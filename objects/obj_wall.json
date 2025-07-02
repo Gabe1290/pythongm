@@ -1,0 +1,6 @@
+{
+  "name": "obj_wall",
+  "sprite": "spr_wall",
+  "solid": true,
+  "events": {}
+}

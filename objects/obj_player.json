@@ -1,0 +1,64 @@
+{
+  "action_lists": {
+    "move_down": [
+      {
+        "action": "move_fixed",
+        "direction": 270,
+        "speed": 4
+      }
+    ],
+    "move_left": [
+      {
+        "action": "move_fixed",
+        "direction": 180,
+        "speed": 4
+      }
+    ],
+    "move_right": [
+      {
+        "action": "move_fixed",
+        "direction": 0,
+        "speed": 4
+      }
+    ],
+    "move_up": [
+      {
+        "action": "move_fixed",
+        "direction": 90,
+        "speed": 4
+      }
+    ]
+  },
+  "events": {
+    "create": [],
+    "step": [
+      {
+        "action": "check_keyboard",
+        "key": "RIGHT",
+        "result_action_list": "move_right"
+      },
+      {
+        "action": "check_keyboard",
+        "key": "LEFT",
+        "result_action_list": "move_left"
+      },
+      {
+        "action": "check_keyboard",
+        "key": "UP",
+        "result_action_list": "move_up"
+      },
+      {
+        "action": "check_keyboard",
+        "key": "DOWN",
+        "result_action_list": "move_down"
+      },
+      {
+        "action": "check_keyboard",
+        "key": "SPACE",
+        "result_action_list": "move_down"
+      }
+    ]
+  },
+  "name": "obj_player",
+  "sprite": "spr_player"
+}

@@ -1,0 +1,22 @@
+{
+  "project_name": "My First Game",
+  "settings": {
+    "screen_width": 800,
+    "screen_height": 600,
+    "fps": 60
+  },
+  "resources": {
+    "sprites": [
+      { "name": "spr_player", "path": "sprites/player.png" },
+      { "name": "spr_wall", "path": "sprites/spr_wall.png" }
+    ],
+    "objects": [
+      { "name": "obj_player", "definition_file": "objects/obj_player.json" },
+      { "name": "obj_wall", "definition_file": "objects/obj_wall.json" }
+    ],
+    "rooms": [
+      { "name": "room_main", "definition_file": "rooms/room_main.json" }
+    ]
+  },
+  "start_room": "room_main"
+}
