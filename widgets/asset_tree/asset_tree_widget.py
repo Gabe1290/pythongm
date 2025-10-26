@@ -1,0 +1,754 @@
+#!/usr/bin/env python3
+"""
+Streamlined Asset Tree Widget for PyGameMaker IDE
+Core tree widget focusing on UI management and delegating operations
+"""
+
+import json
+from pathlib import Path
+from typing import Dict, List, Optional
+from PySide6.QtWidgets import QTreeWidget, QMenu, QMessageBox
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QAction
+
+from .asset_tree_item import AssetTreeItem
+from .asset_operations import AssetOperations
+from .asset_dialogs import AssetPropertiesDialog
+from .asset_utils import get_asset_categories
+
+
+class AssetTreeWidget(QTreeWidget):
+    """Streamlined asset tree widget focusing on UI and tree management"""
+    
+    # Signals
+    assetSelected = Signal(dict)
+    assetDoubleClicked = Signal(dict)
+    assetImported = Signal(str, str, dict)
+    assetDeleted = Signal(str, str)
+    assetRenamed = Signal(str, str, str)  # old_name, new_name, asset_type
+    
+    # camelCase aliases for backward compatibility
+    asset_selected = assetSelected
+    asset_double_clicked = assetDoubleClicked
+    asset_imported = assetImported
+    asset_deleted = assetDeleted
+    asset_renamed = assetRenamed
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        
+        # Core properties
+        self.project_path = None
+        self.project_manager = None
+        self.current_project = None
+        
+        # Initialize operations handler
+        self.operations = AssetOperations(self)
+        
+        # Setup UI
+        self.setup_ui()
+        self.setup_categories()
+        self.setup_connections()
+        
+        print("🔧 AssetTreeWidget: Initialized with operations handler")
+    
+    def setup_ui(self):
+        """Setup the tree widget UI"""
+        self.setHeaderLabel("Assets")
+        self.setDragDropMode(QTreeWidget.DragDropMode.InternalMove)
+        self.setDefaultDropAction(Qt.DropAction.MoveAction)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        
+        # Hide the header
+        self.header().hide()
+        
+        # Set minimum width
+        self.setMinimumWidth(200)
+        
+        # Enable selection
+        self.setSelectionMode(QTreeWidget.SelectionMode.SingleSelection)
+    
+    def setup_categories(self):
+        """Setup default asset categories with separators"""
+        categories = [
+            ("sprites", "Sprites"),
+            ("sounds", "Sounds"), 
+            ("backgrounds", "Backgrounds"),
+            "separator",  # First separator
+            ("objects", "Objects"),
+            ("rooms", "Rooms"),
+            "separator",  # Second separator
+            ("scripts", "Scripts"),
+            ("fonts", "Fonts")
+        ]
+        
+        for item in categories:
+            if item == "separator":
+                # Create separator item
+                separator_item = self.create_separator_item()
+                self.addTopLevelItem(separator_item)
+            else:
+                category_type, category_display = item
+                category_item = AssetTreeItem(
+                    parent=self,
+                    asset_type=category_type,
+                    asset_name="",
+                    asset_data={}
+                )
+                self.addTopLevelItem(category_item)
+        
+        # Expand all categories by default (but not separators)
+        for i in range(self.topLevelItemCount()):
+            item = self.topLevelItem(i)
+            if hasattr(item, 'is_category') and item.is_category:
+                self.expandItem(item)
+                
+        # Clear any initial focus/selection to prevent focus rectangle
+        self.clearSelection()
+        self.setCurrentItem(None)
+
+    def create_separator_item(self):
+        """Create a separator item for the asset tree"""
+        from PySide6.QtWidgets import QTreeWidgetItem
+        from PySide6.QtCore import Qt
+        from PySide6.QtGui import QFont
+        
+        separator = QTreeWidgetItem([""])
+        
+        # Make it non-selectable and non-interactive
+        separator.setFlags(Qt.ItemFlag.NoItemFlags)
+        
+        # Set custom styling to make it look like a separator
+        separator.setBackground(0, Qt.GlobalColor.transparent)
+        
+        # Add a visual line using text
+        separator.setText(0, "─" * 50)  # Unicode horizontal line character
+        
+        # Center the text and make it smaller
+        font = QFont()
+        font.setPointSize(6)
+        separator.setFont(0, font)
+        separator.setTextAlignment(0, Qt.AlignmentFlag.AlignCenter)
+        
+        # Make it slightly shorter
+        separator.setSizeHint(0, self.fontMetrics().boundingRect("A").size())
+        
+        return separator
+    
+    def setup_connections(self):
+        """Setup signal connections"""
+        self.itemClicked.connect(self.on_item_clicked)
+        self.itemDoubleClicked.connect(self.on_item_double_clicked)
+        self.customContextMenuRequested.connect(self.show_context_menu)
+    
+    def show_context_menu(self, position):
+        """Show right-click context menu for asset management"""
+        print(f"🖱️ Context menu requested at position: {position}")
+        
+        item = self.itemAt(position)
+        print(f"   Item at position: {item}")
+        
+        if not item:
+            print(f"   ❌ No item found at position")
+            return
+        
+        print(f"   Item type: {type(item)}")
+        print(f"   Is AssetTreeItem: {isinstance(item, AssetTreeItem)}")
+        
+        if not isinstance(item, AssetTreeItem):
+            print(f"   ❌ Item is not an AssetTreeItem")
+            return
+        
+        print(f"   Is category: {item.is_category}")
+        
+        # Create context menu
+        context_menu = QMenu(self)
+        
+        if item.is_category:
+            # Category menu - show create and import options
+            print(f"   ✅ Showing category menu for: {item.asset_type}")
+            
+            # Get singular form for display (remove trailing 's')
+            singular_type = item.asset_type.rstrip('s')
+            
+            # Create new asset action
+            create_action = QAction(f"➕ Create New {singular_type.title()}...", self)
+            create_action.triggered.connect(lambda: self.trigger_create_for_category(item.asset_type))
+            context_menu.addAction(create_action)
+            
+            # Import asset action
+            import_action = QAction(f"📥 Import {item.asset_type.title()}...", self)
+            import_action.triggered.connect(lambda: self.trigger_import_for_category(item.asset_type))
+            context_menu.addAction(import_action)
+            
+        else:
+            # Asset item menu - show rename, delete, properties
+            print(f"   ✅ Showing context menu for: {item.asset_name}")
+            
+            # Rename action
+            rename_action = QAction("✏️ Rename", self)
+            rename_action.triggered.connect(lambda: self.operations.rename_asset(item))
+            context_menu.addAction(rename_action)
+            
+            # Import Image action for sprites
+            if item.asset_type in ["sprite", "sprites"]:
+                import_image_action = QAction("📥 Import Image...", self)
+                import_image_action.triggered.connect(lambda: self.import_sprite_image(item))
+                context_menu.addAction(import_image_action)
+            
+            # Delete action
+            delete_action = QAction("🗑️ Delete", self)
+            delete_action.triggered.connect(lambda: self.operations.delete_asset(item))
+            context_menu.addAction(delete_action)
+            
+            context_menu.addSeparator()
+            
+            # Properties action
+            properties_action = QAction("⚙️ Properties...", self)
+            properties_action.triggered.connect(lambda: self.show_asset_properties(item))
+            context_menu.addAction(properties_action)
+        
+        print(f"   📋 Executing menu at global position")
+        context_menu.exec(self.mapToGlobal(position))
+        print(f"   ✅ Menu closed")
+    
+    def trigger_create_for_category(self, asset_type: str):
+        """Trigger create dialog for a specific asset category"""
+        print(f"➕ Create requested for category: {asset_type}")
+        
+        # Get the parent IDE window to access the create functionality
+        parent = self.parent()
+        while parent and not hasattr(parent, 'create_asset'):
+            parent = parent.parent()
+        
+        if parent and hasattr(parent, 'create_asset'):
+            # Call the parent's create_asset method with the asset type
+            parent.create_asset(asset_type)
+        else:
+            # Fallback: try to create locally if method exists
+            if hasattr(self, 'create_asset'):
+                self.create_asset(asset_type)
+            else:
+                print(f"⚠️ Could not find parent with create_asset method")
+                QMessageBox.information(
+                    self,
+                    "Create Asset",
+                    f"Asset creation for {asset_type} is not yet implemented."
+                )
+    
+    def trigger_import_for_category(self, asset_type: str):
+        """Trigger import dialog for a specific asset category"""
+        print(f"📥 Import requested for category: {asset_type}")
+        
+        # Get the parent IDE window to access the import functionality
+        parent = self.parent()
+        while parent and not hasattr(parent, 'import_assets'):
+            parent = parent.parent()
+        
+        if parent and hasattr(parent, 'import_assets'):
+            parent.import_assets(asset_type)
+        else:
+            print(f"⚠️ Could not find parent with import_assets method")
+            QMessageBox.information(
+                self,
+                "Import Assets",
+                f"Please use the File menu to import {asset_type}"
+            )
+    
+    def show_asset_properties(self, item):
+        """Show detailed asset properties dialog"""
+        if isinstance(item, AssetTreeItem) and not item.is_category:
+            dialog = AssetPropertiesDialog(item.asset_data, self)
+            dialog.exec()
+    
+    def import_sprite_image(self, item):
+        """Import an image for a sprite asset"""
+        if not isinstance(item, AssetTreeItem) or item.is_category:
+            return
+        
+        from PySide6.QtWidgets import QFileDialog
+        from pathlib import Path
+        
+        sprite_name = item.asset_name
+        
+        # Open file dialog
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            f"Select Image for Sprite '{sprite_name}'",
+            str(Path.home()),
+            "Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)"
+        )
+        
+        if not file_path:
+            return
+        
+        # Use the operations handler to import
+        if self.operations.import_sprite_image_for_asset(Path(file_path), sprite_name):
+            # Refresh the tree to show the new thumbnail
+            self.force_project_refresh()
+            QMessageBox.information(
+                self,
+                "Success",
+                f"Image imported successfully for sprite '{sprite_name}'"
+            )
+
+    def export_resource(self, asset_type: str, asset_name: str):
+        """Export a resource (object or room) with dependencies"""
+        from PySide6.QtWidgets import QFileDialog, QMessageBox
+        from utils.resource_packager import ResourcePackager
+        
+        # Get project path
+        if not self.project_path:
+            QMessageBox.warning(self, "No Project", "No project is currently loaded")
+            return
+        
+        project_path = Path(self.project_path)
+        
+        # Determine file extension and filter
+        if asset_type == 'objects':
+            extension = '.gmobj'
+            file_filter = "GameMaker Objects (*.gmobj)"
+            singular = "object"
+        elif asset_type == 'rooms':
+            extension = '.gmroom'
+            file_filter = "GameMaker Rooms (*.gmroom)"
+            singular = "room"
+        else:
+            return
+        
+        # Ask user where to save
+        default_filename = f"{asset_name}{extension}"
+        file_path, _ = QFileDialog.getSaveFileName(
+            self,
+            f"Export {singular.title()}",
+            str(Path.home() / default_filename),
+            file_filter
+        )
+        
+        if file_path:
+            output_path = Path(file_path)
+            
+            # Export based on type
+            if asset_type == 'objects':
+                success = ResourcePackager.export_object(project_path, asset_name, output_path)
+            else:  # rooms
+                success = ResourcePackager.export_room(project_path, asset_name, output_path)
+            
+            if success:
+                QMessageBox.information(
+                    self,
+                    "Export Successful",
+                    f"{singular.title()} '{asset_name}' exported to:\n{output_path}"
+                )
+            else:
+                QMessageBox.warning(
+                    self,
+                    "Export Failed",
+                    f"Failed to export {singular} '{asset_name}'"
+                )
+
+    def on_item_clicked(self, item, column):
+        """Handle item click"""
+        if isinstance(item, AssetTreeItem) and not item.is_category:
+            asset_data = {
+                'asset_type': item.asset_type,
+                'name': item.asset_name,
+                'data': item.asset_data
+            }
+            self.assetSelected.emit(asset_data)
+    
+    def on_item_double_clicked(self, item, column):
+        """Handle item double click"""
+        if isinstance(item, AssetTreeItem) and not item.is_category:
+            asset_data = {
+                'asset_type': item.asset_type,
+                'name': item.asset_name,
+                'data': item.asset_data
+            }
+            self.assetDoubleClicked.emit(asset_data)
+    
+    # Asset management methods - delegate to operations handler
+    def import_asset(self, files: List[str], asset_type: str, project_path: str):
+        """Import asset files - delegates to operations handler"""
+        return self.operations.import_asset(files, asset_type, project_path)
+    
+    def delete_asset(self, item):
+        """Delete an asset - delegates to operations handler"""
+        return self.operations.delete_asset(item)
+    
+    def rename_asset(self, item):
+        """Rename an asset - delegates to operations handler"""
+        return self.operations.rename_asset(item)
+    
+    def create_asset(self, asset_type: str):
+        """Create a new asset of the specified type"""
+        from PySide6.QtWidgets import QInputDialog
+        
+        name, ok = QInputDialog.getText(
+            self, 
+            f"Create {asset_type.title()[:-1]}", 
+            f"Enter name for new {asset_type[:-1]}:"
+        )
+        
+        if ok and name:
+            from .asset_utils import create_asset_data_template
+            asset_data = create_asset_data_template(name, asset_type)
+            self.add_asset(asset_type, name, asset_data)
+    
+    # Tree management methods
+    def add_asset(self, asset_type: str, asset_name: str, asset_data: Dict):
+        """Add an asset to the tree"""
+        # Find the appropriate category
+        category_item = None
+        for i in range(self.topLevelItemCount()):
+            item = self.topLevelItem(i)
+            if isinstance(item, AssetTreeItem) and item.asset_type == asset_type:
+                category_item = item
+                break
+        
+        if category_item:
+            # Create new asset item
+            asset_item = AssetTreeItem(
+                parent=category_item,
+                asset_type=asset_type,
+                asset_name=asset_name,
+                asset_data=asset_data
+            )
+    
+    def remove_asset(self, asset_type: str, asset_name: str):
+        """Remove an asset from the tree"""
+        for i in range(self.topLevelItemCount()):
+            category_item = self.topLevelItem(i)
+            if isinstance(category_item, AssetTreeItem) and category_item.asset_type == asset_type:
+                for j in range(category_item.childCount()):
+                    asset_item = category_item.child(j)
+                    if isinstance(asset_item, AssetTreeItem) and asset_item.asset_name == asset_name:
+                        category_item.removeChild(asset_item)
+                        print(f"✅ Removed {asset_name} from {asset_type} category")
+                        return
+        
+        print(f"❌ Could not find {asset_name} in {asset_type} category")
+    
+    def clear_assets(self):
+        """Clear all assets but keep categories"""
+        for i in range(self.topLevelItemCount()):
+            category_item = self.topLevelItem(i)
+            if isinstance(category_item, AssetTreeItem) and category_item.is_category:
+                # Remove all children
+                while category_item.childCount() > 0:
+                    category_item.removeChild(category_item.child(0))
+    
+    def refresh_from_project(self, project_data: Dict):
+        """Refresh tree from project data maintaining room order"""
+        self.clear_assets()
+        
+        assets = project_data.get('assets', {})
+        
+        # Add all assets (including rooms) using the standard add_asset method
+        for asset_type, asset_list in assets.items():
+            for asset_name, asset_data in asset_list.items():
+                self.add_asset(asset_type, asset_name, asset_data)
+
+    def get_asset_data(self, asset_type: str, asset_name: str) -> Optional[Dict]:
+        """Get asset data by type and name"""
+        for i in range(self.topLevelItemCount()):
+            category_item = self.topLevelItem(i)
+            if isinstance(category_item, AssetTreeItem) and category_item.asset_type == asset_type:
+                for j in range(category_item.childCount()):
+                    asset_item = category_item.child(j)
+                    if isinstance(asset_item, AssetTreeItem) and asset_item.asset_name == asset_name:
+                        return asset_item.asset_data
+        
+        return None
+    
+    # Room ordering methods
+    def get_room_list(self):
+        """Get ordered list of room names from project data"""
+        try:
+            project_file = Path(self.project_path) / "project.json"
+            if not project_file.exists():
+                return []
+                
+            with open(project_file, 'r') as f:
+                project_data = json.load(f)
+            
+            rooms = project_data.get('assets', {}).get('rooms', {})
+            return list(rooms.keys())
+        except:
+            return []
+
+    def move_room_up(self, room_name: str):
+        """Move a room up in the order"""
+        self._reorder_room(room_name, -1)
+
+    def move_room_down(self, room_name: str):
+        """Move a room down in the order"""
+        self._reorder_room(room_name, 1)
+
+    def move_room_to_top(self, room_name: str):
+        """Move a room to the top of the list"""
+        self._reorder_room(room_name, 'top')
+
+    def move_room_to_bottom(self, room_name: str):
+        """Move a room to the bottom of the list"""
+        self._reorder_room(room_name, 'bottom')
+
+    def _reorder_room(self, room_name: str, direction):
+        """Reorder rooms in project data and save"""
+        try:
+            from collections import OrderedDict
+            
+            project_file = Path(self.project_path) / "project.json"
+            if not project_file.exists():
+                return
+            
+            # Load project data with order preservation
+            with open(project_file, 'r') as f:
+                project_data = json.load(f, object_pairs_hook=OrderedDict)
+            
+            rooms = project_data.get('assets', {}).get('rooms', OrderedDict())
+            room_list = list(rooms.keys())
+            
+            if room_name not in room_list:
+                return
+            
+            current_index = room_list.index(room_name)
+            
+            # Remove from current position
+            room_list.remove(room_name)
+            
+            # Calculate new position
+            if direction == 'top':
+                new_index = 0
+            elif direction == 'bottom':
+                new_index = len(room_list)
+            else:  # numeric offset
+                new_index = max(0, min(current_index + direction, len(room_list)))
+            
+            # Insert at new position
+            room_list.insert(new_index, room_name)
+            
+            # Rebuild rooms OrderedDict in new order
+            new_rooms = OrderedDict()
+            for room_key in room_list:
+                new_rooms[room_key] = rooms[room_key]
+            
+            project_data['assets']['rooms'] = new_rooms
+            
+            # Save project back to file with order preservation
+            with open(project_file, 'w') as f:
+                json.dump(project_data, f, indent=2, sort_keys=False)
+            
+            print(f"✅ Saved new room order to project.json: {room_list}")
+            
+            # Find the IDE parent window
+            ide_window = self.parent()
+            while ide_window and not hasattr(ide_window, 'current_project_data'):
+                ide_window = ide_window.parent()
+            
+            if ide_window:
+                # CRITICAL: Update the asset manager's cache directly
+                if hasattr(ide_window, 'asset_manager') and ide_window.asset_manager:
+                    if hasattr(ide_window.asset_manager, 'assets_cache'):
+                        # Update the cache with the new room order
+                        ide_window.asset_manager.assets_cache['rooms'] = new_rooms
+                        print(f"✅ Updated asset manager cache with new room order")
+                
+                # Update the IDE's project data
+                ide_window.current_project_data = project_data
+                
+                # Update the project manager's data
+                if hasattr(ide_window, 'project_manager'):
+                    ide_window.project_manager.current_project_data = project_data
+                    ide_window.project_manager.mark_dirty()
+                    
+                    # Force save to ensure asset manager syncs
+                    if ide_window.project_manager.save_project():
+                        print(f"✅ Project saved with new room order")
+                
+                # Refresh the entire asset tree from the updated data
+                self.refresh_from_project(project_data)
+                
+                # Update status
+                if hasattr(ide_window, 'update_status'):
+                    ide_window.update_status(f"Reordered room: {room_name}")
+            else:
+                # Fallback to local refresh if we can't find IDE
+                self._refresh_room_display()
+            
+        except Exception as e:
+            print(f"Error reordering room: {e}")
+            import traceback
+            traceback.print_exc()
+
+    def _refresh_room_display(self):
+        """Refresh the room category in the tree after reordering"""
+        try:
+            # Find rooms category
+            rooms_category = None
+            for i in range(self.topLevelItemCount()):
+                item = self.topLevelItem(i)
+                if isinstance(item, AssetTreeItem) and item.asset_type == "rooms":
+                    rooms_category = item
+                    break
+            
+            if not rooms_category:
+                return
+            
+            # Get current room data
+            room_list = self.get_room_list()
+            
+            # Store expansion state
+            was_expanded = self.isItemExpanded(rooms_category)
+            
+            # Clear and rebuild room items
+            while rooms_category.childCount() > 0:
+                rooms_category.removeChild(rooms_category.child(0))
+            
+            # Load project data for room details
+            project_file = Path(self.project_path) / "project.json"
+            with open(project_file, 'r') as f:
+                project_data = json.load(f)
+            
+            rooms_data = project_data.get('assets', {}).get('rooms', {})
+            
+            # Add rooms in order without position numbers
+            for room_name in room_list:
+                if room_name in rooms_data:
+                    room_data = rooms_data[room_name]
+                    room_item = AssetTreeItem(
+                        parent=rooms_category,
+                        asset_type="rooms",
+                        asset_name=room_name,
+                        asset_data=room_data
+                    )
+            
+            # Restore expansion state
+            if was_expanded:
+                self.expandItem(rooms_category)
+                
+        except Exception as e:
+            print(f"Error refreshing room display: {e}")
+    
+    # Project management methods
+    def set_project(self, project_path: str, project_data: Dict):
+        """Set project and refresh asset tree"""
+        try:
+            self.project_path = project_path
+            self.set_current_project(project_path)
+            
+            # DEBUG: Check room order when receiving project data
+            rooms = project_data.get('assets', {}).get('rooms', {})
+            print(f"DEBUG asset_tree set_project: room order = {list(rooms.keys())}")
+            
+            if isinstance(project_data, dict):
+                self.refresh_from_project(project_data)
+            else:
+                print("⚠️ Invalid project_data, clearing assets")
+                self.clear_assets()
+                
+        except Exception as e:
+            self.clear_assets()
+    
+    def set_current_project(self, project_path: str):
+        """Set current project"""
+        self.current_project = project_path
+    
+    def set_project(self, project_path: str, project_data: Dict):
+        """Set project and refresh asset tree"""
+        try:
+            self.project_path = project_path
+            self.set_current_project(project_path)
+            
+            if isinstance(project_data, dict):
+                self.refresh_from_project(project_data)
+            else:
+                print("⚠️ Invalid project_data, clearing assets")
+                self.clear_assets()
+            
+        except Exception as e:
+            self.clear_assets()
+    
+    def force_project_refresh(self):
+        """Force the IDE to refresh from the updated project.json"""
+        try:
+            # Find project manager and force reload
+            parent = self.parent()
+            while parent:
+                if hasattr(parent, 'project_manager'):
+                    project_manager = parent.project_manager
+                    current_path = project_manager.get_current_project_path()
+                    if current_path:
+                        project_manager.load_project(current_path)
+                        print("🔄 Forced project manager to reload")
+                    break
+                parent = parent.parent()
+        except Exception as e:
+            print(f"⚠️ Could not force refresh: {e}")
+    
+    # Compatibility methods for existing code
+    def update_asset_manager_cache(self, asset_name: str, asset_type: str, asset_data: Dict):
+        """Compatibility method - delegates to operations"""
+        self.operations.update_asset_manager_cache(asset_name, asset_type, asset_data)
+    
+    def save_asset_to_project(self, asset_name: str, asset_type: str, asset_data: Dict, project_path: str) -> bool:
+        """Compatibility method - delegates to operations"""
+        return self.operations.save_asset_to_project(asset_name, asset_type, asset_data, project_path)
+
+    def get_asset_absolute_path(self, asset_data: Dict) -> Optional[str]:
+        """Get absolute path for an asset - needed for image preview functionality"""
+        try:
+            # Try project_path first (full absolute path)
+            if 'project_path' in asset_data:
+                asset_path = Path(asset_data['project_path'])
+                if asset_path.exists():
+                    return str(asset_path)
+            
+            # Try relative path with project root
+            if 'file_path' in asset_data and self.project_path:
+                asset_path = Path(self.project_path) / asset_data['file_path']
+                if asset_path.exists():
+                    return str(asset_path)
+            
+            # Try name-based path construction for imported assets
+            if self.project_path and 'name' in asset_data and 'asset_type' in asset_data:
+                asset_name = asset_data['name']
+                asset_type = asset_data['asset_type']
+                
+                # Convert singular to plural for directory name
+                type_map = {
+                    'sprite': 'sprites',
+                    'sound': 'sounds', 
+                    'background': 'backgrounds',
+                    'object': 'objects',
+                    'room': 'rooms',
+                    'script': 'scripts',
+                    'font': 'fonts'
+                }
+                plural_type = type_map.get(asset_type, asset_type + 's')
+                
+                # Common image extensions to try
+                extensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp']
+                
+                for ext in extensions:
+                    asset_path = Path(self.project_path) / plural_type / f"{asset_name}{ext}"
+                    if asset_path.exists():
+                        return str(asset_path)
+            
+            return None
+            
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return None
+
+    def get_selected_asset(self):
+        """Get the currently selected asset data"""
+        current = self.currentItem()
+        if isinstance(current, AssetTreeItem) and not current.is_category:
+            return {
+                'type': current.asset_type,
+                'name': current.asset_name,
+                'data': current.asset_data
+            }
+        return None

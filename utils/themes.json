@@ -1,0 +1,157 @@
+{
+  "dark": {
+    "name": "Dark",
+    "style": "Fusion",
+    "colors": {
+      "window": "#1e1e1e",
+      "window_text": "#e0e0e0",
+      "base": "#252526",
+      "alternate_base": "#2d2d30",
+      "tooltip_base": "#2d2d30",
+      "tooltip_text": "#e0e0e0",
+      "text": "#cccccc",
+      "button": "#3e3e42",
+      "button_text": "#cccccc",
+      "bright_text": "#ffffff",
+      "link": "#569cd6",
+      "highlight": "#094771",
+      "highlight_text": "#ffffff",
+      "disabled_text": "#6e6e6e",
+      "disabled_button_text": "#6e6e6e",
+      
+      "panel_background": "#1e1e1e",
+      "tree_background": "#1e1e1e",
+      "tree_alternate": "#252526",
+      "tree_hover": "#2d2d30",
+      "tree_selected": "#094771",
+      "tree_selected_text": "#ffffff",
+      
+      "menu_background": "#1e1e1e",
+      "menu_text": "#cccccc",
+      "menu_selected": "#094771",
+      "menu_selected_text": "#ffffff",
+      "menu_pressed": "#0e639c",
+      "menu_separator": "#3e3e42",
+      
+      "dropdown_background": "#252526",
+      "dropdown_border": "#3e3e42",
+      
+      "toolbar_background": "#252526",
+      "toolbar_button_hover": "#3e3e42",
+      "toolbar_button_pressed": "#094771",
+      
+      "tab_background": "#2d2d30",
+      "tab_selected": "#094771",
+      "tab_hover": "#3e3e42",
+      "tab_text": "#cccccc",
+      "tab_selected_text": "#ffffff",
+      "tab_pane": "#252526",
+      "tab_border": "#3e3e42",
+      
+      "input_background": "#252526",
+      "input_border": "#3e3e42",
+      "input_focus_border": "#569cd6",
+      "input_selection": "#094771",
+      
+      "button_hover": "#505050",
+      "button_pressed": "#094771",
+      "button_disabled": "#2d2d30",
+      
+      "checkbox_background": "#252526",
+      "checkbox_checked": "#094771",
+      "checkbox_border": "#3e3e42",
+      
+      "scrollbar_background": "#1e1e1e",
+      "scrollbar_handle": "#424242",
+      "scrollbar_handle_hover": "#4e4e4e",
+      
+      "groupbox_border": "#3e3e42",
+      
+      "statusbar_background": "#007acc",
+      "statusbar_text": "#ffffff",
+      
+      "border": "#3e3e42",
+      "border_light": "#505050"
+    }
+  },
+  "light": {
+    "name": "Light",
+    "style": "Fusion",
+    "colors": {
+      "window": "#f5f5f5",
+      "window_text": "#1e1e1e",
+      "base": "#ffffff",
+      "alternate_base": "#f9f9f9",
+      "tooltip_base": "#ffffdc",
+      "tooltip_text": "#000000",
+      "text": "#1e1e1e",
+      "button": "#e1e1e1",
+      "button_text": "#1e1e1e",
+      "bright_text": "#ff0000",
+      "link": "#0066cc",
+      "highlight": "#c8e1f7",
+      "highlight_text": "#ffffff",
+      "disabled_text": "#a0a0a0",
+      "disabled_button_text": "#a0a0a0",
+      
+      "panel_background": "#f5f5f5",
+      "tree_background": "#f5f5f5",
+      "tree_alternate": "#f9f9f9",
+      "tree_hover": "#e5e5e5",
+      "tree_selected": "#c8e1f7",
+      "tree_selected_text": "#ffffff",
+      
+      "menu_background": "#f5f5f5",
+      "menu_text": "#1e1e1e",
+      "menu_selected": "#c8e1f7",
+      "menu_selected_text": "#ffffff",
+      "menu_pressed": "#005a9e",
+      "menu_separator": "#d0d0d0",
+      
+      "dropdown_background": "#ffffff",
+      "dropdown_border": "#cccccc",
+      
+      "toolbar_background": "#f5f5f5",
+      "toolbar_button_hover": "#e5e5e5",
+      "toolbar_button_pressed": "#cce4f7",
+      
+      "tab_background": "#e1e1e1",
+      "tab_selected": "#c8e1f7",
+      "tab_hover": "#d0d0d0",
+      "tab_text": "#1e1e1e",
+      "tab_selected_text": "#1e1e1e",
+      "tab_pane": "#ffffff",
+      "tab_border": "#cccccc",
+      
+      "input_background": "#ffffff",
+      "input_border": "#cccccc",
+      "input_focus_border": "#c8e1f7",
+      "input_selection": "#c8e1f7",
+      
+      "button_hover": "#d0d0d0",
+      "button_pressed": "#cce4f7",
+      "button_disabled": "#f0f0f0",
+      
+      "checkbox_background": "#ffffff",
+      "checkbox_checked": "#c8e1f7",
+      "checkbox_border": "#cccccc",
+      
+      "scrollbar_background": "#f5f5f5",
+      "scrollbar_handle": "#c0c0c0",
+      "scrollbar_handle_hover": "#a0a0a0",
+      
+      "groupbox_border": "#cccccc",
+      
+      "statusbar_background": "#c8e1f7",
+      "statusbar_text": "#ffffff",
+      
+      "border": "#cccccc",
+      "border_light": "#d0d0d0"
+    }
+  },
+  "default": {
+    "name": "Default",
+    "style": "Fusion",
+    "palette": null
+  }
+}

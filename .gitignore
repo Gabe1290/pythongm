@@ -1,0 +1,14 @@
+# Byte-compiled / optimized / C extensions
+__pycache__/
+
+# LO Writer & Calc files
+*.odt
+*.ods
+
+# Distribution / packaging
+venv/
+
+# Work folders
+Projects/
+Tutorial1/
+

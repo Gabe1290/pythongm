@@ -1,0 +1,349 @@
+#!/usr/bin/env python3
+"""
+{{ object_name }} - Game Object
+Exported from PyGameMaker IDE
+
+Auto-generated game object class
+"""
+
+from kivy.uix.widget import Widget
+from kivy.uix.image import Image
+from kivy.graphics import Rectangle, Color
+from kivy.core.image import Image as CoreImage
+from kivy.core.window import Window
+from kivy.logger import Logger
+from pathlib import Path
+
+import os
+
+class {{ object_name }}(Widget):
+    """
+    Game object: {{ object_name }}
+    {% if sprite_name %}Sprite: {{ sprite_name }}{% endif %}
+    """
+    
+    def __init__(self, scene, x=0, y=0, **kwargs):
+        """
+        Initialize the game object.
+        
+        Args:
+            scene: Reference to the parent scene/room
+            x: Initial x position
+            y: Initial y position
+        """
+        super().__init__(**kwargs)
+        
+        # Object properties
+        self.scene = scene
+        self.game = scene.game if scene and hasattr(scene, 'game') else None
+        self.pos = (x, y)
+
+        # Store x, y separately for grid calculations
+        self._x = x
+        self._y = y
+
+        self.size = (32, 32)  # Default size
+        
+        # GameMaker-style properties
+        self.visible = {{ visible }}
+        self.solid = {{ solid }}
+        self.persistent = {{ persistent }}
+        self.depth = {{ depth }}
+        
+        # Movement properties
+        self.speed = 0
+        self.direction = 0
+        self.hspeed = 0
+        self.vspeed = 0
+        
+        # Sprite properties
+        self.sprite_name = "{{ sprite_name }}" if "{{ sprite_name }}" else None
+        self.sprite_index = 0
+        self.sprite_speed = 0.2
+        self.image_widget = None
+        
+        # State flags
+        self.destroyed = False
+
+        # Keyboard state tracking for stop_if_no_keys action
+        self.keys_pressed = {}
+        
+        # Initialize sprite
+        self._setup_sprite()
+        
+        # Call Create event
+        self.on_create()
+        
+        Logger.debug(f"{{ object_name }}: Created at ({x}, {y})")
+    
+    @property
+    def x(self):
+        """Get x position."""
+        return self._x
+    
+    @x.setter
+    def x(self, value):
+        """Set x position."""
+        self._x = value
+        self.pos = (self._x, self._y)
+    
+    @property
+    def y(self):
+        """Get y position."""
+        return self._y
+    
+    @y.setter
+    def y(self, value):
+        """Set y position."""
+        self._y = value
+        self.pos = (self._x, self._y)
+
+    def _setup_sprite(self):
+        """Setup the sprite/visual representation."""
+        {% if sprite_path %}
+        sprite_path = Path("{{ sprite_path }}")
+        if sprite_path.exists():
+            self.image_widget = Image(
+                source=str(sprite_path),
+                pos=self.pos,
+                allow_stretch=True
+            )
+            self.add_widget(self.image_widget)
+            
+            # Get sprite dimensions
+            if self.image_widget.texture:
+                self.size = self.image_widget.texture.size
+        else:
+            Logger.warning(f"{{ object_name }}: Sprite not found: {sprite_path}")
+            self._setup_default_sprite()
+        {% else %}
+        # No sprite assigned, use colored rectangle
+        self._setup_default_sprite()
+        {% endif %}
+    
+    def _setup_default_sprite(self):
+        """Setup a default colored rectangle when no sprite is available."""
+        with self.canvas:
+            Color(1, 0, 1, 1)  # Magenta - indicates missing sprite
+            self.rect = Rectangle(pos=self.pos, size=self.size)
+    
+    def update(self, dt):
+        """
+        Update the object each frame.
+        
+        Args:
+            dt: Delta time since last frame
+        """
+        if self.destroyed:
+            return
+        
+        # Apply movement
+        self._apply_movement(dt)
+        
+        # Update sprite position
+        self._update_sprite_position()
+        
+        # Call Step event
+        self.on_step(dt)
+    
+    def _apply_movement(self, dt):
+                """Apply speed and direction-based movement with delta time for smooth, frame-independent motion."""
+                # Convert speed/direction to hspeed/vspeed if using polar coordinates
+                if self.speed != 0:
+                    import math
+                    rad = math.radians(self.direction)
+                    self.hspeed = math.cos(rad) * self.speed
+                    self.vspeed = -math.sin(rad) * self.speed
+                
+                # Apply horizontal and vertical speeds WITH delta time
+                if self.hspeed != 0 or self.vspeed != 0:
+                    # Multiply by dt for frame-independent movement
+                    # This makes movement smooth regardless of frame rate
+                    new_x = self.x + (self.hspeed * dt * 240)  # Normalize to 60 FPS base
+                    new_y = self.y + (self.vspeed * dt * 240)
+                    
+                    self.x = new_x
+                    self.y = new_y
+                    
+                    # Update Kivy widget position
+                    self.pos = (self.x, self.y)
+    
+    def _update_sprite_position(self):
+        """Update the visual sprite position to match object position."""
+        if self.image_widget:
+            self.image_widget.pos = self.pos
+        elif hasattr(self, 'rect'):
+            self.rect.pos = self.pos
+    
+    def change_sprite(self, sprite_name):
+        """
+        Change the object's sprite.
+        
+        Args:
+            sprite_name: Name of the new sprite
+        """
+        Logger.debug(f"{{ object_name }}: Changing sprite to {sprite_name}")
+        # TODO: Implement sprite changing
+        pass
+    
+    def destroy(self):
+        """Destroy this object instance."""
+        if not self.destroyed:
+            Logger.debug(f"{{ object_name }}: Destroying instance")
+            self.destroyed = True
+            self.scene.remove_instance(self)
+            self.parent.remove_widget(self)
+    
+    def check_collision(self, other_object):
+        """
+        Check if this object collides with another object.
+        
+        Args:
+            other_object: The other object to check collision with
+            
+        Returns:
+            bool: True if objects are colliding
+        """
+        # Simple AABB collision detection
+        x1, y1 = self.pos
+        w1, h1 = self.size
+        x2, y2 = other_object.pos
+        w2, h2 = other_object.size
+        
+        return (x1 < x2 + w2 and
+                x1 + w1 > x2 and
+                y1 < y2 + h2 and
+                y1 + h1 > y2)
+    
+    def play_sound(self, sound_name, loop=False):
+        """
+        Play a sound effect.
+        
+        Args:
+            sound_name: Name of the sound to play
+            loop: Whether to loop the sound
+        """
+        # TODO: Implement sound playback
+        Logger.debug(f"{{ object_name }}: Playing sound {sound_name} (loop={loop})")
+        pass
+    
+    def stop_sound(self, sound_name):
+        """
+        Stop a playing sound.
+        
+        Args:
+            sound_name: Name of the sound to stop
+        """
+        # TODO: Implement sound stopping
+        Logger.debug(f"{{ object_name }}: Stopping sound {sound_name}")
+        pass
+    
+    # ========================================================================
+    # EVENT HANDLERS
+    # ========================================================================
+    
+    def on_create(self):
+        """
+        Create Event - Called when the object is created.
+        """
+        {% if events.create %}
+        {{ events.create | indent(8) }}
+        {% else %}
+        pass
+        {% endif %}
+    
+    def on_step(self, dt):
+        """
+        Step Event - Called every frame.
+        
+        Args:
+            dt: Delta time since last frame
+        """
+        {% if events.step %}
+        {{ events.step | indent(8) }}
+        {% else %}
+        pass
+        {% endif %}
+    
+    def on_draw(self):
+        """
+        Draw Event - Called when the object needs to be drawn.
+        """
+        {% if events.draw %}
+        {{ events.draw | indent(8) }}
+        {% else %}
+        pass
+        {% endif %}
+    
+    {% if events.keyboard %}
+    def on_keyboard(self, keycode, text, modifiers):
+        """
+        Keyboard Event - Called when a key is pressed.
+        
+        Args:
+            keycode: The key code (int, str) tuple
+            text: The text of the key
+            modifiers: List of modifiers (shift, ctrl, etc.)
+        """
+        # Get the string representation
+        if isinstance(keycode, tuple) and len(keycode) >= 2:
+            key = keycode[1] if keycode[1] else str(keycode[0])
+        else:
+            key = str(keycode)
+        
+        # Track key state
+        self.keys_pressed[key] = True
+        
+        Logger.debug(f"{{ object_name }}: Key pressed - {key}")
+        
+        {% for key_name, key_code in events.keyboard.items() %}
+        if key == '{{ key_name }}':
+            Logger.debug(f"{{ object_name }}: Handling '{{ key_name }}' key")
+{{ key_code | indent(12) }}
+        {% endfor %}
+    
+    def on_keyboard_up(self, keycode):
+        """
+        Keyboard Release Event - Called when a key is released.
+        
+        Args:
+            keycode: The key code (int, str) tuple
+        """
+        # Get the string representation
+        if isinstance(keycode, tuple) and len(keycode) >= 2:
+            key = keycode[1] if keycode[1] else str(keycode[0])
+        else:
+            key = str(keycode)
+        
+        # Clear key state
+        if key in self.keys_pressed:
+            self.keys_pressed[key] = False
+        
+        Logger.debug(f"{{ object_name }}: Key released - {key}")
+    {% endif %}
+    
+    {% if events.collision %}
+    def check_collisions(self):
+        """Check for collisions with other objects."""
+        {% for collision_obj, collision_code in events.collision.items() %}
+        # Check collision with {{ collision_obj }}
+        for obj in self.scene.get_instances('{{ collision_obj }}'):
+            if obj != self and self.check_collision(obj):
+                # Store reference to other object for destroy_instance actions
+                self._collision_other = obj
+                self.on_collision_{{ collision_obj }}(obj)
+                self._collision_other = None
+        {% endfor %}
+    
+    {% for collision_obj, collision_code in events.collision.items() %}
+    def on_collision_{{ collision_obj }}(self, other):
+        """
+        Collision Event - {{ collision_obj }}
+        
+        Args:
+            other: The other object involved in the collision
+        """
+        {{ collision_code | indent(8) }}
+    
+    {% endfor %}
+    {% endif %}

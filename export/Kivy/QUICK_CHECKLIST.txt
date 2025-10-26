@@ -1,0 +1,75 @@
+KIVY EXPORT - QUICK REFERENCE CHECKLIST
+========================================
+
+DIRECTORY CREATION:
+-------------------
+[ ] Create /mnt/project/export/
+[ ] Create /mnt/project/export/kivy/
+[ ] Create /mnt/project/export/kivy/templates/
+
+
+FILES TO COPY (Source → Destination):
+--------------------------------------
+[ ] __init__.py → /mnt/project/export/__init__.py
+    (Use export__init__.py from outputs)
+
+[ ] __init__.py → /mnt/project/export/kivy/__init__.py
+[ ] kivy_exporter.py → /mnt/project/export/kivy/kivy_exporter.py
+[ ] code_generator.py → /mnt/project/export/kivy/code_generator.py
+[ ] asset_bundler.py → /mnt/project/export/kivy/asset_bundler.py
+[ ] buildspec_generator.py → /mnt/project/export/kivy/buildspec_generator.py
+
+[ ] main.py.template → /mnt/project/export/kivy/templates/main.py.template
+[ ] game_object.py.template → /mnt/project/export/kivy/templates/game_object.py.template
+[ ] scene.py.template → /mnt/project/export/kivy/templates/scene.py.template
+[ ] buildozer.spec.template → /mnt/project/export/kivy/templates/buildozer.spec.template
+
+
+FILE MODIFICATIONS:
+-------------------
+[ ] /mnt/project/project_dialogs.py
+    - Add "Mobile (Kivy)" to platform dropdown
+    - Add elif condition for Kivy export
+    - Add _export_kivy() method
+
+[ ] /mnt/project/__init__.py
+    - Add: from .export.kivy import KivyExporter
+    - Add 'KivyExporter' to __all__
+
+[ ] /mnt/project/requirements.txt
+    - Add: kivy>=2.3.0
+    - Add: buildozer>=1.5.0
+    - Add: jinja2>=3.1.0
+    - Add: pillow>=10.0.0
+
+
+INSTALLATION:
+-------------
+[ ] pip install kivy>=2.3.0 buildozer>=1.5.0 jinja2>=3.1.0 pillow>=10.0.0
+
+
+TESTING:
+--------
+[ ] Launch PyGameMaker IDE
+[ ] Open a project
+[ ] File → Export Project
+[ ] Select "Mobile (Kivy)"
+[ ] Export and verify output
+
+
+ALL FILES AVAILABLE IN:
+-----------------------
+/mnt/user-data/outputs/
+
+- __init__.py (for export/kivy/)
+- export__init__.py (for export/)
+- kivy_exporter.py
+- code_generator.py
+- asset_bundler.py
+- buildspec_generator.py
+- main.py.template
+- game_object.py.template
+- scene.py.template
+- buildozer.spec.template
+- IMPLEMENTATION_GUIDE.txt (full documentation)
+- QUICK_CHECKLIST.txt (this file)

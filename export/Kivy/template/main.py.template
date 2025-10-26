@@ -1,0 +1,206 @@
+#!/usr/bin/env python3
+"""
+{{ project_name }} - Kivy Mobile Game
+Exported from PyGameMaker IDE
+
+Main application entry point
+"""
+
+import os
+import sys
+from pathlib import Path
+
+# Kivy imports
+from kivy.app import App
+from kivy.uix.widget import Widget
+from kivy.uix.floatlayout import FloatLayout
+from kivy.core.window import Window
+from kivy.clock import Clock
+from kivy.logger import Logger
+
+# Game scene imports
+{% for room_name in room_names %}
+from scenes.{{ room_name }} import {{ room_name }}
+{% endfor %}
+
+
+class GameManager:
+    """
+    Manages game state, room transitions, and global game logic.
+    """
+    
+    def __init__(self, app):
+        """
+        Initialize the game manager.
+        
+        Args:
+            app: Reference to the main Kivy app
+        """
+        self.app = app
+        self.current_room = None
+        self.rooms = {}
+        self.running = True
+        
+        Logger.info(f"GameManager: Initializing {{ project_name }}")
+        
+        # Initialize all rooms
+        self._initialize_rooms()
+    
+    def _initialize_rooms(self):
+        """Create instances of all game rooms."""
+        {% for room_name in room_names %}
+        self.rooms['{{ room_name }}'] = {{ room_name }}(self)
+        {% endfor %}
+        
+        Logger.info(f"GameManager: Initialized {len(self.rooms)} rooms")
+    
+    def start(self):
+            """Start the game with the initial room."""
+            {% if initial_room %}
+            self.change_room('{{ initial_room }}')
+            {% else %}
+            Logger.warning("GameManager: No initial room specified")
+            # Create a default test screen to show something
+            from kivy.uix.label import Label
+            from kivy.graphics import Color, Rectangle
+            
+            # Add a test label
+            test_label = Label(
+                text='No rooms in project\nAdd rooms in PyGameMaker IDE',
+                font_size='20sp',
+                halign='center'
+            )
+            self.app.root.add_widget(test_label)
+            
+            # Add colored background so we know app is running
+            with self.app.root.canvas.before:
+                Color(0.2, 0.2, 0.3, 1.0)  # Dark blue-gray
+                Rectangle(pos=self.app.root.pos, size=self.app.root.size)
+            {% endif %}
+    
+    def change_room(self, room_name):
+        """
+        Change to a different room.
+        
+        Args:
+            room_name: Name of the room to switch to
+        """
+        if room_name not in self.rooms:
+            Logger.error(f"GameManager: Room '{room_name}' not found")
+            return
+        
+        Logger.info(f"GameManager: Changing to room '{room_name}'")
+        
+        # Clean up current room
+        if self.current_room:
+            self.current_room.on_leave()
+            self.app.root.clear_widgets()
+        
+        # Switch to new room
+        self.current_room = self.rooms[room_name]
+        self.app.root.add_widget(self.current_room)
+        self.current_room.on_enter()
+    
+    def restart_room(self):
+        """Restart the current room."""
+        if self.current_room:
+            room_name = None
+            for name, room in self.rooms.items():
+                if room == self.current_room:
+                    room_name = name
+                    break
+            
+            if room_name:
+                Logger.info(f"GameManager: Restarting room '{room_name}'")
+                # Recreate the room
+                self.rooms[room_name] = type(self.current_room)(self)
+                self.change_room(room_name)
+    
+    def end_game(self):
+        """End the game and close the application."""
+        Logger.info("GameManager: Ending game")
+        self.running = False
+        self.app.stop()
+
+
+class {{ project_name }}App(App):
+    """
+    Main Kivy application class for {{ project_name }}.
+    """
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.game_manager = None
+    
+    def build(self):
+        """
+        Build and return the root widget.
+        
+        Returns:
+            Widget: Root widget for the application
+        """
+        # Set window size (for desktop testing)
+        Window.size = ({{ window_width }}, {{ window_height }})
+        
+        # Create root layout
+        root = FloatLayout(size=({{ window_width }}, {{ window_height }}))
+        
+        # Initialize game manager
+        self.game_manager = GameManager(self)
+        
+        # Schedule game start after app is fully initialized
+        Clock.schedule_once(lambda dt: self.game_manager.start(), 0)
+        
+        # Schedule update loop
+        Clock.schedule_interval(self.update, 1.0 / 60.0)  # 60 FPS
+        
+        Logger.info("{{ project_name }}App: Application built successfully")
+        
+        return root
+    
+    def update(self, dt):
+        """
+        Main game loop update.
+        
+        Args:
+            dt: Delta time since last update
+        """
+        if self.game_manager and self.game_manager.running:
+            if self.game_manager.current_room:
+                self.game_manager.current_room.update(dt)
+    
+    def on_pause(self):
+        """
+        Handle application pause (Android/iOS).
+        
+        Returns:
+            bool: True to allow pause
+        """
+        Logger.info("{{ project_name }}App: Application paused")
+        return True
+    
+    def on_resume(self):
+        """Handle application resume (Android/iOS)."""
+        Logger.info("{{ project_name }}App: Application resumed")
+    
+    def on_stop(self):
+        """Handle application stop/close."""
+        Logger.info("{{ project_name }}App: Application stopped")
+
+
+def main():
+    """Main entry point for the application."""
+    try:
+        # Create and run the app
+        app = {{ project_name }}App()
+        app.run()
+        
+    except Exception as e:
+        Logger.error(f"{{ project_name }}: Fatal error - {e}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()

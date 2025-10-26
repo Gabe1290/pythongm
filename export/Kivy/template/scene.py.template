@@ -1,0 +1,338 @@
+#!/usr/bin/env python3
+"""
+{{ room_name }} - Game Scene/Room
+Exported from PyGameMaker IDE
+
+Auto-generated scene class
+"""
+
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.image import Image
+from kivy.graphics import Rectangle, Color
+from kivy.core.window import Window
+from kivy.logger import Logger
+from pathlib import Path
+
+# Import game objects used in this room
+{% for object_type in object_types %}
+from objects.{{ object_type }} import {{ object_type }}
+{% endfor %}
+
+
+class {{ room_name }}(FloatLayout):
+    """
+    Game scene: {{ room_name }}
+    Dimensions: {{ width }} x {{ height }}
+    """
+    
+    def __init__(self, game=None, **kwargs):
+        """
+        Initialize the scene.
+        
+        Args:
+            game: Reference to the game manager
+        """
+        super().__init__(**kwargs)
+        
+        # Scene properties
+        self.game = game
+        self.size = ({{ width }}, {{ height }})
+        self.size_hint = (None, None)
+        
+        # Background properties
+        self.background_color = "{{ background_color }}"
+        self.background_image = None
+        
+        # Object instances
+        self.instances = []
+        self.instances_by_type = {}
+        
+        # Initialize background
+        self._setup_background()
+        
+        # Create initial instances
+        self._create_initial_instances()
+        
+        # Bind keyboard events
+        self._bind_keyboard()
+        
+        Logger.info(f"{{ room_name }}: Scene initialized")
+    
+    def _setup_background(self):
+        """Setup the background (color or image)."""
+        with self.canvas.before:
+            # Parse background color
+            color = self._parse_color(self.background_color)
+            Color(*color)
+            self.bg_rect = Rectangle(pos=self.pos, size=self.size)
+        
+        {% if background_path %}
+        # Load background image
+        bg_path = Path("{{ background_path }}")
+        if bg_path.exists():
+            self.background_image = Image(
+                source=str(bg_path),
+                pos=self.pos,
+                size=self.size,
+                allow_stretch=True
+            )
+            self.add_widget(self.background_image)
+            Logger.debug(f"{{ room_name }}: Background image loaded")
+        else:
+            Logger.warning(f"{{ room_name }}: Background image not found: {bg_path}")
+        {% endif %}
+    
+    def _parse_color(self, color_str):
+        """
+        Parse color string to RGBA tuple.
+        
+        Args:
+            color_str: Color string (hex format like "#RRGGBB" or "#AARRGGBB")
+            
+        Returns:
+            tuple: (r, g, b, a) values from 0-1
+        """
+        try:
+            # Remove '#' if present
+            color_str = color_str.lstrip('#')
+            
+            # Parse hex values
+            if len(color_str) == 6:
+                # RGB format
+                r = int(color_str[0:2], 16) / 255.0
+                g = int(color_str[2:4], 16) / 255.0
+                b = int(color_str[4:6], 16) / 255.0
+                a = 1.0
+            elif len(color_str) == 8:
+                # ARGB format
+                a = int(color_str[0:2], 16) / 255.0
+                r = int(color_str[2:4], 16) / 255.0
+                g = int(color_str[4:6], 16) / 255.0
+                b = int(color_str[6:8], 16) / 255.0
+            else:
+                # Default to black
+                r, g, b, a = 0, 0, 0, 1
+            
+            return (r, g, b, a)
+        except:
+            Logger.warning(f"{{ room_name }}: Failed to parse color '{color_str}', using black")
+            return (0, 0, 0, 1)
+    
+    def _create_initial_instances(self):
+        """Create all initial object instances for this room."""
+        {% if instances %}
+        Logger.debug(f"{{ room_name }}: Creating {{ instances|length }} initial instances")
+        
+        {% for instance in instances %}
+        # Create {{ instance.object_type }} at ({{ instance.x }}, {{ instance.y }})
+        self.create_instance('{{ instance.object_type }}', {{ instance.x }}, {{ instance.y }})
+        {% if instance.creation_code %}
+        # TODO: Apply creation code
+        # {{ instance.creation_code }}
+        {% endif %}
+        
+        {% endfor %}
+        {% else %}
+        Logger.debug(f"{{ room_name }}: No initial instances to create")
+        {% endif %}
+    
+    def _bind_keyboard(self):
+        """Bind keyboard events for object handling."""
+        from kivy.core.window import Window
+        Window.bind(on_key_down=self._on_keyboard_down)
+        Window.bind(on_key_up=self._on_keyboard_up)
+        Logger.debug(f"{{ room_name }}: Keyboard events bound")
+    
+    def _unbind_keyboard(self):
+        """Unbind keyboard events when leaving the room."""
+        from kivy.core.window import Window
+        try:
+            Window.unbind(on_key_down=self._on_keyboard_down)
+            Window.unbind(on_key_up=self._on_keyboard_up)
+            Logger.debug(f"{{ room_name }}: Keyboard events unbound")
+        except:
+            pass
+    
+    def _on_keyboard_down(self, window, keycode, scancode, text, modifiers):
+        """
+        Handle keyboard key down events.
+        
+        Args:
+            window: The window instance
+            keycode: The key code integer
+            scancode: The scan code integer
+            text: The text of the key
+            modifiers: List of modifiers
+        """
+        # Create keycode tuple for compatibility
+        key_tuple = (keycode, text) if text else (keycode, str(keycode))
+        
+        Logger.debug(f"{{ room_name }}: Key down - {text} (keycode: {keycode})")
+        
+        # Pass keyboard events to all instances that have keyboard handlers
+        for instance in self.instances:
+            if hasattr(instance, 'on_keyboard') and not instance.destroyed:
+                try:
+                    instance.on_keyboard(key_tuple, text, modifiers)
+                except Exception as e:
+                    Logger.error(f"{{ room_name }}: Error in keyboard handler: {e}")
+    
+    def _on_keyboard_up(self, window, keycode, scancode):
+        """
+        Handle keyboard key up events.
+        
+        Args:
+            window: The window instance
+            keycode: The key code integer
+            scancode: The scan code integer
+        """
+        # Create keycode tuple for compatibility
+        key_tuple = (keycode, str(keycode))
+        
+        # Pass keyboard up events to all instances that have keyboard handlers
+        for instance in self.instances:
+            if hasattr(instance, 'on_keyboard_up') and not instance.destroyed:
+                try:
+                    instance.on_keyboard_up(key_tuple)
+                except Exception as e:
+                    Logger.error(f"{{ room_name }}: Error in keyboard up handler: {e}")
+    
+    def create_instance(self, object_type, x, y):
+        """
+        Create a new object instance in this room.
+        
+        Args:
+            object_type: Type/class name of the object to create
+            x: X position
+            y: Y position
+            
+        Returns:
+            The created instance, or None if creation failed
+        """
+        try:
+            # Get the object class
+            object_class = globals().get(object_type)
+            
+            if not object_class:
+                Logger.error(f"{{ room_name }}: Unknown object type: {object_type}")
+                return None
+            
+            # Create instance
+            instance = object_class(self, x, y)
+            
+            # Add to instance lists
+            self.instances.append(instance)
+            
+            if object_type not in self.instances_by_type:
+                self.instances_by_type[object_type] = []
+            self.instances_by_type[object_type].append(instance)
+            
+            # Add to scene
+            self.add_widget(instance)
+            
+            Logger.debug(f"{{ room_name }}: Created {object_type} at ({x}, {y})")
+            
+            return instance
+            
+        except Exception as e:
+            Logger.error(f"{{ room_name }}: Failed to create {object_type}: {e}")
+            return None
+    
+    def remove_instance(self, instance):
+        """
+        Remove an object instance from this room.
+        
+        Args:
+            instance: The instance to remove
+        """
+        try:
+            # Remove from main list
+            if instance in self.instances:
+                self.instances.remove(instance)
+            
+            # Remove from type-specific list
+            object_type = type(instance).__name__
+            if object_type in self.instances_by_type:
+                if instance in self.instances_by_type[object_type]:
+                    self.instances_by_type[object_type].remove(instance)
+            
+            Logger.debug(f"{{ room_name }}: Removed instance of {object_type}")
+            
+        except Exception as e:
+            Logger.error(f"{{ room_name }}: Failed to remove instance: {e}")
+    
+    def get_instances(self, object_type=None):
+        """
+        Get all instances of a specific type, or all instances.
+        
+        Args:
+            object_type: Type of object to get, or None for all instances
+            
+        Returns:
+            list: List of matching instances
+        """
+        if object_type is None:
+            return self.instances.copy()
+        else:
+            return self.instances_by_type.get(object_type, []).copy()
+    
+    def count_instances(self, object_type=None):
+        """
+        Count instances of a specific type, or all instances.
+        
+        Args:
+            object_type: Type of object to count, or None for all
+            
+        Returns:
+            int: Number of matching instances
+        """
+        if object_type is None:
+            return len(self.instances)
+        else:
+            return len(self.instances_by_type.get(object_type, []))
+    
+    def update(self, dt):
+        """
+        Update all objects in the scene.
+        
+        Args:
+            dt: Delta time since last frame
+        """
+        # Update all instances
+        for instance in self.instances[:]:  # Copy list to allow modifications
+            if not instance.destroyed:
+                instance.update(dt)
+                
+                # Check collisions if the instance has collision events
+                if hasattr(instance, 'check_collisions'):
+                    instance.check_collisions()
+        
+        # Remove destroyed instances
+        self.instances = [inst for inst in self.instances if not inst.destroyed]
+    
+    def on_enter(self):
+        """Called when entering this room."""
+        Logger.info(f"{{ room_name }}: Entering room")
+        
+        # Reset keyboard bindings
+        self._bind_keyboard()
+    
+    def on_leave(self):
+        """Called when leaving this room."""
+        Logger.info(f"{{ room_name }}: Leaving room")
+        
+        # Unbind keyboard events
+        self._unbind_keyboard()
+        
+        # Clean up non-persistent instances
+        for instance in self.instances[:]:
+            if not getattr(instance, 'persistent', False):
+                instance.destroy()
+    
+    def on_size(self, *args):
+        """Handle size changes."""
+        if hasattr(self, 'bg_rect'):
+            self.bg_rect.size = self.size
+        
+        if self.background_image:
+            self.background_image.size = self.size

@@ -1,0 +1,688 @@
+#!/usr/bin/env python3
+"""
+Buildspec Generator for PyGameMaker Kivy Export
+Generates build configuration files for Android (buildozer.spec) and iOS
+"""
+
+import logging
+from pathlib import Path
+from typing import Dict, List, Any, Optional
+
+logger = logging.getLogger(__name__)
+
+
+class BuildspecGenerator:
+    """
+    Generates build specification files for mobile platforms.
+    Creates buildozer.spec for Android and configuration for iOS.
+    """
+    
+    def __init__(self, project_data: Dict[str, Any], output_path: Path):
+        """
+        Initialize the buildspec generator.
+        
+        Args:
+            project_data: Complete project data dictionary
+            output_path: Path to the export output directory
+        """
+        self.project_data = project_data
+        self.output_path = output_path
+        
+        # Extract project metadata
+        self.project_name = project_data.get("name", "KivyGame")
+        self.settings = project_data.get("settings", {})
+        
+        # Generate package name from project name
+        self.package_name = self._generate_package_name(self.project_name)
+        
+        logger.info("Buildspec generator initialized")
+    
+    def generate_buildozer_spec(self) -> bool:
+        """
+        Generate buildozer.spec file for Android builds.
+        
+        Returns:
+            bool: True if generation successful
+        """
+        logger.info("Generating buildozer.spec for Android...")
+        
+        try:
+            spec_content = self._create_buildozer_spec_content()
+            
+            spec_path = self.output_path / "buildozer.spec"
+            spec_path.write_text(spec_content, encoding='utf-8')
+            
+            logger.info(f"buildozer.spec created successfully: {spec_path}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Failed to generate buildozer.spec: {e}", exc_info=True)
+            return False
+    
+    def generate_kivy_ios_config(self) -> bool:
+        """
+        Generate configuration files for iOS builds.
+        Currently creates a basic setup guide.
+        
+        Returns:
+            bool: True if generation successful
+        """
+        logger.info("Generating iOS build configuration...")
+        
+        try:
+            config_content = self._create_ios_config_content()
+            
+            config_path = self.output_path / "ios_build_guide.txt"
+            config_path.write_text(config_content, encoding='utf-8')
+            
+            logger.info(f"iOS build guide created: {config_path}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Failed to generate iOS config: {e}", exc_info=True)
+            return False
+    
+    def _create_buildozer_spec_content(self) -> str:
+        """
+        Create the content for buildozer.spec file.
+        
+        Returns:
+            str: Complete buildozer.spec content
+        """
+        # Get app metadata
+        app_metadata = self._get_app_metadata()
+        requirements = self._get_requirements_list()
+        permissions = self._get_permissions_list()
+        
+        spec_content = f"""[app]
+
+# (str) Title of your application
+title = {app_metadata['title']}
+
+# (str) Package name
+package.name = {app_metadata['package_name']}
+
+# (str) Package domain (needed for android/ios packaging)
+package.domain = {app_metadata['domain']}
+
+# (str) Source code where the main.py live
+source.dir = .
+
+# (list) Source files to include (let empty to include all the files)
+source.include_exts = py,png,jpg,jpeg,gif,bmp,kv,atlas,json,wav,mp3,ogg,m4a
+
+# (list) List of inclusions using pattern matching
+source.include_patterns = assets/*,game/*
+
+# (str) Application versioning (method 1)
+version = {app_metadata['version']}
+
+# (list) Application requirements
+# comma separated e.g. requirements = sqlite3,kivy
+requirements = {','.join(requirements)}
+
+# (str) Custom source folders for requirements
+# Sets custom source for any requirements with recipes
+# requirements.source.kivy = ../../kivy
+
+# (str) Presplash of the application
+#presplash.filename = %(source.dir)s/data/presplash.png
+
+# (str) Icon of the application
+#icon.filename = %(source.dir)s/data/icon.png
+
+# (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
+orientation = {app_metadata['orientation']}
+
+# (list) List of service to declare
+#services = NAME:ENTRYPOINT_TO_PY,NAME2:ENTRYPOINT2_TO_PY
+
+#
+# OSX Specific
+#
+
+#
+# author = © Copyright Info
+
+# change the major version of python used by the app
+osx.python_version = 3
+
+# Kivy version to use
+osx.kivy_version = 2.3.0
+
+#
+# Android specific
+#
+
+# (bool) Indicate if the application should be fullscreen or not
+fullscreen = {str(app_metadata['fullscreen']).lower()}
+
+# (string) Presplash background color (for android toolchain)
+# Supported formats are: #RRGGBB #AARRGGBB or one of the following names:
+# red, blue, green, black, white, gray, cyan, magenta, yellow, lightgray,
+# darkgray, grey, lightgrey, darkgrey, aqua, fuchsia, lime, maroon, navy,
+# olive, purple, silver, teal.
+#android.presplash_color = #FFFFFF
+
+# (string) Presplash animation using Lottie format.
+# see https://lottiefiles.com/ for examples and https://airbnb.design/lottie/
+# for general documentation.
+# Lottie files can be created using various tools, like Adobe After Effects or Synfig.
+#android.presplash_lottie = "path/to/lottie/file.json"
+
+# (list) Permissions
+android.permissions = {','.join(permissions)}
+
+# (list) features (adds uses-feature -tags to manifest)
+#android.features = android.hardware.usb.host
+
+# (int) Target Android API, should be as high as possible.
+android.api = 33
+
+# (int) Minimum API your APK / AAB will support.
+android.minapi = 21
+
+# (int) Android SDK version to use
+#android.sdk = 20
+
+# (str) Android NDK version to use
+android.ndk = 25b
+
+# (bool) Use --private data storage (True) or --dir public storage (False)
+#android.private_storage = True
+
+# (str) Android NDK directory (if empty, it will be automatically downloaded.)
+#android.ndk_path =
+
+# (str) Android SDK directory (if empty, it will be automatically downloaded.)
+#android.sdk_path =
+
+# (str) ANT directory (if empty, it will be automatically downloaded.)
+#android.ant_path =
+
+# (bool) If True, then skip trying to update the Android sdk
+# This can be useful to avoid excess Internet downloads or save time
+# when an update is due and you just want to test/build your package
+# android.skip_update = False
+
+# (bool) If True, then automatically accept SDK license
+# agreements. This is intended for automation only. If set to False,
+# the default, you will be shown the license when first running
+# buildozer.
+android.accept_sdk_license = False
+
+# (str) Android entry point, default is ok for Kivy-based app
+#android.entrypoint = org.kivy.android.PythonActivity
+
+# (str) Full name including package path of the Java class that implements Android Activity
+# use that parameter together with android.entrypoint to set custom Java class instead of PythonActivity
+#android.activity_class_name = org.kivy.android.PythonActivity
+
+# (str) Extra xml to write directly inside the <manifest> element of AndroidManifest.xml
+# use that parameter to provide a filename from where to load your custom XML code
+#android.extra_manifest_xml = ./src/android/extra_manifest.xml
+
+# (str) Extra xml to write directly inside the <application> element of AndroidManifest.xml
+# use that parameter to provide a filename from where to load your custom XML code
+#android.extra_manifest_application_xml = ./src/android/extra_manifest_application.xml
+
+# (str) Full name including package path of the Java class that implements Python Service
+# use that parameter to set custom Java class instead of PythonService
+#android.service_class_name = org.kivy.android.PythonService
+
+# (str) Android app theme, default is ok for Kivy-based app
+# android.apptheme = "@android:style/Theme.NoTitleBar"
+
+# (list) Pattern to whitelist for the whole project
+#android.whitelist =
+
+# (str) Path to a custom whitelist file
+#android.whitelist_src =
+
+# (str) Path to a custom blacklist file
+#android.blacklist_src =
+
+# (list) List of Java .jar files to add to the libs so that pyjnius can access
+# their classes. Don't add jars that you do not need, since extra jars can slow
+# down the build process. Allows wildcards matching, for example:
+# OUYA-ODK/libs/*.jar
+#android.add_jars = foo.jar,bar.jar,path/to/more/*.jar
+
+# (list) List of Java files to add to the android project (can be java or a
+# directory containing the files)
+#android.add_src =
+
+# (list) Android AAR archives to add
+#android.add_aars =
+
+# (list) Put these files or directories in the apk assets directory.
+# Either form may be used, and assets need not be in 'source.include_exts'.
+# 1) android.add_assets = source_dir/asset_name
+# 2) android.add_assets = source_dir/asset_name:destination_dir/asset_name
+#android.add_assets =
+
+# (list) Put these files or directories in the apk res directory.
+# The option may be used in three ways, the value may contain one or zero ':'
+# Some examples:
+# 1) A file to add to resources, legal resource names contain ['a-z','0-9','_']
+# android.add_resources = my_icons/all-inclusive.png:drawable/all_inclusive.png
+# 2) A directory, here  'legal_icons' must contain resources of one kind
+# android.add_resources = legal_icons:drawable
+# 3) A directory, here  'legal_resources' must contain one or more directories, 
+# each of a resource kind:  drawable, xml, etc...
+# android.add_resources = legal_resources
+#android.add_resources =
+
+# (list) Gradle dependencies to add
+#android.gradle_dependencies =
+
+# (bool) Enable AndroidX support
+android.enable_androidx = True
+
+# (list) add java compile options
+# this can for example be necessary when importing certain java libraries using the 'android.gradle_dependencies' option
+# see https://developer.android.com/studio/write/java8-support for further information
+# android.add_compile_options = "sourceCompatibility = 1.8", "targetCompatibility = 1.8"
+
+# (list) Gradle repositories to add {{can be necessary for some android.gradle_dependencies}}
+# please enclose in double quotes 
+# e.g. android.gradle_repositories = "maven {{ url 'https://kotlin.bintray.com/ktor' }}"
+#android.add_gradle_repositories =
+
+# (list) packaging options to add 
+# see https://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.PackagingOptions.html
+# can be necessary to solve conflicts in gradle_dependencies
+# please enclose in double quotes 
+# e.g. android.add_packaging_options = "exclude 'META-INF/common.kotlin_module'", "exclude 'META-INF/*.kotlin_module'"
+#android.add_packaging_options =
+
+# (list) Java classes to add as activities to the manifest.
+#android.add_activities = com.example.ExampleActivity
+
+# (str) OUYA Console category. Should be one of GAME or APP
+# If you leave this blank, OUYA support will not be enabled
+#android.ouya.category = GAME
+
+# (str) Filename of OUYA Console icon. It must be a 732x412 png image.
+#android.ouya.icon.filename = %(source.dir)s/data/ouya_icon.png
+
+# (str) XML file to include as an intent filters in <activity> tag
+#android.manifest.intent_filters =
+
+# (str) launchMode to set for the main activity
+#android.manifest.launch_mode = standard
+
+# (list) Android additional libraries to copy into libs/armeabi
+#android.add_libs_armeabi = libs/android/*.so
+#android.add_libs_armeabi_v7a = libs/android-v7/*.so
+#android.add_libs_arm64_v8a = libs/android-v8/*.so
+#android.add_libs_x86 = libs/android-x86/*.so
+#android.add_libs_mips = libs/android-mips/*.so
+
+# (bool) Indicate whether the screen should stay on
+# Don't forget to add the WAKE_LOCK permission if you set this to True
+#android.wakelock = False
+
+# (list) Android application meta-data to set (key=value format)
+#android.meta_data =
+
+# (str) Android library project to add (will be added in the
+# project.properties automatically.)
+#android.library_references =
+
+# (list) Android shared libraries which will be added to AndroidManifest.xml using <uses-library> tag
+#android.uses_library =
+
+# (str) Android logcat filters to use
+#android.logcat_filters = *:S python:D
+
+# (bool) Android logcat only display log for activity's pid
+#android.logcat_pid_only = False
+
+# (str) Android additional adb arguments
+#android.adb_args = -H host.docker.internal
+
+# (bool) Copy library instead of making a libpymodules.so
+#android.copy_libs = 1
+
+# (list) The Android archs to build for, choices: armeabi-v7a, arm64-v8a, x86, x86_64
+# In past, was `android.arch` as we weren't supporting builds for multiple archs at the same time.
+android.archs = arm64-v8a, armeabi-v7a
+
+# (int) overrides automatic versionCode computation (used in build.gradle)
+# this is not the same as app version and should only be edited if you know what you're doing
+# android.numeric_version = 1
+
+# (bool) enables Android auto backup feature (Android API >=23)
+android.allow_backup = True
+
+# (str) XML file for custom backup rules (see official auto backup documentation)
+# android.backup_rules =
+
+# (str) If True, then skip trying to update the Android sdk
+# This can be useful to avoid excess Internet downloads or save time
+# when an update is due and you just want to test/build your package
+# android.skip_update = False
+
+# (bool) If True, then automatically accept SDK license
+# agreements. This is intended for automation only. If set to False,
+# the default, you will be shown the license when first running
+# buildozer.
+# android.accept_sdk_license = False
+
+# (str) The Android arch to build for, choices: armeabi-v7a, arm64-v8a, x86, x86_64
+# android.arch = armeabi-v7a
+
+#
+# Python for android (p4a) specific
+#
+
+# (str) python-for-android URL to use for checkout
+#p4a.url =
+
+# (str) python-for-android fork to use in case if p4a.url is not specified, defaults to upstream (kivy)
+#p4a.fork = kivy
+
+# (str) python-for-android branch to use, defaults to master
+#p4a.branch = master
+
+# (str) python-for-android specific commit to use, defaults to HEAD, must be within p4a.branch
+#p4a.commit = HEAD
+
+# (str) python-for-android git clone directory (if empty, it will be automatically cloned from github)
+#p4a.source_dir =
+
+# (str) The directory in which python-for-android should look for your own build recipes (if any)
+#p4a.local_recipes =
+
+# (str) Filename to the hook for p4a
+#p4a.hook =
+
+# (str) Bootstrap to use for android builds
+# p4a.bootstrap = sdl2
+
+# (int) port number to specify an explicit --port= p4a argument (eg for bootstrap flask)
+#p4a.port =
+
+# Control passing the --use-setup-py vs --ignore-setup-py to p4a
+# "in the future" --use-setup-py is going to be the default behaviour in p4a, right now it is not
+# Setting this to false will pass --ignore-setup-py, true will pass --use-setup-py
+# NOTE: this is general setuptools integration, having pyproject.toml is enough, no need to generate
+# setup.py if you're using Poetry, but you need to add "toml" to source.include_exts.
+#p4a.setup_py = false
+
+# (str) extra command line arguments to pass when invoking pythonforandroid.toolchain
+#p4a.extra_args =
+
+
+#
+# iOS specific
+#
+
+# (str) Path to a custom kivy-ios folder
+#ios.kivy_ios_dir = ../kivy-ios
+# Alternately, specify the URL and branch of a git checkout:
+ios.kivy_ios_url = https://github.com/kivy/kivy-ios
+ios.kivy_ios_branch = master
+
+# Another platform dependency: ios-deploy
+# Uncomment to use a custom checkout
+#ios.ios_deploy_dir = ../ios_deploy
+# Or specify URL and branch
+ios.ios_deploy_url = https://github.com/phonegap/ios-deploy
+ios.ios_deploy_branch = 1.12.2
+
+# (bool) Whether or not to sign the code
+ios.codesign.allowed = false
+
+# (str) Name of the certificate to use for signing the debug version
+# Get a list of available identities: buildozer ios list_identities
+#ios.codesign.debug = "iPhone Developer: <lastname> <firstname> (<hexstring>)"
+
+# (str) The development team to use for signing the debug version
+#ios.codesign.development_team.debug = <hexstring>
+
+# (str) Name of the certificate to use for signing the release version
+#ios.codesign.release = %(ios.codesign.debug)s
+
+# (str) The development team to use for signing the release version
+#ios.codesign.development_team.release = <hexstring>
+
+# (str) URL pointing to .ipa file to be installed
+# This option should be defined along with `display-image-url` and `full-size-image-url` options.
+#ios.manifest.app_url =
+
+# (str) URL pointing to an icon (57x57px) to be displayed during download
+# This option should be defined along with `app-url` and `full-size-image-url` options.
+#ios.manifest.display_image_url =
+
+# (str) URL pointing to a large icon (512x512px) to be displayed during download
+# This option should be defined along with `app-url` and `display-image-url` options.
+#ios.manifest.full_size_image_url =
+
+#
+# Buildozer
+#
+
+# (int) Log level (0 = error only, 1 = info, 2 = debug (with command output))
+log_level = 2
+
+# (int) Display warning if buildozer is run as root (0 = False, 1 = True)
+warn_on_root = 1
+
+# (str) Path to build artifact storage, absolute or relative to spec file
+# build_dir = ./.buildozer
+
+# (str) Path to build output (i.e. .apk, .aab, .ipa) storage
+# bin_dir = ./bin
+
+#    -----------------------------------------------------------------------------
+#    List as sections
+#
+#    You can define all the "list" as [section:key].
+#    Each line will be considered as a option to the list.
+#    Let's take [app] / source.exclude_patterns.
+#    Instead of doing:
+#
+#[app]
+#source.exclude_patterns = license,data/audio/*.wav,data/images/original/*
+#
+#    This can be translated into:
+#
+#[app:source.exclude_patterns]
+#license
+#data/audio/*.wav
+#data/images/original/*
+#
+
+#    -----------------------------------------------------------------------------
+#    Profiles
+#
+#    You can extend section / key with a profile
+#    For example, you want to deploy a demo version of your application without
+#    HD content. You could first change the title to add "(demo)" in the name
+#    and extend the excluded directories to remove the HD content.
+#
+#[app@demo]
+#title = My Application (demo)
+#
+#[app:source.exclude_patterns@demo]
+#images/hd/*
+#
+#    Then, invoke the command line with the "demo" profile:
+#
+#buildozer --profile demo android debug
+"""
+        
+        return spec_content
+    
+    def _create_ios_config_content(self) -> str:
+        """
+        Create iOS build configuration guide.
+        
+        Returns:
+            str: iOS build guide content
+        """
+        app_metadata = self._get_app_metadata()
+        requirements = self._get_requirements_list()
+        
+        config_content = f"""iOS Build Configuration for {app_metadata['title']}
+{'='*60}
+
+Building for iOS requires a Mac with Xcode installed.
+
+PROJECT INFORMATION:
+-------------------
+App Name: {app_metadata['title']}
+Package Name: {app_metadata['package_name']}
+Domain: {app_metadata['domain']}
+Version: {app_metadata['version']}
+
+PREREQUISITES:
+-------------
+1. macOS with Xcode installed (latest version recommended)
+2. Xcode Command Line Tools
+3. Python 3.8+ with pip
+4. Kivy-iOS toolchain
+
+INSTALLATION STEPS:
+------------------
+
+1. Install Kivy-iOS:
+   pip install kivy-ios
+
+2. Build Kivy framework:
+   toolchain build kivy
+
+3. Build Python dependencies:
+{self._format_ios_requirements(requirements)}
+
+4. Create Xcode project:
+   toolchain create {app_metadata['package_name']} {self.output_path}
+
+5. Open in Xcode:
+   open {app_metadata['package_name']}-ios/{app_metadata['package_name']}.xcodeproj
+
+BUILDING:
+--------
+1. In Xcode, select your target device or simulator
+2. Configure signing (requires Apple Developer account)
+3. Build and run (Cmd+R)
+
+DEPLOYMENT:
+----------
+For App Store deployment:
+1. Archive the app (Product > Archive)
+2. Validate and upload to App Store Connect
+3. Submit for review
+
+TROUBLESHOOTING:
+---------------
+- Ensure all dependencies are built for iOS architecture
+- Check that provisioning profiles are correctly configured
+- Verify app capabilities and entitlements in Xcode
+- Test on actual device before App Store submission
+
+For more information, visit:
+https://github.com/kivy/kivy-ios
+https://developer.apple.com/documentation/
+
+{'='*60}
+Generated by PyGameMaker IDE Kivy Exporter
+"""
+        
+        return config_content
+    
+    def _generate_package_name(self, project_name: str) -> str:
+        """
+        Generate a valid package name from project name.
+        
+        Args:
+            project_name: Original project name
+            
+        Returns:
+            str: Valid package name (lowercase, alphanumeric + underscores)
+        """
+        # Convert to lowercase and replace spaces/special chars with underscores
+        package_name = project_name.lower()
+        package_name = ''.join(c if c.isalnum() else '_' for c in package_name)
+        
+        # Remove leading/trailing underscores
+        package_name = package_name.strip('_')
+        
+        # Ensure it doesn't start with a number
+        if package_name and package_name[0].isdigit():
+            package_name = 'game_' + package_name
+        
+        # Default if empty
+        if not package_name:
+            package_name = 'kivygame'
+        
+        return package_name
+    
+    def _get_app_metadata(self) -> Dict[str, str]:
+        """
+        Get application metadata for build configuration.
+        
+        Returns:
+            Dict containing app metadata
+        """
+        return {
+            'title': self.project_name,
+            'package_name': self.package_name,
+            'domain': 'org.pygamemaker',
+            'version': '1.0.0',
+            'orientation': 'landscape',  # Can be: portrait, landscape, all
+            'fullscreen': True,
+        }
+    
+    def _get_requirements_list(self) -> List[str]:
+        """
+        Get list of Python package requirements.
+        
+        Returns:
+            List of requirement strings
+        """
+        requirements = [
+            'python3',
+            'kivy',
+            'pygame',
+        ]
+        
+        return requirements
+    
+    def _get_permissions_list(self) -> List[str]:
+        """
+        Get list of Android permissions needed.
+        
+        Returns:
+            List of permission strings
+        """
+        permissions = [
+            'INTERNET',
+            'WRITE_EXTERNAL_STORAGE',
+            'READ_EXTERNAL_STORAGE',
+        ]
+        
+        return permissions
+    
+    def _format_ios_requirements(self, requirements: List[str]) -> str:
+        """
+        Format requirements list for iOS build instructions.
+        
+        Args:
+            requirements: List of requirement strings
+            
+        Returns:
+            str: Formatted build commands
+        """
+        formatted = []
+        for req in requirements:
+            if req != 'python3':  # Python3 is already included
+                formatted.append(f"   toolchain build {req}")
+        
+        return '\n'.join(formatted) if formatted else "   (No additional requirements)"
+
+
+# Export the main class
+__all__ = ['BuildspecGenerator']

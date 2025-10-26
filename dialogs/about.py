@@ -1,0 +1,113 @@
+#!/usr/bin/env python3
+"""
+About Dialog for PyGameMaker IDE
+"""
+
+from PySide6.QtWidgets import (
+    QDialog, QVBoxLayout, QHBoxLayout, QLabel, 
+    QPushButton, QTextEdit, QTabWidget, QWidget
+)
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QFont
+
+class AboutDialog(QDialog):
+    """About dialog for the IDE"""
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("About PyGameMaker IDE")
+        self.setModal(True)
+        self.resize(450, 350)
+        self.setup_ui()
+        
+    def setup_ui(self):
+        """Setup the about dialog UI"""
+        layout = QVBoxLayout(self)
+        
+        # Title
+        title = QLabel("PyGameMaker IDE")
+        title_font = QFont()
+        title_font.setPointSize(18)
+        title_font.setBold(True)
+        title.setFont(title_font)
+        title.setAlignment(Qt.AlignCenter)
+        layout.addWidget(title)
+        
+        # Version
+        version = QLabel("Version 1.0.0")
+        version.setAlignment(Qt.AlignCenter)
+        layout.addWidget(version)
+        
+        # Tabs
+        tabs = QTabWidget()
+        
+        # About tab
+        about_tab = QWidget()
+        about_layout = QVBoxLayout(about_tab)
+        
+        about_text = QTextEdit()
+        about_text.setReadOnly(True)
+        about_text.setHtml("""
+        <h3>PyGameMaker IDE</h3>
+        <p>A GameMaker-inspired IDE for creating 2D games with Python.</p>
+        
+        <h4>Features:</h4>
+        <ul>
+        <li>Visual scripting with events and actions</li>
+        <li>Asset management for sprites, sounds, and objects</li>
+        <li>Room-based game development</li>
+        <li>Export to standalone Python games</li>
+        </ul>
+        
+        <h4>Built with:</h4>
+        <ul>
+        <li>PySide6 for the user interface</li>
+        <li>Pygame for game runtime</li>
+        <li>Python 3.11+</li>
+        </ul>
+        """)
+        
+        about_layout.addWidget(about_text)
+        tabs.addTab(about_tab, "About")
+        
+        # Credits tab
+        credits_tab = QWidget()
+        credits_layout = QVBoxLayout(credits_tab)
+        
+        credits_text = QTextEdit()
+        credits_text.setReadOnly(True)
+        credits_text.setPlainText("""
+Credits:
+
+Development:
+- PyGameMaker IDE Team
+
+Special Thanks:
+- The GameMaker Studio community for inspiration
+- The Python and Pygame communities
+- All contributors and testers
+
+Third-Party Libraries:
+- PySide6 (Qt for Python)
+- Pygame (game development library)
+- Pillow (image processing)
+
+License:
+This software is released under the MIT License.
+        """)
+        
+        credits_layout.addWidget(credits_text)
+        tabs.addTab(credits_tab, "Credits")
+        
+        layout.addWidget(tabs)
+        
+        # Close button
+        button_layout = QHBoxLayout()
+        close_button = QPushButton("Close")
+        close_button.clicked.connect(self.accept)
+        close_button.setDefault(True)
+        
+        button_layout.addStretch()
+        button_layout.addWidget(close_button)
+        
+        layout.addLayout(button_layout)

@@ -1,0 +1,808 @@
+#!/usr/bin/env python3
+"""
+Enhanced GameRunner that properly renders room objects
+"""
+
+import pygame
+import json
+import sys
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+
+from runtime.action_executor import ActionExecutor
+
+class GameSprite:
+    """Represents a loaded sprite"""
+    
+    def __init__(self, image_path: str):
+        self.path = image_path
+        self.surface = None
+        self.width = 32
+        self.height = 32
+        self.load_image()
+    
+    def load_image(self):
+        """Load the sprite image"""
+        try:
+            if Path(self.path).exists():
+                self.surface = pygame.image.load(self.path).convert_alpha()
+                self.width = self.surface.get_width()
+                self.height = self.surface.get_height()
+            else:
+                print(f"Sprite not found: {self.path}")
+                self.create_default_sprite()
+        except Exception as e:
+            print(f"Error loading sprite {self.path}: {e}")
+            self.create_default_sprite()
+    
+    def create_default_sprite(self):
+        """Create a default sprite (colored rectangle)"""
+        self.surface = pygame.Surface((32, 32))
+        self.surface.fill((255, 100, 100))  # Red rectangle
+        pygame.draw.rect(self.surface, (0, 0, 0), (0, 0, 32, 32), 2)
+        self.width = 32
+        self.height = 32
+
+class GameInstance:
+    """Represents an object instance in the game world"""
+    
+    def __init__(self, object_name: str, x: float, y: float, instance_data: dict):
+        self.object_name = object_name
+        self.x = float(x)
+        self.y = float(y)
+        self.instance_id = instance_data.get('instance_id', id(self))
+        self.visible = instance_data.get('visible', True)
+        self.rotation = instance_data.get('rotation', 0)
+        self.scale_x = instance_data.get('scale_x', 1.0)
+        self.scale_y = instance_data.get('scale_y', 1.0)
+        
+        self.sprite = None
+        self.object_data = None
+
+        # Speed properties for smooth movement
+        self.hspeed = 0.0  # Horizontal speed (pixels per frame)
+        self.vspeed = 0.0  # Vertical speed (pixels per frame)
+
+        # Action executor
+        self.action_executor = ActionExecutor()
+        
+        # Execute Create event when instance is created
+        if self.object_data and "events" in self.object_data:
+            self.action_executor.execute_event(self, "create", self.object_data["events"])
+    
+    def step(self):
+        """Execute step event every frame"""
+        if self.object_data and "events" in self.object_data:
+            self.action_executor.execute_event(self, "step", self.object_data["events"])
+
+    def set_sprite(self, sprite: GameSprite):
+        """Set the sprite for this instance"""
+        self.sprite = sprite
+    
+    def set_object_data(self, object_data: dict):
+        """Set the object data from project"""
+        self.object_data = object_data
+    
+    def render(self, screen: pygame.Surface):
+        """Render this instance"""
+        if not self.visible or not self.sprite:
+            return
+        
+        # Calculate render position
+        render_x = int(self.x)
+        render_y = int(self.y)
+        
+        # Handle scaling (basic implementation)
+        if self.scale_x != 1.0 or self.scale_y != 1.0:
+            scaled_width = int(self.sprite.width * self.scale_x)
+            scaled_height = int(self.sprite.height * self.scale_y)
+            scaled_surface = pygame.transform.scale(self.sprite.surface, (scaled_width, scaled_height))
+            screen.blit(scaled_surface, (render_x, render_y))
+        else:
+            screen.blit(self.sprite.surface, (render_x, render_y))
+
+class GameRoom:
+    """Represents a game room with instances"""
+    
+    def __init__(self, name: str, room_data: dict):
+        self.name = name
+        self.width = room_data.get('width', 1024)
+        self.height = room_data.get('height', 768)
+        self.background_color = self.parse_color(room_data.get('background_color', '#87CEEB'))
+        self.instances: List[GameInstance] = []
+        
+        # Load instances
+        instances_data = room_data.get('instances', [])
+        for instance_data in instances_data:
+            instance = GameInstance(
+                instance_data['object_name'],
+                instance_data['x'],
+                instance_data['y'],
+                instance_data
+            )
+            self.instances.append(instance)
+    
+    def parse_color(self, color_str: str) -> Tuple[int, int, int]:
+        """Parse color string to RGB tuple"""
+        if color_str.startswith('#'):
+            color_str = color_str[1:]
+        
+        try:
+            r = int(color_str[0:2], 16)
+            g = int(color_str[2:4], 16)
+            b = int(color_str[4:6], 16)
+            return (r, g, b)
+        except:
+            return (135, 206, 235)  # Default sky blue
+    
+    def set_sprites_for_instances(self, sprites: Dict[str, GameSprite], objects: Dict[str, dict]):
+        """Set sprites for all instances based on their object types"""
+        for instance in self.instances:
+            # Get object data
+            if instance.object_name in objects:
+                object_data = objects[instance.object_name]
+                instance.set_object_data(object_data)
+                
+                # Get sprite name from object
+                sprite_name = object_data.get('sprite', '')
+                if sprite_name and sprite_name in sprites:
+                    instance.set_sprite(sprites[sprite_name])
+                else:
+                    # Create a default sprite for objects without sprites
+                    default_sprite = self.create_default_sprite_for_object(instance.object_name)
+                    instance.set_sprite(default_sprite)
+    
+    def create_default_sprite_for_object(self, object_name: str) -> GameSprite:
+        """Create a default sprite for an object"""
+        # Create a colored rectangle based on object name
+        colors = {
+            'player': (0, 255, 0),      # Green
+            'enemy': (255, 0, 0),       # Red  
+            'wall': (128, 128, 128),    # Gray
+            'coin': (255, 255, 0),      # Yellow
+            'door': (139, 69, 19),      # Brown
+            'key': (255, 215, 0),       # Gold
+        }
+        
+        # Get color or use hash-based color
+        if object_name in colors:
+            color = colors[object_name]
+        else:
+            # Generate color from name hash
+            hash_val = hash(object_name)
+            color = (
+                (hash_val % 128) + 127,
+                ((hash_val >> 8) % 128) + 127,
+                ((hash_val >> 16) % 128) + 127
+            )
+        
+        # Create sprite surface
+        surface = pygame.Surface((32, 32))
+        surface.fill(color)
+        pygame.draw.rect(surface, (0, 0, 0), (0, 0, 32, 32), 2)  # Black border
+        
+        # Create sprite object
+        sprite = GameSprite("")  # Empty path since we're creating manually
+        sprite.surface = surface
+        sprite.width = 32
+        sprite.height = 32
+        
+        return sprite
+    
+    def render(self, screen: pygame.Surface):
+        """Render the room and all its instances"""
+        # Clear screen with background color
+        screen.fill(self.background_color)
+        
+        # Render all instances
+        for instance in self.instances:
+            instance.render(screen)
+
+class GameRunner:
+    """Enhanced game runner that properly renders rooms with objects"""
+    
+    def __init__(self, project_path: str = None):
+        self.running = False
+        self.screen = None
+        self.clock = None
+        self.project_data = None
+        self.project_path = None
+        
+        # Game assets
+        self.sprites: Dict[str, GameSprite] = {}
+        self.rooms: Dict[str, GameRoom] = {}
+        self.current_room = None
+        
+        # Game settings
+        self.fps = 60
+        self.window_width = 800
+        self.window_height = 600
+        
+        # If project path provided, load it
+        if project_path:
+            self.load_project_data_only(project_path)
+    
+    def is_game_running(self):
+        """Check if game is currently running"""
+        return self.running
+    
+    def load_project_data_only(self, project_path: str) -> bool:
+        """Load project data without loading sprites (sprites loaded later)"""
+        try:
+            path = Path(project_path)
+            
+            # If it's a directory, look for project.json inside
+            if path.is_dir():
+                self.project_path = path
+                project_file = path / "project.json"
+            # If it's a file, use it directly
+            elif path.is_file() and path.name == "project.json":
+                self.project_path = path.parent
+                project_file = path
+            else:
+                print(f"Invalid project path: {project_path}")
+                return False
+            
+            if not project_file.exists():
+                print(f"Project file not found: {project_file}")
+                return False
+            
+            # Load project data
+            with open(project_file, 'r') as f:
+                self.project_data = json.load(f)
+            
+            print(f"Loaded project: {self.project_data.get('name', 'Untitled')}")
+            
+            # Only load rooms (without sprites for instances yet)
+            self.load_rooms_without_sprites()
+            
+            return True
+            
+        except Exception as e:
+            print(f"Error loading project: {e}")
+            import traceback
+            traceback.print_exc()
+            return False
+    
+    def load_sprites(self):
+        """Load all sprites from the project (called after pygame.display is initialized)"""
+        sprites_data = self.project_data.get('assets', {}).get('sprites', {})
+        
+        print(f"Loading {len(sprites_data)} sprites...")
+        
+        for sprite_name, sprite_info in sprites_data.items():
+            try:
+                file_path = sprite_info.get('file_path', '')
+                if file_path:
+                    full_path = self.project_path / file_path
+                    sprite = GameSprite(str(full_path))
+                    self.sprites[sprite_name] = sprite
+                    print(f"  âœ… Loaded sprite: {sprite_name} ({sprite.width}x{sprite.height})")
+                else:
+                    print(f"  âš ï¸  Sprite {sprite_name} has no file path")
+            except Exception as e:
+                print(f"  âŒ Error loading sprite {sprite_name}: {e}")
+    
+    def load_rooms_without_sprites(self):
+        """Load rooms but don't assign sprites to instances yet"""
+        rooms_data = self.project_data.get('assets', {}).get('rooms', {})
+        
+        print(f"Loading {len(rooms_data)} rooms...")
+        
+        for room_name, room_info in rooms_data.items():
+            try:
+                room = GameRoom(room_name, room_info)
+                # Don't set sprites yet - will do this after pygame.display is ready
+                self.rooms[room_name] = room
+                print(f"  Loaded room: {room_name} ({len(room.instances)} instances)")
+            except Exception as e:
+                print(f"  Error loading room {room_name}: {e}")
+                import traceback
+                traceback.print_exc()
+    
+    def assign_sprites_to_rooms(self):
+        """Assign loaded sprites to room instances"""
+        objects_data = self.project_data.get('assets', {}).get('objects', {})
+        
+        print("Assigning sprites to room instances...")
+        for room_name, room in self.rooms.items():
+            room.set_sprites_for_instances(self.sprites, objects_data)
+            
+            # Count instances with sprites
+            sprites_assigned = sum(1 for instance in room.instances if instance.sprite)
+            print(f"  Room {room_name}: {sprites_assigned}/{len(room.instances)} instances have sprites")
+    
+    def find_starting_room(self) -> Optional[str]:
+        """Find a room to start the game in"""
+        if not self.rooms:
+            return None
+        
+        # Look for common starting room names
+        preferred_names = ['main', 'start', 'level1', 'room1', 'intro']
+        
+        for name in preferred_names:
+            if name in self.rooms:
+                return name
+        
+        # Just use the first room
+        return list(self.rooms.keys())[0]
+    
+    def test_game(self, project_path: str) -> bool:
+        """Test run the game from project"""
+        print(f"Testing game from project: {project_path}")
+        
+        # Load project data (but not sprites yet)
+        if not self.load_project_data_only(project_path):
+            print("Failed to load project")
+            return False
+        
+        # Find starting room
+        starting_room = self.find_starting_room()
+        if not starting_room:
+            print("No rooms found in project")
+            return False
+        
+        print(f"Starting with room: {starting_room}")
+        self.current_room = self.rooms[starting_room]
+        
+        # Set window size based on room
+        self.window_width = self.current_room.width
+        self.window_height = self.current_room.height
+        
+        # Run the game (sprites will be loaded after pygame.display is ready)
+        return self.run_game_loop()
+    
+    def run_game_loop(self) -> bool:
+        """Main game loop"""
+        try:
+            # Initialize pygame
+            pygame.init()
+            
+            # Create display
+            self.screen = pygame.display.set_mode((self.window_width, self.window_height))
+            pygame.display.set_caption(f"PyGameMaker - {self.project_data.get('name', 'Game')}")
+            
+            # Initialize clock
+            self.clock = pygame.time.Clock()
+            
+            print(f"Game window: {self.window_width}x{self.window_height}")
+            
+            # NOW load sprites (after pygame.display is initialized)
+            print("\nðŸŽ® Loading sprites after pygame.display initialization...")
+            self.load_sprites()
+            
+            # Assign sprites to room instances
+            self.assign_sprites_to_rooms()
+            
+            print(f"\nCurrent room: {self.current_room.name}")
+            print(f"Room instances: {len(self.current_room.instances)}")
+            
+            # Count instances by type for summary
+            instance_counts = {}
+            for instance in self.current_room.instances:
+                obj_name = instance.object_name
+                instance_counts[obj_name] = instance_counts.get(obj_name, 0) + 1
+            
+            print(f"Instance summary:")
+            for obj_name, count in sorted(instance_counts.items()):
+                print(f"  {obj_name}: {count}")
+
+            
+            self.running = True
+            
+            # Main game loop
+            while self.running:
+                # Handle events
+                self.handle_events()
+                
+                # Update (placeholder for game logic)
+                self.update()
+                
+                # Execute step events for all instances
+                for instance in self.current_room.instances:
+                    instance.step()
+                
+                # Clear screen
+                self.screen.fill((135, 206, 235))  # Sky blue
+
+                # Render
+                self.render()
+                
+                # Control framerate
+                self.clock.tick(self.fps)
+            
+            return True
+            
+        except Exception as e:
+            print(f"Error in game loop: {e}")
+            import traceback
+            traceback.print_exc()
+            return False
+        
+        finally:
+            self.cleanup()
+    
+    def handle_events(self):
+        """Handle pygame events"""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.stop_game()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.stop_game()
+                elif event.key == pygame.K_F1:
+                    self.show_debug_info()
+                else:
+                    # Handle keyboard press events for all instances
+                    self.handle_keyboard_press(event.key)
+        elif event.type == pygame.KEYUP:
+            # Handle keyboard release events
+            self.handle_keyboard_release(event.key)
+    
+    def handle_keyboard_press(self, key):
+        """Handle keyboard press event"""
+        if not self.current_room:
+            return
+        
+        # Map pygame keys to sub-event keys used in IDE
+        key_map = {
+            pygame.K_LEFT: "left",
+            pygame.K_RIGHT: "right",
+            pygame.K_UP: "up",
+            pygame.K_DOWN: "down",
+        }
+        
+        sub_key = key_map.get(key)
+        if not sub_key:
+            return
+        
+        print(f"\n⌨️  Key pressed: {sub_key}")
+        
+        # Execute keyboard event for all instances
+        for instance in self.current_room.instances:
+            if not instance.object_data:
+                continue
+            
+            events = instance.object_data.get('events', {})
+            
+            # Debug: Show events for player object
+            if instance.object_name == "obj_player":
+                print(f"  📋 obj_player events: {list(events.keys())}")
+                
+                # Show FULL structure of keyboard event if it exists
+                if "keyboard" in events:
+                    keyboard_data = events["keyboard"]
+                    print(f"  📋 keyboard type: {type(keyboard_data)}")
+                    print(f"  📋 keyboard content: {keyboard_data}")
+                
+                # Show FULL structure of keyboard_press event if it exists
+                if "keyboard_press" in events:
+                    keyboard_press_data = events["keyboard_press"]
+                    print(f"  📋 keyboard_press type: {type(keyboard_press_data)}")
+                    print(f"  📋 keyboard_press content: {keyboard_press_data}")
+            
+            # Check for keyboard_press parent event with sub-events
+            if "keyboard_press" in events:
+                keyboard_press_event = events["keyboard_press"]
+                
+                # Check if it has sub-events for specific keys
+                if isinstance(keyboard_press_event, dict) and sub_key in keyboard_press_event:
+                    print(f"  ✅ Found keyboard_press.{sub_key} for {instance.object_name}")
+                    # Execute the sub-event
+                    sub_event_data = keyboard_press_event[sub_key]
+                    if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
+                        actions = sub_event_data["actions"]
+                        print(f"  → Executing {len(actions)} actions from keyboard_press.{sub_key}")
+                        for action_data in actions:
+                            print(f"    - Action: {action_data.get('action', 'unknown')}")
+                            instance.action_executor.execute_action(instance, action_data)
+            
+            # ALSO check for keyboard (held) event - might be used instead
+            if "keyboard" in events:
+                keyboard_event = events["keyboard"]
+                
+                # Check if it has sub-events for specific keys
+                if isinstance(keyboard_event, dict) and sub_key in keyboard_event:
+                    print(f"  ✅ Found keyboard.{sub_key} for {instance.object_name}")
+                    # Execute the sub-event
+                    sub_event_data = keyboard_event[sub_key]
+                    if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
+                        actions = sub_event_data["actions"]
+                        print(f"  → Executing {len(actions)} actions from keyboard.{sub_key}")
+                        for action_data in actions:
+                            print(f"    - Action: {action_data.get('action', 'unknown')}")
+                            instance.action_executor.execute_action(instance, action_data)
+                    else:
+                        print(f"  ❌ keyboard.{sub_key} has no actions: {sub_event_data}")
+                else:
+                    print(f"  ❌ keyboard event doesn't contain '{sub_key}' key")
+                    if isinstance(keyboard_event, dict):
+                        print(f"  ❌ Available keys in keyboard: {list(keyboard_event.keys())}")
+    
+    def handle_keyboard_release(self, key):
+        """Handle keyboard release event - stop movement"""
+        if not self.current_room:
+            return
+        
+        # Map pygame keys
+        key_map = {
+            pygame.K_LEFT: "left",
+            pygame.K_RIGHT: "right",
+            pygame.K_UP: "up",
+            pygame.K_DOWN: "down",
+        }
+        
+        sub_key = key_map.get(key)
+        if not sub_key:
+            return
+        
+        # Stop movement for all instances when key is released
+        for instance in self.current_room.instances:
+            if not instance.object_data:
+                continue
+            
+            # Stop the corresponding movement direction
+            if sub_key in ["left", "right"]:
+                if hasattr(instance, 'hspeed'):
+                    instance.hspeed = 0
+            elif sub_key in ["up", "down"]:
+                if hasattr(instance, 'vspeed'):
+                    instance.vspeed = 0
+    
+    def update(self):
+        """Update game logic"""
+        if not self.current_room:
+            return
+        
+        # Get objects data for solid checks
+        objects_data = self.project_data.get('assets', {}).get('objects', {})
+        
+        # Check for room restart/transition flags FIRST
+        for instance in self.current_room.instances:
+            if hasattr(instance, 'restart_room_flag') and instance.restart_room_flag:
+                print("🔄 Restarting room...")
+                self.restart_current_room()
+                return
+            
+            if hasattr(instance, 'next_room_flag') and instance.next_room_flag:
+                print("➡️  Going to next room...")
+                self.goto_next_room()
+                return
+        
+        
+        # Apply speed-based movement (hspeed, vspeed)
+        for instance in self.current_room.instances:
+            if hasattr(instance, 'hspeed') and instance.hspeed != 0:
+                instance.x += instance.hspeed
+            if hasattr(instance, 'vspeed') and instance.vspeed != 0:
+                instance.y += instance.vspeed
+        # Handle intended movement with collision checking
+        for instance in self.current_room.instances:
+            if hasattr(instance, 'intended_x') and hasattr(instance, 'intended_y'):
+                # Check if movement would collide with solid objects
+                can_move = self.check_movement_collision(instance, objects_data)
+                
+                if can_move:
+                    print(f"✅ Movement allowed: {instance.object_name} → ({instance.intended_x}, {instance.intended_y})")
+                    instance.x = instance.intended_x
+                    instance.y = instance.intended_y
+                else:
+                    print(f"❌ Movement blocked: {instance.object_name} (hit solid object)")
+                
+                # Clear intended movement
+                delattr(instance, 'intended_x')
+                delattr(instance, 'intended_y')
+        
+        # Check collision events
+        for instance in self.current_room.instances:
+            self.check_collision_events(instance, objects_data)
+        
+        # Execute step events for all instances
+        for instance in self.current_room.instances:
+            instance.step()
+    
+    def check_movement_collision(self, moving_instance, objects_data: dict) -> bool:
+        """Check if intended movement would collide with solid objects"""
+        intended_x = moving_instance.intended_x
+        intended_y = moving_instance.intended_y
+        
+        # Get dimensions
+        w1 = moving_instance.sprite.width if moving_instance.sprite else 32
+        h1 = moving_instance.sprite.height if moving_instance.sprite else 32
+        
+        for other_instance in self.current_room.instances:
+            if other_instance == moving_instance:
+                continue
+            
+            # Check if other object is solid
+            if other_instance.object_name in objects_data:
+                other_obj_data = objects_data[other_instance.object_name]
+                is_solid = other_obj_data.get('solid', False)
+                
+                if not is_solid:
+                    continue
+                
+                # Get other instance dimensions
+                w2 = other_instance.sprite.width if other_instance.sprite else 32
+                h2 = other_instance.sprite.height if other_instance.sprite else 32
+                
+                # Check rectangle overlap at intended position
+                if self.rectangles_overlap(intended_x, intended_y, w1, h1,
+                                          other_instance.x, other_instance.y, w2, h2):
+                    return False
+        
+        return True
+    
+    def check_collision_events(self, instance, objects_data: dict):
+        """Check if instance is colliding and trigger collision events"""
+        if not instance.object_data:
+            return
+        
+        events = instance.object_data.get('events', {})
+        
+        # Check all collision events
+        for event_name, event_data in events.items():
+            if event_name.startswith('collision_with_'):
+                target_object = event_name.replace('collision_with_', '')
+                
+                # Check collision with target object
+                for other_instance in self.current_room.instances:
+                    if other_instance == instance:
+                        continue
+                    
+                    if other_instance.object_name == target_object:
+                        if self.instances_overlap(instance, other_instance):
+                            print(f"💥 Collision: {instance.object_name} with {target_object}")
+                            instance.action_executor.execute_event(instance, event_name, events)
+                            break
+    
+    def instances_overlap(self, inst1, inst2) -> bool:
+        """Check if two instances overlap"""
+        w1 = inst1.sprite.width if inst1.sprite else 32
+        h1 = inst1.sprite.height if inst1.sprite else 32
+        w2 = inst2.sprite.width if inst2.sprite else 32
+        h2 = inst2.sprite.height if inst2.sprite else 32
+        
+        return self.rectangles_overlap(inst1.x, inst1.y, w1, h1, inst2.x, inst2.y, w2, h2)
+    
+    def rectangles_overlap(self, x1, y1, w1, h1, x2, y2, w2, h2) -> bool:
+        """Check if two rectangles overlap"""
+        return not (x1 + w1 <= x2 or x2 + w2 <= x1 or y1 + h1 <= y2 or y2 + h2 <= y1)
+    
+    def restart_current_room(self):
+        """Restart the current room"""
+        if not self.current_room:
+            return
+        
+        room_name = self.current_room.name
+        # Trigger a room reload
+        room_list = self.get_room_list()
+        if room_name in room_list:
+            # Find the room in our rooms dictionary and reload it
+            room_data = self.project_data.get('assets', {}).get('rooms', {}).get(room_name)
+            if room_data:
+                # Just change to the same room (will recreate instances)
+                self.change_room(room_name)
+    
+    def goto_next_room(self):
+        """Go to the next room"""
+        if not self.current_room:
+            return
+        
+        room_list = self.get_room_list()
+        if not room_list:
+            return
+        
+        try:
+            current_index = room_list.index(self.current_room.name)
+            next_index = (current_index + 1) % len(room_list)
+            next_room_name = room_list[next_index]
+            self.change_room(next_room_name)
+        except ValueError:
+            print(f"Current room '{self.current_room.name}' not in room list")
+    
+    def get_room_list(self) -> List[str]:
+        """Get ordered list of room names"""
+        if not self.project_data:
+            return []
+        
+        rooms_data = self.project_data.get('assets', {}).get('rooms', {})
+        room_order = self.project_data.get('room_order', [])
+        
+        if room_order:
+            return [r for r in room_order if r in rooms_data]
+        else:
+            return list(rooms_data.keys())
+    
+    def change_room(self, room_name: str):
+        """Change to a different room"""
+        if room_name in self.rooms:
+            print(f"🚪 Changing to room: {room_name}")
+            self.current_room = self.rooms[room_name]
+            
+            # Execute create events for all instances
+            for instance in self.current_room.instances:
+                if instance.object_data and "events" in instance.object_data:
+                    instance.action_executor.execute_event(instance, "create", instance.object_data["events"])
+
+    
+    def render(self):
+        """Render the game"""
+        if not self.screen or not self.current_room:
+            return
+        
+        # Render current room
+        self.current_room.render(self.screen)
+        
+        # Update display
+        pygame.display.flip()
+    
+    def show_debug_info(self):
+        """Print debug information"""
+        print("\n=== DEBUG INFO ===")
+        print(f"Project: {self.project_data.get('name', 'Unknown')}")
+        print(f"Current room: {self.current_room.name if self.current_room else 'None'}")
+        
+        if self.current_room:
+            print(f"Room size: {self.current_room.width}x{self.current_room.height}")
+            print(f"Background: {self.current_room.background_color}")
+            print(f"Instances: {len(self.current_room.instances)}")
+            
+            for i, instance in enumerate(self.current_room.instances):
+                sprite_info = "no sprite" if not instance.sprite else f"sprite loaded"
+                print(f"  {i+1}. {instance.object_name} at ({instance.x}, {instance.y}) - {sprite_info}")
+        
+        print("===================\n")
+    
+    def stop_game(self):
+        """Stop the game"""
+        print("Stopping game...")
+        self.running = False
+    
+    def run(self):
+        """Run the game - main entry point called by IDE"""
+        if not self.project_data:
+            print("❌ No project loaded. Cannot run game.")
+            return False
+        
+        # Find starting room
+        starting_room = self.find_starting_room()
+        if not starting_room:
+            print("❌ No rooms found in project")
+            return False
+        
+        print(f"🎮 Starting game with room: {starting_room}")
+        self.current_room = self.rooms[starting_room]
+        
+        # Set window size based on room
+        self.window_width = self.current_room.width
+        self.window_height = self.current_room.height
+        
+        # Run the game loop
+        return self.run_game_loop()
+    
+    def cleanup(self):
+        """Clean up pygame resources"""
+        try:
+            if pygame.get_init():
+                pygame.quit()
+            print("Game cleanup complete")
+        except Exception as e:
+            print(f"Error during cleanup: {e}")
+
+# Test function
+def test_runner():
+    """Test the enhanced game runner"""
+    runner = GameRunner()
+    
+    # Test with a project path - replace with actual path
+    test_project = "/path/to/your/project"
+    
+    if Path(test_project).exists():
+        runner.test_game(test_project)
+    else:
+        print(f"Test project not found: {test_project}")
+        print("Please update the test_project path")
+
+if __name__ == "__main__":
+    test_runner()

@@ -1,0 +1,1 @@
+"""PyGameMaker IDE Plugins Directory"""

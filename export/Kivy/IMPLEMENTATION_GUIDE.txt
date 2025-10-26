@@ -1,0 +1,377 @@
+KIVY EXPORT SYSTEM - COMPLETE IMPLEMENTATION GUIDE
+==================================================
+
+This document provides complete step-by-step instructions for implementing
+the Kivy mobile export system in PyGameMaker IDE.
+
+================================================================================
+DIRECTORY STRUCTURE
+================================================================================
+
+Create the following directory structure in your project:
+
+/mnt/project/
+├── export/
+│   └── kivy/
+│       ├── __init__.py
+│       ├── kivy_exporter.py
+│       ├── code_generator.py
+│       ├── asset_bundler.py
+│       ├── buildspec_generator.py
+│       └── templates/
+│           ├── main.py.template
+│           ├── game_object.py.template
+│           ├── scene.py.template
+│           └── buildozer.spec.template
+
+================================================================================
+FILE CREATION CHECKLIST
+================================================================================
+
+NEW FILES TO CREATE (9 files):
+-------------------------------
+
+1. [ ] /mnt/project/export/kivy/__init__.py
+   Source: /mnt/user-data/outputs/__init__.py
+
+2. [ ] /mnt/project/export/kivy/kivy_exporter.py
+   Source: /mnt/user-data/outputs/kivy_exporter.py
+
+3. [ ] /mnt/project/export/kivy/code_generator.py
+   Source: /mnt/user-data/outputs/code_generator.py
+
+4. [ ] /mnt/project/export/kivy/asset_bundler.py
+   Source: /mnt/user-data/outputs/asset_bundler.py
+
+5. [ ] /mnt/project/export/kivy/buildspec_generator.py
+   Source: /mnt/user-data/outputs/buildspec_generator.py
+
+6. [ ] /mnt/project/export/kivy/templates/main.py.template
+   Source: /mnt/user-data/outputs/main.py.template
+
+7. [ ] /mnt/project/export/kivy/templates/game_object.py.template
+   Source: /mnt/user-data/outputs/game_object.py.template
+
+8. [ ] /mnt/project/export/kivy/templates/scene.py.template
+   Source: /mnt/user-data/outputs/scene.py.template
+
+9. [ ] /mnt/project/export/kivy/templates/buildozer.spec.template
+   Source: /mnt/user-data/outputs/buildozer.spec.template
+
+================================================================================
+FILE MODIFICATIONS
+================================================================================
+
+MODIFICATION 1: /mnt/project/project_dialogs.py
+------------------------------------------------
+
+CHANGE 1 - Add Kivy to export platform dropdown:
+
+FIND this line (in ExportProjectDialog.setup_ui() method):
+    self.export_platform.addItems(["Python (pygame)", "HTML5 (Canvas)"])
+
+REPLACE WITH:
+    self.export_platform.addItems(["Python (pygame)", "HTML5 (Canvas)", "Mobile (Kivy)"])
+
+
+CHANGE 2 - Add Kivy export handler:
+
+FIND the accept_export() method (look for the elif conditions for export platforms)
+
+ADD this condition after the HTML5 export handling:
+    elif platform == "Mobile (Kivy)":
+        self._export_kivy()
+
+
+CHANGE 3 - Add Kivy export method:
+
+ADD this new method to the ExportProjectDialog class (at the end of the class):
+
+    def _export_kivy(self):
+        """Export project to Kivy mobile format"""
+        try:
+            from export.kivy import KivyExporter
+            
+            exporter = KivyExporter(
+                self.project_data,
+                self.project_path,
+                self.output_dir
+            )
+            
+            if exporter.export():
+                QMessageBox.information(
+                    self,
+                    "Export Successful",
+                    f"Kivy project exported to:\n{self.output_dir}"
+                )
+            else:
+                QMessageBox.warning(
+                    self,
+                    "Export Failed",
+                    "Failed to export Kivy project. Check logs for details."
+                )
+        except Exception as e:
+            QMessageBox.critical(
+                self,
+                "Export Error",
+                f"Error during Kivy export:\n{str(e)}"
+            )
+
+
+MODIFICATION 2: /mnt/project/__init__.py
+-----------------------------------------
+
+ADD this import line (with other imports at the top):
+    from .export.kivy import KivyExporter
+
+ADD to __all__ list:
+    'KivyExporter',
+
+
+MODIFICATION 3: /mnt/project/requirements.txt
+----------------------------------------------
+
+ADD these lines at the end of the file:
+    kivy>=2.3.0
+    buildozer>=1.5.0
+    jinja2>=3.1.0
+    pillow>=10.0.0
+
+================================================================================
+STEP-BY-STEP IMPLEMENTATION INSTRUCTIONS
+================================================================================
+
+STEP 1: Create Directory Structure
+-----------------------------------
+1. Navigate to /mnt/project/
+2. Create directory: export/
+3. Create directory: export/kivy/
+4. Create directory: export/kivy/templates/
+
+STEP 2: Copy Python Module Files
+---------------------------------
+Copy each file from /mnt/user-data/outputs/ to the appropriate location:
+
+1. Copy __init__.py → /mnt/project/export/kivy/__init__.py
+2. Copy kivy_exporter.py → /mnt/project/export/kivy/kivy_exporter.py
+3. Copy code_generator.py → /mnt/project/export/kivy/code_generator.py
+4. Copy asset_bundler.py → /mnt/project/export/kivy/asset_bundler.py
+5. Copy buildspec_generator.py → /mnt/project/export/kivy/buildspec_generator.py
+
+STEP 3: Copy Template Files
+----------------------------
+Copy each template file to the templates directory:
+
+1. Copy main.py.template → /mnt/project/export/kivy/templates/main.py.template
+2. Copy game_object.py.template → /mnt/project/export/kivy/templates/game_object.py.template
+3. Copy scene.py.template → /mnt/project/export/kivy/templates/scene.py.template
+4. Copy buildozer.spec.template → /mnt/project/export/kivy/templates/buildozer.spec.template
+
+STEP 4: Modify project_dialogs.py
+----------------------------------
+Apply the three changes outlined in MODIFICATION 1 above.
+
+STEP 5: Modify __init__.py
+---------------------------
+Apply the changes outlined in MODIFICATION 2 above.
+
+STEP 6: Modify requirements.txt
+--------------------------------
+Apply the changes outlined in MODIFICATION 3 above.
+
+STEP 7: Create export/__init__.py
+----------------------------------
+Create /mnt/project/export/__init__.py with the following content:
+
+#!/usr/bin/env python3
+"""
+Export System for PyGameMaker IDE
+Handles game export to various platforms
+"""
+
+from .kivy import KivyExporter
+
+__all__ = ['KivyExporter']
+__version__ = "1.0.0"
+
+STEP 8: Install Dependencies
+-----------------------------
+Run this command to install the new dependencies:
+
+    pip install kivy>=2.3.0 buildozer>=1.5.0 jinja2>=3.1.0 pillow>=10.0.0
+
+Or if using --break-system-packages flag:
+
+    pip install kivy>=2.3.0 buildozer>=1.5.0 jinja2>=3.1.0 pillow>=10.0.0 --break-system-packages
+
+STEP 9: Test the Implementation
+--------------------------------
+1. Launch PyGameMaker IDE
+2. Open a project
+3. Go to File → Export Project
+4. Select "Mobile (Kivy)" from the platform dropdown
+5. Choose an output directory
+6. Click Export
+7. Check the output directory for the exported Kivy project
+
+================================================================================
+EXPORTED PROJECT STRUCTURE
+================================================================================
+
+When a project is exported, it will create this structure:
+
+exported_project/
+├── main.py                 # Main Kivy application
+├── requirements.txt        # Python dependencies
+├── buildozer.spec         # Android build configuration
+├── ios_build_guide.txt    # iOS build instructions
+├── README.md              # Complete documentation
+├── game/
+│   ├── __init__.py
+│   ├── objects/           # Game object classes
+│   │   ├── __init__.py
+│   │   ├── Player.py
+│   │   ├── Enemy.py
+│   │   └── ...
+│   └── scenes/            # Room/scene classes
+│       ├── __init__.py
+│       ├── MainMenu.py
+│       ├── Level1.py
+│       └── ...
+└── assets/
+    ├── manifest.json      # Asset inventory
+    ├── sprites/           # Sprite images
+    │   ├── player/
+    │   │   └── frame_0.png
+    │   └── ...
+    ├── sounds/            # Sound files
+    │   └── ...
+    └── backgrounds/       # Background images
+        └── ...
+
+================================================================================
+BUILDING THE EXPORTED PROJECT
+================================================================================
+
+ANDROID BUILD:
+--------------
+1. Navigate to the exported project directory
+2. Run: buildozer -v android debug
+3. APK will be created in: bin/
+
+iOS BUILD:
+----------
+1. Install kivy-ios: pip install kivy-ios
+2. Build framework: toolchain build kivy
+3. Create project: toolchain create [appname] .
+4. Open Xcode project and build
+
+DESKTOP TESTING:
+----------------
+1. Install dependencies: pip install -r requirements.txt
+2. Run: python main.py
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+ISSUE: Import error for export.kivy
+SOLUTION: Ensure export/__init__.py exists and properly imports KivyExporter
+
+ISSUE: Template not found error
+SOLUTION: Verify all .template files are in export/kivy/templates/
+
+ISSUE: Jinja2 import error
+SOLUTION: Install jinja2: pip install jinja2
+
+ISSUE: PIL import error  
+SOLUTION: Install pillow: pip install pillow
+
+ISSUE: Kivy export option not showing in dropdown
+SOLUTION: Check that project_dialogs.py was modified correctly
+
+ISSUE: Export fails with missing module error
+SOLUTION: Check that all .py files are in export/kivy/ directory
+
+================================================================================
+FEATURES INCLUDED
+================================================================================
+
+✓ Complete GameMaker event system conversion
+✓ Sprite and animation support
+✓ Movement system (speed, direction, hspeed, vspeed)
+✓ Collision detection (AABB)
+✓ Keyboard input handling
+✓ Room/scene management
+✓ Object instance creation/destruction
+✓ Asset bundling and optimization
+✓ Android build configuration (buildozer.spec)
+✓ iOS build instructions
+✓ Comprehensive README generation
+✓ Asset manifest generation
+✓ Image optimization (via Pillow)
+✓ Multi-platform support (Android, iOS, Desktop)
+
+================================================================================
+SUPPORTED GAMEMAKER ACTIONS
+================================================================================
+
+Movement Actions:
+- Move (direction + speed)
+- Set Speed
+- Set Direction
+- Jump to Position
+
+Object Actions:
+- Create Instance
+- Destroy Instance
+
+Variable Actions:
+- Set Variable
+
+Room Actions:
+- Go to Room
+- Restart Room
+
+Game Actions:
+- End Game
+
+Sound Actions:
+- Play Sound (TODO: implementation needed)
+- Stop Sound (TODO: implementation needed)
+
+Sprite Actions:
+- Change Sprite (TODO: implementation needed)
+
+Message Actions:
+- Show Message (as print statement)
+
+================================================================================
+NEXT STEPS / FUTURE ENHANCEMENTS
+================================================================================
+
+1. Implement sound playback system
+2. Implement sprite changing system
+3. Add animation system for multi-frame sprites
+4. Add touch input handling for mobile
+5. Add accelerometer support
+6. Add custom icon/splash screen support
+7. Add additional GameMaker actions
+8. Add collision masks (beyond AABB)
+9. Add particle system support
+10. Add save/load system
+
+================================================================================
+SUPPORT & DOCUMENTATION
+================================================================================
+
+Kivy Documentation: https://kivy.org/doc/stable/
+Buildozer Documentation: https://buildozer.readthedocs.io/
+Python-for-Android: https://python-for-android.readthedocs.io/
+Kivy-iOS: https://github.com/kivy/kivy-ios
+
+================================================================================
+END OF IMPLEMENTATION GUIDE
+================================================================================
+
+Generated by PyGameMaker IDE - Kivy Export System v1.0.0
