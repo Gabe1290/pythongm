@@ -1,0 +1,173 @@
+#!/usr/bin/env python3
+"""
+Minimal working Config for PyGameMaker IDE
+Fixes import issues with backward compatibility
+"""
+
+import json
+from pathlib import Path
+from typing import Dict, Any
+
+
+class Config:
+    """Simple Config class for backward compatibility"""
+    
+    _config_file = Path.home() / ".pygamemaker" / "config.json"
+    _config_data = {}
+    
+    @classmethod
+    def load(cls):
+        """Load configuration"""
+        try:
+            cls._config_file.parent.mkdir(exist_ok=True)
+            
+            if cls._config_file.exists():
+                with open(cls._config_file, 'r') as f:
+                    cls._config_data = json.load(f)
+            else:
+                cls._config_data = {
+                    "version": "0.4",
+                    "recent_projects": [],
+                    "window": {"width": 1200, "height": 800}
+                }
+            
+            return cls._config_data
+            
+        except Exception as e:
+            print(f"Config load error: {e}")
+            cls._config_data = {"version": "0.4", "recent_projects": []}
+            return cls._config_data
+    
+    @classmethod
+    def save(cls, config_data=None):
+        """Save configuration with JSON-safe filtering"""
+        try:
+            if config_data:
+                cls._config_data = config_data
+
+            cls._config_file.parent.mkdir(exist_ok=True)
+
+            # Clean the config data before saving
+            clean_data = cls._clean_config_for_json(cls._config_data)
+
+            with open(cls._config_file, 'w') as f:
+                json.dump(clean_data, f, indent=2)
+
+            return True
+
+        except Exception as e:
+            print(f"Config save error: {e}")
+            return False
+
+    @classmethod
+    def get(cls, key, default=None):
+        """Get config value"""
+        return cls._config_data.get(key, default)
+    
+    @classmethod
+    def set(cls, key, value):
+        """Set config value"""
+        cls._config_data[key] = value
+    
+    @classmethod
+    def get_recent_projects(cls):
+        """Get recent projects"""
+        return cls._config_data.get("recent_projects", [])
+    
+    @classmethod
+    def add_recent_project(cls, project_path):
+        """Add recent project"""
+        recent = cls.get_recent_projects()
+        
+        if project_path in recent:
+            recent.remove(project_path)
+        
+        recent.insert(0, project_path)
+        recent = recent[:10]  # Keep last 10
+        
+        cls.set("recent_projects", recent)
+
+    # Quick fix for QByteArray JSON error
+    # Add this method to your Config class in utils/config.py:
+
+    @classmethod
+    def _clean_config_for_json(cls, data):
+        """Remove non-JSON-serializable objects from config data"""
+        if isinstance(data, dict):
+            clean_data = {}
+            for key, value in data.items():
+                # Skip Qt objects and other non-serializable types
+                if hasattr(value, '__class__'):
+                    class_name = value.__class__.__name__
+                    if class_name in ['QByteArray', 'QSize', 'QPoint', 'QRect']:
+                        continue  # Skip Qt objects
+
+                if isinstance(value, (dict, list)):
+                    clean_data[key] = cls._clean_config_for_json(value)
+                elif isinstance(value, (str, int, float, bool, type(None))):
+                    clean_data[key] = value
+                else:
+                    # Skip other non-serializable objects
+                    continue
+            return clean_data
+        elif isinstance(data, list):
+            return [cls._clean_config_for_json(item) for item in data if isinstance(item, (str, int, float, bool, type(None), dict, list))]
+        else:
+            return data
+
+
+# Initialize config on import
+Config.load()
+
+
+# Utility functions for compatibility
+def load_config():
+    return Config.load()
+
+
+def save_config(config_data=None):
+    return Config.save(config_data)
+
+
+def save_on_exit():
+    """Save configuration on exit - FIXED VERSION"""
+    try:
+        Config.save()
+        print("💾 Configuration saved on exit")
+    except Exception as e:
+        print(f"❌ Error saving config on exit: {e}")
+
+# Create a config_manager instance for compatibility
+class ConfigManager:
+    """Wrapper for Config class to provide config_manager compatibility"""
+    
+    def __init__(self):
+        self.config = Config._config_data
+    
+    def save_config(self):
+        """Save configuration"""
+        return Config.save()
+    
+    def load_config(self):
+        """Load configuration"""
+        return Config.load()
+    
+    def save_window_geometry(self, window):
+        """Save window geometry (simplified)"""
+        try:
+            Config.set("window_width", window.width())
+            Config.set("window_height", window.height())
+            Config.set("window_x", window.x())
+            Config.set("window_y", window.y())
+            Config.set("window_maximized", window.isMaximized())
+        except Exception as e:
+            print(f"Error saving window geometry: {e}")
+
+
+# Create global instance for compatibility
+config_manager = ConfigManager()
+
+
+
+# Export all needed symbols
+__all__ = ['Config', 'config_manager', 'save_on_exit']

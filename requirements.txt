@@ -1,0 +1,26 @@
+# PyGameMaker IDE Dependencies
+
+# Core GUI Framework
+PySide6>=6.4.0
+
+# Image processing and manipulation
+Pillow>=9.0.0
+
+# Audio support for game functionality
+pygame>=2.1.0
+
+# Development and debugging tools
+watchdog>=2.1.9
+
+# Optional: Enhanced text editing
+QScintilla>=2.13.0
+
+# Built-in Python modules (no installation needed):
+# - json
+# - pathlib
+# - shutil
+# - os
+# - sys
+# - datetime
+# - typing
+# - hashlib

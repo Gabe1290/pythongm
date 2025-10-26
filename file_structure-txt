@@ -1,0 +1,77 @@
+widgets/
+├── asset_tree/
+│   ├── __init__.py              # Main exports
+│   ├── asset_tree_item.py       # AssetTreeItem class only    OK
+│   ├── asset_tree_widget.py     # Core widget functionality
+│   ├── asset_operations.py      # Import/delete/rename operations
+│   ├── asset_dialogs.py         # Rename dialog and other UI dialogs
+│   └── asset_utils.py           # Pure utility functions
+└── [other widget files]
+
+
+
+pygm/
+├── main.py
+├── requirements.txt
+├── core/
+│   ├── __init__.py
+│   └── ide_window.py
+└── widgets/
+    ├── __init__.py
+    ├── asset_tree_widget.py
+    └── (other widget files...)
+
+
+gamemaker_ide/                          # Main application directory
+├── main.py                             # Main IDE application entry point
+├── qt_patch.py                         # Qt compatibility fixes
+├── qt_standardicon_fix.py              # Qt icon fixes
+├── requirements.txt                    # Python dependencies
+│
+├── core/                               # Core functionality
+│   ├── __init__.py
+│   ├── project_manager.py              # Project loading/saving logic
+│   ├── asset_manager.py                # Asset import/export/management
+│   └── game_compiler.py                # Game compilation (future)
+│
+├── dialogs/                            # UI dialogs
+│   ├── __init__.py
+│   ├── asset_dialogs.py                # Asset import/creation dialogs
+│   ├── project_dialogs.py              # New/open project dialogs
+│   └── preferences_dialog.py           # Settings/preferences
+│
+├── utils/                              # Utility functions
+│   ├── __init__.py
+│   ├── file_utils.py                   # File operations
+│   ├── image_utils.py                  # Image processing helpers
+│   └── validation.py                   # Input validation functions
+│
+├── widgets/                            # Custom widgets
+│   ├── __init__.py
+│   ├── asset_tree_widget.py            # Asset tree (left panel)
+│   ├── properties_widget.py            # Properties panel (center)
+│   ├── events_widget.py                # Events/actions panel (right)
+│   ├── room_editor.py                  # 🆕 Room editor widget
+│   └── sprite_editor.py                # 🔮 Future sprite editor
+│
+├── editors/                            # 🆕 Specialized editors
+│   ├── __init__.py
+│   ├── room_editor_components.py       # 🆕 Room editor helper classes
+│   ├── visual_scripting.py             # 🔮 Visual scripting editor
+│   └── code_editor.py                  # 🔮 Text/code editor
+│
+├── resources/                          # 🆕 Application resources
+│   ├── __init__.py
+│   ├── icons/                          # UI icons
+│   ├── templates/                      # Project templates
+│   └── styles/                         # Qt stylesheets
+│
+├── examples/                           # 🆕 Example projects
+│   ├── platformer_demo/
+│   └── puzzle_game/
+│
+└── __pycache__/                        # Python cache (auto-generated)
+
+
+
+

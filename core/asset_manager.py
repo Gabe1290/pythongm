@@ -1,0 +1,635 @@
+#!/usr/bin/env python3
+
+import json
+import shutil
+import hashlib
+import os
+from pathlib import Path
+from datetime import datetime
+from typing import Dict, List, Optional, Tuple, Any
+from PySide6.QtCore import QObject, Signal
+from PIL import Image, ImageOps
+import pygame
+
+
+class AssetManager(QObject):
+    
+    asset_imported = Signal(str, str, dict)  # asset_type, asset_name, asset_data
+    asset_deleted = Signal(str, str)  # asset_type, asset_name
+    asset_updated = Signal(str, str, dict)  # asset_type, asset_name, asset_data
+    status_changed = Signal(str)  # status_message
+    
+    SUPPORTED_FORMATS = {
+        "sprites": [".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tga", ".webp"],
+        "sounds": [".wav", ".mp3", ".ogg", ".m4a", ".aac", ".flac"],
+        "backgrounds": [".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tga", ".webp"],
+        "fonts": [".ttf", ".otf", ".woff", ".woff2"],
+        "data": [".json", ".xml", ".txt", ".csv"]
+    }
+    
+    THUMBNAIL_SIZE = (64, 64)
+    MAX_PREVIEW_SIZE = (256, 256)
+    
+    def __init__(self, project_directory: Optional[Path] = None):
+        super().__init__()
+        self.project_directory = project_directory or Path.cwd()
+        self.assets_cache = {}
+        self.thumbnails_cache = {}
+        
+        pygame.mixer.init()
+        self.ensure_directories()
+    
+    def set_project_directory(self, project_directory: Optional[Path]):
+        """Set the project directory and reset caches"""
+        if project_directory:
+            self.project_directory = Path(project_directory).resolve()
+            self.ensure_directories()
+        else:
+            self.project_directory = None
+        
+        self.assets_cache.clear()
+        self.thumbnails_cache.clear()
+    
+    def get_absolute_path(self, relative_path: str) -> Path:
+        """Convert relative project path to absolute path"""
+        if not self.project_directory:
+            return Path(relative_path)  # Return as-is if no project directory
+        return self.project_directory / relative_path
+    
+    def get_relative_path(self, absolute_path: Path) -> str:
+        """Convert absolute path to relative project path"""
+        if not self.project_directory:
+            return str(absolute_path)
+        try:
+            return str(Path(absolute_path).relative_to(self.project_directory))
+        except ValueError:
+            # If path is not relative to project directory, return as-is
+            return str(absolute_path)
+    
+    def ensure_directories(self):
+        """Create necessary asset directories in the project directory"""
+        if not self.project_directory:
+            return
+            
+        directories = [
+            "sprites", "sounds", "backgrounds", "objects", 
+            "rooms", "scripts", "fonts", "data", "thumbnails"
+        ]
+        
+        for directory in directories:
+            (self.project_directory / directory).mkdir(exist_ok=True)
+    
+    def get_supported_formats(self, asset_type: str) -> List[str]:
+        return self.SUPPORTED_FORMATS.get(asset_type, [])
+    
+    def is_supported_format(self, file_path: Path, asset_type: str) -> bool:
+        supported = self.get_supported_formats(asset_type)
+        return file_path.suffix.lower() in supported
+    
+    def import_asset(self, file_path: Path, asset_type: str, asset_name: Optional[str] = None) -> Optional[Dict[str, Any]]:
+        """Import an asset from an external file path to the project"""
+        if not self.project_directory:
+            self.status_changed.emit("No project directory set")
+            return None
+            
+        if not self.is_supported_format(file_path, asset_type):
+            self.status_changed.emit(f"Unsupported file format: {file_path.suffix}")
+            return None
+        
+        try:
+            if not asset_name:
+                asset_name = file_path.stem
+            
+            asset_name = self.get_unique_asset_name(asset_name, asset_type)
+            
+            asset_data = self._create_asset_data(file_path, asset_type, asset_name)
+            
+            # Copy to project directory (store as relative path)
+            relative_path = f"{asset_type}/{asset_name}{file_path.suffix}"
+            dest_path = self.get_absolute_path(relative_path)
+            shutil.copy2(file_path, dest_path)
+            
+            asset_data["file_path"] = relative_path
+            
+            if asset_type in ["sprites", "backgrounds"]:
+                thumbnail_path = self.generate_thumbnail(dest_path, asset_name)
+                if thumbnail_path:
+                    asset_data["thumbnail"] = self.get_relative_path(thumbnail_path)
+            
+            self.assets_cache.setdefault(asset_type, {})[asset_name] = asset_data
+            
+            self.asset_imported.emit(asset_type, asset_name, asset_data)
+            self.status_changed.emit(f"Imported {asset_name}")
+            
+            return asset_data
+            
+        except Exception as e:
+            self.status_changed.emit(f"Failed to import {file_path.name}: {str(e)}")
+            return None
+    
+    def import_multiple_assets(self, file_paths: List[Path], asset_type: str) -> List[Dict[str, Any]]:
+        """Import multiple assets at once"""
+        imported_assets = []
+        
+        for file_path in file_paths:
+            asset_data = self.import_asset(file_path, asset_type)
+            if asset_data:
+                imported_assets.append(asset_data)
+        
+        if imported_assets:
+            self.status_changed.emit(f"Imported {len(imported_assets)} {asset_type}")
+        
+        return imported_assets
+    
+    def create_asset(self, asset_name: str, asset_type: str, **kwargs) -> Optional[Dict[str, Any]]:
+        """Create a new asset (objects, rooms, scripts, etc.)"""
+        asset_name = self.get_unique_asset_name(asset_name, asset_type)
+        
+        asset_data = {
+            "name": asset_name,
+            "asset_type": asset_type,
+            "created": datetime.now().isoformat(),
+            "modified": datetime.now().isoformat(),
+            "imported": False,
+            "file_path": "",
+        }
+        
+        if asset_type == "objects":
+            asset_data.update({
+                "sprite": "",
+                "visible": True,
+                "solid": False,
+                "persistent": False,
+                "depth": 0,
+                "events": {}
+            })
+        elif asset_type == "rooms":
+            asset_data.update({
+                "width": 1024,
+                "height": 768,
+                "background": "",
+                "background_color": "#000000",
+                "instances": [],
+                "creation_code": ""
+            })
+        elif asset_type == "scripts":
+            asset_data.update({
+                "code": "// Script code goes here\n",
+                "language": "gml"
+            })
+        elif asset_type == "fonts":
+            asset_data.update({
+                "font_name": "Arial",
+                "size": 12,
+                "bold": False,
+                "italic": False,
+                "charset": "ascii"
+            })
+        
+        asset_data.update(kwargs)
+        
+        self.assets_cache.setdefault(asset_type, {})[asset_name] = asset_data
+        
+        self.asset_imported.emit(asset_type, asset_name, asset_data)
+        self.status_changed.emit(f"Created {asset_name}")
+        
+        return asset_data
+    
+    def delete_asset(self, asset_type: str, asset_name: str) -> bool:
+        """Delete an asset and its associated files"""
+        if not self.project_directory:
+            return False
+            
+        try:
+            asset_data = self.get_asset(asset_type, asset_name)
+            if not asset_data:
+                return False
+            
+            # Delete main file
+            if asset_data.get("file_path"):
+                file_path = self.get_absolute_path(asset_data["file_path"])
+                if file_path.exists():
+                    file_path.unlink()
+            
+            # Delete thumbnail
+            if asset_data.get("thumbnail"):
+                thumbnail_path = self.get_absolute_path(asset_data["thumbnail"])
+                if thumbnail_path.exists():
+                    thumbnail_path.unlink()
+            
+            # Remove from cache
+            if asset_type in self.assets_cache and asset_name in self.assets_cache[asset_type]:
+                del self.assets_cache[asset_type][asset_name]
+            
+            self.asset_deleted.emit(asset_type, asset_name)
+            self.status_changed.emit(f"Deleted {asset_name}")
+            
+            return True
+            
+        except Exception as e:
+            self.status_changed.emit(f"Failed to delete {asset_name}: {str(e)}")
+            return False
+    
+    def rename_asset(self, asset_type: str, old_name: str, new_name: str) -> bool:
+        """Rename an asset and update file paths"""
+        if not self.project_directory:
+            return False
+            
+        if old_name == new_name:
+            return True
+        
+        if self.asset_exists(asset_type, new_name):
+            self.status_changed.emit(f"Asset {new_name} already exists")
+            return False
+        
+        try:
+            asset_data = self.get_asset(asset_type, old_name)
+            if not asset_data:
+                return False
+            
+            # Rename main file
+            if asset_data.get("file_path"):
+                old_file_path = self.get_absolute_path(asset_data["file_path"])
+                if old_file_path.exists():
+                    new_file_path = old_file_path.parent / f"{new_name}{old_file_path.suffix}"
+                    old_file_path.rename(new_file_path)
+                    asset_data["file_path"] = self.get_relative_path(new_file_path)
+                    
+            # Rename thumbnail
+            if asset_data.get("thumbnail"):
+                old_thumbnail_path = self.get_absolute_path(asset_data["thumbnail"])
+                if old_thumbnail_path.exists():
+                    new_thumbnail_path = old_thumbnail_path.parent / f"{new_name}_thumb.png"
+                    old_thumbnail_path.rename(new_thumbnail_path)
+                    asset_data["thumbnail"] = self.get_relative_path(new_thumbnail_path)
+            
+            # Update asset data
+            asset_data["name"] = new_name
+            asset_data["modified"] = datetime.now().isoformat()
+            
+            # Update cache
+            if asset_type in self.assets_cache:
+                self.assets_cache[asset_type][new_name] = self.assets_cache[asset_type].pop(old_name)
+            
+            self.asset_updated.emit(asset_type, new_name, asset_data)
+            self.status_changed.emit(f"Renamed {old_name} to {new_name}")
+            
+            return True
+            
+        except Exception as e:
+            self.status_changed.emit(f"Failed to rename {old_name}: {str(e)}")
+            return False
+    
+    def duplicate_asset(self, asset_type: str, asset_name: str) -> Optional[Dict[str, Any]]:
+        """Create a copy of an existing asset"""
+        if not self.project_directory:
+            return None
+            
+        original_asset = self.get_asset(asset_type, asset_name)
+        if not original_asset:
+            return None
+        
+        try:
+            new_name = self.get_unique_asset_name(f"{asset_name}_copy", asset_type)
+            
+            # Copy asset data
+            new_asset_data = original_asset.copy()
+            new_asset_data["name"] = new_name
+            new_asset_data["created"] = datetime.now().isoformat()
+            new_asset_data["modified"] = datetime.now().isoformat()
+            
+            # Copy main file
+            if original_asset.get("file_path"):
+                original_file_path = self.get_absolute_path(original_asset["file_path"])
+                if original_file_path.exists():
+                    new_file_path = original_file_path.parent / f"{new_name}{original_file_path.suffix}"
+                    shutil.copy2(original_file_path, new_file_path)
+                    
+                    new_asset_data["file_path"] = self.get_relative_path(new_file_path)
+                    
+                    # Generate new thumbnail for image assets
+                    if asset_type in ["sprites", "backgrounds"]:
+                        thumbnail_path = self.generate_thumbnail(new_file_path, new_name)
+                        if thumbnail_path:
+                            new_asset_data["thumbnail"] = self.get_relative_path(thumbnail_path)
+            
+            self.assets_cache.setdefault(asset_type, {})[new_name] = new_asset_data
+            
+            self.asset_imported.emit(asset_type, new_name, new_asset_data)
+            self.status_changed.emit(f"Duplicated {asset_name} as {new_name}")
+            
+            return new_asset_data
+            
+        except Exception as e:
+            self.status_changed.emit(f"Failed to duplicate {asset_name}: {str(e)}")
+            return None
+    
+    def get_asset(self, asset_type: str, asset_name: str) -> Optional[Dict[str, Any]]:
+        """Get asset data by type and name"""
+        return self.assets_cache.get(asset_type, {}).get(asset_name)
+    
+    def get_assets_by_type(self, asset_type: str) -> Dict[str, Dict[str, Any]]:
+        """Get all assets of a specific type"""
+        return self.assets_cache.get(asset_type, {})
+    
+    def get_all_assets(self) -> Dict[str, Dict[str, Dict[str, Any]]]:
+        """Get all assets"""
+        return self.assets_cache.copy()
+    
+    def asset_exists(self, asset_type: str, asset_name: str) -> bool:
+        """Check if an asset exists"""
+        return asset_name in self.assets_cache.get(asset_type, {})
+    
+    def get_unique_asset_name(self, base_name: str, asset_type: str) -> str:
+        """Generate a unique asset name by adding number suffix if needed"""
+        if not self.asset_exists(asset_type, base_name):
+            return base_name
+        
+        counter = 1
+        while self.asset_exists(asset_type, f"{base_name}_{counter}"):
+            counter += 1
+        
+        return f"{base_name}_{counter}"
+    
+    def load_assets_from_project_data(self, project_data: Dict[str, Any]):
+        """Load assets from project JSON data"""
+        from collections import OrderedDict
+        
+        self.assets_cache = {}
+        assets = project_data.get("assets", {})
+        
+        # Preserve order for ALL asset types using OrderedDict
+        for asset_type, asset_dict in assets.items():
+            # Use OrderedDict to preserve insertion order from JSON
+            self.assets_cache[asset_type] = OrderedDict(asset_dict)
+        
+        # Validate asset paths
+        for asset_type, assets_of_type in self.assets_cache.items():
+            for asset_name, asset_data in assets_of_type.items():
+                self._validate_asset_paths(asset_data)
+    
+    def save_assets_to_project_data(self, project_data: Dict[str, Any]):
+        """Save assets to project JSON data preserving order"""
+        from collections import OrderedDict
+        
+        # Convert OrderedDict to regular dict for JSON serialization
+        # but maintain the order by reconstructing from items()
+        assets_for_json = {}
+        for asset_type, assets_of_type in self.assets_cache.items():
+            if isinstance(assets_of_type, OrderedDict):
+                # Preserve order by converting to list of tuples, then back to dict
+                assets_for_json[asset_type] = dict(assets_of_type.items())
+            else:
+                assets_for_json[asset_type] = assets_of_type
+        
+        project_data["assets"] = assets_for_json
+    
+    def generate_thumbnail(self, image_path: Path, asset_name: str) -> Optional[Path]:
+        """Generate a thumbnail for an image asset"""
+        if not self.project_directory:
+            return None
+            
+        try:
+            thumbnail_dir = self.project_directory / "thumbnails"
+            thumbnail_dir.mkdir(exist_ok=True)
+            
+            thumbnail_path = thumbnail_dir / f"{asset_name}_thumb.png"
+            
+            with Image.open(image_path) as img:
+                img = ImageOps.exif_transpose(img)
+                
+                if img.mode == "RGBA":
+                    thumbnail = Image.new("RGBA", self.THUMBNAIL_SIZE, (0, 0, 0, 0))
+                else:
+                    thumbnail = Image.new("RGB", self.THUMBNAIL_SIZE, (255, 255, 255))
+                
+                img.thumbnail(self.THUMBNAIL_SIZE, Image.Resampling.LANCZOS)
+                
+                x = (self.THUMBNAIL_SIZE[0] - img.width) // 2
+                y = (self.THUMBNAIL_SIZE[1] - img.height) // 2
+                
+                thumbnail.paste(img, (x, y))
+                thumbnail.save(thumbnail_path, "PNG")
+                
+                return thumbnail_path
+                
+        except Exception as e:
+            self.status_changed.emit(f"Failed to generate thumbnail: {str(e)}")
+            return None
+    
+    def get_asset_info(self, asset_type: str, asset_name: str) -> Dict[str, Any]:
+        """Get detailed information about an asset"""
+        asset_data = self.get_asset(asset_type, asset_name)
+        if not asset_data:
+            return {}
+        
+        info = asset_data.copy()
+        
+        if asset_data.get("file_path"):
+            file_path = self.get_absolute_path(asset_data["file_path"])
+            if file_path.exists():
+                stat = file_path.stat()
+                info.update({
+                    "file_size": stat.st_size,
+                    "file_modified": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                    "absolute_path": str(file_path)
+                })
+                
+                if asset_type in ["sprites", "backgrounds"]:
+                    try:
+                        with Image.open(file_path) as img:
+                            info.update({
+                                "width": img.width,
+                                "height": img.height,
+                                "format": img.format,
+                                "mode": img.mode
+                            })
+                    except:
+                        pass
+                
+                elif asset_type == "sounds":
+                    try:
+                        sound = pygame.mixer.Sound(file_path)
+                        info.update({
+                            "length": sound.get_length()
+                        })
+                    except:
+                        pass
+        
+        return info
+    
+    def validate_project_assets(self) -> List[Dict[str, Any]]:
+        """Validate all project assets and return list of issues"""
+        issues = []
+        
+        if not self.project_directory:
+            return issues
+        
+        for asset_type, assets in self.assets_cache.items():
+            for asset_name, asset_data in assets.items():
+                if asset_data.get("file_path"):
+                    file_path = self.get_absolute_path(asset_data["file_path"])
+                    if not file_path.exists():
+                        issues.append({
+                            "type": "missing_file",
+                            "asset_type": asset_type,
+                            "asset_name": asset_name,
+                            "file_path": str(file_path),
+                            "relative_path": asset_data["file_path"],
+                            "message": f"File not found: {asset_data['file_path']}"
+                        })
+                    elif not self.is_supported_format(file_path, asset_type):
+                        issues.append({
+                            "type": "unsupported_format",
+                            "asset_type": asset_type,
+                            "asset_name": asset_name,
+                            "file_path": str(file_path),
+                            "relative_path": asset_data["file_path"],
+                            "message": f"Unsupported format: {file_path.suffix}"
+                        })
+                
+                if asset_data.get("thumbnail"):
+                    thumbnail_path = self.get_absolute_path(asset_data["thumbnail"])
+                    if not thumbnail_path.exists():
+                        issues.append({
+                            "type": "missing_thumbnail",
+                            "asset_type": asset_type,
+                            "asset_name": asset_name,
+                            "thumbnail_path": str(thumbnail_path),
+                            "relative_path": asset_data["thumbnail"],
+                            "message": f"Thumbnail not found: {asset_data['thumbnail']}"
+                        })
+        
+        return issues
+    
+    def clean_unused_files(self) -> List[str]:
+        """Remove files that are not referenced by any assets"""
+        if not self.project_directory:
+            return []
+            
+        removed_files = []
+        asset_directories = ["sprites", "sounds", "backgrounds", "thumbnails"]
+        
+        for directory in asset_directories:
+            dir_path = self.project_directory / directory
+            if not dir_path.exists():
+                continue
+            
+            for file_path in dir_path.iterdir():
+                if file_path.is_file():
+                    relative_path = self.get_relative_path(file_path)
+                    
+                    is_used = False
+                    for asset_type, assets in self.assets_cache.items():
+                        for asset_data in assets.values():
+                            if (asset_data.get("file_path") == relative_path or 
+                                asset_data.get("thumbnail") == relative_path):
+                                is_used = True
+                                break
+                        if is_used:
+                            break
+                    
+                    if not is_used:
+                        try:
+                            file_path.unlink()
+                            removed_files.append(relative_path)
+                        except Exception as e:
+                            self.status_changed.emit(f"Failed to remove {file_path}: {str(e)}")
+        
+        if removed_files:
+            self.status_changed.emit(f"Removed {len(removed_files)} unused files")
+        
+        return removed_files
+    
+    def get_file_hash(self, file_path: Path) -> str:
+        """Generate MD5 hash of a file"""
+        try:
+            hash_md5 = hashlib.md5()
+            with open(file_path, "rb") as f:
+                for chunk in iter(lambda: f.read(4096), b""):
+                    hash_md5.update(chunk)
+            return hash_md5.hexdigest()
+        except:
+            return ""
+    
+    def _create_asset_data(self, file_path: Path, asset_type: str, asset_name: str) -> Dict[str, Any]:
+        """Create asset data dictionary from file"""
+        asset_data = {
+            "name": asset_name,
+            "asset_type": asset_type,
+            "created": datetime.now().isoformat(),
+            "modified": datetime.now().isoformat(),
+            "imported": True,
+            "file_hash": self.get_file_hash(file_path)
+        }
+        
+        if asset_type == "sprites":
+            try:
+                with Image.open(file_path) as img:
+                    asset_data.update({
+                        "width": img.width,
+                        "height": img.height,
+                        "origin_x": img.width // 2,
+                        "origin_y": img.height // 2,
+                        "frames": 1,
+                        "speed": 1.0
+                    })
+            except:
+                asset_data.update({
+                    "width": 32,
+                    "height": 32,
+                    "origin_x": 16,
+                    "origin_y": 16,
+                    "frames": 1,
+                    "speed": 1.0
+                })
+        
+        elif asset_type == "sounds":
+            try:
+                sound = pygame.mixer.Sound(file_path)
+                asset_data.update({
+                    "length": sound.get_length(),
+                    "volume": 1.0,
+                    "loop": False
+                })
+            except:
+                asset_data.update({
+                    "length": 0.0,
+                    "volume": 1.0,
+                    "loop": False
+                })
+        
+        elif asset_type == "backgrounds":
+            try:
+                with Image.open(file_path) as img:
+                    asset_data.update({
+                        "width": img.width,
+                        "height": img.height,
+                        "tile_horizontal": False,
+                        "tile_vertical": False
+                    })
+            except:
+                asset_data.update({
+                    "width": 1024,
+                    "height": 768,
+                    "tile_horizontal": False,
+                    "tile_vertical": False
+                })
+        
+        return asset_data
+    
+    def _validate_asset_paths(self, asset_data: Dict[str, Any]):
+        """Validate that asset file paths exist and mark missing files"""
+        if not self.project_directory:
+            return
+            
+        if asset_data.get("file_path"):
+            file_path = self.get_absolute_path(asset_data["file_path"])
+            if not file_path.exists():
+                asset_data["imported"] = False
+                asset_data["file_missing"] = True
+        
+        if asset_data.get("thumbnail"):
+            thumbnail_path = self.get_absolute_path(asset_data["thumbnail"])
+            if not thumbnail_path.exists():
+                asset_data.pop("thumbnail", None)

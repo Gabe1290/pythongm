@@ -1,0 +1,364 @@
+#!/usr/bin/env python3
+"""
+Asset Tree Widget for PyGameMaker IDE
+Displays and manages game assets in a hierarchical tree structure
+"""
+
+from pathlib import Path
+from typing import Dict, List, Optional, Any
+from PySide6.QtWidgets import (QTreeWidget, QTreeWidgetItem, QMenu, QMessageBox, 
+                               QInputDialog, QFileDialog, QApplication, QHeaderView)
+from PySide6.QtCore import Qt, Signal, QMimeData, QUrl
+from PySide6.QtGui import QIcon, QPixmap, QDrag, QAction, QFont
+
+
+class AssetTreeItem(QTreeWidgetItem):
+    """Custom tree item for assets"""
+    
+    def __init__(self, parent=None, asset_type: str = "", asset_name: str = "", asset_data: Dict = None):
+        super().__init__(parent)
+        
+        self.asset_type = asset_type
+        self.asset_name = asset_name
+        self.asset_data = asset_data or {}
+        self.is_category = asset_name == ""
+        
+        # Create camelCase aliases for compatibility
+        self.assetType = asset_type
+        self.assetName = asset_name
+        self.assetData = asset_data or {}
+        self.isCategory = self.is_category
+        
+        self.setup_item()
+    
+    def setup_item(self):
+        """Setup the appearance and properties of the tree item"""
+        if self.is_category:
+            # Category item
+            self.setText(0, self.asset_type.title())
+            self.setFont(0, QFont("", 9, QFont.Weight.Bold))
+            
+            # Set category icons
+            icon_map = {
+                "sprites": "🖼️",
+                "sounds": "🔊", 
+                "backgrounds": "🏞️",
+                "objects": "⚙️",
+                "rooms": "🏠",
+                "scripts": "📜",
+                "fonts": "🔤",
+                "data": "📄"
+            }
+            
+            if self.asset_type in icon_map:
+                self.setText(0, f"{icon_map[self.asset_type]} {self.asset_type.title()}")
+            
+            # Make categories non-selectable but expandable
+            self.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsDropEnabled)
+            
+        else:
+            # Asset item
+            self.setText(0, self.asset_name)
+            
+            # Check if asset is imported
+            asset_imported = self.asset_data.get('imported', False)
+            assetImported = asset_imported  # camelCase alias
+            
+            if asset_imported:
+                # Show imported asset normally
+                self.setForeground(0, Qt.GlobalColor.black)
+                
+                # Add type-specific icon
+                if self.asset_type == "sprites":
+                    self.setText(0, f"🖼️ {self.asset_name}")
+                elif self.asset_type == "sounds":
+                    self.setText(0, f"🔊 {self.asset_name}")
+                elif self.asset_type == "backgrounds":
+                    self.setText(0, f"🏞️ {self.asset_name}")
+                elif self.asset_type == "objects":
+                    self.setText(0, f"⚙️ {self.asset_name}")
+                elif self.asset_type == "rooms":
+                    self.setText(0, f"🏠 {self.asset_name}")
+                elif self.asset_type == "scripts":
+                    self.setText(0, f"📜 {self.asset_name}")
+                elif self.asset_type == "fonts":
+                    self.setText(0, f"🔤 {self.asset_name}")
+            else:
+                # Show not-imported assets in gray
+                self.setText(0, f"❌ {self.asset_name} (not imported)")
+                self.setForeground(0, Qt.GlobalColor.gray)
+            
+            # Make assets selectable and draggable
+            self.setFlags(Qt.ItemFlag.ItemIsEnabled | 
+                         Qt.ItemFlag.ItemIsSelectable | 
+                         Qt.ItemFlag.ItemIsDragEnabled)
+
+
+class AssetTreeWidget(QTreeWidget):
+    """Main asset tree widget for the PyGameMaker IDE"""
+    
+    # Signals
+    assetSelected = Signal(dict)
+    assetDoubleClicked = Signal(dict)
+    assetImported = Signal(str, str, dict)
+    assetDeleted = Signal(str, str)
+    assetRenamed = Signal(str, str, str)
+    
+    # camelCase aliases for signals
+    asset_selected = assetSelected
+    asset_double_clicked = assetDoubleClicked
+    asset_imported = assetImported
+    asset_deleted = assetDeleted
+    asset_renamed = assetRenamed
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        
+        self.project_manager = None
+        self.current_project = None
+        
+        self.setup_ui()
+        self.setup_categories()
+        self.setup_connections()
+    
+    def setup_ui(self):
+        """Setup the tree widget UI"""
+        self.setHeaderLabel("Assets")
+        self.setDragDropMode(QTreeWidget.DragDropMode.InternalMove)
+        self.setDefaultDropAction(Qt.DropAction.MoveAction)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        
+        # Hide the header
+        self.header().hide()
+        
+        # Set minimum width
+        self.setMinimumWidth(200)
+        
+        # Enable selection
+        self.setSelectionMode(QTreeWidget.SelectionMode.SingleSelection)
+    
+    def setup_categories(self):
+        """Setup default asset categories"""
+        categories = [
+            "sprites",
+            "sounds", 
+            "backgrounds",
+            "objects",
+            "rooms",
+            "scripts",
+            "fonts"
+        ]
+        
+        for category in categories:
+            category_item = AssetTreeItem(
+                parent=self,
+                asset_type=category,
+                asset_name="",
+                asset_data={}
+            )
+            self.addTopLevelItem(category_item)
+        
+        # Expand all categories by default
+        self.expandAll()
+    
+    def setup_connections(self):
+        """Setup signal connections"""
+        self.itemClicked.connect(self.on_item_clicked)
+        self.itemDoubleClicked.connect(self.on_item_double_clicked)
+        self.customContextMenuRequested.connect(self.show_context_menu)
+    
+    def on_item_clicked(self, item, column):
+        """Handle item click"""
+        if isinstance(item, AssetTreeItem) and not item.is_category:
+            asset_data = {
+                'type': item.asset_type,
+                'name': item.asset_name,
+                'data': item.asset_data
+            }
+            self.assetSelected.emit(asset_data)
+    
+    def on_item_double_clicked(self, item, column):
+        """Handle item double click"""
+        if isinstance(item, AssetTreeItem) and not item.is_category:
+            asset_data = {
+                'type': item.asset_type,
+                'name': item.asset_name,
+                'data': item.asset_data
+            }
+            self.assetDoubleClicked.emit(asset_data)
+    
+    def show_context_menu(self, position):
+        """Show context menu for assets"""
+        item = self.itemAt(position)
+        if not item:
+            return
+        
+        menu = QMenu(self)
+        
+        if isinstance(item, AssetTreeItem):
+            if item.is_category:
+                # Category context menu
+                menu.addAction(f"Import {item.asset_type.title()[:-1]}", 
+                             lambda: self.import_asset(item.asset_type))
+                menu.addAction(f"Create New {item.asset_type.title()[:-1]}", 
+                             lambda: self.create_asset(item.asset_type))
+            else:
+                # Asset context menu
+                menu.addAction("Open", lambda: self.open_asset(item))
+                menu.addAction("Rename", lambda: self.rename_asset(item))
+                menu.addSeparator()
+                menu.addAction("Delete", lambda: self.delete_asset(item))
+        
+        menu.exec(self.mapToGlobal(position))
+    
+    def import_asset(self, asset_type):
+        """Import an asset of the specified type"""
+        # This would typically be handled by the main IDE
+        print(f"Import {asset_type} requested")
+    
+    def create_asset(self, asset_type):
+        """Create a new asset of the specified type"""
+        name, ok = QInputDialog.getText(
+            self, 
+            f"Create {asset_type.title()[:-1]}", 
+            f"Enter name for new {asset_type[:-1]}:"
+        )
+        
+        if ok and name:
+            asset_data = {
+                'name': name,
+                'type': asset_type[:-1],
+                'imported': True,
+                'created': True
+            }
+            self.add_asset(asset_type, name, asset_data)
+    
+    def open_asset(self, item):
+        """Open an asset for editing"""
+        if isinstance(item, AssetTreeItem) and not item.is_category:
+            asset_data = {
+                'type': item.asset_type,
+                'name': item.asset_name,
+                'data': item.asset_data
+            }
+            self.assetDoubleClicked.emit(asset_data)
+    
+    def rename_asset(self, item):
+        """Rename an asset"""
+        if isinstance(item, AssetTreeItem) and not item.is_category:
+            old_name = item.asset_name
+            new_name, ok = QInputDialog.getText(
+                self, 
+                "Rename Asset", 
+                f"Enter new name for '{old_name}':",
+                text=old_name
+            )
+            
+            if ok and new_name and new_name != old_name:
+                item.asset_name = new_name
+                item.assetName = new_name  # camelCase alias
+                item.setup_item()
+                self.assetRenamed.emit(item.asset_type, old_name, new_name)
+    
+    def delete_asset(self, item):
+        """Delete an asset"""
+        if isinstance(item, AssetTreeItem) and not item.is_category:
+            reply = QMessageBox.question(
+                self,
+                "Delete Asset",
+                f"Are you sure you want to delete '{item.asset_name}'?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No
+            )
+            
+            if reply == QMessageBox.StandardButton.Yes:
+                parent = item.parent()
+                if parent:
+                    parent.removeChild(item)
+                else:
+                    index = self.indexOfTopLevelItem(item)
+                    self.takeTopLevelItem(index)
+                
+                self.assetDeleted.emit(item.asset_type, item.asset_name)
+    
+    def add_asset(self, asset_type: str, asset_name: str, asset_data: Dict):
+        """Add an asset to the tree"""
+        # Find the appropriate category
+        category_item = None
+        for i in range(self.topLevelItemCount()):
+            item = self.topLevelItem(i)
+            if isinstance(item, AssetTreeItem) and item.asset_type == asset_type:
+                category_item = item
+                break
+        
+        if category_item:
+            # Create new asset item
+            asset_item = AssetTreeItem(
+                parent=category_item,
+                asset_type=asset_type,
+                asset_name=asset_name,
+                asset_data=asset_data
+            )
+            
+            # Expand the category to show the new asset
+            self.expandItem(category_item)
+            
+            print(f"✅ Added {asset_name} to {asset_type} category")
+        else:
+            print(f"❌ Could not find {asset_type} category")
+    
+    def remove_asset(self, asset_type: str, asset_name: str):
+        """Remove an asset from the tree"""
+        # Find the asset and remove it
+        for i in range(self.topLevelItemCount()):
+            category_item = self.topLevelItem(i)
+            if isinstance(category_item, AssetTreeItem) and category_item.asset_type == asset_type:
+                for j in range(category_item.childCount()):
+                    asset_item = category_item.child(j)
+                    if isinstance(asset_item, AssetTreeItem) and asset_item.asset_name == asset_name:
+                        category_item.removeChild(asset_item)
+                        print(f"✅ Removed {asset_name} from {asset_type} category")
+                        return
+        
+        print(f"❌ Could not find {asset_name} in {asset_type} category")
+    
+    def clear_assets(self):
+        """Clear all assets but keep categories"""
+        for i in range(self.topLevelItemCount()):
+            category_item = self.topLevelItem(i)
+            if isinstance(category_item, AssetTreeItem) and category_item.is_category:
+                # Remove all children
+                while category_item.childCount() > 0:
+                    category_item.removeChild(category_item.child(0))
+    
+    def refresh_from_project(self, project_data: Dict):
+        """Refresh tree from project data"""
+        self.clear_assets()
+        
+        assets = project_data.get('assets', {})
+        
+        for asset_type, asset_list in assets.items():
+            for asset_name, asset_data in asset_list.items():
+                self.add_asset(asset_type, asset_name, asset_data)
+        
+        print("✅ Asset tree refreshed from project data")
+    
+    def get_asset_data(self, asset_type: str, asset_name: str) -> Optional[Dict]:
+        """Get asset data by type and name"""
+        for i in range(self.topLevelItemCount()):
+            category_item = self.topLevelItem(i)
+            if isinstance(category_item, AssetTreeItem) and category_item.asset_type == asset_type:
+                for j in range(category_item.childCount()):
+                    asset_item = category_item.child(j)
+                    if isinstance(asset_item, AssetTreeItem) and asset_item.asset_name == asset_name:
+                        return asset_item.asset_data
+        
+        return None
+    
+    def set_project_manager(self, project_manager):
+        """Set reference to project manager"""
+        self.project_manager = project_manager
+    
+    def set_current_project(self, project_path: str):
+        """Set current project"""
+        self.current_project = project_path

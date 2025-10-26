@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+from pathlib import Path
+from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout
+from PySide6.QtCore import Signal
+
+class PropertiesWidget(QWidget):
+    propertyChanged = Signal(str, str, object)
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        layout = QVBoxLayout(self)
+        layout.addWidget(QLabel("Properties"))
+
+    def set_asset(self, asset_data):
+        if not asset_data:
+            self.preview_label.setText("Select an asset to preview")
+            return
+        
+        name = asset_data.get('name', 'Unknown')
+        project_path = asset_data.get('project_path', '')
+    
+        if hasattr(self, 'name_edit'):
+            self.name_edit.setText(name)
+    
+        # Show image preview if it's a sprite/background
+        if project_path and os.path.exists(project_path):
+            from PySide6.QtGui import QPixmap
+            from PySide6.QtCore import Qt
+            pixmap = QPixmap(project_path)
+            if not pixmap.isNull():
+                scaled = pixmap.scaled(180, 180, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                self.preview_label.setPixmap(scaled)
+            else:
+                self.preview_label.setText(f"Asset: {name}")
+        else:
+            self.preview_label.setText(f"Asset: {name}")
+
+    def set_project(self, project_path: str, project_data: dict):
+        """Set project for properties panel - ADDED to fix AttributeError"""
+        try:
+            self.current_project_path = project_path
+            self.current_project_data = project_data
+            print(f"✅ Properties panel set to project: {Path(project_path).name}")
+        except Exception as e:
+            print(f"❌ Error setting project in properties panel: {e}")
+
+
+# All possible aliases
+PropertiesPanel = PropertiesWidget
+Properties = PropertiesWidget
