@@ -1,0 +1,1 @@
+"""PyGameMaker IDE Test Suite"""
