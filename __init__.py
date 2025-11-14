@@ -18,6 +18,11 @@ __author__ = "Your Name"
 __description__ = "GameMaker-style IDE for Python game development"
 
 # Import main application class for easy access
-from .main import GameMakerIDE
+# Lazy import to avoid loading Qt during test collection
+def __getattr__(name):
+    if name == 'GameMakerIDE':
+        from .main import GameMakerIDE
+        return GameMakerIDE
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 __all__ = ['GameMakerIDE']
