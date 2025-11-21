@@ -129,12 +129,9 @@ class ExeExporter(QObject):
     def _check_pyinstaller(self) -> bool:
         """Check if PyInstaller is installed"""
         try:
-            result = subprocess.run(['pyinstaller', '--version'],
-                                  capture_output=True,
-                                  text=True,
-                                  timeout=5)
-            return result.returncode == 0
-        except:
+            import PyInstaller
+            return True
+        except ImportError:
             return False
 
     def _check_kivy(self) -> bool:

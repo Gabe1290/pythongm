@@ -637,6 +637,48 @@ class ActionExecutor:
         self.game_runner.highscores = []
         print("🧹 Highscore table cleared")
 
+    # ==================== CODE EXECUTION ACTIONS ====================
+
+    def execute_execute_code_action(self, instance, parameters: Dict[str, Any]):
+        """Execute custom Python code
+
+        Provides access to:
+        - self: the current instance
+        - game: the game runner object
+        - All Python built-ins
+        """
+        code = parameters.get('code', '')
+
+        if not code or not code.strip():
+            return
+
+        # Create execution environment
+        exec_globals = {
+            '__builtins__': __builtins__,
+            'self': instance,
+            'game': self.game_runner,
+            'instance': instance,  # Alternative name
+            # Add common modules for convenience
+            'math': __import__('math'),
+            'random': __import__('random'),
+        }
+
+        exec_locals = {}
+
+        try:
+            # Execute the code
+            exec(code, exec_globals, exec_locals)
+
+            # Apply any changes to instance variables from locals
+            for key, value in exec_locals.items():
+                if not key.startswith('__'):
+                    setattr(instance, key, value)
+
+        except Exception as e:
+            print(f"⚠️  Error executing custom code: {e}")
+            import traceback
+            traceback.print_exc()
+
     # ==================== INSTANCE ACTIONS ====================
 
     def execute_destroy_instance_action(self, instance, parameters: Dict[str, Any]):

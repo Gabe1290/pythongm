@@ -19,6 +19,8 @@ from PySide6.QtGui import QPixmap, QFont
 from ..base_editor import BaseEditor, EditorUndoCommand
 from .object_properties_panel import ObjectPropertiesPanel
 from .gm80_events_panel import GM80EventsPanel
+from .python_syntax_highlighter import PythonSyntaxHighlighter
+from .blockly_widget import BlocklyVisualProgrammingTab
 from ..object_editor_components import ActionListWidget, VisualScriptingArea
 # from visual_programming import (
 #     VisualCanvas, NodePalette, NodePropertiesPanel, 
@@ -305,53 +307,112 @@ class ObjectEditor(BaseEditor):
         self.center_tabs.addTab(traditional_tab, self.tr("📋 Event List"))
         
         print("DEBUG: Creating visual programming tab...")
-        # Tab 2: Visual Programming (DISABLED)
+        # Tab 2: Visual Programming with Blockly (ENABLED!)
         try:
             visual_tab = self.create_visual_programming_tab()
-            visual_tab_index = self.center_tabs.addTab(visual_tab, self.tr("🎨 Visual Programming"))
-            self.center_tabs.setTabEnabled(visual_tab_index, False)
-            self.center_tabs.setTabToolTip(visual_tab_index, self.tr("Visual Programming - Coming Soon"))
-            print("DEBUG: Visual programming tab created successfully")
+            visual_tab_index = self.center_tabs.addTab(visual_tab, self.tr("🧩 Visual Programming"))
+            self.center_tabs.setTabEnabled(visual_tab_index, True)  # NOW ENABLED!
+            self.center_tabs.setTabToolTip(visual_tab_index, self.tr("Scratch-like block programming"))
+            print("DEBUG: Blockly visual programming tab created and ENABLED")
         except Exception as e:
             print(f"ERROR creating visual programming tab: {e}")
             import traceback
             traceback.print_exc()
 
         print("DEBUG: Creating code editor tab...")
-        # Tab 3: Code Editor (ENABLED)
+        # Tab 3: Code Editor (ENABLED - Editable with Syntax Highlighting)
         try:
             code_tab = QWidget()
             code_tab_layout = QVBoxLayout(code_tab)
             code_tab_layout.setContentsMargins(5, 5, 5, 5)
 
+            # Add toolbar for code editor
+            code_toolbar = QHBoxLayout()
+            code_toolbar.setSpacing(5)
+
+            # Mode selector: View Generated vs Edit Custom
+            self.code_mode_label = QLabel(self.tr("Mode:"))
+            code_toolbar.addWidget(self.code_mode_label)
+
+            self.code_mode_combo = QComboBox()
+            self.code_mode_combo.addItem(self.tr("📖 View Generated Code"))
+            self.code_mode_combo.addItem(self.tr("✏️ Edit Custom Code"))
+            self.code_mode_combo.currentIndexChanged.connect(self.on_code_mode_changed)
+            code_toolbar.addWidget(self.code_mode_combo)
+
+            code_toolbar.addStretch()
+
+            # Apply button (for custom code)
+            self.apply_code_button = QPushButton(self.tr("✅ Apply Changes"))
+            self.apply_code_button.clicked.connect(self.apply_code_changes)
+            self.apply_code_button.setVisible(False)  # Hidden in view mode
+            code_toolbar.addWidget(self.apply_code_button)
+
+            # Refresh button (for generated code)
+            self.refresh_code_button = QPushButton(self.tr("🔄 Refresh"))
+            self.refresh_code_button.clicked.connect(lambda: self.view_generated_code(auto_switch_tab=False))
+            code_toolbar.addWidget(self.refresh_code_button)
+
+            code_tab_layout.addLayout(code_toolbar)
+
+            # Code editor with syntax highlighting
             self.code_editor = QTextEdit()
             # ✅ TRANSLATABLE: Placeholder text
             self.code_editor.setPlaceholderText(
-                self.tr("// Generated code will appear here when 'View Code' is checked\n"
-                       "// Code is read-only and shows Python/Kivy equivalent of events")
+                self.tr("# Python code editor\n"
+                       "# Switch to 'Edit Custom Code' mode to write your own Python code\n"
+                       "# Or view generated code from visual events")
             )
-            self.code_editor.setReadOnly(True)
+            self.code_editor.setReadOnly(False)  # NOW EDITABLE!
 
             # Use monospace font for code
             code_font = QFont("Courier New", 10)
             code_font.setStyleHint(QFont.Monospace)
             self.code_editor.setFont(code_font)
 
-            # Set syntax-highlighting-like colors
+            # Set professional code editor colors
             self.code_editor.setStyleSheet("""
                 QTextEdit {
-                    background-color: #f5f5f5;
-                    color: #333;
-                    border: 1px solid #ccc;
+                    background-color: #2b2b2b;
+                    color: #a9b7c6;
+                    border: 1px solid #555;
+                    selection-background-color: #214283;
                 }
             """)
 
+            # Add Python syntax highlighter
+            self.syntax_highlighter = PythonSyntaxHighlighter(self.code_editor.document())
+
+            # Track code changes
+            self.code_editor.textChanged.connect(self.on_code_editor_changed)
+
             code_tab_layout.addWidget(self.code_editor)
+
+            # Store custom code per event
+            self.custom_code_by_event = {}  # event_name -> code_string
+            self.current_code_event = "create"  # Default event for custom code
+
+            # Event selector for custom code
+            event_selector_layout = QHBoxLayout()
+            event_selector_layout.addWidget(QLabel(self.tr("Event for custom code:")))
+
+            self.code_event_combo = QComboBox()
+            self.code_event_combo.addItems([
+                "create", "step", "draw", "destroy",
+                "keyboard_press", "keyboard_release",
+                "mouse_left_press", "mouse_right_press"
+            ])
+            self.code_event_combo.currentTextChanged.connect(self.on_code_event_changed)
+            self.code_event_combo.setVisible(False)  # Hidden in view mode
+            event_selector_layout.addWidget(self.code_event_combo)
+            event_selector_layout.addStretch()
+
+            code_tab_layout.addLayout(event_selector_layout)
 
             code_tab_index = self.center_tabs.addTab(code_tab, self.tr("💻 Code Editor"))
             self.center_tabs.setTabEnabled(code_tab_index, True)  # ENABLED!
-            self.center_tabs.setTabToolTip(code_tab_index, self.tr("View generated Python/Kivy code"))
-            print("DEBUG: Code editor tab created and ENABLED successfully")
+            self.center_tabs.setTabToolTip(code_tab_index, self.tr("Edit Python code or view generated code"))
+            print("DEBUG: Code editor tab created with syntax highlighting and edit mode")
         except Exception as e:
             print(f"ERROR creating code editor tab: {e}")
             import traceback
@@ -372,26 +433,19 @@ class ObjectEditor(BaseEditor):
         return panel
 
     def create_visual_programming_tab(self) -> QWidget:
-        """Create the visual programming tab"""
-        tab = QWidget()
-        layout = QVBoxLayout(tab)
-        layout.setContentsMargins(10, 10, 10, 10)
+        """Create the visual programming tab with Blockly"""
+        # Create Blockly visual programming tab
+        self.blockly_tab = BlocklyVisualProgrammingTab()
 
-        # Show message that visual programming is not yet available
-        label = QLabel("Visual Programming")
-        label.setFont(QFont("Arial", 16, QFont.Bold))
-        layout.addWidget(label)
+        # Connect signals
+        self.blockly_tab.events_modified.connect(self.on_blockly_events_modified)
+        self.blockly_tab.sync_requested.connect(self.on_blockly_sync_requested)
 
-        info_label = QLabel(
-            "Visual node-based programming is coming soon!\n\n"
-            "For now, use the Traditional Events tab to configure object events and actions."
-        )
-        info_label.setWordWrap(True)
-        layout.addWidget(info_label)
+        return self.blockly_tab
 
-        layout.addStretch()
-
-        return tab
+    def on_blockly_sync_requested(self):
+        """Handle sync request from Blockly (user clicked 'Sync from Events')"""
+        self._sync_events_to_blockly()
 
     def add_node_to_canvas(self, type_id: str):
         """Add a node to the visual canvas"""
@@ -601,14 +655,22 @@ class ObjectEditor(BaseEditor):
             # Load events data only if events_panel exists
             if hasattr(self, 'events_panel') and self.events_panel:
                 events_data = data.get('events', {})
-                
+
                 if events_data:
                     print(f"Loading {len(events_data)} events for {self.asset_name}:")
                     for event_name, event_info in events_data.items():
                         if isinstance(event_info, dict):
                             actions_count = len(event_info.get('actions', []))
                             print(f"  - Event: {event_name} ({actions_count} actions)")
-                
+
+                            # Extract custom code from execute_code actions
+                            for action in event_info.get('actions', []):
+                                if isinstance(action, dict) and action.get('action') == 'execute_code':
+                                    code = action.get('parameters', {}).get('code', '')
+                                    if code and hasattr(self, 'custom_code_by_event'):
+                                        self.custom_code_by_event[event_name] = code
+                                        print(f"    - Loaded custom code for {event_name}")
+
                 self.events_panel.load_events_data(events_data)
             else:
                 print("Note: Events panel not initialized yet, storing for later")
@@ -617,11 +679,27 @@ class ObjectEditor(BaseEditor):
             if hasattr(self, 'properties_panel'):
                 self.properties_panel.load_properties(data)
             
-            # Load visual programming data
+            # Load visual programming data (old format)
             visual_data = data.get('visual_programming', {})
             if visual_data and hasattr(self, 'visual_canvas'):
                 self.load_visual_programming_data(visual_data)
-            
+
+            # Load Blockly workspace data
+            blockly_xml = data.get('blockly_workspace', '')
+            if blockly_xml and hasattr(self, 'blockly_tab') and self.blockly_tab:
+                try:
+                    self.blockly_tab.load_workspace_xml(blockly_xml)
+                    print("Loaded Blockly workspace from saved data")
+                except Exception as e:
+                    print(f"Note: Could not load Blockly workspace: {e}")
+            elif events_data and hasattr(self, 'blockly_tab') and self.blockly_tab:
+                # No saved Blockly workspace, but we have events - sync them to Blockly
+                try:
+                    self.blockly_tab.load_events_data(events_data)
+                    print(f"Synced {len(events_data)} events to Blockly (no saved workspace)")
+                except Exception as e:
+                    print(f"Note: Could not sync events to Blockly: {e}")
+
             # Update display only if UI elements exist
             if hasattr(self, 'object_info_label'):
                 self.update_object_info()
@@ -687,11 +765,20 @@ class ObjectEditor(BaseEditor):
             'imported': True
         }
         
-        # Add visual programming data
+        # Add visual programming data (old format)
         visual_data = self.get_visual_programming_data()
         if visual_data and visual_data.get('nodes'):
             object_data['visual_programming'] = visual_data
-        
+
+        # Add Blockly workspace data
+        if hasattr(self, 'blockly_tab') and self.blockly_tab:
+            try:
+                blockly_xml = self.blockly_tab.get_workspace_xml()
+                if blockly_xml:
+                    object_data['blockly_workspace'] = blockly_xml
+            except Exception as e:
+                print(f"Note: Could not get Blockly workspace: {e}")
+
         return object_data
     
     def validate_data(self) -> tuple[bool, str]:
@@ -868,12 +955,59 @@ class ObjectEditor(BaseEditor):
         self.update_status(self.tr("Editing event: {0}").format(event_name))
     
     def on_events_modified(self):
-        """Handle events modification"""
+        """Handle events modification from the events panel"""
         self.data_modified.emit(self.asset_name)
 
         # Auto-update code view if View Code is enabled
         if hasattr(self, 'view_code_enabled') and self.view_code_enabled:
             self.view_generated_code(auto_switch_tab=False)
+
+        # Sync events to Blockly (bidirectional sync: Events → Blockly)
+        # Only sync if not already syncing from Blockly
+        if not getattr(self, '_syncing_from_blockly', False):
+            self._sync_events_to_blockly()
+
+    def _sync_events_to_blockly(self):
+        """Sync current events to Blockly visual programming tab"""
+        if not hasattr(self, 'blockly_tab') or not self.blockly_tab:
+            return
+
+        if not hasattr(self, 'events_panel') or not self.events_panel:
+            return
+
+        # Get current events data
+        events_data = self.events_panel.get_events_data()
+
+        if events_data:
+            # Load events into Blockly
+            self.blockly_tab.load_events_data(events_data)
+
+    def on_blockly_events_modified(self, events: dict):
+        """Handle events modified from Blockly visual programming"""
+        print(f"Blockly events generated: {len(events)} events")
+
+        if hasattr(self, 'events_panel') and self.events_panel:
+            # Set flag to prevent infinite sync loop
+            self._syncing_from_blockly = True
+
+            # Merge Blockly events with existing events
+            current_events = self.events_panel.get_events_data()
+
+            # Update with Blockly events (Blockly takes priority for overlapping events)
+            for event_name, event_data in events.items():
+                current_events[event_name] = event_data
+
+            # Reload events panel
+            self.events_panel.load_events_data(current_events)
+
+            # Clear the sync flag
+            self._syncing_from_blockly = False
+
+            # Mark as modified
+            self.mark_modified()
+
+            # Update status
+            self.update_status(self.tr("Applied {0} events from visual blocks").format(len(events)))
     
     def on_script_modified(self):
         """Handle script modification"""
@@ -1015,6 +1149,133 @@ class ObjectEditor(BaseEditor):
 
         return code
 
+    def on_code_mode_changed(self, index):
+        """Handle code editor mode change"""
+        is_edit_mode = (index == 1)  # 0=View, 1=Edit
+
+        if is_edit_mode:
+            # Switch to Edit Custom Code mode
+            self.code_editor.setReadOnly(False)
+            self.apply_code_button.setVisible(True)
+            self.refresh_code_button.setVisible(False)
+            self.code_event_combo.setVisible(True)
+
+            # Load custom code for current event
+            event_name = self.code_event_combo.currentText()
+            custom_code = self.custom_code_by_event.get(event_name, "")
+
+            if not custom_code:
+                # Provide template code
+                custom_code = f"""# Custom Python code for {event_name} event
+# You have access to:
+#   self - the current instance
+#   game - the game runner object
+#   game.score, game.lives, game.health - global game state
+
+# Example: Increase score
+# game.score += 10
+
+# Example: Move instance
+# self.x += 5
+# self.y -= 3
+
+# Example: Check conditions
+# if game.lives <= 0:
+#     print("Game Over!")
+
+# Write your code here:
+"""
+
+            self.code_editor.setPlainText(custom_code)
+            self.update_status(self.tr("Edit mode: Write custom Python code"))
+
+        else:
+            # Switch to View Generated Code mode
+            self.code_editor.setReadOnly(True)
+            self.apply_code_button.setVisible(False)
+            self.refresh_code_button.setVisible(True)
+            self.code_event_combo.setVisible(False)
+
+            # Show generated code
+            self.view_generated_code(auto_switch_tab=False)
+            self.update_status(self.tr("View mode: Showing generated code from events"))
+
+    def on_code_event_changed(self, event_name):
+        """Handle event selection change in code editor"""
+        # Save current code before switching
+        if hasattr(self, 'current_code_event') and self.current_code_event:
+            self.custom_code_by_event[self.current_code_event] = self.code_editor.toPlainText()
+
+        # Load code for new event
+        self.current_code_event = event_name
+        custom_code = self.custom_code_by_event.get(event_name, "")
+
+        if not custom_code:
+            # Provide template
+            custom_code = f"""# Custom Python code for {event_name} event
+# Write your code here:
+"""
+
+        self.code_editor.setPlainText(custom_code)
+
+    def on_code_editor_changed(self):
+        """Handle code editor text changes"""
+        # Enable apply button if in edit mode
+        if hasattr(self, 'code_mode_combo') and self.code_mode_combo.currentIndex() == 1:
+            self.apply_code_button.setEnabled(True)
+
+    def apply_code_changes(self):
+        """Apply custom code changes to events"""
+        event_name = self.code_event_combo.currentText()
+        custom_code = self.code_editor.toPlainText()
+
+        # Store custom code
+        self.custom_code_by_event[event_name] = custom_code
+
+        # Create or update "execute_code" action in the event
+        if hasattr(self, 'events_panel') and self.events_panel:
+            # Get current events data
+            events_data = self.events_panel.get_events_data()
+
+            # Ensure event exists
+            if event_name not in events_data:
+                events_data[event_name] = {'actions': []}
+
+            # Find existing execute_code action or add new one
+            actions = events_data[event_name].get('actions', [])
+            found_code_action = False
+
+            for i, action in enumerate(actions):
+                if isinstance(action, dict) and action.get('action') == 'execute_code':
+                    # Update existing code action
+                    action['parameters'] = {'code': custom_code}
+                    found_code_action = True
+                    break
+
+            if not found_code_action:
+                # Add new execute_code action
+                actions.append({
+                    'action': 'execute_code',
+                    'parameters': {'code': custom_code}
+                })
+
+            events_data[event_name]['actions'] = actions
+
+            # Reload events data
+            self.events_panel.load_events_data(events_data)
+
+            # Mark as modified
+            self.mark_modified()
+
+            # Show confirmation
+            self.update_status(self.tr("Custom code applied to {0} event").format(event_name))
+            QMessageBox.information(
+                self,
+                self.tr("Code Applied"),
+                self.tr("Custom Python code has been applied to the {0} event.\n\n"
+                       "The code will execute when the event triggers during gameplay.").format(event_name)
+            )
+
     def _generate_action_code(self, action, indent=8) -> str:
         """Generate code for a single action"""
         spaces = " " * indent
@@ -1072,6 +1333,13 @@ class ObjectEditor(BaseEditor):
 
         elif action_type == 'restart_room':
             return f"{spaces}game.restart_room()\n"
+
+        elif action_type == 'execute_code':
+            # Custom code action - include the code directly
+            code = params.get('code', '# No code')
+            # Indent each line of custom code
+            indented_code = '\n'.join(spaces + line for line in code.split('\n'))
+            return f"{spaces}# Custom code:\n{indented_code}\n"
 
         else:
             # Generic action

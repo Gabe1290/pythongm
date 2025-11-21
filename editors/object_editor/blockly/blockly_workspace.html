@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob:;">
+    <title>PyGameMaker Visual Programming</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+        }
+        #blocklyDiv {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #loadingDiv {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 18px;
+            text-align: center;
+            z-index: 1000;
+        }
+        #errorDiv {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff6666;
+            font-size: 16px;
+            text-align: center;
+            z-index: 1000;
+            display: none;
+            padding: 20px;
+            background: #333;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+        /* Force toolbox visibility - Blockly 12.x class names */
+        .blocklyToolbox {
+            background-color: #2d2d2d !important;
+            min-width: 180px !important;
+        }
+        .blocklyToolboxDiv {
+            background-color: #2d2d2d !important;
+            min-width: 180px !important;
+        }
+        .blocklyToolboxCategory {
+            padding: 6px 4px !important;
+        }
+        .blocklyToolboxCategoryLabel {
+            color: #ffffff !important;
+            font-size: 13px !important;
+        }
+        .blocklyToolboxCategoryIcon {
+            margin-right: 8px !important;
+        }
+        .blocklyTreeLabel {
+            color: #ffffff !important;
+        }
+        .blocklyTreeRow {
+            padding: 5px 0 !important;
+        }
+        .blocklyFlyoutBackground {
+            fill: #252526 !important;
+        }
+        .blocklyFlyout {
+            background-color: #252526 !important;
+        }
+        /* Ensure SVG content is visible */
+        .blocklySvg {
+            background-color: #1e1e1e !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="loadingDiv">Loading Blockly...</div>
+    <div id="errorDiv"></div>
+    <div id="blocklyDiv"></div>
+
+    <!-- Load Blockly with error handling - use local files -->
+    <script>
+        var blocklyLoaded = false;
+        var blocklyLoadTimeout = null;
+
+        function onBlocklyLoadError(msg) {
+            if (!blocklyLoaded) {
+                document.getElementById('loadingDiv').style.display = 'none';
+                document.getElementById('errorDiv').style.display = 'block';
+                document.getElementById('errorDiv').innerHTML =
+                    '<h3>Failed to load Blockly</h3>' +
+                    '<p>Could not load the visual programming library.</p>' +
+                    '<p>Error: ' + (msg || 'Unknown error') + '</p>';
+            }
+        }
+
+        // Set timeout in case script never loads
+        blocklyLoadTimeout = setTimeout(function() { onBlocklyLoadError('Timeout'); }, 15000);
+    </script>
+    <!-- Load local Blockly files -->
+    <script src="lib/blockly_compressed.js" onerror="onBlocklyLoadError('blockly_compressed.js')"></script>
+    <script src="lib/blocks_compressed.js" onerror="onBlocklyLoadError('blocks_compressed.js')"></script>
+    <script src="lib/msg_en.js" onerror="onBlocklyLoadError('msg_en.js')"></script>
+
+    <xml id="toolbox" style="display: none">
+        <!-- Events Category -->
+        <category name="Events" colour="#FFD500">
+            <block type="event_create"></block>
+            <block type="event_step"></block>
+            <block type="event_draw"></block>
+            <block type="event_destroy"></block>
+            <block type="event_keyboard">
+                <field name="KEY">right</field>
+            </block>
+            <block type="event_keyboard_press">
+                <field name="KEY">space</field>
+            </block>
+            <block type="event_mouse">
+                <field name="BUTTON">left_press</field>
+            </block>
+            <block type="event_collision">
+                <field name="OBJECT">obj_wall</field>
+            </block>
+        </category>
+
+        <!-- Movement Category -->
+        <category name="Movement" colour="#5C81A6">
+            <block type="move_set_hspeed">
+                <value name="SPEED">
+                    <shadow type="math_number"><field name="NUM">4</field></shadow>
+                </value>
+            </block>
+            <block type="move_set_vspeed">
+                <value name="SPEED">
+                    <shadow type="math_number"><field name="NUM">4</field></shadow>
+                </value>
+            </block>
+            <block type="move_stop"></block>
+            <block type="move_direction">
+                <field name="DIRECTION">right</field>
+                <value name="SPEED">
+                    <shadow type="math_number"><field name="NUM">4</field></shadow>
+                </value>
+            </block>
+            <block type="move_towards">
+                <value name="X">
+                    <shadow type="math_number"><field name="NUM">0</field></shadow>
+                </value>
+                <value name="Y">
+                    <shadow type="math_number"><field name="NUM">0</field></shadow>
+                </value>
+                <value name="SPEED">
+                    <shadow type="math_number"><field name="NUM">4</field></shadow>
+                </value>
+            </block>
+            <block type="move_snap_to_grid">
+                <value name="GRID_SIZE">
+                    <shadow type="math_number"><field name="NUM">32</field></shadow>
+                </value>
+            </block>
+            <block type="move_jump_to">
+                <value name="X">
+                    <shadow type="math_number"><field name="NUM">0</field></shadow>
+                </value>
+                <value name="Y">
+                    <shadow type="math_number"><field name="NUM">0</field></shadow>
+                </value>
+            </block>
+            <block type="grid_stop_if_no_keys">
+                <value name="GRID_SIZE">
+                    <shadow type="math_number"><field name="NUM">32</field></shadow>
+                </value>
+            </block>
+            <block type="grid_check_keys_and_move">
+                <value name="GRID_SIZE">
+                    <shadow type="math_number"><field name="NUM">32</field></shadow>
+                </value>
+                <value name="SPEED">
+                    <shadow type="math_number"><field name="NUM">4</field></shadow>
+                </value>
+            </block>
+            <block type="grid_if_on_grid">
+                <value name="GRID_SIZE">
+                    <shadow type="math_number"><field name="NUM">32</field></shadow>
+                </value>
+            </block>
+        </category>
+
+        <!-- Score/Lives/Health Category -->
+        <category name="Score/Lives/Health" colour="#5CA65C">
+            <block type="score_set">
+                <value name="VALUE">
+                    <shadow type="math_number"><field name="NUM">0</field></shadow>
+                </value>
+            </block>
+            <block type="score_add">
+                <value name="VALUE">
+                    <shadow type="math_number"><field name="NUM">10</field></shadow>
+                </value>
+            </block>
+            <block type="lives_set">
+                <value name="VALUE">
+                    <shadow type="math_number"><field name="NUM">3</field></shadow>
+                </value>
+            </block>
+            <block type="lives_add">
+                <value name="VALUE">
+                    <shadow type="math_number"><field name="NUM">-1</field></shadow>
+                </value>
+            </block>
+            <block type="health_set">
+                <value name="VALUE">
+                    <shadow type="math_number"><field name="NUM">100</field></shadow>
+                </value>
+            </block>
+            <block type="health_add">
+                <value name="VALUE">
+                    <shadow type="math_number"><field name="NUM">-10</field></shadow>
+                </value>
+            </block>
+            <block type="draw_score">
+                <value name="X">
+                    <shadow type="math_number"><field name="NUM">10</field></shadow>
+                </value>
+                <value name="Y">
+                    <shadow type="math_number"><field name="NUM">10</field></shadow>
+                </value>
+            </block>
+            <block type="draw_lives">
+                <value name="X">
+                    <shadow type="math_number"><field name="NUM">10</field></shadow>
+                </value>
+                <value name="Y">
+                    <shadow type="math_number"><field name="NUM">40</field></shadow>
+                </value>
+            </block>
+            <block type="draw_health_bar">
+                <value name="X">
+                    <shadow type="math_number"><field name="NUM">10</field></shadow>
+                </value>
+                <value name="Y">
+                    <shadow type="math_number"><field name="NUM">70</field></shadow>
+                </value>
+                <value name="WIDTH">
+                    <shadow type="math_number"><field name="NUM">100</field></shadow>
+                </value>
+            </block>
+        </category>
+
+        <!-- Control Category -->
+        <category name="Control" colour="#FFAB19">
+            <block type="controls_if"></block>
+            <block type="controls_ifelse"></block>
+            <block type="controls_repeat_ext">
+                <value name="TIMES">
+                    <shadow type="math_number"><field name="NUM">10</field></shadow>
+                </value>
+            </block>
+            <block type="controls_whileUntil"></block>
+        </category>
+
+        <!-- Instance Category -->
+        <category name="Instance" colour="#A65C81">
+            <block type="instance_destroy"></block>
+            <block type="instance_destroy_other"></block>
+            <block type="instance_create">
+                <field name="OBJECT">obj_bullet</field>
+                <value name="X">
+                    <shadow type="math_number"><field name="NUM">0</field></shadow>
+                </value>
+                <value name="Y">
+                    <shadow type="math_number"><field name="NUM">0</field></shadow>
+                </value>
+            </block>
+        </category>
+
+        <!-- Room Category -->
+        <category name="Rooms" colour="#A6745C">
+            <block type="room_goto_next"></block>
+            <block type="room_restart"></block>
+            <block type="room_goto">
+                <field name="ROOM">room0</field>
+            </block>
+        </category>
+
+        <!-- Values Category -->
+        <category name="Values" colour="#5C68A6">
+            <block type="value_x"></block>
+            <block type="value_y"></block>
+            <block type="value_hspeed"></block>
+            <block type="value_vspeed"></block>
+            <block type="value_score"></block>
+            <block type="value_lives"></block>
+            <block type="value_health"></block>
+            <block type="value_mouse_x"></block>
+            <block type="value_mouse_y"></block>
+        </category>
+
+        <!-- Math Category -->
+        <category name="Math" colour="#5C68A6">
+            <block type="math_number">
+                <field name="NUM">0</field>
+            </block>
+            <block type="math_arithmetic"></block>
+            <block type="math_single"></block>
+            <block type="math_random_int">
+                <value name="FROM">
+                    <shadow type="math_number"><field name="NUM">1</field></shadow>
+                </value>
+                <value name="TO">
+                    <shadow type="math_number"><field name="NUM">100</field></shadow>
+                </value>
+            </block>
+        </category>
+
+        <!-- Logic Category -->
+        <category name="Logic" colour="#5CA65C">
+            <block type="logic_compare"></block>
+            <block type="logic_operation"></block>
+            <block type="logic_negate"></block>
+            <block type="logic_boolean"></block>
+        </category>
+
+        <!-- Sound Category -->
+        <category name="Sound" colour="#9966FF">
+            <block type="sound_play">
+                <field name="SOUND">snd_jump</field>
+            </block>
+            <block type="music_play">
+                <field name="MUSIC">bgm_main</field>
+            </block>
+            <block type="music_stop"></block>
+        </category>
+
+        <!-- Output Category -->
+        <category name="Output" colour="#745CA6">
+            <block type="output_message">
+                <value name="MESSAGE">
+                    <shadow type="text"><field name="TEXT">Hello!</field></shadow>
+                </value>
+            </block>
+            <block type="text"></block>
+            <block type="text_join"></block>
+        </category>
+    </xml>
+
+    <script>
+        // Mark Blockly as loaded and clear timeout
+        blocklyLoaded = true;
+        if (blocklyLoadTimeout) {
+            clearTimeout(blocklyLoadTimeout);
+        }
+
+        // Check if Blockly actually loaded
+        if (typeof Blockly === 'undefined') {
+            onBlocklyLoadError();
+            throw new Error('Blockly not loaded');
+        }
+
+        // Hide loading indicator
+        document.getElementById('loadingDiv').style.display = 'none';
+
+        // Define custom blocks for PyGameMaker
+
+        // ============ EVENT BLOCKS ============
+        Blockly.Blocks['event_create'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("When object is created");
+                this.appendStatementInput("DO")
+                    .setCheck(null);
+                this.setColour("#FFD500");
+                this.setTooltip("Runs when the object instance is created");
+            }
+        };
+
+        Blockly.Blocks['event_step'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("Every frame (step)");
+                this.appendStatementInput("DO")
+                    .setCheck(null);
+                this.setColour("#FFD500");
+                this.setTooltip("Runs every game frame (60 times per second)");
+            }
+        };
+
+        Blockly.Blocks['event_draw'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("When drawing");
+                this.appendStatementInput("DO")
+                    .setCheck(null);
+                this.setColour("#FFD500");
+                this.setTooltip("Runs when the object is drawn");
+            }
+        };
+
+        Blockly.Blocks['event_destroy'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("When destroyed");
+                this.appendStatementInput("DO")
+                    .setCheck(null);
+                this.setColour("#FFD500");
+                this.setTooltip("Runs when the object is destroyed");
+            }
+        };
+
+        Blockly.Blocks['event_keyboard'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("When key")
+                    .appendField(new Blockly.FieldDropdown([
+                        ["Right Arrow", "right"],
+                        ["Left Arrow", "left"],
+                        ["Up Arrow", "up"],
+                        ["Down Arrow", "down"],
+                        ["Space", "space"],
+                        ["Enter", "enter"],
+                        ["A", "a"], ["B", "b"], ["C", "c"], ["D", "d"],
+                        ["W", "w"], ["S", "s"]
+                    ]), "KEY")
+                    .appendField("is held");
+                this.appendStatementInput("DO")
+                    .setCheck(null);
+                this.setColour("#FFD500");
+                this.setTooltip("Runs while the key is being held down");
+            }
+        };
+
+        Blockly.Blocks['event_keyboard_press'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("When key")
+                    .appendField(new Blockly.FieldDropdown([
+                        ["Right Arrow", "right"],
+                        ["Left Arrow", "left"],
+                        ["Up Arrow", "up"],
+                        ["Down Arrow", "down"],
+                        ["Space", "space"],
+                        ["Enter", "enter"],
+                        ["A", "a"], ["B", "b"], ["C", "c"], ["D", "d"],
+                        ["W", "w"], ["S", "s"]
+                    ]), "KEY")
+                    .appendField("is pressed");
+                this.appendStatementInput("DO")
+                    .setCheck(null);
+                this.setColour("#FFD500");
+                this.setTooltip("Runs once when the key is first pressed");
+            }
+        };
+
+        Blockly.Blocks['event_mouse'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("When mouse")
+                    .appendField(new Blockly.FieldDropdown([
+                        ["Left Button Pressed", "left_press"],
+                        ["Left Button Released", "left_release"],
+                        ["Right Button Pressed", "right_press"],
+                        ["Right Button Released", "right_release"],
+                        ["Mouse Enters", "enter"],
+                        ["Mouse Leaves", "leave"]
+                    ]), "BUTTON");
+                this.appendStatementInput("DO")
+                    .setCheck(null);
+                this.setColour("#FFD500");
+                this.setTooltip("Runs on mouse events");
+            }
+        };
+
+        Blockly.Blocks['event_collision'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("When colliding with")
+                    .appendField(new Blockly.FieldTextInput("obj_wall"), "OBJECT");
+                this.appendStatementInput("DO")
+                    .setCheck(null);
+                this.setColour("#FFD500");
+                this.setTooltip("Runs when colliding with another object");
+            }
+        };
+
+        // ============ MOVEMENT BLOCKS ============
+        Blockly.Blocks['move_set_hspeed'] = {
+            init: function() {
+                this.appendValueInput("SPEED")
+                    .setCheck("Number")
+                    .appendField("Set horizontal speed to");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5C81A6");
+                this.setTooltip("Set horizontal movement speed");
+            }
+        };
+
+        Blockly.Blocks['move_set_vspeed'] = {
+            init: function() {
+                this.appendValueInput("SPEED")
+                    .setCheck("Number")
+                    .appendField("Set vertical speed to");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5C81A6");
+                this.setTooltip("Set vertical movement speed");
+            }
+        };
+
+        Blockly.Blocks['move_stop'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("Stop movement");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5C81A6");
+                this.setTooltip("Stop all movement");
+            }
+        };
+
+        Blockly.Blocks['move_direction'] = {
+            init: function() {
+                this.appendValueInput("SPEED")
+                    .setCheck("Number")
+                    .appendField("Move")
+                    .appendField(new Blockly.FieldDropdown([
+                        ["right", "right"],
+                        ["left", "left"],
+                        ["up", "up"],
+                        ["down", "down"]
+                    ]), "DIRECTION")
+                    .appendField("at speed");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5C81A6");
+                this.setTooltip("Move in a direction");
+            }
+        };
+
+        Blockly.Blocks['move_towards'] = {
+            init: function() {
+                this.appendValueInput("X")
+                    .setCheck("Number")
+                    .appendField("Move towards x:");
+                this.appendValueInput("Y")
+                    .setCheck("Number")
+                    .appendField("y:");
+                this.appendValueInput("SPEED")
+                    .setCheck("Number")
+                    .appendField("at speed:");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5C81A6");
+                this.setTooltip("Move towards a point");
+            }
+        };
+
+        Blockly.Blocks['move_snap_to_grid'] = {
+            init: function() {
+                this.appendValueInput("GRID_SIZE")
+                    .setCheck("Number")
+                    .appendField("Snap to grid size");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5C81A6");
+                this.setTooltip("Snap position to grid");
+            }
+        };
+
+        // ============ GRID MOVEMENT BLOCKS ============
+        Blockly.Blocks['grid_stop_if_no_keys'] = {
+            init: function() {
+                this.appendValueInput("GRID_SIZE")
+                    .setCheck("Number")
+                    .appendField("Stop if no keys (grid size");
+                this.appendDummyInput()
+                    .appendField(")");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5C81A6");
+                this.setTooltip("Stop movement when no arrow keys are pressed (grid-based)");
+            }
+        };
+
+        Blockly.Blocks['grid_check_keys_and_move'] = {
+            init: function() {
+                this.appendValueInput("GRID_SIZE")
+                    .setCheck("Number")
+                    .appendField("Check keys & move (grid");
+                this.appendValueInput("SPEED")
+                    .setCheck("Number")
+                    .appendField(", speed");
+                this.appendDummyInput()
+                    .appendField(")");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5C81A6");
+                this.setTooltip("Check arrow keys and move in grid-aligned steps");
+            }
+        };
+
+        Blockly.Blocks['grid_if_on_grid'] = {
+            init: function() {
+                this.appendValueInput("GRID_SIZE")
+                    .setCheck("Number")
+                    .appendField("If on grid (size");
+                this.appendDummyInput()
+                    .appendField(")");
+                this.appendStatementInput("DO")
+                    .setCheck(null)
+                    .appendField("do");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#FFAB19");
+                this.setTooltip("Execute actions only when aligned to grid");
+            }
+        };
+
+        Blockly.Blocks['move_jump_to'] = {
+            init: function() {
+                this.appendValueInput("X")
+                    .setCheck("Number")
+                    .appendField("Jump to x:");
+                this.appendValueInput("Y")
+                    .setCheck("Number")
+                    .appendField("y:");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5C81A6");
+                this.setTooltip("Instantly move to position");
+            }
+        };
+
+        // ============ SCORE/LIVES/HEALTH BLOCKS ============
+        Blockly.Blocks['score_set'] = {
+            init: function() {
+                this.appendValueInput("VALUE")
+                    .setCheck("Number")
+                    .appendField("Set score to");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5CA65C");
+                this.setTooltip("Set the score value");
+            }
+        };
+
+        Blockly.Blocks['score_add'] = {
+            init: function() {
+                this.appendValueInput("VALUE")
+                    .setCheck("Number")
+                    .appendField("Add to score");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5CA65C");
+                this.setTooltip("Add to the score");
+            }
+        };
+
+        Blockly.Blocks['lives_set'] = {
+            init: function() {
+                this.appendValueInput("VALUE")
+                    .setCheck("Number")
+                    .appendField("Set lives to");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5CA65C");
+                this.setTooltip("Set the number of lives");
+            }
+        };
+
+        Blockly.Blocks['lives_add'] = {
+            init: function() {
+                this.appendValueInput("VALUE")
+                    .setCheck("Number")
+                    .appendField("Add to lives");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5CA65C");
+                this.setTooltip("Add to lives (use negative to subtract)");
+            }
+        };
+
+        Blockly.Blocks['health_set'] = {
+            init: function() {
+                this.appendValueInput("VALUE")
+                    .setCheck("Number")
+                    .appendField("Set health to");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5CA65C");
+                this.setTooltip("Set the health value (0-100)");
+            }
+        };
+
+        Blockly.Blocks['health_add'] = {
+            init: function() {
+                this.appendValueInput("VALUE")
+                    .setCheck("Number")
+                    .appendField("Add to health");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5CA65C");
+                this.setTooltip("Add to health (use negative for damage)");
+            }
+        };
+
+        Blockly.Blocks['draw_score'] = {
+            init: function() {
+                this.appendValueInput("X")
+                    .setCheck("Number")
+                    .appendField("Draw score at x:");
+                this.appendValueInput("Y")
+                    .setCheck("Number")
+                    .appendField("y:");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5CA65C");
+                this.setTooltip("Draw the score on screen");
+            }
+        };
+
+        Blockly.Blocks['draw_lives'] = {
+            init: function() {
+                this.appendValueInput("X")
+                    .setCheck("Number")
+                    .appendField("Draw lives at x:");
+                this.appendValueInput("Y")
+                    .setCheck("Number")
+                    .appendField("y:");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5CA65C");
+                this.setTooltip("Draw lives on screen");
+            }
+        };
+
+        Blockly.Blocks['draw_health_bar'] = {
+            init: function() {
+                this.appendValueInput("X")
+                    .setCheck("Number")
+                    .appendField("Draw health bar at x:");
+                this.appendValueInput("Y")
+                    .setCheck("Number")
+                    .appendField("y:");
+                this.appendValueInput("WIDTH")
+                    .setCheck("Number")
+                    .appendField("width:");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5CA65C");
+                this.setTooltip("Draw a health bar");
+            }
+        };
+
+        // ============ INSTANCE BLOCKS ============
+        Blockly.Blocks['instance_destroy'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("Destroy this instance");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#A65C81");
+                this.setTooltip("Destroy the current instance");
+            }
+        };
+
+        Blockly.Blocks['instance_destroy_other'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("Destroy other instance");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#A65C81");
+                this.setTooltip("Destroy the colliding instance");
+            }
+        };
+
+        Blockly.Blocks['instance_create'] = {
+            init: function() {
+                this.appendValueInput("X")
+                    .setCheck("Number")
+                    .appendField("Create")
+                    .appendField(new Blockly.FieldTextInput("obj_bullet"), "OBJECT")
+                    .appendField("at x:");
+                this.appendValueInput("Y")
+                    .setCheck("Number")
+                    .appendField("y:");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#A65C81");
+                this.setTooltip("Create a new instance");
+            }
+        };
+
+        // ============ ROOM BLOCKS ============
+        Blockly.Blocks['room_goto_next'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("Go to next room");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#A6745C");
+                this.setTooltip("Go to the next room");
+            }
+        };
+
+        Blockly.Blocks['room_restart'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("Restart room");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#A6745C");
+                this.setTooltip("Restart the current room");
+            }
+        };
+
+        Blockly.Blocks['room_goto'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("Go to room")
+                    .appendField(new Blockly.FieldTextInput("room0"), "ROOM");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#A6745C");
+                this.setTooltip("Go to a specific room");
+            }
+        };
+
+        // ============ VALUE BLOCKS ============
+        Blockly.Blocks['value_x'] = {
+            init: function() {
+                this.appendDummyInput().appendField("x position");
+                this.setOutput(true, "Number");
+                this.setColour("#5C68A6");
+                this.setTooltip("Get x position");
+            }
+        };
+
+        Blockly.Blocks['value_y'] = {
+            init: function() {
+                this.appendDummyInput().appendField("y position");
+                this.setOutput(true, "Number");
+                this.setColour("#5C68A6");
+                this.setTooltip("Get y position");
+            }
+        };
+
+        Blockly.Blocks['value_hspeed'] = {
+            init: function() {
+                this.appendDummyInput().appendField("horizontal speed");
+                this.setOutput(true, "Number");
+                this.setColour("#5C68A6");
+                this.setTooltip("Get horizontal speed");
+            }
+        };
+
+        Blockly.Blocks['value_vspeed'] = {
+            init: function() {
+                this.appendDummyInput().appendField("vertical speed");
+                this.setOutput(true, "Number");
+                this.setColour("#5C68A6");
+                this.setTooltip("Get vertical speed");
+            }
+        };
+
+        Blockly.Blocks['value_score'] = {
+            init: function() {
+                this.appendDummyInput().appendField("score");
+                this.setOutput(true, "Number");
+                this.setColour("#5C68A6");
+                this.setTooltip("Get current score");
+            }
+        };
+
+        Blockly.Blocks['value_lives'] = {
+            init: function() {
+                this.appendDummyInput().appendField("lives");
+                this.setOutput(true, "Number");
+                this.setColour("#5C68A6");
+                this.setTooltip("Get current lives");
+            }
+        };
+
+        Blockly.Blocks['value_health'] = {
+            init: function() {
+                this.appendDummyInput().appendField("health");
+                this.setOutput(true, "Number");
+                this.setColour("#5C68A6");
+                this.setTooltip("Get current health");
+            }
+        };
+
+        Blockly.Blocks['value_mouse_x'] = {
+            init: function() {
+                this.appendDummyInput().appendField("mouse x");
+                this.setOutput(true, "Number");
+                this.setColour("#5C68A6");
+                this.setTooltip("Get mouse x position");
+            }
+        };
+
+        Blockly.Blocks['value_mouse_y'] = {
+            init: function() {
+                this.appendDummyInput().appendField("mouse y");
+                this.setOutput(true, "Number");
+                this.setColour("#5C68A6");
+                this.setTooltip("Get mouse y position");
+            }
+        };
+
+        // ============ SOUND BLOCKS ============
+        Blockly.Blocks['sound_play'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("Play sound")
+                    .appendField(new Blockly.FieldTextInput("snd_jump"), "SOUND");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#9966FF");
+                this.setTooltip("Play a sound effect");
+            }
+        };
+
+        Blockly.Blocks['music_play'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("Play music")
+                    .appendField(new Blockly.FieldTextInput("bgm_main"), "MUSIC");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#9966FF");
+                this.setTooltip("Play background music");
+            }
+        };
+
+        Blockly.Blocks['music_stop'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("Stop music");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#9966FF");
+                this.setTooltip("Stop background music");
+            }
+        };
+
+        // ============ OUTPUT BLOCKS ============
+        Blockly.Blocks['output_message'] = {
+            init: function() {
+                this.appendValueInput("MESSAGE")
+                    .setCheck("String")
+                    .appendField("Show message");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#745CA6");
+                this.setTooltip("Show a message");
+            }
+        };
+
+        // Create a dark theme for PyGameMaker
+        var darkTheme = Blockly.Theme.defineTheme('pygamemaker_dark', {
+            'base': Blockly.Themes.Classic,
+            'componentStyles': {
+                'workspaceBackgroundColour': '#1e1e1e',
+                'toolboxBackgroundColour': '#2d2d2d',
+                'toolboxForegroundColour': '#ffffff',
+                'flyoutBackgroundColour': '#252526',
+                'flyoutForegroundColour': '#ffffff',
+                'flyoutOpacity': 1,
+                'scrollbarColour': '#555555',
+                'insertionMarkerColour': '#fff',
+                'insertionMarkerOpacity': 0.3,
+                'scrollbarOpacity': 0.4,
+                'cursorColour': '#d0d0d0'
+            },
+            'fontStyle': {
+                'family': 'Arial, sans-serif',
+                'weight': 'normal',
+                'size': 12
+            }
+        });
+
+        // Initialize Blockly workspace
+        var workspace = Blockly.inject('blocklyDiv', {
+            toolbox: document.getElementById('toolbox'),
+            grid: {
+                spacing: 20,
+                length: 3,
+                colour: '#444',
+                snap: true
+            },
+            zoom: {
+                controls: true,
+                wheel: true,
+                startScale: 1.0,
+                maxScale: 3,
+                minScale: 0.3,
+                scaleSpeed: 1.2
+            },
+            trashcan: true,
+            theme: darkTheme
+        });
+
+        // Function to get workspace XML
+        function getWorkspaceXml() {
+            var xml = Blockly.Xml.workspaceToDom(workspace);
+            return Blockly.Xml.domToText(xml);
+        }
+
+        // Function to load workspace from XML
+        function loadWorkspaceXml(xmlText) {
+            workspace.clear();
+            if (xmlText) {
+                var xml = Blockly.utils.xml.textToDom(xmlText);
+                Blockly.Xml.domToWorkspace(xml, workspace);
+            }
+        }
+
+        // Function to generate Python code
+        function generatePythonCode() {
+            return generatePyGameMakerCode(workspace);
+        }
+
+        // Custom Python code generator for PyGameMaker
+        function generatePyGameMakerCode(workspace) {
+            var events = {};
+            var topBlocks = workspace.getTopBlocks(true);
+
+            for (var i = 0; i < topBlocks.length; i++) {
+                var block = topBlocks[i];
+                var eventType = getEventType(block);
+                if (eventType) {
+                    var code = generateBlockCode(block);
+
+                    // Handle keyboard events with nested format
+                    // Output: {"keyboard": {"right": {"actions": [...]}}}
+                    if (eventType.subtype && (eventType.event === 'keyboard' || eventType.event === 'keyboard_press' || eventType.event === 'keyboard_release')) {
+                        if (!events[eventType.event]) {
+                            events[eventType.event] = {};
+                        }
+                        // Create nested structure: keyboard -> key -> actions
+                        events[eventType.event][eventType.subtype] = {actions: code.actions || []};
+                    } else {
+                        // Regular event (create, step, draw, etc.)
+                        if (!events[eventType.event]) {
+                            events[eventType.event] = {actions: []};
+                        }
+                        events[eventType.event].actions = events[eventType.event].actions.concat(code.actions || []);
+                    }
+                }
+            }
+
+            return JSON.stringify(events, null, 2);
+        }
+
+        function getEventType(block) {
+            switch (block.type) {
+                case 'event_create': return {event: 'create'};
+                case 'event_step': return {event: 'step'};
+                case 'event_draw': return {event: 'draw'};
+                case 'event_destroy': return {event: 'destroy'};
+                case 'event_keyboard': return {event: 'keyboard', subtype: block.getFieldValue('KEY')};
+                case 'event_keyboard_press': return {event: 'keyboard_press', subtype: block.getFieldValue('KEY')};
+                case 'event_mouse': return {event: 'mouse_' + block.getFieldValue('BUTTON')};
+                case 'event_collision': return {event: 'collision_with_' + block.getFieldValue('OBJECT')};
+                default: return null;
+            }
+        }
+
+        function generateBlockCode(eventBlock) {
+            var actions = [];
+            var doBlock = eventBlock.getInputTargetBlock('DO');
+
+            while (doBlock) {
+                var action = generateActionCode(doBlock);
+                if (action) {
+                    actions.push(action);
+                }
+                doBlock = doBlock.getNextBlock();
+            }
+
+            return {actions: actions};
+        }
+
+        function generateActionCode(block) {
+            switch (block.type) {
+                case 'move_set_hspeed':
+                    return {action: 'set_hspeed', parameters: {value: getInputValue(block, 'SPEED', 0)}};
+                case 'move_set_vspeed':
+                    return {action: 'set_vspeed', parameters: {value: getInputValue(block, 'SPEED', 0)}};
+                case 'move_stop':
+                    return {action: 'stop_movement', parameters: {}};
+                case 'move_direction':
+                    var dir = block.getFieldValue('DIRECTION');
+                    var speed = getInputValue(block, 'SPEED', 4);
+                    // Convert direction string to numeric degrees for game compatibility
+                    var directionDegrees;
+                    switch (dir) {
+                        case 'right': directionDegrees = 0; break;
+                        case 'up': directionDegrees = 90; break;
+                        case 'left': directionDegrees = 180; break;
+                        case 'down': directionDegrees = 270; break;
+                        default: directionDegrees = 0;
+                    }
+                    return {action: 'start_moving_direction', parameters: {directions: directionDegrees, speed: speed}};
+                case 'move_snap_to_grid':
+                    return {action: 'snap_to_grid', parameters: {grid_size: getInputValue(block, 'GRID_SIZE', 32)}};
+                case 'move_jump_to':
+                    return {action: 'jump_to_position', parameters: {x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0)}};
+                case 'grid_stop_if_no_keys':
+                    return {action: 'stop_if_no_keys', parameters: {grid_size: getInputValue(block, 'GRID_SIZE', 32)}};
+                case 'grid_check_keys_and_move':
+                    return {action: 'check_keys_and_move', parameters: {grid_size: getInputValue(block, 'GRID_SIZE', 32), speed: getInputValue(block, 'SPEED', 4)}};
+                case 'grid_if_on_grid':
+                    // This is a wrapper action - collect inner actions
+                    var innerActions = [];
+                    var innerBlock = block.getInputTargetBlock('DO');
+                    while (innerBlock) {
+                        var innerAction = generateActionCode(innerBlock);
+                        if (innerAction) {
+                            innerActions.push(innerAction);
+                        }
+                        innerBlock = innerBlock.getNextBlock();
+                    }
+                    return {action: 'if_on_grid', parameters: {grid_size: getInputValue(block, 'GRID_SIZE', 32), then_actions: innerActions}};
+                case 'score_set':
+                    return {action: 'set_score', parameters: {value: getInputValue(block, 'VALUE', 0), relative: false}};
+                case 'score_add':
+                    return {action: 'set_score', parameters: {value: getInputValue(block, 'VALUE', 0), relative: true}};
+                case 'lives_set':
+                    return {action: 'set_lives', parameters: {value: getInputValue(block, 'VALUE', 0), relative: false}};
+                case 'lives_add':
+                    return {action: 'set_lives', parameters: {value: getInputValue(block, 'VALUE', 0), relative: true}};
+                case 'health_set':
+                    return {action: 'set_health', parameters: {value: getInputValue(block, 'VALUE', 0), relative: false}};
+                case 'health_add':
+                    return {action: 'set_health', parameters: {value: getInputValue(block, 'VALUE', 0), relative: true}};
+                case 'draw_score':
+                    return {action: 'draw_score', parameters: {x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0), caption: "Score: "}};
+                case 'draw_lives':
+                    return {action: 'draw_lives', parameters: {x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0)}};
+                case 'draw_health_bar':
+                    return {action: 'draw_health_bar', parameters: {x1: getInputValue(block, 'X', 0), y1: getInputValue(block, 'Y', 0), x2: getInputValue(block, 'X', 0) + getInputValue(block, 'WIDTH', 100), y2: getInputValue(block, 'Y', 0) + 20}};
+                case 'instance_destroy':
+                    return {action: 'destroy_instance', parameters: {target: 'self'}};
+                case 'instance_destroy_other':
+                    return {action: 'destroy_instance', parameters: {target: 'other'}};
+                case 'room_goto_next':
+                    return {action: 'next_room', parameters: {}};
+                case 'room_restart':
+                    return {action: 'restart_room', parameters: {}};
+                case 'sound_play':
+                    return {action: 'play_sound', parameters: {sound: block.getFieldValue('SOUND')}};
+                case 'music_play':
+                    return {action: 'play_music', parameters: {music: block.getFieldValue('MUSIC')}};
+                case 'music_stop':
+                    return {action: 'stop_music', parameters: {}};
+                case 'output_message':
+                    return {action: 'show_message', parameters: {message: getInputValue(block, 'MESSAGE', '')}};
+                default:
+                    return null;
+            }
+        }
+
+        function getInputValue(block, inputName, defaultValue) {
+            var input = block.getInputTargetBlock(inputName);
+            if (input) {
+                if (input.type === 'math_number') {
+                    return parseFloat(input.getFieldValue('NUM')) || defaultValue;
+                } else if (input.type === 'text') {
+                    return input.getFieldValue('TEXT') || defaultValue;
+                } else if (input.type === 'value_x') {
+                    return 'self.x';
+                } else if (input.type === 'value_y') {
+                    return 'self.y';
+                } else if (input.type === 'value_score') {
+                    return 'game.score';
+                } else if (input.type === 'value_lives') {
+                    return 'game.lives';
+                } else if (input.type === 'value_health') {
+                    return 'game.health';
+                }
+            }
+            return defaultValue;
+        }
+
+        // Listen for workspace changes
+        var ignoreChanges = false;  // Flag to prevent infinite loops during sync
+        workspace.addChangeListener(function(event) {
+            if (ignoreChanges) return;
+            if (event.type == Blockly.Events.BLOCK_CHANGE ||
+                event.type == Blockly.Events.BLOCK_CREATE ||
+                event.type == Blockly.Events.BLOCK_DELETE ||
+                event.type == Blockly.Events.BLOCK_MOVE) {
+                // Notify Qt that blocks changed
+                if (window.pyBridge) {
+                    window.pyBridge.onBlocksChanged(generatePythonCode());
+                }
+            }
+        });
+
+        // ============ EVENTS TO BLOCKS CONVERTER (Bidirectional Sync) ============
+
+        // Map action names to block types
+        var actionToBlockType = {
+            'set_hspeed': 'move_set_hspeed',
+            'set_vspeed': 'move_set_vspeed',
+            'stop_movement': 'move_stop',
+            'start_moving_direction': 'move_direction',
+            'snap_to_grid': 'move_snap_to_grid',
+            'jump_to_position': 'move_jump_to',
+            'stop_if_no_keys': 'grid_stop_if_no_keys',
+            'check_keys_and_move': 'grid_check_keys_and_move',
+            'if_on_grid': 'grid_if_on_grid',
+            'set_score': 'score_set',  // Will check relative flag
+            'set_lives': 'lives_set',  // Will check relative flag
+            'set_health': 'health_set',  // Will check relative flag
+            'draw_score': 'draw_score',
+            'draw_lives': 'draw_lives',
+            'draw_health_bar': 'draw_health_bar',
+            'destroy_instance': 'instance_destroy',
+            'create_instance': 'instance_create',
+            'next_room': 'room_goto_next',
+            'restart_room': 'room_restart',
+            'goto_room': 'room_goto',
+            'play_sound': 'sound_play',
+            'play_music': 'music_play',
+            'stop_music': 'music_stop',
+            'show_message': 'output_message'
+        };
+
+        // Map event names to block types
+        var eventToBlockType = {
+            'create': 'event_create',
+            'step': 'event_step',
+            'draw': 'event_draw',
+            'destroy': 'event_destroy',
+            'keyboard': 'event_keyboard',
+            'keyboard_press': 'event_keyboard_press'
+        };
+
+        function loadEventsData(eventsJson) {
+            // Parse JSON if string
+            var events = typeof eventsJson === 'string' ? JSON.parse(eventsJson) : eventsJson;
+
+            console.log('[Blockly] ========== loadEventsData START ==========');
+            console.log('[Blockly] Input type:', typeof eventsJson);
+            console.log('[Blockly] Parsed events:', JSON.stringify(events, null, 2));
+            console.log('[Blockly] Event keys:', Object.keys(events));
+
+            // Clear workspace and disable change events temporarily
+            ignoreChanges = true;
+            workspace.clear();
+
+            var yOffset = 50;  // Starting Y position for blocks
+            var eventCount = 0;
+
+            for (var eventName in events) {
+                var eventData = events[eventName];
+
+                console.log('[Blockly] Processing event:', eventName);
+                console.log('[Blockly] Event data:', JSON.stringify(eventData, null, 2));
+                console.log('[Blockly] Event data type:', typeof eventData);
+                console.log('[Blockly] Has actions?:', eventData && eventData.actions ? 'YES (' + eventData.actions.length + ')' : 'NO');
+
+                // Handle nested keyboard/keyboard_press events
+                // Format: {"keyboard": {"right": {"actions": [...]}, "left": {"actions": [...]}}}
+                if ((eventName === 'keyboard' || eventName === 'keyboard_press' || eventName === 'keyboard_release')
+                    && typeof eventData === 'object' && !eventData.actions) {
+                    console.log('[Blockly] Handling nested keyboard event');
+                    // This is a nested keyboard event - iterate over keys
+                    for (var keyName in eventData) {
+                        if (keyName === 'actions') continue;  // Skip if it's directly actions
+                        var keyData = eventData[keyName];
+                        console.log('[Blockly] Keyboard key:', keyName, 'data:', JSON.stringify(keyData));
+                        if (typeof keyData === 'object' && keyData.actions) {
+                            // Create a flat event name like "keyboard_right"
+                            var flatEventName = eventName + '_' + keyName;
+                            console.log('[Blockly] Creating event block:', flatEventName);
+                            var eventBlock = createEventBlock(flatEventName, keyData);
+                            if (eventBlock) {
+                                eventBlock.moveBy(50, yOffset);
+                                yOffset += 150;
+                                console.log('[Blockly] Attaching', keyData.actions.length, 'actions to', flatEventName);
+                                attachActionsToEvent(eventBlock, keyData.actions);
+                                eventCount++;
+                            }
+                        }
+                    }
+                } else {
+                    // Regular event (create, step, draw, etc.) or flat keyboard event
+                    console.log('[Blockly] Handling regular event:', eventName);
+                    var eventBlock = createEventBlock(eventName, eventData);
+
+                    if (eventBlock) {
+                        // Position the event block
+                        eventBlock.moveBy(50, yOffset);
+                        yOffset += 150;  // Space between event blocks
+
+                        // Create action blocks and connect them
+                        if (eventData && eventData.actions && eventData.actions.length > 0) {
+                            console.log('[Blockly] Attaching', eventData.actions.length, 'actions to', eventName);
+                            attachActionsToEvent(eventBlock, eventData.actions);
+                        } else {
+                            console.log('[Blockly] No actions to attach for', eventName);
+                        }
+                        eventCount++;
+                    } else {
+                        console.log('[Blockly] WARNING: Failed to create event block for:', eventName);
+                    }
+                }
+            }
+
+            // Re-enable change events
+            ignoreChanges = false;
+
+            // Render workspace
+            workspace.render();
+
+            console.log('Loaded ' + eventCount + ' events as blocks');
+            return eventCount;
+        }
+
+        function attachActionsToEvent(eventBlock, actions) {
+            // Create action blocks and connect them to the event
+            console.log('[Blockly] attachActionsToEvent called with', actions ? actions.length : 0, 'actions');
+            console.log('[Blockly] Actions data:', JSON.stringify(actions, null, 2));
+
+            if (!actions || actions.length === 0) {
+                console.log('[Blockly] No actions to attach');
+                return;
+            }
+
+            var prevBlock = null;
+            for (var i = 0; i < actions.length; i++) {
+                console.log('[Blockly] Creating action block for:', JSON.stringify(actions[i]));
+                var actionBlock = createActionBlock(actions[i]);
+                if (actionBlock) {
+                    console.log('[Blockly] Action block created:', actionBlock.type);
+                    if (prevBlock === null) {
+                        // Connect first action to event's DO input
+                        var doInput = eventBlock.getInput('DO');
+                        if (doInput && doInput.connection) {
+                            console.log('[Blockly] Connecting first action to event DO input');
+                            doInput.connection.connect(actionBlock.previousConnection);
+                        } else {
+                            console.log('[Blockly] WARNING: Event block has no DO input or connection');
+                        }
+                    } else {
+                        // Connect to previous action
+                        if (prevBlock.nextConnection && actionBlock.previousConnection) {
+                            console.log('[Blockly] Connecting action to previous action');
+                            prevBlock.nextConnection.connect(actionBlock.previousConnection);
+                        }
+                    }
+                    prevBlock = actionBlock;
+                } else {
+                    console.log('[Blockly] WARNING: Failed to create action block for:', actions[i].action);
+                }
+            }
+            console.log('[Blockly] Finished attaching actions, total attached:', prevBlock ? 'at least 1' : '0');
+        }
+
+        function createEventBlock(eventName, eventData) {
+            var blockType = null;
+            var fields = {};
+
+            // Determine block type based on event name
+            if (eventName === 'create') {
+                blockType = 'event_create';
+            } else if (eventName === 'step') {
+                blockType = 'event_step';
+            } else if (eventName === 'draw') {
+                blockType = 'event_draw';
+            } else if (eventName === 'destroy') {
+                blockType = 'event_destroy';
+            } else if (eventName.startsWith('keyboard_')) {
+                // keyboard_right, keyboard_press_space, etc.
+                var key = eventName.replace('keyboard_press_', '').replace('keyboard_', '');
+                if (eventName.includes('_press_')) {
+                    blockType = 'event_keyboard_press';
+                } else {
+                    blockType = 'event_keyboard';
+                }
+                fields['KEY'] = key;
+            } else if (eventName.startsWith('mouse_')) {
+                blockType = 'event_mouse';
+                var button = eventName.replace('mouse_', '');
+                fields['BUTTON'] = button;
+            } else if (eventName.startsWith('collision_with_')) {
+                blockType = 'event_collision';
+                fields['OBJECT'] = eventName.replace('collision_with_', '');
+            }
+
+            if (!blockType) {
+                console.log('Unknown event type:', eventName);
+                return null;
+            }
+
+            // Create the block
+            var block = workspace.newBlock(blockType);
+
+            // Set field values
+            for (var fieldName in fields) {
+                var field = block.getField(fieldName);
+                if (field) {
+                    field.setValue(fields[fieldName]);
+                }
+            }
+
+            block.initSvg();
+            block.render();
+
+            return block;
+        }
+
+        function createActionBlock(actionData) {
+            console.log('[Blockly] createActionBlock called with:', JSON.stringify(actionData));
+
+            if (!actionData || !actionData.action) {
+                console.log('[Blockly] Invalid actionData - missing action field');
+                return null;
+            }
+
+            var actionName = actionData.action;
+            var params = actionData.parameters || {};
+            console.log('[Blockly] Action name:', actionName, 'Params:', JSON.stringify(params));
+
+            // Handle if_collision_at which doesn't have a direct block equivalent
+            if (actionName === 'if_collision_at') {
+                console.log('[Blockly] Wrapper action detected (if_collision_at), checking for then_actions');
+                var thenActions = params.then_actions || [];
+                if (thenActions.length > 0) {
+                    // Try each inner action until we find one that creates a block
+                    console.log('[Blockly] Searching', thenActions.length, 'then_actions for supported action');
+                    for (var i = 0; i < thenActions.length; i++) {
+                        var innerBlock = createActionBlock(thenActions[i]);
+                        if (innerBlock) {
+                            console.log('[Blockly] Found supported action at index', i);
+                            return innerBlock;
+                        }
+                    }
+                    console.log('[Blockly] No supported actions found in then_actions');
+                }
+                console.log('[Blockly] No then_actions found in wrapper');
+                return null;
+            }
+
+            // Skip truly unsupported custom actions gracefully
+            var unsupportedActions = ['move_grid'];
+            if (unsupportedActions.indexOf(actionName) !== -1) {
+                console.log('[Blockly] Skipping unsupported custom action:', actionName);
+                return null;
+            }
+
+            var blockType = actionToBlockType[actionName];
+            console.log('[Blockly] Initial blockType from mapping:', blockType);
+
+            // Handle relative flag for score/lives/health
+            if (actionName === 'set_score') {
+                blockType = params.relative ? 'score_add' : 'score_set';
+                console.log('[Blockly] set_score: relative=' + params.relative + ' -> blockType=' + blockType);
+            } else if (actionName === 'set_lives') {
+                blockType = params.relative ? 'lives_add' : 'lives_set';
+                console.log('[Blockly] set_lives: relative=' + params.relative + ' -> blockType=' + blockType);
+            } else if (actionName === 'set_health') {
+                blockType = params.relative ? 'health_add' : 'health_set';
+                console.log('[Blockly] set_health: relative=' + params.relative + ' -> blockType=' + blockType);
+            } else if (actionName === 'destroy_instance') {
+                blockType = params.target === 'other' ? 'instance_destroy_other' : 'instance_destroy';
+            }
+
+            if (!blockType) {
+                console.log('[Blockly] WARNING: Unknown action type:', actionName);
+                console.log('[Blockly] Available mappings:', JSON.stringify(Object.keys(actionToBlockType)));
+                return null;
+            }
+
+            console.log('[Blockly] Creating block of type:', blockType);
+
+            // Create the block
+            try {
+                var block = workspace.newBlock(blockType);
+
+                // Set parameters based on action type
+                setBlockParameters(block, blockType, params);
+
+                block.initSvg();
+                block.render();
+
+                console.log('[Blockly] Block created successfully:', block.id);
+                return block;
+            } catch (e) {
+                console.error('[Blockly] Error creating block:', e);
+                return null;
+            }
+        }
+
+        function setBlockParameters(block, blockType, params) {
+            // Helper to create and connect a number block
+            function connectNumberBlock(inputName, value) {
+                var input = block.getInput(inputName);
+                if (input && input.connection) {
+                    var numBlock = workspace.newBlock('math_number');
+                    numBlock.setFieldValue(String(value), 'NUM');
+                    numBlock.initSvg();
+                    numBlock.render();
+                    input.connection.connect(numBlock.outputConnection);
+                }
+            }
+
+            // Helper to create and connect a text block
+            function connectTextBlock(inputName, value) {
+                var input = block.getInput(inputName);
+                if (input && input.connection) {
+                    var textBlock = workspace.newBlock('text');
+                    textBlock.setFieldValue(String(value), 'TEXT');
+                    textBlock.initSvg();
+                    textBlock.render();
+                    input.connection.connect(textBlock.outputConnection);
+                }
+            }
+
+            // Set parameters based on block type
+            switch (blockType) {
+                case 'move_set_hspeed':
+                case 'move_set_vspeed':
+                    // Handle both 'value' (create event format) and 'speed' (keyboard event format)
+                    var speedValue = params.value !== undefined ? params.value : (params.speed || 0);
+                    connectNumberBlock('SPEED', speedValue);
+                    break;
+
+                case 'move_direction':
+                    // Handle both formats:
+                    // - Blockly format: {direction: 'right', speed: 4}
+                    // - Game format: {directions: [270], speed: 4.0} or {directions: 'right', speed: 4.0}
+                    var direction = params.direction || 'right';
+
+                    // If using game format with directions (array or number)
+                    if (params.directions !== undefined) {
+                        var dirs = params.directions;
+                        // Convert numeric direction to string
+                        if (typeof dirs === 'number') {
+                            if (dirs === 0 || dirs === 360) direction = 'right';
+                            else if (dirs === 90) direction = 'up';
+                            else if (dirs === 180) direction = 'left';
+                            else if (dirs === 270) direction = 'down';
+                        } else if (Array.isArray(dirs) && dirs.length > 0) {
+                            var d = dirs[0];
+                            if (d === 0 || d === 360) direction = 'right';
+                            else if (d === 90) direction = 'up';
+                            else if (d === 180) direction = 'left';
+                            else if (d === 270) direction = 'down';
+                        } else if (typeof dirs === 'string') {
+                            direction = dirs.toLowerCase();
+                        }
+                        console.log('[Blockly] Converted directions', params.directions, 'to', direction);
+                    }
+
+                    block.setFieldValue(direction, 'DIRECTION');
+                    connectNumberBlock('SPEED', params.speed || 4);
+                    break;
+
+                case 'move_snap_to_grid':
+                    connectNumberBlock('GRID_SIZE', params.grid_size || 32);
+                    break;
+
+                case 'move_jump_to':
+                    connectNumberBlock('X', params.x || 0);
+                    connectNumberBlock('Y', params.y || 0);
+                    break;
+
+                case 'grid_stop_if_no_keys':
+                    connectNumberBlock('GRID_SIZE', params.grid_size || 32);
+                    break;
+
+                case 'grid_check_keys_and_move':
+                    connectNumberBlock('GRID_SIZE', params.grid_size || 32);
+                    connectNumberBlock('SPEED', params.speed || 4);
+                    break;
+
+                case 'grid_if_on_grid':
+                    connectNumberBlock('GRID_SIZE', params.grid_size || 32);
+                    // Handle inner actions - attach them to the DO input
+                    if (params.then_actions && params.then_actions.length > 0) {
+                        var doInput = block.getInput('DO');
+                        if (doInput && doInput.connection) {
+                            var prevInnerBlock = null;
+                            for (var i = 0; i < params.then_actions.length; i++) {
+                                var innerBlock = createActionBlock(params.then_actions[i]);
+                                if (innerBlock) {
+                                    if (prevInnerBlock === null) {
+                                        doInput.connection.connect(innerBlock.previousConnection);
+                                    } else if (prevInnerBlock.nextConnection) {
+                                        prevInnerBlock.nextConnection.connect(innerBlock.previousConnection);
+                                    }
+                                    prevInnerBlock = innerBlock;
+                                }
+                            }
+                        }
+                    }
+                    break;
+
+                case 'score_set':
+                case 'score_add':
+                case 'lives_set':
+                case 'lives_add':
+                case 'health_set':
+                case 'health_add':
+                    connectNumberBlock('VALUE', params.value || 0);
+                    break;
+
+                case 'draw_score':
+                case 'draw_lives':
+                    connectNumberBlock('X', params.x || 0);
+                    connectNumberBlock('Y', params.y || 0);
+                    break;
+
+                case 'draw_health_bar':
+                    connectNumberBlock('X', params.x1 || 0);
+                    connectNumberBlock('Y', params.y1 || 0);
+                    connectNumberBlock('WIDTH', (params.x2 - params.x1) || 100);
+                    break;
+
+                case 'instance_create':
+                    block.setFieldValue(params.object || 'obj_bullet', 'OBJECT');
+                    connectNumberBlock('X', params.x || 0);
+                    connectNumberBlock('Y', params.y || 0);
+                    break;
+
+                case 'room_goto':
+                    block.setFieldValue(params.room || 'room0', 'ROOM');
+                    break;
+
+                case 'sound_play':
+                    block.setFieldValue(params.sound || 'snd_jump', 'SOUND');
+                    break;
+
+                case 'music_play':
+                    block.setFieldValue(params.music || 'bgm_main', 'MUSIC');
+                    break;
+
+                case 'output_message':
+                    connectTextBlock('MESSAGE', params.message || 'Hello!');
+                    break;
+            }
+        }
+
+        // Expose functions to Qt
+        window.blocklyApi = {
+            getXml: getWorkspaceXml,
+            loadXml: loadWorkspaceXml,
+            getCode: generatePythonCode,
+            clear: function() { workspace.clear(); },
+            // NEW: Load events data and create blocks
+            loadEvents: loadEventsData,
+            // NEW: Check if workspace has blocks
+            hasBlocks: function() { return workspace.getAllBlocks().length > 0; }
+        };
+    </script>
+</body>
+</html>
