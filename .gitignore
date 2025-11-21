@@ -1,5 +1,20 @@
 # Byte-compiled / optimized / C extensions
 __pycache__/
+*.pyc
+*.pyo
+
+# Backup files (use git instead!)
+*.bak
+*.bak[0-9]
+*.bak[0-9][0-9]
+*.old
+*.rollback
+*conflicted copy*
+*conflicto*
+*does-not-work*
+
+# Cleanup backups
+.cleanup_backup/
 
 # LO Writer & Calc files
 *.odt
@@ -11,4 +26,10 @@ venv/
 # Work folders
 Projects/
 Tutorial1/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
 

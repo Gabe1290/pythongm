@@ -65,10 +65,9 @@ class GameInstance:
 
         # Action executor
         self.action_executor = ActionExecutor()
-        
-        # Execute Create event when instance is created
-        if self.object_data and "events" in self.object_data:
-            self.action_executor.execute_event(self, "create", self.object_data["events"])
+
+        # NOTE: Create event is triggered in set_object_data(), not here
+        # because object_data is set to None initially
     
     def step(self):
         """Execute step event every frame"""
@@ -80,8 +79,11 @@ class GameInstance:
         self.sprite = sprite
     
     def set_object_data(self, object_data: dict):
-        """Set the object data from project"""
+        """Set the object data from project (create event triggered when room becomes active)"""
         self.object_data = object_data
+
+        # NOTE: Create event is NOT triggered here!
+        # It's triggered when the room becomes active (in change_room)
     
     def render(self, screen: pygame.Surface):
         """Render this instance"""

@@ -244,14 +244,14 @@ class ProjectManager(QObject):
             # Get latest asset data from asset manager
             if self.asset_manager:
                 print("💾 DEBUG: Getting assets from asset manager...")
-                assets_dict = {}
-                for asset_type in ['sprites', 'backgrounds', 'sounds', 'objects', 'rooms', 'scripts', 'fonts']:
-                    assets_of_type = self.asset_manager.get_assets_by_type(asset_type)
-                    if assets_of_type:
-                        assets_dict[asset_type] = assets_of_type
+                # Use save_assets_to_project_data to preserve order
+                self.asset_manager.save_assets_to_project_data(self.current_project_data)
 
-                self.current_project_data['assets'] = assets_dict
-                
+                # DEBUG: Check room order being saved
+                rooms_data = self.current_project_data.get('assets', {}).get('rooms', {})
+                room_order = list(rooms_data.keys())
+                print(f"💾 DEBUG: Saving room order: {room_order}")
+
                 # DEBUG: Check what sprite values are actually being saved
                 objects_data = self.current_project_data.get('assets', {}).get('objects', {})
                 print(f"💾 DEBUG: Asset data updated. Objects in project: {list(objects_data.keys())}")

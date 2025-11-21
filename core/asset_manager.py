@@ -437,7 +437,7 @@ class AssetManager(QObject):
     def save_assets_to_project_data(self, project_data: Dict[str, Any]) -> None:
         """Save assets to project JSON data preserving order"""
         from collections import OrderedDict
-        
+
         # Convert OrderedDict to regular dict for JSON serialization
         # but maintain the order by reconstructing from items()
         assets_for_json = {}
@@ -445,9 +445,14 @@ class AssetManager(QObject):
             if isinstance(assets_of_type, OrderedDict):
                 # Preserve order by converting to list of tuples, then back to dict
                 assets_for_json[asset_type] = dict(assets_of_type.items())
+
+                # DEBUG: Verify room order is preserved
+                if asset_type == 'rooms':
+                    room_order = list(assets_of_type.keys())
+                    print(f"💾 AssetManager: Saving room order: {room_order}")
             else:
                 assets_for_json[asset_type] = assets_of_type
-        
+
         project_data["assets"] = assets_for_json
     
     def generate_thumbnail(self, image_path: Path, asset_name: str) -> Optional[Path]:

@@ -6,6 +6,7 @@ Enhanced room editor that allows placing objects in rooms
 
 import sys
 import json
+import copy
 from pathlib import Path
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
                                QScrollArea, QToolBar, QMessageBox, QLabel)
@@ -278,7 +279,8 @@ class RoomEditor(QWidget):
     def load_asset(self, asset_name, asset_data):
         """Load room asset data"""
         self.asset_name = asset_name
-        self.current_room_properties = asset_data.copy()
+        # Use deep copy to prevent cross-contamination between multiple open room editors
+        self.current_room_properties = copy.deepcopy(asset_data)
         
         # Set room properties including background settings
         self.room_canvas.set_room_properties(
@@ -400,7 +402,8 @@ class RoomEditor(QWidget):
     
     def get_data(self):
         """Get current room data with all required fields"""
-        data = self.current_room_properties.copy()
+        # Use deep copy to ensure returned data is independent
+        data = copy.deepcopy(self.current_room_properties)
         data['instances'] = self.room_canvas.get_instances()
         
         if 'name' not in data:

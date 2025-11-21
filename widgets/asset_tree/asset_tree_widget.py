@@ -184,25 +184,70 @@ class AssetTreeWidget(QTreeWidget):
         else:
             # Asset item menu - show rename, delete, properties
             print(f"   ✅ Showing context menu for: {item.asset_name}")
-            
+
             # Rename action
             rename_action = QAction("✏️ Rename", self)
             rename_action.triggered.connect(lambda: self.operations.rename_asset(item))
             context_menu.addAction(rename_action)
-            
+
             # Import Image action for sprites
             if item.asset_type in ["sprite", "sprites"]:
                 import_image_action = QAction("📥 Import Image...", self)
                 import_image_action.triggered.connect(lambda: self.import_sprite_image(item))
                 context_menu.addAction(import_image_action)
-            
+
             # Delete action
             delete_action = QAction("🗑️ Delete", self)
             delete_action.triggered.connect(lambda: self.operations.delete_asset(item))
             context_menu.addAction(delete_action)
-            
+
+            # Room reordering actions (only for rooms)
+            if item.asset_type in ["room", "rooms"]:
+                context_menu.addSeparator()
+
+                # Get all rooms to check position
+                rooms_category = None
+                for i in range(self.topLevelItemCount()):
+                    category = self.topLevelItem(i)
+                    if isinstance(category, AssetTreeItem) and category.asset_type == 'rooms':
+                        rooms_category = category
+                        break
+
+                if rooms_category:
+                    room_count = rooms_category.childCount()
+                    room_index = rooms_category.indexOfChild(item)
+
+                    is_first = (room_index == 0)
+                    is_last = (room_index == room_count - 1)
+
+                    # Move Up
+                    move_up_action = QAction("⬆️ Move Up", self)
+                    move_up_action.setEnabled(not is_first)
+                    move_up_action.triggered.connect(lambda: self.move_room_up(item.asset_name))
+                    context_menu.addAction(move_up_action)
+
+                    # Move Down
+                    move_down_action = QAction("⬇️ Move Down", self)
+                    move_down_action.setEnabled(not is_last)
+                    move_down_action.triggered.connect(lambda: self.move_room_down(item.asset_name))
+                    context_menu.addAction(move_down_action)
+
+                    context_menu.addSeparator()
+
+                    # Move to Top
+                    move_top_action = QAction("⏫ Move to Top", self)
+                    move_top_action.setEnabled(not is_first)
+                    move_top_action.triggered.connect(lambda: self.move_room_to_top(item.asset_name))
+                    context_menu.addAction(move_top_action)
+
+                    # Move to Bottom
+                    move_bottom_action = QAction("⏬ Move to Bottom", self)
+                    move_bottom_action.setEnabled(not is_last)
+                    move_bottom_action.triggered.connect(lambda: self.move_room_to_bottom(item.asset_name))
+                    context_menu.addAction(move_bottom_action)
+
             context_menu.addSeparator()
-            
+
             # Properties action
             properties_action = QAction("⚙️ Properties...", self)
             properties_action.triggered.connect(lambda: self.show_asset_properties(item))
@@ -495,11 +540,13 @@ class AssetTreeWidget(QTreeWidget):
 
     def _reorder_room(self, room_name: str, direction):
         """Reorder rooms in project data and save"""
+        print(f"🔧 DEBUG: _reorder_room called with room_name='{room_name}', direction={direction}")
         try:
             from collections import OrderedDict
-            
+
             project_file = Path(self.project_path) / "project.json"
             if not project_file.exists():
+                print(f"❌ DEBUG: project.json not found at {project_file}")
                 return
             
             # Load project data with order preservation
@@ -508,11 +555,14 @@ class AssetTreeWidget(QTreeWidget):
             
             rooms = project_data.get('assets', {}).get('rooms', OrderedDict())
             room_list = list(rooms.keys())
-            
+            print(f"🔍 DEBUG: Current room order (before reorder): {room_list}")
+
             if room_name not in room_list:
+                print(f"❌ DEBUG: room_name '{room_name}' not found in room_list")
                 return
-            
+
             current_index = room_list.index(room_name)
+            print(f"🔍 DEBUG: Current index of '{room_name}': {current_index}")
             
             # Remove from current position
             room_list.remove(room_name)
@@ -527,32 +577,47 @@ class AssetTreeWidget(QTreeWidget):
             
             # Insert at new position
             room_list.insert(new_index, room_name)
-            
+            print(f"🔍 DEBUG: New room order (after reorder): {room_list}")
+
             # Rebuild rooms OrderedDict in new order
             new_rooms = OrderedDict()
             for room_key in room_list:
                 new_rooms[room_key] = rooms[room_key]
-            
+
             project_data['assets']['rooms'] = new_rooms
-            
+            print(f"🔍 DEBUG: Built new_rooms OrderedDict with keys: {list(new_rooms.keys())}")
+
             # Save project back to file with order preservation
             with open(project_file, 'w') as f:
                 json.dump(project_data, f, indent=2, sort_keys=False)
-            
+
             print(f"✅ Saved new room order to project.json: {room_list}")
             
             # Find the IDE parent window
             ide_window = self.parent()
             while ide_window and not hasattr(ide_window, 'current_project_data'):
                 ide_window = ide_window.parent()
-            
+
             if ide_window:
+                print(f"🔍 DEBUG: Found IDE window")
+
                 # CRITICAL: Update the asset manager's cache directly
-                if hasattr(ide_window, 'asset_manager') and ide_window.asset_manager:
-                    if hasattr(ide_window.asset_manager, 'assets_cache'):
-                        # Update the cache with the new room order
-                        ide_window.asset_manager.assets_cache['rooms'] = new_rooms
-                        print(f"✅ Updated asset manager cache with new room order")
+                if hasattr(ide_window, 'asset_manager'):
+                    print(f"🔍 DEBUG: IDE has asset_manager attribute")
+                    if ide_window.asset_manager:
+                        print(f"🔍 DEBUG: asset_manager is not None")
+                        if hasattr(ide_window.asset_manager, 'assets_cache'):
+                            print(f"🔍 DEBUG: asset_manager has assets_cache attribute")
+                            # Update the cache with the new room order
+                            ide_window.asset_manager.assets_cache['rooms'] = new_rooms
+                            print(f"✅ Updated asset manager cache with new room order")
+                            print(f"🔍 DEBUG: New cache room order: {list(new_rooms.keys())}")
+                        else:
+                            print(f"❌ DEBUG: asset_manager does NOT have assets_cache attribute")
+                    else:
+                        print(f"❌ DEBUG: asset_manager is None")
+                else:
+                    print(f"❌ DEBUG: IDE does NOT have asset_manager attribute")
                 
                 # Update the IDE's project data
                 ide_window.current_project_data = project_data
@@ -573,6 +638,7 @@ class AssetTreeWidget(QTreeWidget):
                 if hasattr(ide_window, 'update_status'):
                     ide_window.update_status(f"Reordered room: {room_name}")
             else:
+                print(f"❌ DEBUG: Could not find IDE window")
                 # Fallback to local refresh if we can't find IDE
                 self._refresh_room_display()
             

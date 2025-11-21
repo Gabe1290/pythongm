@@ -18,7 +18,7 @@ from PySide6.QtGui import QPixmap, QFont
 
 from ..base_editor import BaseEditor, EditorUndoCommand
 from .object_properties_panel import ObjectPropertiesPanel
-from .object_events_panel import ObjectEventsPanel
+from .gm80_events_panel import GM80EventsPanel
 from ..object_editor_components import ActionListWidget, VisualScriptingArea
 # from visual_programming import (
 #     VisualCanvas, NodePalette, NodePropertiesPanel, 
@@ -222,7 +222,7 @@ class ObjectEditor(BaseEditor):
         events_layout.setContentsMargins(5, 5, 5, 5)
         
         # Create the events panel
-        self.events_panel = ObjectEventsPanel()
+        self.events_panel = GM80EventsPanel()
         self.events_panel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         events_layout.addWidget(self.events_panel)
         
@@ -374,28 +374,23 @@ class ObjectEditor(BaseEditor):
     def create_visual_programming_tab(self) -> QWidget:
         """Create the visual programming tab"""
         tab = QWidget()
-        layout = QHBoxLayout(tab)
-        layout.setContentsMargins(0, 0, 0, 0)
-        
-        # Left: Node palette
-        self.node_palette = NodePalette()
-        self.node_palette.setMaximumWidth(250)
-        self.node_palette.node_requested.connect(self.add_node_to_canvas)
-        layout.addWidget(self.node_palette)
-        
-        # Center: Visual canvas
-        self.visual_canvas = VisualCanvas()
-        self.visual_canvas.node_selected.connect(self.on_visual_node_selected)
-        self.visual_canvas.node_deselected.connect(self.on_visual_node_deselected)
-        self.visual_canvas.nodes_modified.connect(self.on_visual_nodes_modified)
-        layout.addWidget(self.visual_canvas)
-        
-        # Right: Node properties
-        self.node_properties = NodePropertiesPanel()
-        self.node_properties.setMaximumWidth(250)
-        self.node_properties.property_changed.connect(self.on_node_property_changed)
-        layout.addWidget(self.node_properties)
-        
+        layout = QVBoxLayout(tab)
+        layout.setContentsMargins(10, 10, 10, 10)
+
+        # Show message that visual programming is not yet available
+        label = QLabel("Visual Programming")
+        label.setFont(QFont("Arial", 16, QFont.Bold))
+        layout.addWidget(label)
+
+        info_label = QLabel(
+            "Visual node-based programming is coming soon!\n\n"
+            "For now, use the Traditional Events tab to configure object events and actions."
+        )
+        info_label.setWordWrap(True)
+        layout.addWidget(info_label)
+
+        layout.addStretch()
+
         return tab
 
     def add_node_to_canvas(self, type_id: str):

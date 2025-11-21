@@ -85,8 +85,11 @@ class GameInstance:
         self.sprite = sprite
     
     def set_object_data(self, object_data: dict):
-        """Set the object data from project"""
+        """Set the object data from project (create event triggered when room becomes active)"""
         self.object_data = object_data
+
+        # NOTE: Create event is NOT triggered here!
+        # It's triggered when the room becomes active (in change_room or run_game_loop)
     
     def render(self, screen: pygame.Surface):
         """Render this instance"""
@@ -215,8 +218,14 @@ class GameRunner:
         self.project_data = None
         self.project_path = None
 
-        # Shared action executor for all instances
-        self.action_executor = ActionExecutor()
+        # Global game state (Score/Lives/Health system) - must be before ActionExecutor
+        self.score = 0
+        self.lives = 3
+        self.health = 100.0
+        self.highscores = []  # List of (name, score) tuples
+
+        # Shared action executor for all instances (pass self for global state access)
+        self.action_executor = ActionExecutor(game_runner=self)
 
         # Load plugins
         print("🔌 Loading action/event plugins...")
@@ -231,7 +240,7 @@ class GameRunner:
         self.fps = 60
         self.window_width = 800
         self.window_height = 600
-        
+
         # If project path provided, load it
         if project_path:
             self.load_project_data_only(project_path)
@@ -387,21 +396,26 @@ class GameRunner:
             
             # Assign sprites to room instances
             self.assign_sprites_to_rooms()
-            
+
             print(f"\nCurrent room: {self.current_room.name}")
             print(f"Room instances: {len(self.current_room.instances)}")
-            
+
             # Count instances by type for summary
             instance_counts = {}
             for instance in self.current_room.instances:
                 obj_name = instance.object_name
                 instance_counts[obj_name] = instance_counts.get(obj_name, 0) + 1
-            
+
             print(f"Instance summary:")
             for obj_name, count in sorted(instance_counts.items()):
                 print(f"  {obj_name}: {count}")
 
-            
+            # IMPORTANT: Execute create events for starting room instances
+            print(f"\n🎬 Triggering create events for starting room: {self.current_room.name}")
+            for instance in self.current_room.instances:
+                if instance.object_data and "events" in instance.object_data:
+                    self.action_executor.execute_event(instance, "create", instance.object_data["events"])
+
             self.running = True
             
             # Main game loop
@@ -602,10 +616,9 @@ class GameRunner:
         # Check collision events
         for instance in self.current_room.instances:
             self.check_collision_events(instance, objects_data)
-        
-        # Execute step events for all instances
-        for instance in self.current_room.instances:
-            instance.step()
+
+        # NOTE: Step events are executed in the main game loop, not here
+        # (see run_game_loop where instance.step() is called)
     
     def check_movement_collision(self, moving_instance, objects_data: dict) -> bool:
         """Check if intended movement would collide with solid objects"""
@@ -658,6 +671,7 @@ class GameRunner:
                     
                     if other_instance.object_name == target_object:
                         if self.instances_overlap(instance, other_instance):
+                            print(f"🎯 COLLISION DETECTED: {instance.object_name} with {other_instance.object_name}")
                             # Pass other_instance as context for collision actions
                             instance.action_executor.execute_collision_event(instance, event_name, events, other_instance)
                             break
@@ -692,20 +706,25 @@ class GameRunner:
     
     def goto_next_room(self):
         """Go to the next room"""
+        print(f"🚪 goto_next_room called")
         if not self.current_room:
+            print(f"❌ No current room!")
             return
-        
+
         room_list = self.get_room_list()
+        print(f"🔍 Room list: {room_list}")
         if not room_list:
+            print(f"❌ Room list is empty!")
             return
-        
+
         try:
             current_index = room_list.index(self.current_room.name)
             next_index = (current_index + 1) % len(room_list)
             next_room_name = room_list[next_index]
+            print(f"➡️  Changing from '{self.current_room.name}' (index {current_index}) to '{next_room_name}' (index {next_index})")
             self.change_room(next_room_name)
         except ValueError:
-            print(f"Current room '{self.current_room.name}' not in room list")
+            print(f"❌ Current room '{self.current_room.name}' not in room list")
     
     def get_room_list(self) -> List[str]:
         """Get ordered list of room names"""
@@ -725,7 +744,18 @@ class GameRunner:
         if room_name in self.rooms:
             print(f"🚪 Changing to room: {room_name}")
             self.current_room = self.rooms[room_name]
-            
+
+            # Resize the window if room size is different
+            if self.screen:
+                room_width = self.current_room.width
+                room_height = self.current_room.height
+                current_width, current_height = self.screen.get_size()
+
+                if room_width != current_width or room_height != current_height:
+                    print(f"📐 Resizing window from {current_width}x{current_height} to {room_width}x{room_height}")
+                    self.screen = pygame.display.set_mode((room_width, room_height))
+                    print(f"✅ Window resized to {room_width}x{room_height}")
+
             # Execute create events for all instances
             for instance in self.current_room.instances:
                 if instance.object_data and "events" in instance.object_data:
