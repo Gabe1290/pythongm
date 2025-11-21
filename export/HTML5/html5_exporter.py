@@ -740,6 +740,35 @@ class GameObject {
                 }
                 break;
 
+            case 'next_room':
+                // Go to next room in the room order
+                const roomNamesNext = Object.keys(game.rooms);
+                const currentIndexNext = roomNamesNext.indexOf(game.currentRoom.name);
+                if (currentIndexNext >= 0 && currentIndexNext < roomNamesNext.length - 1) {
+                    const nextRoomName = roomNamesNext[currentIndexNext + 1];
+                    game.changeRoom(nextRoomName);
+                } else {
+                    console.log('Already at last room');
+                }
+                break;
+
+            case 'previous_room':
+                // Go to previous room in the room order
+                const roomNamesPrev = Object.keys(game.rooms);
+                const currentIndexPrev = roomNamesPrev.indexOf(game.currentRoom.name);
+                if (currentIndexPrev > 0) {
+                    const prevRoomName = roomNamesPrev[currentIndexPrev - 1];
+                    game.changeRoom(prevRoomName);
+                } else {
+                    console.log('Already at first room');
+                }
+                break;
+
+            case 'restart_room':
+                // Restart current room
+                game.changeRoom(game.currentRoom.name);
+                break;
+
             case 'change_room':
             case 'go_to_room':
                 let roomName = params.room_name || params.room;
