@@ -87,6 +87,9 @@ class BlocklyWidget(QWidget):
         self.web_view = QWebEngineView()
         self.web_view.setMinimumHeight(400)
 
+        # Hide web view until loaded to prevent visual flickering
+        self.web_view.setVisible(False)
+
         # Configure web settings to allow external scripts
         settings = self.web_view.page().settings()
         settings.setAttribute(QWebEngineSettings.WebAttribute.JavascriptEnabled, True)
@@ -118,6 +121,9 @@ class BlocklyWidget(QWidget):
 
     def on_load_finished(self, ok: bool):
         """Handle page load completion"""
+        # Show the web view now that it's loaded
+        self.web_view.setVisible(True)
+
         if ok:
             self.update_status("Drag blocks from the toolbox on the left to create game logic!")
         else:
@@ -126,6 +132,7 @@ class BlocklyWidget(QWidget):
     def reload_blockly(self):
         """Reload the Blockly workspace"""
         self.update_status("Reloading Blockly...")
+        self.web_view.setVisible(False)  # Hide during reload
         self._load_blockly_html()
 
     def setup_web_channel(self):
