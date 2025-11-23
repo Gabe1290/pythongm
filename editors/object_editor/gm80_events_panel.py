@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QTreeWidget, QTreeWidgetItem,
     QPushButton, QMenu, QMessageBox, QDialog, QLabel
 )
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QFont
 
 # Import GM8.0 event and action systems
@@ -62,9 +62,25 @@ class GM80EventsPanel(QWidget):
         # Disable auto-collapse behavior
         self.events_tree.setAnimated(False)  # Disable animations that might collapse items
 
-        # Configure header
+        # Configure header for 55-45 split (Event column slightly wider)
         header = self.events_tree.header()
         header.setStretchLastSection(True)
+        header.setSectionResizeMode(0, header.ResizeMode.Interactive)  # Event column resizable
+
+        # Set initial column width after widget is shown
+        def set_initial_widths():
+            total_width = self.events_tree.viewport().width()
+            self.events_tree.setColumnWidth(0, int(total_width * 0.55))
+
+        QTimer.singleShot(100, set_initial_widths)
+
+        # Maintain proportions on resize
+        def on_resize(event):
+            QTreeWidget.resizeEvent(self.events_tree, event)
+            viewport_width = self.events_tree.viewport().width()
+            self.events_tree.setColumnWidth(0, int(viewport_width * 0.55))
+
+        self.events_tree.resizeEvent = on_resize
 
         layout.addWidget(self.events_tree)
 
@@ -128,10 +144,23 @@ class GM80EventsPanel(QWidget):
     def add_keyboard_submenu(self, parent_menu, event):
         """Add keyboard event with key selector"""
         for event_def in get_events_by_category("keyboard"):
-            action = parent_menu.addAction(f"{event_def.icon} {event_def.display_name}...")
-            action.triggered.connect(
-                lambda checked, e=event_def: self.add_keyboard_event_with_dialog(e.name)
+            # Check if this event requires a key selector (has parameters)
+            needs_key_selector = event_def.parameters and any(
+                p.get("type") == "key_selector" for p in event_def.parameters
             )
+
+            if needs_key_selector:
+                # Events that need key selection: add "..." and open dialog
+                action = parent_menu.addAction(f"{event_def.icon} {event_def.display_name}...")
+                action.triggered.connect(
+                    lambda checked, e=event_def: self.add_keyboard_event_with_dialog(e.name)
+                )
+            else:
+                # Direct events (No Key, Any Key): no "..." and add directly
+                action = parent_menu.addAction(f"{event_def.icon} {event_def.display_name}")
+                action.triggered.connect(
+                    lambda checked, e=event_def: self.add_direct_keyboard_event(e.name)
+                )
 
     def add_event(self, event_name: str):
         """Add a simple event"""
@@ -141,6 +170,34 @@ class GM80EventsPanel(QWidget):
             return
 
         self.current_events_data[event_name] = {"actions": []}
+        self.refresh_display()
+        self.events_modified.emit()
+
+    def add_direct_keyboard_event(self, event_name: str):
+        """Add a direct keyboard event (No Key, Any Key) without key selector"""
+        # These events use the "keyboard" parent with a special subtype
+        # e.g., keyboard_no_key -> keyboard.nokey, keyboard_any_key -> keyboard.anykey
+        if event_name == "keyboard_no_key":
+            parent_event = "keyboard"
+            subtype = "nokey"
+        elif event_name == "keyboard_any_key":
+            parent_event = "keyboard"
+            subtype = "anykey"
+        else:
+            # Fallback - just add as a simple event
+            self.add_event(event_name)
+            return
+
+        # Create nested structure like other keyboard events
+        if parent_event not in self.current_events_data:
+            self.current_events_data[parent_event] = {}
+
+        if subtype in self.current_events_data[parent_event]:
+            QMessageBox.information(self, "Event Exists",
+                f"The {event_name} event already exists.")
+            return
+
+        self.current_events_data[parent_event][subtype] = {"actions": []}
         self.refresh_display()
         self.events_modified.emit()
 

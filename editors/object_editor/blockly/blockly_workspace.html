@@ -118,10 +118,15 @@
             <block type="event_step"></block>
             <block type="event_draw"></block>
             <block type="event_destroy"></block>
-            <block type="event_keyboard">
+            <block type="event_keyboard_nokey"></block>
+            <block type="event_keyboard_anykey"></block>
+            <block type="event_keyboard_held">
                 <field name="KEY">right</field>
             </block>
             <block type="event_keyboard_press">
+                <field name="KEY">space</field>
+            </block>
+            <block type="event_keyboard_release">
                 <field name="KEY">space</field>
             </block>
             <block type="event_mouse">
@@ -416,47 +421,112 @@
             }
         };
 
-        Blockly.Blocks['event_keyboard'] = {
+        // Complete list of all available keys for the key selector
+        var ALL_KEYS = [
+            // Arrow keys
+            ["Right Arrow", "right"],
+            ["Left Arrow", "left"],
+            ["Up Arrow", "up"],
+            ["Down Arrow", "down"],
+            // Common keys
+            ["Space", "space"],
+            ["Enter", "enter"],
+            ["Escape", "escape"],
+            ["Tab", "tab"],
+            ["Backspace", "backspace"],
+            ["Delete", "delete"],
+            // Modifier keys
+            ["Left Shift", "lshift"],
+            ["Right Shift", "rshift"],
+            ["Left Ctrl", "lctrl"],
+            ["Right Ctrl", "rctrl"],
+            ["Left Alt", "lalt"],
+            ["Right Alt", "ralt"],
+            // Letters A-Z
+            ["A", "a"], ["B", "b"], ["C", "c"], ["D", "d"], ["E", "e"],
+            ["F", "f"], ["G", "g"], ["H", "h"], ["I", "i"], ["J", "j"],
+            ["K", "k"], ["L", "l"], ["M", "m"], ["N", "n"], ["O", "o"],
+            ["P", "p"], ["Q", "q"], ["R", "r"], ["S", "s"], ["T", "t"],
+            ["U", "u"], ["V", "v"], ["W", "w"], ["X", "x"], ["Y", "y"], ["Z", "z"],
+            // Numbers 0-9
+            ["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"],
+            ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"],
+            // Function keys
+            ["F1", "f1"], ["F2", "f2"], ["F3", "f3"], ["F4", "f4"],
+            ["F5", "f5"], ["F6", "f6"], ["F7", "f7"], ["F8", "f8"],
+            ["F9", "f9"], ["F10", "f10"], ["F11", "f11"], ["F12", "f12"],
+            // Navigation keys
+            ["Home", "home"], ["End", "end"],
+            ["Page Up", "pageup"], ["Page Down", "pagedown"],
+            ["Insert", "insert"],
+            // Numpad
+            ["Numpad 0", "numpad_0"], ["Numpad 1", "numpad_1"], ["Numpad 2", "numpad_2"],
+            ["Numpad 3", "numpad_3"], ["Numpad 4", "numpad_4"], ["Numpad 5", "numpad_5"],
+            ["Numpad 6", "numpad_6"], ["Numpad 7", "numpad_7"], ["Numpad 8", "numpad_8"],
+            ["Numpad 9", "numpad_9"],
+            ["Numpad +", "numpad_plus"], ["Numpad -", "numpad_minus"],
+            ["Numpad *", "numpad_multiply"], ["Numpad /", "numpad_divide"],
+            ["Numpad Enter", "numpad_enter"], ["Numpad .", "numpad_period"]
+        ];
+
+        // ============ KEYBOARD EVENT BLOCKS (5 separate blocks) ============
+
+        Blockly.Blocks['event_keyboard_nokey'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("When key")
-                    .appendField(new Blockly.FieldDropdown([
-                        ["Right Arrow", "right"],
-                        ["Left Arrow", "left"],
-                        ["Up Arrow", "up"],
-                        ["Down Arrow", "down"],
-                        ["Space", "space"],
-                        ["Enter", "enter"],
-                        ["A", "a"], ["B", "b"], ["C", "c"], ["D", "d"],
-                        ["W", "w"], ["S", "s"]
-                    ]), "KEY")
-                    .appendField("is held");
+                    .appendField("Keyboard: No key");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#FFD500");
-                this.setTooltip("Runs while the key is being held down");
+                this.setTooltip("Runs when no keyboard key is pressed");
+            }
+        };
+
+        Blockly.Blocks['event_keyboard_anykey'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("Keyboard: Any key");
+                this.appendStatementInput("DO")
+                    .setCheck(null);
+                this.setColour("#FFD500");
+                this.setTooltip("Runs when any keyboard key is pressed");
+            }
+        };
+
+        Blockly.Blocks['event_keyboard_held'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("Keyboard:")
+                    .appendField(new Blockly.FieldDropdown(ALL_KEYS), "KEY")
+                    .appendField("(held)");
+                this.appendStatementInput("DO")
+                    .setCheck(null);
+                this.setColour("#FFD500");
+                this.setTooltip("Runs continuously while the key is held down");
             }
         };
 
         Blockly.Blocks['event_keyboard_press'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("When key")
-                    .appendField(new Blockly.FieldDropdown([
-                        ["Right Arrow", "right"],
-                        ["Left Arrow", "left"],
-                        ["Up Arrow", "up"],
-                        ["Down Arrow", "down"],
-                        ["Space", "space"],
-                        ["Enter", "enter"],
-                        ["A", "a"], ["B", "b"], ["C", "c"], ["D", "d"],
-                        ["W", "w"], ["S", "s"]
-                    ]), "KEY")
-                    .appendField("is pressed");
+                    .appendField("Key press:")
+                    .appendField(new Blockly.FieldDropdown(ALL_KEYS), "KEY");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#FFD500");
                 this.setTooltip("Runs once when the key is first pressed");
+            }
+        };
+
+        Blockly.Blocks['event_keyboard_release'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("Key release:")
+                    .appendField(new Blockly.FieldDropdown(ALL_KEYS), "KEY");
+                this.appendStatementInput("DO")
+                    .setCheck(null);
+                this.setColour("#FFD500");
+                this.setTooltip("Runs once when the key is released");
             }
         };
 
@@ -1078,8 +1148,11 @@
                 case 'event_step': return {event: 'step'};
                 case 'event_draw': return {event: 'draw'};
                 case 'event_destroy': return {event: 'destroy'};
-                case 'event_keyboard': return {event: 'keyboard', subtype: block.getFieldValue('KEY')};
+                case 'event_keyboard_nokey': return {event: 'keyboard', subtype: 'nokey'};
+                case 'event_keyboard_anykey': return {event: 'keyboard', subtype: 'anykey'};
+                case 'event_keyboard_held': return {event: 'keyboard', subtype: block.getFieldValue('KEY')};
                 case 'event_keyboard_press': return {event: 'keyboard_press', subtype: block.getFieldValue('KEY')};
+                case 'event_keyboard_release': return {event: 'keyboard_release', subtype: block.getFieldValue('KEY')};
                 case 'event_mouse': return {event: 'mouse_' + block.getFieldValue('BUTTON')};
                 case 'event_collision': return {event: 'collision_with_' + block.getFieldValue('OBJECT')};
                 default: return null;
@@ -1254,8 +1327,9 @@
             'step': 'event_step',
             'draw': 'event_draw',
             'destroy': 'event_destroy',
-            'keyboard': 'event_keyboard',
-            'keyboard_press': 'event_keyboard_press'
+            'keyboard': 'event_keyboard_held',
+            'keyboard_press': 'event_keyboard_press',
+            'keyboard_release': 'event_keyboard_release'
         };
 
         function loadEventsData(eventsJson) {
@@ -1394,14 +1468,23 @@
             } else if (eventName === 'destroy') {
                 blockType = 'event_destroy';
             } else if (eventName.startsWith('keyboard_')) {
-                // keyboard_right, keyboard_press_space, etc.
-                var key = eventName.replace('keyboard_press_', '').replace('keyboard_', '');
-                if (eventName.includes('_press_')) {
+                // keyboard_right, keyboard_press_space, keyboard_release_space, keyboard_nokey, keyboard_anykey, etc.
+                var key = eventName.replace('keyboard_release_', '').replace('keyboard_press_', '').replace('keyboard_', '');
+
+                if (key === 'nokey') {
+                    blockType = 'event_keyboard_nokey';
+                } else if (key === 'anykey') {
+                    blockType = 'event_keyboard_anykey';
+                } else if (eventName.includes('_release_')) {
+                    blockType = 'event_keyboard_release';
+                    fields['KEY'] = key;
+                } else if (eventName.includes('_press_')) {
                     blockType = 'event_keyboard_press';
+                    fields['KEY'] = key;
                 } else {
-                    blockType = 'event_keyboard';
+                    blockType = 'event_keyboard_held';
+                    fields['KEY'] = key;
                 }
-                fields['KEY'] = key;
             } else if (eventName.startsWith('mouse_')) {
                 blockType = 'event_mouse';
                 var button = eventName.replace('mouse_', '');

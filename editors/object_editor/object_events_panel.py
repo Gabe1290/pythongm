@@ -58,16 +58,16 @@ class ObjectEventsPanel(QWidget):
         self.events_tree.setWordWrap(False)  # Don't wrap text
         self.events_tree.setTextElideMode(Qt.ElideRight)  # Show ... at end if too long
 
-        # Configure header for 50/50 split with dynamic resizing
+        # Configure header for 55-45 split with dynamic resizing
         header = self.events_tree.header()
         header.setStretchLastSection(True)
         header.setSectionResizeMode(0, header.ResizeMode.Interactive)  # Event column resizable
         # Column 1 (Actions) will stretch automatically
 
-        # Set initial 50/50 split after widget is shown
+        # Set initial 55-45 split after widget is shown (Event column slightly wider)
         def set_initial_widths():
             total_width = self.events_tree.viewport().width()
-            self.events_tree.setColumnWidth(0, total_width // 2)
+            self.events_tree.setColumnWidth(0, int(total_width * 0.55))
 
         # Delay setting widths until widget is visible
         QTimer.singleShot(100, set_initial_widths)
@@ -77,9 +77,9 @@ class ObjectEventsPanel(QWidget):
             """Keep columns proportional when resizing"""
             # Let the default handler run first
             QTreeWidget.resizeEvent(self.events_tree, event)
-            # Then adjust column 0 to be 50% of visible width
+            # Then adjust column 0 to be 55% of visible width
             viewport_width = self.events_tree.viewport().width()
-            self.events_tree.setColumnWidth(0, viewport_width // 2)
+            self.events_tree.setColumnWidth(0, int(viewport_width * 0.55))
 
         # Override resize event
         self.events_tree.resizeEvent = on_resize
