@@ -160,22 +160,27 @@ class ProjectManager(QObject):
         """Load an existing project (compatibility method)"""
         try:
             project_path = Path(project_path)
-            
+            print(f"DEBUG PM load_project: path={project_path}")
+
             # Check if project file exists
             project_file = project_path / self.PROJECT_FILE
+            print(f"DEBUG PM load_project: checking for {project_file}, exists={project_file.exists()}")
             if not project_file.exists():
                 self.status_changed.emit(f"Project file not found: {project_file}")
                 return False
-            
+
             # Load project data with object_pairs_hook to preserve order
             with open(project_file, 'r', encoding='utf-8') as f:
                 from collections import OrderedDict
                 project_data = json.load(f, object_pairs_hook=OrderedDict)
-            
+            print(f"DEBUG PM load_project: loaded data keys={list(project_data.keys())}")
+
             # Validate project data
             if not self._validate_project_data(project_data):
+                print(f"DEBUG PM load_project: validation FAILED")
                 self.status_changed.emit("Invalid project file format")
                 return False
+            print(f"DEBUG PM load_project: validation passed")
             
             # Update asset manager with project location FIRST
             if self.asset_manager:

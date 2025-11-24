@@ -930,14 +930,29 @@ class PyGameMakerIDE(QMainWindow):
         dialog = NewProjectDialog(self)
         if dialog.exec():
             project_info = dialog.get_project_info()
+            print(f"DEBUG new_project: project_info = {project_info}")
 
             if self.project_manager.create_project(
                 project_info["name"],
                 project_info["path"],
                 project_info["template"]
             ):
+                # Update IDE state with newly created project
+                project_path = self.project_manager.current_project_path
+                project_data = self.project_manager.current_project_data
+                print(f"DEBUG new_project: project_path = {project_path}")
+                print(f"DEBUG new_project: project_data keys = {list(project_data.keys()) if project_data else None}")
+
+                # Call on_project_loaded to properly initialize the IDE
+                self.on_project_loaded(project_path, project_data)
+                print("DEBUG new_project: on_project_loaded called")
+
+                # Add to recent projects
+                self.add_to_recent_projects(str(project_path))
+
                 self.update_status(self.tr("Project created successfully"))
             else:
+                print("DEBUG new_project: create_project returned False")
                 QMessageBox.warning(self, self.tr("Error"), self.tr("Failed to create project"))
 
     def open_project(self):
@@ -970,12 +985,15 @@ class PyGameMakerIDE(QMainWindow):
         self.load_project(Path(project_path))
 
     def load_project(self, project_path):
+        print(f"DEBUG load_project: Attempting to load from {project_path}")
         if self.project_manager.load_project(project_path):
+            print(f"DEBUG load_project: project_manager.load_project succeeded")
             self.asset_tree.project_manager = self.project_manager
 
             Config.set("last_project_directory", str(project_path.parent))
             self.add_to_recent_projects(str(project_path))
         else:
+            print(f"DEBUG load_project: project_manager.load_project FAILED")
             QMessageBox.warning(self, self.tr("Error"), self.tr("Failed to load project"))
 
     def save_project(self):
@@ -2151,6 +2169,7 @@ class PyGameMakerIDE(QMainWindow):
                 break
 
     def on_project_loaded(self, project_path, project_data):
+        print(f"DEBUG on_project_loaded: START - path={project_path}, data_keys={list(project_data.keys()) if project_data else None}")
         self.current_project_path = project_path
         self.current_project_data = project_data
 
@@ -2170,7 +2189,9 @@ class PyGameMakerIDE(QMainWindow):
             self.game_runner = None
 
         # Load assets into asset tree (order is preserved through OrderedDict)
+        print(f"DEBUG on_project_loaded: calling asset_tree.set_project")
         self.asset_tree.set_project(str(project_path), project_data)
+        print(f"DEBUG on_project_loaded: asset_tree.set_project done")
 
         # Set project base path for properties panel
         if hasattr(self.properties_panel, 'set_project_base_path'):
@@ -2179,6 +2200,7 @@ class PyGameMakerIDE(QMainWindow):
         self.update_window_title()
         self.update_ui_state()
         self.update_status(self.tr("Project loaded: {0}").format(project_data['name']))
+        print(f"DEBUG on_project_loaded: END")
 
     def on_project_saved(self):
         self.update_status(self.tr("Project saved"))

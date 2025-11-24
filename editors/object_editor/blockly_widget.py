@@ -79,6 +79,12 @@ class BlocklyWidget(QWidget):
         self.reload_button.clicked.connect(self.reload_blockly)
         toolbar.addWidget(self.reload_button)
 
+        # Configure blocks button
+        self.configure_btn = QPushButton("Configure Blocks...")
+        self.configure_btn.setToolTip("Choose which blocks are available in the toolbox")
+        self.configure_btn.clicked.connect(self.open_configure_dialog)
+        toolbar.addWidget(self.configure_btn)
+
         toolbar.addStretch()
 
         layout.addLayout(toolbar)
@@ -125,6 +131,8 @@ class BlocklyWidget(QWidget):
         self.web_view.setVisible(True)
 
         if ok:
+            # Apply saved configuration to toolbox
+            self._apply_saved_configuration()
             self.update_status("Drag blocks from the toolbox on the left to create game logic!")
         else:
             self.update_status("Error loading Blockly - click Reload to try again")
@@ -271,6 +279,45 @@ class BlocklyWidget(QWidget):
         """Request sync from events panel (emits signal for parent to handle)"""
         self.update_status("Requesting sync from events...")
         self.sync_requested.emit()
+
+    def open_configure_dialog(self):
+        """Open the block configuration dialog"""
+        from dialogs.blockly_config_dialog import BlocklyConfigDialog
+        from config.blockly_config import load_config
+
+        current_config = load_config()
+        dialog = BlocklyConfigDialog(self, current_config)
+        dialog.config_changed.connect(self.apply_configuration)
+        dialog.exec()
+
+    def apply_configuration(self, config):
+        """Apply a new block configuration to the toolbox"""
+        from config.blockly_config import BlocklyConfig
+
+        # Convert config to JSON format expected by JavaScript
+        config_dict = {
+            'enabled_blocks': list(config.enabled_blocks),
+            'enabled_categories': list(config.enabled_categories),
+            'preset_name': config.preset_name
+        }
+        config_json = json.dumps(config_dict)
+
+        # Call JavaScript to reconfigure toolbox
+        self.web_view.page().runJavaScript(
+            f"window.blocklyApi.reconfigureToolbox({config_json})"
+        )
+
+        # Update status
+        total_blocks = len(config.enabled_blocks)
+        total_categories = len(config.enabled_categories)
+        self.update_status(f"Configuration applied: {total_blocks} blocks, {total_categories} categories")
+
+    def _apply_saved_configuration(self):
+        """Apply the saved configuration on startup"""
+        from config.blockly_config import load_config
+
+        config = load_config()
+        self.apply_configuration(config)
 
 
 class BlocklyVisualProgrammingTab(QWidget):

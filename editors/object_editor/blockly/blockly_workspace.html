@@ -135,6 +135,9 @@
             <block type="event_collision">
                 <field name="OBJECT">obj_wall</field>
             </block>
+            <block type="event_alarm">
+                <field name="ALARM_NUM">0</field>
+            </block>
         </category>
 
         <!-- Movement Category -->
@@ -196,6 +199,81 @@
             <block type="grid_if_on_grid">
                 <value name="GRID_SIZE">
                     <shadow type="math_number"><field name="NUM">32</field></shadow>
+                </value>
+            </block>
+            <block type="set_gravity">
+                <value name="DIRECTION">
+                    <shadow type="math_number"><field name="NUM">270</field></shadow>
+                </value>
+                <value name="GRAVITY">
+                    <shadow type="math_number"><field name="NUM">0.5</field></shadow>
+                </value>
+            </block>
+            <block type="set_friction">
+                <value name="FRICTION">
+                    <shadow type="math_number"><field name="NUM">0.1</field></shadow>
+                </value>
+            </block>
+            <block type="reverse_horizontal"></block>
+            <block type="reverse_vertical"></block>
+        </category>
+
+        <!-- Timing Category -->
+        <category name="Timing" colour="#FF6B6B">
+            <block type="set_alarm">
+                <field name="ALARM_NUM">0</field>
+                <value name="STEPS">
+                    <shadow type="math_number"><field name="NUM">30</field></shadow>
+                </value>
+            </block>
+        </category>
+
+        <!-- Drawing Category -->
+        <category name="Drawing" colour="#9B59B6">
+            <block type="draw_text">
+                <value name="TEXT">
+                    <shadow type="text"><field name="TEXT">Hello!</field></shadow>
+                </value>
+                <value name="X">
+                    <shadow type="math_number"><field name="NUM">100</field></shadow>
+                </value>
+                <value name="Y">
+                    <shadow type="math_number"><field name="NUM">100</field></shadow>
+                </value>
+            </block>
+            <block type="draw_rectangle">
+                <value name="X">
+                    <shadow type="math_number"><field name="NUM">100</field></shadow>
+                </value>
+                <value name="Y">
+                    <shadow type="math_number"><field name="NUM">100</field></shadow>
+                </value>
+                <value name="WIDTH">
+                    <shadow type="math_number"><field name="NUM">50</field></shadow>
+                </value>
+                <value name="HEIGHT">
+                    <shadow type="math_number"><field name="NUM">50</field></shadow>
+                </value>
+                <field name="COLOR">#FF0000</field>
+            </block>
+            <block type="draw_circle">
+                <value name="X">
+                    <shadow type="math_number"><field name="NUM">100</field></shadow>
+                </value>
+                <value name="Y">
+                    <shadow type="math_number"><field name="NUM">100</field></shadow>
+                </value>
+                <value name="RADIUS">
+                    <shadow type="math_number"><field name="NUM">25</field></shadow>
+                </value>
+                <field name="COLOR">#00FF00</field>
+            </block>
+            <block type="set_sprite">
+                <field name="SPRITE">spr_player</field>
+            </block>
+            <block type="set_alpha">
+                <value name="ALPHA">
+                    <shadow type="math_number"><field name="NUM">1.0</field></shadow>
                 </value>
             </block>
         </category>
@@ -1046,6 +1124,191 @@
             }
         };
 
+        // ============ ALARM EVENT BLOCK ============
+        Blockly.Blocks['event_alarm'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("When alarm")
+                    .appendField(new Blockly.FieldDropdown([
+                        ["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"],
+                        ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"],
+                        ["8", "8"], ["9", "9"], ["10", "10"], ["11", "11"]
+                    ]), "ALARM_NUM")
+                    .appendField("triggers");
+                this.appendStatementInput("DO")
+                    .setCheck(null);
+                this.setColour("#FFD500");
+                this.setTooltip("Runs when the alarm reaches zero");
+            }
+        };
+
+        // ============ TIMING BLOCKS ============
+        Blockly.Blocks['set_alarm'] = {
+            init: function() {
+                this.appendValueInput("STEPS")
+                    .setCheck("Number")
+                    .appendField("Set alarm")
+                    .appendField(new Blockly.FieldDropdown([
+                        ["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"],
+                        ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"],
+                        ["8", "8"], ["9", "9"], ["10", "10"], ["11", "11"]
+                    ]), "ALARM_NUM")
+                    .appendField("to");
+                this.appendDummyInput()
+                    .appendField("steps");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#FF6B6B");
+                this.setTooltip("Set an alarm to trigger after specified steps");
+            }
+        };
+
+        // ============ DRAWING BLOCKS ============
+        Blockly.Blocks['draw_text'] = {
+            init: function() {
+                this.appendValueInput("TEXT")
+                    .setCheck("String")
+                    .appendField("Draw text");
+                this.appendValueInput("X")
+                    .setCheck("Number")
+                    .appendField("at x:");
+                this.appendValueInput("Y")
+                    .setCheck("Number")
+                    .appendField("y:");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#9B59B6");
+                this.setTooltip("Draw text on screen");
+            }
+        };
+
+        Blockly.Blocks['draw_rectangle'] = {
+            init: function() {
+                this.appendValueInput("X")
+                    .setCheck("Number")
+                    .appendField("Draw rectangle at x:");
+                this.appendValueInput("Y")
+                    .setCheck("Number")
+                    .appendField("y:");
+                this.appendValueInput("WIDTH")
+                    .setCheck("Number")
+                    .appendField("width:");
+                this.appendValueInput("HEIGHT")
+                    .setCheck("Number")
+                    .appendField("height:");
+                this.appendValueInput("COLOR")
+                    .setCheck("String")
+                    .appendField("color:");
+                this.setInputsInline(false);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#9B59B6");
+                this.setTooltip("Draw a filled rectangle");
+            }
+        };
+
+        Blockly.Blocks['draw_circle'] = {
+            init: function() {
+                this.appendValueInput("X")
+                    .setCheck("Number")
+                    .appendField("Draw circle at x:");
+                this.appendValueInput("Y")
+                    .setCheck("Number")
+                    .appendField("y:");
+                this.appendValueInput("RADIUS")
+                    .setCheck("Number")
+                    .appendField("radius:");
+                this.appendValueInput("COLOR")
+                    .setCheck("String")
+                    .appendField("color:");
+                this.setInputsInline(false);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#9B59B6");
+                this.setTooltip("Draw a filled circle");
+            }
+        };
+
+        Blockly.Blocks['set_sprite'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("Set sprite to")
+                    .appendField(new Blockly.FieldTextInput("spr_player"), "SPRITE");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#9B59B6");
+                this.setTooltip("Change the sprite");
+            }
+        };
+
+        Blockly.Blocks['set_alpha'] = {
+            init: function() {
+                this.appendValueInput("ALPHA")
+                    .setCheck("Number")
+                    .appendField("Set transparency to");
+                this.appendDummyInput()
+                    .appendField("(0-1)");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#9B59B6");
+                this.setTooltip("Set sprite transparency (0=invisible, 1=solid)");
+            }
+        };
+
+        // ============ PHYSICS BLOCKS ============
+        Blockly.Blocks['set_gravity'] = {
+            init: function() {
+                this.appendValueInput("DIRECTION")
+                    .setCheck("Number")
+                    .appendField("Set gravity direction:");
+                this.appendValueInput("STRENGTH")
+                    .setCheck("Number")
+                    .appendField("strength:");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5C81A6");
+                this.setTooltip("Apply gravity to this instance");
+            }
+        };
+
+        Blockly.Blocks['set_friction'] = {
+            init: function() {
+                this.appendValueInput("FRICTION")
+                    .setCheck("Number")
+                    .appendField("Set friction to");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5C81A6");
+                this.setTooltip("Set movement friction");
+            }
+        };
+
+        Blockly.Blocks['reverse_horizontal'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("Reverse horizontal movement");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5C81A6");
+                this.setTooltip("Reverse horizontal direction");
+            }
+        };
+
+        Blockly.Blocks['reverse_vertical'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField("Reverse vertical movement");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5C81A6");
+                this.setTooltip("Reverse vertical direction");
+            }
+        };
+
         // Create a dark theme for PyGameMaker
         var darkTheme = Blockly.Theme.defineTheme('pygamemaker_dark', {
             'base': Blockly.Themes.Classic,
@@ -1148,6 +1411,7 @@
                 case 'event_step': return {event: 'step'};
                 case 'event_draw': return {event: 'draw'};
                 case 'event_destroy': return {event: 'destroy'};
+                case 'event_alarm': return {event: 'alarm_' + block.getFieldValue('ALARM_NUM')};
                 case 'event_keyboard_nokey': return {event: 'keyboard', subtype: 'nokey'};
                 case 'event_keyboard_anykey': return {event: 'keyboard', subtype: 'anykey'};
                 case 'event_keyboard_held': return {event: 'keyboard', subtype: block.getFieldValue('KEY')};
@@ -1249,6 +1513,26 @@
                     return {action: 'stop_music', parameters: {}};
                 case 'output_message':
                     return {action: 'show_message', parameters: {message: getInputValue(block, 'MESSAGE', '')}};
+                case 'set_alarm':
+                    return {action: 'set_alarm', parameters: {alarm_num: parseInt(block.getFieldValue('ALARM_NUM')), steps: getInputValue(block, 'STEPS', 30)}};
+                case 'draw_text':
+                    return {action: 'draw_text', parameters: {text: getInputValue(block, 'TEXT', ''), x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0)}};
+                case 'draw_rectangle':
+                    return {action: 'draw_rectangle', parameters: {x1: getInputValue(block, 'X', 0), y1: getInputValue(block, 'Y', 0), x2: getInputValue(block, 'X', 0) + getInputValue(block, 'WIDTH', 100), y2: getInputValue(block, 'Y', 0) + getInputValue(block, 'HEIGHT', 100), color: getInputValue(block, 'COLOR', 'white')}};
+                case 'draw_circle':
+                    return {action: 'draw_circle', parameters: {x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0), radius: getInputValue(block, 'RADIUS', 50), color: getInputValue(block, 'COLOR', 'white')}};
+                case 'set_sprite':
+                    return {action: 'set_sprite', parameters: {sprite: block.getFieldValue('SPRITE')}};
+                case 'set_alpha':
+                    return {action: 'set_alpha', parameters: {alpha: getInputValue(block, 'ALPHA', 1.0)}};
+                case 'set_gravity':
+                    return {action: 'set_gravity', parameters: {direction: getInputValue(block, 'DIRECTION', 270), strength: getInputValue(block, 'STRENGTH', 0.5)}};
+                case 'set_friction':
+                    return {action: 'set_friction', parameters: {friction: getInputValue(block, 'FRICTION', 0)}};
+                case 'reverse_horizontal':
+                    return {action: 'reverse_horizontal', parameters: {}};
+                case 'reverse_vertical':
+                    return {action: 'reverse_vertical', parameters: {}};
                 default:
                     return null;
             }
@@ -1318,7 +1602,17 @@
             'play_sound': 'sound_play',
             'play_music': 'music_play',
             'stop_music': 'music_stop',
-            'show_message': 'output_message'
+            'show_message': 'output_message',
+            'set_alarm': 'set_alarm',
+            'draw_text': 'draw_text',
+            'draw_rectangle': 'draw_rectangle',
+            'draw_circle': 'draw_circle',
+            'set_sprite': 'set_sprite',
+            'set_alpha': 'set_alpha',
+            'set_gravity': 'set_gravity',
+            'set_friction': 'set_friction',
+            'reverse_horizontal': 'reverse_horizontal',
+            'reverse_vertical': 'reverse_vertical'
         };
 
         // Map event names to block types
@@ -1329,7 +1623,19 @@
             'destroy': 'event_destroy',
             'keyboard': 'event_keyboard_held',
             'keyboard_press': 'event_keyboard_press',
-            'keyboard_release': 'event_keyboard_release'
+            'keyboard_release': 'event_keyboard_release',
+            'alarm_0': 'event_alarm',
+            'alarm_1': 'event_alarm',
+            'alarm_2': 'event_alarm',
+            'alarm_3': 'event_alarm',
+            'alarm_4': 'event_alarm',
+            'alarm_5': 'event_alarm',
+            'alarm_6': 'event_alarm',
+            'alarm_7': 'event_alarm',
+            'alarm_8': 'event_alarm',
+            'alarm_9': 'event_alarm',
+            'alarm_10': 'event_alarm',
+            'alarm_11': 'event_alarm'
         };
 
         function loadEventsData(eventsJson) {
@@ -1467,6 +1773,11 @@
                 blockType = 'event_draw';
             } else if (eventName === 'destroy') {
                 blockType = 'event_destroy';
+            } else if (eventName.startsWith('alarm_')) {
+                blockType = 'event_alarm';
+                // Extract alarm number from event name (e.g., "alarm_0" -> "0")
+                var alarmNum = eventName.replace('alarm_', '');
+                fields['ALARM_NUM'] = alarmNum;
             } else if (eventName.startsWith('keyboard_')) {
                 // keyboard_right, keyboard_press_space, keyboard_release_space, keyboard_nokey, keyboard_anykey, etc.
                 var key = eventName.replace('keyboard_release_', '').replace('keyboard_press_', '').replace('keyboard_', '');
@@ -1745,7 +2056,251 @@
                 case 'output_message':
                     connectTextBlock('MESSAGE', params.message || 'Hello!');
                     break;
+
+                case 'set_alarm':
+                    block.setFieldValue(String(params.alarm_num || 0), 'ALARM_NUM');
+                    connectNumberBlock('STEPS', params.steps || 30);
+                    break;
+
+                case 'draw_text':
+                    connectTextBlock('TEXT', params.text || 'Hello!');
+                    connectNumberBlock('X', params.x || 0);
+                    connectNumberBlock('Y', params.y || 0);
+                    break;
+
+                case 'draw_rectangle':
+                    connectNumberBlock('X', params.x1 || 0);
+                    connectNumberBlock('Y', params.y1 || 0);
+                    connectNumberBlock('WIDTH', (params.x2 - params.x1) || 100);
+                    connectNumberBlock('HEIGHT', (params.y2 - params.y1) || 100);
+                    connectTextBlock('COLOR', params.color || 'white');
+                    break;
+
+                case 'draw_circle':
+                    connectNumberBlock('X', params.x || 0);
+                    connectNumberBlock('Y', params.y || 0);
+                    connectNumberBlock('RADIUS', params.radius || 50);
+                    connectTextBlock('COLOR', params.color || 'white');
+                    break;
+
+                case 'set_sprite':
+                    block.setFieldValue(params.sprite || 'spr_player', 'SPRITE');
+                    break;
+
+                case 'set_alpha':
+                    connectNumberBlock('ALPHA', params.alpha || 1.0);
+                    break;
+
+                case 'set_gravity':
+                    connectNumberBlock('DIRECTION', params.direction || 270);
+                    connectNumberBlock('STRENGTH', params.strength || 0.5);
+                    break;
+
+                case 'set_friction':
+                    connectNumberBlock('FRICTION', params.friction || 0);
+                    break;
+
+                // reverse_horizontal and reverse_vertical have no parameters
             }
+        }
+
+        // ============ DYNAMIC TOOLBOX RECONFIGURATION ============
+
+        function reconfigureToolbox(config) {
+            /**
+             * Reconfigure the toolbox with a new set of enabled blocks
+             * config: {enabled_blocks: [block_types...], enabled_categories: [categories...]}
+             */
+            console.log('[Blockly] Reconfiguring toolbox with config:', config);
+
+            // Generate new toolbox XML
+            var toolboxXml = generateToolboxXml(config);
+
+            // Update the workspace toolbox
+            workspace.updateToolbox(toolboxXml);
+
+            console.log('[Blockly] Toolbox reconfigured');
+        }
+
+        function generateToolboxXml(config) {
+            /**
+             * Generate toolbox XML based on configuration
+             */
+            var enabledBlocks = new Set(config.enabled_blocks || []);
+            var enabledCategories = new Set(config.enabled_categories || []);
+
+            // If no config provided, show all blocks
+            var showAll = enabledBlocks.size === 0;
+
+            var xml = '<xml id="toolbox" style="display: none">';
+
+            // Define all categories and their blocks
+            var categories = {
+                'Events': {
+                    color: '#FFD500',
+                    blocks: [
+                        '<block type="event_create"></block>',
+                        '<block type="event_step"></block>',
+                        '<block type="event_draw"></block>',
+                        '<block type="event_destroy"></block>',
+                        '<block type="event_keyboard_nokey"></block>',
+                        '<block type="event_keyboard_anykey"></block>',
+                        '<block type="event_keyboard_held"><field name="KEY">right</field></block>',
+                        '<block type="event_keyboard_press"><field name="KEY">space</field></block>',
+                        '<block type="event_keyboard_release"><field name="KEY">space</field></block>',
+                        '<block type="event_mouse"><field name="BUTTON">left_press</field></block>',
+                        '<block type="event_collision"><field name="OBJECT">obj_wall</field></block>',
+                        '<block type="event_alarm"><field name="ALARM_NUM">0</field></block>'
+                    ]
+                },
+                'Movement': {
+                    color: '#5C81A6',
+                    blocks: [
+                        '<block type="move_set_hspeed"><value name="SPEED"><shadow type="math_number"><field name="NUM">4</field></shadow></value></block>',
+                        '<block type="move_set_vspeed"><value name="SPEED"><shadow type="math_number"><field name="NUM">4</field></shadow></value></block>',
+                        '<block type="move_stop"></block>',
+                        '<block type="move_direction"><value name="SPEED"><shadow type="math_number"><field name="NUM">4</field></shadow></value></block>',
+                        '<block type="move_towards"><value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="SPEED"><shadow type="math_number"><field name="NUM">4</field></shadow></value></block>',
+                        '<block type="move_snap_to_grid"><value name="GRID_SIZE"><shadow type="math_number"><field name="NUM">32</field></shadow></value></block>',
+                        '<block type="move_jump_to"><value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
+                        '<block type="grid_stop_if_no_keys"><value name="GRID_SIZE"><shadow type="math_number"><field name="NUM">32</field></shadow></value></block>',
+                        '<block type="grid_check_keys_and_move"><value name="GRID_SIZE"><shadow type="math_number"><field name="NUM">32</field></shadow></value><value name="SPEED"><shadow type="math_number"><field name="NUM">4</field></shadow></value></block>',
+                        '<block type="grid_if_on_grid"><value name="GRID_SIZE"><shadow type="math_number"><field name="NUM">32</field></shadow></value></block>',
+                        '<block type="set_gravity"><value name="DIRECTION"><shadow type="math_number"><field name="NUM">270</field></shadow></value><value name="STRENGTH"><shadow type="math_number"><field name="NUM">0.5</field></shadow></value></block>',
+                        '<block type="set_friction"><value name="FRICTION"><shadow type="math_number"><field name="NUM">0.1</field></shadow></value></block>',
+                        '<block type="reverse_horizontal"></block>',
+                        '<block type="reverse_vertical"></block>'
+                    ]
+                },
+                'Timing': {
+                    color: '#FF6B6B',
+                    blocks: [
+                        '<block type="set_alarm"><field name="ALARM_NUM">0</field><value name="STEPS"><shadow type="math_number"><field name="NUM">30</field></shadow></value></block>'
+                    ]
+                },
+                'Drawing': {
+                    color: '#9B59B6',
+                    blocks: [
+                        '<block type="draw_text"><value name="TEXT"><shadow type="text"><field name="TEXT">Hello!</field></shadow></value><value name="X"><shadow type="math_number"><field name="NUM">100</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">100</field></shadow></value></block>',
+                        '<block type="draw_rectangle"><value name="X"><shadow type="math_number"><field name="NUM">100</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">100</field></shadow></value><value name="WIDTH"><shadow type="math_number"><field name="NUM">50</field></shadow></value><value name="HEIGHT"><shadow type="math_number"><field name="NUM">50</field></shadow></value><value name="COLOR"><shadow type="text"><field name="TEXT">#FF0000</field></shadow></value></block>',
+                        '<block type="draw_circle"><value name="X"><shadow type="math_number"><field name="NUM">100</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">100</field></shadow></value><value name="RADIUS"><shadow type="math_number"><field name="NUM">25</field></shadow></value><value name="COLOR"><shadow type="text"><field name="TEXT">#00FF00</field></shadow></value></block>',
+                        '<block type="set_sprite"><field name="SPRITE">spr_player</field></block>',
+                        '<block type="set_alpha"><value name="ALPHA"><shadow type="math_number"><field name="NUM">1.0</field></shadow></value></block>'
+                    ]
+                },
+                'Score/Lives/Health': {
+                    color: '#5CA65C',
+                    blocks: [
+                        '<block type="score_set"><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
+                        '<block type="score_add"><value name="VALUE"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block>',
+                        '<block type="lives_set"><value name="VALUE"><shadow type="math_number"><field name="NUM">3</field></shadow></value></block>',
+                        '<block type="lives_add"><value name="VALUE"><shadow type="math_number"><field name="NUM">1</field></shadow></value></block>',
+                        '<block type="health_set"><value name="VALUE"><shadow type="math_number"><field name="NUM">100</field></shadow></value></block>',
+                        '<block type="health_add"><value name="VALUE"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block>',
+                        '<block type="draw_score"><value name="X"><shadow type="math_number"><field name="NUM">10</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block>',
+                        '<block type="draw_lives"><value name="X"><shadow type="math_number"><field name="NUM">10</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">10</field></shadow></value></block>',
+                        '<block type="draw_health_bar"><value name="X"><shadow type="math_number"><field name="NUM">10</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">10</field></shadow></value><value name="WIDTH"><shadow type="math_number"><field name="NUM">100</field></shadow></value></block>'
+                    ]
+                },
+                'Instance': {
+                    color: '#A65C81',
+                    blocks: [
+                        '<block type="instance_destroy"></block>',
+                        '<block type="instance_destroy_other"></block>',
+                        '<block type="instance_create"><field name="OBJECT">obj_bullet</field><value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>'
+                    ]
+                },
+                'Room': {
+                    color: '#A6745C',
+                    blocks: [
+                        '<block type="room_goto_next"></block>',
+                        '<block type="room_restart"></block>',
+                        '<block type="room_goto"><field name="ROOM">room0</field></block>'
+                    ]
+                },
+                'Values': {
+                    color: '#5C68A6',
+                    blocks: [
+                        '<block type="value_x"></block>',
+                        '<block type="value_y"></block>',
+                        '<block type="value_hspeed"></block>',
+                        '<block type="value_vspeed"></block>',
+                        '<block type="value_score"></block>',
+                        '<block type="value_lives"></block>',
+                        '<block type="value_health"></block>',
+                        '<block type="value_mouse_x"></block>',
+                        '<block type="value_mouse_y"></block>'
+                    ]
+                },
+                'Sound': {
+                    color: '#9966FF',
+                    blocks: [
+                        '<block type="sound_play"><field name="SOUND">snd_jump</field></block>',
+                        '<block type="music_play"><field name="MUSIC">bgm_main</field></block>',
+                        '<block type="music_stop"></block>'
+                    ]
+                },
+                'Output': {
+                    color: '#745CA6',
+                    blocks: [
+                        '<block type="output_message"><value name="MESSAGE"><shadow type="text"><field name="TEXT">Hello!</field></shadow></value></block>'
+                    ]
+                }
+            };
+
+            // Add Math and Logic categories (always included)
+            xml += '<category name="Math" colour="#5C68A6">';
+            xml += '<block type="math_number"><field name="NUM">0</field></block>';
+            xml += '<block type="math_arithmetic"></block>';
+            xml += '<block type="math_single"></block>';
+            xml += '<block type="math_random_int"><value name="FROM"><shadow type="math_number"><field name="NUM">1</field></shadow></value><value name="TO"><shadow type="math_number"><field name="NUM">100</field></shadow></value></block>';
+            xml += '</category>';
+
+            xml += '<category name="Logic" colour="#5CA65C">';
+            xml += '<block type="logic_compare"></block>';
+            xml += '<block type="logic_operation"></block>';
+            xml += '<block type="logic_negate"></block>';
+            xml += '<block type="logic_boolean"></block>';
+            xml += '</category>';
+
+            // Generate categories based on config
+            for (var categoryName in categories) {
+                var category = categories[categoryName];
+
+                // Skip if category not enabled (unless showing all)
+                if (!showAll && !enabledCategories.has(categoryName)) {
+                    continue;
+                }
+
+                // Filter blocks
+                var categoryBlocks = [];
+                for (var i = 0; i < category.blocks.length; i++) {
+                    var blockXml = category.blocks[i];
+                    var blockType = extractBlockType(blockXml);
+
+                    if (showAll || enabledBlocks.has(blockType)) {
+                        categoryBlocks.push(blockXml);
+                    }
+                }
+
+                // Only add category if it has blocks
+                if (categoryBlocks.length > 0) {
+                    xml += '<category name="' + categoryName + '" colour="' + category.color + '">';
+                    xml += categoryBlocks.join('');
+                    xml += '</category>';
+                }
+            }
+
+            xml += '</xml>';
+            return Blockly.utils.xml.textToDom(xml);
+        }
+
+        function extractBlockType(blockXml) {
+            /**
+             * Extract block type from XML string
+             */
+            var match = blockXml.match(/type="([^"]+)"/);
+            return match ? match[1] : '';
         }
 
         // Expose functions to Qt
@@ -1757,7 +2312,9 @@
             // NEW: Load events data and create blocks
             loadEvents: loadEventsData,
             // NEW: Check if workspace has blocks
-            hasBlocks: function() { return workspace.getAllBlocks().length > 0; }
+            hasBlocks: function() { return workspace.getAllBlocks().length > 0; },
+            // NEW: Reconfigure toolbox with custom block set
+            reconfigureToolbox: reconfigureToolbox
         };
     </script>
 </body>
