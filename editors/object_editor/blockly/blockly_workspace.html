@@ -114,7 +114,7 @@
 
     <xml id="toolbox" style="display: none">
         <!-- Events Category -->
-        <category name="Events" colour="#FFD500">
+        <category name="Events" colour="#CC8800">
             <block type="event_create"></block>
             <block type="event_step"></block>
             <block type="event_draw"></block>
@@ -462,7 +462,7 @@
                     .appendField(getBlockMessage('event_create', window.BLOCKLY_LANG) || "When object is created");
                 this.appendStatementInput("DO")
                     .setCheck(null);
-                this.setColour("#FFD500");
+                this.setColour("#CC8800");
                 this.setTooltip(getBlockMessage('event_create_tooltip', window.BLOCKLY_LANG) || "Runs when the object instance is created");
             }
         };
@@ -473,7 +473,7 @@
                     .appendField(getBlockMessage('event_step', window.BLOCKLY_LANG) || "Every frame (step)");
                 this.appendStatementInput("DO")
                     .setCheck(null);
-                this.setColour("#FFD500");
+                this.setColour("#CC8800");
                 this.setTooltip(getBlockMessage('event_step_tooltip', window.BLOCKLY_LANG) || "Runs every game frame (60 times per second)");
             }
         };
@@ -484,7 +484,7 @@
                     .appendField(getBlockMessage('event_draw', window.BLOCKLY_LANG) || "When drawing");
                 this.appendStatementInput("DO")
                     .setCheck(null);
-                this.setColour("#FFD500");
+                this.setColour("#CC8800");
                 this.setTooltip(getBlockMessage('event_draw_tooltip', window.BLOCKLY_LANG) || "Runs when the object is drawn");
             }
         };
@@ -495,7 +495,7 @@
                     .appendField(getBlockMessage('event_destroy', window.BLOCKLY_LANG) || "When destroyed");
                 this.appendStatementInput("DO")
                     .setCheck(null);
-                this.setColour("#FFD500");
+                this.setColour("#CC8800");
                 this.setTooltip(getBlockMessage('event_destroy_tooltip', window.BLOCKLY_LANG) || "Runs when the object is destroyed");
             }
         };
@@ -567,7 +567,7 @@
                     .appendField(getBlockMessage('event_keyboard_nokey', window.BLOCKLY_LANG) || "Keyboard: No key");
                 this.appendStatementInput("DO")
                     .setCheck(null);
-                this.setColour("#FFD500");
+                this.setColour("#CC8800");
                 this.setTooltip(getBlockMessage('event_keyboard_nokey_tooltip', window.BLOCKLY_LANG) || "Runs when no keyboard key is pressed");
             }
         };
@@ -578,7 +578,7 @@
                     .appendField(getBlockMessage('event_keyboard_anykey', window.BLOCKLY_LANG) || "Keyboard: Any key");
                 this.appendStatementInput("DO")
                     .setCheck(null);
-                this.setColour("#FFD500");
+                this.setColour("#CC8800");
                 this.setTooltip(getBlockMessage('event_keyboard_anykey_tooltip', window.BLOCKLY_LANG) || "Runs when any keyboard key is pressed");
             }
         };
@@ -591,7 +591,7 @@
                     .appendField(getBlockMessage('event_keyboard_held_suffix', window.BLOCKLY_LANG) || "(held)");
                 this.appendStatementInput("DO")
                     .setCheck(null);
-                this.setColour("#FFD500");
+                this.setColour("#CC8800");
                 this.setTooltip(getBlockMessage('event_keyboard_held_tooltip', window.BLOCKLY_LANG) || "Runs continuously while the key is held down");
             }
         };
@@ -603,7 +603,7 @@
                     .appendField(new Blockly.FieldDropdown(getTranslatedKeyOptions()), "KEY");
                 this.appendStatementInput("DO")
                     .setCheck(null);
-                this.setColour("#FFD500");
+                this.setColour("#CC8800");
                 this.setTooltip(getBlockMessage('event_keyboard_press_tooltip', window.BLOCKLY_LANG) || "Runs once when the key is first pressed");
             }
         };
@@ -615,7 +615,7 @@
                     .appendField(new Blockly.FieldDropdown(getTranslatedKeyOptions()), "KEY");
                 this.appendStatementInput("DO")
                     .setCheck(null);
-                this.setColour("#FFD500");
+                this.setColour("#CC8800");
                 this.setTooltip(getBlockMessage('event_keyboard_release_tooltip', window.BLOCKLY_LANG) || "Runs once when the key is released");
             }
         };
@@ -634,7 +634,7 @@
                     ]), "BUTTON");
                 this.appendStatementInput("DO")
                     .setCheck(null);
-                this.setColour("#FFD500");
+                this.setColour("#CC8800");
                 this.setTooltip(getBlockMessage('event_mouse_tooltip', window.BLOCKLY_LANG) || "Runs on mouse events");
             }
         };
@@ -646,7 +646,7 @@
                     .appendField(new Blockly.FieldTextInput("obj_wall"), "OBJECT");
                 this.appendStatementInput("DO")
                     .setCheck(null);
-                this.setColour("#FFD500");
+                this.setColour("#CC8800");
                 this.setTooltip(getBlockMessage('event_collision_tooltip', window.BLOCKLY_LANG) || "Runs when colliding with another object");
             }
         };
@@ -1149,7 +1149,7 @@
                     .appendField(getBlockMessage('event_alarm_suffix', window.BLOCKLY_LANG) || "triggers");
                 this.appendStatementInput("DO")
                     .setCheck(null);
-                this.setColour("#FFD500");
+                this.setColour("#CC8800");
                 this.setTooltip(getBlockMessage('event_alarm_tooltip', window.BLOCKLY_LANG) || "Runs when the alarm reaches zero");
             }
         };
@@ -2149,7 +2149,7 @@
             // Define all categories and their blocks
             var categories = {
                 'Events': {
-                    color: '#FFD500',
+                    color: '#CC8800',
                     blocks: [
                         '<block type="event_create"></block>',
                         '<block type="event_step"></block>',
