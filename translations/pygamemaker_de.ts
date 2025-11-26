@@ -282,7 +282,11 @@ Some changes may require restarting the IDE to take effect.</source>
 
 Einige Änderungen erfordern möglicherweise einen Neustart der IDE, um wirksam zu werden.</translation>
     </message>
-  </context>
+  <message><source>Settings have been saved successfully.
+
+</source><translation>Die Einstellungen wurden erfolgreich gespeichert.
+
+</translation></message></context>
   <context>
     <name>PyGameMakerIDE</name>
     <message>
@@ -711,7 +715,7 @@ Jetzt im Browser öffnen?</translation>
     <message>
       <location filename="../core/ide_window.py" line="440" />
       <source>Failed to load</source>
-      <translation type="unfinished" />
+      <translation>Fehler beim Laden</translation>
     </message>
     <message>
       <location filename="../core/ide_window.py" line="454" />
@@ -1031,7 +1035,7 @@ Möchten Sie jetzt ein neues Projekt erstellen?</translation>
     <message>
       <location filename="../core/ide_window.py" line="1238" />
       <source>Failed to create {0}: {1}</source>
-      <translation type="unfinished" />
+      <translation>Fehler beim Erstellen von {0}: {1}</translation>
     </message>
     <message>
       <location filename="../core/ide_window.py" line="1247" />
@@ -1655,7 +1659,7 @@ Möchten Sie:
       <source>Choose project action:</source>
       <translation>Projektaktion wählen:</translation>
     </message>
-  </context>
+  <message><source>Search:</source><translation>Suchen:</translation></message><message><source>Type to filter events...</source><translation>Zum Filtern von Ereignissen tippen...</translation></message></context>
   <context>
     <name>VisualScriptingArea</name>
     <message>
@@ -1697,4 +1701,4 @@ Möchten Sie:
       <translation>🏠 Raum erstellen (Strg+R)</translation>
     </message>
   </context>
-</TS>
+<context><name>KeyMouseSelectors</name><message><source>No Selection</source><translation>Keine Auswahl</translation></message><message><source>Please select a key first.</source><translation>Bitte wählen Sie zuerst eine Taste aus.</translation></message><message><source>Please select a mouse event first.</source><translation>Bitte wählen Sie zuerst ein Mausereignis aus.</translation></message><message><source>Select Key</source><translation>Taste auswählen</translation></message><message><source>Select Mouse Event</source><translation>Mausereignis auswählen</translation></message><message><source>Select which key to respond to:</source><translation>Wählen Sie die Taste aus, auf die reagiert werden soll:</translation></message><message><source>Select which mouse event to respond to:</source><translation>Wählen Sie das Mausereignis aus, auf das reagiert werden soll:</translation></message><message><source>Type to filter keys...</source><translation>Zum Filtern von Tasten tippen...</translation></message></context></TS>
