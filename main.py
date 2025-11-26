@@ -122,7 +122,22 @@ def main():
         
         ide = PyGameMakerIDE()
         ide.show()
-        
+
+        # If translator was installed, trigger retranslation of all widgets
+        if language_config and language_config != 'en':
+            from PySide6.QtCore import QEvent
+            from PySide6.QtCore import QTimer
+
+            def retranslate_all():
+                """Retranslate all widgets after IDE is fully initialized"""
+                print(f"🔄 Triggering retranslation for {len(app.allWidgets())} widgets...")
+                for widget in app.allWidgets():
+                    app.sendEvent(widget, QEvent(QEvent.Type.LanguageChange))
+                print(f"✅ Retranslation complete")
+
+            # Use QTimer to defer retranslation until after event loop starts
+            QTimer.singleShot(0, retranslate_all)
+
         def save_on_exit():
             """Save configuration on application exit - FIXED"""
             try:

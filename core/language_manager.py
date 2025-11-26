@@ -79,6 +79,13 @@ class LanguageManager:
                     if app:
                         app.installTranslator(self.translator)
                         print(f"   ✅ Translator installed to app")
+
+                        # Trigger retranslation of all existing widgets
+                        from PySide6.QtCore import QEvent
+                        for widget in app.allWidgets():
+                            app.sendEvent(widget, QEvent(QEvent.Type.LanguageChange))
+                        print(f"   🔄 Sent LanguageChange event to all widgets")
+
                     self.current_language = language_code
                     Config.set('language', language_code)
                     print(f"   ✅ Language set to: {language_code}")
