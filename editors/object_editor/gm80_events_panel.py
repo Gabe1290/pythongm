@@ -502,6 +502,7 @@ class GM80EventsPanel(QWidget):
                 parent_event.setExpanded(True)  # Expand parent by default
 
                 # Add child items for each key
+                keys_added = []  # Track which keys we add for debugging
                 for key_name, key_data in event_data.items():
                     if key_name == "actions":
                         # Old format - direct actions under event
@@ -514,6 +515,7 @@ class GM80EventsPanel(QWidget):
                         key_item.setText(1, f"{len(key_data.get('actions', []))} actions")
                         key_item.setData(0, Qt.UserRole, f"{event_name}_{key_name}")
                         key_item.setExpanded(True)  # Expand key by default
+                        keys_added.append(key_name)
 
                         # Add actions under the key
                         for action_data in key_data.get("actions", []):
@@ -529,6 +531,10 @@ class GM80EventsPanel(QWidget):
                                     action_item.setText(1, param_str)
 
                                 action_item.setData(0, Qt.UserRole, action_data)
+
+                # Debug: print which keys were added
+                if keys_added:
+                    print(f"DEBUG: Added {len(keys_added)} keyboard keys to tree: {keys_added}")
 
             elif event_name.startswith("collision_with_"):
                 # Collision event
