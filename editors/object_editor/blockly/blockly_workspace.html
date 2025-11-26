@@ -110,6 +110,7 @@
     <script src="lib/blockly_compressed.js" onerror="onBlocklyLoadError('blockly_compressed.js')"></script>
     <script src="lib/blocks_compressed.js" onerror="onBlocklyLoadError('blocks_compressed.js')"></script>
     <script src="lib/msg_en.js" onerror="onBlocklyLoadError('msg_en.js')"></script>
+    <script src="blockly_i18n.js"></script>
 
     <xml id="toolbox" style="display: none">
         <!-- Events Category -->
@@ -458,44 +459,44 @@
         Blockly.Blocks['event_create'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("When object is created");
+                    .appendField(getBlockMessage('event_create', window.BLOCKLY_LANG) || "When object is created");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#FFD500");
-                this.setTooltip("Runs when the object instance is created");
+                this.setTooltip(getBlockMessage('event_create_tooltip', window.BLOCKLY_LANG) || "Runs when the object instance is created");
             }
         };
 
         Blockly.Blocks['event_step'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Every frame (step)");
+                    .appendField(getBlockMessage('event_step', window.BLOCKLY_LANG) || "Every frame (step)");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#FFD500");
-                this.setTooltip("Runs every game frame (60 times per second)");
+                this.setTooltip(getBlockMessage('event_step_tooltip', window.BLOCKLY_LANG) || "Runs every game frame (60 times per second)");
             }
         };
 
         Blockly.Blocks['event_draw'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("When drawing");
+                    .appendField(getBlockMessage('event_draw', window.BLOCKLY_LANG) || "When drawing");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#FFD500");
-                this.setTooltip("Runs when the object is drawn");
+                this.setTooltip(getBlockMessage('event_draw_tooltip', window.BLOCKLY_LANG) || "Runs when the object is drawn");
             }
         };
 
         Blockly.Blocks['event_destroy'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("When destroyed");
+                    .appendField(getBlockMessage('event_destroy', window.BLOCKLY_LANG) || "When destroyed");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#FFD500");
-                this.setTooltip("Runs when the object is destroyed");
+                this.setTooltip(getBlockMessage('event_destroy_tooltip', window.BLOCKLY_LANG) || "Runs when the object is destroyed");
             }
         };
 
@@ -552,66 +553,66 @@
         Blockly.Blocks['event_keyboard_nokey'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Keyboard: No key");
+                    .appendField(getBlockMessage('event_keyboard_nokey', window.BLOCKLY_LANG) || "Keyboard: No key");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#FFD500");
-                this.setTooltip("Runs when no keyboard key is pressed");
+                this.setTooltip(getBlockMessage('event_keyboard_nokey_tooltip', window.BLOCKLY_LANG) || "Runs when no keyboard key is pressed");
             }
         };
 
         Blockly.Blocks['event_keyboard_anykey'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Keyboard: Any key");
+                    .appendField(getBlockMessage('event_keyboard_anykey', window.BLOCKLY_LANG) || "Keyboard: Any key");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#FFD500");
-                this.setTooltip("Runs when any keyboard key is pressed");
+                this.setTooltip(getBlockMessage('event_keyboard_anykey_tooltip', window.BLOCKLY_LANG) || "Runs when any keyboard key is pressed");
             }
         };
 
         Blockly.Blocks['event_keyboard_held'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Keyboard:")
+                    .appendField(getBlockMessage('event_keyboard_held_prefix', window.BLOCKLY_LANG) || "Keyboard:")
                     .appendField(new Blockly.FieldDropdown(ALL_KEYS), "KEY")
-                    .appendField("(held)");
+                    .appendField(getBlockMessage('event_keyboard_held_suffix', window.BLOCKLY_LANG) || "(held)");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#FFD500");
-                this.setTooltip("Runs continuously while the key is held down");
+                this.setTooltip(getBlockMessage('event_keyboard_held_tooltip', window.BLOCKLY_LANG) || "Runs continuously while the key is held down");
             }
         };
 
         Blockly.Blocks['event_keyboard_press'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Key press:")
+                    .appendField(getBlockMessage('event_keyboard_press_prefix', window.BLOCKLY_LANG) || "Key press:")
                     .appendField(new Blockly.FieldDropdown(ALL_KEYS), "KEY");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#FFD500");
-                this.setTooltip("Runs once when the key is first pressed");
+                this.setTooltip(getBlockMessage('event_keyboard_press_tooltip', window.BLOCKLY_LANG) || "Runs once when the key is first pressed");
             }
         };
 
         Blockly.Blocks['event_keyboard_release'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Key release:")
+                    .appendField(getBlockMessage('event_keyboard_release_prefix', window.BLOCKLY_LANG) || "Key release:")
                     .appendField(new Blockly.FieldDropdown(ALL_KEYS), "KEY");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#FFD500");
-                this.setTooltip("Runs once when the key is released");
+                this.setTooltip(getBlockMessage('event_keyboard_release_tooltip', window.BLOCKLY_LANG) || "Runs once when the key is released");
             }
         };
 
         Blockly.Blocks['event_mouse'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("When mouse")
+                    .appendField(getBlockMessage('event_mouse_prefix', window.BLOCKLY_LANG) || "When mouse")
                     .appendField(new Blockly.FieldDropdown([
                         ["Left Button Pressed", "left_press"],
                         ["Left Button Released", "left_release"],
@@ -623,19 +624,19 @@
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#FFD500");
-                this.setTooltip("Runs on mouse events");
+                this.setTooltip(getBlockMessage('event_mouse_tooltip', window.BLOCKLY_LANG) || "Runs on mouse events");
             }
         };
 
         Blockly.Blocks['event_collision'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("When colliding with")
+                    .appendField(getBlockMessage('event_collision_prefix', window.BLOCKLY_LANG) || "When colliding with")
                     .appendField(new Blockly.FieldTextInput("obj_wall"), "OBJECT");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#FFD500");
-                this.setTooltip("Runs when colliding with another object");
+                this.setTooltip(getBlockMessage('event_collision_tooltip', window.BLOCKLY_LANG) || "Runs when colliding with another object");
             }
         };
 
@@ -644,11 +645,11 @@
             init: function() {
                 this.appendValueInput("SPEED")
                     .setCheck("Number")
-                    .appendField("Set horizontal speed to");
+                    .appendField(getBlockMessage('move_set_hspeed_prefix', window.BLOCKLY_LANG) || "Set horizontal speed to");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5C81A6");
-                this.setTooltip("Set horizontal movement speed");
+                this.setTooltip(getBlockMessage('move_set_hspeed_tooltip', window.BLOCKLY_LANG) || "Set horizontal movement speed");
             }
         };
 
@@ -656,22 +657,22 @@
             init: function() {
                 this.appendValueInput("SPEED")
                     .setCheck("Number")
-                    .appendField("Set vertical speed to");
+                    .appendField(getBlockMessage('move_set_vspeed_prefix', window.BLOCKLY_LANG) || "Set vertical speed to");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5C81A6");
-                this.setTooltip("Set vertical movement speed");
+                this.setTooltip(getBlockMessage('move_set_vspeed_tooltip', window.BLOCKLY_LANG) || "Set vertical movement speed");
             }
         };
 
         Blockly.Blocks['move_stop'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Stop movement");
+                    .appendField(getBlockMessage('move_stop', window.BLOCKLY_LANG) || "Stop movement");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5C81A6");
-                this.setTooltip("Stop all movement");
+                this.setTooltip(getBlockMessage('move_stop_tooltip', window.BLOCKLY_LANG) || "Stop all movement");
             }
         };
 
@@ -679,18 +680,18 @@
             init: function() {
                 this.appendValueInput("SPEED")
                     .setCheck("Number")
-                    .appendField("Move")
+                    .appendField(getBlockMessage('move_direction_prefix', window.BLOCKLY_LANG) || "Move")
                     .appendField(new Blockly.FieldDropdown([
                         ["right", "right"],
                         ["left", "left"],
                         ["up", "up"],
                         ["down", "down"]
                     ]), "DIRECTION")
-                    .appendField("at speed");
+                    .appendField(getBlockMessage('move_direction_suffix', window.BLOCKLY_LANG) || "at speed");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5C81A6");
-                this.setTooltip("Move in a direction");
+                this.setTooltip(getBlockMessage('move_direction_tooltip', window.BLOCKLY_LANG) || "Move in a direction");
             }
         };
 
@@ -698,18 +699,18 @@
             init: function() {
                 this.appendValueInput("X")
                     .setCheck("Number")
-                    .appendField("Move towards x:");
+                    .appendField(getBlockMessage('move_towards_prefix', window.BLOCKLY_LANG) || "Move towards x:");
                 this.appendValueInput("Y")
                     .setCheck("Number")
-                    .appendField("y:");
+                    .appendField(getBlockMessage('move_towards_y', window.BLOCKLY_LANG) || "y:");
                 this.appendValueInput("SPEED")
                     .setCheck("Number")
-                    .appendField("at speed:");
+                    .appendField(getBlockMessage('move_towards_speed', window.BLOCKLY_LANG) || "at speed:");
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5C81A6");
-                this.setTooltip("Move towards a point");
+                this.setTooltip(getBlockMessage('move_towards_tooltip', window.BLOCKLY_LANG) || "Move towards a point");
             }
         };
 
@@ -717,11 +718,11 @@
             init: function() {
                 this.appendValueInput("GRID_SIZE")
                     .setCheck("Number")
-                    .appendField("Snap to grid size");
+                    .appendField(getBlockMessage('move_snap_to_grid_prefix', window.BLOCKLY_LANG) || "Snap to grid size");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5C81A6");
-                this.setTooltip("Snap position to grid");
+                this.setTooltip(getBlockMessage('move_snap_to_grid_tooltip', window.BLOCKLY_LANG) || "Snap position to grid");
             }
         };
 
@@ -730,14 +731,14 @@
             init: function() {
                 this.appendValueInput("GRID_SIZE")
                     .setCheck("Number")
-                    .appendField("Stop if no keys (grid size");
+                    .appendField(getBlockMessage('grid_stop_if_no_keys_prefix', window.BLOCKLY_LANG) || "Stop if no keys (grid size");
                 this.appendDummyInput()
-                    .appendField(")");
+                    .appendField(getBlockMessage('grid_stop_if_no_keys_suffix', window.BLOCKLY_LANG) || ")");
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5C81A6");
-                this.setTooltip("Stop movement when no arrow keys are pressed (grid-based)");
+                this.setTooltip(getBlockMessage('grid_stop_if_no_keys_tooltip', window.BLOCKLY_LANG) || "Stop movement when no arrow keys are pressed (grid-based)");
             }
         };
 
@@ -745,17 +746,17 @@
             init: function() {
                 this.appendValueInput("GRID_SIZE")
                     .setCheck("Number")
-                    .appendField("Check keys & move (grid");
+                    .appendField(getBlockMessage('grid_check_keys_and_move_prefix', window.BLOCKLY_LANG) || "Check keys & move (grid");
                 this.appendValueInput("SPEED")
                     .setCheck("Number")
-                    .appendField(", speed");
+                    .appendField(getBlockMessage('grid_check_keys_and_move_middle', window.BLOCKLY_LANG) || ", speed");
                 this.appendDummyInput()
-                    .appendField(")");
+                    .appendField(getBlockMessage('grid_check_keys_and_move_suffix', window.BLOCKLY_LANG) || ")");
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5C81A6");
-                this.setTooltip("Check arrow keys and move in grid-aligned steps");
+                this.setTooltip(getBlockMessage('grid_check_keys_and_move_tooltip', window.BLOCKLY_LANG) || "Check arrow keys and move in grid-aligned steps");
             }
         };
 
@@ -763,17 +764,17 @@
             init: function() {
                 this.appendValueInput("GRID_SIZE")
                     .setCheck("Number")
-                    .appendField("If on grid (size");
+                    .appendField(getBlockMessage('grid_if_on_grid_prefix', window.BLOCKLY_LANG) || "If on grid (size");
                 this.appendDummyInput()
-                    .appendField(")");
+                    .appendField(getBlockMessage('grid_if_on_grid_suffix', window.BLOCKLY_LANG) || ")");
                 this.appendStatementInput("DO")
                     .setCheck(null)
-                    .appendField("do");
+                    .appendField(getBlockMessage('grid_if_on_grid_do', window.BLOCKLY_LANG) || "do");
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#FFAB19");
-                this.setTooltip("Execute actions only when aligned to grid");
+                this.setTooltip(getBlockMessage('grid_if_on_grid_tooltip', window.BLOCKLY_LANG) || "Execute actions only when aligned to grid");
             }
         };
 
@@ -781,15 +782,15 @@
             init: function() {
                 this.appendValueInput("X")
                     .setCheck("Number")
-                    .appendField("Jump to x:");
+                    .appendField(getBlockMessage('move_jump_to_prefix', window.BLOCKLY_LANG) || "Jump to x:");
                 this.appendValueInput("Y")
                     .setCheck("Number")
-                    .appendField("y:");
+                    .appendField(getBlockMessage('move_jump_to_y', window.BLOCKLY_LANG) || "y:");
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5C81A6");
-                this.setTooltip("Instantly move to position");
+                this.setTooltip(getBlockMessage('move_jump_to_tooltip', window.BLOCKLY_LANG) || "Instantly move to position");
             }
         };
 
@@ -798,11 +799,11 @@
             init: function() {
                 this.appendValueInput("VALUE")
                     .setCheck("Number")
-                    .appendField("Set score to");
+                    .appendField(getBlockMessage('score_set_prefix', window.BLOCKLY_LANG) || "Set score to");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5CA65C");
-                this.setTooltip("Set the score value");
+                this.setTooltip(getBlockMessage('score_set_tooltip', window.BLOCKLY_LANG) || "Set the score value");
             }
         };
 
@@ -810,11 +811,11 @@
             init: function() {
                 this.appendValueInput("VALUE")
                     .setCheck("Number")
-                    .appendField("Add to score");
+                    .appendField(getBlockMessage('score_add_prefix', window.BLOCKLY_LANG) || "Add to score");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5CA65C");
-                this.setTooltip("Add to the score");
+                this.setTooltip(getBlockMessage('score_add_tooltip', window.BLOCKLY_LANG) || "Add to the score");
             }
         };
 
@@ -822,11 +823,11 @@
             init: function() {
                 this.appendValueInput("VALUE")
                     .setCheck("Number")
-                    .appendField("Set lives to");
+                    .appendField(getBlockMessage('lives_set_prefix', window.BLOCKLY_LANG) || "Set lives to");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5CA65C");
-                this.setTooltip("Set the number of lives");
+                this.setTooltip(getBlockMessage('lives_set_tooltip', window.BLOCKLY_LANG) || "Set the number of lives");
             }
         };
 
@@ -834,11 +835,11 @@
             init: function() {
                 this.appendValueInput("VALUE")
                     .setCheck("Number")
-                    .appendField("Add to lives");
+                    .appendField(getBlockMessage('lives_add_prefix', window.BLOCKLY_LANG) || "Add to lives");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5CA65C");
-                this.setTooltip("Add to lives (use negative to subtract)");
+                this.setTooltip(getBlockMessage('lives_add_tooltip', window.BLOCKLY_LANG) || "Add to lives (use negative to subtract)");
             }
         };
 
@@ -846,11 +847,11 @@
             init: function() {
                 this.appendValueInput("VALUE")
                     .setCheck("Number")
-                    .appendField("Set health to");
+                    .appendField(getBlockMessage('health_set_prefix', window.BLOCKLY_LANG) || "Set health to");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5CA65C");
-                this.setTooltip("Set the health value (0-100)");
+                this.setTooltip(getBlockMessage('health_set_tooltip', window.BLOCKLY_LANG) || "Set the health value (0-100)");
             }
         };
 
@@ -858,11 +859,11 @@
             init: function() {
                 this.appendValueInput("VALUE")
                     .setCheck("Number")
-                    .appendField("Add to health");
+                    .appendField(getBlockMessage('health_add_prefix', window.BLOCKLY_LANG) || "Add to health");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5CA65C");
-                this.setTooltip("Add to health (use negative for damage)");
+                this.setTooltip(getBlockMessage('health_add_tooltip', window.BLOCKLY_LANG) || "Add to health (use negative for damage)");
             }
         };
 
@@ -870,15 +871,15 @@
             init: function() {
                 this.appendValueInput("X")
                     .setCheck("Number")
-                    .appendField("Draw score at x:");
+                    .appendField(getBlockMessage('draw_score_prefix', window.BLOCKLY_LANG) || "Draw score at x:");
                 this.appendValueInput("Y")
                     .setCheck("Number")
-                    .appendField("y:");
+                    .appendField(getBlockMessage('draw_score_y', window.BLOCKLY_LANG) || "y:");
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5CA65C");
-                this.setTooltip("Draw the score on screen");
+                this.setTooltip(getBlockMessage('draw_score_tooltip', window.BLOCKLY_LANG) || "Draw the score on screen");
             }
         };
 
@@ -886,15 +887,15 @@
             init: function() {
                 this.appendValueInput("X")
                     .setCheck("Number")
-                    .appendField("Draw lives at x:");
+                    .appendField(getBlockMessage('draw_lives_prefix', window.BLOCKLY_LANG) || "Draw lives at x:");
                 this.appendValueInput("Y")
                     .setCheck("Number")
-                    .appendField("y:");
+                    .appendField(getBlockMessage('draw_lives_y', window.BLOCKLY_LANG) || "y:");
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5CA65C");
-                this.setTooltip("Draw lives on screen");
+                this.setTooltip(getBlockMessage('draw_lives_tooltip', window.BLOCKLY_LANG) || "Draw lives on screen");
             }
         };
 
@@ -902,18 +903,18 @@
             init: function() {
                 this.appendValueInput("X")
                     .setCheck("Number")
-                    .appendField("Draw health bar at x:");
+                    .appendField(getBlockMessage('draw_health_bar_prefix', window.BLOCKLY_LANG) || "Draw health bar at x:");
                 this.appendValueInput("Y")
                     .setCheck("Number")
-                    .appendField("y:");
+                    .appendField(getBlockMessage('draw_health_bar_y', window.BLOCKLY_LANG) || "y:");
                 this.appendValueInput("WIDTH")
                     .setCheck("Number")
-                    .appendField("width:");
+                    .appendField(getBlockMessage('draw_health_bar_width', window.BLOCKLY_LANG) || "width:");
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5CA65C");
-                this.setTooltip("Draw a health bar");
+                this.setTooltip(getBlockMessage('draw_health_bar_tooltip', window.BLOCKLY_LANG) || "Draw a health bar");
             }
         };
 
@@ -921,22 +922,22 @@
         Blockly.Blocks['instance_destroy'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Destroy this instance");
+                    .appendField(getBlockMessage('instance_destroy', window.BLOCKLY_LANG) || "Destroy this instance");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#A65C81");
-                this.setTooltip("Destroy the current instance");
+                this.setTooltip(getBlockMessage('instance_destroy_tooltip', window.BLOCKLY_LANG) || "Destroy the current instance");
             }
         };
 
         Blockly.Blocks['instance_destroy_other'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Destroy other instance");
+                    .appendField(getBlockMessage('instance_destroy_other', window.BLOCKLY_LANG) || "Destroy other instance");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#A65C81");
-                this.setTooltip("Destroy the colliding instance");
+                this.setTooltip(getBlockMessage('instance_destroy_other_tooltip', window.BLOCKLY_LANG) || "Destroy the colliding instance");
             }
         };
 
@@ -944,17 +945,17 @@
             init: function() {
                 this.appendValueInput("X")
                     .setCheck("Number")
-                    .appendField("Create")
+                    .appendField(getBlockMessage('instance_create_prefix', window.BLOCKLY_LANG) || "Create")
                     .appendField(new Blockly.FieldTextInput("obj_bullet"), "OBJECT")
-                    .appendField("at x:");
+                    .appendField(getBlockMessage('instance_create_x', window.BLOCKLY_LANG) || "at x:");
                 this.appendValueInput("Y")
                     .setCheck("Number")
-                    .appendField("y:");
+                    .appendField(getBlockMessage('instance_create_y', window.BLOCKLY_LANG) || "y:");
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#A65C81");
-                this.setTooltip("Create a new instance");
+                this.setTooltip(getBlockMessage('instance_create_tooltip', window.BLOCKLY_LANG) || "Create a new instance");
             }
         };
 
@@ -962,116 +963,116 @@
         Blockly.Blocks['room_goto_next'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Go to next room");
+                    .appendField(getBlockMessage('room_goto_next', window.BLOCKLY_LANG) || "Go to next room");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#A6745C");
-                this.setTooltip("Go to the next room");
+                this.setTooltip(getBlockMessage('room_goto_next_tooltip', window.BLOCKLY_LANG) || "Go to the next room");
             }
         };
 
         Blockly.Blocks['room_restart'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Restart room");
+                    .appendField(getBlockMessage('room_restart', window.BLOCKLY_LANG) || "Restart room");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#A6745C");
-                this.setTooltip("Restart the current room");
+                this.setTooltip(getBlockMessage('room_restart_tooltip', window.BLOCKLY_LANG) || "Restart the current room");
             }
         };
 
         Blockly.Blocks['room_goto'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Go to room")
+                    .appendField(getBlockMessage('room_goto_prefix', window.BLOCKLY_LANG) || "Go to room")
                     .appendField(new Blockly.FieldTextInput("room0"), "ROOM");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#A6745C");
-                this.setTooltip("Go to a specific room");
+                this.setTooltip(getBlockMessage('room_goto_tooltip', window.BLOCKLY_LANG) || "Go to a specific room");
             }
         };
 
         // ============ VALUE BLOCKS ============
         Blockly.Blocks['value_x'] = {
             init: function() {
-                this.appendDummyInput().appendField("x position");
+                this.appendDummyInput().appendField(getBlockMessage('value_x', window.BLOCKLY_LANG) || "x position");
                 this.setOutput(true, "Number");
                 this.setColour("#5C68A6");
-                this.setTooltip("Get x position");
+                this.setTooltip(getBlockMessage('value_x_tooltip', window.BLOCKLY_LANG) || "Get x position");
             }
         };
 
         Blockly.Blocks['value_y'] = {
             init: function() {
-                this.appendDummyInput().appendField("y position");
+                this.appendDummyInput().appendField(getBlockMessage('value_y', window.BLOCKLY_LANG) || "y position");
                 this.setOutput(true, "Number");
                 this.setColour("#5C68A6");
-                this.setTooltip("Get y position");
+                this.setTooltip(getBlockMessage('value_y_tooltip', window.BLOCKLY_LANG) || "Get y position");
             }
         };
 
         Blockly.Blocks['value_hspeed'] = {
             init: function() {
-                this.appendDummyInput().appendField("horizontal speed");
+                this.appendDummyInput().appendField(getBlockMessage('value_hspeed', window.BLOCKLY_LANG) || "horizontal speed");
                 this.setOutput(true, "Number");
                 this.setColour("#5C68A6");
-                this.setTooltip("Get horizontal speed");
+                this.setTooltip(getBlockMessage('value_hspeed_tooltip', window.BLOCKLY_LANG) || "Get horizontal speed");
             }
         };
 
         Blockly.Blocks['value_vspeed'] = {
             init: function() {
-                this.appendDummyInput().appendField("vertical speed");
+                this.appendDummyInput().appendField(getBlockMessage('value_vspeed', window.BLOCKLY_LANG) || "vertical speed");
                 this.setOutput(true, "Number");
                 this.setColour("#5C68A6");
-                this.setTooltip("Get vertical speed");
+                this.setTooltip(getBlockMessage('value_vspeed_tooltip', window.BLOCKLY_LANG) || "Get vertical speed");
             }
         };
 
         Blockly.Blocks['value_score'] = {
             init: function() {
-                this.appendDummyInput().appendField("score");
+                this.appendDummyInput().appendField(getBlockMessage('value_score', window.BLOCKLY_LANG) || "score");
                 this.setOutput(true, "Number");
                 this.setColour("#5C68A6");
-                this.setTooltip("Get current score");
+                this.setTooltip(getBlockMessage('value_score_tooltip', window.BLOCKLY_LANG) || "Get current score");
             }
         };
 
         Blockly.Blocks['value_lives'] = {
             init: function() {
-                this.appendDummyInput().appendField("lives");
+                this.appendDummyInput().appendField(getBlockMessage('value_lives', window.BLOCKLY_LANG) || "lives");
                 this.setOutput(true, "Number");
                 this.setColour("#5C68A6");
-                this.setTooltip("Get current lives");
+                this.setTooltip(getBlockMessage('value_lives_tooltip', window.BLOCKLY_LANG) || "Get current lives");
             }
         };
 
         Blockly.Blocks['value_health'] = {
             init: function() {
-                this.appendDummyInput().appendField("health");
+                this.appendDummyInput().appendField(getBlockMessage('value_health', window.BLOCKLY_LANG) || "health");
                 this.setOutput(true, "Number");
                 this.setColour("#5C68A6");
-                this.setTooltip("Get current health");
+                this.setTooltip(getBlockMessage('value_health_tooltip', window.BLOCKLY_LANG) || "Get current health");
             }
         };
 
         Blockly.Blocks['value_mouse_x'] = {
             init: function() {
-                this.appendDummyInput().appendField("mouse x");
+                this.appendDummyInput().appendField(getBlockMessage('value_mouse_x', window.BLOCKLY_LANG) || "mouse x");
                 this.setOutput(true, "Number");
                 this.setColour("#5C68A6");
-                this.setTooltip("Get mouse x position");
+                this.setTooltip(getBlockMessage('value_mouse_x_tooltip', window.BLOCKLY_LANG) || "Get mouse x position");
             }
         };
 
         Blockly.Blocks['value_mouse_y'] = {
             init: function() {
-                this.appendDummyInput().appendField("mouse y");
+                this.appendDummyInput().appendField(getBlockMessage('value_mouse_y', window.BLOCKLY_LANG) || "mouse y");
                 this.setOutput(true, "Number");
                 this.setColour("#5C68A6");
-                this.setTooltip("Get mouse y position");
+                this.setTooltip(getBlockMessage('value_mouse_y_tooltip', window.BLOCKLY_LANG) || "Get mouse y position");
             }
         };
 
@@ -1079,35 +1080,35 @@
         Blockly.Blocks['sound_play'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Play sound")
+                    .appendField(getBlockMessage('sound_play_prefix', window.BLOCKLY_LANG) || "Play sound")
                     .appendField(new Blockly.FieldTextInput("snd_jump"), "SOUND");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#9966FF");
-                this.setTooltip("Play a sound effect");
+                this.setTooltip(getBlockMessage('sound_play_tooltip', window.BLOCKLY_LANG) || "Play a sound effect");
             }
         };
 
         Blockly.Blocks['music_play'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Play music")
+                    .appendField(getBlockMessage('music_play_prefix', window.BLOCKLY_LANG) || "Play music")
                     .appendField(new Blockly.FieldTextInput("bgm_main"), "MUSIC");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#9966FF");
-                this.setTooltip("Play background music");
+                this.setTooltip(getBlockMessage('music_play_tooltip', window.BLOCKLY_LANG) || "Play background music");
             }
         };
 
         Blockly.Blocks['music_stop'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Stop music");
+                    .appendField(getBlockMessage('music_stop', window.BLOCKLY_LANG) || "Stop music");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#9966FF");
-                this.setTooltip("Stop background music");
+                this.setTooltip(getBlockMessage('music_stop_tooltip', window.BLOCKLY_LANG) || "Stop background music");
             }
         };
 
@@ -1116,11 +1117,11 @@
             init: function() {
                 this.appendValueInput("MESSAGE")
                     .setCheck("String")
-                    .appendField("Show message");
+                    .appendField(getBlockMessage('output_message_prefix', window.BLOCKLY_LANG) || "Show message");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#745CA6");
-                this.setTooltip("Show a message");
+                this.setTooltip(getBlockMessage('output_message_tooltip', window.BLOCKLY_LANG) || "Show a message");
             }
         };
 
@@ -1128,17 +1129,17 @@
         Blockly.Blocks['event_alarm'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("When alarm")
+                    .appendField(getBlockMessage('event_alarm_prefix', window.BLOCKLY_LANG) || "When alarm")
                     .appendField(new Blockly.FieldDropdown([
                         ["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"],
                         ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"],
                         ["8", "8"], ["9", "9"], ["10", "10"], ["11", "11"]
                     ]), "ALARM_NUM")
-                    .appendField("triggers");
+                    .appendField(getBlockMessage('event_alarm_suffix', window.BLOCKLY_LANG) || "triggers");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#FFD500");
-                this.setTooltip("Runs when the alarm reaches zero");
+                this.setTooltip(getBlockMessage('event_alarm_tooltip', window.BLOCKLY_LANG) || "Runs when the alarm reaches zero");
             }
         };
 
@@ -1147,20 +1148,20 @@
             init: function() {
                 this.appendValueInput("STEPS")
                     .setCheck("Number")
-                    .appendField("Set alarm")
+                    .appendField(getBlockMessage('set_alarm_prefix', window.BLOCKLY_LANG) || "Set alarm")
                     .appendField(new Blockly.FieldDropdown([
                         ["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"],
                         ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"],
                         ["8", "8"], ["9", "9"], ["10", "10"], ["11", "11"]
                     ]), "ALARM_NUM")
-                    .appendField("to");
+                    .appendField(getBlockMessage('set_alarm_middle', window.BLOCKLY_LANG) || "to");
                 this.appendDummyInput()
-                    .appendField("steps");
+                    .appendField(getBlockMessage('set_alarm_suffix', window.BLOCKLY_LANG) || "steps");
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#FF6B6B");
-                this.setTooltip("Set an alarm to trigger after specified steps");
+                this.setTooltip(getBlockMessage('set_alarm_tooltip', window.BLOCKLY_LANG) || "Set an alarm to trigger after specified steps");
             }
         };
 
@@ -1169,18 +1170,18 @@
             init: function() {
                 this.appendValueInput("TEXT")
                     .setCheck("String")
-                    .appendField("Draw text");
+                    .appendField(getBlockMessage('draw_text_prefix', window.BLOCKLY_LANG) || "Draw text");
                 this.appendValueInput("X")
                     .setCheck("Number")
-                    .appendField("at x:");
+                    .appendField(getBlockMessage('draw_text_x', window.BLOCKLY_LANG) || "at x:");
                 this.appendValueInput("Y")
                     .setCheck("Number")
-                    .appendField("y:");
+                    .appendField(getBlockMessage('draw_text_y', window.BLOCKLY_LANG) || "y:");
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#9B59B6");
-                this.setTooltip("Draw text on screen");
+                this.setTooltip(getBlockMessage('draw_text_tooltip', window.BLOCKLY_LANG) || "Draw text on screen");
             }
         };
 
@@ -1188,24 +1189,24 @@
             init: function() {
                 this.appendValueInput("X")
                     .setCheck("Number")
-                    .appendField("Draw rectangle at x:");
+                    .appendField(getBlockMessage('draw_rectangle_prefix', window.BLOCKLY_LANG) || "Draw rectangle at x:");
                 this.appendValueInput("Y")
                     .setCheck("Number")
-                    .appendField("y:");
+                    .appendField(getBlockMessage('draw_rectangle_y', window.BLOCKLY_LANG) || "y:");
                 this.appendValueInput("WIDTH")
                     .setCheck("Number")
-                    .appendField("width:");
+                    .appendField(getBlockMessage('draw_rectangle_width', window.BLOCKLY_LANG) || "width:");
                 this.appendValueInput("HEIGHT")
                     .setCheck("Number")
-                    .appendField("height:");
+                    .appendField(getBlockMessage('draw_rectangle_height', window.BLOCKLY_LANG) || "height:");
                 this.appendValueInput("COLOR")
                     .setCheck("String")
-                    .appendField("color:");
+                    .appendField(getBlockMessage('draw_rectangle_color', window.BLOCKLY_LANG) || "color:");
                 this.setInputsInline(false);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#9B59B6");
-                this.setTooltip("Draw a filled rectangle");
+                this.setTooltip(getBlockMessage('draw_rectangle_tooltip', window.BLOCKLY_LANG) || "Draw a filled rectangle");
             }
         };
 
@@ -1213,33 +1214,33 @@
             init: function() {
                 this.appendValueInput("X")
                     .setCheck("Number")
-                    .appendField("Draw circle at x:");
+                    .appendField(getBlockMessage('draw_circle_prefix', window.BLOCKLY_LANG) || "Draw circle at x:");
                 this.appendValueInput("Y")
                     .setCheck("Number")
-                    .appendField("y:");
+                    .appendField(getBlockMessage('draw_circle_y', window.BLOCKLY_LANG) || "y:");
                 this.appendValueInput("RADIUS")
                     .setCheck("Number")
-                    .appendField("radius:");
+                    .appendField(getBlockMessage('draw_circle_radius', window.BLOCKLY_LANG) || "radius:");
                 this.appendValueInput("COLOR")
                     .setCheck("String")
-                    .appendField("color:");
+                    .appendField(getBlockMessage('draw_circle_color', window.BLOCKLY_LANG) || "color:");
                 this.setInputsInline(false);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#9B59B6");
-                this.setTooltip("Draw a filled circle");
+                this.setTooltip(getBlockMessage('draw_circle_tooltip', window.BLOCKLY_LANG) || "Draw a filled circle");
             }
         };
 
         Blockly.Blocks['set_sprite'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Set sprite to")
+                    .appendField(getBlockMessage('set_sprite_prefix', window.BLOCKLY_LANG) || "Set sprite to")
                     .appendField(new Blockly.FieldTextInput("spr_player"), "SPRITE");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#9B59B6");
-                this.setTooltip("Change the sprite");
+                this.setTooltip(getBlockMessage('set_sprite_tooltip', window.BLOCKLY_LANG) || "Change the sprite");
             }
         };
 
@@ -1247,14 +1248,14 @@
             init: function() {
                 this.appendValueInput("ALPHA")
                     .setCheck("Number")
-                    .appendField("Set transparency to");
+                    .appendField(getBlockMessage('set_alpha_prefix', window.BLOCKLY_LANG) || "Set transparency to");
                 this.appendDummyInput()
-                    .appendField("(0-1)");
+                    .appendField(getBlockMessage('set_alpha_suffix', window.BLOCKLY_LANG) || "(0-1)");
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#9B59B6");
-                this.setTooltip("Set sprite transparency (0=invisible, 1=solid)");
+                this.setTooltip(getBlockMessage('set_alpha_tooltip', window.BLOCKLY_LANG) || "Set sprite transparency (0=invisible, 1=solid)");
             }
         };
 
@@ -1263,15 +1264,15 @@
             init: function() {
                 this.appendValueInput("DIRECTION")
                     .setCheck("Number")
-                    .appendField("Set gravity direction:");
+                    .appendField(getBlockMessage('set_gravity_prefix', window.BLOCKLY_LANG) || "Set gravity direction:");
                 this.appendValueInput("STRENGTH")
                     .setCheck("Number")
-                    .appendField("strength:");
+                    .appendField(getBlockMessage('set_gravity_strength', window.BLOCKLY_LANG) || "strength:");
                 this.setInputsInline(true);
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5C81A6");
-                this.setTooltip("Apply gravity to this instance");
+                this.setTooltip(getBlockMessage('set_gravity_tooltip', window.BLOCKLY_LANG) || "Apply gravity to this instance");
             }
         };
 
@@ -1279,33 +1280,33 @@
             init: function() {
                 this.appendValueInput("FRICTION")
                     .setCheck("Number")
-                    .appendField("Set friction to");
+                    .appendField(getBlockMessage('set_friction_prefix', window.BLOCKLY_LANG) || "Set friction to");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5C81A6");
-                this.setTooltip("Set movement friction");
+                this.setTooltip(getBlockMessage('set_friction_tooltip', window.BLOCKLY_LANG) || "Set movement friction");
             }
         };
 
         Blockly.Blocks['reverse_horizontal'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Reverse horizontal movement");
+                    .appendField(getBlockMessage('reverse_horizontal', window.BLOCKLY_LANG) || "Reverse horizontal movement");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5C81A6");
-                this.setTooltip("Reverse horizontal direction");
+                this.setTooltip(getBlockMessage('reverse_horizontal_tooltip', window.BLOCKLY_LANG) || "Reverse horizontal direction");
             }
         };
 
         Blockly.Blocks['reverse_vertical'] = {
             init: function() {
                 this.appendDummyInput()
-                    .appendField("Reverse vertical movement");
+                    .appendField(getBlockMessage('reverse_vertical', window.BLOCKLY_LANG) || "Reverse vertical movement");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#5C81A6");
-                this.setTooltip("Reverse vertical direction");
+                this.setTooltip(getBlockMessage('reverse_vertical_tooltip', window.BLOCKLY_LANG) || "Reverse vertical direction");
             }
         };
 
@@ -2249,14 +2250,14 @@
             };
 
             // Add Math and Logic categories (always included)
-            xml += '<category name="Math" colour="#5C68A6">';
+            xml += '<category name="' + getCategoryMessage('Math', window.BLOCKLY_LANG) + '" colour="#5C68A6">';
             xml += '<block type="math_number"><field name="NUM">0</field></block>';
             xml += '<block type="math_arithmetic"></block>';
             xml += '<block type="math_single"></block>';
             xml += '<block type="math_random_int"><value name="FROM"><shadow type="math_number"><field name="NUM">1</field></shadow></value><value name="TO"><shadow type="math_number"><field name="NUM">100</field></shadow></value></block>';
             xml += '</category>';
 
-            xml += '<category name="Logic" colour="#5CA65C">';
+            xml += '<category name="' + getCategoryMessage('Logic', window.BLOCKLY_LANG) + '" colour="#5CA65C">';
             xml += '<block type="logic_compare"></block>';
             xml += '<block type="logic_operation"></block>';
             xml += '<block type="logic_negate"></block>';
@@ -2285,7 +2286,7 @@
 
                 // Only add category if it has blocks
                 if (categoryBlocks.length > 0) {
-                    xml += '<category name="' + categoryName + '" colour="' + category.color + '">';
+                    xml += '<category name="' + getCategoryMessage(categoryName, window.BLOCKLY_LANG) + '" colour="' + category.color + '">';
                     xml += categoryBlocks.join('');
                     xml += '</category>';
                 }

@@ -131,11 +131,28 @@ class BlocklyWidget(QWidget):
         self.web_view.setVisible(True)
 
         if ok:
+            # Set the language for Blockly blocks
+            self._set_blockly_language()
+
             # Apply saved configuration to toolbox
             self._apply_saved_configuration()
             self.update_status("Drag blocks from the toolbox on the left to create game logic!")
         else:
             self.update_status("Error loading Blockly - click Reload to try again")
+
+    def _set_blockly_language(self):
+        """Set the Blockly language based on IDE language setting"""
+        from core.language_manager import get_language_manager
+
+        language_manager = get_language_manager()
+        current_lang = language_manager.get_current_language()
+
+        print(f"[Blockly] Setting language to: {current_lang}")
+
+        # Call JavaScript function to set the language
+        self.web_view.page().runJavaScript(
+            f"if (typeof setBlocklyLanguage !== 'undefined') {{ setBlocklyLanguage('{current_lang}'); }}"
+        )
 
     def reload_blockly(self):
         """Reload the Blockly workspace"""
