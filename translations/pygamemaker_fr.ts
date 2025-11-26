@@ -1069,7 +1069,7 @@ Voulez-vous créer un nouveau projet maintenant ?</translation>
 {0}
 
 Check console for details.</source>
-      <translation>Échec de l'exécution du jeu :
+      <translation>Échec du lancement du jeu :
 
 {0}
 
@@ -1659,7 +1659,71 @@ Voulez-vous :
       <source>Choose project action:</source>
       <translation>Choisissez une action :</translation>
     </message>
-  <message><source>Search:</source><translation>Rechercher :</translation></message><message><source>Type to filter events...</source><translation>Tapez pour filtrer les événements...</translation></message></context>
+  <message><source>Search:</source><translation>Rechercher :</translation></message><message><source>Type to filter events...</source><translation>Tapez pour filtrer les événements...</translation></message><message><source /><translation /></message><message><source># Python code editor
+</source><translation># Éditeur de code Python
+</translation></message><message><source>↑ Move Up</source><translation>↑ Monter</translation></message><message><source>↓ Move Down</source><translation>↓ Descendre</translation></message><message><source>✅ Apply Changes</source><translation>✅ Appliquer les modifications</translation></message><message><source>✏️ Edit Custom Code</source><translation>✏️ Modifier le code personnalisé</translation></message><message><source>🎮 Test Object</source><translation>🎮 Tester l'objet</translation></message><message><source>💻 Code Editor</source><translation>💻 Éditeur de code</translation></message><message><source>💾 Save</source><translation>💾 Enregistrer</translation></message><message><source>📋 View Code</source><translation>📋 Voir le code</translation></message><message><source>📖 View Generated Code</source><translation>📖 Voir le code généré</translation></message><message><source>🔄 Refresh</source><translation>🔄 Actualiser</translation></message><message><source>🧩 Visual Programming</source><translation>🧩 Programmation visuelle</translation></message><message><source>Object </source><translation>Objet </translation></message><message><source>Room </source><translation>Salle </translation></message><message><source>Referenced sprite </source><translation>Sprite référencé </translation></message><message><source>Arrow</source><translation>Flèche</translation></message><message><source>Solid</source><translation>Solide</translation></message><message><source>Persistent</source><translation>Persistant</translation></message><message><source>Visible</source><translation>Visible</translation></message><message><source>Mode:</source><translation>Mode :</translation></message><message><source>Sprite:</source><translation>Sprite :</translation></message><message><source>View Code</source><translation>Voir le code</translation></message><message><source>negate</source><translation>inverser</translation></message><message><source>parameters</source><translation>paramètres</translation></message><message><source>target_object</source><translation>objet_cible</translation></message><message><source>Object Properties</source><translation>Propriétés de l'objet</translation></message><message><source>Configuration Saved</source><translation>Configuration enregistrée</translation></message><message><source>Code Applied</source><translation>Code appliqué</translation></message><message><source>Validation Error</source><translation>Erreur de validation</translation></message><message><source>Object: {0} | Sprite: {1}</source><translation>Objet : {0} | Sprite : {1}</translation></message><message><source>Saved: {0}</source><translation>Enregistré : {0}</translation></message><message><source>Cannot save: {0}</source><translation>Impossible d'enregistrer : {0}</translation></message><message><source>Assets loaded: {0} sprites</source><translation>Ressources chargées : {0} sprites</translation></message><message><source>Loaded {0} sprites</source><translation>{0} sprites chargés</translation></message><message><source>Generated code view updated</source><translation>Vue du code généré mise à jour</translation></message><message><source>Object: Not loaded</source><translation>Objet : Non chargé</translation></message><message><source>Object is visible in the game</source><translation>L'objet est visible dans le jeu</translation></message><message><source>Object persists between rooms</source><translation>L'objet persiste entre les salles</translation></message><message><source>Solid objects block movement</source><translation>Les objets solides bloquent le mouvement</translation></message><message><source>Sprite to display for this object</source><translation>Sprite à afficher pour cet objet</translation></message><message><source>❌ NOT colliding (trigger when NOT touching)</source><translation>❌ NON en collision (déclencher quand PAS en contact)</translation></message><message><source>Ctrl+Up</source><translation>Ctrl+Haut</translation></message><message><source>Ctrl+Down</source><translation>Ctrl+Bas</translation></message><message><source>Save object (Ctrl+S)</source><translation>Enregistrer l'objet (Ctrl+S)</translation></message><message><source>Edit Python code or view generated code</source><translation>Modifier le code Python ou voir le code généré</translation></message><message><source>Edit mode: Write custom Python code</source><translation>Mode édition : Écrire du code Python personnalisé</translation></message><message><source>Show generated code in Code Editor tab</source><translation>Afficher le code généré dans l'onglet Éditeur de code</translation></message><message><source>Scratch-like block programming</source><translation>Programmation par blocs type Scratch</translation></message><message><source>Error loading assets: {0}</source><translation>Erreur lors du chargement des ressources : {0}</translation></message><message><source>Error saving object: {0}</source><translation>Erreur lors de l'enregistrement de l'objet : {0}</translation></message><message><source>Validation error: {0}</source><translation>Erreur de validation : {0}</translation></message><message><source>Object name is required</source><translation>Le nom de l'objet est requis</translation></message><message><source>No objects available</source><translation>Aucun objet disponible</translation></message><message><source>Debug mode will start the game with verbose console output.
+
+</source><translation>Le mode débogage lancera le jeu avec une sortie console détaillée.
+
+</translation></message><message><source>Language changed to {0}.
+
+</source><translation>Langue changée en {0}.
+
+</translation></message><message><source>Asset Manager is not yet implemented.
+
+</source><translation>Le gestionnaire de ressources n'est pas encore implémenté.
+
+</translation></message><message><source>Documentation is not yet available.
+
+</source><translation>La documentation n'est pas encore disponible.
+
+</translation></message><message><source>Project cleanup is not yet implemented.
+
+</source><translation>Le nettoyage du projet n'est pas encore implémenté.
+
+</translation></message><message><source>Project structure is valid!
+
+</source><translation>La structure du projet est valide !
+
+</translation></message><message><source>Standalone build is not yet implemented.
+
+</source><translation>La construction autonome n'est pas encore implémentée.
+
+</translation></message><message><source>Standalone executable building is not yet implemented.
+
+</source><translation>La création d'exécutables autonomes n'est pas encore implémentée.
+
+</translation></message><message><source>This feature will be available in a future update.
+
+</source><translation>Cette fonctionnalité sera disponible dans une future mise à jour.
+
+</translation></message><message><source>This export format is not yet available.
+
+</source><translation>Ce format d'export n'est pas encore disponible.
+
+</translation></message><message><source>Editor for {0} not yet implemented.
+</source><translation>Éditeur pour {0} pas encore implémenté.
+</translation></message><message><source>Object testing not implemented yet</source><translation>Test d'objet pas encore implémenté</translation></message><message><source>This will build a standalone executable and run it.
+
+</source><translation>Cela créera un exécutable autonome et le lancera.
+
+</translation></message><message><source>Please open or create a project first before testing a game.</source><translation>Veuillez d'abord ouvrir ou créer un projet avant de tester un jeu.</translation></message><message><source>Please open or create a project first before exporting a game.</source><translation>Veuillez d'abord ouvrir ou créer un projet avant d'exporter un jeu.</translation></message><message><source>You need to create or open a project before importing sprites.
+
+</source><translation>Vous devez créer ou ouvrir un projet avant d'importer des sprites.
+
+</translation></message><message><source>You need to create or open a project before {0}.
+
+</source><translation>Vous devez créer ou ouvrir un projet avant {0}.
+
+</translation></message><message><source>Would you like to export the current project as a zip file now?
+
+</source><translation>Voulez-vous exporter le projet actuel en fichier zip maintenant ?
+
+</translation></message><message><source>Translation file for {0} is not available.
+
+</source><translation>Le fichier de traduction pour {0} n'est pas disponible.
+
+</translation></message></context>
   <context>
     <name>VisualScriptingArea</name>
     <message>
@@ -1701,4 +1765,22 @@ Voulez-vous :
       <translation>🏠 Créer une salle (Ctrl+R)</translation>
     </message>
   </context>
-<context><name>KeyMouseSelectors</name><message><source>No Selection</source><translation>Aucune sélection</translation></message><message><source>Please select a key first.</source><translation>Veuillez d'abord sélectionner une touche.</translation></message><message><source>Please select a mouse event first.</source><translation>Veuillez d'abord sélectionner un événement de souris.</translation></message><message><source>Select Key</source><translation>Sélectionner une touche</translation></message><message><source>Select Mouse Event</source><translation>Sélectionner un événement de souris</translation></message><message><source>Select which key to respond to:</source><translation>Sélectionnez la touche à laquelle répondre :</translation></message><message><source>Select which mouse event to respond to:</source><translation>Sélectionnez l'événement de souris auquel répondre :</translation></message><message><source>Type to filter keys...</source><translation>Tapez pour filtrer les touches...</translation></message></context></TS>
+<context><name>KeyMouseSelectors</name><message><source>No Selection</source><translation>Aucune sélection</translation></message><message><source>Please select a key first.</source><translation>Veuillez d'abord sélectionner une touche.</translation></message><message><source>Please select a mouse event first.</source><translation>Veuillez d'abord sélectionner un événement de souris.</translation></message><message><source>Select Key</source><translation>Sélectionner une touche</translation></message><message><source>Select Mouse Event</source><translation>Sélectionner un événement de souris</translation></message><message><source>Select which key to respond to:</source><translation>Sélectionnez la touche à laquelle répondre :</translation></message><message><source>Select which mouse event to respond to:</source><translation>Sélectionnez l'événement de souris auquel répondre :</translation></message><message><source>Type to filter keys...</source><translation>Tapez pour filtrer les touches...</translation></message></context><context><name>ObjectEditor</name><message><source># No events or actions have been added yet.
+</source><translation># Aucun événement ou action n'a encore été ajouté.
+</translation></message><message><source>+ Add Event</source><translation>+ Ajouter un événement</translation></message><message><source>- Remove Event</source><translation>- Supprimer l'événement</translation></message><message><source>Add Action</source><translation>Ajouter une action</translation></message><message><source>Remove Action</source><translation>Supprimer l'action</translation></message><message><source>Edit Action</source><translation>Modifier l'action</translation></message><message><source>Remove Event</source><translation>Supprimer l'événement</translation></message><message><source>📋 Event List</source><translation>📋 Liste des événements</translation></message><message><source>Actions</source><translation>Actions</translation></message><message><source>Event</source><translation>Événement</translation></message><message><source>Event </source><translation>Événement </translation></message><message><source>action</source><translation>action</translation></message><message><source>actions</source><translation>actions</translation></message><message><source>Object Events</source><translation>Événements de l'objet</translation></message><message><source>Collision Event Options</source><translation>Options de l'événement de collision</translation></message><message><source>Event Exists</source><translation>L'événement existe</translation></message><message><source>Key Event Exists</source><translation>L'événement de touche existe</translation></message><message><source>Mouse Event Exists</source><translation>L'événement de souris existe</translation></message><message><source>Collision Event Exists</source><translation>L'événement de collision existe</translation></message><message><source>Cannot Add Action</source><translation>Impossible d'ajouter une action</translation></message><message><source>Remove Collision Event</source><translation>Supprimer l'événement de collision</translation></message><message><source>Remove Key Event</source><translation>Supprimer l'événement de touche</translation></message><message><source>Remove Mouse Event</source><translation>Supprimer l'événement de souris</translation></message><message><source>&lt;b&gt;Collision with: {0}&lt;/b&gt;</source><translation>&lt;b&gt;Collision avec : {0}&lt;/b&gt;</translation></message><message><source>Event: {0}</source><translation>Événement : {0}</translation></message><message><source>Editing event: {0}</source><translation>Modification de l'événement : {0}</translation></message><message><source>Selected action: {0} ({1})</source><translation>Action sélectionnée : {0} ({1})</translation></message><message><source>{0} actions</source><translation>{0} actions</translation></message><message><source>{0} total actions</source><translation>{0} actions au total</translation></message><message><source>Actions are managed through the Object Events panel on the left.
+
+</source><translation>Les actions sont gérées par le panneau Événements de l'objet à gauche.
+
+</translation></message><message><source>Cannot add actions directly to %1.
+
+</source><translation>Impossible d'ajouter des actions directement à %1.
+
+</translation></message><message><source>Are you sure you want to remove this action?</source><translation>Voulez-vous vraiment supprimer cette action ?</translation></message><message><source>Are you sure you want to remove the {0} event?</source><translation>Voulez-vous vraiment supprimer l'événement {0} ?</translation></message><message><source>Are you sure you want to remove the {0} event and all its actions?</source><translation>Voulez-vous vraiment supprimer l'événement {0} et toutes ses actions ?</translation></message><message><source>Are you sure you want to remove the {0} arrow key event and all its actions?</source><translation>Voulez-vous vraiment supprimer l'événement de touche fléchée {0} et toutes ses actions ?</translation></message><message><source>Are you sure you want to remove the collision event with {0}?</source><translation>Voulez-vous vraiment supprimer l'événement de collision avec {0} ?</translation></message><message><source>Applied {0} events from visual blocks</source><translation>{0} événements appliqués depuis les blocs visuels</translation></message><message><source>Custom code applied to {0} event</source><translation>Code personnalisé appliqué à l'événement {0}</translation></message><message><source>Check this to trigger actions when the object is NOT colliding with the target</source><translation>Cochez ceci pour déclencher des actions lorsque l'objet N'est PAS en collision avec la cible</translation></message><message><source>Move selected action up (Ctrl+Up)</source><translation>Monter l'action sélectionnée (Ctrl+Haut)</translation></message><message><source>Move selected action down (Ctrl+Down)</source><translation>Descendre l'action sélectionnée (Ctrl+Bas)</translation></message><message><source>View mode: Showing generated code from events</source><translation>Mode visualisation : Affichage du code généré depuis les événements</translation></message><message><source>Event for custom code:</source><translation>Événement pour le code personnalisé :</translation></message><message><source>No event selected</source><translation>Aucun événement sélectionné</translation></message><message><source>The {0} event already exists.</source><translation>L'événement {0} existe déjà.</translation></message><message><source>The {0} arrow key event already exists.</source><translation>L'événement de touche fléchée {0} existe déjà.</translation></message><message><source>The {0} key event already exists for {1}.</source><translation>L'événement de touche {0} existe déjà pour {1}.</translation></message><message><source>This collision event already exists.</source><translation>Cet événement de collision existe déjà.</translation></message><message><source>This mouse event already exists.</source><translation>Cet événement de souris existe déjà.</translation></message><message><source>Custom Python code has been applied to the {0} event.
+
+</source><translation>Du code Python personnalisé a été appliqué à l'événement {0}.
+
+</translation></message></context><context><name>BlocklyConfig</name><message><source>Blockly configuration has been saved.
+
+</source><translation>La configuration Blockly a été enregistrée.
+
+</translation></message><message><source>Configure &amp;Blockly Blocks...</source><translation>Configurer les blocs &amp;Blockly...</translation></message></context></TS>
