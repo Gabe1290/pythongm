@@ -267,13 +267,18 @@ class PyGameMakerIDE(QMainWindow):
         for code, name, flag in language_manager.get_available_languages():
             action = menu.addAction(f"{flag} {name}")
             action.setCheckable(True)
-            action.setChecked(code == current_lang)
             action.setData(code)  # Store language code
 
             # Show if translation is available
             if not language_manager.is_translation_available(code) and code != 'en':
                 action.setText(f"{flag} {name} (translation not available)")
 
+            # Block signals while setting the checked state to avoid triggering change_language during initialization
+            action.blockSignals(True)
+            action.setChecked(code == current_lang)
+            action.blockSignals(False)
+
+            # Connect the triggered signal AFTER setting up the action
             action.triggered.connect(lambda checked, lang=code: self.change_language(lang))
             self.language_action_group.addAction(action)
 
