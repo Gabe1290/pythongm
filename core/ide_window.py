@@ -286,6 +286,7 @@ class PyGameMakerIDE(QMainWindow):
         """Change the application language"""
         from core.language_manager import get_language_manager
         from PySide6.QtWidgets import QMessageBox
+        from PySide6.QtCore import QCoreApplication
 
         language_manager = get_language_manager()
 
@@ -300,13 +301,23 @@ class PyGameMakerIDE(QMainWindow):
         success = language_manager.set_language(language_code)
 
         if success or language_code == 'en':
-            # Show restart message
-            QMessageBox.information(
+            # Ask if user wants to restart now
+            reply = QMessageBox.question(
                 self,
                 self.tr("Language Changed"),
                 self.tr("Language changed to {0}.\n\n"
-                    "Please restart PyGameMaker IDE for the changes to take full effect.").format(lang_name)
+                    "The IDE needs to restart for the language change to take effect.\n\n"
+                    "Do you want to restart now?").format(lang_name),
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.Yes
             )
+
+            if reply == QMessageBox.Yes:
+                # Restart the application
+                QCoreApplication.quit()
+                import subprocess
+                import sys
+                subprocess.Popen([sys.executable] + sys.argv)
         else:
             # Translation file not found
             QMessageBox.warning(
