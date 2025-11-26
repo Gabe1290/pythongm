@@ -19,7 +19,7 @@ from events.gm80_events import (
     get_event,
     GM80_EVENT_CATEGORIES
 )
-from actions.gm80_actions import (
+from actions import (
     get_action_tabs_ordered,
     get_actions_by_tab,
     get_action,

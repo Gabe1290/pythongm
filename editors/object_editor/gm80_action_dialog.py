@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QColor
 
-from actions.gm80_actions import ActionDefinition, ActionParameter
+from actions import ActionDefinition, ActionParameter
 
 
 class GM80ActionDialog(QDialog):
