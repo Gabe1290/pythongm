@@ -26,6 +26,11 @@ from actions import (
     GM80_ALL_ACTIONS
 )
 
+# Create convenience wrapper for get_action with GM80_ALL_ACTIONS pre-bound
+def get_action_def(action_name: str):
+    """Get action definition by name from GM80_ALL_ACTIONS"""
+    return get_action(GM80_ALL_ACTIONS, action_name)
+
 # Import Blockly configuration for filtering
 from config.blockly_config import load_config
 
@@ -346,7 +351,7 @@ class GM80EventsPanel(QWidget):
                 tab_menu = add_action_menu.addMenu(f"{tab_info['icon']} {tab_info['name']}")
 
                 # Get actions in this tab
-                actions = get_actions_by_tab(tab_id)
+                actions = get_actions_by_tab(GM80_ALL_ACTIONS, tab_id)
 
                 for action in actions:
                     action_item = tab_menu.addAction(f"{action.icon} {action.display_name}")
@@ -372,7 +377,7 @@ class GM80EventsPanel(QWidget):
         """Add action to an event"""
         from editors.object_editor.gm80_action_dialog import GM80ActionDialog
 
-        action_def = get_action(action_name)
+        action_def = get_action_def(action_name)
         if not action_def:
             return
 
@@ -404,7 +409,7 @@ class GM80EventsPanel(QWidget):
         if not action_data:
             return
 
-        action_def = get_action(action_data["action"])
+        action_def = get_action_def(action_data["action"])
         if not action_def:
             return
 
@@ -519,7 +524,7 @@ class GM80EventsPanel(QWidget):
 
                         # Add actions under the key
                         for action_data in key_data.get("actions", []):
-                            action_def = get_action(action_data["action"])
+                            action_def = get_action_def(action_data["action"])
                             if action_def:
                                 action_item = QTreeWidgetItem(key_item)
                                 action_item.setText(0, f"{action_def.icon} {action_def.display_name}")
@@ -547,7 +552,7 @@ class GM80EventsPanel(QWidget):
 
                 # Add actions
                 for action_data in event_data.get("actions", []):
-                    action_def = get_action(action_data["action"])
+                    action_def = get_action_def(action_data["action"])
                     if action_def:
                         action_item = QTreeWidgetItem(event_item)
                         action_item.setText(0, f"{action_def.icon} {action_def.display_name}")
@@ -572,7 +577,7 @@ class GM80EventsPanel(QWidget):
 
                     # Add actions
                     for action_data in event_data.get("actions", []):
-                        action_def = get_action(action_data["action"])
+                        action_def = get_action_def(action_data["action"])
                         if action_def:
                             action_item = QTreeWidgetItem(event_item)
                             action_item.setText(0, f"{action_def.icon} {action_def.display_name}")
