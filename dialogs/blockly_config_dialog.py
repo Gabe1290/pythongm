@@ -24,7 +24,7 @@ class BlocklyConfigDialog(QDialog):
 
     def __init__(self, parent=None, current_config: BlocklyConfig = None):
         super().__init__(parent)
-        self.setWindowTitle("Configure Blockly Blocks")
+        self.setWindowTitle(self.tr("Configure Blockly Blocks"))
         self.resize(700, 600)
 
         # Current configuration
@@ -40,16 +40,16 @@ class BlocklyConfigDialog(QDialog):
 
         # ====== Preset Selection ======
         preset_layout = QHBoxLayout()
-        preset_layout.addWidget(QLabel("Preset:"))
+        preset_layout.addWidget(QLabel(self.tr("Preset:")))
 
         self.preset_combo = QComboBox()
         self.preset_combo.addItems([
-            "Full (All Blocks)",
-            "Beginner (Basic Blocks)",
-            "Intermediate (More Features)",
-            "Platformer Game",
-            "Grid-based RPG",
-            "Custom"
+            self.tr("Full (All Blocks)"),
+            self.tr("Beginner (Basic Blocks)"),
+            self.tr("Intermediate (More Features)"),
+            self.tr("Platformer Game"),
+            self.tr("Grid-based RPG"),
+            self.tr("Custom")
         ])
         self.preset_combo.currentTextChanged.connect(self.on_preset_changed)
         preset_layout.addWidget(self.preset_combo)
@@ -64,12 +64,12 @@ class BlocklyConfigDialog(QDialog):
         layout.addLayout(preset_layout)
 
         # ====== Block Tree ======
-        tree_label = QLabel("Select blocks to enable:")
+        tree_label = QLabel(self.tr("Select blocks to enable:"))
         tree_label.setStyleSheet("font-weight: bold; margin-top: 10px;")
         layout.addWidget(tree_label)
 
         self.tree = QTreeWidget()
-        self.tree.setHeaderLabels(["Block", "Description"])
+        self.tree.setHeaderLabels([self.tr("Block"), self.tr("Description")])
         self.tree.setColumnWidth(0, 300)
         self.tree.itemChanged.connect(self.on_item_changed)
         layout.addWidget(self.tree)
@@ -87,22 +87,22 @@ class BlocklyConfigDialog(QDialog):
         # ====== Button Bar ======
         button_layout = QHBoxLayout()
 
-        self.select_all_btn = QPushButton("Select All")
+        self.select_all_btn = QPushButton(self.tr("Select All"))
         self.select_all_btn.clicked.connect(self.select_all)
         button_layout.addWidget(self.select_all_btn)
 
-        self.select_none_btn = QPushButton("Select None")
+        self.select_none_btn = QPushButton(self.tr("Select None"))
         self.select_none_btn.clicked.connect(self.select_none)
         button_layout.addWidget(self.select_none_btn)
 
         button_layout.addStretch()
 
-        self.save_btn = QPushButton("Save")
+        self.save_btn = QPushButton(self.tr("Save"))
         self.save_btn.clicked.connect(self.save_and_close)
         self.save_btn.setDefault(True)
         button_layout.addWidget(self.save_btn)
 
-        self.cancel_btn = QPushButton("Cancel")
+        self.cancel_btn = QPushButton(self.tr("Cancel"))
         self.cancel_btn.clicked.connect(self.reject)
         button_layout.addWidget(self.cancel_btn)
 
@@ -116,7 +116,7 @@ class BlocklyConfigDialog(QDialog):
 
         for category, blocks in BLOCK_REGISTRY.items():
             # Create category item
-            category_item = QTreeWidgetItem(self.tree, [category, f"{len(blocks)} blocks"])
+            category_item = QTreeWidgetItem(self.tree, [category, self.tr("{0} blocks").format(len(blocks))])
             category_item.setFlags(category_item.flags() | Qt.ItemIsUserCheckable | Qt.ItemIsAutoTristate)
             category_item.setCheckState(0, Qt.Unchecked)
             category_item.setData(0, Qt.UserRole, category)
@@ -154,8 +154,8 @@ class BlocklyConfigDialog(QDialog):
                 if block["type"] in BLOCK_DEPENDENCIES:
                     deps = BLOCK_DEPENDENCIES[block["type"]]
                     dep_names = [self._get_block_name(d) for d in deps]
-                    block_item.setToolTip(0, f"Requires: {', '.join(dep_names)}")
-                    block_item.setToolTip(1, block["description"] + f"\nRequires: {', '.join(dep_names)}")
+                    block_item.setToolTip(0, self.tr("Requires: {0}").format(', '.join(dep_names)))
+                    block_item.setToolTip(1, block["description"] + "\n" + self.tr("Requires: {0}").format(', '.join(dep_names)))
 
                 self.block_items[block["type"]] = block_item
 
@@ -203,14 +203,14 @@ class BlocklyConfigDialog(QDialog):
     def on_preset_changed(self, text: str):
         """Handle preset selection"""
         preset_map = {
-            "Full (All Blocks)": "full",
-            "Beginner (Basic Blocks)": "beginner",
-            "Intermediate (More Features)": "intermediate",
-            "Platformer Game": "platformer",
-            "Grid-based RPG": "grid_rpg",
+            self.tr("Full (All Blocks)"): "full",
+            self.tr("Beginner (Basic Blocks)"): "beginner",
+            self.tr("Intermediate (More Features)"): "intermediate",
+            self.tr("Platformer Game"): "platformer",
+            self.tr("Grid-based RPG"): "grid_rpg",
         }
 
-        if text == "Custom":
+        if text == self.tr("Custom"):
             # Don't change config, just mark as custom
             self.config.preset_name = "custom"
             return
@@ -268,8 +268,7 @@ class BlocklyConfigDialog(QDialog):
                 warnings.append(f"• {block_name} requires: {', '.join(dep_names)}")
 
             self.warning_label.setText(
-                "⚠️ Warning: Some blocks are missing dependencies:\n" +
-                "\n".join(warnings)
+                self.tr("⚠️ Warning: Some blocks are missing dependencies:\n{0}").format("\n".join(warnings))
             )
             self.warning_label.setVisible(True)
         else:
@@ -279,7 +278,7 @@ class BlocklyConfigDialog(QDialog):
         """Update the info label with block count"""
         total_blocks = len(self.config.enabled_blocks)
         total_categories = len(self.config.enabled_categories)
-        self.info_label.setText(f"{total_blocks} blocks, {total_categories} categories")
+        self.info_label.setText(self.tr("{0} blocks, {1} categories").format(total_blocks, total_categories))
 
     def select_all(self):
         """Select all blocks"""
@@ -298,10 +297,10 @@ class BlocklyConfigDialog(QDialog):
         if missing:
             response = QMessageBox.warning(
                 self,
-                "Missing Dependencies",
-                "Some enabled blocks are missing their dependencies. "
+                self.tr("Missing Dependencies"),
+                self.tr("Some enabled blocks are missing their dependencies. "
                 "The blocks may not work correctly.\n\n"
-                "Do you want to save anyway?",
+                "Do you want to save anyway?"),
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.No
             )

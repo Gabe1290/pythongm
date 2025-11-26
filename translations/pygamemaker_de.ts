@@ -1389,7 +1389,7 @@ Zukünftige Funktionen:
       <source>Project validation found the following issues:
 
 </source>
-      <translation>Die Projektvalidierung hat folgende Probleme gefunden:
+      <translation>Projektvalidierung hat die folgenden Probleme gefunden:
 
 </translation>
     </message>
@@ -1783,4 +1783,10 @@ Möchten Sie:
 
 </source><translation>Die Blockly-Konfiguration wurde gespeichert.
 
-</translation></message><message><source>Configure &amp;Blockly Blocks...</source><translation>&amp;Blockly-Blöcke konfigurieren...</translation></message></context></TS>
+</translation></message><message><source>Configure &amp;Blockly Blocks...</source><translation>&amp;Blockly-Blöcke konfigurieren...</translation></message></context><context><name>BlocklyConfigDialog</name><message><source>Configure Blockly Blocks</source><translation>Blockly-Blöcke konfigurieren</translation></message><message><source>Preset:</source><translation>Voreinstellung:</translation></message><message><source>Full (All Blocks)</source><translation>Vollständig (alle Blöcke)</translation></message><message><source>Beginner (Basic Blocks)</source><translation>Anfänger (Grundblöcke)</translation></message><message><source>Intermediate (More Features)</source><translation>Fortgeschritten (mehr Funktionen)</translation></message><message><source>Platformer Game</source><translation>Plattformspiel</translation></message><message><source>Grid-based RPG</source><translation>Gitterbasiertes RPG</translation></message><message><source>Custom</source><translation>Benutzerdefiniert</translation></message><message><source>Select blocks to enable:</source><translation>Wählen Sie die zu aktivierenden Blöcke:</translation></message><message><source>Block</source><translation>Block</translation></message><message><source>Description</source><translation>Beschreibung</translation></message><message><source>Select All</source><translation>Alle auswählen</translation></message><message><source>Select None</source><translation>Nichts auswählen</translation></message><message><source>{0} blocks</source><translation>{0} Blöcke</translation></message><message><source>Requires: {0}</source><translation>Erfordert: {0}</translation></message><message><source>{0} blocks, {1} categories</source><translation>{0} Blöcke, {1} Kategorien</translation></message><message><source>⚠️ Warning: Some blocks are missing dependencies:
+{0}</source><translation>⚠️ Warnung: Einigen Blöcken fehlen Abhängigkeiten:
+{0}</translation></message><message><source>Missing Dependencies</source><translation>Fehlende Abhängigkeiten</translation></message><message><source>Some enabled blocks are missing their dependencies. The blocks may not work correctly.
+
+Do you want to save anyway?</source><translation>Einigen aktivierten Blöcken fehlen ihre Abhängigkeiten. Die Blöcke funktionieren möglicherweise nicht korrekt.
+
+Trotzdem speichern?</translation></message></context></TS>

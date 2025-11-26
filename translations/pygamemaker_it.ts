@@ -1069,11 +1069,11 @@ Vuoi creare un nuovo progetto ora?</translation>
 {0}
 
 Check console for details.</source>
-      <translation>Impossibile avviare il gioco:
+      <translation>Impossibile eseguire il gioco:
 
 {0}
 
-Controlla la console per i dettagli.</translation>
+Controllare la console per i dettagli.</translation>
     </message>
     <message>
       <location filename="../core/ide_window.py" line="1276" />
@@ -1505,7 +1505,7 @@ Documentazione online in arrivo!</translation>
       <source>
 💡 Tip: Check the documentation (F1) for quick help!</source>
       <translation>
-💡 Suggerimento: Controlla la documentazione (F1) per un aiuto rapido!</translation>
+💡 Suggerimento: Controlla la documentazione (F1) per aiuto rapido!</translation>
     </message>
     <message>
       <location filename="../core/ide_window.py" line="1878" />
@@ -1783,4 +1783,10 @@ Vuoi:
 
 </source><translation>La configurazione Blockly è stata salvata.
 
-</translation></message><message><source>Configure &amp;Blockly Blocks...</source><translation>Configura blocchi &amp;Blockly...</translation></message></context></TS>
+</translation></message><message><source>Configure &amp;Blockly Blocks...</source><translation>Configura blocchi &amp;Blockly...</translation></message></context><context><name>BlocklyConfigDialog</name><message><source>Configure Blockly Blocks</source><translation>Configura blocchi Blockly</translation></message><message><source>Preset:</source><translation>Preset:</translation></message><message><source>Full (All Blocks)</source><translation>Completo (tutti i blocchi)</translation></message><message><source>Beginner (Basic Blocks)</source><translation>Principiante (blocchi base)</translation></message><message><source>Intermediate (More Features)</source><translation>Intermedio (più funzionalità)</translation></message><message><source>Platformer Game</source><translation>Gioco platform</translation></message><message><source>Grid-based RPG</source><translation>RPG a griglia</translation></message><message><source>Custom</source><translation>Personalizzato</translation></message><message><source>Select blocks to enable:</source><translation>Seleziona i blocchi da abilitare:</translation></message><message><source>Block</source><translation>Blocco</translation></message><message><source>Description</source><translation>Descrizione</translation></message><message><source>Select All</source><translation>Seleziona tutto</translation></message><message><source>Select None</source><translation>Deseleziona tutto</translation></message><message><source>{0} blocks</source><translation>{0} blocchi</translation></message><message><source>Requires: {0}</source><translation>Richiede: {0}</translation></message><message><source>{0} blocks, {1} categories</source><translation>{0} blocchi, {1} categorie</translation></message><message><source>⚠️ Warning: Some blocks are missing dependencies:
+{0}</source><translation>⚠️ Avviso: Ad alcuni blocchi mancano le dipendenze:
+{0}</translation></message><message><source>Missing Dependencies</source><translation>Dipendenze mancanti</translation></message><message><source>Some enabled blocks are missing their dependencies. The blocks may not work correctly.
+
+Do you want to save anyway?</source><translation>Ad alcuni blocchi abilitati mancano le dipendenze. I blocchi potrebbero non funzionare correttamente.
+
+Vuoi salvare comunque?</translation></message></context></TS>
