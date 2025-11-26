@@ -2568,6 +2568,1303 @@ Certains changements peuvent nécessiter de redémarrer l'IDE pour prendre effet
     </message>
   </context>
   <context>
+    <name>PyGameMakerIDE</name>
+    <message>
+      <location filename="../core/ide_window.py" line="120" />
+      <source>&amp;File</source>
+      <translation type="unfinished">&amp;Fichier</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="121" />
+      <source>&amp;New Project...</source>
+      <translation type="unfinished">&amp;Nouveau projet...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="122" />
+      <source>&amp;Open Project...</source>
+      <translation type="unfinished">&amp;Ouvrir un projet...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="124" />
+      <source>&amp;Save Project</source>
+      <translation type="unfinished">&amp;Enregistrer le projet</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="125" />
+      <source>Save Project &amp;As...</source>
+      <translation type="unfinished">Enregistrer le projet &amp;sous...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="128" />
+      <source>Recent Projects</source>
+      <translation type="unfinished">Projets récents</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="134" />
+      <source>Export as HTML5...</source>
+      <translation type="unfinished">Exporter en HTML5...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="135" />
+      <source>Export as &amp;Zip...</source>
+      <translation type="unfinished">Exporter en &amp;Zip...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="136" />
+      <source>Export to Kivy...</source>
+      <translation type="unfinished">Exporter vers Kivy...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="137" />
+      <source>Export Project...</source>
+      <translation type="unfinished">Exporter le projet...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="144" />
+      <source>Open &amp;Zip Project...</source>
+      <translation type="unfinished">Ouvrir un projet &amp;Zip...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="148" />
+      <source>Auto-Save to Zip</source>
+      <translation type="unfinished">Sauvegarde automatique en Zip</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="155" />
+      <source>Enable Auto-Save</source>
+      <translation type="unfinished">Activer la sauvegarde automatique</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="162" />
+      <source>Auto-Save Settings...</source>
+      <translation type="unfinished">Paramètres de sauvegarde automatique...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="167" />
+      <source>Project &amp;Settings...</source>
+      <translation type="unfinished">&amp;Paramètres du projet...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="169" />
+      <source>E&amp;xit</source>
+      <translation type="unfinished">&amp;Quitter</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="171" />
+      <source>&amp;Edit</source>
+      <translation type="unfinished">&amp;Éditer</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="172" />
+      <source>&amp;Undo</source>
+      <translation type="unfinished">&amp;Annuler</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="173" />
+      <source>&amp;Redo</source>
+      <translation type="unfinished">&amp;Rétablir</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="175" />
+      <source>Cu&amp;t</source>
+      <translation type="unfinished">Co&amp;uper</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="176" />
+      <source>&amp;Copy</source>
+      <translation type="unfinished">&amp;Copier</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="177" />
+      <source>&amp;Paste</source>
+      <translation type="unfinished">Co&amp;ller</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="178" />
+      <source>&amp;Duplicate</source>
+      <translation type="unfinished">&amp;Dupliquer</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="180" />
+      <source>&amp;Find...</source>
+      <translation type="unfinished">&amp;Rechercher...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="181" />
+      <source>Find and &amp;Replace...</source>
+      <translation type="unfinished">Rechercher et &amp;remplacer...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="184" />
+      <source>Import &amp;Sprite...</source>
+      <translation type="unfinished">Importer un &amp;sprite...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="185" />
+      <source>Import &amp;Sound...</source>
+      <translation type="unfinished">Importer un &amp;son...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="186" />
+      <source>Import &amp;Background...</source>
+      <translation type="unfinished">Importer un &amp;arrière-plan...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="187" />
+      <source>Create &amp;Object...</source>
+      <translation type="unfinished">Créer un &amp;objet...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="188" />
+      <source>Create &amp;Room...</source>
+      <translation type="unfinished">Créer une &amp;salle...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="190" />
+      <source>Create S&amp;cript...</source>
+      <translation type="unfinished">Créer un s&amp;cript...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="191" />
+      <source>Create &amp;Font...</source>
+      <translation type="unfinished">Créer une &amp;police...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="202" />
+      <source>&amp;Assets</source>
+      <translation type="unfinished">&amp;Ressources</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="214" />
+      <source>Import Object Package...</source>
+      <translation type="unfinished">Importer un package d'objets...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="215" />
+      <source>Import Room Package...</source>
+      <translation type="unfinished">Importer un package de salles...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="219" />
+      <source>&amp;Build</source>
+      <translation type="unfinished">&amp;Compiler</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="221" />
+      <source>&amp;Test Game</source>
+      <translation type="unfinished">&amp;Tester le jeu</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="222" />
+      <source>&amp;Debug Game</source>
+      <translation type="unfinished">&amp;Déboguer le jeu</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="223" />
+      <source>&amp;Build Game...</source>
+      <translation type="unfinished">&amp;Compiler le jeu...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="224" />
+      <source>Build and &amp;Run</source>
+      <translation type="unfinished">Compiler et &amp;exécuter</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="225" />
+      <source>&amp;Export Game...</source>
+      <translation type="unfinished">&amp;Exporter le jeu...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="235" />
+      <source>&amp;Tools</source>
+      <translation type="unfinished">&amp;Outils</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="236" />
+      <source>&amp;Preferences...</source>
+      <translation type="unfinished">&amp;Préférences...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="237" />
+      <source>&amp;Asset Manager...</source>
+      <translation type="unfinished">Gestionnaire de &amp;ressources...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="238" />
+      <source>Configure &amp;Blockly Blocks...</source>
+      <translation type="unfinished">Configurer les blocs &amp;Blockly...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="240" />
+      <source>&amp;Validate Project</source>
+      <translation type="unfinished">&amp;Valider le projet</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="241" />
+      <source>&amp;Clean Project</source>
+      <translation type="unfinished">&amp;Nettoyer le projet</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="245" />
+      <source>🌐 &amp;Language</source>
+      <translation type="unfinished">🌐 &amp;Langue</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="248" />
+      <source>&amp;Help</source>
+      <translation type="unfinished">&amp;Aide</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="249" />
+      <source>&amp;Documentation</source>
+      <translation type="unfinished">&amp;Documentation</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="250" />
+      <source>&amp;Tutorials</source>
+      <translation type="unfinished">&amp;Tutoriels</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="252" />
+      <source>&amp;About PyGameMaker</source>
+      <translation type="unfinished">À &amp;propos de PyGameMaker</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="306" />
+      <source>Language Changed</source>
+      <translation type="unfinished">Langue modifiée</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="307" />
+      <source>Language changed to {0}.
+
+Please restart PyGameMaker IDE for the changes to take full effect.</source>
+      <translation type="unfinished">La langue a été changée en {0}.
+
+Veuillez redémarrer PyGameMaker IDE pour que les changements prennent effet.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="314" />
+      <source>Translation Not Available</source>
+      <translation type="unfinished">Traduction non disponible</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="315" />
+      <source>Translation file for {0} is not available.
+
+The language has been set, but the interface will remain in English until a translation file is provided.
+
+Expected file: translations/pygamemaker_{1}.qm</source>
+      <translation type="unfinished">Le fichier de traduction pour {0} n'est pas disponible.
+
+La langue a été définie, mais l'interface restera en anglais jusqu'à ce qu'un fichier de traduction soit fourni.
+
+Fichier attendu : translations/pygamemaker_{1}.qm</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="352" />
+      <source>Auto-Save to Zip Enabled</source>
+      <translation type="unfinished">Sauvegarde automatique en Zip activée</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="353" />
+      <source>The project will now automatically save to the original zip file.</source>
+      <translation type="unfinished">Le projet sera désormais automatiquement enregistré dans le fichier zip d'origine.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="359" />
+      <source>Export as Zip?</source>
+      <translation type="unfinished">Exporter en Zip ?</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="360" />
+      <source>Would you like to export the current project as a zip file now?
+
+This will allow auto-save to work with the zip file.</source>
+      <translation type="unfinished">Souhaitez-vous exporter le projet actuel en tant que fichier zip maintenant ?
+
+Cela permettra à la sauvegarde automatique de fonctionner avec le fichier zip.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="368" />
+      <source>Auto-save to zip disabled</source>
+      <translation type="unfinished">Sauvegarde automatique en zip désactivée</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="380" />
+      <source>Auto-save enabled</source>
+      <translation type="unfinished">Sauvegarde automatique activée</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="383" />
+      <source>Auto-Save Enabled</source>
+      <translation type="unfinished">Sauvegarde automatique activée</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="384" />
+      <source>Your project will be automatically saved every {0} seconds.</source>
+      <translation type="unfinished">Votre projet sera automatiquement enregistré toutes les {0} secondes.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="387" />
+      <source>Auto-save disabled</source>
+      <translation type="unfinished">Sauvegarde automatique désactivée</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="390" />
+      <source>Auto-Save Disabled</source>
+      <translation type="unfinished">Sauvegarde automatique désactivée</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="391" />
+      <source>Remember to save your project manually (Ctrl+S).</source>
+      <translation type="unfinished">N'oubliez pas d'enregistrer votre projet manuellement (Ctrl+S).</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="536" />
+      <location filename="../core/ide_window.py" line="423" />
+      <source>Auto-save settings updated</source>
+      <translation type="unfinished">Paramètres de sauvegarde automatique mis à jour</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1782" />
+      <location filename="../core/ide_window.py" line="1742" />
+      <location filename="../core/ide_window.py" line="1675" />
+      <location filename="../core/ide_window.py" line="1405" />
+      <location filename="../core/ide_window.py" line="1329" />
+      <location filename="../core/ide_window.py" line="1162" />
+      <location filename="../core/ide_window.py" line="1078" />
+      <location filename="../core/ide_window.py" line="942" />
+      <location filename="../core/ide_window.py" line="469" />
+      <location filename="../core/ide_window.py" line="428" />
+      <source>No Project</source>
+      <translation type="unfinished">Aucun projet</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1078" />
+      <location filename="../core/ide_window.py" line="942" />
+      <location filename="../core/ide_window.py" line="469" />
+      <location filename="../core/ide_window.py" line="428" />
+      <source>Please open a project first</source>
+      <translation type="unfinished">Veuillez d'abord ouvrir un projet</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="433" />
+      <source>Import Object Package</source>
+      <translation type="unfinished">Importer un package d'objets</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="435" />
+      <source>GameMaker Objects (*.gmobj)</source>
+      <translation type="unfinished">Objets GameMaker (*.gmobj)</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="441" />
+      <source>Importing object...</source>
+      <translation type="unfinished">Importation de l'objet...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="495" />
+      <location filename="../core/ide_window.py" line="454" />
+      <source>Import Successful</source>
+      <translation type="unfinished">Importation réussie</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="455" />
+      <source>Object '{0}' imported successfully!</source>
+      <translation type="unfinished">L'objet '{0}' a été importé avec succès !</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="457" />
+      <source>Object imported: {0}</source>
+      <translation type="unfinished">Objet importé : {0}</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="502" />
+      <location filename="../core/ide_window.py" line="461" />
+      <source>Import Failed</source>
+      <translation type="unfinished">Échec de l'importation</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="462" />
+      <source>Failed to import object package</source>
+      <translation type="unfinished">Échec de l'importation du package d'objets</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="505" />
+      <location filename="../core/ide_window.py" line="464" />
+      <source>Import failed</source>
+      <translation type="unfinished">Échec de l'importation</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="474" />
+      <source>Import Room Package</source>
+      <translation type="unfinished">Importer un package de salles</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="476" />
+      <source>GameMaker Rooms (*.gmroom)</source>
+      <translation type="unfinished">Salles GameMaker (*.gmroom)</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="482" />
+      <source>Importing room...</source>
+      <translation type="unfinished">Importation de la salle...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="496" />
+      <source>Room '{0}' imported successfully!</source>
+      <translation type="unfinished">La salle '{0}' a été importée avec succès !</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="498" />
+      <source>Room imported: {0}</source>
+      <translation type="unfinished">Salle importée : {0}</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="503" />
+      <source>Failed to import room package</source>
+      <translation type="unfinished">Échec de l'importation du package de salles</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="539" />
+      <source>Main</source>
+      <translation type="unfinished">Principal</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="551" />
+      <source>New</source>
+      <translation type="unfinished">Nouveau</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="552" />
+      <source>Open</source>
+      <translation type="unfinished">Ouvrir</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="553" />
+      <source>Save</source>
+      <translation type="unfinished">Enregistrer</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="561" />
+      <source>Test</source>
+      <translation type="unfinished">Tester</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="562" />
+      <source>Debug</source>
+      <translation type="unfinished">Débogage</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="563" />
+      <source>Build</source>
+      <translation type="unfinished">Compiler</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="566" />
+      <source>Import Sprite</source>
+      <translation type="unfinished">Importer un sprite</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="567" />
+      <source>Import Sound</source>
+      <translation type="unfinished">Importer un son</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2323" />
+      <location filename="../core/ide_window.py" line="1250" />
+      <location filename="../core/ide_window.py" line="651" />
+      <source>Unsaved Changes</source>
+      <translation type="unfinished">Modifications non enregistrées</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="652" />
+      <source>"{0}" has unsaved changes. Save before closing?</source>
+      <translation type="unfinished">"{0}" contient des modifications non enregistrées. Enregistrer avant de fermer ?</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="688" />
+      <source>Welcome</source>
+      <translation type="unfinished">Bienvenue</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2248" />
+      <location filename="../core/ide_window.py" line="752" />
+      <source>Ready</source>
+      <translation type="unfinished">Prêt</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2243" />
+      <location filename="../core/ide_window.py" line="759" />
+      <source>No project loaded</source>
+      <translation type="unfinished">Aucun projet chargé</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="817" />
+      <source>No recent projects</source>
+      <translation type="unfinished">Aucun projet récent</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="851" />
+      <source>Project created successfully</source>
+      <translation type="unfinished">Projet créé avec succès</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2015" />
+      <location filename="../core/ide_window.py" line="1969" />
+      <location filename="../core/ide_window.py" line="1153" />
+      <location filename="../core/ide_window.py" line="934" />
+      <location filename="../core/ide_window.py" line="908" />
+      <location filename="../core/ide_window.py" line="895" />
+      <location filename="../core/ide_window.py" line="874" />
+      <location filename="../core/ide_window.py" line="854" />
+      <source>Error</source>
+      <translation type="unfinished">Erreur</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="854" />
+      <source>Failed to create project</source>
+      <translation type="unfinished">Échec de la création du projet</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="858" />
+      <source>Open Project</source>
+      <translation type="unfinished">Ouvrir un projet</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="860" />
+      <source>Project Files (project.json);;Zip Files (*.zip);;All Files (*)</source>
+      <translation type="unfinished">Fichiers de projet (project.json);;Fichiers Zip (*.zip);;Tous les fichiers (*)</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="874" />
+      <source>Failed to load project from zip</source>
+      <translation type="unfinished">Échec du chargement du projet depuis le zip</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="876" />
+      <source>Invalid Zip</source>
+      <translation type="unfinished">Zip invalide</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="877" />
+      <source>This zip file does not contain a valid PyGameMaker project</source>
+      <translation type="unfinished">Ce fichier zip ne contient pas un projet PyGameMaker valide</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="895" />
+      <source>Failed to load project</source>
+      <translation type="unfinished">Échec du chargement du projet</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2195" />
+      <location filename="../core/ide_window.py" line="931" />
+      <location filename="../core/ide_window.py" line="905" />
+      <source>Project saved</source>
+      <translation type="unfinished">Projet enregistré</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="934" />
+      <location filename="../core/ide_window.py" line="908" />
+      <source>Failed to save project</source>
+      <translation type="unfinished">Échec de l'enregistrement du projet</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="924" />
+      <source>Save Project As</source>
+      <translation type="unfinished">Enregistrer le projet sous</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2350" />
+      <location filename="../core/ide_window.py" line="958" />
+      <source>No Project Loaded</source>
+      <translation type="unfinished">Aucun projet chargé</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="959" />
+      <source>You need to create or open a project before importing sprites.
+
+Would you like to create a new project now?</source>
+      <translation type="unfinished">Vous devez créer ou ouvrir un projet avant d'importer des sprites.
+
+Voulez-vous créer un nouveau projet maintenant ?</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1086" />
+      <source>Create {0}</source>
+      <translation type="unfinished">Créer {0}</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1087" />
+      <source>Enter name for new {0}:</source>
+      <translation type="unfinished">Entrez le nom du nouveau {0} :</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1147" />
+      <source>Created {0}</source>
+      <translation type="unfinished">Créé {0}</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1154" />
+      <source>Failed to create {0}: {1}</source>
+      <translation type="unfinished">Échec de la création de {0} : {1}</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1163" />
+      <source>Please open or create a project first before testing a game.</source>
+      <translation type="unfinished">Veuillez d'abord ouvrir ou créer un projet avant de tester un jeu.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1172" />
+      <source>Running game...</source>
+      <translation type="unfinished">Exécution du jeu...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1181" />
+      <source>Project Error</source>
+      <translation type="unfinished">Erreur de projet</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1182" />
+      <source>project.json not found in project directory</source>
+      <translation type="unfinished">project.json introuvable dans le répertoire du projet</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1190" />
+      <source>Game closed</source>
+      <translation type="unfinished">Jeu fermé</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1195" />
+      <source>Game Test Error</source>
+      <translation type="unfinished">Erreur de test du jeu</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1196" />
+      <source>Failed to run game:
+
+{0}
+
+Check console for details.</source>
+      <translation type="unfinished">Échec de l'exécution du jeu :
+
+{0}
+
+Vérifiez la console pour plus de détails.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1201" />
+      <source>Game test failed</source>
+      <translation type="unfinished">Test du jeu échoué</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1208" />
+      <source>Game Running</source>
+      <translation type="unfinished">Jeu en cours d'exécution</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1209" />
+      <source>A game is already running. Please stop it first.</source>
+      <translation type="unfinished">Un jeu est déjà en cours d'exécution. Veuillez d'abord l'arrêter.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1219" />
+      <source>Starting game in debug mode...</source>
+      <translation type="unfinished">Démarrage du jeu en mode débogage...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1223" />
+      <source>Debug Mode</source>
+      <translation type="unfinished">Mode débogage</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1224" />
+      <source>Debug mode will start the game with verbose console output.
+
+Future features:
+• Breakpoints
+• Variable inspection
+• Step-through execution
+• Performance profiling
+
+For now, check the console for debug messages.</source>
+      <translation type="unfinished">Le mode débogage démarrera le jeu avec une sortie console détaillée.
+
+Fonctionnalités futures :
+• Points d'arrêt
+• Inspection des variables
+• Exécution pas à pas
+• Profilage des performances
+
+Pour l'instant, consultez la console pour les messages de débogage.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1235" />
+      <source>Game started in debug mode - Check console for debug output</source>
+      <translation type="unfinished">Jeu démarré en mode débogage - Consultez la console pour la sortie de débogage</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1237" />
+      <source>Failed to start game</source>
+      <translation type="unfinished">Échec du démarrage du jeu</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1240" />
+      <source>Game Error</source>
+      <translation type="unfinished">Erreur de jeu</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1241" />
+      <source>Failed to start the game. Check console for details.</source>
+      <translation type="unfinished">Échec du démarrage du jeu. Consultez la console pour plus de détails.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1251" />
+      <source>You have unsaved changes. Save before building?</source>
+      <translation type="unfinished">Vous avez des modifications non enregistrées. Enregistrer avant de compiler ?</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1264" />
+      <source>Select Build Output Directory</source>
+      <translation type="unfinished">Sélectionner le répertoire de sortie de compilation</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1271" />
+      <source>Building game...</source>
+      <translation type="unfinished">Compilation du jeu...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2215" />
+      <location filename="../core/ide_window.py" line="1276" />
+      <source>Build Game</source>
+      <translation type="unfinished">Compiler le jeu</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1277" />
+      <source>Standalone executable building is not yet implemented.
+
+Current workaround:
+• Use 'Export as HTML5' to create a web version
+• Use 'Test Game' to run from source
+
+Future build targets:
+• Windows .exe
+• Linux binary
+• macOS .app
+• Android .apk
+
+Would you like to export as HTML5 instead?</source>
+      <translation type="unfinished">La compilation d'exécutable autonome n'est pas encore implémentée.
+
+Solution de contournement actuelle :
+• Utilisez 'Exporter en HTML5' pour créer une version web
+• Utilisez 'Tester le jeu' pour exécuter depuis le code source
+
+Cibles de compilation futures :
+• Windows .exe
+• Binaire Linux
+• macOS .app
+• Android .apk
+
+Voulez-vous plutôt exporter en HTML5 ?</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1289" />
+      <source>Build cancelled - use HTML5 export instead</source>
+      <translation type="unfinished">Compilation annulée - utilisez plutôt l'exportation HTML5</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2216" />
+      <location filename="../core/ide_window.py" line="1315" />
+      <location filename="../core/ide_window.py" line="1295" />
+      <source>Build and Run</source>
+      <translation type="unfinished">Compiler et exécuter</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1296" />
+      <source>This will build a standalone executable and run it.
+
+Building may take several minutes.
+
+Continue?</source>
+      <translation type="unfinished">Cela va compiler un exécutable autonome et l'exécuter.
+
+La compilation peut prendre plusieurs minutes.
+
+Continuer ?</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1310" />
+      <source>Building and running game...</source>
+      <translation type="unfinished">Compilation et exécution du jeu...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1316" />
+      <source>Standalone build is not yet implemented.
+
+Running game in test mode instead...</source>
+      <translation type="unfinished">La compilation autonome n'est pas encore implémentée.
+
+Exécution du jeu en mode test à la place...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1330" />
+      <source>Please open or create a project first before exporting a game.</source>
+      <translation type="unfinished">Veuillez d'abord ouvrir ou créer un projet avant d'exporter un jeu.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1338" />
+      <source>Export Game</source>
+      <translation type="unfinished">Exporter le jeu</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1343" />
+      <source>&lt;h3&gt;Export Game&lt;/h3&gt;</source>
+      <translation type="unfinished">&lt;h3&gt;Exporter le jeu&lt;/h3&gt;</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1344" />
+      <source>Choose export format:</source>
+      <translation type="unfinished">Choisir le format d'exportation :</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1349" />
+      <source>HTML5 (Web Browser) - ✅ Available</source>
+      <translation type="unfinished">HTML5 (Navigateur web) - ✅ Disponible</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1354" />
+      <source>Windows Executable (.exe) - ✅ Available</source>
+      <translation type="unfinished">Exécutable Windows (.exe) - ✅ Disponible</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1359" />
+      <source>Linux Binary - 🚧 Coming Soon</source>
+      <translation type="unfinished">Binaire Linux - 🚧 Bientôt disponible</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1364" />
+      <source>macOS Application (.app) - 🚧 Coming Soon</source>
+      <translation type="unfinished">Application macOS (.app) - 🚧 Bientôt disponible</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1369" />
+      <source>Android Package (.apk) - 🚧 Coming Soon</source>
+      <translation type="unfinished">Package Android (.apk) - 🚧 Bientôt disponible</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1376" />
+      <source>Export</source>
+      <translation type="unfinished">Exporter</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1378" />
+      <source>Cancel</source>
+      <translation type="unfinished">Annuler</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1803" />
+      <location filename="../core/ide_window.py" line="1394" />
+      <source>Coming Soon</source>
+      <translation type="unfinished">Bientôt disponible</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1395" />
+      <source>This export format is not yet available.
+
+Please use HTML5 or Windows EXE export for now.</source>
+      <translation type="unfinished">Ce format d'exportation n'est pas encore disponible.
+
+Veuillez utiliser l'exportation HTML5 ou Windows EXE pour l'instant.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1406" />
+      <source>Please open or create a project first.</source>
+      <translation type="unfinished">Veuillez d'abord ouvrir ou créer un projet.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1416" />
+      <source>Choose Export Location</source>
+      <translation type="unfinished">Choisir l'emplacement d'export</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1436" />
+      <source>Exporting Game</source>
+      <translation type="unfinished">Exportation du jeu</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1442" />
+      <source>Preparing export...</source>
+      <translation type="unfinished">Préparation de l'exportation...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1463" />
+      <source>Export Complete</source>
+      <translation type="unfinished">Exportation terminée</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1464" />
+      <source>Would you like to open the output folder?</source>
+      <translation type="unfinished">Voulez-vous ouvrir le dossier de sortie ?</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1479" />
+      <source>Export Failed</source>
+      <translation type="unfinished">Échec de l'export</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1660" />
+      <location filename="../core/ide_window.py" line="1652" />
+      <source>Not Implemented</source>
+      <translation type="unfinished">Non implémenté</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1653" />
+      <source>Find functionality is not yet implemented.</source>
+      <translation type="unfinished">La fonctionnalité de recherche n'est pas encore implémentée.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1661" />
+      <source>Find and Replace functionality is not yet implemented.</source>
+      <translation type="unfinished">La fonctionnalité de recherche et remplacement n'est pas encore implémentée.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1676" />
+      <source>Please open a project first to manage assets.</source>
+      <translation type="unfinished">Veuillez d'abord ouvrir un projet pour gérer les ressources.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1682" />
+      <source>Asset Manager</source>
+      <translation type="unfinished">Gestionnaire de ressources</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1683" />
+      <source>Asset Manager is not yet implemented.
+
+Current workaround:
+Use the Asset Tree panel on the left to manage your assets.
+
+Future features:
+• Bulk asset operations
+• Asset search and filter
+• Asset usage tracking
+• Unused asset cleanup</source>
+      <translation type="unfinished">Le gestionnaire de ressources n'est pas encore implémenté.
+
+Solution de contournement actuelle :
+Utilisez le panneau Arborescence des ressources à gauche pour gérer vos ressources.
+
+Fonctionnalités futures :
+• Opérations en masse sur les ressources
+• Recherche et filtrage des ressources
+• Suivi de l'utilisation des ressources
+• Nettoyage des ressources inutilisées</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1713" />
+      <source>Configuration Saved</source>
+      <translation type="unfinished">Configuration enregistrée</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1714" />
+      <source>Blockly configuration has been saved.
+
+The new event/block selection is now active in:
+• Visual programming editor (Blockly)
+• Traditional event editor
+
+Changes apply immediately to currently open editors.</source>
+      <translation type="unfinished">La configuration Blockly a été enregistrée.
+
+La nouvelle sélection d'événements/blocs est maintenant active dans :
+• L'éditeur de programmation visuelle (Blockly)
+• L'éditeur d'événements traditionnel
+
+Les modifications s'appliquent immédiatement aux éditeurs actuellement ouverts.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1743" />
+      <source>Please open a project first to validate.</source>
+      <translation type="unfinished">Veuillez d'abord ouvrir un projet pour valider.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1765" />
+      <source>Validation Issues Found</source>
+      <translation type="unfinished">Problèmes de validation trouvés</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1766" />
+      <source>Project validation found the following issues:
+
+</source>
+      <translation type="unfinished">La validation du projet a trouvé les problèmes suivants :
+
+</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1771" />
+      <source>Validation Passed</source>
+      <translation type="unfinished">Validation réussie</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1772" />
+      <source>Project structure is valid!
+
+✓ All required directories exist
+✓ project.json is present</source>
+      <translation type="unfinished">La structure du projet est valide !
+
+✓ Tous les répertoires requis existent
+✓ project.json est présent</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1783" />
+      <source>Please open a project first to clean.</source>
+      <translation type="unfinished">Veuillez d'abord ouvrir un projet pour nettoyer.</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1789" />
+      <source>Clean Project</source>
+      <translation type="unfinished">Nettoyer le projet</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1790" />
+      <source>Project cleanup is not yet implemented.
+
+Future features:
+• Remove temporary files
+• Delete unused assets
+• Clean build artifacts
+• Optimize project size
+
+Would you like to learn more?</source>
+      <translation type="unfinished">Le nettoyage du projet n'est pas encore implémenté.
+
+Fonctionnalités futures :
+• Supprimer les fichiers temporaires
+• Supprimer les ressources inutilisées
+• Nettoyer les artefacts de compilation
+• Optimiser la taille du projet
+
+Voulez-vous en savoir plus ?</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1804" />
+      <source>This feature will be available in a future update.
+
+For now, you can manually delete temporary files from:
+• .cache/ directory
+• __pycache__/ directories
+• *.pyc files</source>
+      <translation type="unfinished">Cette fonctionnalité sera disponible dans une mise à jour future.
+
+Pour l'instant, vous pouvez supprimer manuellement les fichiers temporaires de :
+• Répertoire .cache/
+• Répertoires __pycache__/
+• Fichiers *.pyc</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1815" />
+      <source>Documentation</source>
+      <translation type="unfinished">Documentation</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1816" />
+      <source>Documentation is not yet available.
+
+Quick Help:
+• F1: Open this help
+• Ctrl+N: New Project
+• Ctrl+O: Open Project
+• Ctrl+S: Save Project
+• Double-click assets to edit them
+• Right-click for more options
+
+Online documentation coming soon!</source>
+      <translation type="unfinished">La documentation n'est pas encore disponible.
+
+Aide rapide :
+• F1 : Ouvrir cette aide
+• Ctrl+N : Nouveau projet
+• Ctrl+O : Ouvrir un projet
+• Ctrl+S : Enregistrer le projet
+• Double-cliquez sur les ressources pour les éditer
+• Clic droit pour plus d'options
+
+Documentation en ligne bientôt disponible !</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1832" />
+      <source>Tutorials</source>
+      <translation type="unfinished">Tutoriels</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1837" />
+      <source>&lt;h3&gt;PyGameMaker Tutorials&lt;/h3&gt;</source>
+      <translation type="unfinished">&lt;h3&gt;Tutoriels PyGameMaker&lt;/h3&gt;</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1838" />
+      <source>Coming soon! Tutorials will include:</source>
+      <translation type="unfinished">Bientôt disponible ! Les tutoriels incluront :</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1854" />
+      <source>
+💡 Tip: Check the documentation (F1) for quick help!</source>
+      <translation type="unfinished">
+💡 Astuce : Consultez la documentation (F1) pour une aide rapide !</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1856" />
+      <source>Close</source>
+      <translation type="unfinished">Fermer</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1864" />
+      <source>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version 1.0.0&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A comprehensive visual game development environment&lt;br&gt;inspired by GameMaker Studio, built with Python.&lt;/p&gt;&lt;h3&gt;Features&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Dual Programming Modes:&lt;/b&gt; Visual (Blockly) and Traditional Events&lt;/li&gt;&lt;li&gt;&lt;b&gt;Asset Management:&lt;/b&gt; Sprites, sounds, objects, and rooms&lt;/li&gt;&lt;li&gt;&lt;b&gt;Cross-Platform Export:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Flexible Configuration:&lt;/b&gt; Customizable block/event visibility&lt;/li&gt;&lt;li&gt;&lt;b&gt;Real-time Testing:&lt;/b&gt; Run games directly from the IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technology Stack&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Game Engine:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Visual Programming:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Language:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Project Information&lt;/h3&gt;&lt;p&gt;PyGameMaker is an educational tool designed to make&lt;br&gt;game development accessible to beginners while providing&lt;br&gt;powerful features for experienced developers.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Built with ❤️ using Python and Qt&lt;/small&gt;&lt;/p&gt;</source>
+      <translation type="unfinished">&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version 1.0.0&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Un environnement de développement de jeux visuel complet&lt;br&gt;inspiré de GameMaker Studio, construit avec Python.&lt;/p&gt;&lt;h3&gt;Fonctionnalités&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Modes de programmation doubles :&lt;/b&gt; Visuel (Blockly) et événements traditionnels&lt;/li&gt;&lt;li&gt;&lt;b&gt;Gestion des ressources :&lt;/b&gt; Sprites, sons, objets et salles&lt;/li&gt;&lt;li&gt;&lt;b&gt;Exportation multiplateforme :&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Configuration flexible :&lt;/b&gt; Visibilité personnalisable des blocs/événements&lt;/li&gt;&lt;li&gt;&lt;b&gt;Tests en temps réel :&lt;/b&gt; Exécutez les jeux directement depuis l'IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Pile technologique&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE :&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Moteur de jeu :&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Programmation visuelle :&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Exportation :&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Langage :&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Informations sur le projet&lt;/h3&gt;&lt;p&gt;PyGameMaker est un outil éducatif conçu pour rendre&lt;br&gt;le développement de jeux accessible aux débutants tout en offrant&lt;br&gt;des fonctionnalités puissantes pour les développeurs expérimentés.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Construit avec ❤️ en utilisant Python et Qt&lt;/small&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1898" />
+      <source>About PyGameMaker</source>
+      <translation type="unfinished">À propos de PyGameMaker</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1905" />
+      <source>Imported {0}</source>
+      <translation type="unfinished">Importé {0}</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1926" />
+      <source>Editor</source>
+      <translation type="unfinished">Éditeur</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1927" />
+      <source>Editor for {0} not yet implemented.
+Asset: {1}</source>
+      <translation type="unfinished">Éditeur pour {0} pas encore implémenté.
+Ressource : {1}</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1963" />
+      <source>Opened room: {0}</source>
+      <translation type="unfinished">Salle ouverte : {0}</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="1970" />
+      <source>Failed to open room editor: {0}</source>
+      <translation type="unfinished">Échec de l'ouverture de l'éditeur de salle : {0}</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2010" />
+      <source>Opened object: {0}</source>
+      <translation type="unfinished">Objet ouvert : {0}</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2016" />
+      <source>Failed to open object editor: {0}</source>
+      <translation type="unfinished">Échec de l'ouverture de l'éditeur d'objet : {0}</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2137" />
+      <location filename="../core/ide_window.py" line="2129" />
+      <source>Save Error</source>
+      <translation type="unfinished">Erreur d'enregistrement</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2130" />
+      <source>Failed to save project to disk</source>
+      <translation type="unfinished">Échec de l'enregistrement du projet sur le disque</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2138" />
+      <source>Failed to save {0}: {1}</source>
+      <translation type="unfinished">Échec de l'enregistrement de {0} : {1}</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2191" />
+      <source>Project loaded: {0}</source>
+      <translation type="unfinished">Projet chargé : {0}</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2211" />
+      <source>Save Project</source>
+      <translation type="unfinished">Enregistrer le projet</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2211" />
+      <source>Save Project As...</source>
+      <translation type="unfinished">Enregistrer le projet sous...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2211" />
+      <source>Project Settings...</source>
+      <translation type="unfinished">Paramètres du projet...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2213" />
+      <source>Import</source>
+      <translation type="unfinished">Importer</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2213" />
+      <source>Create</source>
+      <translation type="unfinished">Créer</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2215" />
+      <source>Test Game</source>
+      <translation type="unfinished">Tester le jeu</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2215" />
+      <source>Debug Game</source>
+      <translation type="unfinished">Déboguer le jeu</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2216" />
+      <source>Export Game...</source>
+      <translation type="unfinished">Exporter le jeu...</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2241" />
+      <source>Project: {0}</source>
+      <translation type="unfinished">Projet : {0}</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2324" />
+      <source>You have unsaved changes. Do you want to save before closing?</source>
+      <translation type="unfinished">Vous avez des modifications non enregistrées. Voulez-vous enregistrer avant de fermer ?</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2351" />
+      <source>You need to create or open a project before {0}.
+
+Would you like to:
+• Create a new project, or
+• Open an existing project?</source>
+      <translation type="unfinished">Vous devez créer ou ouvrir un projet avant {0}.
+
+Voulez-vous :
+• Créer un nouveau projet, ou
+• Ouvrir un projet existant ?</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2363" />
+      <source>Create or Open Project</source>
+      <translation type="unfinished">Créer ou ouvrir un projet</translation>
+    </message>
+    <message>
+      <location filename="../core/ide_window.py" line="2364" />
+      <source>Choose project action:</source>
+      <translation type="unfinished">Choisir l'action du projet :</translation>
+    </message>
+  </context>
+  <context>
     <name>RoomEditor</name>
     <message>
       <location filename="../editors/room_editor/__init__.py" line="98" />
