@@ -32,7 +32,7 @@ class GM80ActionDialog(QDialog):
 
     def setup_ui(self):
         """Setup the dialog UI"""
-        self.setWindowTitle(f"Configure: {self.action_def.display_name}")
+        self.setWindowTitle(self.tr("Configure: {0}").format(self.action_def.display_name))
         self.setMinimumWidth(450)
 
         layout = QVBoxLayout(self)
@@ -50,7 +50,7 @@ class GM80ActionDialog(QDialog):
 
         # Parameters
         if self.action_def.parameters:
-            params_group = QGroupBox("Parameters")
+            params_group = QGroupBox(self.tr("Parameters"))
             params_layout = QFormLayout()
 
             for param in self.action_def.parameters:
@@ -65,7 +65,7 @@ class GM80ActionDialog(QDialog):
             params_group.setLayout(params_layout)
             layout.addWidget(params_group)
         else:
-            no_params_label = QLabel("This action has no parameters.")
+            no_params_label = QLabel(self.tr("This action has no parameters."))
             no_params_label.setStyleSheet("color: gray; font-style: italic;")
             layout.addWidget(no_params_label)
 
@@ -131,7 +131,7 @@ class GM80ActionDialog(QDialog):
             color_edit.setPlaceholderText("#RRGGBB")
             layout.addWidget(color_edit)
 
-            pick_btn = QPushButton("Pick Color...")
+            pick_btn = QPushButton(self.tr("Pick Color..."))
             pick_btn.clicked.connect(lambda: self.pick_color(color_edit))
             layout.addWidget(pick_btn)
 
@@ -172,7 +172,7 @@ class GM80ActionDialog(QDialog):
     def pick_color(self, color_edit: QLineEdit):
         """Show color picker dialog"""
         current_color = QColor(color_edit.text())
-        color = QColorDialog.getColor(current_color, self, "Pick Color")
+        color = QColorDialog.getColor(current_color, self, self.tr("Pick Color"))
         if color.isValid():
             color_edit.setText(color.name())
 

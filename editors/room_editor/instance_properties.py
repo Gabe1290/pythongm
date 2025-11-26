@@ -24,7 +24,7 @@ class InstanceProperties(QWidget):
         layout = QVBoxLayout(self)
         
         # Title
-        title = QLabel("Instance Properties")
+        title = QLabel(self.tr("Instance Properties"))
         title.setFont(QFont("", 10, QFont.Bold))
         layout.addWidget(title)
         
@@ -32,20 +32,20 @@ class InstanceProperties(QWidget):
         form_layout = QVBoxLayout()
         
         # Object name (read-only)
-        self.object_label = QLabel("Object: None")
+        self.object_label = QLabel(self.tr("Object: None"))
         form_layout.addWidget(self.object_label)
         
         # Position
-        pos_group = QGroupBox("Position")
+        pos_group = QGroupBox(self.tr("Position"))
         pos_layout = QHBoxLayout(pos_group)
-        
-        pos_layout.addWidget(QLabel("X:"))
+
+        pos_layout.addWidget(QLabel(self.tr("X:")))
         self.x_spin = QSpinBox()
         self.x_spin.setRange(0, 9999)
         self.x_spin.valueChanged.connect(self.on_x_changed)
         pos_layout.addWidget(self.x_spin)
-        
-        pos_layout.addWidget(QLabel("Y:"))
+
+        pos_layout.addWidget(QLabel(self.tr("Y:")))
         self.y_spin = QSpinBox()
         self.y_spin.setRange(0, 9999)
         self.y_spin.valueChanged.connect(self.on_y_changed)
@@ -54,13 +54,13 @@ class InstanceProperties(QWidget):
         form_layout.addWidget(pos_group)
         
         # Visibility
-        self.visible_check = QCheckBox("Visible")
+        self.visible_check = QCheckBox(self.tr("Visible"))
         self.visible_check.setChecked(True)
         self.visible_check.toggled.connect(self.on_visible_changed)
         form_layout.addWidget(self.visible_check)
         
         # Rotation
-        rot_group = QGroupBox("Rotation")
+        rot_group = QGroupBox(self.tr("Rotation"))
         rot_layout = QHBoxLayout(rot_group)
         self.rotation_spin = QSpinBox()
         self.rotation_spin.setRange(0, 360)
@@ -71,10 +71,10 @@ class InstanceProperties(QWidget):
         form_layout.addWidget(rot_group)
 
         # Scale
-        scale_group = QGroupBox("Scale")
+        scale_group = QGroupBox(self.tr("Scale"))
         scale_layout = QHBoxLayout(scale_group)
 
-        scale_layout.addWidget(QLabel("X:"))
+        scale_layout.addWidget(QLabel(self.tr("X:")))
         self.scale_x_spin = QSpinBox()
         self.scale_x_spin.setRange(10, 1000)
         self.scale_x_spin.setSuffix("%")
@@ -82,7 +82,7 @@ class InstanceProperties(QWidget):
         self.scale_x_spin.valueChanged.connect(self.on_scale_x_changed)
         scale_layout.addWidget(self.scale_x_spin)
 
-        scale_layout.addWidget(QLabel("Y:"))
+        scale_layout.addWidget(QLabel(self.tr("Y:")))
         self.scale_y_spin = QSpinBox()
         self.scale_y_spin.setRange(10, 1000)
         self.scale_y_spin.setSuffix("%")
@@ -93,7 +93,7 @@ class InstanceProperties(QWidget):
         form_layout.addWidget(scale_group)
 
         # Delete button
-        delete_btn = QPushButton("Delete Instance")
+        delete_btn = QPushButton(self.tr("Delete Instance"))
         delete_btn.clicked.connect(self.delete_instance)
         form_layout.addWidget(delete_btn)
         
@@ -114,7 +114,7 @@ class InstanceProperties(QWidget):
             self.scale_y_spin.blockSignals(True)
             
             # Load values
-            self.object_label.setText(f"Object: {instance.object_name}")
+            self.object_label.setText(self.tr("Object: {0}").format(instance.object_name))
             self.x_spin.setValue(instance.x)
             self.y_spin.setValue(instance.y)
             self.visible_check.setChecked(instance.visible)
@@ -132,7 +132,7 @@ class InstanceProperties(QWidget):
             
             self.setEnabled(True)
         else:
-            self.object_label.setText("Object: None")
+            self.object_label.setText(self.tr("Object: None"))
             self.setEnabled(False)
     
     def on_x_changed(self, value):

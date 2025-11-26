@@ -27,7 +27,7 @@ class ObjectPalette(QWidget):
         layout = QVBoxLayout(self)
         
         # Title
-        title = QLabel("Objects")
+        title = QLabel(self.tr("Objects"))
         title.setFont(QFont("", 10, QFont.Bold))
         layout.addWidget(title)
         
@@ -38,7 +38,7 @@ class ObjectPalette(QWidget):
         layout.addWidget(self.object_list)
         
         # Clear selection button
-        clear_btn = QPushButton("Clear Selection")
+        clear_btn = QPushButton(self.tr("Clear Selection"))
         clear_btn.clicked.connect(self.clear_selection)
         layout.addWidget(clear_btn)
     

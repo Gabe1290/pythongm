@@ -83,13 +83,13 @@ class GM80EventsPanel(QWidget):
         layout.setContentsMargins(5, 5, 5, 5)
 
         # Title
-        title_label = QLabel("Object Events")
+        title_label = QLabel(self.tr("Object Events"))
         title_label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
         layout.addWidget(title_label)
 
         # Events tree
         self.events_tree = QTreeWidget()
-        self.events_tree.setHeaderLabels(["Event", "Actions"])
+        self.events_tree.setHeaderLabels([self.tr("Event"), self.tr("Actions")])
         self.events_tree.setContextMenuPolicy(Qt.CustomContextMenu)
         self.events_tree.customContextMenuRequested.connect(self.show_context_menu)
         self.events_tree.itemDoubleClicked.connect(self.on_item_double_clicked)
@@ -127,11 +127,11 @@ class GM80EventsPanel(QWidget):
         # Buttons
         button_layout = QHBoxLayout()
 
-        self.add_event_btn = QPushButton("+ Add Event")
+        self.add_event_btn = QPushButton(self.tr("+ Add Event"))
         self.add_event_btn.clicked.connect(self.show_add_event_menu)
         button_layout.addWidget(self.add_event_btn)
 
-        self.remove_event_btn = QPushButton("- Remove Event")
+        self.remove_event_btn = QPushButton(self.tr("- Remove Event"))
         self.remove_event_btn.clicked.connect(self.remove_selected_event)
         self.remove_event_btn.setEnabled(False)
         button_layout.addWidget(self.remove_event_btn)
@@ -205,10 +205,10 @@ class GM80EventsPanel(QWidget):
         
         # Show warning if no events are enabled
         if not has_enabled_events:
-            no_events = menu.addAction("⚠️ No events enabled")
+            no_events = menu.addAction(self.tr("⚠️ No events enabled"))
             no_events.setEnabled(False)
             menu.addSeparator()
-            help_action = menu.addAction("Configure enabled events...")
+            help_action = menu.addAction(self.tr("Configure enabled events..."))
             help_action.triggered.connect(self.show_config_help)
 
         menu.exec(self.add_event_btn.mapToGlobal(self.add_event_btn.rect().bottomLeft()))
@@ -225,7 +225,7 @@ class GM80EventsPanel(QWidget):
                     lambda checked, obj=obj_name: self.add_collision_event(obj)
                 )
         else:
-            no_obj = parent_menu.addAction("No objects available")
+            no_obj = parent_menu.addAction(self.tr("No objects available"))
             no_obj.setEnabled(False)
 
     def add_keyboard_submenu(self, parent_menu, event):
@@ -256,8 +256,8 @@ class GM80EventsPanel(QWidget):
     def add_event(self, event_name: str):
         """Add a simple event"""
         if event_name in self.current_events_data:
-            QMessageBox.information(self, "Event Exists",
-                f"The {event_name} event already exists.")
+            QMessageBox.information(self, self.tr("Event Exists"),
+                self.tr("The {0} event already exists.").format(event_name))
             return
 
         self.current_events_data[event_name] = {"actions": []}
@@ -284,8 +284,8 @@ class GM80EventsPanel(QWidget):
             self.current_events_data[parent_event] = {}
 
         if subtype in self.current_events_data[parent_event]:
-            QMessageBox.information(self, "Event Exists",
-                f"The {event_name} event already exists.")
+            QMessageBox.information(self, self.tr("Event Exists"),
+                self.tr("The {0} event already exists.").format(event_name))
             return
 
         self.current_events_data[parent_event][subtype] = {"actions": []}
@@ -297,8 +297,8 @@ class GM80EventsPanel(QWidget):
         event_key = f"collision_with_{target_object}"
 
         if event_key in self.current_events_data:
-            QMessageBox.information(self, "Event Exists",
-                "This collision event already exists.")
+            QMessageBox.information(self, self.tr("Event Exists"),
+                self.tr("This collision event already exists."))
             return
 
         self.current_events_data[event_key] = {
@@ -323,8 +323,8 @@ class GM80EventsPanel(QWidget):
                     self.current_events_data[event_name] = {}
 
                 if selected_key in self.current_events_data[event_name]:
-                    QMessageBox.information(self, "Event Exists",
-                        f"The {selected_key} key event already exists.")
+                    QMessageBox.information(self, self.tr("Event Exists"),
+                        self.tr("The {0} key event already exists.").format(selected_key))
                     return
 
                 self.current_events_data[event_name][selected_key] = {"actions": []}
@@ -344,7 +344,7 @@ class GM80EventsPanel(QWidget):
 
         if isinstance(event_data, str):
             # This is an event item
-            add_action_menu = menu.addMenu("Add Action")
+            add_action_menu = menu.addMenu(self.tr("Add Action"))
 
             # Create submenus for each action tab
             for tab_id, tab_info in get_action_tabs_ordered():
@@ -360,15 +360,15 @@ class GM80EventsPanel(QWidget):
                     )
 
             menu.addSeparator()
-            remove_action = menu.addAction("Remove Event")
+            remove_action = menu.addAction(self.tr("Remove Event"))
             remove_action.triggered.connect(lambda: self.remove_event(event_data))
 
         elif isinstance(event_data, dict) and "action" in event_data:
             # This is an action item
-            edit_action = menu.addAction("Edit Action")
+            edit_action = menu.addAction(self.tr("Edit Action"))
             edit_action.triggered.connect(lambda: self.edit_action(item))
 
-            remove_action = menu.addAction("Remove Action")
+            remove_action = menu.addAction(self.tr("Remove Action"))
             remove_action.triggered.connect(lambda: self.remove_action(item))
 
         menu.exec(self.events_tree.mapToGlobal(position))
@@ -431,8 +431,8 @@ class GM80EventsPanel(QWidget):
         if event_name in self.current_events_data:
             actions = self.current_events_data[event_name].get("actions", [])
             if 0 <= action_index < len(actions):
-                reply = QMessageBox.question(self, "Remove Action",
-                    "Are you sure you want to remove this action?",
+                reply = QMessageBox.question(self, self.tr("Remove Action"),
+                    self.tr("Are you sure you want to remove this action?"),
                     QMessageBox.Yes | QMessageBox.No)
 
                 if reply == QMessageBox.Yes:
@@ -443,8 +443,8 @@ class GM80EventsPanel(QWidget):
     def remove_event(self, event_name: str):
         """Remove an event"""
         if event_name in self.current_events_data:
-            reply = QMessageBox.question(self, "Remove Event",
-                f"Are you sure you want to remove the {event_name} event?",
+            reply = QMessageBox.question(self, self.tr("Remove Event"),
+                self.tr("Are you sure you want to remove the {0} event?").format(event_name),
                 QMessageBox.Yes | QMessageBox.No)
 
             if reply == QMessageBox.Yes:
@@ -502,7 +502,7 @@ class GM80EventsPanel(QWidget):
                 # Count total keys
                 key_count = sum(1 for k, v in event_data.items()
                                if isinstance(v, dict) and 'actions' in v)
-                parent_event.setText(1, f"{key_count} keys")
+                parent_event.setText(1, self.tr("{0} keys").format(key_count))
                 parent_event.setData(0, Qt.UserRole, event_name)
                 parent_event.setExpanded(True)  # Expand parent by default
 
@@ -517,7 +517,7 @@ class GM80EventsPanel(QWidget):
                         # Create child item for this specific key
                         key_item = QTreeWidgetItem(parent_event)
                         key_item.setText(0, f"  {key_name}")
-                        key_item.setText(1, f"{len(key_data.get('actions', []))} actions")
+                        key_item.setText(1, self.tr("{0} actions").format(len(key_data.get('actions', []))))
                         key_item.setData(0, Qt.UserRole, f"{event_name}_{key_name}")
                         key_item.setExpanded(True)  # Expand key by default
                         keys_added.append(key_name)
@@ -545,8 +545,8 @@ class GM80EventsPanel(QWidget):
                 # Collision event
                 target = event_name.replace("collision_with_", "")
                 event_item = QTreeWidgetItem(self.events_tree)
-                event_item.setText(0, f"💥 Collision with {target}")
-                event_item.setText(1, f"{len(event_data.get('actions', []))} actions")
+                event_item.setText(0, self.tr("💥 Collision with {0}").format(target))
+                event_item.setText(1, self.tr("{0} actions").format(len(event_data.get('actions', []))))
                 event_item.setData(0, Qt.UserRole, event_name)
                 event_item.setExpanded(True)  # Expand immediately
 
@@ -571,7 +571,7 @@ class GM80EventsPanel(QWidget):
                 if event_def:
                     event_item = QTreeWidgetItem(self.events_tree)
                     event_item.setText(0, f"{event_def.icon} {event_def.display_name}")
-                    event_item.setText(1, f"{len(event_data.get('actions', []))} actions")
+                    event_item.setText(1, self.tr("{0} actions").format(len(event_data.get('actions', []))))
                     event_item.setData(0, Qt.UserRole, event_name)
                     event_item.setExpanded(True)  # Expand immediately
 
@@ -612,12 +612,12 @@ class GM80EventsPanel(QWidget):
         """Show help dialog about configuring enabled events"""
         QMessageBox.information(
             self,
-            "Configure Events",
-            "To enable/disable events, go to:\n\n"
+            self.tr("Configure Events"),
+            self.tr("To enable/disable events, go to:\n\n"
             "Tools → Configure Blockly Blocks\n\n"
             "Select which events you want available in both the\n"
             "visual programming editor and this traditional event editor.\n\n"
-            "Changes will take effect immediately."
+            "Changes will take effect immediately.")
         )
 
     def get_available_objects(self) -> List[str]:

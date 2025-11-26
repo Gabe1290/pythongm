@@ -95,78 +95,78 @@ class RoomEditor(QWidget):
     
     def create_toolbar(self):
         """Create the room editor toolbar"""
-        self.toolbar = QToolBar("Room Editor")
+        self.toolbar = QToolBar(self.tr("Room Editor"))
         self.toolbar.setMovable(False)
         self.toolbar.setFloatable(False)
-        
+
         # Save button (shortcut handled by main window menu)
-        save_action = self.toolbar.addAction("💾 Save")
-        save_action.setToolTip("Save room (Ctrl+S)")
+        save_action = self.toolbar.addAction(self.tr("💾 Save"))
+        save_action.setToolTip(self.tr("Save room (Ctrl+S)"))
         save_action.triggered.connect(self.save)
         
         self.toolbar.addSeparator()
         
         # Undo/Redo buttons (shortcuts handled by main window menu)
-        self.undo_action = self.toolbar.addAction("↶ Undo")
-        self.undo_action.setToolTip("Undo (Ctrl+Z)")
+        self.undo_action = self.toolbar.addAction(self.tr("↶ Undo"))
+        self.undo_action.setToolTip(self.tr("Undo (Ctrl+Z)"))
         self.undo_action.setEnabled(False)
         self.undo_action.triggered.connect(self.undo)
 
-        self.redo_action = self.toolbar.addAction("↷ Redo")
-        self.redo_action.setToolTip("Redo (Ctrl+Y)")
+        self.redo_action = self.toolbar.addAction(self.tr("↷ Redo"))
+        self.redo_action.setToolTip(self.tr("Redo (Ctrl+Y)"))
         self.redo_action.setEnabled(False)
         self.redo_action.triggered.connect(self.redo)
 
         self.toolbar.addSeparator()
 
         # Edit actions (shortcuts handled by main window menu)
-        self.cut_action = self.toolbar.addAction("✂️ Cut")
-        self.cut_action.setToolTip("Cut selected instance (Ctrl+X)")
+        self.cut_action = self.toolbar.addAction(self.tr("✂️ Cut"))
+        self.cut_action.setToolTip(self.tr("Cut selected instance (Ctrl+X)"))
         self.cut_action.setEnabled(False)
         self.cut_action.triggered.connect(self.cut_instance)
 
-        self.copy_action = self.toolbar.addAction("📋 Copy")
-        self.copy_action.setToolTip("Copy selected instance (Ctrl+C)")
+        self.copy_action = self.toolbar.addAction(self.tr("📋 Copy"))
+        self.copy_action.setToolTip(self.tr("Copy selected instance (Ctrl+C)"))
         self.copy_action.setEnabled(False)
         self.copy_action.triggered.connect(self.copy_instance)
 
-        self.paste_action = self.toolbar.addAction("📄 Paste")
-        self.paste_action.setToolTip("Paste instance (Ctrl+V)")
+        self.paste_action = self.toolbar.addAction(self.tr("📄 Paste"))
+        self.paste_action.setToolTip(self.tr("Paste instance (Ctrl+V)"))
         self.paste_action.setEnabled(False)
         self.paste_action.triggered.connect(self.paste_instance)
 
-        self.duplicate_action = self.toolbar.addAction("⎘ Duplicate")
-        self.duplicate_action.setToolTip("Duplicate selected instance (Ctrl+D)")
+        self.duplicate_action = self.toolbar.addAction(self.tr("⎘ Duplicate"))
+        self.duplicate_action.setToolTip(self.tr("Duplicate selected instance (Ctrl+D)"))
         self.duplicate_action.setEnabled(False)
         self.duplicate_action.triggered.connect(self.duplicate_instance)
 
         self.toolbar.addSeparator()
 
         # Grid toggle
-        self.grid_action = self.toolbar.addAction("🔲 Grid")
+        self.grid_action = self.toolbar.addAction(self.tr("🔲 Grid"))
         self.grid_action.setCheckable(True)
         self.grid_action.setChecked(True)
-        self.grid_action.setToolTip("Toggle grid visibility")
+        self.grid_action.setToolTip(self.tr("Toggle grid visibility"))
         self.grid_action.triggered.connect(self.toggle_grid)
-        
+
         # Snap to grid toggle
-        self.snap_action = self.toolbar.addAction("🧲 Snap")
+        self.snap_action = self.toolbar.addAction(self.tr("🧲 Snap"))
         self.snap_action.setCheckable(True)
         self.snap_action.setChecked(True)
-        self.snap_action.setToolTip("Toggle snap to grid")
+        self.snap_action.setToolTip(self.tr("Toggle snap to grid"))
         self.snap_action.triggered.connect(self.toggle_snap)
         
         self.toolbar.addSeparator()
         
         # Clear all instances
-        clear_action = self.toolbar.addAction("🗑️ Clear All")
-        clear_action.setToolTip("Remove all object instances")
+        clear_action = self.toolbar.addAction(self.tr("🗑️ Clear All"))
+        clear_action.setToolTip(self.tr("Remove all object instances"))
         clear_action.triggered.connect(self.clear_all_instances)
-        
+
         self.toolbar.addSeparator()
-        
+
         # Status label
-        self.status_label = QLabel("Ready")
+        self.status_label = QLabel(self.tr("Ready"))
         self.toolbar.addWidget(self.status_label)
     
     def toggle_grid(self, checked):
@@ -184,25 +184,25 @@ class RoomEditor(QWidget):
         """Clear all object instances with confirmation"""
         if hasattr(self, 'room_canvas') and self.room_canvas.instances:
             reply = QMessageBox.question(
-                self, 
-                "Clear All Instances",
-                f"Are you sure you want to remove all {len(self.room_canvas.instances)} object instances?",
+                self,
+                self.tr("Clear All Instances"),
+                self.tr("Are you sure you want to remove all {0} object instances?").format(len(self.room_canvas.instances)),
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.No
             )
-            
+
             if reply == QMessageBox.Yes:
                 self.room_canvas.clear_instances()
                 self.instance_properties.set_instance(None)
                 self.mark_modified()
-                self.update_status("All instances cleared")
+                self.update_status(self.tr("All instances cleared"))
     
     def update_status(self, message, timeout=3000):
         """Update status message"""
         if hasattr(self, 'status_label'):
             self.status_label.setText(message)
             if timeout > 0:
-                QTimer.singleShot(timeout, lambda: self.status_label.setText("Ready") if hasattr(self, 'status_label') else None)
+                QTimer.singleShot(timeout, lambda: self.status_label.setText(self.tr("Ready")) if hasattr(self, 'status_label') else None)
     
     def setup_connections(self):
         """Set up signal connections"""
@@ -262,9 +262,9 @@ class RoomEditor(QWidget):
             self.mark_modified()
             count = len(instances_to_delete)
             if count == 1:
-                self.update_status(f"Deleted {instances_to_delete[0].object_name}")
+                self.update_status(self.tr("Deleted {0}").format(instances_to_delete[0].object_name))
             else:
-                self.update_status(f"Deleted {count} instances")
+                self.update_status(self.tr("Deleted {0} instances").format(count))
 
     def refresh_object_sprites(self, object_name: str):
         """Refresh sprites for a specific object"""
@@ -301,12 +301,12 @@ class RoomEditor(QWidget):
         
         # Load available objects from project
         self.load_available_objects()
-        
+
         # Emit activation signal
         self.room_editor_activated.emit(asset_name, self.current_room_properties)
-        
+
         self.is_modified = False
-        self.update_status(f"Loaded room '{asset_name}' with {len(instances_data)} instances")
+        self.update_status(self.tr("Loaded room '{0}' with {1} instances").format(asset_name, len(instances_data)))
     
     def pass_project_info_to_canvas(self):
         """Pass project information to canvas and palette"""
@@ -335,20 +335,20 @@ class RoomEditor(QWidget):
                 
                 self.object_palette.set_project_info(self.project_path, project_data)
                 self.object_palette.set_available_objects(objects)
-                
-                self.update_status(f"Loaded {len(objects)} objects")
-                
+
+                self.update_status(self.tr("Loaded {0} objects").format(len(objects)))
+
         except Exception as e:
             print(f"Error loading objects: {e}")
-            self.update_status(f"Error loading objects: {e}", 5000)
+            self.update_status(self.tr("Error loading objects: {0}").format(e), 5000)
     
     def on_object_selected(self, object_name):
         """Handle object selection from palette"""
         self.room_canvas.set_current_object_type(object_name)
         if object_name:
-            self.update_status(f"Selected '{object_name}' - Click in room to place")
+            self.update_status(self.tr("Selected '{0}' - Click in room to place").format(object_name))
         else:
-            self.update_status("No object selected")
+            self.update_status(self.tr("No object selected"))
     
     def on_instance_selected(self, instance):
         """Handle instance selection in canvas"""
@@ -365,32 +365,32 @@ class RoomEditor(QWidget):
         
         if selection_count > 0:
             if selection_count == 1:
-                self.update_status(f"Selected {instance.object_name} at ({instance.x}, {instance.y})")
+                self.update_status(self.tr("Selected {0} at ({1}, {2})").format(instance.object_name, instance.x, instance.y))
             else:
-                self.update_status(f"Selected {selection_count} instances")
+                self.update_status(self.tr("Selected {0} instances").format(selection_count))
         else:
-            self.update_status("No instance selected")
+            self.update_status(self.tr("No instance selected"))
     
     def on_instance_moved(self, instance):
         """Handle instance movement"""
         self.mark_modified()
         self.instance_properties.set_instance(instance)
-        self.update_status(f"Moved {instance.object_name} to ({instance.x}, {instance.y})")
-    
+        self.update_status(self.tr("Moved {0} to ({1}, {2})").format(instance.object_name, instance.x, instance.y))
+
     def on_instance_added(self, instance):
         """Handle instance addition"""
         self.mark_modified()
-        self.update_status(f"Added {instance.object_name} at ({instance.x}, {instance.y})")
+        self.update_status(self.tr("Added {0} at ({1}, {2})").format(instance.object_name, instance.x, instance.y))
     
     def on_instance_property_changed(self, instance, property_name, value):
         """Handle instance property change"""
         if property_name == "delete":
             self.room_canvas.remove_instance(instance)
             self.instance_properties.set_instance(None)
-            self.update_status(f"Deleted {instance.object_name} instance")
+            self.update_status(self.tr("Deleted {0} instance").format(instance.object_name))
         else:
-            self.update_status(f"Updated {instance.object_name} {property_name}: {value}")
-        
+            self.update_status(self.tr("Updated {0} {1}: {2}").format(instance.object_name, property_name, value))
+
         self.mark_modified()
         self.room_canvas.update()
     
@@ -423,16 +423,16 @@ class RoomEditor(QWidget):
     def save(self):
         """Save the room"""
         try:
-            self.update_status("Saving room...")
+            self.update_status(self.tr("Saving room..."))
             data = self.get_data()
             self.save_requested.emit(self.asset_name, data)
             self.is_modified = False
-            self.update_status(f"Room '{self.asset_name}' saved successfully")
+            self.update_status(self.tr("Room '{0}' saved successfully").format(self.asset_name))
             return True
         except Exception as e:
             print(f"Error saving room: {e}")
-            self.update_status(f"Error saving room: {e}", 5000)
-            QMessageBox.critical(self, "Save Error", f"Failed to save room:\n{e}")
+            self.update_status(self.tr("Error saving room: {0}").format(e), 5000)
+            QMessageBox.critical(self, self.tr("Save Error"), self.tr("Failed to save room:\n{0}").format(e))
             return False
     
     def update_room_property_from_ide(self, property_name, value):
@@ -459,14 +459,14 @@ class RoomEditor(QWidget):
         if hasattr(self.room_canvas, 'undo_stack'):
             self.room_canvas.undo_stack.undo()
             self.mark_modified()
-            self.update_status("Undo")
+            self.update_status(self.tr("Undo"))
 
     def redo(self):
         """Redo last undone action"""
         if hasattr(self.room_canvas, 'undo_stack'):
             self.room_canvas.undo_stack.redo()
             self.mark_modified()
-            self.update_status("Redo")
+            self.update_status(self.tr("Redo"))
 
     def update_undo_actions(self):
         """Update undo/redo button states"""
@@ -479,15 +479,15 @@ class RoomEditor(QWidget):
             
             if can_undo:
                 undo_text = self.room_canvas.undo_stack.undoText()
-                self.undo_action.setText(f"↶ Undo: {undo_text}")
+                self.undo_action.setText(self.tr("↶ Undo: {0}").format(undo_text))
             else:
-                self.undo_action.setText("↶ Undo")
-            
+                self.undo_action.setText(self.tr("↶ Undo"))
+
             if can_redo:
                 redo_text = self.room_canvas.undo_stack.redoText()
-                self.redo_action.setText(f"↷ Redo: {redo_text}")
+                self.redo_action.setText(self.tr("↷ Redo: {0}").format(redo_text))
             else:
-                self.redo_action.setText("↷ Redo")
+                self.redo_action.setText(self.tr("↷ Redo"))
 
     def cut_instance(self):
         """Cut selected instance(s)"""
@@ -496,7 +496,7 @@ class RoomEditor(QWidget):
                 self.paste_action.setEnabled(True)
                 self.mark_modified()
                 count = self.room_canvas.get_selected_count()
-                self.update_status(f"Cut {count} instance(s) to clipboard")
+                self.update_status(self.tr("Cut {0} instance(s) to clipboard").format(count))
 
     def copy_instance(self):
         """Copy selected instance(s)"""
@@ -504,20 +504,20 @@ class RoomEditor(QWidget):
             if self.room_canvas.copy_selected_instances():
                 self.paste_action.setEnabled(True)
                 count = self.room_canvas.get_selected_count()
-                self.update_status(f"Copied {count} instance(s) to clipboard")
+                self.update_status(self.tr("Copied {0} instance(s) to clipboard").format(count))
                 
     def paste_instance(self):
         """Paste instance(s) from clipboard"""
         if hasattr(self.room_canvas, 'paste_instances'):
             # Get count before pasting
             clipboard_count = len(self.room_canvas.clipboard_instances)
-            
+
             if self.room_canvas.paste_instances():
                 self.mark_modified()
                 if clipboard_count == 1:
-                    self.update_status("Instance pasted")
+                    self.update_status(self.tr("Instance pasted"))
                 else:
-                    self.update_status(f"Pasted {clipboard_count} instances")
+                    self.update_status(self.tr("Pasted {0} instances").format(clipboard_count))
 
     def duplicate_instance(self):
         """Duplicate selected instance(s)"""
@@ -525,4 +525,4 @@ class RoomEditor(QWidget):
             if self.room_canvas.duplicate_selected_instances():
                 self.mark_modified()
                 count = self.room_canvas.get_selected_count()
-                self.update_status(f"Duplicated {count} instance(s)")
+                self.update_status(self.tr("Duplicated {0} instance(s)").format(count))

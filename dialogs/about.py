@@ -15,7 +15,7 @@ class AboutDialog(QDialog):
     
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("About PyGameMaker IDE")
+        self.setWindowTitle(self.tr("About PyGameMaker IDE"))
         self.setModal(True)
         self.resize(450, 350)
         self.setup_ui()
@@ -25,16 +25,16 @@ class AboutDialog(QDialog):
         layout = QVBoxLayout(self)
         
         # Title
-        title = QLabel("PyGameMaker IDE")
+        title = QLabel(self.tr("PyGameMaker IDE"))
         title_font = QFont()
         title_font.setPointSize(18)
         title_font.setBold(True)
         title.setFont(title_font)
         title.setAlignment(Qt.AlignCenter)
         layout.addWidget(title)
-        
+
         # Version
-        version = QLabel("Version 1.0.0")
+        version = QLabel(self.tr("Version 1.0.0"))
         version.setAlignment(Qt.AlignCenter)
         layout.addWidget(version)
         
@@ -47,28 +47,10 @@ class AboutDialog(QDialog):
         
         about_text = QTextEdit()
         about_text.setReadOnly(True)
-        about_text.setHtml("""
-        <h3>PyGameMaker IDE</h3>
-        <p>A GameMaker-inspired IDE for creating 2D games with Python.</p>
-        
-        <h4>Features:</h4>
-        <ul>
-        <li>Visual scripting with events and actions</li>
-        <li>Asset management for sprites, sounds, and objects</li>
-        <li>Room-based game development</li>
-        <li>Export to standalone Python games</li>
-        </ul>
-        
-        <h4>Built with:</h4>
-        <ul>
-        <li>PySide6 for the user interface</li>
-        <li>Pygame for game runtime</li>
-        <li>Python 3.11+</li>
-        </ul>
-        """)
+        about_text.setHtml(self.tr("<h3>PyGameMaker IDE</h3><p>A GameMaker-inspired IDE for creating 2D games with Python.</p><h4>Features:</h4><ul><li>Visual scripting with events and actions</li><li>Asset management for sprites, sounds, and objects</li><li>Room-based game development</li><li>Export to standalone Python games</li></ul><h4>Built with:</h4><ul><li>PySide6 for the user interface</li><li>Pygame for game runtime</li><li>Python 3.11+</li></ul>"))
         
         about_layout.addWidget(about_text)
-        tabs.addTab(about_tab, "About")
+        tabs.addTab(about_tab, self.tr("About"))
         
         # Credits tab
         credits_tab = QWidget()
@@ -76,34 +58,16 @@ class AboutDialog(QDialog):
         
         credits_text = QTextEdit()
         credits_text.setReadOnly(True)
-        credits_text.setPlainText("""
-Credits:
-
-Development:
-- PyGameMaker IDE Team
-
-Special Thanks:
-- The GameMaker Studio community for inspiration
-- The Python and Pygame communities
-- All contributors and testers
-
-Third-Party Libraries:
-- PySide6 (Qt for Python)
-- Pygame (game development library)
-- Pillow (image processing)
-
-License:
-This software is released under the MIT License.
-        """)
+        credits_text.setPlainText(self.tr("Credits:\n\nDevelopment:\n- PyGameMaker IDE Team\n\nSpecial Thanks:\n- The GameMaker Studio community for inspiration\n- The Python and Pygame communities\n- All contributors and testers\n\nThird-Party Libraries:\n- PySide6 (Qt for Python)\n- Pygame (game development library)\n- Pillow (image processing)\n\nLicense:\nThis software is released under the MIT License."))
         
         credits_layout.addWidget(credits_text)
-        tabs.addTab(credits_tab, "Credits")
+        tabs.addTab(credits_tab, self.tr("Credits"))
         
         layout.addWidget(tabs)
         
         # Close button
         button_layout = QHBoxLayout()
-        close_button = QPushButton("Close")
+        close_button = QPushButton(self.tr("Close"))
         close_button.clicked.connect(self.accept)
         close_button.setDefault(True)
         

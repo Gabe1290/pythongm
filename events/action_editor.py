@@ -33,10 +33,10 @@ class ActionConfigDialog(QDialog):
             'else_action_params': self.current_params.get('else_action_params', {})
         }
         
-        self.setWindowTitle(f"Configure {action_type.display_name}")
+        self.setWindowTitle(self.tr("Configure {0}").format(action_type.display_name))
         self.setModal(True)
         self.resize(500, 400)
-        
+
         self.setup_ui()
     
     def setup_ui(self):
@@ -44,7 +44,7 @@ class ActionConfigDialog(QDialog):
         # Special handling for conditional actions
         if self.is_conditional:
             layout = QVBoxLayout(self)
-            label = QLabel("This action requires special configuration.")
+            label = QLabel(self.tr("This action requires special configuration."))
             label.setAlignment(Qt.AlignCenter)
             layout.addWidget(label)
             
@@ -132,11 +132,11 @@ class ActionConfigDialog(QDialog):
                 if param.name in self.current_params:
                     current_value = str(self.current_params[param.name])
                     if current_value == "__next__":
-                        widget.setCurrentText("→ Next Room")
+                        widget.setCurrentText(self.tr("→ Next Room"))
                     elif current_value == "__prev__":
-                        widget.setCurrentText("← Previous Room")
+                        widget.setCurrentText(self.tr("← Previous Room"))
                     elif current_value == "__current__":
-                        widget.setCurrentText("↺ Restart Current Room")
+                        widget.setCurrentText(self.tr("↺ Restart Current Room"))
                     else:
                         widget.setCurrentText(current_value)
                 else:
@@ -155,7 +155,7 @@ class ActionConfigDialog(QDialog):
                 param_layout.addWidget(widget)
                 
                 # Add "Configure..." button
-                config_btn = QPushButton("⚙️ Configure...")
+                config_btn = QPushButton(self.tr("⚙️ Configure..."))
                 config_btn.setMaximumWidth(120)
                 config_btn.clicked.connect(
                     lambda checked, p=param.name, w=widget: self.configure_nested_action(p, w.currentText())
@@ -169,11 +169,11 @@ class ActionConfigDialog(QDialog):
             # Create appropriate widget based on parameter type
             elif param.param_type == "string":
                 widget = QLineEdit()
-                widget.setPlaceholderText(str(param.default_value))
+                widget.setPlaceholderText(str(param.default_value) if param.default_value else "")
                 if param.name in self.current_params:
                     widget.setText(str(self.current_params[param.name]))
                 else:
-                    widget.setText(str(param.default_value))
+                    widget.setText(str(param.default_value) if param.default_value else "")
             
             elif param.param_type == "number":
                 widget = QSpinBox()
@@ -212,7 +212,7 @@ class ActionConfigDialog(QDialog):
             
             # Special handling for action_list parameters (then_actions, else_actions)
             elif param.param_type == "action_list":
-                widget = QPushButton("📋 Configure Actions...")
+                widget = QPushButton(self.tr("📋 Configure Actions..."))
                 widget.clicked.connect(
                     lambda checked, p=param.name: self.configure_action_list(p)
                 )
@@ -230,7 +230,7 @@ class ActionConfigDialog(QDialog):
             elif param.param_type == "color":
                 current_color = self.current_params.get(param.name, param.default_value)
                 widget = QPushButton()
-                widget.setText("🎨 Choose Color...")
+                widget.setText(self.tr("🎨 Choose Color..."))
                 widget.setProperty("color_value", current_color)
 
                 # Set button background to current color
@@ -254,7 +254,7 @@ class ActionConfigDialog(QDialog):
                 if available_sprites:
                     widget.addItems(available_sprites)
                 else:
-                    widget.addItems(["(No sprites available)"])
+                    widget.addItems([self.tr("(No sprites available)")])
 
                 if param.name in self.current_params:
                     widget.setCurrentText(str(self.current_params[param.name]))
@@ -271,7 +271,7 @@ class ActionConfigDialog(QDialog):
                 if available_sounds:
                     widget.addItems(available_sounds)
                 else:
-                    widget.addItems(["(No sounds available)"])
+                    widget.addItems([self.tr("(No sounds available)")])
 
                 if param.name in self.current_params:
                     widget.setCurrentText(str(self.current_params[param.name]))
@@ -282,7 +282,7 @@ class ActionConfigDialog(QDialog):
             elif param.param_type == "code":
                 widget = QTextEdit()
                 widget.setMaximumHeight(150)
-                widget.setPlaceholderText("Enter code here...")
+                widget.setPlaceholderText(self.tr("Enter code here..."))
                 if param.name in self.current_params:
                     widget.setPlainText(str(self.current_params[param.name]))
                 else:
@@ -296,12 +296,12 @@ class ActionConfigDialog(QDialog):
                 pos_layout.setContentsMargins(0, 0, 0, 0)
 
                 x_spin = QSpinBox()
-                x_spin.setPrefix("X: ")
+                x_spin.setPrefix(self.tr("X: "))
                 x_spin.setMinimum(-9999)
                 x_spin.setMaximum(9999)
 
                 y_spin = QSpinBox()
-                y_spin.setPrefix("Y: ")
+                y_spin.setPrefix(self.tr("Y: "))
                 y_spin.setMinimum(-9999)
                 y_spin.setMaximum(9999)
 
@@ -381,13 +381,13 @@ class ActionConfigDialog(QDialog):
             initial_color = QColor(255, 255, 255)
 
         # Show color picker
-        color = QColorDialog.getColor(initial_color, self, "Choose Color")
+        color = QColorDialog.getColor(initial_color, self, self.tr("Choose Color"))
 
         if color.isValid():
             color_hex = color.name()  # Returns "#RRGGBB"
             button_widget.setProperty("color_value", color_hex)
             button_widget.setStyleSheet(f"background-color: {color_hex}; color: white;")
-            button_widget.setText(f"🎨 {color_hex}")
+            button_widget.setText(self.tr("🎨 {0}").format(color_hex))
 
     def get_available_objects(self):
         """Get list of available objects from the project"""
@@ -437,9 +437,9 @@ class ActionConfigDialog(QDialog):
         
         # Add special navigation options first
         room_list.extend([
-            "→ Next Room",
-            "← Previous Room", 
-            "↺ Restart Current Room",
+            self.tr("→ Next Room"),
+            self.tr("← Previous Room"),
+            self.tr("↺ Restart Current Room"),
             "---"
         ])
         
@@ -479,11 +479,11 @@ class ActionConfigDialog(QDialog):
 
                 # Map navigation options
                 if param_name == "room_name" or "room" in param_name.lower():
-                    if value == "→ Next Room":
+                    if value == self.tr("→ Next Room"):
                         value = "__next__"
-                    elif value == "← Previous Room":
+                    elif value == self.tr("← Previous Room"):
                         value = "__prev__"
-                    elif value == "↺ Restart Current Room":
+                    elif value == self.tr("↺ Restart Current Room"):
                         value = "__current__"
 
                 values[param_name] = value
@@ -535,7 +535,7 @@ class MultiActionEditor(QDialog):
         super().__init__(parent)
         self.action_list = action_list or []
         
-        self.setWindowTitle("Configure Actions")
+        self.setWindowTitle(self.tr("Configure Actions"))
         self.setModal(True)
         self.resize(600, 500)
         
@@ -543,38 +543,38 @@ class MultiActionEditor(QDialog):
     
     def setup_ui(self):
         layout = QVBoxLayout(self)
-        
+
         # Title
-        title = QLabel("Action Sequence")
+        title = QLabel(self.tr("Action Sequence"))
         title.setFont(QFont("Arial", 12, QFont.Weight.Bold))
         layout.addWidget(title)
-        
+
         # Action list
         self.action_tree = QTreeWidget()
-        self.action_tree.setHeaderLabels(["Action", "Parameters"])
+        self.action_tree.setHeaderLabels([self.tr("Action"), self.tr("Parameters")])
         self.action_tree.itemDoubleClicked.connect(self.edit_action)
         layout.addWidget(self.action_tree)
-        
+
         # Buttons for managing actions
         button_layout = QHBoxLayout()
-        
-        add_btn = QPushButton("➕ Add Action")
+
+        add_btn = QPushButton(self.tr("➕ Add Action"))
         add_btn.clicked.connect(self.add_action)
         button_layout.addWidget(add_btn)
-        
-        edit_btn = QPushButton("✏️ Edit Action")
+
+        edit_btn = QPushButton(self.tr("✏️ Edit Action"))
         edit_btn.clicked.connect(lambda: self.edit_action(self.action_tree.currentItem(), 0))
         button_layout.addWidget(edit_btn)
-        
-        remove_btn = QPushButton("➖ Remove Action")
+
+        remove_btn = QPushButton(self.tr("➖ Remove Action"))
         remove_btn.clicked.connect(self.remove_action)
         button_layout.addWidget(remove_btn)
-        
-        move_up_btn = QPushButton("⬆️ Move Up")
+
+        move_up_btn = QPushButton(self.tr("⬆️ Move Up"))
         move_up_btn.clicked.connect(self.move_up)
         button_layout.addWidget(move_up_btn)
-        
-        move_down_btn = QPushButton("⬇️ Move Down")
+
+        move_down_btn = QPushButton(self.tr("⬇️ Move Down"))
         move_down_btn.clicked.connect(self.move_down)
         button_layout.addWidget(move_down_btn)
         

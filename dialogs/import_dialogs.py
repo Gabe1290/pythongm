@@ -20,7 +20,7 @@ class ImportAssetsDialog(QDialog):
     def __init__(self, asset_type, parent=None):
         super().__init__(parent)
         self.asset_type = asset_type
-        self.setWindowTitle("Import Assets")
+        self.setWindowTitle(self.tr("Import Assets"))
         self.setModal(True)
         self.resize(600, 400)
         self.setup_ui()
@@ -30,23 +30,23 @@ class ImportAssetsDialog(QDialog):
         layout = QVBoxLayout(self)
         
         # File selection
-        files_group = QGroupBox("Select Files to Import")
+        files_group = QGroupBox(self.tr("Select Files to Import"))
         files_layout = QVBoxLayout(files_group)
         
         self.file_list = QListWidget()
         files_layout.addWidget(self.file_list)
         
         buttons_layout = QHBoxLayout()
-        
-        add_files_btn = QPushButton("Add Files...")
+
+        add_files_btn = QPushButton(self.tr("Add Files..."))
         add_files_btn.clicked.connect(self.add_files)
         buttons_layout.addWidget(add_files_btn)
-        
-        add_folder_btn = QPushButton("Add Folder...")
+
+        add_folder_btn = QPushButton(self.tr("Add Folder..."))
         add_folder_btn.clicked.connect(self.add_folder)
         buttons_layout.addWidget(add_folder_btn)
-        
-        clear_btn = QPushButton("Clear All")
+
+        clear_btn = QPushButton(self.tr("Clear All"))
         clear_btn.clicked.connect(self.clear_files)
         buttons_layout.addWidget(clear_btn)
         
@@ -55,14 +55,14 @@ class ImportAssetsDialog(QDialog):
         layout.addWidget(files_group)
         
         # Options
-        options_group = QGroupBox("Import Options")
+        options_group = QGroupBox(self.tr("Import Options"))
         options_layout = QVBoxLayout(options_group)
-        
-        self.auto_detect_type = QCheckBox("Auto-detect asset type")
+
+        self.auto_detect_type = QCheckBox(self.tr("Auto-detect asset type"))
         self.auto_detect_type.setChecked(True)
         options_layout.addWidget(self.auto_detect_type)
-        
-        self.copy_files = QCheckBox("Copy files to project folder")
+
+        self.copy_files = QCheckBox(self.tr("Copy files to project folder"))
         self.copy_files.setChecked(True)
         options_layout.addWidget(self.copy_files)
         
@@ -70,11 +70,11 @@ class ImportAssetsDialog(QDialog):
         
         # Dialog buttons
         dialog_buttons = QHBoxLayout()
-        
-        cancel_btn = QPushButton("Cancel")
+
+        cancel_btn = QPushButton(self.tr("Cancel"))
         cancel_btn.clicked.connect(self.reject)
-        
-        import_btn = QPushButton("Import")
+
+        import_btn = QPushButton(self.tr("Import"))
         import_btn.clicked.connect(self.start_import)
         import_btn.setDefault(True)
         
@@ -88,9 +88,9 @@ class ImportAssetsDialog(QDialog):
         """Add files to import"""
         files, _ = QFileDialog.getOpenFileNames(
             self,
-            "Select Files to Import",
+            self.tr("Select Files to Import"),
             "",
-            "Images (*.png *.jpg *.jpeg *.bmp *.gif);;Sounds (*.wav *.mp3 *.ogg);;All Files (*)"
+            self.tr("Images (*.png *.jpg *.jpeg *.bmp *.gif);;Sounds (*.wav *.mp3 *.ogg);;All Files (*)")
         )
         
         if files:
@@ -105,7 +105,7 @@ class ImportAssetsDialog(QDialog):
             
     def add_folder(self):
         """Add folder contents"""
-        folder = QFileDialog.getExistingDirectory(self, "Select Folder")
+        folder = QFileDialog.getExistingDirectory(self, self.tr("Select Folder"))
         if folder:
             folder_path = Path(folder)
             for ext in ['.png', '.jpg', '.jpeg', '.bmp', '.gif', '.wav', '.mp3', '.ogg']:

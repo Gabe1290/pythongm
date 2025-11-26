@@ -23,36 +23,36 @@ class AssetRenameDialog(QDialog):
         
     def setup_ui(self):
         """Setup the rename dialog UI"""
-        self.setWindowTitle(f"Rename {self.asset_type.title()}")
+        self.setWindowTitle(self.tr("Rename {0}").format(self.asset_type.title()))
         self.setFixedSize(400, 180)
         self.setModal(True)
-        
+
         layout = QVBoxLayout(self)
         layout.setSpacing(12)
         layout.setContentsMargins(20, 20, 20, 20)
-        
+
         # Current name label
-        current_label = QLabel(f"Current name: <b>{self.current_name}</b>")
+        current_label = QLabel(self.tr("Current name: <b>{0}</b>").format(self.current_name))
         layout.addWidget(current_label)
-        
+
         # New name input
-        name_label = QLabel("New name:")
+        name_label = QLabel(self.tr("New name:"))
         layout.addWidget(name_label)
-        
+
         self.name_edit = QLineEdit()
         self.name_edit.setText(self.current_name)
         self.name_edit.selectAll()
         self.name_edit.setFocus()
         layout.addWidget(self.name_edit)
-        
+
         # Buttons
         button_layout = QHBoxLayout()
-        
-        cancel_btn = QPushButton("Cancel")
+
+        cancel_btn = QPushButton(self.tr("Cancel"))
         cancel_btn.clicked.connect(self.reject)
         button_layout.addWidget(cancel_btn)
-        
-        self.rename_btn = QPushButton("Rename")
+
+        self.rename_btn = QPushButton(self.tr("Rename"))
         self.rename_btn.clicked.connect(self.accept_rename)
         self.rename_btn.setDefault(True)
         button_layout.addWidget(self.rename_btn)
@@ -83,12 +83,12 @@ class AssetRenameDialog(QDialog):
     def accept_rename(self):
         """Accept the rename if valid"""
         new_name = self.name_edit.text().strip()
-        
+
         # Final validation
         is_valid, error_msg = validate_asset_name(new_name)
-        
+
         if not is_valid:
-            QMessageBox.warning(self, "Invalid Name", error_msg)
+            QMessageBox.warning(self, self.tr("Invalid Name"), error_msg)
             return
             
         if new_name == self.current_name:
@@ -111,30 +111,31 @@ class AssetPropertiesDialog(QDialog):
         """Setup the properties dialog UI"""
         asset_name = self.asset_data.get('name', 'Unknown')
         asset_type = self.asset_data.get('asset_type', 'Unknown')
-        
-        self.setWindowTitle(f"{asset_type.title()} Properties - {asset_name}")
+
+        self.setWindowTitle(self.tr("{0} Properties - {1}").format(asset_type.title(), asset_name))
         self.setFixedSize(500, 400)
         self.setModal(True)
-        
+
         layout = QVBoxLayout(self)
         layout.setSpacing(10)
         layout.setContentsMargins(20, 20, 20, 20)
-        
+
         # Asset info
         info_label = QLabel(f"<h3>{asset_name}</h3>")
         layout.addWidget(info_label)
-        
-        type_label = QLabel(f"Type: {asset_type}")
+
+        type_label = QLabel(self.tr("Type: {0}").format(asset_type))
         layout.addWidget(type_label)
-        
+
         # File path info
         if 'project_path' in self.asset_data:
-            path_label = QLabel(f"File: {self.asset_data['project_path']}")
+            path_label = QLabel(self.tr("File: {0}").format(self.asset_data['project_path']))
             layout.addWidget(path_label)
-        
+
         # Import status
         imported = self.asset_data.get('imported', False)
-        status_label = QLabel(f"Status: {'Imported' if imported else 'Not imported'}")
+        status_text = self.tr("Imported") if imported else self.tr("Not imported")
+        status_label = QLabel(self.tr("Status: {0}").format(status_text))
         layout.addWidget(status_label)
         
         # Import button for sprites without images
@@ -142,19 +143,19 @@ class AssetPropertiesDialog(QDialog):
             context_menu.addSeparator()
             
             import_button_layout = QHBoxLayout()
-            self.import_btn = QPushButton("📥 Import Image...")
+            self.import_btn = QPushButton(self.tr("📥 Import Image..."))
             self.import_btn.clicked.connect(self.import_sprite_image)
             import_button_layout.addWidget(self.import_btn)
             layout.addLayout(import_button_layout)
 
         # Creation date
         if 'created_date' in self.asset_data:
-            date_label = QLabel(f"Created: {self.asset_data['created_date']}")
+            date_label = QLabel(self.tr("Created: {0}").format(self.asset_data['created_date']))
             layout.addWidget(date_label)
-        
+
         # Close button
         button_layout = QHBoxLayout()
-        close_btn = QPushButton("Close")
+        close_btn = QPushButton(self.tr("Close"))
         close_btn.clicked.connect(self.accept)
         close_btn.setDefault(True)
         button_layout.addWidget(close_btn)
@@ -170,9 +171,9 @@ class AssetPropertiesDialog(QDialog):
         # Open file dialog for image selection
         file_path, _ = QFileDialog.getOpenFileName(
             self,
-            "Select Sprite Image",
+            self.tr("Select Sprite Image"),
             str(Path.home()),
-            "Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)"
+            self.tr("Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)")
         )
         
         if not file_path:
@@ -198,8 +199,8 @@ class AssetPropertiesDialog(QDialog):
                 if result:
                     QMessageBox.information(
                         self,
-                        "Success",
-                        f"Image imported successfully for sprite '{sprite_name}'"
+                        self.tr("Success"),
+                        self.tr("Image imported successfully for sprite '{0}'").format(sprite_name)
                     )
                     # Update the dialog to show new status
                     self.asset_data = result
@@ -207,20 +208,20 @@ class AssetPropertiesDialog(QDialog):
                 else:
                     QMessageBox.warning(
                         self,
-                        "Import Failed",
-                        "Failed to import the image. Please try again."
+                        self.tr("Import Failed"),
+                        self.tr("Failed to import the image. Please try again.")
                     )
             except Exception as e:
                 QMessageBox.critical(
                     self,
-                    "Error",
-                    f"Error importing image: {str(e)}"
+                    self.tr("Error"),
+                    self.tr("Error importing image: {0}").format(str(e))
                 )
         else:
             QMessageBox.warning(
                 self,
-                "Error",
-                "Could not access asset manager. Please try again."
+                self.tr("Error"),
+                self.tr("Could not access asset manager. Please try again.")
             )
 
 class CreateAssetDialog(QDialog):
@@ -234,35 +235,35 @@ class CreateAssetDialog(QDialog):
     
     def setup_ui(self):
         """Setup the create asset dialog UI"""
-        self.setWindowTitle(f"Create {self.asset_type.title()}")
+        self.setWindowTitle(self.tr("Create {0}").format(self.asset_type.title()))
         self.setFixedSize(400, 150)
         self.setModal(True)
-        
+
         layout = QVBoxLayout(self)
         layout.setSpacing(15)
         layout.setContentsMargins(20, 20, 20, 20)
-        
+
         # Title
-        title_label = QLabel(f"<h3>Create New {self.asset_type.title()}</h3>")
+        title_label = QLabel(self.tr("<h3>Create New {0}</h3>").format(self.asset_type.title()))
         layout.addWidget(title_label)
-        
+
         # Name input
-        name_label = QLabel("Asset name:")
+        name_label = QLabel(self.tr("Asset name:"))
         layout.addWidget(name_label)
-        
+
         self.name_edit = QLineEdit()
-        self.name_edit.setPlaceholderText(f"Enter {self.asset_type} name...")
+        self.name_edit.setPlaceholderText(self.tr("Enter {0} name...").format(self.asset_type))
         self.name_edit.setFocus()
         layout.addWidget(self.name_edit)
-        
+
         # Buttons
         button_layout = QHBoxLayout()
-        
-        cancel_btn = QPushButton("Cancel")
+
+        cancel_btn = QPushButton(self.tr("Cancel"))
         cancel_btn.clicked.connect(self.reject)
         button_layout.addWidget(cancel_btn)
-        
-        self.create_btn = QPushButton("Create")
+
+        self.create_btn = QPushButton(self.tr("Create"))
         self.create_btn.clicked.connect(self.accept_create)
         self.create_btn.setDefault(True)
         self.create_btn.setEnabled(False)
@@ -287,10 +288,10 @@ class CreateAssetDialog(QDialog):
         name = self.name_edit.text().strip()
         
         is_valid, error_msg = validate_asset_name(name)
-        
+
         if not is_valid:
-            QMessageBox.warning(self, "Invalid Name", error_msg)
+            QMessageBox.warning(self, self.tr("Invalid Name"), error_msg)
             return
-        
+
         self.asset_name = name
         self.accept()

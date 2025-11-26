@@ -32,13 +32,13 @@ class EditorStatusWidget(QWidget):
         layout.addWidget(self.modified_label)
         
         # Status text
-        self.status_label = QLabel("Saved")
+        self.status_label = QLabel(self.tr("Saved"))
         layout.addWidget(self.status_label)
-        
+
         layout.addStretch()
-        
+
         # Auto-save indicator
-        self.auto_save_label = QLabel("🔄 Auto-save: ON")
+        self.auto_save_label = QLabel(self.tr("🔄 Auto-save: ON"))
         self.auto_save_label.setStyleSheet("color: #4CAF50;")
         layout.addWidget(self.auto_save_label)
     
@@ -50,15 +50,15 @@ class EditorStatusWidget(QWidget):
             if auto_save_enabled:
                 # Green bullet - will auto-save
                 self.modified_label.setStyleSheet("color: #4CAF50;")
-                self.status_label.setText("Unsaved (auto-save in 3s)")
+                self.status_label.setText(self.tr("Unsaved (auto-save in 3s)"))
                 self.blink_timer.start(500)
             else:
                 # Red bullet - needs manual save
                 self.modified_label.setStyleSheet("color: #F44336;")
-                self.status_label.setText("Unsaved - press Ctrl+S")
+                self.status_label.setText(self.tr("Unsaved - press Ctrl+S"))
                 self.blink_timer.start(300)
         else:
-            self.status_label.setText("Saved")
+            self.status_label.setText(self.tr("Saved"))
             self.blink_timer.stop()
             self.modified_label.setVisible(True)
             self.modified_label.setStyleSheet("color: #4CAF50;")
@@ -66,27 +66,27 @@ class EditorStatusWidget(QWidget):
     def set_auto_save_enabled(self, enabled: bool):
         """Update auto-save status"""
         if enabled:
-            self.auto_save_label.setText("🔄 Auto-save: ON")
+            self.auto_save_label.setText(self.tr("🔄 Auto-save: ON"))
             self.auto_save_label.setStyleSheet("color: #4CAF50;")
         else:
-            self.auto_save_label.setText("⏸️ Auto-save: OFF")
+            self.auto_save_label.setText(self.tr("⏸️ Auto-save: OFF"))
             self.auto_save_label.setStyleSheet("color: #FF9800;")
     
     def set_saving(self):
         """Show saving indicator"""
-        self.status_label.setText("Saving...")
+        self.status_label.setText(self.tr("Saving..."))
         self.modified_label.setVisible(True)
         self.modified_label.setStyleSheet("color: #2196F3;")
         self.blink_timer.stop()
-    
+
     def set_saved(self):
         """Show saved indicator"""
-        self.status_label.setText("Saved ✓")
+        self.status_label.setText(self.tr("Saved ✓"))
         self.modified_label.setVisible(False)
         self.blink_timer.stop()
-        
+
         # Show checkmark briefly
-        QTimer.singleShot(2000, lambda: self.status_label.setText("Saved"))
+        QTimer.singleShot(2000, lambda: self.status_label.setText(self.tr("Saved")))
     
     def toggle_blink(self):
         """Toggle blink state for unsaved indicator"""

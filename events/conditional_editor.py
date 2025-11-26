@@ -25,10 +25,10 @@ class ConditionalActionEditor(QDialog):
         self.then_actions = self.current_params.get("then_actions", []).copy()
         self.else_actions = self.current_params.get("else_actions", []).copy()
         
-        self.setWindowTitle("Configure If Condition")
+        self.setWindowTitle(self.tr("Configure If Condition"))
         self.setMinimumWidth(600)
         self.setMinimumHeight(500)
-        
+
         self.setup_ui()
         self.load_current_values()
     
@@ -37,22 +37,22 @@ class ConditionalActionEditor(QDialog):
         layout = QVBoxLayout(self)
         
         # Condition section
-        condition_group = QGroupBox("Condition")
+        condition_group = QGroupBox(self.tr("Condition"))
         condition_layout = QVBoxLayout()
-        
+
         # Condition type
         type_layout = QHBoxLayout()
-        type_layout.addWidget(QLabel("Condition Type:"))
+        type_layout.addWidget(QLabel(self.tr("Condition Type:")))
         self.condition_type = QComboBox()
         self.condition_type.addItems([
-            "instance_count",
-            "variable_compare",
-            "position_check",
-            "collision_check",
-            "key_pressed",
-            "mouse_check",
-            "random_chance",
-            "expression"
+            self.tr("instance_count"),
+            self.tr("variable_compare"),
+            self.tr("position_check"),
+            self.tr("collision_check"),
+            self.tr("key_pressed"),
+            self.tr("mouse_check"),
+            self.tr("random_chance"),
+            self.tr("expression")
         ])
         self.condition_type.currentTextChanged.connect(self.on_condition_type_changed)
         type_layout.addWidget(self.condition_type)
@@ -99,24 +99,24 @@ class ConditionalActionEditor(QDialog):
         condition_group.setLayout(condition_layout)
         layout.addWidget(condition_group)
         
-        then_group = QGroupBox("Then Do (if condition is TRUE)")
+        then_group = QGroupBox(self.tr("Then Do (if condition is TRUE)"))
         then_layout = QVBoxLayout()
-        
+
         self.then_list = QListWidget()
         self.then_list.setMaximumHeight(150)
         self.then_list.itemDoubleClicked.connect(lambda: self.edit_action_in_list("then"))
         then_layout.addWidget(self.then_list)
-        
+
         then_buttons = QHBoxLayout()
-        self.add_then_btn = QPushButton("+ Add Action")
+        self.add_then_btn = QPushButton(self.tr("+ Add Action"))
         self.add_then_btn.clicked.connect(lambda: self.add_action_to_list("then"))
         then_buttons.addWidget(self.add_then_btn)
-        
-        self.edit_then_btn = QPushButton("Edit Action")
+
+        self.edit_then_btn = QPushButton(self.tr("Edit Action"))
         self.edit_then_btn.clicked.connect(lambda: self.edit_action_in_list("then"))
         then_buttons.addWidget(self.edit_then_btn)
-        
-        self.remove_then_btn = QPushButton("- Remove")
+
+        self.remove_then_btn = QPushButton(self.tr("- Remove"))
         self.remove_then_btn.clicked.connect(lambda: self.remove_action_from_list("then"))
         then_buttons.addWidget(self.remove_then_btn)
         then_buttons.addStretch()
@@ -126,24 +126,24 @@ class ConditionalActionEditor(QDialog):
         layout.addWidget(then_group)
         
         # Else Actions section
-        else_group = QGroupBox("Else Do (if condition is FALSE)")
+        else_group = QGroupBox(self.tr("Else Do (if condition is FALSE)"))
         else_layout = QVBoxLayout()
-        
+
         self.else_list = QListWidget()
         self.else_list.setMaximumHeight(150)
         self.else_list.itemDoubleClicked.connect(lambda: self.edit_action_in_list("else"))
         else_layout.addWidget(self.else_list)
-        
+
         else_buttons = QHBoxLayout()
-        self.add_else_btn = QPushButton("+ Add Action")
+        self.add_else_btn = QPushButton(self.tr("+ Add Action"))
         self.add_else_btn.clicked.connect(lambda: self.add_action_to_list("else"))
         else_buttons.addWidget(self.add_else_btn)
-        
-        self.edit_else_btn = QPushButton("Edit Action")
+
+        self.edit_else_btn = QPushButton(self.tr("Edit Action"))
         self.edit_else_btn.clicked.connect(lambda: self.edit_action_in_list("else"))
         else_buttons.addWidget(self.edit_else_btn)
-        
-        self.remove_else_btn = QPushButton("- Remove")
+
+        self.remove_else_btn = QPushButton(self.tr("- Remove"))
         self.remove_else_btn.clicked.connect(lambda: self.remove_action_from_list("else"))
         else_buttons.addWidget(self.remove_else_btn)
         else_buttons.addStretch()
@@ -168,10 +168,10 @@ class ConditionalActionEditor(QDialog):
         
         # Object name - now using a dropdown
         object_layout = QHBoxLayout()
-        object_layout.addWidget(QLabel("Object:"))
+        object_layout.addWidget(QLabel(self.tr("Object:")))
         self.object_name = QComboBox()  # Changed from QLineEdit to QComboBox
         self.object_name.setEditable(True)  # Allow typing custom names
-        
+
         # Populate with available objects
         available_objects = self.get_available_objects_for_dropdown()
         if available_objects:
@@ -179,13 +179,13 @@ class ConditionalActionEditor(QDialog):
         else:
             # Add defaults if no project data
             self.object_name.addItems(["obj_box", "obj_wall", "obj_player", "obj_enemy"])
-        
+
         object_layout.addWidget(self.object_name)
         layout.addLayout(object_layout)
-        
+
         # Operator and value
         compare_layout = QHBoxLayout()
-        compare_layout.addWidget(QLabel("Count is:"))
+        compare_layout.addWidget(QLabel(self.tr("Count is:")))
         self.operator = QComboBox()
         self.operator.addItems(["==", "!=", "<", ">", "<=", ">="])
         compare_layout.addWidget(self.operator)
@@ -207,20 +207,20 @@ class ConditionalActionEditor(QDialog):
         
         # Variable name
         var_layout = QHBoxLayout()
-        var_layout.addWidget(QLabel("Variable:"))
+        var_layout.addWidget(QLabel(self.tr("Variable:")))
         self.var_name = QLineEdit()
-        self.var_name.setPlaceholderText("health, score, x, y, etc.")
+        self.var_name.setPlaceholderText(self.tr("health, score, x, y, etc."))
         var_layout.addWidget(self.var_name)
         layout.addLayout(var_layout)
-        
+
         # Comparison
         compare_layout = QHBoxLayout()
-        compare_layout.addWidget(QLabel("Is:"))
+        compare_layout.addWidget(QLabel(self.tr("Is:")))
         self.var_operator = QComboBox()
         self.var_operator.addItems(["==", "!=", "<", ">", "<=", ">="])
         compare_layout.addWidget(self.var_operator)
-        
-        compare_layout.addWidget(QLabel("Value:"))
+
+        compare_layout.addWidget(QLabel(self.tr("Value:")))
         self.var_value = QLineEdit()
         self.var_value.setPlaceholderText("0")
         compare_layout.addWidget(self.var_value)
@@ -237,21 +237,21 @@ class ConditionalActionEditor(QDialog):
         
         # Position type
         pos_type_layout = QHBoxLayout()
-        pos_type_layout.addWidget(QLabel("Check if:"))
+        pos_type_layout.addWidget(QLabel(self.tr("Check if:")))
         self.pos_check_type = QComboBox()
         self.pos_check_type.addItems([
-            "x position",
-            "y position",
-            "in region",
-            "distance to object"
+            self.tr("x position"),
+            self.tr("y position"),
+            self.tr("in region"),
+            self.tr("distance to object")
         ])
         pos_type_layout.addWidget(self.pos_check_type)
         pos_type_layout.addStretch()
         layout.addLayout(pos_type_layout)
-        
+
         # Position values
         pos_layout = QHBoxLayout()
-        pos_layout.addWidget(QLabel("Is:"))
+        pos_layout.addWidget(QLabel(self.tr("Is:")))
         self.pos_operator = QComboBox()
         self.pos_operator.addItems(["==", "!=", "<", ">", "<=", ">="])
         pos_layout.addWidget(self.pos_operator)
@@ -273,23 +273,23 @@ class ConditionalActionEditor(QDialog):
         
         # Collision target
         col_layout = QHBoxLayout()
-        col_layout.addWidget(QLabel("Colliding with:"))
+        col_layout.addWidget(QLabel(self.tr("Colliding with:")))
         self.collision_object = QComboBox()
         self.collision_object.setEditable(True)
         self.collision_object.addItems(["obj_wall", "obj_enemy", "obj_goal"])
         col_layout.addWidget(self.collision_object)
         layout.addLayout(col_layout)
-        
+
         # Collision position
         offset_layout = QHBoxLayout()
-        offset_layout.addWidget(QLabel("At offset X:"))
+        offset_layout.addWidget(QLabel(self.tr("At offset X:")))
         self.collision_x = QSpinBox()
         self.collision_x.setMinimum(-100)
         self.collision_x.setMaximum(100)
         self.collision_x.setValue(0)
         offset_layout.addWidget(self.collision_x)
-        
-        offset_layout.addWidget(QLabel("Y:"))
+
+        offset_layout.addWidget(QLabel(self.tr("Y:")))
         self.collision_y = QSpinBox()
         self.collision_y.setMinimum(-100)
         self.collision_y.setMaximum(100)
@@ -307,19 +307,19 @@ class ConditionalActionEditor(QDialog):
         layout = QVBoxLayout(widget)
         
         key_layout = QHBoxLayout()
-        key_layout.addWidget(QLabel("Key:"))
+        key_layout.addWidget(QLabel(self.tr("Key:")))
         self.key_check = QComboBox()
         self.key_check.addItems([
-            "Space", "Enter", "Escape",
-            "Left Arrow", "Right Arrow", "Up Arrow", "Down Arrow",
+            self.tr("Space"), self.tr("Enter"), self.tr("Escape"),
+            self.tr("Left Arrow"), self.tr("Right Arrow"), self.tr("Up Arrow"), self.tr("Down Arrow"),
             "A", "W", "S", "D",
-            "Shift", "Control", "Alt"
+            self.tr("Shift"), self.tr("Control"), self.tr("Alt")
         ])
         key_layout.addWidget(self.key_check)
-        
-        key_layout.addWidget(QLabel("Is:"))
+
+        key_layout.addWidget(QLabel(self.tr("Is:")))
         self.key_state = QComboBox()
-        self.key_state.addItems(["Pressed", "Held", "Released"])
+        self.key_state.addItems([self.tr("Pressed"), self.tr("Held"), self.tr("Released")])
         key_layout.addWidget(self.key_state)
         key_layout.addStretch()
         layout.addLayout(key_layout)
@@ -333,14 +333,14 @@ class ConditionalActionEditor(QDialog):
         layout = QVBoxLayout(widget)
         
         mouse_layout = QHBoxLayout()
-        mouse_layout.addWidget(QLabel("Mouse:"))
+        mouse_layout.addWidget(QLabel(self.tr("Mouse:")))
         self.mouse_check = QComboBox()
         self.mouse_check.addItems([
-            "Left button pressed",
-            "Right button pressed",
-            "Middle button pressed",
-            "Over object",
-            "In region"
+            self.tr("Left button pressed"),
+            self.tr("Right button pressed"),
+            self.tr("Middle button pressed"),
+            self.tr("Over object"),
+            self.tr("In region")
         ])
         mouse_layout.addWidget(self.mouse_check)
         mouse_layout.addStretch()
@@ -355,8 +355,8 @@ class ConditionalActionEditor(QDialog):
         layout = QVBoxLayout(widget)
         
         chance_layout = QHBoxLayout()
-        chance_layout.addWidget(QLabel("Chance:"))
-        
+        chance_layout.addWidget(QLabel(self.tr("Chance:")))
+
         self.chance_slider = QSlider(Qt.Horizontal)
         self.chance_slider.setMinimum(0)
         self.chance_slider.setMaximum(100)
@@ -364,7 +364,7 @@ class ConditionalActionEditor(QDialog):
         self.chance_slider.setTickPosition(QSlider.TicksBelow)
         self.chance_slider.setTickInterval(10)
         chance_layout.addWidget(self.chance_slider)
-        
+
         self.chance_label = QLabel("50%")
         self.chance_slider.valueChanged.connect(
             lambda v: self.chance_label.setText(f"{v}%")
@@ -381,12 +381,11 @@ class ConditionalActionEditor(QDialog):
         widget = QWidget()
         layout = QVBoxLayout(widget)
         
-        layout.addWidget(QLabel("Custom GML Expression:"))
+        layout.addWidget(QLabel(self.tr("Custom GML Expression:")))
         self.expression_edit = QTextEdit()
         self.expression_edit.setMaximumHeight(100)
         self.expression_edit.setPlaceholderText(
-            "Enter any GML expression that evaluates to true/false\n"
-            "Example: x > 100 && y < 200"
+            self.tr("Enter any GML expression that evaluates to true/false\nExample: x > 100 && y < 200")
         )
         layout.addWidget(self.expression_edit)
         

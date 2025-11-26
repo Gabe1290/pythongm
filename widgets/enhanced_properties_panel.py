@@ -54,29 +54,29 @@ class EnhancedPropertiesPanel(QWidget):
         layout = QVBoxLayout(self)
         
         # Asset info group
-        info_group = QGroupBox("Asset Information")
+        info_group = QGroupBox(self.tr("Asset Information"))
         info_layout = QFormLayout(info_group)
-        
-        self.name_label = QLabel("No asset selected")
+
+        self.name_label = QLabel(self.tr("No asset selected"))
         self.type_label = QLabel("-")
         self.status_label = QLabel("-")
-        
-        info_layout.addRow("Name:", self.name_label)
-        info_layout.addRow("Type:", self.type_label)
-        info_layout.addRow("Status:", self.status_label)
+
+        info_layout.addRow(self.tr("Name:"), self.name_label)
+        info_layout.addRow(self.tr("Type:"), self.type_label)
+        info_layout.addRow(self.tr("Status:"), self.status_label)
         
         layout.addWidget(info_group)
         
         # Properties group
-        self.properties_group = QGroupBox("Properties")
+        self.properties_group = QGroupBox(self.tr("Properties"))
         self.properties_layout = QFormLayout(self.properties_group)
         layout.addWidget(self.properties_group)
-        
+
         # Preview group
-        preview_group = QGroupBox("Preview")
+        preview_group = QGroupBox(self.tr("Preview"))
         preview_layout = QVBoxLayout(preview_group)
-        
-        self.preview_label = QLabel("No preview available")
+
+        self.preview_label = QLabel(self.tr("No preview available"))
         self.preview_label.setAlignment(Qt.AlignCenter)
         self.preview_label.setMinimumHeight(200)
         self.preview_label.setMaximumHeight(300)
@@ -121,8 +121,8 @@ class EnhancedPropertiesPanel(QWidget):
         
         # Update info
         self.name_label.setText(room_name)
-        self.type_label.setText("Room (Editor)")
-        self.status_label.setText("Active")
+        self.type_label.setText(self.tr("Room (Editor)"))
+        self.status_label.setText(self.tr("Active"))
         
         self.show_room_properties(room_properties)
         
@@ -157,7 +157,7 @@ class EnhancedPropertiesPanel(QWidget):
         
         # Background image selection
         self.bg_image_combo = QComboBox()
-        self.bg_image_combo.addItem("None")
+        self.bg_image_combo.addItem(self.tr("None"))
 
         # Get available backgrounds/sprites
         available_backgrounds = self.get_available_backgrounds()
@@ -171,7 +171,7 @@ class EnhancedPropertiesPanel(QWidget):
                 self.bg_image_combo.setCurrentIndex(index)
 
         self.bg_image_combo.currentTextChanged.connect(
-            lambda v: self.on_room_property_changed('background_image', v if v != "None" else '')
+            lambda v: self.on_room_property_changed('background_image', v if v != self.tr("None") else '')
         )
 
         # Tiling options
@@ -184,9 +184,9 @@ class EnhancedPropertiesPanel(QWidget):
         self.tile_v_check.toggled.connect(lambda v: self.on_room_property_changed('tile_vertical', v))
 
         # Add to layout
-        self.properties_layout.addRow("Background Image:", self.bg_image_combo)
-        self.properties_layout.addRow("Tile Horizontal:", self.tile_h_check)
-        self.properties_layout.addRow("Tile Vertical:", self.tile_v_check)
+        self.properties_layout.addRow(self.tr("Background Image:"), self.bg_image_combo)
+        self.properties_layout.addRow(self.tr("Tile Horizontal:"), self.tile_h_check)
+        self.properties_layout.addRow(self.tr("Tile Vertical:"), self.tile_v_check)
 
         # Views
         self.views_check = QCheckBox()
@@ -194,14 +194,14 @@ class EnhancedPropertiesPanel(QWidget):
         self.views_check.toggled.connect(lambda v: self.on_room_property_changed('enable_views', v))
         
         # Add to layout
-        self.properties_layout.addRow("Width:", self.width_spin)
-        self.properties_layout.addRow("Height:", self.height_spin)
-        self.properties_layout.addRow("Background:", self.bg_color_btn)
-        self.properties_layout.addRow("Enable Views:", self.views_check)
-        
+        self.properties_layout.addRow(self.tr("Width:"), self.width_spin)
+        self.properties_layout.addRow(self.tr("Height:"), self.height_spin)
+        self.properties_layout.addRow(self.tr("Background:"), self.bg_color_btn)
+        self.properties_layout.addRow(self.tr("Enable Views:"), self.views_check)
+
         # Instance count (read-only)
         instance_count = len(room_data.get('instances', []))
-        self.properties_layout.addRow("Instances:", QLabel(str(instance_count)))
+        self.properties_layout.addRow(self.tr("Instances:"), QLabel(str(instance_count)))
     
     def choose_background_color(self):
         """Open color dialog for background color"""
@@ -209,7 +209,7 @@ class EnhancedPropertiesPanel(QWidget):
         from PySide6.QtWidgets import QColorDialog
         
         current_color = self.bg_color_btn.text()
-        color = QColorDialog.getColor(QColor(current_color), self, "Choose Background Color")
+        color = QColorDialog.getColor(QColor(current_color), self, self.tr("Choose Background Color"))
         
         if color.isValid():
             color_hex = color.name()
@@ -256,16 +256,16 @@ class EnhancedPropertiesPanel(QWidget):
                     # Update tooltip
                     room_data = self.current_room_editor.get_data()
                     instance_count = len(room_data.get('instances', []))
-                    tooltip = f"Room Preview\n{room_data.get('width', 0)}x{room_data.get('height', 0)}\n{instance_count} instances"
+                    tooltip = self.tr("Room Preview\n{0}x{1}\n{2} instances").format(room_data.get('width', 0), room_data.get('height', 0), instance_count)
                     self.preview_label.setToolTip(tooltip)
                 else:
-                    self.preview_label.setText("Preview\nGeneration Failed")
+                    self.preview_label.setText(self.tr("Preview\nGeneration Failed"))
             else:
-                self.preview_label.setText("Preview\nNot Available")
+                self.preview_label.setText(self.tr("Preview\nNot Available"))
         
         except Exception as e:
             print(f"Error updating room preview: {e}")
-            self.preview_label.setText("Preview\nUpdate Error")
+            self.preview_label.setText(self.tr("Preview\nUpdate Error"))
     
     def on_room_property_changed(self, property_name: str, value):
         """Handle room property changes and notify room editor"""
@@ -287,7 +287,7 @@ class EnhancedPropertiesPanel(QWidget):
     
     def show_default_state(self):
         """Show default state when no asset is selected"""
-        self.name_label.setText("No asset selected")
+        self.name_label.setText(self.tr("No asset selected"))
         self.type_label.setText("-")
         self.status_label.setText("-")
         
@@ -296,8 +296,8 @@ class EnhancedPropertiesPanel(QWidget):
             child = self.properties_layout.takeAt(0)
             if child.widget():
                 child.widget().deleteLater()
-        
-        self.preview_label.setText("No preview available")
+
+        self.preview_label.setText(self.tr("No preview available"))
         self.preview_label.setPixmap(QPixmap())  # Clear any pixmap
     
     def set_asset(self, asset_data):
@@ -326,7 +326,7 @@ class EnhancedPropertiesPanel(QWidget):
         # Update info
         self.name_label.setText(asset_name)
         self.type_label.setText(asset_type.title())
-        self.status_label.setText("Loaded")
+        self.status_label.setText(self.tr("Loaded"))
         
         # Clear previous properties
         while self.properties_layout.count():
@@ -340,13 +340,13 @@ class EnhancedPropertiesPanel(QWidget):
             height_edit = QLineEdit(str(asset_data.get('height', 600)))
             bg_color_edit = QLineEdit(asset_data.get('background_color', '#87CEEB'))
             
-            self.properties_layout.addRow("Width:", width_edit)
-            self.properties_layout.addRow("Height:", height_edit)
-            self.properties_layout.addRow("Background:", bg_color_edit)
-            
+            self.properties_layout.addRow(self.tr("Width:"), width_edit)
+            self.properties_layout.addRow(self.tr("Height:"), height_edit)
+            self.properties_layout.addRow(self.tr("Background:"), bg_color_edit)
+
             # Update preview
             self.preview_label.setPixmap(QPixmap())  # Clear pixmap
-            self.preview_label.setText(f"Room: {asset_name}\n{asset_data.get('width', 800)} x {asset_data.get('height', 600)}")
+            self.preview_label.setText(self.tr("Room: {0}\n{1} x {2}").format(asset_name, asset_data.get('width', 800), asset_data.get('height', 600)))
         
         elif asset_type == 'sprites':
             # Sprite properties
@@ -363,18 +363,18 @@ class EnhancedPropertiesPanel(QWidget):
             speed_edit = QLineEdit(str(asset_data.get('speed', 1.0)))
             speed_edit.setReadOnly(True)
             
-            self.properties_layout.addRow("Width:", width_edit)
-            self.properties_layout.addRow("Height:", height_edit)
-            self.properties_layout.addRow("Frames:", frames_edit)
-            self.properties_layout.addRow("Origin X:", origin_x_edit)
-            self.properties_layout.addRow("Origin Y:", origin_y_edit)
-            self.properties_layout.addRow("Speed:", speed_edit)
-            
+            self.properties_layout.addRow(self.tr("Width:"), width_edit)
+            self.properties_layout.addRow(self.tr("Height:"), height_edit)
+            self.properties_layout.addRow(self.tr("Frames:"), frames_edit)
+            self.properties_layout.addRow(self.tr("Origin X:"), origin_x_edit)
+            self.properties_layout.addRow(self.tr("Origin Y:"), origin_y_edit)
+            self.properties_layout.addRow(self.tr("Speed:"), speed_edit)
+
             # Show file path
             file_path = asset_data.get('file_path', 'N/A')
             file_path_edit = QLineEdit(file_path)
             file_path_edit.setReadOnly(True)
-            self.properties_layout.addRow("File:", file_path_edit)
+            self.properties_layout.addRow(self.tr("File:"), file_path_edit)
             
             # Try to load and display the actual sprite image
             self.load_sprite_preview(asset_name, asset_data)
@@ -386,14 +386,14 @@ class EnhancedPropertiesPanel(QWidget):
             height_edit = QLineEdit(str(asset_data.get('height', 0)))
             height_edit.setReadOnly(True)
             
-            self.properties_layout.addRow("Width:", width_edit)
-            self.properties_layout.addRow("Height:", height_edit)
-            
+            self.properties_layout.addRow(self.tr("Width:"), width_edit)
+            self.properties_layout.addRow(self.tr("Height:"), height_edit)
+
             # Show file path
             file_path = asset_data.get('file_path', 'N/A')
             file_path_edit = QLineEdit(file_path)
             file_path_edit.setReadOnly(True)
-            self.properties_layout.addRow("File:", file_path_edit)
+            self.properties_layout.addRow(self.tr("File:"), file_path_edit)
             
             # Try to load and display the actual background image
             self.load_sprite_preview(asset_name, asset_data)
@@ -410,7 +410,7 @@ class EnhancedPropertiesPanel(QWidget):
                     self.properties_layout.addRow(f"{key.title()}:", prop_edit)
             
             self.preview_label.setPixmap(QPixmap())  # Clear pixmap
-            self.preview_label.setText(f"{asset_type.title()}: {asset_name}")
+            self.preview_label.setText(self.tr("{0}: {1}").format(asset_type.title(), asset_name))
 
     def load_sprite_preview(self, asset_name: str, asset_data: Dict[str, Any]):
         """Load and display sprite/background image in preview"""
@@ -445,12 +445,12 @@ class EnhancedPropertiesPanel(QWidget):
             print(f"❌ DEBUG: No 'project_path' or 'file_path' in asset_data")
         
         if not image_path:
-            self.preview_label.setText(f"No image file path found for {asset_name}")
+            self.preview_label.setText(self.tr("No image file path found for {0}").format(asset_name))
             return
-        
+
         # Check if file exists
         if not Path(image_path).exists():
-            self.preview_label.setText(f"Image file not found:\n{Path(image_path).name}")
+            self.preview_label.setText(self.tr("Image file not found:\n{0}").format(Path(image_path).name))
             return
 
         try:
@@ -458,7 +458,7 @@ class EnhancedPropertiesPanel(QWidget):
             pixmap = QPixmap(str(image_path))
             
             if pixmap.isNull():
-                self.preview_label.setText(f"Failed to load image:\n{asset_name}")
+                self.preview_label.setText(self.tr("Failed to load image:\n{0}").format(asset_name))
                 return
             
             # Scale image to fit preview area while maintaining aspect ratio
@@ -475,16 +475,16 @@ class EnhancedPropertiesPanel(QWidget):
             # Display the image
             self.preview_label.setPixmap(scaled_pixmap)
             self.preview_label.setText("")
-            
+
             # Update tooltip with image info
-            info_text = f"{asset_name}\n{pixmap.width()}x{pixmap.height()}"
+            info_text = self.tr("{0}\n{1}x{2}").format(asset_name, pixmap.width(), pixmap.height())
             self.preview_label.setToolTip(info_text)
-            
+
         except Exception as e:
             print(f"❌ DEBUG: Exception loading image: {e}")
             import traceback
             traceback.print_exc()
-            self.preview_label.setText(f"Error loading image:\n{str(e)}")
+            self.preview_label.setText(self.tr("Error loading image:\n{0}").format(str(e)))
     
     def set_object_editor_context(self, object_editor, object_name: str, object_properties: Dict[str, Any]):
         """Set context to show object properties from object editor"""
@@ -494,8 +494,8 @@ class EnhancedPropertiesPanel(QWidget):
         
         # Update info
         self.name_label.setText(object_name)
-        self.type_label.setText("Object (Editor)")
-        self.status_label.setText("Active")
+        self.type_label.setText(self.tr("Object (Editor)"))
+        self.status_label.setText(self.tr("Active"))
         
         self.show_object_properties(object_properties)
 
@@ -521,7 +521,7 @@ class EnhancedPropertiesPanel(QWidget):
             
             # Sprite assignment
             self.sprite_combo = QComboBox()
-            self.sprite_combo.addItem("None")
+            self.sprite_combo.addItem(self.tr("None"))
             
             # Get available sprites from project
             available_sprites = self.get_available_sprites()
@@ -548,23 +548,23 @@ class EnhancedPropertiesPanel(QWidget):
             self.persistent_check.toggled.connect(lambda v: self.on_object_property_changed('persistent', v))
             
             # Add to layout
-            self.properties_layout.addRow("Sprite:", self.sprite_combo)
+            self.properties_layout.addRow(self.tr("Sprite:"), self.sprite_combo)
             # Show sprite dimensions if a sprite is assigned
             if current_sprite and current_sprite in available_sprites:
                 sprite_data = available_sprites[current_sprite]
                 sprite_width = sprite_data.get('width', '?')
                 sprite_height = sprite_data.get('height', '?')
-                size_label = QLabel(f"{sprite_width} x {sprite_height}")
+                size_label = QLabel(self.tr("{0} x {1}").format(sprite_width, sprite_height))
                 size_label.setStyleSheet("color: #666;")
-                self.properties_layout.addRow("Sprite Size:", size_label)
+                self.properties_layout.addRow(self.tr("Sprite Size:"), size_label)
 
-            self.properties_layout.addRow("Visible:", self.visible_check)
-            self.properties_layout.addRow("Solid:", self.solid_check)
-            self.properties_layout.addRow("Persistent:", self.persistent_check)
-            
+            self.properties_layout.addRow(self.tr("Visible:"), self.visible_check)
+            self.properties_layout.addRow(self.tr("Solid:"), self.solid_check)
+            self.properties_layout.addRow(self.tr("Persistent:"), self.persistent_check)
+
             # Event count (read-only)
             event_count = len(object_data.get('events', {}))
-            self.properties_layout.addRow("Events:", QLabel(str(event_count)))
+            self.properties_layout.addRow(self.tr("Events:"), QLabel(str(event_count)))
             
             # Update preview with sprite
             self.show_object_preview(object_data)
@@ -577,8 +577,8 @@ class EnhancedPropertiesPanel(QWidget):
             """Handle sprite combo changes"""
             if getattr(self, '_updating_properties', False):
                 return
-            
-            value = sprite_name if sprite_name != "None" else ''
+
+            value = sprite_name if sprite_name != self.tr("None") else ''
             self.on_object_property_changed('sprite', value)
     
     def _finish_property_setup(self):
@@ -642,7 +642,7 @@ class EnhancedPropertiesPanel(QWidget):
                 
                 # Clear and repopulate
                 self.sprite_combo.clear()
-                self.sprite_combo.addItem("None")
+                self.sprite_combo.addItem(self.tr("None"))
                 
                 available_sprites = self.get_available_sprites()
                 for sprite_name in available_sprites.keys():
@@ -679,12 +679,11 @@ class EnhancedPropertiesPanel(QWidget):
                 
                 # Load the preview image (this sets a basic tooltip)
                 self.load_sprite_preview(sprite_name, sprite_data)
-                
+
                 # Override tooltip with more detailed object info
-                tooltip_text = f"Object: {object_name}\n"
-                tooltip_text += f"Sprite: {sprite_name}\n"
-                tooltip_text += f"Size: {sprite_width}x{sprite_height}\n"
-                tooltip_text += f"Events: {event_count}"
+                tooltip_text = self.tr("Object: {0}\nSprite: {1}\nSize: {2}x{3}\nEvents: {4}").format(
+                    object_name, sprite_name, sprite_width, sprite_height, event_count
+                )
                 self.preview_label.setToolTip(tooltip_text)
                 return
             else:
@@ -696,18 +695,23 @@ class EnhancedPropertiesPanel(QWidget):
         event_count = len(object_data.get('events', {}))
         visible = object_data.get('visible', True)
         solid = object_data.get('solid', False)
-        
-        status_text = f"Object: {object_name}\n"
+
+        status_parts = [self.tr("Object: {0}").format(object_name)]
         if sprite_name:
-            status_text += f"Sprite: {sprite_name}\n"
+            status_parts.append(self.tr("Sprite: {0}").format(sprite_name))
         else:
-            status_text += "No sprite assigned\n"
-        status_text += f"Events: {event_count}\n"
+            status_parts.append(self.tr("No sprite assigned"))
+        status_parts.append(self.tr("Events: {0}").format(event_count))
+
+        flags = []
         if visible:
-            status_text += "Visible "
+            flags.append(self.tr("Visible"))
         if solid:
-            status_text += "Solid"
-        
+            flags.append(self.tr("Solid"))
+        if flags:
+            status_parts.append(" ".join(flags))
+
+        status_text = "\n".join(status_parts)
         self.preview_label.setText(status_text)
         self.preview_label.setToolTip(status_text)
 

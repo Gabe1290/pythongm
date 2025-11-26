@@ -54,7 +54,7 @@ class AssetTreeWidget(QTreeWidget):
     
     def setup_ui(self):
         """Setup the tree widget UI"""
-        self.setHeaderLabel("Assets")
+        self.setHeaderLabel(self.tr("Assets"))
         self.setDragDropMode(QTreeWidget.DragDropMode.InternalMove)
         self.setDefaultDropAction(Qt.DropAction.MoveAction)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -71,15 +71,15 @@ class AssetTreeWidget(QTreeWidget):
     def setup_categories(self):
         """Setup default asset categories with separators"""
         categories = [
-            ("sprites", "Sprites"),
-            ("sounds", "Sounds"), 
-            ("backgrounds", "Backgrounds"),
+            ("sprites", self.tr("Sprites")),
+            ("sounds", self.tr("Sounds")),
+            ("backgrounds", self.tr("Backgrounds")),
             "separator",  # First separator
-            ("objects", "Objects"),
-            ("rooms", "Rooms"),
+            ("objects", self.tr("Objects")),
+            ("rooms", self.tr("Rooms")),
             "separator",  # Second separator
-            ("scripts", "Scripts"),
-            ("fonts", "Fonts")
+            ("scripts", self.tr("Scripts")),
+            ("fonts", self.tr("Fonts"))
         ]
         
         for item in categories:
@@ -172,12 +172,12 @@ class AssetTreeWidget(QTreeWidget):
             singular_type = item.asset_type.rstrip('s')
             
             # Create new asset action
-            create_action = QAction(f"➕ Create New {singular_type.title()}...", self)
+            create_action = QAction(self.tr("➕ Create New {0}...").format(singular_type.title()), self)
             create_action.triggered.connect(lambda: self.trigger_create_for_category(item.asset_type))
             context_menu.addAction(create_action)
-            
+
             # Import asset action
-            import_action = QAction(f"📥 Import {item.asset_type.title()}...", self)
+            import_action = QAction(self.tr("📥 Import {0}...").format(item.asset_type.title()), self)
             import_action.triggered.connect(lambda: self.trigger_import_for_category(item.asset_type))
             context_menu.addAction(import_action)
             
@@ -186,18 +186,18 @@ class AssetTreeWidget(QTreeWidget):
             print(f"   ✅ Showing context menu for: {item.asset_name}")
 
             # Rename action
-            rename_action = QAction("✏️ Rename", self)
+            rename_action = QAction(self.tr("✏️ Rename"), self)
             rename_action.triggered.connect(lambda: self.operations.rename_asset(item))
             context_menu.addAction(rename_action)
 
             # Import Image action for sprites
             if item.asset_type in ["sprite", "sprites"]:
-                import_image_action = QAction("📥 Import Image...", self)
+                import_image_action = QAction(self.tr("📥 Import Image..."), self)
                 import_image_action.triggered.connect(lambda: self.import_sprite_image(item))
                 context_menu.addAction(import_image_action)
 
             # Delete action
-            delete_action = QAction("🗑️ Delete", self)
+            delete_action = QAction(self.tr("🗑️ Delete"), self)
             delete_action.triggered.connect(lambda: self.operations.delete_asset(item))
             context_menu.addAction(delete_action)
 
@@ -221,13 +221,13 @@ class AssetTreeWidget(QTreeWidget):
                     is_last = (room_index == room_count - 1)
 
                     # Move Up
-                    move_up_action = QAction("⬆️ Move Up", self)
+                    move_up_action = QAction(self.tr("⬆️ Move Up"), self)
                     move_up_action.setEnabled(not is_first)
                     move_up_action.triggered.connect(lambda: self.move_room_up(item.asset_name))
                     context_menu.addAction(move_up_action)
 
                     # Move Down
-                    move_down_action = QAction("⬇️ Move Down", self)
+                    move_down_action = QAction(self.tr("⬇️ Move Down"), self)
                     move_down_action.setEnabled(not is_last)
                     move_down_action.triggered.connect(lambda: self.move_room_down(item.asset_name))
                     context_menu.addAction(move_down_action)
@@ -235,13 +235,13 @@ class AssetTreeWidget(QTreeWidget):
                     context_menu.addSeparator()
 
                     # Move to Top
-                    move_top_action = QAction("⏫ Move to Top", self)
+                    move_top_action = QAction(self.tr("⏫ Move to Top"), self)
                     move_top_action.setEnabled(not is_first)
                     move_top_action.triggered.connect(lambda: self.move_room_to_top(item.asset_name))
                     context_menu.addAction(move_top_action)
 
                     # Move to Bottom
-                    move_bottom_action = QAction("⏬ Move to Bottom", self)
+                    move_bottom_action = QAction(self.tr("⏬ Move to Bottom"), self)
                     move_bottom_action.setEnabled(not is_last)
                     move_bottom_action.triggered.connect(lambda: self.move_room_to_bottom(item.asset_name))
                     context_menu.addAction(move_bottom_action)
@@ -249,7 +249,7 @@ class AssetTreeWidget(QTreeWidget):
             context_menu.addSeparator()
 
             # Properties action
-            properties_action = QAction("⚙️ Properties...", self)
+            properties_action = QAction(self.tr("⚙️ Properties..."), self)
             properties_action.triggered.connect(lambda: self.show_asset_properties(item))
             context_menu.addAction(properties_action)
         
@@ -277,8 +277,8 @@ class AssetTreeWidget(QTreeWidget):
                 print(f"⚠️ Could not find parent with create_asset method")
                 QMessageBox.information(
                     self,
-                    "Create Asset",
-                    f"Asset creation for {asset_type} is not yet implemented."
+                    self.tr("Create Asset"),
+                    self.tr("Asset creation for {0} is not yet implemented.").format(asset_type)
                 )
     
     def trigger_import_for_category(self, asset_type: str):
@@ -296,8 +296,8 @@ class AssetTreeWidget(QTreeWidget):
             print(f"⚠️ Could not find parent with import_assets method")
             QMessageBox.information(
                 self,
-                "Import Assets",
-                f"Please use the File menu to import {asset_type}"
+                self.tr("Import Assets"),
+                self.tr("Please use the File menu to import {0}").format(asset_type)
             )
     
     def show_asset_properties(self, item):
@@ -319,9 +319,9 @@ class AssetTreeWidget(QTreeWidget):
         # Open file dialog
         file_path, _ = QFileDialog.getOpenFileName(
             self,
-            f"Select Image for Sprite '{sprite_name}'",
+            self.tr("Select Image for Sprite '{0}'").format(sprite_name),
             str(Path.home()),
-            "Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)"
+            self.tr("Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)")
         )
         
         if not file_path:
@@ -333,8 +333,8 @@ class AssetTreeWidget(QTreeWidget):
             self.force_project_refresh()
             QMessageBox.information(
                 self,
-                "Success",
-                f"Image imported successfully for sprite '{sprite_name}'"
+                self.tr("Success"),
+                self.tr("Image imported successfully for sprite '{0}'").format(sprite_name)
             )
 
     def export_resource(self, asset_type: str, asset_name: str):
@@ -344,7 +344,7 @@ class AssetTreeWidget(QTreeWidget):
         
         # Get project path
         if not self.project_path:
-            QMessageBox.warning(self, "No Project", "No project is currently loaded")
+            QMessageBox.warning(self, self.tr("No Project"), self.tr("No project is currently loaded"))
             return
         
         project_path = Path(self.project_path)
@@ -365,7 +365,7 @@ class AssetTreeWidget(QTreeWidget):
         default_filename = f"{asset_name}{extension}"
         file_path, _ = QFileDialog.getSaveFileName(
             self,
-            f"Export {singular.title()}",
+            self.tr("Export {0}").format(singular.title()),
             str(Path.home() / default_filename),
             file_filter
         )
@@ -382,14 +382,14 @@ class AssetTreeWidget(QTreeWidget):
             if success:
                 QMessageBox.information(
                     self,
-                    "Export Successful",
-                    f"{singular.title()} '{asset_name}' exported to:\n{output_path}"
+                    self.tr("Export Successful"),
+                    self.tr("{0} '{1}' exported to:\n{2}").format(singular.title(), asset_name, output_path)
                 )
             else:
                 QMessageBox.warning(
                     self,
-                    "Export Failed",
-                    f"Failed to export {singular} '{asset_name}'"
+                    self.tr("Export Failed"),
+                    self.tr("Failed to export {0} '{1}'").format(singular, asset_name)
                 )
 
     def on_item_clicked(self, item, column):
@@ -430,9 +430,9 @@ class AssetTreeWidget(QTreeWidget):
         from PySide6.QtWidgets import QInputDialog
         
         name, ok = QInputDialog.getText(
-            self, 
-            f"Create {asset_type.title()[:-1]}", 
-            f"Enter name for new {asset_type[:-1]}:"
+            self,
+            self.tr("Create {0}").format(asset_type.title()[:-1]),
+            self.tr("Enter name for new {0}:").format(asset_type[:-1])
         )
         
         if ok and name:

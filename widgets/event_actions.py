@@ -9,7 +9,7 @@ class EventActionWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         layout = QVBoxLayout(self)
-        layout.addWidget(QLabel("Events & Actions"))
+        layout.addWidget(QLabel(self.tr("Events & Actions")))
 
     def set_project(self, project_path: str, project_data: dict):
         """Set project for event actions panel - ADDED to fix AttributeError"""
