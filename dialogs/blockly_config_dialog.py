@@ -44,31 +44,14 @@ class BlocklyConfigDialog(QDialog):
 
     def _detect_language(self) -> str:
         """Detect current IDE language setting"""
-        # Try to get language from QCoreApplication translator
-        from PySide6.QtCore import QCoreApplication
-        translators = QCoreApplication.instance().property("translators") or []
+        # Get language from the global language manager
+        from core.language_manager import get_language_manager
 
-        # Check if French, German, or Italian translator is loaded
-        for translator in translators:
-            if hasattr(translator, 'language'):
-                lang = translator.language()
-                if lang in ['fr', 'de', 'it']:
-                    return lang
+        language_manager = get_language_manager()
+        current_lang = language_manager.get_current_language()
 
-        # Check translator filenames
-        import os
-        for translator in translators:
-            if hasattr(translator, 'filePath'):
-                filepath = translator.filePath()
-                if '_fr.' in filepath or filepath.endswith('_fr.qm'):
-                    return 'fr'
-                elif '_de.' in filepath or filepath.endswith('_de.qm'):
-                    return 'de'
-                elif '_it.' in filepath or filepath.endswith('_it.qm'):
-                    return 'it'
-
-        # Default to English
-        return 'en'
+        # Return the current language (defaults to 'en' if not set)
+        return current_lang if current_lang else 'en'
 
     def setup_ui(self):
         """Setup the dialog UI"""
