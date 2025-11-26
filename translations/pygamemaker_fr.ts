@@ -282,7 +282,11 @@ Some changes may require restarting the IDE to take effect.</source>
 
 Certaines modifications peuvent nécessiter le redémarrage de l'IDE pour prendre effet.</translation>
     </message>
-  </context>
+  <message><source>Settings have been saved successfully.
+
+</source><translation>Les paramètres ont été enregistrés avec succès.
+
+</translation></message></context>
   <context>
     <name>PyGameMakerIDE</name>
     <message>
@@ -1359,7 +1363,16 @@ Future features:
 • Asset search and filter
 • Asset usage tracking
 • Unused asset cleanup</source>
-      <translation type="unfinished" />
+      <translation>Le gestionnaire de ressources n'est pas encore implémenté.
+
+Solution de contournement actuelle :
+Utilisez le panneau Arbre des ressources à gauche pour gérer vos ressources.
+
+Fonctionnalités futures :
+• Opérations groupées sur les ressources
+• Recherche et filtrage des ressources
+• Suivi de l'utilisation des ressources
+• Nettoyage des ressources inutilisées</translation>
     </message>
     <message>
       <location filename="../core/ide_window.py" line="1765" />
@@ -1391,7 +1404,10 @@ Future features:
 
 ✓ All required directories exist
 ✓ project.json is present</source>
-      <translation type="unfinished" />
+      <translation>La structure du projet est valide !
+
+✓ Tous les répertoires requis existent
+✓ project.json est présent</translation>
     </message>
     <message>
       <location filename="../core/ide_window.py" line="1805" />
@@ -1414,7 +1430,15 @@ Future features:
 • Optimize project size
 
 Would you like to learn more?</source>
-      <translation type="unfinished" />
+      <translation>Le nettoyage du projet n'est pas encore implémenté.
+
+Fonctionnalités futures :
+• Supprimer les fichiers temporaires
+• Supprimer les ressources inutilisées
+• Nettoyer les artefacts de compilation
+• Optimiser la taille du projet
+
+Souhaitez-vous en savoir plus ?</translation>
     </message>
     <message>
       <location filename="../core/ide_window.py" line="1826" />
@@ -1424,7 +1448,12 @@ For now, you can manually delete temporary files from:
 • .cache/ directory
 • __pycache__/ directories
 • *.pyc files</source>
-      <translation type="unfinished" />
+      <translation>Cette fonctionnalité sera disponible dans une future mise à jour.
+
+Pour l'instant, vous pouvez supprimer manuellement les fichiers temporaires de :
+• Répertoire .cache/
+• Répertoires __pycache__/
+• Fichiers *.pyc</translation>
     </message>
     <message>
       <location filename="../core/ide_window.py" line="1837" />
@@ -1444,7 +1473,17 @@ Quick Help:
 • Right-click for more options
 
 Online documentation coming soon!</source>
-      <translation type="unfinished" />
+      <translation>La documentation n'est pas encore disponible.
+
+Aide rapide :
+• F1 : Ouvrir cette aide
+• Ctrl+N : Nouveau projet
+• Ctrl+O : Ouvrir un projet
+• Ctrl+S : Enregistrer le projet
+• Double-cliquez sur les ressources pour les modifier
+• Clic droit pour plus d'options
+
+Documentation en ligne bientôt disponible !</translation>
     </message>
     <message>
       <location filename="../core/ide_window.py" line="1854" />
@@ -1620,7 +1659,7 @@ Voulez-vous :
       <source>Choose project action:</source>
       <translation>Choisissez une action :</translation>
     </message>
-  </context>
+  <message><source>Search:</source><translation>Rechercher :</translation></message><message><source>Type to filter events...</source><translation>Tapez pour filtrer les événements...</translation></message></context>
   <context>
     <name>VisualScriptingArea</name>
     <message>
@@ -1662,4 +1701,4 @@ Voulez-vous :
       <translation>🏠 Créer une salle (Ctrl+R)</translation>
     </message>
   </context>
-</TS>
+<context><name>KeyMouseSelectors</name><message><source>No Selection</source><translation>Aucune sélection</translation></message><message><source>Please select a key first.</source><translation>Veuillez d'abord sélectionner une touche.</translation></message><message><source>Please select a mouse event first.</source><translation>Veuillez d'abord sélectionner un événement de souris.</translation></message><message><source>Select Key</source><translation>Sélectionner une touche</translation></message><message><source>Select Mouse Event</source><translation>Sélectionner un événement de souris</translation></message><message><source>Select which key to respond to:</source><translation>Sélectionnez la touche à laquelle répondre :</translation></message><message><source>Select which mouse event to respond to:</source><translation>Sélectionnez l'événement de souris auquel répondre :</translation></message><message><source>Type to filter keys...</source><translation>Tapez pour filtrer les touches...</translation></message></context></TS>
