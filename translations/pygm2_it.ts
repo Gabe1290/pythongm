@@ -664,91 +664,112 @@ Vuoi salvare comunque?</translation>
   <context>
     <name>BlocklyVisualProgrammingTab</name>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="359" />
       <source>Visual Block Programming</source>
-      <translation type="vanished">Programmazione a blocchi visuale</translation>
+      <translation>Programmazione a blocchi visuale</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="365" />
       <source>Drag blocks from the toolbox on the left to create game logic</source>
-      <translation type="vanished">Trascina i blocchi dalla casella degli strumenti a sinistra per creare la logica del gioco</translation>
+      <translation>Trascina i blocchi dalla casella degli strumenti a sinistra per creare la logica del gioco</translation>
     </message>
   </context>
   <context>
     <name>BlocklyWidget</name>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="61" />
       <source>Apply to Events →</source>
-      <translation type="vanished">Applica agli eventi →</translation>
+      <translation>Applica agli eventi →</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="62" />
       <source>Apply block changes to the Events panel</source>
-      <translation type="vanished">Applica le modifiche dei blocchi al pannello Eventi</translation>
+      <translation>Applica le modifiche dei blocchi al pannello Eventi</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="67" />
       <source>← Sync from Events</source>
-      <translation type="vanished">← Sincronizza dagli eventi</translation>
+      <translation>← Sincronizza dagli eventi</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="68" />
       <source>Load events from the Events panel into blocks</source>
-      <translation type="vanished">Carica gli eventi dal pannello Eventi nei blocchi</translation>
+      <translation>Carica gli eventi dal pannello Eventi nei blocchi</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="73" />
       <source>Clear All</source>
-      <translation type="vanished">Cancella tutto</translation>
+      <translation>Cancella tutto</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="78" />
       <source>Reload</source>
-      <translation type="vanished">Ricarica</translation>
+      <translation>Ricarica</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="83" />
       <source>Configure Blocks...</source>
-      <translation type="vanished">Configura i blocchi...</translation>
+      <translation>Configura i blocchi...</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="84" />
       <source>Choose which blocks are available in the toolbox</source>
-      <translation type="vanished">Scegli quali blocchi sono disponibili nella casella degli strumenti</translation>
+      <translation>Scegli quali blocchi sono disponibili nella casella degli strumenti</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="139" />
       <source>Drag blocks from the toolbox on the left to create game logic!</source>
-      <translation type="vanished">Trascina i blocchi dalla casella degli strumenti a sinistra per creare la logica del gioco!</translation>
+      <translation>Trascina i blocchi dalla casella degli strumenti a sinistra per creare la logica del gioco!</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="141" />
       <source>Error loading Blockly - click Reload to try again</source>
-      <translation type="vanished">Errore nel caricamento di Blockly - clicca su Ricarica per riprovare</translation>
+      <translation>Errore nel caricamento di Blockly - clicca su Ricarica per riprovare</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="159" />
       <source>Reloading Blockly...</source>
-      <translation type="vanished">Ricaricamento di Blockly...</translation>
+      <translation>Ricaricamento di Blockly...</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="181" />
       <source>Blocks updated - {0} events</source>
-      <translation type="vanished">Blocchi aggiornati - {0} eventi</translation>
+      <translation>Blocchi aggiornati - {0} eventi</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="200" />
       <source>Applied {0} events</source>
-      <translation type="vanished">{0} eventi applicati</translation>
+      <translation>{0} eventi applicati</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="208" />
       <source>Workspace cleared</source>
-      <translation type="vanished">Area di lavoro cancellata</translation>
+      <translation>Area di lavoro cancellata</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="247" />
       <source>No events to load</source>
-      <translation type="vanished">Nessun evento da caricare</translation>
+      <translation>Nessun evento da caricare</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="263" />
       <source>Loaded {0} events as blocks</source>
-      <translation type="vanished">{0} eventi caricati come blocchi</translation>
+      <translation>{0} eventi caricati come blocchi</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="265" />
       <source>Loaded {0} events - some may not have block equivalents</source>
-      <translation type="vanished">{0} eventi caricati - alcuni potrebbero non avere equivalenti in blocchi</translation>
+      <translation>{0} eventi caricati - alcuni potrebbero non avere equivalenti in blocchi</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="297" />
       <source>Requesting sync from events...</source>
-      <translation type="vanished">Richiesta di sincronizzazione dagli eventi...</translation>
+      <translation>Richiesta di sincronizzazione dagli eventi...</translation>
     </message>
     <message>
+      <location filename="../editors/object_editor/blockly_widget.py" line="330" />
       <source>Configuration applied: {0} blocks, {1} categories</source>
-      <translation type="vanished">Configurazione applicata: {0} blocchi, {1} categorie</translation>
+      <translation>Configurazione applicata: {0} blocchi, {1} categorie</translation>
     </message>
   </context>
   <context>
