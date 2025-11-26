@@ -2389,3 +2389,18 @@ class PyGameMakerIDE(QMainWindow):
                 return bool(self.current_project_path)
 
         return False  # User cancelled
+
+    def changeEvent(self, event):
+        """Handle events, including language changes"""
+        from PySide6.QtCore import QEvent
+
+        if event.type() == QEvent.Type.LanguageChange:
+            # Recreate menu bar with new translations
+            print("🔄 Language change event detected, recreating menus...")
+            self.menuBar().clear()
+            self.create_menu_bar()
+            self.create_toolbar()
+            print("✅ Menus and toolbars recreated with new language")
+
+        # Call parent class handler
+        super().changeEvent(event)
