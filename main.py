@@ -117,13 +117,14 @@ def setup_directories():
 def main():
     try:
         app = setup_application()
-        
+
         app_dir, projects_dir = setup_directories()
-        
+
         ide = PyGameMakerIDE()
         ide.show()
 
         # If translator was installed, trigger retranslation of all widgets
+        language_config = Config.get('language', 'en')
         if language_config and language_config != 'en':
             from PySide6.QtCore import QEvent
             from PySide6.QtCore import QTimer
