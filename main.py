@@ -47,15 +47,21 @@ def setup_application():
     # Get language from config or use system default
     language_config = Config.get('language', 'en')
     
+    print(f"🌐 Language config: {language_config}")
+
     if language_config and language_config != 'en':
         # Try to load translation file
         translations_path = Path(__file__).parent / "translations"
         translation_file = translations_path / f"pygamemaker_{language_config}.qm"
-        
+
+        print(f"📁 Translation file path: {translation_file}")
+        print(f"📁 File exists: {translation_file.exists()}")
+
         if translation_file.exists():
             if translator.load(str(translation_file)):
                 app.installTranslator(translator)
-                print(f"✅ Loaded translation: {language_config}")
+                print(f"✅ Loaded and installed translation: {language_config}")
+                print(f"✅ Testing: AboutDialog/Close = {app.translate('AboutDialog', 'Close')}")
             else:
                 print(f"⚠️ Failed to load translation: {translation_file}")
         else:
