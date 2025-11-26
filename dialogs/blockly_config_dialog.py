@@ -15,6 +15,11 @@ from config.blockly_config import (
     BlocklyConfig, BLOCK_REGISTRY, PRESETS, save_config, load_config,
     BLOCK_DEPENDENCIES
 )
+from config.blockly_translations import (
+    get_translated_category,
+    get_translated_block_name,
+    get_translated_block_description
+)
 
 
 class BlocklyConfigDialog(QDialog):
@@ -31,8 +36,39 @@ class BlocklyConfigDialog(QDialog):
         self.config = current_config or load_config()
         self.original_config = BlocklyConfig.from_dict(self.config.to_dict())  # Deep copy
 
+        # Detect current language from parent or system
+        self.language = self._detect_language()
+
         self.setup_ui()
         self.load_config_to_ui()
+
+    def _detect_language(self) -> str:
+        """Detect current IDE language setting"""
+        # Try to get language from QCoreApplication translator
+        from PySide6.QtCore import QCoreApplication
+        translators = QCoreApplication.instance().property("translators") or []
+
+        # Check if French, German, or Italian translator is loaded
+        for translator in translators:
+            if hasattr(translator, 'language'):
+                lang = translator.language()
+                if lang in ['fr', 'de', 'it']:
+                    return lang
+
+        # Check translator filenames
+        import os
+        for translator in translators:
+            if hasattr(translator, 'filePath'):
+                filepath = translator.filePath()
+                if '_fr.' in filepath or filepath.endswith('_fr.qm'):
+                    return 'fr'
+                elif '_de.' in filepath or filepath.endswith('_de.qm'):
+                    return 'de'
+                elif '_it.' in filepath or filepath.endswith('_it.qm'):
+                    return 'it'
+
+        # Default to English
+        return 'en'
 
     def setup_ui(self):
         """Setup the dialog UI"""
@@ -115,8 +151,13 @@ class BlocklyConfigDialog(QDialog):
         self.block_items = {}
 
         for category, blocks in BLOCK_REGISTRY.items():
+            # Translate category name
+            translated_category = get_translated_category(category, self.language)
+            if not translated_category:
+                translated_category = category
+
             # Create category item
-            category_item = QTreeWidgetItem(self.tree, [category, self.tr("{0} blocks").format(len(blocks))])
+            category_item = QTreeWidgetItem(self.tree, [translated_category, self.tr("{0} blocks").format(len(blocks))])
             category_item.setFlags(category_item.flags() | Qt.ItemIsUserCheckable | Qt.ItemIsAutoTristate)
             category_item.setCheckState(0, Qt.Unchecked)
             category_item.setData(0, Qt.UserRole, category)
@@ -145,7 +186,15 @@ class BlocklyConfigDialog(QDialog):
 
             # Add block items
             for block in blocks:
-                block_item = QTreeWidgetItem(category_item, [block["name"], block["description"]])
+                # Translate block name and description
+                translated_name = get_translated_block_name(block["type"], self.language)
+                translated_desc = get_translated_block_description(block["type"], self.language)
+
+                # Fall back to English if translation not available
+                display_name = translated_name if translated_name else block["name"]
+                display_desc = translated_desc if translated_desc else block["description"]
+
+                block_item = QTreeWidgetItem(category_item, [display_name, display_desc])
                 block_item.setFlags(block_item.flags() | Qt.ItemIsUserCheckable)
                 block_item.setCheckState(0, Qt.Unchecked)
                 block_item.setData(0, Qt.UserRole, block["type"])
