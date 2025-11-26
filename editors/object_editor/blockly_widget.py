@@ -58,30 +58,30 @@ class BlocklyWidget(QWidget):
         toolbar.setSpacing(5)
 
         # Apply button (Blockly → Events)
-        self.apply_button = QPushButton("Apply to Events →")
-        self.apply_button.setToolTip("Apply block changes to the Events panel")
+        self.apply_button = QPushButton(self.tr("Apply to Events →"))
+        self.apply_button.setToolTip(self.tr("Apply block changes to the Events panel"))
         self.apply_button.clicked.connect(self.apply_blocks_to_events)
         toolbar.addWidget(self.apply_button)
 
         # Sync from Events button (Events → Blockly)
-        self.sync_button = QPushButton("← Sync from Events")
-        self.sync_button.setToolTip("Load events from the Events panel into blocks")
+        self.sync_button = QPushButton(self.tr("← Sync from Events"))
+        self.sync_button.setToolTip(self.tr("Load events from the Events panel into blocks"))
         self.sync_button.clicked.connect(self.request_sync_from_events)
         toolbar.addWidget(self.sync_button)
 
         # Clear button
-        self.clear_button = QPushButton("Clear All")
+        self.clear_button = QPushButton(self.tr("Clear All"))
         self.clear_button.clicked.connect(self.clear_workspace)
         toolbar.addWidget(self.clear_button)
 
         # Reload button (for debugging/reloading Blockly)
-        self.reload_button = QPushButton("Reload")
+        self.reload_button = QPushButton(self.tr("Reload"))
         self.reload_button.clicked.connect(self.reload_blockly)
         toolbar.addWidget(self.reload_button)
 
         # Configure blocks button
-        self.configure_btn = QPushButton("Configure Blocks...")
-        self.configure_btn.setToolTip("Choose which blocks are available in the toolbox")
+        self.configure_btn = QPushButton(self.tr("Configure Blocks..."))
+        self.configure_btn.setToolTip(self.tr("Choose which blocks are available in the toolbox"))
         self.configure_btn.clicked.connect(self.open_configure_dialog)
         toolbar.addWidget(self.configure_btn)
 
@@ -136,9 +136,9 @@ class BlocklyWidget(QWidget):
 
             # Apply saved configuration to toolbox
             self._apply_saved_configuration()
-            self.update_status("Drag blocks from the toolbox on the left to create game logic!")
+            self.update_status(self.tr("Drag blocks from the toolbox on the left to create game logic!"))
         else:
-            self.update_status("Error loading Blockly - click Reload to try again")
+            self.update_status(self.tr("Error loading Blockly - click Reload to try again"))
 
     def _set_blockly_language(self):
         """Set the Blockly language based on IDE language setting"""
@@ -156,7 +156,7 @@ class BlocklyWidget(QWidget):
 
     def reload_blockly(self):
         """Reload the Blockly workspace"""
-        self.update_status("Reloading Blockly...")
+        self.update_status(self.tr("Reloading Blockly..."))
         self.web_view.setVisible(False)  # Hide during reload
         self._load_blockly_html()
 
@@ -178,7 +178,7 @@ class BlocklyWidget(QWidget):
         try:
             self.events_data = json.loads(code_json)
             self.blocks_modified.emit()
-            self.update_status(f"Blocks updated - {len(self.events_data)} events")
+            self.update_status(self.tr("Blocks updated - {0} events").format(len(self.events_data)))
         except json.JSONDecodeError as e:
             print(f"Error parsing blocks JSON: {e}")
 
@@ -197,7 +197,7 @@ class BlocklyWidget(QWidget):
                 events = json.loads(code_json)
                 self.events_data = events
                 self.events_generated.emit(events)
-                self.update_status(f"Applied {len(events)} events")
+                self.update_status(self.tr("Applied {0} events").format(len(events)))
             except json.JSONDecodeError as e:
                 print(f"Error parsing code JSON: {e}")
 
@@ -205,7 +205,7 @@ class BlocklyWidget(QWidget):
         """Clear the Blockly workspace"""
         self.web_view.page().runJavaScript("window.blocklyApi.clear()")
         self.events_data = {}
-        self.update_status("Workspace cleared")
+        self.update_status(self.tr("Workspace cleared"))
 
     def get_workspace_xml(self) -> str:
         """Get the current workspace as XML (for saving)"""
@@ -244,7 +244,7 @@ class BlocklyWidget(QWidget):
         self.events_data = events_data
 
         if not events_data:
-            self.update_status("No events to load")
+            self.update_status(self.tr("No events to load"))
             return
 
         # Debug: Print the events data being sent
@@ -260,9 +260,9 @@ class BlocklyWidget(QWidget):
             self._loading = False
             print(f"[Blockly] Load complete, result: {result}")
             if result is not None:
-                self.update_status(f"Loaded {result} events as blocks")
+                self.update_status(self.tr("Loaded {0} events as blocks").format(result))
             else:
-                self.update_status(f"Loaded {len(events_data)} events - some may not have block equivalents")
+                self.update_status(self.tr("Loaded {0} events - some may not have block equivalents").format(len(events_data)))
 
         # Check if blocklyApi is available before calling
         check_and_load_script = f"""
@@ -294,7 +294,7 @@ class BlocklyWidget(QWidget):
 
     def request_sync_from_events(self):
         """Request sync from events panel (emits signal for parent to handle)"""
-        self.update_status("Requesting sync from events...")
+        self.update_status(self.tr("Requesting sync from events..."))
         self.sync_requested.emit()
 
     def open_configure_dialog(self):
@@ -327,7 +327,7 @@ class BlocklyWidget(QWidget):
         # Update status
         total_blocks = len(config.enabled_blocks)
         total_categories = len(config.enabled_categories)
-        self.update_status(f"Configuration applied: {total_blocks} blocks, {total_categories} categories")
+        self.update_status(self.tr("Configuration applied: {0} blocks, {1} categories").format(total_blocks, total_categories))
 
     def _apply_saved_configuration(self):
         """Apply the saved configuration on startup"""
@@ -356,13 +356,13 @@ class BlocklyVisualProgrammingTab(QWidget):
         # Info bar
         info_layout = QHBoxLayout()
 
-        title_label = QLabel("Visual Block Programming")
+        title_label = QLabel(self.tr("Visual Block Programming"))
         title_label.setStyleSheet("font-size: 14px; font-weight: bold;")
         info_layout.addWidget(title_label)
 
         info_layout.addStretch()
 
-        help_label = QLabel("Drag blocks from the toolbox on the left to create game logic")
+        help_label = QLabel(self.tr("Drag blocks from the toolbox on the left to create game logic"))
         help_label.setStyleSheet("color: #666; font-style: italic;")
         info_layout.addWidget(help_label)
 
