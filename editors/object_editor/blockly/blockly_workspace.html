@@ -548,6 +548,17 @@
             ["Numpad Enter", "numpad_enter"], ["Numpad .", "numpad_period"]
         ];
 
+        /**
+         * Get translated key options for dropdown
+         * @returns {Array} Array of [translatedName, value] pairs
+         */
+        function getTranslatedKeyOptions() {
+            return ALL_KEYS.map(function(key) {
+                var displayName = getKeyName(key[0], window.BLOCKLY_LANG);
+                return [displayName, key[1]];
+            });
+        }
+
         // ============ KEYBOARD EVENT BLOCKS (5 separate blocks) ============
 
         Blockly.Blocks['event_keyboard_nokey'] = {
@@ -576,7 +587,7 @@
             init: function() {
                 this.appendDummyInput()
                     .appendField(getBlockMessage('event_keyboard_held_prefix', window.BLOCKLY_LANG) || "Keyboard:")
-                    .appendField(new Blockly.FieldDropdown(ALL_KEYS), "KEY")
+                    .appendField(new Blockly.FieldDropdown(getTranslatedKeyOptions()), "KEY")
                     .appendField(getBlockMessage('event_keyboard_held_suffix', window.BLOCKLY_LANG) || "(held)");
                 this.appendStatementInput("DO")
                     .setCheck(null);
@@ -589,7 +600,7 @@
             init: function() {
                 this.appendDummyInput()
                     .appendField(getBlockMessage('event_keyboard_press_prefix', window.BLOCKLY_LANG) || "Key press:")
-                    .appendField(new Blockly.FieldDropdown(ALL_KEYS), "KEY");
+                    .appendField(new Blockly.FieldDropdown(getTranslatedKeyOptions()), "KEY");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#FFD500");
@@ -601,7 +612,7 @@
             init: function() {
                 this.appendDummyInput()
                     .appendField(getBlockMessage('event_keyboard_release_prefix', window.BLOCKLY_LANG) || "Key release:")
-                    .appendField(new Blockly.FieldDropdown(ALL_KEYS), "KEY");
+                    .appendField(new Blockly.FieldDropdown(getTranslatedKeyOptions()), "KEY");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#FFD500");
