@@ -168,13 +168,23 @@ class ActionExecutor:
     
     def execute_set_hspeed_action(self, instance, parameters: Dict[str, Any]):
         """Set horizontal speed for smooth movement"""
-        speed = float(parameters.get("speed", 0))
+        # Accept both 'value' (from IDE) and 'speed' (legacy) parameters
+        speed = float(parameters.get("value", parameters.get("speed", 0)))
+        old_speed = instance.hspeed
         instance.hspeed = speed
+        # Only print when speed changes
+        if old_speed != speed:
+            print(f"  🏃 {instance.object_name} hspeed: {old_speed} → {speed}")
     
     def execute_set_vspeed_action(self, instance, parameters: Dict[str, Any]):
         """Set vertical speed for smooth movement"""
-        speed = float(parameters.get("speed", 0))
+        # Accept both 'value' (from IDE) and 'speed' (legacy) parameters
+        speed = float(parameters.get("value", parameters.get("speed", 0)))
+        old_speed = instance.vspeed
         instance.vspeed = speed
+        # Only print when speed changes
+        if old_speed != speed:
+            print(f"  🏃 {instance.object_name} vspeed: {old_speed} → {speed}")
     
     def execute_stop_movement_action(self, instance, parameters: Dict[str, Any]):
         """Stop all movement by setting speeds to zero"""

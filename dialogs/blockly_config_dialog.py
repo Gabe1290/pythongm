@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (
     QTreeWidgetItem, QLabel, QComboBox, QMessageBox, QGroupBox
 )
 from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QColor, QBrush
 
 from config.blockly_config import (
     BlocklyConfig, BLOCK_REGISTRY, PRESETS, save_config, load_config,
@@ -73,15 +74,15 @@ class BlocklyConfigDialog(QDialog):
         self.tree.itemChanged.connect(self.on_item_changed)
         layout.addWidget(self.tree)
 
-        # Populate tree
-        self.populate_tree()
-
         # ====== Warning Label ======
         self.warning_label = QLabel()
         self.warning_label.setStyleSheet("color: #ff6b6b; font-weight: bold;")
         self.warning_label.setWordWrap(True)
         self.warning_label.setVisible(False)
         layout.addWidget(self.warning_label)
+
+        # Populate tree AFTER warning_label is created
+        self.populate_tree()
 
         # ====== Button Bar ======
         button_layout = QHBoxLayout()
@@ -135,9 +136,10 @@ class BlocklyConfigDialog(QDialog):
                 "Output": "#745CA6",
             }
             if category in category_colors:
-                color = category_colors[category]
-                category_item.setBackground(0, color)
-                category_item.setForeground(0, Qt.white if self._is_dark_color(color) else Qt.black)
+                color_hex = category_colors[category]
+                color = QColor(color_hex)
+                category_item.setBackground(0, QBrush(color))
+                category_item.setForeground(0, QBrush(Qt.white if self._is_dark_color(color_hex) else Qt.black))
 
             self.category_items[category] = category_item
 

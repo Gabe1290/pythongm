@@ -514,12 +514,7 @@ class GameRunner:
                         for action_data in actions:
                             print(f"    - Action: {action_data.get('action', 'unknown')}")
                             instance.action_executor.execute_action(instance, action_data)
-                    else:
-                        print(f"  ❌ keyboard.{sub_key} has no actions: {sub_event_data}")
-                else:
-                    print(f"  ❌ keyboard event doesn't contain '{sub_key}' key")
-                    if isinstance(keyboard_event, dict):
-                        print(f"  ❌ Available keys in keyboard: {list(keyboard_event.keys())}")
+                # Removed error messages - it's normal for an object to not handle every key
     
     def handle_keyboard_release(self, key):
         """Handle keyboard release event - stop movement"""

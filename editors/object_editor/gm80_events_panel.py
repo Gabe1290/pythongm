@@ -26,6 +26,37 @@ from actions.gm80_actions import (
     GM80_ALL_ACTIONS
 )
 
+# Import Blockly configuration for filtering
+from config.blockly_config import load_config
+
+
+# ============================================================================
+# BLOCKLY TO GM80 EVENT MAPPING
+# ============================================================================
+
+# Maps Blockly event block types to GM80 event categories/names
+BLOCKLY_TO_GM80_MAPPING = {
+    # Direct category mappings
+    "event_create": {"categories": ["create"]},
+    "event_destroy": {"categories": ["destroy"]},
+    "event_draw": {"categories": ["draw"]},
+    "event_collision": {"categories": ["collision"]},
+    "event_alarm": {"categories": ["alarm"]},
+    
+    # Step events - includes begin_step, step, end_step
+    "event_step": {"categories": ["step"]},
+    
+    # Keyboard events
+    "event_keyboard_nokey": {"events": ["keyboard_no_key"]},
+    "event_keyboard_anykey": {"events": ["keyboard_any_key"]},
+    "event_keyboard_held": {"events": ["keyboard"]},
+    "event_keyboard_press": {"events": ["keyboard_press"]},
+    "event_keyboard_release": {"events": ["keyboard_release"]},
+    
+    # Mouse events - entire category
+    "event_mouse": {"categories": ["mouse"]},
+}
+
 
 class GM80EventsPanel(QWidget):
     """GameMaker 8.0 style events panel with organized categories"""
@@ -35,6 +66,10 @@ class GM80EventsPanel(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.current_events_data = {}
+        
+        # Load Blockly configuration for event filtering
+        self.blockly_config = load_config()
+        
         self.setup_ui()
 
     def setup_ui(self):
@@ -98,18 +133,57 @@ class GM80EventsPanel(QWidget):
 
         layout.addLayout(button_layout)
 
+    def is_event_category_enabled(self, category_id: str) -> bool:
+        """Check if an event category is enabled based on Blockly configuration"""
+        # Find which Blockly blocks enable this category
+        for blockly_type, mapping in BLOCKLY_TO_GM80_MAPPING.items():
+            if "categories" in mapping and category_id in mapping["categories"]:
+                if self.blockly_config.is_block_enabled(blockly_type):
+                    return True
+        return False
+    
+    def is_event_enabled(self, event_name: str, category_id: str) -> bool:
+        """Check if a specific event is enabled based on Blockly configuration"""
+        # Check if entire category is enabled
+        if self.is_event_category_enabled(category_id):
+            return True
+        
+        # Check specific event mappings
+        for blockly_type, mapping in BLOCKLY_TO_GM80_MAPPING.items():
+            if "events" in mapping and event_name in mapping["events"]:
+                if self.blockly_config.is_block_enabled(blockly_type):
+                    return True
+        
+        return False
+    
+    def reload_config(self):
+        """Reload the Blockly configuration (call after config changes)"""
+        self.blockly_config = load_config()
+
     def show_add_event_menu(self):
-        """Show organized event menu by GM8.0 categories"""
+        """Show organized event menu by GM8.0 categories (filtered by Blockly config)"""
         menu = QMenu(self)
+        
+        # Track if any events are available
+        has_enabled_events = False
 
         # Get event categories in order
         for category_id, category_info in get_event_categories_ordered():
+            # Skip category if not enabled
+            if not self.is_event_category_enabled(category_id):
+                continue
+            
+            has_enabled_events = True
             category_menu = menu.addMenu(f"{category_info['icon']} {category_info['name']}")
 
             # Get events in this category
             events = get_events_by_category(category_id)
 
             for event in events:
+                # Check if this specific event is enabled
+                if not self.is_event_enabled(event.name, category_id):
+                    continue
+                
                 # Special handling for dynamic events
                 if category_id == "collision":
                     self.add_collision_submenu(category_menu)
@@ -123,6 +197,14 @@ class GM80EventsPanel(QWidget):
                     action.triggered.connect(
                         lambda checked, e=event: self.add_event(e.name)
                     )
+        
+        # Show warning if no events are enabled
+        if not has_enabled_events:
+            no_events = menu.addAction("⚠️ No events enabled")
+            no_events.setEnabled(False)
+            menu.addSeparator()
+            help_action = menu.addAction("Configure enabled events...")
+            help_action.triggered.connect(self.show_config_help)
 
         menu.exec(self.add_event_btn.mapToGlobal(self.add_event_btn.rect().bottomLeft()))
 
@@ -142,8 +224,12 @@ class GM80EventsPanel(QWidget):
             no_obj.setEnabled(False)
 
     def add_keyboard_submenu(self, parent_menu, event):
-        """Add keyboard event with key selector"""
+        """Add keyboard event with key selector (filtered by Blockly config)"""
         for event_def in get_events_by_category("keyboard"):
+            # Check if this specific keyboard event is enabled
+            if not self.is_event_enabled(event_def.name, "keyboard"):
+                continue
+            
             # Check if this event requires a key selector (has parameters)
             needs_key_selector = event_def.parameters and any(
                 p.get("type") == "key_selector" for p in event_def.parameters
@@ -510,6 +596,18 @@ class GM80EventsPanel(QWidget):
     def get_events_data(self) -> Dict[str, Any]:
         """Get current events data"""
         return self.current_events_data.copy()
+    
+    def show_config_help(self):
+        """Show help dialog about configuring enabled events"""
+        QMessageBox.information(
+            self,
+            "Configure Events",
+            "To enable/disable events, go to:\n\n"
+            "Tools → Configure Blockly Blocks\n\n"
+            "Select which events you want available in both the\n"
+            "visual programming editor and this traditional event editor.\n\n"
+            "Changes will take effect immediately."
+        )
 
     def get_available_objects(self) -> List[str]:
         """Get list of available objects from project"""

@@ -83,7 +83,21 @@ class GameInstance:
     def step(self):
         """Execute step event every frame"""
         if self.object_data and "events" in self.object_data:
+            # Execute regular step event
             self.action_executor.execute_event(self, "step", self.object_data["events"])
+            
+            # Check for "nokey" event (GameMaker compatibility)
+            # This event triggers when no keyboard keys are currently pressed
+            events = self.object_data["events"]
+            if "keyboard" in events and "nokey" in events["keyboard"]:
+                # Check if no keys are currently pressed
+                keys_pressed = getattr(self, 'keys_pressed', set())
+                if len(keys_pressed) == 0:
+                    # No keys pressed - execute nokey event actions
+                    nokey_event = events["keyboard"]["nokey"]
+                    if isinstance(nokey_event, dict) and "actions" in nokey_event:
+                        for action_data in nokey_event["actions"]:
+                            self.action_executor.execute_action(self, action_data)
 
     def set_sprite(self, sprite: GameSprite):
         """Set the sprite for this instance"""
@@ -425,15 +439,38 @@ class GameRunner:
             
             # Main game loop
             while self.running:
-                # Handle events
+                # Execute begin_step events (before everything else)
+                for instance in self.current_room.instances:
+                    if instance.object_data and "events" in instance.object_data:
+                        events = instance.object_data["events"]
+                        if "begin_step" in events:
+                            instance.action_executor.execute_event(instance, "begin_step", events)
+                
+                # Handle events (keyboard, mouse, etc.)
                 self.handle_events()
                 
-                # Update (placeholder for game logic)
+                # Update (collision checking, movement, etc.)
                 self.update()
                 
                 # Execute step events for all instances
                 for instance in self.current_room.instances:
                     instance.step()
+                
+                # Execute end_step events (after step, before rendering)
+                for instance in self.current_room.instances:
+                    if instance.object_data and "events" in instance.object_data:
+                        events = instance.object_data["events"]
+                        if "end_step" in events:
+                            instance.action_executor.execute_event(instance, "end_step", events)
+                
+                # Trigger destroy events for instances marked for destruction
+                for instance in self.current_room.instances:
+                    if instance.to_destroy:
+                        if instance.object_data and "events" in instance.object_data:
+                            events = instance.object_data["events"]
+                            if "destroy" in events:
+                                print(f"💥 Triggering destroy event for {instance.object_name}")
+                                instance.action_executor.execute_event(instance, "destroy", events)
                 
                 # Remove destroyed instances
                 self.current_room.instances = [inst for inst in self.current_room.instances if not inst.to_destroy]
@@ -474,6 +511,15 @@ class GameRunner:
             elif event.type == pygame.KEYUP:
                 # Handle keyboard release events
                 self.handle_keyboard_release(event.key)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Handle mouse button press
+                self.handle_mouse_press(event.button, event.pos)
+            elif event.type == pygame.MOUSEBUTTONUP:
+                # Handle mouse button release
+                self.handle_mouse_release(event.button, event.pos)
+            elif event.type == pygame.MOUSEMOTION:
+                # Handle mouse movement
+                self.handle_mouse_motion(event.pos)
     
     def handle_keyboard_press(self, key):
         """Handle keyboard press event"""
@@ -492,22 +538,45 @@ class GameRunner:
         if not sub_key:
             return
         
+        print(f"\n⌨️  Keyboard pressed: {sub_key}")
+        
         # Track which keys are pressed
         for instance in self.current_room.instances:
             if hasattr(instance, "keys_pressed"):
                 instance.keys_pressed.add(sub_key)
         
         # Execute keyboard events for all instances
+        events_found = False
         for instance in self.current_room.instances:
             if not instance.object_data:
                 continue
             
             events = instance.object_data.get('events', {})
             
+            # Check if this is a direction reversal (moving left and pressing right, or vice versa)
+            is_direction_reversal = False
+            if sub_key == "left" and hasattr(instance, 'hspeed') and instance.hspeed > 0:
+                is_direction_reversal = True
+            elif sub_key == "right" and hasattr(instance, 'hspeed') and instance.hspeed < 0:
+                is_direction_reversal = True
+            elif sub_key == "up" and hasattr(instance, 'vspeed') and instance.vspeed > 0:
+                is_direction_reversal = True
+            elif sub_key == "down" and hasattr(instance, 'vspeed') and instance.vspeed < 0:
+                is_direction_reversal = True
+            
+            # If reversing direction, snap to grid first for clean movement
+            if is_direction_reversal:
+                grid_size = 32  # Default grid size
+                instance.x = round(instance.x / grid_size) * grid_size
+                instance.y = round(instance.y / grid_size) * grid_size
+                print(f"  🔄 Direction reversal: snapped {instance.object_name} to grid ({instance.x}, {instance.y})")
+            
             # Check for keyboard_press event
             if "keyboard_press" in events:
                 keyboard_press_event = events["keyboard_press"]
                 if isinstance(keyboard_press_event, dict) and sub_key in keyboard_press_event:
+                    print(f"  ✅ Executing keyboard_press.{sub_key} for {instance.object_name}")
+                    events_found = True
                     sub_event_data = keyboard_press_event[sub_key]
                     if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
                         for action_data in sub_event_data["actions"]:
@@ -517,19 +586,19 @@ class GameRunner:
             if "keyboard" in events:
                 keyboard_event = events["keyboard"]
                 if isinstance(keyboard_event, dict) and sub_key in keyboard_event:
+                    print(f"  ✅ Executing keyboard.{sub_key} for {instance.object_name}")
+                    events_found = True
                     sub_event_data = keyboard_event[sub_key]
                     if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
                         for action_data in sub_event_data["actions"]:
                             instance.action_executor.execute_action(instance, action_data)
-                    else:
-                        print(f"  ❌ keyboard.{sub_key} has no actions: {sub_event_data}")
-                else:
-                    print(f"  ❌ keyboard event doesn't contain '{sub_key}' key")
-                    if isinstance(keyboard_event, dict):
-                        print(f"  ❌ Available keys in keyboard: {list(keyboard_event.keys())}")
+                # Removed error messages - it's normal for an object to not handle every key
+        
+        if not events_found:
+            print(f"  ℹ️  No objects have keyboard events for '{sub_key}'")
     
     def handle_keyboard_release(self, key):
-        """Handle keyboard release event - stop movement"""
+        """Handle keyboard release event - stop movement immediately AND trigger JSON events"""
         if not self.current_room:
             return
         
@@ -545,7 +614,9 @@ class GameRunner:
         if not sub_key:
             return
         
-        # Mark key as released and let Step event handle stopping on grid
+        print(f"\n⌨️  Keyboard released: {sub_key}")
+        
+        # Stop movement immediately and snap to grid for responsive controls
         for instance in self.current_room.instances:
             if not instance.object_data:
                 continue
@@ -553,6 +624,144 @@ class GameRunner:
             # Remove key from pressed set
             if hasattr(instance, "keys_pressed"):
                 instance.keys_pressed.discard(sub_key)
+            
+            # Check if this instance has keyboard events for this key
+            events = instance.object_data.get('events', {})
+            has_keyboard_event = False
+            
+            if "keyboard" in events:
+                keyboard_event = events["keyboard"]
+                if isinstance(keyboard_event, dict) and sub_key in keyboard_event:
+                    has_keyboard_event = True
+            
+            if "keyboard_press" in events:
+                keyboard_press_event = events["keyboard_press"]
+                if isinstance(keyboard_press_event, dict) and sub_key in keyboard_press_event:
+                    has_keyboard_event = True
+            
+            # If this object responds to this key, stop its movement
+            if has_keyboard_event:
+                # Stop movement based on which key was released
+                if sub_key in ["left", "right"]:
+                    instance.hspeed = 0
+                    print(f"  🛑 Stopped horizontal movement for {instance.object_name}")
+                elif sub_key in ["up", "down"]:
+                    instance.vspeed = 0
+                    print(f"  🛑 Stopped vertical movement for {instance.object_name}")
+                
+                # Snap to grid for clean positioning
+                grid_size = 32  # Default grid size
+                instance.x = round(instance.x / grid_size) * grid_size
+                instance.y = round(instance.y / grid_size) * grid_size
+                print(f"  📍 Snapped to grid: ({instance.x}, {instance.y})")
+            
+            # NEW: Execute keyboard_release events from JSON (custom actions)
+            if "keyboard_release" in events:
+                keyboard_release_event = events["keyboard_release"]
+                if isinstance(keyboard_release_event, dict) and sub_key in keyboard_release_event:
+                    print(f"  ✅ Executing keyboard_release.{sub_key} for {instance.object_name}")
+                    sub_event_data = keyboard_release_event[sub_key]
+                    if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
+                        for action_data in sub_event_data["actions"]:
+                            instance.action_executor.execute_action(instance, action_data)
+    
+    def handle_mouse_press(self, button, pos):
+        """Handle mouse button press event"""
+        if not self.current_room:
+            return
+        
+        # Map pygame mouse buttons to event names
+        button_map = {
+            1: "left_button",
+            2: "middle_button",
+            3: "right_button",
+        }
+        
+        button_name = button_map.get(button)
+        if not button_name:
+            return
+        
+        mouse_x, mouse_y = pos
+        print(f"\n🖱️  Mouse pressed: {button_name} at ({mouse_x}, {mouse_y})")
+        
+        # Execute mouse events for all instances
+        for instance in self.current_room.instances:
+            if not instance.object_data:
+                continue
+            
+            events = instance.object_data.get('events', {})
+            
+            # Check for mouse event
+            if "mouse" in events:
+                mouse_event = events["mouse"]
+                if isinstance(mouse_event, dict) and button_name in mouse_event:
+                    print(f"  ✅ Executing mouse.{button_name} for {instance.object_name}")
+                    sub_event_data = mouse_event[button_name]
+                    if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
+                        for action_data in sub_event_data["actions"]:
+                            # Add mouse position to instance for actions to use
+                            instance.mouse_x = mouse_x
+                            instance.mouse_y = mouse_y
+                            instance.action_executor.execute_action(instance, action_data)
+    
+    def handle_mouse_release(self, button, pos):
+        """Handle mouse button release event"""
+        if not self.current_room:
+            return
+        
+        button_map = {
+            1: "left_button_released",
+            2: "middle_button_released",
+            3: "right_button_released",
+        }
+        
+        button_name = button_map.get(button)
+        if not button_name:
+            return
+        
+        mouse_x, mouse_y = pos
+        
+        # Execute mouse release events
+        for instance in self.current_room.instances:
+            if not instance.object_data:
+                continue
+            
+            events = instance.object_data.get('events', {})
+            
+            if "mouse" in events:
+                mouse_event = events["mouse"]
+                if isinstance(mouse_event, dict) and button_name in mouse_event:
+                    sub_event_data = mouse_event[button_name]
+                    if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
+                        for action_data in sub_event_data["actions"]:
+                            instance.mouse_x = mouse_x
+                            instance.mouse_y = mouse_y
+                            instance.action_executor.execute_action(instance, action_data)
+    
+    def handle_mouse_motion(self, pos):
+        """Handle mouse movement event"""
+        if not self.current_room:
+            return
+        
+        mouse_x, mouse_y = pos
+        
+        # Execute mouse motion events
+        for instance in self.current_room.instances:
+            if not instance.object_data:
+                continue
+            
+            events = instance.object_data.get('events', {})
+            
+            if "mouse" in events:
+                mouse_event = events["mouse"]
+                if isinstance(mouse_event, dict) and "mouse_move" in mouse_event:
+                    sub_event_data = mouse_event["mouse_move"]
+                    if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
+                        for action_data in sub_event_data["actions"]:
+                            instance.mouse_x = mouse_x
+                            instance.mouse_y = mouse_y
+                            instance.action_executor.execute_action(instance, action_data)
+    
     def update(self):
         """Update game logic"""
         if not self.current_room:

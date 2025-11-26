@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{game_name}</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+        }
+
+        #gameContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        #gameCanvas {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            background: #000;
+        }
+
+        #controls {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 20px 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #fps {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .instructions {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div class="title">{game_name}</div>
+        <canvas id="gameCanvas" width="{width}" height="{height}"></canvas>
+        <div class="instructions">
+            Use Arrow Keys to move • Press ESC to pause • F5 to restart
+        </div>
+        <div id="controls">
+            <button id="pauseBtn" onclick="game.togglePause()">⏸️ Pause</button>
+            <button onclick="game.restart()">🔄 Restart</button>
+            <span id="fps">FPS: 60</span>
+        </div>
+    </div>
+
+    <script>
+        // Decompress embedded game data
+        function decompressData(base64Data) {
+            try {
+                const binaryString = atob(base64Data);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                const decompressed = pako.inflate(bytes, { to: 'string' });
+                return JSON.parse(decompressed);
+            } catch (error) {
+                console.error('Failed to decompress data:', error);
+                return null;
+            }
+        }
+
+        console.log('📦 Decompressing game data...');
+        const gameData = decompressData({game_data});
+        const spritesData = decompressData({sprites_data});
+
+        if (!gameData || !spritesData) {
+            document.body.innerHTML = '<div style="color:white;text-align:center;padding:50px;">❌ Failed to load game data</div>';
+            throw new Error('Data decompression failed');
+        }
+
+        console.log('✅ Game data decompressed');
+        console.log('📊 Loaded ' + Object.keys(gameData.assets.rooms).length + ' rooms, ' +
+                    Object.keys(gameData.assets.objects).length + ' objects');
+
+        // Game engine code
+        {engine_code}
+    </script>
+</body>
+</html>

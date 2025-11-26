@@ -18,8 +18,10 @@ from widgets.asset_tree.asset_tree_widget import AssetTreeWidget
 from widgets.enhanced_properties_panel import EnhancedPropertiesPanel
 from core.project_manager import ProjectManager
 from core.asset_manager import AssetManager
+from core.ide_exporters import IDEExporters
 from dialogs.project_dialogs import NewProjectDialog, ProjectSettingsDialog, ExportProjectDialog
 from dialogs.import_dialogs import ImportAssetDialog
+from dialogs.blockly_config_dialog import BlocklyConfigDialog
 from utils.config import Config
 from editors.room_editor import RoomEditor
 from editors.object_editor import ObjectEditor
@@ -51,6 +53,9 @@ class PyGameMakerIDE(QMainWindow):
 
         self.current_project_path = None
         self.current_project_data = None
+
+        # Initialize export helper module
+        self.exporters = IDEExporters(self)
 
         # Add game runner
         self.game_runner = None  # Will be initialized when project is loaded
@@ -230,6 +235,7 @@ class PyGameMakerIDE(QMainWindow):
         tools_menu = menubar.addMenu(self.tr("&Tools"))
         tools_menu.addAction(self.create_action(self.tr("&Preferences..."), None, self.preferences))
         tools_menu.addAction(self.create_action(self.tr("&Asset Manager..."), None, self.show_asset_manager))
+        tools_menu.addAction(self.create_action(self.tr("Configure &Blockly Blocks..."), None, self.configure_blockly))
         tools_menu.addSeparator()
         tools_menu.addAction(self.create_action(self.tr("&Validate Project"), None, self.validate_project))
         tools_menu.addAction(self.create_action(self.tr("&Clean Project"), None, self.clean_project))
@@ -244,7 +250,6 @@ class PyGameMakerIDE(QMainWindow):
         help_menu.addAction(self.create_action(self.tr("&Tutorials"), None, self.show_tutorials))
         help_menu.addSeparator()
         help_menu.addAction(self.create_action(self.tr("&About PyGameMaker"), None, self.about))
-        help_menu.addAction(self.create_action(self.tr("About &Qt"), None, self.about_qt))
 
     def create_language_menu(self, menu):
         """Create language selection submenu"""
@@ -309,135 +314,23 @@ class PyGameMakerIDE(QMainWindow):
             )
 
     def export_html5(self):
-        """Export project as HTML5"""
-
-        from export.HTML5.html5_exporter import HTML5Exporter
-
-        output_dir = QFileDialog.getExistingDirectory(
-            self,
-            self.tr("Select Export Directory"),
-            str(Path.home())
-        )
-
-        if output_dir:
-            exporter = HTML5Exporter()
-
-            # Show progress
-            self.update_status(self.tr("Exporting to HTML5..."))
-
-            if exporter.export(self.current_project_path, Path(output_dir)):
-                output_file = Path(output_dir) / f"{self.current_project_data['name']}.html"
-
-                reply = QMessageBox.question(
-                    self,
-                    self.tr("Export Successful"),
-                    self.tr("Game exported as HTML5!\n\n{0}\n\nOpen in browser now?").format(output_file.name),
-                    QMessageBox.Yes | QMessageBox.No
-                )
-
-                if reply == QMessageBox.Yes:
-                    import webbrowser
-                    webbrowser.open(str(output_file))
-
-                self.update_status(self.tr("HTML5 export complete"))
-            else:
-                QMessageBox.warning(
-                    self,
-                    self.tr("Export Failed"),
-                    self.tr("Failed to export game as HTML5. Check console for details.")
-                )
-                self.update_status(self.tr("Export failed"))
+        """Export project as HTML5 - delegated to exporters module"""
+        self.exporters.export_html5()
     def export_kivy(self):
-        """Quick export to Kivy - opens export dialog with Kivy pre-selected"""
-        dialog = ExportProjectDialog(self, self.current_project_data)
-        # Pre-select Kivy platform
-        kivy_index = dialog.export_platform.findText("Mobile (Kivy)")
-        if kivy_index >= 0:
-            dialog.export_platform.setCurrentIndex(kivy_index)
-
-        if dialog.exec() == QDialog.DialogCode.Accepted:
-            result = dialog.get_project_info()
-            self.statusBar().showMessage(f"Export completed to: {result['export_settings']['output_path']}", 5000)
+        """Quick export to Kivy - delegated to exporters module"""
+        self.exporters.export_kivy()
 
     def export_project(self):
-        """Open export project dialog"""
-        dialog = ExportProjectDialog(self, self.current_project_data)
-        if dialog.exec() == QDialog.DialogCode.Accepted:
-            result = dialog.get_project_info()
-            self.statusBar().showMessage(f"Export completed to: {result['export_settings']['output_path']}", 5000)
+        """Open export project dialog - delegated to exporters module"""
+        self.exporters.export_project()
 
     def export_project_zip(self):
-        """Export current project as a .zip file"""
-        # Get default filename
-        project_name = self.current_project_data.get('name', 'project')
-        default_filename = f"{project_name}.zip"
-
-        # Ask user where to save
-        file_path, _ = QFileDialog.getSaveFileName(
-            self,
-            self.tr("Export Project as Zip"),
-            str(Path.home() / default_filename),
-            self.tr("Zip Files (*.zip)")
-        )
-
-        if file_path:
-            zip_path = Path(file_path)
-
-            # Show progress
-            self.update_status(self.tr("Exporting project..."))
-
-            # Export
-            if self.project_manager.export_project_as_zip(zip_path):
-                QMessageBox.information(
-                    self,
-                    self.tr("Export Successful"),
-                    self.tr("Project exported to:\n{0}").format(zip_path)
-                )
-                self.update_status(self.tr("Project exported"))
-            else:
-                QMessageBox.warning(
-                    self,
-                    self.tr("Export Failed"),
-                    self.tr("Failed to export project as zip")
-                )
-                self.update_status(self.tr("Export failed"))
+        """Export current project as a .zip file - delegated to exporters module"""
+        self.exporters.export_project_zip()
 
     def open_project_zip(self):
-        """Open a project from a .zip file"""
-        file_path, _ = QFileDialog.getOpenFileName(
-            self,
-            self.tr("Open Zip Project"),
-            Config.get("last_project_directory", str(Path.home())),
-            self.tr("Zip Files (*.zip)")
-        )
-
-        if file_path:
-            zip_path = Path(file_path)
-
-            # Check if it's a valid project zip
-            from utils.project_compression import ProjectCompressor
-            if not ProjectCompressor.is_project_zip(zip_path):
-                QMessageBox.warning(
-                    self,
-                    self.tr("Invalid Zip"),
-                    self.tr("This zip file does not contain a valid PyGameMaker project")
-                )
-                return
-
-            # Show progress
-            self.update_status(self.tr("Loading project from zip..."))
-
-            # Load
-            if self.project_manager.load_project_from_zip(zip_path):
-                Config.set("last_project_directory", str(zip_path.parent))
-                self.update_status(self.tr("Project loaded from zip"))
-            else:
-                QMessageBox.warning(
-                    self,
-                    self.tr("Error"),
-                    self.tr("Failed to load project from zip")
-                )
-                self.update_status(self.tr("Failed to load"))
+        """Open a project from a .zip file - delegated to exporters module"""
+        self.exporters.open_project_zip()
 
     def toggle_auto_save_zip(self):
         """Toggle auto-save to zip mode"""
@@ -1257,6 +1150,15 @@ class PyGameMakerIDE(QMainWindow):
 
     def test_game(self):
         """Test the current game"""
+        # Check if project is open
+        if not self.current_project_path:
+            QMessageBox.warning(
+                self,
+                self.tr("No Project"),
+                self.tr("Please open or create a project first before testing a game.")
+            )
+            return
+        
         # Save project before testing
         if self.project_manager.is_dirty():
             self.save_project()
@@ -1415,6 +1317,15 @@ class PyGameMakerIDE(QMainWindow):
 
     def export_game(self):
         """Export game - shows dialog with export options"""
+        # Check if project is open
+        if not self.current_project_path:
+            QMessageBox.warning(
+                self,
+                self.tr("No Project"),
+                self.tr("Please open or create a project first before exporting a game.")
+            )
+            return
+        
         # Create export options dialog
         from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QButtonGroup, QRadioButton
 
@@ -1773,6 +1684,50 @@ class PyGameMakerIDE(QMainWindow):
                     "• Asset usage tracking\n"
                     "• Unused asset cleanup")
         )
+    
+    def configure_blockly(self):
+        """Open Blockly configuration dialog to customize available blocks"""
+        from config.blockly_config import load_config, save_config
+        
+        # Load current configuration
+        current_config = load_config()
+        
+        # Show dialog
+        dialog = BlocklyConfigDialog(self, current_config)
+        if dialog.exec() == QDialog.Accepted:
+            # Save the new configuration
+            new_config = dialog.config
+            save_config(new_config)
+            
+            # Refresh any open GM80 events panels
+            self.refresh_event_panels_config()
+            
+            # Show confirmation
+            QMessageBox.information(
+                self,
+                self.tr("Configuration Saved"),
+                self.tr("Blockly configuration has been saved.\n\n"
+                        "The new event/block selection is now active in:\n"
+                        "• Visual programming editor (Blockly)\n"
+                        "• Traditional event editor\n\n"
+                        "Changes apply immediately to currently open editors.")
+            )
+            
+            print(f"✅ Blockly configuration updated: {new_config.preset_name} preset")
+            print(f"   Enabled blocks: {len(new_config.enabled_blocks)}")
+            print(f"   Enabled categories: {', '.join(new_config.enabled_categories)}")
+    
+    def refresh_event_panels_config(self):
+        """Refresh configuration in all open GM80 events panels"""
+        # Find all open object editors with GM80 events panels
+        for i in range(self.editor_tabs.count()):
+            widget = self.editor_tabs.widget(i)
+            # Check if it's an object editor
+            if hasattr(widget, 'gm80_events_panel'):
+                # Reload configuration in the events panel
+                widget.gm80_events_panel.reload_config()
+                print(f"   ♻️ Reloaded event panel config for: {self.editor_tabs.tabText(i)}")
+
 
     def validate_project(self):
         """Validate project structure and assets"""
@@ -1900,13 +1855,42 @@ class PyGameMakerIDE(QMainWindow):
         dialog.exec()
 
     def about(self):
-        QMessageBox.about(self, self.tr("About PyGameMaker"),
-                        self.tr("PyGameMaker IDE v1.0.0\n\n"
-                                "A visual game development environment\n"
-                                "inspired by GameMaker Studio."))
-
-    def about_qt(self):
-        QMessageBox.aboutQt(self)
+        """Show comprehensive About PyGameMaker dialog"""
+        about_text = self.tr(
+            "<h2>PyGameMaker IDE</h2>"
+            "<p><b>Version 1.0.0</b></p>"
+            "<p>A comprehensive visual game development environment<br>"
+            "inspired by GameMaker Studio, built with Python.</p>"
+            
+            "<h3>Features</h3>"
+            "<ul>"
+            "<li><b>Dual Programming Modes:</b> Visual (Blockly) and Traditional Events</li>"
+            "<li><b>Asset Management:</b> Sprites, sounds, objects, and rooms</li>"
+            "<li><b>Cross-Platform Export:</b> Windows, Linux, macOS, Android, iOS</li>"
+            "<li><b>Flexible Configuration:</b> Customizable block/event visibility</li>"
+            "<li><b>Real-time Testing:</b> Run games directly from the IDE</li>"
+            "</ul>"
+            
+            "<h3>Technology Stack</h3>"
+            "<p>"
+            "• <b>IDE:</b> PySide6 (Qt 6)<br>"
+            "• <b>Game Engine:</b> Pygame<br>"
+            "• <b>Visual Programming:</b> Blockly<br>"
+            "• <b>Export:</b> PyInstaller, Kivy<br>"
+            "• <b>Language:</b> Python 3.11+"
+            "</p>"
+            
+            "<h3>Project Information</h3>"
+            "<p>"
+            "PyGameMaker is an educational tool designed to make<br>"
+            "game development accessible to beginners while providing<br>"
+            "powerful features for experienced developers."
+            "</p>"
+            
+            "<p><small>Built with ❤️ using Python and Qt</small></p>"
+        )
+        
+        QMessageBox.about(self, self.tr("About PyGameMaker"), about_text)
 
     def on_asset_selected(self, asset_data):
         self.properties_panel.set_asset(asset_data)
