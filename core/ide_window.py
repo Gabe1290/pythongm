@@ -313,6 +313,11 @@ class PyGameMakerIDE(QMainWindow):
             )
 
             if reply == QMessageBox.Yes:
+                # Save config to ensure language setting is persisted
+                from utils.config import Config
+                Config.save()
+                print(f"💾 Config saved before restart")
+
                 # Restart the application
                 QCoreApplication.quit()
                 import subprocess
