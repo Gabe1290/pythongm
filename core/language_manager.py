@@ -101,9 +101,17 @@ class LanguageManager:
                 Config.set('language', language_code)
                 return False
         else:
-            # English selected
+            # English selected - need to trigger retranslation to clear translations
             self.current_language = 'en'
             Config.set('language', 'en')
+
+            # Trigger retranslation of all existing widgets so they revert to English
+            if app:
+                from PySide6.QtCore import QEvent
+                for widget in app.allWidgets():
+                    app.sendEvent(widget, QEvent(QEvent.Type.LanguageChange))
+                print(f"   🔄 Sent LanguageChange event to all widgets")
+
             print(f"   ✅ Set to English")
             return True
     

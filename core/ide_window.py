@@ -300,14 +300,32 @@ class PyGameMakerIDE(QMainWindow):
         # Set the language
         success = language_manager.set_language(language_code)
 
+        # Process events to ensure translation changes are fully applied
+        # This is critical when switching TO English - the translator removal must be processed
+        QCoreApplication.processEvents()
+
         if success or language_code == 'en':
             # Ask if user wants to restart now
+            if language_code == 'en':
+                # For English, use hardcoded strings since there's no translator
+                title = "Language Changed"
+                message = (
+                    f"Language changed to {lang_name}.\n\n"
+                    "The IDE needs to restart for the language change to take effect.\n\n"
+                    "Do you want to restart now?")
+            else:
+                # For other languages, use QCoreApplication.translate() to get fresh translations
+                # This ensures the dialog appears in the NEW language, not the old one
+                title = QCoreApplication.translate("PyGameMakerIDE", "Language Changed")
+                message = QCoreApplication.translate("PyGameMakerIDE",
+                    "Language changed to {0}.\n\n"
+                    "The IDE needs to restart for the language change to take effect.\n\n"
+                    "Do you want to restart now?").format(lang_name)
+
             reply = QMessageBox.question(
                 self,
-                self.tr("Language Changed"),
-                self.tr("Language changed to {0}.\n\n"
-                    "The IDE needs to restart for the language change to take effect.\n\n"
-                    "Do you want to restart now?").format(lang_name),
+                title,
+                message,
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.Yes
             )
@@ -325,14 +343,15 @@ class PyGameMakerIDE(QMainWindow):
                 subprocess.Popen([sys.executable] + sys.argv)
         else:
             # Translation file not found
-            QMessageBox.warning(
-                self,
-                self.tr("Translation Not Available"),
-                self.tr("Translation file for {0} is not available.\n\n"
-                    "The language has been set, but the interface will remain in English until "
-                    "a translation file is provided.\n\n"
-                    "Expected file: translations/pygamemaker_{1}.qm").format(lang_name, language_code)
-            )
+            # Use QCoreApplication.translate() for consistency
+            title = QCoreApplication.translate("PyGameMakerIDE", "Translation Not Available")
+            message = QCoreApplication.translate("PyGameMakerIDE",
+                "Translation file for {0} is not available.\n\n"
+                "The language has been set, but the interface will remain in English until "
+                "a translation file is provided.\n\n"
+                "Expected file: translations/pygamemaker_{1}.qm").format(lang_name, language_code)
+
+            QMessageBox.warning(self, title, message)
 
     def export_html5(self):
         """Export project as HTML5 - delegated to exporters module"""
