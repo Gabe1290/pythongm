@@ -8,11 +8,12 @@ import json
 from pathlib import Path
 from typing import Dict, Any, Optional
 
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
-from PySide6.QtCore import Signal, Slot, QUrl, QObject
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QMainWindow
+from PySide6.QtCore import Signal, Slot, QUrl, QObject, Qt
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebEngineCore import QWebEngineSettings
 from PySide6.QtWebChannel import QWebChannel
+from PySide6.QtGui import QCloseEvent
 
 
 class BlocklyBridge(QObject):
@@ -30,6 +31,42 @@ class BlocklyBridge(QObject):
         self.blocks_changed.emit(code_json)
 
 
+class DetachedBlocklyWindow(QMainWindow):
+    """Detached window for Blockly visual programming editor"""
+
+    # Signal emitted when the window is closed (to re-attach the widget)
+    window_closed = Signal()
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(self.tr("Visual Block Programming (Detached)"))
+        self.setMinimumSize(800, 600)
+        self.resize(1000, 700)
+
+        # Central widget container
+        self.container = QWidget()
+        self.container_layout = QVBoxLayout(self.container)
+        self.container_layout.setContentsMargins(0, 0, 0, 0)
+        self.setCentralWidget(self.container)
+
+    def set_widget(self, widget: QWidget):
+        """Set the widget to display in this window"""
+        self.container_layout.addWidget(widget)
+
+    def take_widget(self) -> Optional[QWidget]:
+        """Remove and return the widget from this window"""
+        if self.container_layout.count() > 0:
+            item = self.container_layout.takeAt(0)
+            if item and item.widget():
+                return item.widget()
+        return None
+
+    def closeEvent(self, event: QCloseEvent):
+        """Handle window close - emit signal to re-attach widget"""
+        self.window_closed.emit()
+        event.accept()
+
+
 class BlocklyWidget(QWidget):
     """Widget containing the Blockly visual programming interface"""
 
@@ -37,6 +74,7 @@ class BlocklyWidget(QWidget):
     blocks_modified = Signal()  # Emitted when blocks are modified
     events_generated = Signal(dict)  # Emitted with generated events data
     sync_requested = Signal()  # Emitted when user wants to sync from events panel
+    detach_requested = Signal()  # Emitted when user wants to detach the editor
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -86,6 +124,12 @@ class BlocklyWidget(QWidget):
         toolbar.addWidget(self.configure_btn)
 
         toolbar.addStretch()
+
+        # Detach button
+        self.detach_btn = QPushButton(self.tr("⬜ Detach"))
+        self.detach_btn.setToolTip(self.tr("Open Blockly editor in a separate window"))
+        self.detach_btn.clicked.connect(self.request_detach)
+        toolbar.addWidget(self.detach_btn)
 
         layout.addLayout(toolbar)
 
@@ -336,6 +380,10 @@ class BlocklyWidget(QWidget):
         config = load_config()
         self.apply_configuration(config)
 
+    def request_detach(self):
+        """Request to detach the editor to a separate window"""
+        self.detach_requested.emit()
+
 
 class BlocklyVisualProgrammingTab(QWidget):
     """Complete visual programming tab with Blockly"""
@@ -346,34 +394,102 @@ class BlocklyVisualProgrammingTab(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.detached_window = None
+        self.is_detached = False
         self.setup_ui()
 
     def setup_ui(self):
         """Setup the complete visual programming tab"""
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(5, 5, 5, 5)
+        self.main_layout = QVBoxLayout(self)
+        self.main_layout.setContentsMargins(5, 5, 5, 5)
 
         # Info bar
         info_layout = QHBoxLayout()
 
-        title_label = QLabel(self.tr("Visual Block Programming"))
-        title_label.setStyleSheet("font-size: 14px; font-weight: bold;")
-        info_layout.addWidget(title_label)
+        self.title_label = QLabel(self.tr("Visual Block Programming"))
+        self.title_label.setStyleSheet("font-size: 14px; font-weight: bold;")
+        info_layout.addWidget(self.title_label)
 
         info_layout.addStretch()
 
-        help_label = QLabel(self.tr("Drag blocks from the toolbox on the left to create game logic"))
-        help_label.setStyleSheet("color: #666; font-style: italic;")
-        info_layout.addWidget(help_label)
+        self.help_label = QLabel(self.tr("Drag blocks from the toolbox on the left to create game logic"))
+        self.help_label.setStyleSheet("color: #666; font-style: italic;")
+        info_layout.addWidget(self.help_label)
 
-        layout.addLayout(info_layout)
+        self.main_layout.addLayout(info_layout)
+
+        # Placeholder label shown when editor is detached
+        self.detached_placeholder = QLabel(self.tr("Editor is detached. Close the detached window to return it here."))
+        self.detached_placeholder.setAlignment(Qt.AlignCenter)
+        self.detached_placeholder.setStyleSheet("color: #888; font-size: 14px; padding: 50px;")
+        self.detached_placeholder.hide()
+        self.main_layout.addWidget(self.detached_placeholder)
 
         # Blockly widget
         self.blockly_widget = BlocklyWidget()
         self.blockly_widget.events_generated.connect(self.on_events_generated)
         self.blockly_widget.blocks_modified.connect(self.on_blocks_modified)
         self.blockly_widget.sync_requested.connect(self.on_sync_requested)
-        layout.addWidget(self.blockly_widget)
+        self.blockly_widget.detach_requested.connect(self.detach_editor)
+        self.main_layout.addWidget(self.blockly_widget)
+
+    def detach_editor(self):
+        """Detach the Blockly editor to a separate window"""
+        if self.is_detached:
+            # Already detached, bring window to front
+            if self.detached_window:
+                self.detached_window.raise_()
+                self.detached_window.activateWindow()
+            return
+
+        # Create detached window
+        self.detached_window = DetachedBlocklyWindow()
+        self.detached_window.window_closed.connect(self.attach_editor)
+
+        # Remove widget from layout and add to detached window
+        self.main_layout.removeWidget(self.blockly_widget)
+        self.detached_window.set_widget(self.blockly_widget)
+
+        # Show placeholder in tab
+        self.detached_placeholder.show()
+
+        # Update button text
+        self.blockly_widget.detach_btn.setText(self.tr("📥 Attach"))
+        self.blockly_widget.detach_btn.setToolTip(self.tr("Return editor to the tab"))
+        self.blockly_widget.detach_btn.clicked.disconnect()
+        self.blockly_widget.detach_btn.clicked.connect(self.attach_editor)
+
+        # Show detached window
+        self.detached_window.show()
+        self.is_detached = True
+
+    def attach_editor(self):
+        """Attach the Blockly editor back to the tab"""
+        if not self.is_detached:
+            return
+
+        # Get widget from detached window
+        if self.detached_window:
+            widget = self.detached_window.take_widget()
+            if widget:
+                # Hide placeholder
+                self.detached_placeholder.hide()
+
+                # Add widget back to layout
+                self.main_layout.addWidget(widget)
+
+                # Update button text
+                self.blockly_widget.detach_btn.setText(self.tr("⬜ Detach"))
+                self.blockly_widget.detach_btn.setToolTip(self.tr("Open Blockly editor in a separate window"))
+                self.blockly_widget.detach_btn.clicked.disconnect()
+                self.blockly_widget.detach_btn.clicked.connect(self.detach_editor)
+
+            # Close and cleanup detached window
+            self.detached_window.close()
+            self.detached_window.deleteLater()
+            self.detached_window = None
+
+        self.is_detached = False
 
     def on_events_generated(self, events: dict):
         """Handle events generated from blocks"""

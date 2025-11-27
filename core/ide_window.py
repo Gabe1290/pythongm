@@ -1898,10 +1898,12 @@ class PyGameMakerIDE(QMainWindow):
         """Show comprehensive About PyGameMaker dialog"""
         about_text = self.tr(
             "<h2>PyGameMaker IDE</h2>"
-            "<p><b>Version 1.0.0</b></p>"
+            "<p><b>Version 0.9.0</b></p>"
             "<p>A comprehensive visual game development environment<br>"
             "inspired by GameMaker Studio, built with Python.</p>"
-            
+
+            "<p><a href='https://github.com/Gabe1290/pythongm'>https://github.com/Gabe1290/pythongm</a></p>"
+
             "<h3>Features</h3>"
             "<ul>"
             "<li><b>Dual Programming Modes:</b> Visual (Blockly) and Traditional Events</li>"
@@ -1910,7 +1912,7 @@ class PyGameMakerIDE(QMainWindow):
             "<li><b>Flexible Configuration:</b> Customizable block/event visibility</li>"
             "<li><b>Real-time Testing:</b> Run games directly from the IDE</li>"
             "</ul>"
-            
+
             "<h3>Technology Stack</h3>"
             "<p>"
             "• <b>IDE:</b> PySide6 (Qt 6)<br>"
@@ -1919,17 +1921,17 @@ class PyGameMakerIDE(QMainWindow):
             "• <b>Export:</b> PyInstaller, Kivy<br>"
             "• <b>Language:</b> Python 3.11+"
             "</p>"
-            
+
             "<h3>Project Information</h3>"
             "<p>"
             "PyGameMaker is an educational tool designed to make<br>"
             "game development accessible to beginners while providing<br>"
             "powerful features for experienced developers."
             "</p>"
-            
+
             "<p><small>Built with ❤️ using Python and Qt</small></p>"
         )
-        
+
         QMessageBox.about(self, self.tr("About PyGameMaker"), about_text)
 
     def on_asset_selected(self, asset_data):

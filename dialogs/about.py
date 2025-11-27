@@ -34,9 +34,15 @@ class AboutDialog(QDialog):
         layout.addWidget(title)
 
         # Version
-        version = QLabel(self.tr("Version 1.0.0"))
+        version = QLabel(self.tr("Version 0.9.0"))
         version.setAlignment(Qt.AlignCenter)
         layout.addWidget(version)
+
+        # GitHub link
+        github_label = QLabel('<a href="https://github.com/Gabe1290/pythongm">https://github.com/Gabe1290/pythongm</a>')
+        github_label.setOpenExternalLinks(True)
+        github_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(github_label)
         
         # Tabs
         tabs = QTabWidget()
