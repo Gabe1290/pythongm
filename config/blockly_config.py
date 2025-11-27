@@ -217,11 +217,16 @@ class BlocklyConfig:
         config.enable_block("score_add")
         config.enable_block("draw_score")
 
+        # Room
+        config.enable_block("room_goto_next")
+        config.enable_block("room_restart")
+        config.enable_block("room_goto")
+
         # Output
         config.enable_block("output_message")
 
         # Enable categories that have blocks
-        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Output"}
+        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Output"}
 
         return config
 
