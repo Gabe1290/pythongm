@@ -4,8 +4,15 @@ Enhanced GameRunner with smooth movement that snaps to grid
 """
 
 import os
-# Force pygame to use software rendering to avoid GLX conflicts with Qt
-os.environ['SDL_VIDEODRIVER'] = 'x11'
+import sys
+# Force pygame to use software rendering to avoid conflicts with Qt
+# Use appropriate video driver based on platform
+if sys.platform == 'win32':
+    os.environ['SDL_VIDEODRIVER'] = 'windows'
+elif sys.platform == 'darwin':
+    os.environ['SDL_VIDEODRIVER'] = 'cocoa'
+else:  # Linux and other Unix-like systems
+    os.environ['SDL_VIDEODRIVER'] = 'x11'
 os.environ['SDL_RENDER_DRIVER'] = 'software'
 
 import pygame
