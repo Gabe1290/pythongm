@@ -421,7 +421,12 @@ class {class_name}(Widget):
             if hasattr(instance, '_process_alarms'):
                 instance._process_alarms()
 
-        # 3. KEYBOARD/MOUSE EVENTS - handled by Kivy event system
+        # 3. KEYBOARD EVENTS
+        # Check for "nokey" event - triggers when no keys are pressed
+        if not self.keys_pressed:
+            for instance in self.instances:
+                if hasattr(instance, 'on_nokey'):
+                    instance.on_nokey()
 
         # 4. NORMAL STEP EVENTS
         for instance in self.instances:
@@ -1024,15 +1029,29 @@ class {class_name}(GameObject):
             print(f"      No valid events found, returning pass")
             return "    pass\n"
         
-        # Group keyboard events together
-        keyboard_events = [e for e in events if e.get('event_type') == 'keyboard' and e.get('key_name')]
+        # Group keyboard events together (but NOT nokey - that's handled separately)
+        keyboard_events = [e for e in events if e.get('event_type') == 'keyboard' and e.get('key_name') and e.get('key_name') != 'nokey']
+        nokey_events = [e for e in events if e.get('event_type') == 'keyboard' and e.get('key_name') == 'nokey']
         other_events = [e for e in events if not (e.get('event_type') == 'keyboard' and e.get('key_name'))]
-        
+
         # Generate consolidated keyboard handler if there are keyboard events
         if keyboard_events:
             print(f"      Generating consolidated keyboard handler for {len(keyboard_events)} key(s)")
             keyboard_method = self._generate_keyboard_handler(keyboard_events)
             methods.append(keyboard_method)
+
+        # Generate on_nokey method for nokey events
+        if nokey_events:
+            print(f"      Generating nokey handler")
+            nokey_event = nokey_events[0]  # There should only be one nokey event
+            actions = nokey_event.get('actions', [])
+            if actions:
+                action_code = self._generate_action_code(obj_name, actions, nokey_event)
+                nokey_method = f'''    def on_nokey(self):
+        """Event handler: keyboard nokey (no keys pressed)"""
+{action_code}
+'''
+                methods.append(nokey_method)
         
         # Generate other event handlers
         for event in other_events:
@@ -1071,7 +1090,7 @@ class {class_name}(GameObject):
         return '\n'.join(methods) if methods else "    pass\n"
     
     def _generate_keyboard_handler(self, keyboard_events: List[Dict]) -> str:
-        """Generate a consolidated keyboard handler for all key-specific events - DISABLED FOR GRID MOVEMENT"""
+        """Generate a consolidated keyboard handler for all key-specific events"""
         # For grid-based movement games, keyboard input should be handled in the step event
         # NOT in keyboard handlers, to avoid conflicts and wall-phasing issues
 
@@ -1089,10 +1108,9 @@ class {class_name}(GameObject):
             if uses_grid_movement:
                 break
 
-        # If using grid movement, don't generate keyboard handler
-        # The step event will handle everything
+        # If using grid movement, generate step-based keyboard checking instead
         if uses_grid_movement:
-            return ""
+            return self._generate_grid_keyboard_handler(keyboard_events)
 
         # Otherwise, generate normal keyboard handler
         key_map = {
@@ -1131,7 +1149,85 @@ class {class_name}(GameObject):
                 code_lines.append("            pass")
 
         return '\n'.join(code_lines)
-    
+
+    def _generate_grid_keyboard_handler(self, keyboard_events: List[Dict]) -> str:
+        """Generate an on_update method that checks keyboard state for grid-based movement"""
+        key_map = {
+            'right': '275',
+            'left': '276',
+            'up': '273',
+            'down': '274',
+        }
+
+        # Collect all key codes used in events
+        used_key_codes = []
+        for event in keyboard_events:
+            key_name = event.get('key_name', '')
+            if key_name in key_map:
+                used_key_codes.append(key_map[key_name])
+
+        code_lines = []
+        code_lines.append("    def on_update(self, dt):")
+        code_lines.append('        """Step event with keyboard checking for grid-based movement"""')
+        code_lines.append("        # Check if we're on a grid position before processing keys")
+        code_lines.append("        # Use tolerance-based grid check to handle floating point precision")
+        code_lines.append("        on_grid = self.is_on_grid()")
+        code_lines.append("")
+        code_lines.append("        if on_grid:")
+        code_lines.append("            # Snap to exact grid position when starting movement")
+        code_lines.append("            self.snap_to_grid()")
+
+        first_key = True
+        for event in keyboard_events:
+            key_name = event.get('key_name', '')
+            actions = event.get('actions', [])
+            key_code = key_map.get(key_name, '0')
+
+            if_keyword = "if" if first_key else "elif"
+            first_key = False
+            code_lines.append(f"            {if_keyword} self.scene.keys_pressed.get({key_code}, False):  # {key_name}")
+
+            # For grid movement, we need to extract the inner actions from if_on_grid
+            inner_actions = []
+            for action in actions:
+                if isinstance(action, dict):
+                    action_type = action.get('action_type', action.get('action', ''))
+                    if action_type == 'if_on_grid':
+                        # Extract then_actions from if_on_grid
+                        params = action.get('parameters', {})
+                        then_actions = params.get('then_actions', [])
+                        inner_actions.extend(then_actions)
+                    else:
+                        inner_actions.append(action)
+
+            if inner_actions:
+                for action in inner_actions:
+                    if isinstance(action, dict):
+                        action_type = action.get('action_type', action.get('action', ''))
+                        params = action.get('parameters', {})
+                        if action_type == 'set_hspeed':
+                            value = params.get('value', 0)
+                            code_lines.append(f"                self.hspeed = {value}")
+                        elif action_type == 'set_vspeed':
+                            value = params.get('value', 0)
+                            code_lines.append(f"                self.vspeed = {value}")
+                        elif action_type == 'stop_movement':
+                            code_lines.append("                self.hspeed = 0")
+                            code_lines.append("                self.vspeed = 0")
+                        else:
+                            code_lines.append(f"                # TODO: {action_type}")
+            else:
+                code_lines.append("                pass")
+
+        # Add else clause to stop movement when no arrow keys are pressed
+        code_lines.append("            else:")
+        code_lines.append("                # No movement keys pressed - stop movement")
+        code_lines.append("                self.hspeed = 0")
+        code_lines.append("                self.vspeed = 0")
+        code_lines.append("")  # Empty line to separate from next method
+
+        return '\n'.join(code_lines)
+
     def _get_event_method_name(self, event: Dict) -> str:
         """Get the method name for an event - GAMEMAKER 7.0 COMPLETE"""
         event_type = event.get('event_type', '')
@@ -1340,24 +1436,54 @@ Helper functions for the game
 
 from kivy.core.image import Image as CoreImage
 import os
+import sys
 
 
 _image_cache = {}
+_base_path = None
+
+
+def get_base_path():
+    """Get the base path for assets, handling PyInstaller frozen executables"""
+    global _base_path
+    if _base_path is not None:
+        return _base_path
+
+    if getattr(sys, 'frozen', False):
+        # Running as compiled executable (PyInstaller)
+        # Assets are in _MEIPASS/game/
+        _base_path = os.path.join(sys._MEIPASS, 'game')
+    else:
+        # Running as script - use the directory containing this file
+        _base_path = os.path.dirname(os.path.abspath(__file__))
+
+    return _base_path
+
+
+def get_asset_path(relative_path):
+    """Get absolute path to an asset file"""
+    base = get_base_path()
+    return os.path.join(base, relative_path)
 
 
 def load_image(path):
     """Load an image with caching"""
     if path in _image_cache:
         return _image_cache[path]
-    
+
+    # Convert relative path to absolute path
+    abs_path = get_asset_path(path)
+
     try:
-        if os.path.exists(path):
-            img = CoreImage(path)
+        if os.path.exists(abs_path):
+            img = CoreImage(abs_path)
             _image_cache[path] = img
             return img
+        else:
+            print(f"Image not found: {abs_path}")
     except Exception as e:
-        print(f"Failed to load image {path}: {e}")
-    
+        print(f"Failed to load image {abs_path}: {e}")
+
     return None
 
 

@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
 """
-Windows EXE Exporter for PyGameMaker
+Linux Binary Exporter for PyGameMaker
 Uses Kivy runtime (80% GameMaker 7.0 compatible) bundled with PyInstaller
 """
 
 import subprocess
 import shutil
 import json
+import platform
 from pathlib import Path
 from typing import Dict, Optional
 from PySide6.QtCore import QObject, Signal
 
 
-class ExeExporter(QObject):
-    """Handles exporting games as Windows EXE files using Kivy runtime"""
+class LinuxExporter(QObject):
+    """Handles exporting games as Linux binaries using Kivy runtime"""
 
     progress_update = Signal(int, str)  # progress percentage, status message
     export_complete = Signal(bool, str)  # success, message
@@ -27,11 +28,11 @@ class ExeExporter(QObject):
 
     def export_project(self, project_path: str, output_path: str, settings: Dict) -> bool:
         """
-        Export the project as a Windows EXE with Kivy runtime
+        Export the project as a Linux binary with Kivy runtime
 
         Args:
             project_path: Path to the .pgm project file
-            output_path: Directory where the EXE will be created
+            output_path: Directory where the binary will be created
             settings: Export settings dictionary
 
         Returns:
@@ -51,8 +52,20 @@ class ExeExporter(QObject):
             with open(project_file, 'r') as f:
                 self.project_data = json.load(f)
 
-            # Step 1: Verify dependencies are available
-            self.progress_update.emit(5, "Checking dependencies...")
+            # Step 1: Verify we're on Linux
+            self.progress_update.emit(5, "Checking platform...")
+
+            if platform.system() != 'Linux':
+                self.export_complete.emit(
+                    False,
+                    "Linux export must be run on a Linux system.\n\n"
+                    "PyInstaller creates binaries for the platform it runs on.\n"
+                    "To create a Linux binary, run this export on Linux."
+                )
+                return False
+
+            # Step 2: Verify dependencies are available
+            self.progress_update.emit(10, "Checking dependencies...")
 
             if not self._check_pyinstaller():
                 self.export_complete.emit(
@@ -67,7 +80,7 @@ class ExeExporter(QObject):
                 self.export_complete.emit(
                     False,
                     "Kivy not found.\n\n"
-                    "The Windows EXE exporter requires Kivy to be installed.\n"
+                    "The Linux exporter requires Kivy to be installed.\n"
                     "Please install it in your virtual environment:\n\n"
                     "pip install kivy\n\n"
                     "Or install all dependencies:\n"
@@ -79,7 +92,7 @@ class ExeExporter(QObject):
                 self.export_complete.emit(
                     False,
                     "Pillow (PIL) not found.\n\n"
-                    "The Windows EXE exporter requires Pillow for image handling.\n"
+                    "The Linux exporter requires Pillow for image handling.\n"
                     "Please install it in your virtual environment:\n\n"
                     "pip install pillow\n\n"
                     "Or install all dependencies:\n"
@@ -87,35 +100,35 @@ class ExeExporter(QObject):
                 )
                 return False
 
-            # Step 2: Create temporary build directory
+            # Step 3: Create temporary build directory
             self.progress_update.emit(20, "Creating build directory...")
             build_dir = self._create_build_directory()
 
-            # Step 3: Generate Kivy game using KivyExporter
+            # Step 4: Generate Kivy game using KivyExporter
             self.progress_update.emit(30, "Generating Kivy game...")
             if not self._generate_kivy_game(build_dir):
                 self.export_complete.emit(False, "Failed to generate Kivy game")
                 return False
 
-            # Step 4: Create launcher script
+            # Step 5: Create launcher script
             self.progress_update.emit(50, "Creating launcher script...")
             launcher_script = self._create_launcher_script(build_dir)
 
-            # Step 5: Create PyInstaller spec file
+            # Step 6: Create PyInstaller spec file
             self.progress_update.emit(60, "Creating PyInstaller spec...")
             spec_file = self._create_spec_file(build_dir, launcher_script)
 
-            # Step 6: Run PyInstaller
+            # Step 7: Run PyInstaller
             self.progress_update.emit(70, "Building executable (this may take a while)...")
             if not self._run_pyinstaller(spec_file):
                 self.export_complete.emit(False, "PyInstaller build failed")
                 return False
 
-            # Step 7: Copy output to final location
+            # Step 8: Copy output to final location
             self.progress_update.emit(90, "Copying to output directory...")
             self._copy_to_output(build_dir)
 
-            # Step 8: Cleanup (if not in debug mode)
+            # Step 9: Cleanup (if not in debug mode)
             if not settings.get('include_debug', False):
                 self.progress_update.emit(95, "Cleaning up temporary files...")
                 self._cleanup(build_dir)
@@ -130,7 +143,7 @@ class ExeExporter(QObject):
             import traceback
             traceback.print_exc()
             return False
-    
+
     def _check_pyinstaller(self) -> bool:
         """Check if PyInstaller is installed"""
         try:
@@ -158,7 +171,7 @@ class ExeExporter(QObject):
     def _create_build_directory(self) -> Path:
         """Create a temporary build directory"""
         project_dir = self.project_path.parent
-        build_dir = project_dir / "build_temp_exe"
+        build_dir = project_dir / "build_temp_linux"
 
         # Clean if exists
         if build_dir.exists():
@@ -277,10 +290,10 @@ if __name__ == "__main__":
             f.write(script_content)
 
         return launcher_script
-    
+
     def _create_spec_file(self, build_dir: Path, launcher_script: Path) -> Path:
         """
-        Create PyInstaller spec file for bundling Kivy game
+        Create PyInstaller spec file for bundling Kivy game on Linux
 
         This spec file includes:
         - The launcher script
@@ -335,15 +348,10 @@ if __name__ == "__main__":
 
         hidden_imports_str = ',\n        '.join([f"'{imp}'" for imp in hidden_imports])
 
-        # Get icon path if specified
-        icon_line = ""
-        if self.export_settings.get('icon_path'):
-            icon_line = f"icon='{self.export_settings['icon_path']}',"
-
-        # Create spec content
+        # Create spec content (Linux-specific)
         spec_content = f'''# -*- mode: python ; coding: utf-8 -*-
-# PyInstaller spec file for {game_name}
-# Generated by PyGameMaker IDE - EXE Exporter
+# PyInstaller spec file for {game_name} (Linux)
+# Generated by PyGameMaker IDE - Linux Exporter
 
 block_cipher = None
 
@@ -368,10 +376,8 @@ a = Analysis(
         'matplotlib',
         'numpy',
     ],
-    win_no_prefer_redirects=False,
-    win_private_assemblies=False,
-    cipher=block_cipher,
     noarchive=False,
+    cipher=block_cipher,
 )
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
@@ -383,11 +389,11 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='{game_name}.exe',
+    name='{game_name}',
     debug={self.export_settings.get('include_debug', False)},
     bootloader_ignore_signals=False,
-    strip=False,
-    upx={self.export_settings.get('optimize', False)},  # Disabled by default (saves memory)
+    strip={not self.export_settings.get('include_debug', False)},
+    upx={self.export_settings.get('optimize', False)},
     upx_exclude=[],
     runtime_tmpdir=None,
     console={self.export_settings.get('include_debug', False)},
@@ -396,7 +402,6 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    {icon_line}
 )
 '''
 
@@ -404,7 +409,7 @@ exe = EXE(
             f.write(spec_content)
 
         return spec_file
-    
+
     def _run_pyinstaller(self, spec_file: Path) -> bool:
         """Run PyInstaller to build the executable"""
         try:
@@ -458,22 +463,26 @@ exe = EXE(
             import traceback
             traceback.print_exc()
             return False
-    
+
     def _copy_to_output(self, build_dir: Path):
         """Copy the built executable to the output directory"""
         dist_dir = build_dir / "dist"
-        
+
         # Create output directory
         self.output_path.mkdir(parents=True, exist_ok=True)
-        
+
         # Copy all files from dist to output
         if dist_dir.exists():
             for item in dist_dir.iterdir():
+                dest = self.output_path / item.name
                 if item.is_file():
-                    shutil.copy2(item, self.output_path / item.name)
+                    shutil.copy2(item, dest)
+                    # Make the binary executable
+                    if not item.suffix:  # No extension means it's likely the binary
+                        dest.chmod(dest.stat().st_mode | 0o111)
                 elif item.is_dir():
-                    shutil.copytree(item, self.output_path / item.name, dirs_exist_ok=True)
-    
+                    shutil.copytree(item, dest, dirs_exist_ok=True)
+
     def _cleanup(self, build_dir: Path):
         """Clean up temporary build files"""
         try:

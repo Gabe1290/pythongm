@@ -15,9 +15,8 @@ try:
 except ImportError:
     pass
 
-# Future exporters can be added like this:
-# try:
-#     from .kivy.kivy_exporter import KivyExporter
-#     __all__.append('KivyExporter')
-# except ImportError:
-#     pass
+try:
+    from .linux.linux_exporter import LinuxExporter
+    __all__.append('LinuxExporter')
+except ImportError:
+    pass

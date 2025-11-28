@@ -19,7 +19,9 @@
       "Bash(git add:*)",
       "Bash(python -m pip install:*)",
       "Bash(venv_py312Scriptspython.exe -m pip install pygame)",
-      "Bash(./venv_py312/Scripts/python.exe -m pip install:*)"
+      "Bash(./venv_py312/Scripts/python.exe -m pip install:*)",
+      "Bash(./Laby02)",
+      "Bash(/bin/ls:*)"
     ],
     "deny": [],
     "ask": []
