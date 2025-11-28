@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(cat:*)",
+      "Bash(7z x:*)",
+      "Bash(pylupdate6:*)",
+      "Bash(lrelease-qt6:*)",
+      "Bash(lrelease:*)",
+      "Bash(/home/gabe/Dropbox/pygm2/venv/bin/python -m pip:*)",
+      "Bash(/home/gabe/Dropbox/pygm2/venv/bin/python:*)",
+      "Bash(chmod:*)",
+      "Bash(./venv/bin/python:*)",
+      "Bash(mkdir:*)",
+      "Bash(timeout:*)",
+      "Bash(git commit:*)",
+      "Bash(/home/edu-thulleng/Dropbox/pygm2/venv/bin/python:*)",
+      "Bash(git push:*)",
+      "Bash(git add:*)",
+      "Bash(python -m pip install:*)",
+      "Bash(venv_py312Scriptspython.exe -m pip install pygame)",
+      "Bash(./venv_py312/Scripts/python.exe -m pip install:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
