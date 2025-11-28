@@ -22,6 +22,9 @@ __pycache__/
 
 # Distribution / packaging
 venv/
+venv_py312/
+get-pip.py
+python312.bat
 
 # Work folders
 Projects/
