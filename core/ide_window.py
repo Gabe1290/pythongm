@@ -595,7 +595,7 @@ class PyGameMakerIDE(QMainWindow):
 
         toolbar.addAction(self.create_action(self.tr("Test"), None, self.test_game, "SP_MediaPlay"))
         toolbar.addAction(self.create_action(self.tr("Debug"), None, self.debug_game, "SP_ComputerIcon"))
-        toolbar.addAction(self.create_action(self.tr("Build"), None, self.build_game, "SP_DialogApplyButton"))
+        toolbar.addAction(self.create_action(self.tr("Export"), None, self.export_game, "SP_DialogApplyButton"))
         toolbar.addSeparator()
 
         toolbar.addAction(self.create_action(self.tr("Import Sprite"), None, self.import_sprite, "SP_FileIcon"))
