@@ -2,6 +2,12 @@
 """
 Language Manager for PyGameMaker IDE
 Handles language selection and translation loading
+
+Languages are auto-discovered from .qm files in the translations/ folder.
+To add a new language:
+1. Create pygm2_XX.ts file with translations
+2. Compile to pygm2_XX.qm using lrelease
+3. Done - it appears automatically in the language menu
 """
 
 from pathlib import Path
@@ -12,70 +18,135 @@ from utils.config import Config
 
 class LanguageManager:
     """Manages application translations and language switching"""
-    
-    # Available languages: (code, display_name, flag_emoji)
-    AVAILABLE_LANGUAGES = [
-        ('en', 'English', '🇬🇧'),
-        ('fr', 'Français', '🇫🇷'),
-        ('es', 'Español', '🇪🇸'),
-        ('de', 'Deutsch', '🇩🇪'),
-        ('it', 'Italiano', '🇮🇹'),
-        ('pt', 'Português', '🇵🇹'),
-        ('ru', 'Русский', '🇷🇺'),
-        ('uk', 'Українська', '🇺🇦'),
-        ('zh', '中文', '🇨🇳'),
-        ('ja', '日本語', '🇯🇵'),
-    ]
-    
+
+    # Language metadata: code -> (display_name, flag_emoji)
+    # This is a reference table - languages only appear in menu if .qm file exists
+    LANGUAGE_INFO = {
+        'en': ('English', '🇬🇧'),
+        'fr': ('Français', '🇫🇷'),
+        'es': ('Español', '🇪🇸'),
+        'de': ('Deutsch', '🇩🇪'),
+        'it': ('Italiano', '🇮🇹'),
+        'pt': ('Português', '🇵🇹'),
+        'ru': ('Русский', '🇷🇺'),
+        'uk': ('Українська', '🇺🇦'),
+        'zh': ('中文', '🇨🇳'),
+        'ja': ('日本語', '🇯🇵'),
+        'ko': ('한국어', '🇰🇷'),
+        'ar': ('العربية', '🇸🇦'),
+        'hi': ('हिन्दी', '🇮🇳'),
+        'tr': ('Türkçe', '🇹🇷'),
+        'pl': ('Polski', '🇵🇱'),
+        'nl': ('Nederlands', '🇳🇱'),
+        'sv': ('Svenska', '🇸🇪'),
+        'da': ('Dansk', '🇩🇰'),
+        'no': ('Norsk', '🇳🇴'),
+        'fi': ('Suomi', '🇫🇮'),
+        'cs': ('Čeština', '🇨🇿'),
+        'el': ('Ελληνικά', '🇬🇷'),
+        'he': ('עברית', '🇮🇱'),
+        'th': ('ไทย', '🇹🇭'),
+        'vi': ('Tiếng Việt', '🇻🇳'),
+        'id': ('Bahasa Indonesia', '🇮🇩'),
+        'ms': ('Bahasa Melayu', '🇲🇾'),
+        'ro': ('Română', '🇷🇴'),
+        'hu': ('Magyar', '🇭🇺'),
+        'bg': ('Български', '🇧🇬'),
+        'hr': ('Hrvatski', '🇭🇷'),
+        'sk': ('Slovenčina', '🇸🇰'),
+        'sl': ('Slovenščina', '🇸🇮'),
+        'sr': ('Српски', '🇷🇸'),
+        'ca': ('Català', '🇪🇸'),
+        'eu': ('Euskara', '🇪🇸'),
+        'gl': ('Galego', '🇪🇸'),
+    }
+
     def __init__(self):
         self.current_language = Config.get('language', 'en')
         self.translator = QTranslator()
         self.translations_dir = Path(__file__).parent.parent / 'translations'
-        
+
         # Ensure translations directory exists
         self.translations_dir.mkdir(exist_ok=True)
-    
+
+        # Cache for discovered languages
+        self._available_languages = None
+
+    def _discover_languages(self):
+        """Auto-discover available languages from .qm files in translations folder"""
+        languages = [('en', 'English', '🇬🇧')]  # English is always available (built-in)
+
+        # Find all .qm files
+        found_codes = set()
+        for qm_file in self.translations_dir.glob('*.qm'):
+            # Extract language code from filename
+            # Supports: pygm2_XX.qm, pygamemaker_XX.qm
+            name = qm_file.stem  # e.g., "pygm2_fr" or "pygamemaker_es"
+            if '_' in name:
+                code = name.split('_', 1)[1]  # Get part after first underscore
+                if code and code != 'en':  # Skip English (it's built-in)
+                    found_codes.add(code)
+
+        # Build language list with metadata
+        for code in sorted(found_codes):
+            if code in self.LANGUAGE_INFO:
+                name, flag = self.LANGUAGE_INFO[code]
+            else:
+                # Unknown language - use code as name and generic flag
+                name = code.upper()
+                flag = '🌐'
+            languages.append((code, name, flag))
+
+        return languages
+
     def get_available_languages(self):
-        """Get list of available languages"""
-        return self.AVAILABLE_LANGUAGES
-    
+        """Get list of available languages (auto-discovered from .qm files)"""
+        if self._available_languages is None:
+            self._available_languages = self._discover_languages()
+        return self._available_languages
+
+    def refresh_available_languages(self):
+        """Force re-discovery of available languages"""
+        self._available_languages = None
+        return self.get_available_languages()
+
     def get_current_language(self):
         """Get current language code"""
         return self.current_language
-    
+
     def get_current_language_name(self):
         """Get current language display name"""
-        for code, name, flag in self.AVAILABLE_LANGUAGES:
+        for code, name, flag in self.get_available_languages():
             if code == self.current_language:
                 return f"{flag} {name}"
         return "🇬🇧 English"
-    
+
     def set_language(self, language_code: str):
         """Set the application language"""
         print(f"🌐 set_language called with: {language_code}")
         print(f"   Current language: {self.current_language}")
-        
+
         if language_code == self.current_language:
             print(f"   ✅ Already set to {language_code}")
             return True  # Already set
-        
+
         # Remove old translator
         app = QApplication.instance()
         print(f"   App instance: {app}")
         if app:
             app.removeTranslator(self.translator)
             print(f"   ✅ Removed old translator")
-        
+
         # Load new translation
         if language_code != 'en':  # English is the default, no translation needed
             # Try pygm2 first (newer, more complete translations), then fall back to pygamemaker
             translation_file = self.translations_dir / f"pygm2_{language_code}.qm"
             if not translation_file.exists():
                 translation_file = self.translations_dir / f"pygamemaker_{language_code}.qm"
-            
+
             print(f"   📁 Translation file: {translation_file}")
             print(f"   📁 File exists: {translation_file.exists()}")
-            
+
             if translation_file.exists():
                 print(f"   📂 Loading translation file...")
                 if self.translator.load(str(translation_file)):
@@ -118,15 +189,15 @@ class LanguageManager:
 
             print(f"   ✅ Set to English")
             return True
-    
+
     def load_current_language(self):
         """Force load the current language translator (used at startup)"""
         print(f"🌐 load_current_language called, current: {self.current_language}")
-        
+
         if self.current_language == 'en':
             print(f"   ✅ Using English (built-in)")
             return True
-        
+
         # Force load the translator for current language
         app = QApplication.instance()
         if not app:
@@ -137,10 +208,10 @@ class LanguageManager:
         translation_file = self.translations_dir / f"pygm2_{self.current_language}.qm"
         if not translation_file.exists():
             translation_file = self.translations_dir / f"pygamemaker_{self.current_language}.qm"
-        
+
         print(f"   📁 Translation file: {translation_file}")
         print(f"   📁 File exists: {translation_file.exists()}")
-        
+
         if translation_file.exists():
             print(f"   📂 Loading translation file...")
             if self.translator.load(str(translation_file)):
