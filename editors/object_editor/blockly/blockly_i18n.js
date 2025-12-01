@@ -166,14 +166,14 @@ const BLOCK_MESSAGES = {
         'instance_create': 'créer instance de %1 à x: %2 y: %3',
         'instance_create_tooltip': 'Crée un nouvel objet',
 
-        // Room blocks
-        'room_goto_next': 'Aller à la salle suivante',
-        'room_goto_next_tooltip': 'Va à la salle suivante',
-        'room_restart': 'Redémarrer la salle',
-        'room_restart_tooltip': 'Redémarre la salle actuelle',
-        'room_goto_prefix': 'Aller à la salle',
-        'room_goto': 'aller à la salle %1',
-        'room_goto_tooltip': 'Va à une salle spécifique',
+        // Room blocks (using "Niveau" instead of "Salle")
+        'room_goto_next': 'Aller au niveau suivant',
+        'room_goto_next_tooltip': 'Va au niveau suivant',
+        'room_restart': 'Redémarrer le niveau',
+        'room_restart_tooltip': 'Redémarre le niveau actuel',
+        'room_goto_prefix': 'Aller au niveau',
+        'room_goto': 'aller au niveau %1',
+        'room_goto_tooltip': 'Va à un niveau spécifique',
 
         // Value blocks
         'value_x': 'position x',
@@ -226,6 +226,27 @@ const BLOCK_MESSAGES = {
         'direction': 'direction',
         'color': 'couleur',
         'grid_size': 'taille grille',
+
+        // Math blocks
+        'math_square_root': 'racine carrée',
+        'math_absolute': 'valeur absolue',
+        'math_random_int': 'entier aléatoire de %1 à %2',
+        'math_round': 'arrondir',
+        'math_floor': 'arrondir vers le bas',
+        'math_ceiling': 'arrondir vers le haut',
+        'math_sin': 'sinus',
+        'math_cos': 'cosinus',
+        'math_tan': 'tangente',
+
+        // Logic blocks
+        'logic_and': 'et',
+        'logic_or': 'ou',
+        'logic_not': 'non',
+        'logic_true': 'vrai',
+        'logic_false': 'faux',
+        'logic_if': 'si',
+        'logic_else': 'sinon',
+        'logic_then': 'alors',
     },
     'de': {
         // Event blocks
@@ -851,7 +872,7 @@ const CATEGORY_MESSAGES = {
         'Drawing': 'Dessin',
         'Score/Lives/Health': 'Score/Vies/Santé',
         'Instance': 'Instance',
-        'Room': 'Salle',
+        'Room': 'Niveau',
         'Values': 'Valeurs',
         'Sound': 'Son',
         'Output': 'Sortie',
@@ -885,6 +906,20 @@ const CATEGORY_MESSAGES = {
         'Output': 'Uscita',
         'Math': 'Matematica',
         'Logic': 'Logica'
+    },
+    'uk': {
+        'Events': 'Події',
+        'Movement': 'Рух',
+        'Timing': 'Таймінг',
+        'Drawing': 'Малювання',
+        'Score/Lives/Health': 'Рахунок/Життя/Здоров\'я',
+        'Instance': 'Екземпляр',
+        'Room': 'Кімната',
+        'Values': 'Значення',
+        'Sound': 'Звук',
+        'Output': 'Вивід',
+        'Math': 'Математика',
+        'Logic': 'Логіка'
     }
 };
 
@@ -901,7 +936,230 @@ function getCategoryMessage(category, lang) {
     return CATEGORY_MESSAGES[lang][category] || category;
 }
 
-// Initialize with English by default
-if (typeof window.BLOCKLY_LANG === 'undefined') {
-    window.BLOCKLY_LANG = 'en';
+// Initialize language from URL query parameter, or use English by default
+(function() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var langParam = urlParams.get('lang');
+    var supportedLangs = ['fr', 'de', 'it', 'uk', 'es', 'pt', 'ru', 'zh', 'ja'];
+    if (langParam && supportedLangs.indexOf(langParam) !== -1) {
+        window.BLOCKLY_LANG = langParam;
+        console.log('Blockly language set from URL:', window.BLOCKLY_LANG);
+    } else if (typeof window.BLOCKLY_LANG === 'undefined') {
+        window.BLOCKLY_LANG = 'en';
+        console.log('Blockly language defaulting to English');
+    }
+})();
+
+/**
+ * Blockly built-in block translations
+ * These override Blockly.Msg for Math, Logic, and Text blocks
+ */
+const BLOCKLY_MSG_TRANSLATIONS = {
+    'fr': {
+        // Math blocks
+        "MATH_NUMBER_TOOLTIP": "Un nombre.",
+        "MATH_ARITHMETIC_TOOLTIP_ADD": "Renvoie la somme des deux nombres.",
+        "MATH_ARITHMETIC_TOOLTIP_MINUS": "Renvoie la différence des deux nombres.",
+        "MATH_ARITHMETIC_TOOLTIP_MULTIPLY": "Renvoie le produit des deux nombres.",
+        "MATH_ARITHMETIC_TOOLTIP_DIVIDE": "Renvoie le quotient des deux nombres.",
+        "MATH_ARITHMETIC_TOOLTIP_POWER": "Renvoie le premier nombre élevé à la puissance du second.",
+        "MATH_SINGLE_OP_ROOT": "racine carrée",
+        "MATH_SINGLE_OP_ABSOLUTE": "valeur absolue",
+        "MATH_SINGLE_TOOLTIP_ROOT": "Renvoie la racine carrée d'un nombre.",
+        "MATH_SINGLE_TOOLTIP_ABS": "Renvoie la valeur absolue d'un nombre.",
+        "MATH_SINGLE_TOOLTIP_NEG": "Renvoie l'opposé d'un nombre.",
+        "MATH_SINGLE_TOOLTIP_LN": "Renvoie le logarithme naturel d'un nombre.",
+        "MATH_SINGLE_TOOLTIP_LOG10": "Renvoie le logarithme base 10 d'un nombre.",
+        "MATH_SINGLE_TOOLTIP_EXP": "Renvoie e élevé à la puissance d'un nombre.",
+        "MATH_SINGLE_TOOLTIP_POW10": "Renvoie 10 élevé à la puissance d'un nombre.",
+        "MATH_RANDOM_INT_TITLE": "entier aléatoire de %1 à %2",
+        "MATH_RANDOM_INT_TOOLTIP": "Renvoie un entier aléatoire entre les deux limites spécifiées, incluses.",
+        "MATH_RANDOM_FLOAT_TITLE_RANDOM": "fraction aléatoire",
+        "MATH_RANDOM_FLOAT_TOOLTIP": "Renvoie une fraction aléatoire entre 0.0 (inclus) et 1.0 (exclus).",
+        "MATH_ROUND_OPERATOR_ROUND": "arrondir",
+        "MATH_ROUND_OPERATOR_ROUNDUP": "arrondir au supérieur",
+        "MATH_ROUND_OPERATOR_ROUNDDOWN": "arrondir à l'inférieur",
+        "MATH_ROUND_TOOLTIP": "Arrondir un nombre au supérieur ou à l'inférieur.",
+        "MATH_MODULO_TITLE": "reste de %1 ÷ %2",
+        "MATH_MODULO_TOOLTIP": "Renvoie le reste de la division des deux nombres.",
+        "MATH_CONSTRAIN_TITLE": "contraindre %1 entre %2 et %3",
+        "MATH_CONSTRAIN_TOOLTIP": "Contraindre un nombre à être entre les limites spécifiées (incluses).",
+        "MATH_IS_EVEN": "est pair",
+        "MATH_IS_ODD": "est impair",
+        "MATH_IS_PRIME": "est premier",
+        "MATH_IS_WHOLE": "est entier",
+        "MATH_IS_POSITIVE": "est positif",
+        "MATH_IS_NEGATIVE": "est négatif",
+        "MATH_IS_DIVISIBLE_BY": "est divisible par",
+        "MATH_IS_TOOLTIP": "Vérifie si un nombre est pair, impair, premier, entier, positif, négatif, ou s'il est divisible par un nombre. Renvoie vrai ou faux.",
+        "MATH_CHANGE_TITLE": "incrémenter %1 de %2",
+        "MATH_CHANGE_TOOLTIP": "Ajouter un nombre à la variable « %1 ».",
+
+        // Logic blocks
+        "LOGIC_COMPARE_TOOLTIP_EQ": "Renvoie vrai si les deux entrées sont égales.",
+        "LOGIC_COMPARE_TOOLTIP_NEQ": "Renvoie vrai si les deux entrées ne sont pas égales.",
+        "LOGIC_COMPARE_TOOLTIP_LT": "Renvoie vrai si la première entrée est plus petite que la seconde.",
+        "LOGIC_COMPARE_TOOLTIP_LTE": "Renvoie vrai si la première entrée est plus petite ou égale à la seconde.",
+        "LOGIC_COMPARE_TOOLTIP_GT": "Renvoie vrai si la première entrée est plus grande que la seconde.",
+        "LOGIC_COMPARE_TOOLTIP_GTE": "Renvoie vrai si la première entrée est plus grande ou égale à la seconde.",
+        "LOGIC_OPERATION_AND": "et",
+        "LOGIC_OPERATION_OR": "ou",
+        "LOGIC_OPERATION_TOOLTIP_AND": "Renvoie vrai si les deux entrées sont vraies.",
+        "LOGIC_OPERATION_TOOLTIP_OR": "Renvoie vrai si au moins une des entrées est vraie.",
+        "LOGIC_NEGATE_TITLE": "non %1",
+        "LOGIC_NEGATE_TOOLTIP": "Renvoie vrai si l'entrée est fausse. Renvoie faux si l'entrée est vraie.",
+        "LOGIC_BOOLEAN_TRUE": "vrai",
+        "LOGIC_BOOLEAN_FALSE": "faux",
+        "LOGIC_BOOLEAN_TOOLTIP": "Renvoie soit vrai soit faux.",
+        "LOGIC_NULL": "nul",
+        "LOGIC_NULL_TOOLTIP": "Renvoie nul.",
+        "LOGIC_TERNARY_CONDITION": "test",
+        "LOGIC_TERNARY_IF_TRUE": "si vrai",
+        "LOGIC_TERNARY_IF_FALSE": "si faux",
+        "LOGIC_TERNARY_TOOLTIP": "Vérifie la condition dans « test ». Si la condition est vraie, renvoie la valeur « si vrai » ; sinon renvoie la valeur « si faux ».",
+        "CONTROLS_IF_MSG_IF": "si",
+        "CONTROLS_IF_MSG_ELSEIF": "sinon si",
+        "CONTROLS_IF_MSG_ELSE": "sinon",
+        "CONTROLS_IF_TOOLTIP_1": "Si une valeur est vraie, alors exécuter des instructions.",
+        "CONTROLS_IF_TOOLTIP_2": "Si une valeur est vraie, alors exécuter le premier bloc d'instructions. Sinon, exécuter le second bloc d'instructions.",
+
+        // Text blocks
+        "TEXT_TEXT_TOOLTIP": "Une lettre, un mot ou une ligne de texte.",
+        "TEXT_JOIN_TITLE_CREATEWITH": "créer texte avec",
+        "TEXT_JOIN_TOOLTIP": "Créer un texte en assemblant plusieurs éléments.",
+        "TEXT_CREATE_JOIN_TITLE_JOIN": "joindre",
+        "TEXT_CREATE_JOIN_TOOLTIP": "Ajouter, supprimer ou réorganiser les sections pour reconfigurer ce bloc de texte.",
+        "TEXT_CREATE_JOIN_ITEM_TOOLTIP": "Ajouter un élément au texte.",
+        "TEXT_APPEND_TITLE": "à %1 ajouter le texte %2",
+        "TEXT_APPEND_TOOLTIP": "Ajouter du texte à la variable « %1 ».",
+        "TEXT_LENGTH_TITLE": "longueur de %1",
+        "TEXT_LENGTH_TOOLTIP": "Renvoie le nombre de lettres (espaces inclus) dans le texte fourni.",
+        "TEXT_ISEMPTY_TITLE": "%1 est vide",
+        "TEXT_ISEMPTY_TOOLTIP": "Renvoie vrai si le texte fourni est vide.",
+        "TEXT_INDEXOF_TITLE": "dans le texte %1 %2 %3",
+        "TEXT_INDEXOF_OPERATOR_FIRST": "trouver la première occurrence de",
+        "TEXT_INDEXOF_OPERATOR_LAST": "trouver la dernière occurrence de",
+        "TEXT_INDEXOF_TOOLTIP": "Renvoie la position de la première/dernière occurrence du premier texte dans le second. Renvoie %1 si le texte n'est pas trouvé.",
+
+        // Common UI messages
+        "ADD_COMMENT": "Ajouter un commentaire",
+        "CLEAN_UP": "Nettoyer les blocs",
+        "COLLAPSE_ALL": "Réduire les blocs",
+        "COLLAPSE_BLOCK": "Réduire le bloc",
+        "DELETE_ALL_BLOCKS": "Supprimer les %1 blocs ?",
+        "DELETE_BLOCK": "Supprimer le bloc",
+        "DELETE_X_BLOCKS": "Supprimer %1 blocs",
+        "DISABLE_BLOCK": "Désactiver le bloc",
+        "DUPLICATE_BLOCK": "Dupliquer",
+        "ENABLE_BLOCK": "Activer le bloc",
+        "EXPAND_ALL": "Développer les blocs",
+        "EXPAND_BLOCK": "Développer le bloc",
+        "EXTERNAL_INPUTS": "Entrées externes",
+        "HELP": "Aide",
+        "INLINE_INPUTS": "Entrées en ligne",
+        "REDO": "Rétablir",
+        "UNDO": "Annuler",
+        "REMOVE_COMMENT": "Supprimer le commentaire"
+    },
+    'de': {
+        // Math blocks
+        "MATH_NUMBER_TOOLTIP": "Eine Zahl.",
+        "MATH_SINGLE_OP_ROOT": "Quadratwurzel",
+        "MATH_SINGLE_OP_ABSOLUTE": "Absolutwert",
+        "MATH_RANDOM_INT_TITLE": "ganze Zufallszahl von %1 bis %2",
+        "MATH_ROUND_OPERATOR_ROUND": "runden",
+        "MATH_ROUND_OPERATOR_ROUNDUP": "aufrunden",
+        "MATH_ROUND_OPERATOR_ROUNDDOWN": "abrunden",
+
+        // Logic blocks
+        "LOGIC_OPERATION_AND": "und",
+        "LOGIC_OPERATION_OR": "oder",
+        "LOGIC_NEGATE_TITLE": "nicht %1",
+        "LOGIC_BOOLEAN_TRUE": "wahr",
+        "LOGIC_BOOLEAN_FALSE": "falsch",
+        "CONTROLS_IF_MSG_IF": "wenn",
+        "CONTROLS_IF_MSG_ELSEIF": "sonst wenn",
+        "CONTROLS_IF_MSG_ELSE": "sonst"
+    },
+    'it': {
+        // Math blocks
+        "MATH_NUMBER_TOOLTIP": "Un numero.",
+        "MATH_SINGLE_OP_ROOT": "radice quadrata",
+        "MATH_SINGLE_OP_ABSOLUTE": "valore assoluto",
+        "MATH_RANDOM_INT_TITLE": "intero casuale da %1 a %2",
+        "MATH_ROUND_OPERATOR_ROUND": "arrotonda",
+        "MATH_ROUND_OPERATOR_ROUNDUP": "arrotonda per eccesso",
+        "MATH_ROUND_OPERATOR_ROUNDDOWN": "arrotonda per difetto",
+
+        // Logic blocks
+        "LOGIC_OPERATION_AND": "e",
+        "LOGIC_OPERATION_OR": "o",
+        "LOGIC_NEGATE_TITLE": "non %1",
+        "LOGIC_BOOLEAN_TRUE": "vero",
+        "LOGIC_BOOLEAN_FALSE": "falso",
+        "CONTROLS_IF_MSG_IF": "se",
+        "CONTROLS_IF_MSG_ELSEIF": "altrimenti se",
+        "CONTROLS_IF_MSG_ELSE": "altrimenti"
+    },
+    'uk': {
+        // Math blocks
+        "MATH_NUMBER_TOOLTIP": "Число.",
+        "MATH_SINGLE_OP_ROOT": "квадратний корінь",
+        "MATH_SINGLE_OP_ABSOLUTE": "абсолютне значення",
+        "MATH_RANDOM_INT_TITLE": "випадкове ціле від %1 до %2",
+        "MATH_ROUND_OPERATOR_ROUND": "округлити",
+        "MATH_ROUND_OPERATOR_ROUNDUP": "округлити вгору",
+        "MATH_ROUND_OPERATOR_ROUNDDOWN": "округлити вниз",
+        "MATH_ARITHMETIC_TOOLTIP_ADD": "Повертає суму двох чисел.",
+        "MATH_ARITHMETIC_TOOLTIP_MINUS": "Повертає різницю двох чисел.",
+        "MATH_ARITHMETIC_TOOLTIP_MULTIPLY": "Повертає добуток двох чисел.",
+        "MATH_ARITHMETIC_TOOLTIP_DIVIDE": "Повертає частку двох чисел.",
+
+        // Logic blocks
+        "LOGIC_OPERATION_AND": "і",
+        "LOGIC_OPERATION_OR": "або",
+        "LOGIC_NEGATE_TITLE": "не %1",
+        "LOGIC_BOOLEAN_TRUE": "істина",
+        "LOGIC_BOOLEAN_FALSE": "хибність",
+        "LOGIC_OPERATION_TOOLTIP_AND": "Повертає істину, якщо обидва входи істинні.",
+        "LOGIC_OPERATION_TOOLTIP_OR": "Повертає істину, якщо хоча б один з входів істинний.",
+        "CONTROLS_IF_MSG_IF": "якщо",
+        "CONTROLS_IF_MSG_ELSEIF": "інакше якщо",
+        "CONTROLS_IF_MSG_ELSE": "інакше",
+
+        // Common UI
+        "DELETE_BLOCK": "Видалити блок",
+        "DUPLICATE_BLOCK": "Дублювати",
+        "ADD_COMMENT": "Додати коментар",
+        "HELP": "Допомога"
+    }
+};
+
+/**
+ * Apply translations to Blockly.Msg for built-in blocks
+ * Call this after Blockly is loaded but before workspace is created
+ */
+function applyBlocklyMsgTranslations(lang) {
+    if (!lang || lang === 'en' || !BLOCKLY_MSG_TRANSLATIONS[lang]) {
+        console.log('[Blockly i18n] Using default English for Blockly.Msg');
+        return;
+    }
+
+    if (typeof Blockly === 'undefined' || !Blockly.Msg) {
+        console.warn('[Blockly i18n] Blockly.Msg not available yet');
+        return;
+    }
+
+    var translations = BLOCKLY_MSG_TRANSLATIONS[lang];
+    var count = 0;
+    for (var key in translations) {
+        if (translations.hasOwnProperty(key)) {
+            Blockly.Msg[key] = translations[key];
+            count++;
+        }
+    }
+    console.log('[Blockly i18n] Applied ' + count + ' translations to Blockly.Msg for language: ' + lang);
 }
+
+// Export for use in blockly_workspace.html
+window.applyBlocklyMsgTranslations = applyBlocklyMsgTranslations;

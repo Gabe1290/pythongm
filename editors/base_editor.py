@@ -112,41 +112,41 @@ class BaseEditor(QWidget):
     def setup_toolbar_actions(self):
         """Setup common toolbar actions"""
         # Save action
-        self.save_action = self.toolbar.addAction("💾 Save", self.save)
+        self.save_action = self.toolbar.addAction(self.tr("💾 Save"), self.save)
         self.save_action.setShortcut(QKeySequence.Save)
         self.save_action.setEnabled(False)
-        
+
         # Auto-save toggle - IMPROVED VERSION
-        self.auto_save_action = self.toolbar.addAction("🔄 Auto-save: ON", self.toggle_auto_save)
+        self.auto_save_action = self.toolbar.addAction(self.tr("🔄 Auto-save: ON"), self.toggle_auto_save)
         self.auto_save_action.setCheckable(True)
         self.auto_save_action.setChecked(self.auto_save_enabled)
-        self.auto_save_action.setToolTip("Toggle automatic saving (currently every 3 seconds)")
-        
+        self.auto_save_action.setToolTip(self.tr("Toggle automatic saving (currently every 3 seconds)"))
+
         # Update the text based on state
         self.update_auto_save_button_text()
-        
+
         self.toolbar.addSeparator()
-        
+
         # Undo/Redo actions
-        self.undo_action = self.toolbar.addAction("↶ Undo", self.undo_stack.undo)
+        self.undo_action = self.toolbar.addAction(self.tr("↶ Undo"), self.undo_stack.undo)
         self.undo_action.setShortcut(QKeySequence.Undo)
         self.undo_action.setEnabled(False)
-        
-        self.redo_action = self.toolbar.addAction("↷ Redo", self.undo_stack.redo)
+
+        self.redo_action = self.toolbar.addAction(self.tr("↷ Redo"), self.undo_stack.redo)
         self.redo_action.setShortcut(QKeySequence.Redo)
         self.redo_action.setEnabled(False)
-        
+
         self.toolbar.addSeparator()
 
     def update_auto_save_button_text(self):
         """Update auto-save button text to show current state"""
         if hasattr(self, 'auto_save_action'):
             if self.auto_save_enabled:
-                self.auto_save_action.setText("🔄 Auto-save: ON")
-                self.auto_save_action.setToolTip("Auto-save is enabled. Click to disable.")
+                self.auto_save_action.setText(self.tr("🔄 Auto-save: ON"))
+                self.auto_save_action.setToolTip(self.tr("Auto-save is enabled. Click to disable."))
             else:
-                self.auto_save_action.setText("⏸️ Auto-save: OFF")
-                self.auto_save_action.setToolTip("Auto-save is disabled. Click to enable.")
+                self.auto_save_action.setText(self.tr("⏸️ Auto-save: OFF"))
+                self.auto_save_action.setToolTip(self.tr("Auto-save is disabled. Click to enable."))
 
     def toggle_auto_save(self):
         """Toggle auto-save on/off"""
@@ -201,7 +201,7 @@ class BaseEditor(QWidget):
         
         # Update UI
         self.update_window_title()
-        self.update_status(f"Loaded: {asset_name}")
+        self.update_status(self.tr("Loaded: {0}").format(asset_name))
             
     @abstractmethod
     def load_data(self, data: Dict[str, Any]):

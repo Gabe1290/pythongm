@@ -51,8 +51,11 @@ def setup_application():
 
     if language_config and language_config != 'en':
         # Try to load translation file
+        # Try pygm2 first (newer, more complete translations), then fall back to pygamemaker
         translations_path = Path(__file__).parent / "translations"
-        translation_file = translations_path / f"pygamemaker_{language_config}.qm"
+        translation_file = translations_path / f"pygm2_{language_config}.qm"
+        if not translation_file.exists():
+            translation_file = translations_path / f"pygamemaker_{language_config}.qm"
 
         print(f"📁 Translation file path: {translation_file}")
         print(f"📁 File exists: {translation_file.exists()}")

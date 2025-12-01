@@ -263,24 +263,45 @@ class PyGameMakerIDE(QMainWindow):
         self.language_action_group = QActionGroup(self)
         self.language_action_group.setExclusive(True)
 
-        # Add language options
+        # Separate languages into available and unavailable
+        available_languages = []
+        unavailable_languages = []
+
         for code, name, flag in language_manager.get_available_languages():
+            if language_manager.is_translation_available(code) or code == 'en':
+                available_languages.append((code, name, flag))
+            else:
+                unavailable_languages.append((code, name, flag))
+
+        # Add available languages first
+        for code, name, flag in available_languages:
             action = menu.addAction(f"{flag} {name}")
             action.setCheckable(True)
-            action.setData(code)  # Store language code
+            action.setData(code)
 
-            # Show if translation is available
-            if not language_manager.is_translation_available(code) and code != 'en':
-                action.setText(f"{flag} {name} (translation not available)")
-
-            # Block signals while setting the checked state to avoid triggering change_language during initialization
             action.blockSignals(True)
             action.setChecked(code == current_lang)
             action.blockSignals(False)
 
-            # Connect the triggered signal AFTER setting up the action
             action.triggered.connect(lambda checked, lang=code: self.change_language(lang))
             self.language_action_group.addAction(action)
+
+        # Add separator if there are unavailable languages
+        if unavailable_languages:
+            menu.addSeparator()
+
+            # Add unavailable languages
+            for code, name, flag in unavailable_languages:
+                action = menu.addAction(f"{flag} {name} (translation not available)")
+                action.setCheckable(True)
+                action.setData(code)
+
+                action.blockSignals(True)
+                action.setChecked(code == current_lang)
+                action.blockSignals(False)
+
+                action.triggered.connect(lambda checked, lang=code: self.change_language(lang))
+                self.language_action_group.addAction(action)
 
     def change_language(self, language_code: str):
         """Change the application language"""

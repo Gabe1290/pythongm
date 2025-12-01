@@ -508,16 +508,20 @@ class ObjectEditor(BaseEditor):
             
             actions = [action.text() for action in self.toolbar.actions()]
             if not any('Save' in action for action in actions):
-                # ✅ TRANSLATABLE: Save action
-                save_action = self.toolbar.insertAction(
-                    self.toolbar.actions()[0] if self.toolbar.actions() else None,
-                    self.tr("💾 Save")
-                )
+                # ✅ TRANSLATABLE: Save action - create action first, then insert
+                from PySide6.QtGui import QAction
+                save_action = QAction(self.tr("💾 Save"), self)
                 save_action.triggered.connect(self.save)
                 save_action.setShortcut("Ctrl+S")
+
+                if self.toolbar.actions():
+                    self.toolbar.insertAction(self.toolbar.actions()[0], save_action)
+                else:
+                    self.toolbar.addAction(save_action)
                 self.save_action = save_action
-                
-                self.toolbar.insertSeparator(self.toolbar.actions()[1] if len(self.toolbar.actions()) > 1 else None)
+
+                if len(self.toolbar.actions()) > 1:
+                    self.toolbar.insertSeparator(self.toolbar.actions()[1])
         else:
             # ✅ TRANSLATABLE: Save action
             self.save_action = self.toolbar.addAction(self.tr("💾 Save"), self.save)

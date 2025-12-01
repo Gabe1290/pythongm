@@ -156,15 +156,26 @@ class BlocklyWidget(QWidget):
         layout.addWidget(self.web_view)
 
     def _load_blockly_html(self):
-        """Load the Blockly HTML file"""
+        """Load the Blockly HTML file with language parameter"""
+        from core.language_manager import get_language_manager
+
+        # Get current language to pass to the HTML
+        language_manager = get_language_manager()
+        current_lang = language_manager.get_current_language()
+
         blockly_html = Path(__file__).parent / "blockly" / "blockly_workspace.html"
         if blockly_html.exists():
-            self.web_view.setUrl(QUrl.fromLocalFile(str(blockly_html)))
+            # Pass language as URL fragment to be read by JavaScript
+            url = QUrl.fromLocalFile(str(blockly_html))
+            url.setQuery(f"lang={current_lang}")
+            self.web_view.setUrl(url)
         else:
             # Try alternate path
             blockly_html = Path("/home/gabe/Dropbox/pygm2/editors/object_editor/blockly/blockly_workspace.html")
             if blockly_html.exists():
-                self.web_view.setUrl(QUrl.fromLocalFile(str(blockly_html)))
+                url = QUrl.fromLocalFile(str(blockly_html))
+                url.setQuery(f"lang={current_lang}")
+                self.web_view.setUrl(url)
             else:
                 print(f"ERROR: Blockly HTML not found at {blockly_html}")
                 self.web_view.setHtml("<h1>Blockly not found</h1><p>Could not load blockly_workspace.html</p>")

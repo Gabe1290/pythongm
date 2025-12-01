@@ -21,7 +21,18 @@
       "Bash(venv_py312Scriptspython.exe -m pip install pygame)",
       "Bash(./venv_py312/Scripts/python.exe -m pip install:*)",
       "Bash(./Laby02)",
-      "Bash(/bin/ls:*)"
+      "Bash(/bin/ls:*)",
+      "Bash(/home/edu-thulleng/.local/lib/python3.11/site-packages/PySide6/Qt/bin/lrelease:*)",
+      "Bash(/home/edu-thulleng/.local/lib/python3.11/site-packages/PySide6/lrelease:*)",
+      "Bash(/home/edu-thulleng/.local/lib/python3.11/site-packages/PySide6/lupdate:*)",
+      "Bash(/home/edu-thulleng/Dropbox/pygm2/translations/pygamemaker_fr.qm )",
+      "Bash(/home/edu-thulleng/Dropbox/pygm2/translations/pygamemaker_de.ts )",
+      "Bash(/home/edu-thulleng/Dropbox/pygm2/translations/pygamemaker_de.qm )",
+      "Bash(/home/edu-thulleng/Dropbox/pygm2/translations/pygamemaker_it.ts )",
+      "Bash(/home/edu-thulleng/Dropbox/pygm2/translations/pygamemaker_it.qm )",
+      "Bash(/home/edu-thulleng/Dropbox/pygm2/translations/pygamemaker_uk.ts )",
+      "Bash(/home/edu-thulleng/Dropbox/pygm2/translations/pygamemaker_uk.qm )",
+      "Bash(/home/edu-thulleng/Dropbox/pygm2/translations/pygamemaker_fr.ts.backup)"
     ],
     "deny": [],
     "ask": []

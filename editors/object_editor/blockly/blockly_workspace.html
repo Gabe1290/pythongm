@@ -1321,6 +1321,12 @@
             }
         };
 
+        // Apply translations to Blockly.Msg for built-in blocks (Math, Logic, Text)
+        // This must happen after Blockly loads but before workspace is created
+        if (typeof applyBlocklyMsgTranslations === 'function') {
+            applyBlocklyMsgTranslations(window.BLOCKLY_LANG);
+        }
+
         // Create a dark theme for PyGameMaker
         var darkTheme = Blockly.Theme.defineTheme('pygamemaker_dark', {
             'base': Blockly.Themes.Classic,

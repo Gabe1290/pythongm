@@ -2,6 +2,433 @@
 <!DOCTYPE TS>
 <TS version="2.1">
   <context>
+    <name>PyGameMakerIDE</name>
+    <message>
+      <source>&amp;File</source>
+      <translation>&amp;Fichier</translation>
+    </message>
+    <message>
+      <source>&amp;New Project...</source>
+      <translation>&amp;Nouveau projet...</translation>
+    </message>
+    <message>
+      <source>&amp;Open Project...</source>
+      <translation>&amp;Ouvrir un projet...</translation>
+    </message>
+    <message>
+      <source>&amp;Save Project</source>
+      <translation>&amp;Enregistrer le projet</translation>
+    </message>
+    <message>
+      <source>Save Project &amp;As...</source>
+      <translation>Enregistrer le projet &amp;sous...</translation>
+    </message>
+    <message>
+      <source>Recent Projects</source>
+      <translation>Projets récents</translation>
+    </message>
+    <message>
+      <source>Export as HTML5...</source>
+      <translation>Exporter en HTML5...</translation>
+    </message>
+    <message>
+      <source>Export as &amp;Zip...</source>
+      <translation>Exporter en &amp;Zip...</translation>
+    </message>
+    <message>
+      <source>Export to Kivy...</source>
+      <translation>Exporter vers Kivy...</translation>
+    </message>
+    <message>
+      <source>Export Project...</source>
+      <translation>Exporter le projet...</translation>
+    </message>
+    <message>
+      <source>Open &amp;Zip Project...</source>
+      <translation>Ouvrir un projet &amp;Zip...</translation>
+    </message>
+    <message>
+      <source>Auto-Save to Zip</source>
+      <translation>Sauvegarde auto en Zip</translation>
+    </message>
+    <message>
+      <source>Enable Auto-Save</source>
+      <translation>Activer la sauvegarde auto</translation>
+    </message>
+    <message>
+      <source>Auto-Save Settings...</source>
+      <translation>Paramètres de sauvegarde auto...</translation>
+    </message>
+    <message>
+      <source>Project &amp;Settings...</source>
+      <translation>Paramètres du &amp;projet...</translation>
+    </message>
+    <message>
+      <source>E&amp;xit</source>
+      <translation>&amp;Quitter</translation>
+    </message>
+    <message>
+      <source>&amp;Edit</source>
+      <translation>&amp;Édition</translation>
+    </message>
+    <message>
+      <source>&amp;Undo</source>
+      <translation>&amp;Annuler</translation>
+    </message>
+    <message>
+      <source>&amp;Redo</source>
+      <translation>&amp;Rétablir</translation>
+    </message>
+    <message>
+      <source>Cu&amp;t</source>
+      <translation>Cou&amp;per</translation>
+    </message>
+    <message>
+      <source>&amp;Copy</source>
+      <translation>&amp;Copier</translation>
+    </message>
+    <message>
+      <source>&amp;Paste</source>
+      <translation>Co&amp;ller</translation>
+    </message>
+    <message>
+      <source>&amp;Delete</source>
+      <translation>&amp;Supprimer</translation>
+    </message>
+    <message>
+      <source>Select &amp;All</source>
+      <translation>Sélectionner &amp;tout</translation>
+    </message>
+    <message>
+      <source>&amp;View</source>
+      <translation>&amp;Affichage</translation>
+    </message>
+    <message>
+      <source>Show &amp;Grid</source>
+      <translation>Afficher la &amp;grille</translation>
+    </message>
+    <message>
+      <source>Snap to &amp;Grid</source>
+      <translation>Aligner sur la &amp;grille</translation>
+    </message>
+    <message>
+      <source>Zoom &amp;In</source>
+      <translation>Zoom &amp;avant</translation>
+    </message>
+    <message>
+      <source>Zoom &amp;Out</source>
+      <translation>Zoom a&amp;rrière</translation>
+    </message>
+    <message>
+      <source>&amp;Reset Zoom</source>
+      <translation>&amp;Réinitialiser le zoom</translation>
+    </message>
+    <message>
+      <source>&amp;Assets</source>
+      <translation>&amp;Ressources</translation>
+    </message>
+    <message>
+      <source>Import &amp;Sprite...</source>
+      <translation>Importer un &amp;sprite...</translation>
+    </message>
+    <message>
+      <source>Import &amp;Sound...</source>
+      <translation>Importer un &amp;son...</translation>
+    </message>
+    <message>
+      <source>Import &amp;Background...</source>
+      <translation>Importer un arrière-&amp;plan...</translation>
+    </message>
+    <message>
+      <source>Create &amp;Object...</source>
+      <translation>Créer un &amp;objet...</translation>
+    </message>
+    <message>
+      <source>Create &amp;Room...</source>
+      <translation>Créer une &amp;salle...</translation>
+    </message>
+    <message>
+      <source>Create &amp;Script...</source>
+      <translation>Créer un s&amp;cript...</translation>
+    </message>
+    <message>
+      <source>Create &amp;Font...</source>
+      <translation>Créer une &amp;police...</translation>
+    </message>
+    <message>
+      <source>Import Object Package...</source>
+      <translation>Importer un package d'objet...</translation>
+    </message>
+    <message>
+      <source>Import Room Package...</source>
+      <translation>Importer un package de salle...</translation>
+    </message>
+    <message>
+      <source>&amp;Build</source>
+      <translation>&amp;Compiler</translation>
+    </message>
+    <message>
+      <source>&amp;Test Game</source>
+      <translation>&amp;Tester le jeu</translation>
+    </message>
+    <message>
+      <source>&amp;Build Game...</source>
+      <translation>&amp;Compiler le jeu...</translation>
+    </message>
+    <message>
+      <source>Build and &amp;Run</source>
+      <translation>Compiler et &amp;exécuter</translation>
+    </message>
+    <message>
+      <source>&amp;Export Game...</source>
+      <translation>&amp;Exporter le jeu...</translation>
+    </message>
+    <message>
+      <source>&amp;Run</source>
+      <translation>&amp;Exécuter</translation>
+    </message>
+    <message>
+      <source>&amp;Run Game</source>
+      <translation>&amp;Lancer le jeu</translation>
+    </message>
+    <message>
+      <source>&amp;Debug Game</source>
+      <translation>&amp;Déboguer le jeu</translation>
+    </message>
+    <message>
+      <source>&amp;Stop Game</source>
+      <translation>&amp;Arrêter le jeu</translation>
+    </message>
+    <message>
+      <source>&amp;Tools</source>
+      <translation>&amp;Outils</translation>
+    </message>
+    <message>
+      <source>&amp;Preferences...</source>
+      <translation>&amp;Préférences...</translation>
+    </message>
+    <message>
+      <source>&amp;Asset Manager...</source>
+      <translation>&amp;Gestionnaire de ressources...</translation>
+    </message>
+    <message>
+      <source>Configure &amp;Blockly Blocks...</source>
+      <translation>Configurer les &amp;blocs Blockly...</translation>
+    </message>
+    <message>
+      <source>&amp;Validate Project</source>
+      <translation>&amp;Valider le projet</translation>
+    </message>
+    <message>
+      <source>&amp;Clean Project</source>
+      <translation>&amp;Nettoyer le projet</translation>
+    </message>
+    <message>
+      <source>🌐 &amp;Language</source>
+      <translation>🌐 &amp;Langue</translation>
+    </message>
+    <message>
+      <source>&amp;Language</source>
+      <translation>&amp;Langue</translation>
+    </message>
+    <message>
+      <source>Configure Blockly Blocks...</source>
+      <translation>Configurer les blocs Blockly...</translation>
+    </message>
+    <message>
+      <source>&amp;Help</source>
+      <translation>&amp;Aide</translation>
+    </message>
+    <message>
+      <source>&amp;Documentation</source>
+      <translation>&amp;Documentation</translation>
+    </message>
+    <message>
+      <source>&amp;About</source>
+      <translation>À &amp;propos</translation>
+    </message>
+    <message>
+      <source>About PyGameMaker</source>
+      <translation>À propos de PyGameMaker</translation>
+    </message>
+    <message>
+      <source>PyGameMaker IDE</source>
+      <translation>PyGameMaker IDE</translation>
+    </message>
+    <message>
+      <source>Ready</source>
+      <translation>Prêt</translation>
+    </message>
+    <message>
+      <source>Assets</source>
+      <translation>Ressources</translation>
+    </message>
+    <message>
+      <source>Properties</source>
+      <translation>Propriétés</translation>
+    </message>
+    <message>
+      <source>No asset selected</source>
+      <translation>Aucune ressource sélectionnée</translation>
+    </message>
+    <message>
+      <source>Error</source>
+      <translation>Erreur</translation>
+    </message>
+    <message>
+      <source>Warning</source>
+      <translation>Avertissement</translation>
+    </message>
+    <message>
+      <source>Information</source>
+      <translation>Information</translation>
+    </message>
+    <message>
+      <source>Confirm</source>
+      <translation>Confirmer</translation>
+    </message>
+    <message>
+      <source>Are you sure?</source>
+      <translation>Êtes-vous sûr ?</translation>
+    </message>
+    <message>
+      <source>Yes</source>
+      <translation>Oui</translation>
+    </message>
+    <message>
+      <source>No</source>
+      <translation>Non</translation>
+    </message>
+    <message>
+      <source>Cancel</source>
+      <translation>Annuler</translation>
+    </message>
+    <message>
+      <source>OK</source>
+      <translation>OK</translation>
+    </message>
+    <message>
+      <source>Close</source>
+      <translation>Fermer</translation>
+    </message>
+    <message>
+      <source>Save</source>
+      <translation>Enregistrer</translation>
+    </message>
+    <message>
+      <source>Open</source>
+      <translation>Ouvrir</translation>
+    </message>
+    <message>
+      <source>Create</source>
+      <translation>Créer</translation>
+    </message>
+    <message>
+      <source>Delete</source>
+      <translation>Supprimer</translation>
+    </message>
+    <message>
+      <source>Rename</source>
+      <translation>Renommer</translation>
+    </message>
+    <message>
+      <source>Duplicate</source>
+      <translation>Dupliquer</translation>
+    </message>
+    <message>
+      <source>Import</source>
+      <translation>Importer</translation>
+    </message>
+    <message>
+      <source>Export</source>
+      <translation>Exporter</translation>
+    </message>
+    <message>
+      <source>New Project</source>
+      <translation>Nouveau projet</translation>
+    </message>
+    <message>
+      <source>Open Project</source>
+      <translation>Ouvrir un projet</translation>
+    </message>
+    <message>
+      <source>Save Project</source>
+      <translation>Enregistrer le projet</translation>
+    </message>
+    <message>
+      <source>Project saved successfully</source>
+      <translation>Projet enregistré avec succès</translation>
+    </message>
+    <message>
+      <source>Failed to save project</source>
+      <translation>Échec de l'enregistrement du projet</translation>
+    </message>
+    <message>
+      <source>Project loaded successfully</source>
+      <translation>Projet chargé avec succès</translation>
+    </message>
+    <message>
+      <source>Failed to load project</source>
+      <translation>Échec du chargement du projet</translation>
+    </message>
+    <message>
+      <source>Unsaved Changes</source>
+      <translation>Modifications non enregistrées</translation>
+    </message>
+    <message>
+      <source>Do you want to save your changes?</source>
+      <translation>Voulez-vous enregistrer vos modifications ?</translation>
+    </message>
+    <message>
+      <source>Game is running...</source>
+      <translation>Le jeu est en cours d'exécution...</translation>
+    </message>
+    <message>
+      <source>Game stopped</source>
+      <translation>Jeu arrêté</translation>
+    </message>
+    <message>
+      <source>Build</source>
+      <translation>Compiler</translation>
+    </message>
+    <message>
+      <source>&amp;Build Project</source>
+      <translation>&amp;Compiler le projet</translation>
+    </message>
+    <message>
+      <source>Build and Run</source>
+      <translation>Compiler et exécuter</translation>
+    </message>
+    <message>
+      <source>Clear Build Cache</source>
+      <translation>Vider le cache de compilation</translation>
+    </message>
+    <message>
+      <source>No project loaded</source>
+      <translation>Aucun projet chargé</translation>
+    </message>
+    <message>
+      <source>Please create or open a project first</source>
+      <translation>Veuillez d'abord créer ou ouvrir un projet</translation>
+    </message>
+    <message>
+      <source>Language Changed</source>
+      <translation>Langue modifiée</translation>
+    </message>
+    <message>
+      <source>Language changed to {0}.
+
+The IDE needs to restart for the language change to take effect.
+
+Do you want to restart now?</source>
+      <translation>Langue changée en {0}.
+
+L'IDE doit redémarrer pour que le changement de langue prenne effet.
+
+Voulez-vous redémarrer maintenant ?</translation>
+    </message>
+  </context>
+  <context>
     <name>AboutDialog</name>
     <message>
       <location filename="../dialogs/about.py" line="18" />
@@ -662,16 +1089,35 @@ Voulez-vous enregistrer quand même ?</translation>
     </message>
   </context>
   <context>
+    <name>DetachedBlocklyWindow</name>
+    <message>
+      <source>Visual Block Programming (Detached)</source>
+      <translation>Programmation visuelle par blocs (Détaché)</translation>
+    </message>
+  </context>
+  <context>
     <name>BlocklyVisualProgrammingTab</name>
     <message>
       <location filename="../editors/object_editor/blockly_widget.py" line="359" />
       <source>Visual Block Programming</source>
-      <translation>Programmation par blocs visuels</translation>
+      <translation>Programmation visuelle par blocs</translation>
     </message>
     <message>
       <location filename="../editors/object_editor/blockly_widget.py" line="365" />
       <source>Drag blocks from the toolbox on the left to create game logic</source>
       <translation>Glissez des blocs depuis la boîte à outils à gauche pour créer la logique du jeu</translation>
+    </message>
+    <message>
+      <source>Editor is detached. Close the detached window to return it here.</source>
+      <translation>L'éditeur est détaché. Fermez la fenêtre détachée pour le ramener ici.</translation>
+    </message>
+    <message>
+      <source>📥 Attach</source>
+      <translation>📥 Rattacher</translation>
+    </message>
+    <message>
+      <source>Return editor to the tab</source>
+      <translation>Ramener l'éditeur dans l'onglet</translation>
     </message>
   </context>
   <context>
@@ -715,6 +1161,14 @@ Voulez-vous enregistrer quand même ?</translation>
       <location filename="../editors/object_editor/blockly_widget.py" line="84" />
       <source>Choose which blocks are available in the toolbox</source>
       <translation>Choisir quels blocs sont disponibles dans la boîte à outils</translation>
+    </message>
+    <message>
+      <source>⬜ Detach</source>
+      <translation>⬜ Détacher</translation>
+    </message>
+    <message>
+      <source>Open Blockly editor in a separate window</source>
+      <translation>Ouvrir l'éditeur Blockly dans une fenêtre séparée</translation>
     </message>
     <message>
       <location filename="../editors/object_editor/blockly_widget.py" line="139" />
@@ -770,6 +1224,87 @@ Voulez-vous enregistrer quand même ?</translation>
       <location filename="../editors/object_editor/blockly_widget.py" line="330" />
       <source>Configuration applied: {0} blocks, {1} categories</source>
       <translation>Configuration appliquée : {0} blocs, {1} catégories</translation>
+    </message>
+  </context>
+  <context>
+    <name>ObjectPropertiesPanel</name>
+    <message>
+      <source>Object Properties</source>
+      <translation>Propriétés de l'objet</translation>
+    </message>
+    <message>
+      <source>View Code</source>
+      <translation>Voir le code</translation>
+    </message>
+  </context>
+  <context>
+    <name>BaseEditor</name>
+    <message>
+      <source>Loaded: {0}</source>
+      <translation>Chargé : {0}</translation>
+    </message>
+    <message>
+      <source>💾 Save</source>
+      <translation>💾 Enregistrer</translation>
+    </message>
+    <message>
+      <source>🔄 Auto-save: ON</source>
+      <translation>🔄 Sauvegarde auto : ACTIVÉE</translation>
+    </message>
+    <message>
+      <source>Toggle automatic saving (currently every 3 seconds)</source>
+      <translation>Activer/désactiver la sauvegarde automatique (actuellement toutes les 3 secondes)</translation>
+    </message>
+    <message>
+      <source>↶ Undo</source>
+      <translation>↶ Annuler</translation>
+    </message>
+    <message>
+      <source>↷ Redo</source>
+      <translation>↷ Rétablir</translation>
+    </message>
+    <message>
+      <source>Auto-save is enabled. Click to disable.</source>
+      <translation>La sauvegarde automatique est activée. Cliquez pour désactiver.</translation>
+    </message>
+    <message>
+      <source>⏸️ Auto-save: OFF</source>
+      <translation>⏸️ Sauvegarde auto : DÉSACTIVÉE</translation>
+    </message>
+    <message>
+      <source>Auto-save is disabled. Click to enable.</source>
+      <translation>La sauvegarde automatique est désactivée. Cliquez pour activer.</translation>
+    </message>
+  </context>
+  <context>
+    <name>ObjectEditor</name>
+    <message>
+      <source>📋 View Code</source>
+      <translation>📋 Voir le code</translation>
+    </message>
+    <message>
+      <source>💾 Save</source>
+      <translation>💾 Enregistrer</translation>
+    </message>
+    <message>
+      <source>Save object (Ctrl+S)</source>
+      <translation>Enregistrer l'objet (Ctrl+S)</translation>
+    </message>
+    <message>
+      <source>📋 Event List</source>
+      <translation>📋 Liste des événements</translation>
+    </message>
+    <message>
+      <source>🧩 Visual Programming</source>
+      <translation>🧩 Programmation visuelle</translation>
+    </message>
+    <message>
+      <source>💻 Code Editor</source>
+      <translation>💻 Éditeur de code</translation>
+    </message>
+    <message>
+      <source>🎮 Test Object</source>
+      <translation>🎮 Tester l'objet</translation>
     </message>
   </context>
   <context>

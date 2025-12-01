@@ -68,7 +68,10 @@ class LanguageManager:
         
         # Load new translation
         if language_code != 'en':  # English is the default, no translation needed
-            translation_file = self.translations_dir / f"pygamemaker_{language_code}.qm"
+            # Try pygm2 first (newer, more complete translations), then fall back to pygamemaker
+            translation_file = self.translations_dir / f"pygm2_{language_code}.qm"
+            if not translation_file.exists():
+                translation_file = self.translations_dir / f"pygamemaker_{language_code}.qm"
             
             print(f"   📁 Translation file: {translation_file}")
             print(f"   📁 File exists: {translation_file.exists()}")
@@ -129,8 +132,11 @@ class LanguageManager:
         if not app:
             print(f"   ❌ No app instance")
             return False
-        
-        translation_file = self.translations_dir / f"pygamemaker_{self.current_language}.qm"
+
+        # Try pygm2 first (newer, more complete translations), then fall back to pygamemaker
+        translation_file = self.translations_dir / f"pygm2_{self.current_language}.qm"
+        if not translation_file.exists():
+            translation_file = self.translations_dir / f"pygamemaker_{self.current_language}.qm"
         
         print(f"   📁 Translation file: {translation_file}")
         print(f"   📁 File exists: {translation_file.exists()}")
@@ -151,13 +157,20 @@ class LanguageManager:
 
     def get_translation_file_path(self, language_code: str) -> Path:
         """Get path to translation file for a language"""
+        # Try pygm2 first, then fall back to pygamemaker
+        pygm2_path = self.translations_dir / f"pygm2_{language_code}.qm"
+        if pygm2_path.exists():
+            return pygm2_path
         return self.translations_dir / f"pygamemaker_{language_code}.qm"
-    
+
     def is_translation_available(self, language_code: str) -> bool:
         """Check if translation file exists for a language"""
         if language_code == 'en':
             return True  # English is built-in
-        return self.get_translation_file_path(language_code).exists()
+        # Check both naming conventions
+        pygm2_path = self.translations_dir / f"pygm2_{language_code}.qm"
+        pygamemaker_path = self.translations_dir / f"pygamemaker_{language_code}.qm"
+        return pygm2_path.exists() or pygamemaker_path.exists()
 
 
 # Global language manager instance
