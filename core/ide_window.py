@@ -1227,8 +1227,6 @@ class PyGameMakerIDE(QMainWindow):
         try:
             self.update_status(self.tr("Running game..."))
 
-            # Create GameRunner with path to project.json
-            from runtime.game_runner import GameRunner
             project_json = self.current_project_path / "project.json"
 
             if not project_json.exists():
@@ -1239,9 +1237,19 @@ class PyGameMakerIDE(QMainWindow):
                 )
                 return
 
-            # Create runner and run game
-            runner = GameRunner(str(project_json))
-            runner.run()
+            # Run game in subprocess to avoid OpenGL conflicts between Qt WebEngine and pygame
+            # This isolates pygame's SDL/OpenGL context from Qt's Chromium OpenGL context
+            import subprocess
+            game_script = Path(__file__).parent.parent / "runtime" / "run_game.py"
+
+            # Run the game subprocess and wait for it to complete
+            result = subprocess.run(
+                [sys.executable, str(game_script), str(project_json)],
+                cwd=str(self.current_project_path)
+            )
+
+            if result.returncode != 0:
+                print(f"Game exited with code: {result.returncode}")
 
             self.update_status(self.tr("Game closed"))
 
