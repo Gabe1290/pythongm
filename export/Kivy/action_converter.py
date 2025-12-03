@@ -128,26 +128,32 @@ class ActionConverter:
         grid_size = params.get('grid_size', self.grid_size)
         then_actions = params.get('then_actions', [])
         else_actions = params.get('else_actions', [])
-        
+
         code_lines = []
-        
-        # Check if on grid
-        code_lines.append(self._indent(f"# Check if aligned to {grid_size}px grid", indent_level))
-        code_lines.append(self._indent(f"if self.x % {grid_size} == 0 and self.y % {grid_size} == 0:", indent_level))
-        
-        # Then branch
+
+        # Check if on grid using tolerance (handles floating point positions)
+        code_lines.append(self._indent(f"# Check if aligned to {grid_size}px grid (with tolerance)", indent_level))
+        code_lines.append(self._indent(f"_grid = {grid_size}", indent_level))
+        code_lines.append(self._indent(f"_nearest_x = round(self.x / _grid) * _grid", indent_level))
+        code_lines.append(self._indent(f"_nearest_y = round(self.y / _grid) * _grid", indent_level))
+        code_lines.append(self._indent(f"_on_grid = abs(self.x - _nearest_x) < 2 and abs(self.y - _nearest_y) < 2", indent_level))
+        code_lines.append(self._indent(f"if _on_grid:", indent_level))
+
+        # Then branch - also snap to grid
+        code_lines.append(self._indent("# Snap to exact grid position", indent_level + 1))
+        code_lines.append(self._indent("self.x = _nearest_x", indent_level + 1))
+        code_lines.append(self._indent("self.y = _nearest_y", indent_level + 1))
+        code_lines.append(self._indent("self._update_position()", indent_level + 1))
         if then_actions:
             then_code = self.convert_actions(then_actions, indent_level + 1)
             code_lines.append(then_code)
-        else:
-            code_lines.append(self._indent("pass", indent_level + 1))
-        
+
         # Else branch
         if else_actions:
             code_lines.append(self._indent("else:", indent_level))
             else_code = self.convert_actions(else_actions, indent_level + 1)
             code_lines.append(else_code)
-        
+
         return '\n'.join(code_lines)
     
     def _convert_set_hspeed(self, params: Dict[str, Any], indent_level: int) -> str:
@@ -192,13 +198,14 @@ class ActionConverter:
         return '\n'.join(code_lines)
     
     def _convert_stop_if_no_keys(self, params: Dict[str, Any], indent_level: int) -> str:
-        """Convert stop_if_no_keys action - stops movement if no arrow keys pressed."""
+        """Convert stop_if_no_keys action - stops movement and snaps to grid if no arrow keys pressed."""
         code_lines = []
-        code_lines.append(self._indent("# Stop if no movement keys are pressed", indent_level))
+        code_lines.append(self._indent("# Stop and snap to grid if no movement keys are pressed", indent_level))
         code_lines.append(self._indent("if not (self.scene.keys_pressed.get(275, False) or  # right", indent_level))
         code_lines.append(self._indent("        self.scene.keys_pressed.get(276, False) or  # left", indent_level))
         code_lines.append(self._indent("        self.scene.keys_pressed.get(273, False) or  # up", indent_level))
         code_lines.append(self._indent("        self.scene.keys_pressed.get(274, False)):  # down", indent_level))
+        code_lines.append(self._indent("self.snap_to_grid()  # Snap to grid when stopping", indent_level + 1))
         code_lines.append(self._indent("self.hspeed = 0", indent_level + 1))
         code_lines.append(self._indent("self.vspeed = 0", indent_level + 1))
         return '\n'.join(code_lines)

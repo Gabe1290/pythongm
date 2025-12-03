@@ -141,8 +141,34 @@ function generateActionCode(block) {
             return {action: 'destroy_instance', parameters: {target: 'other'}};
         case 'room_goto_next':
             return {action: 'next_room', parameters: {}};
+        case 'room_goto_previous':
+            return {action: 'previous_room', parameters: {}};
         case 'room_restart':
             return {action: 'restart_room', parameters: {}};
+        case 'room_goto':
+            return {action: 'goto_room', parameters: {room_name: block.getFieldValue('ROOM')}};
+        case 'room_if_next_exists':
+            var nextExistsActions = [];
+            var nextExistsBlock = block.getInputTargetBlock('DO');
+            while (nextExistsBlock) {
+                var nextExistsAction = generateActionCode(nextExistsBlock);
+                if (nextExistsAction) {
+                    nextExistsActions.push(nextExistsAction);
+                }
+                nextExistsBlock = nextExistsBlock.getNextBlock();
+            }
+            return {action: 'if_next_room_exists', parameters: {then_actions: nextExistsActions}};
+        case 'room_if_previous_exists':
+            var prevExistsActions = [];
+            var prevExistsBlock = block.getInputTargetBlock('DO');
+            while (prevExistsBlock) {
+                var prevExistsAction = generateActionCode(prevExistsBlock);
+                if (prevExistsAction) {
+                    prevExistsActions.push(prevExistsAction);
+                }
+                prevExistsBlock = prevExistsBlock.getNextBlock();
+            }
+            return {action: 'if_previous_room_exists', parameters: {then_actions: prevExistsActions}};
         case 'sound_play':
             return {action: 'play_sound', parameters: {sound: block.getFieldValue('SOUND')}};
         case 'music_play':

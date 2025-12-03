@@ -262,7 +262,64 @@ ACTION_TYPES = {
         icon="➡️",
         parameters=[]
     ),
-    
+
+    "previous_room": ActionType(
+        name="previous_room",
+        display_name="Previous Room",
+        description="Go to previous room",
+        category="Game",
+        icon="⬅️",
+        parameters=[]
+    ),
+
+    "if_next_room_exists": ActionType(
+        name="if_next_room_exists",
+        display_name="If Next Room Exists",
+        description="Check if there is a next room after the current one",
+        category="Game",
+        icon="❓➡️",
+        parameters=[
+            ActionParameter(
+                name="then_actions",
+                display_name="Then Actions",
+                param_type="action_list",
+                default_value=[],
+                description="Actions if next room exists"
+            ),
+            ActionParameter(
+                name="else_actions",
+                display_name="Else Actions",
+                param_type="action_list",
+                default_value=[],
+                description="Actions if next room does not exist"
+            )
+        ]
+    ),
+
+    "if_previous_room_exists": ActionType(
+        name="if_previous_room_exists",
+        display_name="If Previous Room Exists",
+        description="Check if there is a previous room before the current one",
+        category="Game",
+        icon="❓⬅️",
+        parameters=[
+            ActionParameter(
+                name="then_actions",
+                display_name="Then Actions",
+                param_type="action_list",
+                default_value=[],
+                description="Actions if previous room exists"
+            ),
+            ActionParameter(
+                name="else_actions",
+                display_name="Else Actions",
+                param_type="action_list",
+                default_value=[],
+                description="Actions if previous room does not exist"
+            )
+        ]
+    ),
+
     "destroy_instance": ActionType(
         name="destroy_instance",
         display_name="Destroy Instance",

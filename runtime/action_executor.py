@@ -69,38 +69,108 @@ class ActionExecutor:
             if actions:
                 print(f"   First action: {actions[0].get('action', 'unknown')}")
 
-        for action_data in actions:
-            self.execute_action(instance, action_data)
+        # Execute actions with conditional flow support
+        self.execute_action_list(instance, actions)
+
+    def execute_action_list(self, instance, actions: list):
+        """Execute a list of actions with conditional flow support
+
+        GM80-style conditionals: test actions set skip_next flag to skip following action(s)
+        """
+        i = 0
+        skip_next = False
+        condition_was_false = False  # Track if original condition was false
+
+        while i < len(actions):
+            action_data = actions[i]
+            action_name = action_data.get("action", "")
+
+            # Handle else action (supports both else_action and else_block)
+            if action_name in ("else_action", "else_block", "else"):
+                # If the condition was false, we skipped the "then" part, so execute the "else" part
+                # If the condition was true, we executed the "then" part, so skip the "else" part
+                skip_next = not condition_was_false
+                i += 1
+                continue
+
+            # Handle end_block - reset conditional state
+            if action_name in ("end_block", "end"):
+                skip_next = False
+                condition_was_false = False
+                i += 1
+                continue
+
+            # Skip this action if skip_next is set
+            if skip_next:
+                # Skip one action and reset (unless we hit another else/end_block)
+                skip_next = False
+                i += 1
+                continue
+
+            # Execute the action
+            result = self.execute_action(instance, action_data)
+
+            # Check if this was a conditional action that returned False
+            # Conditional actions return True/False, regular actions return None
+            if result is False:
+                skip_next = True
+                condition_was_false = True
+            elif result is True:
+                condition_was_false = False
+
+            i += 1
     
+    # Action name aliases for compatibility between different naming conventions
+    ACTION_ALIASES = {
+        "display_message": "show_message",
+        "message": "show_message",
+        "goto_next_room": "next_room",
+        "goto_previous_room": "previous_room",
+        "goto_room": "next_room",  # Will be handled specially if room_name param exists
+    }
+
     def execute_action(self, instance, action_data: Dict[str, Any]):
-        """Execute a single action with validation"""
+        """Execute a single action with validation
+
+        Returns:
+            - True if action is a conditional that evaluated to True
+            - False if action is a conditional that evaluated to False
+            - None for non-conditional actions
+        """
         action_name = action_data.get("action", "")
         parameters = action_data.get("parameters", {})
 
         if not action_name:
             print(f"⚠️ Action missing 'action' field: {action_data}")
-            return
+            return None
+
+        # Apply action name aliases
+        if action_name in self.ACTION_ALIASES:
+            action_name = self.ACTION_ALIASES[action_name]
 
         if action_name not in self.action_handlers:
             print(f"❌ Unknown action: {action_name}")
             print(f"   Available actions: {', '.join(sorted(self.action_handlers.keys()))}")
-            return
+            return None
 
         # Validate instance has required attributes for this action
         if not self._validate_action_requirements(instance, action_name):
             print(f"⚠️ Instance missing requirements for action '{action_name}'")
-            return
+            return None
 
         # Execute the action with error handling
         try:
-            self.action_handlers[action_name](instance, parameters)
+            result = self.action_handlers[action_name](instance, parameters)
+            return result  # Return result for conditional flow
         except AttributeError as e:
             print(f"❌ Attribute error in action {action_name}: {e}")
             print(f"   Instance may be missing required attributes")
+            return None
         except Exception as e:
             print(f"❌ Error executing action {action_name}: {e}")
             import traceback
             traceback.print_exc()
+            return None
 
     def _validate_action_requirements(self, instance, action_name: str) -> bool:
         """Validate that instance has required attributes for an action
@@ -389,7 +459,96 @@ class ActionExecutor:
         """Execute next room action - advances to next level"""
         print(f"➡️  Next room requested by {instance.object_name}")
         instance.next_room_flag = True
-    
+
+    def execute_previous_room_action(self, instance, parameters: Dict[str, Any]):
+        """Execute previous room action - goes to previous level"""
+        print(f"⬅️  Previous room requested by {instance.object_name}")
+        instance.previous_room_flag = True
+
+    def execute_if_next_room_exists_action(self, instance, parameters: Dict[str, Any]):
+        """Check if next room exists
+
+        This is a conditional action:
+        - Returns True if next room exists (next action will execute)
+        - Returns False if no next room (next action will be skipped)
+
+        Also supports nested then_actions/else_actions for Blockly-style conditionals.
+        """
+        if not self.game_runner:
+            print("⚠️  Warning: if_next_room_exists requires game_runner reference")
+            return False
+
+        room_list = self.game_runner.get_room_list()
+        current_room = self.game_runner.current_room
+
+        next_exists = False
+        if current_room and room_list:
+            try:
+                current_index = room_list.index(current_room.name)
+                next_exists = (current_index + 1) < len(room_list)
+            except ValueError:
+                pass
+
+        print(f"❓ Next room exists: {next_exists}")
+
+        # If there are nested actions (Blockly-style), execute them
+        then_actions = parameters.get('then_actions', [])
+        else_actions = parameters.get('else_actions', [])
+
+        if then_actions or else_actions:
+            if next_exists:
+                for action in then_actions:
+                    self.execute_action(instance, action)
+            else:
+                for action in else_actions:
+                    self.execute_action(instance, action)
+            return None  # Don't affect next action flow
+
+        # Return result for GM80-style conditional flow
+        return next_exists
+
+    def execute_if_previous_room_exists_action(self, instance, parameters: Dict[str, Any]):
+        """Check if previous room exists
+
+        This is a conditional action:
+        - Returns True if previous room exists (next action will execute)
+        - Returns False if no previous room (next action will be skipped)
+
+        Also supports nested then_actions/else_actions for Blockly-style conditionals.
+        """
+        if not self.game_runner:
+            print("⚠️  Warning: if_previous_room_exists requires game_runner reference")
+            return False
+
+        room_list = self.game_runner.get_room_list()
+        current_room = self.game_runner.current_room
+
+        prev_exists = False
+        if current_room and room_list:
+            try:
+                current_index = room_list.index(current_room.name)
+                prev_exists = current_index > 0
+            except ValueError:
+                pass
+
+        print(f"❓ Previous room exists: {prev_exists}")
+
+        # If there are nested actions (Blockly-style), execute them
+        then_actions = parameters.get('then_actions', [])
+        else_actions = parameters.get('else_actions', [])
+
+        if then_actions or else_actions:
+            if prev_exists:
+                for action in then_actions:
+                    self.execute_action(instance, action)
+            else:
+                for action in else_actions:
+                    self.execute_action(instance, action)
+            return None  # Don't affect next action flow
+
+        # Return result for GM80-style conditional flow
+        return prev_exists
+
     # ==================== SCORE/LIVES/HEALTH ACTIONS ====================
 
     def execute_set_score_action(self, instance, parameters: Dict[str, Any]):
@@ -700,15 +859,67 @@ class ActionExecutor:
         """Execute collision event with context about the other instance"""
         if event_name not in events_data:
             return
-            
+
         event_data = events_data[event_name]
         actions = event_data.get("actions", [])
-        
-        for action_data in actions:
-            self.execute_collision_action(instance, action_data, other_instance)
+
+        # Store reference to other instance for collision-specific actions
+        self._collision_other = other_instance
+
+        # Use execute_action_list for proper conditional flow support
+        self.execute_collision_action_list(instance, actions, other_instance)
+
+        # Clean up
+        self._collision_other = None
+
+    def execute_collision_action_list(self, instance, actions: list, other_instance):
+        """Execute collision actions with conditional flow support"""
+        i = 0
+        skip_next = False
+        condition_was_false = False
+
+        while i < len(actions):
+            action_data = actions[i]
+            action_name = action_data.get("action", "")
+
+            # Handle else action (supports both else_action and else_block)
+            if action_name in ("else_action", "else_block", "else"):
+                skip_next = not condition_was_false
+                i += 1
+                continue
+
+            # Handle end_block
+            if action_name in ("end_block", "end"):
+                skip_next = False
+                condition_was_false = False
+                i += 1
+                continue
+
+            # Skip this action if skip_next is set
+            if skip_next:
+                skip_next = False
+                i += 1
+                continue
+
+            # Execute the action
+            result = self.execute_collision_action(instance, action_data, other_instance)
+
+            # Check if this was a conditional action that returned False
+            if result is False:
+                skip_next = True
+                condition_was_false = True
+            elif result is True:
+                condition_was_false = False
+
+            i += 1
 
     def execute_collision_action(self, instance, action_data: Dict[str, Any], other_instance):
-        """Execute a collision action with knowledge of both self and other"""
+        """Execute a collision action with knowledge of both self and other
+
+        Returns:
+            - True/False for conditional actions
+            - None for regular actions
+        """
         action_name = action_data.get("action")
         parameters = action_data.get("parameters", {})
 
@@ -719,6 +930,7 @@ class ActionExecutor:
                 instance.to_destroy = True
             elif target == "other":
                 other_instance.to_destroy = True
+            return None
         else:
             # For all other actions, use the regular action executor
-            self.execute_action(instance, action_data)
+            return self.execute_action(instance, action_data)

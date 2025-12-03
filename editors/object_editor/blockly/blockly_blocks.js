@@ -751,6 +751,43 @@ Blockly.Blocks['room_goto'] = {
     }
 };
 
+Blockly.Blocks['room_goto_previous'] = {
+    init: function() {
+        this.appendDummyInput()
+            .appendField("Go to previous room");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour("#A6745C");
+        this.setTooltip("Go to the previous room");
+    }
+};
+
+Blockly.Blocks['room_if_next_exists'] = {
+    init: function() {
+        this.appendDummyInput()
+            .appendField("If next room exists");
+        this.appendStatementInput("DO")
+            .setCheck(null);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour("#A6745C");
+        this.setTooltip("Execute actions only if there is a next room");
+    }
+};
+
+Blockly.Blocks['room_if_previous_exists'] = {
+    init: function() {
+        this.appendDummyInput()
+            .appendField("If previous room exists");
+        this.appendStatementInput("DO")
+            .setCheck(null);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour("#A6745C");
+        this.setTooltip("Execute actions only if there is a previous room");
+    }
+};
+
 // ============================================================================
 // VALUE BLOCKS
 // ============================================================================

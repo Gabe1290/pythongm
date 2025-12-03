@@ -487,7 +487,10 @@ class GameRunner:
 
                 # Render
                 self.render()
-                
+
+                # Check for pending messages and display them
+                self.process_pending_messages()
+
                 # Control framerate
                 self.clock.tick(self.fps)
             
@@ -788,8 +791,13 @@ class GameRunner:
                 print("➡️  Going to next room...")
                 self.goto_next_room()
                 return
-        
-        
+
+            if hasattr(instance, 'previous_room_flag') and instance.previous_room_flag:
+                print("⬅️  Going to previous room...")
+                self.goto_previous_room()
+                return
+
+
         # Apply speed-based movement (hspeed, vspeed) with collision checking
         for instance in self.current_room.instances:
             if hasattr(instance, 'hspeed') and instance.hspeed != 0:
@@ -874,28 +882,48 @@ class GameRunner:
         return True
     
     def check_collision_events(self, instance, objects_data: dict):
-        """Check if instance is colliding and trigger collision events"""
+        """Check if instance is colliding and trigger collision events
+
+        Uses collision tracking to fire events only once per collision pair
+        until the objects separate.
+        """
         if not instance.object_data:
             return
-        
+
+        # Initialize collision tracking set if not exists
+        if not hasattr(instance, '_active_collisions'):
+            instance._active_collisions = set()
+
         events = instance.object_data.get('events', {})
-        
+
+        # Track which collisions are currently active this frame
+        current_collisions = set()
+
         # Check all collision events
         for event_name, event_data in events.items():
             if event_name.startswith('collision_with_'):
                 target_object = event_name.replace('collision_with_', '')
-                
+
                 # Check collision with target object
                 for other_instance in self.current_room.instances:
                     if other_instance == instance:
                         continue
-                    
+
                     if other_instance.object_name == target_object:
                         if self.instances_overlap(instance, other_instance):
-                            print(f"🎯 COLLISION DETECTED: {instance.object_name} with {other_instance.object_name}")
-                            # Pass other_instance as context for collision actions
-                            instance.action_executor.execute_collision_event(instance, event_name, events, other_instance)
+                            # Create unique collision key
+                            collision_key = (id(other_instance), event_name)
+                            current_collisions.add(collision_key)
+
+                            # Only fire event if this is a NEW collision (wasn't active last frame)
+                            if collision_key not in instance._active_collisions:
+                                print(f"🎯 COLLISION DETECTED: {instance.object_name} with {other_instance.object_name}")
+                                # Pass other_instance as context for collision actions
+                                instance.action_executor.execute_collision_event(instance, event_name, events, other_instance)
                             break
+
+        # Update active collisions for next frame
+        instance._active_collisions = current_collisions
     
     def instances_overlap(self, inst1, inst2) -> bool:
         """Check if two instances overlap"""
@@ -940,13 +968,41 @@ class GameRunner:
 
         try:
             current_index = room_list.index(self.current_room.name)
-            next_index = (current_index + 1) % len(room_list)
-            next_room_name = room_list[next_index]
-            print(f"➡️  Changing from '{self.current_room.name}' (index {current_index}) to '{next_room_name}' (index {next_index})")
-            self.change_room(next_room_name)
+            next_index = current_index + 1
+            if next_index < len(room_list):
+                next_room_name = room_list[next_index]
+                print(f"➡️  Changing from '{self.current_room.name}' (index {current_index}) to '{next_room_name}' (index {next_index})")
+                self.change_room(next_room_name)
+            else:
+                print(f"⚠️  Already at last room '{self.current_room.name}'")
         except ValueError:
             print(f"❌ Current room '{self.current_room.name}' not in room list")
-    
+
+    def goto_previous_room(self):
+        """Go to the previous room"""
+        print(f"🚪 goto_previous_room called")
+        if not self.current_room:
+            print(f"❌ No current room!")
+            return
+
+        room_list = self.get_room_list()
+        print(f"🔍 Room list: {room_list}")
+        if not room_list:
+            print(f"❌ Room list is empty!")
+            return
+
+        try:
+            current_index = room_list.index(self.current_room.name)
+            if current_index > 0:
+                prev_index = current_index - 1
+                prev_room_name = room_list[prev_index]
+                print(f"⬅️  Changing from '{self.current_room.name}' (index {current_index}) to '{prev_room_name}' (index {prev_index})")
+                self.change_room(prev_room_name)
+            else:
+                print(f"⚠️  Already at first room '{self.current_room.name}'")
+        except ValueError:
+            print(f"❌ Current room '{self.current_room.name}' not in room list")
+
     def get_room_list(self) -> List[str]:
         """Get ordered list of room names"""
         if not self.project_data:
@@ -1038,6 +1094,122 @@ class GameRunner:
         # Run the game loop
         return self.run_game_loop()
     
+    def process_pending_messages(self):
+        """Check all instances for pending messages and display them"""
+        for instance in self.current_room.instances:
+            if hasattr(instance, 'pending_messages') and instance.pending_messages:
+                # Get the first pending message
+                message = instance.pending_messages.pop(0)
+                # Display the message dialog (this pauses the game)
+                self.show_message_dialog(message)
+
+    def show_message_dialog(self, message: str):
+        """Display a message dialog box that pauses the game
+
+        The dialog shows the message centered on screen with an OK button.
+        User can click OK or press Enter/Space/Escape to dismiss.
+        """
+        # Create a semi-transparent overlay
+        overlay = pygame.Surface((self.window_width, self.window_height))
+        overlay.fill((0, 0, 0))
+        overlay.set_alpha(128)
+
+        # Dialog box dimensions
+        dialog_width = min(400, self.window_width - 40)
+        dialog_height = 150
+        dialog_x = (self.window_width - dialog_width) // 2
+        dialog_y = (self.window_height - dialog_height) // 2
+
+        # Button dimensions
+        button_width = 80
+        button_height = 30
+        button_x = dialog_x + (dialog_width - button_width) // 2
+        button_y = dialog_y + dialog_height - button_height - 15
+
+        # Get font
+        try:
+            font = pygame.font.Font(None, 24)
+            title_font = pygame.font.Font(None, 28)
+        except Exception:
+            font = pygame.font.SysFont('arial', 18)
+            title_font = pygame.font.SysFont('arial', 22)
+
+        # Dialog loop - waits for user to dismiss
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.stop_game()
+                    waiting = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key in (pygame.K_RETURN, pygame.K_SPACE, pygame.K_ESCAPE):
+                        waiting = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    # Check if OK button was clicked
+                    mx, my = event.pos
+                    if (button_x <= mx <= button_x + button_width and
+                        button_y <= my <= button_y + button_height):
+                        waiting = False
+
+            # Draw overlay
+            self.screen.blit(overlay, (0, 0))
+
+            # Draw dialog box
+            pygame.draw.rect(self.screen, (240, 240, 240),
+                           (dialog_x, dialog_y, dialog_width, dialog_height))
+            pygame.draw.rect(self.screen, (100, 100, 100),
+                           (dialog_x, dialog_y, dialog_width, dialog_height), 2)
+
+            # Draw title bar
+            pygame.draw.rect(self.screen, (70, 130, 180),
+                           (dialog_x, dialog_y, dialog_width, 30))
+            title_text = title_font.render("Message", True, (255, 255, 255))
+            self.screen.blit(title_text, (dialog_x + 10, dialog_y + 5))
+
+            # Draw message text (wrap if too long)
+            words = message.split()
+            lines = []
+            current_line = ""
+            max_text_width = dialog_width - 30
+
+            for word in words:
+                test_line = current_line + (" " if current_line else "") + word
+                if font.size(test_line)[0] <= max_text_width:
+                    current_line = test_line
+                else:
+                    if current_line:
+                        lines.append(current_line)
+                    current_line = word
+
+            if current_line:
+                lines.append(current_line)
+
+            # Render message lines
+            y_offset = dialog_y + 45
+            for line in lines[:4]:  # Max 4 lines
+                text_surface = font.render(line, True, (0, 0, 0))
+                self.screen.blit(text_surface, (dialog_x + 15, y_offset))
+                y_offset += 22
+
+            # Draw OK button
+            mouse_pos = pygame.mouse.get_pos()
+            button_hover = (button_x <= mouse_pos[0] <= button_x + button_width and
+                          button_y <= mouse_pos[1] <= button_y + button_height)
+
+            button_color = (100, 149, 237) if button_hover else (70, 130, 180)
+            pygame.draw.rect(self.screen, button_color,
+                           (button_x, button_y, button_width, button_height))
+            pygame.draw.rect(self.screen, (50, 50, 50),
+                           (button_x, button_y, button_width, button_height), 1)
+
+            ok_text = font.render("OK", True, (255, 255, 255))
+            ok_text_x = button_x + (button_width - ok_text.get_width()) // 2
+            ok_text_y = button_y + (button_height - ok_text.get_height()) // 2
+            self.screen.blit(ok_text, (ok_text_x, ok_text_y))
+
+            pygame.display.flip()
+            self.clock.tick(60)
+
     def cleanup(self):
         """Clean up pygame resources"""
         try:

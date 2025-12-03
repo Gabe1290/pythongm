@@ -903,3 +903,108 @@ class ProjectManager(QObject):
     def is_auto_save_as_zip(self) -> bool:
         """Check if auto-save as zip is enabled"""
         return self._auto_save_as_zip
+
+    def validate_project(self) -> List[Dict[str, Any]]:
+        """
+        Validate project for potential issues.
+
+        Returns:
+            List of validation issues, each containing:
+            - 'type': 'error' or 'warning'
+            - 'message': Human-readable description
+            - 'object': Object name where issue was found (optional)
+            - 'room': Room name if relevant (optional)
+        """
+        issues = []
+
+        if not self.current_project_data:
+            return issues
+
+        assets = self.current_project_data.get('assets', {})
+        rooms = assets.get('rooms', {})
+        objects = assets.get('objects', {})
+
+        room_list = list(rooms.keys())
+        num_rooms = len(room_list)
+
+        # Check each object for room navigation issues
+        for obj_name, obj_data in objects.items():
+            events = obj_data.get('events', {})
+
+            # Check all event types
+            for event_name, event_data in events.items():
+                actions = []
+
+                # Handle different event data structures
+                if isinstance(event_data, dict):
+                    actions = event_data.get('actions', [])
+                elif isinstance(event_data, list):
+                    actions = event_data
+
+                # Check actions for room navigation
+                self._check_actions_for_room_issues(
+                    actions, obj_name, event_name, room_list, num_rooms, issues
+                )
+
+        return issues
+
+    def _check_actions_for_room_issues(
+        self,
+        actions: List,
+        obj_name: str,
+        event_name: str,
+        room_list: List[str],
+        num_rooms: int,
+        issues: List[Dict[str, Any]]
+    ):
+        """Recursively check actions for room navigation issues"""
+        for action in actions:
+            if not isinstance(action, dict):
+                continue
+
+            action_type = action.get('action', action.get('action_type', ''))
+            params = action.get('parameters', {})
+
+            # Check next_room when on last room
+            if action_type == 'next_room' and num_rooms <= 1:
+                issues.append({
+                    'type': 'warning',
+                    'message': f"'{obj_name}' uses 'next_room' but there is only {num_rooms} room(s). "
+                               f"The action will have no effect on the last room.",
+                    'object': obj_name,
+                    'event': event_name
+                })
+
+            # Check previous_room when on first room
+            if action_type == 'previous_room' and num_rooms <= 1:
+                issues.append({
+                    'type': 'warning',
+                    'message': f"'{obj_name}' uses 'previous_room' but there is only {num_rooms} room(s). "
+                               f"The action will have no effect on the first room.",
+                    'object': obj_name,
+                    'event': event_name
+                })
+
+            # Check goto_room with invalid room name
+            if action_type == 'goto_room':
+                target_room = params.get('room', params.get('room_name', ''))
+                if target_room and target_room not in room_list:
+                    issues.append({
+                        'type': 'error',
+                        'message': f"'{obj_name}' tries to go to room '{target_room}' which doesn't exist.",
+                        'object': obj_name,
+                        'event': event_name
+                    })
+
+            # Check nested actions (e.g., in if_on_grid)
+            then_actions = params.get('then_actions', [])
+            if then_actions:
+                self._check_actions_for_room_issues(
+                    then_actions, obj_name, event_name, room_list, num_rooms, issues
+                )
+
+            else_actions = params.get('else_actions', [])
+            if else_actions:
+                self._check_actions_for_room_issues(
+                    else_actions, obj_name, event_name, room_list, num_rooms, issues
+                )

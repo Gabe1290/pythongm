@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (QMainWindow, QVBoxLayout, QHBoxLayout, QWidget,
                                QFileDialog, QInputDialog, QProgressBar, QLabel, QStyle,
                                QTabWidget, QTextBrowser, QSizePolicy, QGroupBox, QFormLayout,
                                QSpinBox,QComboBox, QDialogButtonBox, QPushButton, QCheckBox,
-                               QDoubleSpinBox, QLineEdit)
+                               QDoubleSpinBox, QLineEdit, QToolBar)
 
 from PySide6.QtCore import Qt, QTimer, QThread, Signal, QSize
 from PySide6.QtGui import QAction, QKeySequence, QFont
@@ -216,7 +216,7 @@ class PyGameMakerIDE(QMainWindow):
         assets_menu.addAction(import_object_action)
         assets_menu.addAction(import_room_action)
 
-        build_menu = menubar.addMenu(self.tr("&Build"))
+        self.build_menu = menubar.addMenu(self.tr("&Build"))
         # Store references to build actions
         self.test_game_action = self.create_action(self.tr("&Test Game"), "F5", self.test_game)
         self.debug_game_action = self.create_action(self.tr("&Debug Game"), "F6", self.debug_game)
@@ -224,13 +224,13 @@ class PyGameMakerIDE(QMainWindow):
         self.build_and_run_action = self.create_action(self.tr("Build and &Run"), "F8", self.build_and_run)
         self.export_game_action = self.create_action(self.tr("&Export Game..."), None, self.export_game)
 
-        build_menu.addAction(self.test_game_action)
-        build_menu.addAction(self.debug_game_action)
-        build_menu.addSeparator()
-        build_menu.addAction(self.build_game_action)
-        build_menu.addAction(self.build_and_run_action)
-        build_menu.addSeparator()
-        build_menu.addAction(self.export_game_action)
+        self.build_menu.addAction(self.test_game_action)
+        self.build_menu.addAction(self.debug_game_action)
+        self.build_menu.addSeparator()
+        self.build_menu.addAction(self.build_game_action)
+        self.build_menu.addAction(self.build_and_run_action)
+        self.build_menu.addSeparator()
+        self.build_menu.addAction(self.export_game_action)
 
         tools_menu = menubar.addMenu(self.tr("&Tools"))
         tools_menu.addAction(self.create_action(self.tr("&Preferences..."), None, self.preferences))
@@ -1219,10 +1219,13 @@ class PyGameMakerIDE(QMainWindow):
                 self.tr("Please open or create a project first before testing a game.")
             )
             return
-        
+
         # Save project before testing
         if self.project_manager.is_dirty():
             self.save_project()
+
+        # Validate project and show warnings
+        self._show_validation_warnings()
 
         try:
             self.update_status(self.tr("Running game..."))
@@ -1384,6 +1387,48 @@ class PyGameMakerIDE(QMainWindow):
         # Run in test mode
         self.test_game()
 
+    def _show_validation_warnings(self):
+        """Validate project and show any warnings to the user"""
+        issues = self.project_manager.validate_project()
+
+        if not issues:
+            return
+
+        # Separate errors and warnings
+        errors = [i for i in issues if i['type'] == 'error']
+        warnings = [i for i in issues if i['type'] == 'warning']
+
+        # Build message
+        message_parts = []
+
+        if errors:
+            message_parts.append(self.tr("Errors:"))
+            for err in errors:
+                message_parts.append(f"  • {err['message']}")
+            message_parts.append("")
+
+        if warnings:
+            message_parts.append(self.tr("Warnings:"))
+            for warn in warnings:
+                message_parts.append(f"  • {warn['message']}")
+
+        message = "\n".join(message_parts)
+
+        if errors:
+            # Show errors as critical - they will likely cause problems
+            QMessageBox.warning(
+                self,
+                self.tr("Project Validation Issues"),
+                message
+            )
+        elif warnings:
+            # Show warnings as information
+            QMessageBox.information(
+                self,
+                self.tr("Project Validation Warnings"),
+                message
+            )
+
     def export_game(self):
         """Export game - shows dialog with export options"""
         # Check if project is open
@@ -1394,7 +1439,10 @@ class PyGameMakerIDE(QMainWindow):
                 self.tr("Please open or create a project first before exporting a game.")
             )
             return
-        
+
+        # Validate project and show warnings
+        self._show_validation_warnings()
+
         # Create export options dialog
         from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QButtonGroup, QRadioButton
 
@@ -2415,6 +2463,10 @@ class PyGameMakerIDE(QMainWindow):
         if hasattr(self, 'export_game_action'):
             self.export_game_action.setEnabled(has_project)
 
+        # Enable/disable Build menu based on project state
+        if hasattr(self, 'build_menu'):
+            self.build_menu.setEnabled(has_project)
+
         if has_project:
             self.project_label.setText(self.tr("Project: {0}").format(self.current_project_data['name']))
         else:
@@ -2561,7 +2613,16 @@ class PyGameMakerIDE(QMainWindow):
             print("🔄 Language change event detected, recreating menus...")
             self.menuBar().clear()
             self.create_menu_bar()
+
+            # Remove existing toolbar before creating new one
+            existing_toolbar = self.findChild(QToolBar, "MainToolbar")
+            if existing_toolbar:
+                self.removeToolBar(existing_toolbar)
+                existing_toolbar.deleteLater()
             self.create_toolbar()
+
+            # Update UI state to enable/disable actions based on project state
+            self.update_ui_state()
             print("✅ Menus and toolbars recreated with new language")
 
         # Call parent class handler

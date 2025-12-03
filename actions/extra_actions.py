@@ -112,6 +112,24 @@ EXTRA_ACTIONS = {
             ActionParameter("not_flag", "boolean", "NOT", "Invert condition", default=False)
         ]
     ),
+    "if_next_room_exists": ActionDefinition(
+        name="if_next_room_exists",
+        display_name="If Next Room Exists",
+        category="rooms",
+        tab="extra",
+        description="Check if there is a next room after the current one",
+        icon="❓➡️",
+        parameters=[]
+    ),
+    "if_previous_room_exists": ActionDefinition(
+        name="if_previous_room_exists",
+        display_name="If Previous Room Exists",
+        category="rooms",
+        tab="extra",
+        description="Check if there is a previous room before the current one",
+        icon="❓⬅️",
+        parameters=[]
+    ),
 }
 
 # ============================================================================

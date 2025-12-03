@@ -32,7 +32,9 @@
       "Bash(/home/edu-thulleng/Dropbox/pygm2/translations/pygamemaker_it.qm )",
       "Bash(/home/edu-thulleng/Dropbox/pygm2/translations/pygamemaker_uk.ts )",
       "Bash(/home/edu-thulleng/Dropbox/pygm2/translations/pygamemaker_uk.qm )",
-      "Bash(/home/edu-thulleng/Dropbox/pygm2/translations/pygamemaker_fr.ts.backup)"
+      "Bash(/home/edu-thulleng/Dropbox/pygm2/translations/pygamemaker_fr.ts.backup)",
+      "Bash(find:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

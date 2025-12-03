@@ -139,7 +139,7 @@ class GameObject {
         if (this.events && this.events[eventName]) {
             const event = this.events[eventName];
             const actions = event.actions || [];
-            actions.forEach(action => this.executeAction(action, this._gameRef));
+            this.executeActions(actions, this._gameRef);
         }
     }
 
@@ -148,7 +148,7 @@ class GameObject {
         if (this.events && this.events.begin_step) {
             const event = this.events.begin_step;
             const actions = event.actions || [];
-            actions.forEach(action => this.executeAction(action, game));
+            this.executeActions(actions, game);
         }
     }
 
@@ -156,7 +156,7 @@ class GameObject {
         if (this.events && this.events.step) {
             const event = this.events.step;
             const actions = event.actions || [];
-            actions.forEach(action => this.executeAction(action, game));
+            this.executeActions(actions, game);
         }
     }
 
@@ -164,7 +164,7 @@ class GameObject {
         if (this.events && this.events.end_step) {
             const event = this.events.end_step;
             const actions = event.actions || [];
-            actions.forEach(action => this.executeAction(action, game));
+            this.executeActions(actions, game);
         }
     }
 
@@ -201,7 +201,7 @@ class GameObject {
                 for (const dirName of directions) {
                     if (keyboardEvents[dirName] && keyboardEvents[dirName].actions) {
                         const actions = keyboardEvents[dirName].actions;
-                        actions.forEach(action => this.executeAction(action, game));
+                        this.executeActions(actions, game);
                         break;
                     }
                 }
@@ -223,6 +223,15 @@ class GameObject {
         this.handleKeyboardEvent(key, this.events.keyboard_release, game);
     }
 
+    onNoKey(game) {
+        // Handle nokey event (fires when no arrow keys are pressed)
+        if (!this.events || !this.events.keyboard || !this.events.keyboard.nokey) return;
+
+        const nokeyEvent = this.events.keyboard.nokey;
+        const actions = nokeyEvent.actions || [];
+        this.executeActions(actions, game);
+    }
+
     handleKeyboardEvent(key, eventData, game) {
         // Map browser keys to event key names
         const keyMap = {
@@ -242,7 +251,7 @@ class GameObject {
         if (key.length === 1 && /[a-zA-Z]/.test(key)) {
             const upperKey = key.toUpperCase();
             if (eventData[upperKey] && eventData[upperKey].actions) {
-                eventData[upperKey].actions.forEach(action => this.executeAction(action, game));
+                this.executeActions(eventData[upperKey].actions, game);
             }
             return;
         }
@@ -250,7 +259,7 @@ class GameObject {
         // Handle number keys (0-9)
         if (key.length === 1 && /[0-9]/.test(key)) {
             if (eventData[key] && eventData[key].actions) {
-                eventData[key].actions.forEach(action => this.executeAction(action, game));
+                this.executeActions(eventData[key].actions, game);
             }
             return;
         }
@@ -258,13 +267,13 @@ class GameObject {
         // Handle special keys
         const mappedKey = keyMap[key] || key;
         if (eventData[mappedKey] && eventData[mappedKey].actions) {
-            eventData[mappedKey].actions.forEach(action => this.executeAction(action, game));
+            this.executeActions(eventData[mappedKey].actions, game);
         }
 
         // Also try legacy lowercase format for arrow keys
         const legacyKey = mappedKey.toLowerCase();
         if (eventData[legacyKey] && eventData[legacyKey].actions) {
-            eventData[legacyKey].actions.forEach(action => this.executeAction(action, game));
+            this.executeActions(eventData[legacyKey].actions, game);
         }
     }
 
@@ -272,7 +281,7 @@ class GameObject {
         if (this._pendingCreateEvent && this.events && this.events.create) {
             const createEvent = this.events.create;
             const actions = createEvent.actions || [];
-            actions.forEach(action => this.executeAction(action, game));
+            this.executeActions(actions, game);
             this._pendingCreateEvent = false;
         }
     }
@@ -336,6 +345,145 @@ class GameObject {
                 this.x = newX;
                 this.y = newY;
             }
+        }
+    }
+
+    /**
+     * Execute an array of actions with block-based conditional support.
+     * Handles if_xxx/else_block patterns where actions are sequential siblings.
+     */
+    executeActions(actions, game) {
+        let i = 0;
+        while (i < actions.length) {
+            const action = actions[i];
+            const actionType = action.action;
+            const params = action.parameters || {};
+
+            // Check if this is a conditional action
+            if (actionType && actionType.startsWith('if_')) {
+                // Check if this conditional uses NESTED then_actions/else_actions (legacy format)
+                // If so, delegate to executeAction which handles nested format
+                if (params.then_actions || params.else_actions) {
+                    this.executeAction(action, game);
+                    i++;
+                    continue;
+                }
+
+                // Otherwise, use SEQUENTIAL block-based format (if_xxx, actions, else_block, actions)
+                // Evaluate the condition
+                const conditionResult = this.evaluateCondition(action, game);
+
+                // Find the else_block position (if any) and end of block
+                let elseIndex = -1;
+                let endIndex = actions.length;
+
+                for (let j = i + 1; j < actions.length; j++) {
+                    const nextAction = actions[j].action;
+                    if (nextAction === 'else_block' || nextAction === 'else_action') {
+                        elseIndex = j;
+                        break;
+                    }
+                    // If we hit another if_* at the same level, that's the end
+                    if (nextAction && nextAction.startsWith('if_')) {
+                        endIndex = j;
+                        break;
+                    }
+                }
+
+                if (conditionResult) {
+                    // Condition is TRUE: execute actions from i+1 to elseIndex (or endIndex)
+                    const trueEndIndex = elseIndex >= 0 ? elseIndex : endIndex;
+                    for (let j = i + 1; j < trueEndIndex; j++) {
+                        this.executeAction(actions[j], game);
+                    }
+                    // Skip past the else block content
+                    if (elseIndex >= 0) {
+                        i = endIndex;  // Jump to end
+                    } else {
+                        i = trueEndIndex;
+                    }
+                } else {
+                    // Condition is FALSE: skip to else_block and execute from there
+                    if (elseIndex >= 0) {
+                        for (let j = elseIndex + 1; j < endIndex; j++) {
+                            this.executeAction(actions[j], game);
+                        }
+                        i = endIndex;
+                    } else {
+                        // No else block, skip the whole if block
+                        i = endIndex;
+                    }
+                }
+            } else if (actionType === 'else_block' || actionType === 'else_action') {
+                // Else blocks handled by if_* processing, skip if encountered standalone
+                i++;
+            } else {
+                // Regular action, execute normally
+                this.executeAction(action, game);
+                i++;
+            }
+        }
+    }
+
+    /**
+     * Evaluate a conditional action and return true/false.
+     */
+    evaluateCondition(action, game) {
+        const actionType = action.action;
+        const params = action.parameters || {};
+
+        switch (actionType) {
+            case 'if_next_room_exists':
+                const roomNamesNext = Object.keys(game.rooms);
+                const currentIdxNext = roomNamesNext.indexOf(game.currentRoom.name);
+                return currentIdxNext >= 0 && currentIdxNext < roomNamesNext.length - 1;
+
+            case 'if_previous_room_exists':
+                const roomNamesPrev = Object.keys(game.rooms);
+                const currentIdxPrev = roomNamesPrev.indexOf(game.currentRoom.name);
+                return currentIdxPrev > 0;
+
+            case 'if_on_grid':
+                const checkGridSize = params.grid_size || 32;
+                const nearestGridX = Math.round(this.x / checkGridSize) * checkGridSize;
+                const nearestGridY = Math.round(this.y / checkGridSize) * checkGridSize;
+                const gridTolerance = Math.max(Math.abs(this._hspeed), Math.abs(this._vspeed), 4) + 1;
+                return Math.abs(this.x - nearestGridX) <= gridTolerance &&
+                       Math.abs(this.y - nearestGridY) <= gridTolerance;
+
+            case 'if_collision':
+            case 'if_collision_at':
+                // Check collision at specified position
+                const checkX = params.x !== undefined ? params.x : this.x;
+                const checkY = params.y !== undefined ? params.y : this.y;
+                const targetObject = params.object;
+                // Would need to check collisions at this position
+                return false;  // Default to false for now
+
+            case 'if_variable':
+                // Compare a variable to a value
+                const varName = params.variable;
+                const compareValue = params.value;
+                const op = params.operation || '==';
+                const currentValue = this[varName];
+                switch (op) {
+                    case '==': return currentValue == compareValue;
+                    case '!=': return currentValue != compareValue;
+                    case '<': return currentValue < compareValue;
+                    case '>': return currentValue > compareValue;
+                    case '<=': return currentValue <= compareValue;
+                    case '>=': return currentValue >= compareValue;
+                    default: return currentValue == compareValue;
+                }
+
+            case 'if_question':
+                // Show a yes/no dialog and return result
+                const question = params.message || params.question || 'Yes or No?';
+                return confirm(question);
+
+            default:
+                console.warn(`Unknown conditional action: ${actionType}`);
+                return false;
         }
     }
 
@@ -419,6 +567,10 @@ class GameObject {
                 this.speed = 0;
                 this.targetX = null;
                 this.targetY = null;
+                // Snap to nearest grid position when stopping
+                const stopGridSize = 32;
+                this.x = Math.round(this.x / stopGridSize) * stopGridSize;
+                this.y = Math.round(this.y / stopGridSize) * stopGridSize;
                 break;
 
             // GAMEMAKER 7.0: Alarm actions
@@ -445,7 +597,7 @@ class GameObject {
                 const times = params.times || 1;
                 const repeatActions = params.actions || [];
                 for (let i = 0; i < times; i++) {
-                    repeatActions.forEach(a => this.executeAction(a, game));
+                    this.executeActions(repeatActions, game);
                 }
                 break;
 
@@ -500,12 +652,19 @@ class GameObject {
 
             case 'if_on_grid':
                 const checkGridSize = params.grid_size || 32;
-                const isOnGrid = (this.x % checkGridSize === 0) && (this.y % checkGridSize === 0);
+                // Use tolerance-based grid check (handles floating point positions)
+                const nearestGridX = Math.round(this.x / checkGridSize) * checkGridSize;
+                const nearestGridY = Math.round(this.y / checkGridSize) * checkGridSize;
+                const gridTolerance = Math.max(Math.abs(this._hspeed), Math.abs(this._vspeed), 4) + 1;
+                const isOnGrid = Math.abs(this.x - nearestGridX) <= gridTolerance &&
+                                 Math.abs(this.y - nearestGridY) <= gridTolerance;
 
-                if (isOnGrid && params.then_actions) {
-                    params.then_actions.forEach(a => this.executeAction(a, game));
-                } else if (!isOnGrid && params.else_actions) {
-                    params.else_actions.forEach(a => this.executeAction(a, game));
+                if (isOnGrid) {
+                    if (params.then_actions) {
+                        this.executeActions(params.then_actions, game);
+                    }
+                } else if (params.else_actions) {
+                    this.executeActions(params.else_actions, game);
                 }
                 break;
 
@@ -557,9 +716,9 @@ class GameObject {
                 }
 
                 if (collisionFound && params.then_actions) {
-                    params.then_actions.forEach(a => this.executeAction(a, game));
+                    this.executeActions(params.then_actions, game);
                 } else if (!collisionFound && params.else_actions) {
-                    params.else_actions.forEach(a => this.executeAction(a, game));
+                    this.executeActions(params.else_actions, game);
                 }
                 break;
 
@@ -632,6 +791,67 @@ class GameObject {
 
                 if (roomName && game.rooms[roomName]) {
                     game.changeRoom(roomName);
+                }
+                break;
+
+            case 'if_next_room_exists':
+                // Note: Block-based if/else handling is done in executeActions()
+                // This case handles legacy nested then_actions/else_actions format
+                const roomNamesForNext = Object.keys(game.rooms);
+                const currentIdxForNext = roomNamesForNext.indexOf(game.currentRoom.name);
+                const nextRoomExists = currentIdxForNext >= 0 && currentIdxForNext < roomNamesForNext.length - 1;
+
+                if (nextRoomExists && params.then_actions) {
+                    this.executeActions(params.then_actions, game);
+                } else if (!nextRoomExists && params.else_actions) {
+                    this.executeActions(params.else_actions, game);
+                }
+                break;
+
+            case 'if_previous_room_exists':
+                // Note: Block-based if/else handling is done in executeActions()
+                // This case handles legacy nested then_actions/else_actions format
+                const roomNamesForPrev = Object.keys(game.rooms);
+                const currentIdxForPrev = roomNamesForPrev.indexOf(game.currentRoom.name);
+                const prevRoomExists = currentIdxForPrev > 0;
+
+                if (prevRoomExists && params.then_actions) {
+                    this.executeActions(params.then_actions, game);
+                } else if (!prevRoomExists && params.else_actions) {
+                    this.executeActions(params.else_actions, game);
+                }
+                break;
+
+            case 'else_block':
+            case 'else_action':
+                // Else blocks are handled by their parent if_* actions
+                // They should not be executed directly
+                break;
+
+            case 'display_message':
+            case 'show_message':
+                // Display a message dialog
+                const message = params.message || params.text || '';
+                if (message) {
+                    // Stop movement and snap to grid before showing message
+                    // This prevents the player from drifting off-grid during collision events
+                    this.hspeed = 0;
+                    this.vspeed = 0;
+                    this.speed = 0;
+                    const msgGridSize = 32;
+                    this.x = Math.round(this.x / msgGridSize) * msgGridSize;
+                    this.y = Math.round(this.y / msgGridSize) * msgGridSize;
+
+                    // Also stop and snap the collision "other" object if applicable
+                    if (this._collision_other) {
+                        this._collision_other.hspeed = 0;
+                        this._collision_other.vspeed = 0;
+                        this._collision_other.speed = 0;
+                        this._collision_other.x = Math.round(this._collision_other.x / msgGridSize) * msgGridSize;
+                        this._collision_other.y = Math.round(this._collision_other.y / msgGridSize) * msgGridSize;
+                    }
+
+                    alert(message);
                 }
                 break;
 
@@ -739,7 +959,7 @@ class GameObject {
                     const collisionEvent = this.events[collisionKey];
                     const actions = collisionEvent.actions || [];
                     this._collision_other = other;
-                    actions.forEach(action => this.executeAction(action, game));
+                    this.executeActions(actions, game);
                 }
             }
         }
@@ -772,6 +992,18 @@ class GameRoom {
         });
 
         // 3. Keyboard events (handled separately in game.processKeyboard)
+        // 3b. NoKey events - only fire when no arrow keys pressed AND object is moving
+        // This prevents constant stop_movement calls when already stationary
+        const arrowKeysForNoKey = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+        const anyArrowKeyHeld = arrowKeysForNoKey.some(key => game.keys[key]);
+        if (!anyArrowKeyHeld) {
+            this.instances.forEach(inst => {
+                // Only trigger nokey if the instance is actually moving
+                if (!inst.toDestroy && (inst._hspeed !== 0 || inst._vspeed !== 0)) {
+                    inst.onNoKey(game);
+                }
+            });
+        }
 
         // 4. Step events
         this.instances.forEach(inst => {

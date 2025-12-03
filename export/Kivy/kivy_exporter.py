@@ -187,15 +187,32 @@ class KivyExporter:
         """Generate the main Kivy application file"""
         settings = self.project_data.get('settings', {})
         rooms = self.project_data.get('assets', {}).get('rooms', {})
-        
+
         # Get first room as starting room
-        first_room = next(iter(rooms.keys())) if rooms else "room0"
-        
+        room_names = list(rooms.keys())
+        first_room = room_names[0] if room_names else "room0"
+
         # Get room dimensions
         room_data = rooms.get(first_room, {})
         room_width = room_data.get('width', 640)
         room_height = room_data.get('height', 480)
-        
+
+        # Generate imports for all rooms
+        room_imports = []
+        room_class_map = {}
+        for room_name in room_names:
+            class_name = self._get_room_class_name(room_name)
+            room_imports.append(f"from scenes.{room_name} import {class_name}")
+            room_class_map[room_name] = class_name
+
+        room_imports_str = '\n'.join(room_imports)
+
+        # Generate room list for navigation
+        room_list_str = ', '.join([f'"{name}"' for name in room_names])
+
+        # Generate room class mapping
+        room_mapping_str = ', '.join([f'"{name}": {cls}' for name, cls in room_class_map.items()])
+
         code = f'''#!/usr/bin/env python3
 """
 Generated Kivy Game Application
@@ -210,32 +227,136 @@ from kivy.graphics import Rectangle, Color
 from kivy.core.image import Image as CoreImage
 import os
 
-# Import game scenes
-from scenes.{first_room} import {self._get_room_class_name(first_room)}
+# Import all game scenes
+{room_imports_str}
+
+# Global game manager reference
+_game_app = None
+
+# Room configuration
+ROOM_ORDER = [{room_list_str}]
+ROOM_CLASSES = {{{room_mapping_str}}}
+
+
+def get_game_app():
+    """Get the global game app instance"""
+    return _game_app
+
+
+def goto_next_room():
+    """Go to the next room in the room order"""
+    if _game_app:
+        _game_app.goto_next_room()
+
+
+def goto_previous_room():
+    """Go to the previous room in the room order"""
+    if _game_app:
+        _game_app.goto_previous_room()
+
+
+def goto_room(room_name):
+    """Go to a specific room by name"""
+    if _game_app:
+        _game_app.goto_room(room_name)
+
+
+def next_room_exists():
+    """Check if there is a next room after the current one"""
+    if _game_app:
+        return _game_app.current_room_index + 1 < len(ROOM_ORDER)
+    return False
+
+
+def previous_room_exists():
+    """Check if there is a previous room before the current one"""
+    if _game_app:
+        return _game_app.current_room_index > 0
+    return False
 
 
 class GameApp(App):
     """Main game application"""
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.current_room_index = 0
+        self.scene = None
+        self.update_event = None
+
     def build(self):
         """Build the application"""
+        global _game_app
+        _game_app = self
+
         # Set window properties to match room size
         Window.size = ({room_width}, {room_height})
         Window.clearcolor = (0, 0, 0, 1)
 
         # Create and return the starting scene
         self.scene = {self._get_room_class_name(first_room)}()
+        self.current_room_index = 0
 
         # PERFORMANCE FIX: Schedule game loop at 60 FPS for optimal performance
-        # Running faster than 60 FPS wastes CPU/battery with no visual benefit
-        # The scene.update() method uses dt for frame-independent movement
-        Clock.schedule_interval(self.scene.update, 1.0/60.0)  # 60 FPS target
+        self.update_event = Clock.schedule_interval(self.scene.update, 1.0/60.0)
 
         return self.scene
-    
+
+    def goto_next_room(self):
+        """Switch to the next room"""
+        next_index = self.current_room_index + 1
+        if next_index < len(ROOM_ORDER):
+            self._switch_to_room(next_index)
+        else:
+            print("Already at last room")
+
+    def goto_previous_room(self):
+        """Switch to the previous room"""
+        if self.current_room_index > 0:
+            self._switch_to_room(self.current_room_index - 1)
+        else:
+            print("Already at first room")
+
+    def goto_room(self, room_name):
+        """Switch to a specific room by name"""
+        if room_name in ROOM_ORDER:
+            index = ROOM_ORDER.index(room_name)
+            self._switch_to_room(index)
+        else:
+            print(f"Room '{{room_name}}' not found")
+
+    def _switch_to_room(self, room_index):
+        """Internal method to switch rooms"""
+        if room_index < 0 or room_index >= len(ROOM_ORDER):
+            return
+
+        # Stop current update loop
+        if self.update_event:
+            Clock.unschedule(self.update_event)
+
+        # Clear current scene
+        if self.scene:
+            self.scene.clear_widgets()
+
+        # Create new scene
+        room_name = ROOM_ORDER[room_index]
+        room_class = ROOM_CLASSES[room_name]
+        self.scene = room_class()
+        self.current_room_index = room_index
+
+        # Update root widget
+        self.root.clear_widgets()
+        self.root.add_widget(self.scene)
+
+        # Restart update loop
+        self.update_event = Clock.schedule_interval(self.scene.update, 1.0/60.0)
+
+        print(f"Switched to room: {{room_name}}")
+
     def on_stop(self):
         """Cleanup when app stops"""
-        Clock.unschedule(self.scene.update)
+        if self.update_event:
+            Clock.unschedule(self.update_event)
         return True
 
 
@@ -317,10 +438,12 @@ if __name__ == '__main__':
             y_gamemaker = instance.get('y', 0)
 
             # KIVY COORDINATE FIX: Flip Y-axis for room layout
-            # GameMaker: Y=0 at top, increases downward
-            # Kivy: Y=0 at bottom, increases upward
-            # Formula: y_kivy = room_height - y_gamemaker
-            y = height - y_gamemaker
+            # GameMaker: Y=0 at top, increases downward, position is sprite origin (usually top-left)
+            # Kivy: Y=0 at bottom, increases upward, position is bottom-left corner
+            # Formula: y_kivy = room_height - y_gamemaker - sprite_height
+            # We use 32 as default sprite height (standard grid size)
+            sprite_height = 32
+            y = height - y_gamemaker - sprite_height
 
             if obj_type:
                 class_name_obj = self._get_object_class_name(obj_type)
@@ -828,9 +951,11 @@ class GameObject(Widget):
     
     def is_on_grid(self):
         """Check if object is close to grid alignment"""
-        # Check if we're within movement speed of a grid position
-        # This handles float precision issues
-        tolerance = 3.5  # Allow up to 3.5 pixels off (tighter tolerance to prevent overshoot)
+        # Tolerance must account for variable frame rates
+        # At 30 FPS with speed 4: movement = 4 * 2.0 = 8 pixels/frame
+        # Use generous tolerance to handle frame rate variations
+        base_speed = max(abs(self.hspeed), abs(self.vspeed), 4)
+        tolerance = base_speed * 2.5  # Handle up to ~24 FPS
 
         # Find nearest grid position
         nearest_x = round(self.x / self.grid_size) * self.grid_size
@@ -1151,7 +1276,13 @@ class {class_name}(GameObject):
         return '\n'.join(code_lines)
 
     def _generate_grid_keyboard_handler(self, keyboard_events: List[Dict]) -> str:
-        """Generate an on_update method that checks keyboard state for grid-based movement"""
+        """Generate an on_update method that checks keyboard state for grid-based movement
+
+        Grid movement logic:
+        - When on a grid position, check keys and set movement direction
+        - When NOT on grid, continue moving until we reach a grid position
+        - Track whether keys are released mid-movement with _want_to_stop flag
+        """
         key_map = {
             'right': '275',
             'left': '276',
@@ -1159,72 +1290,96 @@ class {class_name}(GameObject):
             'down': '274',
         }
 
-        # Collect all key codes used in events
-        used_key_codes = []
-        for event in keyboard_events:
-            key_name = event.get('key_name', '')
-            if key_name in key_map:
-                used_key_codes.append(key_map[key_name])
-
-        code_lines = []
-        code_lines.append("    def on_update(self, dt):")
-        code_lines.append('        """Step event with keyboard checking for grid-based movement"""')
-        code_lines.append("        # Check if we're on a grid position before processing keys")
-        code_lines.append("        # Use tolerance-based grid check to handle floating point precision")
-        code_lines.append("        on_grid = self.is_on_grid()")
-        code_lines.append("")
-        code_lines.append("        if on_grid:")
-        code_lines.append("            # Snap to exact grid position when starting movement")
-        code_lines.append("            self.snap_to_grid()")
-
-        first_key = True
+        # Extract speed values from the keyboard events
+        speed_values = {'right': 4, 'left': -4, 'up': 4, 'down': -4}
         for event in keyboard_events:
             key_name = event.get('key_name', '')
             actions = event.get('actions', [])
-            key_code = key_map.get(key_name, '0')
-
-            if_keyword = "if" if first_key else "elif"
-            first_key = False
-            code_lines.append(f"            {if_keyword} self.scene.keys_pressed.get({key_code}, False):  # {key_name}")
-
-            # For grid movement, we need to extract the inner actions from if_on_grid
-            inner_actions = []
             for action in actions:
                 if isinstance(action, dict):
                     action_type = action.get('action_type', action.get('action', ''))
                     if action_type == 'if_on_grid':
-                        # Extract then_actions from if_on_grid
                         params = action.get('parameters', {})
                         then_actions = params.get('then_actions', [])
-                        inner_actions.extend(then_actions)
-                    else:
-                        inner_actions.append(action)
-
-            if inner_actions:
-                for action in inner_actions:
-                    if isinstance(action, dict):
-                        action_type = action.get('action_type', action.get('action', ''))
+                        for inner in then_actions:
+                            if isinstance(inner, dict):
+                                inner_type = inner.get('action_type', inner.get('action', ''))
+                                inner_params = inner.get('parameters', {})
+                                if inner_type == 'set_hspeed' and key_name in ['right', 'left']:
+                                    speed_values[key_name] = inner_params.get('value', 4)
+                                elif inner_type == 'set_vspeed' and key_name in ['up', 'down']:
+                                    # Flip for Kivy coordinates
+                                    val = inner_params.get('value', 4)
+                                    speed_values[key_name] = -val if isinstance(val, (int, float)) else val
+                    elif action_type == 'set_hspeed' and key_name in ['right', 'left']:
                         params = action.get('parameters', {})
-                        if action_type == 'set_hspeed':
-                            value = params.get('value', 0)
-                            code_lines.append(f"                self.hspeed = {value}")
-                        elif action_type == 'set_vspeed':
-                            value = params.get('value', 0)
-                            code_lines.append(f"                self.vspeed = {value}")
-                        elif action_type == 'stop_movement':
-                            code_lines.append("                self.hspeed = 0")
-                            code_lines.append("                self.vspeed = 0")
-                        else:
-                            code_lines.append(f"                # TODO: {action_type}")
-            else:
-                code_lines.append("                pass")
+                        speed_values[key_name] = params.get('value', 4)
+                    elif action_type == 'set_vspeed' and key_name in ['up', 'down']:
+                        params = action.get('parameters', {})
+                        val = params.get('value', 4)
+                        speed_values[key_name] = -val if isinstance(val, (int, float)) else val
 
-        # Add else clause to stop movement when no arrow keys are pressed
-        code_lines.append("            else:")
-        code_lines.append("                # No movement keys pressed - stop movement")
+        code_lines = []
+        code_lines.append("    def on_update(self, dt):")
+        code_lines.append('        """Step event with keyboard checking for grid-based movement"""')
+        code_lines.append("")
+        code_lines.append("        # Initialize stop flag if not present")
+        code_lines.append("        if not hasattr(self, '_want_to_stop'):")
+        code_lines.append("            self._want_to_stop = False")
+        code_lines.append("")
+        code_lines.append("        # Check if any movement key is currently pressed")
+        code_lines.append("        key_right = self.scene.keys_pressed.get(275, False)")
+        code_lines.append("        key_left = self.scene.keys_pressed.get(276, False)")
+        code_lines.append("        key_up = self.scene.keys_pressed.get(273, False)")
+        code_lines.append("        key_down = self.scene.keys_pressed.get(274, False)")
+        code_lines.append("        any_key_pressed = key_right or key_left or key_up or key_down")
+        code_lines.append("")
+        code_lines.append("        # If no keys pressed and we're moving, mark that we want to stop")
+        code_lines.append("        if not any_key_pressed and (self.hspeed != 0 or self.vspeed != 0):")
+        code_lines.append("            self._want_to_stop = True")
+        code_lines.append("")
+        code_lines.append("        # Check if we're on or near a grid position")
+        code_lines.append("        grid = self.grid_size")
+        code_lines.append("        # Tolerance must account for frame-rate-scaled movement")
+        code_lines.append("        speed_factor = dt * 60.0 if dt > 0 else 1.0")
+        code_lines.append("        actual_movement = max(abs(self.hspeed), abs(self.vspeed), 4) * speed_factor")
+        code_lines.append("        tolerance = actual_movement + 1.0")
+        code_lines.append("        nearest_x = round(self.x / grid) * grid")
+        code_lines.append("        nearest_y = round(self.y / grid) * grid")
+        code_lines.append("        on_grid = abs(self.x - nearest_x) <= tolerance and abs(self.y - nearest_y) <= tolerance")
+        code_lines.append("")
+        code_lines.append("        # DEBUG: Uncomment to trace grid stopping")
+        code_lines.append("        # if self._want_to_stop or not any_key_pressed:")
+        code_lines.append("        #     print(f'DEBUG: x={self.x:.1f} y={self.y:.1f} hsp={self.hspeed} vsp={self.vspeed} on_grid={on_grid} want_stop={self._want_to_stop} keys={any_key_pressed}')")
+        code_lines.append("")
+        code_lines.append("        if on_grid:")
+        code_lines.append("            # Snap to exact grid position")
+        code_lines.append("            self.x = nearest_x")
+        code_lines.append("            self.y = nearest_y")
+        code_lines.append("            self._update_position()")
+        code_lines.append("")
+        code_lines.append("            # If we wanted to stop (keys released mid-movement), stop now")
+        code_lines.append("            if self._want_to_stop or not any_key_pressed:")
         code_lines.append("                self.hspeed = 0")
         code_lines.append("                self.vspeed = 0")
-        code_lines.append("")  # Empty line to separate from next method
+        code_lines.append("                self._want_to_stop = False")
+        code_lines.append("            else:")
+        code_lines.append("                # Set movement direction based on pressed key")
+        code_lines.append(f"                if key_right:")
+        code_lines.append(f"                    self.hspeed = {speed_values.get('right', 4)}")
+        code_lines.append(f"                    self.vspeed = 0")
+        code_lines.append(f"                elif key_left:")
+        code_lines.append(f"                    self.hspeed = {speed_values.get('left', -4)}")
+        code_lines.append(f"                    self.vspeed = 0")
+        code_lines.append(f"                elif key_up:")
+        code_lines.append(f"                    self.hspeed = 0")
+        code_lines.append(f"                    self.vspeed = {speed_values.get('up', 4)}")
+        code_lines.append(f"                elif key_down:")
+        code_lines.append(f"                    self.hspeed = 0")
+        code_lines.append(f"                    self.vspeed = {speed_values.get('down', -4)}")
+        code_lines.append("")
+        code_lines.append("        # If NOT on grid, continue moving - we'll stop when we reach grid")
+        code_lines.append("")
 
         return '\n'.join(code_lines)
 
@@ -1375,7 +1530,9 @@ class {class_name}(GameObject):
 
         # GAMEMAKER 7.0 CONTROL ACTIONS
         elif action_type == 'if_on_grid':
-            return "if self.is_on_grid():"
+            # Check if on grid AND snap to exact position
+            return """if self.is_on_grid():
+            self.snap_to_grid()"""
 
         elif action_type == 'test_expression':
             expr = params.get('expression', 'False')

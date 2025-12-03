@@ -103,6 +103,8 @@ class ActionCodeGenerator:
             self.add_line("if self.is_on_grid():")
             self.push_indent()
             self.block_stack.append('if_on_grid')
+            # Snap to exact grid position when on grid
+            self.add_line("self.snap_to_grid()")
 
             # Process nested then_actions if present
             then_actions = params.get('then_actions', [])
@@ -141,6 +143,64 @@ class ActionCodeGenerator:
             self.add_line(f"if self.scene.keys_pressed.get({key_code}, False):")
             self.push_indent()
             self.block_stack.append('if')
+            return
+
+        elif action_type == 'if_next_room_exists':
+            self.add_line("from main import next_room_exists")
+            self.add_line("if next_room_exists():")
+            self.push_indent()
+            self.block_stack.append('if')
+
+            # Process nested then_actions if present
+            then_actions = params.get('then_actions', [])
+            if then_actions:
+                for nested_action in then_actions:
+                    if isinstance(nested_action, dict):
+                        self.process_action(nested_action, event_type)
+                # Pop indent after processing then actions
+                self.pop_indent()
+
+                # Process else_actions if present
+                else_actions = params.get('else_actions', [])
+                if else_actions:
+                    self.add_line("else:")
+                    self.push_indent()
+                    for nested_action in else_actions:
+                        if isinstance(nested_action, dict):
+                            self.process_action(nested_action, event_type)
+                    self.pop_indent()
+
+                if self.block_stack and self.block_stack[-1] == 'if':
+                    self.block_stack.pop()
+            return
+
+        elif action_type == 'if_previous_room_exists':
+            self.add_line("from main import previous_room_exists")
+            self.add_line("if previous_room_exists():")
+            self.push_indent()
+            self.block_stack.append('if')
+
+            # Process nested then_actions if present
+            then_actions = params.get('then_actions', [])
+            if then_actions:
+                for nested_action in then_actions:
+                    if isinstance(nested_action, dict):
+                        self.process_action(nested_action, event_type)
+                # Pop indent after processing then actions
+                self.pop_indent()
+
+                # Process else_actions if present
+                else_actions = params.get('else_actions', [])
+                if else_actions:
+                    self.add_line("else:")
+                    self.push_indent()
+                    for nested_action in else_actions:
+                        if isinstance(nested_action, dict):
+                            self.process_action(nested_action, event_type)
+                    self.pop_indent()
+
+                if self.block_stack and self.block_stack[-1] == 'if':
+                    self.block_stack.pop()
             return
 
         # LOOP ACTIONS
@@ -221,9 +281,10 @@ class ActionCodeGenerator:
             return f"self.hspeed = {params.get('speed', params.get('value', 0))}"
 
         elif action_type == 'set_vspeed':
-            # KIVY COORDINATE FIX: Kivy uses bottom-left origin (Y increases upward)
-            # GameMaker uses top-left origin (Y increases downward)
-            # So we need to flip the vspeed sign
+            # KIVY COORDINATE FIX: Flip vspeed sign
+            # GameMaker: Y=0 at top, increases downward. UP = negative vspeed
+            # Kivy: Y=0 at bottom, increases upward. UP = positive vspeed
+            # So: kivy_vspeed = -gamemaker_vspeed
             speed = params.get('speed', params.get('value', 0))
             flipped_speed = -speed if isinstance(speed, (int, float)) else f"-({speed})"
             return f"self.vspeed = {flipped_speed}"
@@ -274,6 +335,20 @@ class ActionCodeGenerator:
             alarm_num = params.get('alarm_number', 0)
             steps = params.get('steps', 30)
             return f"self.alarms[{alarm_num}] = {steps}"
+
+        # ROOM ACTIONS
+        elif action_type == 'next_room':
+            return "from main import goto_next_room; goto_next_room()"
+
+        elif action_type == 'previous_room':
+            return "from main import goto_previous_room; goto_previous_room()"
+
+        elif action_type == 'goto_room':
+            room_name = params.get('room', params.get('room_name', ''))
+            return f"from main import goto_room; goto_room('{room_name}')"
+
+        elif action_type == 'restart_room':
+            return "from main import get_game_app; app = get_game_app(); app._switch_to_room(app.current_room_index) if app else None"
 
         # DEFAULT
         else:

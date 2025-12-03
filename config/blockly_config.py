@@ -74,8 +74,11 @@ BLOCK_REGISTRY: Dict[str, List[Dict[str, str]]] = {
     ],
     "Room": [
         {"type": "room_goto_next", "name": "Next Room", "description": "Go to next room"},
+        {"type": "room_goto_previous", "name": "Previous Room", "description": "Go to previous room"},
         {"type": "room_restart", "name": "Restart Room", "description": "Restart current room"},
         {"type": "room_goto", "name": "Go to Room", "description": "Go to specific room"},
+        {"type": "room_if_next_exists", "name": "If Next Room Exists", "description": "Check if next room exists"},
+        {"type": "room_if_previous_exists", "name": "If Previous Room Exists", "description": "Check if previous room exists"},
     ],
     "Values": [
         {"type": "value_x", "name": "X Position", "description": "Get X coordinate"},
@@ -219,8 +222,11 @@ class BlocklyConfig:
 
         # Room
         config.enable_block("room_goto_next")
+        config.enable_block("room_goto_previous")
         config.enable_block("room_restart")
         config.enable_block("room_goto")
+        config.enable_block("room_if_next_exists")
+        config.enable_block("room_if_previous_exists")
 
         # Output
         config.enable_block("output_message")
