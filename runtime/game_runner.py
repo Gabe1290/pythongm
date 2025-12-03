@@ -1109,6 +1109,12 @@ class GameRunner:
         The dialog shows the message centered on screen with an OK button.
         User can click OK or press Enter/Space/Escape to dismiss.
         """
+        # Stop all instances when showing a message dialog
+        # This prevents other instances from continuing to move while dialog is open
+        for instance in self.current_room.instances:
+            instance.hspeed = 0
+            instance.vspeed = 0
+
         # Create a semi-transparent overlay
         overlay = pygame.Surface((self.window_width, self.window_height))
         overlay.fill((0, 0, 0))
