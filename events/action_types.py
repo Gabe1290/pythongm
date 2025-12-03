@@ -54,7 +54,7 @@ ACTION_TYPES = {
         display_name="Move Grid",
         description="Move one grid unit in the specified direction",
         category="Movement",
-        icon="⬛",
+        icon="▦",
         parameters=[
             ActionParameter(
                 name="direction",
@@ -122,7 +122,7 @@ ACTION_TYPES = {
         display_name="Snap to Grid",
         description="Align instance position to grid",
         category="Grid",
-        icon="📐",
+        icon="▦",
         parameters=[
             ActionParameter(
                 name="grid_size",
@@ -139,7 +139,7 @@ ACTION_TYPES = {
         display_name="If On Grid",
         description="Check if object is aligned to grid",
         category="Grid",
-        icon="🎯",
+        icon="▦",
         parameters=[
             ActionParameter(
                 name="grid_size",
@@ -170,7 +170,7 @@ ACTION_TYPES = {
         display_name="Stop If No Keys Pressed",
         description="Stop movement on grid when no movement keys are pressed (perfect for smooth grid snapping)",
         category="Grid",
-        icon="⏸️",
+        icon="▦",
         parameters=[
             ActionParameter(
                 name="grid_size",
