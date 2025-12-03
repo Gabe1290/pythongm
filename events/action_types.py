@@ -249,16 +249,16 @@ ACTION_TYPES = {
         name="restart_room",
         display_name="Restart Room",
         description="Restart current room",
-        category="Game",
+        category="Room",
         icon="🔄",
         parameters=[]
     ),
-    
+
     "next_room": ActionType(
         name="next_room",
         display_name="Next Room",
         description="Go to next room",
-        category="Game",
+        category="Room",
         icon="➡️",
         parameters=[]
     ),
@@ -267,7 +267,7 @@ ACTION_TYPES = {
         name="previous_room",
         display_name="Previous Room",
         description="Go to previous room",
-        category="Game",
+        category="Room",
         icon="⬅️",
         parameters=[]
     ),
@@ -276,7 +276,7 @@ ACTION_TYPES = {
         name="if_next_room_exists",
         display_name="If Next Room Exists",
         description="Check if there is a next room after the current one",
-        category="Game",
+        category="Room",
         icon="❓➡️",
         parameters=[
             ActionParameter(
@@ -300,7 +300,7 @@ ACTION_TYPES = {
         name="if_previous_room_exists",
         display_name="If Previous Room Exists",
         description="Check if there is a previous room before the current one",
-        category="Game",
+        category="Room",
         icon="❓⬅️",
         parameters=[
             ActionParameter(
