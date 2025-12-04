@@ -19,6 +19,10 @@ from utils.config import Config
 class LanguageManager:
     """Manages application translations and language switching"""
 
+    # Translation file groups - these are loaded in order
+    # Each group is a separate .qm file: pygm2_XX_group.qm
+    TRANSLATION_GROUPS = ['core', 'editors', 'actions', 'dialogs', 'blockly', 'misc']
+
     # Language metadata: code -> (display_name, flag_emoji)
     # This is a reference table - languages only appear in menu if .qm file exists
     # Qt's standard translations (for buttons like Yes/No) are loaded separately
@@ -64,7 +68,7 @@ class LanguageManager:
 
     def __init__(self):
         self.current_language = Config.get('language', 'en')
-        self.translator = QTranslator()
+        self.translators = []  # List of QTranslator instances for split files
         self.qt_translator = QTranslator()  # For Qt's built-in strings (Yes/No buttons, etc.)
         self.translations_dir = Path(__file__).parent.parent / 'translations'
 
@@ -82,11 +86,12 @@ class LanguageManager:
         found_codes = set()
         for qm_file in self.translations_dir.glob('*.qm'):
             # Extract language code from filename
-            # Supports: pygm2_XX.qm, pygamemaker_XX.qm
-            name = qm_file.stem  # e.g., "pygm2_fr" or "pygamemaker_es"
-            if '_' in name:
-                code = name.split('_', 1)[1]  # Get part after first underscore
-                if code and code != 'en':  # Skip English (it's built-in)
+            # Supports: pygm2_XX.qm, pygm2_XX_group.qm, pygamemaker_XX.qm
+            name = qm_file.stem  # e.g., "pygm2_fr", "pygm2_fr_core", "pygamemaker_es"
+            parts = name.split('_')
+            if len(parts) >= 2:
+                code = parts[1]  # Language code is always second part
+                if code and code != 'en' and len(code) == 2:  # Skip English, only 2-char codes
                     found_codes.add(code)
 
         # Build language list with metadata
@@ -123,6 +128,41 @@ class LanguageManager:
                 return f"{flag} {name}"
         return "🇬🇧 English"
 
+    def _get_translation_files(self, language_code: str) -> list:
+        """
+        Get list of translation files for a language.
+        Returns split files if available, otherwise falls back to monolithic file.
+        """
+        files = []
+
+        # First, check for split files (pygm2_XX_group.qm)
+        for group in self.TRANSLATION_GROUPS:
+            split_file = self.translations_dir / f"pygm2_{language_code}_{group}.qm"
+            if split_file.exists():
+                files.append(split_file)
+
+        # If split files found, use them
+        if files:
+            return files
+
+        # Fall back to monolithic file (pygm2_XX.qm or pygamemaker_XX.qm)
+        monolithic = self.translations_dir / f"pygm2_{language_code}.qm"
+        if monolithic.exists():
+            return [monolithic]
+
+        legacy = self.translations_dir / f"pygamemaker_{language_code}.qm"
+        if legacy.exists():
+            return [legacy]
+
+        return []
+
+    def _remove_all_translators(self, app):
+        """Remove all installed translators from the app."""
+        for translator in self.translators:
+            app.removeTranslator(translator)
+        self.translators.clear()
+        app.removeTranslator(self.qt_translator)
+
     def set_language(self, language_code: str):
         """Set the application language"""
         print(f"🌐 set_language called with: {language_code}")
@@ -136,28 +176,33 @@ class LanguageManager:
         app = QApplication.instance()
         print(f"   App instance: {app}")
         if app:
-            app.removeTranslator(self.translator)
-            app.removeTranslator(self.qt_translator)
+            self._remove_all_translators(app)
             print(f"   ✅ Removed old translators")
 
         # Load new translation
         if language_code != 'en':  # English is the default, no translation needed
-            # Try pygm2 first (newer, more complete translations), then fall back to pygamemaker
-            translation_file = self.translations_dir / f"pygm2_{language_code}.qm"
-            if not translation_file.exists():
-                translation_file = self.translations_dir / f"pygamemaker_{language_code}.qm"
+            translation_files = self._get_translation_files(language_code)
 
-            print(f"   📁 Translation file: {translation_file}")
-            print(f"   📁 File exists: {translation_file.exists()}")
+            if translation_files:
+                print(f"   📁 Found {len(translation_files)} translation file(s)")
+                loaded_count = 0
 
-            if translation_file.exists():
-                print(f"   📂 Loading translation file...")
-                if self.translator.load(str(translation_file)):
-                    print(f"   ✅ Translation loaded successfully")
+                for tf in translation_files:
+                    print(f"   📂 Loading {tf.name}...")
+                    translator = QTranslator()
+                    if translator.load(str(tf)):
+                        self.translators.append(translator)
+                        if app:
+                            app.installTranslator(translator)
+                        loaded_count += 1
+                        print(f"   ✅ Loaded {tf.name}")
+                    else:
+                        print(f"   ⚠️ Failed to load {tf.name}")
+
+                if loaded_count > 0:
+                    print(f"   ✅ {loaded_count} translator(s) installed")
+
                     if app:
-                        app.installTranslator(self.translator)
-                        print(f"   ✅ Translator installed to app")
-
                         # Load Qt's built-in translations for standard buttons (Yes, No, OK, Cancel, etc.)
                         from PySide6.QtCore import QLibraryInfo
                         qt_translations_path = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
@@ -184,10 +229,10 @@ class LanguageManager:
                     print(f"   ✅ Language set to: {language_code}")
                     return True
                 else:
-                    print(f"   ❌ Failed to load translation file: {translation_file}")
+                    print(f"   ❌ Failed to load any translation files")
                     return False
             else:
-                print(f"   ❌ Translation file not found: {translation_file}")
+                print(f"   ❌ No translation files found for {language_code}")
                 print(f"Using English as fallback")
                 # Still set the language code even if file doesn't exist
                 self.current_language = language_code
@@ -228,54 +273,59 @@ class LanguageManager:
             print(f"   ❌ No app instance")
             return False
 
-        # Try pygm2 first (newer, more complete translations), then fall back to pygamemaker
-        translation_file = self.translations_dir / f"pygm2_{self.current_language}.qm"
-        if not translation_file.exists():
-            translation_file = self.translations_dir / f"pygamemaker_{self.current_language}.qm"
+        translation_files = self._get_translation_files(self.current_language)
 
-        print(f"   📁 Translation file: {translation_file}")
-        print(f"   📁 File exists: {translation_file.exists()}")
+        if not translation_files:
+            print(f"   ❌ No translation files found for {self.current_language}")
+            return False
 
-        if translation_file.exists():
-            print(f"   📂 Loading translation file...")
-            if self.translator.load(str(translation_file)):
-                print(f"   ✅ Translation loaded successfully")
-                app.installTranslator(self.translator)
-                print(f"   ✅ Translator installed to app")
+        print(f"   📁 Found {len(translation_files)} translation file(s)")
+        loaded_count = 0
 
-                # Load Qt's built-in translations for standard buttons (Yes, No, OK, Cancel, etc.)
-                from PySide6.QtCore import QLibraryInfo
-                qt_translations_path = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
-                if self.qt_translator.load(f"qtbase_{self.current_language}", qt_translations_path):
-                    app.installTranslator(self.qt_translator)
-                    print(f"   ✅ Qt base translator installed for {self.current_language}")
-                else:
-                    print(f"   ⚠️ Qt base translations not found for {self.current_language}")
-
-                return True
+        for tf in translation_files:
+            print(f"   📂 Loading {tf.name}...")
+            translator = QTranslator()
+            if translator.load(str(tf)):
+                self.translators.append(translator)
+                app.installTranslator(translator)
+                loaded_count += 1
+                print(f"   ✅ Loaded {tf.name}")
             else:
-                print(f"   ❌ Failed to load translation file")
-                return False
+                print(f"   ⚠️ Failed to load {tf.name}")
+
+        if loaded_count > 0:
+            print(f"   ✅ {loaded_count} translator(s) installed")
+
+            # Load Qt's built-in translations for standard buttons (Yes, No, OK, Cancel, etc.)
+            from PySide6.QtCore import QLibraryInfo
+            qt_translations_path = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
+            if self.qt_translator.load(f"qtbase_{self.current_language}", qt_translations_path):
+                app.installTranslator(self.qt_translator)
+                print(f"   ✅ Qt base translator installed for {self.current_language}")
+            else:
+                print(f"   ⚠️ Qt base translations not found for {self.current_language}")
+
+            return True
         else:
-            print(f"   ❌ Translation file not found")
+            print(f"   ❌ Failed to load any translation files")
             return False
 
     def get_translation_file_path(self, language_code: str) -> Path:
-        """Get path to translation file for a language"""
-        # Try pygm2 first, then fall back to pygamemaker
-        pygm2_path = self.translations_dir / f"pygm2_{language_code}.qm"
-        if pygm2_path.exists():
-            return pygm2_path
-        return self.translations_dir / f"pygamemaker_{language_code}.qm"
+        """Get path to translation file for a language (returns first available)"""
+        files = self._get_translation_files(language_code)
+        if files:
+            return files[0]
+        return self.translations_dir / f"pygm2_{language_code}.qm"
+
+    def get_translation_file_paths(self, language_code: str) -> list:
+        """Get all translation file paths for a language"""
+        return self._get_translation_files(language_code)
 
     def is_translation_available(self, language_code: str) -> bool:
         """Check if translation file exists for a language"""
         if language_code == 'en':
             return True  # English is built-in
-        # Check both naming conventions
-        pygm2_path = self.translations_dir / f"pygm2_{language_code}.qm"
-        pygamemaker_path = self.translations_dir / f"pygamemaker_{language_code}.qm"
-        return pygm2_path.exists() or pygamemaker_path.exists()
+        return len(self._get_translation_files(language_code)) > 0
 
 
 # Global language manager instance

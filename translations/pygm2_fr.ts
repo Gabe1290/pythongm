@@ -3375,4 +3375,31 @@ Certains changements peuvent nécessiter de redémarrer l'IDE pour prendre effet
       <translation>{0} instance(s) dupliquée(s)</translation>
     </message>
   </context>
+  <context>
+    <name>WelcomeTab</name>
+    <message>
+      <source>Welcome to PyGameMaker IDE</source>
+      <translation>Bienvenue dans PyGameMaker IDE</translation>
+    </message>
+    <message>
+      <source>Create amazing 2D games with visual scripting</source>
+      <translation>Créez des jeux 2D incroyables avec la programmation visuelle</translation>
+    </message>
+    <message>
+      <source>Quick Actions</source>
+      <translation>Actions rapides</translation>
+    </message>
+    <message>
+      <source>🆕 New Project (Ctrl+N)</source>
+      <translation>🆕 Nouveau projet (Ctrl+N)</translation>
+    </message>
+    <message>
+      <source>📂 Open Project (Ctrl+O)</source>
+      <translation>📂 Ouvrir un projet (Ctrl+O)</translation>
+    </message>
+    <message>
+      <source>🏠 Create Room (Ctrl+R)</source>
+      <translation>🏠 Créer une room (Ctrl+R)</translation>
+    </message>
+  </context>
 </TS>

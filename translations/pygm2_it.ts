@@ -3333,4 +3333,31 @@ Alcune modifiche potrebbero richiedere il riavvio dell'IDE per avere effetto.</t
       <translation>{0} istanza/e duplicata/e</translation>
     </message>
   </context>
+  <context>
+    <name>WelcomeTab</name>
+    <message>
+      <source>Welcome to PyGameMaker IDE</source>
+      <translation>Benvenuto in PyGameMaker IDE</translation>
+    </message>
+    <message>
+      <source>Create amazing 2D games with visual scripting</source>
+      <translation>Crea fantastici giochi 2D con la programmazione visuale</translation>
+    </message>
+    <message>
+      <source>Quick Actions</source>
+      <translation>Azioni rapide</translation>
+    </message>
+    <message>
+      <source>🆕 New Project (Ctrl+N)</source>
+      <translation>🆕 Nuovo progetto (Ctrl+N)</translation>
+    </message>
+    <message>
+      <source>📂 Open Project (Ctrl+O)</source>
+      <translation>📂 Apri progetto (Ctrl+O)</translation>
+    </message>
+    <message>
+      <source>🏠 Create Room (Ctrl+R)</source>
+      <translation>🏠 Crea stanza (Ctrl+R)</translation>
+    </message>
+  </context>
 </TS>
