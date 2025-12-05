@@ -10,7 +10,7 @@ ROOMS_ACTIONS = {
     "set_room_speed": ActionDefinition(
         name="set_room_speed",
         display_name="Set Room Speed",
-        category="room_settings",
+        category="rooms",
         tab="rooms",
         description="Set game speed (FPS)",
         icon="⏱️",
@@ -21,7 +21,7 @@ ROOMS_ACTIONS = {
     "set_room_caption": ActionDefinition(
         name="set_room_caption",
         display_name="Set Room Caption",
-        category="room_settings",
+        category="rooms",
         tab="rooms",
         description="Set room caption text",
         icon="🏷️",
@@ -32,7 +32,7 @@ ROOMS_ACTIONS = {
     "set_room_persistent": ActionDefinition(
         name="set_room_persistent",
         display_name="Set Room Persistent",
-        category="room_settings",
+        category="rooms",
         tab="rooms",
         description="Make room persistent",
         icon="💾",
@@ -43,7 +43,7 @@ ROOMS_ACTIONS = {
     "set_background_color": ActionDefinition(
         name="set_background_color",
         display_name="Set Background Color",
-        category="room_settings",
+        category="rooms",
         tab="rooms",
         description="Set room background color",
         icon="🎨",
@@ -55,7 +55,7 @@ ROOMS_ACTIONS = {
     "set_background": ActionDefinition(
         name="set_background",
         display_name="Set Background Image",
-        category="room_settings",
+        category="rooms",
         tab="rooms",
         description="Set room background image",
         icon="🖼️",
@@ -72,7 +72,7 @@ ROOMS_ACTIONS = {
     "enable_views": ActionDefinition(
         name="enable_views",
         display_name="Enable Views",
-        category="room_settings",
+        category="rooms",
         tab="rooms",
         description="Enable/disable view system",
         icon="👁️",
@@ -83,7 +83,7 @@ ROOMS_ACTIONS = {
     "set_view": ActionDefinition(
         name="set_view",
         display_name="Set View",
-        category="room_settings",
+        category="rooms",
         tab="rooms",
         description="Configure a view",
         icon="🔭",

@@ -549,6 +549,178 @@ class ActionExecutor:
         # Return result for GM80-style conditional flow
         return prev_exists
 
+    # ==================== VARIABLE ACTIONS ====================
+
+    def _parse_value(self, value_str: str, instance=None):
+        """Parse a value string into appropriate type (number, string, or expression result)"""
+        if not isinstance(value_str, str):
+            return value_str
+
+        value_str = value_str.strip()
+
+        # Try to parse as integer
+        try:
+            return int(value_str)
+        except ValueError:
+            pass
+
+        # Try to parse as float
+        try:
+            return float(value_str)
+        except ValueError:
+            pass
+
+        # Check for boolean
+        if value_str.lower() == "true":
+            return True
+        if value_str.lower() == "false":
+            return False
+
+        # Check for variable reference (starts with instance. or global. or just a variable name)
+        if instance and not value_str.startswith('"') and not value_str.startswith("'"):
+            # Try to get instance variable
+            if hasattr(instance, value_str):
+                return getattr(instance, value_str)
+            # Try global variable
+            if self.game_runner and value_str in self.game_runner.global_variables:
+                return self.game_runner.global_variables[value_str]
+
+        # Return as string (strip quotes if present)
+        if (value_str.startswith('"') and value_str.endswith('"')) or \
+           (value_str.startswith("'") and value_str.endswith("'")):
+            return value_str[1:-1]
+
+        return value_str
+
+    def execute_set_variable_action(self, instance, parameters: Dict[str, Any]):
+        """Set an instance or global variable
+
+        Parameters:
+            variable: Variable name
+            value: Value to set (number, string, or expression)
+            scope: "self" for instance variable, "other" for collision other, "global" for global variable
+            relative: If True, add to current value instead of replacing
+        """
+        variable = parameters.get("variable", "")
+        value_str = parameters.get("value", "0")
+        scope = parameters.get("scope", "self")
+        relative = parameters.get("relative", False)
+
+        if not variable:
+            print("⚠️  set_variable: No variable name specified")
+            return
+
+        # Parse the value
+        value = self._parse_value(value_str, instance)
+
+        if scope == "global":
+            if not self.game_runner:
+                print("⚠️  set_variable: Cannot access global variables without game_runner")
+                return
+
+            if relative:
+                current = self.game_runner.global_variables.get(variable, 0)
+                try:
+                    value = current + value
+                except TypeError:
+                    print(f"⚠️  set_variable: Cannot add {type(value)} to {type(current)}")
+                    return
+
+            self.game_runner.global_variables[variable] = value
+            print(f"🌐 Global variable '{variable}' = {value}")
+
+        elif scope == "other":
+            # Get the "other" instance from collision context
+            other = getattr(self, '_collision_other', None)
+            if not other:
+                print("⚠️  set_variable: 'other' scope only available in collision events")
+                return
+
+            if relative:
+                current = getattr(other, variable, 0)
+                try:
+                    value = current + value
+                except TypeError:
+                    print(f"⚠️  set_variable: Cannot add {type(value)} to {type(current)}")
+                    return
+
+            setattr(other, variable, value)
+            print(f"📝 Other instance variable '{variable}' = {value}")
+
+        else:  # scope == "self"
+            if relative:
+                current = getattr(instance, variable, 0)
+                try:
+                    value = current + value
+                except TypeError:
+                    print(f"⚠️  set_variable: Cannot add {type(value)} to {type(current)}")
+                    return
+
+            setattr(instance, variable, value)
+            print(f"📝 Instance variable '{variable}' = {value}")
+
+    def execute_test_variable_action(self, instance, parameters: Dict[str, Any]):
+        """Test an instance or global variable
+
+        Returns True if condition met, False otherwise
+
+        Parameters:
+            variable: Variable name
+            value: Value to compare against
+            scope: "self" for instance variable, "other" for collision other, "global" for global variable
+            operation: Comparison operator (equal, less, greater, etc.)
+        """
+        variable = parameters.get("variable", "")
+        value_str = parameters.get("value", "0")
+        scope = parameters.get("scope", "self")
+        operation = parameters.get("operation", "equal")
+
+        if not variable:
+            print("⚠️  test_variable: No variable name specified")
+            return False
+
+        # Get current value based on scope
+        if scope == "global":
+            if not self.game_runner:
+                return False
+            current = self.game_runner.global_variables.get(variable, 0)
+        elif scope == "other":
+            # Get the "other" instance from collision context
+            other = getattr(self, '_collision_other', None)
+            if not other:
+                print("⚠️  test_variable: 'other' scope only available in collision events")
+                return False
+            current = getattr(other, variable, 0)
+        else:  # scope == "self"
+            current = getattr(instance, variable, 0)
+
+        # Parse comparison value
+        compare_value = self._parse_value(value_str, instance)
+
+        # Perform comparison
+        try:
+            if operation == "equal":
+                result = current == compare_value
+            elif operation == "less":
+                result = current < compare_value
+            elif operation == "greater":
+                result = current > compare_value
+            elif operation == "less_equal":
+                result = current <= compare_value
+            elif operation == "greater_equal":
+                result = current >= compare_value
+            elif operation == "not_equal":
+                result = current != compare_value
+            else:
+                result = False
+        except TypeError:
+            # Can't compare these types
+            result = False
+
+        scope_label = "other" if scope == "other" else ("global" if scope == "global" else "self")
+        print(f"❓ Test {scope_label}.{variable} ({current}) {operation} {compare_value}: {result}")
+        return result
+
     # ==================== SCORE/LIVES/HEALTH ACTIONS ====================
 
     def execute_set_score_action(self, instance, parameters: Dict[str, Any]):

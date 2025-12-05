@@ -253,6 +253,9 @@ class GameRunner:
         self.health = 100.0
         self.highscores = []  # List of (name, score) tuples
 
+        # Global variables storage (user-defined variables accessible from any instance)
+        self.global_variables: Dict[str, Any] = {}
+
         # Shared action executor for all instances (pass self for global state access)
         self.action_executor = ActionExecutor(game_runner=self)
 

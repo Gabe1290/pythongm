@@ -123,6 +123,37 @@ CONTROL_ACTIONS = {
         description="Stop executing current event",
         icon="🚪"
     ),
+    "set_variable": ActionDefinition(
+        name="set_variable",
+        display_name="Set Variable",
+        category="control",
+        tab="control",
+        description="Set an instance or global variable",
+        icon="📝",
+        parameters=[
+            ActionParameter("variable", "string", "Variable", "Variable name", default=""),
+            ActionParameter("value", "string", "Value", "Value (number, string, or expression)", default="0"),
+            ActionParameter("scope", "choice", "Scope", "Variable scope",
+                          default="self", options=["self", "other", "global"]),
+            ActionParameter("relative", "boolean", "Relative", "Add to current value", default=False)
+        ]
+    ),
+    "test_variable": ActionDefinition(
+        name="test_variable",
+        display_name="Test Variable",
+        category="control",
+        tab="control",
+        description="Test an instance or global variable",
+        icon="❓",
+        parameters=[
+            ActionParameter("variable", "string", "Variable", "Variable name", default=""),
+            ActionParameter("value", "string", "Value", "Value to compare", default="0"),
+            ActionParameter("scope", "choice", "Scope", "Variable scope",
+                          default="self", options=["self", "other", "global"]),
+            ActionParameter("operation", "choice", "Operation", "Comparison operator",
+                          default="equal", options=["equal", "less", "greater", "less_equal", "greater_equal", "not_equal"])
+        ]
+    ),
 }
 
 # ============================================================================
