@@ -831,7 +831,7 @@ class ObjectEventsPanel(QWidget):
                         
                         action_item.setData(0, Qt.UserRole, action_data)
         
-        self.events_tree.expandAll()
+        self.events_tree.collapseAll()
     
     def on_event_selected(self, item: QTreeWidgetItem):
         """Handle event selection"""

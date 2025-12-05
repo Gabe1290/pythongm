@@ -590,13 +590,8 @@ class GM80EventsPanel(QWidget):
 
                             action_item.setData(0, Qt.UserRole, action_data)
 
-        # Ensure all items are expanded to show actions
-        self.events_tree.expandAll()
-
-        # Force expand each top-level item explicitly
-        for i in range(self.events_tree.topLevelItemCount()):
-            item = self.events_tree.topLevelItem(i)
-            item.setExpanded(True)
+        # Collapse all items by default
+        self.events_tree.collapseAll()
 
     def load_events_data(self, events_data: Dict[str, Any]):
         """Load events data"""

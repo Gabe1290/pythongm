@@ -270,6 +270,13 @@ class GameRunner:
         self.window_width = 800
         self.window_height = 600
 
+        # Caption display settings (like GM's "Display score in caption")
+        # By default, nothing shows until the value is used in the game
+        self.show_score_in_caption = False
+        self.show_lives_in_caption = False
+        self.show_health_in_caption = False
+        self.window_caption = ""  # Custom caption prefix
+
         # If project path provided, load it
         if project_path:
             self.load_project_data_only(project_path)
@@ -1042,14 +1049,36 @@ class GameRunner:
                     instance.action_executor.execute_event(instance, "create", instance.object_data["events"])
 
     
+    def update_caption(self):
+        """Update window caption with score/lives/health if enabled"""
+        parts = []
+
+        if self.window_caption:
+            parts.append(self.window_caption)
+
+        if self.show_score_in_caption:
+            parts.append(f"Score: {self.score}")
+
+        if self.show_lives_in_caption:
+            parts.append(f"Lives: {self.lives}")
+
+        if self.show_health_in_caption:
+            parts.append(f"Health: {int(self.health)}")
+
+        caption = " | ".join(parts) if parts else "Game"
+        pygame.display.set_caption(caption)
+
     def render(self):
         """Render the game"""
         if not self.screen or not self.current_room:
             return
-        
+
+        # Update window caption with score/lives/health
+        self.update_caption()
+
         # Render current room
         self.current_room.render(self.screen)
-        
+
         # Update display
         pygame.display.flip()
     

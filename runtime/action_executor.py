@@ -565,6 +565,9 @@ class ActionExecutor:
         else:
             self.game_runner.score = value
 
+        # Auto-enable score in caption when score is used
+        self.game_runner.show_score_in_caption = True
+
         print(f"🏆 Score set to: {self.game_runner.score}")
 
     def execute_test_score_action(self, instance, parameters: Dict[str, Any]):
@@ -635,6 +638,9 @@ class ActionExecutor:
         # Ensure lives doesn't go negative
         self.game_runner.lives = max(0, self.game_runner.lives)
 
+        # Auto-enable lives in caption when lives are used
+        self.game_runner.show_lives_in_caption = True
+
         print(f"❤️  Lives set to: {self.game_runner.lives}")
 
     def execute_test_lives_action(self, instance, parameters: Dict[str, Any]):
@@ -702,6 +708,9 @@ class ActionExecutor:
         # Clamp health between 0 and 100
         self.game_runner.health = max(0, min(100, self.game_runner.health))
 
+        # Auto-enable health in caption when health is used
+        self.game_runner.show_health_in_caption = True
+
         print(f"💚 Health set to: {self.game_runner.health}")
 
     def execute_test_health_action(self, instance, parameters: Dict[str, Any]):
@@ -759,32 +768,18 @@ class ActionExecutor:
         })
 
     def execute_set_window_caption_action(self, instance, parameters: Dict[str, Any]):
-        """Set game window title with score/lives/health"""
+        """Set game window caption settings (score/lives/health display)"""
         if not self.game_runner:
             return
 
-        import pygame
+        # Update caption display settings on game_runner
+        self.game_runner.show_score_in_caption = parameters.get("show_score", True)
+        self.game_runner.show_lives_in_caption = parameters.get("show_lives", True)
+        self.game_runner.show_health_in_caption = parameters.get("show_health", False)
+        self.game_runner.window_caption = parameters.get("caption", "")
 
-        show_score = parameters.get("show_score", True)
-        show_lives = parameters.get("show_lives", True)
-        show_health = parameters.get("show_health", False)
-        caption = parameters.get("caption", "")
-
-        # Build window caption
-        parts = []
-        if caption:
-            parts.append(caption)
-        if show_score:
-            parts.append(f"Score: {self.game_runner.score}")
-        if show_lives:
-            parts.append(f"Lives: {self.game_runner.lives}")
-        if show_health:
-            parts.append(f"Health: {int(self.game_runner.health)}")
-
-        window_title = " | ".join(parts) if parts else "Game"
-
-        pygame.display.set_caption(window_title)
-        print(f"🪟 Window caption: {window_title}")
+        print(f"🪟 Caption settings updated: score={self.game_runner.show_score_in_caption}, "
+              f"lives={self.game_runner.show_lives_in_caption}, health={self.game_runner.show_health_in_caption}")
 
     def execute_show_highscore_action(self, instance, parameters: Dict[str, Any]):
         """Show highscore table (placeholder implementation)"""
@@ -851,9 +846,21 @@ class ActionExecutor:
     # ==================== INSTANCE ACTIONS ====================
 
     def execute_destroy_instance_action(self, instance, parameters: Dict[str, Any]):
-        """Execute destroy instance action"""
-        print(f"💀 Destroying instance: {instance.object_name}")
-        instance.to_destroy = True
+        """Execute destroy instance action
+
+        Parameters:
+            target: "self" or "other" - which instance to destroy
+        """
+        target = parameters.get("target", "self")
+
+        if target == "other" and hasattr(self, '_collision_other') and self._collision_other:
+            # Destroy the other instance in a collision context
+            print(f"💀 Destroying other instance: {self._collision_other.object_name}")
+            self._collision_other.to_destroy = True
+        else:
+            # Destroy self (default behavior)
+            print(f"💀 Destroying instance: {instance.object_name}")
+            instance.to_destroy = True
 
     def execute_collision_event(self, instance, event_name: str, events_data: Dict[str, Any], other_instance):
         """Execute collision event with context about the other instance"""
