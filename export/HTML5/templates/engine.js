@@ -11,7 +11,12 @@ class GameObject {
         this.x = x;
         this.y = y;
         this.sprite = null;
+        // Instance visibility starts from instance data
         this.visible = data.visible !== false;
+        // Apply object-level visibility: if object has visible=false, instance is invisible
+        if (objectData && objectData.visible === false) {
+            this.visible = false;
+        }
         this.solid = objectData ? (objectData.solid || false) : false;
         this.objectData = objectData;
         this.toDestroy = false;
@@ -905,10 +910,12 @@ class GameObject {
     }
 
     render(ctx) {
+        // Don't render if not visible or no sprite assigned
         if (!this.visible) return;
+        if (!this.sprite || !this.sprite.complete) return;
 
-        const width = this.sprite && this.sprite.complete ? this.sprite.width : 32;
-        const height = this.sprite && this.sprite.complete ? this.sprite.height : 32;
+        const width = this.sprite.width;
+        const height = this.sprite.height;
 
         if (this.rotation !== 0 || this.scale_x !== 1.0 || this.scale_y !== 1.0) {
             ctx.save();
@@ -924,21 +931,10 @@ class GameObject {
                 ctx.scale(this.scale_x, this.scale_y);
             }
 
-            if (this.sprite && this.sprite.complete) {
-                ctx.drawImage(this.sprite, -width / 2, -height / 2);
-            } else {
-                ctx.fillStyle = '#FF6B6B';
-                ctx.fillRect(-width / 2, -height / 2, width, height);
-            }
-
+            ctx.drawImage(this.sprite, -width / 2, -height / 2);
             ctx.restore();
         } else {
-            if (this.sprite && this.sprite.complete) {
-                ctx.drawImage(this.sprite, Math.floor(this.x), Math.floor(this.y));
-            } else {
-                ctx.fillStyle = '#FF6B6B';
-                ctx.fillRect(Math.floor(this.x), Math.floor(this.y), 32, 32);
-            }
+            ctx.drawImage(this.sprite, Math.floor(this.x), Math.floor(this.y));
         }
     }
 

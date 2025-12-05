@@ -82,6 +82,11 @@ class GameInstance:
         """Set the object data from project (create event triggered when room becomes active)"""
         self.object_data = object_data
 
+        # Apply object-level visibility setting
+        # If the object type has visible=False, make all instances of it invisible
+        if not object_data.get('visible', True):
+            self.visible = False
+
         # NOTE: Create event is NOT triggered here!
         # It's triggered when the room becomes active (in change_room)
     
@@ -149,10 +154,8 @@ class GameRoom:
                 sprite_name = object_data.get('sprite', '')
                 if sprite_name and sprite_name in sprites:
                     instance.set_sprite(sprites[sprite_name])
-                else:
-                    # Create a default sprite for objects without sprites
-                    default_sprite = self.create_default_sprite_for_object(instance.object_name)
-                    instance.set_sprite(default_sprite)
+                # else: No sprite assigned - instance.sprite remains None
+                # The render method will skip instances with no sprite
     
     def create_default_sprite_for_object(self, object_name: str) -> GameSprite:
         """Create a default sprite for an object"""

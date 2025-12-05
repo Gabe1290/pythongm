@@ -1192,6 +1192,17 @@ class PyGameMakerIDE(QMainWindow):
             asset_category = assets.setdefault(asset_type, {})
             asset_category[asset_name] = asset_data
 
+            # IMPORTANT: Also add to asset_manager's cache so it persists on save
+            # The save_project() method uses assets_cache to write project data,
+            # so if we only add to current_project_data, the asset gets lost on save
+            if self.project_manager and self.project_manager.asset_manager:
+                cache = self.project_manager.asset_manager.assets_cache
+                if asset_type not in cache:
+                    from collections import OrderedDict
+                    cache[asset_type] = OrderedDict()
+                cache[asset_type][asset_name] = asset_data
+                print(f"✅ Added {asset_name} to asset_manager cache")
+
             # Mark project as dirty and save
             self.project_manager.mark_dirty()
 
@@ -1201,6 +1212,10 @@ class PyGameMakerIDE(QMainWindow):
             # Save the project immediately to persist the new asset
             if self.project_manager.save_project():
                 self.update_status(self.tr("Created {0}").format(asset_name))
+
+                # Refresh any open room editors' object palette when a new object is created
+                if asset_type == 'objects':
+                    self._refresh_room_editor_objects()
             else:
                 print(f"Failed to save project after creating {asset_name}")
 
@@ -1208,6 +1223,17 @@ class PyGameMakerIDE(QMainWindow):
             print(f"Error creating {asset_type[:-1]}: {e}")
             QMessageBox.warning(self, self.tr("Error"),
                             self.tr("Failed to create {0}: {1}").format(asset_type[:-1], e))
+
+    def _refresh_room_editor_objects(self):
+        """Refresh the object palette in any open room editors"""
+        try:
+            for i in range(self.editor_tabs.count()):
+                widget = self.editor_tabs.widget(i)
+                if hasattr(widget, 'load_available_objects'):
+                    widget.load_available_objects()
+                    print(f"✅ Refreshed object palette in room editor tab {i}")
+        except Exception as e:
+            print(f"⚠️ Could not refresh room editor objects: {e}")
 
     def test_game(self):
         """Test the current game"""
