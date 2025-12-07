@@ -726,10 +726,15 @@ class GameObject(Widget):
         
         self.size = (32, 32)  # Default size
         self.pos = (x, y)
-        
-        with self.canvas:
-            Color(1, 1, 1, 1)
-            self.rect = Rectangle(pos=self.pos, size=self.size)
+
+        # Visibility property - invisible objects can still collide, just don't render
+        self.visible = True
+
+        # Has sprite - objects without sprites have no collision mask
+        self.has_sprite = False
+
+        # Don't draw anything here - wait for set_sprite
+        self.rect = None
 
     # GAMEMAKER 7.0: Bidirectional speed/direction synchronization
     @property
@@ -827,21 +832,27 @@ class GameObject(Widget):
             self._vspeed = 0
     
     def set_sprite(self, sprite_path):
-        """Set the object's sprite"""
+        """Set the object's sprite - enables collision detection"""
         self.sprite_name = sprite_path
         img = load_image(sprite_path)
-        
+
         if img:
             self.image = img
             self.image_width = img.width
             self.image_height = img.height
             self.size = (img.width, img.height)
-            
-            # Update canvas
-            self.canvas.clear()
-            with self.canvas:
-                Color(1, 1, 1, 1)
-                self.rect = Rectangle(texture=img.texture, pos=self.pos, size=self.size)
+            self.has_sprite = True  # Object has a sprite, can collide
+
+            # Only draw if visible (invisible objects can still collide)
+            if self.visible:
+                self.canvas.clear()
+                with self.canvas:
+                    Color(1, 1, 1, 1)
+                    self.rect = Rectangle(texture=img.texture, pos=self.pos, size=self.size)
+            else:
+                # Invisible but still has collision - don't draw anything
+                self.canvas.clear()
+                self.rect = None
     
     def _process_alarms(self):
         """Process alarm clocks (GAMEMAKER 7.0 feature)"""
@@ -925,7 +936,7 @@ class GameObject(Widget):
         """Update visual position with sub-pixel precision for smooth rendering"""
         # PERFORMANCE FIX: Keep float precision for smooth movement
         self.pos = (float(self.x), float(self.y))
-        if hasattr(self, 'rect'):
+        if self.rect is not None:
             self.rect.pos = self.pos
             # PERFORMANCE FIX: Removed canvas.ask_update() - Kivy auto-updates on property changes
             # Calling ask_update() every frame for every object was causing major slowdowns
@@ -935,7 +946,15 @@ class GameObject(Widget):
 
         PERFORMANCE: This is a fast rectangular collision check.
         Returns True if this object overlaps with the other object.
+
+        GameMaker behavior:
+        - Objects without sprites have no collision mask (no collisions)
+        - Invisible objects WITH sprites can still collide
         """
+        # No collision if either object has no sprite (no collision mask)
+        if not self.has_sprite or not other.has_sprite:
+            return False
+
         return (
             self.x < other.x + other.size[0] and
             self.x + self.size[0] > other.x and

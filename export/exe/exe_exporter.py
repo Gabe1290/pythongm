@@ -317,7 +317,8 @@ if __name__ == "__main__":
                 datas.append((rel_path, dest_dir))
 
         # Format datas for spec file
-        datas_str = ',\n        '.join([f"('{d[0]}', '{d[1]}')" for d in datas])
+        # Use forward slashes to avoid escape sequence issues on Windows
+        datas_str = ',\n        '.join([f"('{d[0].replace(chr(92), '/')}', '{d[1].replace(chr(92), '/')}')" for d in datas])
 
         # Hidden imports for Kivy
         hidden_imports = [
