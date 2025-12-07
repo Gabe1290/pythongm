@@ -1,0 +1,7 @@
+# Handle line endings automatically for files detected as text
+* text=auto
+
+# Force Python files to use LF everywhere
+*.py text eol=lf
+*.ts text eol=lf
+*.qm binary
