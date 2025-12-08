@@ -160,9 +160,22 @@ class ExeExporter(QObject):
         project_dir = self.project_path.parent
         build_dir = project_dir / "build_temp_exe"
 
-        # Clean if exists
+        # Clean if exists - with retry for locked files (Dropbox, etc.)
         if build_dir.exists():
-            shutil.rmtree(build_dir)
+            import time
+            for attempt in range(3):
+                try:
+                    shutil.rmtree(build_dir)
+                    break
+                except PermissionError as e:
+                    if attempt < 2:
+                        print(f"Build directory locked, retrying in 2 seconds... (attempt {attempt + 1}/3)")
+                        time.sleep(2)
+                    else:
+                        # Try using a different directory name
+                        import uuid
+                        build_dir = project_dir / f"build_temp_exe_{uuid.uuid4().hex[:8]}"
+                        print(f"Using alternate build directory: {build_dir}")
 
         build_dir.mkdir(parents=True, exist_ok=True)
         return build_dir
@@ -341,6 +354,21 @@ if __name__ == "__main__":
         if self.export_settings.get('icon_path'):
             icon_line = f"icon='{self.export_settings['icon_path']}',"
 
+        # Create Windows manifest for DPI awareness
+        manifest_content = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+  <application xmlns="urn:schemas-microsoft-com:asm.v3">
+    <windowsSettings>
+      <dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">true/pm</dpiAware>
+      <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">permonitorv2,permonitor</dpiAwareness>
+    </windowsSettings>
+  </application>
+</assembly>'''
+
+        manifest_file = build_dir / "game.manifest"
+        with open(manifest_file, 'w') as f:
+            f.write(manifest_content)
+
         # Create spec content
         spec_content = f'''# -*- mode: python ; coding: utf-8 -*-
 # PyInstaller spec file for {game_name}
@@ -397,6 +425,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    manifest='game.manifest',
     {icon_line}
 )
 '''
@@ -462,18 +491,29 @@ exe = EXE(
     
     def _copy_to_output(self, build_dir: Path):
         """Copy the built executable to the output directory"""
+        import time
         dist_dir = build_dir / "dist"
-        
+
         # Create output directory
         self.output_path.mkdir(parents=True, exist_ok=True)
-        
-        # Copy all files from dist to output
+
+        # Copy all files from dist to output with retry for locked files
         if dist_dir.exists():
             for item in dist_dir.iterdir():
-                if item.is_file():
-                    shutil.copy2(item, self.output_path / item.name)
-                elif item.is_dir():
-                    shutil.copytree(item, self.output_path / item.name, dirs_exist_ok=True)
+                for attempt in range(5):
+                    try:
+                        if item.is_file():
+                            shutil.copy2(item, self.output_path / item.name)
+                        elif item.is_dir():
+                            shutil.copytree(item, self.output_path / item.name, dirs_exist_ok=True)
+                        break  # Success
+                    except PermissionError as e:
+                        if attempt < 4:
+                            print(f"File locked, retrying in 1 second... ({item.name})")
+                            time.sleep(1)
+                        else:
+                            print(f"Warning: Could not copy {item.name}: {e}")
+                            print(f"The EXE is available at: {dist_dir / item.name}")
     
     def _cleanup(self, build_dir: Path):
         """Clean up temporary build files"""

@@ -187,6 +187,7 @@ class KivyExporter:
         """Generate the main Kivy application file"""
         settings = self.project_data.get('settings', {})
         rooms = self.project_data.get('assets', {}).get('rooms', {})
+        project_name = self.project_data.get('name', 'Game')
 
         # Get first room as starting room
         room_names = list(rooms.keys())
@@ -219,13 +220,54 @@ Generated Kivy Game Application
 Exported from PyGameMaker IDE
 """
 
+# Room dimensions - used for window sizing
+GAME_WIDTH = {room_width}
+GAME_HEIGHT = {room_height}
+
+import os
+os.environ['KIVY_WINDOW'] = 'sdl2'
+
+# Get Windows DPI scale and adjust window size to compensate
+def get_dpi_scale():
+    try:
+        import ctypes
+        # Make process DPI aware
+        try:
+            ctypes.windll.shcore.SetProcessDpiAwareness(2)
+        except:
+            pass
+        # Get DPI
+        hdc = ctypes.windll.user32.GetDC(0)
+        dpi = ctypes.windll.gdi32.GetDeviceCaps(hdc, 88)
+        ctypes.windll.user32.ReleaseDC(0, hdc)
+        return dpi / 96.0
+    except:
+        return 1.0
+
+DPI_SCALE = get_dpi_scale()
+ADJUSTED_WIDTH = int(GAME_WIDTH / DPI_SCALE)
+ADJUSTED_HEIGHT = int(GAME_HEIGHT / DPI_SCALE)
+
+# Configure Kivy with adjusted size
+from kivy.config import Config
+Config.set('graphics', 'width', str(ADJUSTED_WIDTH))
+Config.set('graphics', 'height', str(ADJUSTED_HEIGHT))
+Config.set('graphics', 'resizable', '0')
+Config.set('graphics', 'fullscreen', '0')
+
 from kivy.app import App
 from kivy.uix.widget import Widget
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
 from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.graphics import Rectangle, Color
 from kivy.core.image import Image as CoreImage
-import os
+
+# Force adjusted window size
+Window.size = (ADJUSTED_WIDTH, ADJUSTED_HEIGHT)
 
 # Import all game scenes
 {room_imports_str}
@@ -243,21 +285,29 @@ def get_game_app():
     return _game_app
 
 
+_room_transition_pending = False
+
 def goto_next_room():
     """Go to the next room in the room order"""
-    if _game_app:
+    global _room_transition_pending
+    if _game_app and not _room_transition_pending:
+        _room_transition_pending = True
         _game_app.goto_next_room()
 
 
 def goto_previous_room():
     """Go to the previous room in the room order"""
-    if _game_app:
+    global _room_transition_pending
+    if _game_app and not _room_transition_pending:
+        _room_transition_pending = True
         _game_app.goto_previous_room()
 
 
 def goto_room(room_name):
     """Go to a specific room by name"""
-    if _game_app:
+    global _room_transition_pending
+    if _game_app and not _room_transition_pending:
+        _room_transition_pending = True
         _game_app.goto_room(room_name)
 
 
@@ -275,6 +325,102 @@ def previous_room_exists():
     return False
 
 
+def get_score():
+    """Get the current score"""
+    if _game_app:
+        return _game_app.score
+    return 0
+
+
+def set_score(value, relative=False):
+    """Set the score value"""
+    if _game_app:
+        if relative:
+            _game_app.score += value
+        else:
+            _game_app.score = value
+        _game_app.show_score_in_caption = True
+        _game_app.update_caption()
+
+
+def get_lives():
+    """Get the current lives"""
+    if _game_app:
+        return _game_app.lives
+    return 0
+
+
+def set_lives(value, relative=False):
+    """Set the lives value"""
+    if _game_app:
+        if relative:
+            _game_app.lives += value
+        else:
+            _game_app.lives = value
+        _game_app.show_lives_in_caption = True
+        _game_app.update_caption()
+
+
+def get_health():
+    """Get the current health"""
+    if _game_app:
+        return _game_app.health
+    return 100
+
+
+def set_health(value, relative=False):
+    """Set the health value"""
+    if _game_app:
+        if relative:
+            _game_app.health += value
+        else:
+            _game_app.health = value
+        _game_app.health = max(0, min(100, _game_app.health))
+        _game_app.show_health_in_caption = True
+        _game_app.update_caption()
+
+
+def set_window_caption(caption="", show_score=True, show_lives=True, show_health=False):
+    """Set window caption settings"""
+    if _game_app:
+        _game_app.window_caption = caption
+        _game_app.show_score_in_caption = show_score
+        _game_app.show_lives_in_caption = show_lives
+        _game_app.show_health_in_caption = show_health
+        _game_app.update_caption()
+
+
+_popup_open = False
+
+def show_message(message):
+    """Show a popup message dialog"""
+    global _popup_open
+
+    # Prevent duplicate popups
+    if _popup_open:
+        return
+    _popup_open = True
+
+    content = BoxLayout(orientation='vertical', padding=10, spacing=10)
+    content.add_widget(Label(text=str(message)))
+    btn = Button(text='OK', size_hint_y=None, height=40)
+    content.add_widget(btn)
+
+    popup = Popup(title='Message',
+                  content=content,
+                  size_hint=(None, None),
+                  size=(300, 200),
+                  auto_dismiss=False)
+
+    def on_dismiss(instance):
+        global _popup_open
+        _popup_open = False
+
+    popup.bind(on_dismiss=on_dismiss)
+    btn.bind(on_release=popup.dismiss)
+    popup.open()
+
+
 class GameApp(App):
     """Main game application"""
 
@@ -284,13 +430,44 @@ class GameApp(App):
         self.scene = None
         self.update_event = None
 
+        # Game state (score, lives, health)
+        self.score = 0
+        self.lives = 3
+        self.health = 100
+
+        # Caption display settings
+        self.window_caption = ""
+        self.show_score_in_caption = False
+        self.show_lives_in_caption = False
+        self.show_health_in_caption = False
+        self.project_name = "{project_name}"
+
+    def update_caption(self):
+        """Update window caption with score/lives/health if enabled"""
+        parts = []
+
+        if self.window_caption:
+            parts.append(self.window_caption)
+
+        if self.show_score_in_caption:
+            parts.append(f"Score: {{self.score}}")
+
+        if self.show_lives_in_caption:
+            parts.append(f"Lives: {{self.lives}}")
+
+        if self.show_health_in_caption:
+            parts.append(f"Health: {{int(self.health)}}")
+
+        caption = " | ".join(parts) if parts else self.project_name
+        Window.set_title(caption)
+
     def build(self):
         """Build the application"""
         global _game_app
         _game_app = self
 
-        # Set window properties to match room size
-        Window.size = ({room_width}, {room_height})
+        # Force DPI-adjusted window size
+        Window.size = (ADJUSTED_WIDTH, ADJUSTED_HEIGHT)
         Window.clearcolor = (0, 0, 0, 1)
 
         # Create and return the starting scene
@@ -300,6 +477,11 @@ class GameApp(App):
         # PERFORMANCE FIX: Schedule game loop at 60 FPS for optimal performance
         self.update_event = Clock.schedule_interval(self.scene.update, 1.0/60.0)
 
+        # Force window size again after scene is created
+        def force_size(dt):
+            Window.size = (ADJUSTED_WIDTH, ADJUSTED_HEIGHT)
+        Clock.schedule_once(force_size, 0.1)
+
         return self.scene
 
     def goto_next_room(self):
@@ -308,14 +490,14 @@ class GameApp(App):
         if next_index < len(ROOM_ORDER):
             self._switch_to_room(next_index)
         else:
-            print("Already at last room")
+            show_message("Already at last room")
 
     def goto_previous_room(self):
         """Switch to the previous room"""
         if self.current_room_index > 0:
             self._switch_to_room(self.current_room_index - 1)
         else:
-            print("Already at first room")
+            show_message("Already at first room")
 
     def goto_room(self, room_name):
         """Switch to a specific room by name"""
@@ -323,7 +505,7 @@ class GameApp(App):
             index = ROOM_ORDER.index(room_name)
             self._switch_to_room(index)
         else:
-            print(f"Room '{{room_name}}' not found")
+            show_message(f"Room '{{room_name}}' not found")
 
     def _switch_to_room(self, room_index):
         """Internal method to switch rooms"""
@@ -344,6 +526,11 @@ class GameApp(App):
         self.scene = room_class()
         self.current_room_index = room_index
 
+        # Resize window to match new room's dimensions (adjusted for DPI)
+        new_width = int(self.scene.room_width / DPI_SCALE)
+        new_height = int(self.scene.room_height / DPI_SCALE)
+        Window.size = (new_width, new_height)
+
         # Update root widget
         self.root.clear_widgets()
         self.root.add_widget(self.scene)
@@ -351,7 +538,13 @@ class GameApp(App):
         # Restart update loop
         self.update_event = Clock.schedule_interval(self.scene.update, 1.0/60.0)
 
-        print(f"Switched to room: {{room_name}}")
+        # Reset room transition flag after a short delay (allows current frame to complete)
+        def reset_transition_flag(dt):
+            global _room_transition_pending
+            _room_transition_pending = False
+        Clock.schedule_once(reset_transition_flag, 0.1)
+
+        print(f"Switched to room: {{room_name}} ({{new_width}}x{{new_height}})")
 
     def on_stop(self):
         """Cleanup when app stops"""
@@ -1342,9 +1535,11 @@ class {class_name}(GameObject):
         code_lines.append("    def on_update(self, dt):")
         code_lines.append('        """Step event with keyboard checking for grid-based movement"""')
         code_lines.append("")
-        code_lines.append("        # Initialize stop flag if not present")
-        code_lines.append("        if not hasattr(self, '_want_to_stop'):")
-        code_lines.append("            self._want_to_stop = False")
+        code_lines.append("        # Initialize grid movement state if not present")
+        code_lines.append("        if not hasattr(self, '_grid_target_x'):")
+        code_lines.append("            self._grid_target_x = None  # Target grid X position")
+        code_lines.append("            self._grid_target_y = None  # Target grid Y position")
+        code_lines.append("            self._grid_moving = False   # Currently moving to a target")
         code_lines.append("")
         code_lines.append("        # Check if any movement key is currently pressed")
         code_lines.append("        key_right = self.scene.keys_pressed.get(275, False)")
@@ -1353,51 +1548,94 @@ class {class_name}(GameObject):
         code_lines.append("        key_down = self.scene.keys_pressed.get(274, False)")
         code_lines.append("        any_key_pressed = key_right or key_left or key_up or key_down")
         code_lines.append("")
-        code_lines.append("        # If no keys pressed and we're moving, mark that we want to stop")
-        code_lines.append("        if not any_key_pressed and (self.hspeed != 0 or self.vspeed != 0):")
-        code_lines.append("            self._want_to_stop = True")
-        code_lines.append("")
-        code_lines.append("        # Check if we're on or near a grid position")
         code_lines.append("        grid = self.grid_size")
-        code_lines.append("        # Tolerance must account for frame-rate-scaled movement")
-        code_lines.append("        speed_factor = dt * 60.0 if dt > 0 else 1.0")
-        code_lines.append("        actual_movement = max(abs(self.hspeed), abs(self.vspeed), 4) * speed_factor")
-        code_lines.append("        tolerance = actual_movement + 1.0")
-        code_lines.append("        nearest_x = round(self.x / grid) * grid")
-        code_lines.append("        nearest_y = round(self.y / grid) * grid")
-        code_lines.append("        on_grid = abs(self.x - nearest_x) <= tolerance and abs(self.y - nearest_y) <= tolerance")
         code_lines.append("")
-        code_lines.append("        # DEBUG: Uncomment to trace grid stopping")
-        code_lines.append("        # if self._want_to_stop or not any_key_pressed:")
-        code_lines.append("        #     print(f'DEBUG: x={self.x:.1f} y={self.y:.1f} hsp={self.hspeed} vsp={self.vspeed} on_grid={on_grid} want_stop={self._want_to_stop} keys={any_key_pressed}')")
+        code_lines.append("        # If we're currently moving to a target, check if we've reached it")
+        code_lines.append("        if self._grid_moving:")
+        code_lines.append("            reached_x = True")
+        code_lines.append("            reached_y = True")
+        code_lines.append("            ")
+        code_lines.append("            # Check X target")
+        code_lines.append("            if self._grid_target_x is not None:")
+        code_lines.append("                if self.hspeed > 0 and self.x >= self._grid_target_x:")
+        code_lines.append("                    self.x = self._grid_target_x")
+        code_lines.append("                    reached_x = True")
+        code_lines.append("                elif self.hspeed < 0 and self.x <= self._grid_target_x:")
+        code_lines.append("                    self.x = self._grid_target_x")
+        code_lines.append("                    reached_x = True")
+        code_lines.append("                elif self.hspeed != 0:")
+        code_lines.append("                    reached_x = False")
+        code_lines.append("            ")
+        code_lines.append("            # Check Y target")
+        code_lines.append("            if self._grid_target_y is not None:")
+        code_lines.append("                if self.vspeed > 0 and self.y >= self._grid_target_y:")
+        code_lines.append("                    self.y = self._grid_target_y")
+        code_lines.append("                    reached_y = True")
+        code_lines.append("                elif self.vspeed < 0 and self.y <= self._grid_target_y:")
+        code_lines.append("                    self.y = self._grid_target_y")
+        code_lines.append("                    reached_y = True")
+        code_lines.append("                elif self.vspeed != 0:")
+        code_lines.append("                    reached_y = False")
+        code_lines.append("            ")
+        code_lines.append("            # If we've reached the target, check if we should continue or stop")
+        code_lines.append("            if reached_x and reached_y:")
+        code_lines.append("                self._update_position()")
+        code_lines.append("                # Check if the same direction key is still held - continue moving")
+        code_lines.append("                continue_moving = False")
+        code_lines.append(f"                if self.hspeed > 0 and key_right:")
+        code_lines.append(f"                    self._grid_target_x = self.x + grid")
+        code_lines.append(f"                    continue_moving = True")
+        code_lines.append(f"                elif self.hspeed < 0 and key_left:")
+        code_lines.append(f"                    self._grid_target_x = self.x - grid")
+        code_lines.append(f"                    continue_moving = True")
+        code_lines.append(f"                elif self.vspeed > 0 and key_up:")
+        code_lines.append(f"                    self._grid_target_y = self.y + grid")
+        code_lines.append(f"                    continue_moving = True")
+        code_lines.append(f"                elif self.vspeed < 0 and key_down:")
+        code_lines.append(f"                    self._grid_target_y = self.y - grid")
+        code_lines.append(f"                    continue_moving = True")
+        code_lines.append("                ")
+        code_lines.append("                if not continue_moving:")
+        code_lines.append("                    # Stop moving")
+        code_lines.append("                    self.hspeed = 0")
+        code_lines.append("                    self.vspeed = 0")
+        code_lines.append("                    self._grid_moving = False")
+        code_lines.append("                    self._grid_target_x = None")
+        code_lines.append("                    self._grid_target_y = None")
         code_lines.append("")
-        code_lines.append("        if on_grid:")
-        code_lines.append("            # Snap to exact grid position")
-        code_lines.append("            self.x = nearest_x")
-        code_lines.append("            self.y = nearest_y")
-        code_lines.append("            self._update_position()")
-        code_lines.append("")
-        code_lines.append("            # If we wanted to stop (keys released mid-movement), stop now")
-        code_lines.append("            if self._want_to_stop or not any_key_pressed:")
-        code_lines.append("                self.hspeed = 0")
-        code_lines.append("                self.vspeed = 0")
-        code_lines.append("                self._want_to_stop = False")
-        code_lines.append("            else:")
-        code_lines.append("                # Set movement direction based on pressed key")
-        code_lines.append(f"                if key_right:")
-        code_lines.append(f"                    self.hspeed = {speed_values.get('right', 4)}")
-        code_lines.append(f"                    self.vspeed = 0")
-        code_lines.append(f"                elif key_left:")
-        code_lines.append(f"                    self.hspeed = {speed_values.get('left', -4)}")
-        code_lines.append(f"                    self.vspeed = 0")
-        code_lines.append(f"                elif key_up:")
-        code_lines.append(f"                    self.hspeed = 0")
-        code_lines.append(f"                    self.vspeed = {speed_values.get('up', 4)}")
-        code_lines.append(f"                elif key_down:")
-        code_lines.append(f"                    self.hspeed = 0")
-        code_lines.append(f"                    self.vspeed = {speed_values.get('down', -4)}")
-        code_lines.append("")
-        code_lines.append("        # If NOT on grid, continue moving - we'll stop when we reach grid")
+        code_lines.append("        # If not moving, check for new movement input")
+        code_lines.append("        if not self._grid_moving and any_key_pressed:")
+        code_lines.append("            # Snap to nearest grid position first (in case we're slightly off)")
+        code_lines.append("            snap_x = round(self.x / grid) * grid")
+        code_lines.append("            snap_y = round(self.y / grid) * grid")
+        code_lines.append("            self.x = snap_x")
+        code_lines.append("            self.y = snap_y")
+        code_lines.append("            ")
+        code_lines.append("            # Set target based on key pressed (priority: right, left, up, down)")
+        code_lines.append(f"            if key_right:")
+        code_lines.append(f"                self._grid_target_x = snap_x + grid")
+        code_lines.append(f"                self._grid_target_y = snap_y")
+        code_lines.append(f"                self.hspeed = {abs(speed_values.get('right', 4))}")
+        code_lines.append(f"                self.vspeed = 0")
+        code_lines.append(f"                self._grid_moving = True")
+        code_lines.append(f"            elif key_left:")
+        code_lines.append(f"                self._grid_target_x = snap_x - grid")
+        code_lines.append(f"                self._grid_target_y = snap_y")
+        code_lines.append(f"                self.hspeed = -{abs(speed_values.get('left', 4))}")
+        code_lines.append(f"                self.vspeed = 0")
+        code_lines.append(f"                self._grid_moving = True")
+        code_lines.append(f"            elif key_up:")
+        code_lines.append(f"                self._grid_target_x = snap_x")
+        code_lines.append(f"                self._grid_target_y = snap_y + grid")
+        code_lines.append(f"                self.hspeed = 0")
+        code_lines.append(f"                self.vspeed = {abs(speed_values.get('up', 4))}")
+        code_lines.append(f"                self._grid_moving = True")
+        code_lines.append(f"            elif key_down:")
+        code_lines.append(f"                self._grid_target_x = snap_x")
+        code_lines.append(f"                self._grid_target_y = snap_y - grid")
+        code_lines.append(f"                self.hspeed = 0")
+        code_lines.append(f"                self.vspeed = -{abs(speed_values.get('down', 4))}")
+        code_lines.append(f"                self._grid_moving = True")
         code_lines.append("")
 
         return '\n'.join(code_lines)
@@ -1598,6 +1836,36 @@ class {class_name}(GameObject):
         elif action_type == 'check_key':
             key_code = params.get('key', 0)
             return f"if {key_code} in self.scene.keys_pressed:"
+
+        # MESSAGE ACTIONS
+        elif action_type == 'show_message' or action_type == 'display_message':
+            message = params.get('message', '')
+            # Escape quotes in message
+            escaped_message = message.replace("'", "\\'")
+            return f"from main import show_message; show_message('{escaped_message}')"
+
+        # SCORE/LIVES/HEALTH ACTIONS (use lazy import to avoid circular imports)
+        elif action_type == 'set_score':
+            value = params.get('value', 0)
+            relative = params.get('relative', False)
+            return f"from main import set_score; set_score({value}, relative={relative})"
+
+        elif action_type == 'set_lives':
+            value = params.get('value', 3)
+            relative = params.get('relative', False)
+            return f"from main import set_lives; set_lives({value}, relative={relative})"
+
+        elif action_type == 'set_health':
+            value = params.get('value', 100)
+            relative = params.get('relative', False)
+            return f"from main import set_health; set_health({value}, relative={relative})"
+
+        elif action_type == 'set_window_caption':
+            caption = params.get('caption', '')
+            show_score = params.get('show_score', True)
+            show_lives = params.get('show_lives', True)
+            show_health = params.get('show_health', False)
+            return f"from main import set_window_caption; set_window_caption(caption='{caption}', show_score={show_score}, show_lives={show_lives}, show_health={show_health})"
 
         # Default: return comment for unsupported action
         return f"# TODO: Implement {action_type}"

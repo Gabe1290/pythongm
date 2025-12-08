@@ -62,6 +62,10 @@ class ActionCodeGenerator:
 
     def get_code(self):
         """Get final generated code"""
+        # Auto-close any remaining open blocks
+        while self.block_stack:
+            self.block_stack.pop()
+            self.pop_indent()
         return '\n'.join(self.lines)
 
     def process_action(self, action: Dict, event_type: str = ''):
@@ -89,12 +93,12 @@ class ActionCodeGenerator:
             self.pop_indent()
             return
 
-        elif action_type == 'else_action':
+        elif action_type == 'else_action' or action_type == 'else_block':
             # Else clause - pop indent, add else, push indent
             self.pop_indent()
             self.add_line("else:")
             self.push_indent()
-            if self.block_stack and self.block_stack[-1] in ['if', 'if_on_grid']:
+            if self.block_stack and self.block_stack[-1] in ['if', 'if_on_grid', 'if_next_room_exists', 'if_previous_room_exists']:
                 self.block_stack[-1] = 'else'
             return
 
@@ -146,12 +150,16 @@ class ActionCodeGenerator:
             return
 
         elif action_type == 'if_next_room_exists':
-            self.add_line("from main import next_room_exists")
-            self.add_line("if next_room_exists():")
+            self.add_line("from main import next_room_exists, _room_transition_pending")
+            self.add_line("if _room_transition_pending:")
             self.push_indent()
-            self.block_stack.append('if')
+            self.add_line("pass  # Room transition already in progress")
+            self.pop_indent()
+            self.add_line("elif next_room_exists():")
+            self.push_indent()
+            self.block_stack.append('if_next_room_exists')
 
-            # Process nested then_actions if present
+            # Process nested then_actions if present (for nested action structure)
             then_actions = params.get('then_actions', [])
             if then_actions:
                 for nested_action in then_actions:
@@ -170,17 +178,22 @@ class ActionCodeGenerator:
                             self.process_action(nested_action, event_type)
                     self.pop_indent()
 
-                if self.block_stack and self.block_stack[-1] == 'if':
+                if self.block_stack and self.block_stack[-1] == 'if_next_room_exists':
                     self.block_stack.pop()
+            # If no then_actions, leave block open for sequential action handling
             return
 
         elif action_type == 'if_previous_room_exists':
-            self.add_line("from main import previous_room_exists")
-            self.add_line("if previous_room_exists():")
+            self.add_line("from main import previous_room_exists, _room_transition_pending")
+            self.add_line("if _room_transition_pending:")
             self.push_indent()
-            self.block_stack.append('if')
+            self.add_line("pass  # Room transition already in progress")
+            self.pop_indent()
+            self.add_line("elif previous_room_exists():")
+            self.push_indent()
+            self.block_stack.append('if_previous_room_exists')
 
-            # Process nested then_actions if present
+            # Process nested then_actions if present (for nested action structure)
             then_actions = params.get('then_actions', [])
             if then_actions:
                 for nested_action in then_actions:
@@ -199,8 +212,9 @@ class ActionCodeGenerator:
                             self.process_action(nested_action, event_type)
                     self.pop_indent()
 
-                if self.block_stack and self.block_stack[-1] == 'if':
+                if self.block_stack and self.block_stack[-1] == 'if_previous_room_exists':
                     self.block_stack.pop()
+            # If no then_actions, leave block open for sequential action handling
             return
 
         # LOOP ACTIONS
@@ -349,6 +363,36 @@ class ActionCodeGenerator:
 
         elif action_type == 'restart_room':
             return "from main import get_game_app; app = get_game_app(); app._switch_to_room(app.current_room_index) if app else None"
+
+        # MESSAGE ACTIONS
+        elif action_type == 'show_message' or action_type == 'display_message':
+            message = params.get('message', '')
+            # Escape quotes in message
+            escaped_message = message.replace("'", "\\'")
+            return f"from main import show_message; show_message('{escaped_message}')"
+
+        # SCORE/LIVES/HEALTH ACTIONS (use lazy import to avoid circular imports)
+        elif action_type == 'set_score':
+            value = params.get('value', 0)
+            relative = params.get('relative', False)
+            return f"from main import set_score; set_score({value}, relative={relative})"
+
+        elif action_type == 'set_lives':
+            value = params.get('value', 3)
+            relative = params.get('relative', False)
+            return f"from main import set_lives; set_lives({value}, relative={relative})"
+
+        elif action_type == 'set_health':
+            value = params.get('value', 100)
+            relative = params.get('relative', False)
+            return f"from main import set_health; set_health({value}, relative={relative})"
+
+        elif action_type == 'set_window_caption':
+            caption = params.get('caption', '')
+            show_score = params.get('show_score', True)
+            show_lives = params.get('show_lives', True)
+            show_health = params.get('show_health', False)
+            return f"from main import set_window_caption; set_window_caption(caption='{caption}', show_score={show_score}, show_lives={show_lives}, show_health={show_health})"
 
         # DEFAULT
         else:
