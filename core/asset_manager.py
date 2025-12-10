@@ -334,18 +334,71 @@ class AssetManager(QObject):
                 # Verify the update
                 print(f"  Cache after: {list(self.assets_cache.get(asset_type, {}).keys())}")
             
+            # Update references in other assets (e.g., objects using this sprite)
+            self._update_asset_references(asset_type, old_name, new_name)
+
             self.asset_updated.emit(asset_type, new_name, asset_data)
             self.status_changed.emit(f"Renamed {old_name} to {new_name}")
-            
+
             return True
-            
+
         except Exception as e:
             self.status_changed.emit(f"Failed to rename {old_name}: {str(e)}")
             print(f"❌ Rename exception: {e}")
             import traceback
             traceback.print_exc()
             return False
-    
+
+    def _update_asset_references(self, asset_type: str, old_name: str, new_name: str):
+        """Update all references to a renamed asset in other assets"""
+        try:
+            if asset_type == "sprites":
+                # Update sprite references in objects
+                objects = self.assets_cache.get("objects", {})
+                for obj_name, obj_data in objects.items():
+                    if obj_data.get("sprite") == old_name:
+                        obj_data["sprite"] = new_name
+                        obj_data["modified"] = datetime.now().isoformat()
+                        print(f"  📝 Updated sprite reference in object '{obj_name}': {old_name} → {new_name}")
+
+                # Update sprite references in room instances
+                rooms = self.assets_cache.get("rooms", {})
+                for room_name, room_data in rooms.items():
+                    # Room instances typically use object_name, not sprite directly
+                    # But some rooms might have direct sprite references
+                    pass
+
+            elif asset_type == "objects":
+                # Update object references in rooms
+                rooms = self.assets_cache.get("rooms", {})
+                for room_name, room_data in rooms.items():
+                    instances = room_data.get("instances", [])
+                    updated = False
+                    for instance in instances:
+                        if instance.get("object_name") == old_name:
+                            instance["object_name"] = new_name
+                            updated = True
+                            print(f"  📝 Updated object reference in room '{room_name}' instance: {old_name} → {new_name}")
+                    if updated:
+                        room_data["modified"] = datetime.now().isoformat()
+
+            elif asset_type == "sounds":
+                # Sounds might be referenced in object events
+                # This would require parsing action parameters
+                pass
+
+            elif asset_type == "backgrounds":
+                # Update background references in rooms
+                rooms = self.assets_cache.get("rooms", {})
+                for room_name, room_data in rooms.items():
+                    if room_data.get("background_image") == old_name:
+                        room_data["background_image"] = new_name
+                        room_data["modified"] = datetime.now().isoformat()
+                        print(f"  📝 Updated background reference in room '{room_name}': {old_name} → {new_name}")
+
+        except Exception as e:
+            print(f"⚠️ Error updating asset references: {e}")
+
     def duplicate_asset(self, asset_type: str, asset_name: str) -> Optional[Dict[str, Any]]:
         """Create a copy of an existing asset"""
         if not self.project_directory:

@@ -7,6 +7,20 @@ from actions.core import ActionDefinition, ActionParameter
 
 
 TIMING_ACTIONS = {
+    "set_alarm": ActionDefinition(
+        name="set_alarm",
+        display_name="Set Alarm",
+        category="timing",
+        tab="timing",
+        description="Set an alarm to trigger after N steps",
+        icon="⏰",
+        parameters=[
+            ActionParameter("alarm_number", "choice", "Alarm", "Which alarm (0-11)",
+                          default="0", options=["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]),
+            ActionParameter("steps", "string", "Steps", "Number of steps until alarm triggers (-1 to disable)", default="30"),
+            ActionParameter("relative", "boolean", "Relative", "Add to current alarm value", default=False)
+        ]
+    ),
     "set_timeline": ActionDefinition(
         name="set_timeline",
         display_name="Set Timeline",

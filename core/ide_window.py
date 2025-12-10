@@ -2162,6 +2162,9 @@ class PyGameMakerIDE(QMainWindow):
                 self.properties_panel.refresh_sprite_combo()
                 print(f"Refreshed sprite combo after importing {asset_name}")
 
+            # Also refresh open object editors so they see the new sprite
+            self.refresh_open_object_editors()
+
     def on_asset_double_clicked(self, asset_data):
         """Handle double-click on assets to open in appropriate editor"""
         asset_type = asset_data.get('asset_type', '')
@@ -2503,6 +2506,15 @@ class PyGameMakerIDE(QMainWindow):
 
         QTimer.singleShot(3000, lambda: self.status_label.setText(self.tr("Ready")))
 
+    def refresh_open_object_editors(self):
+        """Refresh sprite lists in all open object editors"""
+        for i in range(self.editor_tabs.count()):
+            widget = self.editor_tabs.widget(i)
+            # Check if this is an object editor (has load_project_assets method)
+            if hasattr(widget, 'load_project_assets'):
+                widget.load_project_assets()
+                print(f"🔄 Refreshed sprites in object editor: {self.editor_tabs.tabText(i)}")
+
     def refresh_object_sprites(self, object_name: str, old_sprite: str, new_sprite: str):
         """Refresh object sprites in room editors when they change"""
         print(f"Refreshing sprite for object {object_name}: {old_sprite} -> {new_sprite}")
@@ -2511,7 +2523,12 @@ class PyGameMakerIDE(QMainWindow):
         for i in range(self.editor_tabs.count()):
             widget = self.editor_tabs.widget(i)
             if hasattr(widget, 'room_canvas') and hasattr(widget, 'object_palette'):
-                # Clear sprite cache for the object
+                # Update room canvas with latest project data so it sees the new sprite assignment
+                if hasattr(widget.room_canvas, 'set_project_info') and self.current_project_data:
+                    project_path = self.current_project_path if hasattr(self, 'current_project_path') else None
+                    widget.room_canvas.set_project_info(project_path, self.current_project_data)
+
+                # Clear sprite cache for the object (set_project_info clears all, but be explicit)
                 if hasattr(widget.room_canvas, 'sprite_cache') and object_name in widget.room_canvas.sprite_cache:
                     del widget.room_canvas.sprite_cache[object_name]
 

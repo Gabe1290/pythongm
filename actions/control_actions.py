@@ -12,12 +12,12 @@ CONTROL_ACTIONS = {
         display_name="Check Collision",
         category="control",
         tab="control",
-        description="Test for collision with object",
+        description="Test for collision with object (use 'any' to check for any object)",
         icon="❓",
         parameters=[
-            ActionParameter("x", "float", "X", "X offset", default=0),
-            ActionParameter("y", "float", "Y", "Y offset", default=0),
-            ActionParameter("object", "object", "Object", "Object to check"),
+            ActionParameter("x", "string", "X", "X offset (number or expression like other.hspeed*8)", default="0"),
+            ActionParameter("y", "string", "Y", "Y offset (number or expression like other.vspeed*8)", default="0"),
+            ActionParameter("object", "object", "Object", "Object to check ('any' for any object, 'solid' for solid objects only)", default="any"),
             ActionParameter("not_flag", "boolean", "NOT", "Invert condition", default=False)
         ]
     ),
@@ -106,13 +106,13 @@ CONTROL_ACTIONS = {
     ),
     "repeat": ActionDefinition(
         name="repeat",
-        display_name="Repeat Next Action",
+        display_name="Repeat",
         category="control",
         tab="control",
-        description="Repeat following action N times",
+        description="Repeat following actions N times (use Start/End Block for multiple actions)",
         icon="🔁",
         parameters=[
-            ActionParameter("times", "int", "Times", "Number of repetitions", default=1)
+            ActionParameter("times", "string", "Times", "Number of repetitions (number or variable)", default="1")
         ]
     ),
     "exit_event": ActionDefinition(

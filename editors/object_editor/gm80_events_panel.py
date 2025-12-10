@@ -94,6 +94,7 @@ class GM80EventsPanel(QWidget):
         self.events_tree.customContextMenuRequested.connect(self.show_context_menu)
         self.events_tree.itemDoubleClicked.connect(self.on_item_double_clicked)
         self.events_tree.itemClicked.connect(self.on_item_clicked)  # Handle single-click
+        self.events_tree.itemSelectionChanged.connect(self.on_selection_changed)  # Handle selection changes
 
         # IMPORTANT: Set tree to expand items by default
         self.events_tree.setItemsExpandable(True)
@@ -368,6 +369,24 @@ class GM80EventsPanel(QWidget):
             edit_action = menu.addAction(self.tr("Edit Action"))
             edit_action.triggered.connect(lambda: self.edit_action(item))
 
+            menu.addSeparator()
+
+            # Move up/down options
+            move_up_action = menu.addAction(self.tr("Move Up"))
+            move_up_action.triggered.connect(lambda: self.move_action(item, -1))
+
+            move_down_action = menu.addAction(self.tr("Move Down"))
+            move_down_action.triggered.connect(lambda: self.move_action(item, 1))
+
+            # Enable/disable based on position
+            parent_item = item.parent()
+            if parent_item:
+                action_index = parent_item.indexOfChild(item)
+                move_up_action.setEnabled(action_index > 0)
+                move_down_action.setEnabled(action_index < parent_item.childCount() - 1)
+
+            menu.addSeparator()
+
             remove_action = menu.addAction(self.tr("Remove Action"))
             remove_action.triggered.connect(lambda: self.remove_action(item))
 
@@ -413,9 +432,26 @@ class GM80EventsPanel(QWidget):
         if not action_def:
             return
 
-        dialog = GM80ActionDialog(action_def, action_data.get("parameters", {}), parent=self)
+        # Get the parent event to find the actual action in current_events_data
+        parent_item = action_item.parent()
+        if not parent_item:
+            return
+
+        event_name = parent_item.data(0, Qt.UserRole)
+        action_index = parent_item.indexOfChild(action_item)
+
+        # Get the actual actions list from current_events_data
+        actions_list = self._get_actions_list_for_event(event_name)
+        if actions_list is None or action_index < 0 or action_index >= len(actions_list):
+            return
+
+        # Get the actual action data from the list (not the copy from tree widget)
+        actual_action_data = actions_list[action_index]
+
+        dialog = GM80ActionDialog(action_def, actual_action_data.get("parameters", {}), parent=self)
         if dialog.exec() == QDialog.Accepted:
-            action_data["parameters"] = dialog.get_parameter_values()
+            # Update the actual action data in current_events_data
+            actual_action_data["parameters"] = dialog.get_parameter_values()
             self.refresh_display()
             self.events_modified.emit()
 
@@ -428,17 +464,64 @@ class GM80EventsPanel(QWidget):
         event_name = parent_item.data(0, Qt.UserRole)
         action_index = parent_item.indexOfChild(action_item)
 
-        if event_name in self.current_events_data:
-            actions = self.current_events_data[event_name].get("actions", [])
-            if 0 <= action_index < len(actions):
-                reply = QMessageBox.question(self, self.tr("Remove Action"),
-                    self.tr("Are you sure you want to remove this action?"),
-                    QMessageBox.Yes | QMessageBox.No)
+        # Get the actions list for this event (handles nested keyboard events)
+        actions = self._get_actions_list_for_event(event_name)
+        if actions is not None and 0 <= action_index < len(actions):
+            reply = QMessageBox.question(self, self.tr("Remove Action"),
+                self.tr("Are you sure you want to remove this action?"),
+                QMessageBox.Yes | QMessageBox.No)
 
-                if reply == QMessageBox.Yes:
-                    actions.pop(action_index)
-                    self.refresh_display()
-                    self.events_modified.emit()
+            if reply == QMessageBox.Yes:
+                actions.pop(action_index)
+                self.refresh_display()
+                self.events_modified.emit()
+
+    def move_action(self, action_item: QTreeWidgetItem, direction: int):
+        """Move an action up (-1) or down (+1) in the list"""
+        parent_item = action_item.parent()
+        if not parent_item:
+            return
+
+        event_name = parent_item.data(0, Qt.UserRole)
+        action_index = parent_item.indexOfChild(action_item)
+
+        # Get the actions list for this event
+        actions = self._get_actions_list_for_event(event_name)
+        if actions is None:
+            return
+
+        new_index = action_index + direction
+
+        # Check bounds
+        if new_index < 0 or new_index >= len(actions):
+            return
+
+        # Swap the actions
+        actions[action_index], actions[new_index] = actions[new_index], actions[action_index]
+
+        # Refresh display and emit signal
+        self.refresh_display()
+        self.events_modified.emit()
+
+    def _get_actions_list_for_event(self, event_name: str):
+        """Get the actions list for an event, handling nested keyboard events"""
+        # Check if it's a nested keyboard event (e.g., "keyboard_right", "keyboard_press_up")
+        if "_" in event_name:
+            parts = event_name.rsplit("_", 1)
+            if len(parts) == 2:
+                parent_event, key_name = parts
+                # Check for keyboard events with nested structure
+                if parent_event in ["keyboard", "keyboard_press", "keyboard_release"]:
+                    if parent_event in self.current_events_data:
+                        key_data = self.current_events_data[parent_event].get(key_name, {})
+                        if isinstance(key_data, dict) and "actions" in key_data:
+                            return key_data["actions"]
+
+        # Regular event
+        if event_name in self.current_events_data:
+            return self.current_events_data[event_name].get("actions", [])
+
+        return None
 
     def remove_event(self, event_name: str):
         """Remove an event"""
@@ -463,13 +546,44 @@ class GM80EventsPanel(QWidget):
             self.remove_event(event_name)
 
     def on_item_clicked(self, item: QTreeWidgetItem, column: int):
-        """Handle single-click - toggle expand/collapse for events"""
+        """Handle single-click - toggle expand/collapse for events and enable/disable remove button"""
         if not item:
+            self.remove_event_btn.setEnabled(False)
             return
+
+        # Check if this is an event item (has event_name in data)
+        item_data = item.data(0, Qt.UserRole)
+        is_event_item = isinstance(item_data, str) and not item_data.startswith("action:")
+
+        # Also check parent - if clicking on an action, the parent is the event
+        if not is_event_item and item.parent():
+            parent_data = item.parent().data(0, Qt.UserRole)
+            is_event_item = isinstance(parent_data, str) and not parent_data.startswith("action:")
+
+        # Enable remove button if an event (or action within event) is selected
+        self.remove_event_btn.setEnabled(is_event_item or (item.parent() is not None))
 
         # Only toggle expand/collapse if this is an event item (has children)
         if item.childCount() > 0:
             item.setExpanded(not item.isExpanded())
+
+    def on_selection_changed(self):
+        """Handle selection changes - enable/disable remove button"""
+        selected_items = self.events_tree.selectedItems()
+        if not selected_items:
+            self.remove_event_btn.setEnabled(False)
+            return
+
+        item = selected_items[0]
+        item_data = item.data(0, Qt.UserRole)
+
+        # Check if this is an event item (string data that's not an action)
+        is_event_item = isinstance(item_data, str) and not item_data.startswith("action:")
+
+        # Also enable if an action is selected (can remove parent event)
+        has_parent_event = item.parent() is not None
+
+        self.remove_event_btn.setEnabled(is_event_item or has_parent_event)
 
     def on_item_double_clicked(self, item: QTreeWidgetItem, column: int):
         """Handle double-click - edit actions"""

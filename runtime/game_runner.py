@@ -80,6 +80,9 @@ class GameInstance:
         # Track if movement keys are currently pressed
         self.keys_pressed = set()  # Set of currently pressed keys
 
+        # Alarms - 12 alarms (0-11), -1 means disabled
+        self.alarm = [-1] * 12
+
         # Action executor - use shared instance or create new one
         self.action_executor = action_executor if action_executor else ActionExecutor()
 
@@ -92,10 +95,33 @@ class GameInstance:
         if self.object_data and "events" in self.object_data:
             # Execute regular step event
             self.action_executor.execute_event(self, "step", self.object_data["events"])
-            
+
+            # Process alarms - decrement and trigger when reaching 0
+            events = self.object_data["events"]
+            for alarm_num in range(12):
+                if self.alarm[alarm_num] > 0:
+                    self.alarm[alarm_num] -= 1
+                    if self.alarm[alarm_num] == 0:
+                        # Alarm triggered! Execute alarm event
+                        self.alarm[alarm_num] = -1  # Reset to disabled
+                        alarm_key = f"alarm_{alarm_num}"
+
+                        # Check for alarm event in different structures:
+                        # 1. Nested: events["alarm"]["alarm_0"]
+                        # 2. Flat: events["alarm_0"]
+                        alarm_event = None
+                        if "alarm" in events and alarm_key in events["alarm"]:
+                            alarm_event = events["alarm"][alarm_key]
+                        elif alarm_key in events:
+                            alarm_event = events[alarm_key]
+
+                        if alarm_event and isinstance(alarm_event, dict) and "actions" in alarm_event:
+                            print(f"⏰ Alarm {alarm_num} triggered for {self.object_name}")
+                            for action_data in alarm_event["actions"]:
+                                self.action_executor.execute_action(self, action_data)
+
             # Check for "nokey" event (GameMaker compatibility)
             # This event triggers when no keyboard keys are currently pressed
-            events = self.object_data["events"]
             if "keyboard" in events and "nokey" in events["keyboard"]:
                 # Check if no keys are currently pressed
                 keys_pressed = getattr(self, 'keys_pressed', set())
@@ -143,13 +169,22 @@ class GameInstance:
 class GameRoom:
     """Represents a game room with instances"""
 
-    def __init__(self, name: str, room_data: dict, action_executor=None):
+    def __init__(self, name: str, room_data: dict, action_executor=None, project_path=None, sprites_data=None):
         self.name = name
         self.width = room_data.get('width', 1024)
         self.height = room_data.get('height', 768)
         self.background_color = self.parse_color(room_data.get('background_color', '#87CEEB'))
+        self.background_image_name = room_data.get('background_image', '')
+        self.tile_horizontal = room_data.get('tile_horizontal', False)
+        self.tile_vertical = room_data.get('tile_vertical', False)
+        self.background_surface = None
+        self.project_path = project_path
+        self.sprites_data = sprites_data or {}
         self.instances: List[GameInstance] = []
         self.action_executor = action_executor
+
+        # Don't load background image here - pygame display may not be ready yet
+        # Background will be loaded later via load_background_image()
 
         # Load instances
         instances_data = room_data.get('instances', [])
@@ -167,7 +202,7 @@ class GameRoom:
         """Parse color string to RGB tuple"""
         if color_str.startswith('#'):
             color_str = color_str[1:]
-        
+
         try:
             r = int(color_str[0:2], 16)
             g = int(color_str[2:4], 16)
@@ -175,6 +210,39 @@ class GameRoom:
             return (r, g, b)
         except:
             return (135, 206, 235)  # Default sky blue
+
+    def load_background_image(self):
+        """Load background image from project assets"""
+        if not self.background_image_name or not self.project_path:
+            return
+
+        try:
+            # Look in both backgrounds and sprites
+            for asset_type in ['backgrounds', 'sprites']:
+                if self.background_image_name in self.sprites_data.get(asset_type, {}):
+                    asset_data = self.sprites_data[asset_type][self.background_image_name]
+                    file_path = asset_data.get('file_path', '')
+                    if file_path:
+                        full_path = Path(self.project_path) / file_path
+                        if full_path.exists():
+                            self.background_surface = pygame.image.load(str(full_path)).convert()
+                            print(f"🖼️ Loaded background image: {self.background_image_name}")
+                            return
+
+            # Also check sprites_data directly (it might already be merged)
+            if self.background_image_name in self.sprites_data:
+                asset_data = self.sprites_data[self.background_image_name]
+                file_path = asset_data.get('file_path', '')
+                if file_path:
+                    full_path = Path(self.project_path) / file_path
+                    if full_path.exists():
+                        self.background_surface = pygame.image.load(str(full_path)).convert()
+                        print(f"🖼️ Loaded background image: {self.background_image_name}")
+                        return
+
+            print(f"⚠️ Background image not found: {self.background_image_name}")
+        except Exception as e:
+            print(f"❌ Error loading background image: {e}")
     
     def set_sprites_for_instances(self, sprites: Dict[str, GameSprite], objects: Dict[str, dict]):
         """Set sprites for all instances based on their object types"""
@@ -232,7 +300,29 @@ class GameRoom:
         """Render the room and all its instances"""
         # Clear screen with background color
         screen.fill(self.background_color)
-        
+
+        # Draw background image if present
+        if self.background_surface:
+            img_width = self.background_surface.get_width()
+            img_height = self.background_surface.get_height()
+
+            if self.tile_horizontal or self.tile_vertical:
+                # Tile the background
+                x_count = (self.width // img_width) + 2 if self.tile_horizontal else 1
+                y_count = (self.height // img_height) + 2 if self.tile_vertical else 1
+
+                for x_tile in range(x_count):
+                    for y_tile in range(y_count):
+                        x_pos = x_tile * img_width if self.tile_horizontal else 0
+                        y_pos = y_tile * img_height if self.tile_vertical else 0
+
+                        if x_pos < self.width and y_pos < self.height:
+                            screen.blit(self.background_surface, (x_pos, y_pos))
+            else:
+                # Stretch to fill room
+                scaled_bg = pygame.transform.scale(self.background_surface, (self.width, self.height))
+                screen.blit(scaled_bg, (0, 0))
+
         # Render all instances
         for instance in self.instances:
             instance.render(screen)
@@ -348,12 +438,19 @@ class GameRunner:
     def load_rooms_without_sprites(self):
         """Load rooms but don't assign sprites to instances yet"""
         rooms_data = self.project_data.get('assets', {}).get('rooms', {})
-        
+        assets = self.project_data.get('assets', {})
+
         print(f"Loading {len(rooms_data)} rooms...")
-        
+
         for room_name, room_info in rooms_data.items():
             try:
-                room = GameRoom(room_name, room_info, action_executor=self.action_executor)
+                room = GameRoom(
+                    room_name,
+                    room_info,
+                    action_executor=self.action_executor,
+                    project_path=self.project_path,
+                    sprites_data=assets  # Pass all assets so room can find backgrounds/sprites
+                )
                 # Don't set sprites yet - will do this after pygame.display is ready
                 self.rooms[room_name] = room
                 print(f"  Loaded room: {room_name} ({len(room.instances)} instances)")
@@ -365,14 +462,25 @@ class GameRunner:
     def assign_sprites_to_rooms(self):
         """Assign loaded sprites to room instances"""
         objects_data = self.project_data.get('assets', {}).get('objects', {})
-        
+
         print("Assigning sprites to room instances...")
         for room_name, room in self.rooms.items():
             room.set_sprites_for_instances(self.sprites, objects_data)
-            
+
             # Count instances with sprites
             sprites_assigned = sum(1 for instance in room.instances if instance.sprite)
             print(f"  Room {room_name}: {sprites_assigned}/{len(room.instances)} instances have sprites")
+
+    def load_room_backgrounds(self):
+        """Load background images for all rooms (called after pygame.display is initialized)"""
+        print("Loading room background images...")
+        for room_name, room in self.rooms.items():
+            if room.background_image_name:
+                room.load_background_image()
+                if room.background_surface:
+                    print(f"  Room {room_name}: background '{room.background_image_name}' loaded")
+                else:
+                    print(f"  Room {room_name}: background '{room.background_image_name}' NOT found")
     
     def find_starting_room(self) -> Optional[str]:
         """Find a room to start the game in"""
@@ -430,9 +538,12 @@ class GameRunner:
             print(f"Game window: {self.window_width}x{self.window_height}")
             
             # NOW load sprites (after pygame.display is initialized)
-            print("\nðŸŽ® Loading sprites after pygame.display initialization...")
+            print("\n🎮 Loading sprites after pygame.display initialization...")
             self.load_sprites()
-            
+
+            # Load background images for all rooms
+            self.load_room_backgrounds()
+
             # Assign sprites to room instances
             self.assign_sprites_to_rooms()
 
@@ -855,9 +966,16 @@ class GameRunner:
                 delattr(instance, 'intended_x')
                 delattr(instance, 'intended_y')
         
-        # Check collision events
+        # Check collision events - use global two-pass approach
+        # First pass: Detect ALL collisions for ALL instances and capture speeds
+        all_collisions = []
         for instance in self.current_room.instances:
-            self.check_collision_events(instance, objects_data)
+            collisions = self.detect_collisions_for_instance(instance, objects_data)
+            all_collisions.extend(collisions)
+
+        # Second pass: Process ALL collision events with stored speeds
+        for collision_data in all_collisions:
+            self.process_collision_event(collision_data)
 
         # NOTE: Step events are executed in the main game loop, not here
         # (see run_game_loop where instance.step() is called)
@@ -894,25 +1012,40 @@ class GameRunner:
         
         return True
     
-    def check_collision_events(self, instance, objects_data: dict):
-        """Check if instance is colliding and trigger collision events
+    def detect_collisions_for_instance(self, instance, objects_data: dict) -> list:
+        """Detect collisions for an instance and capture speeds
 
-        Uses collision tracking to fire events only once per collision pair
-        until the objects separate.
+        Returns a list of collision data dicts with speeds captured at detection time.
+        Does NOT process the events - that's done separately.
         """
+        collisions = []
+
         if not instance.object_data:
-            return
+            return collisions
 
         # Initialize collision tracking set if not exists
         if not hasattr(instance, '_active_collisions'):
             instance._active_collisions = set()
+
+        # Initialize collision cooldown dict if not exists
+        # Maps collision_key -> frames remaining in cooldown
+        if not hasattr(instance, '_collision_cooldowns'):
+            instance._collision_cooldowns = {}
 
         events = instance.object_data.get('events', {})
 
         # Track which collisions are currently active this frame
         current_collisions = set()
 
-        # Check all collision events
+        # Decrement cooldowns
+        expired_keys = []
+        for key, frames in instance._collision_cooldowns.items():
+            instance._collision_cooldowns[key] = frames - 1
+            if instance._collision_cooldowns[key] <= 0:
+                expired_keys.append(key)
+        for key in expired_keys:
+            del instance._collision_cooldowns[key]
+
         for event_name, event_data in events.items():
             if event_name.startswith('collision_with_'):
                 target_object = event_name.replace('collision_with_', '')
@@ -928,16 +1061,55 @@ class GameRunner:
                             collision_key = (id(other_instance), event_name)
                             current_collisions.add(collision_key)
 
-                            # Only fire event if this is a NEW collision (wasn't active last frame)
-                            if collision_key not in instance._active_collisions:
-                                print(f"🎯 COLLISION DETECTED: {instance.object_name} with {other_instance.object_name}")
-                                # Pass other_instance as context for collision actions
-                                instance.action_executor.execute_collision_event(instance, event_name, events, other_instance)
+                            # Only fire event if this is a NEW collision AND not in cooldown
+                            in_cooldown = collision_key in instance._collision_cooldowns
+                            if collision_key not in instance._active_collisions and not in_cooldown:
+                                # Store the collision data with speeds captured NOW
+                                collisions.append({
+                                    'instance': instance,
+                                    'event_name': event_name,
+                                    'events': events,
+                                    'other_instance': other_instance,
+                                    # Capture speeds at moment of collision detection
+                                    'self_hspeed': getattr(instance, 'hspeed', 0),
+                                    'self_vspeed': getattr(instance, 'vspeed', 0),
+                                    'other_hspeed': getattr(other_instance, 'hspeed', 0),
+                                    'other_vspeed': getattr(other_instance, 'vspeed', 0),
+                                })
+                                # Add short cooldown (2 frames) to prevent double-trigger within same push
+                                # This is short enough to allow continuous pushing when key is held
+                                instance._collision_cooldowns[collision_key] = 2
                             break
 
         # Update active collisions for next frame
         instance._active_collisions = current_collisions
-    
+
+        return collisions
+
+    def process_collision_event(self, collision_data: dict):
+        """Process a single collision event with stored speeds"""
+        instance = collision_data['instance']
+        event_name = collision_data['event_name']
+        events = collision_data['events']
+        other_instance = collision_data['other_instance']
+
+        print(f"🎯 COLLISION DETECTED: {instance.object_name} with {other_instance.object_name}")
+        print(f"   Stored speeds - self: ({collision_data['self_hspeed']}, {collision_data['self_vspeed']}), other: ({collision_data['other_hspeed']}, {collision_data['other_vspeed']})")
+
+        # Pass other_instance and collision speeds as context for collision actions
+        instance.action_executor.execute_collision_event(
+            instance,
+            event_name,
+            events,
+            other_instance,
+            collision_speeds={
+                'self_hspeed': collision_data['self_hspeed'],
+                'self_vspeed': collision_data['self_vspeed'],
+                'other_hspeed': collision_data['other_hspeed'],
+                'other_vspeed': collision_data['other_vspeed'],
+            }
+        )
+
     def instances_overlap(self, inst1, inst2) -> bool:
         """Check if two instances overlap"""
         w1 = inst1.sprite.width if inst1.sprite else 32
@@ -950,7 +1122,64 @@ class GameRunner:
     def rectangles_overlap(self, x1, y1, w1, h1, x2, y2, w2, h2) -> bool:
         """Check if two rectangles overlap"""
         return not (x1 + w1 <= x2 or x2 + w2 <= x1 or y1 + h1 <= y2 or y2 + h2 <= y1)
-    
+
+    def check_collision_at_position(self, instance, check_x: float, check_y: float,
+                                    object_type: str = "any", exclude_instance=None) -> bool:
+        """Check if there's a collision at a given position
+
+        Args:
+            instance: The instance doing the check
+            check_x: X position to check
+            check_y: Y position to check
+            object_type: Type of object to check for:
+                - 'any': Any object at that position
+                - 'solid': Only solid objects
+                - specific name: Only that specific object type
+            exclude_instance: Additional instance to exclude (e.g., collision other)
+
+        Returns:
+            True if collision found, False otherwise
+        """
+        if not self.current_room:
+            print(f"⚠️ check_collision_at_position: No current room!")
+            return False
+
+        objects_data = self.project_data.get('assets', {}).get('objects', {})
+
+        # Get instance dimensions
+        w1 = instance.sprite.width if instance.sprite else 32
+        h1 = instance.sprite.height if instance.sprite else 32
+
+        for other_instance in self.current_room.instances:
+            if other_instance == instance:
+                continue
+            # Also exclude the collision "other" instance (e.g., explorer pushing rock)
+            if exclude_instance and other_instance == exclude_instance:
+                continue
+
+            # Get other instance dimensions
+            w2 = other_instance.sprite.width if other_instance.sprite else 32
+            h2 = other_instance.sprite.height if other_instance.sprite else 32
+
+            # Check if positions overlap
+            if self.rectangles_overlap(check_x, check_y, w1, h1,
+                                       other_instance.x, other_instance.y, w2, h2):
+                # Collision detected - check if it matches the filter
+                if object_type == "any":
+                    return True
+                elif object_type == "solid":
+                    # Check if other object is solid
+                    if other_instance.object_name in objects_data:
+                        other_obj_data = objects_data[other_instance.object_name]
+                        if other_obj_data.get('solid', False):
+                            return True
+                else:
+                    # Check for specific object type
+                    if other_instance.object_name == object_type:
+                        return True
+
+        return False
+
     def restart_current_room(self):
         """Restart the current room"""
         if not self.current_room:

@@ -44,6 +44,7 @@ class GameObject {
 
         // Collision tracking
         this._collision_other = null;
+        this._collision_speeds = null; // Stores speeds at moment of collision
 
         // Store game reference for later
         this._pendingCreateEvent = true;
@@ -458,12 +459,102 @@ class GameObject {
 
             case 'if_collision':
             case 'if_collision_at':
-                // Check collision at specified position
-                const checkX = params.x !== undefined ? params.x : this.x;
-                const checkY = params.y !== undefined ? params.y : this.y;
-                const targetObject = params.object;
-                // Would need to check collisions at this position
-                return false;  // Default to false for now
+                // Check collision at specified position (supports 'any', 'solid', or specific object name)
+                // X and Y can be expressions like "other.hspeed*8" or plain numbers
+                let collXOffset = 0;
+                let collYOffset = 0;
+
+                // Parse X expression
+                if (params.x !== undefined) {
+                    const xStr = params.x.toString();
+                    if (xStr.includes('other.') || xStr.includes('self.') || xStr.includes('*') || xStr.includes('+') || xStr.includes('-')) {
+                        // Expression - evaluate it
+                        // Use stored collision speeds if available, otherwise current speeds
+                        const selfHspeed = this._collision_speeds ? this._collision_speeds.selfHspeed : (this.hspeed || 0);
+                        const selfVspeed = this._collision_speeds ? this._collision_speeds.selfVspeed : (this.vspeed || 0);
+                        const otherHspeed = this._collision_speeds ? this._collision_speeds.otherHspeed : (this._collision_other ? this._collision_other.hspeed : 0);
+                        const otherVspeed = this._collision_speeds ? this._collision_speeds.otherVspeed : (this._collision_other ? this._collision_other.vspeed : 0);
+                        try {
+                            const xExpr = xStr
+                                .replace(/self\.x/g, this.x.toString())
+                                .replace(/self\.y/g, this.y.toString())
+                                .replace(/self\.hspeed/g, selfHspeed.toString())
+                                .replace(/self\.vspeed/g, selfVspeed.toString())
+                                .replace(/other\.hspeed/g, otherHspeed.toString())
+                                .replace(/other\.vspeed/g, otherVspeed.toString())
+                                .replace(/other\.x/g, (this._collision_other ? this._collision_other.x : 0).toString())
+                                .replace(/other\.y/g, (this._collision_other ? this._collision_other.y : 0).toString());
+                            collXOffset = eval(xExpr);
+                        } catch(e) {
+                            collXOffset = parseFloat(xStr) || 0;
+                        }
+                    } else {
+                        collXOffset = parseFloat(xStr) || 0;
+                    }
+                }
+
+                // Parse Y expression
+                if (params.y !== undefined) {
+                    const yStr = params.y.toString();
+                    if (yStr.includes('other.') || yStr.includes('self.') || yStr.includes('*') || yStr.includes('+') || yStr.includes('-')) {
+                        // Expression - evaluate it
+                        // Use stored collision speeds if available, otherwise current speeds
+                        const selfHspeed = this._collision_speeds ? this._collision_speeds.selfHspeed : (this.hspeed || 0);
+                        const selfVspeed = this._collision_speeds ? this._collision_speeds.selfVspeed : (this.vspeed || 0);
+                        const otherHspeed = this._collision_speeds ? this._collision_speeds.otherHspeed : (this._collision_other ? this._collision_other.hspeed : 0);
+                        const otherVspeed = this._collision_speeds ? this._collision_speeds.otherVspeed : (this._collision_other ? this._collision_other.vspeed : 0);
+                        try {
+                            const yExpr = yStr
+                                .replace(/self\.x/g, this.x.toString())
+                                .replace(/self\.y/g, this.y.toString())
+                                .replace(/self\.hspeed/g, selfHspeed.toString())
+                                .replace(/self\.vspeed/g, selfVspeed.toString())
+                                .replace(/other\.hspeed/g, otherHspeed.toString())
+                                .replace(/other\.vspeed/g, otherVspeed.toString())
+                                .replace(/other\.x/g, (this._collision_other ? this._collision_other.x : 0).toString())
+                                .replace(/other\.y/g, (this._collision_other ? this._collision_other.y : 0).toString());
+                            collYOffset = eval(yExpr);
+                        } catch(e) {
+                            collYOffset = parseFloat(yStr) || 0;
+                        }
+                    } else {
+                        collYOffset = parseFloat(yStr) || 0;
+                    }
+                }
+
+                const collCheckX = this.x + collXOffset;
+                const collCheckY = this.y + collYOffset;
+                const collObjectType = params.object || 'any';
+                const notFlag = params.not_flag || false;
+
+                // Check for collision at position
+                let hasCollision = false;
+                for (const inst of game.instances) {
+                    if (inst === this || inst.toDestroy) continue;
+
+                    // Check if positions overlap
+                    const myW = this.sprite ? this.sprite.width : 32;
+                    const myH = this.sprite ? this.sprite.height : 32;
+                    const otherW = inst.sprite ? inst.sprite.width : 32;
+                    const otherH = inst.sprite ? inst.sprite.height : 32;
+
+                    if (collCheckX < inst.x + otherW && collCheckX + myW > inst.x &&
+                        collCheckY < inst.y + otherH && collCheckY + myH > inst.y) {
+                        // Collision detected - check if it matches the filter
+                        if (collObjectType === 'any') {
+                            hasCollision = true;
+                            break;
+                        } else if (collObjectType === 'solid' && inst.solid) {
+                            hasCollision = true;
+                            break;
+                        } else if (inst.objectName === collObjectType || inst.name === collObjectType) {
+                            hasCollision = true;
+                            break;
+                        }
+                    }
+                }
+
+                return notFlag ? !hasCollision : hasCollision;
 
             case 'if_variable':
                 // Compare a variable to a value
@@ -576,6 +667,78 @@ class GameObject {
                 const stopGridSize = 32;
                 this.x = Math.round(this.x / stopGridSize) * stopGridSize;
                 this.y = Math.round(this.y / stopGridSize) * stopGridSize;
+                break;
+
+            case 'jump_to_position':
+                // Jump to position - supports expressions and relative mode
+                let jumpX = 0;
+                let jumpY = 0;
+                const jumpRelative = params.relative || false;
+
+                // Parse X expression
+                if (params.x !== undefined) {
+                    const xStr = params.x.toString();
+                    if (xStr.includes('other.') || xStr.includes('self.') || xStr.includes('*') || xStr.includes('+') || xStr.includes('-')) {
+                        // Use stored collision speeds if available, otherwise current speeds
+                        const selfHspeedJump = this._collision_speeds ? this._collision_speeds.selfHspeed : (this.hspeed || 0);
+                        const selfVspeedJump = this._collision_speeds ? this._collision_speeds.selfVspeed : (this.vspeed || 0);
+                        const otherHspeedJump = this._collision_speeds ? this._collision_speeds.otherHspeed : (this._collision_other ? this._collision_other.hspeed : 0);
+                        const otherVspeedJump = this._collision_speeds ? this._collision_speeds.otherVspeed : (this._collision_other ? this._collision_other.vspeed : 0);
+                        try {
+                            const xExpr = xStr
+                                .replace(/self\.x/g, this.x.toString())
+                                .replace(/self\.y/g, this.y.toString())
+                                .replace(/self\.hspeed/g, selfHspeedJump.toString())
+                                .replace(/self\.vspeed/g, selfVspeedJump.toString())
+                                .replace(/other\.hspeed/g, otherHspeedJump.toString())
+                                .replace(/other\.vspeed/g, otherVspeedJump.toString())
+                                .replace(/other\.x/g, (this._collision_other ? this._collision_other.x : 0).toString())
+                                .replace(/other\.y/g, (this._collision_other ? this._collision_other.y : 0).toString());
+                            jumpX = eval(xExpr);
+                        } catch(e) {
+                            jumpX = parseFloat(xStr) || 0;
+                        }
+                    } else {
+                        jumpX = parseFloat(xStr) || 0;
+                    }
+                }
+
+                // Parse Y expression
+                if (params.y !== undefined) {
+                    const yStr = params.y.toString();
+                    if (yStr.includes('other.') || yStr.includes('self.') || yStr.includes('*') || yStr.includes('+') || yStr.includes('-')) {
+                        // Use stored collision speeds if available, otherwise current speeds
+                        const selfHspeedJumpY = this._collision_speeds ? this._collision_speeds.selfHspeed : (this.hspeed || 0);
+                        const selfVspeedJumpY = this._collision_speeds ? this._collision_speeds.selfVspeed : (this.vspeed || 0);
+                        const otherHspeedJumpY = this._collision_speeds ? this._collision_speeds.otherHspeed : (this._collision_other ? this._collision_other.hspeed : 0);
+                        const otherVspeedJumpY = this._collision_speeds ? this._collision_speeds.otherVspeed : (this._collision_other ? this._collision_other.vspeed : 0);
+                        try {
+                            const yExpr = yStr
+                                .replace(/self\.x/g, this.x.toString())
+                                .replace(/self\.y/g, this.y.toString())
+                                .replace(/self\.hspeed/g, selfHspeedJumpY.toString())
+                                .replace(/self\.vspeed/g, selfVspeedJumpY.toString())
+                                .replace(/other\.hspeed/g, otherHspeedJumpY.toString())
+                                .replace(/other\.vspeed/g, otherVspeedJumpY.toString())
+                                .replace(/other\.x/g, (this._collision_other ? this._collision_other.x : 0).toString())
+                                .replace(/other\.y/g, (this._collision_other ? this._collision_other.y : 0).toString());
+                            jumpY = eval(yExpr);
+                        } catch(e) {
+                            jumpY = parseFloat(yStr) || 0;
+                        }
+                    } else {
+                        jumpY = parseFloat(yStr) || 0;
+                    }
+                }
+
+                // Apply position (relative or absolute)
+                if (jumpRelative) {
+                    this.x += jumpX;
+                    this.y += jumpY;
+                } else {
+                    this.x = jumpX;
+                    this.y = jumpY;
+                }
                 break;
 
             // GAMEMAKER 7.0: Alarm actions
@@ -943,6 +1106,9 @@ class GameObject {
 
         const myRect = { x: this.x + 2, y: this.y + 2, width: 28, height: 28 };
 
+        // First pass: Detect all collisions and capture speeds BEFORE any events run
+        const collisionsToProcess = [];
+
         for (const other of game.currentRoom.instances) {
             if (other === this || other.toDestroy) continue;
 
@@ -952,12 +1118,33 @@ class GameObject {
                 const collisionKey = `collision_with_${other.name}`;
 
                 if (this.events[collisionKey]) {
-                    const collisionEvent = this.events[collisionKey];
-                    const actions = collisionEvent.actions || [];
-                    this._collision_other = other;
-                    this.executeActions(actions, game);
+                    // Store collision data with speeds captured NOW
+                    collisionsToProcess.push({
+                        event: this.events[collisionKey],
+                        other: other,
+                        // Capture speeds at moment of collision detection
+                        selfHspeed: this.hspeed || 0,
+                        selfVspeed: this.vspeed || 0,
+                        otherHspeed: other.hspeed || 0,
+                        otherVspeed: other.vspeed || 0
+                    });
                 }
             }
+        }
+
+        // Second pass: Process all collision events with stored speeds
+        for (const collision of collisionsToProcess) {
+            const actions = collision.event.actions || [];
+            this._collision_other = collision.other;
+            // Store collision speeds so they can be accessed via other.hspeed etc.
+            this._collision_speeds = {
+                selfHspeed: collision.selfHspeed,
+                selfVspeed: collision.selfVspeed,
+                otherHspeed: collision.otherHspeed,
+                otherVspeed: collision.otherVspeed
+            };
+            this.executeActions(actions, game);
+            this._collision_speeds = null;
         }
     }
 }

@@ -12,12 +12,14 @@ MOVE_ACTIONS = {
         display_name="Start Moving in a Direction",
         category="movement",
         tab="move",
-        description="Start moving in one of 8 directions",
+        description="Start moving in one of 8 directions or use expression (e.g. other.direction)",
         icon="➡️",
         parameters=[
             ActionParameter("directions", "direction_buttons", "Directions",
                           "Select movement directions (8-way + center)", default=[]),
-            ActionParameter("speed", "float", "Speed", "Movement speed", default=4.0)
+            ActionParameter("direction_expr", "string", "Or Direction Expression",
+                          "Expression like other.direction, self.direction, or angle in degrees", default=""),
+            ActionParameter("speed", "string", "Speed", "Movement speed (number or expression like other.speed)", default="4.0")
         ]
     ),
     "set_direction_speed": ActionDefinition(
@@ -53,7 +55,7 @@ MOVE_ACTIONS = {
         description="Set horizontal movement speed",
         icon="↔️",
         parameters=[
-            ActionParameter("hspeed", "float", "Horizontal Speed", "Pixels per step", default=0)
+            ActionParameter("hspeed", "string", "Horizontal Speed", "Pixels per step (number or variable like other.hspeed)", default="0")
         ]
     ),
     "set_vspeed": ActionDefinition(
@@ -64,7 +66,7 @@ MOVE_ACTIONS = {
         description="Set vertical movement speed",
         icon="↕️",
         parameters=[
-            ActionParameter("vspeed", "float", "Vertical Speed", "Pixels per step", default=0)
+            ActionParameter("vspeed", "string", "Vertical Speed", "Pixels per step (number or variable like other.vspeed)", default="0")
         ]
     ),
     "set_gravity": ActionDefinition(
@@ -111,11 +113,12 @@ MOVE_ACTIONS = {
         display_name="Jump to Position",
         category="movement",
         tab="move",
-        description="Instantly move to coordinates",
+        description="Instantly move to coordinates (supports expressions like other.x, self.hspeed*8)",
         icon="📍",
         parameters=[
-            ActionParameter("x", "float", "X", "X position", default=0),
-            ActionParameter("y", "float", "Y", "Y position", default=0)
+            ActionParameter("x", "string", "X", "X position (number or expression like other.x, self.hspeed*8)", default="0"),
+            ActionParameter("y", "string", "Y", "Y position (number or expression like other.y, self.vspeed*8)", default="0"),
+            ActionParameter("relative", "boolean", "Relative", "Add to current position instead of setting absolute", default=False)
         ]
     ),
     "jump_to_start": ActionDefinition(
@@ -201,11 +204,10 @@ MOVE_ACTIONS = {
         display_name="If On Grid",
         category="control",
         tab="control",
-        description="Execute actions if aligned to grid",
+        description="Check if aligned to grid (use with Start/End Block for multiple actions)",
         icon="▦",
         parameters=[
-            ActionParameter("grid_size", "int", "Grid Size", "Grid cell size in pixels", default=32),
-            ActionParameter("then_actions", "actions", "Then Actions", "Actions to execute if on grid", default=[])
+            ActionParameter("grid_size", "int", "Grid Size", "Grid cell size in pixels", default=32)
         ]
     ),
     "stop_if_no_keys": ActionDefinition(

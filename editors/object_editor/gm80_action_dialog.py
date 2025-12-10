@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QFormLayout,
     QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox,
     QComboBox, QTextEdit, QPushButton, QLabel,
-    QDialogButtonBox, QGroupBox, QColorDialog
+    QDialogButtonBox, QGroupBox, QColorDialog, QWidget
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QColor
@@ -163,6 +163,28 @@ class GM80ActionDialog(QDialog):
             widget.setPlaceholderText("Directions (e.g., [0, 90, 180, 270])")
             return widget
 
+        elif param_type == "action_list":
+            # Action list (then_actions, else_actions) - use a button to configure
+            container = QWidget()
+            layout = QHBoxLayout(container)
+            layout.setContentsMargins(0, 0, 0, 0)
+
+            # Store the action list data
+            action_list = default_value if isinstance(default_value, list) else []
+            container._action_list = action_list
+
+            # Show count label
+            count_label = QLabel(self.tr("{0} actions").format(len(action_list)))
+            layout.addWidget(count_label)
+            container._count_label = count_label
+
+            # Configure button
+            config_btn = QPushButton(self.tr("📋 Configure..."))
+            config_btn.clicked.connect(lambda: self.configure_action_list(container, param.name))
+            layout.addWidget(config_btn)
+
+            return container
+
         else:
             # Fallback to string input
             widget = QLineEdit()
@@ -175,6 +197,17 @@ class GM80ActionDialog(QDialog):
         color = QColorDialog.getColor(current_color, self, self.tr("Pick Color"))
         if color.isValid():
             color_edit.setText(color.name())
+
+    def configure_action_list(self, container, param_name: str):
+        """Open dialog to configure action list"""
+        from events.action_editor import MultiActionEditor
+
+        action_list = container._action_list.copy() if container._action_list else []
+
+        dialog = MultiActionEditor(action_list, parent=self)
+        if dialog.exec() == QDialog.Accepted:
+            container._action_list = dialog.get_action_list()
+            container._count_label.setText(self.tr("{0} actions").format(len(container._action_list)))
 
     def get_parameter_values(self) -> Dict[str, Any]:
         """Get all parameter values from widgets"""
@@ -221,6 +254,10 @@ class GM80ActionDialog(QDialog):
                     values[param_name] = json.loads(widget.text())
                 except:
                     values[param_name] = []
+
+            elif param_type == "action_list":
+                # Extract action list from container widget
+                values[param_name] = widget._action_list if hasattr(widget, '_action_list') else []
 
             else:
                 values[param_name] = widget.text()

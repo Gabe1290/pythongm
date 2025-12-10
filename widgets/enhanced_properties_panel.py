@@ -183,20 +183,18 @@ class EnhancedPropertiesPanel(QWidget):
         self.tile_v_check.setChecked(room_data.get('tile_vertical', False))
         self.tile_v_check.toggled.connect(lambda v: self.on_room_property_changed('tile_vertical', v))
 
-        # Add to layout
-        self.properties_layout.addRow(self.tr("Background Image:"), self.bg_image_combo)
-        self.properties_layout.addRow(self.tr("Tile Horizontal:"), self.tile_h_check)
-        self.properties_layout.addRow(self.tr("Tile Vertical:"), self.tile_v_check)
-
         # Views
         self.views_check = QCheckBox()
         self.views_check.setChecked(room_data.get('enable_views', False))
         self.views_check.toggled.connect(lambda v: self.on_room_property_changed('enable_views', v))
-        
-        # Add to layout
+
+        # Add to layout in logical order
         self.properties_layout.addRow(self.tr("Width:"), self.width_spin)
         self.properties_layout.addRow(self.tr("Height:"), self.height_spin)
-        self.properties_layout.addRow(self.tr("Background:"), self.bg_color_btn)
+        self.properties_layout.addRow(self.tr("Background Color:"), self.bg_color_btn)
+        self.properties_layout.addRow(self.tr("Background Image:"), self.bg_image_combo)
+        self.properties_layout.addRow(self.tr("Tile Horizontal:"), self.tile_h_check)
+        self.properties_layout.addRow(self.tr("Tile Vertical:"), self.tile_v_check)
         self.properties_layout.addRow(self.tr("Enable Views:"), self.views_check)
 
         # Instance count (read-only)
@@ -218,14 +216,19 @@ class EnhancedPropertiesPanel(QWidget):
             self.on_room_property_changed('background_color', color_hex)
     
     def get_available_backgrounds(self) -> Dict[str, Any]:
-        """Get available backgrounds from project"""
+        """Get available backgrounds and sprites from project"""
         try:
             parent = self.parent()
             while parent:
                 if hasattr(parent, 'current_project_data') and parent.current_project_data:
                     assets = parent.current_project_data.get('assets', {})
-                    # Get ONLY backgrounds, not sprites
-                    backgrounds = assets.get('backgrounds', {})
+                    # Get both backgrounds and sprites (sprites can be used as backgrounds)
+                    backgrounds = assets.get('backgrounds', {}).copy()
+                    sprites = assets.get('sprites', {})
+                    # Add sprites to the list (they can be used as backgrounds)
+                    for sprite_name, sprite_data in sprites.items():
+                        if sprite_name not in backgrounds:
+                            backgrounds[sprite_name] = sprite_data
                     return backgrounds
                 parent = parent.parent()
             return {}

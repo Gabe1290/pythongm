@@ -678,17 +678,19 @@ class ProjectManager(QObject):
             return False
     
     def rename_asset(self, asset_type: str, old_name: str, new_name: str) -> bool:
-        """Rename an asset"""
+        """Rename an asset and update all references"""
         try:
             if not self.asset_manager:
                 return False
-            
+
             result = self.asset_manager.rename_asset(asset_type, old_name, new_name)
             if result:
                 self.mark_dirty()
+                # Auto-save to persist the rename and all updated references
+                self.save_project()
                 return True
             return False
-            
+
         except Exception as e:
             self.status_changed.emit(f"Failed to rename asset {old_name}: {str(e)}")
             return False
