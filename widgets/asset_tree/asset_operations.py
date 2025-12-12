@@ -631,7 +631,7 @@ class AssetOperations:
         pass
 
     def import_sprite_image_for_asset(self, file_path: Path, sprite_name: str) -> bool:
-        """Import an image file for an existing sprite asset"""
+        """Replace/import an image file for an existing sprite asset"""
         try:
             # Get AssetManager
             asset_manager = self._get_asset_manager()
@@ -642,17 +642,13 @@ class AssetOperations:
                     "Asset manager is not available."
                 )
                 return False
-            
-            # Import the sprite with the specified name
-            result = asset_manager.import_asset(
-                file_path,
-                'sprites',
-                sprite_name
-            )
-            
+
+            # Use replace_sprite_image to update existing sprite (not create new one)
+            result = asset_manager.replace_sprite_image(file_path, sprite_name)
+
             if result:
-                print(f"✅ Successfully imported image for sprite: {sprite_name}")
-                
+                print(f"✅ Successfully replaced image for sprite: {sprite_name}")
+
                 # Update the tree item
                 for i in range(self.tree.topLevelItemCount()):
                     category_item = self.tree.topLevelItem(i)
@@ -666,9 +662,14 @@ class AssetOperations:
                                 self.refresh_asset_item_after_rename(asset_item, sprite_name)
                                 break
                         break
-                
+
                 # Emit signal
                 self.tree.asset_imported.emit(sprite_name, 'sprites', result)
+
+                # Save project to persist changes
+                if hasattr(self.tree, 'project_manager') and self.tree.project_manager:
+                    self.tree.project_manager.save_project()
+
                 return True
             else:
                 QMessageBox.warning(
@@ -677,7 +678,7 @@ class AssetOperations:
                     "Failed to import the image."
                 )
                 return False
-                
+
         except Exception as e:
             print(f"❌ Error importing sprite image: {e}")
             import traceback

@@ -164,10 +164,10 @@ class AssetPropertiesDialog(QDialog):
         layout.addLayout(button_layout)
 
     def import_sprite_image(self):
-        """Import an image for this sprite"""
+        """Import an image for this sprite (replaces existing image)"""
         from PySide6.QtWidgets import QFileDialog
         from pathlib import Path
-        
+
         # Open file dialog for image selection
         file_path, _ = QFileDialog.getOpenFileName(
             self,
@@ -175,27 +175,26 @@ class AssetPropertiesDialog(QDialog):
             str(Path.home()),
             self.tr("Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)")
         )
-        
+
         if not file_path:
             return
-        
+
         # Get the IDE window to access asset import functionality
         parent = self.parent()
         while parent and not hasattr(parent, 'asset_manager'):
             parent = parent.parent()
-        
+
         if parent and hasattr(parent, 'asset_manager'):
-            # Import the sprite image
+            # Replace the sprite image (not import as new)
             sprite_name = self.asset_data.get('name')
-            asset_type = 'sprites'
-            
+
             try:
-                result = parent.asset_manager.import_asset(
-                    Path(file_path), 
-                    asset_type,
-                    sprite_name  # Use existing sprite name
+                # Use replace_sprite_image to update existing sprite
+                result = parent.asset_manager.replace_sprite_image(
+                    Path(file_path),
+                    sprite_name
                 )
-                
+
                 if result:
                     QMessageBox.information(
                         self,

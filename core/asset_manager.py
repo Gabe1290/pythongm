@@ -155,7 +155,7 @@ class AssetManager(QObject):
             self.status_changed.emit(f"Imported {asset_name}")
             
             return asset_data
-            
+
         except Exception as e:
             error_msg = f"Failed to import {file_path.name}: {str(e)}"
             print(f"❌ IMPORT ERROR: {error_msg}")
@@ -166,7 +166,76 @@ class AssetManager(QObject):
             traceback.print_exc()
             self.status_changed.emit(error_msg)
             return None
-    
+
+    def replace_sprite_image(self, file_path: Path, sprite_name: str) -> Optional[Dict[str, Any]]:
+        """Replace the image file for an existing sprite asset"""
+        if not self.project_directory:
+            self.status_changed.emit("No project directory set")
+            return None
+
+        if not self.is_supported_format(file_path, "sprites"):
+            self.status_changed.emit(f"Unsupported file format: {file_path.suffix}")
+            return None
+
+        # Get existing sprite data
+        existing_sprite = self.get_asset("sprites", sprite_name)
+        if not existing_sprite:
+            self.status_changed.emit(f"Sprite '{sprite_name}' not found")
+            return None
+
+        try:
+            # Delete old image file if it exists
+            old_file_path = existing_sprite.get("file_path")
+            if old_file_path:
+                old_abs_path = self.get_absolute_path(old_file_path)
+                if old_abs_path.exists():
+                    old_abs_path.unlink()
+                    print(f"🗑️ Deleted old sprite file: {old_abs_path}")
+
+            # Delete old thumbnail if it exists
+            old_thumbnail = existing_sprite.get("thumbnail")
+            if old_thumbnail:
+                old_thumb_path = self.get_absolute_path(old_thumbnail)
+                if old_thumb_path.exists():
+                    old_thumb_path.unlink()
+                    print(f"🗑️ Deleted old thumbnail: {old_thumb_path}")
+
+            # Copy new image to project directory
+            relative_path = f"sprites/{sprite_name}{file_path.suffix}"
+            dest_path = self.get_absolute_path(relative_path)
+            shutil.copy2(file_path, dest_path)
+            print(f"📁 Copied new image: {dest_path}")
+
+            # Update sprite data
+            existing_sprite["file_path"] = relative_path
+            existing_sprite["modified"] = datetime.now().isoformat()
+
+            # Get image dimensions
+            with Image.open(dest_path) as img:
+                existing_sprite["width"] = img.width
+                existing_sprite["height"] = img.height
+
+            # Generate new thumbnail
+            thumbnail_path = self.generate_thumbnail(dest_path, sprite_name)
+            if thumbnail_path:
+                existing_sprite["thumbnail"] = self.get_relative_path(thumbnail_path)
+
+            # Update cache
+            self.assets_cache.setdefault("sprites", {})[sprite_name] = existing_sprite
+
+            self.asset_updated.emit("sprites", sprite_name, existing_sprite)
+            self.status_changed.emit(f"Replaced image for {sprite_name}")
+
+            return existing_sprite
+
+        except Exception as e:
+            error_msg = f"Failed to replace sprite image: {str(e)}"
+            print(f"❌ REPLACE ERROR: {error_msg}")
+            import traceback
+            traceback.print_exc()
+            self.status_changed.emit(error_msg)
+            return None
+
     def import_multiple_assets(self, file_paths: List[Path], asset_type: str) -> List[Dict[str, Any]]:
         """Import multiple assets at once"""
         imported_assets = []
@@ -381,6 +450,51 @@ class AssetManager(QObject):
                             print(f"  📝 Updated object reference in room '{room_name}' instance: {old_name} → {new_name}")
                     if updated:
                         room_data["modified"] = datetime.now().isoformat()
+
+                # Update collision event references in ALL objects
+                objects = self.assets_cache.get("objects", {})
+                for obj_name, obj_data in objects.items():
+                    events = obj_data.get("events", {})
+                    if not events:
+                        continue
+
+                    updated_events = {}
+                    obj_modified = False
+
+                    for event_name, event_data in events.items():
+                        new_event_name = event_name
+
+                        # Rename collision_with_X events
+                        if event_name == f"collision_with_{old_name}":
+                            new_event_name = f"collision_with_{new_name}"
+                            print(f"  📝 Updated event name in object '{obj_name}': {event_name} → {new_event_name}")
+                            obj_modified = True
+
+                        # Update target_object in event data
+                        if event_data.get("target_object") == old_name:
+                            event_data["target_object"] = new_name
+                            print(f"  📝 Updated target_object in object '{obj_name}' event '{new_event_name}': {old_name} → {new_name}")
+                            obj_modified = True
+
+                        # Update object references in action parameters
+                        actions = event_data.get("actions", [])
+                        for action in actions:
+                            params = action.get("parameters", {})
+                            # Check 'object' parameter (used in if_collision, create_instance, etc.)
+                            if params.get("object") == old_name:
+                                params["object"] = new_name
+                                print(f"  📝 Updated action parameter in object '{obj_name}': object={old_name} → {new_name}")
+                                obj_modified = True
+                            # Check 'target_object' parameter
+                            if params.get("target_object") == old_name:
+                                params["target_object"] = new_name
+                                obj_modified = True
+
+                        updated_events[new_event_name] = event_data
+
+                    if obj_modified:
+                        obj_data["events"] = updated_events
+                        obj_data["modified"] = datetime.now().isoformat()
 
             elif asset_type == "sounds":
                 # Sounds might be referenced in object events

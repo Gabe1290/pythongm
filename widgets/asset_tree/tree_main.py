@@ -381,41 +381,54 @@ class AssetTreeWidget(QTreeWidget):
             return False
 
     def perform_asset_rename(self, asset_data, new_name):
-        """Perform the actual asset rename operation"""
+        """Perform the actual asset rename operation using project_manager"""
         try:
+            current_name = asset_data['name']
+            asset_type = asset_data['asset_type']
+
+            # Get the correct category name (plural)
+            category = asset_type + 's' if not asset_type.endswith('s') else asset_type
+
+            # Use project_manager for rename (handles references and auto-saves)
+            if hasattr(self, 'project_manager') and self.project_manager:
+                print(f"🔧 Using project_manager to rename: {current_name} → {new_name}")
+                success = self.project_manager.rename_asset(category, current_name, new_name)
+                if success:
+                    print(f"💾 Project file updated with renamed asset")
+                    return True
+                else:
+                    print(f"❌ Project manager rename failed")
+                    return False
+
+            # Fallback to direct file access if project_manager not available
+            print(f"⚠️ Warning: project_manager not available, using direct file access")
             project_path = Path(self.project_path)
             project_file = project_path / "project.json"
-            
+
             if not project_file.exists():
                 print(f"❌ Project file not found: {project_file}")
                 return False
-            
+
             # Load project data
             with open(project_file, 'r') as f:
                 project_data = json.load(f)
-            
-            current_name = asset_data['name']
-            asset_type = asset_data['asset_type']
-            
-            # Get the correct category name (plural)
-            category = asset_type + 's' if not asset_type.endswith('s') else asset_type
-            
+
             if category not in project_data.get('assets', {}):
                 print(f"❌ Asset category not found: {category}")
                 return False
-            
+
             assets = project_data['assets'][category]
-            
+
             if current_name not in assets:
                 print(f"❌ Asset not found in project: {current_name}")
                 return False
-            
+
             # Get the asset data
             asset_info = assets[current_name].copy()
-            
+
             # Update the asset name in the data
             asset_info['name'] = new_name
-            
+
             # Handle file renaming if the asset has an actual file
             old_file_path = asset_info.get('project_path')
             if old_file_path:
@@ -424,34 +437,34 @@ class AssetTreeWidget(QTreeWidget):
                     # Create new file path
                     new_file_name = new_name + old_file.suffix
                     new_file_path = old_file.parent / new_file_name
-                    
+
                     # Rename the actual file
                     try:
                         shutil.move(str(old_file), str(new_file_path))
                         print(f"🔗 File renamed: {old_file.name} → {new_file_path.name}")
-                        
+
                         # Update file paths in asset data
                         asset_info['project_path'] = str(new_file_path)
                         if 'file_path' in asset_info:
                             # Update relative path
                             relative_path = new_file_path.relative_to(project_path)
                             asset_info['file_path'] = str(relative_path)
-                            
+
                     except Exception as e:
                         print(f"❌ Error renaming file: {e}")
                         return False
-            
+
             # Remove old asset entry and add new one
             del assets[current_name]
             assets[new_name] = asset_info
-            
+
             # Save the updated project file
             with open(project_file, 'w') as f:
                 json.dump(project_data, f, indent=2)
-            
+
             print(f"💾 Project file updated with renamed asset")
             return True
-            
+
         except Exception as e:
             print(f"❌ Error performing asset rename: {e}")
             return False
