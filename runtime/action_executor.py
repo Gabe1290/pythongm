@@ -1528,6 +1528,82 @@ class ActionExecutor:
             print(f"💀 Destroying instance: {instance.object_name}")
             instance.to_destroy = True
 
+    def execute_change_instance_action(self, instance, parameters: Dict[str, Any]):
+        """Change instance into a different object type
+
+        This is like destroying the current instance and creating a new one
+        of a different type at the same position.
+
+        Parameters:
+            object: The new object type to change into
+            perform_events: Whether to execute destroy/create events (default True)
+            target: "self" or "other" - which instance to change (default "self")
+        """
+        new_object_name = parameters.get("object", "")
+        perform_events = parameters.get("perform_events", True)
+        target = parameters.get("target", "self")
+
+        if not new_object_name:
+            print("⚠️ change_instance: No object specified")
+            return
+
+        # Determine which instance to change
+        if target == "other" and hasattr(self, '_collision_other') and self._collision_other:
+            target_instance = self._collision_other
+        else:
+            target_instance = instance
+
+        print(f"🔄 Changing {target_instance.object_name} into {new_object_name}")
+
+        # Get the game runner to access objects data and room
+        if not self.game_runner:
+            print("⚠️ change_instance: No game_runner reference")
+            return
+
+        # Get the new object's data
+        objects_data = self.game_runner.project_data.get('assets', {}).get('objects', {})
+        if new_object_name not in objects_data:
+            print(f"⚠️ change_instance: Object '{new_object_name}' not found")
+            return
+
+        new_object_data = objects_data[new_object_name]
+
+        # Execute destroy event if requested
+        if perform_events and target_instance.object_data:
+            events = target_instance.object_data.get('events', {})
+            if 'destroy' in events:
+                print(f"  💥 Executing destroy event for {target_instance.object_name}")
+                self.execute_event(target_instance, 'destroy', events)
+
+        # Store current position and properties
+        old_x = target_instance.x
+        old_y = target_instance.y
+
+        # Change the object type
+        target_instance.object_name = new_object_name
+        target_instance.object_data = new_object_data
+
+        # Update sprite if the new object has a different one
+        sprite_name = new_object_data.get('sprite', '')
+        if sprite_name and sprite_name in self.game_runner.sprites:
+            target_instance.sprite = self.game_runner.sprites[sprite_name]
+            print(f"  🖼️ Updated sprite to: {sprite_name}")
+
+        # Reset collision tracking for the changed instance
+        if hasattr(target_instance, '_active_collisions'):
+            target_instance._active_collisions = set()
+        if hasattr(target_instance, '_collision_cooldowns'):
+            target_instance._collision_cooldowns = {}
+
+        # Execute create event for new object type if requested
+        if perform_events:
+            events = new_object_data.get('events', {})
+            if 'create' in events:
+                print(f"  🎬 Executing create event for {new_object_name}")
+                self.execute_event(target_instance, 'create', events)
+
+        print(f"  ✅ Changed to {new_object_name} at ({old_x}, {old_y})")
+
     def execute_collision_event(self, instance, event_name: str, events_data: Dict[str, Any], other_instance, collision_speeds=None):
         """Execute collision event with context about the other instance
 
@@ -1541,10 +1617,17 @@ class ActionExecutor:
                 - other_hspeed, other_vspeed: Other instance's speeds at collision
         """
         if event_name not in events_data:
+            print(f"  ⚠️ Event '{event_name}' not found in events_data. Available: {list(events_data.keys())}")
             return
 
         event_data = events_data[event_name]
         actions = event_data.get("actions", [])
+
+        if not actions:
+            print(f"  ⚠️ No actions defined for event '{event_name}'")
+            return
+
+        print(f"  🎬 Executing {len(actions)} action(s) for {event_name}")
 
         # Store reference to other instance for collision-specific actions
         self._collision_other = other_instance

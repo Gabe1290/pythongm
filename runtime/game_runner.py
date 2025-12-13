@@ -977,41 +977,120 @@ class GameRunner:
         for collision_data in all_collisions:
             self.process_collision_event(collision_data)
 
+        # Third pass: Separate overlapping instances that have collision events
+        # This handles the case where soko pushes box into wall - soko should be pushed back
+        self.separate_overlapping_instances(objects_data)
+
         # NOTE: Step events are executed in the main game loop, not here
         # (see run_game_loop where instance.step() is called)
     
     def check_movement_collision(self, moving_instance, objects_data: dict) -> bool:
-        """Check if intended movement would collide with solid objects"""
+        """Check if intended movement would be blocked by solid objects.
+
+        Only solid objects block movement. Non-solid objects don't block -
+        they rely on collision events to handle interactions.
+        """
         intended_x = moving_instance.intended_x
         intended_y = moving_instance.intended_y
-        
+
         # Get dimensions
         w1 = moving_instance.sprite.width if moving_instance.sprite else 32
         h1 = moving_instance.sprite.height if moving_instance.sprite else 32
-        
+
         for other_instance in self.current_room.instances:
             if other_instance == moving_instance:
                 continue
-            
-            # Check if other object is solid
+
             if other_instance.object_name in objects_data:
                 other_obj_data = objects_data[other_instance.object_name]
                 is_solid = other_obj_data.get('solid', False)
-                
+
+                # Only solid objects block movement
                 if not is_solid:
                     continue
-                
+
                 # Get other instance dimensions
                 w2 = other_instance.sprite.width if other_instance.sprite else 32
                 h2 = other_instance.sprite.height if other_instance.sprite else 32
-                
+
                 # Check rectangle overlap at intended position
                 if self.rectangles_overlap(intended_x, intended_y, w1, h1,
                                           other_instance.x, other_instance.y, w2, h2):
                     return False
-        
+
         return True
-    
+
+    def separate_overlapping_instances(self, objects_data: dict):
+        """Separate instances that are overlapping after collision events.
+
+        When object A pushes object B but B can't move (hits solid), A should be pushed back.
+        This only applies to instances that have collision events defined between them.
+        """
+        processed_pairs = set()
+
+        for instance in self.current_room.instances:
+            instance_obj_data = objects_data.get(instance.object_name, {})
+            instance_events = instance_obj_data.get('events', {})
+
+            w1 = instance.sprite.width if instance.sprite else 32
+            h1 = instance.sprite.height if instance.sprite else 32
+
+            for other_instance in self.current_room.instances:
+                if other_instance == instance:
+                    continue
+
+                # Skip if we already processed this pair
+                pair_key = (min(id(instance), id(other_instance)), max(id(instance), id(other_instance)))
+                if pair_key in processed_pairs:
+                    continue
+
+                # Check if there's a collision event between these objects
+                collision_event_name = f"collision_with_{other_instance.object_name}"
+                if collision_event_name not in instance_events:
+                    continue
+
+                w2 = other_instance.sprite.width if other_instance.sprite else 32
+                h2 = other_instance.sprite.height if other_instance.sprite else 32
+
+                # Check if they're overlapping
+                if self.rectangles_overlap(instance.x, instance.y, w1, h1,
+                                          other_instance.x, other_instance.y, w2, h2):
+                    # They're overlapping - push the moving instance back
+                    # Determine which one was moving based on hspeed/vspeed
+                    inst_moving = hasattr(instance, 'hspeed') and instance.hspeed != 0 or \
+                                  hasattr(instance, 'vspeed') and instance.vspeed != 0
+                    other_moving = hasattr(other_instance, 'hspeed') and other_instance.hspeed != 0 or \
+                                   hasattr(other_instance, 'vspeed') and other_instance.vspeed != 0
+
+                    if inst_moving and not other_moving:
+                        # Push instance back to non-overlapping position
+                        self.push_back_instance(instance, other_instance, w1, h1, w2, h2)
+                    elif other_moving and not inst_moving:
+                        # Push other_instance back
+                        self.push_back_instance(other_instance, instance, w2, h2, w1, h1)
+
+                    processed_pairs.add(pair_key)
+
+    def push_back_instance(self, moving_inst, static_inst, w1, h1, w2, h2):
+        """Push moving instance back so it no longer overlaps with static instance."""
+        # Calculate overlap amounts
+        overlap_left = (moving_inst.x + w1) - static_inst.x
+        overlap_right = (static_inst.x + w2) - moving_inst.x
+        overlap_top = (moving_inst.y + h1) - static_inst.y
+        overlap_bottom = (static_inst.y + h2) - moving_inst.y
+
+        # Find minimum overlap to resolve
+        min_overlap = min(overlap_left, overlap_right, overlap_top, overlap_bottom)
+
+        if min_overlap == overlap_left and overlap_left > 0:
+            moving_inst.x = static_inst.x - w1
+        elif min_overlap == overlap_right and overlap_right > 0:
+            moving_inst.x = static_inst.x + w2
+        elif min_overlap == overlap_top and overlap_top > 0:
+            moving_inst.y = static_inst.y - h1
+        elif min_overlap == overlap_bottom and overlap_bottom > 0:
+            moving_inst.y = static_inst.y + h2
+
     def detect_collisions_for_instance(self, instance, objects_data: dict) -> list:
         """Detect collisions for an instance and capture speeds
 
@@ -1079,7 +1158,8 @@ class GameRunner:
                                 # Add short cooldown (2 frames) to prevent double-trigger within same push
                                 # This is short enough to allow continuous pushing when key is held
                                 instance._collision_cooldowns[collision_key] = 2
-                            break
+                            # Don't break - continue checking for other instances of this type
+                            # and other collision events (e.g., obj_box_stored at same position as obj_store)
 
         # Update active collisions for next frame
         instance._active_collisions = current_collisions
@@ -1132,7 +1212,7 @@ class GameRunner:
             check_x: X position to check
             check_y: Y position to check
             object_type: Type of object to check for:
-                - 'any': Any object at that position
+                - 'any': Only solid objects (non-solid don't block, collision events fire after move)
                 - 'solid': Only solid objects
                 - specific name: Only that specific object type
             exclude_instance: Additional instance to exclude (e.g., collision other)
@@ -1164,15 +1244,60 @@ class GameRunner:
             # Check if positions overlap
             if self.rectangles_overlap(check_x, check_y, w1, h1,
                                        other_instance.x, other_instance.y, w2, h2):
+                # Get other object's properties
+                other_obj_data = objects_data.get(other_instance.object_name, {})
+                is_solid = other_obj_data.get('solid', False)
+
                 # Collision detected - check if it matches the filter
                 if object_type == "any":
-                    return True
-                elif object_type == "solid":
-                    # Check if other object is solid
-                    if other_instance.object_name in objects_data:
-                        other_obj_data = objects_data[other_instance.object_name]
-                        if other_obj_data.get('solid', False):
+                    # Solid objects always block
+                    if is_solid:
+                        return True
+
+                    # For non-solid objects, check if there's a collision event
+                    # that has a "stop_movement" action
+                    instance_obj_data = objects_data.get(instance.object_name, {})
+                    instance_events = instance_obj_data.get('events', {})
+                    collision_event_name = f"collision_with_{other_instance.object_name}"
+
+                    if collision_event_name in instance_events:
+                        # Check if the collision event has a stop_movement action
+                        event_data = instance_events[collision_event_name]
+                        actions = event_data.get('actions', [])
+                        has_stop_movement = False
+                        for action in actions:
+                            if action.get('action') == 'stop_movement':
+                                has_stop_movement = True
+                                break
+                        if has_stop_movement:
+                            print(f"    🛑 Blocking: {instance.object_name} has stop_movement for {collision_event_name}")
                             return True
+                        # Collision event exists but no stop_movement - continue checking other objects
+                        # (there might be another blocking object at the same position)
+                        print(f"    ✅ Allowing: {instance.object_name} has {collision_event_name} but no stop_movement - checking other objects")
+                        continue  # Check other objects at this position
+                    else:
+                        print(f"    ℹ️ No event: {instance.object_name} has no {collision_event_name} - checking other's events")
+                        # Also check if the OTHER object has a collision event with stop_movement
+                        # This handles cases like obj_box_stored blocking obj_box
+                        other_obj_events = other_obj_data.get('events', {})
+                        reverse_collision_name = f"collision_with_{instance.object_name}"
+                        if reverse_collision_name in other_obj_events:
+                            reverse_event_data = other_obj_events[reverse_collision_name]
+                            reverse_actions = reverse_event_data.get('actions', [])
+                            for action in reverse_actions:
+                                if action.get('action') == 'stop_movement':
+                                    print(f"    🛑 Blocking: {other_instance.object_name} has stop_movement for {reverse_collision_name}")
+                                    return True
+
+                        # No blocking event for THIS object - continue checking other objects
+                        print(f"    ℹ️ No blocking event for {other_instance.object_name} - checking other objects")
+                        continue  # Check other objects at this position
+
+                elif object_type == "solid":
+                    # "solid" means only solid objects
+                    if is_solid:
+                        return True
                 else:
                     # Check for specific object type
                     if other_instance.object_name == object_type:

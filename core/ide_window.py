@@ -2156,6 +2156,14 @@ class PyGameMakerIDE(QMainWindow):
         """Handle asset import with correct signal signature"""
         self.update_status(self.tr("Imported {0}").format(asset_name))
 
+        # Update current_project_data with the new asset
+        if self.current_project_data is not None:
+            if 'assets' not in self.current_project_data:
+                self.current_project_data['assets'] = {}
+            if asset_type not in self.current_project_data['assets']:
+                self.current_project_data['assets'][asset_type] = {}
+            self.current_project_data['assets'][asset_type][asset_name] = asset_data
+
         # Refresh sprite combo if it's a sprite import
         if asset_type == 'sprites':
             if hasattr(self, 'properties_panel') and hasattr(self.properties_panel, 'refresh_sprite_combo'):

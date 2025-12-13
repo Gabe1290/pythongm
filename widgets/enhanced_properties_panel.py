@@ -216,19 +216,25 @@ class EnhancedPropertiesPanel(QWidget):
             self.on_room_property_changed('background_color', color_hex)
     
     def get_available_backgrounds(self) -> Dict[str, Any]:
-        """Get available backgrounds and sprites from project"""
+        """Get available backgrounds from project"""
         try:
             parent = self.parent()
             while parent:
+                # Try current_project_data first
                 if hasattr(parent, 'current_project_data') and parent.current_project_data:
                     assets = parent.current_project_data.get('assets', {})
-                    # Get both backgrounds and sprites (sprites can be used as backgrounds)
-                    backgrounds = assets.get('backgrounds', {}).copy()
-                    sprites = assets.get('sprites', {})
-                    # Add sprites to the list (they can be used as backgrounds)
-                    for sprite_name, sprite_data in sprites.items():
-                        if sprite_name not in backgrounds:
-                            backgrounds[sprite_name] = sprite_data
+                    backgrounds = assets.get('backgrounds', {})
+
+                    # If no backgrounds found, try getting from project_manager
+                    if not backgrounds and hasattr(parent, 'project_manager') and parent.project_manager:
+                        pm_data = parent.project_manager.get_current_project_data()
+                        if pm_data:
+                            pm_assets = pm_data.get('assets', {})
+                            backgrounds = pm_assets.get('backgrounds', {})
+                            # Also update current_project_data to stay in sync
+                            if backgrounds:
+                                parent.current_project_data.setdefault('assets', {})['backgrounds'] = backgrounds
+
                     return backgrounds
                 parent = parent.parent()
             return {}

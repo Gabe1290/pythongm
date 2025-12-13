@@ -144,13 +144,19 @@ class GM80ActionDialog(QDialog):
             widget = QComboBox()
             widget.setEditable(True)
 
+            # For object type, add special options first
+            if param_type == "object":
+                widget.addItem("any")
+                widget.addItem("solid")
+                widget.addItem("all")
+                widget.insertSeparator(3)
+
             # Get available resources from project
             resources = self.get_available_resources(param_type)
             if resources:
                 widget.addItems(resources)
-                if default_value and default_value in resources:
-                    widget.setCurrentText(str(default_value))
 
+            # Set current value
             if default_value:
                 widget.setCurrentText(str(default_value))
 
@@ -266,28 +272,38 @@ class GM80ActionDialog(QDialog):
 
     def get_available_resources(self, resource_type: str) -> list:
         """Get list of available resources from project"""
-        # Walk up to find IDE window
+        # Map parameter type to asset type
+        asset_type_map = {
+            "object": "objects",
+            "sprite": "sprites",
+            "sound": "sounds",
+            "room": "rooms",
+            "background": "backgrounds",
+            "font": "fonts",
+            "script": "scripts",
+            "timeline": "timelines"
+        }
+        asset_type = asset_type_map.get(resource_type, resource_type + "s")
+
+        # Walk up to find IDE window with project data
         parent = self.parent()
         while parent:
+            # Try current_project_data first
             if hasattr(parent, 'current_project_data'):
                 project_data = parent.current_project_data
                 if project_data and 'assets' in project_data:
-                    # Map parameter type to asset type
-                    asset_type_map = {
-                        "object": "objects",
-                        "sprite": "sprites",
-                        "sound": "sounds",
-                        "room": "rooms",
-                        "background": "backgrounds",
-                        "font": "fonts",
-                        "script": "scripts",
-                        "timeline": "timelines"
-                    }
-
-                    asset_type = asset_type_map.get(resource_type, resource_type + "s")
                     assets = project_data['assets'].get(asset_type, {})
-                    return list(assets.keys())
-                break
+                    if assets:
+                        return sorted(assets.keys())
+
+            # Also try project_manager as fallback
+            if hasattr(parent, 'project_manager') and parent.project_manager:
+                project_data = parent.project_manager.get_current_project_data()
+                if project_data and 'assets' in project_data:
+                    assets = project_data['assets'].get(asset_type, {})
+                    if assets:
+                        return sorted(assets.keys())
+
             parent = parent.parent()
 
         return []
