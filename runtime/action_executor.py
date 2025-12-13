@@ -422,6 +422,13 @@ class ActionExecutor:
             instance.y = y_value
             print(f"  📍 {instance.object_name} jumped to ({instance.x}, {instance.y})")
 
+        # Snap to grid after jump to prevent off-grid drift
+        # This is important for grid-based games like Sokoban
+        grid_size = 32
+        instance.x = round(instance.x / grid_size) * grid_size
+        instance.y = round(instance.y / grid_size) * grid_size
+        print(f"  📐 Snapped to grid: ({instance.x}, {instance.y})")
+
     def execute_start_moving_direction_action(self, instance, parameters: Dict[str, Any]):
         """Start moving in a specific direction
 
@@ -722,7 +729,38 @@ class ActionExecutor:
             'then_actions': then_actions,
             'else_actions': else_actions
         })
-    
+
+    def execute_if_object_exists_action(self, instance, parameters: Dict[str, Any]):
+        """Check if any instance of an object type exists in the room
+
+        Parameters:
+            object: The object type to check for
+            not_flag: If True, returns True when object does NOT exist
+
+        Returns True if condition is met (for conditional flow), False otherwise.
+        """
+        object_type = parameters.get("object", "")
+        not_flag = parameters.get("not_flag", False)
+
+        if not object_type:
+            print(f"  ⚠️ if_object_exists: No object type specified")
+            return False
+
+        # Count instances of the specified object type
+        exists = False
+        if self.game_runner and self.game_runner.current_room:
+            for room_instance in self.game_runner.current_room.instances:
+                if room_instance.object_name == object_type:
+                    exists = True
+                    break
+
+        # Apply NOT flag
+        result = not exists if not_flag else exists
+
+        print(f"  ❓ if_object_exists: '{object_type}' exists={exists}, not_flag={not_flag}, result={result}")
+
+        return result
+
     # ==================== GAME ACTIONS ====================
     
     def execute_show_message_action(self, instance, parameters: Dict[str, Any]):

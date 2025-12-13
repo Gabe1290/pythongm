@@ -141,8 +141,11 @@ class GM80ActionDialog(QDialog):
         elif param_type in ["object", "sprite", "sound", "room", "background",
                            "font", "script", "timeline"]:
             # Resource selector dropdown
+            print(f"🔧 Creating QComboBox for param_type='{param_type}'")
             widget = QComboBox()
-            widget.setEditable(True)
+            # NOT editable - this ensures the dropdown arrow is always visible
+            widget.setEditable(False)
+            widget.setMinimumWidth(200)
 
             # For object type, add special options first
             if param_type == "object":
@@ -153,12 +156,15 @@ class GM80ActionDialog(QDialog):
 
             # Get available resources from project
             resources = self.get_available_resources(param_type)
+            print(f"🔧 Found {len(resources)} resources: {resources}")
             if resources:
                 widget.addItems(resources)
 
             # Set current value
             if default_value:
                 widget.setCurrentText(str(default_value))
+
+            print(f"🔧 QComboBox created with {widget.count()} items, isEditable={widget.isEditable()}")
 
             return widget
 
@@ -272,6 +278,8 @@ class GM80ActionDialog(QDialog):
 
     def get_available_resources(self, resource_type: str) -> list:
         """Get list of available resources from project"""
+        from PySide6.QtWidgets import QApplication
+
         # Map parameter type to asset type
         asset_type_map = {
             "object": "objects",
@@ -285,25 +293,45 @@ class GM80ActionDialog(QDialog):
         }
         asset_type = asset_type_map.get(resource_type, resource_type + "s")
 
-        # Walk up to find IDE window with project data
+        # Try to find project data from multiple sources:
+        # 1. Walk up parent chain
+        # 2. Check active window (main IDE)
+        # 3. Check all top-level windows
+
+        sources_to_check = []
+
+        # Add parent chain
         parent = self.parent()
         while parent:
+            sources_to_check.append(parent)
+            parent = parent.parent()
+
+        # Add active window
+        active_window = QApplication.activeWindow()
+        if active_window and active_window not in sources_to_check:
+            sources_to_check.append(active_window)
+
+        # Add all top-level widgets
+        for widget in QApplication.topLevelWidgets():
+            if widget not in sources_to_check:
+                sources_to_check.append(widget)
+
+        # Check all sources for project data
+        for source in sources_to_check:
             # Try current_project_data first
-            if hasattr(parent, 'current_project_data'):
-                project_data = parent.current_project_data
+            if hasattr(source, 'current_project_data'):
+                project_data = source.current_project_data
                 if project_data and 'assets' in project_data:
                     assets = project_data['assets'].get(asset_type, {})
                     if assets:
                         return sorted(assets.keys())
 
             # Also try project_manager as fallback
-            if hasattr(parent, 'project_manager') and parent.project_manager:
-                project_data = parent.project_manager.get_current_project_data()
+            if hasattr(source, 'project_manager') and source.project_manager:
+                project_data = source.project_manager.get_current_project_data()
                 if project_data and 'assets' in project_data:
                     assets = project_data['assets'].get(asset_type, {})
                     if assets:
                         return sorted(assets.keys())
-
-            parent = parent.parent()
 
         return []

@@ -183,6 +183,11 @@ class GameRoom:
         self.instances: List[GameInstance] = []
         self.action_executor = action_executor
 
+        # Spatial grid for collision optimization
+        # Cell size of 64 pixels works well for 32x32 sprites
+        self.grid_cell_size = 64
+        self.spatial_grid: Dict[Tuple[int, int], List[GameInstance]] = {}
+
         # Don't load background image here - pygame display may not be ready yet
         # Background will be loaded later via load_background_image()
 
@@ -197,6 +202,73 @@ class GameRoom:
                 action_executor=self.action_executor
             )
             self.instances.append(instance)
+
+        # Build initial spatial grid
+        self.rebuild_spatial_grid()
+
+    def rebuild_spatial_grid(self):
+        """Rebuild the entire spatial grid from all instances"""
+        self.spatial_grid.clear()
+        for instance in self.instances:
+            self._add_to_grid(instance)
+
+    def _get_grid_cells(self, x: float, y: float, w: int = 32, h: int = 32) -> List[Tuple[int, int]]:
+        """Get all grid cells that an object at (x, y) with size (w, h) occupies"""
+        cell_size = self.grid_cell_size
+        min_cell_x = int(x) // cell_size
+        max_cell_x = int(x + w - 1) // cell_size
+        min_cell_y = int(y) // cell_size
+        max_cell_y = int(y + h - 1) // cell_size
+
+        cells = []
+        for cx in range(min_cell_x, max_cell_x + 1):
+            for cy in range(min_cell_y, max_cell_y + 1):
+                cells.append((cx, cy))
+        return cells
+
+    def _add_to_grid(self, instance: 'GameInstance'):
+        """Add an instance to the spatial grid"""
+        w = instance.sprite.width if instance.sprite else 32
+        h = instance.sprite.height if instance.sprite else 32
+        cells = self._get_grid_cells(instance.x, instance.y, w, h)
+        for cell in cells:
+            if cell not in self.spatial_grid:
+                self.spatial_grid[cell] = []
+            if instance not in self.spatial_grid[cell]:
+                self.spatial_grid[cell].append(instance)
+
+    def _remove_from_grid(self, instance: 'GameInstance'):
+        """Remove an instance from the spatial grid"""
+        # Remove from all cells (brute force but simple)
+        for cell_instances in self.spatial_grid.values():
+            if instance in cell_instances:
+                cell_instances.remove(instance)
+
+    def update_instance_grid_position(self, instance: 'GameInstance'):
+        """Update an instance's position in the spatial grid"""
+        self._remove_from_grid(instance)
+        self._add_to_grid(instance)
+
+    def get_nearby_instances(self, x: float, y: float, w: int = 32, h: int = 32) -> List['GameInstance']:
+        """Get all instances that might collide with an object at (x, y) with size (w, h)
+
+        We expand the search area by one cell in each direction to catch objects
+        that might be on the border of adjacent cells.
+        """
+        cell_size = self.grid_cell_size
+        # Calculate the cell range, expanded by 1 in each direction
+        min_cell_x = int(x) // cell_size - 1
+        max_cell_x = int(x + w - 1) // cell_size + 1
+        min_cell_y = int(y) // cell_size - 1
+        max_cell_y = int(y + h - 1) // cell_size + 1
+
+        nearby = set()
+        for cx in range(min_cell_x, max_cell_x + 1):
+            for cy in range(min_cell_y, max_cell_y + 1):
+                cell = (cx, cy)
+                if cell in self.spatial_grid:
+                    nearby.update(self.spatial_grid[cell])
+        return list(nearby)
     
     def parse_color(self, color_str: str) -> Tuple[int, int, int]:
         """Parse color string to RGB tuple"""
@@ -604,7 +676,11 @@ class GameRunner:
                                 instance.action_executor.execute_event(instance, "destroy", events)
                 
                 # Remove destroyed instances
+                old_count = len(self.current_room.instances)
                 self.current_room.instances = [inst for inst in self.current_room.instances if not inst.to_destroy]
+                if len(self.current_room.instances) != old_count:
+                    # Rebuild spatial grid after removing instances
+                    self.current_room.rebuild_spatial_grid()
 
                 # Clear screen
                 self.screen.fill((135, 206, 235))  # Sky blue
@@ -775,18 +851,21 @@ class GameRunner:
             
             # If this object responds to this key, stop its movement
             if has_keyboard_event:
+                grid_size = 32  # Default grid size
+
                 # Stop movement based on which key was released
+                # Snap to NEAREST grid position (not forward) for precise Sokoban-style control
                 if sub_key in ["left", "right"]:
                     instance.hspeed = 0
+                    # Snap X to nearest grid position
+                    instance.x = round(instance.x / grid_size) * grid_size
                     print(f"  🛑 Stopped horizontal movement for {instance.object_name}")
                 elif sub_key in ["up", "down"]:
                     instance.vspeed = 0
+                    # Snap Y to nearest grid position
+                    instance.y = round(instance.y / grid_size) * grid_size
                     print(f"  🛑 Stopped vertical movement for {instance.object_name}")
-                
-                # Snap to grid for clean positioning
-                grid_size = 32  # Default grid size
-                instance.x = round(instance.x / grid_size) * grid_size
-                instance.y = round(instance.y / grid_size) * grid_size
+
                 print(f"  📍 Snapped to grid: ({instance.x}, {instance.y})")
             
             # NEW: Execute keyboard_release events from JSON (custom actions)
@@ -981,6 +1060,10 @@ class GameRunner:
         # This handles the case where soko pushes box into wall - soko should be pushed back
         self.separate_overlapping_instances(objects_data)
 
+        # Update spatial grid after all movement is complete
+        # This ensures collision detection stays accurate for the next frame
+        self.current_room.rebuild_spatial_grid()
+
         # NOTE: Step events are executed in the main game loop, not here
         # (see run_game_loop where instance.step() is called)
     
@@ -997,7 +1080,10 @@ class GameRunner:
         w1 = moving_instance.sprite.width if moving_instance.sprite else 32
         h1 = moving_instance.sprite.height if moving_instance.sprite else 32
 
-        for other_instance in self.current_room.instances:
+        # Use spatial grid for faster collision detection
+        nearby_instances = self.current_room.get_nearby_instances(intended_x, intended_y, w1, h1)
+
+        for other_instance in nearby_instances:
             if other_instance == moving_instance:
                 continue
 
@@ -1035,7 +1121,10 @@ class GameRunner:
             w1 = instance.sprite.width if instance.sprite else 32
             h1 = instance.sprite.height if instance.sprite else 32
 
-            for other_instance in self.current_room.instances:
+            # Use spatial grid for faster collision detection
+            nearby_instances = self.current_room.get_nearby_instances(instance.x, instance.y, w1, h1)
+
+            for other_instance in nearby_instances:
                 if other_instance == instance:
                     continue
 
@@ -1125,12 +1214,17 @@ class GameRunner:
         for key in expired_keys:
             del instance._collision_cooldowns[key]
 
+        # Get nearby instances using spatial grid for faster detection
+        w1 = instance.sprite.width if instance.sprite else 32
+        h1 = instance.sprite.height if instance.sprite else 32
+        nearby_instances = self.current_room.get_nearby_instances(instance.x, instance.y, w1, h1)
+
         for event_name, event_data in events.items():
             if event_name.startswith('collision_with_'):
                 target_object = event_name.replace('collision_with_', '')
 
-                # Check collision with target object
-                for other_instance in self.current_room.instances:
+                # Check collision with target object (only nearby instances)
+                for other_instance in nearby_instances:
                     if other_instance == instance:
                         continue
 
@@ -1140,9 +1234,24 @@ class GameRunner:
                             collision_key = (id(other_instance), event_name)
                             current_collisions.add(collision_key)
 
+                            # Check if this instance is actively moving (for push mechanics)
+                            is_moving = (getattr(instance, 'hspeed', 0) != 0 or
+                                        getattr(instance, 'vspeed', 0) != 0)
+
+                            # Check if the OTHER instance is actively moving (it might be pushing us)
+                            other_is_moving = (getattr(other_instance, 'hspeed', 0) != 0 or
+                                              getattr(other_instance, 'vspeed', 0) != 0)
+
                             # Only fire event if this is a NEW collision AND not in cooldown
+                            # OR if one of the instances is actively moving (for push mechanics)
                             in_cooldown = collision_key in instance._collision_cooldowns
-                            if collision_key not in instance._active_collisions and not in_cooldown:
+                            is_new_collision = collision_key not in instance._active_collisions
+
+                            # Fire if: (new collision and not in cooldown) OR (moving and not in cooldown)
+                            should_fire = (is_new_collision and not in_cooldown) or \
+                                         ((is_moving or other_is_moving) and not in_cooldown)
+
+                            if should_fire:
                                 # Store the collision data with speeds captured NOW
                                 collisions.append({
                                     'instance': instance,
@@ -1230,7 +1339,10 @@ class GameRunner:
         w1 = instance.sprite.width if instance.sprite else 32
         h1 = instance.sprite.height if instance.sprite else 32
 
-        for other_instance in self.current_room.instances:
+        # Use spatial grid for faster collision detection
+        nearby_instances = self.current_room.get_nearby_instances(check_x, check_y, w1, h1)
+
+        for other_instance in nearby_instances:
             if other_instance == instance:
                 continue
             # Also exclude the collision "other" instance (e.g., explorer pushing rock)
@@ -1270,14 +1382,13 @@ class GameRunner:
                                 has_stop_movement = True
                                 break
                         if has_stop_movement:
-                            print(f"    🛑 Blocking: {instance.object_name} has stop_movement for {collision_event_name}")
+                            # Debug: only print blocking events
+                            # print(f"    🛑 Blocking: {instance.object_name} has stop_movement for {collision_event_name}")
                             return True
                         # Collision event exists but no stop_movement - continue checking other objects
                         # (there might be another blocking object at the same position)
-                        print(f"    ✅ Allowing: {instance.object_name} has {collision_event_name} but no stop_movement - checking other objects")
                         continue  # Check other objects at this position
                     else:
-                        print(f"    ℹ️ No event: {instance.object_name} has no {collision_event_name} - checking other's events")
                         # Also check if the OTHER object has a collision event with stop_movement
                         # This handles cases like obj_box_stored blocking obj_box
                         other_obj_events = other_obj_data.get('events', {})
@@ -1287,11 +1398,11 @@ class GameRunner:
                             reverse_actions = reverse_event_data.get('actions', [])
                             for action in reverse_actions:
                                 if action.get('action') == 'stop_movement':
-                                    print(f"    🛑 Blocking: {other_instance.object_name} has stop_movement for {reverse_collision_name}")
+                                    # Debug: only print blocking events
+                                    # print(f"    🛑 Blocking: {other_instance.object_name} has stop_movement for {reverse_collision_name}")
                                     return True
 
                         # No blocking event for THIS object - continue checking other objects
-                        print(f"    ℹ️ No blocking event for {other_instance.object_name} - checking other objects")
                         continue  # Check other objects at this position
 
                 elif object_type == "solid":
