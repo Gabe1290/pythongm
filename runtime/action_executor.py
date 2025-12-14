@@ -380,10 +380,18 @@ class ActionExecutor:
 
         Supports expressions like other.x, self.hspeed*8, etc.
         With 'relative' option, adds to current position instead of setting absolute.
+        With 'push_other' option (default True in collision), moves the 'other' instance
+        to this instance's current position (Sokoban-style push behavior).
         """
         x_expr = str(parameters.get("x", "0"))
         y_expr = str(parameters.get("y", "0"))
         relative = parameters.get("relative", False)
+        # By default, move the "other" instance (pusher) to fill the gap in collision events
+        push_other = parameters.get("push_other", True)
+
+        # Store current position before moving (for push_other feature)
+        old_x = instance.x
+        old_y = instance.y
 
         # Debug: Show stored collision speeds
         collision_speeds = getattr(self, '_collision_speeds', {})
@@ -428,6 +436,19 @@ class ActionExecutor:
         instance.x = round(instance.x / grid_size) * grid_size
         instance.y = round(instance.y / grid_size) * grid_size
         print(f"  📐 Snapped to grid: ({instance.x}, {instance.y})")
+
+        # Sokoban-style push: move the "other" instance (pusher) to fill the gap
+        # This only happens during collision events when push_other is True
+        if push_other and hasattr(self, '_collision_other') and self._collision_other:
+            other = self._collision_other
+            # Only move other if instance actually moved (relative jump with non-zero values)
+            if relative and (x_value != 0 or y_value != 0):
+                other.x = old_x
+                other.y = old_y
+                # Stop the pusher's movement
+                other.hspeed = 0
+                other.vspeed = 0
+                print(f"  🚶 Pusher {other.object_name} moved to ({old_x}, {old_y}) and stopped")
 
     def execute_start_moving_direction_action(self, instance, parameters: Dict[str, Any]):
         """Start moving in a specific direction
@@ -1619,12 +1640,14 @@ class ActionExecutor:
 
         # Change the object type
         target_instance.object_name = new_object_name
-        target_instance.object_data = new_object_data
+        # Use set_object_data to properly update cached fields (_cached_object_data, _collision_targets)
+        target_instance.set_object_data(new_object_data)
 
         # Update sprite if the new object has a different one
         sprite_name = new_object_data.get('sprite', '')
         if sprite_name and sprite_name in self.game_runner.sprites:
-            target_instance.sprite = self.game_runner.sprites[sprite_name]
+            # Use set_sprite to properly update cached dimensions (_cached_width, _cached_height)
+            target_instance.set_sprite(self.game_runner.sprites[sprite_name])
             print(f"  🖼️ Updated sprite to: {sprite_name}")
 
         # Reset collision tracking for the changed instance

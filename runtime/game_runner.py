@@ -61,8 +61,9 @@ class GameInstance:
 
     def __init__(self, object_name: str, x: float, y: float, instance_data: dict, action_executor=None):
         self.object_name = object_name
-        self.x = float(x)
-        self.y = float(y)
+        self._x = float(x)
+        self._y = float(y)
+        self._grid_dirty = False  # Track if position changed for spatial grid update
         self.instance_id = instance_data.get('instance_id', id(self))
         self.visible = instance_data.get('visible', True)
         self.rotation = instance_data.get('rotation', 0)
@@ -71,7 +72,13 @@ class GameInstance:
 
         self.sprite = None
         self.object_data = None
+        self._cached_object_data = None  # Cached reference to object data
+        self._collision_targets = {}  # Pre-parsed collision events: {target_object_name: event_data}
         self.to_destroy = False
+
+        # Cached dimensions (updated when sprite is set)
+        self._cached_width = 32
+        self._cached_height = 32
 
         # Speed properties for smooth movement
         self.hspeed = 0.0  # Horizontal speed (pixels per frame)
@@ -86,9 +93,25 @@ class GameInstance:
         # Action executor - use shared instance or create new one
         self.action_executor = action_executor if action_executor else ActionExecutor()
 
-        # Execute Create event when instance is created
-        if self.object_data and "events" in self.object_data:
-            self.action_executor.execute_event(self, "create", self.object_data["events"])
+    @property
+    def x(self):
+        return self._x
+
+    @x.setter
+    def x(self, value):
+        if self._x != value:
+            self._x = value
+            self._grid_dirty = True
+
+    @property
+    def y(self):
+        return self._y
+
+    @y.setter
+    def y(self, value):
+        if self._y != value:
+            self._y = value
+            self._grid_dirty = True
     
     def step(self):
         """Execute step event every frame"""
@@ -135,10 +158,29 @@ class GameInstance:
     def set_sprite(self, sprite: GameSprite):
         """Set the sprite for this instance"""
         self.sprite = sprite
+        # Cache dimensions for faster collision detection
+        if sprite:
+            self._cached_width = sprite.width
+            self._cached_height = sprite.height
+        else:
+            self._cached_width = 32
+            self._cached_height = 32
     
     def set_object_data(self, object_data: dict):
         """Set the object data from project (create event triggered when room becomes active)"""
         self.object_data = object_data
+        self._cached_object_data = object_data  # Cache reference
+
+        # Pre-parse collision events for faster lookup
+        # Instead of iterating all events and checking startswith('collision_with_') each frame,
+        # we build a dict of {target_object_name: event_data}
+        self._collision_targets = {}
+        if object_data:
+            events = object_data.get('events', {})
+            for event_name, event_data in events.items():
+                if event_name.startswith('collision_with_'):
+                    target_object = event_name[15:]  # len('collision_with_') == 15
+                    self._collision_targets[target_object] = event_data
 
         # Apply object-level visibility setting
         # If the object type has visible=False, make all instances of it invisible
@@ -228,8 +270,9 @@ class GameRoom:
 
     def _add_to_grid(self, instance: 'GameInstance'):
         """Add an instance to the spatial grid"""
-        w = instance.sprite.width if instance.sprite else 32
-        h = instance.sprite.height if instance.sprite else 32
+        # Use cached dimensions for performance
+        w = instance._cached_width
+        h = instance._cached_height
         cells = self._get_grid_cells(instance.x, instance.y, w, h)
         for cell in cells:
             if cell not in self.spatial_grid:
@@ -248,6 +291,14 @@ class GameRoom:
         """Update an instance's position in the spatial grid"""
         self._remove_from_grid(instance)
         self._add_to_grid(instance)
+
+    def update_dirty_instances(self):
+        """Update spatial grid only for instances that have moved (lazy update)"""
+        for instance in self.instances:
+            if instance._grid_dirty:
+                self._remove_from_grid(instance)
+                self._add_to_grid(instance)
+                instance._grid_dirty = False
 
     def get_nearby_instances(self, x: float, y: float, w: int = 32, h: int = 32) -> List['GameInstance']:
         """Get all instances that might collide with an object at (x, y) with size (w, h)
@@ -454,7 +505,7 @@ class GameRunner:
         """Load project data without loading sprites (sprites loaded later)"""
         try:
             path = Path(project_path)
-            
+
             # If it's a directory, look for project.json inside
             if path.is_dir():
                 self.project_path = path
@@ -466,27 +517,66 @@ class GameRunner:
             else:
                 print(f"Invalid project path: {project_path}")
                 return False
-            
+
             if not project_file.exists():
                 print(f"Project file not found: {project_file}")
                 return False
-            
+
             # Load project data
             with open(project_file, 'r') as f:
                 self.project_data = json.load(f)
-            
+
+            # Load room data from separate files if they exist
+            self._load_rooms_from_files()
+
             print(f"Loaded project: {self.project_data.get('name', 'Untitled')}")
-            
+
             # Only load rooms (without sprites for instances yet)
             self.load_rooms_without_sprites()
-            
+
             return True
-            
+
         except Exception as e:
             print(f"Error loading project: {e}")
             import traceback
             traceback.print_exc()
             return False
+
+    def _load_rooms_from_files(self) -> None:
+        """Load room instance data from separate files in rooms/ directory"""
+        rooms_dir = self.project_path / "rooms"
+
+        if not rooms_dir.exists():
+            print(f"DEBUG: No rooms/ directory found, using embedded room data")
+            return
+
+        rooms_data = self.project_data.get('assets', {}).get('rooms', {})
+
+        for room_name, room_data in rooms_data.items():
+            room_file = rooms_dir / f"{room_name}.json"
+
+            if room_file.exists():
+                try:
+                    with open(room_file, 'r') as f:
+                        file_room_data = json.load(f)
+
+                    # Merge file data into room data (file takes precedence for instances)
+                    if 'instances' in file_room_data:
+                        room_data['instances'] = file_room_data['instances']
+                        print(f"📂 Loaded room: {room_name} ({len(room_data['instances'])} instances from file)")
+
+                    # Also copy other room properties from file if present
+                    for key in ['width', 'height', 'background_color', 'background_image',
+                               'tile_horizontal', 'tile_vertical']:
+                        if key in file_room_data:
+                            room_data[key] = file_room_data[key]
+
+                except Exception as e:
+                    print(f"⚠️ Failed to load room file {room_file}: {e}")
+            else:
+                # No external file - use embedded instances (legacy format)
+                if room_data.get('instances'):
+                    print(f"📂 Room {room_name}: using embedded instances")
     
     def load_sprites(self):
         """Load all sprites from the project (called after pygame.display is initialized)"""
@@ -1060,9 +1150,9 @@ class GameRunner:
         # This handles the case where soko pushes box into wall - soko should be pushed back
         self.separate_overlapping_instances(objects_data)
 
-        # Update spatial grid after all movement is complete
-        # This ensures collision detection stays accurate for the next frame
-        self.current_room.rebuild_spatial_grid()
+        # Update spatial grid only for instances that moved (lazy update)
+        # This is much faster than rebuilding the entire grid every frame
+        self.current_room.update_dirty_instances()
 
         # NOTE: Step events are executed in the main game loop, not here
         # (see run_game_loop where instance.step() is called)
@@ -1076,9 +1166,9 @@ class GameRunner:
         intended_x = moving_instance.intended_x
         intended_y = moving_instance.intended_y
 
-        # Get dimensions
-        w1 = moving_instance.sprite.width if moving_instance.sprite else 32
-        h1 = moving_instance.sprite.height if moving_instance.sprite else 32
+        # Use cached dimensions
+        w1 = moving_instance._cached_width
+        h1 = moving_instance._cached_height
 
         # Use spatial grid for faster collision detection
         nearby_instances = self.current_room.get_nearby_instances(intended_x, intended_y, w1, h1)
@@ -1087,22 +1177,25 @@ class GameRunner:
             if other_instance == moving_instance:
                 continue
 
-            if other_instance.object_name in objects_data:
-                other_obj_data = objects_data[other_instance.object_name]
-                is_solid = other_obj_data.get('solid', False)
+            # Use cached object data if available
+            other_obj_data = other_instance._cached_object_data
+            if not other_obj_data:
+                other_obj_data = objects_data.get(other_instance.object_name, {})
 
-                # Only solid objects block movement
-                if not is_solid:
-                    continue
+            is_solid = other_obj_data.get('solid', False)
 
-                # Get other instance dimensions
-                w2 = other_instance.sprite.width if other_instance.sprite else 32
-                h2 = other_instance.sprite.height if other_instance.sprite else 32
+            # Only solid objects block movement
+            if not is_solid:
+                continue
 
-                # Check rectangle overlap at intended position
-                if self.rectangles_overlap(intended_x, intended_y, w1, h1,
-                                          other_instance.x, other_instance.y, w2, h2):
-                    return False
+            # Use cached dimensions
+            w2 = other_instance._cached_width
+            h2 = other_instance._cached_height
+
+            # Check rectangle overlap at intended position
+            if self.rectangles_overlap(intended_x, intended_y, w1, h1,
+                                      other_instance.x, other_instance.y, w2, h2):
+                return False
 
         return True
 
@@ -1115,11 +1208,14 @@ class GameRunner:
         processed_pairs = set()
 
         for instance in self.current_room.instances:
-            instance_obj_data = objects_data.get(instance.object_name, {})
-            instance_events = instance_obj_data.get('events', {})
+            # Use pre-parsed collision targets for faster lookup
+            collision_targets = instance._collision_targets
+            if not collision_targets:
+                continue
 
-            w1 = instance.sprite.width if instance.sprite else 32
-            h1 = instance.sprite.height if instance.sprite else 32
+            # Use cached dimensions
+            w1 = instance._cached_width
+            h1 = instance._cached_height
 
             # Use spatial grid for faster collision detection
             nearby_instances = self.current_room.get_nearby_instances(instance.x, instance.y, w1, h1)
@@ -1133,23 +1229,21 @@ class GameRunner:
                 if pair_key in processed_pairs:
                     continue
 
-                # Check if there's a collision event between these objects
-                collision_event_name = f"collision_with_{other_instance.object_name}"
-                if collision_event_name not in instance_events:
+                # Check if there's a collision event between these objects using pre-parsed targets
+                if other_instance.object_name not in collision_targets:
                     continue
 
-                w2 = other_instance.sprite.width if other_instance.sprite else 32
-                h2 = other_instance.sprite.height if other_instance.sprite else 32
+                # Use cached dimensions
+                w2 = other_instance._cached_width
+                h2 = other_instance._cached_height
 
                 # Check if they're overlapping
                 if self.rectangles_overlap(instance.x, instance.y, w1, h1,
                                           other_instance.x, other_instance.y, w2, h2):
                     # They're overlapping - push the moving instance back
                     # Determine which one was moving based on hspeed/vspeed
-                    inst_moving = hasattr(instance, 'hspeed') and instance.hspeed != 0 or \
-                                  hasattr(instance, 'vspeed') and instance.vspeed != 0
-                    other_moving = hasattr(other_instance, 'hspeed') and other_instance.hspeed != 0 or \
-                                   hasattr(other_instance, 'vspeed') and other_instance.vspeed != 0
+                    inst_moving = instance.hspeed != 0 or instance.vspeed != 0
+                    other_moving = other_instance.hspeed != 0 or other_instance.vspeed != 0
 
                     if inst_moving and not other_moving:
                         # Push instance back to non-overlapping position
@@ -1185,10 +1279,14 @@ class GameRunner:
 
         Returns a list of collision data dicts with speeds captured at detection time.
         Does NOT process the events - that's done separately.
+
+        Optimized to use pre-parsed collision targets and cached dimensions.
         """
         collisions = []
 
-        if not instance.object_data:
+        # Use pre-parsed collision targets (much faster than iterating all events)
+        collision_targets = instance._collision_targets
+        if not collision_targets:
             return collisions
 
         # Initialize collision tracking set if not exists
@@ -1200,75 +1298,72 @@ class GameRunner:
         if not hasattr(instance, '_collision_cooldowns'):
             instance._collision_cooldowns = {}
 
-        events = instance.object_data.get('events', {})
-
         # Track which collisions are currently active this frame
         current_collisions = set()
 
         # Decrement cooldowns
-        expired_keys = []
-        for key, frames in instance._collision_cooldowns.items():
-            instance._collision_cooldowns[key] = frames - 1
-            if instance._collision_cooldowns[key] <= 0:
-                expired_keys.append(key)
+        expired_keys = [key for key, frames in instance._collision_cooldowns.items() if frames <= 1]
         for key in expired_keys:
             del instance._collision_cooldowns[key]
+        for key in instance._collision_cooldowns:
+            instance._collision_cooldowns[key] -= 1
 
         # Get nearby instances using spatial grid for faster detection
-        w1 = instance.sprite.width if instance.sprite else 32
-        h1 = instance.sprite.height if instance.sprite else 32
+        # Use cached dimensions instead of sprite lookup
+        w1 = instance._cached_width
+        h1 = instance._cached_height
         nearby_instances = self.current_room.get_nearby_instances(instance.x, instance.y, w1, h1)
 
-        for event_name, event_data in events.items():
-            if event_name.startswith('collision_with_'):
-                target_object = event_name.replace('collision_with_', '')
+        # Cache instance speeds (avoid repeated getattr)
+        inst_hspeed = instance.hspeed
+        inst_vspeed = instance.vspeed
+        is_moving = inst_hspeed != 0 or inst_vspeed != 0
 
-                # Check collision with target object (only nearby instances)
-                for other_instance in nearby_instances:
-                    if other_instance == instance:
-                        continue
+        # Use pre-parsed collision targets instead of iterating all events
+        for target_object, event_data in collision_targets.items():
+            event_name = f"collision_with_{target_object}"
 
-                    if other_instance.object_name == target_object:
-                        if self.instances_overlap(instance, other_instance):
-                            # Create unique collision key
-                            collision_key = (id(other_instance), event_name)
-                            current_collisions.add(collision_key)
+            # Check collision with target object (only nearby instances)
+            for other_instance in nearby_instances:
+                if other_instance == instance:
+                    continue
 
-                            # Check if this instance is actively moving (for push mechanics)
-                            is_moving = (getattr(instance, 'hspeed', 0) != 0 or
-                                        getattr(instance, 'vspeed', 0) != 0)
+                if other_instance.object_name == target_object:
+                    if self.instances_overlap(instance, other_instance):
+                        # Create unique collision key
+                        collision_key = (id(other_instance), event_name)
+                        current_collisions.add(collision_key)
 
-                            # Check if the OTHER instance is actively moving (it might be pushing us)
-                            other_is_moving = (getattr(other_instance, 'hspeed', 0) != 0 or
-                                              getattr(other_instance, 'vspeed', 0) != 0)
+                        # Check if the OTHER instance is actively moving (it might be pushing us)
+                        other_hspeed = other_instance.hspeed
+                        other_vspeed = other_instance.vspeed
+                        other_is_moving = other_hspeed != 0 or other_vspeed != 0
 
-                            # Only fire event if this is a NEW collision AND not in cooldown
-                            # OR if one of the instances is actively moving (for push mechanics)
-                            in_cooldown = collision_key in instance._collision_cooldowns
-                            is_new_collision = collision_key not in instance._active_collisions
+                        # Only fire event if this is a NEW collision AND not in cooldown
+                        in_cooldown = collision_key in instance._collision_cooldowns
+                        is_new_collision = collision_key not in instance._active_collisions
 
-                            # Fire if: (new collision and not in cooldown) OR (moving and not in cooldown)
-                            should_fire = (is_new_collision and not in_cooldown) or \
-                                         ((is_moving or other_is_moving) and not in_cooldown)
+                        # Fire on new collision (not in cooldown)
+                        should_fire = is_new_collision and not in_cooldown
 
-                            if should_fire:
-                                # Store the collision data with speeds captured NOW
-                                collisions.append({
-                                    'instance': instance,
-                                    'event_name': event_name,
-                                    'events': events,
-                                    'other_instance': other_instance,
-                                    # Capture speeds at moment of collision detection
-                                    'self_hspeed': getattr(instance, 'hspeed', 0),
-                                    'self_vspeed': getattr(instance, 'vspeed', 0),
-                                    'other_hspeed': getattr(other_instance, 'hspeed', 0),
-                                    'other_vspeed': getattr(other_instance, 'vspeed', 0),
-                                })
-                                # Add short cooldown (2 frames) to prevent double-trigger within same push
-                                # This is short enough to allow continuous pushing when key is held
-                                instance._collision_cooldowns[collision_key] = 2
-                            # Don't break - continue checking for other instances of this type
-                            # and other collision events (e.g., obj_box_stored at same position as obj_store)
+                        if should_fire:
+                            # Store the collision data with speeds captured NOW
+                            collisions.append({
+                                'instance': instance,
+                                'event_name': event_name,
+                                'events': instance._cached_object_data.get('events', {}),
+                                'other_instance': other_instance,
+                                # Capture speeds at moment of collision detection
+                                'self_hspeed': inst_hspeed,
+                                'self_vspeed': inst_vspeed,
+                                'other_hspeed': other_hspeed,
+                                'other_vspeed': other_vspeed,
+                            })
+                            # Short cooldown (5 frames) prevents double-trigger in same collision
+                            # This is short enough to allow continuous pushing at normal speeds
+                            instance._collision_cooldowns[collision_key] = 5
+                        # Don't break - continue checking for other instances of this type
+                        # and other collision events (e.g., obj_box_stored at same position as obj_store)
 
         # Update active collisions for next frame
         instance._active_collisions = current_collisions
@@ -1301,11 +1396,12 @@ class GameRunner:
 
     def instances_overlap(self, inst1, inst2) -> bool:
         """Check if two instances overlap"""
-        w1 = inst1.sprite.width if inst1.sprite else 32
-        h1 = inst1.sprite.height if inst1.sprite else 32
-        w2 = inst2.sprite.width if inst2.sprite else 32
-        h2 = inst2.sprite.height if inst2.sprite else 32
-        
+        # Use cached dimensions for performance
+        w1 = inst1._cached_width
+        h1 = inst1._cached_height
+        w2 = inst2._cached_width
+        h2 = inst2._cached_height
+
         return self.rectangles_overlap(inst1.x, inst1.y, w1, h1, inst2.x, inst2.y, w2, h2)
     
     def rectangles_overlap(self, x1, y1, w1, h1, x2, y2, w2, h2) -> bool:
@@ -1333,14 +1429,15 @@ class GameRunner:
             print(f"⚠️ check_collision_at_position: No current room!")
             return False
 
-        objects_data = self.project_data.get('assets', {}).get('objects', {})
-
-        # Get instance dimensions
-        w1 = instance.sprite.width if instance.sprite else 32
-        h1 = instance.sprite.height if instance.sprite else 32
+        # Use cached dimensions
+        w1 = instance._cached_width
+        h1 = instance._cached_height
 
         # Use spatial grid for faster collision detection
         nearby_instances = self.current_room.get_nearby_instances(check_x, check_y, w1, h1)
+
+        # Cache instance's collision targets for checking stop_movement
+        instance_collision_targets = instance._collision_targets
 
         for other_instance in nearby_instances:
             if other_instance == instance:
@@ -1349,15 +1446,19 @@ class GameRunner:
             if exclude_instance and other_instance == exclude_instance:
                 continue
 
-            # Get other instance dimensions
-            w2 = other_instance.sprite.width if other_instance.sprite else 32
-            h2 = other_instance.sprite.height if other_instance.sprite else 32
+            # Use cached dimensions
+            w2 = other_instance._cached_width
+            h2 = other_instance._cached_height
 
             # Check if positions overlap
             if self.rectangles_overlap(check_x, check_y, w1, h1,
                                        other_instance.x, other_instance.y, w2, h2):
-                # Get other object's properties
-                other_obj_data = objects_data.get(other_instance.object_name, {})
+                # Use cached object data for properties
+                other_obj_data = other_instance._cached_object_data
+                if not other_obj_data:
+                    objects_data = self.project_data.get('assets', {}).get('objects', {})
+                    other_obj_data = objects_data.get(other_instance.object_name, {})
+
                 is_solid = other_obj_data.get('solid', False)
 
                 # Collision detected - check if it matches the filter
@@ -1367,43 +1468,30 @@ class GameRunner:
                         return True
 
                     # For non-solid objects, check if there's a collision event
-                    # that has a "stop_movement" action
-                    instance_obj_data = objects_data.get(instance.object_name, {})
-                    instance_events = instance_obj_data.get('events', {})
-                    collision_event_name = f"collision_with_{other_instance.object_name}"
-
-                    if collision_event_name in instance_events:
+                    # that has a "stop_movement" action using pre-parsed collision targets
+                    target_name = other_instance.object_name
+                    if target_name in instance_collision_targets:
                         # Check if the collision event has a stop_movement action
-                        event_data = instance_events[collision_event_name]
+                        event_data = instance_collision_targets[target_name]
                         actions = event_data.get('actions', [])
-                        has_stop_movement = False
                         for action in actions:
                             if action.get('action') == 'stop_movement':
-                                has_stop_movement = True
-                                break
-                        if has_stop_movement:
-                            # Debug: only print blocking events
-                            # print(f"    🛑 Blocking: {instance.object_name} has stop_movement for {collision_event_name}")
-                            return True
+                                return True
                         # Collision event exists but no stop_movement - continue checking other objects
-                        # (there might be another blocking object at the same position)
-                        continue  # Check other objects at this position
+                        continue
                     else:
                         # Also check if the OTHER object has a collision event with stop_movement
-                        # This handles cases like obj_box_stored blocking obj_box
-                        other_obj_events = other_obj_data.get('events', {})
-                        reverse_collision_name = f"collision_with_{instance.object_name}"
-                        if reverse_collision_name in other_obj_events:
-                            reverse_event_data = other_obj_events[reverse_collision_name]
+                        # using its pre-parsed collision targets
+                        other_collision_targets = other_instance._collision_targets
+                        if instance.object_name in other_collision_targets:
+                            reverse_event_data = other_collision_targets[instance.object_name]
                             reverse_actions = reverse_event_data.get('actions', [])
                             for action in reverse_actions:
                                 if action.get('action') == 'stop_movement':
-                                    # Debug: only print blocking events
-                                    # print(f"    🛑 Blocking: {other_instance.object_name} has stop_movement for {reverse_collision_name}")
                                     return True
 
                         # No blocking event for THIS object - continue checking other objects
-                        continue  # Check other objects at this position
+                        continue
 
                 elif object_type == "solid":
                     # "solid" means only solid objects

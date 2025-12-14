@@ -175,36 +175,82 @@ class ProjectManager(QObject):
                 project_data = json.load(f, object_pairs_hook=OrderedDict)
             print(f"DEBUG PM load_project: loaded data keys={list(project_data.keys())}")
 
+            # Load room data from separate files if they exist
+            self._load_rooms_from_files(project_path, project_data)
+
             # Validate project data
             if not self._validate_project_data(project_data):
                 print(f"DEBUG PM load_project: validation FAILED")
                 self.status_changed.emit("Invalid project file format")
                 return False
             print(f"DEBUG PM load_project: validation passed")
-            
+
             # Update asset manager with project location FIRST
             if self.asset_manager:
                 self.asset_manager.set_project_directory(project_path)
                 self.asset_manager.load_assets_from_project_data(project_data)
-            
+
             # Update internal state
             self.current_project_path = project_path
             self.current_project_data = project_data
             self.is_dirty_flag = False
-            
+
             # Start auto-save
             if self.auto_save_enabled:
                 self.auto_save_timer.start(self.auto_save_interval)
-            
+
             # Emit signal with project data
             self.project_loaded.emit(project_path, project_data)
             self.status_changed.emit(f"Opened project: {project_path.name}")
-            
+
             return True
-            
+
         except Exception as e:
             self.status_changed.emit(f"Failed to open project: {str(e)}")
             return False
+
+    def _load_rooms_from_files(self, project_path: Path, project_data: dict) -> None:
+        """Load room instance data from separate files in rooms/ directory"""
+        rooms_dir = project_path / "rooms"
+
+        if not rooms_dir.exists():
+            print(f"DEBUG: No rooms/ directory found, using embedded room data")
+            return
+
+        rooms_data = project_data.get('assets', {}).get('rooms', {})
+
+        for room_name, room_data in rooms_data.items():
+            room_file = rooms_dir / f"{room_name}.json"
+
+            if room_file.exists():
+                try:
+                    with open(room_file, 'r', encoding='utf-8') as f:
+                        from collections import OrderedDict
+                        file_room_data = json.load(f, object_pairs_hook=OrderedDict)
+
+                    # Merge file data into room data (file takes precedence for instances)
+                    if 'instances' in file_room_data:
+                        room_data['instances'] = file_room_data['instances']
+                        print(f"📂 Loaded room: {room_name} ({len(room_data['instances'])} instances from file)")
+
+                    # Also copy other room properties from file if present
+                    for key in ['width', 'height', 'background_color', 'background_image',
+                               'tile_horizontal', 'tile_vertical']:
+                        if key in file_room_data:
+                            room_data[key] = file_room_data[key]
+
+                    # Clean up external file marker
+                    if '_external_file' in room_data:
+                        del room_data['_external_file']
+
+                except Exception as e:
+                    print(f"⚠️ Failed to load room file {room_file}: {e}")
+            else:
+                # No external file - check if instances are embedded (legacy format)
+                if room_data.get('instances'):
+                    print(f"📂 Room {room_name}: using embedded instances ({len(room_data['instances'])} instances)")
+                else:
+                    print(f"⚠️ Room {room_name}: no instances found")
        
     def save_project(self, project_path: Optional[Path] = None) -> bool:
         """
@@ -240,12 +286,12 @@ class ProjectManager(QObject):
         try:
             save_path = Path(project_path) if project_path else self.current_project_path
             project_file = save_path / self.PROJECT_FILE
-            
+
             print(f"💾 DEBUG: Saving to {project_file}")
-            
+
             # Update project metadata
             self.current_project_data["modified"] = datetime.now().isoformat()
-            
+
             # Get latest asset data from asset manager
             if self.asset_manager:
                 print("💾 DEBUG: Getting assets from asset manager...")
@@ -262,30 +308,74 @@ class ProjectManager(QObject):
                 print(f"💾 DEBUG: Asset data updated. Objects in project: {list(objects_data.keys())}")
                 for obj_name, obj_data in objects_data.items():
                     sprite = obj_data.get('sprite', 'none')
-                    print(f"💾 DEBUG: Object '{obj_name}' has sprite: '{sprite}'")    
-                    
-            # Save to file
+                    print(f"💾 DEBUG: Object '{obj_name}' has sprite: '{sprite}'")
+
+            # Save rooms to separate files
+            self._save_rooms_to_files(save_path)
+
+            # Create a copy of project data without room instance data for main file
+            # (room metadata stays in project.json, instance data goes to room files)
+            project_data_for_save = self._prepare_project_data_for_save()
+
+            # Save main project file (without room instance data)
             with open(project_file, 'w', encoding='utf-8') as f:
-                json.dump(self.current_project_data, f, indent=2, ensure_ascii=False, sort_keys=False)
+                json.dump(project_data_for_save, f, indent=2, ensure_ascii=False, sort_keys=False)
 
             print(f"✅ DEBUG: Project saved successfully to {project_file}")
-            
+
             # Update state
             self.is_dirty_flag = False
             if project_path:
                 self.current_project_path = save_path
-            
+
             self.project_saved.emit()
             self.dirty_changed.emit(False)
             self.status_changed.emit(f"Saved project: {save_path.name}")
-            
+
             return True
-            
+
         except Exception as e:
             print(f"💥 DEBUG: Folder save failed: {e}")
             import traceback
             traceback.print_exc()
             return False
+
+    def _save_rooms_to_files(self, project_path: Path) -> None:
+        """Save each room's instance data to a separate file in rooms/ directory"""
+        rooms_dir = project_path / "rooms"
+        rooms_dir.mkdir(exist_ok=True)
+
+        rooms_data = self.current_project_data.get('assets', {}).get('rooms', {})
+
+        for room_name, room_data in rooms_data.items():
+            room_file = rooms_dir / f"{room_name}.json"
+
+            # Save full room data including instances
+            with open(room_file, 'w', encoding='utf-8') as f:
+                json.dump(room_data, f, indent=2, ensure_ascii=False)
+
+            print(f"💾 Saved room: {room_name} ({len(room_data.get('instances', []))} instances)")
+
+    def _prepare_project_data_for_save(self) -> dict:
+        """Prepare project data for saving - rooms store only metadata, not instances"""
+        from collections import OrderedDict
+        from copy import deepcopy
+
+        # Deep copy to avoid modifying the live data
+        data = deepcopy(self.current_project_data)
+
+        # For rooms, only keep metadata (not instances) in main project.json
+        if 'assets' in data and 'rooms' in data['assets']:
+            rooms = data['assets']['rooms']
+            for room_name, room_data in rooms.items():
+                # Keep room metadata but remove instances (they're in separate files)
+                if 'instances' in room_data:
+                    # Store instance count for reference
+                    room_data['instance_count'] = len(room_data['instances'])
+                    room_data['instances'] = []  # Clear instances from main file
+                    room_data['_external_file'] = f"rooms/{room_name}.json"
+
+        return data
 
     def _save_to_zip(self) -> bool:
         """Save project directly to zip file"""

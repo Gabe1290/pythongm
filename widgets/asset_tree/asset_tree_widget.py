@@ -201,6 +201,14 @@ class AssetTreeWidget(QTreeWidget):
             delete_action.triggered.connect(lambda: self.operations.delete_asset(item))
             context_menu.addAction(delete_action)
 
+            # Export action for objects and rooms
+            if item.asset_type in ["object", "objects", "room", "rooms"]:
+                context_menu.addSeparator()
+                asset_type_plural = "objects" if item.asset_type in ["object", "objects"] else "rooms"
+                export_action = QAction(self.tr("📦 Export Package..."), self)
+                export_action.triggered.connect(lambda checked=False, at=asset_type_plural, an=item.asset_name: self.export_resource(at, an))
+                context_menu.addAction(export_action)
+
             # Room reordering actions (only for rooms)
             if item.asset_type in ["room", "rooms"]:
                 context_menu.addSeparator()
