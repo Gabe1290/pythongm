@@ -21,7 +21,13 @@ from typing import List, Dict, Tuple, Any
 
 
 def parse_xsb_file(xsb_path: str) -> List[Tuple[int, List[str]]]:
-    """Parse XSB file and return list of (level_number, level_lines)"""
+    """Parse XSB file and return list of (level_number, level_lines)
+
+    Supports multiple formats:
+    - Lines starting with '; N' for level numbers
+    - '---' as level separator
+    - Blank lines between levels
+    """
     levels = []
     current_level = []
     current_level_num = 0
@@ -30,19 +36,32 @@ def parse_xsb_file(xsb_path: str) -> List[Tuple[int, List[str]]]:
         for line in f:
             line = line.rstrip('\n\r')
 
-            # Check for level number comment
-            if line.startswith(';'):
+            # Check for separator line (---)
+            if line.strip().startswith('---'):
                 # Save previous level if exists
                 if current_level:
                     levels.append((current_level_num, current_level))
                     current_level = []
+                continue
 
-                # Extract level number
+            # Check for level number comment
+            if line.startswith(';'):
+                # Save previous level if exists and we're starting a new numbered level
+                comment_text = line.strip('; ').strip()
                 try:
-                    current_level_num = int(line.strip('; ').strip())
+                    new_level_num = int(comment_text)
+                    # This is a level number - save previous level
+                    if current_level:
+                        levels.append((current_level_num, current_level))
+                        current_level = []
+                    current_level_num = new_level_num
                 except ValueError:
-                    current_level_num = len(levels) + 1
-            elif line.strip() and not line.startswith(';'):
+                    # Just a comment, not a level number - ignore
+                    pass
+                continue
+
+            # Check if this is level data (contains wall characters)
+            if line.strip() and ('#' in line or '@' in line or '$' in line or '.' in line):
                 # Level data line
                 current_level.append(line)
 

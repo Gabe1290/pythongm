@@ -75,6 +75,7 @@ class GameInstance:
         self._cached_object_data = None  # Cached reference to object data
         self._collision_targets = {}  # Pre-parsed collision events: {target_object_name: event_data}
         self.to_destroy = False
+        self.depth = 0  # Drawing depth (higher = drawn behind, lower = drawn in front)
 
         # Cached dimensions (updated when sprite is set)
         self._cached_width = 32
@@ -186,6 +187,9 @@ class GameInstance:
         # If the object type has visible=False, make all instances of it invisible
         if not object_data.get('visible', True):
             self.visible = False
+
+        # Apply depth from object definition
+        self.depth = object_data.get('depth', 0)
 
         # NOTE: Create event is NOT triggered here!
         # It's triggered when the room becomes active (in change_room or run_game_loop)
@@ -446,8 +450,10 @@ class GameRoom:
                 scaled_bg = pygame.transform.scale(self.background_surface, (self.width, self.height))
                 screen.blit(scaled_bg, (0, 0))
 
-        # Render all instances
-        for instance in self.instances:
+        # Render all instances sorted by depth (higher depth = drawn first/behind)
+        # In GameMaker, lower depth values are drawn on top (in front)
+        sorted_instances = sorted(self.instances, key=lambda inst: getattr(inst, 'depth', 0), reverse=True)
+        for instance in sorted_instances:
             instance.render(screen)
 
 class GameRunner:
