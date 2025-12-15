@@ -366,6 +366,46 @@ class BlocklyConfig:
 
         return config
 
+    @classmethod
+    def get_sokoban(cls) -> 'BlocklyConfig':
+        """Sokoban/box-pushing puzzle game preset"""
+        config = cls(preset_name="sokoban")
+
+        # Events - essential for Sokoban
+        config.enable_block("event_create")
+        config.enable_block("event_keyboard_held")  # Arrow keys for movement
+        config.enable_block("event_keyboard_nokey")  # Stop when no key pressed
+        config.enable_block("event_collision")  # Push boxes, hit walls
+
+        # Movement - grid-based movement is essential
+        config.enable_block("move_set_hspeed")
+        config.enable_block("move_set_vspeed")
+        config.enable_block("move_stop")
+        config.enable_block("move_snap_to_grid")
+        config.enable_block("move_jump_to")  # For pushing boxes
+        config.enable_block("grid_if_on_grid")  # Only move when aligned
+
+        # Instance - for changing box types
+        config.enable_block("instance_destroy")
+        config.enable_block("instance_create")
+
+        # Room - level progression
+        config.enable_block("room_goto_next")
+        config.enable_block("room_goto_previous")
+        config.enable_block("room_restart")
+        config.enable_block("room_if_next_exists")
+
+        # Lives - optional but useful for Sokoban
+        config.enable_block("lives_set")
+        config.enable_block("lives_add")
+
+        # Output - for win messages
+        config.enable_block("output_message")
+
+        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Score/Lives/Health", "Output"}
+
+        return config
+
 
 # ============================================================================
 # PRESET REGISTRY
@@ -377,6 +417,7 @@ PRESETS: Dict[str, BlocklyConfig] = {
     "intermediate": BlocklyConfig.get_intermediate(),
     "platformer": BlocklyConfig.get_platformer(),
     "grid_rpg": BlocklyConfig.get_grid_rpg(),
+    "sokoban": BlocklyConfig.get_sokoban(),
 }
 
 

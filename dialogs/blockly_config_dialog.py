@@ -68,6 +68,7 @@ class BlocklyConfigDialog(QDialog):
             self.tr("Intermediate (More Features)"),
             self.tr("Platformer Game"),
             self.tr("Grid-based RPG"),
+            self.tr("Sokoban (Box Puzzle)"),
             self.tr("Custom")
         ])
         self.preset_combo.currentTextChanged.connect(self.on_preset_changed)
@@ -223,7 +224,8 @@ class BlocklyConfigDialog(QDialog):
             "intermediate": 2,
             "platformer": 3,
             "grid_rpg": 4,
-        }.get(self.config.preset_name, 5)  # 5 = Custom
+            "sokoban": 5,
+        }.get(self.config.preset_name, 6)  # 6 = Custom
         self.preset_combo.setCurrentIndex(preset_index)
 
         self.tree.blockSignals(False)
@@ -240,6 +242,7 @@ class BlocklyConfigDialog(QDialog):
             self.tr("Intermediate (More Features)"): "intermediate",
             self.tr("Platformer Game"): "platformer",
             self.tr("Grid-based RPG"): "grid_rpg",
+            self.tr("Sokoban (Box Puzzle)"): "sokoban",
         }
 
         if text == self.tr("Custom"):
@@ -279,9 +282,9 @@ class BlocklyConfigDialog(QDialog):
                 self.config.disable_block(block_type)
 
         # Mark as custom
-        if self.preset_combo.currentIndex() != 5:
+        if self.preset_combo.currentIndex() != 6:
             self.tree.blockSignals(True)
-            self.preset_combo.setCurrentIndex(5)  # Custom
+            self.preset_combo.setCurrentIndex(6)  # Custom
             self.config.preset_name = "custom"
             self.tree.blockSignals(False)
 
