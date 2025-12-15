@@ -537,6 +537,9 @@ class GameRunner:
 
             print(f"Loaded project: {self.project_data.get('name', 'Untitled')}")
 
+            # Load project settings
+            self._load_project_settings()
+
             # Only load rooms (without sprites for instances yet)
             self.load_rooms_without_sprites()
 
@@ -583,7 +586,23 @@ class GameRunner:
                 # No external file - use embedded instances (legacy format)
                 if room_data.get('instances'):
                     print(f"📂 Room {room_name}: using embedded instances")
-    
+
+    def _load_project_settings(self) -> None:
+        """Load game settings from project data"""
+        settings = self.project_data.get('settings', {})
+
+        # Load lives/score/health initial values
+        self.lives = settings.get('starting_lives', 3)
+        self.score = settings.get('starting_score', 0)
+        self.health = settings.get('starting_health', 100.0)
+
+        # Load caption display settings
+        self.show_lives_in_caption = settings.get('show_lives_in_caption', False)
+        self.show_score_in_caption = settings.get('show_score_in_caption', False)
+        self.show_health_in_caption = settings.get('show_health_in_caption', False)
+
+        print(f"⚙️ Settings: lives={self.lives}, score={self.score}, health={self.health}")
+
     def load_sprites(self):
         """Load all sprites from the project (called after pygame.display is initialized)"""
         sprites_data = self.project_data.get('assets', {}).get('sprites', {})
@@ -811,6 +830,15 @@ class GameRunner:
                     self.stop_game()
                 elif event.key == pygame.K_F1:
                     self.show_debug_info()
+                elif event.key == pygame.K_r:
+                    # Restart current level (costs one life)
+                    self.restart_current_room(use_life=True)
+                elif event.key == pygame.K_n:
+                    # Go to next room
+                    self.goto_next_room()
+                elif event.key == pygame.K_p:
+                    # Go to previous room
+                    self.goto_previous_room()
                 else:
                     # Handle keyboard press events for all instances
                     self.handle_keyboard_press(event.key)
@@ -1510,20 +1538,64 @@ class GameRunner:
 
         return False
 
-    def restart_current_room(self):
-        """Restart the current room"""
+    def restart_current_room(self, use_life: bool = True):
+        """Restart the current room
+
+        Args:
+            use_life: If True, decrement lives and check for game over.
+                     Set to False when restarting without penalty (e.g., from code).
+        """
         if not self.current_room:
             return
-        
+
+        # Check and decrement lives if enabled
+        if use_life:
+            self.lives -= 1
+            print(f"💔 Lives remaining: {self.lives}")
+
+            if self.lives <= 0:
+                # Game over - show message then stop
+                print(f"☠️ GAME OVER - showing dialog...")
+                self.show_message_dialog("Game Over!")
+                print(f"☠️ Dialog closed, stopping game...")
+                self.stop_game()
+                return
+
         room_name = self.current_room.name
-        # Trigger a room reload
-        room_list = self.get_room_list()
-        if room_name in room_list:
-            # Find the room in our rooms dictionary and reload it
-            room_data = self.project_data.get('assets', {}).get('rooms', {}).get(room_name)
-            if room_data:
-                # Just change to the same room (will recreate instances)
-                self.change_room(room_name)
+        print(f"🔄 Restarting room: {room_name}")
+
+        # Reload room from project data to reset all instances
+        room_data = self.project_data.get('assets', {}).get('rooms', {}).get(room_name)
+        if room_data:
+            # Recreate the room from scratch
+            assets = self.project_data.get('assets', {})
+            objects_data = assets.get('objects', {})
+
+            new_room = GameRoom(
+                room_name,
+                room_data,
+                action_executor=self.action_executor,
+                project_path=self.project_path,
+                sprites_data=assets
+            )
+
+            # Assign sprites to instances
+            new_room.set_sprites_for_instances(self.sprites, objects_data)
+
+            # Load background if needed
+            if new_room.background_image_name:
+                new_room.load_background_image()
+
+            # Replace the room in our dictionary
+            self.rooms[room_name] = new_room
+            self.current_room = new_room
+
+            # Execute create events for all instances
+            for instance in self.current_room.instances:
+                if instance.object_data and "events" in instance.object_data:
+                    instance.action_executor.execute_event(instance, "create", instance.object_data["events"])
+
+            print(f"✅ Room {room_name} restarted with {len(new_room.instances)} instances")
     
     def goto_next_room(self):
         """Go to the next room"""
@@ -1703,11 +1775,27 @@ class GameRunner:
         The dialog shows the message centered on screen with an OK button.
         User can click OK or press Enter/Space/Escape to dismiss.
         """
+        print(f"📢 Showing message dialog: {message}")
+
+        # Make sure we have a screen
+        if not self.screen:
+            print(f"⚠️ Cannot show message dialog - no screen")
+            return
+
+        # Clear any pending events to prevent accidental dismissal
+        pygame.event.clear()
+
         # Stop all instances when showing a message dialog
         # This prevents other instances from continuing to move while dialog is open
-        for instance in self.current_room.instances:
-            instance.hspeed = 0
-            instance.vspeed = 0
+        if self.current_room:
+            for instance in self.current_room.instances:
+                instance.hspeed = 0
+                instance.vspeed = 0
+
+        # Render the current game state first (so dialog appears over the game)
+        if self.current_room:
+            self.current_room.render(self.screen)
+            pygame.display.flip()
 
         # Create a semi-transparent overlay
         overlay = pygame.Surface((self.window_width, self.window_height))
@@ -1808,7 +1896,8 @@ class GameRunner:
             self.screen.blit(ok_text, (ok_text_x, ok_text_y))
 
             pygame.display.flip()
-            self.clock.tick(60)
+            if self.clock:
+                self.clock.tick(60)
 
     def cleanup(self):
         """Clean up pygame resources"""

@@ -30,7 +30,7 @@ def parse_xsb_file(xsb_path: str) -> List[Tuple[int, List[str]]]:
     """
     levels = []
     current_level = []
-    current_level_num = 0
+    current_level_num = 1  # Start from 1
 
     with open(xsb_path, 'r') as f:
         for line in f:
@@ -42,6 +42,7 @@ def parse_xsb_file(xsb_path: str) -> List[Tuple[int, List[str]]]:
                 if current_level:
                     levels.append((current_level_num, current_level))
                     current_level = []
+                    current_level_num += 1  # Auto-increment for next level
                 continue
 
             # Check for level number comment

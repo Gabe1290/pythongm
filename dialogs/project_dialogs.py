@@ -286,8 +286,38 @@ class ProjectSettingsDialog(QDialog):
         self.target_platform = QComboBox()
         self.target_platform.addItems([self.tr("Desktop"), self.tr("Web"), self.tr("Mobile")])
         settings_layout.addRow(self.tr("Target Platform:"), self.target_platform)
-        
+
         layout.addWidget(settings_group)
+
+        # Game Settings group
+        game_group = QGroupBox(self.tr("Game Settings"))
+        game_layout = QFormLayout(game_group)
+
+        self.starting_lives_spin = QSpinBox()
+        self.starting_lives_spin.setRange(0, 99)
+        self.starting_lives_spin.setValue(3)
+        game_layout.addRow(self.tr("Starting Lives:"), self.starting_lives_spin)
+
+        self.show_lives_check = QCheckBox()
+        game_layout.addRow(self.tr("Show Lives in Caption:"), self.show_lives_check)
+
+        self.starting_score_spin = QSpinBox()
+        self.starting_score_spin.setRange(0, 999999)
+        self.starting_score_spin.setValue(0)
+        game_layout.addRow(self.tr("Starting Score:"), self.starting_score_spin)
+
+        self.show_score_check = QCheckBox()
+        game_layout.addRow(self.tr("Show Score in Caption:"), self.show_score_check)
+
+        self.starting_health_spin = QSpinBox()
+        self.starting_health_spin.setRange(0, 1000)
+        self.starting_health_spin.setValue(100)
+        game_layout.addRow(self.tr("Starting Health:"), self.starting_health_spin)
+
+        self.show_health_check = QCheckBox()
+        game_layout.addRow(self.tr("Show Health in Caption:"), self.show_health_check)
+
+        layout.addWidget(game_group)
         
         button_box = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
@@ -303,15 +333,24 @@ class ProjectSettingsDialog(QDialog):
                 self.project_path_edit.setText(self.project_data.get("path", ""))
                 self.description_edit.setPlainText(self.project_data.get("description", ""))
                 self.auto_save_check.setChecked(self.project_data.get("auto_save", True))
-                
+
                 platform = self.project_data.get("target_platform", "Desktop")
                 index = self.target_platform.findText(platform)
                 if index >= 0:
                     self.target_platform.setCurrentIndex(index)
+
+                # Load game settings from nested 'settings' dict
+                settings = self.project_data.get("settings", {})
+                self.starting_lives_spin.setValue(settings.get("starting_lives", 3))
+                self.show_lives_check.setChecked(settings.get("show_lives_in_caption", False))
+                self.starting_score_spin.setValue(settings.get("starting_score", 0))
+                self.show_score_check.setChecked(settings.get("show_score_in_caption", False))
+                self.starting_health_spin.setValue(int(settings.get("starting_health", 100)))
+                self.show_health_check.setChecked(settings.get("show_health_in_caption", False))
             else:
                 self.project_name_edit.setText("Untitled Project")
                 self.auto_save_check.setChecked(True)
-            
+
             print("✅ Project settings loaded")
         except Exception as e:
             print(f"⚠️  Project settings error: {e}")
@@ -321,17 +360,34 @@ class ProjectSettingsDialog(QDialog):
     def accept_settings(self):
         if not isinstance(self.project_data, dict):
             self.project_data = {}
-        
+
         self.project_data.update({
             "name": self.project_name_edit.text(),
             "description": self.description_edit.toPlainText(),
             "auto_save": self.auto_save_check.isChecked(),
             "target_platform": self.target_platform.currentText()
         })
-        
+
+        # Save game settings to nested 'settings' dict
+        if "settings" not in self.project_data:
+            self.project_data["settings"] = {}
+
+        self.project_data["settings"].update({
+            "starting_lives": self.starting_lives_spin.value(),
+            "show_lives_in_caption": self.show_lives_check.isChecked(),
+            "starting_score": self.starting_score_spin.value(),
+            "show_score_in_caption": self.show_score_check.isChecked(),
+            "starting_health": self.starting_health_spin.value(),
+            "show_health_in_caption": self.show_health_check.isChecked()
+        })
+
         self.accept()
     
     def get_project_info(self):
+        return self.project_data
+
+    def get_settings(self):
+        """Alias for get_project_info for compatibility"""
         return self.project_data
 
 

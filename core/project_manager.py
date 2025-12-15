@@ -341,7 +341,11 @@ class ProjectManager(QObject):
             return False
 
     def _save_rooms_to_files(self, project_path: Path) -> None:
-        """Save each room's instance data to a separate file in rooms/ directory"""
+        """Save each room's instance data to a separate file in rooms/ directory
+
+        IMPORTANT: If a room file already exists with instances and current_project_data
+        has empty instances, preserve the existing file's instances to avoid data loss.
+        """
         rooms_dir = project_path / "rooms"
         rooms_dir.mkdir(exist_ok=True)
 
@@ -350,11 +354,32 @@ class ProjectManager(QObject):
         for room_name, room_data in rooms_data.items():
             room_file = rooms_dir / f"{room_name}.json"
 
+            # Check if we're about to overwrite a file with good data
+            instances_to_save = room_data.get('instances', [])
+
+            if not instances_to_save and room_file.exists():
+                # Current data has no instances, but file exists - preserve file instances
+                try:
+                    with open(room_file, 'r', encoding='utf-8') as f:
+                        existing_data = json.load(f)
+                    existing_instances = existing_data.get('instances', [])
+                    if existing_instances:
+                        # Merge: use current metadata but preserve existing instances
+                        print(f"⚠️ Preserving {len(existing_instances)} instances from existing file for {room_name}")
+                        room_data_to_save = dict(room_data)
+                        room_data_to_save['instances'] = existing_instances
+                        with open(room_file, 'w', encoding='utf-8') as f:
+                            json.dump(room_data_to_save, f, indent=2, ensure_ascii=False)
+                        print(f"💾 Saved room: {room_name} ({len(existing_instances)} instances preserved)")
+                        continue
+                except Exception as e:
+                    print(f"⚠️ Could not read existing room file {room_file}: {e}")
+
             # Save full room data including instances
             with open(room_file, 'w', encoding='utf-8') as f:
                 json.dump(room_data, f, indent=2, ensure_ascii=False)
 
-            print(f"💾 Saved room: {room_name} ({len(room_data.get('instances', []))} instances)")
+            print(f"💾 Saved room: {room_name} ({len(instances_to_save)} instances)")
 
     def _prepare_project_data_for_save(self) -> dict:
         """Prepare project data for saving - rooms store only metadata, not instances"""
