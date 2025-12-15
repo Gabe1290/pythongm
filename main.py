@@ -134,9 +134,17 @@ def main():
 
             def retranslate_all():
                 """Retranslate all widgets after IDE is fully initialized"""
-                print(f"🔄 Triggering retranslation for {len(app.allWidgets())} widgets...")
-                for widget in app.allWidgets():
-                    app.sendEvent(widget, QEvent(QEvent.Type.LanguageChange))
+                import shiboken6
+                widgets = app.allWidgets()
+                print(f"🔄 Triggering retranslation for {len(widgets)} widgets...")
+                for widget in widgets:
+                    # Check if widget is still valid (not deleted by C++)
+                    try:
+                        if shiboken6.isValid(widget):
+                            app.sendEvent(widget, QEvent(QEvent.Type.LanguageChange))
+                    except RuntimeError:
+                        # Widget was deleted during iteration, skip it
+                        pass
                 print(f"✅ Retranslation complete")
 
             # Use QTimer to defer retranslation until after event loop starts
