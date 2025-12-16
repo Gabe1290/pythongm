@@ -1002,7 +1002,10 @@ class PyGameMakerIDE(QMainWindow):
         if dialog.exec():
             settings = dialog.get_settings()
             self.current_project_data.update(settings)
+            # Also update project manager's data so changes are saved to file
+            self.project_manager.current_project_data.update(settings)
             self.project_manager.mark_dirty()
+            self.update_window_title()
 
     def import_sprite(self):
         # Add the project check

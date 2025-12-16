@@ -498,8 +498,8 @@ class ProjectManager(QObject):
     
     def mark_dirty(self):
         """Mark the project as having unsaved changes"""
-        if not self.is_dirty:
-            self.is_dirty = True
+        if not self.is_dirty_flag:
+            self.is_dirty_flag = True
             self.dirty_changed.emit(True)
     
     def is_dirty(self) -> bool:
