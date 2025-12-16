@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Step 2: Create the Objects</h1>
+
+    <p>Objects are the "actors" in your game. They use sprites for their appearance and have behaviors defined by events.</p>
+
+    <h2>Create the Player Object</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Create a new object</span>
+        <p>Right-click on <strong>Objects</strong> in the asset tree and select <code>Create Object</code>.</p>
+        <p>Name it <code>obj_player</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Assign the sprite</span>
+        <p>In the Object Editor, find the <strong>Sprite</strong> dropdown.</p>
+        <p>Select <code>spr_player</code> from the list.</p>
+    </div>
+
+    <h2>Create the Star Object</h2>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Create another object</span>
+        <p>Right-click on <strong>Objects</strong> and select <code>Create Object</code>.</p>
+        <p>Name it <code>obj_star</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Assign the star sprite</span>
+        <p>Select <code>spr_star</code> as the sprite for this object.</p>
+    </div>
+
+    <h2>Create the Game Room</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Create a room</span>
+        <p>Right-click on <strong>Rooms</strong> and select <code>Create Room</code>.</p>
+        <p>Name it <code>room_game</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Place the player</span>
+        <p>Double-click the room to open the Room Editor.</p>
+        <p>Select <code>obj_player</code> from the object list on the left.</p>
+        <p>Click near the bottom center of the room to place the player there.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Don't place stars yet!</strong> We'll make them spawn automatically from the top of the screen.
+    </div>
+
+    <div class="info">
+        <strong>Objects created!</strong> Click "Next" to add player movement.
+    </div>
+</body>
+</html>

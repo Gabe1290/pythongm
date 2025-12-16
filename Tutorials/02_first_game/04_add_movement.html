@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .blockly-hint { background-color: #e8f4f8; padding: 10px; border-left: 4px solid #3498db; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Step 3: Add Player Movement</h1>
+
+    <p>Now we'll make the player move left and right using the arrow keys.</p>
+
+    <h2>Open the Player Object</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Edit obj_player</span>
+        <p>Double-click on <code>obj_player</code> in the asset tree to open the Object Editor.</p>
+    </div>
+
+    <h2>Add Keyboard Events (Blockly Mode)</h2>
+
+    <div class="blockly-hint">
+        <strong>Using Blockly:</strong> Make sure you're in Blockly mode (check the toggle at the top of the editor).
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Add Left Arrow event</span>
+        <p>Click <strong>Add Event</strong> and select <code>Keyboard &gt; Left</code>.</p>
+        <p>This event triggers when the left arrow key is pressed.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Add movement action</span>
+        <p>From the Blockly toolbox, drag a <strong>"move in direction"</strong> block.</p>
+        <p>Set the direction to <code>180</code> (left) and speed to <code>5</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Add Right Arrow event</span>
+        <p>Click <strong>Add Event</strong> and select <code>Keyboard &gt; Right</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Add movement action</span>
+        <p>Drag another <strong>"move in direction"</strong> block.</p>
+        <p>Set the direction to <code>0</code> (right) and speed to <code>5</code>.</p>
+    </div>
+
+    <h2>Test Your Game!</h2>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Run the game</span>
+        <p>Press <code>F5</code> to test your game.</p>
+        <p>Use the left and right arrow keys to move the player!</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Problem?</strong> If the player moves off screen, we'll fix that later by adding boundary checks.
+    </div>
+
+    <div class="info">
+        <strong>Player moves!</strong> Click "Next" to make stars fall from the sky.
+    </div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Step 6: Finishing Touches</h1>
+
+    <p>Let's add some polish to make your game feel complete!</p>
+
+    <h2>Keep Player on Screen</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Add boundary check</span>
+        <p>In <code>obj_player</code>, add a <strong>Step</strong> event with these conditions:</p>
+        <ul>
+            <li>If x < 0, set x = 0</li>
+            <li>If x > room_width - sprite_width, set x = room_width - sprite_width</li>
+        </ul>
+        <p>This prevents the player from moving off the sides of the screen.</p>
+    </div>
+
+    <h2>Add a Background Color</h2>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Set room background</span>
+        <p>Open <code>room_game</code> in the Room Editor.</p>
+        <p>In the room properties, set the background color to a nice sky blue or dark space color.</p>
+    </div>
+
+    <h2>Export Your Game!</h2>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Export as HTML5</span>
+        <p>Go to <code>File &gt; Export as HTML5</code>.</p>
+        <p>Choose a location and click Export.</p>
+        <p>Open the HTML file in a web browser to play your game!</p>
+    </div>
+
+    <div class="success">
+        <strong>Congratulations!</strong> You've created your first complete game in PyGameMaker!
+    </div>
+
+    <h2>Ideas to Improve Your Game</h2>
+
+    <div class="challenge">
+        <strong>Challenges to try:</strong>
+        <ul>
+            <li>Add lives - lose a life when a star reaches the bottom</li>
+            <li>Make stars fall faster as the score increases</li>
+            <li>Add different colored stars worth different points</li>
+            <li>Add a "bad" object (bomb) that ends the game if caught</li>
+            <li>Add sound effects when catching stars</li>
+            <li>Create a title screen and game over screen</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <strong>What's Next?</strong><br>
+        Explore more tutorials to learn about animations, sounds, multiple rooms, and advanced game mechanics!
+    </div>
+</body>
+</html>

@@ -651,15 +651,30 @@ class PyGameMakerIDE(QMainWindow):
         # Center panel - NEW: Tabbed editors
         center_panel = self.create_center_panel_with_editors()
 
-        # Right panel - Properties (unchanged for now)
+        # Right panel - Stacked widget for Properties and Tutorial viewer
+        from PySide6.QtWidgets import QStackedWidget
+        from widgets.tutorial_panel import TutorialPanel
+
+        self.right_panel_stack = QStackedWidget()
+        self.right_panel_stack.setMinimumWidth(250)
+        self.right_panel_stack.setMaximumWidth(350)
+
+        # Properties panel (index 0)
         self.properties_panel = EnhancedPropertiesPanel()
-        self.properties_panel.setMinimumWidth(250)
-        self.properties_panel.setMaximumWidth(350)
+        self.right_panel_stack.addWidget(self.properties_panel)
+
+        # Tutorial viewer panel (index 1)
+        self.tutorial_panel = TutorialPanel()
+        self.tutorial_panel.close_requested.connect(self.hide_tutorial_panel)
+        self.right_panel_stack.addWidget(self.tutorial_panel)
+
+        # Start with properties panel visible
+        self.right_panel_stack.setCurrentIndex(0)
 
         # Add panels to main splitter
         main_splitter.addWidget(self.asset_tree)
         main_splitter.addWidget(center_panel)
-        main_splitter.addWidget(self.properties_panel)
+        main_splitter.addWidget(self.right_panel_stack)
 
         # Set proportions: asset tree, editors, properties
         main_splitter.setSizes([250, 800, 300])
@@ -1273,6 +1288,19 @@ class PyGameMakerIDE(QMainWindow):
             # This isolates pygame's SDL/OpenGL context from Qt's Chromium OpenGL context
             import subprocess
             game_script = Path(__file__).parent.parent / "runtime" / "run_game.py"
+
+            # Check if we're running from a packaged executable (Nuitka/PyInstaller)
+            # In that case, sys.executable points to the packaged app, not Python
+            is_packaged = getattr(sys, 'frozen', False) or not sys.executable.endswith('python')
+
+            if is_packaged:
+                # When packaged, run game in-process using the game runner
+                # This works because pygame is bundled in the package
+                if self.game_runner.test_game(str(self.current_project_path)):
+                    self.update_status(self.tr("Game closed"))
+                else:
+                    self.update_status(self.tr("Game test failed"))
+                return
 
             # Run the game subprocess and wait for it to complete
             result = subprocess.run(
@@ -2078,39 +2106,41 @@ class PyGameMakerIDE(QMainWindow):
         )
 
     def show_tutorials(self):
-        """Open tutorials window or website"""
-        from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QListWidget
+        """Open tutorials dialog window"""
+        from widgets.tutorial_dialog import TutorialDialog
 
-        dialog = QDialog(self)
-        dialog.setWindowTitle(self.tr("Tutorials"))
-        dialog.setMinimumSize(500, 400)
+        # Find the Tutorials folder - try multiple locations
+        tutorials_path = None
 
-        layout = QVBoxLayout(dialog)
+        # Try relative to source file (development mode)
+        candidate = Path(__file__).parent.parent / "Tutorials"
+        if candidate.exists():
+            tutorials_path = candidate
 
-        layout.addWidget(QLabel(self.tr("<h3>PyGameMaker Tutorials</h3>")))
-        layout.addWidget(QLabel(self.tr("Coming soon! Tutorials will include:")))
+        # Try relative to executable (packaged mode)
+        if not tutorials_path:
+            candidate = Path(sys.executable).parent / "Tutorials"
+            if candidate.exists():
+                tutorials_path = candidate
 
-        tutorial_list = QListWidget()
-        tutorial_list.addItems([
-            "📚 Getting Started with PyGameMaker",
-            "🎮 Creating Your First Game",
-            "🖼️ Working with Sprites and Assets",
-            "🏗️ Building Game Objects",
-            "🗺️ Designing Game Rooms",
-            "🎬 Using the Event System",
-            "🎯 Collision Detection Tutorial",
-            "📜 Introduction to Scripting",
-            "🚀 Exporting Your Game"
-        ])
-        layout.addWidget(tutorial_list)
+        # Try current working directory
+        if not tutorials_path:
+            candidate = Path.cwd() / "Tutorials"
+            if candidate.exists():
+                tutorials_path = candidate
 
-        layout.addWidget(QLabel(self.tr("\n💡 Tip: Check the documentation (F1) for quick help!")))
+        dialog = TutorialDialog(self, tutorials_path)
+        if dialog.exec() == QDialog.Accepted:
+            # User selected a tutorial - show it in the preview panel
+            selected_tutorial = dialog.get_selected_tutorial()
+            if selected_tutorial and tutorials_path:
+                self.tutorial_panel.set_tutorials_path(tutorials_path)
+                self.tutorial_panel.open_tutorial_by_data(selected_tutorial)
+                self.right_panel_stack.setCurrentIndex(1)
 
-        close_btn = QPushButton(self.tr("Close"))
-        close_btn.clicked.connect(dialog.accept)
-        layout.addWidget(close_btn)
-
-        dialog.exec()
+    def hide_tutorial_panel(self):
+        """Hide tutorial panel and show properties panel"""
+        self.right_panel_stack.setCurrentIndex(0)
 
     def about(self):
         """Show comprehensive About PyGameMaker dialog"""
