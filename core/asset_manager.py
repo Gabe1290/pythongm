@@ -36,10 +36,11 @@ class AssetManager(QObject):
     
     def __init__(self, project_directory: Optional[Path] = None):
         super().__init__()
-        self.project_directory = project_directory or Path.cwd()
+        # Don't default to cwd - only set project_directory if explicitly provided
+        self.project_directory = Path(project_directory) if project_directory else None
         self.assets_cache = {}
         self.thumbnails_cache = {}
-        
+
         # Initialize audio mixer safely — some systems (headless) may not have audio device.
         try:
             pygame.mixer.init()
@@ -53,7 +54,9 @@ class AssetManager(QObject):
                     # Fallback to logging if signals are not connected yet
                     logger.warning("Audio disabled: %s", e)
 
-        self.ensure_directories()
+        # Only create directories if a project directory was explicitly provided
+        if self.project_directory:
+            self.ensure_directories()
     
     def set_project_directory(self, project_directory: Optional[Path]) -> None:
         """Set the project directory and reset caches"""

@@ -72,8 +72,8 @@ class LanguageManager:
         self.qt_translator = QTranslator()  # For Qt's built-in strings (Yes/No buttons, etc.)
         self.translations_dir = Path(__file__).parent.parent / 'translations'
 
-        # Ensure translations directory exists
-        self.translations_dir.mkdir(exist_ok=True)
+        # Note: Don't create translations directory - it should exist in the package
+        # Creating it would leave empty dirs in temp extraction folder
 
         # Cache for discovered languages
         self._available_languages = None

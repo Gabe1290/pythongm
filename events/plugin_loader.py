@@ -45,8 +45,7 @@ class PluginLoader:
         """
         if not plugin_dir.exists():
             print(f"Plugin directory not found: {plugin_dir}")
-            plugin_dir.mkdir(parents=True, exist_ok=True)
-            print(f"✅ Created plugin directory: {plugin_dir}")
+            # Don't create the directory - just skip loading plugins
             return 0
 
         plugin_files = list(plugin_dir.glob("*.py"))
