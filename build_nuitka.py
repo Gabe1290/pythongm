@@ -57,6 +57,11 @@ def get_nuitka_command(onefile=False, debug=False):
         "--include-module=PIL",
         "--include-module=watchdog",
 
+        # QtWebEngine support (for Blockly visual programming)
+        "--include-module=PySide6.QtWebEngineWidgets",
+        "--include-module=PySide6.QtWebEngineCore",
+        "--include-module=PySide6.QtWebChannel",
+
         # Include package data
         "--include-package-data=PySide6",
 
@@ -74,8 +79,11 @@ def get_nuitka_command(onefile=False, debug=False):
     # Add onefile option if requested
     if onefile:
         cmd.append("--onefile")
-        # Use compression for smaller file
-        cmd.append("--onefile-tempdir-spec=%TEMP%/pygamemaker")
+        # Use temp directory for extraction
+        if sys.platform == "win32":
+            cmd.append("--onefile-tempdir-spec=%TEMP%/pygamemaker")
+        else:
+            cmd.append("--onefile-tempdir-spec=/tmp/pygamemaker")
 
     # Add data directories
     for data_dir in DATA_DIRS:

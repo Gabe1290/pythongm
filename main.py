@@ -1,5 +1,43 @@
 #!/usr/bin/env python3
 
+# CRITICAL: Set QtWebEngine paths BEFORE importing Qt
+# This is needed for Nuitka onefile builds where resources are extracted to temp dir
+import sys
+import os
+from pathlib import Path
+
+def setup_qtwebengine_paths():
+    """Configure QtWebEngine resource paths for Nuitka onefile builds."""
+    # Check if running from Nuitka compiled executable
+    # Nuitka sets __compiled__ at module level, or we can check if running from /tmp
+    is_nuitka = "__compiled__" in globals() or "__compiled__" in dir(__builtins__) if hasattr(__builtins__, '__dict__') else False
+
+    # Also detect by checking if __file__ is in temp directory (onefile extraction)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    is_onefile_extracted = current_dir.startswith('/tmp/') or current_dir.startswith(os.environ.get('TEMP', ''))
+
+    if is_nuitka or is_onefile_extracted or hasattr(sys, 'frozen'):
+        # Get the directory where the executable's resources are extracted
+        if hasattr(sys, '_MEIPASS'):  # PyInstaller
+            base_path = sys._MEIPASS
+        else:  # Nuitka or other
+            base_path = current_dir
+
+        # Set environment variables for QtWebEngine
+        os.environ['QTWEBENGINE_RESOURCES_PATH'] = base_path
+        os.environ['QTWEBENGINEPROCESS_PATH'] = os.path.join(base_path, 'QtWebEngineProcess')
+
+        # Also set for locales
+        locales_path = os.path.join(base_path, 'qtwebengine_locales')
+        if os.path.exists(locales_path):
+            os.environ['QTWEBENGINE_LOCALES_PATH'] = locales_path
+
+        print(f"🔧 QtWebEngine paths configured for packaged app:")
+        print(f"   Resources: {base_path}")
+
+# Call before any Qt imports
+setup_qtwebengine_paths()
+
 # CRITICAL: Import Qt patch to fix standardIcon errors
 try:
     # import qt_patch
@@ -14,10 +52,6 @@ except ImportError:
         print("✅ Basic Qt setup applied")
     except:
         print("⚠️ Could not apply Qt setup")
-    
-import sys
-import os
-from pathlib import Path
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon, QFont

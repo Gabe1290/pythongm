@@ -1290,8 +1290,22 @@ class PyGameMakerIDE(QMainWindow):
             game_script = Path(__file__).parent.parent / "runtime" / "run_game.py"
 
             # Check if we're running from a packaged executable (Nuitka/PyInstaller)
-            # In that case, sys.executable points to the packaged app, not Python
-            is_packaged = getattr(sys, 'frozen', False) or not sys.executable.endswith('python')
+            # In that case, sys.executable may point to a non-existent Python path
+            # Detection methods:
+            # 1. PyInstaller sets sys.frozen
+            # 2. Nuitka onefile: sys.executable doesn't exist (points to fictional python)
+            # 3. __file__ is in /tmp/ directory (Nuitka extraction)
+            # 4. Check if executable name doesn't contain 'python'
+            import os
+            exe_exists = os.path.exists(sys.executable)
+            file_dir = os.path.dirname(os.path.abspath(__file__))
+            is_packaged = (
+                getattr(sys, 'frozen', False) or  # PyInstaller
+                not exe_exists or  # Nuitka: sys.executable doesn't exist
+                file_dir.startswith('/tmp/') or  # Nuitka onefile extraction
+                file_dir.startswith(os.environ.get('TEMP', ''))  # Windows temp
+            )
+            print(f"🔍 Packaged detection: frozen={getattr(sys, 'frozen', False)}, exe_exists={exe_exists}, file_dir={file_dir}, is_packaged={is_packaged}")
 
             if is_packaged:
                 # When packaged, run game in-process using the game runner

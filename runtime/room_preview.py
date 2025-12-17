@@ -29,6 +29,18 @@ class RoomPreviewRunner(QObject):
         self.current_room = None
         self.start_instance_id = None
         
+    def _is_packaged(self) -> bool:
+        """Check if running from a packaged executable (Nuitka/PyInstaller)"""
+        import os
+        exe_exists = os.path.exists(sys.executable)
+        file_dir = os.path.dirname(os.path.abspath(__file__))
+        return (
+            getattr(sys, 'frozen', False) or  # PyInstaller
+            not exe_exists or  # Nuitka: sys.executable doesn't exist
+            file_dir.startswith('/tmp/') or  # Nuitka onefile extraction
+            file_dir.startswith(os.environ.get('TEMP', ''))  # Windows temp
+        )
+
     def start_preview(self, room_name: str, start_instance_id: Optional[int] = None):
         """Start room preview"""
         if self.process and self.process.state() == QProcess.Running:
@@ -38,13 +50,24 @@ class RoomPreviewRunner(QObject):
                 "A preview is already running. Stop it first."
             )
             return False
-        
+
+        # Check if running from packaged app - room preview requires subprocess
+        if self._is_packaged():
+            QMessageBox.warning(
+                None,
+                "Room Preview Not Available",
+                "Room preview is not available in the standalone executable.\n\n"
+                "Please use 'Run Game' (F5) instead to test the full game."
+            )
+            self.preview_error.emit("Room preview not available in packaged app")
+            return False
+
         self.current_room = room_name
         self.start_instance_id = start_instance_id
-        
+
         # Create temporary preview config
         preview_config = self.create_preview_config(room_name, start_instance_id)
-        
+
         # Save preview config
         preview_config_path = self.project_path / ".preview_config.json"
         try:
@@ -53,34 +76,34 @@ class RoomPreviewRunner(QObject):
         except Exception as e:
             self.preview_error.emit(f"Failed to save preview config: {e}")
             return False
-        
+
         # Find the game runner script
         runner_script = self.find_runner_script()
         if not runner_script:
             self.preview_error.emit("Could not find game runner script")
             return False
-        
+
         # Setup process
         self.process = QProcess(self)
         self.process.setWorkingDirectory(str(self.project_path))
-        
+
         # Connect signals
         self.process.readyReadStandardOutput.connect(self.on_stdout)
         self.process.readyReadStandardError.connect(self.on_stderr)
         self.process.finished.connect(self.on_finished)
         self.process.errorOccurred.connect(self.on_error)
-        
+
         # Start the process
         python_exe = sys.executable
         args = [str(runner_script), "--preview", str(preview_config_path)]
-        
+
         print(f"🎮 Starting room preview: {room_name}")
         if start_instance_id:
             print(f"   Starting from instance: {start_instance_id}")
         print(f"   Command: {python_exe} {' '.join(args)}")
-        
+
         self.process.start(python_exe, args)
-        
+
         if self.process.waitForStarted(3000):
             self.preview_started.emit(room_name)
             return True
