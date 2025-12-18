@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Passo 5: Aggiungere il Punteggio</h1>
+
+    <p>Aggiungiamo il rilevamento delle collisioni così il giocatore può catturare le stelle e guadagnare punti!</p>
+
+    <h2>Catturare le Stelle</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Aggiungi evento collisione al giocatore</span>
+        <p>Apri <code>obj_player</code> e aggiungi un nuovo evento.</p>
+        <p>Seleziona <code>Collisione &gt; obj_star</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Aggiungi azioni punteggio</span>
+        <p>Nell'evento collisione, aggiungi queste azioni:</p>
+        <ul>
+            <li><strong>Aggiungi al Punteggio</strong>: Aggiungi 10 punti</li>
+            <li><strong>Distruggi Istanza</strong>: Distruggi l'oggetto <code>other</code> (la stella)</li>
+        </ul>
+    </div>
+
+    <h2>Visualizzare il Punteggio</h2>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Aggiungi evento Draw al giocatore</span>
+        <p>In <code>obj_player</code>, aggiungi un evento <strong>Draw &gt; Draw GUI</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Disegna il punteggio</span>
+        <p>Aggiungi un'azione <strong>Disegna Testo</strong>:</p>
+        <ul>
+            <li>Testo: "Punti: " + string(score)</li>
+            <li>Posizione: x=10, y=10</li>
+        </ul>
+    </div>
+
+    <h2>Rimuovere le Stelle Mancate</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Aggiungi evento Step alla stella</span>
+        <p>Apri <code>obj_star</code> e aggiungi un evento <strong>Step</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Distruggi se fuori schermo</span>
+        <p>Aggiungi una condizione <strong>If</strong>: se y > room_height</p>
+        <p>Allora: <strong>Distruggi Istanza</strong></p>
+        <p>Questo rimuove le stelle che cadono oltre il fondo dello schermo.</p>
+    </div>
+
+    <div class="success">
+        <strong>Testalo!</strong> Premi F5. Cattura le stelle per guadagnare punti! Il punteggio dovrebbe apparire nell'angolo in alto a sinistra.
+    </div>
+
+    <div class="info">
+        <strong>Il punteggio funziona!</strong> Clicca "Avanti" per aggiungere i ritocchi finali.
+    </div>
+</body>
+</html>

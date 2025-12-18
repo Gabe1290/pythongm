@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Schritt 5: Punktestand hinzufügen</h1>
+
+    <p>Lass uns Kollisionserkennung hinzufügen, damit der Spieler Sterne fangen und Punkte sammeln kann!</p>
+
+    <h2>Die Sterne fangen</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Kollisionsereignis zum Spieler hinzufügen</span>
+        <p>Öffne <code>obj_player</code> und füge ein neues Ereignis hinzu.</p>
+        <p>Wähle <code>Kollision &gt; obj_star</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Punkteaktionen hinzufügen</span>
+        <p>Im Kollisionsereignis füge diese Aktionen hinzu:</p>
+        <ul>
+            <li><strong>Zum Punktestand addieren</strong>: 10 Punkte hinzufügen</li>
+            <li><strong>Instanz zerstören</strong>: Zerstöre das <code>other</code>-Objekt (den Stern)</li>
+        </ul>
+    </div>
+
+    <h2>Den Punktestand anzeigen</h2>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Draw-Ereignis zum Spieler hinzufügen</span>
+        <p>In <code>obj_player</code> füge ein <strong>Draw &gt; Draw GUI</strong>-Ereignis hinzu.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Den Punktestand zeichnen</span>
+        <p>Füge eine <strong>Text zeichnen</strong>-Aktion hinzu:</p>
+        <ul>
+            <li>Text: "Punkte: " + string(score)</li>
+            <li>Position: x=10, y=10</li>
+        </ul>
+    </div>
+
+    <h2>Verpasste Sterne entfernen</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Step-Ereignis zum Stern hinzufügen</span>
+        <p>Öffne <code>obj_star</code> und füge ein <strong>Step</strong>-Ereignis hinzu.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Zerstören wenn außerhalb des Bildschirms</span>
+        <p>Füge eine <strong>If</strong>-Bedingung hinzu: wenn y > room_height</p>
+        <p>Dann: <strong>Instanz zerstören</strong></p>
+        <p>Das entfernt Sterne, die vom unteren Bildschirmrand fallen.</p>
+    </div>
+
+    <div class="success">
+        <strong>Teste es!</strong> Drücke F5. Fange Sterne, um Punkte zu sammeln! Der Punktestand sollte in der oberen linken Ecke angezeigt werden.
+    </div>
+
+    <div class="info">
+        <strong>Punktestand funktioniert!</strong> Klicke auf "Weiter", um den Feinschliff hinzuzufügen.
+    </div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Крок 6: Фінальні штрихи</h1>
+
+    <p>Давай додамо кілька покращень, щоб твоя гра виглядала завершеною!</p>
+
+    <h2>Тримати гравця на екрані</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Додай перевірку меж</span>
+        <p>У <code>obj_player</code> додай подію <strong>Step</strong> з такими умовами:</p>
+        <ul>
+            <li>Якщо x < 0, встановити x = 0</li>
+            <li>Якщо x > room_width - sprite_width, встановити x = room_width - sprite_width</li>
+        </ul>
+        <p>Це не дозволяє гравцю виходити за бічні краї екрана.</p>
+    </div>
+
+    <h2>Додати колір фону</h2>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Встанови фон кімнати</span>
+        <p>Відкрий <code>room_game</code> у редакторі кімнат.</p>
+        <p>У властивостях кімнати встанови колір фону на гарний блакитний або темний космічний колір.</p>
+    </div>
+
+    <h2>Експортуй свою гру!</h2>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Експортувати як HTML5</span>
+        <p>Перейди до <code>Файл &gt; Експортувати як HTML5</code>.</p>
+        <p>Вибери місце збереження і натисни Експортувати.</p>
+        <p>Відкрий HTML-файл у веб-браузері, щоб пограти в свою гру!</p>
+    </div>
+
+    <div class="success">
+        <strong>Вітаємо!</strong> Ти створив свою першу повноцінну гру в PyGameMaker!
+    </div>
+
+    <h2>Ідеї для покращення твоєї гри</h2>
+
+    <div class="challenge">
+        <strong>Виклики для спроби:</strong>
+        <ul>
+            <li>Додай життя — втрачай життя, коли зірка досягає низу</li>
+            <li>Зроби так, щоб зірки падали швидше, коли рахунок зростає</li>
+            <li>Додай зірки різних кольорів, що дають різну кількість очок</li>
+            <li>Додай "поганий" об'єкт (бомбу), який закінчує гру, якщо його зловити</li>
+            <li>Додай звукові ефекти при ловінні зірок</li>
+            <li>Створи титульний екран та екран закінчення гри</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <strong>Що далі?</strong><br>
+        Досліджуй інші посібники, щоб дізнатися про анімації, звуки, кілька кімнат та просунуті ігрові механіки!
+    </div>
+</body>
+</html>

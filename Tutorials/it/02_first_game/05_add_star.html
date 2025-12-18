@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Passo 4: Far Cadere le Stelle</h1>
+
+    <p>Ora creeremo uno spawner che crea stelle cadenti in posizioni casuali.</p>
+
+    <h2>Creare un Oggetto Spawner</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Crea obj_spawner</span>
+        <p>Clicca con il tasto destro su <strong>Oggetti</strong> e crea un nuovo oggetto chiamato <code>obj_spawner</code>.</p>
+        <p>Non assegnare uno sprite - questo oggetto sarà invisibile.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Aggiungi un evento Alarm</span>
+        <p>Apri <code>obj_spawner</code> e clicca <strong>Aggiungi Evento</strong>.</p>
+        <p>Seleziona <code>Alarm &gt; Alarm 0</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Crea una stella</span>
+        <p>Nell'evento Alarm 0, aggiungi queste azioni:</p>
+        <ul>
+            <li><strong>Crea Istanza</strong>: Crea <code>obj_star</code> alla posizione x=random(room_width), y=0</li>
+            <li><strong>Imposta Alarm</strong>: Imposta Alarm 0 a 60 (crea una nuova stella ogni 2 secondi)</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Avvia l'alarm</span>
+        <p>Aggiungi un evento <strong>Create</strong> a <code>obj_spawner</code>.</p>
+        <p>In questo evento, aggiungi: <strong>Imposta Alarm 0</strong> a 60.</p>
+    </div>
+
+    <h2>Far Cadere le Stelle Verso il Basso</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Modifica obj_star</span>
+        <p>Apri <code>obj_star</code> e aggiungi un evento <strong>Create</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Imposta la velocità di caduta</span>
+        <p>Aggiungi un'azione <strong>"imposta vspeed"</strong> e impostala a <code>3</code>.</p>
+        <p>Questo fa muovere la stella verso il basso a velocità 3.</p>
+    </div>
+
+    <h2>Posizionare lo Spawner</h2>
+
+    <div class="step">
+        <span class="step-number">7</span>
+        <span class="step-title">Aggiungi lo spawner alla stanza</span>
+        <p>Apri <code>room_game</code> nell'Editor Stanze.</p>
+        <p>Posiziona un <code>obj_spawner</code> ovunque nella stanza (è invisibile, quindi la posizione non importa).</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Testalo!</strong> Premi F5. Le stelle dovrebbero ora cadere dalla cima dello schermo!
+    </div>
+
+    <div class="info">
+        <strong>Le stelle cadono!</strong> Clicca "Avanti" per aggiungere collisioni e punteggio.
+    </div>
+</body>
+</html>

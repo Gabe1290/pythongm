@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Крок 4: Падіння зірок</h1>
+
+    <p>Тепер ми створимо генератор, який створює падаючі зірки у випадкових позиціях.</p>
+
+    <h2>Створення об'єкта-генератора</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Створи obj_spawner</span>
+        <p>Клацни правою кнопкою миші на <strong>Об'єкти</strong> і створи новий об'єкт під назвою <code>obj_spawner</code>.</p>
+        <p>Не призначай спрайт — цей об'єкт буде невидимим.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Додай подію Alarm</span>
+        <p>Відкрий <code>obj_spawner</code> і натисни <strong>Додати подію</strong>.</p>
+        <p>Вибери <code>Alarm &gt; Alarm 0</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Створи зірку</span>
+        <p>У події Alarm 0 додай ці дії:</p>
+        <ul>
+            <li><strong>Створити екземпляр</strong>: Створи <code>obj_star</code> на позиції x=random(room_width), y=0</li>
+            <li><strong>Встановити Alarm</strong>: Встанови Alarm 0 на 60 (створює нову зірку кожні 2 секунди)</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Запусти alarm</span>
+        <p>Додай подію <strong>Create</strong> до <code>obj_spawner</code>.</p>
+        <p>У цій події додай: <strong>Встановити Alarm 0</strong> на 60.</p>
+    </div>
+
+    <h2>Зробити так, щоб зірки падали вниз</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Редагувати obj_star</span>
+        <p>Відкрий <code>obj_star</code> і додай подію <strong>Create</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Встанови швидкість падіння</span>
+        <p>Додай дію <strong>"встановити vspeed"</strong> і встанови її на <code>3</code>.</p>
+        <p>Це змушує зірку рухатися вниз зі швидкістю 3.</p>
+    </div>
+
+    <h2>Розміщення генератора</h2>
+
+    <div class="step">
+        <span class="step-number">7</span>
+        <span class="step-title">Додай генератор до кімнати</span>
+        <p>Відкрий <code>room_game</code> у редакторі кімнат.</p>
+        <p>Розмісти один <code>obj_spawner</code> будь-де в кімнаті (він невидимий, тому місце не має значення).</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Протестуй!</strong> Натисни F5. Зірки тепер повинні падати з верхньої частини екрана!
+    </div>
+
+    <div class="info">
+        <strong>Зірки падають!</strong> Натисни "Далі", щоб додати зіткнення та підрахунок очок.
+    </div>
+</body>
+</html>

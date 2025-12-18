@@ -16,7 +16,8 @@ class TutorialDialog(QDialog):
 
     def __init__(self, parent=None, tutorials_path=None):
         super().__init__(parent)
-        self.tutorials_path = Path(tutorials_path) if tutorials_path else None
+        self.base_tutorials_path = Path(tutorials_path) if tutorials_path else None
+        self.tutorials_path = self._get_localized_tutorials_path()
         self.selected_tutorial = None
 
         self.setWindowTitle(self.tr("Tutorials"))
@@ -25,6 +26,28 @@ class TutorialDialog(QDialog):
 
         self.setup_ui()
         self.load_tutorial_list()
+
+    def _get_localized_tutorials_path(self):
+        """Get the tutorials path for the current language, falling back to English"""
+        if not self.base_tutorials_path:
+            return None
+
+        # Get current language
+        try:
+            from core.language_manager import get_language_manager
+            language_manager = get_language_manager()
+            current_lang = language_manager.get_current_language()
+        except Exception:
+            current_lang = 'en'
+
+        # Check for language-specific folder
+        if current_lang and current_lang != 'en':
+            localized_path = self.base_tutorials_path / current_lang
+            if localized_path.exists() and (localized_path / "index.json").exists():
+                return localized_path
+
+        # Fall back to base path (English)
+        return self.base_tutorials_path
 
     def get_selected_tutorial(self):
         """Return the selected tutorial data"""

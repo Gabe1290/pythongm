@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #3498db; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #3498db; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Créer votre premier projet</h1>
+
+    <p>Créons un projet simple étape par étape.</p>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Créer un nouveau projet</span>
+        <p>Allez dans <code>Fichier &gt; Nouveau projet</code> (ou appuyez sur <code>Ctrl+N</code>).</p>
+        <p>Entrez un nom pour votre projet et choisissez où le sauvegarder.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Créer un sprite</span>
+        <p>Faites un clic droit sur <strong>Sprites</strong> dans l'arborescence et sélectionnez
+        <code>Créer un sprite</code>.</p>
+        <p>Nommez-le "spr_player" et importez une image pour votre personnage joueur.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Créer un objet</span>
+        <p>Faites un clic droit sur <strong>Objets</strong> et sélectionnez <code>Créer un objet</code>.</p>
+        <p>Nommez-le "obj_player" et assignez-lui le sprite que vous venez de créer.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Créer une salle</span>
+        <p>Faites un clic droit sur <strong>Salles</strong> et sélectionnez <code>Créer une salle</code>.</p>
+        <p>Nommez-la "room_game". Ce sera votre premier niveau de jeu.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Placer votre objet</span>
+        <p>Double-cliquez sur votre salle pour ouvrir l'éditeur de salles.</p>
+        <p>Sélectionnez votre objet dans la liste et cliquez dans la salle pour le placer.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Tester votre jeu</span>
+        <p>Appuyez sur <code>F5</code> ou allez dans <code>Compilation &gt; Tester le jeu</code>.</p>
+        <p>Une fenêtre s'ouvrira montrant votre jeu avec l'objet que vous avez placé !</p>
+    </div>
+
+    <div class="success">
+        <strong>Félicitations !</strong> Vous avez créé votre premier projet PyGameMaker !
+        Il ne fait pas grand-chose pour l'instant, mais vous apprendrez à ajouter des comportements dans les tutoriels suivants.
+    </div>
+</body>
+</html>

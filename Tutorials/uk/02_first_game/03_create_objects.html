@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Крок 2: Створення об'єктів</h1>
+
+    <p>Об'єкти — це "актори" твоєї гри. Вони використовують спрайти для зовнішнього вигляду і мають поведінку, визначену подіями.</p>
+
+    <h2>Створення об'єкта гравця</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Створи новий об'єкт</span>
+        <p>Клацни правою кнопкою миші на <strong>Об'єкти</strong> у дереві ресурсів і вибери <code>Створити об'єкт</code>.</p>
+        <p>Назви його <code>obj_player</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Призначити спрайт</span>
+        <p>У редакторі об'єктів знайди випадаючий список <strong>Спрайт</strong>.</p>
+        <p>Вибери <code>spr_player</code> зі списку.</p>
+    </div>
+
+    <h2>Створення об'єкта зірки</h2>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Створи ще один об'єкт</span>
+        <p>Клацни правою кнопкою миші на <strong>Об'єкти</strong> і вибери <code>Створити об'єкт</code>.</p>
+        <p>Назви його <code>obj_star</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Призначити спрайт зірки</span>
+        <p>Вибери <code>spr_star</code> як спрайт для цього об'єкта.</p>
+    </div>
+
+    <h2>Створення ігрової кімнати</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Створи кімнату</span>
+        <p>Клацни правою кнопкою миші на <strong>Кімнати</strong> і вибери <code>Створити кімнату</code>.</p>
+        <p>Назви її <code>room_game</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Розмісти гравця</span>
+        <p>Двічі клацни на кімнаті, щоб відкрити редактор кімнат.</p>
+        <p>Вибери <code>obj_player</code> зі списку об'єктів зліва.</p>
+        <p>Клацни біля нижнього центру кімнати, щоб розмістити там гравця.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Поки не розміщуй зірки!</strong> Ми зробимо так, щоб вони з'являлися автоматично зверху екрана.
+    </div>
+
+    <div class="info">
+        <strong>Об'єкти створено!</strong> Натисни "Далі", щоб додати рух гравця.
+    </div>
+</body>
+</html>

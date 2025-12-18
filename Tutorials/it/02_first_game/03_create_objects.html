@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Passo 2: Creare gli Oggetti</h1>
+
+    <p>Gli oggetti sono gli "attori" del tuo gioco. Usano gli sprite per il loro aspetto e hanno comportamenti definiti dagli eventi.</p>
+
+    <h2>Creare l'Oggetto Giocatore</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Crea un nuovo oggetto</span>
+        <p>Clicca con il tasto destro su <strong>Oggetti</strong> nell'albero delle risorse e seleziona <code>Crea Oggetto</code>.</p>
+        <p>Chiamalo <code>obj_player</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Assegna lo sprite</span>
+        <p>Nell'Editor Oggetti, trova il menu a tendina <strong>Sprite</strong>.</p>
+        <p>Seleziona <code>spr_player</code> dalla lista.</p>
+    </div>
+
+    <h2>Creare l'Oggetto Stella</h2>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Crea un altro oggetto</span>
+        <p>Clicca con il tasto destro su <strong>Oggetti</strong> e seleziona <code>Crea Oggetto</code>.</p>
+        <p>Chiamalo <code>obj_star</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Assegna lo sprite della stella</span>
+        <p>Seleziona <code>spr_star</code> come sprite per questo oggetto.</p>
+    </div>
+
+    <h2>Creare la Stanza di Gioco</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Crea una stanza</span>
+        <p>Clicca con il tasto destro su <strong>Stanze</strong> e seleziona <code>Crea Stanza</code>.</p>
+        <p>Chiamala <code>room_game</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Posiziona il giocatore</span>
+        <p>Fai doppio clic sulla stanza per aprire l'Editor Stanze.</p>
+        <p>Seleziona <code>obj_player</code> dalla lista oggetti a sinistra.</p>
+        <p>Clicca vicino al centro in basso della stanza per posizionare il giocatore lì.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Non posizionare ancora le stelle!</strong> Le faremo apparire automaticamente dalla parte superiore dello schermo.
+    </div>
+
+    <div class="info">
+        <strong>Oggetti creati!</strong> Clicca "Avanti" per aggiungere il movimento del giocatore.
+    </div>
+</body>
+</html>

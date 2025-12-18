@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .blockly-hint { background-color: #e8f4f8; padding: 10px; border-left: 4px solid #3498db; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Крок 3: Додавання руху гравця</h1>
+
+    <p>Тепер ми зробимо так, щоб гравець рухався ліворуч і праворуч за допомогою клавіш стрілок.</p>
+
+    <h2>Відкриття об'єкта гравця</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Редагувати obj_player</span>
+        <p>Двічі клацни на <code>obj_player</code> у дереві ресурсів, щоб відкрити редактор об'єктів.</p>
+    </div>
+
+    <h2>Додавання подій клавіатури (режим Blockly)</h2>
+
+    <div class="blockly-hint">
+        <strong>Використання Blockly:</strong> Переконайся, що ти в режимі Blockly (перевір перемикач вгорі редактора).
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Додай подію Стрілка вліво</span>
+        <p>Натисни <strong>Додати подію</strong> і вибери <code>Клавіатура &gt; Вліво</code>.</p>
+        <p>Ця подія спрацьовує, коли натиснута ліва стрілка.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Додай дію руху</span>
+        <p>З панелі інструментів Blockly перетягни блок <strong>"рухатися в напрямку"</strong>.</p>
+        <p>Встанови напрямок <code>180</code> (вліво) і швидкість <code>5</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Додай подію Стрілка вправо</span>
+        <p>Натисни <strong>Додати подію</strong> і вибери <code>Клавіатура &gt; Вправо</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Додай дію руху</span>
+        <p>Перетягни ще один блок <strong>"рухатися в напрямку"</strong>.</p>
+        <p>Встанови напрямок <code>0</code> (вправо) і швидкість <code>5</code>.</p>
+    </div>
+
+    <h2>Протестуй свою гру!</h2>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Запусти гру</span>
+        <p>Натисни <code>F5</code>, щоб протестувати гру.</p>
+        <p>Використовуй клавіші стрілок вліво та вправо, щоб рухати гравця!</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Проблема?</strong> Якщо гравець виходить за межі екрана, ми виправимо це пізніше, додавши перевірку меж.
+    </div>
+
+    <div class="info">
+        <strong>Гравець рухається!</strong> Натисни "Далі", щоб зробити так, щоб зірки падали з неба.
+    </div>
+</body>
+</html>

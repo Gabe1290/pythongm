@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Schritt 4: Sterne fallen lassen</h1>
+
+    <p>Jetzt erstellen wir einen Spawner, der fallende Sterne an zufälligen Positionen erzeugt.</p>
+
+    <h2>Ein Spawner-Objekt erstellen</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">obj_spawner erstellen</span>
+        <p>Klicke mit der rechten Maustaste auf <strong>Objekte</strong> und erstelle ein neues Objekt namens <code>obj_spawner</code>.</p>
+        <p>Weise kein Sprite zu - dieses Objekt wird unsichtbar sein.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Ein Alarm-Ereignis hinzufügen</span>
+        <p>Öffne <code>obj_spawner</code> und klicke auf <strong>Ereignis hinzufügen</strong>.</p>
+        <p>Wähle <code>Alarm &gt; Alarm 0</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Einen Stern erstellen</span>
+        <p>Im Alarm 0-Ereignis füge diese Aktionen hinzu:</p>
+        <ul>
+            <li><strong>Instanz erstellen</strong>: Erstelle <code>obj_star</code> an Position x=random(room_width), y=0</li>
+            <li><strong>Alarm setzen</strong>: Setze Alarm 0 auf 60 (erstellt alle 2 Sekunden einen neuen Stern)</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Den Alarm starten</span>
+        <p>Füge ein <strong>Create</strong>-Ereignis zu <code>obj_spawner</code> hinzu.</p>
+        <p>In diesem Ereignis füge hinzu: <strong>Alarm 0 setzen</strong> auf 60.</p>
+    </div>
+
+    <h2>Sterne nach unten fallen lassen</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">obj_star bearbeiten</span>
+        <p>Öffne <code>obj_star</code> und füge ein <strong>Create</strong>-Ereignis hinzu.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Fallgeschwindigkeit setzen</span>
+        <p>Füge eine <strong>"vspeed setzen"</strong>-Aktion hinzu und setze sie auf <code>3</code>.</p>
+        <p>Das lässt den Stern mit Geschwindigkeit 3 nach unten fallen.</p>
+    </div>
+
+    <h2>Den Spawner platzieren</h2>
+
+    <div class="step">
+        <span class="step-number">7</span>
+        <span class="step-title">Spawner zum Raum hinzufügen</span>
+        <p>Öffne <code>room_game</code> im Raum-Editor.</p>
+        <p>Platziere einen <code>obj_spawner</code> irgendwo im Raum (er ist unsichtbar, also spielt der Ort keine Rolle).</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Teste es!</strong> Drücke F5. Sterne sollten jetzt vom oberen Bildschirmrand fallen!
+    </div>
+
+    <div class="info">
+        <strong>Sterne fallen!</strong> Klicke auf "Weiter", um Kollision und Punktestand hinzuzufügen.
+    </div>
+</body>
+</html>

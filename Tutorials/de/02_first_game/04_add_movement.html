@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .blockly-hint { background-color: #e8f4f8; padding: 10px; border-left: 4px solid #3498db; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Schritt 3: Spielerbewegung hinzufügen</h1>
+
+    <p>Jetzt lassen wir den Spieler mit den Pfeiltasten nach links und rechts bewegen.</p>
+
+    <h2>Das Spieler-Objekt öffnen</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">obj_player bearbeiten</span>
+        <p>Doppelklicke auf <code>obj_player</code> im Ressourcenbaum, um den Objekt-Editor zu öffnen.</p>
+    </div>
+
+    <h2>Tastaturereignisse hinzufügen (Blockly-Modus)</h2>
+
+    <div class="blockly-hint">
+        <strong>Blockly verwenden:</strong> Stelle sicher, dass du im Blockly-Modus bist (überprüfe den Schalter oben im Editor).
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Pfeil-Links-Ereignis hinzufügen</span>
+        <p>Klicke auf <strong>Ereignis hinzufügen</strong> und wähle <code>Tastatur &gt; Links</code>.</p>
+        <p>Dieses Ereignis wird ausgelöst, wenn die linke Pfeiltaste gedrückt wird.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Bewegungsaktion hinzufügen</span>
+        <p>Ziehe aus der Blockly-Werkzeugkiste einen <strong>"In Richtung bewegen"</strong>-Block.</p>
+        <p>Setze die Richtung auf <code>180</code> (links) und die Geschwindigkeit auf <code>5</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Pfeil-Rechts-Ereignis hinzufügen</span>
+        <p>Klicke auf <strong>Ereignis hinzufügen</strong> und wähle <code>Tastatur &gt; Rechts</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Bewegungsaktion hinzufügen</span>
+        <p>Ziehe einen weiteren <strong>"In Richtung bewegen"</strong>-Block.</p>
+        <p>Setze die Richtung auf <code>0</code> (rechts) und die Geschwindigkeit auf <code>5</code>.</p>
+    </div>
+
+    <h2>Teste dein Spiel!</h2>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Das Spiel starten</span>
+        <p>Drücke <code>F5</code>, um dein Spiel zu testen.</p>
+        <p>Verwende die linke und rechte Pfeiltaste, um den Spieler zu bewegen!</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Problem?</strong> Wenn der Spieler vom Bildschirm verschwindet, werden wir das später durch Grenzprüfungen beheben.
+    </div>
+
+    <div class="info">
+        <strong>Der Spieler bewegt sich!</strong> Klicke auf "Weiter", um Sterne vom Himmel fallen zu lassen.
+    </div>
+</body>
+</html>

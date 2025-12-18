@@ -1,0 +1,29 @@
+{
+    "tutorials": [
+        {
+            "title": "Erste Schritte mit PyGameMaker",
+            "folder": "01_getting_started",
+            "description": "Lernen Sie die Grundlagen der PyGameMaker-IDE",
+            "pages": [
+                "01_welcome.html",
+                "02_interface.html",
+                "03_first_project.html",
+                "04_next_steps.html"
+            ]
+        },
+        {
+            "title": "Dein erstes Spiel: Fange den Stern",
+            "folder": "02_first_game",
+            "description": "Erstelle ein einfaches Spiel, in dem du fallende Sterne fängst",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_add_movement.html",
+                "05_add_star.html",
+                "06_scoring.html",
+                "07_finishing.html"
+            ]
+        }
+    ]
+}

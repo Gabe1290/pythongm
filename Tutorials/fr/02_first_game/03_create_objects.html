@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Étape 2 : Créer les objets</h1>
+
+    <p>Les objets sont les "acteurs" de votre jeu. Ils utilisent des sprites pour leur apparence et ont des comportements définis par des événements.</p>
+
+    <h2>Créer l'objet joueur</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Créer un nouvel objet</span>
+        <p>Faites un clic droit sur <strong>Objets</strong> dans l'arborescence et sélectionnez <code>Créer un objet</code>.</p>
+        <p>Nommez-le <code>obj_player</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Assigner le sprite</span>
+        <p>Dans l'éditeur d'objets, trouvez le menu déroulant <strong>Sprite</strong>.</p>
+        <p>Sélectionnez <code>spr_player</code> dans la liste.</p>
+    </div>
+
+    <h2>Créer l'objet étoile</h2>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Créer un autre objet</span>
+        <p>Faites un clic droit sur <strong>Objets</strong> et sélectionnez <code>Créer un objet</code>.</p>
+        <p>Nommez-le <code>obj_star</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Assigner le sprite de l'étoile</span>
+        <p>Sélectionnez <code>spr_star</code> comme sprite pour cet objet.</p>
+    </div>
+
+    <h2>Créer la salle de jeu</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Créer une salle</span>
+        <p>Faites un clic droit sur <strong>Salles</strong> et sélectionnez <code>Créer une salle</code>.</p>
+        <p>Nommez-la <code>room_game</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Placer le joueur</span>
+        <p>Double-cliquez sur la salle pour ouvrir l'éditeur de salles.</p>
+        <p>Sélectionnez <code>obj_player</code> dans la liste d'objets à gauche.</p>
+        <p>Cliquez près du centre bas de la salle pour y placer le joueur.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Ne placez pas encore d'étoiles !</strong> Nous allons les faire apparaître automatiquement depuis le haut de l'écran.
+    </div>
+
+    <div class="info">
+        <strong>Objets créés !</strong> Cliquez sur "Suivant" pour ajouter le mouvement du joueur.
+    </div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #3498db; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #3498db; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Створення вашого першого проекту</h1>
+
+    <p>Давайте створимо простий проект з об'єктом, який рухається по екрану!</p>
+
+    <h2>Крок 1: Створіть спрайт</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Створіть новий спрайт</span>
+        <p>Клацніть правою кнопкою миші на папці <strong>Спрайти</strong> у дереві ресурсів та виберіть <code>Створити спрайт</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Назвіть спрайт</span>
+        <p>Назвіть його <code>spr_player</code>. Префікс "spr_" допомагає ідентифікувати його як спрайт.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Додайте зображення</span>
+        <p>Натисніть <strong>Завантажити зображення</strong>, щоб завантажити зображення, або використовуйте вбудований редактор, щоб створити просте.</p>
+    </div>
+
+    <h2>Крок 2: Створіть об'єкт</h2>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Створіть новий об'єкт</span>
+        <p>Клацніть правою кнопкою миші на папці <strong>Об'єкти</strong> та виберіть <code>Створити об'єкт</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Налаштуйте об'єкт</span>
+        <p>Назвіть його <code>obj_player</code> та призначте <code>spr_player</code> як його спрайт.</p>
+    </div>
+
+    <h2>Крок 3: Створіть кімнату</h2>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Створіть кімнату</span>
+        <p>Клацніть правою кнопкою миші на <strong>Кімнати</strong> та виберіть <code>Створити кімнату</code>. Назвіть її <code>room_main</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">7</span>
+        <span class="step-title">Розмістіть ваш об'єкт</span>
+        <p>Відкрийте кімнату та клацніть, щоб розмістити <code>obj_player</code> у кімнаті.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Протестуйте свою гру!</strong> Натисніть <code>F5</code>, щоб запустити гру та побачити свій об'єкт у кімнаті.
+    </div>
+
+    <div class="info">
+        <strong>Чудова робота!</strong> Натисніть "Далі", щоб дізнатися, що ви можете робити далі.
+    </div>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Étape 5 : Ajouter le score</h1>
+
+    <p>Ajoutons la détection des collisions pour que le joueur puisse attraper des étoiles et gagner des points !</p>
+
+    <h2>Attraper les étoiles</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Ajouter un événement collision au joueur</span>
+        <p>Ouvrez <code>obj_player</code> et ajoutez un nouvel événement.</p>
+        <p>Sélectionnez <code>Collision &gt; obj_star</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Ajouter les actions de score</span>
+        <p>Dans l'événement collision, ajoutez ces actions :</p>
+        <ul>
+            <li><strong>Ajouter au score</strong> : Ajouter 10 points</li>
+            <li><strong>Détruire l'instance</strong> : Détruire l'objet <code>other</code> (l'étoile)</li>
+        </ul>
+    </div>
+
+    <h2>Afficher le score</h2>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Ajouter un événement Draw au joueur</span>
+        <p>Dans <code>obj_player</code>, ajoutez un événement <strong>Draw &gt; Draw GUI</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Dessiner le score</span>
+        <p>Ajoutez une action <strong>Dessiner du texte</strong> :</p>
+        <ul>
+            <li>Texte : "Score : " + string(score)</li>
+            <li>Position : x=10, y=10</li>
+        </ul>
+    </div>
+
+    <h2>Supprimer les étoiles manquées</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Ajouter un événement Step à l'étoile</span>
+        <p>Ouvrez <code>obj_star</code> et ajoutez un événement <strong>Step</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Détruire si hors écran</span>
+        <p>Ajoutez une condition <strong>Si</strong> : si y > room_height</p>
+        <p>Alors : <strong>Détruire l'instance</strong></p>
+        <p>Cela supprime les étoiles qui tombent en bas de l'écran.</p>
+    </div>
+
+    <div class="success">
+        <strong>Testez-le !</strong> Appuyez sur F5. Attrapez des étoiles pour gagner des points ! Le score devrait s'afficher dans le coin supérieur gauche.
+    </div>
+
+    <div class="info">
+        <strong>Le score fonctionne !</strong> Cliquez sur "Suivant" pour ajouter les touches finales.
+    </div>
+</body>
+</html>

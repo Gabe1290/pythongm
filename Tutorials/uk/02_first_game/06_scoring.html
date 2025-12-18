@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Крок 5: Додавання підрахунку очок</h1>
+
+    <p>Давай додамо виявлення зіткнень, щоб гравець міг ловити зірки та отримувати очки!</p>
+
+    <h2>Ловити зірки</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Додай подію зіткнення до гравця</span>
+        <p>Відкрий <code>obj_player</code> і додай нову подію.</p>
+        <p>Вибери <code>Зіткнення &gt; obj_star</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Додай дії підрахунку очок</span>
+        <p>У події зіткнення додай ці дії:</p>
+        <ul>
+            <li><strong>Додати до рахунку</strong>: Додати 10 очок</li>
+            <li><strong>Знищити екземпляр</strong>: Знищити об'єкт <code>other</code> (зірку)</li>
+        </ul>
+    </div>
+
+    <h2>Відображення рахунку</h2>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Додай подію Draw до гравця</span>
+        <p>У <code>obj_player</code> додай подію <strong>Draw &gt; Draw GUI</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Намалюй рахунок</span>
+        <p>Додай дію <strong>Намалювати текст</strong>:</p>
+        <ul>
+            <li>Текст: "Очки: " + string(score)</li>
+            <li>Позиція: x=10, y=10</li>
+        </ul>
+    </div>
+
+    <h2>Видалення пропущених зірок</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Додай подію Step до зірки</span>
+        <p>Відкрий <code>obj_star</code> і додай подію <strong>Step</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Знищити, якщо за межами екрана</span>
+        <p>Додай умову <strong>If</strong>: якщо y > room_height</p>
+        <p>Тоді: <strong>Знищити екземпляр</strong></p>
+        <p>Це видаляє зірки, які падають за нижній край екрана.</p>
+    </div>
+
+    <div class="success">
+        <strong>Протестуй!</strong> Натисни F5. Лови зірки, щоб отримувати очки! Рахунок повинен відображатися у верхньому лівому куті.
+    </div>
+
+    <div class="info">
+        <strong>Підрахунок очок працює!</strong> Натисни "Далі", щоб додати фінальні штрихи.
+    </div>
+</body>
+</html>

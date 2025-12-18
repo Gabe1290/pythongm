@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .blockly-hint { background-color: #e8f4f8; padding: 10px; border-left: 4px solid #3498db; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Passo 3: Aggiungere il Movimento del Giocatore</h1>
+
+    <p>Ora faremo muovere il giocatore a sinistra e destra usando i tasti freccia.</p>
+
+    <h2>Aprire l'Oggetto Giocatore</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Modifica obj_player</span>
+        <p>Fai doppio clic su <code>obj_player</code> nell'albero delle risorse per aprire l'Editor Oggetti.</p>
+    </div>
+
+    <h2>Aggiungere Eventi Tastiera (Modalità Blockly)</h2>
+
+    <div class="blockly-hint">
+        <strong>Usando Blockly:</strong> Assicurati di essere in modalità Blockly (controlla l'interruttore in cima all'editor).
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Aggiungi evento Freccia Sinistra</span>
+        <p>Clicca <strong>Aggiungi Evento</strong> e seleziona <code>Tastiera &gt; Sinistra</code>.</p>
+        <p>Questo evento si attiva quando viene premuto il tasto freccia sinistra.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Aggiungi azione di movimento</span>
+        <p>Dalla cassetta degli attrezzi Blockly, trascina un blocco <strong>"muovi in direzione"</strong>.</p>
+        <p>Imposta la direzione a <code>180</code> (sinistra) e la velocità a <code>5</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Aggiungi evento Freccia Destra</span>
+        <p>Clicca <strong>Aggiungi Evento</strong> e seleziona <code>Tastiera &gt; Destra</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Aggiungi azione di movimento</span>
+        <p>Trascina un altro blocco <strong>"muovi in direzione"</strong>.</p>
+        <p>Imposta la direzione a <code>0</code> (destra) e la velocità a <code>5</code>.</p>
+    </div>
+
+    <h2>Testa il Tuo Gioco!</h2>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Avvia il gioco</span>
+        <p>Premi <code>F5</code> per testare il tuo gioco.</p>
+        <p>Usa i tasti freccia sinistra e destra per muovere il giocatore!</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Problema?</strong> Se il giocatore esce dallo schermo, lo sistemeremo più tardi aggiungendo controlli dei bordi.
+    </div>
+
+    <div class="info">
+        <strong>Il giocatore si muove!</strong> Clicca "Avanti" per far cadere le stelle dal cielo.
+    </div>
+</body>
+</html>

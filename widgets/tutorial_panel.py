@@ -123,8 +123,31 @@ class TutorialPanel(QWidget):
 
     def set_tutorials_path(self, path):
         """Set the path to the Tutorials folder and load available tutorials"""
-        self.tutorials_path = Path(path)
+        self.base_tutorials_path = Path(path)
+        self.tutorials_path = self._get_localized_tutorials_path()
         self.load_tutorial_list()
+
+    def _get_localized_tutorials_path(self):
+        """Get the tutorials path for the current language, falling back to English"""
+        if not self.base_tutorials_path:
+            return None
+
+        # Get current language
+        try:
+            from core.language_manager import get_language_manager
+            language_manager = get_language_manager()
+            current_lang = language_manager.get_current_language()
+        except Exception:
+            current_lang = 'en'
+
+        # Check for language-specific folder
+        if current_lang and current_lang != 'en':
+            localized_path = self.base_tutorials_path / current_lang
+            if localized_path.exists() and (localized_path / "index.json").exists():
+                return localized_path
+
+        # Fall back to base path (English)
+        return self.base_tutorials_path
 
     def load_tutorial_list(self):
         """Load the list of available tutorials from the Tutorials folder"""
