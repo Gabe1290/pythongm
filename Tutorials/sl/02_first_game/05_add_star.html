@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Korak 4: Naredite, da zvezde padajo</h1>
+
+    <p>Zdaj bomo ustvarili generator, ki ustvarja padajoče zvezde na naključnih položajih.</p>
+
+    <h2>Ustvarite objekt generatorja</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Ustvarite obj_spawner</span>
+        <p>Z desnim klikom na <strong>Objekti</strong> ustvarite nov objekt imenovan <code>obj_spawner</code>.</p>
+        <p>Ne dodeljujte sprita - ta objekt bo neviden.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Dodajte dogodek alarma</span>
+        <p>Odprite <code>obj_spawner</code> in kliknite <strong>Dodaj dogodek</strong>.</p>
+        <p>Izberite <code>Alarm &gt; Alarm 0</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Ustvarite zvezdo</span>
+        <p>V dogodku Alarm 0 dodajte ta dejanja:</p>
+        <ul>
+            <li><strong>Ustvari primerek</strong>: Ustvarite <code>obj_star</code> na položaju x=random(room_width), y=0</li>
+            <li><strong>Nastavi alarm</strong>: Nastavite Alarm 0 na 60 (ustvari novo zvezdo vsaki 2 sekundi)</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Zaženite alarm</span>
+        <p>Dodajte dogodek <strong>Create</strong> objektu <code>obj_spawner</code>.</p>
+        <p>V tem dogodku dodajte: <strong>Nastavi Alarm 0</strong> na 60.</p>
+    </div>
+
+    <h2>Naredite, da zvezde padajo navzdol</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Uredite obj_star</span>
+        <p>Odprite <code>obj_star</code> in dodajte dogodek <strong>Create</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Nastavite hitrost padanja</span>
+        <p>Dodajte dejanje <strong>"nastavi vspeed"</strong> in ga nastavite na <code>3</code>.</p>
+        <p>To povzroči, da se zvezda premika navzdol s hitrostjo 3.</p>
+    </div>
+
+    <h2>Postavite generator</h2>
+
+    <div class="step">
+        <span class="step-number">7</span>
+        <span class="step-title">Dodajte generator v sobo</span>
+        <p>Odprite <code>room_game</code> v urejevalniku sob.</p>
+        <p>Postavite en <code>obj_spawner</code> kamorkoli v sobi (je neviden, zato lokacija ni pomembna).</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Preizkusite!</strong> Pritisnite F5. Zvezde bi zdaj morale padati z vrha zaslona!
+    </div>
+
+    <div class="info">
+        <strong>Zvezde padajo!</strong> Kliknite "Naprej", da dodate trke in točkovanje.
+    </div>
+</body>
+</html>

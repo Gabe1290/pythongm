@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Korak 6: Zaključne poteze</h1>
+
+    <p>Dodajmo nekaj izboljšav, da bo vaša igra videti dokončana!</p>
+
+    <h2>Ohranite igralca na zaslonu</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Dodajte preverjanje meja</span>
+        <p>V <code>obj_player</code> dodajte dogodek <strong>Step</strong> s temi pogoji:</p>
+        <ul>
+            <li>Če x < 0, nastavi x = 0</li>
+            <li>Če x > room_width - sprite_width, nastavi x = room_width - sprite_width</li>
+        </ul>
+        <p>To prepreči igralcu, da bi se premaknil čez stranice zaslona.</p>
+    </div>
+
+    <h2>Dodajte barvo ozadja</h2>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Nastavite ozadje sobe</span>
+        <p>Odprite <code>room_game</code> v urejevalniku sob.</p>
+        <p>V lastnostih sobe nastavite barvo ozadja na lepo nebesno modro ali temno vesoljsko barvo.</p>
+    </div>
+
+    <h2>Izvozite svojo igro!</h2>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Izvozite kot HTML5</span>
+        <p>Pojdite na <code>Datoteka &gt; Izvozi kot HTML5</code>.</p>
+        <p>Izberite lokacijo in kliknite Izvozi.</p>
+        <p>Odprite datoteko HTML v spletnem brskalniku, da igrate svojo igro!</p>
+    </div>
+
+    <div class="success">
+        <strong>Čestitke!</strong> Ustvarili ste svojo prvo popolno igro v PyGameMakerju!
+    </div>
+
+    <h2>Ideje za izboljšavo vaše igre</h2>
+
+    <div class="challenge">
+        <strong>Izzivi za preizkus:</strong>
+        <ul>
+            <li>Dodajte življenja - izgubite življenje, ko zvezda doseže dno</li>
+            <li>Naredite, da zvezde padajo hitreje, ko se rezultat povečuje</li>
+            <li>Dodajte zvezde različnih barv, vredne različno število točk</li>
+            <li>Dodajte "slab" objekt (bombo), ki konča igro, če jo ujamete</li>
+            <li>Dodajte zvočne učinke ob lovljenju zvezd</li>
+            <li>Ustvarite naslovni zaslon in zaslon konca igre</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <strong>Kaj sledi?</strong><br>
+        Raziščite več vodičev, da se naučite o animacijah, zvokih, več sobah in naprednih igralnih mehanikah!
+    </div>
+</body>
+</html>

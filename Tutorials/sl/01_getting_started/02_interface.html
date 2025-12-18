@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 18px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 14px;
+        }
+        .panel {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .panel-title {
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        code {
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+  </head>
+  <body>
+    <h2>Vmesnik PyGameMaker</h2>
+    <p>Okno PyGameMaker je razdeljeno na tri glavna področja:</p>
+    <div class="panel">
+      <div class="panel-title">1. Drevo sredstev (leva plošča)</div>
+      <p>Ta plošča prikazuje vsa sredstva v vašem projektu, razvrščena po
+        tipu:</p>
+      <ul>
+        <li><strong>Spriti</strong> - Slike in animacije za vašo igro</li>
+        <li><strong>Zvoki</strong> - Zvočni učinki in glasba</li>
+        <li><strong>Objekti</strong> - Igralni elementi z vedenji</li>
+        <li><strong>Sobe</strong> - Igralne stopnje in zasloni</li>
+      </ul>
+      <p>Z desnim klikom na katerokoli kategorijo ustvarite nova sredstva.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-title">2. Področje urejevalnika (sredina)</div>
+      <p>Tu urejate svoja sredstva. Različni urejevalniki se odpirajo v
+        zavihkih:</p>
+      <ul>
+        <li><strong>Urejevalnik spritov</strong> - Ogled in konfiguracija spritov</li>
+        <li><strong>Urejevalnik objektov</strong> - Določanje vedenja objektov
+          z dogodki</li>
+        <li><strong>Urejevalnik sob</strong> - Oblikovanje vaših igralnih stopenj</li>
+      </ul>
+      <p>Dvokliknite sredstvo v drevesu, da odprete njegov urejevalnik.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-title">3. Plošča lastnosti (desna plošča)</div>
+      <p>Prikazuje lastnosti trenutno izbranega sredstva ali objekta. Tu
+        lahko spreminjate nastavitve pri urejanju sob ali objektov.</p>
+    </div>
+    <h2>Ključni meniji</h2>
+    <ul>
+      <li><code>Datoteka</code> - Ustvarjanje, odpiranje in shranjevanje projektov</li>
+      <li><code>Sredstva</code> - Ustvarjanje in uvoz igralnih sredstev</li>
+      <li><code>Gradnja</code> - Testiranje in izvoz vaše igre</li>
+      <li><code>Pomoč</code> - Dostop do vodičev in dokumentacije</li>
+    </ul>
+    <div class="highlight"> <strong>Bližnjica:</strong> Pritisnite <code>F5</code>
+      za hitro testiranje vaše igre! </div>
+  </body>
+</html>

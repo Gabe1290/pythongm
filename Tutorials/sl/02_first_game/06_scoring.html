@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Korak 5: Dodajte točkovanje</h1>
+
+    <p>Dodajmo zaznavanje trkov, da lahko igralec lovi zvezde in zasluži točke!</p>
+
+    <h2>Lovite zvezde</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Dodajte dogodek trka igralcu</span>
+        <p>Odprite <code>obj_player</code> in dodajte nov dogodek.</p>
+        <p>Izberite <code>Trk &gt; obj_star</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Dodajte dejanja točkovanja</span>
+        <p>V dogodku trka dodajte ta dejanja:</p>
+        <ul>
+            <li><strong>Dodaj k rezultatu</strong>: Dodaj 10 točk</li>
+            <li><strong>Uniči primerek</strong>: Uniči objekt <code>other</code> (zvezdo)</li>
+        </ul>
+    </div>
+
+    <h2>Prikažite rezultat</h2>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Dodajte dogodek Draw igralcu</span>
+        <p>V <code>obj_player</code> dodajte dogodek <strong>Draw &gt; Draw GUI</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Narišite rezultat</span>
+        <p>Dodajte dejanje <strong>Nariši besedilo</strong>:</p>
+        <ul>
+            <li>Besedilo: "Točke: " + string(score)</li>
+            <li>Položaj: x=10, y=10</li>
+        </ul>
+    </div>
+
+    <h2>Odstranite zgrešene zvezde</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Dodajte dogodek Step zvezdi</span>
+        <p>Odprite <code>obj_star</code> in dodajte dogodek <strong>Step</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Uničite, če je zunaj zaslona</span>
+        <p>Dodajte pogoj <strong>If</strong>: če y > room_height</p>
+        <p>Potem: <strong>Uniči primerek</strong></p>
+        <p>To odstrani zvezde, ki padejo čez spodnji rob zaslona.</p>
+    </div>
+
+    <div class="success">
+        <strong>Preizkusite!</strong> Pritisnite F5. Lovite zvezde, da zaslužite točke! Rezultat bi moral biti prikazan v zgornjem levem kotu.
+    </div>
+
+    <div class="info">
+        <strong>Točkovanje deluje!</strong> Kliknite "Naprej", da dodate zaključne poteze.
+    </div>
+</body>
+</html>

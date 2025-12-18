@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 18px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 14px;
+        }
+        .step {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .step-number {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .step-title {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        .success {
+            background-color: #d4edda;
+            padding: 10px;
+            border-left: 4px solid #28a745;
+            margin: 10px 0;
+        }
+        code {
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ustvarjanje vašega prvega projekta</h1>
+
+    <p>Ustvarimo preprost projekt korak za korakom.</p>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Ustvari nov projekt</span>
+        <p>Pojdite na <code>Datoteka &gt; Nov projekt</code> (ali pritisnite <code>Ctrl+N</code>).</p>
+        <p>Vnesite ime za svoj projekt in izberite, kam ga želite shraniti.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Ustvari sprite</span>
+        <p>Z desnim klikom na <strong>Spriti</strong> v drevesu sredstev izberite
+        <code>Ustvari sprite</code>.</p>
+        <p>Poimenujte ga "spr_player" in uvozite slikovno datoteko za vaš igralni lik.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Ustvari objekt</span>
+        <p>Z desnim klikom na <strong>Objekti</strong> izberite <code>Ustvari objekt</code>.</p>
+        <p>Poimenujte ga "obj_player" in mu dodelite pravkar ustvarjen sprite.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Ustvari sobo</span>
+        <p>Z desnim klikom na <strong>Sobe</strong> izberite <code>Ustvari sobo</code>.</p>
+        <p>Poimenujte jo "room_game". To bo vaša prva igralna stopnja.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Postavi svoj objekt</span>
+        <p>Dvokliknite svojo sobo, da odprete urejevalnik sob.</p>
+        <p>Izberite svoj objekt s seznama in kliknite v sobo, da ga postavite.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Testiraj svojo igro</span>
+        <p>Pritisnite <code>F5</code> ali pojdite na <code>Gradnja &gt; Testiraj igro</code>.</p>
+        <p>Odprlo se bo okno, ki prikazuje vašo igro s postavljenim objektom!</p>
+    </div>
+
+    <div class="success">
+        <strong>Čestitke!</strong> Ustvarili ste svoj prvi PyGameMaker projekt!
+        Zaenkrat ne počne veliko, vendar se boste v naslednjih vodičih naučili, kako dodati vedenja.
+    </div>
+</body>
+</html>

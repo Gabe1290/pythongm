@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .blockly-hint { background-color: #e8f4f8; padding: 10px; border-left: 4px solid #3498db; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Korak 3: Dodajte premikanje igralca</h1>
+
+    <p>Zdaj bomo naredili, da se igralec premika levo in desno s puščičnimi tipkami.</p>
+
+    <h2>Odprite objekt igralca</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Uredite obj_player</span>
+        <p>Dvokliknite na <code>obj_player</code> v drevesu sredstev, da odprete urejevalnik objektov.</p>
+    </div>
+
+    <h2>Dodajte dogodke tipkovnice (način Blockly)</h2>
+
+    <div class="blockly-hint">
+        <strong>Uporaba Blockly:</strong> Prepričajte se, da ste v načinu Blockly (preverite stikalo na vrhu urejevalnika).
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Dodajte dogodek leve puščice</span>
+        <p>Kliknite <strong>Dodaj dogodek</strong> in izberite <code>Tipkovnica &gt; Levo</code>.</p>
+        <p>Ta dogodek se sproži, ko je pritisnjena leva puščična tipka.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Dodajte dejanje premikanja</span>
+        <p>Iz orodjarne Blockly povlecite blok <strong>"premakni v smeri"</strong>.</p>
+        <p>Nastavite smer na <code>180</code> (levo) in hitrost na <code>5</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Dodajte dogodek desne puščice</span>
+        <p>Kliknite <strong>Dodaj dogodek</strong> in izberite <code>Tipkovnica &gt; Desno</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Dodajte dejanje premikanja</span>
+        <p>Povlecite drug blok <strong>"premakni v smeri"</strong>.</p>
+        <p>Nastavite smer na <code>0</code> (desno) in hitrost na <code>5</code>.</p>
+    </div>
+
+    <h2>Preizkusite svojo igro!</h2>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Zaženite igro</span>
+        <p>Pritisnite <code>F5</code>, da preizkusite svojo igro.</p>
+        <p>Uporabite levo in desno puščično tipko za premikanje igralca!</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Težava?</strong> Če igralec izgine z zaslona, bomo to popravili pozneje z dodajanjem preverjanja meja.
+    </div>
+
+    <div class="info">
+        <strong>Igralec se premika!</strong> Kliknite "Naprej", da naredimo zvezde, ki padajo z neba.
+    </div>
+</body>
+</html>

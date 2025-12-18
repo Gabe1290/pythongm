@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Korak 2: Ustvarite objekte</h1>
+
+    <p>Objekti so "igralci" v vaši igri. Uporabljajo sprite za svoj videz in imajo vedenja, opredeljena z dogodki.</p>
+
+    <h2>Ustvarite objekt igralca</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Ustvarite nov objekt</span>
+        <p>Z desnim klikom na <strong>Objekti</strong> v drevesu sredstev izberite <code>Ustvari objekt</code>.</p>
+        <p>Poimenujte ga <code>obj_player</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Dodelite sprite</span>
+        <p>V urejevalniku objektov poiščite spustni meni <strong>Sprite</strong>.</p>
+        <p>Izberite <code>spr_player</code> s seznama.</p>
+    </div>
+
+    <h2>Ustvarite objekt zvezde</h2>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Ustvarite drug objekt</span>
+        <p>Z desnim klikom na <strong>Objekti</strong> izberite <code>Ustvari objekt</code>.</p>
+        <p>Poimenujte ga <code>obj_star</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Dodelite sprite zvezde</span>
+        <p>Izberite <code>spr_star</code> kot sprite za ta objekt.</p>
+    </div>
+
+    <h2>Ustvarite igralno sobo</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Ustvarite sobo</span>
+        <p>Z desnim klikom na <strong>Sobe</strong> izberite <code>Ustvari sobo</code>.</p>
+        <p>Poimenujte jo <code>room_game</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Postavite igralca</span>
+        <p>Dvokliknite sobo, da odprete urejevalnik sob.</p>
+        <p>Izberite <code>obj_player</code> s seznama objektov na levi.</p>
+        <p>Kliknite blizu spodnjega središča sobe, da tja postavite igralca.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Zvezd še ne postavljajte!</strong> Naredili bomo, da se samodejno pojavljajo z vrha zaslona.
+    </div>
+
+    <div class="info">
+        <strong>Objekti so ustvarjeni!</strong> Kliknite "Naprej", da dodate premikanje igralca.
+    </div>
+</body>
+</html>

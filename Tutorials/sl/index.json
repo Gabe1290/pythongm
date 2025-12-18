@@ -1,0 +1,27 @@
+{
+    "tutorials": [
+        {
+            "title": "Uvod",
+            "folder": "01_getting_started",
+            "pages": [
+                "01_welcome.html",
+                "02_interface.html",
+                "03_first_project.html",
+                "04_next_steps.html"
+            ]
+        },
+        {
+            "title": "Tvoja prva igra",
+            "folder": "02_first_game",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_add_movement.html",
+                "05_add_star.html",
+                "06_scoring.html",
+                "07_finishing.html"
+            ]
+        }
+    ]
+}
