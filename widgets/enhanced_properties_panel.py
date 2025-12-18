@@ -359,19 +359,29 @@ class EnhancedPropertiesPanel(QWidget):
         
         elif asset_type == 'sprites':
             # Sprite properties
-            width_edit = QLineEdit(str(asset_data.get('width', 0)))
+            frames = asset_data.get('frames', 1)
+            frame_width = asset_data.get('frame_width', asset_data.get('width', 0))
+            frame_height = asset_data.get('frame_height', asset_data.get('height', 0))
+
+            # Show frame dimensions for animated sprites
+            if frames > 1:
+                width_edit = QLineEdit(f"{frame_width} (frame)")
+                height_edit = QLineEdit(f"{frame_height} (frame)")
+            else:
+                width_edit = QLineEdit(str(asset_data.get('width', 0)))
+                height_edit = QLineEdit(str(asset_data.get('height', 0)))
             width_edit.setReadOnly(True)
-            height_edit = QLineEdit(str(asset_data.get('height', 0)))
             height_edit.setReadOnly(True)
-            frames_edit = QLineEdit(str(asset_data.get('frames', 1)))
+
+            frames_edit = QLineEdit(str(frames))
             frames_edit.setReadOnly(True)
             origin_x_edit = QLineEdit(str(asset_data.get('origin_x', 0)))
             origin_x_edit.setReadOnly(True)
             origin_y_edit = QLineEdit(str(asset_data.get('origin_y', 0)))
             origin_y_edit.setReadOnly(True)
-            speed_edit = QLineEdit(str(asset_data.get('speed', 1.0)))
+            speed_edit = QLineEdit(f"{asset_data.get('speed', 10.0)} FPS")
             speed_edit.setReadOnly(True)
-            
+
             self.properties_layout.addRow(self.tr("Width:"), width_edit)
             self.properties_layout.addRow(self.tr("Height:"), height_edit)
             self.properties_layout.addRow(self.tr("Frames:"), frames_edit)
@@ -379,13 +389,26 @@ class EnhancedPropertiesPanel(QWidget):
             self.properties_layout.addRow(self.tr("Origin Y:"), origin_y_edit)
             self.properties_layout.addRow(self.tr("Speed:"), speed_edit)
 
+            # Show animation type for animated sprites
+            if frames > 1:
+                anim_type = asset_data.get('animation_type', 'strip_h')
+                anim_type_display = {
+                    'strip_h': self.tr('Horizontal Strip'),
+                    'strip_v': self.tr('Vertical Strip'),
+                    'grid': self.tr('Grid'),
+                    'single': self.tr('Single Frame')
+                }.get(anim_type, anim_type)
+                anim_edit = QLineEdit(anim_type_display)
+                anim_edit.setReadOnly(True)
+                self.properties_layout.addRow(self.tr("Animation:"), anim_edit)
+
             # Show file path
             file_path = asset_data.get('file_path', 'N/A')
             file_path_edit = QLineEdit(file_path)
             file_path_edit.setReadOnly(True)
             self.properties_layout.addRow(self.tr("File:"), file_path_edit)
-            
-            # Try to load and display the actual sprite image
+
+            # Load and display the sprite image (with animation if applicable)
             self.load_sprite_preview(asset_name, asset_data)
         
         elif asset_type == 'backgrounds':

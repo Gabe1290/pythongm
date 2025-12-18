@@ -644,55 +644,72 @@ class RoomCanvas(QWidget):
         painter.setOpacity(1.0)
 
     def load_object_sprite(self, object_name):
-        """Load sprite for an object from the project"""
+        """Load sprite for an object from the project (first frame for animated sprites)"""
         if not self.project_data or not self.project_path:
             return None
-            
+
         if object_name in self.sprite_cache:
             return self.sprite_cache[object_name]
-        
+
         try:
             objects = self.project_data.get('assets', {}).get('objects', {})
             if object_name not in objects:
                 return None
-            
+
             object_data = objects[object_name]
             sprite_name = object_data.get('sprite', '')
-            
+
             if not sprite_name:
                 pixmap = self.create_default_sprite(object_name)
                 self.sprite_cache[object_name] = pixmap
                 return pixmap
-            
+
             sprites = self.project_data.get('assets', {}).get('sprites', {})
             if sprite_name not in sprites:
                 pixmap = self.create_default_sprite(object_name)
                 self.sprite_cache[object_name] = pixmap
                 return pixmap
-            
+
             sprite_data = sprites[sprite_name]
             sprite_file_path = sprite_data.get('file_path', '')
-            
+
             if not sprite_file_path:
                 pixmap = self.create_default_sprite(object_name)
                 self.sprite_cache[object_name] = pixmap
                 return pixmap
-            
+
             full_sprite_path = self.project_path / sprite_file_path
             if full_sprite_path.exists():
                 pixmap = QPixmap(str(full_sprite_path))
-                
+
                 if not pixmap.isNull():
+                    # Check if this is an animated sprite - extract first frame
+                    animation_type = sprite_data.get('animation_type', 'single')
+                    frames = sprite_data.get('frames', 1)
+
+                    if frames > 1 and animation_type != 'single':
+                        # Extract first frame from sprite sheet
+                        frame_width = sprite_data.get('frame_width', pixmap.width())
+                        frame_height = sprite_data.get('frame_height', pixmap.height())
+
+                        # Ensure frame dimensions are valid
+                        frame_width = min(frame_width, pixmap.width())
+                        frame_height = min(frame_height, pixmap.height())
+
+                        # Extract first frame (top-left corner)
+                        pixmap = pixmap.copy(0, 0, frame_width, frame_height)
+
+                    # Scale if too large for room editor display
                     if pixmap.width() > 64 or pixmap.height() > 64:
                         pixmap = pixmap.scaled(64, 64, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-                    
+
                     self.sprite_cache[object_name] = pixmap
                     return pixmap
-            
+
             pixmap = self.create_default_sprite(object_name)
             self.sprite_cache[object_name] = pixmap
             return pixmap
-            
+
         except Exception as e:
             print(f"Error loading sprite for {object_name}: {e}")
             pixmap = self.create_default_sprite(object_name)

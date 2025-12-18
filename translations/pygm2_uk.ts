@@ -33,7 +33,7 @@
         <source>Credits:
 
 Development:
-- PyGameMaker IDE Team
+- Gabriel Thullen
 
 Special Thanks:
 - The GameMaker Studio community for inspiration
@@ -41,13 +41,33 @@ Special Thanks:
 - All contributors and testers
 
 Third-Party Libraries:
-- PySide6 (Qt for Python)
-- Pygame (game development library)
-- Pillow (image processing)
+- PySide6 (Qt for Python) - LGPLv3
+- Pygame (game development library) - LGPLv2.1
+- Pillow (image processing) - HPND
+- Blockly (visual programming) - Apache 2.0
 
 License:
-This software is released under the MIT License.</source>
-        <translation type="unfinished"></translation>
+This software is released under the GNU General Public License v3 (GPLv3).
+Copyright (C) 2024-2025 Gabriel Thullen</source>
+        <translation>Автори:
+
+Розробка:
+- Gabriel Thullen
+
+Особлива подяка:
+- Спільноті GameMaker Studio за натхнення
+- Спільнотам Python та Pygame
+- Усім учасникам та тестувальникам
+
+Сторонні бібліотеки:
+- PySide6 (Qt для Python) - LGPLv3
+- Pygame (бібліотека розробки ігор) - LGPLv2.1
+- Pillow (обробка зображень) - HPND
+- Blockly (візуальне програмування) - Apache 2.0
+
+Ліцензія:
+Ця програма випущена під ліцензією GNU General Public License v3 (GPLv3).
+Copyright (C) 2024-2025 Gabriel Thullen</translation>
     </message>
     <message>
         <location filename="../dialogs/about.py" line="70"/>
@@ -255,12 +275,16 @@ This software is released under the MIT License.</source>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="195"/>
         <source>📥 Import Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>📥 Імпортувати зображення...</translation>
+    </message>
+    <message>
+        <source>🎬 Configure Animation...</source>
+        <translation>🎬 Налаштувати анімацію...</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="200"/>
         <source>🗑️ Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>🗑️ Видалити</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="208"/>
@@ -4657,6 +4681,101 @@ Open in browser now?</source>
         <location filename="../core/ide_exporters.py" line="176"/>
         <source>Failed to load</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SpriteStripDialog</name>
+    <message>
+        <source>Configure Sprite Strip</source>
+        <translation>Налаштувати стрічку спрайту</translation>
+    </message>
+    <message>
+        <source>Sprite Sheet Preview</source>
+        <translation>Попередній перегляд аркуша спрайтів</translation>
+    </message>
+    <message>
+        <source>Frame:</source>
+        <translation>Кадр:</translation>
+    </message>
+    <message>
+        <source>Animation Preview</source>
+        <translation>Попередній перегляд анімації</translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation>Відтворити</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation>Зупинити</translation>
+    </message>
+    <message>
+        <source>Image Info</source>
+        <translation>Інформація про зображення</translation>
+    </message>
+    <message>
+        <source>Width:</source>
+        <translation>Ширина:</translation>
+    </message>
+    <message>
+        <source>Height:</source>
+        <translation>Висота:</translation>
+    </message>
+    <message>
+        <source>Frame Configuration</source>
+        <translation>Налаштування кадру</translation>
+    </message>
+    <message>
+        <source>Horizontal Strip</source>
+        <translation>Горизонтальна стрічка</translation>
+    </message>
+    <message>
+        <source>Vertical Strip</source>
+        <translation>Вертикальна стрічка</translation>
+    </message>
+    <message>
+        <source>Grid (Rows x Columns)</source>
+        <translation>Сітка (Рядки x Стовпці)</translation>
+    </message>
+    <message>
+        <source>Strip Type:</source>
+        <translation>Тип стрічки:</translation>
+    </message>
+    <message>
+        <source>Frame Width:</source>
+        <translation>Ширина кадру:</translation>
+    </message>
+    <message>
+        <source>Frame Height:</source>
+        <translation>Висота кадру:</translation>
+    </message>
+    <message>
+        <source>Columns:</source>
+        <translation>Стовпці:</translation>
+    </message>
+    <message>
+        <source>Rows:</source>
+        <translation>Рядки:</translation>
+    </message>
+    <message>
+        <source>Total Frames:</source>
+        <translation>Всього кадрів:</translation>
+    </message>
+    <message>
+        <source>Animation Settings</source>
+        <translation>Налаштування анімації</translation>
+    </message>
+    <message>
+        <source>Animation Speed:</source>
+        <translation>Швидкість анімації:</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Скасувати</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 </TS>

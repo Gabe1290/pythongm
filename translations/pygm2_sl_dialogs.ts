@@ -190,6 +190,10 @@
       <translation>📥 Uvozi sliko...</translation>
     </message>
     <message>
+      <source>🎬 Configure Animation...</source>
+      <translation>🎬 Konfiguriraj animacijo...</translation>
+    </message>
+    <message>
       <location filename="../widgets/asset_tree/asset_tree_widget.py" line="200" />
       <source>🗑️ Delete</source>
       <translation>🗑️ Izbriši</translation>
@@ -1058,6 +1062,101 @@ Ali želite odpreti mapo izvoza?</translation>
       <location filename="../dialogs/project_dialogs.py" line="288" />
       <source>Target Platform:</source>
       <translation>Ciljna platforma:</translation>
+    </message>
+  </context>
+  <context>
+    <name>SpriteStripDialog</name>
+    <message>
+      <source>Configure Sprite Strip</source>
+      <translation>Konfiguriraj trak sprite</translation>
+    </message>
+    <message>
+      <source>Sprite Sheet Preview</source>
+      <translation>Predogled lista sprite</translation>
+    </message>
+    <message>
+      <source>Frame:</source>
+      <translation>Okvir:</translation>
+    </message>
+    <message>
+      <source>Animation Preview</source>
+      <translation>Predogled animacije</translation>
+    </message>
+    <message>
+      <source>Play</source>
+      <translation>Predvajaj</translation>
+    </message>
+    <message>
+      <source>Stop</source>
+      <translation>Ustavi</translation>
+    </message>
+    <message>
+      <source>Image Info</source>
+      <translation>Info o sliki</translation>
+    </message>
+    <message>
+      <source>Width:</source>
+      <translation>Širina:</translation>
+    </message>
+    <message>
+      <source>Height:</source>
+      <translation>Višina:</translation>
+    </message>
+    <message>
+      <source>Frame Configuration</source>
+      <translation>Konfiguracija okvirja</translation>
+    </message>
+    <message>
+      <source>Horizontal Strip</source>
+      <translation>Vodoravni trak</translation>
+    </message>
+    <message>
+      <source>Vertical Strip</source>
+      <translation>Navpični trak</translation>
+    </message>
+    <message>
+      <source>Grid (Rows x Columns)</source>
+      <translation>Mreža (Vrstice x Stolpci)</translation>
+    </message>
+    <message>
+      <source>Strip Type:</source>
+      <translation>Vrsta traku:</translation>
+    </message>
+    <message>
+      <source>Frame Width:</source>
+      <translation>Širina okvirja:</translation>
+    </message>
+    <message>
+      <source>Frame Height:</source>
+      <translation>Višina okvirja:</translation>
+    </message>
+    <message>
+      <source>Columns:</source>
+      <translation>Stolpci:</translation>
+    </message>
+    <message>
+      <source>Rows:</source>
+      <translation>Vrstice:</translation>
+    </message>
+    <message>
+      <source>Total Frames:</source>
+      <translation>Skupno okvirjev:</translation>
+    </message>
+    <message>
+      <source>Animation Settings</source>
+      <translation>Nastavitve animacije</translation>
+    </message>
+    <message>
+      <source>Animation Speed:</source>
+      <translation>Hitrost animacije:</translation>
+    </message>
+    <message>
+      <source>Cancel</source>
+      <translation>Prekliči</translation>
+    </message>
+    <message>
+      <source>OK</source>
+      <translation>V redu</translation>
     </message>
   </context>
   </TS>

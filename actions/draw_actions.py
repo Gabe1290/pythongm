@@ -176,6 +176,47 @@ DRAW_ACTIONS = {
             ActionParameter("color", "color", "Color", "Effect color", default="#FFFFFF")
         ]
     ),
+    # Animation actions
+    "set_image_index": ActionDefinition(
+        name="set_image_index",
+        display_name="Set Animation Frame",
+        category="drawing",
+        tab="draw",
+        description="Set the current animation frame",
+        icon="🎬",
+        parameters=[
+            ActionParameter("frame", "int", "Frame", "Frame number (0-based)", default=0)
+        ]
+    ),
+    "set_image_speed": ActionDefinition(
+        name="set_image_speed",
+        display_name="Set Animation Speed",
+        category="drawing",
+        tab="draw",
+        description="Set animation speed multiplier (0=stopped, 1=normal)",
+        icon="⏩",
+        parameters=[
+            ActionParameter("speed", "float", "Speed", "Speed multiplier", default=1.0)
+        ]
+    ),
+    "stop_animation": ActionDefinition(
+        name="stop_animation",
+        display_name="Stop Animation",
+        category="drawing",
+        tab="draw",
+        description="Stop the sprite animation",
+        icon="⏸️",
+        parameters=[]
+    ),
+    "start_animation": ActionDefinition(
+        name="start_animation",
+        display_name="Start Animation",
+        category="drawing",
+        tab="draw",
+        description="Start/resume the sprite animation",
+        icon="▶️",
+        parameters=[]
+    ),
 }
 
 # ============================================================================

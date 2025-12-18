@@ -34,7 +34,7 @@ class AboutDialog(QDialog):
         layout.addWidget(title)
 
         # Version
-        version = QLabel(self.tr("Version 0.9.0"))
+        version = QLabel(self.tr("Version 0.10.0-alpha"))
         version.setAlignment(Qt.AlignCenter)
         layout.addWidget(version)
 
@@ -64,7 +64,7 @@ class AboutDialog(QDialog):
         
         credits_text = QTextEdit()
         credits_text.setReadOnly(True)
-        credits_text.setPlainText(self.tr("Credits:\n\nDevelopment:\n- PyGameMaker IDE Team\n\nSpecial Thanks:\n- The GameMaker Studio community for inspiration\n- The Python and Pygame communities\n- All contributors and testers\n\nThird-Party Libraries:\n- PySide6 (Qt for Python)\n- Pygame (game development library)\n- Pillow (image processing)\n\nLicense:\nThis software is released under the MIT License."))
+        credits_text.setPlainText(self.tr("Credits:\n\nDevelopment:\n- Gabriel Thullen\n\nSpecial Thanks:\n- The GameMaker Studio community for inspiration\n- The Python and Pygame communities\n- All contributors and testers\n\nThird-Party Libraries:\n- PySide6 (Qt for Python) - LGPLv3\n- Pygame (game development library) - LGPLv2.1\n- Pillow (image processing) - HPND\n- Blockly (visual programming) - Apache 2.0\n\nLicense:\nThis software is released under the GNU General Public License v3 (GPLv3).\nCopyright (C) 2024-2025 Gabriel Thullen"))
         
         credits_layout.addWidget(credits_text)
         tabs.addTab(credits_tab, self.tr("Credits"))

@@ -242,16 +242,46 @@ class AssetManager(QObject):
     def import_multiple_assets(self, file_paths: List[Path], asset_type: str) -> List[Dict[str, Any]]:
         """Import multiple assets at once"""
         imported_assets = []
-        
+
         for file_path in file_paths:
             asset_data = self.import_asset(file_path, asset_type)
             if asset_data:
                 imported_assets.append(asset_data)
-        
+
         if imported_assets:
             self.status_changed.emit(f"Imported {len(imported_assets)} {asset_type}")
-        
+
         return imported_assets
+
+    def update_sprite_animation(self, sprite_name: str, frames: int, frame_width: int,
+                                 frame_height: int, speed: float = 10.0,
+                                 animation_type: str = "strip_h") -> Optional[Dict[str, Any]]:
+        """Update sprite animation settings (for sprite strips/sheets)"""
+        if not self.project_data:
+            return None
+
+        sprites = self.project_data.get("assets", {}).get("sprites", {})
+        if sprite_name not in sprites:
+            logger.warning("Sprite %s not found", sprite_name)
+            return None
+
+        sprite_data = sprites[sprite_name]
+        sprite_data.update({
+            "frames": frames,
+            "frame_width": frame_width,
+            "frame_height": frame_height,
+            "speed": speed,
+            "animation_type": animation_type,
+            "origin_x": frame_width // 2,  # Update origin to frame center
+            "origin_y": frame_height // 2,
+            "modified": datetime.now().isoformat()
+        })
+
+        self.mark_dirty()
+        self.asset_modified.emit("sprites", sprite_name, sprite_data)
+        self.status_changed.emit(f"Updated animation for {sprite_name}: {frames} frames")
+
+        return sprite_data
     
     def create_asset(self, asset_name: str, asset_type: str, **kwargs) -> Optional[Dict[str, Any]]:
         """Create a new asset (objects, rooms, scripts, etc.)"""
@@ -839,30 +869,39 @@ class AssetManager(QObject):
                     asset_data.update({
                         "width": img.width,
                         "height": img.height,
+                        "frame_width": img.width,  # Single frame = full width
+                        "frame_height": img.height,  # Single frame = full height
                         "origin_x": img.width // 2,
                         "origin_y": img.height // 2,
                         "frames": 1,
-                        "speed": 1.0
+                        "speed": 10.0,  # Animation FPS (frames per second)
+                        "animation_type": "single"  # single, strip_h, strip_v, files
                     })
             except (FileNotFoundError, OSError, IOError) as e:
                 logger.warning("Could not read sprite image %s: %s — using default 32x32", file_path, e)
                 asset_data.update({
                     "width": 32,
                     "height": 32,
+                    "frame_width": 32,
+                    "frame_height": 32,
                     "origin_x": 16,
                     "origin_y": 16,
                     "frames": 1,
-                    "speed": 1.0
+                    "speed": 10.0,
+                    "animation_type": "single"
                 })
             except Exception:
                 logger.exception("Unexpected error reading sprite %s — using default 32x32", file_path)
                 asset_data.update({
                     "width": 32,
                     "height": 32,
+                    "frame_width": 32,
+                    "frame_height": 32,
                     "origin_x": 16,
                     "origin_y": 16,
                     "frames": 1,
-                    "speed": 1.0
+                    "speed": 10.0,
+                    "animation_type": "single"
                 })
         
         elif asset_type == "sounds":

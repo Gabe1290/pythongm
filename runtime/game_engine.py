@@ -280,7 +280,8 @@ class GameRunner:
                 file_path = sprite_info.get('file_path', '')
                 if file_path:
                     full_path = self.project_path / file_path
-                    sprite = GameSprite(str(full_path))
+                    # Pass sprite_info to enable animation support
+                    sprite = GameSprite(str(full_path), sprite_info)
                     self.sprites[sprite_name] = sprite
                     print(f"  âœ… Loaded sprite: {sprite_name} ({sprite.width}x{sprite.height})")
                 else:

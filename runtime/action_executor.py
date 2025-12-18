@@ -1665,6 +1665,40 @@ class ActionExecutor:
 
         print(f"  ✅ Changed to {new_object_name} at ({old_x}, {old_y})")
 
+    # ==================== ANIMATION ACTIONS ====================
+
+    def execute_set_image_index_action(self, instance, parameters: Dict[str, Any]):
+        """Set the current animation frame"""
+        frame = parameters.get("frame", 0)
+        try:
+            frame = int(frame)
+        except (ValueError, TypeError):
+            frame = 0
+
+        instance.image_index = float(frame)
+        print(f"🎬 Set image_index to {frame} for {instance.object_name}")
+
+    def execute_set_image_speed_action(self, instance, parameters: Dict[str, Any]):
+        """Set the animation speed multiplier"""
+        speed = parameters.get("speed", 1.0)
+        try:
+            speed = float(speed)
+        except (ValueError, TypeError):
+            speed = 1.0
+
+        instance.image_speed = speed
+        print(f"⏩ Set image_speed to {speed} for {instance.object_name}")
+
+    def execute_stop_animation_action(self, instance, parameters: Dict[str, Any]):
+        """Stop the sprite animation"""
+        instance.image_speed = 0.0
+        print(f"⏸️ Stopped animation for {instance.object_name}")
+
+    def execute_start_animation_action(self, instance, parameters: Dict[str, Any]):
+        """Start/resume the sprite animation"""
+        instance.image_speed = 1.0
+        print(f"▶️ Started animation for {instance.object_name}")
+
     def execute_collision_event(self, instance, event_name: str, events_data: Dict[str, Any], other_instance, collision_speeds=None):
         """Execute collision event with context about the other instance
 

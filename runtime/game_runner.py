@@ -25,36 +25,127 @@ from runtime.action_executor import ActionExecutor
 from events.plugin_loader import load_all_plugins
 
 class GameSprite:
-    """Represents a loaded sprite"""
-    
-    def __init__(self, image_path: str):
+    """Represents a loaded sprite with animation support"""
+
+    def __init__(self, image_path: str, sprite_data: dict = None):
         self.path = image_path
-        self.surface = None
-        self.width = 32
-        self.height = 32
+        self.sprite_data = sprite_data or {}
+        self.surface = None  # Full sprite sheet surface
+        self.frames = []  # List of individual frame surfaces
+        self.frame_count = 1
+        self.frame_width = 32
+        self.frame_height = 32
+        self.width = 32  # Actual display width (frame width)
+        self.height = 32  # Actual display height (frame height)
+        self.speed = 10.0  # Animation FPS
+        self.animation_type = "single"  # single, strip_h, strip_v, grid
         self.load_image()
-    
+
     def load_image(self):
-        """Load the sprite image"""
+        """Load the sprite image and extract frames if animated"""
         try:
             if Path(self.path).exists():
                 self.surface = pygame.image.load(self.path).convert_alpha()
-                self.width = self.surface.get_width()
-                self.height = self.surface.get_height()
+                full_width = self.surface.get_width()
+                full_height = self.surface.get_height()
+
+                # Get animation data from sprite_data
+                self.frame_count = self.sprite_data.get('frames', 1)
+                self.frame_width = self.sprite_data.get('frame_width', full_width)
+                self.frame_height = self.sprite_data.get('frame_height', full_height)
+                self.speed = self.sprite_data.get('speed', 10.0)
+                self.animation_type = self.sprite_data.get('animation_type', 'single')
+
+                # Set display dimensions to frame size
+                self.width = self.frame_width
+                self.height = self.frame_height
+
+                # Extract frames based on animation type
+                if self.frame_count > 1:
+                    self._extract_frames(full_width, full_height)
+                else:
+                    # Single frame - just use the whole surface
+                    self.frames = [self.surface]
+                    self.frame_count = 1
             else:
                 print(f"Sprite not found: {self.path}")
                 self.create_default_sprite()
         except Exception as e:
             print(f"Error loading sprite {self.path}: {e}")
             self.create_default_sprite()
-    
+
+    def _extract_frames(self, full_width: int, full_height: int):
+        """Extract individual frames from sprite sheet"""
+        self.frames = []
+
+        # Calculate grid dimensions
+        if self.animation_type == "strip_h":
+            # Horizontal strip - frames are side by side
+            columns = max(1, full_width // self.frame_width)
+            rows = 1
+        elif self.animation_type == "strip_v":
+            # Vertical strip - frames are stacked
+            columns = 1
+            rows = max(1, full_height // self.frame_height)
+        else:
+            # Grid or auto-detect
+            columns = max(1, full_width // self.frame_width)
+            rows = max(1, full_height // self.frame_height)
+
+        # Extract each frame
+        for row in range(rows):
+            for col in range(columns):
+                x = col * self.frame_width
+                y = row * self.frame_height
+
+                # Check bounds
+                if x + self.frame_width <= full_width and y + self.frame_height <= full_height:
+                    # Create a new surface for this frame
+                    frame_surface = pygame.Surface(
+                        (self.frame_width, self.frame_height),
+                        pygame.SRCALPHA
+                    )
+                    # Copy the frame region
+                    frame_surface.blit(
+                        self.surface,
+                        (0, 0),
+                        (x, y, self.frame_width, self.frame_height)
+                    )
+                    self.frames.append(frame_surface)
+
+                    if len(self.frames) >= self.frame_count:
+                        break
+            if len(self.frames) >= self.frame_count:
+                break
+
+        # Update frame count to actual extracted frames
+        self.frame_count = len(self.frames) if self.frames else 1
+
+        # Fallback if no frames extracted
+        if not self.frames:
+            self.frames = [self.surface]
+            self.frame_count = 1
+
+    def get_frame(self, image_index: float) -> pygame.Surface:
+        """Get the frame surface for a given animation index"""
+        if not self.frames:
+            return self.surface
+
+        # Wrap index to valid range
+        frame_idx = int(image_index) % len(self.frames)
+        return self.frames[frame_idx]
+
     def create_default_sprite(self):
         """Create a default sprite (colored rectangle)"""
-        self.surface = pygame.Surface((32, 32))
+        self.surface = pygame.Surface((32, 32), pygame.SRCALPHA)
         self.surface.fill((255, 100, 100))  # Red rectangle
         pygame.draw.rect(self.surface, (0, 0, 0), (0, 0, 32, 32), 2)
+        self.frames = [self.surface]
+        self.frame_count = 1
         self.width = 32
         self.height = 32
+        self.frame_width = 32
+        self.frame_height = 32
 
 class GameInstance:
     """Represents an object instance in the game world"""
@@ -80,6 +171,10 @@ class GameInstance:
         # Cached dimensions (updated when sprite is set)
         self._cached_width = 32
         self._cached_height = 32
+
+        # Animation properties
+        self.image_index = 0.0  # Current animation frame (can be fractional for smooth interpolation)
+        self.image_speed = 1.0  # Animation speed multiplier (1.0 = normal, 0 = stopped)
 
         # Speed properties for smooth movement
         self.hspeed = 0.0  # Horizontal speed (pixels per frame)
@@ -116,6 +211,19 @@ class GameInstance:
     
     def step(self):
         """Execute step event every frame"""
+        # Advance animation
+        if self.sprite and self.sprite.frame_count > 1 and self.image_speed != 0:
+            # Calculate animation advancement based on sprite speed and instance speed multiplier
+            # sprite.speed is in FPS, game runs at 30 FPS
+            frame_advance = self.image_speed * (self.sprite.speed / 30.0)
+            self.image_index += frame_advance
+
+            # Wrap around when animation completes
+            if self.image_index >= self.sprite.frame_count:
+                self.image_index = self.image_index % self.sprite.frame_count
+            elif self.image_index < 0:
+                self.image_index = self.sprite.frame_count + (self.image_index % self.sprite.frame_count)
+
         if self.object_data and "events" in self.object_data:
             # Execute regular step event
             self.action_executor.execute_event(self, "step", self.object_data["events"])
@@ -198,19 +306,22 @@ class GameInstance:
         """Render this instance"""
         if not self.visible or not self.sprite:
             return
-        
+
         # Calculate render position
         render_x = int(self.x)
         render_y = int(self.y)
-        
+
+        # Get current animation frame
+        current_frame = self.sprite.get_frame(self.image_index)
+
         # Handle scaling (basic implementation)
         if self.scale_x != 1.0 or self.scale_y != 1.0:
             scaled_width = int(self.sprite.width * self.scale_x)
             scaled_height = int(self.sprite.height * self.scale_y)
-            scaled_surface = pygame.transform.scale(self.sprite.surface, (scaled_width, scaled_height))
+            scaled_surface = pygame.transform.scale(current_frame, (scaled_width, scaled_height))
             screen.blit(scaled_surface, (render_x, render_y))
         else:
-            screen.blit(self.sprite.surface, (render_x, render_y))
+            screen.blit(current_frame, (render_x, render_y))
 
 class GameRoom:
     """Represents a game room with instances"""
@@ -614,7 +725,8 @@ class GameRunner:
                 file_path = sprite_info.get('file_path', '')
                 if file_path:
                     full_path = self.project_path / file_path
-                    sprite = GameSprite(str(full_path))
+                    # Pass sprite_info to enable animation support
+                    sprite = GameSprite(str(full_path), sprite_info)
                     self.sprites[sprite_name] = sprite
                     print(f"  âœ… Loaded sprite: {sprite_name} ({sprite.width}x{sprite.height})")
                 else:

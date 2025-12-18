@@ -196,6 +196,11 @@ class AssetTreeWidget(QTreeWidget):
                 import_image_action.triggered.connect(lambda: self.import_sprite_image(item))
                 context_menu.addAction(import_image_action)
 
+                # Configure animation (sprite strip) action
+                configure_anim_action = QAction(self.tr("🎬 Configure Animation..."), self)
+                configure_anim_action.triggered.connect(lambda: self.configure_sprite_animation(item))
+                context_menu.addAction(configure_anim_action)
+
             # Delete action
             delete_action = QAction(self.tr("🗑️ Delete"), self)
             delete_action.triggered.connect(lambda: self.operations.delete_asset(item))
@@ -344,6 +349,78 @@ class AssetTreeWidget(QTreeWidget):
                 self.tr("Success"),
                 self.tr("Image imported successfully for sprite '{0}'").format(sprite_name)
             )
+
+    def configure_sprite_animation(self, item):
+        """Open the sprite strip configuration dialog"""
+        if not isinstance(item, AssetTreeItem) or item.is_category:
+            return
+
+        sprite_name = item.asset_name
+        sprite_data = item.asset_data
+
+        if not sprite_data:
+            QMessageBox.warning(
+                self,
+                self.tr("No Sprite Data"),
+                self.tr("Could not load sprite data for '{0}'").format(sprite_name)
+            )
+            return
+
+        # Get the sprite image path
+        file_path = sprite_data.get('file_path', '')
+        if not file_path:
+            QMessageBox.warning(
+                self,
+                self.tr("No Image"),
+                self.tr("Sprite '{0}' has no image file. Please import an image first.").format(sprite_name)
+            )
+            return
+
+        # Build full path
+        from pathlib import Path
+        if self.project_path:
+            full_path = Path(self.project_path) / file_path
+        else:
+            full_path = Path(file_path)
+
+        if not full_path.exists():
+            QMessageBox.warning(
+                self,
+                self.tr("Image Not Found"),
+                self.tr("Could not find image file: {0}").format(str(full_path))
+            )
+            return
+
+        # Open the sprite strip dialog
+        from dialogs.sprite_strip_dialog import SpriteStripDialog
+        dialog = SpriteStripDialog(str(full_path), sprite_name, self)
+
+        if dialog.exec():
+            # Get the configuration
+            config = dialog.get_configuration()
+
+            # Update sprite data through asset manager
+            if self.project_manager and hasattr(self.project_manager, 'asset_manager'):
+                asset_manager = self.project_manager.asset_manager
+                asset_manager.update_sprite_animation(
+                    sprite_name,
+                    frames=config['frames'],
+                    frame_width=config['frame_width'],
+                    frame_height=config['frame_height'],
+                    speed=config['speed'],
+                    animation_type=config['animation_type']
+                )
+
+                # Refresh the tree
+                self.force_project_refresh()
+
+                QMessageBox.information(
+                    self,
+                    self.tr("Animation Configured"),
+                    self.tr("Sprite '{0}' configured with {1} frames at {2} FPS").format(
+                        sprite_name, config['frames'], config['speed']
+                    )
+                )
 
     def export_resource(self, asset_type: str, asset_name: str):
         """Export a resource (object or room) with dependencies"""

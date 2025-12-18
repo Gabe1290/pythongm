@@ -37,7 +37,7 @@
         <source>Credits:
 
 Development:
-- PyGameMaker IDE Team
+- Gabriel Thullen
 
 Special Thanks:
 - The GameMaker Studio community for inspiration
@@ -45,16 +45,18 @@ Special Thanks:
 - All contributors and testers
 
 Third-Party Libraries:
-- PySide6 (Qt for Python)
-- Pygame (game development library)
-- Pillow (image processing)
+- PySide6 (Qt for Python) - LGPLv3
+- Pygame (game development library) - LGPLv2.1
+- Pillow (image processing) - HPND
+- Blockly (visual programming) - Apache 2.0
 
 License:
-This software is released under the MIT License.</source>
+This software is released under the GNU General Public License v3 (GPLv3).
+Copyright (C) 2024-2025 Gabriel Thullen</source>
         <translation>Mitwirkende:
 
 Entwicklung:
-- PyGameMaker IDE Team
+- Gabriel Thullen
 
 Besonderer Dank:
 - Die GameMaker Studio Community für die Inspiration
@@ -62,12 +64,14 @@ Besonderer Dank:
 - Alle Mitwirkenden und Tester
 
 Drittanbieter-Bibliotheken:
-- PySide6 (Qt für Python)
-- Pygame (Spieleentwicklungs-Bibliothek)
-- Pillow (Bildverarbeitung)
+- PySide6 (Qt für Python) - LGPLv3
+- Pygame (Spieleentwicklungs-Bibliothek) - LGPLv2.1
+- Pillow (Bildverarbeitung) - HPND
+- Blockly (visuelle Programmierung) - Apache 2.0
 
 Lizenz:
-Diese Software wird unter der MIT-Lizenz veröffentlicht.</translation>
+Diese Software wird unter der GNU General Public License v3 (GPLv3) veröffentlicht.
+Copyright (C) 2024-2025 Gabriel Thullen</translation>
     </message>
     <message>
         <location filename="../dialogs/about.py" line="70"/>

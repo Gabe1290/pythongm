@@ -190,6 +190,10 @@
       <translation>📥 Importa immagine...</translation>
     </message>
     <message>
+      <source>🎬 Configure Animation...</source>
+      <translation>🎬 Configura animazione...</translation>
+    </message>
+    <message>
       <location filename="../widgets/asset_tree/asset_tree_widget.py" line="200" />
       <source>🗑️ Delete</source>
       <translation>🗑️ Elimina</translation>
@@ -1058,6 +1062,101 @@ Vuoi aprire la directory di esportazione?</translation>
       <location filename="../dialogs/project_dialogs.py" line="288" />
       <source>Target Platform:</source>
       <translation>Piattaforma di destinazione:</translation>
+    </message>
+  </context>
+  <context>
+    <name>SpriteStripDialog</name>
+    <message>
+      <source>Configure Sprite Strip</source>
+      <translation>Configura striscia sprite</translation>
+    </message>
+    <message>
+      <source>Sprite Sheet Preview</source>
+      <translation>Anteprima foglio sprite</translation>
+    </message>
+    <message>
+      <source>Frame:</source>
+      <translation>Fotogramma:</translation>
+    </message>
+    <message>
+      <source>Animation Preview</source>
+      <translation>Anteprima animazione</translation>
+    </message>
+    <message>
+      <source>Play</source>
+      <translation>Riproduci</translation>
+    </message>
+    <message>
+      <source>Stop</source>
+      <translation>Stop</translation>
+    </message>
+    <message>
+      <source>Image Info</source>
+      <translation>Info immagine</translation>
+    </message>
+    <message>
+      <source>Width:</source>
+      <translation>Larghezza:</translation>
+    </message>
+    <message>
+      <source>Height:</source>
+      <translation>Altezza:</translation>
+    </message>
+    <message>
+      <source>Frame Configuration</source>
+      <translation>Configurazione fotogramma</translation>
+    </message>
+    <message>
+      <source>Horizontal Strip</source>
+      <translation>Striscia orizzontale</translation>
+    </message>
+    <message>
+      <source>Vertical Strip</source>
+      <translation>Striscia verticale</translation>
+    </message>
+    <message>
+      <source>Grid (Rows x Columns)</source>
+      <translation>Griglia (Righe x Colonne)</translation>
+    </message>
+    <message>
+      <source>Strip Type:</source>
+      <translation>Tipo di striscia:</translation>
+    </message>
+    <message>
+      <source>Frame Width:</source>
+      <translation>Larghezza fotogramma:</translation>
+    </message>
+    <message>
+      <source>Frame Height:</source>
+      <translation>Altezza fotogramma:</translation>
+    </message>
+    <message>
+      <source>Columns:</source>
+      <translation>Colonne:</translation>
+    </message>
+    <message>
+      <source>Rows:</source>
+      <translation>Righe:</translation>
+    </message>
+    <message>
+      <source>Total Frames:</source>
+      <translation>Totale fotogrammi:</translation>
+    </message>
+    <message>
+      <source>Animation Settings</source>
+      <translation>Impostazioni animazione</translation>
+    </message>
+    <message>
+      <source>Animation Speed:</source>
+      <translation>Velocità animazione:</translation>
+    </message>
+    <message>
+      <source>Cancel</source>
+      <translation>Annulla</translation>
+    </message>
+    <message>
+      <source>OK</source>
+      <translation>OK</translation>
     </message>
   </context>
   </TS>

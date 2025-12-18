@@ -18,7 +18,7 @@ from pathlib import Path
 # Project configuration
 APP_NAME = "PyGameMaker"
 MAIN_SCRIPT = "main.py"
-VERSION = "1.0.0"
+VERSION = "0.10.0-alpha"
 
 # Directories to include as data
 DATA_DIRS = [
