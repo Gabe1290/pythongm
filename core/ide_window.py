@@ -1310,7 +1310,7 @@ class PyGameMakerIDE(QMainWindow):
             if is_packaged:
                 # When packaged, run game in-process using the game runner
                 # This works because pygame is bundled in the package
-                if self.game_runner.test_game(str(self.current_project_path)):
+                if self.game_runner.test_game(str(self.current_project_path), Config.get('language', 'en')):
                     self.update_status(self.tr("Game closed"))
                 else:
                     self.update_status(self.tr("Game test failed"))
@@ -1369,7 +1369,7 @@ class PyGameMakerIDE(QMainWindow):
         )
 
         # Run game in test mode (debug mode to be implemented)
-        if self.game_runner.test_game(str(self.current_project_path)):
+        if self.game_runner.test_game(str(self.current_project_path), Config.get('language', 'en')):
             self.update_status(self.tr("Game started in debug mode - Check console for debug output"))
         else:
             self.update_status(self.tr("Failed to start game"))

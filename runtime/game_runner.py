@@ -24,6 +24,16 @@ from typing import Dict, List, Optional, Tuple
 from runtime.action_executor import ActionExecutor
 from events.plugin_loader import load_all_plugins
 
+# Translation strings for game caption (key: language code)
+CAPTION_TRANSLATIONS = {
+    'en': {'score': 'Score', 'lives': 'Lives', 'health': 'Health', 'room': 'Room'},
+    'de': {'score': 'Punkte', 'lives': 'Leben', 'health': 'Gesundheit', 'room': 'Raum'},
+    'fr': {'score': 'Score', 'lives': 'Vies', 'health': 'Santé', 'room': 'Niveau'},
+    'it': {'score': 'Punteggio', 'lives': 'Vite', 'health': 'Salute', 'room': 'Stanza'},
+    'sl': {'score': 'Točke', 'lives': 'Življenja', 'health': 'Zdravje', 'room': 'Soba'},
+    'uk': {'score': 'Рахунок', 'lives': 'Життя', 'health': 'Здоров\'я', 'room': 'Кімната'},
+}
+
 class GameSprite:
     """Represents a loaded sprite with animation support"""
 
@@ -610,6 +620,9 @@ class GameRunner:
         self.show_health_in_caption = False
         self.window_caption = ""  # Custom caption prefix
 
+        # Language for caption translations (default to English)
+        self.language = 'en'
+
         # If project path provided, load it
         if project_path:
             self.load_project_data_only(project_path)
@@ -796,9 +809,10 @@ class GameRunner:
         # Just use the first room
         return list(self.rooms.keys())[0]
     
-    def test_game(self, project_path: str) -> bool:
+    def test_game(self, project_path: str, language: str = 'en') -> bool:
         """Test run the game from project"""
         print(f"Testing game from project: {project_path}")
+        self.language = language
         
         # Load project data (but not sprites yet)
         if not self.load_project_data_only(project_path):
@@ -1795,6 +1809,11 @@ class GameRunner:
                     instance.action_executor.execute_event(instance, "create", instance.object_data["events"])
 
     
+    def get_caption_text(self, key: str) -> str:
+        """Get translated caption text for a key (score, lives, health, room)"""
+        translations = CAPTION_TRANSLATIONS.get(self.language, CAPTION_TRANSLATIONS['en'])
+        return translations.get(key, key.capitalize())
+
     def update_caption(self):
         """Update window caption with score/lives/health if enabled"""
         parts = []
@@ -1803,13 +1822,13 @@ class GameRunner:
             parts.append(self.window_caption)
 
         if self.show_score_in_caption:
-            parts.append(f"Score: {self.score}")
+            parts.append(f"{self.get_caption_text('score')}: {self.score}")
 
         if self.show_lives_in_caption:
-            parts.append(f"Lives: {self.lives}")
+            parts.append(f"{self.get_caption_text('lives')}: {self.lives}")
 
         if self.show_health_in_caption:
-            parts.append(f"Health: {int(self.health)}")
+            parts.append(f"{self.get_caption_text('health')}: {int(self.health)}")
 
         caption = " | ".join(parts) if parts else "Game"
         pygame.display.set_caption(caption)
