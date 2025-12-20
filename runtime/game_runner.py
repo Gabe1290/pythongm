@@ -1252,32 +1252,77 @@ class GameRunner:
 
 
         # Apply speed-based movement (hspeed, vspeed) with collision checking
+        # Also track blocked collisions for firing collision events
+        blocked_collisions = []
+
         for instance in self.current_room.instances:
             if hasattr(instance, 'hspeed') and instance.hspeed != 0:
                 # Store intended position
                 instance.intended_x = instance.x + instance.hspeed
                 instance.intended_y = instance.y
-                
-                # Check collision
-                if self.check_movement_collision(instance, objects_data):
+
+                # Check collision - returns (can_move, blocking_instance)
+                can_move, blocker = self.check_movement_collision_with_blocker(instance, objects_data)
+                if can_move:
                     instance.x = instance.intended_x
-                
+                elif blocker:
+                    # Movement blocked - queue collision event
+                    blocked_collisions.append({
+                        'instance': instance,
+                        'other_instance': blocker,
+                        'self_hspeed': instance.hspeed,
+                        'self_vspeed': instance.vspeed,
+                    })
+
                 # Clean up
                 delattr(instance, 'intended_x')
                 delattr(instance, 'intended_y')
-                
+
             if hasattr(instance, 'vspeed') and instance.vspeed != 0:
                 # Store intended position
                 instance.intended_x = instance.x
                 instance.intended_y = instance.y + instance.vspeed
-                
-                # Check collision
-                if self.check_movement_collision(instance, objects_data):
+
+                # Check collision - returns (can_move, blocking_instance)
+                can_move, blocker = self.check_movement_collision_with_blocker(instance, objects_data)
+                if can_move:
                     instance.y = instance.intended_y
-                
+                elif blocker:
+                    # Movement blocked - queue collision event
+                    blocked_collisions.append({
+                        'instance': instance,
+                        'other_instance': blocker,
+                        'self_hspeed': instance.hspeed,
+                        'self_vspeed': instance.vspeed,
+                    })
+
                 # Clean up
                 delattr(instance, 'intended_x')
                 delattr(instance, 'intended_y')
+
+        # Fire collision events for blocked movements
+        for collision in blocked_collisions:
+            instance = collision['instance']
+            other = collision['other_instance']
+
+            # Check if this instance has a collision event for the blocking object
+            event_name = f"collision_with_{other.object_name}"
+            events = instance._cached_object_data.get('events', {}) if instance._cached_object_data else {}
+
+            if event_name in events:
+                print(f"🎯 BLOCKED COLLISION: {instance.object_name} with {other.object_name}")
+                instance.action_executor.execute_collision_event(
+                    instance,
+                    event_name,
+                    events,
+                    other,
+                    collision_speeds={
+                        'self_hspeed': collision['self_hspeed'],
+                        'self_vspeed': collision['self_vspeed'],
+                        'other_hspeed': other.hspeed,
+                        'other_vspeed': other.vspeed,
+                    }
+                )
         # Handle intended movement with collision checking
         for instance in self.current_room.instances:
             if hasattr(instance, 'intended_x') and hasattr(instance, 'intended_y'):
@@ -1323,6 +1368,15 @@ class GameRunner:
         Only solid objects block movement. Non-solid objects don't block -
         they rely on collision events to handle interactions.
         """
+        can_move, _ = self.check_movement_collision_with_blocker(moving_instance, objects_data)
+        return can_move
+
+    def check_movement_collision_with_blocker(self, moving_instance, objects_data: dict):
+        """Check if intended movement would be blocked by solid objects.
+
+        Returns:
+            (can_move: bool, blocking_instance: GameInstance or None)
+        """
         intended_x = moving_instance.intended_x
         intended_y = moving_instance.intended_y
 
@@ -1355,9 +1409,9 @@ class GameRunner:
             # Check rectangle overlap at intended position
             if self.rectangles_overlap(intended_x, intended_y, w1, h1,
                                       other_instance.x, other_instance.y, w2, h2):
-                return False
+                return (False, other_instance)
 
-        return True
+        return (True, None)
 
     def separate_overlapping_instances(self, objects_data: dict):
         """Separate instances that are overlapping after collision events.
