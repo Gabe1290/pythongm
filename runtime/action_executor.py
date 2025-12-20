@@ -550,9 +550,19 @@ class ActionExecutor:
             else:
                 direction = float(chosen)
         elif isinstance(directions, str):
-            # Check if it's an expression (like other.direction, self.direction)
-            if '.' in directions and directions.lower() not in direction_map:
-                direction = self._parse_value(directions, instance)
+            # Check if it's an expression (like other.direction, self.direction, choose(...), random(...))
+            is_expression = (
+                '.' in directions or
+                'choose(' in directions or
+                'random(' in directions or
+                'irandom(' in directions or
+                '+' in directions or
+                '-' in directions or
+                '*' in directions or
+                '/' in directions
+            )
+            if is_expression and directions.lower() not in direction_map:
+                direction = self._evaluate_expression(directions, instance)
                 if not isinstance(direction, (int, float)):
                     print(f"   ⚠️ Could not evaluate direction expression: {directions}")
                     direction = 0
