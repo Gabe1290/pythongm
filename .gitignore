@@ -34,6 +34,10 @@ PyGameMaker
 PyGameMaker-linux.zip
 *.exe
 
+# Generated docs
+docs/*.pdf
+docs/*.html
+
 # Work folders
 Projects/
 Tutorial1/
