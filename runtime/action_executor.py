@@ -1787,7 +1787,7 @@ class ActionExecutor:
                 continue
 
             # Execute the action
-            result = self.execute_collision_action(instance, action_data, other_instance)
+            result = self.handle_collision_action(instance, action_data, other_instance)
 
             # Check if this was a conditional action that returned False
             if result is False:
@@ -1798,8 +1798,11 @@ class ActionExecutor:
 
             i += 1
 
-    def execute_collision_action(self, instance, action_data: Dict[str, Any], other_instance):
+    def handle_collision_action(self, instance, action_data: Dict[str, Any], other_instance):
         """Execute a collision action with knowledge of both self and other
+
+        This method has a different signature (3 params) than standard action handlers,
+        so it's named differently to avoid auto-registration.
 
         Returns:
             - True/False for conditional actions
