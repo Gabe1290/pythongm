@@ -387,24 +387,39 @@ class ActionExecutor:
             against: "solid" to bounce off all solid objects, or specific object name
 
         For simple bouncing, this reverses the velocity component based on
-        which direction the instance was moving.
+        which direction was blocked. If both directions are blocked (corner),
+        both components are reversed.
         """
-        # Get speeds - prefer collision speeds (captured before movement was blocked)
-        # over current speeds (which might be zero if movement was blocked)
+        # Get speeds and blocked flags from collision info
         collision_speeds = getattr(self, '_collision_speeds', {})
         hspeed = collision_speeds.get('self_hspeed', instance.hspeed)
         vspeed = collision_speeds.get('self_vspeed', instance.vspeed)
+        h_blocked = collision_speeds.get('h_blocked', False)
+        v_blocked = collision_speeds.get('v_blocked', False)
 
         if hspeed != 0 or vspeed != 0:
-            # Determine primary direction of movement and reverse it
-            if abs(hspeed) >= abs(vspeed):
-                # Moving primarily horizontally - reverse horizontal
+            # Use blocked flags to determine which components to reverse
+            if h_blocked and v_blocked:
+                # Corner collision - reverse both components
+                instance.hspeed = -hspeed
+                instance.vspeed = -vspeed
+                print(f"  🏓 {instance.object_name} bounced corner, hspeed: {hspeed} → {instance.hspeed}, vspeed: {vspeed} → {instance.vspeed}")
+            elif h_blocked:
+                # Only horizontal blocked - reverse horizontal
                 instance.hspeed = -hspeed
                 print(f"  🏓 {instance.object_name} bounced horizontally, hspeed: {hspeed} → {instance.hspeed}")
-            else:
-                # Moving primarily vertically - reverse vertical
+            elif v_blocked:
+                # Only vertical blocked - reverse vertical
                 instance.vspeed = -vspeed
                 print(f"  🏓 {instance.object_name} bounced vertically, vspeed: {vspeed} → {instance.vspeed}")
+            else:
+                # Fallback: no flags, use legacy behavior (primary direction)
+                if abs(hspeed) >= abs(vspeed):
+                    instance.hspeed = -hspeed
+                    print(f"  🏓 {instance.object_name} bounced horizontally (fallback), hspeed: {hspeed} → {instance.hspeed}")
+                else:
+                    instance.vspeed = -vspeed
+                    print(f"  🏓 {instance.object_name} bounced vertically (fallback), vspeed: {vspeed} → {instance.vspeed}")
         else:
             print(f"  ⚠️ {instance.object_name} bounce: no velocity to reverse")
 

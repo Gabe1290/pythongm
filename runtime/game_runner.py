@@ -1252,8 +1252,10 @@ class GameRunner:
 
 
         # Apply speed-based movement (hspeed, vspeed) with collision checking
-        # Also track blocked collisions for firing collision events
-        blocked_collisions = []
+        # Track blocked collisions per instance - deduplicate to avoid infinite bounce loops
+        # Key: instance_id -> collision info with h_blocked/v_blocked flags
+        # We key by instance only (not by blocker) so corner collisions with different walls merge
+        blocked_collisions_map = {}
 
         for instance in self.current_room.instances:
             if hasattr(instance, 'hspeed') and instance.hspeed != 0:
@@ -1266,13 +1268,18 @@ class GameRunner:
                 if can_move:
                     instance.x = instance.intended_x
                 elif blocker:
-                    # Movement blocked - queue collision event
-                    blocked_collisions.append({
-                        'instance': instance,
-                        'other_instance': blocker,
-                        'self_hspeed': instance.hspeed,
-                        'self_vspeed': instance.vspeed,
-                    })
+                    # Movement blocked horizontally - track in map by instance only
+                    key = id(instance)
+                    if key not in blocked_collisions_map:
+                        blocked_collisions_map[key] = {
+                            'instance': instance,
+                            'other_instance': blocker,  # Use first blocker for event
+                            'self_hspeed': instance.hspeed,
+                            'self_vspeed': instance.vspeed,
+                            'h_blocked': False,
+                            'v_blocked': False,
+                        }
+                    blocked_collisions_map[key]['h_blocked'] = True
 
                 # Clean up
                 delattr(instance, 'intended_x')
@@ -1288,20 +1295,25 @@ class GameRunner:
                 if can_move:
                     instance.y = instance.intended_y
                 elif blocker:
-                    # Movement blocked - queue collision event
-                    blocked_collisions.append({
-                        'instance': instance,
-                        'other_instance': blocker,
-                        'self_hspeed': instance.hspeed,
-                        'self_vspeed': instance.vspeed,
-                    })
+                    # Movement blocked vertically - track in map by instance only
+                    key = id(instance)
+                    if key not in blocked_collisions_map:
+                        blocked_collisions_map[key] = {
+                            'instance': instance,
+                            'other_instance': blocker,  # Use first blocker for event
+                            'self_hspeed': instance.hspeed,
+                            'self_vspeed': instance.vspeed,
+                            'h_blocked': False,
+                            'v_blocked': False,
+                        }
+                    blocked_collisions_map[key]['v_blocked'] = True
 
                 # Clean up
                 delattr(instance, 'intended_x')
                 delattr(instance, 'intended_y')
 
-        # Fire collision events for blocked movements
-        for collision in blocked_collisions:
+        # Fire collision events for blocked movements (deduplicated)
+        for collision in blocked_collisions_map.values():
             instance = collision['instance']
             other = collision['other_instance']
 
@@ -1310,7 +1322,9 @@ class GameRunner:
             events = instance._cached_object_data.get('events', {}) if instance._cached_object_data else {}
 
             if event_name in events:
-                print(f"🎯 BLOCKED COLLISION: {instance.object_name} with {other.object_name}")
+                h_blocked = collision.get('h_blocked', False)
+                v_blocked = collision.get('v_blocked', False)
+                print(f"🎯 BLOCKED COLLISION: {instance.object_name} with {other.object_name} (h:{h_blocked}, v:{v_blocked})")
                 instance.action_executor.execute_collision_event(
                     instance,
                     event_name,
@@ -1321,6 +1335,8 @@ class GameRunner:
                         'self_vspeed': collision['self_vspeed'],
                         'other_hspeed': other.hspeed,
                         'other_vspeed': other.vspeed,
+                        'h_blocked': h_blocked,
+                        'v_blocked': v_blocked,
                     }
                 )
         # Handle intended movement with collision checking
