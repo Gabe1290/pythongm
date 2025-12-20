@@ -26,6 +26,14 @@ venv_py312/
 get-pip.py
 python312.bat
 
+# Build artifacts (Nuitka)
+main.build/
+main.onefile-build/
+nuitka-crash-report.xml
+PyGameMaker
+PyGameMaker-linux.zip
+*.exe
+
 # Work folders
 Projects/
 Tutorial1/
