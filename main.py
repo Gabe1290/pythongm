@@ -25,14 +25,15 @@ import os
 from pathlib import Path
 
 def setup_qtwebengine_paths():
-    """Configure QtWebEngine resource paths for Nuitka onefile builds."""
+    """Configure QtWebEngine resource paths for both development and packaged builds."""
     # Check if running from Nuitka compiled executable
     # Nuitka sets __compiled__ at module level, or we can check if running from /tmp
     is_nuitka = "__compiled__" in globals() or "__compiled__" in dir(__builtins__) if hasattr(__builtins__, '__dict__') else False
 
     # Also detect by checking if __file__ is in temp directory (onefile extraction)
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    is_onefile_extracted = current_dir.startswith('/tmp/') or current_dir.startswith(os.environ.get('TEMP', ''))
+    temp_dir = os.environ.get('TEMP', '')
+    is_onefile_extracted = current_dir.startswith('/tmp/') or (temp_dir and current_dir.startswith(temp_dir))
 
     if is_nuitka or is_onefile_extracted or hasattr(sys, 'frozen'):
         # Get the directory where the executable's resources are extracted
@@ -52,6 +53,41 @@ def setup_qtwebengine_paths():
 
         print(f"🔧 QtWebEngine paths configured for packaged app:")
         print(f"   Resources: {base_path}")
+    else:
+        # Running from source - find PySide6's QtWebEngineProcess
+        try:
+            import PySide6
+            pyside6_dir = os.path.dirname(PySide6.__file__)
+
+            # QtWebEngineProcess is in Qt/libexec on Linux, Qt/bin on Windows
+            if sys.platform == 'win32':
+                libexec_path = os.path.join(pyside6_dir, 'Qt', 'bin')
+                process_name = 'QtWebEngineProcess.exe'
+            else:
+                libexec_path = os.path.join(pyside6_dir, 'Qt', 'libexec')
+                process_name = 'QtWebEngineProcess'
+
+            process_path = os.path.join(libexec_path, process_name)
+
+            if os.path.exists(process_path):
+                os.environ['QTWEBENGINEPROCESS_PATH'] = process_path
+
+                # Set resources path to Qt directory
+                qt_resources = os.path.join(pyside6_dir, 'Qt', 'resources')
+                if os.path.exists(qt_resources):
+                    os.environ['QTWEBENGINE_RESOURCES_PATH'] = qt_resources
+
+                # Set locales path
+                locales_path = os.path.join(pyside6_dir, 'Qt', 'translations')
+                if os.path.exists(locales_path):
+                    os.environ['QTWEBENGINE_LOCALES_PATH'] = locales_path
+
+                print(f"🔧 QtWebEngine paths configured for development:")
+                print(f"   Process: {process_path}")
+            else:
+                print(f"⚠️ QtWebEngineProcess not found at: {process_path}")
+        except ImportError:
+            print("⚠️ PySide6 not found, skipping QtWebEngine path setup")
 
 # Call before any Qt imports
 setup_qtwebengine_paths()

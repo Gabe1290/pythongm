@@ -62,6 +62,8 @@ class BlocklyConfigDialog(QDialog):
         preset_layout.addWidget(QLabel(self.tr("Preset:")))
 
         self.preset_combo = QComboBox()
+        # Block signals while adding items to prevent triggering on_preset_changed
+        self.preset_combo.blockSignals(True)
         self.preset_combo.addItems([
             self.tr("Full (All Blocks)"),
             self.tr("Beginner (Basic Blocks)"),
@@ -69,8 +71,10 @@ class BlocklyConfigDialog(QDialog):
             self.tr("Platformer Game"),
             self.tr("Grid-based RPG"),
             self.tr("Sokoban (Box Puzzle)"),
+            self.tr("Testing (Validated Only)"),
             self.tr("Custom")
         ])
+        self.preset_combo.blockSignals(False)
         self.preset_combo.currentTextChanged.connect(self.on_preset_changed)
         preset_layout.addWidget(self.preset_combo)
 
@@ -130,6 +134,9 @@ class BlocklyConfigDialog(QDialog):
 
     def populate_tree(self):
         """Populate the tree widget with categories and blocks"""
+        # Block signals while populating to prevent on_item_changed from being triggered
+        self.tree.blockSignals(True)
+
         self.tree.clear()
         self.category_items = {}
         self.block_items = {}
@@ -192,6 +199,9 @@ class BlocklyConfigDialog(QDialog):
 
                 self.block_items[block["type"]] = block_item
 
+        # Unblock signals after populating
+        self.tree.blockSignals(False)
+
     def _is_dark_color(self, hex_color: str) -> bool:
         """Check if a hex color is dark (for text contrast)"""
         hex_color = hex_color.lstrip('#')
@@ -211,6 +221,7 @@ class BlocklyConfigDialog(QDialog):
         """Load current configuration into UI"""
         # Block signals during loading
         self.tree.blockSignals(True)
+        self.preset_combo.blockSignals(True)
 
         # Set checkboxes based on config
         for block_type, item in self.block_items.items():
@@ -225,10 +236,12 @@ class BlocklyConfigDialog(QDialog):
             "platformer": 3,
             "grid_rpg": 4,
             "sokoban": 5,
-        }.get(self.config.preset_name, 6)  # 6 = Custom
+            "testing": 6,
+        }.get(self.config.preset_name, 7)  # 7 = Custom
         self.preset_combo.setCurrentIndex(preset_index)
 
         self.tree.blockSignals(False)
+        self.preset_combo.blockSignals(False)
 
         # Update info
         self.update_info_label()
@@ -243,6 +256,7 @@ class BlocklyConfigDialog(QDialog):
             self.tr("Platformer Game"): "platformer",
             self.tr("Grid-based RPG"): "grid_rpg",
             self.tr("Sokoban (Box Puzzle)"): "sokoban",
+            self.tr("Testing (Validated Only)"): "testing",
         }
 
         if text == self.tr("Custom"):
@@ -252,7 +266,8 @@ class BlocklyConfigDialog(QDialog):
 
         preset_key = preset_map.get(text)
         if preset_key and preset_key in PRESETS:
-            self.config = PRESETS[preset_key]
+            # Make a copy of the preset to avoid modifying the original
+            self.config = BlocklyConfig.from_dict(PRESETS[preset_key].to_dict())
             self.load_config_to_ui()
 
     def on_item_changed(self, item: QTreeWidgetItem, column: int):
@@ -281,10 +296,11 @@ class BlocklyConfigDialog(QDialog):
             else:
                 self.config.disable_block(block_type)
 
-        # Mark as custom
-        if self.preset_combo.currentIndex() != 6:
+        # Mark as custom ONLY if user manually changed something (not during load)
+        # Check if tree signals are blocked - if so, we're loading, not user action
+        if not self.tree.signalsBlocked() and self.preset_combo.currentIndex() != 7:
             self.tree.blockSignals(True)
-            self.preset_combo.setCurrentIndex(6)  # Custom
+            self.preset_combo.setCurrentIndex(7)  # Custom
             self.config.preset_name = "custom"
             self.tree.blockSignals(False)
 

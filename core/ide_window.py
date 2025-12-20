@@ -835,6 +835,8 @@ class PyGameMakerIDE(QMainWindow):
         self.asset_tree.asset_imported.connect(self.on_asset_imported, Qt.ConnectionType.UniqueConnection)
         # Connect the double-click signal
         self.asset_tree.asset_double_clicked.connect(self.on_asset_double_clicked, Qt.ConnectionType.UniqueConnection)
+        # Connect asset deletion signal to update open editors
+        self.asset_tree.assetDeleted.connect(self.on_asset_deleted, Qt.ConnectionType.UniqueConnection)
 
         self.project_manager.project_loaded.connect(self.on_project_loaded, Qt.ConnectionType.UniqueConnection)
         self.project_manager.project_saved.connect(self.on_project_saved, Qt.ConnectionType.UniqueConnection)
@@ -1126,6 +1128,39 @@ class PyGameMakerIDE(QMainWindow):
             print(f"❌ Error finding renamed asset: {e}")
             return None
 
+    def on_asset_deleted(self, asset_type: str, asset_name: str):
+        """Handle asset deletion - update open editors that reference the deleted asset"""
+        try:
+            print(f"🗑️ IDE: Asset deleted - {asset_type}/{asset_name}")
+
+            # If a sprite was deleted, refresh all open object editors
+            if asset_type == "sprites":
+                for editor_name, editor in self.open_editors.items():
+                    if hasattr(editor, '__class__') and editor.__class__.__name__ == 'ObjectEditor':
+                        # Reload sprites in the object editor
+                        if hasattr(editor, 'load_project_assets'):
+                            editor.load_project_assets()
+                            print(f"🔄 Refreshed sprites in object editor: {editor_name}")
+
+                        # If this object was using the deleted sprite, update its data
+                        if hasattr(editor, 'current_object_properties'):
+                            if editor.current_object_properties.get('sprite') == asset_name:
+                                editor.current_object_properties['sprite'] = ''
+                                # Refresh the properties panel to show "None"
+                                if hasattr(editor, 'properties_panel'):
+                                    editor.properties_panel.load_properties(editor.current_object_properties)
+                                print(f"🔄 Cleared sprite reference in object: {editor_name}")
+
+            # If an object was deleted and it's open, close its editor
+            elif asset_type == "objects":
+                if asset_name in self.open_editors:
+                    self.close_editor_by_name(asset_name)
+                    print(f"🔄 Closed deleted object's editor: {asset_name}")
+
+        except Exception as e:
+            print(f"❌ Error handling asset deletion: {e}")
+            import traceback
+            traceback.print_exc()
 
     def create_object(self):
         if not self.ensure_project_loaded("creating objects"):
@@ -1299,11 +1334,12 @@ class PyGameMakerIDE(QMainWindow):
             import os
             exe_exists = os.path.exists(sys.executable)
             file_dir = os.path.dirname(os.path.abspath(__file__))
+            temp_dir = os.environ.get('TEMP', '')
             is_packaged = (
                 getattr(sys, 'frozen', False) or  # PyInstaller
                 not exe_exists or  # Nuitka: sys.executable doesn't exist
                 file_dir.startswith('/tmp/') or  # Nuitka onefile extraction
-                file_dir.startswith(os.environ.get('TEMP', ''))  # Windows temp
+                (temp_dir and file_dir.startswith(temp_dir))  # Windows temp (avoid empty string match)
             )
             print(f"🔍 Packaged detection: frozen={getattr(sys, 'frozen', False)}, exe_exists={exe_exists}, file_dir={file_dir}, is_packaged={is_packaged}")
 
@@ -1987,21 +2023,38 @@ class PyGameMakerIDE(QMainWindow):
     
     def configure_blockly(self):
         """Open Blockly configuration dialog to customize available blocks"""
-        from config.blockly_config import load_config, save_config
-        
-        # Load current configuration
-        current_config = load_config()
-        
+        from config.blockly_config import load_config, save_config, PRESETS, BlocklyConfig
+
+        # Try to load preset from current project settings first
+        current_config = None
+        if self.current_project_data:
+            project_preset = self.current_project_data.get('settings', {}).get('blockly_preset')
+            if project_preset and project_preset in PRESETS:
+                # Make a copy to avoid modifying the original preset
+                current_config = BlocklyConfig.from_dict(PRESETS[project_preset].to_dict())
+
+        # Fall back to global config if no project preset
+        if not current_config:
+            current_config = load_config()
+
         # Show dialog
         dialog = BlocklyConfigDialog(self, current_config)
         if dialog.exec() == QDialog.Accepted:
             # Save the new configuration
             new_config = dialog.config
             save_config(new_config)
-            
+
+            # Also save to project settings if a project is open
+            if self.current_project_path and self.current_project_data:
+                if 'settings' not in self.current_project_data:
+                    self.current_project_data['settings'] = {}
+                self.current_project_data['settings']['blockly_preset'] = new_config.preset_name
+                self.save_project()
+                print(f"✅ Saved Blockly preset '{new_config.preset_name}' to project")
+
             # Refresh any open GM80 events panels
             self.refresh_event_panels_config()
-            
+
             # Show confirmation
             QMessageBox.information(
                 self,
@@ -2012,7 +2065,7 @@ class PyGameMakerIDE(QMainWindow):
                         "• Traditional event editor\n\n"
                         "Changes apply immediately to currently open editors.")
             )
-            
+
             print(f"✅ Blockly configuration updated: {new_config.preset_name} preset")
             print(f"   Enabled blocks: {len(new_config.enabled_blocks)}")
             print(f"   Enabled categories: {', '.join(new_config.enabled_categories)}")
@@ -2201,6 +2254,7 @@ class PyGameMakerIDE(QMainWindow):
 
     def on_asset_imported(self, asset_name, asset_type, asset_data):
         """Handle asset import with correct signal signature"""
+        print(f"📥 on_asset_imported called: {asset_type}/{asset_name}")
         self.update_status(self.tr("Imported {0}").format(asset_name))
 
         # Update current_project_data with the new asset
@@ -2218,6 +2272,7 @@ class PyGameMakerIDE(QMainWindow):
                 print(f"Refreshed sprite combo after importing {asset_name}")
 
             # Also refresh open object editors so they see the new sprite
+            print(f"🔄 Refreshing open object editors after sprite import...")
             self.refresh_open_object_editors()
 
     def on_asset_double_clicked(self, asset_data):

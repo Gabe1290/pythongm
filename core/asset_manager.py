@@ -277,6 +277,14 @@ class AssetManager(QObject):
             "modified": datetime.now().isoformat()
         })
 
+        # Regenerate thumbnail to show only first frame for strips
+        if sprite_data.get("file_path"):
+            image_path = self.get_absolute_path(sprite_data["file_path"])
+            if image_path.exists():
+                thumbnail_path = self.generate_thumbnail(image_path, sprite_name, sprite_data)
+                if thumbnail_path:
+                    sprite_data["thumbnail"] = self.get_relative_path(thumbnail_path)
+
         self.mark_dirty()
         self.asset_modified.emit("sprites", sprite_name, sprite_data)
         self.status_changed.emit(f"Updated animation for {sprite_name}: {frames} frames")
@@ -341,36 +349,54 @@ class AssetManager(QObject):
         """Delete an asset and its associated files"""
         if not self.project_directory:
             return False
-            
+
         try:
             asset_data = self.get_asset(asset_type, asset_name)
             if not asset_data:
                 return False
-            
+
             # Delete main file
             if asset_data.get("file_path"):
                 file_path = self.get_absolute_path(asset_data["file_path"])
                 if file_path.exists():
                     file_path.unlink()
-            
+
             # Delete thumbnail
             if asset_data.get("thumbnail"):
                 thumbnail_path = self.get_absolute_path(asset_data["thumbnail"])
                 if thumbnail_path.exists():
                     thumbnail_path.unlink()
-            
+
+            # If deleting a sprite, clear references from objects that use it
+            if asset_type == "sprites":
+                self._clear_sprite_references(asset_name)
+
             # Remove from cache
             if asset_type in self.assets_cache and asset_name in self.assets_cache[asset_type]:
                 del self.assets_cache[asset_type][asset_name]
-            
+
             self.asset_deleted.emit(asset_type, asset_name)
             self.status_changed.emit(f"Deleted {asset_name}")
-            
+
             return True
-            
+
         except Exception as e:
             self.status_changed.emit(f"Failed to delete {asset_name}: {str(e)}")
             return False
+
+    def _clear_sprite_references(self, sprite_name: str) -> None:
+        """Clear references to a sprite from all objects that use it"""
+        objects = self.assets_cache.get("objects", {})
+        updated_objects = []
+
+        for obj_name, obj_data in objects.items():
+            if obj_data.get("sprite") == sprite_name:
+                obj_data["sprite"] = ""
+                updated_objects.append(obj_name)
+                self.asset_modified.emit("objects", obj_name, obj_data)
+
+        if updated_objects:
+            print(f"🔄 Cleared sprite reference from objects: {', '.join(updated_objects)}")
     
     def rename_asset(self, asset_type: str, old_name: str, new_name: str) -> bool:
         """Rename an asset and update file paths"""
@@ -655,35 +681,53 @@ class AssetManager(QObject):
 
         project_data["assets"] = assets_for_json
     
-    def generate_thumbnail(self, image_path: Path, asset_name: str) -> Optional[Path]:
-        """Generate a thumbnail for an image asset"""
+    def generate_thumbnail(self, image_path: Path, asset_name: str,
+                            sprite_data: Optional[Dict[str, Any]] = None) -> Optional[Path]:
+        """Generate a thumbnail for an image asset.
+
+        For sprite strips/sheets, extracts only the first frame for the thumbnail.
+
+        Args:
+            image_path: Path to the source image
+            asset_name: Name of the asset (used for thumbnail filename)
+            sprite_data: Optional sprite metadata with animation_type, frame_width, frame_height
+        """
         if not self.project_directory:
             return None
-            
+
         try:
             thumbnail_dir = self.project_directory / "thumbnails"
             thumbnail_dir.mkdir(exist_ok=True)
-            
+
             thumbnail_path = thumbnail_dir / f"{asset_name}_thumb.png"
-            
+
             with Image.open(image_path) as img:
                 img = ImageOps.exif_transpose(img)
-                
+
+                # For sprite strips/sheets, extract only the first frame
+                if sprite_data:
+                    animation_type = sprite_data.get("animation_type", "single")
+                    if animation_type in ("strip_h", "strip_v", "grid"):
+                        frame_width = sprite_data.get("frame_width", img.width)
+                        frame_height = sprite_data.get("frame_height", img.height)
+                        # Extract first frame (top-left corner)
+                        img = img.crop((0, 0, frame_width, frame_height))
+
                 if img.mode == "RGBA":
                     thumbnail = Image.new("RGBA", self.THUMBNAIL_SIZE, (0, 0, 0, 0))
                 else:
                     thumbnail = Image.new("RGB", self.THUMBNAIL_SIZE, (255, 255, 255))
-                
+
                 img.thumbnail(self.THUMBNAIL_SIZE, Image.Resampling.LANCZOS)
-                
+
                 x = (self.THUMBNAIL_SIZE[0] - img.width) // 2
                 y = (self.THUMBNAIL_SIZE[1] - img.height) // 2
-                
+
                 thumbnail.paste(img, (x, y))
                 thumbnail.save(thumbnail_path, "PNG")
-                
+
                 return thumbnail_path
-                
+
         except Exception as e:
             self.status_changed.emit(f"Failed to generate thumbnail: {str(e)}")
             return None

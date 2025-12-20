@@ -68,19 +68,27 @@ class AssetTreeItem(QTreeWidgetItem):
                     
                     # Add type-specific icon or thumbnail
                     if self.asset_type == "sprites":
-                        # Try to load actual sprite image as thumbnail icon
+                        # Try to load pre-generated thumbnail (already has first frame for strips)
+                        thumb_path = self.asset_data.get('thumbnail', '')
                         file_path = self.asset_data.get('file_path', '')
-                        if file_path and self.load_sprite_thumbnail(file_path):
+                        if thumb_path and self.load_sprite_thumbnail(thumb_path):
                             # Thumbnail loaded successfully, just show name
+                            self.setText(0, self.asset_name)
+                        elif file_path and self.load_sprite_thumbnail(file_path):
+                            # Fallback to full sprite if no thumbnail
                             self.setText(0, self.asset_name)
                         else:
                             # Fallback to emoji if image loading fails
                             self.setText(0, f"🖼️ {self.asset_name}")
                     elif self.asset_type == "backgrounds":
-                        # Try to load actual background image as thumbnail icon
+                        # Try to load pre-generated thumbnail first
+                        thumb_path = self.asset_data.get('thumbnail', '')
                         file_path = self.asset_data.get('file_path', '')
-                        if file_path and self.load_sprite_thumbnail(file_path):
+                        if thumb_path and self.load_sprite_thumbnail(thumb_path):
                             # Thumbnail loaded successfully, just show name
+                            self.setText(0, self.asset_name)
+                        elif file_path and self.load_sprite_thumbnail(file_path):
+                            # Fallback to full image if no thumbnail
                             self.setText(0, self.asset_name)
                         else:
                             # Fallback to emoji if image loading fails
@@ -166,48 +174,68 @@ class AssetTreeItem(QTreeWidgetItem):
         """Load the assigned sprite as thumbnail icon for an object"""
         try:
             from PySide6.QtGui import QPixmap, QIcon
-            
+            import json
+
             if not sprite_name:
                 return False
-            
+
             # Get the tree widget to access project path and asset manager
             tree_widget = self.treeWidget()
             if not tree_widget or not hasattr(tree_widget, 'project_path'):
                 return False
-            
+
             project_root = Path(tree_widget.project_path)
-            
+
             # Try to get sprite data from asset manager if available
             sprite_file_path = None
-            
+            sprite_data = None
+
             if hasattr(tree_widget, 'project_manager') and tree_widget.project_manager:
                 if tree_widget.project_manager.asset_manager:
                     sprite_data = tree_widget.project_manager.asset_manager.get_asset('sprites', sprite_name)
                     if sprite_data:
                         sprite_file_path = sprite_data.get('file_path', '')
-            
-            # If we didn't get it from asset manager, construct the path
+
+            # If asset manager didn't have it, try loading from project.json directly
+            if not sprite_data:
+                project_file = project_root / "project.json"
+                if project_file.exists():
+                    try:
+                        with open(project_file, 'r') as f:
+                            project_data = json.load(f)
+                        sprite_data = project_data.get('assets', {}).get('sprites', {}).get(sprite_name)
+                        if sprite_data:
+                            sprite_file_path = sprite_data.get('file_path', '')
+                    except Exception:
+                        pass
+
+            # If we still didn't get it, construct the path
             if not sprite_file_path:
                 sprite_file_path = f"sprites/{sprite_name}.png"
-            
+
             # Construct absolute path
             if Path(sprite_file_path).is_absolute():
                 abs_path = Path(sprite_file_path)
             else:
                 abs_path = project_root / sprite_file_path
-            
+
             if not abs_path.exists():
                 print(f"⚠️ Object sprite thumbnail not found: {abs_path}")
                 return False
-            
+
             # Load image from disk
-            with open(abs_path, 'rb') as f:
-                image_data = f.read()
-            
-            pixmap = QPixmap()
-            pixmap.loadFromData(image_data)
-            
+            pixmap = QPixmap(str(abs_path))
+
             if not pixmap.isNull():
+                # For sprite strips, extract only the first frame
+                if sprite_data:
+                    animation_type = sprite_data.get('animation_type', 'single')
+                    if animation_type in ('strip_h', 'strip_v', 'grid'):
+                        frame_width = sprite_data.get('frame_width', pixmap.width())
+                        frame_height = sprite_data.get('frame_height', pixmap.height())
+                        # Extract first frame (top-left corner)
+                        pixmap = pixmap.copy(0, 0, frame_width, frame_height)
+
                 # Scale to thumbnail size (32x32 for consistency)
                 scaled_pixmap = pixmap.scaled(
                     32, 32,
@@ -218,8 +246,8 @@ class AssetTreeItem(QTreeWidgetItem):
                 return True
             else:
                 print(f"⚠️ Failed to load pixmap for object sprite: {sprite_name}")
-                
+
         except Exception as e:
             print(f"⚠️ Failed to load object sprite thumbnail: {e}")
-        
+
         return False

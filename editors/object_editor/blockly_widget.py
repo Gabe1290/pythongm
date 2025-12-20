@@ -355,12 +355,64 @@ class BlocklyWidget(QWidget):
     def open_configure_dialog(self):
         """Open the block configuration dialog"""
         from dialogs.blockly_config_dialog import BlocklyConfigDialog
-        from config.blockly_config import load_config
+        from config.blockly_config import load_config, PRESETS, BlocklyConfig
 
-        current_config = load_config()
+        # Try to load preset from project settings first
+        current_config = None
+        project_preset = self._get_project_preset()
+        if project_preset and project_preset in PRESETS:
+            # Make a copy to avoid modifying the original preset
+            current_config = BlocklyConfig.from_dict(PRESETS[project_preset].to_dict())
+        else:
+            current_config = load_config()
+
         dialog = BlocklyConfigDialog(self, current_config)
         dialog.config_changed.connect(self.apply_configuration)
-        dialog.exec()
+        if dialog.exec():
+            # Save preset to project settings
+            self._save_project_preset(dialog.config.preset_name)
+
+    def _get_project_preset(self) -> Optional[str]:
+        """Get Blockly preset from project settings"""
+        try:
+            # Navigate up to find the object editor which has project_path
+            parent = self.parent()
+            while parent and not hasattr(parent, 'project_path'):
+                parent = parent.parent()
+
+            if parent and parent.project_path:
+                project_file = Path(parent.project_path) / "project.json"
+                if project_file.exists():
+                    with open(project_file, 'r') as f:
+                        data = json.load(f)
+                    return data.get('settings', {}).get('blockly_preset')
+        except Exception as e:
+            print(f"Error loading project preset: {e}")
+        return None
+
+    def _save_project_preset(self, preset_name: str):
+        """Save Blockly preset to project settings"""
+        try:
+            # Navigate up to find the object editor which has project_path
+            parent = self.parent()
+            while parent and not hasattr(parent, 'project_path'):
+                parent = parent.parent()
+
+            if parent and parent.project_path:
+                project_file = Path(parent.project_path) / "project.json"
+                if project_file.exists():
+                    with open(project_file, 'r') as f:
+                        data = json.load(f)
+
+                    if 'settings' not in data:
+                        data['settings'] = {}
+                    data['settings']['blockly_preset'] = preset_name
+
+                    with open(project_file, 'w') as f:
+                        json.dump(data, f, indent=2)
+                    print(f"✅ Saved Blockly preset '{preset_name}' to project")
+        except Exception as e:
+            print(f"Error saving project preset: {e}")
 
     def apply_configuration(self, config):
         """Apply a new block configuration to the toolbox"""

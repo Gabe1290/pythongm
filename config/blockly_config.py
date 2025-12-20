@@ -406,6 +406,138 @@ class BlocklyConfig:
 
         return config
 
+    @classmethod
+    def get_testing(cls) -> 'BlocklyConfig':
+        """Testing preset - only includes validated events and actions.
+
+        This preset is organized by game type phases:
+        - Phase 1: Sokoban-like (grid puzzles)
+        - Phase 2: Labyrinth/Rogue-like (maze exploration)
+        - Phase 3: Platform (side-scrolling)
+        - Phase 4: Scrolling shooter
+        - Phase 5: Racing
+        - Phase 6: Zelda-like RPG
+
+        Enable blocks here only after they pass testing.
+        See docs/TESTING_CHECKLIST.md for the full testing plan.
+        """
+        config = cls(preset_name="testing")
+
+        # =====================================================================
+        # PHASE 1: Sokoban-like Games (Grid-based puzzles)
+        # =====================================================================
+
+        # Phase 1 Events
+        config.enable_block("event_create")
+        config.enable_block("event_keyboard_held")
+        config.enable_block("event_keyboard_nokey")
+        config.enable_block("event_collision")
+        config.enable_block("event_step")
+
+        # Phase 1 Movement
+        config.enable_block("move_set_hspeed")
+        config.enable_block("move_set_vspeed")
+        config.enable_block("move_stop")
+        config.enable_block("move_snap_to_grid")
+        config.enable_block("move_jump_to")
+        config.enable_block("grid_if_on_grid")
+
+        # Phase 1 Instance
+        config.enable_block("instance_destroy")
+        config.enable_block("instance_create")
+
+        # Phase 1 Room
+        config.enable_block("room_goto_next")
+        config.enable_block("room_goto_previous")
+        config.enable_block("room_restart")
+        config.enable_block("room_if_next_exists")
+        config.enable_block("room_if_previous_exists")
+
+        # =====================================================================
+        # PHASE 2: Labyrinth/Rogue-like Games
+        # Uncomment blocks below after Phase 1 testing is complete
+        # =====================================================================
+
+        # Phase 2 Events
+        # config.enable_block("event_keyboard_press")
+        # config.enable_block("event_destroy")
+        # config.enable_block("event_alarm")
+
+        # Phase 2 Movement
+        # config.enable_block("move_direction")
+        # config.enable_block("move_towards")
+        # config.enable_block("grid_stop_if_no_keys")
+        # config.enable_block("grid_check_keys_and_move")
+
+        # Phase 2 Timing
+        # config.enable_block("set_alarm")
+
+        # Phase 2 Score/Lives/Health
+        # config.enable_block("health_set")
+        # config.enable_block("health_add")
+        # config.enable_block("draw_health_bar")
+        # config.enable_block("lives_set")
+        # config.enable_block("lives_add")
+
+        # Phase 2 Sound
+        # config.enable_block("sound_play")
+        # config.enable_block("music_play")
+        # config.enable_block("music_stop")
+
+        # =====================================================================
+        # PHASE 3: Platform Games
+        # Uncomment blocks below after Phase 2 testing is complete
+        # =====================================================================
+
+        # Phase 3 Events
+        # config.enable_block("event_keyboard_release")
+
+        # Phase 3 Movement
+        # config.enable_block("set_gravity")
+        # config.enable_block("set_friction")
+        # config.enable_block("reverse_horizontal")
+        # config.enable_block("reverse_vertical")
+
+        # Phase 3 Score
+        # config.enable_block("score_set")
+        # config.enable_block("score_add")
+        # config.enable_block("draw_score")
+        # config.enable_block("draw_lives")
+
+        # Phase 3 Appearance
+        # config.enable_block("set_sprite")
+        # config.enable_block("set_alpha")
+
+        # =====================================================================
+        # PHASE 4: Scrolling Shooter Games
+        # Uncomment blocks below after Phase 3 testing is complete
+        # =====================================================================
+
+        # (Additional blocks for Phase 4+)
+
+        # =====================================================================
+        # PHASE 5: Racing Games
+        # Uncomment blocks below after Phase 4 testing is complete
+        # =====================================================================
+
+        # (Additional blocks for Phase 5+)
+
+        # =====================================================================
+        # PHASE 6: Zelda-like RPG
+        # Uncomment blocks below after Phase 5 testing is complete
+        # =====================================================================
+
+        # Phase 6 Events
+        # config.enable_block("event_draw")
+        # config.enable_block("event_mouse")
+
+        # Output (useful for testing)
+        config.enable_block("output_message")
+
+        config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Output"}
+
+        return config
+
 
 # ============================================================================
 # PRESET REGISTRY
@@ -418,6 +550,7 @@ PRESETS: Dict[str, BlocklyConfig] = {
     "platformer": BlocklyConfig.get_platformer(),
     "grid_rpg": BlocklyConfig.get_grid_rpg(),
     "sokoban": BlocklyConfig.get_sokoban(),
+    "testing": BlocklyConfig.get_testing(),
 }
 
 

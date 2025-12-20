@@ -278,19 +278,41 @@ class AssetOperations:
             
             # Get asset info before deleting
             asset_data = assets[asset_category][asset_name]
-            print(f"📄 Found asset data: {asset_data.get('project_path', 'No path')}")
-            
+            # Check both 'file_path' (sprites/sounds) and 'project_path' (legacy)
+            rel_file_path = asset_data.get('file_path') or asset_data.get('project_path')
+            print(f"📄 Found asset data: {rel_file_path or 'No path'}")
+
             # Delete physical file if it exists
-            if 'project_path' in asset_data:
-                file_path = Path(asset_data['project_path'])
+            if rel_file_path:
+                # Resolve relative path against project directory
+                file_path = Path(self.tree.project_path) / rel_file_path
                 if file_path.exists():
                     file_path.unlink()
                     print(f"🗑️ Deleted file: {file_path}")
+
+            # Delete thumbnail if it exists
+            thumbnail_path = asset_data.get('thumbnail')
+            if thumbnail_path:
+                thumb_file = Path(self.tree.project_path) / thumbnail_path
+                if thumb_file.exists():
+                    thumb_file.unlink()
+                    print(f"🗑️ Deleted thumbnail: {thumb_file}")
             
             # Remove from project data
             del assets[asset_category][asset_name]
             print(f"✅ Removed {asset_name} from project data")
-            
+
+            # If deleting a sprite, clear references from objects that use it
+            if asset_category == "sprites":
+                objects = assets.get("objects", {})
+                updated_objects = []
+                for obj_name, obj_data in objects.items():
+                    if obj_data.get("sprite") == asset_name:
+                        obj_data["sprite"] = ""
+                        updated_objects.append(obj_name)
+                if updated_objects:
+                    print(f"🔄 Cleared sprite reference from objects: {', '.join(updated_objects)}")
+
             # CRITICAL: Also remove from AssetManager cache
             parent = self.tree.parent()
             while parent and not hasattr(parent, 'asset_manager'):
@@ -303,6 +325,13 @@ class AssetOperations:
                         if asset_name in asset_manager.assets_cache[asset_category]:
                             del asset_manager.assets_cache[asset_category][asset_name]
                             print(f"✅ Removed {asset_name} from AssetManager cache")
+
+                    # Also update object cache if we cleared sprite references
+                    if asset_category == "sprites" and "objects" in asset_manager.assets_cache:
+                        for obj_name in updated_objects:
+                            if obj_name in asset_manager.assets_cache["objects"]:
+                                asset_manager.assets_cache["objects"][obj_name]["sprite"] = ""
+                                print(f"✅ Updated {obj_name} in AssetManager cache")
 
             # Save modified data back to file
             if save_project_data(project_file, project_data):

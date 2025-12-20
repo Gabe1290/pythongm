@@ -623,20 +623,21 @@ class ObjectEditor(BaseEditor):
     
     def load_project_assets(self):
         """Load available sprites from project"""
+        sprite_count = 0
         try:
             project_data = self.load_project_data()
-            
+
             if project_data:
                 assets = project_data.get('assets', {})
-                
+
                 # Load sprites for sprite assignment
                 self.available_sprites = assets.get('sprites', {})
-                
+
                 # Update status
                 sprite_count = len(self.available_sprites)
                 # ✅ TRANSLATABLE: Status message
                 self.update_status(self.tr("Loaded {0} sprites").format(sprite_count))
-                            
+
         except Exception as e:
             print(f"Error loading project assets: {e}")
             # ✅ TRANSLATABLE: Error message
@@ -758,9 +759,11 @@ class ObjectEditor(BaseEditor):
             properties = self.properties_panel.get_properties()
         
         # Get object properties from current stored properties
+        # Use sprite from properties panel (which reflects UI state) over stored properties
+        sprite_name = properties.get('sprite', self.current_object_properties.get('sprite', ''))
         object_data = {
             'name': self.asset_name or 'obj_object1',
-            'sprite': self.current_object_properties.get('sprite', ''),
+            'sprite': sprite_name,
             'visible': properties.get('visible', self.current_object_properties.get('visible', True)),
             'solid': properties.get('solid', self.current_object_properties.get('solid', False)),
             'persistent': properties.get('persistent', self.current_object_properties.get('persistent', False)),
