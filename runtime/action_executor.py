@@ -1080,11 +1080,37 @@ class ActionExecutor:
         bare_var_pattern = r'(?<![.\w])\b([a-zA-Z_]\w*)\b(?!\s*\.)'
         expr_substituted = re.sub(bare_var_pattern, replace_bare_var, expr_substituted)
 
+        # Handle GameMaker-style functions before evaluation
+        import random as random_module
+
+        # random(n) - returns random float from 0 to n (exclusive)
+        def gm_random(n):
+            return random_module.random() * n
+
+        # irandom(n) - returns random integer from 0 to n (inclusive)
+        def gm_irandom(n):
+            return random_module.randint(0, int(n))
+
+        # choose(a, b, c, ...) - returns one of the arguments randomly
+        def gm_choose(*args):
+            return random_module.choice(args)
+
+        # Replace function calls with Python equivalents
+        expr_substituted = re.sub(r'\brandom\s*\(', 'gm_random(', expr_substituted)
+        expr_substituted = re.sub(r'\birandom\s*\(', 'gm_irandom(', expr_substituted)
+        expr_substituted = re.sub(r'\bchoose\s*\(', 'gm_choose(', expr_substituted)
+
         # Try to evaluate the expression safely
         try:
-            # Only allow safe characters for eval
-            if re.match(r'^[\d\s\+\-\*\/\%\(\)\.]+$', expr_substituted):
-                result = eval(expr_substituted)
+            # Allow safe characters plus function calls
+            if re.match(r'^[\d\s\+\-\*\/\%\(\)\.\,a-zA-Z_]+$', expr_substituted):
+                # Create safe namespace with only allowed functions
+                safe_namespace = {
+                    'gm_random': gm_random,
+                    'gm_irandom': gm_irandom,
+                    'gm_choose': gm_choose,
+                }
+                result = eval(expr_substituted, {"__builtins__": {}}, safe_namespace)
                 return result
             else:
                 print(f"⚠️ Unsafe expression: {expr_substituted}")
