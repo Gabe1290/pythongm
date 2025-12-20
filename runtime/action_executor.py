@@ -36,6 +36,10 @@ class ActionExecutor:
                 # Extract action name: execute_move_grid_action -> move_grid
                 action_name = attr_name[8:-7]  # Remove 'execute_' and '_action'
 
+                # Skip if no action name (e.g., "execute_action" -> "")
+                if not action_name:
+                    continue
+
                 # Get the method
                 method = getattr(self, attr_name)
 
@@ -374,6 +378,35 @@ class ActionExecutor:
         """Stop all movement by setting speeds to zero"""
         instance.hspeed = 0
         instance.vspeed = 0
+
+    def execute_bounce_action(self, instance, parameters: Dict[str, Any]):
+        """Bounce off solid objects by reversing velocity.
+
+        Parameters:
+            precise: If True, uses more accurate collision detection (not implemented yet)
+            against: "solid" to bounce off all solid objects, or specific object name
+
+        For simple bouncing, this reverses the velocity component based on
+        which direction the instance was moving.
+        """
+        # Reverse velocity to bounce
+        # Simple approach: reverse both speeds
+        # A more sophisticated approach would detect which side was hit
+
+        if instance.hspeed != 0 or instance.vspeed != 0:
+            # Determine primary direction of movement and reverse it
+            if abs(instance.hspeed) >= abs(instance.vspeed):
+                # Moving primarily horizontally - reverse horizontal
+                instance.hspeed = -instance.hspeed
+                print(f"  🏓 {instance.object_name} bounced horizontally, hspeed now {instance.hspeed}")
+            else:
+                # Moving primarily vertically - reverse vertical
+                instance.vspeed = -instance.vspeed
+                print(f"  🏓 {instance.object_name} bounced vertically, vspeed now {instance.vspeed}")
+
+            # Move instance back slightly to prevent getting stuck
+            instance.x += instance.hspeed
+            instance.y += instance.vspeed
 
     def execute_jump_to_position_action(self, instance, parameters: Dict[str, Any]):
         """Jump to a specific position instantly
