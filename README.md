@@ -7,6 +7,14 @@ A GameMaker-style visual game development IDE for creating 2D games with Python.
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-lightgrey)
 
+## Educational Goals
+
+This project serves a dual educational purpose:
+
+1. **Learn Python through Game Development** - Use PyGameMaker to create games visually, then examine the generated Python/Pygame code to understand how game logic translates to real programming concepts.
+
+2. **Learn Advanced Python through IDE Development** - Contribute to PyGameMaker itself and explore real-world software engineering: Qt GUI development, plugin architecture, code generation, internationalization, and more.
+
 ## Overview
 
 PyGameMaker provides a familiar drag-and-drop interface inspired by classic GameMaker, allowing users to create games visually using:
