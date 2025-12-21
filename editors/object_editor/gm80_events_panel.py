@@ -664,7 +664,29 @@ class GM80EventsPanel(QWidget):
         return None
 
     def remove_event(self, event_name: str):
-        """Remove an event"""
+        """Remove an event or keyboard sub-event"""
+        # Check if this is a keyboard sub-event (e.g., keyboard_UP, keyboard_press_LEFT)
+        for base_event in ["keyboard_release", "keyboard_press", "keyboard"]:
+            if event_name.startswith(base_event + "_"):
+                key_name = event_name[len(base_event) + 1:]
+                if key_name and base_event in self.current_events_data:
+                    keyboard_data = self.current_events_data[base_event]
+                    if isinstance(keyboard_data, dict) and key_name in keyboard_data:
+                        reply = QMessageBox.question(self, self.tr("Remove Event"),
+                            self.tr("Are you sure you want to remove the {0} {1} event?").format(base_event, key_name),
+                            QMessageBox.Yes | QMessageBox.No)
+
+                        if reply == QMessageBox.Yes:
+                            del keyboard_data[key_name]
+                            # If no more keys, remove the parent event too
+                            remaining_keys = [k for k in keyboard_data.keys() if k != "actions"]
+                            if not remaining_keys:
+                                del self.current_events_data[base_event]
+                            self.refresh_display()
+                            self.events_modified.emit()
+                        return
+
+        # Regular event removal
         if event_name in self.current_events_data:
             reply = QMessageBox.question(self, self.tr("Remove Event"),
                 self.tr("Are you sure you want to remove the {0} event?").format(event_name),
