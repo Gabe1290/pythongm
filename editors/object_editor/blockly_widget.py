@@ -75,6 +75,7 @@ class BlocklyWidget(QWidget):
     events_generated = Signal(dict)  # Emitted with generated events data
     sync_requested = Signal()  # Emitted when user wants to sync from events panel
     detach_requested = Signal()  # Emitted when user wants to detach the editor
+    config_changed = Signal(object)  # Emitted when Blockly config changes (passes BlocklyConfig)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -436,6 +437,9 @@ class BlocklyWidget(QWidget):
         total_categories = len(config.enabled_categories)
         self.update_status(self.tr("Configuration applied: {0} blocks, {1} categories").format(total_blocks, total_categories))
 
+        # Emit signal so other components (events panel) can update
+        self.config_changed.emit(config)
+
     def _apply_saved_configuration(self):
         """Apply the saved configuration on startup"""
         from config.blockly_config import load_config
@@ -454,6 +458,7 @@ class BlocklyVisualProgrammingTab(QWidget):
     # Signals
     events_modified = Signal(dict)  # Emitted when events are modified
     sync_requested = Signal()  # Emitted when user wants to sync from events panel
+    config_changed = Signal(object)  # Emitted when Blockly config changes
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -494,6 +499,7 @@ class BlocklyVisualProgrammingTab(QWidget):
         self.blockly_widget.blocks_modified.connect(self.on_blocks_modified)
         self.blockly_widget.sync_requested.connect(self.on_sync_requested)
         self.blockly_widget.detach_requested.connect(self.detach_editor)
+        self.blockly_widget.config_changed.connect(self.config_changed)  # Forward config changes
         self.main_layout.addWidget(self.blockly_widget)
 
     def detach_editor(self):

@@ -1031,27 +1031,41 @@ class GameRunner:
                 instance.y = round(instance.y / grid_size) * grid_size
                 print(f"  🔄 Direction reversal: snapped {instance.object_name} to grid ({instance.x}, {instance.y})")
             
+            # Helper to find key in dict (case-insensitive)
+            def find_key_in_event(event_dict, key):
+                """Find key in event dict, checking both lowercase and uppercase"""
+                if key in event_dict:
+                    return key
+                upper_key = key.upper()
+                if upper_key in event_dict:
+                    return upper_key
+                return None
+
             # Check for keyboard_press event
             if "keyboard_press" in events:
                 keyboard_press_event = events["keyboard_press"]
-                if isinstance(keyboard_press_event, dict) and sub_key in keyboard_press_event:
-                    print(f"  ✅ Executing keyboard_press.{sub_key} for {instance.object_name}")
-                    events_found = True
-                    sub_event_data = keyboard_press_event[sub_key]
-                    if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
-                        for action_data in sub_event_data["actions"]:
-                            instance.action_executor.execute_action(instance, action_data)
-            
+                if isinstance(keyboard_press_event, dict):
+                    found_key = find_key_in_event(keyboard_press_event, sub_key)
+                    if found_key:
+                        print(f"  ✅ Executing keyboard_press.{found_key} for {instance.object_name}")
+                        events_found = True
+                        sub_event_data = keyboard_press_event[found_key]
+                        if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
+                            for action_data in sub_event_data["actions"]:
+                                instance.action_executor.execute_action(instance, action_data)
+
             # Check for keyboard (held) event
             if "keyboard" in events:
                 keyboard_event = events["keyboard"]
-                if isinstance(keyboard_event, dict) and sub_key in keyboard_event:
-                    print(f"  ✅ Executing keyboard.{sub_key} for {instance.object_name}")
-                    events_found = True
-                    sub_event_data = keyboard_event[sub_key]
-                    if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
-                        for action_data in sub_event_data["actions"]:
-                            instance.action_executor.execute_action(instance, action_data)
+                if isinstance(keyboard_event, dict):
+                    found_key = find_key_in_event(keyboard_event, sub_key)
+                    if found_key:
+                        print(f"  ✅ Executing keyboard.{found_key} for {instance.object_name}")
+                        events_found = True
+                        sub_event_data = keyboard_event[found_key]
+                        if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
+                            for action_data in sub_event_data["actions"]:
+                                instance.action_executor.execute_action(instance, action_data)
                 # Removed error messages - it's normal for an object to not handle every key
         
         if not events_found:
@@ -1084,49 +1098,29 @@ class GameRunner:
             # Remove key from pressed set
             if hasattr(instance, "keys_pressed"):
                 instance.keys_pressed.discard(sub_key)
-            
-            # Check if this instance has keyboard events for this key
+
             events = instance.object_data.get('events', {})
-            has_keyboard_event = False
-            
-            if "keyboard" in events:
-                keyboard_event = events["keyboard"]
-                if isinstance(keyboard_event, dict) and sub_key in keyboard_event:
-                    has_keyboard_event = True
-            
-            if "keyboard_press" in events:
-                keyboard_press_event = events["keyboard_press"]
-                if isinstance(keyboard_press_event, dict) and sub_key in keyboard_press_event:
-                    has_keyboard_event = True
-            
-            # If this object responds to this key, stop its movement
-            if has_keyboard_event:
-                grid_size = 32  # Default grid size
 
-                # Stop movement based on which key was released
-                # Snap to NEAREST grid position (not forward) for precise Sokoban-style control
-                if sub_key in ["left", "right"]:
-                    instance.hspeed = 0
-                    # Snap X to nearest grid position
-                    instance.x = round(instance.x / grid_size) * grid_size
-                    print(f"  🛑 Stopped horizontal movement for {instance.object_name}")
-                elif sub_key in ["up", "down"]:
-                    instance.vspeed = 0
-                    # Snap Y to nearest grid position
-                    instance.y = round(instance.y / grid_size) * grid_size
-                    print(f"  🛑 Stopped vertical movement for {instance.object_name}")
+            # Helper to find key in dict (case-insensitive)
+            def find_key_in_event(event_dict, key):
+                if key in event_dict:
+                    return key
+                upper_key = key.upper()
+                if upper_key in event_dict:
+                    return upper_key
+                return None
 
-                print(f"  📍 Snapped to grid: ({instance.x}, {instance.y})")
-            
-            # NEW: Execute keyboard_release events from JSON (custom actions)
+            # Execute keyboard_release events from JSON (custom actions only)
             if "keyboard_release" in events:
                 keyboard_release_event = events["keyboard_release"]
-                if isinstance(keyboard_release_event, dict) and sub_key in keyboard_release_event:
-                    print(f"  ✅ Executing keyboard_release.{sub_key} for {instance.object_name}")
-                    sub_event_data = keyboard_release_event[sub_key]
-                    if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
-                        for action_data in sub_event_data["actions"]:
-                            instance.action_executor.execute_action(instance, action_data)
+                if isinstance(keyboard_release_event, dict):
+                    found_key = find_key_in_event(keyboard_release_event, sub_key)
+                    if found_key:
+                        print(f"  ✅ Executing keyboard_release.{found_key} for {instance.object_name}")
+                        sub_event_data = keyboard_release_event[found_key]
+                        if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
+                            for action_data in sub_event_data["actions"]:
+                                instance.action_executor.execute_action(instance, action_data)
     
     def handle_mouse_press(self, button, pos):
         """Handle mouse button press event"""

@@ -440,8 +440,14 @@ class ObjectEditor(BaseEditor):
         # Connect signals
         self.blockly_tab.events_modified.connect(self.on_blockly_events_modified)
         self.blockly_tab.sync_requested.connect(self.on_blockly_sync_requested)
+        self.blockly_tab.config_changed.connect(self.on_blockly_config_changed)
 
         return self.blockly_tab
+
+    def on_blockly_config_changed(self, config):
+        """Handle Blockly configuration change - update events panel"""
+        if hasattr(self, 'events_panel') and self.events_panel:
+            self.events_panel.apply_config(config)
 
     def on_blockly_sync_requested(self):
         """Handle sync request from Blockly (user clicked 'Sync from Events')"""
@@ -637,6 +643,16 @@ class ObjectEditor(BaseEditor):
                 sprite_count = len(self.available_sprites)
                 # ✅ TRANSLATABLE: Status message
                 self.update_status(self.tr("Loaded {0} sprites").format(sprite_count))
+
+                # Load Blockly preset from project settings and apply to events panel
+                settings = project_data.get('settings', {})
+                blockly_preset = settings.get('blockly_preset')
+                if blockly_preset and hasattr(self, 'events_panel') and self.events_panel:
+                    from config.blockly_config import PRESETS, BlocklyConfig
+                    if blockly_preset in PRESETS:
+                        config = BlocklyConfig.from_dict(PRESETS[blockly_preset].to_dict())
+                        self.events_panel.apply_config(config)
+                        print(f"✅ Applied project Blockly preset '{blockly_preset}' to events panel")
 
         except Exception as e:
             print(f"Error loading project assets: {e}")

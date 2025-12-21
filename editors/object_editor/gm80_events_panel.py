@@ -47,19 +47,86 @@ BLOCKLY_TO_GM80_MAPPING = {
     "event_draw": {"categories": ["draw"]},
     "event_collision": {"categories": ["collision"]},
     "event_alarm": {"categories": ["alarm"]},
-    
+
     # Step events - includes begin_step, step, end_step
     "event_step": {"categories": ["step"]},
-    
+
     # Keyboard events
     "event_keyboard_nokey": {"events": ["keyboard_no_key"]},
     "event_keyboard_anykey": {"events": ["keyboard_any_key"]},
     "event_keyboard_held": {"events": ["keyboard"]},
     "event_keyboard_press": {"events": ["keyboard_press"]},
     "event_keyboard_release": {"events": ["keyboard_release"]},
-    
+
     # Mouse events - entire category
     "event_mouse": {"categories": ["mouse"]},
+}
+
+
+# ============================================================================
+# BLOCKLY TO GM80 ACTION MAPPING
+# ============================================================================
+
+# Maps Blockly action block types to GM80 action names
+# Key: Blockly block type, Value: list of GM80 action names it enables
+BLOCKLY_TO_GM80_ACTION_MAPPING = {
+    # Movement actions
+    "move_set_hspeed": ["set_hspeed"],
+    "move_set_vspeed": ["set_vspeed"],
+    "move_stop": ["stop_movement"],
+    "move_direction": ["start_moving_direction", "set_direction_speed"],
+    "move_towards": ["move_towards_point"],
+    "move_snap_to_grid": ["snap_to_grid"],
+    "move_jump_to": ["jump_to_position", "jump_to_start", "jump_to_random"],
+    "grid_stop_if_no_keys": ["stop_if_no_keys"],
+    "grid_check_keys_and_move": ["check_keys_and_move"],
+    "grid_if_on_grid": ["if_on_grid"],
+    "set_gravity": ["set_gravity"],
+    "set_friction": ["set_friction"],
+    "reverse_horizontal": ["reverse_horizontal"],
+    "reverse_vertical": ["reverse_vertical"],
+
+    # Instance actions
+    "instance_destroy": ["destroy_instance"],
+    "instance_destroy_other": ["destroy_instance"],  # Same action with target="other"
+    "instance_create": ["create_instance"],
+
+    # Room actions
+    "room_goto_next": ["next_room"],
+    "room_goto_previous": ["previous_room"],
+    "room_restart": ["restart_room"],
+    "room_goto": ["goto_room"],
+    "room_if_next_exists": ["if_next_room_exists"],
+    "room_if_previous_exists": ["if_previous_room_exists"],
+
+    # Score/Lives/Health actions (use relative=True for add)
+    "score_set": ["set_score"],
+    "score_add": ["set_score"],  # Same action with relative=True
+    "lives_set": ["set_lives"],
+    "lives_add": ["set_lives"],  # Same action with relative=True
+    "health_set": ["set_health"],
+    "health_add": ["set_health"],  # Same action with relative=True
+    "draw_score": ["draw_score"],
+    "draw_lives": ["draw_lives"],
+    "draw_health_bar": ["draw_health_bar"],
+
+    # Drawing actions
+    "draw_text": ["draw_text"],
+    "draw_rectangle": ["draw_rectangle"],
+    "draw_circle": ["draw_circle"],
+    "set_sprite": ["set_sprite"],
+    "set_alpha": ["set_alpha"],
+
+    # Timing actions
+    "set_alarm": ["set_alarm"],
+
+    # Sound actions (from plugins)
+    "sound_play": ["play_sound"],
+    "music_play": ["play_music"],
+    "music_stop": ["stop_music"],
+
+    # Output actions
+    "output_message": ["display_message"],
 }
 
 
@@ -140,31 +207,65 @@ class GM80EventsPanel(QWidget):
         layout.addLayout(button_layout)
 
     def is_event_category_enabled(self, category_id: str) -> bool:
-        """Check if an event category is enabled based on Blockly configuration"""
-        # Find which Blockly blocks enable this category
+        """Check if an event category is enabled based on Blockly configuration.
+
+        A category is enabled if:
+        1. A Blockly block directly enables the entire category, OR
+        2. Any individual event in that category is enabled
+        """
+        # Check if a Blockly block directly enables this category
         for blockly_type, mapping in BLOCKLY_TO_GM80_MAPPING.items():
             if "categories" in mapping and category_id in mapping["categories"]:
+                if self.blockly_config.is_block_enabled(blockly_type):
+                    return True
+
+        # Also check if any individual events in this category are enabled
+        # This handles cases like keyboard where events are mapped individually
+        events = get_events_by_category(category_id)
+        for event in events:
+            if self.is_individual_event_enabled(event.name, category_id):
+                return True
+
+        return False
+
+    def is_individual_event_enabled(self, event_name: str, category_id: str) -> bool:
+        """Check if a specific individual event is enabled (not category-wide)"""
+        for blockly_type, mapping in BLOCKLY_TO_GM80_MAPPING.items():
+            if "events" in mapping and event_name in mapping["events"]:
                 if self.blockly_config.is_block_enabled(blockly_type):
                     return True
         return False
     
     def is_event_enabled(self, event_name: str, category_id: str) -> bool:
         """Check if a specific event is enabled based on Blockly configuration"""
-        # Check if entire category is enabled
-        if self.is_event_category_enabled(category_id):
-            return True
-        
-        # Check specific event mappings
+        # First check if there's a direct category mapping that enables ALL events in category
         for blockly_type, mapping in BLOCKLY_TO_GM80_MAPPING.items():
-            if "events" in mapping and event_name in mapping["events"]:
+            if "categories" in mapping and category_id in mapping["categories"]:
                 if self.blockly_config.is_block_enabled(blockly_type):
                     return True
-        
-        return False
+
+        # Then check if this specific event is individually enabled
+        return self.is_individual_event_enabled(event_name, category_id)
     
     def reload_config(self):
         """Reload the Blockly configuration (call after config changes)"""
         self.blockly_config = load_config()
+
+    def apply_config(self, config):
+        """Apply a specific Blockly configuration directly (without loading from file)"""
+        self.blockly_config = config
+        print(f"✅ Events panel updated with config: {config.preset_name}")
+        print(f"   Enabled blocks: {len(config.enabled_blocks)} blocks")
+
+    def is_action_enabled(self, action_name: str) -> bool:
+        """Check if a GM80 action is enabled based on Blockly configuration"""
+        # Check all Blockly block types to see if any enables this action
+        for blockly_type, gm80_actions in BLOCKLY_TO_GM80_ACTION_MAPPING.items():
+            if action_name in gm80_actions:
+                if self.blockly_config.is_block_enabled(blockly_type):
+                    return True
+        # Action not in any mapping - not enabled
+        return False
 
     def show_add_event_menu(self):
         """Show organized event menu by GM8.0 categories (filtered by Blockly config)"""
@@ -347,18 +448,38 @@ class GM80EventsPanel(QWidget):
             # This is an event item
             add_action_menu = menu.addMenu(self.tr("Add Action"))
 
-            # Create submenus for each action tab
+            # Track if any actions are available
+            has_enabled_actions = False
+            total_actions = 0
+            filtered_actions = 0
+
+            # Create submenus for each action tab (filtered by Blockly config)
             for tab_id, tab_info in get_action_tabs_ordered():
+                # Get actions in this tab and filter by config
+                actions = get_actions_by_tab(GM80_ALL_ACTIONS, tab_id)
+                total_actions += len(actions)
+                enabled_actions = [a for a in actions if self.is_action_enabled(a.name)]
+                filtered_actions += len(enabled_actions)
+
+                # Skip empty tabs
+                if not enabled_actions:
+                    continue
+
+                has_enabled_actions = True
                 tab_menu = add_action_menu.addMenu(f"{tab_info['icon']} {tab_info['name']}")
 
-                # Get actions in this tab
-                actions = get_actions_by_tab(GM80_ALL_ACTIONS, tab_id)
-
-                for action in actions:
+                for action in enabled_actions:
                     action_item = tab_menu.addAction(f"{action.icon} {action.display_name}")
                     action_item.triggered.connect(
                         lambda checked, e=event_data, a=action: self.add_action_to_event(e, a.name)
                     )
+
+            print(f"🎯 Action filtering: {filtered_actions}/{total_actions} actions enabled")
+
+            # Show warning if no actions are enabled
+            if not has_enabled_actions:
+                no_actions = add_action_menu.addAction(self.tr("⚠️ No actions enabled"))
+                no_actions.setEnabled(False)
 
             menu.addSeparator()
             remove_action = menu.addAction(self.tr("Remove Event"))
@@ -409,7 +530,26 @@ class GM80EventsPanel(QWidget):
                 "parameters": parameters
             }
 
-            # Add to event
+            # Handle keyboard events specially - they use nested structure
+            # event_name might be "keyboard_UP" but data is stored as keyboard.UP
+            # Check for patterns like: keyboard_UP, keyboard_press_LEFT, keyboard_release_SPACE
+            for base_event in ["keyboard_release", "keyboard_press", "keyboard"]:
+                if event_name.startswith(base_event + "_"):
+                    key_name = event_name[len(base_event) + 1:]  # Get the key part
+                    if key_name:  # Make sure there's actually a key name
+                        # Add to nested structure
+                        if base_event not in self.current_events_data:
+                            self.current_events_data[base_event] = {}
+                        if key_name not in self.current_events_data[base_event]:
+                            self.current_events_data[base_event][key_name] = {"actions": []}
+                        if "actions" not in self.current_events_data[base_event][key_name]:
+                            self.current_events_data[base_event][key_name]["actions"] = []
+                        self.current_events_data[base_event][key_name]["actions"].append(action_data)
+                        self.refresh_display()
+                        self.events_modified.emit()
+                        return
+
+            # Regular event handling
             if event_name not in self.current_events_data:
                 self.current_events_data[event_name] = {"actions": []}
 
