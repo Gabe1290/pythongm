@@ -319,18 +319,20 @@ class GameRunner:
             print(f"  Room {room_name}: {sprites_assigned}/{len(room.instances)} instances have sprites")
     
     def find_starting_room(self) -> Optional[str]:
-        """Find a room to start the game in"""
+        """Find a room to start the game in - uses room_order if available"""
         if not self.rooms:
             return None
-        
-        # Look for common starting room names
-        preferred_names = ['main', 'start', 'level1', 'room1', 'intro']
-        
-        for name in preferred_names:
-            if name in self.rooms:
-                return name
-        
-        # Just use the first room
+
+        # Use room_order from project data if available (first room in order)
+        if self.project_data:
+            room_order = self.project_data.get('room_order', [])
+            if room_order:
+                # Return first room in the order that actually exists
+                for room_name in room_order:
+                    if room_name in self.rooms:
+                        return room_name
+
+        # Fallback: just use the first room in the dictionary
         return list(self.rooms.keys())[0]
     
     def test_game(self, project_path: str) -> bool:
