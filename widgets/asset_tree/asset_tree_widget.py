@@ -176,14 +176,16 @@ class AssetTreeWidget(QTreeWidget):
             create_action.triggered.connect(lambda: self.trigger_create_for_category(item.asset_type))
             context_menu.addAction(create_action)
 
-            # Import asset action
-            import_action = QAction(self.tr("📥 Import {0}...").format(item.asset_type.title()), self)
-            import_action.triggered.connect(lambda: self.trigger_import_for_category(item.asset_type))
-            context_menu.addAction(import_action)
+            # Import asset action (only for sprites, sounds, backgrounds - not rooms/objects)
+            if item.asset_type not in ["rooms", "objects"]:
+                import_action = QAction(self.tr("📥 Import {0}...").format(item.asset_type.title()), self)
+                import_action.triggered.connect(lambda: self.trigger_import_for_category(item.asset_type))
+                context_menu.addAction(import_action)
 
             # Import Package action for rooms and objects
             if item.asset_type in ["rooms", "objects"]:
-                import_pkg_action = QAction(self.tr("📦 Import Package..."), self)
+                singular = "Room" if item.asset_type == "rooms" else "Object"
+                import_pkg_action = QAction(self.tr("📦 Import {0} Package...").format(singular), self)
                 import_pkg_action.triggered.connect(lambda checked=False, at=item.asset_type: self.import_package(at))
                 context_menu.addAction(import_pkg_action)
             
