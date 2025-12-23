@@ -498,6 +498,66 @@ class ActionExecutor:
                 other.vspeed = 0
                 print(f"  🚶 Pusher {other.object_name} moved to ({old_x}, {old_y}) and stopped")
 
+    def execute_jump_to_start_action(self, instance, parameters: Dict[str, Any]):
+        """Jump to the instance's starting position (where it was created)
+
+        This restores the instance to its original position when it was first placed in the room.
+        """
+        # Get start position (stored when instance is created)
+        start_x = getattr(instance, 'xstart', instance.x)
+        start_y = getattr(instance, 'ystart', instance.y)
+
+        instance.x = start_x
+        instance.y = start_y
+
+        print(f"  🏠 {instance.object_name} jumped to start position ({start_x}, {start_y})")
+
+    def execute_jump_to_random_action(self, instance, parameters: Dict[str, Any]):
+        """Jump to a random position in the room
+
+        Parameters:
+            snap_h: Horizontal snap grid (default 1 = no snap)
+            snap_v: Vertical snap grid (default 1 = no snap)
+        """
+        import random
+
+        snap_h = int(parameters.get("snap_h", 1))
+        snap_v = int(parameters.get("snap_v", 1))
+
+        # Get room dimensions
+        room_width = 640
+        room_height = 480
+        if self.game_runner and self.game_runner.current_room:
+            room_width = self.game_runner.current_room.width
+            room_height = self.game_runner.current_room.height
+
+        # Get instance dimensions
+        width = getattr(instance, '_cached_width', 32)
+        height = getattr(instance, '_cached_height', 32)
+
+        # Generate random position within room bounds
+        max_x = room_width - width
+        max_y = room_height - height
+
+        if snap_h > 1:
+            # Snap to horizontal grid
+            num_positions_h = max(1, max_x // snap_h)
+            new_x = random.randint(0, num_positions_h) * snap_h
+        else:
+            new_x = random.randint(0, max(0, int(max_x)))
+
+        if snap_v > 1:
+            # Snap to vertical grid
+            num_positions_v = max(1, max_y // snap_v)
+            new_y = random.randint(0, num_positions_v) * snap_v
+        else:
+            new_y = random.randint(0, max(0, int(max_y)))
+
+        instance.x = float(new_x)
+        instance.y = float(new_y)
+
+        print(f"  🎲 {instance.object_name} jumped to random position ({new_x}, {new_y})")
+
     def execute_start_moving_direction_action(self, instance, parameters: Dict[str, Any]):
         """Start moving in a specific direction
 
@@ -1670,6 +1730,93 @@ class ActionExecutor:
             # Destroy self (default behavior)
             print(f"💀 Destroying instance: {instance.object_name}")
             instance.to_destroy = True
+
+    def execute_create_instance_action(self, instance, parameters: Dict[str, Any]):
+        """Create a new instance of an object at a specified position
+
+        Parameters:
+            object: The object type to create
+            x: X position for the new instance
+            y: Y position for the new instance
+            relative: If True, position is relative to current instance
+        """
+        object_name = parameters.get("object", "")
+        x_param = parameters.get("x", 0)
+        y_param = parameters.get("y", 0)
+        relative = parameters.get("relative", False)
+
+        if not object_name:
+            print("⚠️ create_instance: No object specified")
+            return
+
+        if not self.game_runner:
+            print("⚠️ create_instance: No game_runner reference")
+            return
+
+        # Parse position values (can be expressions)
+        x = self._parse_value(str(x_param), instance)
+        y = self._parse_value(str(y_param), instance)
+
+        try:
+            x = float(x) if x is not None else 0.0
+            y = float(y) if y is not None else 0.0
+        except (ValueError, TypeError):
+            x = 0.0
+            y = 0.0
+
+        # Apply relative positioning
+        if relative:
+            x = instance.x + x
+            y = instance.y + y
+
+        # Get the object's data
+        objects_data = self.game_runner.project_data.get('assets', {}).get('objects', {})
+        if object_name not in objects_data:
+            print(f"⚠️ create_instance: Object '{object_name}' not found")
+            return
+
+        object_data = objects_data[object_name]
+
+        # Import GameInstance locally to avoid circular imports
+        from runtime.game_runner import GameInstance
+
+        # Create new instance
+        instance_data = {
+            'object_name': object_name,
+            'x': x,
+            'y': y,
+            'instance_id': id(object_data) + int(x * 1000) + int(y * 1000000)  # Generate unique ID
+        }
+
+        new_instance = GameInstance(
+            object_name,
+            x,
+            y,
+            instance_data,
+            action_executor=self
+        )
+
+        # Set up the new instance with object data and sprite
+        new_instance.set_object_data(object_data)
+
+        # Get sprite for the new instance
+        sprite_name = object_data.get('sprite', '')
+        if sprite_name and sprite_name in self.game_runner.sprites:
+            new_instance.set_sprite(self.game_runner.sprites[sprite_name])
+
+        # Add to current room
+        if self.game_runner.current_room:
+            self.game_runner.current_room.instances.append(new_instance)
+            self.game_runner.current_room._add_to_grid(new_instance)
+
+            # Execute create event for the new instance
+            events = object_data.get('events', {})
+            if 'create' in events:
+                self.execute_event(new_instance, 'create', events)
+
+            print(f"➕ Created instance of '{object_name}' at ({x}, {y})")
+        else:
+            print("⚠️ create_instance: No current room to add instance to")
 
     def execute_change_instance_action(self, instance, parameters: Dict[str, Any]):
         """Change instance into a different object type

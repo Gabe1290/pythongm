@@ -20,7 +20,8 @@ MAIN1_ACTIONS = {
         parameters=[
             ActionParameter("object", "object", "Object", "Object type to create"),
             ActionParameter("x", "float", "X", "X position", default=0),
-            ActionParameter("y", "float", "Y", "Y position", default=0)
+            ActionParameter("y", "float", "Y", "Y position", default=0),
+            ActionParameter("relative", "boolean", "Relative", "Position relative to current instance", default=False)
         ]
     ),
     "create_random_instance": ActionDefinition(

@@ -164,6 +164,9 @@ class GameInstance:
         self.object_name = object_name
         self._x = float(x)
         self._y = float(y)
+        # Store starting position for jump_to_start action
+        self.xstart = float(x)
+        self.ystart = float(y)
         self._grid_dirty = False  # Track if position changed for spatial grid update
         self.instance_id = instance_data.get('instance_id', id(self))
         self.visible = instance_data.get('visible', True)
