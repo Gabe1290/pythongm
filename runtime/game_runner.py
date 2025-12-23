@@ -512,28 +512,14 @@ class GameRoom:
     
     def create_default_sprite_for_object(self, object_name: str) -> GameSprite:
         """Create a default sprite for an object"""
-        # Create a colored rectangle based on object name
-        colors = {
-            'player': (0, 255, 0),      # Green
-            'enemy': (255, 0, 0),       # Red  
-            'wall': (128, 128, 128),    # Gray
-            'coin': (255, 255, 0),      # Yellow
-            'door': (139, 69, 19),      # Brown
-            'key': (255, 215, 0),       # Gold
-        }
-        
-        # Get color or use hash-based color
-        if object_name in colors:
-            color = colors[object_name]
-        else:
-            # Generate color from name hash
-            hash_val = hash(object_name)
-            color = (
-                (hash_val % 128) + 127,
-                ((hash_val >> 8) % 128) + 127,
-                ((hash_val >> 16) % 128) + 127
-            )
-        
+        # Generate color from object name hash for consistency
+        hash_val = hash(object_name)
+        color = (
+            (hash_val % 128) + 127,
+            ((hash_val >> 8) % 128) + 127,
+            ((hash_val >> 16) % 128) + 127
+        )
+
         # Create sprite surface
         surface = pygame.Surface((32, 32))
         surface.fill(color)

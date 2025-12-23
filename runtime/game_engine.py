@@ -159,27 +159,13 @@ class GameRoom:
     
     def create_default_sprite_for_object(self, object_name: str) -> GameSprite:
         """Create a default sprite for an object"""
-        # Create a colored rectangle based on object name
-        colors = {
-            'player': (0, 255, 0),      # Green
-            'enemy': (255, 0, 0),       # Red  
-            'wall': (128, 128, 128),    # Gray
-            'coin': (255, 255, 0),      # Yellow
-            'door': (139, 69, 19),      # Brown
-            'key': (255, 215, 0),       # Gold
-        }
-        
-        # Get color or use hash-based color
-        if object_name in colors:
-            color = colors[object_name]
-        else:
-            # Generate color from name hash
-            hash_val = hash(object_name)
-            color = (
-                (hash_val % 128) + 127,
-                ((hash_val >> 8) % 128) + 127,
-                ((hash_val >> 16) % 128) + 127
-            )
+        # Generate color from object name hash for consistency
+        hash_val = hash(object_name)
+        color = (
+            (hash_val % 128) + 127,
+            ((hash_val >> 8) % 128) + 127,
+            ((hash_val >> 16) % 128) + 127
+        )
         
         # Create sprite surface
         surface = pygame.Surface((32, 32))
@@ -472,23 +458,7 @@ class GameRunner:
                 continue
             
             events = instance.object_data.get('events', {})
-            
-            # Debug: Show events for player object
-            if instance.object_name == "obj_player":
-                print(f"  📋 obj_player events: {list(events.keys())}")
-                
-                # Show FULL structure of keyboard event if it exists
-                if "keyboard" in events:
-                    keyboard_data = events["keyboard"]
-                    print(f"  📋 keyboard type: {type(keyboard_data)}")
-                    print(f"  📋 keyboard content: {keyboard_data}")
-                
-                # Show FULL structure of keyboard_press event if it exists
-                if "keyboard_press" in events:
-                    keyboard_press_data = events["keyboard_press"]
-                    print(f"  📋 keyboard_press type: {type(keyboard_press_data)}")
-                    print(f"  📋 keyboard_press content: {keyboard_press_data}")
-            
+
             # Check for keyboard_press parent event with sub-events
             if "keyboard_press" in events:
                 keyboard_press_event = events["keyboard_press"]
