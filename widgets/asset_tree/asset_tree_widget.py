@@ -180,6 +180,12 @@ class AssetTreeWidget(QTreeWidget):
             import_action = QAction(self.tr("📥 Import {0}...").format(item.asset_type.title()), self)
             import_action.triggered.connect(lambda: self.trigger_import_for_category(item.asset_type))
             context_menu.addAction(import_action)
+
+            # Import Package action for rooms and objects
+            if item.asset_type in ["rooms", "objects"]:
+                import_pkg_action = QAction(self.tr("📦 Import Package..."), self)
+                import_pkg_action.triggered.connect(lambda checked=False, at=item.asset_type: self.import_package(at))
+                context_menu.addAction(import_pkg_action)
             
         else:
             # Asset item menu - show rename, delete, properties
@@ -475,6 +481,61 @@ class AssetTreeWidget(QTreeWidget):
                     self,
                     self.tr("Export Failed"),
                     self.tr("Failed to export {0} '{1}'").format(singular, asset_name)
+                )
+
+    def import_package(self, asset_type: str):
+        """Import a package file (.gmroom or .gmobj) into the project"""
+        from PySide6.QtWidgets import QFileDialog, QMessageBox
+        from utils.resource_packager import ResourcePackager
+
+        # Get project path
+        if not self.project_path:
+            QMessageBox.warning(self, self.tr("No Project"), self.tr("No project is currently loaded"))
+            return
+
+        project_path = Path(self.project_path)
+
+        # Determine file filter based on asset type
+        if asset_type == 'objects':
+            file_filter = "GameMaker Objects (*.gmobj);;All Files (*)"
+            singular = "object"
+        elif asset_type == 'rooms':
+            file_filter = "GameMaker Rooms (*.gmroom);;All Files (*)"
+            singular = "room"
+        else:
+            return
+
+        # Ask user for file to import
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            self.tr("Import {0} Package").format(singular.title()),
+            str(Path.home()),
+            file_filter
+        )
+
+        if file_path:
+            package_path = Path(file_path)
+
+            # Import based on type
+            if asset_type == 'objects':
+                result = ResourcePackager.import_object(package_path, project_path)
+            else:  # rooms
+                result = ResourcePackager.import_room(package_path, project_path)
+
+            if result:
+                # Refresh the asset tree
+                self.force_project_refresh()
+
+                QMessageBox.information(
+                    self,
+                    self.tr("Import Successful"),
+                    self.tr("{0} '{1}' imported successfully!").format(singular.title(), result)
+                )
+            else:
+                QMessageBox.warning(
+                    self,
+                    self.tr("Import Failed"),
+                    self.tr("Failed to import {0} package").format(singular)
                 )
 
     def on_item_clicked(self, item, column):
