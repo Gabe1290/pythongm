@@ -227,6 +227,9 @@ class ObjectEditor(BaseEditor):
         self.events_panel = GM80EventsPanel()
         self.events_panel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         events_layout.addWidget(self.events_panel)
+
+        # Apply project-specific blockly config to events panel (if set)
+        self._apply_project_config_to_events_panel()
         
         layout.addWidget(events_group, 1)
         
@@ -448,6 +451,38 @@ class ObjectEditor(BaseEditor):
         """Handle Blockly configuration change - update events panel"""
         if hasattr(self, 'events_panel') and self.events_panel:
             self.events_panel.apply_config(config)
+
+    def _apply_project_config_to_events_panel(self):
+        """Apply project-specific Blockly config to events panel.
+
+        This ensures the events panel uses the same preset as the Blockly editor,
+        which is stored in the project settings.
+        """
+        from config.blockly_config import PRESETS, BlocklyConfig, load_config
+
+        try:
+            # Check if we have a project path
+            if not hasattr(self, 'project_path') or not self.project_path:
+                return
+
+            # Try to load project-specific preset
+            project_file = Path(self.project_path) / "project.json"
+            if project_file.exists():
+                with open(project_file, 'r') as f:
+                    data = json.load(f)
+                preset_name = data.get('settings', {}).get('blockly_preset')
+
+                if preset_name and preset_name in PRESETS:
+                    # Use the project's preset
+                    config = BlocklyConfig.from_dict(PRESETS[preset_name].to_dict())
+                    self.events_panel.apply_config(config)
+                    print(f"✅ Events panel using project preset: {preset_name}")
+                    return
+
+            # No project preset - use global config (already loaded in events panel __init__)
+            print(f"ℹ️ Events panel using global config (no project preset)")
+        except Exception as e:
+            print(f"⚠️ Error loading project config for events panel: {e}")
 
     def on_blockly_sync_requested(self):
         """Handle sync request from Blockly (user clicked 'Sync from Events')"""
