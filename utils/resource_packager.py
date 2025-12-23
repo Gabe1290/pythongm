@@ -88,12 +88,12 @@ class ResourcePackager:
     def export_room(project_path: Path, room_name: str, output_path: Path) -> bool:
         """
         Export a room with all its dependencies (objects, sprites, backgrounds)
-        
+
         Args:
             project_path: Path to current project
             room_name: Name of room to export
             output_path: Path to output .gmroom file
-            
+
         Returns:
             True if successful
         """
@@ -102,14 +102,27 @@ class ResourcePackager:
             project_file = project_path / "project.json"
             with open(project_file, 'r', encoding='utf-8') as f:
                 project_data = json.load(f)
-            
+
             # Get room data
             rooms = project_data.get('assets', {}).get('rooms', {})
             if room_name not in rooms:
                 print(f"Room '{room_name}' not found")
                 return False
-            
-            room_data = rooms[room_name]
+
+            room_data = rooms[room_name].copy()  # Make a copy to avoid modifying original
+
+            # Load instances from separate room file if it exists
+            # (instances are stored in rooms/<room_name>.json, not in project.json)
+            room_file = project_path / "rooms" / f"{room_name}.json"
+            if room_file.exists():
+                try:
+                    with open(room_file, 'r', encoding='utf-8') as f:
+                        file_room_data = json.load(f)
+                    if 'instances' in file_room_data:
+                        room_data['instances'] = file_room_data['instances']
+                        print(f"  Loaded {len(room_data['instances'])} instances from room file")
+                except Exception as e:
+                    print(f"  ⚠️ Failed to load room file: {e}")
             
             # Collect dependencies (objects, sprites, backgrounds)
             dependencies = ResourcePackager._collect_room_dependencies(
