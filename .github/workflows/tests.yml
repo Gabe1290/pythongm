@@ -47,9 +47,14 @@ jobs:
 
       - name: Run unit tests
         run: |
-          pytest tests/test_config.py -v --tb=short --ignore=tests/test_widgets.py
+          echo "=== Debug Info ==="
+          echo "Python: $(python --version)"
+          echo "Pytest: $(python -m pytest --version)"
+          echo "PWD: $(pwd)"
+          ls -la tests/
+          echo "=== Running tests ==="
+          python -m pytest tests/test_config.py -v --tb=long
         env:
-          # Disable audio for headless testing
           SDL_AUDIODRIVER: dummy
           QT_QPA_PLATFORM: offscreen
 
