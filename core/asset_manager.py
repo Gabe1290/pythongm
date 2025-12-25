@@ -257,10 +257,7 @@ class AssetManager(QObject):
                                  frame_height: int, speed: float = 10.0,
                                  animation_type: str = "strip_h") -> Optional[Dict[str, Any]]:
         """Update sprite animation settings (for sprite strips/sheets)"""
-        if not self.project_data:
-            return None
-
-        sprites = self.project_data.get("assets", {}).get("sprites", {})
+        sprites = self.assets_cache.get("sprites", {})
         if sprite_name not in sprites:
             logger.warning("Sprite %s not found", sprite_name)
             return None
@@ -285,8 +282,7 @@ class AssetManager(QObject):
                 if thumbnail_path:
                     sprite_data["thumbnail"] = self.get_relative_path(thumbnail_path)
 
-        self.mark_dirty()
-        self.asset_modified.emit("sprites", sprite_name, sprite_data)
+        self.asset_updated.emit("sprites", sprite_name, sprite_data)
         self.status_changed.emit(f"Updated animation for {sprite_name}: {frames} frames")
 
         return sprite_data
@@ -393,7 +389,7 @@ class AssetManager(QObject):
             if obj_data.get("sprite") == sprite_name:
                 obj_data["sprite"] = ""
                 updated_objects.append(obj_name)
-                self.asset_modified.emit("objects", obj_name, obj_data)
+                self.asset_updated.emit("objects", obj_name, obj_data)
 
         if updated_objects:
             print(f"🔄 Cleared sprite reference from objects: {', '.join(updated_objects)}")

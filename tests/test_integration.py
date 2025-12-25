@@ -257,18 +257,16 @@ class TestDeleteAssetWorkflow:
         sprite = am.get_asset("sprites", "spr_deletable")
         assert sprite is not None, "Sprite should exist before deletion"
 
-        # Delete the sprite - may fail due to _clear_sprite_references bug
-        # (uses undefined asset_modified signal instead of asset_updated)
-        # The exception is caught internally and returns False
+        # Delete the sprite
         result = am.delete_asset("sprites", "spr_deletable")
-
-        if not result:
-            # Known bug: _clear_sprite_references uses non-existent asset_modified signal
-            # This causes an exception that's caught and returns False
-            pytest.skip("Skipping due to known asset_modified signal bug in _clear_sprite_references")
+        assert result is True, "delete_asset should return True"
 
         # Verify the sprite is deleted
         assert am.get_asset("sprites", "spr_deletable") is None
+
+        # Verify object's sprite reference was cleared
+        obj = am.get_asset("objects", "obj_uses_deleted_sprite")
+        assert obj["sprite"] == "", "Object sprite reference should be cleared"
 
     def test_delete_asset_removes_files(self, project_with_assets):
         """Deleting asset should remove physical files"""
