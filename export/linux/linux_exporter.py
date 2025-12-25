@@ -147,6 +147,7 @@ class LinuxExporter(QObject):
     def _check_pyinstaller(self) -> bool:
         """Check if PyInstaller is installed"""
         try:
+            import PyInstaller  # noqa: F401
             return True
         except ImportError:
             return False
@@ -154,6 +155,7 @@ class LinuxExporter(QObject):
     def _check_kivy(self) -> bool:
         """Check if Kivy is installed"""
         try:
+            import kivy  # noqa: F401
             return True
         except ImportError:
             return False
@@ -161,6 +163,7 @@ class LinuxExporter(QObject):
     def _check_pillow(self) -> bool:
         """Check if Pillow (PIL) is installed"""
         try:
+            import PIL  # noqa: F401
             return True
         except ImportError:
             return False

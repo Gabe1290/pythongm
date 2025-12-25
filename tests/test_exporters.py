@@ -521,6 +521,7 @@ class TestKivyExporterEvents:
 # Skip EXE exporter tests if PySide6 is not available
 # These tests require Qt for signals
 try:
+    from PySide6.QtCore import QObject, Signal  # noqa: F401
     HAS_PYSIDE6 = True
 except ImportError:
     HAS_PYSIDE6 = False
