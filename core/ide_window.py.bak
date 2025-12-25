@@ -1,17 +1,13 @@
 #!/usr/bin/env python3
 
-import sys
 import subprocess
 from pathlib import Path
 from PySide6.QtWidgets import (QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, 
-                               QSplitter, QMenuBar, QStatusBar, QMessageBox, QDialog,
-                               QFileDialog, QInputDialog, QProgressBar, QLabel, QStyle,
-                               QTabWidget, QTextBrowser, QSizePolicy, QGroupBox, QFormLayout,
-                               QSpinBox,QComboBox, QDialogButtonBox, QPushButton, QCheckBox, 
-                               QDoubleSpinBox, QLineEdit)
+                               QSplitter, QMessageBox, QDialog, QFileDialog, QInputDialog,
+                               QProgressBar, QLabel, QStyle, QTabWidget)
         
-from PySide6.QtCore import Qt, QTimer, QThread, Signal, QSize
-from PySide6.QtGui import QAction, QKeySequence, QFont
+from PySide6.QtCore import Qt, QTimer, QSize
+from PySide6.QtGui import QAction
 
 from widgets.asset_tree.asset_tree_widget import AssetTreeWidget
 # from widgets.properties_panel import PropertiesPanel
@@ -24,7 +20,6 @@ from utils.config import Config
 from editors.room_editor import RoomEditor
 from editors.object_editor import ObjectEditor
 from runtime.game_runner import GameRunner
-from export.exe.exe_exporter import ExeExporter
 
 class PyGameMakerIDE(QMainWindow):
     

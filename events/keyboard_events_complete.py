@@ -5,7 +5,7 @@ Defines all keyboard events for letters (A-Z), numbers (0-9), and special keys
 Compatible with both pygame and Kivy key codes
 """
 
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 
 # Pygame key codes (used in runtime)

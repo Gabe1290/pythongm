@@ -5,7 +5,7 @@ Manages object properties: visible, persistent, solid, sprite
 """
 
 from typing import Dict, Any
-from PySide6.QtWidgets import QGroupBox, QHBoxLayout, QVBoxLayout, QFormLayout, QCheckBox, QComboBox, QLabel
+from PySide6.QtWidgets import QGroupBox, QHBoxLayout, QVBoxLayout, QFormLayout, QCheckBox, QComboBox
 from PySide6.QtCore import Signal
 
 

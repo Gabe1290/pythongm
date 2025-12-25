@@ -115,7 +115,7 @@ class PluginExecutor:
         print(f"🔊 Playing sound: {sound_name} at volume {volume}")
 
         try:
-            import pygame
+            pass
             # Get sound from game manager
             if hasattr(instance, 'game') and hasattr(instance.game, 'sounds'):
                 if sound_name in instance.game.sounds:

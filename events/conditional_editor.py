@@ -3,14 +3,13 @@
 Conditional Action Editor - For if/else logic with nested actions
 """
 
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, 
-    QLineEdit, QSpinBox, QGroupBox, QListWidget, QListWidgetItem,
-    QPushButton, QDialogButtonBox, QMessageBox
+    QLineEdit, QSpinBox, QGroupBox, QListWidget, QPushButton,
+    QDialogButtonBox
 )
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QFont
 
 from events.action_types import get_action_type, get_actions_by_category
 from events.action_editor import ActionConfigDialog

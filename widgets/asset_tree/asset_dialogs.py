@@ -6,7 +6,6 @@ UI dialogs for asset management operations
 
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, 
                                QPushButton, QLabel, QMessageBox)
-from PySide6.QtCore import Qt
 
 from .asset_utils import validate_asset_name
 

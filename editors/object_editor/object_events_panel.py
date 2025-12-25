@@ -4,19 +4,18 @@ Object Events Panel
 Manages object events and their actions
 """
 
-import json
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QListWidgetItem,
-    QPushButton, QLabel, QSplitter, QGroupBox, QTreeWidget, QTreeWidgetItem,
-    QMenu, QMessageBox, QDialog, QDialogButtonBox, QCheckBox   
+    QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel,
+    QTreeWidget, QTreeWidgetItem, QMenu, QMessageBox, QDialog, QDialogButtonBox,
+    QCheckBox   
 )
 from PySide6.QtCore import Qt, Signal, QTimer
-from PySide6.QtGui import QFont, QShortcut, QKeySequence
+from PySide6.QtGui import QFont
 
 # Import our new event/action system
 from events.event_types import get_available_events, get_event_type
-from events.action_types import get_available_actions, get_action_type, get_actions_by_category
+from events.action_types import get_action_type, get_actions_by_category
 from events.action_editor import ActionConfigDialog
 
 # Import formatter
@@ -268,10 +267,6 @@ class ObjectEventsPanel(QWidget):
             selected_key_code = dialog.get_selected_key_code()
 
             if selected_key and selected_key_code:
-                # Create the event key using the format "{event_name}_{key}"
-                # For example: "keyboard_W" or "keyboard_press_SPACE"
-                event_key = f"{event_name}_{selected_key}"
-
                 # Check if event already exists
                 if event_name in self.current_events_data and selected_key in self.current_events_data[event_name]:
                     QMessageBox.information(

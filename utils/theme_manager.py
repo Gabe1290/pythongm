@@ -6,10 +6,9 @@ Provides different color themes for the application loaded from JSON
 
 import json
 import os
-from typing import Dict, Optional
+from typing import Dict
 from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QPalette, QColor
-from PySide6.QtCore import Qt
 
 
 class ThemeManager:

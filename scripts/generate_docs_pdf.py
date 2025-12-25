@@ -12,14 +12,11 @@ Output:
     docs/TESTING_CHECKLIST.html - Print-ready HTML version
 """
 
-import os
-import sys
 from pathlib import Path
 
 # Try to import markdown-it, fall back to simple conversion if not available
 try:
     from markdown_it import MarkdownIt
-    from markdown_it.extensions.tables import tables_plugin
     HAS_MARKDOWN_IT = True
 except ImportError:
     HAS_MARKDOWN_IT = False

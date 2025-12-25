@@ -5,7 +5,7 @@ Defines all mouse events for buttons, movement, and wheel
 Compatible with both pygame and Kivy mouse events
 """
 
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 
 # Mouse button codes (pygame standard)

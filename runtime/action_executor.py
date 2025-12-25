@@ -4,8 +4,7 @@ Action Execution Engine - WITH GRID SNAPPING
 Converts visual actions into runtime behavior
 """
 
-import math
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 
 class ActionExecutor:
     """Executes visual actions during gameplay with auto-discovery"""

@@ -9,7 +9,7 @@ Note: We use importlib to load config.py directly because:
 import pytest
 import json
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
 import importlib.util
 
 # Get project root without adding it to sys.path (to avoid triggering __init__.py)

@@ -7,10 +7,9 @@ import json
 from pathlib import Path
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                                QPushButton, QListWidget, QListWidgetItem,
-                               QStackedWidget, QTextBrowser, QSplitter,
-                               QGroupBox, QSizePolicy)
-from PySide6.QtCore import Qt, Signal, QUrl
-from PySide6.QtGui import QFont, QDesktopServices
+                               QStackedWidget, QTextBrowser)
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QDesktopServices
 
 
 class TutorialPanel(QWidget):

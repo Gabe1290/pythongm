@@ -4,7 +4,7 @@ Editor Status Widget - Shows save status and auto-save state
 """
 
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import QTimer
 from PySide6.QtGui import QFont
 
 

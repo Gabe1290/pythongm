@@ -4,11 +4,10 @@ Event System for PyGameMaker IDE - MINIMAL VERSION FOR LABYRINTH GAME
 Handles GameMaker-style events and actions for visual scripting
 """
 
-from enum import Enum, auto
-from typing import Dict, List, Optional, Any, Callable, Union
+from enum import Enum
+from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
 from PySide6.QtCore import QObject, Signal
-import json
 
 class EventType(Enum):
     """Minimal event types for labyrinth game"""

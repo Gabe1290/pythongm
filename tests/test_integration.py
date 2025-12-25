@@ -11,7 +11,6 @@ These tests are slower but provide more confidence in the overall system.
 
 import pytest
 import json
-import shutil
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 

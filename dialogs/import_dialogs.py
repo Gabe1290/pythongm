@@ -4,10 +4,9 @@ Import dialogs for PyGameMaker IDE
 """
 
 from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QLabel, 
-    QPushButton, QFileDialog, QListWidget, 
-    QListWidgetItem, QProgressBar, QTextEdit,
-    QGroupBox, QCheckBox, QComboBox
+    QDialog, QVBoxLayout, QHBoxLayout, QPushButton, 
+    QFileDialog, QListWidget, QListWidgetItem, 
+    QGroupBox, QCheckBox
 )
 from PySide6.QtCore import Qt, Signal
 from pathlib import Path

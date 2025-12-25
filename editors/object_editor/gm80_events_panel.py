@@ -4,7 +4,7 @@ GameMaker 8.0 Events Panel
 Displays events organized by GM8.0 categories with drag-and-drop action support
 """
 
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QTreeWidget, QTreeWidgetItem,
     QPushButton, QMenu, QMessageBox, QDialog, QLabel
@@ -16,8 +16,7 @@ from PySide6.QtGui import QFont
 from events.gm80_events import (
     get_event_categories_ordered,
     get_events_by_category,
-    get_event,
-    GM80_EVENT_CATEGORIES
+    get_event
 )
 from actions import (
     get_action_tabs_ordered,
@@ -419,8 +418,6 @@ class GM80EventsPanel(QWidget):
             selected_key = dialog.get_selected_key()
 
             if selected_key:
-                event_key = f"{event_name}_{selected_key}"
-
                 if event_name not in self.current_events_data:
                     self.current_events_data[event_name] = {}
 

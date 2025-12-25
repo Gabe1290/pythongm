@@ -14,7 +14,6 @@ from PySide6.QtGui import QAction
 from .asset_tree_item import AssetTreeItem
 from .asset_operations import AssetOperations
 from .asset_dialogs import AssetPropertiesDialog
-from .asset_utils import get_asset_categories
 
 
 class AssetTreeWidget(QTreeWidget):
@@ -600,8 +599,8 @@ class AssetTreeWidget(QTreeWidget):
                 break
         
         if category_item:
-            # Create new asset item
-            asset_item = AssetTreeItem(
+            # Create new asset item (assigned to parent via constructor)
+            AssetTreeItem(
                 parent=category_item,
                 asset_type=asset_type,
                 asset_name=asset_name,
@@ -667,7 +666,7 @@ class AssetTreeWidget(QTreeWidget):
             
             rooms = project_data.get('assets', {}).get('rooms', {})
             return list(rooms.keys())
-        except:
+        except Exception:
             return []
 
     def move_room_up(self, room_name: str):
@@ -830,7 +829,7 @@ class AssetTreeWidget(QTreeWidget):
             for room_name in room_list:
                 if room_name in rooms_data:
                     room_data = rooms_data[room_name]
-                    room_item = AssetTreeItem(
+                    AssetTreeItem(
                         parent=rooms_category,
                         asset_type="rooms",
                         asset_name=room_name,
@@ -861,28 +860,13 @@ class AssetTreeWidget(QTreeWidget):
                 print("⚠️ Invalid project_data, clearing assets")
                 self.clear_assets()
                 
-        except Exception as e:
+        except Exception:
             self.clear_assets()
-    
+
     def set_current_project(self, project_path: str):
         """Set current project"""
         self.current_project = project_path
-    
-    def set_project(self, project_path: str, project_data: Dict):
-        """Set project and refresh asset tree"""
-        try:
-            self.project_path = project_path
-            self.set_current_project(project_path)
-            
-            if isinstance(project_data, dict):
-                self.refresh_from_project(project_data)
-            else:
-                print("⚠️ Invalid project_data, clearing assets")
-                self.clear_assets()
-            
-        except Exception as e:
-            self.clear_assets()
-    
+
     def force_project_refresh(self):
         """Force the IDE to refresh from the updated project.json"""
         try:
@@ -951,7 +935,7 @@ class AssetTreeWidget(QTreeWidget):
             
             return None
             
-        except Exception as e:
+        except Exception:
             import traceback
             traceback.print_exc()
             return None

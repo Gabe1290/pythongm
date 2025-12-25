@@ -12,7 +12,6 @@ Options:
 
 import subprocess
 import sys
-import shutil
 from pathlib import Path
 
 # Project configuration
@@ -145,7 +144,7 @@ def main():
 
     # Run Nuitka
     try:
-        result = subprocess.run(cmd, check=True)
+        subprocess.run(cmd, check=True)
         print()
         print("=" * 60)
         print("Build completed successfully!")

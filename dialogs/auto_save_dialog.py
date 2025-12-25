@@ -6,7 +6,6 @@ Auto-Save Settings Dialog for PyGameMaker IDE
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QFormLayout,
                                QCheckBox, QSpinBox, QLabel, QPushButton,
                                QDialogButtonBox, QGroupBox)
-from PySide6.QtCore import Qt
 
 
 class AutoSaveSettingsDialog(QDialog):

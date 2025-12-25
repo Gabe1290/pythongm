@@ -16,13 +16,10 @@ from .asset_dialogs import AssetRenameDialog, AssetPropertiesDialog, CreateAsset
 from .asset_utils import (
     validate_asset_name,
     get_asset_icon_emoji,
-    get_asset_type_singular,
-    get_asset_type_plural,
     sanitize_asset_name,
     get_asset_display_name,
     create_asset_data_template,
     get_asset_categories,
-    is_valid_asset_category,
     get_supported_file_extensions,
     get_asset_file_filter
 )

@@ -4,11 +4,9 @@ Kivy Exporter for PyGameMaker IDE
 Exports projects to Kivy format for mobile deployment
 """
 
-import os
-import json
 import shutil
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 
 
 from export.Kivy.code_generator import ActionCodeGenerator
@@ -185,7 +183,6 @@ class KivyExporter:
     
     def _generate_main_app(self):
         """Generate the main Kivy application file"""
-        settings = self.project_data.get('settings', {})
         rooms = self.project_data.get('assets', {}).get('rooms', {})
         project_name = self.project_data.get('name', 'Game')
 
@@ -1495,13 +1492,6 @@ class {class_name}(GameObject):
         - When NOT on grid, continue moving until we reach a grid position
         - Track whether keys are released mid-movement with _want_to_stop flag
         """
-        key_map = {
-            'right': '275',
-            'left': '276',
-            'up': '273',
-            'down': '274',
-        }
-
         # Extract speed values from the keyboard events
         speed_values = {'right': 4, 'left': -4, 'up': 4, 'down': -4}
         for event in keyboard_events:

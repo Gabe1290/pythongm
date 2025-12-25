@@ -10,7 +10,6 @@ import json
 from pathlib import Path
 import shutil
 import tempfile
-import os
 from typing import Dict, Any, Optional
 
 
@@ -108,7 +107,7 @@ class ProjectCompressor:
                 return 'project.json' in namelist or any(
                     name.endswith('project.json') for name in namelist
                 )
-        except:
+        except Exception:
             return False
     
     @staticmethod

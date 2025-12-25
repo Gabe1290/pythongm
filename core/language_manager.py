@@ -11,7 +11,7 @@ To add a new language:
 """
 
 from pathlib import Path
-from PySide6.QtCore import QTranslator, QLocale, QCoreApplication
+from PySide6.QtCore import QTranslator
 from PySide6.QtWidgets import QApplication
 from utils.config import Config
 

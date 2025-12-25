@@ -7,9 +7,8 @@ Exports/imports individual resources (rooms, objects) with all dependencies
 import json
 import zipfile
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Set
+from typing import Dict, Optional
 from datetime import datetime
-import shutil
 
 
 class ResourcePackager:

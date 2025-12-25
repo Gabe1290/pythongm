@@ -8,7 +8,7 @@ import json
 import base64
 import gzip
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict
 
 
 class HTML5Exporter:

@@ -6,8 +6,7 @@ Displays a list of available tutorials - selection opens in preview panel
 import json
 from pathlib import Path
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
-                               QPushButton, QListWidget, QListWidgetItem,
-                               QTextBrowser)
+                               QPushButton, QListWidget, QListWidgetItem)
 from PySide6.QtCore import Qt
 
 

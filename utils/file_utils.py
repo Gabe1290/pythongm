@@ -6,7 +6,7 @@ import hashlib
 import tempfile
 import mimetypes
 from pathlib import Path
-from typing import List, Dict, Optional, Any, Tuple, Union, Callable
+from typing import List, Any, Union
 from datetime import datetime
 import json
 import zipfile
@@ -623,7 +623,7 @@ class FileUtils:
             try:
                 attrs = os.stat(path).st_file_attributes
                 return attrs & 0x02  # FILE_ATTRIBUTE_HIDDEN
-            except:
+            except Exception:
                 return False
         
         return False

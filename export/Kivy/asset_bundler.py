@@ -4,12 +4,11 @@ Asset Bundler for PyGameMaker Kivy Export
 Handles copying and optimizing game assets for mobile deployment
 """
 
-import os
 import json
 import logging
 import shutil
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any
 
 try:
     from PIL import Image

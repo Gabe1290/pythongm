@@ -10,10 +10,9 @@ from typing import Dict, Any, Optional
 import json
 
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QToolBar, QLabel, 
-    QMessageBox, QSizePolicy
+    QWidget, QVBoxLayout, QToolBar, QMessageBox, QSizePolicy
 )
-from PySide6.QtCore import Qt, Signal, QTimer
+from PySide6.QtCore import Signal, QTimer
 from PySide6.QtGui import QKeySequence, QShortcut, QUndoCommand, QUndoStack
 
 
@@ -206,17 +205,14 @@ class BaseEditor(QWidget):
     @abstractmethod
     def load_data(self, data: Dict[str, Any]):
         """Load data into the editor - must be implemented by subclasses"""
-        pass
     
     @abstractmethod
     def get_data(self) -> Dict[str, Any]:
         """Get current data from the editor - must be implemented by subclasses"""
-        pass
     
     @abstractmethod
     def validate_data(self) -> tuple[bool, str]:
         """Validate current data - returns (is_valid, error_message)"""
-        pass
     
     def save(self):
         """Save the current asset"""
@@ -421,7 +417,6 @@ class BaseEditor(QWidget):
     # Virtual methods for subclasses to override
     def on_project_assets_loaded(self, assets: Dict[str, Any]):
         """Called when project assets are loaded - override in subclasses"""
-        pass
     
     def on_asset_external_change(self, asset_name: str, new_data: Dict[str, Any]):
         """Called when asset is changed externally - override in subclasses"""

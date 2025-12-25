@@ -8,7 +8,7 @@ This module re-exports all action definitions from individual category modules
 for backward compatibility with existing code.
 """
 
-from typing import Dict, List
+from typing import List
 
 # Import core definitions
 from actions.core import (

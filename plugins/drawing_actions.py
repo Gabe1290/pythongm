@@ -271,5 +271,5 @@ class PluginExecutor:
             g = int(color_str[2:4], 16)
             b = int(color_str[4:6], 16)
             return (r, g, b)
-        except:
+        except Exception:
             return (255, 255, 255)  # Default to white

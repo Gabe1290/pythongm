@@ -7,12 +7,11 @@ Allows configuring sprite sheets/strips with frame detection
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel,
     QPushButton, QSpinBox, QDoubleSpinBox, QGroupBox,
-    QFormLayout, QComboBox, QScrollArea, QWidget,
-    QSizePolicy, QSlider
+    QFormLayout, QComboBox, QWidget, QSizePolicy,
+    QSlider
 )
 from PySide6.QtCore import Qt, QTimer, Signal, QRect
 from PySide6.QtGui import QPixmap, QPainter, QPen, QColor, QImage
-from pathlib import Path
 from PIL import Image
 
 

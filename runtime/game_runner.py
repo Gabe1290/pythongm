@@ -459,7 +459,7 @@ class GameRoom:
             g = int(color_str[2:4], 16)
             b = int(color_str[4:6], 16)
             return (r, g, b)
-        except:
+        except Exception:
             return (135, 206, 235)  # Default sky blue
 
     def load_background_image(self):
@@ -1532,7 +1532,6 @@ class GameRunner:
         # Cache instance speeds (avoid repeated getattr)
         inst_hspeed = instance.hspeed
         inst_vspeed = instance.vspeed
-        is_moving = inst_hspeed != 0 or inst_vspeed != 0
 
         # Use pre-parsed collision targets instead of iterating all events
         for target_object, event_data in collision_targets.items():
@@ -1549,10 +1548,9 @@ class GameRunner:
                         collision_key = (id(other_instance), event_name)
                         current_collisions.add(collision_key)
 
-                        # Check if the OTHER instance is actively moving (it might be pushing us)
+                        # Cache other instance speeds for collision data
                         other_hspeed = other_instance.hspeed
                         other_vspeed = other_instance.vspeed
-                        other_is_moving = other_hspeed != 0 or other_vspeed != 0
 
                         # Only fire event if this is a NEW collision AND not in cooldown
                         in_cooldown = collision_key in instance._collision_cooldowns

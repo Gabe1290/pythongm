@@ -5,9 +5,9 @@ Allows users to select mouse events when adding mouse events to objects
 """
 
 from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QListWidget, QListWidgetItem, QDialogButtonBox, QTabWidget,
-    QWidget, QLineEdit
+    QDialog, QVBoxLayout, QHBoxLayout, QLabel, QListWidget,
+    QListWidgetItem, QDialogButtonBox, QTabWidget, QWidget,
+    QLineEdit
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont

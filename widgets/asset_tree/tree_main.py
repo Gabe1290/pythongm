@@ -7,13 +7,12 @@ Main tree widget for displaying and managing game assets in a hierarchical struc
 import json
 import shutil
 from pathlib import Path
-from typing import Dict, List, Optional, Any
-from PySide6.QtWidgets import (QTreeWidget, QTreeWidgetItem, QMenu, QMessageBox, 
-                               QInputDialog, QFileDialog, QApplication, QHeaderView,
-                               QDialog, QMessageBox, QVBoxLayout, QHBoxLayout,
+from typing import Dict, Optional
+from PySide6.QtWidgets import (QTreeWidget, QMenu, QMessageBox, QInputDialog,
+                               QDialog, QVBoxLayout, QHBoxLayout,
                                QLineEdit, QPushButton, QLabel)
-from PySide6.QtCore import Qt, Signal, QMimeData, QUrl
-from PySide6.QtGui import QIcon, QPixmap, QDrag, QAction, QFont
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QAction
 
 from .asset_tree_item import AssetTreeItem
 
@@ -542,7 +541,6 @@ class AssetTreeWidget(QTreeWidget):
         import os
         import shutil
         from datetime import datetime
-        from pathlib import Path
         
         for file_path in files:
             file_name = os.path.basename(file_path)
@@ -591,7 +589,6 @@ class AssetTreeWidget(QTreeWidget):
         print("Cache update for {asset_name} - skipping (not required)")
         # Asset import works fine without cache updates
         # This method exists for compatibility but doesn't need to do anything
-        pass
 
     def save_asset_to_project(self, asset_name, asset_type, asset_data, project_path):
         """Save asset data to project.json file"""
@@ -660,14 +657,14 @@ class AssetTreeWidget(QTreeWidget):
                 break
         
         if category_item:
-            # Create new asset item
-            asset_item = AssetTreeItem(
+            # Create new asset item (assigned to parent via constructor)
+            AssetTreeItem(
                 parent=category_item,
                 asset_type=asset_type,
                 asset_name=asset_name,
                 asset_data=asset_data
             )
-            
+
             # Expand the category to show the new asset
             self.expandItem(category_item)
             

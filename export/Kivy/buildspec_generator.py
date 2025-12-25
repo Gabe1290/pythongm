@@ -6,7 +6,7 @@ Generates build configuration files for Android (buildozer.spec) and iOS
 
 import logging
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 
 logger = logging.getLogger(__name__)
 

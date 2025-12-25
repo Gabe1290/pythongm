@@ -7,13 +7,13 @@ from typing import Dict, Any, List
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QTreeWidgetItem, QTreeWidget, QMenu,
     QLabel, QPushButton, QLineEdit, QSpinBox, QDoubleSpinBox,
-    QCheckBox, QComboBox, QDialogButtonBox, QGroupBox, QTextEdit,
-    QColorDialog, QWidget
+    QCheckBox, QComboBox, QDialogButtonBox, QTextEdit, QColorDialog,
+    QWidget
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QColor
 
-from .action_types import ActionType, ActionParameter
+from .action_types import ActionType
 
 class ActionConfigDialog(QDialog):
     """Dialog for configuring action parameters"""
@@ -237,7 +237,7 @@ class ActionConfigDialog(QDialog):
                 try:
                     if isinstance(current_color, str) and current_color.startswith('#'):
                         widget.setStyleSheet(f"background-color: {current_color}; color: white;")
-                except:
+                except Exception:
                     pass
 
                 widget.clicked.connect(

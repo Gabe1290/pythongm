@@ -6,7 +6,7 @@ Allows users to customize which blocks are available
 
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QPushButton, QTreeWidget,
-    QTreeWidgetItem, QLabel, QComboBox, QMessageBox, QGroupBox
+    QTreeWidgetItem, QLabel, QComboBox, QMessageBox
 )
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QColor, QBrush

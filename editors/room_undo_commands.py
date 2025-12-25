@@ -6,7 +6,6 @@ Safe implementation that prevents segfaults during deletion
 
 from PySide6.QtCore import QTimer
 from PySide6.QtGui import QUndoCommand
-from typing import Dict, Any, List
 
 
 class AddInstanceCommand(QUndoCommand):

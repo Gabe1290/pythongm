@@ -19,7 +19,7 @@ import json
 import os
 import shutil
 from pathlib import Path
-from typing import Dict, List, Optional, Union, Any, Tuple
+from typing import Dict, List, Optional, Union
 from PIL import Image
 import logging
 

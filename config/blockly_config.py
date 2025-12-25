@@ -4,8 +4,8 @@ Blockly Configuration System
 Allows users to customize which blocks are available in the visual editor
 """
 
-from dataclasses import dataclass, field, asdict
-from typing import Set, Dict, List, Optional
+from dataclasses import dataclass, field
+from typing import Set, Dict, List
 from pathlib import Path
 import json
 

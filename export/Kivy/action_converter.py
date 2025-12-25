@@ -3,7 +3,7 @@ GameMaker Action Converter for Kivy Export
 Converts PyGameMaker IDE actions to Kivy Python code
 """
 
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any
 
 
 class ActionConverter:

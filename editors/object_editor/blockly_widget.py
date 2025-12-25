@@ -346,7 +346,6 @@ class BlocklyWidget(QWidget):
 
     def update_status(self, message: str):
         """Update status (no-op - status label removed to save space)"""
-        pass
 
     def request_sync_from_events(self):
         """Request sync from events panel (emits signal for parent to handle)"""
@@ -417,7 +416,6 @@ class BlocklyWidget(QWidget):
 
     def apply_configuration(self, config):
         """Apply a new block configuration to the toolbox"""
-        from config.blockly_config import BlocklyConfig
 
         # Convert config to JSON format expected by JavaScript
         config_dict = {
@@ -567,7 +565,6 @@ class BlocklyVisualProgrammingTab(QWidget):
     def on_blocks_modified(self):
         """Handle blocks being modified"""
         # Could add auto-save or dirty state tracking here
-        pass
 
     def on_sync_requested(self):
         """Handle sync request from Blockly widget"""

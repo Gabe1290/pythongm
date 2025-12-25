@@ -7,7 +7,6 @@ This module can be progressively integrated into the main IDE window
 
 from pathlib import Path
 from PySide6.QtWidgets import QMessageBox, QFileDialog, QDialog
-from PySide6.QtCore import QObject
 from dialogs.project_dialogs import ExportProjectDialog
 from utils.config import Config
 

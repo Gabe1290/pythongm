@@ -5,8 +5,7 @@ FIXED VERSION - All calls are now safe
 """
 
 from PySide6.QtWidgets import QStyle, QApplication
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtGui import QIcon
 
 def get_standard_icon(icon_type):
     """
@@ -75,56 +74,56 @@ def get_file_icon():
     """Get file icon safely"""
     try:
         return QApplication.style().standardIcon(QStyle.StandardPixmap.SP_FileIcon)
-    except:
+    except Exception:
         return QIcon()
 
 def get_folder_icon():
     """Get folder icon safely""" 
     try:
         return QApplication.style().standardIcon(QStyle.StandardPixmap.SP_DirClosedIcon)
-    except:
+    except Exception:
         return QIcon()
 
 def get_folder_open_icon():
     """Get open folder icon safely"""
     try:
         return QApplication.style().standardIcon(QStyle.StandardPixmap.SP_DirOpenIcon)
-    except:
+    except Exception:
         return QIcon()
 
 def get_ok_icon():
     """Get OK button icon safely"""
     try:
         return QApplication.style().standardIcon(QStyle.StandardPixmap.SP_DialogOkButton)
-    except:
+    except Exception:
         return QIcon()
 
 def get_cancel_icon():
     """Get cancel button icon safely"""
     try:
         return QApplication.style().standardIcon(QStyle.StandardPixmap.SP_DialogCancelButton)
-    except:
+    except Exception:
         return QIcon()
 
 def get_warning_icon():
     """Get warning icon safely"""
     try:
         return QApplication.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxWarning)
-    except:
+    except Exception:
         return QIcon()
 
 def get_error_icon():
     """Get error icon safely"""
     try:
         return QApplication.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxCritical)
-    except:
+    except Exception:
         return QIcon()
 
 def get_info_icon():
     """Get information icon safely"""
     try:
         return QApplication.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxInformation)
-    except:
+    except Exception:
         return QIcon()
 
 # Safe wrapper function for any standardIcon call
@@ -147,5 +146,5 @@ def safe_standard_icon_call(style_obj, icon_param):
             return style_obj.standardIcon(icon_param)
         else:
             return get_file_icon()  # Safe default
-    except:
+    except Exception:
         return QIcon()

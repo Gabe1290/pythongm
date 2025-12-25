@@ -4,14 +4,12 @@ Room Editor - Main class
 Enhanced room editor that allows placing objects in rooms
 """
 
-import sys
 import json
 import copy
 from pathlib import Path
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
                                QScrollArea, QToolBar, QMessageBox, QLabel)
 from PySide6.QtCore import Qt, Signal, QTimer
-from PySide6.QtGui import QFont
 
 from .room_canvas import RoomCanvas
 from .object_palette import ObjectPalette
@@ -227,21 +225,6 @@ class RoomEditor(QWidget):
         
         # Setup keyboard shortcuts that work regardless of focus
         self.setup_keyboard_shortcuts()
-
-    def on_instance_selected(self, instance):
-        """Handle instance selection"""
-        self.instance_properties.set_instance(instance)
-        self.update_toolbar_state()
-
-    def on_instance_property_changed(self, instance, property_name, value):
-        """Handle instance property change"""
-        if property_name == "delete":
-            # Handle delete request
-            self.room_canvas.delete_selected_instances()
-        else:
-            # Mark as modified and redraw
-            self.mark_modified()
-            self.room_canvas.update()
 
     def setup_keyboard_shortcuts(self):
         """Setup keyboard shortcuts for the room editor"""

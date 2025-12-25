@@ -5,7 +5,6 @@ Enhanced GameRunner that properly renders room objects
 
 import pygame
 import json
-import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -139,7 +138,7 @@ class GameRoom:
             g = int(color_str[2:4], 16)
             b = int(color_str[4:6], 16)
             return (r, g, b)
-        except:
+        except Exception:
             return (135, 206, 235)  # Default sky blue
     
     def set_sprites_for_instances(self, sprites: Dict[str, GameSprite], objects: Dict[str, dict]):

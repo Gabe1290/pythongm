@@ -7,7 +7,7 @@ Allows loading custom events and actions from plugin files
 import importlib.util
 import sys
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Optional
 from dataclasses import dataclass
 
 from .event_types import EVENT_TYPES, EventType

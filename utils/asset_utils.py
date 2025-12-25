@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 
-import os
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Tuple, Union
+from typing import Dict, List, Any, Tuple, Union
 from datetime import datetime
 import hashlib
 import mimetypes
-from PIL import Image, ImageOps, ImageFilter, ImageEnhance
+from PIL import Image, ImageOps
 import pygame
-import io
 
 
 class AssetUtils:
@@ -329,8 +327,6 @@ class AssetUtils:
                 
                 # Resize if dimensions specified
                 if max_width or max_height:
-                    original_size = img.size
-                    
                     if max_width and max_height:
                         img.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
                     elif max_width:

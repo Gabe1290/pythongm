@@ -6,15 +6,15 @@ Main object editor class for editing game objects
 
 import json
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Any
+from typing import Dict, Any
 
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QSplitter, QToolBar,
-    QLabel, QPushButton, QSpinBox, QComboBox, QCheckBox,
-    QMessageBox, QGroupBox, QSizePolicy, QTabWidget, QTextEdit
+    QWidget, QVBoxLayout, QHBoxLayout, QSplitter, QLabel,
+    QPushButton, QComboBox, QMessageBox, QGroupBox, QSizePolicy,
+    QTabWidget, QTextEdit
 )
-from PySide6.QtCore import Qt, Signal, QTimer
-from PySide6.QtGui import QPixmap, QFont
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QFont
 
 from ..base_editor import BaseEditor, EditorUndoCommand
 from .object_properties_panel import ObjectPropertiesPanel
@@ -471,7 +471,7 @@ class ObjectEditor(BaseEditor):
         This ensures the events panel uses the same preset as the Blockly editor,
         which is stored in the project settings.
         """
-        from config.blockly_config import PRESETS, BlocklyConfig, load_config
+        from config.blockly_config import PRESETS, BlocklyConfig
 
         try:
             # Check if we have a project path

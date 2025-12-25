@@ -104,14 +104,14 @@ except ImportError:
         from PySide6.QtCore import Qt
         QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
         print("✅ Basic Qt setup applied")
-    except:
+    except Exception:
         print("⚠️ Could not apply Qt setup")
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QIcon, QFont
+from PySide6.QtGui import QIcon
 
 from core.ide_window import PyGameMakerIDE
-from utils.config import Config, load_config, save_config
+from utils.config import Config, load_config
 
 def setup_application():
     from PySide6.QtGui import QFont
@@ -127,7 +127,7 @@ def setup_application():
     load_config()
     
     # Load translations based on config or system locale
-    from PySide6.QtCore import QTranslator, QLocale
+    from PySide6.QtCore import QTranslator
     
     translator = QTranslator()
     app.translator = translator  # Store translator on app for later access

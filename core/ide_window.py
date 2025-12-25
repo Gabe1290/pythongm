@@ -4,14 +4,11 @@ import sys
 import subprocess
 from pathlib import Path
 from PySide6.QtWidgets import (QMainWindow, QVBoxLayout, QHBoxLayout, QWidget,
-                               QSplitter, QMenuBar, QStatusBar, QMessageBox, QDialog,
-                               QFileDialog, QInputDialog, QProgressBar, QLabel, QStyle,
-                               QTabWidget, QTextBrowser, QSizePolicy, QGroupBox, QFormLayout,
-                               QSpinBox,QComboBox, QDialogButtonBox, QPushButton, QCheckBox,
-                               QDoubleSpinBox, QLineEdit, QToolBar)
+                               QSplitter, QMessageBox, QDialog, QFileDialog, QInputDialog,
+                               QProgressBar, QLabel, QStyle, QTabWidget, QToolBar)
 
-from PySide6.QtCore import Qt, QTimer, QThread, Signal, QSize
-from PySide6.QtGui import QAction, QKeySequence, QFont
+from PySide6.QtCore import Qt, QTimer, QSize
+from PySide6.QtGui import QAction
 
 from widgets.asset_tree.asset_tree_widget import AssetTreeWidget
 # from widgets.properties_panel import PropertiesPanel
@@ -19,14 +16,13 @@ from widgets.enhanced_properties_panel import EnhancedPropertiesPanel
 from core.project_manager import ProjectManager
 from core.asset_manager import AssetManager
 from core.ide_exporters import IDEExporters
-from dialogs.project_dialogs import NewProjectDialog, ProjectSettingsDialog, ExportProjectDialog
+from dialogs.project_dialogs import NewProjectDialog, ProjectSettingsDialog
 from dialogs.import_dialogs import ImportAssetDialog
 from dialogs.blockly_config_dialog import BlocklyConfigDialog
 from utils.config import Config
 from editors.room_editor import RoomEditor
 from editors.object_editor import ObjectEditor
 from runtime.game_runner import GameRunner
-from export.exe.exe_exporter import ExeExporter
 
 class PyGameMakerIDE(QMainWindow):
 
@@ -559,37 +555,6 @@ class PyGameMakerIDE(QMainWindow):
                     self.tr("Failed to import room package")
                 )
                 self.update_status(self.tr("Import failed"))
-
-    def show_auto_save_settings(self):
-        """Show auto-save settings dialog"""
-        from dialogs.auto_save_dialog import AutoSaveSettingsDialog
-
-        # Get current settings
-        if self.project_manager:
-            current_enabled = self.project_manager.auto_save_enabled
-            current_interval = self.project_manager.auto_save_interval // 1000  # Convert to seconds
-        else:
-            current_enabled = True
-            current_interval = 30
-
-        # Show dialog
-        dialog = AutoSaveSettingsDialog(current_enabled, current_interval, self)
-        if dialog.exec():
-            enabled, interval_seconds = dialog.get_settings()
-
-            # Apply settings
-            if self.project_manager:
-                self.project_manager.set_auto_save(enabled, interval_seconds * 1000)
-
-                # Update menu checkbox
-                self.auto_save_action.setChecked(enabled)
-
-                # Save to config
-                from utils.config import Config
-                Config.set('auto_save_enabled', enabled)
-                Config.set('auto_save_interval', interval_seconds)
-
-                self.update_status(self.tr("Auto-save settings updated"))
 
     def create_toolbar(self):
         toolbar = self.addToolBar(self.tr("Main"))
@@ -1802,7 +1767,6 @@ class PyGameMakerIDE(QMainWindow):
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                 )
                 if result == QMessageBox.StandardButton.Yes:
-                    import os
                     subprocess.run(['xdg-open', output_dir])
             else:
                 QMessageBox.critical(
@@ -1858,7 +1822,7 @@ class PyGameMakerIDE(QMainWindow):
             try:
                 current_widget.undo()
                 return
-            except:
+            except Exception:
                 pass
 
         # Default: project-level undo (if implemented)
@@ -1879,7 +1843,7 @@ class PyGameMakerIDE(QMainWindow):
             try:
                 current_widget.redo()
                 return
-            except:
+            except Exception:
                 pass
 
         # Default: project-level redo (if implemented)
@@ -1900,7 +1864,7 @@ class PyGameMakerIDE(QMainWindow):
             try:
                 current_widget.cut()
                 return
-            except:
+            except Exception:
                 pass
 
         # Default: try to cut from focused widget
@@ -1908,7 +1872,7 @@ class PyGameMakerIDE(QMainWindow):
         if focused_widget and hasattr(focused_widget, 'cut'):
             try:
                 focused_widget.cut()
-            except:
+            except Exception:
                 pass
 
     def copy(self):
@@ -1926,7 +1890,7 @@ class PyGameMakerIDE(QMainWindow):
             try:
                 current_widget.copy()
                 return
-            except:
+            except Exception:
                 pass
 
         # Default: try to copy from focused widget
@@ -1934,7 +1898,7 @@ class PyGameMakerIDE(QMainWindow):
         if focused_widget and hasattr(focused_widget, 'copy'):
             try:
                 focused_widget.copy()
-            except:
+            except Exception:
                 pass
 
     def paste(self):
@@ -1952,7 +1916,7 @@ class PyGameMakerIDE(QMainWindow):
             try:
                 current_widget.paste()
                 return
-            except:
+            except Exception:
                 pass
 
         # Default: try to paste to focused widget
@@ -1960,7 +1924,7 @@ class PyGameMakerIDE(QMainWindow):
         if focused_widget and hasattr(focused_widget, 'paste'):
             try:
                 focused_widget.paste()
-            except:
+            except Exception:
                 pass
 
     def duplicate(self):

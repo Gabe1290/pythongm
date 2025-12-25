@@ -1,7 +1,5 @@
 import os
-import sys
 import warnings
-from typing import Optional
 
 class ConsoleLogger:
     """Simple, clean console logger for the IDE"""

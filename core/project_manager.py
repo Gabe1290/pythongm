@@ -4,7 +4,7 @@ import json
 import shutil
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional, Any
 from PySide6.QtCore import QObject, Signal, QTimer
 
 from utils.project_compression import ProjectCompressor
@@ -383,7 +383,6 @@ class ProjectManager(QObject):
 
     def _prepare_project_data_for_save(self) -> dict:
         """Prepare project data for saving - rooms store only metadata, not instances"""
-        from collections import OrderedDict
         from copy import deepcopy
 
         # Deep copy to avoid modifying the live data

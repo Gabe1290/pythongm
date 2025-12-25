@@ -3,9 +3,9 @@
 Enhanced Properties Panel Widget for PyGameMaker IDE
 """
 from pathlib import Path
-from PySide6.QtWidgets import (QWidget, QHBoxLayout, QVBoxLayout, QLabel, QGroupBox, 
-                               QFormLayout, QLineEdit, QTextEdit, QSpinBox,
-                               QColorDialog, QPushButton, QCheckBox, QComboBox)
+from PySide6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QGroupBox, QFormLayout, 
+                               QLineEdit, QSpinBox, QPushButton, QCheckBox,
+                               QComboBox)
 
 from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QPixmap
@@ -804,4 +804,3 @@ class EnhancedPropertiesPanel(QWidget):
         
     def set_project(self, project_path, project_data):
         """Set project data - compatibility method"""
-        pass

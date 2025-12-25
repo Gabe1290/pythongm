@@ -11,7 +11,6 @@ from PySide6.QtWidgets import (
     QComboBox, QTextEdit, QPushButton, QLabel,
     QDialogButtonBox, QGroupBox, QColorDialog, QWidget
 )
-from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QColor
 
 from actions import ActionDefinition, ActionParameter
@@ -264,7 +263,7 @@ class GM80ActionDialog(QDialog):
                 try:
                     import json
                     values[param_name] = json.loads(widget.text())
-                except:
+                except Exception:
                     values[param_name] = []
 
             elif param_type == "action_list":

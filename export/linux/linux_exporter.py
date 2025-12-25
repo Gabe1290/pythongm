@@ -9,7 +9,7 @@ import shutil
 import json
 import platform
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict
 from PySide6.QtCore import QObject, Signal
 
 
@@ -147,7 +147,6 @@ class LinuxExporter(QObject):
     def _check_pyinstaller(self) -> bool:
         """Check if PyInstaller is installed"""
         try:
-            import PyInstaller
             return True
         except ImportError:
             return False
@@ -155,7 +154,6 @@ class LinuxExporter(QObject):
     def _check_kivy(self) -> bool:
         """Check if Kivy is installed"""
         try:
-            import kivy
             return True
         except ImportError:
             return False
@@ -163,7 +161,6 @@ class LinuxExporter(QObject):
     def _check_pillow(self) -> bool:
         """Check if Pillow (PIL) is installed"""
         try:
-            import PIL
             return True
         except ImportError:
             return False

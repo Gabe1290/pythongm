@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
     QLineEdit, QPushButton, QLabel, QFileDialog, 
     QMessageBox, QGroupBox
 )
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Signal
 from pathlib import Path
 
 class NewProjectDialog(QDialog):

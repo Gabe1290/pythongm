@@ -10,7 +10,6 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                QCheckBox, QDoubleSpinBox, QLineEdit, QFileDialog,
                                QMessageBox)
 from PySide6.QtGui import QFont
-from PySide6.QtCore import Qt
 from utils.config import Config
 
 

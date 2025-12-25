@@ -4,7 +4,7 @@ Event types for the GameMaker IDE - EXPANDED FOR SMOOTH MOVEMENT
 Defines available events and their properties
 """
 
-from typing import Dict, List, Any, Optional
+from typing import List, Any, Optional
 from dataclasses import dataclass, field
 
 @dataclass

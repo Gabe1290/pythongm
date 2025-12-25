@@ -7,7 +7,6 @@ Fixes all JSON serialization and import errors
 import json
 import base64
 from pathlib import Path
-from typing import Dict, Any
 
 
 class Config:
@@ -247,7 +246,6 @@ class Config:
     def get_project_config(cls):
         """Get project configuration"""
         project_config = cls._config_data.get('project', {})
-        import os
         default_projects_dir = str(Path.home() / "PyGameMaker Projects")
         
         return {

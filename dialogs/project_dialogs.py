@@ -5,15 +5,12 @@ Includes ALL dialog classes that could possibly be imported
 """
 
 import os
-import json
 from pathlib import Path
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QFormLayout,
-                               QLineEdit, QPushButton, QTextEdit, QLabel, 
-                               QFileDialog, QDialogButtonBox, QGroupBox,
-                               QCheckBox, QComboBox, QSpinBox, QMessageBox,
-                               QListWidget, QSplitter, QProgressBar, QTabWidget,
-                               QTreeWidget, QTreeWidgetItem)
-from PySide6.QtCore import Qt
+                               QLineEdit, QPushButton, QTextEdit, QFileDialog, 
+                               QDialogButtonBox, QGroupBox, QCheckBox,
+                               QComboBox, QSpinBox, QMessageBox, QListWidget,
+                               QProgressBar)
 
 
 class NewProjectDialog(QDialog):

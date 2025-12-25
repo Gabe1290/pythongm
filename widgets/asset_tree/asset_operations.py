@@ -4,13 +4,10 @@ Asset Operations for PyGameMaker IDE
 Handles all asset file operations: import, delete, rename, and project file management
 """
 
-import json
 import shutil
-import os
 from pathlib import Path
-from datetime import datetime
 from typing import List, Dict, Optional
-from PySide6.QtWidgets import QMessageBox, QInputDialog, QDialog
+from PySide6.QtWidgets import QMessageBox, QDialog
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap, QIcon
 
@@ -657,7 +654,6 @@ class AssetOperations:
         print(f"Cache update for {asset_name} - skipping (not required)")
         # Asset import works fine without cache updates
         # This method exists for compatibility but doesn't need to do anything
-        pass
 
     def import_sprite_image_for_asset(self, file_path: Path, sprite_name: str) -> bool:
         """Replace/import an image file for an existing sprite asset"""
