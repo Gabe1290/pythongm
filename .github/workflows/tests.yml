@@ -1,0 +1,230 @@
+# PyGameMaker IDE - Automated Testing Workflow
+# Runs tests on every push and pull request
+
+name: Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  # Allow manual triggering
+  workflow_dispatch:
+
+jobs:
+  # ============================================================================
+  # Unit Tests (Fast, no GUI)
+  # ============================================================================
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev  # For pygame audio
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-test.txt
+
+      - name: Run unit tests
+        run: |
+          pytest tests/test_config.py -v -m "not widget" --tb=short
+        env:
+          # Disable audio for headless testing
+          SDL_AUDIODRIVER: dummy
+
+  # ============================================================================
+  # Widget Tests (Require Qt and display)
+  # ============================================================================
+  widget-tests:
+    name: Widget Tests (Qt)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libegl1 \
+            libgl1-mesa-glx \
+            libxkbcommon0 \
+            libxcb-cursor0 \
+            libxcb-icccm4 \
+            libxcb-image0 \
+            libxcb-keysyms1 \
+            libxcb-randr0 \
+            libxcb-render-util0 \
+            libxcb-shape0 \
+            libxcb-xfixes0 \
+            libxcb-xinerama0 \
+            xvfb \
+            libasound2-dev \
+            libpulse0 \
+            x11-utils
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-test.txt
+
+      - name: Run widget tests with Xvfb
+        run: |
+          xvfb-run -a --server-args="-screen 0 1920x1080x24" \
+            pytest tests/test_widgets.py -v -m widget --tb=short
+        env:
+          QT_QPA_PLATFORM: offscreen
+          SDL_AUDIODRIVER: dummy
+          DISPLAY: :99
+
+  # ============================================================================
+  # Full Integration Tests
+  # ============================================================================
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [unit-tests]  # Only run after unit tests pass
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libegl1 \
+            libgl1-mesa-glx \
+            libxkbcommon0 \
+            libxcb-cursor0 \
+            libxcb-icccm4 \
+            libxcb-image0 \
+            libxcb-keysyms1 \
+            libxcb-randr0 \
+            libxcb-render-util0 \
+            libxcb-shape0 \
+            libxcb-xfixes0 \
+            libxcb-xinerama0 \
+            xvfb \
+            libasound2-dev \
+            libpulse0
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-test.txt
+
+      - name: Run all tests with coverage
+        run: |
+          xvfb-run -a --server-args="-screen 0 1920x1080x24" \
+            pytest tests/ -v --tb=short --cov=. --cov-report=xml --cov-report=term-missing
+        env:
+          QT_QPA_PLATFORM: offscreen
+          SDL_AUDIODRIVER: dummy
+          DISPLAY: :99
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: false
+        continue-on-error: true
+
+  # ============================================================================
+  # Windows Tests (Optional)
+  # ============================================================================
+  windows-tests:
+    name: Windows Tests
+    runs-on: windows-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-test.txt
+
+      - name: Run unit tests
+        run: |
+          pytest tests/test_config.py tests/test_project_manager.py tests/test_asset_manager.py -v -m "not widget" --tb=short
+        env:
+          SDL_AUDIODRIVER: dummy
+
+  # ============================================================================
+  # Code Quality Checks
+  # ============================================================================
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+
+      - name: Run flake8 (syntax errors and undefined names only)
+        run: |
+          # Stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics \
+            --exclude=venv,venv_py312,build,dist,.git,__pycache__
+
+      - name: Run flake8 (warnings)
+        run: |
+          # Exit-zero treats all errors as warnings
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics \
+            --exclude=venv,venv_py312,build,dist,.git,__pycache__
+        continue-on-error: true
