@@ -7,7 +7,7 @@ Represents an instance of an object placed in a room
 
 class ObjectInstance:
     """Represents an instance of an object placed in a room"""
-    
+
     def __init__(self, object_name, x=0, y=0, instance_id=None):
         self.object_name = object_name
         self.x = x
@@ -17,7 +17,7 @@ class ObjectInstance:
         self.scale_x = 1.0
         self.scale_y = 1.0
         self.visible = True
-        
+
     def to_dict(self):
         """Convert instance to dictionary for saving"""
         return {
@@ -30,13 +30,13 @@ class ObjectInstance:
             'scale_y': self.scale_y,
             'visible': self.visible
         }
-    
+
     @classmethod
     def from_dict(cls, data):
         """Create instance from dictionary"""
         instance = cls(
             data['object_name'],
-            data['x'], 
+            data['x'],
             data['y'],
             data.get('instance_id')
         )

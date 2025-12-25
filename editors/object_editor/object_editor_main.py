@@ -42,7 +42,7 @@ class VisualCodeGenerator:
 
 class ObjectChangeCommand(EditorUndoCommand):
     """Undo command for object changes"""
-    
+
     def __init__(self, object_editor, description: str, old_data: Dict[str, Any]):
         super().__init__(object_editor, description)
         self.old_data = old_data.copy()
@@ -50,80 +50,80 @@ class ObjectChangeCommand(EditorUndoCommand):
 
 class ObjectEditor(BaseEditor):
     """Main object editor widget"""
-    
+
     # Additional signals specific to object editor
     object_property_changed = Signal(str, object)  # property_name, value
     object_editor_activated = Signal(str, dict)    # object_name, properties
-    
+
     def __init__(self, project_path: str = None, parent=None):
         # Initialize data before calling super().__init__()
         self.available_sprites = {}
         self.current_object_properties = {}
         self._pending_events_data = None
         self.view_code_enabled = False
-        
+
         # Call parent constructor (this sets up base UI including toolbar)
         super().__init__(project_path, parent)
-        
+
         # Object-specific setup AFTER base setup
         self.setup_object_ui()
         self.setup_object_connections()
-        
+
         # Apply any pending data that was loaded before UI was ready
         if hasattr(self, 'apply_pending_data'):
             self.apply_pending_data()
-        
+
         self.load_project_assets_if_available()
-        
+
         # Final check that save functionality is working
         print("ObjectEditor initialization complete")
         if hasattr(self, 'save_action'):
             print(f"Save action available: {self.save_action.text()}")
         else:
             print("WARNING: No save action found after initialization!")
-        
+
         # Verify events panel exists
         if hasattr(self, 'events_panel'):
             print("Events panel initialized successfully")
         else:
             print("WARNING: Events panel not initialized!")
-    
+
     def setup_object_ui(self):
         """Setup object editor specific UI"""
         # Clear the base content widget and rebuild
         content_layout = QVBoxLayout(self.content_widget)
         content_layout.setContentsMargins(0, 0, 0, 0)
         content_layout.setSpacing(0)
-        
+
         # IMPORTANT: Ensure base toolbar actions exist first
         if not hasattr(self, 'save_action') or not self.save_action:
             print("Warning: Save action not found in base toolbar")
             self.ensure_save_button_visible()
-        
+
         # Add object-specific toolbar actions AFTER ensuring save exists
         self.add_object_toolbar_actions()
-        
+
         # Force toolbar to be visible
         self.toolbar.setVisible(True)
         self.toolbar.show()
 
         # Ensure save button is properly configured and visible
         self.ensure_save_button_visible()
-        
+
         # Create main splitter (2-panel layout)
         main_splitter = QSplitter(Qt.Horizontal)
-        
+
         # Create left panel
         left_panel = self.create_left_panel()
         main_splitter.addWidget(left_panel)
-        
+
         # Create center panel
         center_panel = self.create_center_panel()
         main_splitter.addWidget(center_panel)
-        
+
         # Set splitter sizes - left panel MUCH wider by default
         main_splitter.setSizes([500, 600])
-        
+
         # Make BOTH panels resizable and stretchable
         main_splitter.setStretchFactor(0, 1)
         main_splitter.setStretchFactor(1, 1)
@@ -134,9 +134,9 @@ class ObjectEditor(BaseEditor):
 
         # Add splitter to content layout
         content_layout.addWidget(main_splitter)
-        
+
         print("Object UI setup complete")
-        
+
         # CRITICAL FIX: Force toolbar visible at the END of setup
         if hasattr(self, 'toolbar'):
             self.toolbar.setVisible(True)
@@ -149,16 +149,16 @@ class ObjectEditor(BaseEditor):
         if not hasattr(self, 'toolbar') or not self.toolbar:
             print("ERROR: No toolbar found, cannot add save button")
             return
-        
+
         # Check if save_action exists from BaseEditor
         if hasattr(self, 'save_action') and self.save_action:
             print(f"Save action exists: {self.save_action.text()}")
-            
+
             # Ensure it's in the toolbar
             toolbar_actions = self.toolbar.actions()
             if self.save_action not in toolbar_actions:
                 print("Save action exists but not in toolbar, adding it")
-                
+
                 # Insert at the beginning of toolbar
                 if toolbar_actions:
                     self.toolbar.insertAction(toolbar_actions[0], self.save_action)
@@ -170,34 +170,34 @@ class ObjectEditor(BaseEditor):
                     self.toolbar.addSeparator()
         else:
             print("Creating new save action")
-            
+
             from PySide6.QtGui import QAction, QKeySequence
-            
+
             # ✅ TRANSLATABLE: Save button text
             self.save_action = QAction(self.tr("💾 Save"), self)
             self.save_action.setShortcut(QKeySequence.Save)
             self.save_action.setToolTip(self.tr("Save object (Ctrl+S)"))
-            
+
             existing_actions = self.toolbar.actions()
-            
+
             if existing_actions:
                 self.toolbar.insertAction(existing_actions[0], self.save_action)
                 self.toolbar.insertSeparator(existing_actions[0])
             else:
                 self.toolbar.addAction(self.save_action)
                 self.toolbar.addSeparator()
-            
+
             self.save_action.triggered.connect(self.save)
             print("Created and connected save action")
-        
+
         # Ensure action is properly connected
         try:
             self.save_action.triggered.disconnect()
         except (RuntimeError, TypeError):
             pass
-        
+
         self.save_action.triggered.connect(self.save)
-        
+
         # Enable/disable based on asset state
         if self.asset_name:
             self.save_action.setEnabled(True)
@@ -205,37 +205,37 @@ class ObjectEditor(BaseEditor):
         else:
             self.save_action.setEnabled(False)
             print("Save action disabled - no asset loaded")
-        
+
         self.toolbar.setVisible(True)
         self.toolbar.show()
-        
+
         # Create keyboard shortcut as additional backup
         if not hasattr(self, '_save_shortcut'):
             from PySide6.QtGui import QShortcut, QKeySequence
             self._save_shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
             self._save_shortcut.activated.connect(self.save)
             print("Added keyboard shortcut backup for save")
-    
+
     def add_object_toolbar_actions(self):
         """Add object-specific actions to toolbar"""
         self.toolbar.addSeparator()
-        
+
         # ✅ TRANSLATABLE: Toolbar actions
         self.toolbar.addAction(self.tr("🎮 Test Object"), self.test_object)
         self.toolbar.addAction(self.tr("📋 View Code"), self.view_generated_code)
-    
+
     def create_left_panel(self) -> QWidget:
         """Create left panel with events"""
         panel = QWidget()
         layout = QVBoxLayout(panel)
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setSpacing(0)
-        
+
         # ✅ TRANSLATABLE: Group box title
         events_group = QGroupBox(self.tr("Object Events"))
         events_layout = QVBoxLayout(events_group)
         events_layout.setContentsMargins(5, 5, 5, 5)
-        
+
         # Create the events panel
         self.events_panel = GM80EventsPanel()
         self.events_panel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -243,17 +243,17 @@ class ObjectEditor(BaseEditor):
 
         # Apply project-specific blockly config to events panel (if set)
         self._apply_project_config_to_events_panel()
-        
+
         layout.addWidget(events_group, 1)
-        
+
         panel.setMinimumWidth(200)
         panel.setMaximumWidth(10000)
         panel.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
-        
+
         print("Left panel created with events_panel")
-        
+
         return panel
-    
+
     def create_center_panel(self) -> QWidget:
         """Create center panel with properties and tabs"""
         print("DEBUG: Creating center panel...")
@@ -261,48 +261,48 @@ class ObjectEditor(BaseEditor):
         layout = QVBoxLayout(panel)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(2)
-        
+
         # Use the new ObjectPropertiesPanel
         self.properties_panel = ObjectPropertiesPanel()
         self.properties_panel.property_changed.connect(self.on_property_changed)
         layout.addWidget(self.properties_panel)
-        
+
         # Keep references for compatibility
         self.visible_checkbox = self.properties_panel.visible_checkbox
         self.persistent_checkbox = self.properties_panel.persistent_checkbox
         self.solid_checkbox = self.properties_panel.solid_checkbox
-        
+
         print("DEBUG: Creating info bar...")
         # Info bar - extremely compact
         info_layout = QHBoxLayout()
         info_layout.setContentsMargins(3, 1, 3, 1)
         info_layout.setSpacing(10)
-        
+
         # ✅ TRANSLATABLE: Info labels
         self.object_info_label = QLabel(self.tr("Object: Not loaded"))
         self.object_info_label.setFixedHeight(18)
         self.object_info_label.setStyleSheet("font-size: 9px; padding: 0px;")
-        
+
         self.event_info_label = QLabel(self.tr("No event selected"))
         self.event_info_label.setFixedHeight(18)
         self.event_info_label.setStyleSheet("font-size: 9px; padding: 0px;")
-        
+
         info_layout.addWidget(self.object_info_label)
         info_layout.addStretch()
         info_layout.addWidget(self.event_info_label)
-        
+
         layout.addLayout(info_layout, 0)
-        
+
         print("DEBUG: Creating tab widget...")
         # Create tab widget for different views
         self.center_tabs = QTabWidget()
-        
+
         print("DEBUG: Creating traditional tab...")
         # Tab 1: Traditional Event List
         traditional_tab = QWidget()
         traditional_layout = QVBoxLayout(traditional_tab)
         traditional_layout.setContentsMargins(10, 10, 10, 10)
-        
+
         # ✅ TRANSLATABLE: Placeholder text
         placeholder_label = QLabel(
             self.tr("Actions are managed through the Object Events panel on the left.\n\n"
@@ -311,17 +311,17 @@ class ObjectEditor(BaseEditor):
         placeholder_label.setAlignment(Qt.AlignCenter)
         placeholder_label.setStyleSheet("color: #666; font-size: 12px;")
         traditional_layout.addWidget(placeholder_label)
-        
+
         # Keep references for compatibility but hide them
         self.actions_widget = ActionListWidget()
         self.actions_widget.hide()
         self.scripting_area = VisualScriptingArea()
         self.scripting_area.hide()
-        
+
         print("DEBUG: Adding traditional tab to center_tabs...")
         # ✅ TRANSLATABLE: Tab titles
         self.center_tabs.addTab(traditional_tab, self.tr("📋 Event List"))
-        
+
         print("DEBUG: Creating visual programming tab...")
         # Tab 2: Visual Programming with Blockly (ENABLED!)
         try:
@@ -436,14 +436,14 @@ class ObjectEditor(BaseEditor):
 
         print("DEBUG: Adding tabs to layout...")
         layout.addWidget(self.center_tabs, 100)
-        
+
         panel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         panel.setMinimumWidth(200)
-        
+
         self.center_tabs.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.center_tabs.setMinimumWidth(200)
         self.center_tabs.setMinimumHeight(400)
-        
+
         print("DEBUG: Center panel created with all UI elements")
 
         return panel
@@ -493,7 +493,7 @@ class ObjectEditor(BaseEditor):
                     return
 
             # No project preset - use global config (already loaded in events panel __init__)
-            print(f"ℹ️ Events panel using global config (no project preset)")
+            print("ℹ️ Events panel using global config (no project preset)")
         except Exception as e:
             print(f"⚠️ Error loading project config for events panel: {e}")
 
@@ -530,7 +530,7 @@ class ObjectEditor(BaseEditor):
         print(f"Node property changed: {property_name} = {value}")
         self.mark_modified()
         self.visual_canvas.update()
-    
+
     def setup_object_connections(self):
         """Setup object editor specific connections"""
         # Connect events panel
@@ -542,7 +542,7 @@ class ObjectEditor(BaseEditor):
                     self.events_panel.event_selected.connect(self.on_event_selected)
             except AttributeError as e:
                 print(f"Note: Events panel signal not available: {e}")
-        
+
         # Connect scripting area
         if hasattr(self, 'scripting_area') and self.scripting_area:
             try:
@@ -559,7 +559,7 @@ class ObjectEditor(BaseEditor):
         if hasattr(self, 'save_action'):
             if self.asset_name:
                 self.save_action.setEnabled(True)
-            
+
             actions = [action.text() for action in self.toolbar.actions()]
             if not any('Save' in action for action in actions):
                 # ✅ TRANSLATABLE: Save action - create action first, then insert
@@ -581,74 +581,74 @@ class ObjectEditor(BaseEditor):
             self.save_action = self.toolbar.addAction(self.tr("💾 Save"), self.save)
             self.save_action.setShortcut("Ctrl+S")
             self.save_action.setEnabled(True)
-            
+
             self.toolbar.removeAction(self.save_action)
             if self.toolbar.actions():
                 self.toolbar.insertAction(self.toolbar.actions()[0], self.save_action)
             else:
                 self.toolbar.addAction(self.save_action)
-        
+
         if not hasattr(self, '_save_shortcut'):
             from PySide6.QtGui import QShortcut, QKeySequence
             self._save_shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
             self._save_shortcut.activated.connect(self.save)
-    
+
     def save(self):
         """Manual save method for the object editor"""
         if not self.asset_name:
             print("Cannot save: No asset loaded")
             return False
-        
+
         print(f"Manual save triggered for: {self.asset_name}")
-        
+
         try:
             # Validate data first
             is_valid, error_msg = self.validate_data()
             if not is_valid:
                 # ✅ TRANSLATABLE: Error dialog
                 QMessageBox.warning(
-                    self, 
-                    self.tr("Validation Error"), 
+                    self,
+                    self.tr("Validation Error"),
                     self.tr("Cannot save: {0}").format(error_msg)
                 )
                 return False
-            
+
             # Get current data (including events)
             data = self.get_data()
-            
+
             # Debug output for events
             events_count = len(data.get('events', {}))
             print(f"Saving object with {events_count} events")
             if events_count > 0:
                 for event_name in data['events'].keys():
                     print(f"  - Saving event: {event_name}")
-            
+
             # Emit save request signal
             self.save_requested.emit(self.asset_name, data)
-            
+
             # Update state
             self.is_modified = False
             self.save_action.setEnabled(False)
-            
+
             # Stop auto-save timer
             if hasattr(self, '_save_timer'):
                 self._save_timer.stop()
-            
+
             # Update UI to show saved state
             # ✅ TRANSLATABLE: Status message
             self.update_status(self.tr("Saved: {0}").format(self.asset_name))
             self.update_window_title()
-            
+
             print(f"Successfully saved object: {self.asset_name}")
             return True
-            
+
         except Exception as e:
             error_msg = f"Error saving object: {e}"
             print(error_msg)
             # ✅ TRANSLATABLE: Error dialog
             QMessageBox.critical(
-                self, 
-                self.tr("Save Error"), 
+                self,
+                self.tr("Save Error"),
                 self.tr("Error saving object: {0}").format(e)
             )
             return False
@@ -656,25 +656,25 @@ class ObjectEditor(BaseEditor):
     def load_asset(self, asset_name: str, asset_data: Dict[str, Any]):
         """Load object asset data"""
         print(f"Loading object asset: {asset_name}")
-        
+
         # Call parent method
         super().load_asset(asset_name, asset_data)
-        
+
         # Ensure save button is available and enabled after loading
         self.ensure_save_button_visible()
-        
+
         # Enable save action since we now have an asset
         if hasattr(self, 'save_action') and self.save_action:
             self.save_action.setEnabled(True)
             print(f"Enabled save action for {asset_name}")
-        
+
         print(f"Object asset loaded: {asset_name}")
 
     def load_project_assets_if_available(self):
         """Load project assets if project path is available"""
         if self.project_path:
             self.load_project_assets()
-    
+
     def load_project_assets(self):
         """Load available sprites from project"""
         sprite_count = 0
@@ -711,16 +711,16 @@ class ObjectEditor(BaseEditor):
         if hasattr(self, 'properties_panel'):
             print(f"🎨 Setting {sprite_count} sprites in properties panel")
             self.properties_panel.set_available_sprites(self.available_sprites)
-    
+
     def load_data(self, data: Dict[str, Any]):
         """Load object data into the editor"""
         try:
             # Store object properties
             self.current_object_properties = data.copy()
-            
+
             # Store events data for later if UI not ready
             self._pending_events_data = data.get('events', {})
-            
+
             # Load events data only if events_panel exists
             if hasattr(self, 'events_panel') and self.events_panel:
                 events_data = data.get('events', {})
@@ -743,11 +743,11 @@ class ObjectEditor(BaseEditor):
                 self.events_panel.load_events_data(events_data)
             else:
                 print("Note: Events panel not initialized yet, storing for later")
-            
+
             # Load properties into properties panel
             if hasattr(self, 'properties_panel'):
                 self.properties_panel.load_properties(data)
-            
+
             # Load visual programming data (old format)
             visual_data = data.get('visual_programming', {})
             if visual_data and hasattr(self, 'visual_canvas'):
@@ -772,15 +772,15 @@ class ObjectEditor(BaseEditor):
             # Update display only if UI elements exist
             if hasattr(self, 'object_info_label'):
                 self.update_object_info()
-            
+
             # Emit signal for IDE properties panel
             if hasattr(self, 'object_editor_activated'):
                 self.object_editor_activated.emit(self.asset_name, self.current_object_properties)
-            
+
         except Exception as e:
             print(f"Warning during object data loading: {e}")
             self.current_object_properties = data.copy()
-    
+
     def apply_pending_data(self):
         """Apply any pending data after UI is fully initialized"""
         if hasattr(self, '_pending_events_data') and self._pending_events_data:
@@ -788,7 +788,7 @@ class ObjectEditor(BaseEditor):
                 print(f"Applying pending events data: {len(self._pending_events_data)} events")
                 self.events_panel.load_events_data(self._pending_events_data)
                 self._pending_events_data = None
-        
+
         # Update object info if needed
         if hasattr(self, 'object_info_label') and self.asset_name:
             self.update_object_info()
@@ -798,30 +798,30 @@ class ObjectEditor(BaseEditor):
         # Collect events and scripts safely
         events_data = {}
         script_data = {}
-        
+
         try:
             if hasattr(self, 'events_panel') and self.events_panel and hasattr(self.events_panel, 'get_events_data'):
                 events_data = self.events_panel.get_events_data()
                 print(f"✓ Got {len(events_data)} events from events panel")
         except Exception as e:
             print(f"Note: Could not get events data: {e}")
-        
+
         try:
             if hasattr(self, 'scripting_area') and self.scripting_area and hasattr(self.scripting_area, 'get_script_data'):
                 script_data = self.scripting_area.get_script_data()
         except Exception as e:
             print(f"Note: Could not get script data: {e}")
-        
+
         # Merge script data into events data
         for event_name, actions in script_data.items():
             if event_name in events_data:
                 events_data[event_name]['actions'] = actions
-        
+
         # Get properties from properties panel
         properties = {}
         if hasattr(self, 'properties_panel'):
             properties = self.properties_panel.get_properties()
-        
+
         # Get object properties from current stored properties
         # Use sprite from properties panel (which reflects UI state) over stored properties
         sprite_name = properties.get('sprite', self.current_object_properties.get('sprite', ''))
@@ -835,7 +835,7 @@ class ObjectEditor(BaseEditor):
             'asset_type': 'object',
             'imported': True
         }
-        
+
         # Add visual programming data (old format)
         visual_data = self.get_visual_programming_data()
         if visual_data and visual_data.get('nodes'):
@@ -851,41 +851,41 @@ class ObjectEditor(BaseEditor):
                 print(f"Note: Could not get Blockly workspace: {e}")
 
         return object_data
-    
+
     def validate_data(self) -> tuple[bool, str]:
         """Validate current object data"""
         try:
             data = self.get_data()
-            
+
             # Check required fields
             if not data.get('name'):
                 # ✅ TRANSLATABLE: Validation error
                 return False, self.tr("Object name is required")
-            
+
             # Validate sprite reference if assigned
             sprite_name = data.get('sprite', '')
             if sprite_name and sprite_name not in self.available_sprites:
                 # ✅ TRANSLATABLE: Validation error
                 return False, self.tr("Referenced sprite '{0}' does not exist").format(sprite_name)
-            
+
             # Validate events
             events = data.get('events', {})
             for event_name, event_data in events.items():
                 if not isinstance(event_data, dict):
                     # ✅ TRANSLATABLE: Validation error
                     return False, self.tr("Event '{0}' has invalid data structure").format(event_name)
-                
+
                 actions = event_data.get('actions', [])
                 if not isinstance(actions, list):
                     # ✅ TRANSLATABLE: Validation error
                     return False, self.tr("Event '{0}' has invalid actions data").format(event_name)
-            
+
             return True, ""
-            
+
         except Exception as e:
             # ✅ TRANSLATABLE: Validation error
             return False, self.tr("Validation error: {0}").format(e)
-    
+
     def on_property_changed(self, property_name: str, value):
         """Handle property changes from properties panel"""
         print(f"DEBUG: ObjectEditor.on_property_changed called: {property_name} = {value}")
@@ -923,14 +923,14 @@ class ObjectEditor(BaseEditor):
         # Update display
         if hasattr(self, 'update_object_info'):
             self.update_object_info()
-        
+
         # Notify sprite changes
         if property_name == 'sprite' and self.asset_name:
             self.notify_sprite_change(self.asset_name, old_sprite or '', value or '')
-        
+
         # Mark as modified
         self.mark_modified()
-    
+
     def update_object_property_from_ide(self, property_name: str, value):
         """Update object property from IDE properties panel"""
         # Check if value actually changed
@@ -938,43 +938,43 @@ class ObjectEditor(BaseEditor):
             current_value = self.current_object_properties.get(property_name)
             if current_value == value:
                 return
-        
+
         # Add recursion prevention
         if hasattr(self, '_processing_update') and self._processing_update:
             return
-        
+
         self._processing_update = True
         try:
             print(f"Object editor: {property_name} = {value}")
-            
+
             old_sprite = None
             if property_name == 'sprite' and hasattr(self, 'current_object_properties'):
                 old_sprite = self.current_object_properties.get('sprite', '')
-            
+
             if not hasattr(self, 'current_object_properties'):
                 self.current_object_properties = {}
-            
+
             self.current_object_properties[property_name] = value
-            
+
             if hasattr(self, 'update_object_info'):
                 self.update_object_info()
-            
+
             if property_name == 'sprite' and self.asset_name:
                 self.notify_sprite_change(self.asset_name, old_sprite or '', value or '')
-            
+
             self.is_modified = True
             if hasattr(self, 'save_action'):
                 self.save_action.setEnabled(True)
-            
+
             if hasattr(self, 'data_modified'):
                 self.data_modified.emit(self.asset_name)
-            
+
             if hasattr(self, 'update_window_title'):
                 self.update_window_title()
-            
+
             if self.auto_save_enabled:
                 self.start_auto_save_timer()
-                
+
         finally:
             self._processing_update = False
 
@@ -1005,7 +1005,7 @@ class ObjectEditor(BaseEditor):
             visible = self.current_object_properties.get('visible', True)
             solid = self.current_object_properties.get('solid', False)
             persistent = self.current_object_properties.get('persistent', False)
-            
+
             # ✅ TRANSLATABLE: Info text
             info_text = self.tr("Object: {0} | Sprite: {1}").format(self.asset_name, sprite_name)
             if visible:
@@ -1014,9 +1014,9 @@ class ObjectEditor(BaseEditor):
                 info_text += " | " + self.tr("Solid")
             if persistent:
                 info_text += " | " + self.tr("Persistent")
-                
+
             self.object_info_label.setText(info_text)
-    
+
     # Event handlers
     def on_event_selected(self, event_name: str):
         """Handle event selection"""
@@ -1024,7 +1024,7 @@ class ObjectEditor(BaseEditor):
         # ✅ TRANSLATABLE: Event info
         self.event_info_label.setText(self.tr("Event: {0}").format(event_name))
         self.update_status(self.tr("Editing event: {0}").format(event_name))
-    
+
     def on_events_modified(self):
         """Handle events modification from the events panel"""
         self.data_modified.emit(self.asset_name)
@@ -1079,23 +1079,23 @@ class ObjectEditor(BaseEditor):
 
             # Update status
             self.update_status(self.tr("Applied {0} events from visual blocks").format(len(events)))
-    
+
     def on_script_modified(self):
         """Handle script modification"""
         self.data_modified.emit(self.asset_name)
-    
+
     def on_action_selected(self, action_name: str, action_data: Dict):
         """Handle action selection"""
         category = action_data.get('category', 'Unknown')
         # ✅ TRANSLATABLE: Status message
         self.update_status(self.tr("Selected action: {0} ({1})").format(action_name, category))
-    
+
     # Toolbar actions
     def test_object(self):
         """Test the object (placeholder)"""
         # ✅ TRANSLATABLE: Status message
         self.update_status(self.tr("Object testing not implemented yet"))
-    
+
     def view_generated_code(self, auto_switch_tab=True):
         """View generated Python/Kivy code"""
         if not hasattr(self, 'events_panel') or not self.events_panel:
@@ -1112,10 +1112,10 @@ class ObjectEditor(BaseEditor):
 
         # Generate Python/Kivy code representation
         code_text = f"# Generated Python/Kivy code for {self.asset_name}\n"
-        code_text += f"# This code is automatically generated from your events\n\n"
+        code_text += "# This code is automatically generated from your events\n\n"
         code_text += "from game.objects.base_object import GameObject\n\n"
         code_text += f"class {self.asset_name}(GameObject):\n"
-        code_text += f"    \"\"\"Object: {self.asset_name}\"\"\"\n\n"
+        code_text += "    \"\"\"Object: {self.asset_name}\"\"\"\n\n"
 
         # Generate code for each event
         for event_name, event_data in events_data.items():
@@ -1194,7 +1194,7 @@ class ObjectEditor(BaseEditor):
         elif event_name.startswith("collision_with_"):
             target_obj = event_name.replace("collision_with_", "")
             code += f"    def on_collision_{target_obj}(self, other, game):\n"
-            code += f"        \"\"\"Collision with {target_obj}\"\"\"\n"
+            code += "        \"\"\"Collision with {target_obj}\"\"\"\n"
             if isinstance(event_data, dict) and 'actions' in event_data:
                 for action in event_data['actions']:
                     code += self._generate_action_code(action, indent=8)
@@ -1203,7 +1203,7 @@ class ObjectEditor(BaseEditor):
         # Handle mouse events
         elif event_name.startswith("mouse_"):
             code += f"    def on_{event_name}(self, game):\n"
-            code += f"        \"\"\"Mouse event: {event_name}\"\"\"\n"
+            code += "        \"\"\"Mouse event: {event_name}\"\"\"\n"
             if isinstance(event_data, dict) and 'actions' in event_data:
                 for action in event_data['actions']:
                     code += self._generate_action_code(action, indent=8)
@@ -1212,7 +1212,7 @@ class ObjectEditor(BaseEditor):
         # Handle other events
         else:
             code += f"    def on_{event_name}(self, game):\n"
-            code += f"        \"\"\"Event: {event_name}\"\"\"\n"
+            code += "        \"\"\"Event: {event_name}\"\"\"\n"
             if isinstance(event_data, dict) and 'actions' in event_data:
                 for action in event_data['actions']:
                     code += self._generate_action_code(action, indent=8)
@@ -1237,7 +1237,7 @@ class ObjectEditor(BaseEditor):
 
             if not custom_code:
                 # Provide template code
-                custom_code = f"""# Custom Python code for {event_name} event
+                custom_code = """# Custom Python code for {event_name} event
 # You have access to:
 #   self - the current instance
 #   game - the game runner object
@@ -1283,7 +1283,7 @@ class ObjectEditor(BaseEditor):
 
         if not custom_code:
             # Provide template
-            custom_code = f"""# Custom Python code for {event_name} event
+            custom_code = """# Custom Python code for {event_name} event
 # Write your code here:
 """
 
@@ -1375,7 +1375,7 @@ class ObjectEditor(BaseEditor):
                    f"{spaces}self.y = round(self.y / {grid_size}) * {grid_size}\n")
 
         elif action_type == 'destroy_instance':
-            target = params.get('target', 'self')
+            target = params.get('target', 'sel')
             if target == 'other':
                 return f"{spaces}other.destroy()\n"
             else:
@@ -1415,7 +1415,7 @@ class ObjectEditor(BaseEditor):
         else:
             # Generic action
             return f"{spaces}# Action: {action_type}({params})\n"
-    
+
     # Override base methods
     def on_project_assets_loaded(self, assets: Dict[str, Any]):
         """Called when project assets are loaded"""
@@ -1424,45 +1424,45 @@ class ObjectEditor(BaseEditor):
         # ✅ TRANSLATABLE: Status message
         self.update_status(self.tr("Assets loaded: {0} sprites").format(sprite_count))
 
-        # Pass sprites to properties panel 
+        # Pass sprites to properties panel
         if hasattr(self, 'properties_panel'):
             print(f"🎨 Setting {sprite_count} sprites in properties panel")
             self.properties_panel.set_available_sprites(self.available_sprites)
-    
+
     def debug_events_state(self):
         """Debug method to check events state"""
         print("\n=== EVENTS DEBUG INFO ===")
         print(f"Asset name: {self.asset_name}")
         print(f"Has events_panel: {hasattr(self, 'events_panel')}")
-        
+
         if hasattr(self, 'events_panel') and self.events_panel:
             events_data = self.events_panel.get_events_data()
             print(f"Number of events: {len(events_data)}")
             for event_name, event_info in events_data.items():
                 if isinstance(event_info, dict):
                     print(f"  - {event_name}: {len(event_info.get('actions', []))} actions")
-        
+
         if hasattr(self, 'current_object_properties'):
             stored_events = self.current_object_properties.get('events', {})
             print(f"Stored events in properties: {len(stored_events)}")
-        
+
         print("======================\n")
 
     def sync_visual_to_events(self):
         """Convert visual programming nodes to event/action data"""
         if not hasattr(self, 'visual_canvas'):
             return
-        
+
         if not self.visual_canvas.nodes:
             print("No visual nodes to sync")
             return
-        
+
         # Generate code from visual nodes
         generator = VisualCodeGenerator()
         generator.set_graph(self.visual_canvas.nodes, self.visual_canvas.connections)
-        
+
         events_data = generator.generate()
-        
+
         if events_data:
             if hasattr(self, 'events_panel') and self.events_panel:
                 self.events_panel.load_events_data(events_data)
@@ -1485,6 +1485,6 @@ class ObjectEditor(BaseEditor):
         if hasattr(self, 'visual_canvas') and data:
             def node_factory(node_data):
                 return create_node_from_type(node_data['node_id'])
-            
+
             self.visual_canvas.from_dict(data, node_factory)
             print(f"Loaded visual programming: {len(data.get('nodes', []))} nodes")

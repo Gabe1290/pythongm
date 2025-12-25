@@ -351,7 +351,7 @@ class PyGameMakerIDE(QMainWindow):
                 # Save config to ensure language setting is persisted
                 from utils.config import Config
                 Config.save()
-                print(f"💾 Config saved before restart")
+                print("💾 Config saved before restart")
 
                 # Restart the application
                 QCoreApplication.quit()
@@ -420,7 +420,7 @@ class PyGameMakerIDE(QMainWindow):
                 self.update_status(self.tr("Auto-save to zip disabled"))
 
     def toggle_auto_save(self):
-        """Toggle auto-save on/off"""
+        """Toggle auto-save on/of"""
         enabled = self.auto_save_action.isChecked()
 
         if self.project_manager:
@@ -923,13 +923,13 @@ class PyGameMakerIDE(QMainWindow):
     def load_project(self, project_path):
         print(f"DEBUG load_project: Attempting to load from {project_path}")
         if self.project_manager.load_project(project_path):
-            print(f"DEBUG load_project: project_manager.load_project succeeded")
+            print("DEBUG load_project: project_manager.load_project succeeded")
             self.asset_tree.project_manager = self.project_manager
 
             Config.set("last_project_directory", str(project_path.parent))
             self.add_to_recent_projects(str(project_path))
         else:
-            print(f"DEBUG load_project: project_manager.load_project FAILED")
+            print("DEBUG load_project: project_manager.load_project FAILED")
             QMessageBox.warning(self, self.tr("Error"), self.tr("Failed to load project"))
 
     def save_project(self):
@@ -1984,7 +1984,7 @@ class PyGameMakerIDE(QMainWindow):
                     "• Asset usage tracking\n"
                     "• Unused asset cleanup")
         )
-    
+
     def configure_blockly(self):
         """Open Blockly configuration dialog to customize available blocks"""
         from config.blockly_config import load_config, save_config, PRESETS, BlocklyConfig
@@ -2033,7 +2033,7 @@ class PyGameMakerIDE(QMainWindow):
             print(f"✅ Blockly configuration updated: {new_config.preset_name} preset")
             print(f"   Enabled blocks: {len(new_config.enabled_blocks)}")
             print(f"   Enabled categories: {', '.join(new_config.enabled_categories)}")
-    
+
     def refresh_event_panels_config(self):
         """Refresh configuration in all open GM80 events panels"""
         # Find all open object editors with GM80 events panels
@@ -2236,7 +2236,7 @@ class PyGameMakerIDE(QMainWindow):
                 print(f"Refreshed sprite combo after importing {asset_name}")
 
             # Also refresh open object editors so they see the new sprite
-            print(f"🔄 Refreshing open object editors after sprite import...")
+            print("🔄 Refreshing open object editors after sprite import...")
             self.refresh_open_object_editors()
 
     def on_asset_double_clicked(self, asset_data):
@@ -2507,9 +2507,9 @@ class PyGameMakerIDE(QMainWindow):
             self.game_runner = None
 
         # Load assets into asset tree (order is preserved through OrderedDict)
-        print(f"DEBUG on_project_loaded: calling asset_tree.set_project")
+        print("DEBUG on_project_loaded: calling asset_tree.set_project")
         self.asset_tree.set_project(str(project_path), project_data)
-        print(f"DEBUG on_project_loaded: asset_tree.set_project done")
+        print("DEBUG on_project_loaded: asset_tree.set_project done")
 
         # Set project base path for properties panel
         if hasattr(self.properties_panel, 'set_project_base_path'):
@@ -2518,7 +2518,7 @@ class PyGameMakerIDE(QMainWindow):
         self.update_window_title()
         self.update_ui_state()
         self.update_status(self.tr("Project loaded: {0}").format(project_data['name']))
-        print(f"DEBUG on_project_loaded: END")
+        print("DEBUG on_project_loaded: END")
 
     def on_project_saved(self):
         self.update_status(self.tr("Project saved"))

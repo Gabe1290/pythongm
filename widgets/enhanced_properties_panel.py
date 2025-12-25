@@ -3,7 +3,7 @@
 Enhanced Properties Panel Widget for PyGameMaker IDE
 """
 from pathlib import Path
-from PySide6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QGroupBox, QFormLayout, 
+from PySide6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QGroupBox, QFormLayout,
                                QLineEdit, QSpinBox, QPushButton, QCheckBox,
                                QComboBox)
 
@@ -13,12 +13,12 @@ from typing import Dict, Any
 
 class EnhancedPropertiesPanel(QWidget):
     """Enhanced properties widget with grouped sections"""
-    
+
     # Signals for property changes
     property_changed = Signal(str, object)  # property_name, value (bool or str)
     room_property_changed = Signal(str, object)  # property_name, value
     object_property_changed = Signal(str, object)  # property_name, value
-    
+
     def __init__(self):
         super().__init__()
         self.available_sprites = {}
@@ -36,7 +36,7 @@ class EnhancedPropertiesPanel(QWidget):
         """Get the project base directory path"""
         if hasattr(self, 'project_base_path') and self.project_base_path:
             return self.project_base_path
-        
+
         # Try to find it through parent chain
         parent = self.parent()
         while parent:
@@ -47,12 +47,12 @@ class EnhancedPropertiesPanel(QWidget):
                 else:
                     return str(project_file_path)
             parent = parent.parent()
-        
+
         return None
 
     def setup_ui(self):
         layout = QVBoxLayout(self)
-        
+
         # Asset info group
         info_group = QGroupBox(self.tr("Asset Information"))
         info_layout = QFormLayout(info_group)
@@ -64,9 +64,9 @@ class EnhancedPropertiesPanel(QWidget):
         info_layout.addRow(self.tr("Name:"), self.name_label)
         info_layout.addRow(self.tr("Type:"), self.type_label)
         info_layout.addRow(self.tr("Status:"), self.status_label)
-        
+
         layout.addWidget(info_group)
-        
+
         # Properties group
         self.properties_group = QGroupBox(self.tr("Properties"))
         self.properties_layout = QFormLayout(self.properties_group)
@@ -90,9 +90,9 @@ class EnhancedPropertiesPanel(QWidget):
 
         preview_layout.addWidget(self.preview_label)
         layout.addWidget(preview_group)
-        
+
         layout.addStretch()
-    
+
     def set_room_editor_context(self, room_editor, room_name: str, room_properties: Dict[str, Any]):
         """Set context to show room properties from room editor"""
         # CRITICAL: Disconnect from previous room editor BEFORE setting new reference
@@ -128,10 +128,10 @@ class EnhancedPropertiesPanel(QWidget):
         self._setting_room_properties = True
         self.show_room_properties(room_properties)
         self._setting_room_properties = False
-        
+
         # Generate initial preview
         QTimer.singleShot(100, self.update_room_preview)
-    
+
     def show_room_properties(self, room_data: Dict[str, Any]):
         """Show room properties with live editing"""
         # Clear previous properties
@@ -139,25 +139,25 @@ class EnhancedPropertiesPanel(QWidget):
             child = self.properties_layout.takeAt(0)
             if child.widget():
                 child.widget().deleteLater()
-        
+
         # Room dimensions
         self.width_spin = QSpinBox()
         self.width_spin.setRange(64, 8192)
         self.width_spin.setValue(room_data.get('width', 1024))
         self.width_spin.valueChanged.connect(lambda v: self.on_room_property_changed('width', v))
-        
+
         self.height_spin = QSpinBox()
         self.height_spin.setRange(64, 8192)
         self.height_spin.setValue(room_data.get('height', 768))
         self.height_spin.valueChanged.connect(lambda v: self.on_room_property_changed('height', v))
-        
+
         # Background color
         self.bg_color_btn = QPushButton()
         bg_color = room_data.get('background_color', '#87CEEB')
         self.bg_color_btn.setStyleSheet(f"background-color: {bg_color}; border: 1px solid gray; min-height: 25px;")
         self.bg_color_btn.setText(bg_color)
         self.bg_color_btn.clicked.connect(self.choose_background_color)
-        
+
         # Background image selection
         self.bg_image_combo = QComboBox()
         self.bg_image_combo.addItem(self.tr("None"))
@@ -203,21 +203,21 @@ class EnhancedPropertiesPanel(QWidget):
         # Instance count (read-only)
         instance_count = len(room_data.get('instances', []))
         self.properties_layout.addRow(self.tr("Instances:"), QLabel(str(instance_count)))
-    
+
     def choose_background_color(self):
         """Open color dialog for background color"""
         from PySide6.QtGui import QColor
         from PySide6.QtWidgets import QColorDialog
-        
+
         current_color = self.bg_color_btn.text()
         color = QColorDialog.getColor(QColor(current_color), self, self.tr("Choose Background Color"))
-        
+
         if color.isValid():
             color_hex = color.name()
             self.bg_color_btn.setStyleSheet(f"background-color: {color_hex}; border: 1px solid gray; min-height: 25px;")
             self.bg_color_btn.setText(color_hex)
             self.on_room_property_changed('background_color', color_hex)
-    
+
     def get_available_backgrounds(self) -> Dict[str, Any]:
         """Get available backgrounds from project"""
         try:
@@ -249,22 +249,22 @@ class EnhancedPropertiesPanel(QWidget):
         """Update the room preview image"""
         if not self.current_room_editor:
             return
-        
+
         try:
             # Get preview size
             preview_size = self.preview_label.size()
             max_width = max(200, preview_size.width() - 20)
             max_height = max(150, preview_size.height() - 20)
-            
+
             # Generate preview from room editor
             if hasattr(self.current_room_editor, 'generate_room_preview'):
                 preview_pixmap = self.current_room_editor.generate_room_preview(max_width, max_height)
-                
+
                 if not preview_pixmap.isNull():
                     # Display the preview
                     self.preview_label.setPixmap(preview_pixmap)
                     self.preview_label.setText("")  # Clear any text
-                    
+
                     # Update tooltip
                     room_data = self.current_room_editor.get_data()
                     instance_count = len(room_data.get('instances', []))
@@ -274,11 +274,11 @@ class EnhancedPropertiesPanel(QWidget):
                     self.preview_label.setText(self.tr("Preview\nGeneration Failed"))
             else:
                 self.preview_label.setText(self.tr("Preview\nNot Available"))
-        
+
         except Exception as e:
             print(f"Error updating room preview: {e}")
             self.preview_label.setText(self.tr("Preview\nUpdate Error"))
-    
+
     def on_room_property_changed(self, property_name: str, value):
         """Handle room property changes and notify room editor"""
         # Don't emit during initial property setup (prevents cross-contamination)
@@ -292,7 +292,7 @@ class EnhancedPropertiesPanel(QWidget):
 
         # Update preview after a short delay to allow room editor to process change
         QTimer.singleShot(100, self.update_room_preview)
-    
+
     def clear_room_context(self):
         """Clear room editor context"""
         # Just clear references, don't worry about disconnecting
@@ -300,13 +300,13 @@ class EnhancedPropertiesPanel(QWidget):
         if hasattr(self, 'current_asset') and self.current_asset and self.current_asset[0] == 'room_editor':
             self.current_asset = None
             self.show_default_state()
-    
+
     def show_default_state(self):
         """Show default state when no asset is selected"""
         self.name_label.setText(self.tr("No asset selected"))
         self.type_label.setText("-")
         self.status_label.setText("-")
-        
+
         # Clear properties
         while self.properties_layout.count():
             child = self.properties_layout.takeAt(0)
@@ -315,47 +315,47 @@ class EnhancedPropertiesPanel(QWidget):
 
         self.preview_label.setText(self.tr("No preview available"))
         self.preview_label.setPixmap(QPixmap())  # Clear any pixmap
-    
+
     def set_asset(self, asset_data):
         """Set asset data for display"""
         if not asset_data:
             return
-        
+
         asset_type = asset_data.get('asset_type', 'unknown')
         asset_name = asset_data.get('name', 'unknown')
         asset_info = asset_data.get('data', {})
-        
-        # If we're in an EDITOR context (room/object editor open), only block if 
+
+        # If we're in an EDITOR context (room/object editor open), only block if
         # the asset being selected is the SAME TYPE as the open editor
         if self.current_room_editor and asset_type == 'rooms':
             return  # Don't override room editor with room asset selection
         if self.current_object_editor and asset_type == 'objects':
             return  # Don't override object editor with object asset selection
-        
+
         # For sprites/backgrounds/other assets, always show preview
         self.show_asset_properties(asset_type, asset_name, asset_info)
-    
+
     def show_asset_properties(self, asset_type: str, asset_name: str, asset_data: Dict[str, Any]):
         """Show properties for an asset with image preview"""
         self.current_asset = (asset_type, asset_name, asset_data)
-        
+
         # Update info
         self.name_label.setText(asset_name)
         self.type_label.setText(asset_type.title())
         self.status_label.setText(self.tr("Loaded"))
-        
+
         # Clear previous properties
         while self.properties_layout.count():
             child = self.properties_layout.takeAt(0)
             if child.widget():
                 child.widget().deleteLater()
-        
+
         # Add properties based on asset type
         if asset_type == 'rooms':
             width_edit = QLineEdit(str(asset_data.get('width', 800)))
             height_edit = QLineEdit(str(asset_data.get('height', 600)))
             bg_color_edit = QLineEdit(asset_data.get('background_color', '#87CEEB'))
-            
+
             self.properties_layout.addRow(self.tr("Width:"), width_edit)
             self.properties_layout.addRow(self.tr("Height:"), height_edit)
             self.properties_layout.addRow(self.tr("Background:"), bg_color_edit)
@@ -363,7 +363,7 @@ class EnhancedPropertiesPanel(QWidget):
             # Update preview
             self.preview_label.setPixmap(QPixmap())  # Clear pixmap
             self.preview_label.setText(self.tr("Room: {0}\n{1} x {2}").format(asset_name, asset_data.get('width', 800), asset_data.get('height', 600)))
-        
+
         elif asset_type == 'sprites':
             # Sprite properties
             frames = asset_data.get('frames', 1)
@@ -417,14 +417,14 @@ class EnhancedPropertiesPanel(QWidget):
 
             # Load and display the sprite image (with animation if applicable)
             self.load_sprite_preview(asset_name, asset_data)
-        
+
         elif asset_type == 'backgrounds':
             # Background properties
             width_edit = QLineEdit(str(asset_data.get('width', 0)))
             width_edit.setReadOnly(True)
             height_edit = QLineEdit(str(asset_data.get('height', 0)))
             height_edit.setReadOnly(True)
-            
+
             self.properties_layout.addRow(self.tr("Width:"), width_edit)
             self.properties_layout.addRow(self.tr("Height:"), height_edit)
 
@@ -433,34 +433,34 @@ class EnhancedPropertiesPanel(QWidget):
             file_path_edit = QLineEdit(file_path)
             file_path_edit.setReadOnly(True)
             self.properties_layout.addRow(self.tr("File:"), file_path_edit)
-            
+
             # Try to load and display the actual background image
             self.load_sprite_preview(asset_name, asset_data)
 
         elif asset_type == 'objects':
             # Object properties - use dedicated method
             self.show_object_properties(asset_data)
-        
+
         else:
             # Generic properties
             for key, value in asset_data.items():
                 if key not in ['name', 'type']:
                     prop_edit = QLineEdit(str(value))
                     self.properties_layout.addRow(f"{key.title()}:", prop_edit)
-            
+
             self.preview_label.setPixmap(QPixmap())  # Clear pixmap
             self.preview_label.setText(self.tr("{0}: {1}").format(asset_type.title(), asset_name))
 
     def load_sprite_preview(self, asset_name: str, asset_data: Dict[str, Any]):
         """Load and display sprite/background image in preview"""
-        
+
         # Try to get the image path - handle both absolute and relative paths
         image_path = None
-        
+
         # First try project_path (handle both absolute and relative)
         if 'project_path' in asset_data and asset_data['project_path']:
             project_path = asset_data['project_path']
-            
+
             if Path(project_path).is_absolute():
                 # Absolute path - use directly
                 image_path = project_path
@@ -469,20 +469,20 @@ class EnhancedPropertiesPanel(QWidget):
                 project_base = self.get_project_base_path()
                 if project_base:
                     image_path = str(Path(project_base) / project_path)
-        
+
         # If no project_path, construct from relative file_path
         elif 'file_path' in asset_data and asset_data['file_path']:
             relative_path = asset_data['file_path']
             project_base = self.get_project_base_path()
-            
+
             if project_base:
                 image_path = str(Path(project_base) / relative_path)
             else:
                 self.preview_label.setText(f"Cannot determine project path for {asset_name}")
                 return
         else:
-            print(f"❌ DEBUG: No 'project_path' or 'file_path' in asset_data")
-        
+            print("❌ DEBUG: No 'project_path' or 'file_path' in asset_data")
+
         if not image_path:
             self.preview_label.setText(self.tr("No image file path found for {0}").format(asset_name))
             return
@@ -495,22 +495,22 @@ class EnhancedPropertiesPanel(QWidget):
         try:
             # Load the image
             pixmap = QPixmap(str(image_path))
-            
+
             if pixmap.isNull():
                 self.preview_label.setText(self.tr("Failed to load image:\n{0}").format(asset_name))
                 return
-            
+
             # Scale image to fit preview area while maintaining aspect ratio
             preview_size = self.preview_label.size()
             max_width = max(200, preview_size.width() - 20)
             max_height = max(180, preview_size.height() - 20)
-            
+
             scaled_pixmap = pixmap.scaled(
                 max_width, max_height,
                 Qt.AspectRatioMode.KeepAspectRatio,
                 Qt.TransformationMode.SmoothTransformation
             )
-            
+
             # Display the image
             self.preview_label.setPixmap(scaled_pixmap)
             self.preview_label.setText("")
@@ -524,68 +524,68 @@ class EnhancedPropertiesPanel(QWidget):
             import traceback
             traceback.print_exc()
             self.preview_label.setText(self.tr("Error loading image:\n{0}").format(str(e)))
-    
+
     def set_object_editor_context(self, object_editor, object_name: str, object_properties: Dict[str, Any]):
         """Set context to show object properties from object editor"""
 
         self.current_object_editor = object_editor
         self.current_asset = ('object_editor', object_name, object_properties)
-        
+
         # Update info
         self.name_label.setText(object_name)
         self.type_label.setText(self.tr("Object (Editor)"))
         self.status_label.setText(self.tr("Active"))
-        
+
         self.show_object_properties(object_properties)
 
     def show_object_properties(self, object_data: Dict[str, Any]):
         """Show object properties with live editing"""
-        
+
         # Prevent recursion during property setup
         if getattr(self, '_updating_properties', False):
             return
-            
+
         self._updating_properties = True
-        
+
         try:
             # Clear previous properties
             while self.properties_layout.count():
                 child = self.properties_layout.takeAt(0)
                 if child.widget():
                     child.widget().deleteLater()
-            
+
             # Clear reference to prevent access to deleted widgets
             if hasattr(self, 'sprite_combo'):
                 self.sprite_combo = None
-            
+
             # Sprite assignment
             self.sprite_combo = QComboBox()
             self.sprite_combo.addItem(self.tr("None"))
-            
+
             # Get available sprites from project
             available_sprites = self.get_available_sprites()
             for sprite_name in available_sprites.keys():
                 self.sprite_combo.addItem(sprite_name)
-            
+
             current_sprite = object_data.get('sprite', '')
             if current_sprite:
                 index = self.sprite_combo.findText(current_sprite)
                 if index >= 0:
                     self.sprite_combo.setCurrentIndex(index)
-            
+
             # Object flags
             self.visible_check = QCheckBox()
             self.visible_check.setChecked(object_data.get('visible', True))
             self.visible_check.toggled.connect(lambda v: self.on_object_property_changed('visible', v))
-            
+
             self.solid_check = QCheckBox()
             self.solid_check.setChecked(object_data.get('solid', False))
             self.solid_check.toggled.connect(lambda v: self.on_object_property_changed('solid', v))
-            
+
             self.persistent_check = QCheckBox()
             self.persistent_check.setChecked(object_data.get('persistent', False))
             self.persistent_check.toggled.connect(lambda v: self.on_object_property_changed('persistent', v))
-            
+
             # Add to layout
             self.properties_layout.addRow(self.tr("Sprite:"), self.sprite_combo)
             # Show sprite dimensions if a sprite is assigned
@@ -604,10 +604,10 @@ class EnhancedPropertiesPanel(QWidget):
             # Event count (read-only)
             event_count = len(object_data.get('events', {}))
             self.properties_layout.addRow(self.tr("Events:"), QLabel(str(event_count)))
-            
+
             # Update preview with sprite
             self.show_object_preview(object_data)
-            
+
         finally:
             # Clear the flag after a delay to allow UI to settle
             QTimer.singleShot(200, self._finish_property_setup)
@@ -619,11 +619,11 @@ class EnhancedPropertiesPanel(QWidget):
 
             value = sprite_name if sprite_name != self.tr("None") else ''
             self.on_object_property_changed('sprite', value)
-    
+
     def _finish_property_setup(self):
             """Finish property setup by clearing flag and connecting signals"""
             self._updating_properties = False
-            
+
             # Now connect the sprite combo signal after flag is cleared
             if hasattr(self, 'sprite_combo') and self.sprite_combo:
                 try:
@@ -637,25 +637,25 @@ class EnhancedPropertiesPanel(QWidget):
         try:
             # Try to get sprites from parent IDE
             parent = self.parent()
-            
+
             level = 0
             while parent:
                 level += 1
-                
+
                 if hasattr(parent, 'current_project_data'):
                     if parent.current_project_data:
-                        
+
                         # Sprites are under 'assets' -> 'sprites' in the JSON
                         assets = parent.current_project_data.get('assets', {})
-                        
+
                         sprites = assets.get('sprites', {})
                         return sprites
-                
+
                 parent = parent.parent()
                 if level > 10:  # Safety limit
                     print("⚠️ DEBUG: Too many parent levels, stopping")
                     break
-            
+
             # Fallback: empty dict
             print("⚠️ DEBUG: No parent with current_project_data found")
             return {}
@@ -664,37 +664,37 @@ class EnhancedPropertiesPanel(QWidget):
             import traceback
             traceback.print_exc()
             return {}
-    
+
     def refresh_sprite_combo(self):
         """Refresh the sprite combo box after project changes"""
         # Don't refresh if we're currently updating properties
         if getattr(self, '_updating_properties', False):
             return
-            
+
         # Check if sprite_combo exists and hasn't been deleted
         if hasattr(self, 'sprite_combo') and self.sprite_combo:
             try:
                 # Block signals during refresh to prevent loops
                 self.sprite_combo.blockSignals(True)
-                
+
                 current_selection = self.sprite_combo.currentText()
-                
+
                 # Clear and repopulate
                 self.sprite_combo.clear()
                 self.sprite_combo.addItem(self.tr("None"))
-                
+
                 available_sprites = self.get_available_sprites()
                 for sprite_name in available_sprites.keys():
                     self.sprite_combo.addItem(sprite_name)
-                
+
                 # Restore selection
                 index = self.sprite_combo.findText(current_selection)
                 if index >= 0:
                     self.sprite_combo.setCurrentIndex(index)
-                
+
                 # Re-enable signals
                 self.sprite_combo.blockSignals(False)
-                
+
             except RuntimeError:
                 # Widget has been deleted, skip refresh
                 return
@@ -702,20 +702,20 @@ class EnhancedPropertiesPanel(QWidget):
     def show_object_preview(self, object_data: Dict[str, Any]):
         """Show object preview (sprite or placeholder)"""
         sprite_name = object_data.get('sprite', '')
-        
+
         if sprite_name:
             # Try to get sprite data from project
             available_sprites = self.get_available_sprites()
-            
+
             if sprite_name in available_sprites:
                 sprite_data = available_sprites[sprite_name]
-                
+
                 # Get sprite dimensions
                 sprite_width = sprite_data.get('width', 'Unknown')
                 sprite_height = sprite_data.get('height', 'Unknown')
                 object_name = object_data.get('name', 'Unknown')
                 event_count = len(object_data.get('events', {}))
-                
+
                 # Load the preview image (this sets a basic tooltip)
                 self.load_sprite_preview(sprite_name, sprite_data)
 
@@ -727,7 +727,7 @@ class EnhancedPropertiesPanel(QWidget):
                 return
             else:
                 print(f"⚠️ DEBUG: Sprite '{sprite_name}' not found in available sprites")
-        
+
         # Show default object preview (no sprite or sprite not found)
         self.preview_label.setPixmap(QPixmap())  # Clear pixmap
         object_name = object_data.get('name', 'Unknown')
@@ -757,17 +757,17 @@ class EnhancedPropertiesPanel(QWidget):
     def on_object_property_changed(self, property_name: str, value):
         """Handle object property changes and notify ONLY the current object editor"""
         print(f"Properties panel: object {property_name} changed to {value}")
-        
+
         # Special handling for sprite changes
         if property_name == 'sprite':
             print(f"Sprite change detected: {value}")
-            
+
             # Update the preview immediately
             if hasattr(self, 'current_asset') and self.current_asset:
                 object_data = self.current_asset[2].copy()
                 object_data[property_name] = value
                 self.show_object_preview(object_data)
-        
+
         # Send the property change ONLY to the current object editor
         if hasattr(self, 'current_object_editor') and self.current_object_editor:
             try:
@@ -801,6 +801,6 @@ class EnhancedPropertiesPanel(QWidget):
         except (RuntimeError, TypeError, AttributeError):
             # Signal has no connections or other error
             return False
-        
+
     def set_project(self, project_path, project_data):
         """Set project data - compatibility method"""

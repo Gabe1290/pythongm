@@ -7,7 +7,7 @@ Includes ALL dialog classes that could possibly be imported
 import os
 from pathlib import Path
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QFormLayout,
-                               QLineEdit, QPushButton, QTextEdit, QFileDialog, 
+                               QLineEdit, QPushButton, QTextEdit, QFileDialog,
                                QDialogButtonBox, QGroupBox, QCheckBox,
                                QComboBox, QSpinBox, QMessageBox, QListWidget,
                                QProgressBar)
@@ -15,29 +15,29 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QFormLayout,
 
 class NewProjectDialog(QDialog):
     """FIXED New Project Dialog"""
-    
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.project_data = {}
         self.parent_ide = parent
-        
+
         self.setWindowTitle(self.tr("New Project"))
         self.setModal(True)
         self.resize(500, 400)
-        
+
         self.setup_ui()
         self.load_settings()
-    
+
     def setup_ui(self):
         layout = QVBoxLayout(self)
-        
+
         details_group = QGroupBox(self.tr("Project Details"))
         details_layout = QFormLayout(details_group)
 
         self.project_name_edit = QLineEdit()
         self.project_name_edit.setPlaceholderText(self.tr("Enter project name..."))
         details_layout.addRow(self.tr("Project Name:"), self.project_name_edit)
-        
+
         path_layout = QHBoxLayout()
         self.project_path_edit = QLineEdit()
         self.project_path_edit.setPlaceholderText(self.tr("Choose project location..."))
@@ -48,21 +48,21 @@ class NewProjectDialog(QDialog):
         path_layout.addWidget(self.project_path_edit)
         path_layout.addWidget(self.browse_button)
         details_layout.addRow(self.tr("Location:"), path_layout)
-        
+
         self.description_edit = QTextEdit()
         self.description_edit.setMaximumHeight(80)
         self.description_edit.setPlaceholderText(self.tr("Optional project description..."))
         details_layout.addRow(self.tr("Description:"), self.description_edit)
-        
+
         layout.addWidget(details_group)
-        
+
         button_box = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
         button_box.accepted.connect(self.accept_project)
         button_box.rejected.connect(self.reject)
         layout.addWidget(button_box)
-    
+
     def load_settings(self):
         try:
             if isinstance(self.project_data, dict):
@@ -71,34 +71,34 @@ class NewProjectDialog(QDialog):
             else:
                 name = ""
                 path = ""
-            
+
             self.project_name_edit.setText(name)
             self.project_path_edit.setText(path)
-            
+
             if not path:
                 default_path = str(Path.home() / "Documents" / "PyGameMaker Projects")
                 self.project_path_edit.setText(default_path)
-            
+
             print("✅ New project dialog settings loaded")
         except Exception as e:
             print(f"⚠️  New project dialog error: {e}")
             self.project_name_edit.setText("")
             default_path = str(Path.home() / "Documents" / "PyGameMaker Projects")
             self.project_path_edit.setText(default_path)
-    
+
     def browse_project_path(self):
         current_path = self.project_path_edit.text()
         if not current_path:
             current_path = str(Path.home() / "Documents")
-        
+
         folder = QFileDialog.getExistingDirectory(self, self.tr("Choose Project Location"), current_path)
         if folder:
             self.project_path_edit.setText(folder)
-    
+
     def accept_project(self):
         project_name = self.project_name_edit.text().strip()
         project_path = self.project_path_edit.text().strip()
-        
+
         if not project_name:
             QMessageBox.warning(self, self.tr("Invalid Input"), self.tr("Please enter a project name."))
             return
@@ -106,7 +106,7 @@ class NewProjectDialog(QDialog):
         if not project_path:
             QMessageBox.warning(self, self.tr("Invalid Input"), self.tr("Please choose a project location."))
             return
-        
+
         self.project_data = {
             "name": project_name,
             "path": project_path,
@@ -116,32 +116,32 @@ class NewProjectDialog(QDialog):
             "create_folder": True,
             "target_platform": "Desktop"
         }
-        
+
         self.accept()
-    
+
     def get_project_info(self):
         return self.project_data
 
 
 class OpenProjectDialog(QDialog):
     """Open Project Dialog"""
-    
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.project_data = {}
         self.parent_ide = parent
         self.selected_project_path = None
-        
+
         self.setWindowTitle(self.tr("Open Project"))
         self.setModal(True)
         self.resize(600, 500)
-        
+
         self.setup_ui()
         self.load_settings()
-    
+
     def setup_ui(self):
         layout = QVBoxLayout(self)
-        
+
         recent_group = QGroupBox(self.tr("Recent Projects"))
         recent_layout = QVBoxLayout(recent_group)
 
@@ -158,32 +158,32 @@ class OpenProjectDialog(QDialog):
 
         self.browse_button = QPushButton(self.tr("Browse..."))
         self.browse_button.clicked.connect(self.browse_project)
-        
+
         browse_layout.addWidget(self.project_path_edit)
         browse_layout.addWidget(self.browse_button)
         layout.addWidget(browse_group)
-        
+
         button_box = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
         button_box.accepted.connect(self.accept_project)
         button_box.rejected.connect(self.reject)
         layout.addWidget(button_box)
-    
+
     def load_settings(self):
         try:
             from utils.config import Config
             recent_projects = Config.get_recent_projects()
-            
+
             for project_path in recent_projects:
                 if Path(project_path).exists():
                     project_name = Path(project_path).name
                     self.recent_projects_list.addItem(f"{project_name} - {project_path}")
-            
+
             print("✅ Recent projects loaded")
         except Exception as e:
             print(f"⚠️  Error loading recent projects: {e}")
-    
+
     def browse_project(self):
         file_path, _ = QFileDialog.getOpenFileName(
             self, self.tr("Open PyGameMaker Project"), str(Path.home() / "Documents"),
@@ -191,13 +191,13 @@ class OpenProjectDialog(QDialog):
         )
         if file_path:
             self.project_path_edit.setText(file_path)
-    
+
     def open_selected_project(self, item):
         text = item.text()
         if " - " in text:
             project_path = text.split(" - ", 1)[1]
             self.project_path_edit.setText(project_path)
-    
+
     def accept_project(self):
         """Handle project creation - COMPLETE FIX with ALL expected keys"""
         project_name = self.project_name_edit.text().strip()
@@ -237,27 +237,27 @@ class OpenProjectDialog(QDialog):
 
 class ProjectSettingsDialog(QDialog):
     """Project Settings Dialog"""
-    
+
     def __init__(self, parent=None, project_data=None):
         super().__init__(parent)
-        
+
         if isinstance(project_data, dict):
             self.project_data = project_data.copy()
         else:
             self.project_data = {}
-        
+
         self.parent_ide = parent
-        
+
         self.setWindowTitle(self.tr("Project Settings"))
         self.setModal(True)
         self.resize(500, 400)
-        
+
         self.setup_ui()
         self.load_settings()
-    
+
     def setup_ui(self):
         layout = QVBoxLayout(self)
-        
+
         info_group = QGroupBox(self.tr("Project Information"))
         info_layout = QFormLayout(info_group)
 
@@ -271,9 +271,9 @@ class ProjectSettingsDialog(QDialog):
         self.description_edit = QTextEdit()
         self.description_edit.setMaximumHeight(80)
         info_layout.addRow(self.tr("Description:"), self.description_edit)
-        
+
         layout.addWidget(info_group)
-        
+
         settings_group = QGroupBox(self.tr("Settings"))
         settings_layout = QFormLayout(settings_group)
 
@@ -315,14 +315,14 @@ class ProjectSettingsDialog(QDialog):
         game_layout.addRow(self.tr("Show Health in Caption:"), self.show_health_check)
 
         layout.addWidget(game_group)
-        
+
         button_box = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
         button_box.accepted.connect(self.accept_settings)
         button_box.rejected.connect(self.reject)
         layout.addWidget(button_box)
-    
+
     def load_settings(self):
         try:
             if isinstance(self.project_data, dict):
@@ -353,7 +353,7 @@ class ProjectSettingsDialog(QDialog):
             print(f"⚠️  Project settings error: {e}")
             self.project_name_edit.setText("Untitled Project")
             self.auto_save_check.setChecked(True)
-    
+
     def accept_settings(self):
         if not isinstance(self.project_data, dict):
             self.project_data = {}
@@ -379,7 +379,7 @@ class ProjectSettingsDialog(QDialog):
         })
 
         self.accept()
-    
+
     def get_project_info(self):
         return self.project_data
 
@@ -390,28 +390,28 @@ class ProjectSettingsDialog(QDialog):
 
 class ExportProjectDialog(QDialog):
     """Export Project Dialog - ADDED to fix import error"""
-    
+
     def __init__(self, parent=None, project_data=None):
         super().__init__(parent)
-        
+
         if isinstance(project_data, dict):
             self.project_data = project_data.copy()
         else:
             self.project_data = {}
-        
+
         self.parent_ide = parent
         self.export_settings = {}
-        
+
         self.setWindowTitle(self.tr("Export Project"))
         self.setModal(True)
         self.resize(600, 500)
-        
+
         self.setup_ui()
         self.load_settings()
-    
+
     def setup_ui(self):
         layout = QVBoxLayout(self)
-        
+
         # Export target
         target_group = QGroupBox(self.tr("Export Target"))
         target_layout = QFormLayout(target_group)
@@ -425,7 +425,7 @@ class ExportProjectDialog(QDialog):
             self.tr("Source Code (.zip)")
         ])
         target_layout.addRow(self.tr("Target Platform:"), self.export_platform)
-        
+
         # Output path
         output_layout = QHBoxLayout()
         self.output_path_edit = QLineEdit()
@@ -437,9 +437,9 @@ class ExportProjectDialog(QDialog):
         output_layout.addWidget(self.output_path_edit)
         output_layout.addWidget(self.browse_output_button)
         target_layout.addRow(self.tr("Output Location:"), output_layout)
-        
+
         layout.addWidget(target_group)
-        
+
         # Export options
         options_group = QGroupBox(self.tr("Export Options"))
         options_layout = QFormLayout(options_group)
@@ -455,26 +455,26 @@ class ExportProjectDialog(QDialog):
         self.include_debug_check = QCheckBox()
         self.include_debug_check.setChecked(False)
         options_layout.addRow(self.tr("Include Debug Info:"), self.include_debug_check)
-        
+
         layout.addWidget(options_group)
-        
+
         # Progress bar (initially hidden)
         self.progress_bar = QProgressBar()
         self.progress_bar.setVisible(False)
         layout.addWidget(self.progress_bar)
-        
+
         # Dialog buttons
         button_box = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
         button_box.accepted.connect(self.accept_export)
         button_box.rejected.connect(self.reject)
-        
+
         self.export_button = button_box.button(QDialogButtonBox.StandardButton.Ok)
         self.export_button.setText(self.tr("Export"))
-        
+
         layout.addWidget(button_box)
-    
+
     def load_settings(self):
         try:
             # Set default output path
@@ -482,21 +482,21 @@ class ExportProjectDialog(QDialog):
                 project_name = self.project_data.get("name", "Untitled")
                 default_output = str(Path.home() / "Desktop" / f"{project_name}_export")
                 self.output_path_edit.setText(default_output)
-            
+
             print("✅ Export dialog settings loaded")
         except Exception as e:
             print(f"⚠️  Export dialog error: {e}")
             self.output_path_edit.setText(str(Path.home() / "Desktop" / "exported_game"))
-    
+
     def browse_output_path(self):
         current_path = self.output_path_edit.text()
         if not current_path:
             current_path = str(Path.home() / "Desktop")
-        
+
         folder = QFileDialog.getExistingDirectory(self, self.tr("Choose Export Location"), current_path)
         if folder:
             self.output_path_edit.setText(folder)
-    
+
     def get_project_info(self):
         return {
             "export_settings": self.export_settings,
@@ -540,9 +540,9 @@ class ExportProjectDialog(QDialog):
             from export.Kivy.project_adapter import export_with_adapter  # ✅ NEW
             import subprocess
             import platform
-            
+
             output_path = self.output_path_edit.text()
-            
+
             # Get the project_manager from parent IDE
             if hasattr(self.parent_ide, 'project_manager'):
                 project_manager = self.parent_ide.project_manager
@@ -550,10 +550,10 @@ class ExportProjectDialog(QDialog):
                 QMessageBox.critical(self, self.tr("Export Error"),
                                 self.tr("Could not access project manager"))
                 return
-            
+
             # Use the adapter to export
             success = export_with_adapter(project_manager, output_path)  # ✅ NEW
-            
+
             if success:
                 result = QMessageBox.information(
                     self,
@@ -561,7 +561,7 @@ class ExportProjectDialog(QDialog):
                     self.tr("Kivy project exported to:\n{0}\n\nWould you like to open the export directory?").format(output_path),
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                 )
-                
+
                 if result == QMessageBox.StandardButton.Yes:
                     if platform.system() == 'Windows':
                         os.startfile(output_path)
@@ -569,7 +569,7 @@ class ExportProjectDialog(QDialog):
                         subprocess.run(['open', output_path])
                     else:  # Linux
                         subprocess.run(['xdg-open', output_path])
-                
+
                 self.accept()
             else:
                 QMessageBox.warning(self, self.tr("Export Failed"),
@@ -768,28 +768,28 @@ class ExportProjectDialog(QDialog):
 
 class BuildProjectDialog(QDialog):
     """Build Project Dialog - ADDED for completeness"""
-    
+
     def __init__(self, parent=None, project_data=None):
         super().__init__(parent)
-        
+
         if isinstance(project_data, dict):
             self.project_data = project_data.copy()
         else:
             self.project_data = {}
-        
+
         self.parent_ide = parent
         self.build_settings = {}
-        
+
         self.setWindowTitle(self.tr("Build Project"))
         self.setModal(True)
         self.resize(500, 400)
-        
+
         self.setup_ui()
         self.load_settings()
-    
+
     def setup_ui(self):
         layout = QVBoxLayout(self)
-        
+
         # Build configuration
         config_group = QGroupBox(self.tr("Build Configuration"))
         config_layout = QFormLayout(config_group)
@@ -801,9 +801,9 @@ class BuildProjectDialog(QDialog):
         self.optimization_level = QComboBox()
         self.optimization_level.addItems([self.tr("None"), self.tr("Basic"), self.tr("Full")])
         config_layout.addRow(self.tr("Optimization:"), self.optimization_level)
-        
+
         layout.addWidget(config_group)
-        
+
         # Build options
         options_group = QGroupBox(self.tr("Build Options"))
         options_layout = QFormLayout(options_group)
@@ -813,31 +813,31 @@ class BuildProjectDialog(QDialog):
 
         self.verbose_output_check = QCheckBox()
         options_layout.addRow(self.tr("Verbose Output:"), self.verbose_output_check)
-        
+
         layout.addWidget(options_group)
-        
+
         # Dialog buttons
         button_box = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
         button_box.accepted.connect(self.accept_build)
         button_box.rejected.connect(self.reject)
-        
+
         self.build_button = button_box.button(QDialogButtonBox.StandardButton.Ok)
         self.build_button.setText(self.tr("Build"))
-        
+
         layout.addWidget(button_box)
-    
+
     def load_settings(self):
         try:
             # Set defaults
             self.build_type.setCurrentText("Debug")
             self.optimization_level.setCurrentText("Basic")
-            
+
             print("✅ Build dialog settings loaded")
         except Exception as e:
             print(f"⚠️  Build dialog error: {e}")
-    
+
     def accept_build(self):
         self.build_settings = {
             "build_type": self.build_type.currentText(),
@@ -845,9 +845,9 @@ class BuildProjectDialog(QDialog):
             "clean_build": self.clean_build_check.isChecked(),
             "verbose_output": self.verbose_output_check.isChecked()
         }
-        
+
         self.accept()
-    
+
     def get_project_info(self):
         return {
             "build_settings": self.build_settings,
@@ -858,7 +858,7 @@ class BuildProjectDialog(QDialog):
 # Export ALL possible dialog classes to prevent ANY import errors
 __all__ = [
     'NewProjectDialog',
-    'OpenProjectDialog', 
+    'OpenProjectDialog',
     'ProjectSettingsDialog',
     'ExportProjectDialog',
     'BuildProjectDialog'

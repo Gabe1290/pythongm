@@ -13,29 +13,29 @@ from export.Kivy.code_generator import ActionCodeGenerator
 
 class KivyExporter:
     """Export PyGameMaker projects to Kivy format"""
-    
+
     def __init__(self, project_data: Dict[str, Any], project_path: Path, output_path: Path):
         self.project_data = project_data
         self.project_path = Path(project_path)
         self.output_path = Path(output_path)
         self.grid_size = 32  # Default grid size for snapping
-        
+
     def export(self) -> bool:
         """Export project to Kivy format"""
         try:
-            
+
             print("=" * 60)
             print("Starting Kivy Export")
             print("=" * 60)
-            
+
             # Diagnostic output
             print("\n📊 Project Data Diagnostic:")
             print(f"  Project name: {self.project_data.get('name', 'Unknown')}")
             print(f"  Output path: {self.output_path}")
             print(f"  Project path: {self.project_path}")
-            
+
             assets = self.project_data.get('assets', {})
-            print(f"\n📦 Assets found:")
+            print("\n📦 Assets found:")
             for asset_type, asset_dict in assets.items():
                 print(f"  - {asset_type}: {len(asset_dict)} items")
                 if asset_type in ['rooms', 'objects']:
@@ -53,57 +53,57 @@ class KivyExporter:
                                         print(f"      └─ {len(events)} event(s) in dict (keys: {list(events.keys())[:3]}...)")
                                     else:
                                         print(f"      └─ events is {type(events).__name__} (expected list or dict)")
-            
+
             print()
-            
+
             # Create directory structure
             self._create_directory_structure()
             print("✓ Directory structure created")
-            
+
             # Export assets
             self._export_assets()
             print(f"✓ Exported {self._count_assets()} asset(s)")
-            
+
             # Generate main application
             self._generate_main_app()
             print("✓ Main application generated")
-            
+
             # Generate game scenes/rooms
             self._generate_scenes()
             print(f"✓ Generated {len(self.project_data.get('assets', {}).get('rooms', {}))} room(s)")
-            
+
             # Generate object classes
             self._generate_objects()
             print(f"✓ Generated {len(self.project_data.get('assets', {}).get('objects', {}))} object type(s)")
-            
+
             # Generate utility files
             self._generate_utils()
             print("✓ Game logic utilities generated")
-            
+
             # Generate build configuration
             self._generate_buildozer_spec()
             print("✓ Buildozer spec generated")
-            
+
             # Generate requirements file
             self._generate_requirements()
             print("✓ Requirements file generated")
-            
+
             # Generate README
             self._generate_readme()
             print("✓ README created")
-            
+
             print("=" * 60)
             print("Export completed successfully!")
             print("=" * 60)
-            
+
             return True
-            
+
         except Exception as e:
             print(f"✗ Export failed: {e}")
             import traceback
             traceback.print_exc()
             return False
-    
+
     def _create_directory_structure(self):
         """Create the output directory structure"""
         dirs = [
@@ -114,22 +114,22 @@ class KivyExporter:
             self.output_path / "game" / "objects",
             self.output_path / "game" / "scenes",
         ]
-        
+
         for dir_path in dirs:
             dir_path.mkdir(parents=True, exist_ok=True)
             print(f"  Created: {dir_path}")
-        
+
         # Create __init__.py files to make directories Python packages
         package_dirs = [
             self.output_path / "game" / "objects",
             self.output_path / "game" / "scenes",
         ]
-        
+
         for pkg_dir in package_dirs:
             init_file = pkg_dir / "__init__.py"
             init_file.write_text("# Auto-generated package file\n")
             print(f"  Created: {init_file}")
-    
+
     def _count_assets(self) -> int:
         """Count total number of assets"""
         count = 0
@@ -137,23 +137,23 @@ class KivyExporter:
         for asset_type in ['sprites', 'sounds', 'backgrounds']:
             count += len(assets.get(asset_type, {}))
         return count
-    
+
     def _export_assets(self):
         """Export all game assets"""
         assets = self.project_data.get('assets', {})
-        
+
         # Export sprites
         for sprite_name, sprite_data in assets.get('sprites', {}).items():
             self._export_sprite(sprite_name, sprite_data)
-        
+
         # Export sounds
         for sound_name, sound_data in assets.get('sounds', {}).items():
             self._export_sound(sound_name, sound_data)
-        
+
         # Export backgrounds
         for bg_name, bg_data in assets.get('backgrounds', {}).items():
             self._export_background(bg_name, bg_data)
-    
+
     def _export_sprite(self, name: str, data: Dict):
         """Export a sprite asset"""
         file_path = data.get('file_path', '')
@@ -162,7 +162,7 @@ class KivyExporter:
             if src.exists():
                 dst = self.output_path / "game" / "assets" / "images" / src.name
                 shutil.copy2(src, dst)
-    
+
     def _export_sound(self, name: str, data: Dict):
         """Export a sound asset"""
         file_path = data.get('file_path', '')
@@ -171,7 +171,7 @@ class KivyExporter:
             if src.exists():
                 dst = self.output_path / "game" / "assets" / "sounds" / src.name
                 shutil.copy2(src, dst)
-    
+
     def _export_background(self, name: str, data: Dict):
         """Export a background asset"""
         file_path = data.get('file_path', '')
@@ -180,7 +180,7 @@ class KivyExporter:
             if src.exists():
                 dst = self.output_path / "game" / "assets" / "images" / src.name
                 shutil.copy2(src, dst)
-    
+
     def _generate_main_app(self):
         """Generate the main Kivy application file"""
         rooms = self.project_data.get('assets', {}).get('rooms', {})
@@ -211,7 +211,7 @@ class KivyExporter:
         # Generate room class mapping
         room_mapping_str = ', '.join([f'"{name}": {cls}' for name, cls in room_class_map.items()])
 
-        code = f'''#!/usr/bin/env python3
+        code = '''#!/usr/bin/env python3
 """
 Generated Kivy Game Application
 Exported from PyGameMaker IDE
@@ -553,18 +553,18 @@ class GameApp(App):
 if __name__ == '__main__':
     GameApp().run()
 '''
-        
+
         output_file = self.output_path / "game" / "main.py"
         output_file.write_text(code)
-    
+
     def _generate_scenes(self):
         """Generate scene files for each room"""
         rooms = self.project_data.get('assets', {}).get('rooms', {})
-        
+
         if not rooms:
             print("  Warning: No rooms found in project data")
             return
-        
+
         for room_name, room_data in rooms.items():
             try:
                 print(f"  Generating scene: {room_name}")
@@ -574,46 +574,46 @@ if __name__ == '__main__':
                 print(f"  ✗ Failed to generate scene {room_name}: {e}")
                 import traceback
                 traceback.print_exc()
-    
+
     def _generate_scene(self, room_name: str, room_data: Dict):
         """Generate a single scene file"""
         class_name = self._get_room_class_name(room_name)
-        
+
         # Get room properties
         width = room_data.get('width', 1024)
         height = room_data.get('height', 768)
         instances = room_data.get('instances', [])
-        
+
         # Import statements for object types used in this room
         object_imports = set()
-        
+
         print(f"    Room has {len(instances)} instances")
         if instances and len(instances) > 0:
             # Debug: show structure of first instance
             first_inst = instances[0]
             print(f"    First instance keys: {list(first_inst.keys()) if isinstance(first_inst, dict) else 'not a dict'}")
             print(f"    First instance sample: {first_inst}")
-        
+
         for instance in instances:
             # Try multiple possible key names for object type
-            obj_type = (instance.get('object_type') or 
+            obj_type = (instance.get('object_type') or
                        instance.get('object_name') or
                        instance.get('type') or
                        instance.get('object') or
                        instance.get('obj_type') or
                        '')
-            
+
             if obj_type:
                 object_imports.add(obj_type)
                 print(f"      Found object type: {obj_type}")
-        
+
         print(f"    Total unique object types: {len(object_imports)}")
-        
+
         import_lines = '\n'.join([
             f"from objects.{obj} import {self._get_object_class_name(obj)}"
             for obj in sorted(object_imports)
         ])
-        
+
         # Generate instance creation code
         instance_code = []
         for i, instance in enumerate(instances):
@@ -643,10 +643,10 @@ if __name__ == '__main__':
                 instance_code.append(
                     f"        self.add_instance(inst_{i})"
                 )
-        
+
         instances_init = '\n'.join(instance_code) if instance_code else "        pass"
-        
-        code = f'''#!/usr/bin/env python3
+
+        code = '''#!/usr/bin/env python3
 """
 Scene: {room_name}
 Generated from PyGameMaker IDE
@@ -690,27 +690,27 @@ class {class_name}(Widget):
         s1 = re.sub('(.)([A-Z][a-z]+)', r'\\1_\\2', name)
         # Insert underscore before uppercase letters preceded by lowercase
         return re.sub('([a-z0-9])([A-Z])', r'\\1_\\2', s1).lower()
-    
+
     def create_instances(self):
         """Create all instances in the room"""
 {instances_init}
-    
+
     def add_instance(self, instance):
         """Add an instance to the room"""
         self.instances.append(instance)
         self.add_widget(instance)
-        
+
         # Call create event
         if hasattr(instance, 'on_create'):
             instance.on_create()
-    
+
     def remove_instance(self, instance):
         """Remove an instance from the room"""
         if instance in self.instances:
             self.instances.remove(instance)
             if instance in self.children:
                 self.remove_widget(instance)
-    
+
     def update(self, dt):
         """Main game loop update - GAMEMAKER 7.0 EVENT ORDER"""
         # GAMEMAKER 7.0 EVENT EXECUTION ORDER:
@@ -793,39 +793,39 @@ class {class_name}(Widget):
             for instance in self.instances_to_destroy:
                 self.remove_instance(instance)
             self.instances_to_destroy.clear()
-    
+
     def destroy_instance(self, instance):
         """Mark instance for destruction"""
         if instance not in self.instances_to_destroy:
             self.instances_to_destroy.append(instance)
-    
+
     def on_keyboard(self, window, key, scancode, codepoint, modifier):
         """Handle keyboard press events"""
         self.keys_pressed[key] = True
-        
+
         # Notify all instances
         for instance in self.instances:
             if hasattr(instance, 'on_keyboard'):
                 instance.on_keyboard(key, scancode, codepoint, modifier)
-        
+
         return False
-    
+
     def on_keyboard_up(self, window, key, scancode):
         """Handle keyboard release events"""
         if key in self.keys_pressed:
             del self.keys_pressed[key]
-        
+
         # Notify all instances
         for instance in self.instances:
             if hasattr(instance, 'on_keyboard_up'):
                 instance.on_keyboard_up(key, scancode)
-        
+
         return False
 '''
-        
+
         output_file = self.output_path / "game" / "scenes" / f"{room_name}.py"
         output_file.write_text(code)
-    
+
     def _generate_objects(self):
         """Generate object class files"""
         # First generate base object class
@@ -860,10 +860,10 @@ class {class_name}(Widget):
 
         if failed_objects:
             raise RuntimeError(f"Failed to generate {len(failed_objects)} object(s): {', '.join(failed_objects)}")
-    
+
     def _generate_base_object(self):
         """Generate the base GameObject class"""
-        code = f'''#!/usr/bin/env python3
+        code = '''#!/usr/bin/env python3
 """
 Base GameObject class
 GameMaker-style base object with movement and collision
@@ -898,22 +898,22 @@ class GameObject(Widget):
 
         # GAMEMAKER 7.0: 12 alarm clocks per instance
         self.alarms = [-1] * 12  # -1 = inactive, >= 0 = active countdown
-        
+
         # Physics properties
         self.solid = False
-        
+
         # Sprite properties
         self.sprite_name = None
         self.image = None
         self.image_width = 0
         self.image_height = 0
-        
+
         # Collision tracking
         self._collision_other = None
-        
+
         # Grid properties
         self.grid_size = {self.grid_size}
-        
+
         self.size = (32, 32)  # Default size
         self.pos = (x, y)
 
@@ -1020,7 +1020,7 @@ class GameObject(Widget):
         else:
             self._hspeed = 0
             self._vspeed = 0
-    
+
     def set_sprite(self, sprite_path):
         """Set the object's sprite - enables collision detection"""
         self.sprite_name = sprite_path
@@ -1043,7 +1043,7 @@ class GameObject(Widget):
                 # Invisible but still has collision - don't draw anything
                 self.canvas.clear()
                 self.rect = None
-    
+
     def _process_alarms(self):
         """Process alarm clocks (GAMEMAKER 7.0 feature)"""
         for i in range(12):
@@ -1098,7 +1098,7 @@ class GameObject(Widget):
         speed_factor = dt * 60.0 if dt > 0 else 1.0
         new_x = self._x + float(self._hspeed * speed_factor)
         new_y = self._y + float(self._vspeed * speed_factor)
-        
+
         # PERFORMANCE FIX: Optimized solid collision checking
         # Only check solid-to-solid collisions to prevent overlap
         # Other collision events are handled by _check_collisions method
@@ -1121,7 +1121,7 @@ class GameObject(Widget):
             self.x = new_x
             self.y = new_y
             self._update_position()
-    
+
     def _update_position(self):
         """Update visual position with sub-pixel precision for smooth rendering"""
         # PERFORMANCE FIX: Keep float precision for smooth movement
@@ -1130,7 +1130,7 @@ class GameObject(Widget):
             self.rect.pos = self.pos
             # PERFORMANCE FIX: Removed canvas.ask_update() - Kivy auto-updates on property changes
             # Calling ask_update() every frame for every object was causing major slowdowns
-    
+
     def check_collision(self, other):
         """Check AABB (Axis-Aligned Bounding Box) collision with another object
 
@@ -1151,13 +1151,13 @@ class GameObject(Widget):
             self.y < other.y + other.size[1] and
             self.y + self.size[1] > other.y
         )
-    
+
     def destroy(self):
         """Destroy this instance"""
         if hasattr(self, 'on_destroy'):
             self.on_destroy()
         self.scene.destroy_instance(self)
-    
+
     def is_on_grid(self):
         """Check if object is close to grid alignment"""
         # Tolerance must account for variable frame rates
@@ -1175,7 +1175,7 @@ class GameObject(Widget):
         y_diff = abs(self.y - nearest_y)
 
         return x_diff <= tolerance and y_diff <= tolerance
-    
+
     def snap_to_grid(self):
         """Snap object to nearest grid position"""
         self.x = round(self.x / self.grid_size) * self.grid_size
@@ -1206,42 +1206,42 @@ class GameObject(Widget):
         self.hspeed = 0
         self.vspeed = 0
         self.speed = 0
-    
+
     # Event handlers (to be overridden by subclasses)
     def on_create(self):
         """Called when instance is created"""
         pass
-    
+
     def on_update(self, dt):
         """Called each frame"""
         pass
-    
+
     def on_destroy(self):
         """Called when instance is destroyed"""
         pass
-    
+
     def on_keyboard(self, key, scancode, codepoint, modifier):
         """Called when a key is pressed"""
         pass
-    
+
     def on_keyboard_up(self, key, scancode):
         """Called when a key is released"""
         pass
 '''
-        
+
         output_file = self.output_path / "game" / "objects" / "base_object.py"
         output_file.write_text(code)
-    
+
     def _generate_object(self, obj_name: str, obj_data: Dict):
         """Generate a specific object class"""
         class_name = self._get_object_class_name(obj_name)
-        
+
         # Get object properties
         sprite_name = obj_data.get('sprite', '')
         solid = obj_data.get('solid', False)
         visible = obj_data.get('visible', True)
         persistent = obj_data.get('persistent', False)
-        
+
         # Get sprite file path if sprite is set
         sprite_path = ""
         if sprite_name:
@@ -1250,12 +1250,12 @@ class GameObject(Widget):
                 sprite_file = sprites[sprite_name].get('file_path', '')
                 if sprite_file:
                     sprite_path = f"assets/images/{Path(sprite_file).name}"
-        
+
         # Generate event handlers from object's events
         events = obj_data.get('events', [])
-        
+
         print(f"    Raw events for {obj_name}: {type(events).__name__}")
-        
+
         # Handle different event storage formats
         if isinstance(events, dict):
             # Events stored as dict/OrderedDict - convert to list
@@ -1266,7 +1266,7 @@ class GameObject(Widget):
                 print(f"      Processing event '{event_key}': {type(event_data).__name__}")
                 if isinstance(event_data, dict):
                     print(f"        Event data keys: {list(event_data.keys())}")
-                    
+
                     # Special handling for keyboard events
                     if event_key == 'keyboard':
                         # Keyboard events have sub-events for each key
@@ -1303,17 +1303,17 @@ class GameObject(Widget):
         elif not isinstance(events, list):
             print(f"    Warning: events for {obj_name} is {type(events).__name__}, converting to empty list")
             events = []
-        
+
         # Show what events we're working with
         if events:
             print(f"    Processing {len(events)} event(s):")
             for i, evt in enumerate(events[:3]):  # Show first 3
                 if isinstance(evt, dict):
                     print(f"      Event {i}: type={evt.get('event_type')}, actions={len(evt.get('actions', []))}")
-        
+
         event_methods = self._generate_event_methods(obj_name, events)
-        
-        code = f'''#!/usr/bin/env python3
+
+        code = '''#!/usr/bin/env python3
 """
 Object: {obj_name}
 Generated from PyGameMaker IDE
@@ -1325,29 +1325,29 @@ from kivy.core.window import Window
 
 class {class_name}(GameObject):
     """Game object: {obj_name}"""
-    
+
     def __init__(self, scene, x=0, y=0, **kwargs):
         super().__init__(scene, x, y, **kwargs)
-        
+
         self.solid = {solid}
         self.visible = {visible}
         self.persistent = {persistent}
-        
+
         # Set sprite
         {"self.set_sprite('" + sprite_path + "')" if sprite_path else "pass"}
-    
+
 {event_methods}
 '''
-        
+
         output_file = self.output_path / "game" / "objects" / f"{obj_name}.py"
         output_file.write_text(code)
-    
+
     def _generate_event_methods(self, obj_name: str, events: List[Dict]) -> str:
         """Generate event handler methods from event data"""
         methods = []
-        
+
         print(f"    _generate_event_methods called with {len(events)} events")
-        
+
         # Filter out any non-dict events (malformed data)
         valid_events = []
         for i, event in enumerate(events):
@@ -1356,13 +1356,13 @@ class {class_name}(GameObject):
                 valid_events.append(event)
             else:
                 print(f"      Warning: Skipping malformed event in {obj_name}: {type(event).__name__}")
-        
+
         events = valid_events
-        
+
         if not events:
-            print(f"      No valid events found, returning pass")
+            print("      No valid events found, returning pass")
             return "    pass\n"
-        
+
         # Group keyboard events together (but NOT nokey - that's handled separately)
         keyboard_events = [e for e in events if e.get('event_type') == 'keyboard' and e.get('key_name') and e.get('key_name') != 'nokey']
         nokey_events = [e for e in events if e.get('event_type') == 'keyboard' and e.get('key_name') == 'nokey']
@@ -1376,30 +1376,30 @@ class {class_name}(GameObject):
 
         # Generate on_nokey method for nokey events
         if nokey_events:
-            print(f"      Generating nokey handler")
+            print("      Generating nokey handler")
             nokey_event = nokey_events[0]  # There should only be one nokey event
             actions = nokey_event.get('actions', [])
             if actions:
                 action_code = self._generate_action_code(obj_name, actions, nokey_event)
-                nokey_method = f'''    def on_nokey(self):
+                nokey_method = '''    def on_nokey(self):
         """Event handler: keyboard nokey (no keys pressed)"""
 {action_code}
 '''
                 methods.append(nokey_method)
-        
+
         # Generate other event handlers
         for event in other_events:
             event_type = event.get('event_type', '')
             actions = event.get('actions', [])
-            
+
             if not actions:
                 continue
-            
+
             # Map event types to method names
             method_name = self._get_event_method_name(event)
             if not method_name:
                 continue
-            
+
             # Generate method signature
             if event_type == 'keyboard':
                 params = "self, key, scancode, codepoint, modifier"
@@ -1411,18 +1411,18 @@ class {class_name}(GameObject):
                 params = "self, dt"
             else:
                 params = "self"
-            
+
             # Generate action code
             action_code = self._generate_action_code(obj_name, actions, event)
-            
-            method = f'''    def {method_name}({params}):
+
+            method = '''    def {method_name}({params}):
         """Event handler: {event_type}"""
 {action_code}
 '''
             methods.append(method)
-        
+
         return '\n'.join(methods) if methods else "    pass\n"
-    
+
     def _generate_keyboard_handler(self, keyboard_events: List[Dict]) -> str:
         """Generate a consolidated keyboard handler for all key-specific events"""
         # For grid-based movement games, keyboard input should be handled in the step event
@@ -1463,7 +1463,7 @@ class {class_name}(GameObject):
             actions = event.get('actions', [])
             key_code = key_map.get(key_name, '0')
 
-            if_keyword = "if" if i == 0 else "elif"
+            if_keyword = "i" if i == 0 else "eli"
             code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")
 
             if actions:
@@ -1572,18 +1572,18 @@ class {class_name}(GameObject):
         code_lines.append("                self._update_position()")
         code_lines.append("                # Check if the same direction key is still held - continue moving")
         code_lines.append("                continue_moving = False")
-        code_lines.append(f"                if self.hspeed > 0 and key_right:")
-        code_lines.append(f"                    self._grid_target_x = self.x + grid")
-        code_lines.append(f"                    continue_moving = True")
-        code_lines.append(f"                elif self.hspeed < 0 and key_left:")
-        code_lines.append(f"                    self._grid_target_x = self.x - grid")
-        code_lines.append(f"                    continue_moving = True")
-        code_lines.append(f"                elif self.vspeed > 0 and key_up:")
-        code_lines.append(f"                    self._grid_target_y = self.y + grid")
-        code_lines.append(f"                    continue_moving = True")
-        code_lines.append(f"                elif self.vspeed < 0 and key_down:")
-        code_lines.append(f"                    self._grid_target_y = self.y - grid")
-        code_lines.append(f"                    continue_moving = True")
+        code_lines.append("                if self.hspeed > 0 and key_right:")
+        code_lines.append("                    self._grid_target_x = self.x + grid")
+        code_lines.append("                    continue_moving = True")
+        code_lines.append("                elif self.hspeed < 0 and key_left:")
+        code_lines.append("                    self._grid_target_x = self.x - grid")
+        code_lines.append("                    continue_moving = True")
+        code_lines.append("                elif self.vspeed > 0 and key_up:")
+        code_lines.append("                    self._grid_target_y = self.y + grid")
+        code_lines.append("                    continue_moving = True")
+        code_lines.append("                elif self.vspeed < 0 and key_down:")
+        code_lines.append("                    self._grid_target_y = self.y - grid")
+        code_lines.append("                    continue_moving = True")
         code_lines.append("                ")
         code_lines.append("                if not continue_moving:")
         code_lines.append("                    # Stop moving")
@@ -1602,30 +1602,30 @@ class {class_name}(GameObject):
         code_lines.append("            self.y = snap_y")
         code_lines.append("            ")
         code_lines.append("            # Set target based on key pressed (priority: right, left, up, down)")
-        code_lines.append(f"            if key_right:")
-        code_lines.append(f"                self._grid_target_x = snap_x + grid")
-        code_lines.append(f"                self._grid_target_y = snap_y")
+        code_lines.append("            if key_right:")
+        code_lines.append("                self._grid_target_x = snap_x + grid")
+        code_lines.append("                self._grid_target_y = snap_y")
         code_lines.append(f"                self.hspeed = {abs(speed_values.get('right', 4))}")
-        code_lines.append(f"                self.vspeed = 0")
-        code_lines.append(f"                self._grid_moving = True")
-        code_lines.append(f"            elif key_left:")
-        code_lines.append(f"                self._grid_target_x = snap_x - grid")
-        code_lines.append(f"                self._grid_target_y = snap_y")
+        code_lines.append("                self.vspeed = 0")
+        code_lines.append("                self._grid_moving = True")
+        code_lines.append("            elif key_left:")
+        code_lines.append("                self._grid_target_x = snap_x - grid")
+        code_lines.append("                self._grid_target_y = snap_y")
         code_lines.append(f"                self.hspeed = -{abs(speed_values.get('left', 4))}")
-        code_lines.append(f"                self.vspeed = 0")
-        code_lines.append(f"                self._grid_moving = True")
-        code_lines.append(f"            elif key_up:")
-        code_lines.append(f"                self._grid_target_x = snap_x")
-        code_lines.append(f"                self._grid_target_y = snap_y + grid")
-        code_lines.append(f"                self.hspeed = 0")
+        code_lines.append("                self.vspeed = 0")
+        code_lines.append("                self._grid_moving = True")
+        code_lines.append("            elif key_up:")
+        code_lines.append("                self._grid_target_x = snap_x")
+        code_lines.append("                self._grid_target_y = snap_y + grid")
+        code_lines.append("                self.hspeed = 0")
         code_lines.append(f"                self.vspeed = {abs(speed_values.get('up', 4))}")
-        code_lines.append(f"                self._grid_moving = True")
-        code_lines.append(f"            elif key_down:")
-        code_lines.append(f"                self._grid_target_x = snap_x")
-        code_lines.append(f"                self._grid_target_y = snap_y - grid")
-        code_lines.append(f"                self.hspeed = 0")
+        code_lines.append("                self._grid_moving = True")
+        code_lines.append("            elif key_down:")
+        code_lines.append("                self._grid_target_x = snap_x")
+        code_lines.append("                self._grid_target_y = snap_y - grid")
+        code_lines.append("                self.hspeed = 0")
         code_lines.append(f"                self.vspeed = -{abs(speed_values.get('down', 4))}")
-        code_lines.append(f"                self._grid_moving = True")
+        code_lines.append("                self._grid_moving = True")
         code_lines.append("")
 
         return '\n'.join(code_lines)
@@ -1669,7 +1669,7 @@ class {class_name}(GameObject):
             return f"on_collision_{collision_obj.lower()}"
 
         return event_map.get(event_type, '')
-    
+
     def _generate_action_code(self, obj_name: str, actions: List[Dict], event: Dict) -> str:
         """Generate Python code from action list - WITH BLOCK SYSTEM"""
         event_type = event.get('event_type', '')
@@ -1707,7 +1707,7 @@ class {class_name}(GameObject):
             return "        pass"
 
         return code
-    
+
     def _convert_action_to_code(self, action_type: str, params: Dict, event_type: str) -> str:
         """Convert a single action to Python code - GAMEMAKER 7.0 COMPLETE"""
 
@@ -1843,7 +1843,7 @@ class {class_name}(GameObject):
 
         # INSTANCE ACTIONS
         elif action_type == 'destroy_instance':
-            target = params.get('target', 'self')
+            target = params.get('target', 'sel')
             if target == 'other' and 'collision' in event_type:
                 return "other.destroy()"
             else:
@@ -1886,7 +1886,7 @@ class {class_name}(GameObject):
 
         # Default: return comment for unsupported action
         return f"# TODO: Implement {action_type}"
-    
+
     def _generate_utils(self):
         """Generate utility functions file"""
         code = '''#!/usr/bin/env python3
@@ -1953,15 +1953,15 @@ def clear_image_cache():
     global _image_cache
     _image_cache.clear()
 '''
-        
+
         output_file = self.output_path / "game" / "utils.py"
         output_file.write_text(code)
-    
+
     def _generate_buildozer_spec(self):
         """Generate buildozer.spec for Android builds"""
         project_name = self.project_data.get('name', 'MyGame')
-        
-        spec = f'''[app]
+
+        spec = '''[app]
 title = {project_name}
 package.name = {project_name.lower().replace(' ', '')}
 package.domain = org.pygamemaker
@@ -1980,23 +1980,23 @@ fullscreen = 1
 log_level = 2
 warn_on_root = 1
 '''
-        
+
         output_file = self.output_path / "buildozer.spec"
         output_file.write_text(spec)
-    
+
     def _generate_requirements(self):
         """Generate requirements.txt"""
         requirements = '''kivy>=2.1.0
 '''
-        
+
         output_file = self.output_path / "requirements.txt"
         output_file.write_text(requirements)
-    
+
     def _generate_readme(self):
         """Generate README with instructions"""
         project_name = self.project_data.get('name', 'MyGame')
-        
-        readme = f'''# {project_name}
+
+        readme = '''# {project_name}
 
 Exported from PyGameMaker IDE
 
@@ -2049,31 +2049,31 @@ Use arrow keys or WASD for movement.
 This game was created with PyGameMaker IDE, a GameMaker-inspired
 game development environment for Python.
 '''
-        
+
         output_file = self.output_path / "README.md"
         output_file.write_text(readme)
-    
+
     def _get_room_class_name(self, room_name: str) -> str:
         """Convert room name to class name"""
         # Convert snake_case to PascalCase
         return ''.join(word.capitalize() for word in room_name.split('_'))
-    
+
     def _get_object_class_name(self, obj_name: str) -> str:
         """Convert object name to class name"""
         # Convert snake_case to PascalCase
         return ''.join(word.capitalize() for word in obj_name.split('_'))
 
 
-def export_to_kivy(project_data: Dict[str, Any], project_path: Path, 
+def export_to_kivy(project_data: Dict[str, Any], project_path: Path,
                    output_path: Path) -> bool:
     """
     Export a PyGameMaker project to Kivy format
-    
+
     Args:
         project_data: Project data dictionary
         project_path: Path to project directory
         output_path: Output directory for export
-        
+
     Returns:
         True if export successful, False otherwise
     """

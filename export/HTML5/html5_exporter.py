@@ -33,7 +33,7 @@ class HTML5Exporter:
                 print(f"  ✓ Loaded project: {project_data['name']}")
 
                 # Encode sprites as base64
-                print(f"  📸 Encoding sprites...")
+                print("  📸 Encoding sprites...")
                 sprites_data = self.encode_sprites(project_path, project_data)
                 print(f"  ✓ Encoded {len(sprites_data)} sprites")
 
@@ -57,13 +57,13 @@ class HTML5Exporter:
                 print(f"  📐 Canvas size: {width}x{height}")
 
                 # Generate HTML
-                print(f"  🎨 Generating HTML...")
+                print("  🎨 Generating HTML...")
 
                 # Serialize the data
                 game_data_json = json.dumps(project_data, separators=(',', ':'))
                 sprites_data_json = json.dumps(sprites_data, separators=(',', ':'))
 
-                print(f"  📊 Original sizes:")
+                print("  📊 Original sizes:")
                 print(f"     Game data: {len(game_data_json):,} bytes")
                 print(f"     Sprites data: {len(sprites_data_json):,} bytes")
 
@@ -79,7 +79,7 @@ class HTML5Exporter:
                 compression_ratio_game = (len(game_data_compressed) * 100) // len(game_data_json)
                 compression_ratio_sprites = (len(sprites_data_compressed) * 100) // len(sprites_data_json)
 
-                print(f"  📦 Compressed sizes:")
+                print("  📦 Compressed sizes:")
                 print(f"     Game data: {len(game_data_compressed):,} bytes ({compression_ratio_game}%)")
                 print(f"     Sprites data: {len(sprites_data_compressed):,} bytes ({compression_ratio_sprites}%)")
                 print(f"  💾 Total size reduction: {len(game_data_json) + len(sprites_data_json) - len(game_data_compressed) - len(sprites_data_compressed):,} bytes saved")
@@ -99,7 +99,7 @@ class HTML5Exporter:
 
                 file_size_kb = output_file.stat().st_size / 1024
 
-                print(f"  ✅ Export complete!")
+                print("  ✅ Export complete!")
                 print(f"  📄 File: {output_file.name}")
                 print(f"  💾 Size: {file_size_kb:.1f} KB")
                 print(f"\n🎮 Open {output_file.name} in a web browser to play!")
@@ -133,7 +133,7 @@ class HTML5Exporter:
                             mime_type = 'image/png'
                             if ext == '.jpg' or ext == '.jpeg':
                                 mime_type = 'image/jpeg'
-                            elif ext == '.gif':
+                            elif ext == '.gi':
                                 mime_type = 'image/gif'
 
                             encoded[sprite_name] = f"data:{mime_type};base64,{b64}"

@@ -18,7 +18,7 @@ class ActionParameter:
     required: bool = True
     choices: List[str] = field(default_factory=list)
 
-@dataclass  
+@dataclass
 class ActionType:
     """Defines an action type"""
     name: str
@@ -31,7 +31,7 @@ class ActionType:
 # Define available action types - EXPANDED SET WITH SMOOTH MOVEMENT
 ACTION_TYPES = {
     # ==================== MOVEMENT ACTIONS ====================
-    
+
     "move_grid": ActionType(
         name="move_grid",
         display_name="Move Grid",
@@ -56,7 +56,7 @@ ACTION_TYPES = {
             )
         ]
     ),
-    
+
     "set_hspeed": ActionType(
         name="set_hspeed",
         display_name="Set Horizontal Speed",
@@ -73,7 +73,7 @@ ACTION_TYPES = {
             )
         ]
     ),
-    
+
     "set_vspeed": ActionType(
         name="set_vspeed",
         display_name="Set Vertical Speed",
@@ -90,7 +90,7 @@ ACTION_TYPES = {
             )
         ]
     ),
-    
+
     "stop_movement": ActionType(
         name="stop_movement",
         display_name="Stop Movement",
@@ -99,9 +99,9 @@ ACTION_TYPES = {
         icon="🛑",
         parameters=[]
     ),
-    
+
     # ==================== GRID ACTIONS ====================
-    
+
     "snap_to_grid": ActionType(
         name="snap_to_grid",
         display_name="Snap to Grid",
@@ -118,7 +118,7 @@ ACTION_TYPES = {
             )
         ]
     ),
-    
+
     "if_on_grid": ActionType(
         name="if_on_grid",
         display_name="If On Grid",
@@ -149,9 +149,9 @@ ACTION_TYPES = {
             )
         ]
     ),
-    
+
     # ==================== CONTROL/LOGIC ACTIONS ====================
-    
+
     "if_collision_at": ActionType(
         name="if_collision_at",
         display_name="If Collision At",
@@ -179,7 +179,7 @@ ACTION_TYPES = {
                 param_type="choice",
                 default_value="any",
                 description="Object type to check",
-                choices=["any", "solid"]  
+                choices=["any", "solid"]
             ),
             ActionParameter(
                 name="then_actions",
@@ -197,9 +197,9 @@ ACTION_TYPES = {
             )
         ]
     ),
-    
+
     # ==================== GAME CONTROL ACTIONS ====================
-    
+
     "show_message": ActionType(
         name="show_message",
         display_name="Show Message",
@@ -216,7 +216,7 @@ ACTION_TYPES = {
             )
         ]
     ),
-    
+
     "restart_room": ActionType(
         name="restart_room",
         display_name="Restart Room",
@@ -225,7 +225,7 @@ ACTION_TYPES = {
         icon="🔄",
         parameters=[]
     ),
-    
+
     "next_room": ActionType(
         name="next_room",
         display_name="Next Room",
@@ -234,9 +234,9 @@ ACTION_TYPES = {
         icon="➡️",
         parameters=[]
     ),
-    
+
     # ==================== INSTANCE ACTIONS ====================
-    
+
     "destroy_instance": ActionType(
         name="destroy_instance",
         display_name="Destroy Instance",

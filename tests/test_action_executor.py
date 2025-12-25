@@ -11,22 +11,13 @@ __init__.py which imports GameRunner (requiring pygame).
 """
 
 import pytest
-from unittest.mock import MagicMock, patch
-import sys
-import os
-import importlib.util
 
-# Add parent directory to path
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, project_root)
+# Import helper from conftest for direct module loading
+from conftest import import_module_directly
 
 # Import ActionExecutor directly from the module file, bypassing the package __init__.py
 # This avoids the pygame dependency from game_runner.py
-_action_executor_path = os.path.join(project_root, 'runtime', 'action_executor.py')
-_spec = importlib.util.spec_from_file_location("action_executor", _action_executor_path)
-_action_executor_module = importlib.util.module_from_spec(_spec)
-sys.modules['action_executor'] = _action_executor_module
-_spec.loader.exec_module(_action_executor_module)
+_action_executor_module = import_module_directly("runtime/action_executor.py")
 ActionExecutor = _action_executor_module.ActionExecutor
 
 
@@ -274,8 +265,6 @@ class TestMovementActions:
 
     def test_start_moving_direction(self):
         """start_moving_direction sets speed in a given direction"""
-        # ActionExecutor imported at module level
-        import math
         executor = ActionExecutor()
         instance = MockInstance()
 

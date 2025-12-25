@@ -220,6 +220,6 @@ def load_all_plugins(action_executor=None) -> PluginLoader:
     if count > 0:
         print(f"✅ Loaded {count} plugin(s)")
     else:
-        print(f"ℹ️  No plugins loaded")
+        print("ℹ️  No plugins loaded")
 
     return loader

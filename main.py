@@ -51,7 +51,7 @@ def setup_qtwebengine_paths():
         if os.path.exists(locales_path):
             os.environ['QTWEBENGINE_LOCALES_PATH'] = locales_path
 
-        print(f"🔧 QtWebEngine paths configured for packaged app:")
+        print("🔧 QtWebEngine paths configured for packaged app:")
         print(f"   Resources: {base_path}")
     else:
         # Running from source - find PySide6's QtWebEngineProcess
@@ -82,7 +82,7 @@ def setup_qtwebengine_paths():
                 if os.path.exists(locales_path):
                     os.environ['QTWEBENGINE_LOCALES_PATH'] = locales_path
 
-                print(f"🔧 QtWebEngine paths configured for development:")
+                print("🔧 QtWebEngine paths configured for development:")
                 print(f"   Process: {process_path}")
             else:
                 print(f"⚠️ QtWebEngineProcess not found at: {process_path}")
@@ -115,26 +115,26 @@ from utils.config import Config, load_config
 
 def setup_application():
     from PySide6.QtGui import QFont
-    
+
     app = QApplication(sys.argv)
-    
+
     app.setApplicationName("PyGameMaker")
     app.setApplicationVersion("1.0.0")
     app.setOrganizationName("PyGameMaker")
     app.setOrganizationDomain("pygamemaker.org")
-    
+
     # Load config first to get preferences
     load_config()
-    
+
     # Load translations based on config or system locale
     from PySide6.QtCore import QTranslator
-    
+
     translator = QTranslator()
     app.translator = translator  # Store translator on app for later access
-    
+
     # Get language from config or use system default
     language_config = Config.get('language', 'en')
-    
+
     print(f"🌐 Language config: {language_config}")
 
     if language_config and language_config != 'en':
@@ -158,17 +158,17 @@ def setup_application():
         else:
             print(f"ℹ️ No translation file for {language_config}, using English")
     else:
-        print(f"ℹ️ Using English (default)")
+        print("ℹ️ Using English (default)")
 
     # Apply theme from config
     from utils.theme_manager import ThemeManager
     appearance_config = Config.get_appearance_config()
     ThemeManager.apply_theme(appearance_config['theme'])
-    
+
     # Set global font configuration
     font_config = Config.get_font_config()
     app_font = QFont()
-    
+
     # Use configured font family, or fall back to platform defaults
     if font_config['family']:
         app_font.setFamily(font_config['family'])
@@ -180,28 +180,28 @@ def setup_application():
             app_font.setFamily("SF Pro Text")
         else:  # Linux
             app_font.setFamily("Ubuntu")
-    
+
     # Set font size from config
     app_font.setPointSize(font_config['size'])
-    
+
     # Apply font globally
     app.setFont(app_font)
-    
+
     print(f"✅ Global font configured: {app_font.family()}, {app_font.pointSize()}pt")
-    
+
     icon_path = Path(__file__).parent / "resources" / "icon.png"
     if icon_path.exists():
         app.setWindowIcon(QIcon(str(icon_path)))
-    
+
     return app
 
 def setup_directories():
     app_dir = Path.home() / ".pygamemaker"
     app_dir.mkdir(exist_ok=True)
-    
+
     projects_dir = Path.home() / "PyGameMaker Projects"
     projects_dir.mkdir(exist_ok=True)
-    
+
     return app_dir, projects_dir
 
 
@@ -233,7 +233,7 @@ def main():
                     except RuntimeError:
                         # Widget was deleted during iteration, skip it
                         pass
-                print(f"✅ Retranslation complete")
+                print("✅ Retranslation complete")
 
             # Use QTimer to defer retranslation until after event loop starts
             QTimer.singleShot(0, retranslate_all)
@@ -248,9 +248,9 @@ def main():
                 print(f"❌ Error saving config on exit: {e}")
 
         app.aboutToQuit.connect(save_on_exit)
-        
+
         sys.exit(app.exec())
-        
+
     except Exception as e:
         print(f"Fatal error: {e}")
         sys.exit(1)

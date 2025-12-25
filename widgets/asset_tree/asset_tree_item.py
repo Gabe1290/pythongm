@@ -13,34 +13,34 @@ from PySide6.QtGui import QFont
 
 class AssetTreeItem(QTreeWidgetItem):
     """Custom tree item for assets"""
-    
+
     def __init__(self, parent=None, asset_type: str = "", asset_name: str = "", asset_data: Dict = None):
         super().__init__(parent)
-        
+
         self.asset_type = asset_type
         self.asset_name = asset_name
         self.asset_data = asset_data or {}
         self.is_category = asset_name == ""
-        
+
         # Create camelCase aliases for compatibility
         self.assetType = asset_type
         self.assetName = asset_name
         self.assetData = asset_data or {}
         self.isCategory = self.is_category
-        
+
         self.setup_item()
-    
+
     def setup_item(self):
             """Setup the appearance and properties of the tree item"""
             if self.is_category:
                 # Category item with emojis
                 self.setText(0, self.asset_type.title())
                 self.setFont(0, QFont("", 9, QFont.Weight.Bold))
-                
+
                 # Set category icons with emojis
                 icon_map = {
                     "sprites": "🖼️ Sprites",
-                    "sounds": "🔊 Sounds", 
+                    "sounds": "🔊 Sounds",
                     "backgrounds": "🖼️ Backgrounds",
                     "objects": "📦 Objects",
                     "rooms": "🏠 Rooms",
@@ -48,24 +48,24 @@ class AssetTreeItem(QTreeWidgetItem):
                     "fonts": "🔤 Fonts",
                     "data": "📄 Data"
                 }
-                
+
                 if self.asset_type in icon_map:
                     self.setText(0, icon_map[self.asset_type])
-                
+
                 # Make categories non-selectable but expandable
                 self.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsDropEnabled)
-                
+
             else:
                 # Asset item
                 self.setText(0, self.asset_name)
-                
+
                 # Check if asset is imported
                 asset_imported = self.asset_data.get('imported', False)
-                
+
                 if asset_imported:
                     # Show imported asset normally with type icons
                     self.setForeground(0, Qt.GlobalColor.black)
-                    
+
                     # Add type-specific icon or thumbnail
                     if self.asset_type == "sprites":
                         # Try to load pre-generated thumbnail (already has first frame for strips)
@@ -114,45 +114,45 @@ class AssetTreeItem(QTreeWidgetItem):
                     # Show not-imported assets in gray
                     self.setText(0, f"❌ {self.asset_name} (not imported)")
                     self.setForeground(0, Qt.GlobalColor.gray)
-                
+
                 # Make assets selectable and draggable
-                self.setFlags(Qt.ItemFlag.ItemIsEnabled | 
-                            Qt.ItemFlag.ItemIsSelectable | 
+                self.setFlags(Qt.ItemFlag.ItemIsEnabled |
+                            Qt.ItemFlag.ItemIsSelectable |
                             Qt.ItemFlag.ItemIsDragEnabled)
-            
+
     def load_sprite_thumbnail(self, file_path):
             """Load sprite as thumbnail icon for tree item"""
             try:
                 from PySide6.QtGui import QPixmap, QIcon
-                
+
                 if not file_path:
                     return False
-                
+
                 # Get the tree widget to access project path
                 tree_widget = self.treeWidget()
                 if not tree_widget or not hasattr(tree_widget, 'project_path'):
                     return False
-                
+
                 # Construct absolute path from relative file_path
                 project_root = Path(tree_widget.project_path)
-                
+
                 # Handle both relative and absolute paths
                 if Path(file_path).is_absolute():
                     abs_path = Path(file_path)
                 else:
                     abs_path = project_root / file_path
-                
+
                 if not abs_path.exists():
                     print(f"⚠️ Thumbnail file not found: {abs_path}")
                     return False
-                
+
                 # Load image from disk
                 with open(abs_path, 'rb') as f:
                     image_data = f.read()
-                
+
                 pixmap = QPixmap()
                 pixmap.loadFromData(image_data)
-                
+
                 if not pixmap.isNull():
                     # Scale to thumbnail size (32x32 for better visibility)
                     scaled_pixmap = pixmap.scaled(
@@ -164,12 +164,12 @@ class AssetTreeItem(QTreeWidgetItem):
                     return True
                 else:
                     print(f"⚠️ Failed to load pixmap from: {abs_path}")
-                    
+
             except Exception as e:
                 print(f"⚠️ Failed to load sprite thumbnail: {e}")
-            
+
             return False
-    
+
     def load_object_sprite_thumbnail(self, sprite_name):
         """Load the assigned sprite as thumbnail icon for an object"""
         try:

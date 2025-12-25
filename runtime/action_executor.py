@@ -56,7 +56,7 @@ class ActionExecutor:
         """
         self.action_handlers[action_name] = handler_func
         print(f"  🔌 Registered custom action: {action_name}")
-    
+
     def execute_event(self, instance, event_name: str, events_data: Dict[str, Any]):
         """Execute all actions in an event"""
         if event_name not in events_data:
@@ -214,7 +214,7 @@ class ActionExecutor:
             i += 1
 
         return i - 1  # Return the index of the end_block
-    
+
     # Action name aliases for compatibility between different naming conventions
     ACTION_ALIASES = {
         "display_message": "show_message",
@@ -259,7 +259,7 @@ class ActionExecutor:
             return result  # Return result for conditional flow
         except AttributeError as e:
             print(f"❌ Attribute error in action {action_name}: {e}")
-            print(f"   Instance may be missing required attributes")
+            print("   Instance may be missing required attributes")
             return None
         except Exception as e:
             print(f"❌ Error executing action {action_name}: {e}")
@@ -306,14 +306,14 @@ class ActionExecutor:
                 return False
 
         return True
-    
+
     # ==================== GRID-BASED MOVEMENT ====================
-    
+
     def execute_move_grid_action(self, instance, parameters: Dict[str, Any]):
         """Execute grid-based movement (instant snap)"""
         direction = parameters.get("direction", "right")
         grid_size = int(parameters.get("grid_size", 32))
-        
+
         # Calculate movement based on direction
         dx, dy = 0, 0
         if direction == "right":
@@ -324,13 +324,13 @@ class ActionExecutor:
             dy = -grid_size
         elif direction == "down":
             dy = grid_size
-        
+
         # Store intended movement for collision checking by game_runner
         instance.intended_x = instance.x + dx
         instance.intended_y = instance.y + dy
-    
+
     # ==================== SPEED-BASED MOVEMENT ====================
-    
+
     def execute_set_hspeed_action(self, instance, parameters: Dict[str, Any]):
         """Set horizontal speed for smooth movement
 
@@ -372,7 +372,7 @@ class ActionExecutor:
         # Only print when speed changes
         if old_speed != speed:
             print(f"  🏃 {instance.object_name} vspeed: {old_speed} → {speed}")
-    
+
     def execute_stop_movement_action(self, instance, parameters: Dict[str, Any]):
         """Stop all movement by setting speeds to zero"""
         instance.hspeed = 0
@@ -609,7 +609,7 @@ class ActionExecutor:
                 if not direction_expr:
                     instance.hspeed = 0
                     instance.vspeed = 0
-                    print(f"   ➡️ Start Moving Direction: stopped (empty directions)")
+                    print("   ➡️ Start Moving Direction: stopped (empty directions)")
                     return
             # Pick random direction from list
             chosen = random.choice(directions)
@@ -649,7 +649,7 @@ class ActionExecutor:
         if direction == -1:
             instance.hspeed = 0
             instance.vspeed = 0
-            print(f"   ➡️ Start Moving Direction: stopped")
+            print("   ➡️ Start Moving Direction: stopped")
             return
 
         # Convert angle to radians (GameMaker uses degrees, 0° is right, 90° is up)
@@ -665,15 +665,15 @@ class ActionExecutor:
         print(f"      hspeed={instance.hspeed:.2f}, vspeed={instance.vspeed:.2f}")
 
     # ==================== GRID UTILITIES ====================
-    
+
     def execute_snap_to_grid_action(self, instance, parameters: Dict[str, Any]):
         """Snap instance to nearest grid position"""
         grid_size = int(parameters.get("grid_size", 32))
-        
+
         # Round to nearest grid position
         instance.x = round(instance.x / grid_size) * grid_size
         instance.y = round(instance.y / grid_size) * grid_size
-    
+
     def execute_if_on_grid_action(self, instance, parameters: Dict[str, Any]):
         """Check if instance is on grid - returns True/False for conditional flow
 
@@ -709,7 +709,7 @@ class ActionExecutor:
 
         # Return True/False for conditional flow (like other if_ actions)
         return on_grid
-    
+
     def execute_stop_if_no_keys_action(self, instance, parameters: Dict[str, Any]):
         """Stop movement when on grid (for precise grid-based movement)
 
@@ -839,7 +839,7 @@ class ActionExecutor:
                 instance, check_x, check_y, object_type, exclude_instance
             )
         else:
-            print(f"  ⚠️ if_collision: game_runner is None! Cannot check collisions.")
+            print("  ⚠️ if_collision: game_runner is None! Cannot check collisions.")
 
         # Apply NOT flag
         result = not has_collision if not_flag else has_collision
@@ -881,7 +881,7 @@ class ActionExecutor:
         not_flag = parameters.get("not_flag", False)
 
         if not object_type:
-            print(f"  ⚠️ if_object_exists: No object type specified")
+            print("  ⚠️ if_object_exists: No object type specified")
             return False
 
         # Count instances of the specified object type
@@ -900,22 +900,22 @@ class ActionExecutor:
         return result
 
     # ==================== GAME ACTIONS ====================
-    
+
     def execute_show_message_action(self, instance, parameters: Dict[str, Any]):
         """Execute show message action"""
         message = parameters.get("message", "")
         print(f"💬 MESSAGE: {message}")
-        
+
         # Store message for game runner to display
         if not hasattr(instance, 'pending_messages'):
             instance.pending_messages = []
         instance.pending_messages.append(message)
-    
+
     def execute_restart_room_action(self, instance, parameters: Dict[str, Any]):
         """Execute restart room action - resets current level"""
         print(f"🔄 Restart room requested by {instance.object_name}")
         instance.restart_room_flag = True
-    
+
     def execute_next_room_action(self, instance, parameters: Dict[str, Any]):
         """Execute next room action - advances to next level"""
         print(f"➡️  Next room requested by {instance.object_name}")
@@ -1055,7 +1055,7 @@ class ActionExecutor:
                 # Get stored collision speeds (if in a collision event)
                 collision_speeds = getattr(self, '_collision_speeds', {})
 
-                if scope == 'self' and instance:
+                if scope == 'sel' and instance:
                     # For collision events, use stored collision speed if available
                     if var_name == 'hspeed' and 'self_hspeed' in collision_speeds:
                         return collision_speeds['self_hspeed']
@@ -1219,7 +1219,7 @@ class ActionExecutor:
         scope, var_name = parts
         scope = scope.lower()
 
-        if scope == 'self' and instance:
+        if scope == 'sel' and instance:
             # For collision events, use stored collision speed if available
             collision_speeds = getattr(self, '_collision_speeds', {})
             if var_name == 'hspeed' and 'self_hspeed' in collision_speeds:
@@ -1251,12 +1251,12 @@ class ActionExecutor:
         Parameters:
             variable: Variable name
             value: Value to set (number, string, or expression)
-            scope: "self" for instance variable, "other" for collision other, "global" for global variable
+            scope: "sel" for instance variable, "other" for collision other, "global" for global variable
             relative: If True, add to current value instead of replacing
         """
         variable = parameters.get("variable", "")
         value_str = parameters.get("value", "0")
-        scope = parameters.get("scope", "self")
+        scope = parameters.get("scope", "sel")
         relative = parameters.get("relative", False)
 
         if not variable:
@@ -1300,7 +1300,7 @@ class ActionExecutor:
             setattr(other, variable, value)
             print(f"📝 Other instance variable '{variable}' = {value}")
 
-        else:  # scope == "self"
+        else:  # scope == "sel"
             if relative:
                 current = getattr(instance, variable, 0)
                 try:
@@ -1320,12 +1320,12 @@ class ActionExecutor:
         Parameters:
             variable: Variable name
             value: Value to compare against
-            scope: "self" for instance variable, "other" for collision other, "global" for global variable
+            scope: "sel" for instance variable, "other" for collision other, "global" for global variable
             operation: Comparison operator (equal, less, greater, etc.)
         """
         variable = parameters.get("variable", "")
         value_str = parameters.get("value", "0")
-        scope = parameters.get("scope", "self")
+        scope = parameters.get("scope", "sel")
         operation = parameters.get("operation", "equal")
 
         if not variable:
@@ -1344,7 +1344,7 @@ class ActionExecutor:
                 print("⚠️  test_variable: 'other' scope only available in collision events")
                 return False
             current = getattr(other, variable, 0)
-        else:  # scope == "self"
+        else:  # scope == "sel"
             current = getattr(instance, variable, 0)
 
         # Parse comparison value
@@ -1370,7 +1370,7 @@ class ActionExecutor:
             # Can't compare these types
             result = False
 
-        scope_label = "other" if scope == "other" else ("global" if scope == "global" else "self")
+        scope_label = "other" if scope == "other" else ("global" if scope == "global" else "sel")
         print(f"❓ Test {scope_label}.{variable} ({current}) {operation} {compare_value}: {result}")
         return result
 
@@ -1687,7 +1687,7 @@ class ActionExecutor:
         # Create execution environment
         exec_globals = {
             '__builtins__': __builtins__,
-            'self': instance,
+            'sel': instance,
             'game': self.game_runner,
             'instance': instance,  # Alternative name
             # Add common modules for convenience
@@ -1717,9 +1717,9 @@ class ActionExecutor:
         """Execute destroy instance action
 
         Parameters:
-            target: "self" or "other" - which instance to destroy
+            target: "sel" or "other" - which instance to destroy
         """
-        target = parameters.get("target", "self")
+        target = parameters.get("target", "sel")
 
         if target == "other" and hasattr(self, '_collision_other') and self._collision_other:
             # Destroy the other instance in a collision context
@@ -1826,11 +1826,11 @@ class ActionExecutor:
         Parameters:
             object: The new object type to change into
             perform_events: Whether to execute destroy/create events (default True)
-            target: "self" or "other" - which instance to change (default "self")
+            target: "sel" or "other" - which instance to change (default "sel")
         """
         new_object_name = parameters.get("object", "")
         perform_events = parameters.get("perform_events", True)
-        target = parameters.get("target", "self")
+        target = parameters.get("target", "sel")
 
         if not new_object_name:
             print("⚠️ change_instance: No object specified")
@@ -2042,9 +2042,9 @@ class ActionExecutor:
         parameters = action_data.get("parameters", {})
 
         if action_name == "destroy_instance":
-            target = parameters.get("target", "self")
+            target = parameters.get("target", "sel")
 
-            if target == "self":
+            if target == "sel":
                 instance.to_destroy = True
             elif target == "other":
                 other_instance.to_destroy = True

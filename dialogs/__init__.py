@@ -12,7 +12,7 @@ from .auto_save_dialog import AutoSaveSettingsDialog
 # Project dialogs
 from .project_dialogs import (
     ProjectSettingsDialog,
-    OpenProjectDialog, 
+    OpenProjectDialog,
     ExportProjectDialog
 )
 
@@ -22,7 +22,7 @@ from .import_dialogs import ImportAssetsDialog
 # Export everything
 __all__ = [
     'NewProjectDialog',
-    'AboutDialog', 
+    'AboutDialog',
     'PreferencesDialog',
     'AutoSaveSettingsDialog',
     'ProjectSettingsDialog',

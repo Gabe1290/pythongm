@@ -137,10 +137,10 @@ class GM80EventsPanel(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.current_events_data = {}
-        
+
         # Load Blockly configuration for event filtering
         self.blockly_config = load_config()
-        
+
         self.setup_ui()
 
     def setup_ui(self):
@@ -234,7 +234,7 @@ class GM80EventsPanel(QWidget):
                 if self.blockly_config.is_block_enabled(blockly_type):
                     return True
         return False
-    
+
     def is_event_enabled(self, event_name: str, category_id: str) -> bool:
         """Check if a specific event is enabled based on Blockly configuration"""
         # First check if there's a direct category mapping that enables ALL events in category
@@ -245,7 +245,7 @@ class GM80EventsPanel(QWidget):
 
         # Then check if this specific event is individually enabled
         return self.is_individual_event_enabled(event_name, category_id)
-    
+
     def reload_config(self):
         """Reload the Blockly configuration (call after config changes)"""
         self.blockly_config = load_config()
@@ -269,7 +269,7 @@ class GM80EventsPanel(QWidget):
     def show_add_event_menu(self):
         """Show organized event menu by GM8.0 categories (filtered by Blockly config)"""
         menu = QMenu(self)
-        
+
         # Track if any events are available
         has_enabled_events = False
 
@@ -278,7 +278,7 @@ class GM80EventsPanel(QWidget):
             # Skip category if not enabled
             if not self.is_event_category_enabled(category_id):
                 continue
-            
+
             has_enabled_events = True
             category_menu = menu.addMenu(f"{category_info['icon']} {category_info['name']}")
 
@@ -289,7 +289,7 @@ class GM80EventsPanel(QWidget):
                 # Check if this specific event is enabled
                 if not self.is_event_enabled(event.name, category_id):
                     continue
-                
+
                 # Special handling for dynamic events
                 if category_id == "collision":
                     self.add_collision_submenu(category_menu)
@@ -303,7 +303,7 @@ class GM80EventsPanel(QWidget):
                     action.triggered.connect(
                         lambda checked, e=event: self.add_event(e.name)
                     )
-        
+
         # Show warning if no events are enabled
         if not has_enabled_events:
             no_events = menu.addAction(self.tr("⚠️ No events enabled"))
@@ -335,7 +335,7 @@ class GM80EventsPanel(QWidget):
             # Check if this specific keyboard event is enabled
             if not self.is_event_enabled(event_def.name, "keyboard"):
                 continue
-            
+
             # Check if this event requires a key selector (has parameters)
             needs_key_selector = event_def.parameters and any(
                 p.get("type") == "key_selector" for p in event_def.parameters
@@ -875,7 +875,7 @@ class GM80EventsPanel(QWidget):
     def get_events_data(self) -> Dict[str, Any]:
         """Get current events data"""
         return self.current_events_data.copy()
-    
+
     def show_config_help(self):
         """Show help dialog about configuring enabled events"""
         QMessageBox.information(

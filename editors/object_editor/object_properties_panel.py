@@ -11,39 +11,39 @@ from PySide6.QtCore import Signal
 
 class ObjectPropertiesPanel(QGroupBox):
     """Panel for object properties (visible, persistent, solid)"""
-    
+
     property_changed = Signal(str, object)  # property_name, value (bool or str)
-    
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.available_sprites = {}
         self.setup_ui()
-    
+
     def setup_ui(self):
         """Setup the properties UI"""
         self.setTitle(self.tr("Object Properties"))
-        
+
         # Use vertical layout for better organization
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(5, 5, 5, 5)
         main_layout.setSpacing(5)
-        
+
         # Sprite selector (using form layout for label)
         sprite_layout = QFormLayout()
         sprite_layout.setContentsMargins(0, 0, 0, 0)
-        
+
         self.sprite_combo = QComboBox()
         self.sprite_combo.addItem("None")
         self.sprite_combo.setToolTip(self.tr("Sprite to display for this object"))
         self.sprite_combo.currentTextChanged.connect(self._on_sprite_changed)
-        
+
         sprite_layout.addRow(self.tr("Sprite:"), self.sprite_combo)
         main_layout.addLayout(sprite_layout)
-        
+
         # Checkboxes in horizontal layout
         checkbox_layout = QHBoxLayout()
         checkbox_layout.setContentsMargins(0, 0, 0, 0)
-        
+
         # Visible checkbox
         self.visible_checkbox = QCheckBox(self.tr("Visible"))
         self.visible_checkbox.setChecked(True)
@@ -52,7 +52,7 @@ class ObjectPropertiesPanel(QGroupBox):
             lambda: self.property_changed.emit('visible', self.visible_checkbox.isChecked())
         )
         checkbox_layout.addWidget(self.visible_checkbox)
-        
+
         # Persistent checkbox
         self.persistent_checkbox = QCheckBox(self.tr("Persistent"))
         self.persistent_checkbox.setChecked(False)
@@ -61,7 +61,7 @@ class ObjectPropertiesPanel(QGroupBox):
             lambda: self.property_changed.emit('persistent', self.persistent_checkbox.isChecked())
         )
         checkbox_layout.addWidget(self.persistent_checkbox)
-        
+
         # Solid checkbox
         self.solid_checkbox = QCheckBox(self.tr("Solid"))
         self.solid_checkbox.setChecked(False)
@@ -88,32 +88,32 @@ class ObjectPropertiesPanel(QGroupBox):
         view_code_layout.addStretch()
 
         main_layout.addLayout(view_code_layout)
-    
+
     def _on_sprite_changed(self, sprite_name: str):
         """Handle sprite selection change"""
         value = sprite_name if sprite_name != "None" else ''
         self.property_changed.emit('sprite', value)
-    
+
     def set_available_sprites(self, sprites: Dict[str, Any]):
         """Update available sprites in combo box"""
         self.available_sprites = sprites
-        
+
         # Block signals while updating
         self.sprite_combo.blockSignals(True)
-        
+
         current_selection = self.sprite_combo.currentText()
-        
+
         self.sprite_combo.clear()
         self.sprite_combo.addItem("None")
-        
+
         for sprite_name in sprites.keys():
             self.sprite_combo.addItem(sprite_name)
-        
+
         # Restore selection if it still exists
         index = self.sprite_combo.findText(current_selection)
         if index >= 0:
             self.sprite_combo.setCurrentIndex(index)
-        
+
         self.sprite_combo.blockSignals(False)
 
     def load_properties(self, data: Dict[str, Any]):
@@ -123,7 +123,7 @@ class ObjectPropertiesPanel(QGroupBox):
         self.visible_checkbox.blockSignals(True)
         self.persistent_checkbox.blockSignals(True)
         self.solid_checkbox.blockSignals(True)
-        
+
         # Load sprite
         sprite_name = data.get('sprite', '')
         if sprite_name:
@@ -134,17 +134,17 @@ class ObjectPropertiesPanel(QGroupBox):
                 self.sprite_combo.setCurrentIndex(0)  # "None"
         else:
             self.sprite_combo.setCurrentIndex(0)  # "None"
-        
+
         self.visible_checkbox.setChecked(data.get('visible', True))
         self.persistent_checkbox.setChecked(data.get('persistent', False))
         self.solid_checkbox.setChecked(data.get('solid', False))
-        
+
         # Unblock signals after loading
         self.sprite_combo.blockSignals(False)
         self.visible_checkbox.blockSignals(False)
         self.persistent_checkbox.blockSignals(False)
         self.solid_checkbox.blockSignals(False)
-    
+
     def get_properties(self) -> Dict[str, Any]:
         """Get current property values"""
         sprite_name = self.sprite_combo.currentText()

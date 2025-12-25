@@ -177,7 +177,7 @@ class LanguageManager:
         print(f"   App instance: {app}")
         if app:
             self._remove_all_translators(app)
-            print(f"   ✅ Removed old translators")
+            print("   ✅ Removed old translators")
 
         # Load new translation
         if language_code != 'en':  # English is the default, no translation needed
@@ -222,18 +222,18 @@ class LanguageManager:
                                     app.sendEvent(widget, QEvent(QEvent.Type.LanguageChange))
                                 except RuntimeError:
                                     pass  # Widget was deleted during iteration
-                        print(f"   🔄 Sent LanguageChange event to all widgets")
+                        print("   🔄 Sent LanguageChange event to all widgets")
 
                     self.current_language = language_code
                     Config.set('language', language_code)
                     print(f"   ✅ Language set to: {language_code}")
                     return True
                 else:
-                    print(f"   ❌ Failed to load any translation files")
+                    print("   ❌ Failed to load any translation files")
                     return False
             else:
                 print(f"   ❌ No translation files found for {language_code}")
-                print(f"Using English as fallback")
+                print("Using English as fallback")
                 # Still set the language code even if file doesn't exist
                 self.current_language = language_code
                 Config.set('language', language_code)
@@ -254,9 +254,9 @@ class LanguageManager:
                             app.sendEvent(widget, QEvent(QEvent.Type.LanguageChange))
                         except RuntimeError:
                             pass  # Widget was deleted during iteration
-                print(f"   🔄 Sent LanguageChange event to all widgets")
+                print("   🔄 Sent LanguageChange event to all widgets")
 
-            print(f"   ✅ Set to English")
+            print("   ✅ Set to English")
             return True
 
     def load_current_language(self):
@@ -264,13 +264,13 @@ class LanguageManager:
         print(f"🌐 load_current_language called, current: {self.current_language}")
 
         if self.current_language == 'en':
-            print(f"   ✅ Using English (built-in)")
+            print("   ✅ Using English (built-in)")
             return True
 
         # Force load the translator for current language
         app = QApplication.instance()
         if not app:
-            print(f"   ❌ No app instance")
+            print("   ❌ No app instance")
             return False
 
         translation_files = self._get_translation_files(self.current_language)
@@ -307,7 +307,7 @@ class LanguageManager:
 
             return True
         else:
-            print(f"   ❌ Failed to load any translation files")
+            print("   ❌ Failed to load any translation files")
             return False
 
     def get_translation_file_path(self, language_code: str) -> Path:

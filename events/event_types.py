@@ -18,7 +18,7 @@ class EventType:
     description: str
     category: str
     icon: Optional[str] = None
-    parameters: List[Any] = field(default_factory=list)  
+    parameters: List[Any] = field(default_factory=list)
 
 # Define available event types - EXPANDED SET WITH SMOOTH MOVEMENT
 EVENT_TYPES = {
@@ -31,7 +31,7 @@ EVENT_TYPES = {
         parameters=[]
     ),
     "step": EventType(
-        name="step", 
+        name="step",
         display_name="Step",
         description="Executed every frame (use for continuous checks)",
         icon="⭐",
@@ -40,7 +40,7 @@ EVENT_TYPES = {
     ),
     "destroy": EventType(
         name="destroy",
-        display_name="Destroy", 
+        display_name="Destroy",
         description="Executed when the object is destroyed",
         icon="💥",
         category="Object",

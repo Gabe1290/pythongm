@@ -20,7 +20,7 @@ from .ide_window import PyGameMakerIDE
 # Import event system components
 from .event_system import (
     EventSystem,
-    EventType, 
+    EventType,
     ActionCategory,
     ActionDefinition,
     EventAction,
@@ -39,7 +39,7 @@ __all__ = [
     'PyGameMakerIDE',
     'EventSystem',
     'EventType',
-    'ActionCategory', 
+    'ActionCategory',
     'ActionDefinition',
     'EventAction',
     'GameEvent',

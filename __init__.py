@@ -8,7 +8,7 @@ A GameMaker-style visual game development environment
 
 This package contains:
 - Core application logic
-- Asset management system  
+- Asset management system
 - Visual programming interface
 - Project management tools
 """

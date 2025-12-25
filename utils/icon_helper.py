@@ -10,19 +10,19 @@ from PySide6.QtGui import QIcon
 def get_standard_icon(icon_type):
     """
     Get a standard icon safely - COMPLETELY BULLETPROOF VERSION
-    
+
     Args:
         icon_type: Either a QStyle.StandardPixmap enum or an integer
-        
+
     Returns:
         QIcon: The requested icon or a default icon
     """
-    
+
     try:
         # If it's already the right type, use it directly
         if hasattr(icon_type, '__class__') and 'StandardPixmap' in str(icon_type.__class__):
             return QApplication.style().standardIcon(icon_type)
-        
+
         # If it's an integer, convert to enum safely
         if isinstance(icon_type, int):
             # Comprehensive icon mapping
@@ -50,20 +50,20 @@ def get_standard_icon(icon_type):
                 51: QStyle.StandardPixmap.SP_ArrowLeft,
                 52: QStyle.StandardPixmap.SP_ArrowRight,
             }
-            
+
             if icon_type in icon_map:
                 return QApplication.style().standardIcon(icon_map[icon_type])
             else:
                 # Default to file icon for unknown numbers
                 return QApplication.style().standardIcon(QStyle.StandardPixmap.SP_FileIcon)
-        
+
         # If it's a StandardPixmap enum, use it directly
         if isinstance(icon_type, QStyle.StandardPixmap):
             return QApplication.style().standardIcon(icon_type)
-        
+
         # Default fallback for any other type
         return QApplication.style().standardIcon(QStyle.StandardPixmap.SP_FileIcon)
-        
+
     except Exception as e:
         print(f"Warning: Icon helper error: {e}")
         # Ultimate fallback - create empty icon
@@ -78,7 +78,7 @@ def get_file_icon():
         return QIcon()
 
 def get_folder_icon():
-    """Get folder icon safely""" 
+    """Get folder icon safely"""
     try:
         return QApplication.style().standardIcon(QStyle.StandardPixmap.SP_DirClosedIcon)
     except Exception:
@@ -130,11 +130,11 @@ def get_info_icon():
 def safe_standard_icon_call(style_obj, icon_param):
     """
     Safely call standardIcon on any style object
-    
+
     Args:
         style_obj: QStyle object (from widget.style() or QApplication.style())
         icon_param: Icon parameter (int or StandardPixmap)
-    
+
     Returns:
         QIcon: Safe icon or empty icon
     """

@@ -8,18 +8,13 @@ Note: We use importlib to load config.py directly because:
 
 import pytest
 import json
-from pathlib import Path
 from unittest.mock import MagicMock
-import importlib.util
 
-# Get project root without adding it to sys.path (to avoid triggering __init__.py)
-project_root = Path(__file__).parent.parent.resolve()
+# Import helper from conftest for direct module loading
+from conftest import import_module_directly
 
-# Import Config directly from file
-config_path = project_root / "utils" / "config.py"
-spec = importlib.util.spec_from_file_location("config_module", str(config_path))
-config_module = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(config_module)
+# Import Config directly from file using conftest helper
+config_module = import_module_directly("utils/config.py")
 Config = config_module.Config
 
 

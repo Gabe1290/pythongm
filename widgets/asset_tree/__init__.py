@@ -35,12 +35,12 @@ __all__ = [
     'AssetTreeWidget',
     'AssetTreeItem',
     'AssetOperations',
-    
+
     # Dialogs
     'AssetRenameDialog',
-    'AssetPropertiesDialog', 
+    'AssetPropertiesDialog',
     'CreateAssetDialog',
-    
+
     # Common utility functions
     'validate_asset_name',
     'get_asset_icon_emoji',

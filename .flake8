@@ -1,0 +1,35 @@
+[flake8]
+# Max line length - be lenient for now
+max-line-length = 120
+
+# Ignore some less critical issues:
+# E501 - line too long (handled by max-line-length)
+# W503 - line break before binary operator (conflicts with PEP 8)
+# E203 - whitespace before ':' (conflicts with black formatting)
+ignore = W503, E203
+
+# Exclude generated files, build directories, and Dropbox conflict files
+exclude =
+    .git,
+    __pycache__,
+    build,
+    dist,
+    *.egg-info,
+    venv,
+    venv_py312,
+    .venv,
+    *conflicted copy*,
+    *conflicted*,
+    node_modules,
+    .mypy_cache,
+    .pytest_cache,
+    .cleanup_backup,
+    Projects,
+    docs/dev-notes/scripts
+
+# Per-file ignores for specific patterns
+per-file-ignores =
+    # Tests can have longer lines for readability
+    tests/*:E501
+    # __init__.py files often have unused imports for re-exporting
+    */__init__.py:F401

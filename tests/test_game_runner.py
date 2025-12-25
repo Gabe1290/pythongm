@@ -11,33 +11,18 @@ These tests focus on logic that can be tested without a pygame display:
 """
 
 import json
-import os
-import sys
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-# Set dummy video driver before importing pygame-dependent modules
-os.environ['SDL_VIDEODRIVER'] = 'dummy'
-os.environ['SDL_AUDIODRIVER'] = 'dummy'
-
-
-# Check if pygame is available
-HAS_PYGAME = False
-try:
-    import pygame
-    pygame.init()
-    HAS_PYGAME = True
-except ImportError:
-    HAS_PYGAME = False
-except Exception:
-    # pygame.error or other init errors
-    HAS_PYGAME = False
+# Import centralized dependency detection from conftest
+# Note: conftest.py already sets SDL_VIDEODRIVER and SDL_AUDIODRIVER before pygame import
+from conftest import skip_without_pygame
 
 # Skip all tests if pygame is not available
-pytestmark = pytest.mark.skipif(not HAS_PYGAME, reason="pygame not available or failed to initialize")
+pytestmark = skip_without_pygame
 
 
 class TestRectanglesOverlap:
@@ -330,7 +315,7 @@ class TestGameRoom:
         """Test spatial grid query"""
         with patch('runtime.game_runner.pygame'):
             with patch('runtime.game_runner.load_all_plugins'):
-                from runtime.game_runner import GameRoom, GameInstance
+                from runtime.game_runner import GameRoom
                 room_data = {
                     'width': 640,
                     'height': 480,

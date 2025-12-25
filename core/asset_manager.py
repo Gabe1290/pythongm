@@ -15,12 +15,12 @@ logger = logging.getLogger(__name__)
 
 
 class AssetManager(QObject):
-    
+
     asset_imported = Signal(str, str, dict)  # asset_type, asset_name, asset_data
     asset_deleted = Signal(str, str)  # asset_type, asset_name
     asset_updated = Signal(str, str, dict)  # asset_type, asset_name, asset_data
     status_changed = Signal(str)  # status_message
-    
+
     SUPPORTED_FORMATS = {
         "sprites": [".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tga", ".webp"],
         "sounds": [".wav", ".mp3", ".ogg", ".m4a", ".aac", ".flac"],
@@ -28,10 +28,10 @@ class AssetManager(QObject):
         "fonts": [".ttf", ".otf", ".woff", ".woff2"],
         "data": [".json", ".xml", ".txt", ".csv"]
     }
-    
+
     THUMBNAIL_SIZE = (64, 64)
     MAX_PREVIEW_SIZE = (256, 256)
-    
+
     def __init__(self, project_directory: Optional[Path] = None):
         super().__init__()
         # Don't default to cwd - only set project_directory if explicitly provided
@@ -55,7 +55,7 @@ class AssetManager(QObject):
         # Only create directories if a project directory was explicitly provided
         if self.project_directory:
             self.ensure_directories()
-    
+
     def set_project_directory(self, project_directory: Optional[Path]) -> None:
         """Set the project directory and reset caches"""
         if project_directory:
@@ -63,16 +63,16 @@ class AssetManager(QObject):
             self.ensure_directories()
         else:
             self.project_directory = None
-        
+
         self.assets_cache.clear()
         self.thumbnails_cache.clear()
-    
+
     def get_absolute_path(self, relative_path: str) -> Path:
         """Convert relative project path to absolute path"""
         if not self.project_directory:
             return Path(relative_path)  # Return as-is if no project directory
         return self.project_directory / relative_path
-    
+
     def get_relative_path(self, absolute_path: Path) -> str:
         """Convert absolute path to relative project path"""
         if not self.project_directory:
@@ -82,79 +82,79 @@ class AssetManager(QObject):
         except ValueError:
             # If path is not relative to project directory, return as-is
             return str(absolute_path)
-    
+
     def ensure_directories(self) -> None:
         """Create necessary asset directories in the project directory"""
         if not self.project_directory:
             return
-            
+
         directories = [
-            "sprites", "sounds", "backgrounds", "objects", 
+            "sprites", "sounds", "backgrounds", "objects",
             "rooms", "scripts", "fonts", "data", "thumbnails"
         ]
-        
+
         for directory in directories:
             (self.project_directory / directory).mkdir(exist_ok=True)
-    
+
     def get_supported_formats(self, asset_type: str) -> List[str]:
         """Get list of supported file formats for an asset type
-    
+
         Args:
             asset_type: Type of asset (sprites, sounds, backgrounds, etc.)
-            
+
         Returns:
             List[str]: List of supported file extensions
         """
         return self.SUPPORTED_FORMATS.get(asset_type, [])
-    
+
     def is_supported_format(self, file_path: Path, asset_type: str) -> bool:
         """Check if a file format is supported for an asset type
-    
+
         Args:
             file_path: Path to the file
             asset_type: Type of asset
-            
+
         Returns:
             bool: True if format is supported, False otherwise
         """
         supported = self.get_supported_formats(asset_type)
         return file_path.suffix.lower() in supported
-    
+
     def import_asset(self, file_path: Path, asset_type: str, asset_name: Optional[str] = None) -> Optional[Dict[str, Any]]:
         """Import an asset from an external file path to the project"""
         if not self.project_directory:
             self.status_changed.emit("No project directory set")
             return None
-            
+
         if not self.is_supported_format(file_path, asset_type):
             self.status_changed.emit(f"Unsupported file format: {file_path.suffix}")
             return None
-        
+
         try:
             if not asset_name:
                 asset_name = file_path.stem
-            
+
             asset_name = self.get_unique_asset_name(asset_name, asset_type)
-            
+
             asset_data = self._create_asset_data(file_path, asset_type, asset_name)
-            
+
             # Copy to project directory (store as relative path)
             relative_path = f"{asset_type}/{asset_name}{file_path.suffix}"
             dest_path = self.get_absolute_path(relative_path)
             shutil.copy2(file_path, dest_path)
-            
+
             asset_data["file_path"] = relative_path
-            
+
             if asset_type in ["sprites", "backgrounds"]:
                 thumbnail_path = self.generate_thumbnail(dest_path, asset_name)
                 if thumbnail_path:
                     asset_data["thumbnail"] = self.get_relative_path(thumbnail_path)
-            
+
             self.assets_cache.setdefault(asset_type, {})[asset_name] = asset_data
-            
+
             self.asset_imported.emit(asset_type, asset_name, asset_data)
             self.status_changed.emit(f"Imported {asset_name}")
-            
+
             return asset_data
 
         except Exception as e:
@@ -284,11 +284,11 @@ class AssetManager(QObject):
         self.status_changed.emit(f"Updated animation for {sprite_name}: {frames} frames")
 
         return sprite_data
-    
+
     def create_asset(self, asset_name: str, asset_type: str, **kwargs) -> Optional[Dict[str, Any]]:
         """Create a new asset (objects, rooms, scripts, etc.)"""
         asset_name = self.get_unique_asset_name(asset_name, asset_type)
-        
+
         asset_data = {
             "name": asset_name,
             "asset_type": asset_type,
@@ -297,7 +297,7 @@ class AssetManager(QObject):
             "imported": False,
             "file_path": "",
         }
-        
+
         if asset_type == "objects":
             asset_data.update({
                 "sprite": "",
@@ -329,16 +329,16 @@ class AssetManager(QObject):
                 "italic": False,
                 "charset": "ascii"
             })
-        
+
         asset_data.update(kwargs)
-        
+
         self.assets_cache.setdefault(asset_type, {})[asset_name] = asset_data
-        
+
         self.asset_imported.emit(asset_type, asset_name, asset_data)
         self.status_changed.emit(f"Created {asset_name}")
-        
+
         return asset_data
-    
+
     def delete_asset(self, asset_type: str, asset_name: str) -> bool:
         """Delete an asset and its associated files"""
         if not self.project_directory:
@@ -391,33 +391,33 @@ class AssetManager(QObject):
 
         if updated_objects:
             print(f"🔄 Cleared sprite reference from objects: {', '.join(updated_objects)}")
-    
+
     def rename_asset(self, asset_type: str, old_name: str, new_name: str) -> bool:
         """Rename an asset and update file paths"""
         if not self.project_directory:
             return False
-            
+
         if old_name == new_name:
             return True
-        
+
         # DEBUG: Check state before rename
         print(f"🔍 RENAME DEBUG: Attempting to rename {asset_type}")
         print(f"  Old name: {old_name}")
         print(f"  New name: {new_name}")
         print(f"  Cache before: {list(self.assets_cache.get(asset_type, {}).keys())}")
-        
+
         if self.asset_exists(asset_type, new_name):
             self.status_changed.emit(f"Asset {new_name} already exists")
             return False
-        
+
         try:
             asset_data = self.get_asset(asset_type, old_name)
             if not asset_data:
                 print(f"❌ Asset not found in cache: {old_name}")
                 return False
-            
+
             print(f"✅ Found asset data for {old_name}")
-            
+
             # Rename main file
             if asset_data.get("file_path"):
                 old_file_path = self.get_absolute_path(asset_data["file_path"])
@@ -426,7 +426,7 @@ class AssetManager(QObject):
                     old_file_path.rename(new_file_path)
                     asset_data["file_path"] = self.get_relative_path(new_file_path)
                     print(f"✅ Renamed file: {old_file_path.name} → {new_file_path.name}")
-                    
+
             # Rename thumbnail
             if asset_data.get("thumbnail"):
                 old_thumbnail_path = self.get_absolute_path(asset_data["thumbnail"])
@@ -434,28 +434,28 @@ class AssetManager(QObject):
                     new_thumbnail_path = old_thumbnail_path.parent / f"{new_name}_thumb.png"
                     old_thumbnail_path.rename(new_thumbnail_path)
                     asset_data["thumbnail"] = self.get_relative_path(new_thumbnail_path)
-            
+
             # Update asset data
             asset_data["name"] = new_name
             asset_data["modified"] = datetime.now().isoformat()
-            
+
             # CRITICAL: Update cache - DELETE old, ADD new
             if asset_type in self.assets_cache:
                 # Save the data first
                 updated_data = asset_data.copy()
-                
+
                 # Remove old key
                 if old_name in self.assets_cache[asset_type]:
                     del self.assets_cache[asset_type][old_name]
                     print(f"✅ Removed old key from cache: {old_name}")
-                
+
                 # Add new key
                 self.assets_cache[asset_type][new_name] = updated_data
                 print(f"✅ Added new key to cache: {new_name}")
-                
+
                 # Verify the update
                 print(f"  Cache after: {list(self.assets_cache.get(asset_type, {}).keys())}")
-            
+
             # Update references in other assets (e.g., objects using this sprite)
             self._update_asset_references(asset_type, old_name, new_name)
 
@@ -570,90 +570,90 @@ class AssetManager(QObject):
         """Create a copy of an existing asset"""
         if not self.project_directory:
             return None
-            
+
         original_asset = self.get_asset(asset_type, asset_name)
         if not original_asset:
             return None
-        
+
         try:
             new_name = self.get_unique_asset_name(f"{asset_name}_copy", asset_type)
-            
+
             # Copy asset data
             new_asset_data = original_asset.copy()
             new_asset_data["name"] = new_name
             new_asset_data["created"] = datetime.now().isoformat()
             new_asset_data["modified"] = datetime.now().isoformat()
-            
+
             # Copy main file
             if original_asset.get("file_path"):
                 original_file_path = self.get_absolute_path(original_asset["file_path"])
                 if original_file_path.exists():
                     new_file_path = original_file_path.parent / f"{new_name}{original_file_path.suffix}"
                     shutil.copy2(original_file_path, new_file_path)
-                    
+
                     new_asset_data["file_path"] = self.get_relative_path(new_file_path)
-                    
+
                     # Generate new thumbnail for image assets
                     if asset_type in ["sprites", "backgrounds"]:
                         thumbnail_path = self.generate_thumbnail(new_file_path, new_name)
                         if thumbnail_path:
                             new_asset_data["thumbnail"] = self.get_relative_path(thumbnail_path)
-            
+
             self.assets_cache.setdefault(asset_type, {})[new_name] = new_asset_data
-            
+
             self.asset_imported.emit(asset_type, new_name, new_asset_data)
             self.status_changed.emit(f"Duplicated {asset_name} as {new_name}")
-            
+
             return new_asset_data
-            
+
         except Exception as e:
             self.status_changed.emit(f"Failed to duplicate {asset_name}: {str(e)}")
             return None
-    
+
     def get_asset(self, asset_type: str, asset_name: str) -> Optional[Dict[str, Any]]:
         """Get asset data by type and name"""
         return self.assets_cache.get(asset_type, {}).get(asset_name)
-    
+
     def get_assets_by_type(self, asset_type: str) -> Dict[str, Dict[str, Any]]:
         """Get all assets of a specific type"""
         return self.assets_cache.get(asset_type, {})
-    
+
     def get_all_assets(self) -> Dict[str, Dict[str, Dict[str, Any]]]:
         """Get all assets"""
         return self.assets_cache.copy()
-    
+
     def asset_exists(self, asset_type: str, asset_name: str) -> bool:
         """Check if an asset exists"""
         return asset_name in self.assets_cache.get(asset_type, {})
-    
+
     def get_unique_asset_name(self, base_name: str, asset_type: str) -> str:
         """Generate a unique asset name by adding number suffix if needed"""
         if not self.asset_exists(asset_type, base_name):
             return base_name
-        
+
         counter = 1
         while self.asset_exists(asset_type, f"{base_name}_{counter}"):
             counter += 1
-        
+
         return f"{base_name}_{counter}"
-    
+
     def load_assets_from_project_data(self, project_data: Dict[str, Any]) -> None:
         """Load assets from project JSON data"""
         from collections import OrderedDict
-        
+
         self.assets_cache = {}
         assets = project_data.get("assets", {})
-        
+
         # Preserve order for ALL asset types using OrderedDict
         for asset_type, asset_dict in assets.items():
             # Use OrderedDict to preserve insertion order from JSON
             self.assets_cache[asset_type] = OrderedDict(asset_dict)
-        
+
         # Validate asset paths
         for asset_type, assets_of_type in self.assets_cache.items():
             for asset_name, asset_data in assets_of_type.items():
                 self._validate_asset_paths(asset_data)
-    
+
     def save_assets_to_project_data(self, project_data: Dict[str, Any]) -> None:
         """Save assets to project JSON data preserving order"""
         from collections import OrderedDict
@@ -674,7 +674,7 @@ class AssetManager(QObject):
                 assets_for_json[asset_type] = assets_of_type
 
         project_data["assets"] = assets_for_json
-    
+
     def generate_thumbnail(self, image_path: Path, asset_name: str,
                             sprite_data: Optional[Dict[str, Any]] = None) -> Optional[Path]:
         """Generate a thumbnail for an image asset.
@@ -725,15 +725,15 @@ class AssetManager(QObject):
         except Exception as e:
             self.status_changed.emit(f"Failed to generate thumbnail: {str(e)}")
             return None
-    
+
     def get_asset_info(self, asset_type: str, asset_name: str) -> Dict[str, Any]:
         """Get detailed information about an asset"""
         asset_data = self.get_asset(asset_type, asset_name)
         if not asset_data:
             return {}
-        
+
         info = asset_data.copy()
-        
+
         if asset_data.get("file_path"):
             file_path = self.get_absolute_path(asset_data["file_path"])
             if file_path.exists():
@@ -743,7 +743,7 @@ class AssetManager(QObject):
                     "file_modified": datetime.fromtimestamp(stat.st_mtime).isoformat(),
                     "absolute_path": str(file_path)
                 })
-                
+
                 if asset_type in ["sprites", "backgrounds"]:
                     try:
                         with Image.open(file_path) as img:
@@ -757,7 +757,7 @@ class AssetManager(QObject):
                         logger.warning("Could not read image %s: %s", file_path, e)
                     except Exception:
                         logger.exception("Unexpected error reading image info for %s", file_path)
-                
+
                 elif asset_type == "sounds":
                     # Only attempt to load sound metadata if audio backend initialized
                     if getattr(self, "audio_available", False):
@@ -776,16 +776,16 @@ class AssetManager(QObject):
                             "length": 0.0,
                             "audio_available": False
                         })
-        
+
         return info
-    
+
     def validate_project_assets(self) -> List[Dict[str, Any]]:
         """Validate all project assets and return list of issues"""
         issues = []
-        
+
         if not self.project_directory:
             return issues
-        
+
         for asset_type, assets in self.assets_cache.items():
             for asset_name, asset_data in assets.items():
                 if asset_data.get("file_path"):
@@ -808,7 +808,7 @@ class AssetManager(QObject):
                             "relative_path": asset_data["file_path"],
                             "message": f"Unsupported format: {file_path.suffix}"
                         })
-                
+
                 if asset_data.get("thumbnail"):
                     thumbnail_path = self.get_absolute_path(asset_data["thumbnail"])
                     if not thumbnail_path.exists():
@@ -820,54 +820,54 @@ class AssetManager(QObject):
                             "relative_path": asset_data["thumbnail"],
                             "message": f"Thumbnail not found: {asset_data['thumbnail']}"
                         })
-        
+
         return issues
-    
+
     def clean_unused_files(self) -> List[str]:
         """Remove files that are not referenced by any assets"""
         if not self.project_directory:
             return []
-            
+
         removed_files = []
         asset_directories = ["sprites", "sounds", "backgrounds", "thumbnails"]
-        
+
         for directory in asset_directories:
             dir_path = self.project_directory / directory
             if not dir_path.exists():
                 continue
-            
+
             for file_path in dir_path.iterdir():
                 if file_path.is_file():
                     relative_path = self.get_relative_path(file_path)
-                    
+
                     is_used = False
                     for asset_type, assets in self.assets_cache.items():
                         for asset_data in assets.values():
-                            if (asset_data.get("file_path") == relative_path or 
+                            if (asset_data.get("file_path") == relative_path or
                                 asset_data.get("thumbnail") == relative_path):
                                 is_used = True
                                 break
                         if is_used:
                             break
-                    
+
                     if not is_used:
                         try:
                             file_path.unlink()
                             removed_files.append(relative_path)
                         except Exception as e:
                             self.status_changed.emit(f"Failed to remove {file_path}: {str(e)}")
-        
+
         if removed_files:
             self.status_changed.emit(f"Removed {len(removed_files)} unused files")
-        
+
         return removed_files
-    
+
     def get_file_hash(self, file_path: Path) -> str:
             """Generate MD5 hash of a file
-            
+
             Args:
                 file_path: Path to the file to hash
-                
+
             Returns:
                 str: MD5 hash as hex string, or empty string if error
             """
@@ -889,7 +889,7 @@ class AssetManager(QObject):
             except Exception:
                 logger.exception("Unexpected error hashing file: %s", file_path)
                 return ""
-    
+
     def _create_asset_data(self, file_path: Path, asset_type: str, asset_name: str) -> Dict[str, Any]:
         """Create asset data dictionary from file"""
         asset_data = {
@@ -900,7 +900,7 @@ class AssetManager(QObject):
             "imported": True,
             "file_hash": self.get_file_hash(file_path)
         }
-        
+
         if asset_type == "sprites":
             try:
                 with Image.open(file_path) as img:
@@ -941,7 +941,7 @@ class AssetManager(QObject):
                     "speed": 10.0,
                     "animation_type": "single"
                 })
-        
+
         elif asset_type == "sounds":
             # Only attempt to load sound length if the audio subsystem is available
             if getattr(self, "audio_available", False):
@@ -975,7 +975,7 @@ class AssetManager(QObject):
                     "loop": False,
                     "audio_available": False
                 })
-        
+
         elif asset_type == "backgrounds":
             try:
                 with Image.open(file_path) as img:
@@ -1001,20 +1001,20 @@ class AssetManager(QObject):
                     "tile_horizontal": False,
                     "tile_vertical": False
                 })
-        
+
         return asset_data
-    
+
     def _validate_asset_paths(self, asset_data: Dict[str, Any]) -> None:
         """Validate that asset file paths exist and mark missing files"""
         if not self.project_directory:
             return
-            
+
         if asset_data.get("file_path"):
             file_path = self.get_absolute_path(asset_data["file_path"])
             if not file_path.exists():
                 asset_data["imported"] = False
                 asset_data["file_missing"] = True
-        
+
         if asset_data.get("thumbnail"):
             thumbnail_path = self.get_absolute_path(asset_data["thumbnail"])
             if not thumbnail_path.exists():

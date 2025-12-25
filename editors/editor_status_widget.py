@@ -10,27 +10,27 @@ from PySide6.QtGui import QFont
 
 class EditorStatusWidget(QWidget):
     """Widget showing editor status (saved/unsaved, auto-save state)"""
-    
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setup_ui()
-        
+
         # Animation timer for unsaved indicator
         self.blink_timer = QTimer()
         self.blink_timer.timeout.connect(self.toggle_blink)
         self.blink_state = False
-    
+
     def setup_ui(self):
         layout = QHBoxLayout(self)
         layout.setContentsMargins(5, 2, 5, 2)
         layout.setSpacing(10)
-        
+
         # Modified indicator
         self.modified_label = QLabel("●")
         self.modified_label.setFont(QFont("Arial", 14))
         self.modified_label.setVisible(False)
         layout.addWidget(self.modified_label)
-        
+
         # Status text
         self.status_label = QLabel(self.tr("Saved"))
         layout.addWidget(self.status_label)
@@ -41,11 +41,11 @@ class EditorStatusWidget(QWidget):
         self.auto_save_label = QLabel(self.tr("🔄 Auto-save: ON"))
         self.auto_save_label.setStyleSheet("color: #4CAF50;")
         layout.addWidget(self.auto_save_label)
-    
+
     def set_modified(self, modified: bool, auto_save_enabled: bool):
         """Update modified status"""
         self.modified_label.setVisible(modified)
-        
+
         if modified:
             if auto_save_enabled:
                 # Green bullet - will auto-save
@@ -62,7 +62,7 @@ class EditorStatusWidget(QWidget):
             self.blink_timer.stop()
             self.modified_label.setVisible(True)
             self.modified_label.setStyleSheet("color: #4CAF50;")
-    
+
     def set_auto_save_enabled(self, enabled: bool):
         """Update auto-save status"""
         if enabled:
@@ -71,7 +71,7 @@ class EditorStatusWidget(QWidget):
         else:
             self.auto_save_label.setText(self.tr("⏸️ Auto-save: OFF"))
             self.auto_save_label.setStyleSheet("color: #FF9800;")
-    
+
     def set_saving(self):
         """Show saving indicator"""
         self.status_label.setText(self.tr("Saving..."))
@@ -87,7 +87,7 @@ class EditorStatusWidget(QWidget):
 
         # Show checkmark briefly
         QTimer.singleShot(2000, lambda: self.status_label.setText(self.tr("Saved")))
-    
+
     def toggle_blink(self):
         """Toggle blink state for unsaved indicator"""
         self.blink_state = not self.blink_state

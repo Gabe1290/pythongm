@@ -16,76 +16,76 @@ class BuildspecGenerator:
     Generates build specification files for mobile platforms.
     Creates buildozer.spec for Android and configuration for iOS.
     """
-    
+
     def __init__(self, project_data: Dict[str, Any], output_path: Path):
         """
         Initialize the buildspec generator.
-        
+
         Args:
             project_data: Complete project data dictionary
             output_path: Path to the export output directory
         """
         self.project_data = project_data
         self.output_path = output_path
-        
+
         # Extract project metadata
         self.project_name = project_data.get("name", "KivyGame")
         self.settings = project_data.get("settings", {})
-        
+
         # Generate package name from project name
         self.package_name = self._generate_package_name(self.project_name)
-        
+
         logger.info("Buildspec generator initialized")
-    
+
     def generate_buildozer_spec(self) -> bool:
         """
         Generate buildozer.spec file for Android builds.
-        
+
         Returns:
             bool: True if generation successful
         """
         logger.info("Generating buildozer.spec for Android...")
-        
+
         try:
             spec_content = self._create_buildozer_spec_content()
-            
+
             spec_path = self.output_path / "buildozer.spec"
             spec_path.write_text(spec_content, encoding='utf-8')
-            
+
             logger.info(f"buildozer.spec created successfully: {spec_path}")
             return True
-            
+
         except Exception as e:
             logger.error(f"Failed to generate buildozer.spec: {e}", exc_info=True)
             return False
-    
+
     def generate_kivy_ios_config(self) -> bool:
         """
         Generate configuration files for iOS builds.
         Currently creates a basic setup guide.
-        
+
         Returns:
             bool: True if generation successful
         """
         logger.info("Generating iOS build configuration...")
-        
+
         try:
             config_content = self._create_ios_config_content()
-            
+
             config_path = self.output_path / "ios_build_guide.txt"
             config_path.write_text(config_content, encoding='utf-8')
-            
+
             logger.info(f"iOS build guide created: {config_path}")
             return True
-            
+
         except Exception as e:
             logger.error(f"Failed to generate iOS config: {e}", exc_info=True)
             return False
-    
+
     def _create_buildozer_spec_content(self) -> str:
         """
         Create the content for buildozer.spec file.
-        
+
         Returns:
             str: Complete buildozer.spec content
         """
@@ -93,7 +93,7 @@ class BuildspecGenerator:
         app_metadata = self._get_app_metadata()
         requirements = self._get_requirements_list()
         permissions = self._get_permissions_list()
-        
+
         spec_content = f"""[app]
 
 # (str) Title of your application
@@ -268,7 +268,7 @@ android.accept_sdk_license = False
 # android.add_resources = my_icons/all-inclusive.png:drawable/all_inclusive.png
 # 2) A directory, here  'legal_icons' must contain resources of one kind
 # android.add_resources = legal_icons:drawable
-# 3) A directory, here  'legal_resources' must contain one or more directories, 
+# 3) A directory, here  'legal_resources' must contain one or more directories,
 # each of a resource kind:  drawable, xml, etc...
 # android.add_resources = legal_resources
 #android.add_resources =
@@ -285,14 +285,14 @@ android.enable_androidx = True
 # android.add_compile_options = "sourceCompatibility = 1.8", "targetCompatibility = 1.8"
 
 # (list) Gradle repositories to add {{can be necessary for some android.gradle_dependencies}}
-# please enclose in double quotes 
+# please enclose in double quotes
 # e.g. android.gradle_repositories = "maven {{ url 'https://kotlin.bintray.com/ktor' }}"
 #android.add_gradle_repositories =
 
-# (list) packaging options to add 
+# (list) packaging options to add
 # see https://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.PackagingOptions.html
 # can be necessary to solve conflicts in gradle_dependencies
-# please enclose in double quotes 
+# please enclose in double quotes
 # e.g. android.add_packaging_options = "exclude 'META-INF/common.kotlin_module'", "exclude 'META-INF/*.kotlin_module'"
 #android.add_packaging_options =
 
@@ -513,19 +513,19 @@ warn_on_root = 1
 #
 #buildozer --profile demo android debug
 """
-        
+
         return spec_content
-    
+
     def _create_ios_config_content(self) -> str:
         """
         Create iOS build configuration guide.
-        
+
         Returns:
             str: iOS build guide content
         """
         app_metadata = self._get_app_metadata()
         requirements = self._get_requirements_list()
-        
+
         config_content = f"""iOS Build Configuration for {app_metadata['title']}
 {'='*60}
 
@@ -590,40 +590,40 @@ https://developer.apple.com/documentation/
 {'='*60}
 Generated by PyGameMaker IDE Kivy Exporter
 """
-        
+
         return config_content
-    
+
     def _generate_package_name(self, project_name: str) -> str:
         """
         Generate a valid package name from project name.
-        
+
         Args:
             project_name: Original project name
-            
+
         Returns:
             str: Valid package name (lowercase, alphanumeric + underscores)
         """
         # Convert to lowercase and replace spaces/special chars with underscores
         package_name = project_name.lower()
         package_name = ''.join(c if c.isalnum() else '_' for c in package_name)
-        
+
         # Remove leading/trailing underscores
         package_name = package_name.strip('_')
-        
+
         # Ensure it doesn't start with a number
         if package_name and package_name[0].isdigit():
             package_name = 'game_' + package_name
-        
+
         # Default if empty
         if not package_name:
             package_name = 'kivygame'
-        
+
         return package_name
-    
+
     def _get_app_metadata(self) -> Dict[str, str]:
         """
         Get application metadata for build configuration.
-        
+
         Returns:
             Dict containing app metadata
         """
@@ -635,11 +635,11 @@ Generated by PyGameMaker IDE Kivy Exporter
             'orientation': 'landscape',  # Can be: portrait, landscape, all
             'fullscreen': True,
         }
-    
+
     def _get_requirements_list(self) -> List[str]:
         """
         Get list of Python package requirements.
-        
+
         Returns:
             List of requirement strings
         """
@@ -648,13 +648,13 @@ Generated by PyGameMaker IDE Kivy Exporter
             'kivy',
             'pygame',
         ]
-        
+
         return requirements
-    
+
     def _get_permissions_list(self) -> List[str]:
         """
         Get list of Android permissions needed.
-        
+
         Returns:
             List of permission strings
         """
@@ -663,16 +663,16 @@ Generated by PyGameMaker IDE Kivy Exporter
             'WRITE_EXTERNAL_STORAGE',
             'READ_EXTERNAL_STORAGE',
         ]
-        
+
         return permissions
-    
+
     def _format_ios_requirements(self, requirements: List[str]) -> str:
         """
         Format requirements list for iOS build instructions.
-        
+
         Args:
             requirements: List of requirement strings
-            
+
         Returns:
             str: Formatted build commands
         """
@@ -680,7 +680,7 @@ Generated by PyGameMaker IDE Kivy Exporter
         for req in requirements:
             if req != 'python3':  # Python3 is already included
                 formatted.append(f"   toolchain build {req}")
-        
+
         return '\n'.join(formatted) if formatted else "   (No additional requirements)"
 
 

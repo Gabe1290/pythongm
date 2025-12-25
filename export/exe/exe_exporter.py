@@ -130,7 +130,7 @@ class ExeExporter(QObject):
             import traceback
             traceback.print_exc()
             return False
-    
+
     def _check_pyinstaller(self) -> bool:
         """Check if PyInstaller is installed"""
         try:
@@ -290,7 +290,7 @@ if __name__ == "__main__":
             f.write(script_content)
 
         return launcher_script
-    
+
     def _create_spec_file(self, build_dir: Path, launcher_script: Path) -> Path:
         """
         Create PyInstaller spec file for bundling Kivy game
@@ -434,7 +434,7 @@ exe = EXE(
             f.write(spec_content)
 
         return spec_file
-    
+
     def _run_pyinstaller(self, spec_file: Path) -> bool:
         """Run PyInstaller to build the executable"""
         try:
@@ -488,7 +488,7 @@ exe = EXE(
             import traceback
             traceback.print_exc()
             return False
-    
+
     def _copy_to_output(self, build_dir: Path):
         """Copy the built executable to the output directory"""
         import time
@@ -514,7 +514,7 @@ exe = EXE(
                         else:
                             print(f"Warning: Could not copy {item.name}: {e}")
                             print(f"The EXE is available at: {dist_dir / item.name}")
-    
+
     def _cleanup(self, build_dir: Path):
         """Clean up temporary build files"""
         try:

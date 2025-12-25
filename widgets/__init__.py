@@ -15,7 +15,7 @@ EventActionsPanel = EventActionWidget
 # Export all
 __all__ = [
     'EnhancedPropertiesPanel',
-    'EventActionWidget', 
+    'EventActionWidget',
     'WelcomeTab',
     'PropertiesPanel',  # Alias
     'EventActionsPanel',  # Alias

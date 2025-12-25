@@ -7,58 +7,20 @@ from pytest-qt for simulating user interactions.
 
 import pytest
 from pathlib import Path
-from unittest.mock import MagicMock
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Check if pytest-qt is available
-try:
-    import pytestqt  # noqa: F401
-    HAS_PYTEST_QT = True
-except ImportError:
-    HAS_PYTEST_QT = False
-
-# Check if PySide6 is available
-try:
-    from PySide6.QtWidgets import QApplication  # noqa: F401
-    HAS_PYSIDE6 = True
-except ImportError:
-    HAS_PYSIDE6 = False
+# Import centralized dependency detection from conftest
+from conftest import skip_without_qt_widgets
 
 # Skip all widget tests if pytest-qt or PySide6 is not available
 pytestmark = [
     pytest.mark.widget,
-    pytest.mark.skipif(not HAS_PYTEST_QT, reason="pytest-qt not installed"),
-    pytest.mark.skipif(not HAS_PYSIDE6, reason="PySide6 not installed"),
+    skip_without_qt_widgets,
 ]
 
-
-@pytest.fixture
-def mock_asset_manager():
-    """Create a mock asset manager"""
-    mock = MagicMock()
-    mock.get_asset.return_value = None
-    mock.assets_cache = {}
-    return mock
-
-
-@pytest.fixture
-def mock_project_manager():
-    """Create a mock project manager"""
-    mock = MagicMock()
-    mock.current_project_path = Path("/fake/project")
-    mock.current_project_data = {
-        "name": "Test Project",
-        "sprites": {},
-        "sounds": {},
-        "backgrounds": {},
-        "objects": {},
-        "rooms": {},
-        "fonts": {},
-        "data": {}
-    }
-    return mock
+# Note: mock_asset_manager and mock_project_manager fixtures are now in conftest.py
 
 
 class TestNewProjectDialog:

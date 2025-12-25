@@ -4,7 +4,7 @@ Asset Dialogs for PyGameMaker IDE
 UI dialogs for asset management operations
 """
 
-from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLineEdit, 
+from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLineEdit,
                                QPushButton, QLabel, QMessageBox)
 
 from .asset_utils import validate_asset_name
@@ -12,14 +12,14 @@ from .asset_utils import validate_asset_name
 
 class AssetRenameDialog(QDialog):
     """Dialog for renaming assets"""
-    
+
     def __init__(self, current_name: str, asset_type: str, parent=None):
         super().__init__(parent)
         self.current_name = current_name
         self.asset_type = asset_type
         self.new_name = None
         self.setup_ui()
-        
+
     def setup_ui(self):
         """Setup the rename dialog UI"""
         self.setWindowTitle(self.tr("Rename {0}").format(self.asset_type.title()))
@@ -55,30 +55,30 @@ class AssetRenameDialog(QDialog):
         self.rename_btn.clicked.connect(self.accept_rename)
         self.rename_btn.setDefault(True)
         button_layout.addWidget(self.rename_btn)
-        
+
         layout.addLayout(button_layout)
-        
+
         # Connect Enter key to rename
         self.name_edit.returnPressed.connect(self.accept_rename)
-        
+
         # Validate input as user types
         self.name_edit.textChanged.connect(self.validate_name)
-        
+
     def validate_name(self, text: str):
         """Validate the new name as user types"""
         # Remove leading/trailing whitespace
         text = text.strip()
-        
+
         # Use utility function for validation
         is_valid, error_msg = validate_asset_name(text)
-        
+
         # Check if name changed
         if text == self.current_name:
             self.rename_btn.setEnabled(False)
             return
-            
+
         self.rename_btn.setEnabled(is_valid)
-        
+
     def accept_rename(self):
         """Accept the rename if valid"""
         new_name = self.name_edit.text().strip()
@@ -89,23 +89,23 @@ class AssetRenameDialog(QDialog):
         if not is_valid:
             QMessageBox.warning(self, self.tr("Invalid Name"), error_msg)
             return
-            
+
         if new_name == self.current_name:
             self.reject()
             return
-            
+
         self.new_name = new_name
         self.accept()
 
 
 class AssetPropertiesDialog(QDialog):
     """Dialog for viewing/editing detailed asset properties"""
-    
+
     def __init__(self, asset_data: dict, parent=None):
         super().__init__(parent)
         self.asset_data = asset_data
         self.setup_ui()
-    
+
     def setup_ui(self):
         """Setup the properties dialog UI"""
         asset_name = self.asset_data.get('name', 'Unknown')
@@ -136,7 +136,7 @@ class AssetPropertiesDialog(QDialog):
         status_text = self.tr("Imported") if imported else self.tr("Not imported")
         status_label = QLabel(self.tr("Status: {0}").format(status_text))
         layout.addWidget(status_label)
-        
+
         # Import button for sprites without images
         if asset_type == "sprite" and not imported:
             import_button_layout = QHBoxLayout()
@@ -156,7 +156,7 @@ class AssetPropertiesDialog(QDialog):
         close_btn.clicked.connect(self.accept)
         close_btn.setDefault(True)
         button_layout.addWidget(close_btn)
-        
+
         layout.addStretch()
         layout.addLayout(button_layout)
 
@@ -222,13 +222,13 @@ class AssetPropertiesDialog(QDialog):
 
 class CreateAssetDialog(QDialog):
     """Dialog for creating new assets"""
-    
+
     def __init__(self, asset_type: str, parent=None):
         super().__init__(parent)
         self.asset_type = asset_type
         self.asset_name = None
         self.setup_ui()
-    
+
     def setup_ui(self):
         """Setup the create asset dialog UI"""
         self.setWindowTitle(self.tr("Create {0}").format(self.asset_type.title()))
@@ -264,25 +264,25 @@ class CreateAssetDialog(QDialog):
         self.create_btn.setDefault(True)
         self.create_btn.setEnabled(False)
         button_layout.addWidget(self.create_btn)
-        
+
         layout.addLayout(button_layout)
-        
+
         # Connect Enter key to create
         self.name_edit.returnPressed.connect(self.accept_create)
-        
+
         # Validate input as user types
         self.name_edit.textChanged.connect(self.validate_name)
-    
+
     def validate_name(self, text: str):
         """Validate the asset name as user types"""
         text = text.strip()
         is_valid, _ = validate_asset_name(text)
         self.create_btn.setEnabled(is_valid)
-    
+
     def accept_create(self):
         """Accept the create if valid"""
         name = self.name_edit.text().strip()
-        
+
         is_valid, error_msg = validate_asset_name(name)
 
         if not is_valid:

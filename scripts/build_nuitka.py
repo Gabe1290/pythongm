@@ -157,7 +157,7 @@ def main():
             else:
                 output = APP_NAME
         else:
-            output = f"main.dist/"
+            output = "main.dist/"
 
         print(f"Output: {output}")
 

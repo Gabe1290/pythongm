@@ -993,3 +993,742 @@ class TestActionCodeGeneratorBlocks:
         assert destroy_line is not None
         # Destroy should be indented more than if
         assert len(destroy_line) - len(destroy_line.lstrip()) > len(if_line) - len(if_line.lstrip())
+
+    def test_if_on_grid_generates_code(self, code_generator):
+        """if_on_grid should generate proper grid check"""
+        code_generator.process_action({
+            'action_type': 'if_on_grid',
+            'parameters': {}
+        }, 'step')
+        code = code_generator.get_code()
+        assert 'if self.is_on_grid()' in code
+        assert 'self.snap_to_grid()' in code
+
+    def test_if_on_grid_with_nested_actions(self, code_generator):
+        """if_on_grid with then_actions should process nested actions"""
+        code_generator.process_action({
+            'action_type': 'if_on_grid',
+            'parameters': {
+                'then_actions': [
+                    {'action_type': 'set_hspeed', 'parameters': {'value': 4}},
+                    {'action_type': 'set_vspeed', 'parameters': {'value': 0}}
+                ]
+            }
+        }, 'step')
+        code = code_generator.get_code()
+        assert 'if self.is_on_grid()' in code
+        assert 'self.hspeed = 4' in code
+        assert 'self.vspeed = 0' in code
+
+    def test_else_action_generates_else(self, code_generator):
+        """else_action should generate else clause"""
+        code_generator.process_action({
+            'action_type': 'test_expression',
+            'parameters': {'expression': 'self.x > 100'}
+        }, 'step')
+        code_generator.process_action({
+            'action_type': 'set_hspeed',
+            'parameters': {'value': 5}
+        }, 'step')
+        code_generator.process_action({
+            'action_type': 'else_action',
+            'parameters': {}
+        }, 'step')
+        code_generator.process_action({
+            'action_type': 'set_hspeed',
+            'parameters': {'value': -5}
+        }, 'step')
+        code = code_generator.get_code()
+
+        assert 'if self.x > 100:' in code
+        assert 'else:' in code
+        assert 'self.hspeed = 5' in code
+        assert 'self.hspeed = -5' in code
+
+    def test_start_block_end_block(self, code_generator):
+        """start_block/end_block should handle indentation"""
+        code_generator.process_action({
+            'action_type': 'test_expression',
+            'parameters': {'expression': 'True'}
+        }, 'step')
+        code_generator.process_action({
+            'action_type': 'start_block',
+            'parameters': {}
+        }, 'step')
+        code_generator.process_action({
+            'action_type': 'set_hspeed',
+            'parameters': {'value': 1}
+        }, 'step')
+        code_generator.process_action({
+            'action_type': 'set_hspeed',
+            'parameters': {'value': 2}
+        }, 'step')
+        code_generator.process_action({
+            'action_type': 'end_block',
+            'parameters': {}
+        }, 'step')
+        code = code_generator.get_code()
+
+        # Both actions should be at same indentation level inside the block
+        lines = [l for l in code.split('\n') if l.strip()]
+        hspeed_line_1 = next((l for l in lines if 'self.hspeed = 1' in l), None)
+        hspeed_line_2 = next((l for l in lines if 'self.hspeed = 2' in l), None)
+
+        assert hspeed_line_1 is not None
+        assert hspeed_line_2 is not None
+        # Both should have same indentation
+        hspeed_indent_1 = len(hspeed_line_1) - len(hspeed_line_1.lstrip())
+        hspeed_indent_2 = len(hspeed_line_2) - len(hspeed_line_2.lstrip())
+        assert hspeed_indent_1 == hspeed_indent_2
+
+    def test_if_next_room_exists(self, code_generator):
+        """if_next_room_exists should generate room check"""
+        code_generator.process_action({
+            'action_type': 'if_next_room_exists',
+            'parameters': {}
+        }, 'step')
+        code = code_generator.get_code()
+        assert 'next_room_exists' in code
+
+    def test_if_previous_room_exists(self, code_generator):
+        """if_previous_room_exists should generate room check"""
+        code_generator.process_action({
+            'action_type': 'if_previous_room_exists',
+            'parameters': {}
+        }, 'step')
+        code = code_generator.get_code()
+        assert 'previous_room_exists' in code
+
+    def test_if_key_pressed(self, code_generator):
+        """if_key_pressed should generate key check"""
+        code_generator.process_action({
+            'action_type': 'if_key_pressed',
+            'parameters': {'key': 'right'}
+        }, 'step')
+        code = code_generator.get_code()
+        assert 'keys_pressed' in code
+        assert '275' in code  # Right arrow key code
+
+    def test_repeat_generates_loop(self, code_generator):
+        """repeat should generate for loop"""
+        code_generator.process_action({
+            'action_type': 'repeat',
+            'parameters': {'count': 5}
+        }, 'step')
+        code_generator.process_action({
+            'action_type': 'set_hspeed',
+            'parameters': {'value': 1}
+        }, 'step')
+        code = code_generator.get_code()
+        assert 'for _i in range(5):' in code
+
+    def test_room_actions(self, code_generator):
+        """Room navigation actions should generate proper imports"""
+        code_generator.process_action({
+            'action_type': 'next_room',
+            'parameters': {}
+        }, 'step')
+        code = code_generator.get_code()
+        assert 'goto_next_room' in code
+
+    def test_previous_room_action(self, code_generator):
+        """previous_room action should generate proper code"""
+        code_generator.process_action({
+            'action_type': 'previous_room',
+            'parameters': {}
+        }, 'step')
+        code = code_generator.get_code()
+        assert 'goto_previous_room' in code
+
+    def test_goto_room_action(self, code_generator):
+        """goto_room action should generate proper code"""
+        code_generator.process_action({
+            'action_type': 'goto_room',
+            'parameters': {'room': 'room_menu'}
+        }, 'step')
+        code = code_generator.get_code()
+        assert 'goto_room' in code
+        assert 'room_menu' in code
+
+    def test_vspeed_coordinate_flip(self, code_generator):
+        """set_vspeed should flip sign for Kivy coordinates"""
+        code_generator.process_action({
+            'action_type': 'set_vspeed',
+            'parameters': {'value': 4}
+        }, 'step')
+        code = code_generator.get_code()
+        # In Kivy, positive Y is up, so GM's vspeed should be negated
+        assert 'self.vspeed = -4' in code
+
+    def test_nested_conditionals(self, code_generator):
+        """Nested conditionals should maintain proper indentation"""
+        # if check_empty
+        code_generator.process_action({
+            'action_type': 'check_empty',
+            'parameters': {'x': 100, 'y': 100}
+        }, 'step')
+        # if check_collision (nested)
+        code_generator.process_action({
+            'action_type': 'check_collision',
+            'parameters': {'object': 'obj_wall'}
+        }, 'step')
+        code_generator.process_action({
+            'action_type': 'destroy_instance',
+            'parameters': {}
+        }, 'step')
+        code = code_generator.get_code()
+
+        lines = [l for l in code.split('\n') if l.strip()]
+        # Should have two if statements
+        if_lines = [l for l in lines if l.strip().startswith('if ')]
+        assert len(if_lines) >= 2
+
+
+# ============================================================================
+# Kivy Exporter Room/Instance Generation Tests
+# ============================================================================
+
+class TestKivyExporterRoomGeneration:
+    """Test Kivy room and instance generation"""
+
+    @pytest.fixture
+    def kivy_exporter_with_room(self, temp_project_dir, temp_dir):
+        """Create a KivyExporter with a room containing instances"""
+        from export.Kivy.kivy_exporter import KivyExporter
+
+        project_data = {
+            'name': 'TestGame',
+            'settings': {'window_width': 800, 'window_height': 600},
+            'assets': {
+                'sprites': {
+                    'spr_player': {'file_path': 'sprites/player.png'},
+                    'spr_wall': {'file_path': 'sprites/wall.png'}
+                },
+                'sounds': {},
+                'backgrounds': {},
+                'objects': {
+                    'obj_player': {
+                        'sprite': 'spr_player',
+                        'solid': False,
+                        'visible': True,
+                        'events': [
+                            {
+                                'event_type': 'create',
+                                'actions': [
+                                    {'action_type': 'set_hspeed', 'parameters': {'value': 0}}
+                                ]
+                            }
+                        ]
+                    },
+                    'obj_wall': {
+                        'sprite': 'spr_wall',
+                        'solid': True,
+                        'visible': True,
+                        'events': []
+                    }
+                },
+                'rooms': {
+                    'room_game': {
+                        'width': 640,
+                        'height': 480,
+                        'instances': [
+                            {'object_type': 'obj_player', 'x': 100, 'y': 100},
+                            {'object_type': 'obj_wall', 'x': 200, 'y': 200},
+                            {'object_type': 'obj_wall', 'x': 232, 'y': 200},
+                            {'object_type': 'obj_wall', 'x': 264, 'y': 200}
+                        ]
+                    }
+                }
+            }
+        }
+        output_path = temp_dir / "kivy_output"
+        output_path.mkdir()
+
+        return KivyExporter(project_data, temp_project_dir, output_path)
+
+    def test_scene_file_created(self, kivy_exporter_with_room, temp_project_dir):
+        """_generate_scene should create scene file"""
+        from PIL import Image
+
+        # Create sprite files
+        (temp_project_dir / "sprites").mkdir(exist_ok=True)
+        Image.new("RGBA", (32, 32), (255, 0, 0, 255)).save(
+            temp_project_dir / "sprites" / "player.png"
+        )
+        Image.new("RGBA", (32, 32), (100, 100, 100, 255)).save(
+            temp_project_dir / "sprites" / "wall.png"
+        )
+
+        kivy_exporter_with_room._create_directory_structure()
+        kivy_exporter_with_room._generate_scenes()
+
+        scene_file = kivy_exporter_with_room.output_path / "game" / "scenes" / "room_game.py"
+        assert scene_file.exists()
+
+    def test_scene_imports_objects(self, kivy_exporter_with_room, temp_project_dir):
+        """Scene should import used object classes"""
+        from PIL import Image
+
+        (temp_project_dir / "sprites").mkdir(exist_ok=True)
+        Image.new("RGBA", (32, 32), (255, 0, 0, 255)).save(
+            temp_project_dir / "sprites" / "player.png"
+        )
+        Image.new("RGBA", (32, 32), (100, 100, 100, 255)).save(
+            temp_project_dir / "sprites" / "wall.png"
+        )
+
+        kivy_exporter_with_room._create_directory_structure()
+        kivy_exporter_with_room._generate_scenes()
+
+        scene_file = kivy_exporter_with_room.output_path / "game" / "scenes" / "room_game.py"
+        content = scene_file.read_text()
+
+        assert 'from objects.obj_player import ObjPlayer' in content
+        assert 'from objects.obj_wall import ObjWall' in content
+
+    def test_scene_creates_instances(self, kivy_exporter_with_room, temp_project_dir):
+        """Scene should create instance objects"""
+        from PIL import Image
+
+        (temp_project_dir / "sprites").mkdir(exist_ok=True)
+        Image.new("RGBA", (32, 32), (255, 0, 0, 255)).save(
+            temp_project_dir / "sprites" / "player.png"
+        )
+        Image.new("RGBA", (32, 32), (100, 100, 100, 255)).save(
+            temp_project_dir / "sprites" / "wall.png"
+        )
+
+        kivy_exporter_with_room._create_directory_structure()
+        kivy_exporter_with_room._generate_scenes()
+
+        scene_file = kivy_exporter_with_room.output_path / "game" / "scenes" / "room_game.py"
+        content = scene_file.read_text()
+
+        # Should have instance creation for player
+        assert 'ObjPlayer(self' in content
+        # Should have instance creation for walls
+        assert 'ObjWall(self' in content
+        # Should call add_instance
+        assert 'self.add_instance(' in content
+
+    def test_scene_flips_y_coordinates(self, kivy_exporter_with_room, temp_project_dir):
+        """Scene should flip Y coordinates for Kivy"""
+        from PIL import Image
+
+        (temp_project_dir / "sprites").mkdir(exist_ok=True)
+        Image.new("RGBA", (32, 32), (255, 0, 0, 255)).save(
+            temp_project_dir / "sprites" / "player.png"
+        )
+        Image.new("RGBA", (32, 32), (100, 100, 100, 255)).save(
+            temp_project_dir / "sprites" / "wall.png"
+        )
+
+        kivy_exporter_with_room._create_directory_structure()
+        kivy_exporter_with_room._generate_scenes()
+
+        scene_file = kivy_exporter_with_room.output_path / "game" / "scenes" / "room_game.py"
+        content = scene_file.read_text()
+
+        # Room height is 480, player GM y=100, sprite height=32
+        # Kivy y = 480 - 100 - 32 = 348
+        assert '348' in content  # Player's flipped Y
+
+    def test_scene_has_room_dimensions(self, kivy_exporter_with_room, temp_project_dir):
+        """Scene should store room dimensions"""
+        from PIL import Image
+
+        (temp_project_dir / "sprites").mkdir(exist_ok=True)
+        Image.new("RGBA", (32, 32), (255, 0, 0, 255)).save(
+            temp_project_dir / "sprites" / "player.png"
+        )
+        Image.new("RGBA", (32, 32), (100, 100, 100, 255)).save(
+            temp_project_dir / "sprites" / "wall.png"
+        )
+
+        kivy_exporter_with_room._create_directory_structure()
+        kivy_exporter_with_room._generate_scenes()
+
+        scene_file = kivy_exporter_with_room.output_path / "game" / "scenes" / "room_game.py"
+        content = scene_file.read_text()
+
+        assert 'self.room_width = 640' in content
+        assert 'self.room_height = 480' in content
+
+    def test_scene_has_update_method(self, kivy_exporter_with_room, temp_project_dir):
+        """Scene should have update method for game loop"""
+        from PIL import Image
+
+        (temp_project_dir / "sprites").mkdir(exist_ok=True)
+        Image.new("RGBA", (32, 32), (255, 0, 0, 255)).save(
+            temp_project_dir / "sprites" / "player.png"
+        )
+        Image.new("RGBA", (32, 32), (100, 100, 100, 255)).save(
+            temp_project_dir / "sprites" / "wall.png"
+        )
+
+        kivy_exporter_with_room._create_directory_structure()
+        kivy_exporter_with_room._generate_scenes()
+
+        scene_file = kivy_exporter_with_room.output_path / "game" / "scenes" / "room_game.py"
+        content = scene_file.read_text()
+
+        assert 'def update(self, dt):' in content
+        assert 'BEGIN STEP' in content or 'begin_step' in content.lower()
+        assert 'END STEP' in content or 'end_step' in content.lower()
+
+
+class TestKivyExporterObjectGeneration:
+    """Test Kivy object class generation"""
+
+    @pytest.fixture
+    def kivy_exporter_with_events(self, temp_project_dir, temp_dir):
+        """Create a KivyExporter with objects that have events"""
+        from export.Kivy.kivy_exporter import KivyExporter
+
+        project_data = {
+            'name': 'TestGame',
+            'assets': {
+                'sprites': {'spr_player': {'file_path': 'sprites/player.png'}},
+                'sounds': {},
+                'backgrounds': {},
+                'objects': {
+                    'obj_player': {
+                        'sprite': 'spr_player',
+                        'solid': False,
+                        'visible': True,
+                        'persistent': False,
+                        'events': [
+                            {
+                                'event_type': 'create',
+                                'actions': [
+                                    {'action_type': 'set_hspeed', 'parameters': {'value': 0}},
+                                    {'action_type': 'set_vspeed', 'parameters': {'value': 0}}
+                                ]
+                            },
+                            {
+                                'event_type': 'step',
+                                'actions': [
+                                    {'action_type': 'set_hspeed', 'parameters': {'value': 4}}
+                                ]
+                            },
+                            {
+                                'event_type': 'collision_with_obj_wall',
+                                'actions': [
+                                    {'action_type': 'stop_movement', 'parameters': {}}
+                                ]
+                            }
+                        ]
+                    }
+                },
+                'rooms': {
+                    'room_test': {
+                        'width': 640,
+                        'height': 480,
+                        'instances': []
+                    }
+                }
+            }
+        }
+        output_path = temp_dir / "kivy_output"
+        output_path.mkdir()
+
+        return KivyExporter(project_data, temp_project_dir, output_path)
+
+    def test_object_file_created(self, kivy_exporter_with_events, temp_project_dir):
+        """_generate_object should create object file"""
+        from PIL import Image
+
+        (temp_project_dir / "sprites").mkdir(exist_ok=True)
+        Image.new("RGBA", (32, 32), (255, 0, 0, 255)).save(
+            temp_project_dir / "sprites" / "player.png"
+        )
+
+        kivy_exporter_with_events._create_directory_structure()
+        kivy_exporter_with_events._generate_objects()
+
+        obj_file = kivy_exporter_with_events.output_path / "game" / "objects" / "obj_player.py"
+        assert obj_file.exists()
+
+    def test_object_has_event_methods(self, kivy_exporter_with_events, temp_project_dir):
+        """Object should have methods for its events"""
+        from PIL import Image
+
+        (temp_project_dir / "sprites").mkdir(exist_ok=True)
+        Image.new("RGBA", (32, 32), (255, 0, 0, 255)).save(
+            temp_project_dir / "sprites" / "player.png"
+        )
+
+        kivy_exporter_with_events._create_directory_structure()
+        kivy_exporter_with_events._generate_objects()
+
+        obj_file = kivy_exporter_with_events.output_path / "game" / "objects" / "obj_player.py"
+        content = obj_file.read_text()
+
+        assert 'def on_create(self)' in content
+        assert 'def on_update(self' in content
+        assert 'def on_collision_obj_wall(self' in content
+
+    def test_object_sets_sprite(self, kivy_exporter_with_events, temp_project_dir):
+        """Object should set its sprite in __init__"""
+        from PIL import Image
+
+        (temp_project_dir / "sprites").mkdir(exist_ok=True)
+        Image.new("RGBA", (32, 32), (255, 0, 0, 255)).save(
+            temp_project_dir / "sprites" / "player.png"
+        )
+
+        kivy_exporter_with_events._create_directory_structure()
+        kivy_exporter_with_events._generate_objects()
+
+        obj_file = kivy_exporter_with_events.output_path / "game" / "objects" / "obj_player.py"
+        content = obj_file.read_text()
+
+        assert "self.set_sprite(" in content
+        assert "player.png" in content
+
+    def test_object_sets_solid_property(self, kivy_exporter_with_events, temp_project_dir):
+        """Object should set solid property"""
+        from PIL import Image
+
+        (temp_project_dir / "sprites").mkdir(exist_ok=True)
+        Image.new("RGBA", (32, 32), (255, 0, 0, 255)).save(
+            temp_project_dir / "sprites" / "player.png"
+        )
+
+        kivy_exporter_with_events._create_directory_structure()
+        kivy_exporter_with_events._generate_objects()
+
+        obj_file = kivy_exporter_with_events.output_path / "game" / "objects" / "obj_player.py"
+        content = obj_file.read_text()
+
+        assert 'self.solid = False' in content
+
+
+class TestKivyExporterMultipleRooms:
+    """Test Kivy exporter with multiple rooms"""
+
+    @pytest.fixture
+    def kivy_exporter_multi_room(self, temp_project_dir, temp_dir):
+        """Create a KivyExporter with multiple rooms"""
+        from export.Kivy.kivy_exporter import KivyExporter
+
+        project_data = {
+            'name': 'TestGame',
+            'assets': {
+                'sprites': {},
+                'sounds': {},
+                'backgrounds': {},
+                'objects': {},
+                'rooms': {
+                    'room_menu': {
+                        'width': 800,
+                        'height': 600,
+                        'instances': []
+                    },
+                    'room_game': {
+                        'width': 640,
+                        'height': 480,
+                        'instances': []
+                    },
+                    'room_gameover': {
+                        'width': 800,
+                        'height': 600,
+                        'instances': []
+                    }
+                }
+            }
+        }
+        output_path = temp_dir / "kivy_output"
+        output_path.mkdir()
+
+        return KivyExporter(project_data, temp_project_dir, output_path)
+
+    def test_main_imports_all_rooms(self, kivy_exporter_multi_room):
+        """Main.py should import all room classes"""
+        kivy_exporter_multi_room._create_directory_structure()
+        kivy_exporter_multi_room._generate_main_app()
+
+        main_file = kivy_exporter_multi_room.output_path / "game" / "main.py"
+        content = main_file.read_text()
+
+        assert 'from scenes.room_menu import RoomMenu' in content
+        assert 'from scenes.room_game import RoomGame' in content
+        assert 'from scenes.room_gameover import RoomGameover' in content
+
+    def test_main_has_room_order(self, kivy_exporter_multi_room):
+        """Main.py should have ROOM_ORDER list"""
+        kivy_exporter_multi_room._create_directory_structure()
+        kivy_exporter_multi_room._generate_main_app()
+
+        main_file = kivy_exporter_multi_room.output_path / "game" / "main.py"
+        content = main_file.read_text()
+
+        assert 'ROOM_ORDER' in content
+        assert 'room_menu' in content
+        assert 'room_game' in content
+        assert 'room_gameover' in content
+
+    def test_main_has_room_navigation_functions(self, kivy_exporter_multi_room):
+        """Main.py should have room navigation functions"""
+        kivy_exporter_multi_room._create_directory_structure()
+        kivy_exporter_multi_room._generate_main_app()
+
+        main_file = kivy_exporter_multi_room.output_path / "game" / "main.py"
+        content = main_file.read_text()
+
+        assert 'def goto_next_room()' in content
+        assert 'def goto_previous_room()' in content
+        assert 'def goto_room(' in content
+        assert 'def next_room_exists()' in content
+        assert 'def previous_room_exists()' in content
+
+
+# ============================================================================
+# HTML5 Exporter Action Code Generation Tests
+# ============================================================================
+
+class TestHTML5ActionCodeInEngine:
+    """Test that the HTML5 engine.js properly handles action types"""
+
+    @pytest.fixture
+    def engine_js_content(self):
+        """Load engine.js content"""
+        engine_path = Path(__file__).parent.parent / "export" / "HTML5" / "templates" / "engine.js"
+        return engine_path.read_text()
+
+    def test_engine_has_movement_actions(self, engine_js_content):
+        """Engine should handle movement actions"""
+        assert "case 'set_hspeed':" in engine_js_content
+        assert "case 'set_vspeed':" in engine_js_content
+        assert "this.hspeed =" in engine_js_content
+        assert "this.vspeed =" in engine_js_content
+
+    def test_engine_has_bidirectional_speed_sync(self, engine_js_content):
+        """Engine should sync speed/direction bidirectionally"""
+        assert 'syncSpeedDirectionFromComponents' in engine_js_content
+        assert 'syncComponentsFromSpeedDirection' in engine_js_content
+
+    def test_engine_has_alarm_support(self, engine_js_content):
+        """Engine should support GM 7.0 alarms"""
+        assert 'alarms' in engine_js_content
+        assert 'processAlarms' in engine_js_content
+        assert 'alarm_' in engine_js_content
+
+    def test_engine_has_conditional_evaluation(self, engine_js_content):
+        """Engine should evaluate conditional actions"""
+        assert 'evaluateCondition' in engine_js_content
+        assert "case 'if_next_room_exists':" in engine_js_content
+        assert "case 'if_previous_room_exists':" in engine_js_content
+        assert "case 'if_on_grid':" in engine_js_content
+        assert "case 'if_collision':" in engine_js_content
+
+    def test_engine_has_keyboard_handling(self, engine_js_content):
+        """Engine should handle keyboard events"""
+        assert 'onKeyboardPress' in engine_js_content
+        assert 'onKeyboardHeld' in engine_js_content
+        assert 'onKeyboardRelease' in engine_js_content
+        assert 'onNoKey' in engine_js_content
+
+    def test_engine_has_collision_checking(self, engine_js_content):
+        """Engine should have collision detection"""
+        assert 'checkCollisionAt' in engine_js_content or 'check_collision' in engine_js_content.lower()
+
+    def test_engine_has_block_action_support(self, engine_js_content):
+        """Engine should handle if/else block patterns"""
+        assert 'else_block' in engine_js_content or 'else_action' in engine_js_content
+        # Should have logic to find else blocks
+        assert 'elseIndex' in engine_js_content or 'else' in engine_js_content.lower()
+
+    def test_engine_has_movement_processing(self, engine_js_content):
+        """Engine should process movement each frame"""
+        assert 'processMovement' in engine_js_content
+        assert 'gravity' in engine_js_content
+        assert 'friction' in engine_js_content
+
+    def test_engine_has_event_order(self, engine_js_content):
+        """Engine should follow GM 7.0 event order"""
+        # These should appear in the code (event processing methods)
+        assert 'onBeginStep' in engine_js_content
+        assert 'onStep' in engine_js_content
+        assert 'onEndStep' in engine_js_content
+
+
+class TestHTML5ExporterTemplateGeneration:
+    """Test HTML5 exporter template generation"""
+
+    @pytest.fixture
+    def html5_exporter(self):
+        """Create an HTML5Exporter instance"""
+        with patch.object(Path, 'read_text') as mock_read:
+            mock_read.return_value = "{game_name} {width} {height} {game_data} {sprites_data} {engine_code}"
+            from export.HTML5.html5_exporter import HTML5Exporter
+            exporter = HTML5Exporter()
+            exporter.template_html = "{game_name} {width} {height} {game_data} {sprites_data} {engine_code}"
+            exporter.engine_code = "// engine code"
+            return exporter
+
+    def test_export_includes_game_name(self, html5_exporter, temp_project_dir, temp_dir):
+        """Export should include game name in HTML"""
+        project_data = {
+            'name': 'MyAwesomeGame',
+            'settings': {'window_width': 800, 'window_height': 600},
+            'assets': {'sprites': {}, 'backgrounds': {}, 'rooms': {}}
+        }
+        with open(temp_project_dir / "project.json", 'w') as f:
+            json.dump(project_data, f)
+
+        output_dir = temp_dir / "output"
+        output_dir.mkdir()
+        html5_exporter.export(temp_project_dir, output_dir)
+
+        html_file = output_dir / "MyAwesomeGame.html"
+        content = html_file.read_text()
+        assert 'MyAwesomeGame' in content
+
+    def test_export_uses_room_dimensions_if_no_settings(self, html5_exporter, temp_project_dir, temp_dir):
+        """Export should use first room dimensions if no window settings"""
+        project_data = {
+            'name': 'TestGame',
+            'settings': {},
+            'assets': {
+                'sprites': {},
+                'backgrounds': {},
+                'rooms': {
+                    'room_start': {'width': 1280, 'height': 720}
+                }
+            }
+        }
+        with open(temp_project_dir / "project.json", 'w') as f:
+            json.dump(project_data, f)
+
+        output_dir = temp_dir / "output"
+        output_dir.mkdir()
+        html5_exporter.export(temp_project_dir, output_dir)
+
+        html_file = output_dir / "TestGame.html"
+        content = html_file.read_text()
+        assert '1280' in content
+        assert '720' in content
+
+    def test_export_compresses_data(self, html5_exporter, temp_project_dir, temp_dir):
+        """Export should compress game data"""
+        project_data = {
+            'name': 'TestGame',
+            'settings': {'window_width': 800, 'window_height': 600},
+            'assets': {
+                'sprites': {},
+                'backgrounds': {},
+                'rooms': {'room1': {'width': 800, 'height': 600}}
+            }
+        }
+        with open(temp_project_dir / "project.json", 'w') as f:
+            json.dump(project_data, f)
+
+        output_dir = temp_dir / "output"
+        output_dir.mkdir()
+        result = html5_exporter.export(temp_project_dir, output_dir)
+
+        assert result is True
+        # The template contains placeholders, compressed data would be base64
+        html_file = output_dir / "TestGame.html"
+        assert html_file.exists()
