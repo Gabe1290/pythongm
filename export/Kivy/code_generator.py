@@ -140,6 +140,40 @@ class ActionCodeGenerator:
             self.block_stack.append('if')
             return
 
+        elif action_type == 'if_collision_at':
+            # Check for collision at specified position (alias for if_collision)
+            obj_name = params.get('object', params.get('target', 'object'))
+            x = params.get('x', 'self.x')
+            y = params.get('y', 'self.y')
+            self.add_line(f"if self.check_collision_at({x}, {y}, '{obj_name}'):")
+            self.push_indent()
+            self.block_stack.append('if')
+            return
+
+        elif action_type == 'check_collision':
+            # Check for collision - if collision exists, execute then block
+            obj_name = params.get('object', params.get('target', 'object'))
+            x = params.get('x', 'self.x')
+            y = params.get('y', 'self.y')
+            self.add_line(f"if self.check_collision_at({x}, {y}, '{obj_name}'):")
+            self.push_indent()
+            self.block_stack.append('if')
+            return
+
+        elif action_type == 'check_empty':
+            # Check if position is collision-free
+            x = params.get('x', 'self.x')
+            y = params.get('y', 'self.y')
+            # relative parameter means offset from current position
+            relative = params.get('relative', False)
+            if relative:
+                self.add_line(f"if not self.check_collision_at(self.x + {x}, self.y + {y}):")
+            else:
+                self.add_line(f"if not self.check_collision_at({x}, {y}):")
+            self.push_indent()
+            self.block_stack.append('if')
+            return
+
         elif action_type == 'if_key_pressed':
             key = params.get('key', 'right')
             key_map = {'right': '275', 'left': '276', 'up': '273', 'down': '274'}
@@ -335,6 +369,55 @@ class ActionCodeGenerator:
         elif action_type == 'stop_if_no_keys':
             # This is handled as a block action in process_action, not here
             return None
+
+        elif action_type == 'move_grid':
+            # Grid-based movement - move one grid cell in specified direction
+            direction = params.get('direction', 'right')
+            grid_size = params.get('grid_size', 32)
+            dir_map = {
+                'right': (1, 0), 'left': (-1, 0),
+                'up': (0, 1), 'down': (0, -1),  # Kivy Y is inverted
+                'up-right': (1, 1), 'up-left': (-1, 1),
+                'down-right': (1, -1), 'down-left': (-1, -1)
+            }
+            dx, dy = dir_map.get(direction, (0, 0))
+            return f"self.x += {dx * grid_size}; self.y += {dy * grid_size}"
+
+        elif action_type == 'move_towards':
+            # Move towards a specific point at given speed
+            x = params.get('x', 0)
+            y = params.get('y', 0)
+            speed = params.get('speed', 4)
+            return f"""import math
+dx = {x} - self.x
+dy = {y} - self.y
+dist = math.sqrt(dx*dx + dy*dy)
+if dist > 0:
+    self.hspeed = (dx / dist) * {speed}
+    self.vspeed = (dy / dist) * {speed}"""
+
+        elif action_type == 'set_gravity':
+            # Set gravity direction and strength
+            direction = params.get('direction', 270)  # Default: down
+            gravity = params.get('gravity', params.get('value', 0.5))
+            return f"self.gravity = {gravity}; self.gravity_direction = {direction}"
+
+        elif action_type == 'set_friction':
+            # Set friction/deceleration
+            friction = params.get('friction', params.get('value', 0.1))
+            return f"self.friction = {friction}"
+
+        elif action_type == 'reverse_horizontal':
+            # Reverse horizontal direction
+            return "self.hspeed = -self.hspeed"
+
+        elif action_type == 'reverse_vertical':
+            # Reverse vertical direction
+            return "self.vspeed = -self.vspeed"
+
+        elif action_type == 'exit_event':
+            # Stop executing remaining actions in this event
+            return "return"
 
         # INSTANCE ACTIONS
         elif action_type == 'destroy_instance':

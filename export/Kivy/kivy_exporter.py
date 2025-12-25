@@ -1798,15 +1798,42 @@ class {class_name}(GameObject):
         elif action_type == 'check_empty':
             x = params.get('x', 'self.x')
             y = params.get('y', 'self.y')
-            only_solid = params.get('only_solid', True)
-            # This needs collision checking logic
-            return f"# TODO: check_empty at ({x}, {y}, solid={only_solid})"
+            relative = params.get('relative', False)
+            if relative:
+                return f"if not self.check_collision_at(self.x + {x}, self.y + {y}):"
+            else:
+                return f"if not self.check_collision_at({x}, {y}):"
 
         elif action_type == 'check_collision':
             x = params.get('x', 'self.x')
             y = params.get('y', 'self.y')
-            only_solid = params.get('only_solid', True)
-            return f"# TODO: check_collision at ({x}, {y}, solid={only_solid})"
+            obj = params.get('object', params.get('target', ''))
+            if obj:
+                return f"if self.check_collision_at({x}, {y}, '{obj}'):"
+            else:
+                return f"if self.check_collision_at({x}, {y}):"
+
+        elif action_type == 'if_collision_at':
+            x = params.get('x', 'self.x')
+            y = params.get('y', 'self.y')
+            obj = params.get('object', params.get('target', ''))
+            if obj:
+                return f"if self.check_collision_at({x}, {y}, '{obj}'):"
+            else:
+                return f"if self.check_collision_at({x}, {y}):"
+
+        elif action_type == 'move_grid':
+            # Grid-based movement - move one grid cell in specified direction
+            direction = params.get('direction', 'right')
+            grid_size = params.get('grid_size', 32)
+            dir_map = {
+                'right': (1, 0), 'left': (-1, 0),
+                'up': (0, 1), 'down': (0, -1),  # Kivy Y is inverted
+                'up-right': (1, 1), 'up-left': (-1, 1),
+                'down-right': (1, -1), 'down-left': (-1, -1)
+            }
+            dx, dy = dir_map.get(direction, (0, 0))
+            return f"self.x += {dx * grid_size}; self.y += {dy * grid_size}"
 
         elif action_type == 'stop_if_no_keys':
             # Check if no arrow keys are pressed
