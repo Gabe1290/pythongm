@@ -1055,7 +1055,7 @@ class ActionExecutor:
                 # Get stored collision speeds (if in a collision event)
                 collision_speeds = getattr(self, '_collision_speeds', {})
 
-                if scope == 'sel' and instance:
+                if scope == 'self' and instance:
                     # For collision events, use stored collision speed if available
                     if var_name == 'hspeed' and 'self_hspeed' in collision_speeds:
                         return collision_speeds['self_hspeed']
@@ -1219,7 +1219,7 @@ class ActionExecutor:
         scope, var_name = parts
         scope = scope.lower()
 
-        if scope == 'sel' and instance:
+        if scope == 'self' and instance:
             # For collision events, use stored collision speed if available
             collision_speeds = getattr(self, '_collision_speeds', {})
             if var_name == 'hspeed' and 'self_hspeed' in collision_speeds:

@@ -468,7 +468,7 @@ class GameApp(App):
         Window.clearcolor = (0, 0, 0, 1)
 
         # Create and return the starting scene
-        self.scene = {self._get_room_class_name(first_room)}()
+        self.scene = {first_room_class}()
         self.current_room_index = 0
 
         # PERFORMANCE FIX: Schedule game loop at 60 FPS for optimal performance
@@ -554,8 +554,20 @@ if __name__ == '__main__':
     GameApp().run()
 '''
 
+        # Format the template with actual values
+        first_room_class = self._get_room_class_name(first_room)
+        code_formatted = code.format(
+            room_width=room_width,
+            room_height=room_height,
+            room_imports_str=room_imports_str,
+            room_list_str=room_list_str,
+            room_mapping_str=room_mapping_str,
+            project_name=project_name,
+            first_room_class=first_room_class
+        )
+
         output_file = self.output_path / "game" / "main.py"
-        output_file.write_text(code)
+        output_file.write_text(code_formatted)
 
     def _generate_scenes(self):
         """Generate scene files for each room"""
@@ -823,8 +835,18 @@ class {class_name}(Widget):
         return False
 '''
 
+        # Format the template with actual values
+        code_formatted = code.format(
+            room_name=room_name,
+            class_name=class_name,
+            width=width,
+            height=height,
+            import_lines=import_lines,
+            instances_init=instances_init
+        )
+
         output_file = self.output_path / "game" / "scenes" / f"{room_name}.py"
-        output_file.write_text(code)
+        output_file.write_text(code_formatted)
 
     def _generate_objects(self):
         """Generate object class files"""
@@ -912,7 +934,7 @@ class GameObject(Widget):
         self._collision_other = None
 
         # Grid properties
-        self.grid_size = {self.grid_size}
+        self.grid_size = {grid_size}
 
         self.size = (32, 32)  # Default size
         self.pos = (x, y)
@@ -1229,8 +1251,11 @@ class GameObject(Widget):
         pass
 '''
 
+        # Format the template with actual values
+        code_formatted = code.format(grid_size=self.grid_size)
+
         output_file = self.output_path / "game" / "objects" / "base_object.py"
-        output_file.write_text(code)
+        output_file.write_text(code_formatted)
 
     def _generate_object(self, obj_name: str, obj_data: Dict):
         """Generate a specific object class"""
@@ -1313,6 +1338,12 @@ class GameObject(Widget):
 
         event_methods = self._generate_event_methods(obj_name, events)
 
+        # Generate sprite line
+        if sprite_path:
+            sprite_line = f"self.set_sprite('{sprite_path}')"
+        else:
+            sprite_line = "pass"
+
         code = '''#!/usr/bin/env python3
 """
 Object: {obj_name}
@@ -1334,13 +1365,24 @@ class {class_name}(GameObject):
         self.persistent = {persistent}
 
         # Set sprite
-        {"self.set_sprite('" + sprite_path + "')" if sprite_path else "pass"}
+        {sprite_line}
 
 {event_methods}
 '''
 
+        # Format the template with actual values
+        code_formatted = code.format(
+            obj_name=obj_name,
+            class_name=class_name,
+            solid=solid,
+            visible=visible,
+            persistent=persistent,
+            sprite_line=sprite_line,
+            event_methods=event_methods
+        )
+
         output_file = self.output_path / "game" / "objects" / f"{obj_name}.py"
-        output_file.write_text(code)
+        output_file.write_text(code_formatted)
 
     def _generate_event_methods(self, obj_name: str, events: List[Dict]) -> str:
         """Generate event handler methods from event data"""
@@ -1384,7 +1426,7 @@ class {class_name}(GameObject):
                 nokey_method = '''    def on_nokey(self):
         """Event handler: keyboard nokey (no keys pressed)"""
 {action_code}
-'''
+'''.format(action_code=action_code)
                 methods.append(nokey_method)
 
         # Generate other event handlers
@@ -1418,7 +1460,7 @@ class {class_name}(GameObject):
             method = '''    def {method_name}({params}):
         """Event handler: {event_type}"""
 {action_code}
-'''
+'''.format(method_name=method_name, params=params, event_type=event_type, action_code=action_code)
             methods.append(method)
 
         return '\n'.join(methods) if methods else "    pass\n"
@@ -1960,10 +2002,11 @@ def clear_image_cache():
     def _generate_buildozer_spec(self):
         """Generate buildozer.spec for Android builds"""
         project_name = self.project_data.get('name', 'MyGame')
+        package_name = project_name.lower().replace(' ', '')
 
         spec = '''[app]
 title = {project_name}
-package.name = {project_name.lower().replace(' ', '')}
+package.name = {package_name}
 package.domain = org.pygamemaker
 
 source.dir = ./game
@@ -1981,8 +2024,14 @@ log_level = 2
 warn_on_root = 1
 '''
 
+        # Format the template with actual values
+        spec_formatted = spec.format(
+            project_name=project_name,
+            package_name=package_name
+        )
+
         output_file = self.output_path / "buildozer.spec"
-        output_file.write_text(spec)
+        output_file.write_text(spec_formatted)
 
     def _generate_requirements(self):
         """Generate requirements.txt"""
@@ -2050,8 +2099,11 @@ This game was created with PyGameMaker IDE, a GameMaker-inspired
 game development environment for Python.
 '''
 
+        # Format the template with actual values
+        readme_formatted = readme.format(project_name=project_name)
+
         output_file = self.output_path / "README.md"
-        output_file.write_text(readme)
+        output_file.write_text(readme_formatted)
 
     def _get_room_class_name(self, room_name: str) -> str:
         """Convert room name to class name"""

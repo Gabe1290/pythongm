@@ -133,7 +133,7 @@ class HTML5Exporter:
                             mime_type = 'image/png'
                             if ext == '.jpg' or ext == '.jpeg':
                                 mime_type = 'image/jpeg'
-                            elif ext == '.gi':
+                            elif ext == '.gif':
                                 mime_type = 'image/gif'
 
                             encoded[sprite_name] = f"data:{mime_type};base64,{b64}"
