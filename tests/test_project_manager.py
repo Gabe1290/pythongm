@@ -10,6 +10,16 @@ from unittest.mock import MagicMock, patch
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+# Check if PySide6 is available (required for ProjectManager)
+try:
+    from PySide6.QtCore import QObject  # noqa: F401
+    HAS_PYSIDE6 = True
+except ImportError:
+    HAS_PYSIDE6 = False
+
+# Skip all tests if PySide6 is not available
+pytestmark = pytest.mark.skipif(not HAS_PYSIDE6, reason="PySide6 not installed")
+
 
 class TestProjectManagerCreation:
     """Test project creation functionality"""

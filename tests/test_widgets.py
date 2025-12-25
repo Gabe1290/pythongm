@@ -12,8 +12,26 @@ from unittest.mock import MagicMock
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Skip all widget tests if Qt is not available or display is not set
-pytestmark = pytest.mark.widget
+# Check if pytest-qt is available
+try:
+    import pytestqt  # noqa: F401
+    HAS_PYTEST_QT = True
+except ImportError:
+    HAS_PYTEST_QT = False
+
+# Check if PySide6 is available
+try:
+    from PySide6.QtWidgets import QApplication  # noqa: F401
+    HAS_PYSIDE6 = True
+except ImportError:
+    HAS_PYSIDE6 = False
+
+# Skip all widget tests if pytest-qt or PySide6 is not available
+pytestmark = [
+    pytest.mark.widget,
+    pytest.mark.skipif(not HAS_PYTEST_QT, reason="pytest-qt not installed"),
+    pytest.mark.skipif(not HAS_PYSIDE6, reason="PySide6 not installed"),
+]
 
 
 @pytest.fixture

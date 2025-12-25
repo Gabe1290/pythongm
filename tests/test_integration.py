@@ -17,8 +17,18 @@ from unittest.mock import MagicMock, patch
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Mark all tests as integration tests
-pytestmark = pytest.mark.integration
+# Check if PySide6 is available (required for ProjectManager/AssetManager)
+try:
+    from PySide6.QtCore import QObject  # noqa: F401
+    HAS_PYSIDE6 = True
+except ImportError:
+    HAS_PYSIDE6 = False
+
+# Mark all tests as integration tests and skip if PySide6 not available
+pytestmark = [
+    pytest.mark.integration,
+    pytest.mark.skipif(not HAS_PYSIDE6, reason="PySide6 not installed"),
+]
 
 
 class TestCompleteProjectWorkflow:
