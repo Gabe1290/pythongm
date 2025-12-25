@@ -89,6 +89,15 @@ def sample_project_data():
         "author": "Test Developer",
         "description": "A sample game for testing",
         "room_order": ["room_start", "room_game", "room_end"],
+        "assets": {
+            "sprites": {},
+            "sounds": {},
+            "backgrounds": {},
+            "objects": {},
+            "rooms": {},
+            "fonts": {},
+            "data": {}
+        },
         "game_settings": {
             "window_width": 1024,
             "window_height": 768,
