@@ -1,1 +1,0 @@
-# PyGameMaker IDE Test Suite
