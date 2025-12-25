@@ -48,7 +48,7 @@ jobs:
 
       - name: Run unit tests
         run: |
-          python -m pytest tests/test_config.py -v --tb=long
+          cd tests && python -m pytest test_config.py -v --tb=long
         env:
           SDL_AUDIODRIVER: dummy
           QT_QPA_PLATFORM: offscreen
@@ -84,8 +84,8 @@ jobs:
 
       - name: Run widget tests with Xvfb
         run: |
-          xvfb-run -a --server-args="-screen 0 1920x1080x24" \
-            pytest tests/test_widgets.py -v -m widget --tb=short -o qt_api=pyside6
+          cd tests && xvfb-run -a --server-args="-screen 0 1920x1080x24" \
+            pytest test_widgets.py -v -m widget --tb=short -o qt_api=pyside6
         env:
           QT_QPA_PLATFORM: offscreen
           SDL_AUDIODRIVER: dummy
@@ -122,8 +122,8 @@ jobs:
 
       - name: Run all tests with coverage
         run: |
-          xvfb-run -a --server-args="-screen 0 1920x1080x24" \
-            pytest tests/ -v --tb=short --cov=. --cov-report=xml --cov-report=term-missing -o qt_api=pyside6
+          cd tests && xvfb-run -a --server-args="-screen 0 1920x1080x24" \
+            pytest . -v --tb=short --cov=.. --cov-report=xml --cov-report=term-missing -o qt_api=pyside6
         env:
           QT_QPA_PLATFORM: offscreen
           SDL_AUDIODRIVER: dummy
@@ -163,7 +163,7 @@ jobs:
 
       - name: Run unit tests
         run: |
-          pytest tests/test_config.py -v --tb=short --ignore=tests/test_widgets.py
+          cd tests && pytest test_config.py -v --tb=short
         env:
           SDL_AUDIODRIVER: dummy
           QT_QPA_PLATFORM: offscreen
