@@ -10,7 +10,12 @@ from unittest.mock import patch, MagicMock
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from utils.config import Config
+# Import Config directly to avoid triggering utils/__init__.py
+import importlib.util
+spec = importlib.util.spec_from_file_location("config", Path(__file__).parent.parent / "utils" / "config.py")
+config_module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(config_module)
+Config = config_module.Config
 
 
 class TestConfigBasics:
