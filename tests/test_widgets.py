@@ -105,40 +105,31 @@ class TestPreferencesDialog:
 class TestAssetTreeWidget:
     """Test the Asset Tree widget"""
 
-    def test_tree_creates(self, qtbot, mock_asset_manager, mock_project_manager):
+    def test_tree_creates(self, qtbot):
         """AssetTreeWidget should create without errors"""
         from widgets.asset_tree.asset_tree_widget import AssetTreeWidget
 
-        tree = AssetTreeWidget(
-            asset_manager=mock_asset_manager,
-            project_manager=mock_project_manager
-        )
+        tree = AssetTreeWidget()
         qtbot.addWidget(tree)
 
         assert tree is not None
 
-    def test_tree_has_categories(self, qtbot, mock_asset_manager, mock_project_manager):
+    def test_tree_has_categories(self, qtbot):
         """AssetTreeWidget should have asset category items"""
         from widgets.asset_tree.asset_tree_widget import AssetTreeWidget
 
-        tree = AssetTreeWidget(
-            asset_manager=mock_asset_manager,
-            project_manager=mock_project_manager
-        )
+        tree = AssetTreeWidget()
         qtbot.addWidget(tree)
 
         # Should have top-level items for categories
         top_level_count = tree.topLevelItemCount()
         assert top_level_count > 0
 
-    def test_tree_category_names(self, qtbot, mock_asset_manager, mock_project_manager):
+    def test_tree_category_names(self, qtbot):
         """AssetTreeWidget should have standard category names"""
         from widgets.asset_tree.asset_tree_widget import AssetTreeWidget
 
-        tree = AssetTreeWidget(
-            asset_manager=mock_asset_manager,
-            project_manager=mock_project_manager
-        )
+        tree = AssetTreeWidget()
         qtbot.addWidget(tree)
 
         # Get all category names
@@ -183,19 +174,17 @@ class TestEnhancedPropertiesPanel:
         panel = EnhancedPropertiesPanel()
         qtbot.addWidget(panel)
 
-        # Mock sprite data
+        # Mock sprite data - set_asset takes a single dict with asset_type
         sprite_data = {
+            "asset_type": "sprites",
             "name": "test_sprite",
             "file_path": str(sample_sprite_path),
             "width": 32,
             "height": 32
         }
 
-        # Should have a method to display asset
-        if hasattr(panel, 'display_asset'):
-            panel.display_asset("sprites", "test_sprite", sprite_data)
-        elif hasattr(panel, 'set_asset'):
-            panel.set_asset("sprites", "test_sprite", sprite_data)
+        # set_asset takes a single dict argument
+        panel.set_asset(sprite_data)
 
 
 class TestRoomCanvas:
