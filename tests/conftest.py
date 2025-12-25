@@ -61,13 +61,22 @@ def temp_project_dir(temp_dir):
     for subdir in subdirs:
         (project_dir / subdir).mkdir()
 
-    # Create a minimal project.json
+    # Create a minimal project.json with required 'assets' key
     project_data = {
         "name": "Test Project",
         "version": "1.0.0",
         "author": "Test Author",
         "description": "A test project",
         "room_order": [],
+        "assets": {
+            "sprites": {},
+            "sounds": {},
+            "backgrounds": {},
+            "objects": {},
+            "rooms": {},
+            "fonts": {},
+            "data": {}
+        },
         "game_settings": {
             "window_width": 800,
             "window_height": 600,
