@@ -13,10 +13,10 @@ import shutil
 import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-
-# Ensure the project root is in the path
 import sys
-sys.path.insert(0, str(Path(__file__).parent.parent))
+
+# Note: We do NOT add project root to sys.path here because the root __init__.py
+# imports PySide6. Individual test files should import specific modules directly.
 
 
 # ============================================================================

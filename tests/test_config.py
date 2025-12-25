@@ -1,18 +1,23 @@
 """
 Tests for the Config class - configuration management
+
+Note: We use importlib to load config.py directly because:
+1. The root __init__.py imports PySide6 which may not be available
+2. utils/__init__.py imports PIL which adds unnecessary dependencies
 """
 
 import pytest
 import json
 from pathlib import Path
 from unittest.mock import patch, MagicMock
-
-import sys
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-# Import Config directly to avoid triggering utils/__init__.py
 import importlib.util
-spec = importlib.util.spec_from_file_location("config", Path(__file__).parent.parent / "utils" / "config.py")
+
+# Get project root without adding it to sys.path (to avoid triggering __init__.py)
+project_root = Path(__file__).parent.parent.resolve()
+
+# Import Config directly from file
+config_path = project_root / "utils" / "config.py"
+spec = importlib.util.spec_from_file_location("config_module", str(config_path))
 config_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(config_module)
 Config = config_module.Config
