@@ -48,9 +48,10 @@ jobs:
 
       - name: Run unit tests
         run: |
-          cd tests && python -m pytest test_config.py test_project_manager.py test_asset_manager.py test_integration.py test_exporters.py -v --tb=long
+          cd tests && python -m pytest test_config.py test_project_manager.py test_asset_manager.py test_integration.py test_exporters.py test_game_runner.py -v --tb=long
         env:
           SDL_AUDIODRIVER: dummy
+          SDL_VIDEODRIVER: dummy
           QT_QPA_PLATFORM: offscreen
 
   # ============================================================================
