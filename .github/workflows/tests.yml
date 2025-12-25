@@ -37,20 +37,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            libasound2-dev \
-            libegl1 \
-            libgl1-mesa-glx \
-            libxkbcommon0 \
-            libxcb-cursor0 \
-            libxcb-icccm4 \
-            libxcb-image0 \
-            libxcb-keysyms1 \
-            libxcb-randr0 \
-            libxcb-render-util0 \
-            libxcb-shape0 \
-            libxcb-xfixes0 \
-            libxcb-xinerama0
+          sudo apt-get install -y libasound2-dev || true
 
       - name: Install Python dependencies
         run: |
@@ -87,23 +74,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            libegl1 \
-            libgl1-mesa-glx \
-            libxkbcommon0 \
-            libxcb-cursor0 \
-            libxcb-icccm4 \
-            libxcb-image0 \
-            libxcb-keysyms1 \
-            libxcb-randr0 \
-            libxcb-render-util0 \
-            libxcb-shape0 \
-            libxcb-xfixes0 \
-            libxcb-xinerama0 \
-            xvfb \
-            libasound2-dev \
-            libpulse0 \
-            x11-utils
+          sudo apt-get install -y xvfb libegl1 libxkbcommon0 libasound2-dev || true
 
       - name: Install Python dependencies
         run: |
@@ -141,22 +112,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            libegl1 \
-            libgl1-mesa-glx \
-            libxkbcommon0 \
-            libxcb-cursor0 \
-            libxcb-icccm4 \
-            libxcb-image0 \
-            libxcb-keysyms1 \
-            libxcb-randr0 \
-            libxcb-render-util0 \
-            libxcb-shape0 \
-            libxcb-xfixes0 \
-            libxcb-xinerama0 \
-            xvfb \
-            libasound2-dev \
-            libpulse0
+          sudo apt-get install -y xvfb libegl1 libxkbcommon0 libasound2-dev || true
 
       - name: Install Python dependencies
         run: |
