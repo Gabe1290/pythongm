@@ -95,9 +95,17 @@ class EnhancedPropertiesPanel(QWidget):
     
     def set_room_editor_context(self, room_editor, room_name: str, room_properties: Dict[str, Any]):
         """Set context to show room properties from room editor"""
+        # CRITICAL: Disconnect from previous room editor BEFORE setting new reference
+        # This prevents changes from being sent to the wrong room editor
+        if self.room_property_changed.receivers() > 0:
+            try:
+                self.room_property_changed.disconnect()
+            except (RuntimeError, TypeError):
+                pass  # No previous connections
+
         self.current_room_editor = room_editor
         self.current_asset = ('room_editor', room_name, room_properties)
-        
+
         # Connect to preview update signal
         if hasattr(room_editor, 'room_preview_update_requested'):
             # Simple approach: just try to connect, Qt handles duplicates
@@ -106,25 +114,20 @@ class EnhancedPropertiesPanel(QWidget):
             except RuntimeError:
                 # Connection already exists, that's fine
                 pass
-        
-        # CRITICAL: Connect property changes to room editor
-        try:
-            # Disconnect any previous connections to avoid duplicates
-            if self.room_property_changed.receivers() > 0:
-                self.room_property_changed.disconnect()
-        except:
-            pass  # No previous connections, that's fine
-        
-        # Connect to room editor's update method
+
+        # Connect to the NEW room editor's update method
         self.room_property_changed.connect(room_editor.update_room_property_from_ide)
         print(f"✅ Connected properties panel to room editor: {room_name}")
-        
+
         # Update info
         self.name_label.setText(room_name)
         self.type_label.setText(self.tr("Room (Editor)"))
         self.status_label.setText(self.tr("Active"))
-        
+
+        # Block signals during initial setup to prevent spurious property changes
+        self._setting_room_properties = True
         self.show_room_properties(room_properties)
+        self._setting_room_properties = False
         
         # Generate initial preview
         QTimer.singleShot(100, self.update_room_preview)
@@ -278,11 +281,15 @@ class EnhancedPropertiesPanel(QWidget):
     
     def on_room_property_changed(self, property_name: str, value):
         """Handle room property changes and notify room editor"""
+        # Don't emit during initial property setup (prevents cross-contamination)
+        if getattr(self, '_setting_room_properties', False):
+            return
+
         print(f"Properties panel: {property_name} changed to {value}")
-        
+
         # Emit signal that room editor will catch
         self.room_property_changed.emit(property_name, value)
-        
+
         # Update preview after a short delay to allow room editor to process change
         QTimer.singleShot(100, self.update_room_preview)
     
