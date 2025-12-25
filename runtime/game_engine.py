@@ -429,9 +429,9 @@ class GameRunner:
                 else:
                     # Handle keyboard press events for all instances
                     self.handle_keyboard_press(event.key)
-        elif event.type == pygame.KEYUP:
-            # Handle keyboard release events
-            self.handle_keyboard_release(event.key)
+            elif event.type == pygame.KEYUP:
+                # Handle keyboard release events
+                self.handle_keyboard_release(event.key)
     
     def handle_keyboard_press(self, key):
         """Handle keyboard press event"""

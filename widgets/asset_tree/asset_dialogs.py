@@ -140,8 +140,6 @@ class AssetPropertiesDialog(QDialog):
         
         # Import button for sprites without images
         if asset_type == "sprite" and not imported:
-            context_menu.addSeparator()
-            
             import_button_layout = QHBoxLayout()
             self.import_btn = QPushButton(self.tr("📥 Import Image..."))
             self.import_btn.clicked.connect(self.import_sprite_image)

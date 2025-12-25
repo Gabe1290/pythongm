@@ -19,7 +19,7 @@ import pygame
 import json
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Any
 
 from runtime.action_executor import ActionExecutor
 from events.plugin_loader import load_all_plugins

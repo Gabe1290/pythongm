@@ -23,9 +23,22 @@ from .python_syntax_highlighter import PythonSyntaxHighlighter
 from .blockly_widget import BlocklyVisualProgrammingTab
 from ..object_editor_components import ActionListWidget, VisualScriptingArea
 # from visual_programming import (
-#     VisualCanvas, NodePalette, NodePropertiesPanel, 
+#     VisualCanvas, NodePalette, NodePropertiesPanel,
 #     create_node_from_type, VisualCodeGenerator
 # )
+
+# Stub functions for visual programming (not yet implemented)
+def create_node_from_type(type_id: str):
+    """Stub: Create a visual programming node from type ID"""
+    return None
+
+class VisualCodeGenerator:
+    """Stub: Visual programming code generator"""
+    def set_graph(self, nodes, connections):
+        pass
+    def generate(self):
+        return {}
+
 
 class ObjectChangeCommand(EditorUndoCommand):
     """Undo command for object changes"""
