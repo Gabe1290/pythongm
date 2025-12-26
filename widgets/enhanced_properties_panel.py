@@ -9,7 +9,9 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QGroupBox, QFormLay
 
 from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QPixmap
-from typing import Dict, Any
+from typing import Dict, Any, Optional
+
+from utils.room_preview_generator import RoomPreviewGenerator
 
 class EnhancedPropertiesPanel(QWidget):
     """Enhanced properties widget with grouped sections"""
@@ -48,6 +50,19 @@ class EnhancedPropertiesPanel(QWidget):
                     return str(project_file_path)
             parent = parent.parent()
 
+        return None
+
+    def get_project_data(self) -> Optional[Dict[str, Any]]:
+        """Get the current project data dictionary"""
+        parent = self.parent()
+        while parent:
+            if hasattr(parent, 'current_project_data') and parent.current_project_data:
+                return parent.current_project_data
+            if hasattr(parent, 'project_manager') and parent.project_manager:
+                pm_data = parent.project_manager.get_current_project_data()
+                if pm_data:
+                    return pm_data
+            parent = parent.parent()
         return None
 
     def setup_ui(self):
@@ -278,6 +293,58 @@ class EnhancedPropertiesPanel(QWidget):
             print(f"Error updating room preview: {e}")
             self.preview_label.setText(self.tr("Preview\nUpdate Error"))
 
+    def _generate_room_asset_preview(self, room_name: str, room_data: Dict[str, Any]):
+        """Generate a preview for a room asset (when not in editor)"""
+        try:
+            # Get project info
+            project_path = self.get_project_base_path()
+            project_data = self.get_project_data()
+
+            if not project_path or not project_data:
+                self.preview_label.setPixmap(QPixmap())
+                self.preview_label.setText(self.tr("Room: {0}\n{1} x {2}\n{3} instances").format(
+                    room_name,
+                    room_data.get('width', 800),
+                    room_data.get('height', 600),
+                    len(room_data.get('instances', []))
+                ))
+                return
+
+            # Get preview size
+            preview_size = self.preview_label.size()
+            max_width = max(200, preview_size.width() - 20)
+            max_height = max(150, preview_size.height() - 20)
+
+            # Generate preview using the utility
+            generator = RoomPreviewGenerator(project_path, project_data)
+            preview_pixmap = generator.generate_preview(room_data, max_width, max_height)
+
+            if not preview_pixmap.isNull():
+                self.preview_label.setPixmap(preview_pixmap)
+                self.preview_label.setText("")
+
+                # Set tooltip
+                instance_count = len(room_data.get('instances', []))
+                tooltip = self.tr("Room: {0}\n{1}x{2}\n{3} instances").format(
+                    room_name,
+                    room_data.get('width', 800),
+                    room_data.get('height', 600),
+                    instance_count
+                )
+                self.preview_label.setToolTip(tooltip)
+            else:
+                self.preview_label.setPixmap(QPixmap())
+                self.preview_label.setText(self.tr("Preview generation failed"))
+
+        except Exception as e:
+            print(f"Error generating room asset preview: {e}")
+            self.preview_label.setPixmap(QPixmap())
+            self.preview_label.setText(self.tr("Room: {0}\n{1} x {2}").format(
+                room_name,
+                room_data.get('width', 800),
+                room_data.get('height', 600)
+            ))
+
     def on_room_property_changed(self, property_name: str, value):
         """Handle room property changes and notify room editor"""
         # Don't emit during initial property setup (prevents cross-contamination)
@@ -352,16 +419,24 @@ class EnhancedPropertiesPanel(QWidget):
         # Add properties based on asset type
         if asset_type == 'rooms':
             width_edit = QLineEdit(str(asset_data.get('width', 800)))
+            width_edit.setReadOnly(True)
             height_edit = QLineEdit(str(asset_data.get('height', 600)))
+            height_edit.setReadOnly(True)
             bg_color_edit = QLineEdit(asset_data.get('background_color', '#87CEEB'))
+            bg_color_edit.setReadOnly(True)
+
+            # Instance count
+            instances = asset_data.get('instances', [])
+            instance_count_edit = QLineEdit(str(len(instances)))
+            instance_count_edit.setReadOnly(True)
 
             self.properties_layout.addRow(self.tr("Width:"), width_edit)
             self.properties_layout.addRow(self.tr("Height:"), height_edit)
             self.properties_layout.addRow(self.tr("Background:"), bg_color_edit)
+            self.properties_layout.addRow(self.tr("Instances:"), instance_count_edit)
 
-            # Update preview
-            self.preview_label.setPixmap(QPixmap())  # Clear pixmap
-            self.preview_label.setText(self.tr("Room: {0}\n{1} x {2}").format(asset_name, asset_data.get('width', 800), asset_data.get('height', 600)))
+            # Generate room preview
+            self._generate_room_asset_preview(asset_name, asset_data)
 
         elif asset_type == 'sprites':
             # Sprite properties
