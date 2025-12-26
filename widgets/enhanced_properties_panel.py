@@ -97,11 +97,10 @@ class EnhancedPropertiesPanel(QWidget):
         """Set context to show room properties from room editor"""
         # CRITICAL: Disconnect from previous room editor BEFORE setting new reference
         # This prevents changes from being sent to the wrong room editor
-        if self.room_property_changed.receivers() > 0:
-            try:
-                self.room_property_changed.disconnect()
-            except (RuntimeError, TypeError):
-                pass  # No previous connections
+        try:
+            self.room_property_changed.disconnect()
+        except (RuntimeError, TypeError):
+            pass  # No previous connections
 
         self.current_room_editor = room_editor
         self.current_asset = ('room_editor', room_name, room_properties)
