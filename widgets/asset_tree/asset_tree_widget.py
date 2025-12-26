@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 from typing import Dict, List, Optional
 from PySide6.QtWidgets import QTreeWidget, QMenu, QMessageBox
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QSize
 from PySide6.QtGui import QAction
 
 from .asset_tree_item import AssetTreeItem
@@ -66,6 +66,9 @@ class AssetTreeWidget(QTreeWidget):
 
         # Enable selection
         self.setSelectionMode(QTreeWidget.SelectionMode.SingleSelection)
+
+        # Set icon size to ensure all icons display at consistent 16x16 size
+        self.setIconSize(QSize(16, 16))
 
     def setup_categories(self):
         """Setup default asset categories with separators"""

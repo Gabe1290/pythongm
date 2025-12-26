@@ -68,27 +68,17 @@ class AssetTreeItem(QTreeWidgetItem):
 
                     # Add type-specific icon or thumbnail
                     if self.asset_type == "sprites":
-                        # Try to load pre-generated thumbnail (already has first frame for strips)
-                        thumb_path = self.asset_data.get('thumbnail', '')
+                        # Try to load from actual sprite file first (thumbnails have padding)
                         file_path = self.asset_data.get('file_path', '')
-                        if thumb_path and self.load_sprite_thumbnail(thumb_path):
-                            # Thumbnail loaded successfully, just show name
-                            self.setText(0, self.asset_name)
-                        elif file_path and self.load_sprite_thumbnail(file_path):
-                            # Fallback to full sprite if no thumbnail
+                        if file_path and self.load_sprite_thumbnail(file_path):
                             self.setText(0, self.asset_name)
                         else:
                             # Fallback to emoji if image loading fails
                             self.setText(0, f"🖼️ {self.asset_name}")
                     elif self.asset_type == "backgrounds":
-                        # Try to load pre-generated thumbnail first
-                        thumb_path = self.asset_data.get('thumbnail', '')
+                        # Try to load from actual file first
                         file_path = self.asset_data.get('file_path', '')
-                        if thumb_path and self.load_sprite_thumbnail(thumb_path):
-                            # Thumbnail loaded successfully, just show name
-                            self.setText(0, self.asset_name)
-                        elif file_path and self.load_sprite_thumbnail(file_path):
-                            # Fallback to full image if no thumbnail
+                        if file_path and self.load_sprite_thumbnail(file_path):
                             self.setText(0, self.asset_name)
                         else:
                             # Fallback to emoji if image loading fails
@@ -126,11 +116,16 @@ class AssetTreeItem(QTreeWidgetItem):
                 from PySide6.QtGui import QPixmap, QIcon
 
                 if not file_path:
+                    print(f"⚠️ SPRITE: no file_path provided")
                     return False
 
                 # Get the tree widget to access project path
                 tree_widget = self.treeWidget()
-                if not tree_widget or not hasattr(tree_widget, 'project_path'):
+                if not tree_widget:
+                    print(f"⚠️ SPRITE: no tree_widget for {file_path}")
+                    return False
+                if not hasattr(tree_widget, 'project_path'):
+                    print(f"⚠️ SPRITE: tree_widget has no project_path for {file_path}")
                     return False
 
                 # Construct absolute path from relative file_path
@@ -154,10 +149,10 @@ class AssetTreeItem(QTreeWidgetItem):
                 pixmap.loadFromData(image_data)
 
                 if not pixmap.isNull():
-                    # Scale to thumbnail size (32x32 for better visibility)
+                    # Scale to exact 16x16 size for tree widget
                     scaled_pixmap = pixmap.scaled(
-                        32, 32,
-                        Qt.AspectRatioMode.KeepAspectRatio,
+                        16, 16,
+                        Qt.AspectRatioMode.IgnoreAspectRatio,
                         Qt.TransformationMode.SmoothTransformation
                     )
                     self.setIcon(0, QIcon(scaled_pixmap))
@@ -236,10 +231,10 @@ class AssetTreeItem(QTreeWidgetItem):
                         # Extract first frame (top-left corner)
                         pixmap = pixmap.copy(0, 0, frame_width, frame_height)
 
-                # Scale to thumbnail size (32x32 for consistency)
+                # Scale to exact 16x16 size for tree widget
                 scaled_pixmap = pixmap.scaled(
-                    32, 32,
-                    Qt.AspectRatioMode.KeepAspectRatio,
+                    16, 16,
+                    Qt.AspectRatioMode.IgnoreAspectRatio,
                     Qt.TransformationMode.SmoothTransformation
                 )
                 self.setIcon(0, QIcon(scaled_pixmap))
