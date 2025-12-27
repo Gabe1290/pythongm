@@ -71,12 +71,24 @@ class LanguageManager:
         self.translators = []  # List of QTranslator instances for split files
         self.qt_translator = QTranslator()  # For Qt's built-in strings (Yes/No buttons, etc.)
         self.translations_dir = Path(__file__).parent.parent / 'translations'
+        self.flags_dir = Path(__file__).parent.parent / 'resources' / 'flags'
 
         # Note: Don't create translations directory - it should exist in the package
         # Creating it would leave empty dirs in temp extraction folder
 
         # Cache for discovered languages
         self._available_languages = None
+
+    def get_flag_icon_path(self, language_code: str) -> Path:
+        """Get the path to the flag icon for a language code"""
+        flag_path = self.flags_dir / f"{language_code}.png"
+        if flag_path.exists():
+            return flag_path
+        # Fallback to globe icon for unknown languages
+        globe_path = self.flags_dir / "globe.png"
+        if globe_path.exists():
+            return globe_path
+        return None
 
     def _discover_languages(self):
         """Auto-discover available languages from .qm files in translations folder"""

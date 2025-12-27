@@ -250,12 +250,12 @@ class PyGameMakerIDE(QMainWindow):
     def create_language_menu(self, menu):
         """Create language selection submenu"""
         from core.language_manager import get_language_manager
+        from PySide6.QtGui import QActionGroup, QIcon
 
         language_manager = get_language_manager()
         current_lang = language_manager.get_current_language()
 
         # Create action group for radio buttons
-        from PySide6.QtGui import QActionGroup
         self.language_action_group = QActionGroup(self)
         self.language_action_group.setExclusive(True)
 
@@ -271,7 +271,12 @@ class PyGameMakerIDE(QMainWindow):
 
         # Add available languages first
         for code, name, flag in available_languages:
-            action = menu.addAction(f"{flag} {name}")
+            # Try to load flag icon, fall back to emoji text
+            flag_path = language_manager.get_flag_icon_path(code)
+            if flag_path and flag_path.exists():
+                action = menu.addAction(QIcon(str(flag_path)), name)
+            else:
+                action = menu.addAction(f"{flag} {name}")
             action.setCheckable(True)
             action.setData(code)
 
@@ -288,7 +293,11 @@ class PyGameMakerIDE(QMainWindow):
 
             # Add unavailable languages
             for code, name, flag in unavailable_languages:
-                action = menu.addAction(f"{flag} {name} (translation not available)")
+                flag_path = language_manager.get_flag_icon_path(code)
+                if flag_path and flag_path.exists():
+                    action = menu.addAction(QIcon(str(flag_path)), f"{name} (translation not available)")
+                else:
+                    action = menu.addAction(f"{flag} {name} (translation not available)")
                 action.setCheckable(True)
                 action.setData(code)
 
