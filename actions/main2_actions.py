@@ -15,12 +15,12 @@ MAIN2_ACTIONS = {
         display_name="Set Sprite",
         category="appearance",
         tab="main2",
-        description="Change the sprite",
+        description="Change the sprite or modify current sprite animation",
         icon="🖼️",
         parameters=[
-            ActionParameter("sprite", "sprite", "Sprite", "New sprite to display"),
-            ActionParameter("subimage", "int", "Subimage", "Frame index", default=0),
-            ActionParameter("speed", "float", "Speed", "Animation speed", default=1.0)
+            ActionParameter("sprite", "sprite", "Sprite", "Sprite to use (<self> = current sprite)", default="<self>"),
+            ActionParameter("subimage", "int", "Subimage", "Frame index (-1 = don't change)", default=-1),
+            ActionParameter("speed", "float", "Speed", "Animation speed (-1 = don't change)", default=-1)
         ]
     ),
     "transform_sprite": ActionDefinition(

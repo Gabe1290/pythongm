@@ -153,6 +153,12 @@ class GM80ActionDialog(QDialog):
                 widget.addItem("all")
                 widget.insertSeparator(3)
 
+            # For sprite type in set_sprite action, add "<self>" option first
+            # This allows modifying animation properties of the current sprite
+            if param_type == "sprite" and self.action_def.name == "set_sprite":
+                widget.addItem("<self>")
+                widget.insertSeparator(1)
+
             # Get available resources from project
             resources = self.get_available_resources(param_type)
             print(f"🔧 Found {len(resources)} resources: {resources}")

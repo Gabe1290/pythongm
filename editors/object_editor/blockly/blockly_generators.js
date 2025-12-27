@@ -186,7 +186,13 @@ function generateActionCode(block) {
         case 'draw_circle':
             return {action: 'draw_circle', parameters: {x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0), radius: getInputValue(block, 'RADIUS', 50), color: getInputValue(block, 'COLOR', 'white')}};
         case 'set_sprite':
-            return {action: 'set_sprite', parameters: {sprite: block.getFieldValue('SPRITE')}};
+            var spriteMode = block.getFieldValue('SPRITE_MODE');
+            var spriteName = (spriteMode === '<self>') ? '<self>' : block.getFieldValue('SPRITE');
+            return {action: 'set_sprite', parameters: {
+                sprite: spriteName,
+                subimage: getInputValue(block, 'SUBIMAGE', -1),
+                speed: getInputValue(block, 'SPEED', -1)
+            }};
         case 'set_alpha':
             return {action: 'set_alpha', parameters: {alpha: getInputValue(block, 'ALPHA', 1.0)}};
         case 'set_gravity':

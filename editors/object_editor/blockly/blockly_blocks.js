@@ -519,11 +519,32 @@ Blockly.Blocks['set_sprite'] = {
     init: function() {
         this.appendDummyInput()
             .appendField("Set sprite to")
+            .appendField(new Blockly.FieldDropdown([
+                ["<self> (current)", "<self>"],
+                ["other...", "other"]
+            ], this.validateSprite.bind(this)), "SPRITE_MODE");
+        this.appendDummyInput("SPRITE_NAME_INPUT")
             .appendField(new Blockly.FieldTextInput("spr_player"), "SPRITE");
+        this.appendValueInput("SUBIMAGE")
+            .setCheck("Number")
+            .appendField("frame:");
+        this.appendValueInput("SPEED")
+            .setCheck("Number")
+            .appendField("speed:");
+        this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#9B59B6");
-        this.setTooltip("Change the sprite");
+        this.setTooltip("Change the sprite or modify current sprite animation. Use <self> to modify the current sprite's animation.");
+        // Hide sprite name input initially since default is <self>
+        this.getInput("SPRITE_NAME_INPUT").setVisible(false);
+    },
+    validateSprite: function(newValue) {
+        var spriteInput = this.getInput("SPRITE_NAME_INPUT");
+        if (spriteInput) {
+            spriteInput.setVisible(newValue === "other");
+        }
+        return newValue;
     }
 };
 

@@ -1929,6 +1929,58 @@ class ActionExecutor:
         instance.image_speed = 1.0
         print(f"▶️ Started animation for {instance.object_name}")
 
+    def execute_set_sprite_action(self, instance, parameters: Dict[str, Any]):
+        """Set the sprite for an instance or modify current sprite animation
+
+        Parameters:
+            sprite: Sprite name to use, or "<self>" to keep current sprite
+            subimage: Frame index to set (-1 = don't change)
+            speed: Animation speed to set (-1 = don't change)
+
+        When sprite is "<self>", only the animation properties (subimage, speed)
+        are modified without changing the sprite. This allows stopping/starting
+        animation on the current sprite.
+        """
+        sprite_name = parameters.get("sprite", "<self>")
+        subimage = parameters.get("subimage", -1)
+        speed = parameters.get("speed", -1)
+
+        # Parse values (can be expressions)
+        try:
+            subimage = int(self._parse_value(str(subimage), instance))
+        except (ValueError, TypeError):
+            subimage = -1
+
+        try:
+            speed = float(self._parse_value(str(speed), instance))
+        except (ValueError, TypeError):
+            speed = -1
+
+        # Handle sprite change (unless <self>)
+        if sprite_name != "<self>" and sprite_name:
+            if self.game_runner and sprite_name in self.game_runner.sprites:
+                instance.set_sprite(self.game_runner.sprites[sprite_name])
+                print(f"🖼️ Set sprite to '{sprite_name}' for {instance.object_name}")
+            else:
+                print(f"⚠️ set_sprite: Sprite '{sprite_name}' not found")
+
+        # Handle subimage (frame index)
+        if subimage >= 0:
+            instance.image_index = float(subimage)
+            print(f"🎬 Set image_index to {subimage} for {instance.object_name}")
+
+        # Handle animation speed (only print when value changes)
+        if speed >= 0:
+            old_speed = getattr(instance, 'image_speed', 1.0)
+            if old_speed != speed:
+                instance.image_speed = speed
+                if speed == 0:
+                    print(f"⏸️ Stopped animation for {instance.object_name}")
+                else:
+                    print(f"⏩ Set image_speed to {speed} for {instance.object_name}")
+            else:
+                instance.image_speed = speed  # Still set it, just don't print
+
     def execute_collision_event(self, instance, event_name: str, events_data: Dict[str, Any], other_instance, collision_speeds=None):
         """Execute collision event with context about the other instance
 

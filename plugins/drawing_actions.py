@@ -128,7 +128,7 @@ PLUGIN_ACTIONS = {
     "set_sprite": ActionType(
         name="set_sprite",
         display_name="Set Sprite",
-        description="Change the sprite of this instance",
+        description="Change the sprite or modify current sprite animation",
         category="Drawing",
         icon="🖼️",
         parameters=[
@@ -136,8 +136,22 @@ PLUGIN_ACTIONS = {
                 name="sprite",
                 display_name="Sprite",
                 param_type="sprite",
-                default_value="",
-                description="Sprite to use"
+                default_value="<self>",
+                description="Sprite to use (<self> = current sprite)"
+            ),
+            ActionParameter(
+                name="subimage",
+                display_name="Subimage",
+                param_type="number",
+                default_value=-1,
+                description="Frame index (-1 = don't change)"
+            ),
+            ActionParameter(
+                name="speed",
+                display_name="Speed",
+                param_type="float",
+                default_value=-1,
+                description="Animation speed (-1 = don't change)"
             )
         ]
     ),
@@ -230,20 +244,57 @@ class PluginExecutor:
         })
 
     def execute_set_sprite_action(self, instance, parameters):
-        """Change instance sprite"""
-        sprite_name = parameters.get("sprite", "")
+        """Change instance sprite or modify current sprite animation
 
-        print(f"🖼️  Setting sprite to: {sprite_name}")
+        Parameters:
+            sprite: Sprite name to use, or "<self>" to keep current sprite
+            subimage: Frame index to set (-1 = don't change)
+            speed: Animation speed to set (-1 = don't change)
+        """
+        sprite_name = parameters.get("sprite", "<self>")
+        subimage = parameters.get("subimage", -1)
+        speed = parameters.get("speed", -1)
+
+        # Parse values
+        try:
+            subimage = int(subimage)
+        except (ValueError, TypeError):
+            subimage = -1
 
         try:
-            if hasattr(instance, 'game') and hasattr(instance.game, 'sprites'):
-                if sprite_name in instance.game.sprites:
-                    instance.sprite = instance.game.sprites[sprite_name]
-                    instance.sprite_name = sprite_name
+            speed = float(speed)
+        except (ValueError, TypeError):
+            speed = -1
+
+        # Handle sprite change (unless <self>)
+        if sprite_name != "<self>" and sprite_name:
+            print(f"🖼️  Setting sprite to: {sprite_name}")
+            try:
+                if hasattr(instance, 'game') and hasattr(instance.game, 'sprites'):
+                    if sprite_name in instance.game.sprites:
+                        instance.sprite = instance.game.sprites[sprite_name]
+                        instance.sprite_name = sprite_name
+                    else:
+                        print(f"⚠️  Sprite not found: {sprite_name}")
+            except Exception as e:
+                print(f"❌ Error setting sprite: {e}")
+
+        # Handle subimage (frame index)
+        if subimage >= 0:
+            instance.image_index = float(subimage)
+            print(f"🎬 Set image_index to {subimage} for {instance.object_name}")
+
+        # Handle animation speed (only print when value changes)
+        if speed >= 0:
+            old_speed = getattr(instance, 'image_speed', 1.0)
+            if old_speed != speed:
+                instance.image_speed = speed
+                if speed == 0:
+                    print(f"⏸️ Stopped animation for {instance.object_name}")
                 else:
-                    print(f"⚠️  Sprite not found: {sprite_name}")
-        except Exception as e:
-            print(f"❌ Error setting sprite: {e}")
+                    print(f"⏩ Set image_speed to {speed} for {instance.object_name}")
+            else:
+                instance.image_speed = speed  # Still set it, just don't print
 
     def execute_set_alpha_action(self, instance, parameters):
         """Set instance transparency"""
