@@ -608,7 +608,7 @@ class PyGameMakerIDE(QMainWindow):
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setSpacing(5)
 
-        main_splitter = QSplitter(Qt.Horizontal)
+        self.main_splitter = QSplitter(Qt.Horizontal)
 
         # Left panel - Asset tree (unchanged)
         try:
@@ -646,17 +646,20 @@ class PyGameMakerIDE(QMainWindow):
         self.right_panel_stack.setCurrentIndex(0)
 
         # Add panels to main splitter
-        main_splitter.addWidget(self.asset_tree)
-        main_splitter.addWidget(center_panel)
-        main_splitter.addWidget(self.right_panel_stack)
+        self.main_splitter.addWidget(self.asset_tree)
+        self.main_splitter.addWidget(center_panel)
+        self.main_splitter.addWidget(self.right_panel_stack)
 
         # Set proportions: asset tree, editors, properties
-        main_splitter.setSizes([250, 800, 300])
-        main_splitter.setCollapsible(0, False)
-        main_splitter.setCollapsible(1, False)
-        main_splitter.setCollapsible(2, False)
+        self.main_splitter.setSizes([250, 800, 300])
+        self.main_splitter.setCollapsible(0, False)
+        self.main_splitter.setCollapsible(1, False)
+        self.main_splitter.setCollapsible(2, True)  # Allow right panel to collapse
 
-        layout.addWidget(main_splitter)
+        # Store default sizes for restoring right panel
+        self._default_splitter_sizes = [250, 800, 300]
+
+        layout.addWidget(self.main_splitter)
 
     def create_center_panel_with_editors(self):
         """Create center panel with tabbed editors"""
@@ -744,9 +747,8 @@ class PyGameMakerIDE(QMainWindow):
             editor_class = widget.__class__.__name__
 
             if editor_class == 'RoomEditor':
-                # Room editor is active - show properties panel with room properties
-                if hasattr(self, 'properties_panel'):
-                    self.properties_panel.show()
+                # Room editor is active - restore right panel with room properties
+                self._restore_right_panel()
 
                 try:
                     room_name = widget.asset_name
@@ -758,23 +760,20 @@ class PyGameMakerIDE(QMainWindow):
                     print(f"Error setting room editor context: {e}")
 
             elif editor_class == 'ObjectEditor':
-                # Object editor is active - HIDE properties panel (object editor has its own)
-                if hasattr(self, 'properties_panel'):
-                    self.properties_panel.hide()
+                # Object editor is active - COLLAPSE right panel (object editor has its own properties)
+                self._collapse_right_panel()
 
                 # Clear the context since we're not using the external properties panel
                 self.clear_properties_contexts()
 
             else:
-                # Other editor type - show properties panel and clear contexts
-                if hasattr(self, 'properties_panel'):
-                    self.properties_panel.show()
+                # Other editor type - restore right panel and clear contexts
+                self._restore_right_panel()
                 self.clear_properties_contexts()
 
         else:
-            # Welcome tab or other non-editor - show properties panel
-            if hasattr(self, 'properties_panel'):
-                self.properties_panel.show()
+            # Welcome tab or other non-editor - restore right panel
+            self._restore_right_panel()
             self.clear_properties_contexts()
 
     def clear_properties_contexts(self):
@@ -790,6 +789,34 @@ class PyGameMakerIDE(QMainWindow):
                 self.properties_panel.clear_room_context()
             if hasattr(self.properties_panel, 'clear_object_context'):
                 self.properties_panel.clear_object_context()
+
+    def _collapse_right_panel(self):
+        """Collapse the right panel to give more space to the center editor"""
+        if hasattr(self, 'main_splitter') and hasattr(self, 'right_panel_stack'):
+            # Store current sizes before collapsing (only if right panel is visible)
+            current_sizes = self.main_splitter.sizes()
+            if current_sizes[2] > 0:
+                self._last_splitter_sizes = current_sizes
+
+            # Hide the right panel and redistribute space to center
+            self.right_panel_stack.hide()
+            # Set right panel size to 0, add its space to center
+            new_sizes = [current_sizes[0], current_sizes[1] + current_sizes[2], 0]
+            self.main_splitter.setSizes(new_sizes)
+
+    def _restore_right_panel(self):
+        """Restore the right panel to its previous size"""
+        if hasattr(self, 'main_splitter') and hasattr(self, 'right_panel_stack'):
+            # Show the right panel
+            self.right_panel_stack.show()
+            if hasattr(self, 'properties_panel'):
+                self.properties_panel.show()
+
+            # Restore previous sizes or use defaults
+            if hasattr(self, '_last_splitter_sizes'):
+                self.main_splitter.setSizes(self._last_splitter_sizes)
+            elif hasattr(self, '_default_splitter_sizes'):
+                self.main_splitter.setSizes(self._default_splitter_sizes)
 
     def create_status_bar(self):
         self.status_bar = self.statusBar()
@@ -2340,10 +2367,9 @@ class PyGameMakerIDE(QMainWindow):
             # Track the editor
             self.open_editors[object_name] = object_editor
 
-            # Hide the properties panel when object editor is active
+            # Collapse right panel when object editor is active
             # (Object editor has its own internal properties)
-            if hasattr(self, 'properties_panel'):
-                self.properties_panel.hide()
+            self._collapse_right_panel()
 
             self.update_status(self.tr("Opened object: {0}").format(object_name))
 
