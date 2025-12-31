@@ -850,7 +850,8 @@ class GM80EventsPanel(QWidget):
 
                     # Add actions
                     for action_data in event_data.get("actions", []):
-                        action_def = get_action_def(action_data["action"])
+                        action_name = action_data.get("action", "unknown") if isinstance(action_data, dict) else "unknown"
+                        action_def = get_action_def(action_name)
                         if action_def:
                             action_item = QTreeWidgetItem(event_item)
                             action_item.setText(0, f"{action_def.icon} {action_def.display_name}")
@@ -863,8 +864,8 @@ class GM80EventsPanel(QWidget):
 
                             action_item.setData(0, Qt.UserRole, action_data)
 
-        # Collapse all items by default
-        self.events_tree.collapseAll()
+        # Expand all items by default so actions are visible
+        self.events_tree.expandAll()
 
     def load_events_data(self, events_data: Dict[str, Any]):
         """Load events data"""

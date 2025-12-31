@@ -726,19 +726,14 @@ class ObjectEditor(BaseEditor):
                 events_data = data.get('events', {})
 
                 if events_data:
-                    print(f"Loading {len(events_data)} events for {self.asset_name}:")
+                    # Extract custom code from execute_code actions
                     for event_name, event_info in events_data.items():
                         if isinstance(event_info, dict):
-                            actions_count = len(event_info.get('actions', []))
-                            print(f"  - Event: {event_name} ({actions_count} actions)")
-
-                            # Extract custom code from execute_code actions
                             for action in event_info.get('actions', []):
                                 if isinstance(action, dict) and action.get('action') == 'execute_code':
                                     code = action.get('parameters', {}).get('code', '')
                                     if code and hasattr(self, 'custom_code_by_event'):
                                         self.custom_code_by_event[event_name] = code
-                                        print(f"    - Loaded custom code for {event_name}")
 
                 self.events_panel.load_events_data(events_data)
             else:
@@ -1055,7 +1050,6 @@ class ObjectEditor(BaseEditor):
 
     def on_blockly_events_modified(self, events: dict):
         """Handle events modified from Blockly visual programming"""
-        print(f"Blockly events generated: {len(events)} events")
 
         if hasattr(self, 'events_panel') and self.events_panel:
             # Set flag to prevent infinite sync loop
