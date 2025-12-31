@@ -1226,11 +1226,13 @@ class GameRunner:
                 return
 
             if hasattr(instance, 'next_room_flag') and instance.next_room_flag:
+                instance.next_room_flag = False  # Clear the flag first
                 print("➡️  Going to next room...")
                 self.goto_next_room()
                 return
 
             if hasattr(instance, 'previous_room_flag') and instance.previous_room_flag:
+                instance.previous_room_flag = False  # Clear the flag first
                 print("⬅️  Going to previous room...")
                 self.goto_previous_room()
                 return
