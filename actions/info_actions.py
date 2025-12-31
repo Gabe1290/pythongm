@@ -18,6 +18,18 @@ INFO_ACTIONS = {
             ActionParameter("message", "string", "Message", "Message text", default="")
         ]
     ),
+    # Alias for display_message (used by Blockly)
+    "show_message": ActionDefinition(
+        name="show_message",
+        display_name="Show Message",
+        category="info",
+        tab="info",
+        description="Show message dialog",
+        icon="💬",
+        parameters=[
+            ActionParameter("message", "string", "Message", "Message text", default="")
+        ]
+    ),
     "show_info": ActionDefinition(
         name="show_info",
         display_name="Show Game Information",
