@@ -31,7 +31,38 @@ PyGameMaker provides a familiar drag-and-drop interface inspired by classic Game
 - Object editor with Blockly-based event programming
 - Real-time game preview and testing
 - Project import/export
-- Multi-language support (English, French, German, Italian, Slovenian, Ukrainian)
+- Multi-language support (English, French, German, Italian, Slovenian, Spanish, Ukrainian, Russian)
+
+## Recent Improvements
+
+### Internationalization
+- Added complete Spanish (Español) translation with 650+ translated strings
+- Added Russian language support with flag icons in the language menu
+- Flag icons now displayed in the Tools → Language menu for easier selection
+
+### UI/UX Enhancements
+- Room preview now shows in properties panel when a room is selected in the asset tree
+- Events tree expands by default to show actions immediately
+- Right panel collapses automatically when object editor is active
+- Fixed room editor properties not updating when switching between rooms
+- Fixed inconsistent icon sizes in asset tree between sprites and objects
+
+### New Features & Actions
+- Added `show_message` action alias for Blockly compatibility
+- Added `<self>` option to `set_sprite` action for current sprite animation
+- Implemented 10 additional missing actions for game logic
+
+### Bug Fixes
+- Fixed infinite loop when navigating to next/previous room at boundaries
+- Fixed broken dependency checks in EXE and Linux exporters
+- Fixed asset_modified signal bug (now correctly uses asset_updated)
+
+### Code Quality & Testing
+- Added comprehensive test suite with 81+ ActionExecutor tests
+- Added 19 event type tests for the event system
+- Added runtime game engine unit tests and integration tests
+- Configured flake8 for code quality with linting fixes applied
+- Improved CI workflow with proper test structure
 
 ## Requirements
 
