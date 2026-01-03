@@ -259,6 +259,32 @@ class PyGameMakerIDE(QMainWindow):
         self.language_action_group = QActionGroup(self)
         self.language_action_group.setExclusive(True)
 
+        # Hotkey mapping: language code -> hotkey character
+        # Each hotkey should be unique and present in the language name
+        # Uses & before the letter to create underlined hotkey (e.g., "&English" -> E)
+        language_hotkeys = {
+            'en': 'E',  # English
+            'fr': 'F',  # Français
+            'es': 'S',  # eSpañol (E taken by English)
+            'de': 'D',  # Deutsch
+            'it': 'I',  # Italiano
+            'pt': 'P',  # Português
+            'ru': 'R',  # Русский (use R for Russian)
+            'uk': 'U',  # Українська (use U for Ukrainian)
+            'sl': 'L',  # SLovenščina (S taken by Spanish)
+        }
+
+        def add_hotkey_to_name(name, code):
+            """Insert & before the hotkey character in the language name"""
+            hotkey = language_hotkeys.get(code)
+            if not hotkey:
+                return name
+            # Find the hotkey character (case-insensitive)
+            idx = name.lower().find(hotkey.lower())
+            if idx >= 0:
+                return name[:idx] + '&' + name[idx:]
+            return name
+
         # Separate languages into available and unavailable
         available_languages = []
         unavailable_languages = []
@@ -271,12 +297,14 @@ class PyGameMakerIDE(QMainWindow):
 
         # Add available languages first
         for code, name, flag in available_languages:
+            # Add hotkey to name
+            display_name = add_hotkey_to_name(name, code)
             # Try to load flag icon, fall back to emoji text
             flag_path = language_manager.get_flag_icon_path(code)
             if flag_path and flag_path.exists():
-                action = menu.addAction(QIcon(str(flag_path)), name)
+                action = menu.addAction(QIcon(str(flag_path)), display_name)
             else:
-                action = menu.addAction(f"{flag} {name}")
+                action = menu.addAction(f"{flag} {display_name}")
             action.setCheckable(True)
             action.setData(code)
 
@@ -293,11 +321,13 @@ class PyGameMakerIDE(QMainWindow):
 
             # Add unavailable languages
             for code, name, flag in unavailable_languages:
+                # Add hotkey to name (even for unavailable, for consistency)
+                display_name = add_hotkey_to_name(name, code)
                 flag_path = language_manager.get_flag_icon_path(code)
                 if flag_path and flag_path.exists():
-                    action = menu.addAction(QIcon(str(flag_path)), f"{name} (translation not available)")
+                    action = menu.addAction(QIcon(str(flag_path)), f"{display_name} (translation not available)")
                 else:
-                    action = menu.addAction(f"{flag} {name} (translation not available)")
+                    action = menu.addAction(f"{flag} {display_name} (translation not available)")
                 action.setCheckable(True)
                 action.setData(code)
 
