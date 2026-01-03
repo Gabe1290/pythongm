@@ -86,6 +86,14 @@ class MockGameRunner:
     def check_collision_at_position(self, instance, x, y, object_type, exclude=None):
         return False
 
+    def trigger_no_more_lives_event(self, instance):
+        """Mock trigger for no more lives event"""
+        pass
+
+    def trigger_no_more_health_event(self, instance):
+        """Mock trigger for no more health event"""
+        pass
+
 
 # ==============================================================================
 # ActionExecutor Initialization Tests
