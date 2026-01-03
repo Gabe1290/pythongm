@@ -1384,8 +1384,10 @@ class PyGameMakerIDE(QMainWindow):
                 return
 
             # Run the game subprocess and wait for it to complete
+            # Pass language code as second argument for runtime translations
+            language = Config.get('language', 'en')
             result = subprocess.run(
-                [sys.executable, str(game_script), str(project_json)],
+                [sys.executable, str(game_script), str(project_json), language],
                 cwd=str(self.current_project_path)
             )
 

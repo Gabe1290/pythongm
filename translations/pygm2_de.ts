@@ -4952,7 +4952,7 @@ Möchten Sie jetzt neu starten?</translation>
     <message>
         <location filename="../widgets/welcome_tab.py" line="44"/>
         <source>📋 Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>📋 Zuletzt geöffnete Projekte</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="45"/>

@@ -422,6 +422,96 @@ class ActionExecutor:
         else:
             print(f"  ⚠️ {instance.object_name} bounce: no velocity to reverse")
 
+    def execute_set_gravity_action(self, instance, parameters: Dict[str, Any]):
+        """Set gravity for the instance
+
+        Parameters:
+            direction: Direction of gravity in degrees (270 = down, 90 = up)
+            gravity: Gravity strength (acceleration per frame)
+        """
+        direction = parameters.get("direction", 270)
+        gravity = parameters.get("gravity", 0.5)
+
+        try:
+            direction = float(direction)
+            gravity = float(gravity)
+        except (ValueError, TypeError):
+            print(f"⚠️  set_gravity: Invalid values direction={direction}, gravity={gravity}")
+            return
+
+        instance.gravity = gravity
+        instance.gravity_direction = direction
+        print(f"  ⬇️ {instance.object_name} gravity set to {gravity} at {direction}°")
+
+    def execute_set_friction_action(self, instance, parameters: Dict[str, Any]):
+        """Set friction for the instance
+
+        Parameters:
+            friction: Friction amount (speed reduction per frame)
+        """
+        friction = parameters.get("friction", 0)
+
+        try:
+            friction = float(friction)
+        except (ValueError, TypeError):
+            print(f"⚠️  set_friction: Invalid friction value '{friction}'")
+            return
+
+        instance.friction = friction
+        print(f"  🛑 {instance.object_name} friction set to {friction}")
+
+    def execute_reverse_horizontal_action(self, instance, parameters: Dict[str, Any]):
+        """Reverse horizontal movement direction"""
+        old_hspeed = instance.hspeed
+        instance.hspeed = -instance.hspeed
+        print(f"  ↔️ {instance.object_name} reversed hspeed: {old_hspeed} → {instance.hspeed}")
+
+    def execute_reverse_vertical_action(self, instance, parameters: Dict[str, Any]):
+        """Reverse vertical movement direction"""
+        old_vspeed = instance.vspeed
+        instance.vspeed = -instance.vspeed
+        print(f"  ↕️ {instance.object_name} reversed vspeed: {old_vspeed} → {instance.vspeed}")
+
+    def execute_wrap_around_room_action(self, instance, parameters: Dict[str, Any]):
+        """Wrap instance to opposite side when leaving room
+
+        Parameters:
+            horizontal: Wrap horizontally (default True)
+            vertical: Wrap vertically (default True)
+        """
+        horizontal = parameters.get("horizontal", True)
+        vertical = parameters.get("vertical", True)
+
+        if not self.game_runner or not self.game_runner.current_room:
+            return
+
+        room_width = self.game_runner.current_room.width
+        room_height = self.game_runner.current_room.height
+
+        # Get sprite dimensions for accurate wrapping
+        sprite_width = getattr(instance, '_cached_width', 32)
+        sprite_height = getattr(instance, '_cached_height', 32)
+
+        wrapped = False
+        if horizontal:
+            if instance.x + sprite_width < 0:
+                instance.x = room_width
+                wrapped = True
+            elif instance.x > room_width:
+                instance.x = -sprite_width
+                wrapped = True
+
+        if vertical:
+            if instance.y + sprite_height < 0:
+                instance.y = room_height
+                wrapped = True
+            elif instance.y > room_height:
+                instance.y = -sprite_height
+                wrapped = True
+
+        if wrapped:
+            print(f"  🔄 {instance.object_name} wrapped to ({instance.x}, {instance.y})")
+
     def execute_jump_to_position_action(self, instance, parameters: Dict[str, Any]):
         """Jump to a specific position instantly
 
@@ -1498,6 +1588,8 @@ class ActionExecutor:
         value = int(parameters.get("value", 3))
         relative = parameters.get("relative", False)
 
+        old_lives = self.game_runner.lives
+
         if relative:
             self.game_runner.lives += value
         else:
@@ -1510,6 +1602,11 @@ class ActionExecutor:
         self.game_runner.show_lives_in_caption = True
 
         print(f"❤️  Lives set to: {self.game_runner.lives}")
+
+        # Trigger no_more_lives event if lives just reached 0
+        if old_lives > 0 and self.game_runner.lives <= 0:
+            print("💀 No more lives! Triggering no_more_lives event...")
+            self.game_runner.trigger_no_more_lives_event(instance)
 
     def execute_test_lives_action(self, instance, parameters: Dict[str, Any]):
         """Test lives value and execute conditional actions"""
@@ -1568,6 +1665,8 @@ class ActionExecutor:
         value = float(parameters.get("value", 100))
         relative = parameters.get("relative", False)
 
+        old_health = self.game_runner.health
+
         if relative:
             self.game_runner.health += value
         else:
@@ -1580,6 +1679,11 @@ class ActionExecutor:
         self.game_runner.show_health_in_caption = True
 
         print(f"💚 Health set to: {self.game_runner.health}")
+
+        # Trigger no_more_health event if health just reached 0
+        if old_health > 0 and self.game_runner.health <= 0:
+            print("💔 No more health! Triggering no_more_health event...")
+            self.game_runner.trigger_no_more_health_event(instance)
 
     def execute_test_health_action(self, instance, parameters: Dict[str, Any]):
         """Test health value and execute conditional actions"""
@@ -1650,24 +1754,68 @@ class ActionExecutor:
               f"lives={self.game_runner.show_lives_in_caption}, health={self.game_runner.show_health_in_caption}")
 
     def execute_show_highscore_action(self, instance, parameters: Dict[str, Any]):
-        """Show highscore table (placeholder implementation)"""
+        """Show highscore table dialog
+
+        Parameters:
+            background: Background color (hex string like "#FFFFDD")
+            new_color: Color for new entry (hex string)
+            other_color: Color for other entries (hex string)
+            allow_new_entry: Whether to prompt for name if score qualifies (default True)
+        """
         if not self.game_runner:
             return
 
-        print("🥇 Highscore table:")
-        if not self.game_runner.highscores:
-            print("  (empty)")
-        else:
-            for i, (name, score) in enumerate(self.game_runner.highscores[:10], 1):
-                print(f"  {i}. {name}: {score}")
+        # Parse color parameters (GameMaker uses BGR format, we use RGB)
+        def hex_to_rgb(hex_str, default):
+            if not hex_str:
+                return default
+            try:
+                hex_str = hex_str.lstrip('#')
+                return tuple(int(hex_str[i:i+2], 16) for i in (0, 2, 4))
+            except:
+                return default
+
+        background = hex_to_rgb(parameters.get('background'), (255, 255, 220))
+        new_color = hex_to_rgb(parameters.get('new_color'), (255, 0, 0))
+        other_color = hex_to_rgb(parameters.get('other_color'), (0, 0, 0))
+        allow_new_entry = parameters.get('allow_new_entry', True)
+
+        print(f"🏆 Show highscore action - current score: {self.game_runner.score}")
+
+        # Show the dialog
+        self.game_runner.show_highscore_dialog(
+            background_color=background,
+            new_color=new_color,
+            other_color=other_color,
+            allow_name_entry=allow_new_entry
+        )
 
     def execute_clear_highscore_action(self, instance, parameters: Dict[str, Any]):
         """Clear highscore table"""
         if not self.game_runner:
             return
 
-        self.game_runner.highscores = []
-        print("🧹 Highscore table cleared")
+        self.game_runner.clear_highscores()
+
+    # ==================== GAME CONTROL ACTIONS ====================
+
+    def execute_end_game_action(self, instance, parameters: Dict[str, Any]):
+        """End the game and close the window"""
+        if not self.game_runner:
+            return
+
+        print("🚪 Ending game...")
+        self.game_runner.running = False
+
+    def execute_restart_game_action(self, instance, parameters: Dict[str, Any]):
+        """Restart the game from the first room"""
+        if not self.game_runner:
+            return
+
+        print("🔄 Restart game requested...")
+        # Set flag for game loop to handle the restart
+        # This ensures the room is properly recreated with fresh instances
+        instance.restart_game_flag = True
 
     # ==================== CODE EXECUTION ACTIONS ====================
 
@@ -1894,6 +2042,96 @@ class ActionExecutor:
                 self.execute_event(target_instance, 'create', events)
 
         print(f"  ✅ Changed to {new_object_name} at ({old_x}, {old_y})")
+
+    # ==================== DRAWING ACTIONS ====================
+
+    def execute_set_draw_color_action(self, instance, parameters: Dict[str, Any]):
+        """Set the drawing color for subsequent draw operations
+
+        Parameters:
+            color: Color in hex format (e.g., "#FF0000" for red)
+        """
+        color = parameters.get("color", "#000000")
+
+        # Parse hex color to RGB tuple
+        def hex_to_rgb(hex_str):
+            if not hex_str:
+                return (0, 0, 0)
+            hex_str = hex_str.lstrip('#')
+            try:
+                return tuple(int(hex_str[i:i+2], 16) for i in (0, 2, 4))
+            except:
+                return (0, 0, 0)
+
+        rgb_color = hex_to_rgb(color)
+
+        # Store drawing color on instance for draw events
+        instance.draw_color = rgb_color
+
+        # Also store on game runner for global access
+        if self.game_runner:
+            self.game_runner.draw_color = rgb_color
+
+        print(f"🎨 Set drawing color to {color} ({rgb_color}) for {instance.object_name}")
+
+    # ==================== AUDIO ACTIONS ====================
+
+    def execute_stop_sound_action(self, instance, parameters: Dict[str, Any]):
+        """Stop playing a specific sound
+
+        Parameters:
+            sound: The sound name to stop
+        """
+        sound_name = parameters.get("sound", "")
+
+        if not sound_name:
+            print("⚠️ stop_sound: No sound specified")
+            return
+
+        if not self.game_runner:
+            print("⚠️ stop_sound: No game_runner reference")
+            return
+
+        # Get the sound from the asset manager
+        if hasattr(self.game_runner, 'sounds') and sound_name in self.game_runner.sounds:
+            sound = self.game_runner.sounds[sound_name]
+            if hasattr(sound, 'stop'):
+                sound.stop()
+                print(f"🔇 Stopped sound: {sound_name}")
+            else:
+                # Try pygame.mixer.stop for all sounds
+                import pygame
+                pygame.mixer.stop()
+                print(f"🔇 Stopped all sounds (trying to stop: {sound_name})")
+        else:
+            print(f"⚠️ stop_sound: Sound '{sound_name}' not found")
+
+    # ==================== CONTROL ACTIONS (Additional) ====================
+
+    def execute_test_chance_action(self, instance, parameters: Dict[str, Any]):
+        """Test a random probability (1 in N chance)
+
+        Parameters:
+            sides: Number of sides on the dice (default 6)
+
+        Returns True if the random roll succeeds (1/N probability)
+        """
+        import random
+
+        sides = parameters.get("sides", 6)
+        try:
+            sides = int(sides)
+            if sides < 1:
+                sides = 1
+        except (ValueError, TypeError):
+            sides = 6
+
+        # Roll the dice - success if we roll a 1 (1/N chance)
+        roll = random.randint(1, sides)
+        result = (roll == 1)
+
+        print(f"🎲 Test chance (1 in {sides}): rolled {roll}, result={result}")
+        return result
 
     # ==================== ANIMATION ACTIONS ====================
 

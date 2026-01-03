@@ -7,18 +7,6 @@ Based on Scratch and Blockly standard French translations
 
 # Category name translations
 CATEGORY_TRANSLATIONS = {
-    "fr": {
-        "Events": "Événements",
-        "Movement": "Mouvement",
-        "Timing": "Minuterie",
-        "Drawing": "Dessin",
-        "Score/Lives/Health": "Score/Vies/Santé",
-        "Instance": "Instance",
-        "Room": "Salle",
-        "Values": "Valeurs",
-        "Sound": "Son",
-        "Output": "Sortie",
-    },
     "de": {
         "Events": "Ereignisse",
         "Movement": "Bewegung",
@@ -31,6 +19,30 @@ CATEGORY_TRANSLATIONS = {
         "Sound": "Klang",
         "Output": "Ausgabe",
     },
+    "es": {
+        "Events": "Eventos",
+        "Movement": "Movimiento",
+        "Timing": "Temporizador",
+        "Drawing": "Dibujo",
+        "Score/Lives/Health": "Puntuación/Vidas/Salud",
+        "Instance": "Instancia",
+        "Room": "Sala",
+        "Values": "Valores",
+        "Sound": "Sonido",
+        "Output": "Salida",
+    },
+    "fr": {
+        "Events": "Événements",
+        "Movement": "Mouvement",
+        "Timing": "Minuterie",
+        "Drawing": "Dessin",
+        "Score/Lives/Health": "Score/Vies/Santé",
+        "Instance": "Instance",
+        "Room": "Salle",
+        "Values": "Valeurs",
+        "Sound": "Son",
+        "Output": "Sortie",
+    },
     "it": {
         "Events": "Eventi",
         "Movement": "Movimento",
@@ -42,7 +54,43 @@ CATEGORY_TRANSLATIONS = {
         "Values": "Valori",
         "Sound": "Suono",
         "Output": "Output",
-    }
+    },
+    "ru": {
+        "Events": "События",
+        "Movement": "Движение",
+        "Timing": "Таймер",
+        "Drawing": "Рисование",
+        "Score/Lives/Health": "Очки/Жизни/Здоровье",
+        "Instance": "Экземпляр",
+        "Room": "Комната",
+        "Values": "Значения",
+        "Sound": "Звук",
+        "Output": "Вывод",
+    },
+    "sl": {
+        "Events": "Dogodki",
+        "Movement": "Gibanje",
+        "Timing": "Časovnik",
+        "Drawing": "Risanje",
+        "Score/Lives/Health": "Točke/Življenja/Zdravje",
+        "Instance": "Primerek",
+        "Room": "Soba",
+        "Values": "Vrednosti",
+        "Sound": "Zvok",
+        "Output": "Izhod",
+    },
+    "uk": {
+        "Events": "Події",
+        "Movement": "Рух",
+        "Timing": "Таймер",
+        "Drawing": "Малювання",
+        "Score/Lives/Health": "Очки/Життя/Здоров'я",
+        "Instance": "Екземпляр",
+        "Room": "Кімната",
+        "Values": "Значення",
+        "Sound": "Звук",
+        "Output": "Вивід",
+    },
 }
 
 # Block name and description translations
@@ -50,262 +98,262 @@ CATEGORY_TRANSLATIONS = {
 BLOCK_TRANSLATIONS = {
     # Events
     "event_create": {
-        "name": {"fr": "Événement de création", "de": "Erstellen-Ereignis", "it": "Evento di creazione"},
-        "description": {"fr": "Quand l'objet est créé", "de": "Wenn Objekt erstellt wird", "it": "Quando l'oggetto viene creato"}
+        "name": {"de": "Erstellen-Ereignis", "es": "Evento de creación", "fr": "Événement de création", "it": "Evento di creazione", "ru": "Событие создания", "sl": "Dogodek ustvarjanja", "uk": "Подія створення"},
+        "description": {"de": "Wenn Objekt erstellt wird", "es": "Cuando se crea el objeto", "fr": "Quand l'objet est créé", "it": "Quando l'oggetto viene creato", "ru": "Когда объект создан", "sl": "Ko je objekt ustvarjen", "uk": "Коли об'єкт створено"}
     },
     "event_step": {
-        "name": {"fr": "Événement étape", "de": "Schritt-Ereignis", "it": "Evento passo"},
-        "description": {"fr": "Chaque image", "de": "Jeden Frame", "it": "Ogni frame"}
+        "name": {"de": "Schritt-Ereignis", "es": "Evento de paso", "fr": "Événement étape", "it": "Evento passo", "ru": "Событие шага", "sl": "Dogodek koraka", "uk": "Подія кроку"},
+        "description": {"de": "Jeden Frame", "es": "Cada fotograma", "fr": "Chaque image", "it": "Ogni frame", "ru": "Каждый кадр", "sl": "Vsak okvir", "uk": "Кожен кадр"}
     },
     "event_draw": {
-        "name": {"fr": "Événement de dessin", "de": "Zeichnen-Ereignis", "it": "Evento di disegno"},
-        "description": {"fr": "Pendant la phase de dessin", "de": "Während der Zeichenphase", "it": "Durante la fase di disegno"}
+        "name": {"de": "Zeichnen-Ereignis", "es": "Evento de dibujo", "fr": "Événement de dessin", "it": "Evento di disegno", "ru": "Событие рисования", "sl": "Dogodek risanja", "uk": "Подія малювання"},
+        "description": {"de": "Während der Zeichenphase", "es": "Durante la fase de dibujo", "fr": "Pendant la phase de dessin", "it": "Durante la fase di disegno", "ru": "Во время фазы рисования", "sl": "Med fazo risanja", "uk": "Під час фази малювання"}
     },
     "event_destroy": {
-        "name": {"fr": "Événement de destruction", "de": "Zerstören-Ereignis", "it": "Evento di distruzione"},
-        "description": {"fr": "Quand l'objet est détruit", "de": "Wenn Objekt zerstört wird", "it": "Quando l'oggetto viene distrutto"}
+        "name": {"de": "Zerstören-Ereignis", "es": "Evento de destrucción", "fr": "Événement de destruction", "it": "Evento di distruzione", "ru": "Событие уничтожения", "sl": "Dogodek uničenja", "uk": "Подія знищення"},
+        "description": {"de": "Wenn Objekt zerstört wird", "es": "Cuando se destruye el objeto", "fr": "Quand l'objet est détruit", "it": "Quando l'oggetto viene distrutto", "ru": "Когда объект уничтожен", "sl": "Ko je objekt uničen", "uk": "Коли об'єкт знищено"}
     },
     "event_keyboard_nokey": {
-        "name": {"fr": "Aucune touche", "de": "Keine Taste", "it": "Nessun tasto"},
-        "description": {"fr": "Aucune touche pressée", "de": "Keine Taste gedrückt", "it": "Nessun tasto premuto"}
+        "name": {"de": "Keine Taste", "es": "Sin tecla", "fr": "Aucune touche", "it": "Nessun tasto", "ru": "Нет клавиши", "sl": "Brez tipke", "uk": "Без клавіші"},
+        "description": {"de": "Keine Taste gedrückt", "es": "Ninguna tecla presionada", "fr": "Aucune touche pressée", "it": "Nessun tasto premuto", "ru": "Клавиша не нажата", "sl": "Tipka ni pritisnjena", "uk": "Клавішу не натиснуто"}
     },
     "event_keyboard_anykey": {
-        "name": {"fr": "N'importe quelle touche", "de": "Beliebige Taste", "it": "Qualsiasi tasto"},
-        "description": {"fr": "N'importe quelle touche pressée", "de": "Beliebige Taste gedrückt", "it": "Qualsiasi tasto premuto"}
+        "name": {"de": "Beliebige Taste", "es": "Cualquier tecla", "fr": "N'importe quelle touche", "it": "Qualsiasi tasto", "ru": "Любая клавиша", "sl": "Katerakoli tipka", "uk": "Будь-яка клавіша"},
+        "description": {"de": "Beliebige Taste gedrückt", "es": "Cualquier tecla presionada", "fr": "N'importe quelle touche pressée", "it": "Qualsiasi tasto premuto", "ru": "Любая клавиша нажата", "sl": "Katerakoli tipka pritisnjena", "uk": "Будь-яку клавішу натиснуто"}
     },
     "event_keyboard_held": {
-        "name": {"fr": "Clavier (maintenu)", "de": "Tastatur (gehalten)", "it": "Tastiera (tenuto)"},
-        "description": {"fr": "Touche maintenue", "de": "Taste gedrückt halten", "it": "Tasto tenuto premuto"}
+        "name": {"de": "Tastatur (gehalten)", "es": "Teclado (mantenido)", "fr": "Clavier (maintenu)", "it": "Tastiera (tenuto)", "ru": "Клавиатура (удержание)", "sl": "Tipkovnica (držanje)", "uk": "Клавіатура (утримання)"},
+        "description": {"de": "Taste gedrückt halten", "es": "Tecla mantenida", "fr": "Touche maintenue", "it": "Tasto tenuto premuto", "ru": "Клавиша удерживается", "sl": "Tipka držana", "uk": "Клавіша утримується"}
     },
     "event_keyboard_press": {
-        "name": {"fr": "Touche pressée", "de": "Taste drücken", "it": "Tasto premuto"},
-        "description": {"fr": "Touche pressée une fois", "de": "Taste einmal gedrückt", "it": "Tasto premuto una volta"}
+        "name": {"de": "Taste drücken", "es": "Tecla presionada", "fr": "Touche pressée", "it": "Tasto premuto", "ru": "Нажатие клавиши", "sl": "Pritisk tipke", "uk": "Натискання клавіші"},
+        "description": {"de": "Taste einmal gedrückt", "es": "Tecla presionada una vez", "fr": "Touche pressée une fois", "it": "Tasto premuto una volta", "ru": "Клавиша нажата один раз", "sl": "Tipka pritisnjena enkrat", "uk": "Клавішу натиснуто один раз"}
     },
     "event_keyboard_release": {
-        "name": {"fr": "Touche relâchée", "de": "Taste loslassen", "it": "Tasto rilasciato"},
-        "description": {"fr": "Touche relâchée", "de": "Taste losgelassen", "it": "Tasto rilasciato"}
+        "name": {"de": "Taste loslassen", "es": "Tecla liberada", "fr": "Touche relâchée", "it": "Tasto rilasciato", "ru": "Отпускание клавиши", "sl": "Spust tipke", "uk": "Відпускання клавіші"},
+        "description": {"de": "Taste losgelassen", "es": "Tecla liberada", "fr": "Touche relâchée", "it": "Tasto rilasciato", "ru": "Клавиша отпущена", "sl": "Tipka spuščena", "uk": "Клавішу відпущено"}
     },
     "event_mouse": {
-        "name": {"fr": "Événements souris", "de": "Mausereignisse", "it": "Eventi mouse"},
-        "description": {"fr": "Clics et mouvement de la souris", "de": "Mausklicks und Bewegung", "it": "Clic e movimento del mouse"}
+        "name": {"de": "Mausereignisse", "es": "Eventos de ratón", "fr": "Événements souris", "it": "Eventi mouse", "ru": "События мыши", "sl": "Dogodki miške", "uk": "Події миші"},
+        "description": {"de": "Mausklicks und Bewegung", "es": "Clics y movimiento del ratón", "fr": "Clics et mouvement de la souris", "it": "Clic e movimento del mouse", "ru": "Клики и движение мыши", "sl": "Kliki in premiki miške", "uk": "Кліки та рух миші"}
     },
     "event_collision": {
-        "name": {"fr": "Collision", "de": "Kollision", "it": "Collisione"},
-        "description": {"fr": "Collision avec un objet", "de": "Kollision mit Objekt", "it": "Collisione con oggetto"}
+        "name": {"de": "Kollision", "es": "Colisión", "fr": "Collision", "it": "Collisione", "ru": "Столкновение", "sl": "Trk", "uk": "Зіткнення"},
+        "description": {"de": "Kollision mit Objekt", "es": "Colisión con objeto", "fr": "Collision avec un objet", "it": "Collisione con oggetto", "ru": "Столкновение с объектом", "sl": "Trk z objektom", "uk": "Зіткнення з об'єктом"}
     },
     "event_alarm": {
-        "name": {"fr": "Événements alarme", "de": "Alarm-Ereignisse", "it": "Eventi allarme"},
-        "description": {"fr": "Déclencheur d'alarme (0-11)", "de": "Alarm-Auslöser (0-11)", "it": "Trigger allarme (0-11)"}
+        "name": {"de": "Alarm-Ereignisse", "es": "Eventos de alarma", "fr": "Événements alarme", "it": "Eventi allarme", "ru": "События будильника", "sl": "Dogodki alarma", "uk": "Події будильника"},
+        "description": {"de": "Alarm-Auslöser (0-11)", "es": "Disparador de alarma (0-11)", "fr": "Déclencheur d'alarme (0-11)", "it": "Trigger allarme (0-11)", "ru": "Срабатывание будильника (0-11)", "sl": "Sprožilec alarma (0-11)", "uk": "Тригер будильника (0-11)"}
     },
 
     # Movement
     "move_set_hspeed": {
-        "name": {"fr": "Définir vitesse horizontale", "de": "Horizontale Geschwindigkeit setzen", "it": "Imposta velocità orizzontale"},
-        "description": {"fr": "Définir la vélocité X", "de": "X-Geschwindigkeit setzen", "it": "Imposta velocità X"}
+        "name": {"de": "Horizontale Geschwindigkeit setzen", "es": "Establecer velocidad horizontal", "fr": "Définir vitesse horizontale", "it": "Imposta velocità orizzontale", "ru": "Задать горизонтальную скорость", "sl": "Nastavi vodoravno hitrost", "uk": "Встановити горизонтальну швидкість"},
+        "description": {"de": "X-Geschwindigkeit setzen", "es": "Establecer velocidad X", "fr": "Définir la vélocité X", "it": "Imposta velocità X", "ru": "Задать скорость по X", "sl": "Nastavi hitrost X", "uk": "Встановити швидкість X"}
     },
     "move_set_vspeed": {
-        "name": {"fr": "Définir vitesse verticale", "de": "Vertikale Geschwindigkeit setzen", "it": "Imposta velocità verticale"},
-        "description": {"fr": "Définir la vélocité Y", "de": "Y-Geschwindigkeit setzen", "it": "Imposta velocità Y"}
+        "name": {"de": "Vertikale Geschwindigkeit setzen", "es": "Establecer velocidad vertical", "fr": "Définir vitesse verticale", "it": "Imposta velocità verticale", "ru": "Задать вертикальную скорость", "sl": "Nastavi navpično hitrost", "uk": "Встановити вертикальну швидкість"},
+        "description": {"de": "Y-Geschwindigkeit setzen", "es": "Establecer velocidad Y", "fr": "Définir la vélocité Y", "it": "Imposta velocità Y", "ru": "Задать скорость по Y", "sl": "Nastavi hitrost Y", "uk": "Встановити швидкість Y"}
     },
     "move_stop": {
-        "name": {"fr": "Arrêter le mouvement", "de": "Bewegung stoppen", "it": "Ferma movimento"},
-        "description": {"fr": "Arrêter tout mouvement", "de": "Alle Bewegung stoppen", "it": "Ferma tutti i movimenti"}
+        "name": {"de": "Bewegung stoppen", "es": "Detener movimiento", "fr": "Arrêter le mouvement", "it": "Ferma movimento", "ru": "Остановить движение", "sl": "Ustavi gibanje", "uk": "Зупинити рух"},
+        "description": {"de": "Alle Bewegung stoppen", "es": "Detener todo movimiento", "fr": "Arrêter tout mouvement", "it": "Ferma tutti i movimenti", "ru": "Остановить всё движение", "sl": "Ustavi vse gibanje", "uk": "Зупинити весь рух"}
     },
     "move_direction": {
-        "name": {"fr": "Déplacer direction", "de": "Richtung bewegen", "it": "Muovi direzione"},
-        "description": {"fr": "Déplacer en 4 directions", "de": "In 4 Richtungen bewegen", "it": "Muovi in 4 direzioni"}
+        "name": {"de": "Richtung bewegen", "es": "Mover en dirección", "fr": "Déplacer direction", "it": "Muovi direzione", "ru": "Двигаться в направлении", "sl": "Premakni v smeri", "uk": "Рухатися в напрямку"},
+        "description": {"de": "In 4 Richtungen bewegen", "es": "Mover en 4 direcciones", "fr": "Déplacer en 4 directions", "it": "Muovi in 4 direzioni", "ru": "Двигаться в 4 направлениях", "sl": "Premakni v 4 smereh", "uk": "Рухатися в 4 напрямках"}
     },
     "move_towards": {
-        "name": {"fr": "Déplacer vers", "de": "Bewegen zu", "it": "Muovi verso"},
-        "description": {"fr": "Déplacer vers un point", "de": "Zu einem Punkt bewegen", "it": "Muovi verso un punto"}
+        "name": {"de": "Bewegen zu", "es": "Mover hacia", "fr": "Déplacer vers", "it": "Muovi verso", "ru": "Двигаться к", "sl": "Premakni proti", "uk": "Рухатися до"},
+        "description": {"de": "Zu einem Punkt bewegen", "es": "Mover hacia un punto", "fr": "Déplacer vers un point", "it": "Muovi verso un punto", "ru": "Двигаться к точке", "sl": "Premakni do točke", "uk": "Рухатися до точки"}
     },
     "move_snap_to_grid": {
-        "name": {"fr": "Aligner à la grille", "de": "An Raster ausrichten", "it": "Allinea alla griglia"},
-        "description": {"fr": "Aligner à la grille", "de": "An Raster ausrichten", "it": "Allinea alla griglia"}
+        "name": {"de": "An Raster ausrichten", "es": "Ajustar a cuadrícula", "fr": "Aligner à la grille", "it": "Allinea alla griglia", "ru": "Выровнять по сетке", "sl": "Poravnaj na mrežo", "uk": "Вирівняти по сітці"},
+        "description": {"de": "An Raster ausrichten", "es": "Alinear a cuadrícula", "fr": "Aligner à la grille", "it": "Allinea alla griglia", "ru": "Выровнять по сетке", "sl": "Poravnaj na mrežo", "uk": "Вирівняти по сітці"}
     },
     "move_jump_to": {
-        "name": {"fr": "Sauter à la position", "de": "Zu Position springen", "it": "Salta alla posizione"},
-        "description": {"fr": "Téléportation instantanée", "de": "Sofortiger Teleport", "it": "Teletrasporto istantaneo"}
+        "name": {"de": "Zu Position springen", "es": "Saltar a posición", "fr": "Sauter à la position", "it": "Salta alla posizione", "ru": "Прыгнуть к позиции", "sl": "Skoči na položaj", "uk": "Стрибнути до позиції"},
+        "description": {"de": "Sofortiger Teleport", "es": "Teletransporte instantáneo", "fr": "Téléportation instantanée", "it": "Teletrasporto istantaneo", "ru": "Мгновенная телепортация", "sl": "Takojšnja teleportacija", "uk": "Миттєва телепортація"}
     },
     "grid_stop_if_no_keys": {
-        "name": {"fr": "Arrêter si aucune touche", "de": "Stoppen wenn keine Taste", "it": "Ferma se nessun tasto"},
-        "description": {"fr": "Aide pour mouvement grille", "de": "Raster-Bewegungshilfe", "it": "Aiuto movimento griglia"}
+        "name": {"de": "Stoppen wenn keine Taste", "es": "Detener si no hay teclas", "fr": "Arrêter si aucune touche", "it": "Ferma se nessun tasto", "ru": "Остановить если нет клавиш", "sl": "Ustavi če ni tipk", "uk": "Зупинити якщо немає клавіш"},
+        "description": {"de": "Raster-Bewegungshilfe", "es": "Ayuda de movimiento en cuadrícula", "fr": "Aide pour mouvement grille", "it": "Aiuto movimento griglia", "ru": "Помощь движения по сетке", "sl": "Pomoč pri gibanju po mreži", "uk": "Допомога руху по сітці"}
     },
     "grid_check_keys_and_move": {
-        "name": {"fr": "Vérifier touches et déplacer", "de": "Tasten prüfen und bewegen", "it": "Controlla tasti e muovi"},
-        "description": {"fr": "Aide pour mouvement grille", "de": "Raster-Bewegungshilfe", "it": "Aiuto movimento griglia"}
+        "name": {"de": "Tasten prüfen und bewegen", "es": "Verificar teclas y mover", "fr": "Vérifier touches et déplacer", "it": "Controlla tasti e muovi", "ru": "Проверить клавиши и двигаться", "sl": "Preveri tipke in premakni", "uk": "Перевірити клавіші та рухатися"},
+        "description": {"de": "Raster-Bewegungshilfe", "es": "Ayuda de movimiento en cuadrícula", "fr": "Aide pour mouvement grille", "it": "Aiuto movimento griglia", "ru": "Помощь движения по сетке", "sl": "Pomoč pri gibanju po mreži", "uk": "Допомога руху по сітці"}
     },
     "grid_if_on_grid": {
-        "name": {"fr": "Si sur la grille", "de": "Wenn auf Raster", "it": "Se sulla griglia"},
-        "description": {"fr": "Vérification alignement grille", "de": "Rasterausrichtungsprüfung", "it": "Controllo allineamento griglia"}
+        "name": {"de": "Wenn auf Raster", "es": "Si en cuadrícula", "fr": "Si sur la grille", "it": "Se sulla griglia", "ru": "Если на сетке", "sl": "Če na mreži", "uk": "Якщо на сітці"},
+        "description": {"de": "Rasterausrichtungsprüfung", "es": "Verificación de alineación", "fr": "Vérification alignement grille", "it": "Controllo allineamento griglia", "ru": "Проверка выравнивания", "sl": "Preverjanje poravnave", "uk": "Перевірка вирівнювання"}
     },
     "set_gravity": {
-        "name": {"fr": "Définir gravité", "de": "Schwerkraft setzen", "it": "Imposta gravità"},
-        "description": {"fr": "Appliquer force de gravité", "de": "Schwerkraft anwenden", "it": "Applica forza di gravità"}
+        "name": {"de": "Schwerkraft setzen", "es": "Establecer gravedad", "fr": "Définir gravité", "it": "Imposta gravità", "ru": "Задать гравитацию", "sl": "Nastavi gravitacijo", "uk": "Встановити гравітацію"},
+        "description": {"de": "Schwerkraft anwenden", "es": "Aplicar fuerza de gravedad", "fr": "Appliquer force de gravité", "it": "Applica forza di gravità", "ru": "Применить силу гравитации", "sl": "Uporabi gravitacijsko silo", "uk": "Застосувати силу гравітації"}
     },
     "set_friction": {
-        "name": {"fr": "Définir friction", "de": "Reibung setzen", "it": "Imposta attrito"},
-        "description": {"fr": "Appliquer friction", "de": "Reibung anwenden", "it": "Applica attrito"}
+        "name": {"de": "Reibung setzen", "es": "Establecer fricción", "fr": "Définir friction", "it": "Imposta attrito", "ru": "Задать трение", "sl": "Nastavi trenje", "uk": "Встановити тертя"},
+        "description": {"de": "Reibung anwenden", "es": "Aplicar fricción", "fr": "Appliquer friction", "it": "Applica attrito", "ru": "Применить трение", "sl": "Uporabi trenje", "uk": "Застосувати тертя"}
     },
     "reverse_horizontal": {
-        "name": {"fr": "Inverser horizontal", "de": "Horizontal umkehren", "it": "Inverti orizzontale"},
-        "description": {"fr": "Inverser direction X", "de": "X-Richtung umkehren", "it": "Inverti direzione X"}
+        "name": {"de": "Horizontal umkehren", "es": "Invertir horizontal", "fr": "Inverser horizontal", "it": "Inverti orizzontale", "ru": "Обратить горизонтально", "sl": "Obrni vodoravno", "uk": "Обернути горизонтально"},
+        "description": {"de": "X-Richtung umkehren", "es": "Invertir dirección X", "fr": "Inverser direction X", "it": "Inverti direzione X", "ru": "Обратить направление X", "sl": "Obrni smer X", "uk": "Обернути напрямок X"}
     },
     "reverse_vertical": {
-        "name": {"fr": "Inverser vertical", "de": "Vertikal umkehren", "it": "Inverti verticale"},
-        "description": {"fr": "Inverser direction Y", "de": "Y-Richtung umkehren", "it": "Inverti direzione Y"}
+        "name": {"de": "Vertikal umkehren", "es": "Invertir vertical", "fr": "Inverser vertical", "it": "Inverti verticale", "ru": "Обратить вертикально", "sl": "Obrni navpično", "uk": "Обернути вертикально"},
+        "description": {"de": "Y-Richtung umkehren", "es": "Invertir dirección Y", "fr": "Inverser direction Y", "it": "Inverti direzione Y", "ru": "Обратить направление Y", "sl": "Obrni smer Y", "uk": "Обернути напрямок Y"}
     },
 
     # Timing
     "set_alarm": {
-        "name": {"fr": "Définir alarme", "de": "Alarm setzen", "it": "Imposta allarme"},
-        "description": {"fr": "Définir minuteur (0-11)", "de": "Timer setzen (0-11)", "it": "Imposta timer (0-11)"}
+        "name": {"de": "Alarm setzen", "es": "Establecer alarma", "fr": "Définir alarme", "it": "Imposta allarme", "ru": "Установить будильник", "sl": "Nastavi alarm", "uk": "Встановити будильник"},
+        "description": {"de": "Timer setzen (0-11)", "es": "Establecer temporizador (0-11)", "fr": "Définir minuteur (0-11)", "it": "Imposta timer (0-11)", "ru": "Установить таймер (0-11)", "sl": "Nastavi časovnik (0-11)", "uk": "Встановити таймер (0-11)"}
     },
 
     # Drawing
     "draw_text": {
-        "name": {"fr": "Dessiner texte", "de": "Text zeichnen", "it": "Disegna testo"},
-        "description": {"fr": "Afficher du texte", "de": "Text anzeigen", "it": "Visualizza testo"}
+        "name": {"de": "Text zeichnen", "es": "Dibujar texto", "fr": "Dessiner texte", "it": "Disegna testo", "ru": "Нарисовать текст", "sl": "Nariši besedilo", "uk": "Намалювати текст"},
+        "description": {"de": "Text anzeigen", "es": "Mostrar texto", "fr": "Afficher du texte", "it": "Visualizza testo", "ru": "Показать текст", "sl": "Prikaži besedilo", "uk": "Показати текст"}
     },
     "draw_rectangle": {
-        "name": {"fr": "Dessiner rectangle", "de": "Rechteck zeichnen", "it": "Disegna rettangolo"},
-        "description": {"fr": "Dessiner rectangle plein", "de": "Gefülltes Rechteck zeichnen", "it": "Disegna rettangolo pieno"}
+        "name": {"de": "Rechteck zeichnen", "es": "Dibujar rectángulo", "fr": "Dessiner rectangle", "it": "Disegna rettangolo", "ru": "Нарисовать прямоугольник", "sl": "Nariši pravokotnik", "uk": "Намалювати прямокутник"},
+        "description": {"de": "Gefülltes Rechteck zeichnen", "es": "Dibujar rectángulo relleno", "fr": "Dessiner rectangle plein", "it": "Disegna rettangolo pieno", "ru": "Нарисовать заполненный прямоугольник", "sl": "Nariši poln pravokotnik", "uk": "Намалювати заповнений прямокутник"}
     },
     "draw_circle": {
-        "name": {"fr": "Dessiner cercle", "de": "Kreis zeichnen", "it": "Disegna cerchio"},
-        "description": {"fr": "Dessiner cercle plein", "de": "Gefüllten Kreis zeichnen", "it": "Disegna cerchio pieno"}
+        "name": {"de": "Kreis zeichnen", "es": "Dibujar círculo", "fr": "Dessiner cercle", "it": "Disegna cerchio", "ru": "Нарисовать круг", "sl": "Nariši krog", "uk": "Намалювати коло"},
+        "description": {"de": "Gefüllten Kreis zeichnen", "es": "Dibujar círculo relleno", "fr": "Dessiner cercle plein", "it": "Disegna cerchio pieno", "ru": "Нарисовать заполненный круг", "sl": "Nariši poln krog", "uk": "Намалювати заповнене коло"}
     },
     "set_sprite": {
-        "name": {"fr": "Définir sprite", "de": "Sprite setzen", "it": "Imposta sprite"},
-        "description": {"fr": "Changer l'image du sprite", "de": "Sprite-Bild ändern", "it": "Cambia immagine sprite"}
+        "name": {"de": "Sprite setzen", "es": "Establecer sprite", "fr": "Définir sprite", "it": "Imposta sprite", "ru": "Установить спрайт", "sl": "Nastavi sprite", "uk": "Встановити спрайт"},
+        "description": {"de": "Sprite-Bild ändern", "es": "Cambiar imagen del sprite", "fr": "Changer l'image du sprite", "it": "Cambia immagine sprite", "ru": "Изменить изображение спрайта", "sl": "Spremeni sliko sprajtа", "uk": "Змінити зображення спрайту"}
     },
     "set_alpha": {
-        "name": {"fr": "Définir transparence", "de": "Transparenz setzen", "it": "Imposta trasparenza"},
-        "description": {"fr": "Définir alpha (0-1)", "de": "Alpha setzen (0-1)", "it": "Imposta alpha (0-1)"}
+        "name": {"de": "Transparenz setzen", "es": "Establecer transparencia", "fr": "Définir transparence", "it": "Imposta trasparenza", "ru": "Установить прозрачность", "sl": "Nastavi prosojnost", "uk": "Встановити прозорість"},
+        "description": {"de": "Alpha setzen (0-1)", "es": "Establecer alfa (0-1)", "fr": "Définir alpha (0-1)", "it": "Imposta alpha (0-1)", "ru": "Установить альфа (0-1)", "sl": "Nastavi alfo (0-1)", "uk": "Встановити альфа (0-1)"}
     },
 
     # Score/Lives/Health
     "score_set": {
-        "name": {"fr": "Définir score", "de": "Punkte setzen", "it": "Imposta punteggio"},
-        "description": {"fr": "Définir valeur du score", "de": "Punktewert setzen", "it": "Imposta valore punteggio"}
+        "name": {"de": "Punkte setzen", "es": "Establecer puntuación", "fr": "Définir score", "it": "Imposta punteggio", "ru": "Установить очки", "sl": "Nastavi točke", "uk": "Встановити очки"},
+        "description": {"de": "Punktewert setzen", "es": "Establecer valor de puntuación", "fr": "Définir valeur du score", "it": "Imposta valore punteggio", "ru": "Установить значение очков", "sl": "Nastavi vrednost točk", "uk": "Встановити значення очок"}
     },
     "score_add": {
-        "name": {"fr": "Ajouter au score", "de": "Punkte hinzufügen", "it": "Aggiungi al punteggio"},
-        "description": {"fr": "Modifier le score", "de": "Punkte ändern", "it": "Modifica punteggio"}
+        "name": {"de": "Punkte hinzufügen", "es": "Añadir puntuación", "fr": "Ajouter au score", "it": "Aggiungi al punteggio", "ru": "Добавить очки", "sl": "Dodaj točke", "uk": "Додати очки"},
+        "description": {"de": "Punkte ändern", "es": "Modificar puntuación", "fr": "Modifier le score", "it": "Modifica punteggio", "ru": "Изменить очки", "sl": "Spremeni točke", "uk": "Змінити очки"}
     },
     "lives_set": {
-        "name": {"fr": "Définir vies", "de": "Leben setzen", "it": "Imposta vite"},
-        "description": {"fr": "Définir nombre de vies", "de": "Lebenanzahl setzen", "it": "Imposta numero di vite"}
+        "name": {"de": "Leben setzen", "es": "Establecer vidas", "fr": "Définir vies", "it": "Imposta vite", "ru": "Установить жизни", "sl": "Nastavi življenja", "uk": "Встановити життя"},
+        "description": {"de": "Lebenanzahl setzen", "es": "Establecer número de vidas", "fr": "Définir nombre de vies", "it": "Imposta numero di vite", "ru": "Установить количество жизней", "sl": "Nastavi število življenj", "uk": "Встановити кількість життів"}
     },
     "lives_add": {
-        "name": {"fr": "Ajouter aux vies", "de": "Leben hinzufügen", "it": "Aggiungi alle vite"},
-        "description": {"fr": "Modifier les vies", "de": "Leben ändern", "it": "Modifica vite"}
+        "name": {"de": "Leben hinzufügen", "es": "Añadir vidas", "fr": "Ajouter aux vies", "it": "Aggiungi alle vite", "ru": "Добавить жизни", "sl": "Dodaj življenja", "uk": "Додати життя"},
+        "description": {"de": "Leben ändern", "es": "Modificar vidas", "fr": "Modifier les vies", "it": "Modifica vite", "ru": "Изменить жизни", "sl": "Spremeni življenja", "uk": "Змінити життя"}
     },
     "health_set": {
-        "name": {"fr": "Définir santé", "de": "Gesundheit setzen", "it": "Imposta salute"},
-        "description": {"fr": "Définir valeur de santé", "de": "Gesundheitswert setzen", "it": "Imposta valore salute"}
+        "name": {"de": "Gesundheit setzen", "es": "Establecer salud", "fr": "Définir santé", "it": "Imposta salute", "ru": "Установить здоровье", "sl": "Nastavi zdravje", "uk": "Встановити здоров'я"},
+        "description": {"de": "Gesundheitswert setzen", "es": "Establecer valor de salud", "fr": "Définir valeur de santé", "it": "Imposta valore salute", "ru": "Установить значение здоровья", "sl": "Nastavi vrednost zdravja", "uk": "Встановити значення здоров'я"}
     },
     "health_add": {
-        "name": {"fr": "Ajouter à la santé", "de": "Gesundheit hinzufügen", "it": "Aggiungi alla salute"},
-        "description": {"fr": "Modifier la santé", "de": "Gesundheit ändern", "it": "Modifica salute"}
+        "name": {"de": "Gesundheit hinzufügen", "es": "Añadir salud", "fr": "Ajouter à la santé", "it": "Aggiungi alla salute", "ru": "Добавить здоровье", "sl": "Dodaj zdravje", "uk": "Додати здоров'я"},
+        "description": {"de": "Gesundheit ändern", "es": "Modificar salud", "fr": "Modifier la santé", "it": "Modifica salute", "ru": "Изменить здоровье", "sl": "Spremeni zdravje", "uk": "Змінити здоров'я"}
     },
     "draw_score": {
-        "name": {"fr": "Afficher score", "de": "Punkte anzeigen", "it": "Visualizza punteggio"},
-        "description": {"fr": "Afficher texte du score", "de": "Punktetext anzeigen", "it": "Visualizza testo punteggio"}
+        "name": {"de": "Punkte anzeigen", "es": "Mostrar puntuación", "fr": "Afficher score", "it": "Visualizza punteggio", "ru": "Показать очки", "sl": "Prikaži točke", "uk": "Показати очки"},
+        "description": {"de": "Punktetext anzeigen", "es": "Mostrar texto de puntuación", "fr": "Afficher texte du score", "it": "Visualizza testo punteggio", "ru": "Показать текст очков", "sl": "Prikaži besedilo točk", "uk": "Показати текст очок"}
     },
     "draw_lives": {
-        "name": {"fr": "Afficher vies", "de": "Leben anzeigen", "it": "Visualizza vite"},
-        "description": {"fr": "Afficher icônes des vies", "de": "Leben-Icons anzeigen", "it": "Visualizza icone vite"}
+        "name": {"de": "Leben anzeigen", "es": "Mostrar vidas", "fr": "Afficher vies", "it": "Visualizza vite", "ru": "Показать жизни", "sl": "Prikaži življenja", "uk": "Показати життя"},
+        "description": {"de": "Leben-Icons anzeigen", "es": "Mostrar iconos de vidas", "fr": "Afficher icônes des vies", "it": "Visualizza icone vite", "ru": "Показать иконки жизней", "sl": "Prikaži ikone življenj", "uk": "Показати іконки життів"}
     },
     "draw_health_bar": {
-        "name": {"fr": "Afficher barre de santé", "de": "Gesundheitsleiste anzeigen", "it": "Visualizza barra salute"},
-        "description": {"fr": "Afficher barre de santé", "de": "Gesundheitsleiste anzeigen", "it": "Visualizza barra salute"}
+        "name": {"de": "Gesundheitsleiste anzeigen", "es": "Mostrar barra de salud", "fr": "Afficher barre de santé", "it": "Visualizza barra salute", "ru": "Показать полосу здоровья", "sl": "Prikaži vrstico zdravja", "uk": "Показати смужку здоров'я"},
+        "description": {"de": "Gesundheitsleiste anzeigen", "es": "Mostrar barra de salud", "fr": "Afficher barre de santé", "it": "Visualizza barra salute", "ru": "Показать полосу здоровья", "sl": "Prikaži vrstico zdravja", "uk": "Показати смужку здоров'я"}
     },
 
     # Instance
     "instance_destroy": {
-        "name": {"fr": "Détruire instance", "de": "Instanz zerstören", "it": "Distruggi istanza"},
-        "description": {"fr": "Détruire cet objet", "de": "Dieses Objekt zerstören", "it": "Distruggi questo oggetto"}
+        "name": {"de": "Instanz zerstören", "es": "Destruir instancia", "fr": "Détruire instance", "it": "Distruggi istanza", "ru": "Уничтожить экземпляр", "sl": "Uniči primerek", "uk": "Знищити екземпляр"},
+        "description": {"de": "Dieses Objekt zerstören", "es": "Destruir este objeto", "fr": "Détruire cet objet", "it": "Distruggi questo oggetto", "ru": "Уничтожить этот объект", "sl": "Uniči ta objekt", "uk": "Знищити цей об'єкт"}
     },
     "instance_destroy_other": {
-        "name": {"fr": "Détruire autre", "de": "Anderes zerstören", "it": "Distruggi altro"},
-        "description": {"fr": "Détruire objet en collision", "de": "Kollidierendes Objekt zerstören", "it": "Distruggi oggetto in collisione"}
+        "name": {"de": "Anderes zerstören", "es": "Destruir otro", "fr": "Détruire autre", "it": "Distruggi altro", "ru": "Уничтожить другой", "sl": "Uniči drugo", "uk": "Знищити інший"},
+        "description": {"de": "Kollidierendes Objekt zerstören", "es": "Destruir objeto en colisión", "fr": "Détruire objet en collision", "it": "Distruggi oggetto in collisione", "ru": "Уничтожить столкнувшийся объект", "sl": "Uniči trčen objekt", "uk": "Знищити об'єкт зіткнення"}
     },
     "instance_create": {
-        "name": {"fr": "Créer instance", "de": "Instanz erstellen", "it": "Crea istanza"},
-        "description": {"fr": "Créer nouvel objet", "de": "Neues Objekt erstellen", "it": "Crea nuovo oggetto"}
+        "name": {"de": "Instanz erstellen", "es": "Crear instancia", "fr": "Créer instance", "it": "Crea istanza", "ru": "Создать экземпляр", "sl": "Ustvari primerek", "uk": "Створити екземпляр"},
+        "description": {"de": "Neues Objekt erstellen", "es": "Crear nuevo objeto", "fr": "Créer nouvel objet", "it": "Crea nuovo oggetto", "ru": "Создать новый объект", "sl": "Ustvari nov objekt", "uk": "Створити новий об'єкт"}
     },
 
     # Room
     "room_goto_next": {
-        "name": {"fr": "Salle suivante", "de": "Nächster Raum", "it": "Stanza successiva"},
-        "description": {"fr": "Aller à la salle suivante", "de": "Zum nächsten Raum gehen", "it": "Vai alla stanza successiva"}
+        "name": {"de": "Nächster Raum", "es": "Siguiente sala", "fr": "Salle suivante", "it": "Stanza successiva", "ru": "Следующая комната", "sl": "Naslednja soba", "uk": "Наступна кімната"},
+        "description": {"de": "Zum nächsten Raum gehen", "es": "Ir a la siguiente sala", "fr": "Aller à la salle suivante", "it": "Vai alla stanza successiva", "ru": "Перейти в следующую комнату", "sl": "Pojdi v naslednjo sobo", "uk": "Перейти до наступної кімнати"}
     },
     "room_restart": {
-        "name": {"fr": "Redémarrer salle", "de": "Raum neustarten", "it": "Riavvia stanza"},
-        "description": {"fr": "Redémarrer la salle actuelle", "de": "Aktuellen Raum neustarten", "it": "Riavvia stanza corrente"}
+        "name": {"de": "Raum neustarten", "es": "Reiniciar sala", "fr": "Redémarrer salle", "it": "Riavvia stanza", "ru": "Перезапустить комнату", "sl": "Ponovno zaženi sobo", "uk": "Перезапустити кімнату"},
+        "description": {"de": "Aktuellen Raum neustarten", "es": "Reiniciar sala actual", "fr": "Redémarrer la salle actuelle", "it": "Riavvia stanza corrente", "ru": "Перезапустить текущую комнату", "sl": "Ponovno zaženi trenutno sobo", "uk": "Перезапустити поточну кімнату"}
     },
     "room_goto": {
-        "name": {"fr": "Aller à la salle", "de": "Zu Raum gehen", "it": "Vai alla stanza"},
-        "description": {"fr": "Aller à une salle spécifique", "de": "Zu bestimmtem Raum gehen", "it": "Vai a una stanza specifica"}
+        "name": {"de": "Zu Raum gehen", "es": "Ir a sala", "fr": "Aller à la salle", "it": "Vai alla stanza", "ru": "Перейти в комнату", "sl": "Pojdi v sobo", "uk": "Перейти до кімнати"},
+        "description": {"de": "Zu bestimmtem Raum gehen", "es": "Ir a una sala específica", "fr": "Aller à une salle spécifique", "it": "Vai a una stanza specifica", "ru": "Перейти в определённую комнату", "sl": "Pojdi v določeno sobo", "uk": "Перейти до певної кімнати"}
     },
 
     # Values
     "value_x": {
-        "name": {"fr": "Position X", "de": "X-Position", "it": "Posizione X"},
-        "description": {"fr": "Obtenir coordonnée X", "de": "X-Koordinate abrufen", "it": "Ottieni coordinata X"}
+        "name": {"de": "X-Position", "es": "Posición X", "fr": "Position X", "it": "Posizione X", "ru": "Позиция X", "sl": "Položaj X", "uk": "Позиція X"},
+        "description": {"de": "X-Koordinate abrufen", "es": "Obtener coordenada X", "fr": "Obtenir coordonnée X", "it": "Ottieni coordinata X", "ru": "Получить координату X", "sl": "Pridobi koordinato X", "uk": "Отримати координату X"}
     },
     "value_y": {
-        "name": {"fr": "Position Y", "de": "Y-Position", "it": "Posizione Y"},
-        "description": {"fr": "Obtenir coordonnée Y", "de": "Y-Koordinate abrufen", "it": "Ottieni coordinata Y"}
+        "name": {"de": "Y-Position", "es": "Posición Y", "fr": "Position Y", "it": "Posizione Y", "ru": "Позиция Y", "sl": "Položaj Y", "uk": "Позиція Y"},
+        "description": {"de": "Y-Koordinate abrufen", "es": "Obtener coordenada Y", "fr": "Obtenir coordonnée Y", "it": "Ottieni coordinata Y", "ru": "Получить координату Y", "sl": "Pridobi koordinato Y", "uk": "Отримати координату Y"}
     },
     "value_hspeed": {
-        "name": {"fr": "Vitesse horizontale", "de": "Horizontale Geschwindigkeit", "it": "Velocità orizzontale"},
-        "description": {"fr": "Obtenir vélocité X", "de": "X-Geschwindigkeit abrufen", "it": "Ottieni velocità X"}
+        "name": {"de": "Horizontale Geschwindigkeit", "es": "Velocidad horizontal", "fr": "Vitesse horizontale", "it": "Velocità orizzontale", "ru": "Горизонтальная скорость", "sl": "Vodoravna hitrost", "uk": "Горизонтальна швидкість"},
+        "description": {"de": "X-Geschwindigkeit abrufen", "es": "Obtener velocidad X", "fr": "Obtenir vélocité X", "it": "Ottieni velocità X", "ru": "Получить скорость X", "sl": "Pridobi hitrost X", "uk": "Отримати швидкість X"}
     },
     "value_vspeed": {
-        "name": {"fr": "Vitesse verticale", "de": "Vertikale Geschwindigkeit", "it": "Velocità verticale"},
-        "description": {"fr": "Obtenir vélocité Y", "de": "Y-Geschwindigkeit abrufen", "it": "Ottieni velocità Y"}
+        "name": {"de": "Vertikale Geschwindigkeit", "es": "Velocidad vertical", "fr": "Vitesse verticale", "it": "Velocità verticale", "ru": "Вертикальная скорость", "sl": "Navpična hitrost", "uk": "Вертикальна швидкість"},
+        "description": {"de": "Y-Geschwindigkeit abrufen", "es": "Obtener velocidad Y", "fr": "Obtenir vélocité Y", "it": "Ottieni velocità Y", "ru": "Получить скорость Y", "sl": "Pridobi hitrost Y", "uk": "Отримати швидкість Y"}
     },
     "value_score": {
-        "name": {"fr": "Score", "de": "Punkte", "it": "Punteggio"},
-        "description": {"fr": "Obtenir valeur du score", "de": "Punktewert abrufen", "it": "Ottieni valore punteggio"}
+        "name": {"de": "Punkte", "es": "Puntuación", "fr": "Score", "it": "Punteggio", "ru": "Очки", "sl": "Točke", "uk": "Очки"},
+        "description": {"de": "Punktewert abrufen", "es": "Obtener valor de puntuación", "fr": "Obtenir valeur du score", "it": "Ottieni valore punteggio", "ru": "Получить значение очков", "sl": "Pridobi vrednost točk", "uk": "Отримати значення очок"}
     },
     "value_lives": {
-        "name": {"fr": "Vies", "de": "Leben", "it": "Vite"},
-        "description": {"fr": "Obtenir nombre de vies", "de": "Lebenanzahl abrufen", "it": "Ottieni numero di vite"}
+        "name": {"de": "Leben", "es": "Vidas", "fr": "Vies", "it": "Vite", "ru": "Жизни", "sl": "Življenja", "uk": "Життя"},
+        "description": {"de": "Lebenanzahl abrufen", "es": "Obtener número de vidas", "fr": "Obtenir nombre de vies", "it": "Ottieni numero di vite", "ru": "Получить количество жизней", "sl": "Pridobi število življenj", "uk": "Отримати кількість життів"}
     },
     "value_health": {
-        "name": {"fr": "Santé", "de": "Gesundheit", "it": "Salute"},
-        "description": {"fr": "Obtenir valeur de santé", "de": "Gesundheitswert abrufen", "it": "Ottieni valore salute"}
+        "name": {"de": "Gesundheit", "es": "Salud", "fr": "Santé", "it": "Salute", "ru": "Здоровье", "sl": "Zdravje", "uk": "Здоров'я"},
+        "description": {"de": "Gesundheitswert abrufen", "es": "Obtener valor de salud", "fr": "Obtenir valeur de santé", "it": "Ottieni valore salute", "ru": "Получить значение здоровья", "sl": "Pridobi vrednost zdravja", "uk": "Отримати значення здоров'я"}
     },
     "value_mouse_x": {
-        "name": {"fr": "Souris X", "de": "Maus X", "it": "Mouse X"},
-        "description": {"fr": "Obtenir X de la souris", "de": "Maus-X abrufen", "it": "Ottieni X del mouse"}
+        "name": {"de": "Maus X", "es": "Ratón X", "fr": "Souris X", "it": "Mouse X", "ru": "Мышь X", "sl": "Miška X", "uk": "Миша X"},
+        "description": {"de": "Maus-X abrufen", "es": "Obtener X del ratón", "fr": "Obtenir X de la souris", "it": "Ottieni X del mouse", "ru": "Получить X мыши", "sl": "Pridobi X miške", "uk": "Отримати X миші"}
     },
     "value_mouse_y": {
-        "name": {"fr": "Souris Y", "de": "Maus Y", "it": "Mouse Y"},
-        "description": {"fr": "Obtenir Y de la souris", "de": "Maus-Y abrufen", "it": "Ottieni Y del mouse"}
+        "name": {"de": "Maus Y", "es": "Ratón Y", "fr": "Souris Y", "it": "Mouse Y", "ru": "Мышь Y", "sl": "Miška Y", "uk": "Миша Y"},
+        "description": {"de": "Maus-Y abrufen", "es": "Obtener Y del ratón", "fr": "Obtenir Y de la souris", "it": "Ottieni Y del mouse", "ru": "Получить Y мыши", "sl": "Pridobi Y miške", "uk": "Отримати Y миші"}
     },
 
     # Sound
     "sound_play": {
-        "name": {"fr": "Jouer son", "de": "Sound abspielen", "it": "Riproduci suono"},
-        "description": {"fr": "Jouer effet sonore", "de": "Soundeffekt abspielen", "it": "Riproduci effetto sonoro"}
+        "name": {"de": "Sound abspielen", "es": "Reproducir sonido", "fr": "Jouer son", "it": "Riproduci suono", "ru": "Воспроизвести звук", "sl": "Predvajaj zvok", "uk": "Відтворити звук"},
+        "description": {"de": "Soundeffekt abspielen", "es": "Reproducir efecto de sonido", "fr": "Jouer effet sonore", "it": "Riproduci effetto sonoro", "ru": "Воспроизвести звуковой эффект", "sl": "Predvajaj zvočni učinek", "uk": "Відтворити звуковий ефект"}
     },
     "music_play": {
-        "name": {"fr": "Jouer musique", "de": "Musik abspielen", "it": "Riproduci musica"},
-        "description": {"fr": "Jouer musique de fond", "de": "Hintergrundmusik abspielen", "it": "Riproduci musica di sottofondo"}
+        "name": {"de": "Musik abspielen", "es": "Reproducir música", "fr": "Jouer musique", "it": "Riproduci musica", "ru": "Воспроизвести музыку", "sl": "Predvajaj glasbo", "uk": "Відтворити музику"},
+        "description": {"de": "Hintergrundmusik abspielen", "es": "Reproducir música de fondo", "fr": "Jouer musique de fond", "it": "Riproduci musica di sottofondo", "ru": "Воспроизвести фоновую музыку", "sl": "Predvajaj glasbo v ozadju", "uk": "Відтворити фонову музику"}
     },
     "music_stop": {
-        "name": {"fr": "Arrêter musique", "de": "Musik stoppen", "it": "Ferma musica"},
-        "description": {"fr": "Arrêter la musique", "de": "Musik stoppen", "it": "Ferma musica"}
+        "name": {"de": "Musik stoppen", "es": "Detener música", "fr": "Arrêter musique", "it": "Ferma musica", "ru": "Остановить музыку", "sl": "Ustavi glasbo", "uk": "Зупинити музику"},
+        "description": {"de": "Musik stoppen", "es": "Detener la música", "fr": "Arrêter la musique", "it": "Ferma musica", "ru": "Остановить музыку", "sl": "Ustavi glasbo", "uk": "Зупинити музику"}
     },
 
     # Output
     "output_message": {
-        "name": {"fr": "Afficher message", "de": "Nachricht anzeigen", "it": "Mostra messaggio"},
-        "description": {"fr": "Afficher dialogue de message", "de": "Nachrichtendialog anzeigen", "it": "Visualizza dialogo messaggio"}
+        "name": {"de": "Nachricht anzeigen", "es": "Mostrar mensaje", "fr": "Afficher message", "it": "Mostra messaggio", "ru": "Показать сообщение", "sl": "Prikaži sporočilo", "uk": "Показати повідомлення"},
+        "description": {"de": "Nachrichtendialog anzeigen", "es": "Mostrar diálogo de mensaje", "fr": "Afficher dialogue de message", "it": "Visualizza dialogo messaggio", "ru": "Показать диалог сообщения", "sl": "Prikaži pogovorno okno", "uk": "Показати діалог повідомлення"}
     },
 }
 
@@ -329,3 +377,188 @@ def get_translated_block_description(block_type: str, language: str = "en") -> s
     if language == "en" or block_type not in BLOCK_TRANSLATIONS:
         return None
     return BLOCK_TRANSLATIONS[block_type]["description"].get(language)
+
+
+# Runtime translations for Pygame dialogs (highscore, etc.)
+# These are used by game_runner.py since it can't use Qt's translation system
+# Languages: de, es, fr, it, ru, sl, uk (active IDE languages)
+#            + ja, ko, nl, pl, pt, tr, zh (additional)
+RUNTIME_TRANSLATIONS = {
+    # Highscore dialog
+    "HIGH SCORES": {
+        "de": "BESTENLISTE",
+        "es": "PUNTUACIONES ALTAS",
+        "fr": "MEILLEURS SCORES",
+        "it": "PUNTEGGI MIGLIORI",
+        "ja": "ハイスコア",
+        "ko": "최고 점수",
+        "nl": "HOOGSTE SCORES",
+        "pl": "NAJLEPSZE WYNIKI",
+        "pt": "RECORDES",
+        "ru": "РЕКОРДЫ",
+        "sl": "NAJBOLJŠI REZULTATI",
+        "tr": "EN YÜKSEK SKORLAR",
+        "uk": "НАЙКРАЩІ РЕЗУЛЬТАТИ",
+        "zh": "最高分",
+    },
+    "Rank": {
+        "de": "Rang",
+        "es": "Pos.",
+        "fr": "Rang",
+        "it": "Pos.",
+        "ja": "順位",
+        "ko": "순위",
+        "nl": "Rang",
+        "pl": "Poz.",
+        "pt": "Pos.",
+        "ru": "Место",
+        "sl": "Mesto",
+        "tr": "Sıra",
+        "uk": "Місце",
+        "zh": "排名",
+    },
+    "Name": {
+        "de": "Name",
+        "es": "Nombre",
+        "fr": "Nom",
+        "it": "Nome",
+        "ja": "名前",
+        "ko": "이름",
+        "nl": "Naam",
+        "pl": "Nazwa",
+        "pt": "Nome",
+        "ru": "Имя",
+        "sl": "Ime",
+        "tr": "İsim",
+        "uk": "Ім'я",
+        "zh": "姓名",
+    },
+    "Score": {
+        "de": "Punkte",
+        "es": "Puntos",
+        "fr": "Score",
+        "it": "Punti",
+        "ja": "スコア",
+        "ko": "점수",
+        "nl": "Score",
+        "pl": "Wynik",
+        "pt": "Pontos",
+        "ru": "Очки",
+        "sl": "Točke",
+        "tr": "Skor",
+        "uk": "Очки",
+        "zh": "分数",
+    },
+    "No scores yet!": {
+        "de": "Noch keine Punkte!",
+        "es": "¡Sin puntuaciones!",
+        "fr": "Aucun score !",
+        "it": "Nessun punteggio!",
+        "ja": "スコアなし！",
+        "ko": "점수 없음!",
+        "nl": "Nog geen scores!",
+        "pl": "Brak wyników!",
+        "pt": "Sem pontuações!",
+        "ru": "Нет рекордов!",
+        "sl": "Še ni rezultatov!",
+        "tr": "Henüz skor yok!",
+        "uk": "Ще немає результатів!",
+        "zh": "暂无分数！",
+    },
+    "Press any key or click to continue": {
+        "de": "Beliebige Taste drücken oder klicken zum Fortfahren",
+        "es": "Presiona una tecla o haz clic para continuar",
+        "fr": "Appuyez sur une touche ou cliquez pour continuer",
+        "it": "Premi un tasto o clicca per continuare",
+        "ja": "続行するにはキーを押すかクリックしてください",
+        "ko": "계속하려면 아무 키나 누르거나 클릭하세요",
+        "nl": "Druk op een toets of klik om door te gaan",
+        "pl": "Naciśnij dowolny klawisz lub kliknij, aby kontynuować",
+        "pt": "Pressione uma tecla ou clique para continuar",
+        "ru": "Нажмите любую клавишу или щёлкните для продолжения",
+        "sl": "Pritisnite tipko ali kliknite za nadaljevanje",
+        "tr": "Devam etmek için bir tuşa basın veya tıklayın",
+        "uk": "Натисніть будь-яку клавішу або клацніть для продовження",
+        "zh": "按任意键或点击继续",
+    },
+    # Name entry dialog
+    "NEW HIGH SCORE!": {
+        "de": "NEUER REKORD!",
+        "es": "¡NUEVO RÉCORD!",
+        "fr": "NOUVEAU RECORD !",
+        "it": "NUOVO RECORD!",
+        "ja": "新記録！",
+        "ko": "새 기록!",
+        "nl": "NIEUW RECORD!",
+        "pl": "NOWY REKORD!",
+        "pt": "NOVO RECORDE!",
+        "ru": "НОВЫЙ РЕКОРД!",
+        "sl": "NOV REKORD!",
+        "tr": "YENİ REKOR!",
+        "uk": "НОВИЙ РЕКОРД!",
+        "zh": "新纪录！",
+    },
+    "Enter your name:": {
+        "de": "Geben Sie Ihren Namen ein:",
+        "es": "Ingresa tu nombre:",
+        "fr": "Entrez votre nom :",
+        "it": "Inserisci il tuo nome:",
+        "ja": "名前を入力：",
+        "ko": "이름을 입력하세요:",
+        "nl": "Voer uw naam in:",
+        "pl": "Wpisz swoje imię:",
+        "pt": "Digite seu nome:",
+        "ru": "Введите ваше имя:",
+        "sl": "Vnesite svoje ime:",
+        "tr": "Adınızı girin:",
+        "uk": "Введіть своє ім'я:",
+        "zh": "请输入姓名：",
+    },
+    "OK": {
+        "de": "OK",
+        "es": "OK",
+        "fr": "OK",
+        "it": "OK",
+        "ja": "OK",
+        "ko": "확인",
+        "nl": "OK",
+        "pl": "OK",
+        "pt": "OK",
+        "ru": "ОК",
+        "sl": "V redu",
+        "tr": "Tamam",
+        "uk": "OK",
+        "zh": "确定",
+    },
+    "Cancel": {
+        "de": "Abbrechen",
+        "es": "Cancelar",
+        "fr": "Annuler",
+        "it": "Annulla",
+        "ja": "キャンセル",
+        "ko": "취소",
+        "nl": "Annuleren",
+        "pl": "Anuluj",
+        "pt": "Cancelar",
+        "ru": "Отмена",
+        "sl": "Prekliči",
+        "tr": "İptal",
+        "uk": "Скасувати",
+        "zh": "取消",
+    },
+}
+
+
+def get_runtime_translation(text: str, language: str = "en") -> str:
+    """Get translated runtime text for Pygame dialogs
+
+    Args:
+        text: The English text to translate
+        language: Target language code (e.g., 'fr', 'de')
+
+    Returns:
+        Translated text, or original text if translation not available
+    """
+    if language == "en" or text not in RUNTIME_TRANSLATIONS:
+        return text
+    return RUNTIME_TRANSLATIONS[text].get(language, text)

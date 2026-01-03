@@ -31,6 +31,7 @@ class ActionDefinition:
     parameters: List[ActionParameter] = field(default_factory=list)
     gm_version: str = "8.0"
     applies_to: str = "self"  # self, other, object
+    implemented: bool = True  # False for placeholder/unimplemented actions
 
 
 # ============================================================================
@@ -108,12 +109,18 @@ GM80_ACTION_TABS = {
         "name": "Info",
         "icon": "ℹ️",
         "order": 11,
-        "description": "Information and game control"
+        "description": "Information display"
+    },
+    "game": {
+        "name": "Game",
+        "icon": "🎮",
+        "order": 12,
+        "description": "Game control actions"
     },
     "resources": {
         "name": "Resources",
         "icon": "📦",
-        "order": 12,
+        "order": 13,
         "description": "Resource replacement"
     }
 }

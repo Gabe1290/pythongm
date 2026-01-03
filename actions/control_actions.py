@@ -45,7 +45,8 @@ CONTROL_ACTIONS = {
             ActionParameter("number", "int", "Number", "Count to compare", default=0),
             ActionParameter("operation", "choice", "Operation", "Comparison operator",
                           options=["equal", "less", "greater", "less_equal", "greater_equal", "not_equal"])
-        ]
+        ],
+        implemented=False
     ),
     "test_chance": ActionDefinition(
         name="test_chance",
@@ -67,7 +68,8 @@ CONTROL_ACTIONS = {
         icon="❔",
         parameters=[
             ActionParameter("question", "string", "Question", "Question text", default="")
-        ]
+        ],
+        implemented=False
     ),
     "test_expression": ActionDefinition(
         name="test_expression",
@@ -78,7 +80,8 @@ CONTROL_ACTIONS = {
         icon="📝",
         parameters=[
             ActionParameter("expression", "string", "Expression", "GML code to evaluate", default="")
-        ]
+        ],
+        implemented=False
     ),
     "start_block": ActionDefinition(
         name="start_block",

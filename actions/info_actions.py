@@ -36,7 +36,8 @@ INFO_ACTIONS = {
         category="info",
         tab="info",
         description="Display game info screen",
-        icon="ℹ️"
+        icon="ℹ️",
+        implemented=False
     ),
     "show_video": ActionDefinition(
         name="show_video",
@@ -48,7 +49,8 @@ INFO_ACTIONS = {
         parameters=[
             ActionParameter("filename", "string", "Filename", "Video file path", default=""),
             ActionParameter("fullscreen", "boolean", "Fullscreen", "Play fullscreen", default=False)
-        ]
+        ],
+        implemented=False
     ),
     "open_webpage": ActionDefinition(
         name="open_webpage",
@@ -59,21 +61,22 @@ INFO_ACTIONS = {
         icon="🌐",
         parameters=[
             ActionParameter("url", "string", "URL", "Web address", default="")
-        ]
+        ],
+        implemented=False
     ),
     "restart_game": ActionDefinition(
         name="restart_game",
         display_name="Restart Game",
-        category="info",
-        tab="info",
+        category="game",
+        tab="game",
         description="Restart from first room",
         icon="🔄"
     ),
     "end_game": ActionDefinition(
         name="end_game",
         display_name="End Game",
-        category="info",
-        tab="info",
+        category="game",
+        tab="game",
         description="Close the game",
         icon="🚪"
     ),
@@ -86,7 +89,8 @@ INFO_ACTIONS = {
         icon="💾",
         parameters=[
             ActionParameter("filename", "string", "Filename", "Save file name", default="savegame.sav")
-        ]
+        ],
+        implemented=False
     ),
     "load_game": ActionDefinition(
         name="load_game",
@@ -97,7 +101,8 @@ INFO_ACTIONS = {
         icon="📂",
         parameters=[
             ActionParameter("filename", "string", "Filename", "Save file name", default="savegame.sav")
-        ]
+        ],
+        implemented=False
     ),
 }
 

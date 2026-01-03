@@ -294,7 +294,7 @@ class AssetManager(QObject):
             "asset_type": asset_type,
             "created": datetime.now().isoformat(),
             "modified": datetime.now().isoformat(),
-            "imported": False,
+            "imported": True,  # Asset is created within IDE, so it's immediately available
             "file_path": "",
         }
 
@@ -649,10 +649,14 @@ class AssetManager(QObject):
             # Use OrderedDict to preserve insertion order from JSON
             self.assets_cache[asset_type] = OrderedDict(asset_dict)
 
-        # Validate asset paths
+        # Validate asset paths and fix 'imported' flag for existing assets
         for asset_type, assets_of_type in self.assets_cache.items():
             for asset_name, asset_data in assets_of_type.items():
                 self._validate_asset_paths(asset_data)
+                # Migration fix: Assets that exist in the project should be marked as imported
+                # This fixes older projects where assets were incorrectly saved with imported=False
+                if not asset_data.get('imported', False):
+                    asset_data['imported'] = True
 
     def save_assets_to_project_data(self, project_data: Dict[str, Any]) -> None:
         """Save assets to project JSON data preserving order"""

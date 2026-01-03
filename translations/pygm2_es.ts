@@ -4952,12 +4952,12 @@ Voulez-vous redémarrer maintenant ?</translation>
     <message>
         <location filename="../widgets/welcome_tab.py" line="45"/>
         <source>🏠 Create Room (Ctrl+R)</source>
-        <translation>🏠 Créer une room (Ctrl+R)</translation>
+        <translation>🏠 Crear sala (Ctrl+R)</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="44"/>
         <source>📋 Recent Projects</source>
-        <translation>📋 Projets récents</translation>
+        <translation>📋 Proyectos recientes</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="78"/>

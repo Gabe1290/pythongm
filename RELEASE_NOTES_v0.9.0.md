@@ -23,6 +23,9 @@ PyGameMaker is a GameMaker-style visual game development IDE for creating 2D gam
 - Fixed keyboard event removal in object editor
 - Fixed inconsistent icon sizes in asset tree
 - Fixed Blockly preset filtering issues
+- Fixed Blockly config migration not persisting new blocks/categories (caused missing events/actions on some systems)
+- Fixed object events not saving to external files (events like `no_more_lives` were lost on reload)
+- Fixed `restart_game` action calling non-existent method (game now properly restarts)
 
 ## UI/UX Improvements
 

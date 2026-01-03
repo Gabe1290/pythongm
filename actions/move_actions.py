@@ -32,7 +32,8 @@ MOVE_ACTIONS = {
         parameters=[
             ActionParameter("direction", "float", "Direction", "Direction in degrees (0-360)", default=0),
             ActionParameter("speed", "float", "Speed", "Movement speed", default=4.0)
-        ]
+        ],
+        implemented=False
     ),
     "move_towards_point": ActionDefinition(
         name="move_towards_point",
@@ -45,7 +46,8 @@ MOVE_ACTIONS = {
             ActionParameter("x", "float", "X", "Target X position", default=0),
             ActionParameter("y", "float", "Y", "Target Y position", default=0),
             ActionParameter("speed", "float", "Speed", "Movement speed", default=4.0)
-        ]
+        ],
+        implemented=False
     ),
     "set_hspeed": ActionDefinition(
         name="set_hspeed",
@@ -176,7 +178,8 @@ MOVE_ACTIONS = {
             ActionParameter("direction", "float", "Direction", "Direction to move", default=0),
             ActionParameter("max_distance", "float", "Max Distance", "Maximum pixels to move", default=1000),
             ActionParameter("object", "object", "Against Object", "Object to stop at", default="all")
-        ]
+        ],
+        implemented=False
     ),
     "bounce": ActionDefinition(
         name="bounce",

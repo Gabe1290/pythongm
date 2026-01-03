@@ -23,6 +23,7 @@ from typing import Dict, List, Optional, Tuple, Any
 
 from runtime.action_executor import ActionExecutor
 from events.plugin_loader import load_all_plugins
+from config.blockly_translations import get_runtime_translation
 
 # Translation strings for game caption (key: language code)
 CAPTION_TRANSLATIONS = {
@@ -192,6 +193,11 @@ class GameInstance:
         # Speed properties for smooth movement
         self.hspeed = 0.0  # Horizontal speed (pixels per frame)
         self.vspeed = 0.0  # Vertical speed (pixels per frame)
+
+        # Physics properties
+        self.gravity = 0.0  # Gravity strength (pixels per frame^2)
+        self.gravity_direction = 270  # Direction of gravity in degrees (270 = down)
+        self.friction = 0.0  # Friction coefficient (reduces speed each frame)
 
         # Track if movement keys are currently pressed
         self.keys_pressed = set()  # Set of currently pressed keys
@@ -581,6 +587,8 @@ class GameRunner:
         self.lives = 3
         self.health = 100.0
         self.highscores = []  # List of (name, score) tuples
+        self.highscore_max_entries = 10  # Maximum entries in highscore table
+        self.highscore_file = None  # Path to highscore file (set when project loads)
 
         # Global variables storage (user-defined variables accessible from any instance)
         self.global_variables: Dict[str, Any] = {}
@@ -645,13 +653,19 @@ class GameRunner:
             with open(project_file, 'r') as f:
                 self.project_data = json.load(f)
 
-            # Load room data from separate files if they exist
+            # Load asset data from separate files if they exist
             self._load_rooms_from_files()
+            self._load_objects_from_files()
+            self._load_sprites_from_files()
 
             print(f"Loaded project: {self.project_data.get('name', 'Untitled')}")
 
             # Load project settings
             self._load_project_settings()
+
+            # Set up highscore file path and load existing scores
+            self.highscore_file = self.project_path / "highscores.json"
+            self.load_highscores()
 
             # Only load rooms (without sprites for instances yet)
             self.load_rooms_without_sprites()
@@ -699,6 +713,63 @@ class GameRunner:
                 # No external file - use embedded instances (legacy format)
                 if room_data.get('instances'):
                     print(f"📂 Room {room_name}: using embedded instances")
+
+    def _load_objects_from_files(self) -> None:
+        """Load object data from separate files in objects/ directory"""
+        objects_dir = self.project_path / "objects"
+
+        if not objects_dir.exists():
+            return
+
+        objects_data = self.project_data.get('assets', {}).get('objects', {})
+
+        for object_name, object_data in objects_data.items():
+            object_file = objects_dir / f"{object_name}.json"
+
+            if object_file.exists():
+                try:
+                    with open(object_file, 'r') as f:
+                        file_object_data = json.load(f)
+
+                    # Merge file data into object data (file takes precedence)
+                    # Copy all properties from file, especially events
+                    for key in ['events', 'sprite', 'visible', 'solid', 'persistent',
+                               'depth', 'parent', 'mask', 'imported', 'created', 'modified']:
+                        if key in file_object_data:
+                            object_data[key] = file_object_data[key]
+
+                    event_count = len(file_object_data.get('events', {}))
+                    print(f"📂 Loaded object: {object_name} ({event_count} events from file)")
+
+                except Exception as e:
+                    print(f"⚠️ Failed to load object file {object_file}: {e}")
+
+    def _load_sprites_from_files(self) -> None:
+        """Load sprite data from separate files in sprites/ directory"""
+        sprites_dir = self.project_path / "sprites"
+
+        if not sprites_dir.exists():
+            return
+
+        sprites_data = self.project_data.get('assets', {}).get('sprites', {})
+
+        for sprite_name, sprite_data in sprites_data.items():
+            sprite_file = sprites_dir / f"{sprite_name}.json"
+
+            if sprite_file.exists():
+                try:
+                    with open(sprite_file, 'r') as f:
+                        file_sprite_data = json.load(f)
+
+                    # Merge file data into sprite data (file takes precedence)
+                    for key in ['frames', 'width', 'height', 'origin_x', 'origin_y',
+                               'collision_mask', 'bbox_left', 'bbox_right', 'bbox_top',
+                               'bbox_bottom', 'imported', 'created', 'modified', 'file_path']:
+                        if key in file_sprite_data:
+                            sprite_data[key] = file_sprite_data[key]
+
+                except Exception as e:
+                    print(f"⚠️ Failed to load sprite file {sprite_file}: {e}")
 
     def _load_project_settings(self) -> None:
         """Load game settings from project data"""
@@ -1237,6 +1308,37 @@ class GameRunner:
                 self.goto_previous_room()
                 return
 
+            if hasattr(instance, 'restart_game_flag') and instance.restart_game_flag:
+                instance.restart_game_flag = False  # Clear the flag first
+                print("🔄 Restarting game...")
+                self.restart_game()
+                return
+
+
+        # Apply physics (gravity and friction) to all instances
+        import math
+        for instance in self.current_room.instances:
+            # Apply gravity
+            if hasattr(instance, 'gravity') and instance.gravity != 0:
+                gravity_dir = getattr(instance, 'gravity_direction', 270)
+                rad = math.radians(gravity_dir)
+                instance.hspeed += instance.gravity * math.cos(rad)
+                instance.vspeed -= instance.gravity * math.sin(rad)  # Negative because Y increases downward
+
+            # Apply friction
+            if hasattr(instance, 'friction') and instance.friction != 0:
+                speed = math.sqrt(instance.hspeed ** 2 + instance.vspeed ** 2)
+                if speed > 0:
+                    # Reduce speed by friction amount
+                    new_speed = max(0, speed - instance.friction)
+                    if new_speed == 0:
+                        instance.hspeed = 0
+                        instance.vspeed = 0
+                    else:
+                        # Scale velocity to new speed
+                        scale = new_speed / speed
+                        instance.hspeed *= scale
+                        instance.vspeed *= scale
 
         # Apply speed-based movement (hspeed, vspeed) with collision checking
         # Track blocked collisions per instance - deduplicate to avoid infinite bounce loops
@@ -1778,6 +1880,70 @@ class GameRunner:
 
             print(f"✅ Room {room_name} restarted with {len(new_room.instances)} instances")
 
+    def restart_game(self):
+        """Restart the game from the first room with reset score/lives/health"""
+        print("🔄 Restarting game from first room...")
+
+        # Reset score, lives, and health to starting values
+        settings = self.project_data.get('settings', {})
+        self.score = settings.get('starting_score', 0)
+        self.lives = settings.get('starting_lives', 3)
+        self.health = settings.get('starting_health', 100)
+
+        print(f"  📊 Reset: Score={self.score}, Lives={self.lives}, Health={self.health}")
+
+        # Get the first room
+        room_list = self.get_room_list()
+        if not room_list:
+            print("  ⚠️ No rooms found to restart to")
+            return
+
+        first_room_name = room_list[0]
+        print(f"  ➡️ Going to first room: {first_room_name}")
+
+        # Recreate the first room from scratch (like restart_current_room does)
+        room_data = self.project_data.get('assets', {}).get('rooms', {}).get(first_room_name)
+        if room_data:
+            assets = self.project_data.get('assets', {})
+            objects_data = assets.get('objects', {})
+
+            new_room = GameRoom(
+                first_room_name,
+                room_data,
+                action_executor=self.action_executor,
+                project_path=self.project_path,
+                sprites_data=assets
+            )
+
+            # Assign sprites to instances
+            new_room.set_sprites_for_instances(self.sprites, objects_data)
+
+            # Load background if needed
+            if new_room.background_image_name:
+                new_room.load_background_image()
+
+            # Resize window if needed
+            if self.screen:
+                room_width = new_room.width
+                room_height = new_room.height
+                current_width, current_height = self.screen.get_size()
+                if room_width != current_width or room_height != current_height:
+                    print(f"  📐 Resizing window to {room_width}x{room_height}")
+                    self.screen = pygame.display.set_mode((room_width, room_height))
+
+            # Replace the room in our dictionary
+            self.rooms[first_room_name] = new_room
+            self.current_room = new_room
+
+            # Execute create events for all instances
+            for instance in self.current_room.instances:
+                if instance.object_data and "events" in instance.object_data:
+                    instance.action_executor.execute_event(instance, "create", instance.object_data["events"])
+
+            print(f"  ✅ Game restarted with room '{first_room_name}' ({len(new_room.instances)} instances)")
+        else:
+            print(f"  ⚠️ Could not find room data for '{first_room_name}'")
+
     def goto_next_room(self):
         """Go to the next room"""
         print("🚪 goto_next_room called")
@@ -1901,6 +2067,38 @@ class GameRunner:
 
         # Update display
         pygame.display.flip()
+
+    def trigger_no_more_lives_event(self, triggering_instance=None):
+        """Trigger the no_more_lives event for all instances that have it defined"""
+        if not self.current_room:
+            return
+
+        print("💀 Triggering no_more_lives event for all instances...")
+
+        for instance in self.current_room.instances:
+            if not instance.object_data:
+                continue
+
+            events = instance.object_data.get('events', {})
+            if 'no_more_lives' in events:
+                print(f"  📢 Executing no_more_lives for {instance.object_name}")
+                instance.action_executor.execute_event(instance, 'no_more_lives', events)
+
+    def trigger_no_more_health_event(self, triggering_instance=None):
+        """Trigger the no_more_health event for all instances that have it defined"""
+        if not self.current_room:
+            return
+
+        print("💔 Triggering no_more_health event for all instances...")
+
+        for instance in self.current_room.instances:
+            if not instance.object_data:
+                continue
+
+            events = instance.object_data.get('events', {})
+            if 'no_more_health' in events:
+                print(f"  📢 Executing no_more_health for {instance.object_name}")
+                instance.action_executor.execute_event(instance, 'no_more_health', events)
 
     def show_debug_info(self):
         """Print debug information"""
@@ -2084,6 +2282,478 @@ class GameRunner:
             pygame.display.flip()
             if self.clock:
                 self.clock.tick(60)
+
+    # ==================== HIGHSCORE SYSTEM ====================
+
+    def load_highscores(self):
+        """Load highscores from file"""
+        if not self.highscore_file:
+            return
+
+        try:
+            if self.highscore_file.exists():
+                with open(self.highscore_file, 'r') as f:
+                    data = json.load(f)
+                    self.highscores = [(entry['name'], entry['score']) for entry in data]
+                    print(f"📊 Loaded {len(self.highscores)} highscores from {self.highscore_file}")
+        except Exception as e:
+            print(f"⚠️ Could not load highscores: {e}")
+            self.highscores = []
+
+    def save_highscores(self):
+        """Save highscores to file"""
+        if not self.highscore_file:
+            return
+
+        try:
+            # Ensure directory exists
+            self.highscore_file.parent.mkdir(parents=True, exist_ok=True)
+
+            data = [{'name': name, 'score': score} for name, score in self.highscores]
+            with open(self.highscore_file, 'w') as f:
+                json.dump(data, f, indent=2)
+            print(f"💾 Saved {len(self.highscores)} highscores to {self.highscore_file}")
+        except Exception as e:
+            print(f"⚠️ Could not save highscores: {e}")
+
+    def clear_highscores(self):
+        """Clear all highscores"""
+        self.highscores = []
+        self.save_highscores()
+        print("🧹 Highscore table cleared")
+
+    def is_highscore(self, score: int) -> bool:
+        """Check if a score qualifies for the highscore table"""
+        if len(self.highscores) < self.highscore_max_entries:
+            return True
+        # Check if score is higher than the lowest entry
+        if self.highscores:
+            lowest_score = min(entry[1] for entry in self.highscores)
+            return score > lowest_score
+        return True
+
+    def add_highscore(self, name: str, score: int):
+        """Add a new highscore entry"""
+        self.highscores.append((name, score))
+        # Sort by score descending
+        self.highscores.sort(key=lambda x: x[1], reverse=True)
+        # Keep only top entries
+        self.highscores = self.highscores[:self.highscore_max_entries]
+        self.save_highscores()
+
+    def show_highscore_dialog(self, background_color=(255, 255, 220),
+                               new_color=(255, 0, 0), other_color=(0, 0, 0),
+                               allow_name_entry: bool = True):
+        """Display the highscore table dialog
+
+        Args:
+            background_color: Background color for the dialog (R, G, B) - ignored, uses modern dark theme
+            new_color: Color for the new highscore entry (R, G, B)
+            other_color: Color for other entries (R, G, B) - ignored, uses theme colors
+            allow_name_entry: If True and current score qualifies, prompt for name
+        """
+        print(f"🏆 Showing highscore dialog (score: {self.score})")
+
+        if not self.screen:
+            print("⚠️ Cannot show highscore dialog - no screen")
+            return
+
+        # Clear any pending events
+        pygame.event.clear()
+
+        # Check if current score qualifies and we should prompt for name
+        player_name = None
+        player_rank = -1
+        if allow_name_entry and self.is_highscore(self.score) and self.score > 0:
+            player_name = self._show_name_entry_dialog()
+            if player_name:
+                self.add_highscore(player_name, self.score)
+                # Find the rank of the new entry
+                for i, (name, score) in enumerate(self.highscores):
+                    if name == player_name and score == self.score:
+                        player_rank = i
+                        break
+
+        # Render the current game state first
+        if self.current_room:
+            self.current_room.render(self.screen)
+            pygame.display.flip()
+
+        # Modern dark theme colors (matching IDE)
+        bg_dark = (30, 30, 30)           # #1e1e1e - main background
+        bg_header = (0, 122, 204)        # #007acc - blue header (like IDE status bar)
+        bg_row_odd = (37, 37, 38)        # #252526 - alternating row
+        bg_row_even = (45, 45, 48)       # #2d2d30 - alternating row
+        bg_highlight = (9, 71, 113)      # #094771 - selected/highlight
+        text_primary = (224, 224, 224)   # #e0e0e0 - main text
+        text_secondary = (150, 150, 150) # #969696 - secondary text
+        text_gold = (255, 215, 0)        # Gold for rank numbers
+        text_new = (100, 200, 100)       # Green for new entry
+        border_color = (62, 62, 66)      # #3e3e42 - borders
+        button_normal = (0, 122, 204)    # #007acc - blue button
+        button_hover = (28, 151, 234)    # #1c97ea - lighter blue
+
+        # Create semi-transparent overlay
+        overlay = pygame.Surface((self.window_width, self.window_height))
+        overlay.fill((0, 0, 0))
+        overlay.set_alpha(180)
+
+        # Dialog dimensions
+        dialog_width = min(420, self.window_width - 40)
+        dialog_height = min(420, self.window_height - 40)
+        dialog_x = (self.window_width - dialog_width) // 2
+        dialog_y = (self.window_height - dialog_height) // 2
+
+        # Button dimensions
+        button_width = 100
+        button_height = 32
+        button_x = dialog_x + (dialog_width - button_width) // 2
+        button_y = dialog_y + dialog_height - button_height - 16
+
+        # Fonts - try to use a clean sans-serif font
+        try:
+            title_font = pygame.font.SysFont('segoeui', 24, bold=True)
+            header_font = pygame.font.SysFont('segoeui', 16, bold=True)
+            entry_font = pygame.font.SysFont('segoeui', 18)
+            button_font = pygame.font.SysFont('segoeui', 16, bold=True)
+        except Exception:
+            try:
+                title_font = pygame.font.SysFont('arial', 24, bold=True)
+                header_font = pygame.font.SysFont('arial', 16, bold=True)
+                entry_font = pygame.font.SysFont('arial', 18)
+                button_font = pygame.font.SysFont('arial', 16, bold=True)
+            except Exception:
+                title_font = pygame.font.Font(None, 32)
+                header_font = pygame.font.Font(None, 22)
+                entry_font = pygame.font.Font(None, 24)
+                button_font = pygame.font.Font(None, 22)
+
+        # Dialog loop
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.stop_game()
+                    waiting = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key in (pygame.K_RETURN, pygame.K_SPACE, pygame.K_ESCAPE):
+                        waiting = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mx, my = event.pos
+                    if (button_x <= mx <= button_x + button_width and
+                        button_y <= my <= button_y + button_height):
+                        waiting = False
+
+            # Draw overlay
+            self.screen.blit(overlay, (0, 0))
+
+            # Draw dialog with rounded corners effect (draw multiple rects)
+            # Main background
+            pygame.draw.rect(self.screen, bg_dark,
+                           (dialog_x, dialog_y, dialog_width, dialog_height))
+            # Border
+            pygame.draw.rect(self.screen, border_color,
+                           (dialog_x, dialog_y, dialog_width, dialog_height), 2)
+
+            # Draw header bar
+            header_height = 45
+            pygame.draw.rect(self.screen, bg_header,
+                           (dialog_x + 2, dialog_y + 2, dialog_width - 4, header_height))
+
+            # Title text (translated)
+            title_str = get_runtime_translation("HIGH SCORES", self.language)
+            title_text = title_font.render(title_str, True, (255, 255, 255))
+            title_x = dialog_x + (dialog_width - title_text.get_width()) // 2
+            self.screen.blit(title_text, (title_x, dialog_y + 12))
+
+            # Column headers background
+            header_y = dialog_y + header_height + 10
+            pygame.draw.rect(self.screen, bg_row_odd,
+                           (dialog_x + 10, header_y, dialog_width - 20, 28))
+
+            # Column headers (translated)
+            rank_str = get_runtime_translation("Rank", self.language)
+            name_str = get_runtime_translation("Name", self.language)
+            score_str = get_runtime_translation("Score", self.language)
+            rank_text = header_font.render(rank_str, True, text_secondary)
+            name_text = header_font.render(name_str.upper(), True, text_secondary)
+            score_text = header_font.render(score_str.upper(), True, text_secondary)
+
+            self.screen.blit(rank_text, (dialog_x + 25, header_y + 6))
+            self.screen.blit(name_text, (dialog_x + 70, header_y + 6))
+            self.screen.blit(score_text, (dialog_x + dialog_width - 100, header_y + 6))
+
+            # Draw highscore entries
+            entry_start_y = header_y + 35
+            entry_height = 30
+
+            if not self.highscores:
+                # No scores yet (translated)
+                no_scores_str = get_runtime_translation("No scores yet!", self.language)
+                no_scores_text = entry_font.render(no_scores_str, True, text_secondary)
+                no_scores_x = dialog_x + (dialog_width - no_scores_text.get_width()) // 2
+                self.screen.blit(no_scores_text, (no_scores_x, entry_start_y + 60))
+            else:
+                for i, (name, score) in enumerate(self.highscores[:10]):
+                    entry_y = entry_start_y + i * entry_height
+
+                    # Alternating row background
+                    if i == player_rank:
+                        row_bg = bg_highlight
+                    elif i % 2 == 0:
+                        row_bg = bg_row_even
+                    else:
+                        row_bg = bg_row_odd
+
+                    pygame.draw.rect(self.screen, row_bg,
+                                   (dialog_x + 10, entry_y, dialog_width - 20, entry_height - 2))
+
+                    # Text color
+                    if i == player_rank:
+                        text_color = text_new
+                        rank_color = text_new
+                    else:
+                        text_color = text_primary
+                        # Gold/silver/bronze for top 3
+                        if i == 0:
+                            rank_color = (255, 215, 0)   # Gold
+                        elif i == 1:
+                            rank_color = (192, 192, 192) # Silver
+                        elif i == 2:
+                            rank_color = (205, 127, 50)  # Bronze
+                        else:
+                            rank_color = text_secondary
+
+                    # Rank number
+                    rank_str = str(i + 1)
+                    rank_surface = entry_font.render(rank_str, True, rank_color)
+                    self.screen.blit(rank_surface, (dialog_x + 25, entry_y + 5))
+
+                    # Name (truncate if too long)
+                    display_name = name[:18] + ".." if len(name) > 18 else name
+                    name_surface = entry_font.render(display_name, True, text_color)
+                    self.screen.blit(name_surface, (dialog_x + 70, entry_y + 5))
+
+                    # Score (right-aligned)
+                    score_str = f"{score:,}"
+                    score_surface = entry_font.render(score_str, True, text_color)
+                    score_x = dialog_x + dialog_width - 30 - score_surface.get_width()
+                    self.screen.blit(score_surface, (score_x, entry_y + 5))
+
+            # Draw OK button
+            mouse_pos = pygame.mouse.get_pos()
+            button_hover_state = (button_x <= mouse_pos[0] <= button_x + button_width and
+                          button_y <= mouse_pos[1] <= button_y + button_height)
+
+            btn_color = button_hover if button_hover_state else button_normal
+            pygame.draw.rect(self.screen, btn_color,
+                           (button_x, button_y, button_width, button_height))
+
+            ok_str = get_runtime_translation("OK", self.language)
+            ok_text = button_font.render(ok_str, True, (255, 255, 255))
+            ok_x = button_x + (button_width - ok_text.get_width()) // 2
+            ok_y = button_y + (button_height - ok_text.get_height()) // 2
+            self.screen.blit(ok_text, (ok_x, ok_y))
+
+            pygame.display.flip()
+            if self.clock:
+                self.clock.tick(60)
+
+    def _show_name_entry_dialog(self) -> str:
+        """Show dialog to enter player name for highscore
+
+        Returns:
+            Player name or empty string if cancelled
+        """
+        print("📝 Showing name entry dialog")
+
+        if not self.screen:
+            return ""
+
+        pygame.event.clear()
+
+        # Render game state
+        if self.current_room:
+            self.current_room.render(self.screen)
+            pygame.display.flip()
+
+        # Modern dark theme colors (matching IDE)
+        bg_dark = (30, 30, 30)           # #1e1e1e
+        bg_header = (0, 122, 204)        # #007acc
+        bg_input = (45, 45, 48)          # #2d2d30
+        text_primary = (224, 224, 224)   # #e0e0e0
+        text_score = (100, 200, 100)     # Green for score
+        border_color = (62, 62, 66)      # #3e3e42
+        input_border = (0, 122, 204)     # Blue border for focused input
+        button_ok = (0, 122, 204)        # #007acc
+        button_ok_hover = (28, 151, 234) # #1c97ea
+        button_cancel = (90, 90, 90)     # Gray
+        button_cancel_hover = (110, 110, 110)
+
+        # Overlay
+        overlay = pygame.Surface((self.window_width, self.window_height))
+        overlay.fill((0, 0, 0))
+        overlay.set_alpha(180)
+
+        # Dialog dimensions
+        dialog_width = min(380, self.window_width - 40)
+        dialog_height = 200
+        dialog_x = (self.window_width - dialog_width) // 2
+        dialog_y = (self.window_height - dialog_height) // 2
+
+        # Input field dimensions
+        input_width = dialog_width - 50
+        input_height = 36
+        input_x = dialog_x + 25
+        input_y = dialog_y + 110
+
+        # Button dimensions
+        button_width = 90
+        button_height = 32
+        ok_button_x = dialog_x + dialog_width // 2 - button_width - 8
+        cancel_button_x = dialog_x + dialog_width // 2 + 8
+        button_y = dialog_y + dialog_height - button_height - 16
+
+        # Fonts
+        try:
+            title_font = pygame.font.SysFont('segoeui', 22, bold=True)
+            label_font = pygame.font.SysFont('segoeui', 16)
+            score_font = pygame.font.SysFont('segoeui', 20, bold=True)
+            input_font = pygame.font.SysFont('segoeui', 18)
+            button_font = pygame.font.SysFont('segoeui', 15, bold=True)
+        except Exception:
+            try:
+                title_font = pygame.font.SysFont('arial', 22, bold=True)
+                label_font = pygame.font.SysFont('arial', 16)
+                score_font = pygame.font.SysFont('arial', 20, bold=True)
+                input_font = pygame.font.SysFont('arial', 18)
+                button_font = pygame.font.SysFont('arial', 15, bold=True)
+            except Exception:
+                title_font = pygame.font.Font(None, 28)
+                label_font = pygame.font.Font(None, 22)
+                score_font = pygame.font.Font(None, 26)
+                input_font = pygame.font.Font(None, 24)
+                button_font = pygame.font.Font(None, 20)
+
+        player_name = ""
+        max_name_length = 20
+        cursor_visible = True
+        cursor_timer = 0
+
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.stop_game()
+                    return ""
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        if player_name.strip():
+                            return player_name.strip()
+                    elif event.key == pygame.K_ESCAPE:
+                        return ""
+                    elif event.key == pygame.K_BACKSPACE:
+                        player_name = player_name[:-1]
+                    elif event.unicode and len(player_name) < max_name_length:
+                        # Only allow printable characters
+                        if event.unicode.isprintable():
+                            player_name += event.unicode
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mx, my = event.pos
+                    # OK button
+                    if (ok_button_x <= mx <= ok_button_x + button_width and
+                        button_y <= my <= button_y + button_height):
+                        if player_name.strip():
+                            return player_name.strip()
+                    # Cancel button
+                    if (cancel_button_x <= mx <= cancel_button_x + button_width and
+                        button_y <= my <= button_y + button_height):
+                        return ""
+
+            # Update cursor blink
+            cursor_timer += 1
+            if cursor_timer >= 30:
+                cursor_visible = not cursor_visible
+                cursor_timer = 0
+
+            # Draw overlay
+            self.screen.blit(overlay, (0, 0))
+
+            # Draw dialog background
+            pygame.draw.rect(self.screen, bg_dark,
+                           (dialog_x, dialog_y, dialog_width, dialog_height))
+            pygame.draw.rect(self.screen, border_color,
+                           (dialog_x, dialog_y, dialog_width, dialog_height), 2)
+
+            # Header bar
+            header_height = 45
+            pygame.draw.rect(self.screen, bg_header,
+                           (dialog_x + 2, dialog_y + 2, dialog_width - 4, header_height))
+
+            # Title (translated)
+            title_str = get_runtime_translation("NEW HIGH SCORE!", self.language)
+            title_text = title_font.render(title_str, True, (255, 255, 255))
+            title_x = dialog_x + (dialog_width - title_text.get_width()) // 2
+            self.screen.blit(title_text, (title_x, dialog_y + 12))
+
+            # Score display (translated)
+            score_label = get_runtime_translation("Score", self.language)
+            score_text = score_font.render(f"{score_label}: {self.score:,}", True, text_score)
+            score_x = dialog_x + (dialog_width - score_text.get_width()) // 2
+            self.screen.blit(score_text, (score_x, dialog_y + 55))
+
+            # Name label (translated)
+            label_str = get_runtime_translation("Enter your name:", self.language)
+            label_text = label_font.render(label_str, True, text_primary)
+            self.screen.blit(label_text, (input_x, input_y - 22))
+
+            # Input field
+            pygame.draw.rect(self.screen, bg_input,
+                           (input_x, input_y, input_width, input_height))
+            pygame.draw.rect(self.screen, input_border,
+                           (input_x, input_y, input_width, input_height), 2)
+
+            # Input text with cursor
+            display_text = player_name
+            if cursor_visible:
+                display_text += "|"
+            name_surface = input_font.render(display_text, True, text_primary)
+            self.screen.blit(name_surface, (input_x + 10, input_y + 8))
+
+            # Buttons
+            mouse_pos = pygame.mouse.get_pos()
+
+            # OK button
+            ok_hover = (ok_button_x <= mouse_pos[0] <= ok_button_x + button_width and
+                       button_y <= mouse_pos[1] <= button_y + button_height)
+            ok_color = button_ok_hover if ok_hover else button_ok
+            pygame.draw.rect(self.screen, ok_color,
+                           (ok_button_x, button_y, button_width, button_height))
+            pygame.draw.rect(self.screen, (50, 50, 50),
+                           (ok_button_x, button_y, button_width, button_height), 1)
+            ok_str = get_runtime_translation("OK", self.language)
+            ok_text = button_font.render(ok_str, True, (255, 255, 255))
+            self.screen.blit(ok_text, (ok_button_x + (button_width - ok_text.get_width()) // 2,
+                                       button_y + (button_height - ok_text.get_height()) // 2))
+
+            # Cancel button (translated)
+            cancel_hover = (cancel_button_x <= mouse_pos[0] <= cancel_button_x + button_width and
+                           button_y <= mouse_pos[1] <= button_y + button_height)
+            cancel_color = (180, 100, 100) if cancel_hover else (150, 80, 80)
+            pygame.draw.rect(self.screen, cancel_color,
+                           (cancel_button_x, button_y, button_width, button_height))
+            pygame.draw.rect(self.screen, (50, 50, 50),
+                           (cancel_button_x, button_y, button_width, button_height), 1)
+            cancel_str = get_runtime_translation("Cancel", self.language)
+            cancel_text = button_font.render(cancel_str, True, (255, 255, 255))
+            self.screen.blit(cancel_text, (cancel_button_x + (button_width - cancel_text.get_width()) // 2,
+                                           button_y + (button_height - cancel_text.get_height()) // 2))
+
+            pygame.display.flip()
+            if self.clock:
+                self.clock.tick(60)
+
+        return ""
 
     def cleanup(self):
         """Clean up pygame resources"""

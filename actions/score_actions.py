@@ -48,16 +48,16 @@ SCORE_ACTIONS = {
     "show_highscore": ActionDefinition(
         name="show_highscore",
         display_name="Show Highscore Table",
-        category="score",
-        tab="score",
+        category="game",
+        tab="game",
         description="Display highscore table",
         icon="🥇"
     ),
     "clear_highscore": ActionDefinition(
         name="clear_highscore",
         display_name="Clear Highscore Table",
-        category="score",
-        tab="score",
+        category="game",
+        tab="game",
         description="Reset all highscores",
         icon="🧹"
     ),

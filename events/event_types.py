@@ -201,6 +201,22 @@ EVENT_TYPES = {
         category="Other",
         icon="⚠️",
         parameters=[]
+    ),
+    "no_more_lives": EventType(
+        name="no_more_lives",
+        display_name="No More Lives",
+        description="Executed when lives become 0 or less",
+        category="Other",
+        icon="💀",
+        parameters=[]
+    ),
+    "no_more_health": EventType(
+        name="no_more_health",
+        display_name="No More Health",
+        description="Executed when health becomes 0 or less",
+        category="Other",
+        icon="💔",
+        parameters=[]
     )
 }
 

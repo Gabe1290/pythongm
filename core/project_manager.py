@@ -175,8 +175,10 @@ class ProjectManager(QObject):
                 project_data = json.load(f, object_pairs_hook=OrderedDict)
             print(f"DEBUG PM load_project: loaded data keys={list(project_data.keys())}")
 
-            # Load room data from separate files if they exist
+            # Load asset data from separate files if they exist
             self._load_rooms_from_files(project_path, project_data)
+            self._load_objects_from_files(project_path, project_data)
+            self._load_sprites_from_files(project_path, project_data)
 
             # Validate project data
             if not self._validate_project_data(project_data):
@@ -252,6 +254,82 @@ class ProjectManager(QObject):
                 else:
                     print(f"⚠️ Room {room_name}: no instances found")
 
+    def _load_objects_from_files(self, project_path: Path, project_data: dict) -> None:
+        """Load object data from separate files in objects/ directory"""
+        objects_dir = project_path / "objects"
+
+        if not objects_dir.exists():
+            print("DEBUG: No objects/ directory found, using embedded object data")
+            return
+
+        objects_data = project_data.get('assets', {}).get('objects', {})
+
+        for object_name, object_data in objects_data.items():
+            object_file = objects_dir / f"{object_name}.json"
+
+            if object_file.exists():
+                try:
+                    with open(object_file, 'r', encoding='utf-8') as f:
+                        from collections import OrderedDict
+                        file_object_data = json.load(f, object_pairs_hook=OrderedDict)
+
+                    # Merge file data into object data (file takes precedence)
+                    # Copy all properties from file, especially events
+                    for key in ['events', 'sprite', 'visible', 'solid', 'persistent',
+                               'depth', 'parent', 'mask', 'imported', 'created', 'modified']:
+                        if key in file_object_data:
+                            object_data[key] = file_object_data[key]
+
+                    event_count = len(file_object_data.get('events', {}))
+                    print(f"📂 Loaded object: {object_name} ({event_count} events from file)")
+
+                    # Clean up external file marker
+                    if '_external_file' in object_data:
+                        del object_data['_external_file']
+
+                except Exception as e:
+                    print(f"⚠️ Failed to load object file {object_file}: {e}")
+            else:
+                # No external file - use embedded data
+                if object_data.get('events'):
+                    print(f"📂 Object {object_name}: using embedded events")
+
+    def _load_sprites_from_files(self, project_path: Path, project_data: dict) -> None:
+        """Load sprite data from separate files in sprites/ directory"""
+        sprites_dir = project_path / "sprites"
+
+        if not sprites_dir.exists():
+            print("DEBUG: No sprites/ directory found, using embedded sprite data")
+            return
+
+        sprites_data = project_data.get('assets', {}).get('sprites', {})
+
+        for sprite_name, sprite_data in sprites_data.items():
+            sprite_file = sprites_dir / f"{sprite_name}.json"
+
+            if sprite_file.exists():
+                try:
+                    with open(sprite_file, 'r', encoding='utf-8') as f:
+                        from collections import OrderedDict
+                        file_sprite_data = json.load(f, object_pairs_hook=OrderedDict)
+
+                    # Merge file data into sprite data (file takes precedence)
+                    for key in ['frames', 'width', 'height', 'origin_x', 'origin_y',
+                               'collision_mask', 'bbox_left', 'bbox_right', 'bbox_top',
+                               'bbox_bottom', 'imported', 'created', 'modified', 'file_path']:
+                        if key in file_sprite_data:
+                            sprite_data[key] = file_sprite_data[key]
+
+                    frame_count = len(file_sprite_data.get('frames', []))
+                    print(f"📂 Loaded sprite: {sprite_name} ({frame_count} frames from file)")
+
+                    # Clean up external file marker
+                    if '_external_file' in sprite_data:
+                        del sprite_data['_external_file']
+
+                except Exception as e:
+                    print(f"⚠️ Failed to load sprite file {sprite_file}: {e}")
+
     def save_project(self, project_path: Optional[Path] = None) -> bool:
         """
         Save the current project
@@ -312,6 +390,9 @@ class ProjectManager(QObject):
 
             # Save rooms to separate files
             self._save_rooms_to_files(save_path)
+
+            # Save objects to separate files (if objects/ directory exists)
+            self._save_objects_to_files(save_path)
 
             # Create a copy of project data without room instance data for main file
             # (room metadata stays in project.json, instance data goes to room files)
@@ -380,6 +461,31 @@ class ProjectManager(QObject):
                 json.dump(room_data, f, indent=2, ensure_ascii=False)
 
             print(f"💾 Saved room: {room_name} ({len(instances_to_save)} instances)")
+
+    def _save_objects_to_files(self, project_path: Path) -> None:
+        """Save each object's data to a separate file in objects/ directory
+
+        Only saves if objects/ directory already exists (to maintain compatibility
+        with projects that don't use external object files).
+        """
+        objects_dir = project_path / "objects"
+
+        # Only save to external files if the directory already exists
+        # This maintains backward compatibility with projects that don't use this feature
+        if not objects_dir.exists():
+            return
+
+        objects_data = self.current_project_data.get('assets', {}).get('objects', {})
+
+        for object_name, object_data in objects_data.items():
+            object_file = objects_dir / f"{object_name}.json"
+
+            # Save full object data including events
+            with open(object_file, 'w', encoding='utf-8') as f:
+                json.dump(object_data, f, indent=2, ensure_ascii=False)
+
+            event_count = len(object_data.get('events', {}))
+            print(f"💾 Saved object: {object_name} ({event_count} events)")
 
     def _prepare_project_data_for_save(self) -> dict:
         """Prepare project data for saving - rooms store only metadata, not instances"""
@@ -901,7 +1007,7 @@ class ProjectManager(QObject):
             "creation_code": "",
             "created": now,
             "modified": now,
-            "imported": False
+            "imported": True  # Room is created within IDE, so it's immediately available
         }
 
         return project_data

@@ -29,6 +29,7 @@ BLOCK_REGISTRY: Dict[str, List[Dict[str, str]]] = {
         {"type": "event_mouse", "name": "Mouse Events", "description": "Mouse clicks and movement"},
         {"type": "event_collision", "name": "Collision", "description": "Collision with object"},
         {"type": "event_alarm", "name": "Alarm Events", "description": "Alarm triggers (0-11)"},
+        {"type": "event_other", "name": "Other Events", "description": "No more lives, health, room events"},
     ],
     "Movement": [
         {"type": "move_set_hspeed", "name": "Set Horizontal Speed", "description": "Set X velocity"},
@@ -45,6 +46,9 @@ BLOCK_REGISTRY: Dict[str, List[Dict[str, str]]] = {
         {"type": "set_friction", "name": "Set Friction", "description": "Apply friction"},
         {"type": "reverse_horizontal", "name": "Reverse Horizontal", "description": "Flip X direction"},
         {"type": "reverse_vertical", "name": "Reverse Vertical", "description": "Flip Y direction"},
+        {"type": "bounce", "name": "Bounce", "description": "Bounce off solid objects"},
+        {"type": "wrap_around_room", "name": "Wrap Around Room", "description": "Wrap to opposite side"},
+        {"type": "move_to_contact", "name": "Move to Contact", "description": "Move until touching"},
     ],
     "Timing": [
         {"type": "set_alarm", "name": "Set Alarm", "description": "Set timer (0-11)"},
@@ -98,6 +102,12 @@ BLOCK_REGISTRY: Dict[str, List[Dict[str, str]]] = {
     ],
     "Output": [
         {"type": "output_message", "name": "Show Message", "description": "Display message dialog"},
+    ],
+    "Game": [
+        {"type": "game_end", "name": "End Game", "description": "Close the game"},
+        {"type": "game_restart", "name": "Restart Game", "description": "Restart from first room"},
+        {"type": "show_highscore", "name": "Show Highscore", "description": "Display highscore table"},
+        {"type": "clear_highscore", "name": "Clear Highscore", "description": "Reset highscore table"},
     ],
 }
 
@@ -579,7 +589,36 @@ def load_config() -> BlocklyConfig:
         try:
             with open(config_path) as f:
                 data = json.load(f)
-                return BlocklyConfig.from_dict(data)
+                config = BlocklyConfig.from_dict(data)
+
+                # Migrate: If using "full" preset, ensure all new blocks and categories are enabled
+                # This handles the case where new blocks/categories were added after config was saved
+                if config.preset_name == "full":
+                    needs_save = False
+
+                    all_blocks = get_all_block_types()
+                    new_blocks = all_blocks - config.enabled_blocks
+                    if new_blocks:
+                        print(f"Blockly config migration: Adding {len(new_blocks)} new blocks to full preset: {new_blocks}")
+                        for block in new_blocks:
+                            config.enabled_blocks.add(block)
+                        needs_save = True
+
+                    # Also ensure all categories are enabled
+                    all_categories = set(BLOCK_REGISTRY.keys())
+                    new_categories = all_categories - config.enabled_categories
+                    if new_categories:
+                        print(f"Blockly config migration: Adding {len(new_categories)} new categories: {new_categories}")
+                        for category in new_categories:
+                            config.enabled_categories.add(category)
+                        needs_save = True
+
+                    # Save the migrated config so it persists
+                    if needs_save:
+                        save_config(config)
+                        print("Blockly config migration: Saved updated configuration")
+
+                return config
         except Exception as e:
             print(f"Error loading Blockly config: {e}")
 

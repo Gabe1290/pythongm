@@ -19,7 +19,8 @@ DRAW_ACTIONS = {
             ActionParameter("x", "int", "X", "X position", default=0),
             ActionParameter("y", "int", "Y", "Y position", default=0),
             ActionParameter("subimage", "int", "Subimage", "Frame index", default=0)
-        ]
+        ],
+        implemented=False
     ),
     "draw_background": ActionDefinition(
         name="draw_background",
@@ -33,7 +34,8 @@ DRAW_ACTIONS = {
             ActionParameter("x", "int", "X", "X position", default=0),
             ActionParameter("y", "int", "Y", "Y position", default=0),
             ActionParameter("tiled", "boolean", "Tiled", "Tile the background", default=False)
-        ]
+        ],
+        implemented=False
     ),
     "draw_text": ActionDefinition(
         name="draw_text",
@@ -61,7 +63,8 @@ DRAW_ACTIONS = {
             ActionParameter("text", "string", "Text", "Text to display", default=""),
             ActionParameter("xscale", "float", "X Scale", "Horizontal scale", default=1.0),
             ActionParameter("yscale", "float", "Y Scale", "Vertical scale", default=1.0)
-        ]
+        ],
+        implemented=False
     ),
     "draw_rectangle": ActionDefinition(
         name="draw_rectangle",
@@ -91,7 +94,8 @@ DRAW_ACTIONS = {
             ActionParameter("x2", "int", "X2", "Right", default=100),
             ActionParameter("y2", "int", "Y2", "Bottom", default=100),
             ActionParameter("filled", "boolean", "Filled", "Fill ellipse", default=False)
-        ]
+        ],
+        implemented=False
     ),
     "draw_line": ActionDefinition(
         name="draw_line",
@@ -105,7 +109,8 @@ DRAW_ACTIONS = {
             ActionParameter("y1", "int", "Y1", "Start Y", default=0),
             ActionParameter("x2", "int", "X2", "End X", default=100),
             ActionParameter("y2", "int", "Y2", "End Y", default=100)
-        ]
+        ],
+        implemented=False
     ),
     "draw_arrow": ActionDefinition(
         name="draw_arrow",
@@ -120,7 +125,8 @@ DRAW_ACTIONS = {
             ActionParameter("x2", "int", "X2", "End X", default=100),
             ActionParameter("y2", "int", "Y2", "End Y", default=100),
             ActionParameter("tip_size", "int", "Tip Size", "Arrow tip size", default=10)
-        ]
+        ],
+        implemented=False
     ),
     "set_draw_color": ActionDefinition(
         name="set_draw_color",
@@ -146,7 +152,8 @@ DRAW_ACTIONS = {
                           default="left", options=["left", "center", "right"]),
             ActionParameter("valign", "choice", "Vertical Align", "Vertical alignment",
                           default="top", options=["top", "middle", "bottom"])
-        ]
+        ],
+        implemented=False
     ),
     "fill_color": ActionDefinition(
         name="fill_color",
@@ -157,7 +164,8 @@ DRAW_ACTIONS = {
         icon="🎨",
         parameters=[
             ActionParameter("color", "color", "Color", "Fill color", default="#000000")
-        ]
+        ],
+        implemented=False
     ),
     "create_effect": ActionDefinition(
         name="create_effect",
@@ -174,7 +182,8 @@ DRAW_ACTIONS = {
             ActionParameter("size", "choice", "Size", "Effect size",
                           default="medium", options=["small", "medium", "large"]),
             ActionParameter("color", "color", "Color", "Effect color", default="#FFFFFF")
-        ]
+        ],
+        implemented=False
     ),
     # Animation actions
     "set_image_index": ActionDefinition(

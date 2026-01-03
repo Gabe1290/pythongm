@@ -34,7 +34,8 @@ MAIN2_ACTIONS = {
             ActionParameter("xscale", "float", "X Scale", "Horizontal scale", default=1.0),
             ActionParameter("yscale", "float", "Y Scale", "Vertical scale", default=1.0),
             ActionParameter("angle", "float", "Rotation", "Rotation angle", default=0.0)
-        ]
+        ],
+        implemented=False
     ),
     "set_color": ActionDefinition(
         name="set_color",
@@ -46,7 +47,8 @@ MAIN2_ACTIONS = {
         parameters=[
             ActionParameter("color", "color", "Color", "Blend color", default="#FFFFFF"),
             ActionParameter("alpha", "float", "Alpha", "Transparency (0-1)", default=1.0)
-        ]
+        ],
+        implemented=False
     ),
     "play_sound": ActionDefinition(
         name="play_sound",
@@ -81,7 +83,8 @@ MAIN2_ACTIONS = {
         parameters=[
             ActionParameter("sound", "sound", "Sound", "Sound to check"),
             ActionParameter("not_flag", "boolean", "NOT", "Invert condition", default=False)
-        ]
+        ],
+        implemented=False
     ),
 }
 

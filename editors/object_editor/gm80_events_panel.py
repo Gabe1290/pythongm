@@ -46,6 +46,7 @@ BLOCKLY_TO_GM80_MAPPING = {
     "event_draw": {"categories": ["draw"]},
     "event_collision": {"categories": ["collision"]},
     "event_alarm": {"categories": ["alarm"]},
+    "event_other": {"categories": ["other"]},  # Other events (no_more_lives, no_more_health, etc.)
 
     # Step events - includes begin_step, step, end_step
     "event_step": {"categories": ["step"]},
@@ -84,6 +85,9 @@ BLOCKLY_TO_GM80_ACTION_MAPPING = {
     "set_friction": ["set_friction"],
     "reverse_horizontal": ["reverse_horizontal"],
     "reverse_vertical": ["reverse_vertical"],
+    "bounce": ["bounce"],
+    "wrap_around_room": ["wrap_around_room"],
+    "move_to_contact": ["move_to_contact"],
 
     # Instance actions
     "instance_destroy": ["destroy_instance"],
@@ -126,6 +130,12 @@ BLOCKLY_TO_GM80_ACTION_MAPPING = {
 
     # Output actions
     "output_message": ["display_message"],
+
+    # Game control actions
+    "game_end": ["end_game"],
+    "game_restart": ["restart_game"],
+    "show_highscore": ["show_highscore"],
+    "clear_highscore": ["clear_highscore"],
 }
 
 
@@ -466,10 +476,18 @@ class GM80EventsPanel(QWidget):
                 tab_menu = add_action_menu.addMenu(f"{tab_info['icon']} {tab_info['name']}")
 
                 for action in enabled_actions:
-                    action_item = tab_menu.addAction(f"{action.icon} {action.display_name}")
-                    action_item.triggered.connect(
-                        lambda checked, e=event_data, a=action: self.add_action_to_event(e, a.name)
-                    )
+                    # Check if action is implemented
+                    is_implemented = getattr(action, 'implemented', True)
+
+                    if is_implemented:
+                        action_item = tab_menu.addAction(f"{action.icon} {action.display_name}")
+                        action_item.triggered.connect(
+                            lambda checked, e=event_data, a=action: self.add_action_to_event(e, a.name)
+                        )
+                    else:
+                        # Show unimplemented actions as grayed out with indicator
+                        action_item = tab_menu.addAction(f"{action.icon} {action.display_name} (not implemented)")
+                        action_item.setEnabled(False)
 
             print(f"🎯 Action filtering: {filtered_actions}/{total_actions} actions enabled")
 

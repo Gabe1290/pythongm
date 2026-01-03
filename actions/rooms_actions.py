@@ -16,7 +16,8 @@ ROOMS_ACTIONS = {
         icon="⏱️",
         parameters=[
             ActionParameter("speed", "int", "Speed", "Frames per second", default=30)
-        ]
+        ],
+        implemented=False
     ),
     "set_room_caption": ActionDefinition(
         name="set_room_caption",
@@ -27,7 +28,8 @@ ROOMS_ACTIONS = {
         icon="🏷️",
         parameters=[
             ActionParameter("caption", "string", "Caption", "Caption text", default="")
-        ]
+        ],
+        implemented=False
     ),
     "set_room_persistent": ActionDefinition(
         name="set_room_persistent",
@@ -38,7 +40,8 @@ ROOMS_ACTIONS = {
         icon="💾",
         parameters=[
             ActionParameter("persistent", "boolean", "Persistent", "Keep room state", default=True)
-        ]
+        ],
+        implemented=False
     ),
     "set_background_color": ActionDefinition(
         name="set_background_color",
@@ -50,7 +53,8 @@ ROOMS_ACTIONS = {
         parameters=[
             ActionParameter("color", "color", "Color", "Background color", default="#000000"),
             ActionParameter("show_color", "boolean", "Show Color", "Display background color", default=True)
-        ]
+        ],
+        implemented=False
     ),
     "set_background": ActionDefinition(
         name="set_background",
@@ -67,7 +71,8 @@ ROOMS_ACTIONS = {
             ActionParameter("tiled_v", "boolean", "Tile Vertical", "Tile vertically", default=False),
             ActionParameter("hspeed", "float", "H Speed", "Horizontal scroll speed", default=0),
             ActionParameter("vspeed", "float", "V Speed", "Vertical scroll speed", default=0)
-        ]
+        ],
+        implemented=False
     ),
     "enable_views": ActionDefinition(
         name="enable_views",
@@ -78,7 +83,8 @@ ROOMS_ACTIONS = {
         icon="👁️",
         parameters=[
             ActionParameter("enable", "boolean", "Enable", "Enable views", default=True)
-        ]
+        ],
+        implemented=False
     ),
     "set_view": ActionDefinition(
         name="set_view",
@@ -103,7 +109,8 @@ ROOMS_ACTIONS = {
             ActionParameter("vborder", "int", "V Border", "Vertical border", default=32),
             ActionParameter("hspeed", "int", "H Speed", "Max horizontal speed", default=-1),
             ActionParameter("vspeed", "int", "V Speed", "Max vertical speed", default=-1)
-        ]
+        ],
+        implemented=False
     ),
 }
 

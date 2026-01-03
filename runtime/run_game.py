@@ -18,10 +18,11 @@ from runtime.game_runner import GameRunner
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python run_game.py <path_to_project.json>")
+        print("Usage: python run_game.py <path_to_project.json> [language_code]")
         sys.exit(1)
 
     project_json = sys.argv[1]
+    language = sys.argv[2] if len(sys.argv) > 2 else 'en'
 
     if not os.path.exists(project_json):
         print(f"Error: Project file not found: {project_json}")
@@ -29,6 +30,7 @@ def main():
 
     try:
         runner = GameRunner(project_json)
+        runner.language = language  # Set the language for runtime translations
         runner.run()
         sys.exit(0)
     except Exception as e:

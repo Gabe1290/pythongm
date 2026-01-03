@@ -30,7 +30,8 @@ TIMING_ACTIONS = {
         icon="⏱️",
         parameters=[
             ActionParameter("timeline", "timeline", "Timeline", "Timeline to use")
-        ]
+        ],
+        implemented=False
     ),
     "set_timeline_position": ActionDefinition(
         name="set_timeline_position",
@@ -42,7 +43,8 @@ TIMING_ACTIONS = {
         parameters=[
             ActionParameter("position", "int", "Position", "Timeline position", default=0),
             ActionParameter("relative", "boolean", "Relative", "Add to current position", default=False)
-        ]
+        ],
+        implemented=False
     ),
     "set_timeline_speed": ActionDefinition(
         name="set_timeline_speed",
@@ -53,7 +55,8 @@ TIMING_ACTIONS = {
         icon="⏱️",
         parameters=[
             ActionParameter("speed", "float", "Speed", "Timeline speed", default=1.0)
-        ]
+        ],
+        implemented=False
     ),
     "start_timeline": ActionDefinition(
         name="start_timeline",
@@ -61,7 +64,8 @@ TIMING_ACTIONS = {
         category="timing",
         tab="timing",
         description="Start timeline playback",
-        icon="▶️"
+        icon="▶️",
+        implemented=False
     ),
     "pause_timeline": ActionDefinition(
         name="pause_timeline",
@@ -69,7 +73,8 @@ TIMING_ACTIONS = {
         category="timing",
         tab="timing",
         description="Pause timeline",
-        icon="⏸️"
+        icon="⏸️",
+        implemented=False
     ),
     "stop_timeline": ActionDefinition(
         name="stop_timeline",
@@ -77,7 +82,8 @@ TIMING_ACTIONS = {
         category="timing",
         tab="timing",
         description="Stop and reset timeline",
-        icon="⏹️"
+        icon="⏹️",
+        implemented=False
     ),
 }
 
