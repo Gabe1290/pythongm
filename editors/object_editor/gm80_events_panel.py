@@ -901,7 +901,7 @@ class GM80EventsPanel(QWidget):
             self,
             self.tr("Configure Events"),
             self.tr("To enable/disable events, go to:\n\n"
-            "Tools → Configure Blockly Blocks\n\n"
+            "Tools → Configure Events & Actions\n\n"
             "Select which events you want available in both the\n"
             "visual programming editor and this traditional event editor.\n\n"
             "Changes will take effect immediately.")

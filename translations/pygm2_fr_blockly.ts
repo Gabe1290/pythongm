@@ -4,8 +4,8 @@
     <name>BlocklyConfigDialog</name>
     <message>
       <location filename="../dialogs/blockly_config_dialog.py" line="32" />
-      <source>Configure Blockly Blocks</source>
-      <translation>Configurer les blocs Blockly</translation>
+      <source>Configure Events &amp; Actions</source>
+      <translation>Configurer les événements et actions</translation>
     </message>
     <message>
       <location filename="../dialogs/blockly_config_dialog.py" line="62" />
@@ -43,10 +43,28 @@
       <translation>RPG basé sur une grille</translation>
     </message>
     <message>
-      <location filename="../dialogs/blockly_config_dialog.py" line="245" />
-      <location filename="../dialogs/blockly_config_dialog.py" line="71" />
+      <location filename="../dialogs/blockly_config_dialog.py" line="72" />
+      <source>Sokoban (Box Puzzle)</source>
+      <translation>Sokoban (Puzzle de boîtes)</translation>
+    </message>
+    <message>
+      <location filename="../dialogs/blockly_config_dialog.py" line="73" />
+      <source>Testing (Validated Only)</source>
+      <translation>Test (Validé uniquement)</translation>
+    </message>
+    <message>
+      <location filename="../dialogs/blockly_config_dialog.py" line="74" />
+      <source>Implemented Only</source>
+      <translation>Implémenté uniquement</translation>
+    </message>
+    <message>
+      <location filename="../dialogs/blockly_config_dialog.py" line="75" />
       <source>Custom</source>
       <translation>Personnalisé</translation>
+    </message>
+    <message>
+      <source>[Not implemented] {0}</source>
+      <translation>[Non implémenté] {0}</translation>
     </message>
     <message>
       <location filename="../dialogs/blockly_config_dialog.py" line="86" />

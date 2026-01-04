@@ -13,7 +13,7 @@ This package contains:
 - Project management tools
 """
 
-__version__ = "0.10.0-alpha"
+__version__ = "0.10.1-alpha"
 __author__ = "Gabriel Thullen"
 __description__ = "GameMaker-style IDE for Python game development"
 

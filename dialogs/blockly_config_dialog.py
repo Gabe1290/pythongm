@@ -13,7 +13,7 @@ from PySide6.QtGui import QColor, QBrush
 
 from config.blockly_config import (
     BlocklyConfig, BLOCK_REGISTRY, PRESETS, save_config, load_config,
-    BLOCK_DEPENDENCIES
+    BLOCK_DEPENDENCIES, is_block_implemented
 )
 from config.blockly_translations import (
     get_translated_category,
@@ -29,7 +29,7 @@ class BlocklyConfigDialog(QDialog):
 
     def __init__(self, parent=None, current_config: BlocklyConfig = None):
         super().__init__(parent)
-        self.setWindowTitle(self.tr("Configure Blockly Blocks"))
+        self.setWindowTitle(self.tr("Configure Events & Actions"))
         self.resize(700, 600)
 
         # Current configuration
@@ -72,6 +72,7 @@ class BlocklyConfigDialog(QDialog):
             self.tr("Grid-based RPG"),
             self.tr("Sokoban (Box Puzzle)"),
             self.tr("Testing (Validated Only)"),
+            self.tr("Implemented Only"),
             self.tr("Custom")
         ])
         self.preset_combo.blockSignals(False)
@@ -185,10 +186,23 @@ class BlocklyConfigDialog(QDialog):
                 display_name = translated_name if translated_name else block["name"]
                 display_desc = translated_desc if translated_desc else block["description"]
 
+                # Check if block is implemented
+                implemented = is_block_implemented(block["type"])
+
+                # Add marker for unimplemented blocks
+                if not implemented:
+                    display_name = f"⚠ {display_name}"
+                    display_desc = self.tr("[Not implemented] {0}").format(display_desc)
+
                 block_item = QTreeWidgetItem(category_item, [display_name, display_desc])
                 block_item.setFlags(block_item.flags() | Qt.ItemIsUserCheckable)
                 block_item.setCheckState(0, Qt.Unchecked)
                 block_item.setData(0, Qt.UserRole, block["type"])
+
+                # Style unimplemented blocks with gray/italic
+                if not implemented:
+                    block_item.setForeground(0, QBrush(QColor("#888888")))
+                    block_item.setForeground(1, QBrush(QColor("#888888")))
 
                 # Show dependencies as tooltip
                 if block["type"] in BLOCK_DEPENDENCIES:
@@ -237,7 +251,8 @@ class BlocklyConfigDialog(QDialog):
             "grid_rpg": 4,
             "sokoban": 5,
             "testing": 6,
-        }.get(self.config.preset_name, 7)  # 7 = Custom
+            "implemented_only": 7,
+        }.get(self.config.preset_name, 8)  # 8 = Custom
         self.preset_combo.setCurrentIndex(preset_index)
 
         self.tree.blockSignals(False)
@@ -257,6 +272,7 @@ class BlocklyConfigDialog(QDialog):
             self.tr("Grid-based RPG"): "grid_rpg",
             self.tr("Sokoban (Box Puzzle)"): "sokoban",
             self.tr("Testing (Validated Only)"): "testing",
+            self.tr("Implemented Only"): "implemented_only",
         }
 
         if text == self.tr("Custom"):
@@ -298,9 +314,9 @@ class BlocklyConfigDialog(QDialog):
 
         # Mark as custom ONLY if user manually changed something (not during load)
         # Check if tree signals are blocked - if so, we're loading, not user action
-        if not self.tree.signalsBlocked() and self.preset_combo.currentIndex() != 7:
+        if not self.tree.signalsBlocked() and self.preset_combo.currentIndex() != 8:
             self.tree.blockSignals(True)
-            self.preset_combo.setCurrentIndex(7)  # Custom
+            self.preset_combo.setCurrentIndex(8)  # Custom
             self.config.preset_name = "custom"
             self.tree.blockSignals(False)
 

@@ -4,49 +4,67 @@
     <name>BlocklyConfigDialog</name>
     <message>
       <location filename="../dialogs/blockly_config_dialog.py" line="32" />
-      <source>Configure Blockly Blocks</source>
-      <translation>Configure Blockly Blocks</translation>
+      <source>Configure Events &amp; Actions</source>
+      <translation>Настройка событий и действий</translation>
     </message>
     <message>
       <location filename="../dialogs/blockly_config_dialog.py" line="62" />
       <source>Preset:</source>
-      <translation>Preset:</translation>
+      <translation>Шаблон:</translation>
     </message>
     <message>
       <location filename="../dialogs/blockly_config_dialog.py" line="238" />
       <location filename="../dialogs/blockly_config_dialog.py" line="66" />
       <source>Full (All Blocks)</source>
-      <translation>Full (All Blocks)</translation>
+      <translation>Полный (Все блоки)</translation>
     </message>
     <message>
       <location filename="../dialogs/blockly_config_dialog.py" line="239" />
       <location filename="../dialogs/blockly_config_dialog.py" line="67" />
       <source>Beginner (Basic Blocks)</source>
-      <translation>Beginner (Basic Blocks)</translation>
+      <translation>Начинающий (Базовые блоки)</translation>
     </message>
     <message>
       <location filename="../dialogs/blockly_config_dialog.py" line="240" />
       <location filename="../dialogs/blockly_config_dialog.py" line="68" />
       <source>Intermediate (More Features)</source>
-      <translation>Intermediate (More Features)</translation>
+      <translation>Средний (Больше функций)</translation>
     </message>
     <message>
       <location filename="../dialogs/blockly_config_dialog.py" line="241" />
       <location filename="../dialogs/blockly_config_dialog.py" line="69" />
       <source>Platformer Game</source>
-      <translation>Platformer Game</translation>
+      <translation>Платформер</translation>
     </message>
     <message>
       <location filename="../dialogs/blockly_config_dialog.py" line="242" />
       <location filename="../dialogs/blockly_config_dialog.py" line="70" />
       <source>Grid-based RPG</source>
-      <translation>Grid-based RPG</translation>
+      <translation>RPG на сетке</translation>
     </message>
     <message>
-      <location filename="../dialogs/blockly_config_dialog.py" line="245" />
-      <location filename="../dialogs/blockly_config_dialog.py" line="71" />
+      <location filename="../dialogs/blockly_config_dialog.py" line="72" />
+      <source>Sokoban (Box Puzzle)</source>
+      <translation>Сокобан (Головоломка с ящиками)</translation>
+    </message>
+    <message>
+      <location filename="../dialogs/blockly_config_dialog.py" line="73" />
+      <source>Testing (Validated Only)</source>
+      <translation>Тестирование (Только проверенные)</translation>
+    </message>
+    <message>
+      <location filename="../dialogs/blockly_config_dialog.py" line="74" />
+      <source>Implemented Only</source>
+      <translation>Только реализованные</translation>
+    </message>
+    <message>
+      <location filename="../dialogs/blockly_config_dialog.py" line="75" />
       <source>Custom</source>
-      <translation>Custom</translation>
+      <translation>Пользовательский</translation>
+    </message>
+    <message>
+      <source>[Not implemented] {0}</source>
+      <translation>[Не реализовано] {0}</translation>
     </message>
     <message>
       <location filename="../dialogs/blockly_config_dialog.py" line="86" />

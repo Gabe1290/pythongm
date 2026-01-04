@@ -15,101 +15,121 @@ import json
 # ============================================================================
 
 # All available block types organized by category
-BLOCK_REGISTRY: Dict[str, List[Dict[str, str]]] = {
+# Each block has: type, name, description, and implemented (True/False)
+BLOCK_REGISTRY: Dict[str, List[Dict]] = {
     "Events": [
-        {"type": "event_create", "name": "Create Event", "description": "When object is created"},
-        {"type": "event_step", "name": "Step Event", "description": "Every frame"},
-        {"type": "event_draw", "name": "Draw Event", "description": "During drawing phase"},
-        {"type": "event_destroy", "name": "Destroy Event", "description": "When object is destroyed"},
-        {"type": "event_keyboard_nokey", "name": "No Key", "description": "No key pressed"},
-        {"type": "event_keyboard_anykey", "name": "Any Key", "description": "Any key pressed"},
-        {"type": "event_keyboard_held", "name": "Keyboard (held)", "description": "Key held down"},
-        {"type": "event_keyboard_press", "name": "Key Press", "description": "Key pressed once"},
-        {"type": "event_keyboard_release", "name": "Key Release", "description": "Key released"},
-        {"type": "event_mouse", "name": "Mouse Events", "description": "Mouse clicks and movement"},
-        {"type": "event_collision", "name": "Collision", "description": "Collision with object"},
-        {"type": "event_alarm", "name": "Alarm Events", "description": "Alarm triggers (0-11)"},
-        {"type": "event_other", "name": "Other Events", "description": "No more lives, health, room events"},
+        {"type": "event_create", "name": "Create Event", "description": "When object is created", "implemented": True},
+        {"type": "event_step", "name": "Step Event", "description": "Every frame", "implemented": True},
+        {"type": "event_draw", "name": "Draw Event", "description": "During drawing phase", "implemented": True},
+        {"type": "event_destroy", "name": "Destroy Event", "description": "When object is destroyed", "implemented": True},
+        {"type": "event_keyboard_nokey", "name": "No Key", "description": "No key pressed", "implemented": True},
+        {"type": "event_keyboard_anykey", "name": "Any Key", "description": "Any key pressed", "implemented": True},
+        {"type": "event_keyboard_held", "name": "Keyboard (held)", "description": "Key held down", "implemented": True},
+        {"type": "event_keyboard_press", "name": "Key Press", "description": "Key pressed once", "implemented": True},
+        {"type": "event_keyboard_release", "name": "Key Release", "description": "Key released", "implemented": True},
+        {"type": "event_mouse", "name": "Mouse Events", "description": "Mouse clicks and movement", "implemented": True},
+        {"type": "event_collision", "name": "Collision", "description": "Collision with object", "implemented": True},
+        {"type": "event_alarm", "name": "Alarm Events", "description": "Alarm triggers (0-11)", "implemented": True},
+        {"type": "event_other", "name": "Other Events", "description": "No more lives, health, room events", "implemented": True},
     ],
     "Movement": [
-        {"type": "move_set_hspeed", "name": "Set Horizontal Speed", "description": "Set X velocity"},
-        {"type": "move_set_vspeed", "name": "Set Vertical Speed", "description": "Set Y velocity"},
-        {"type": "move_stop", "name": "Stop Movement", "description": "Stop all movement"},
-        {"type": "move_direction", "name": "Move Direction", "description": "Move in 4 directions"},
-        {"type": "move_towards", "name": "Move Towards", "description": "Move to point"},
-        {"type": "move_snap_to_grid", "name": "Snap to Grid", "description": "Align to grid"},
-        {"type": "move_jump_to", "name": "Jump to Position", "description": "Instant teleport"},
-        {"type": "grid_stop_if_no_keys", "name": "Stop if No Keys", "description": "Grid movement helper"},
-        {"type": "grid_check_keys_and_move", "name": "Check Keys and Move", "description": "Grid movement helper"},
-        {"type": "grid_if_on_grid", "name": "If On Grid", "description": "Grid-aligned check"},
-        {"type": "set_gravity", "name": "Set Gravity", "description": "Apply gravity force"},
-        {"type": "set_friction", "name": "Set Friction", "description": "Apply friction"},
-        {"type": "reverse_horizontal", "name": "Reverse Horizontal", "description": "Flip X direction"},
-        {"type": "reverse_vertical", "name": "Reverse Vertical", "description": "Flip Y direction"},
-        {"type": "bounce", "name": "Bounce", "description": "Bounce off solid objects"},
-        {"type": "wrap_around_room", "name": "Wrap Around Room", "description": "Wrap to opposite side"},
-        {"type": "move_to_contact", "name": "Move to Contact", "description": "Move until touching"},
+        {"type": "move_set_hspeed", "name": "Set Horizontal Speed", "description": "Set X velocity", "implemented": True},
+        {"type": "move_set_vspeed", "name": "Set Vertical Speed", "description": "Set Y velocity", "implemented": True},
+        {"type": "move_stop", "name": "Stop Movement", "description": "Stop all movement", "implemented": True},
+        {"type": "move_direction", "name": "Move Direction", "description": "Move in 4 directions", "implemented": True},
+        {"type": "move_towards", "name": "Move Towards", "description": "Move to point", "implemented": False},
+        {"type": "move_snap_to_grid", "name": "Snap to Grid", "description": "Align to grid", "implemented": True},
+        {"type": "move_jump_to", "name": "Jump to Position", "description": "Instant teleport", "implemented": True},
+        {"type": "grid_stop_if_no_keys", "name": "Stop if No Keys", "description": "Grid movement helper", "implemented": True},
+        {"type": "grid_check_keys_and_move", "name": "Check Keys and Move", "description": "Grid movement helper", "implemented": True},
+        {"type": "grid_if_on_grid", "name": "If On Grid", "description": "Grid-aligned check", "implemented": True},
+        {"type": "set_gravity", "name": "Set Gravity", "description": "Apply gravity force", "implemented": True},
+        {"type": "set_friction", "name": "Set Friction", "description": "Apply friction", "implemented": True},
+        {"type": "reverse_horizontal", "name": "Reverse Horizontal", "description": "Flip X direction", "implemented": True},
+        {"type": "reverse_vertical", "name": "Reverse Vertical", "description": "Flip Y direction", "implemented": True},
+        {"type": "bounce", "name": "Bounce", "description": "Bounce off solid objects", "implemented": True},
+        {"type": "wrap_around_room", "name": "Wrap Around Room", "description": "Wrap to opposite side", "implemented": True},
+        {"type": "move_to_contact", "name": "Move to Contact", "description": "Move until touching", "implemented": False},
     ],
     "Timing": [
-        {"type": "set_alarm", "name": "Set Alarm", "description": "Set timer (0-11)"},
+        {"type": "set_alarm", "name": "Set Alarm", "description": "Set timer (0-11)", "implemented": True},
     ],
     "Drawing": [
-        {"type": "draw_text", "name": "Draw Text", "description": "Display text"},
-        {"type": "draw_rectangle", "name": "Draw Rectangle", "description": "Draw filled rectangle"},
-        {"type": "draw_circle", "name": "Draw Circle", "description": "Draw filled circle"},
-        {"type": "set_sprite", "name": "Set Sprite", "description": "Change sprite image"},
-        {"type": "set_alpha", "name": "Set Transparency", "description": "Set alpha (0-1)"},
+        {"type": "draw_text", "name": "Draw Text", "description": "Display text", "implemented": False},
+        {"type": "draw_rectangle", "name": "Draw Rectangle", "description": "Draw filled rectangle", "implemented": False},
+        {"type": "draw_circle", "name": "Draw Circle", "description": "Draw filled circle", "implemented": False},
+        {"type": "set_sprite", "name": "Set Sprite", "description": "Change sprite image", "implemented": True},
+        {"type": "set_alpha", "name": "Set Transparency", "description": "Set alpha (0-1)", "implemented": False},
     ],
     "Score/Lives/Health": [
-        {"type": "score_set", "name": "Set Score", "description": "Set score value"},
-        {"type": "score_add", "name": "Add to Score", "description": "Change score"},
-        {"type": "lives_set", "name": "Set Lives", "description": "Set lives value"},
-        {"type": "lives_add", "name": "Add to Lives", "description": "Change lives"},
-        {"type": "health_set", "name": "Set Health", "description": "Set health value"},
-        {"type": "health_add", "name": "Add to Health", "description": "Change health"},
-        {"type": "draw_score", "name": "Draw Score", "description": "Display score text"},
-        {"type": "draw_lives", "name": "Draw Lives", "description": "Display lives icons"},
-        {"type": "draw_health_bar", "name": "Draw Health Bar", "description": "Display health bar"},
+        {"type": "score_set", "name": "Set Score", "description": "Set score value", "implemented": True},
+        {"type": "score_add", "name": "Add to Score", "description": "Change score", "implemented": True},
+        {"type": "lives_set", "name": "Set Lives", "description": "Set lives value", "implemented": True},
+        {"type": "lives_add", "name": "Add to Lives", "description": "Change lives", "implemented": True},
+        {"type": "health_set", "name": "Set Health", "description": "Set health value", "implemented": True},
+        {"type": "health_add", "name": "Add to Health", "description": "Change health", "implemented": True},
+        {"type": "draw_score", "name": "Draw Score", "description": "Display score text", "implemented": True},
+        {"type": "draw_lives", "name": "Draw Lives", "description": "Display lives icons", "implemented": True},
+        {"type": "draw_health_bar", "name": "Draw Health Bar", "description": "Display health bar", "implemented": True},
     ],
     "Instance": [
-        {"type": "instance_destroy", "name": "Destroy Instance", "description": "Destroy this object"},
-        {"type": "instance_destroy_other", "name": "Destroy Other", "description": "Destroy colliding object"},
-        {"type": "instance_create", "name": "Create Instance", "description": "Spawn new object"},
+        {"type": "instance_destroy", "name": "Destroy Instance", "description": "Destroy this object", "implemented": True},
+        {"type": "instance_destroy_other", "name": "Destroy Other", "description": "Destroy colliding object", "implemented": True},
+        {"type": "instance_create", "name": "Create Instance", "description": "Spawn new object", "implemented": True},
     ],
     "Room": [
-        {"type": "room_goto_next", "name": "Next Room", "description": "Go to next room"},
-        {"type": "room_goto_previous", "name": "Previous Room", "description": "Go to previous room"},
-        {"type": "room_restart", "name": "Restart Room", "description": "Restart current room"},
-        {"type": "room_goto", "name": "Go to Room", "description": "Go to specific room"},
-        {"type": "room_if_next_exists", "name": "If Next Room Exists", "description": "Check if next room exists"},
-        {"type": "room_if_previous_exists", "name": "If Previous Room Exists", "description": "Check if previous room exists"},
+        {"type": "room_goto_next", "name": "Next Room", "description": "Go to next room", "implemented": True},
+        {"type": "room_goto_previous", "name": "Previous Room", "description": "Go to previous room", "implemented": True},
+        {"type": "room_restart", "name": "Restart Room", "description": "Restart current room", "implemented": True},
+        {"type": "room_goto", "name": "Go to Room", "description": "Go to specific room", "implemented": False},
+        {"type": "room_if_next_exists", "name": "If Next Room Exists", "description": "Check if next room exists", "implemented": True},
+        {"type": "room_if_previous_exists", "name": "If Previous Room Exists", "description": "Check if previous room exists", "implemented": True},
     ],
     "Values": [
-        {"type": "value_x", "name": "X Position", "description": "Get X coordinate"},
-        {"type": "value_y", "name": "Y Position", "description": "Get Y coordinate"},
-        {"type": "value_hspeed", "name": "Horizontal Speed", "description": "Get X velocity"},
-        {"type": "value_vspeed", "name": "Vertical Speed", "description": "Get Y velocity"},
-        {"type": "value_score", "name": "Score", "description": "Get score value"},
-        {"type": "value_lives", "name": "Lives", "description": "Get lives value"},
-        {"type": "value_health", "name": "Health", "description": "Get health value"},
-        {"type": "value_mouse_x", "name": "Mouse X", "description": "Get mouse X"},
-        {"type": "value_mouse_y", "name": "Mouse Y", "description": "Get mouse Y"},
+        {"type": "value_x", "name": "X Position", "description": "Get X coordinate", "implemented": True},
+        {"type": "value_y", "name": "Y Position", "description": "Get Y coordinate", "implemented": True},
+        {"type": "value_hspeed", "name": "Horizontal Speed", "description": "Get X velocity", "implemented": True},
+        {"type": "value_vspeed", "name": "Vertical Speed", "description": "Get Y velocity", "implemented": True},
+        {"type": "value_score", "name": "Score", "description": "Get score value", "implemented": True},
+        {"type": "value_lives", "name": "Lives", "description": "Get lives value", "implemented": True},
+        {"type": "value_health", "name": "Health", "description": "Get health value", "implemented": True},
+        {"type": "value_mouse_x", "name": "Mouse X", "description": "Get mouse X", "implemented": True},
+        {"type": "value_mouse_y", "name": "Mouse Y", "description": "Get mouse Y", "implemented": True},
     ],
     "Sound": [
-        {"type": "sound_play", "name": "Play Sound", "description": "Play sound effect"},
-        {"type": "music_play", "name": "Play Music", "description": "Play background music"},
-        {"type": "music_stop", "name": "Stop Music", "description": "Stop music"},
+        {"type": "sound_play", "name": "Play Sound", "description": "Play sound effect", "implemented": True},
+        {"type": "music_play", "name": "Play Music", "description": "Play background music", "implemented": True},
+        {"type": "music_stop", "name": "Stop Music", "description": "Stop music", "implemented": True},
     ],
     "Output": [
-        {"type": "output_message", "name": "Show Message", "description": "Display message dialog"},
+        {"type": "output_message", "name": "Show Message", "description": "Display message dialog", "implemented": True},
     ],
     "Game": [
-        {"type": "game_end", "name": "End Game", "description": "Close the game"},
-        {"type": "game_restart", "name": "Restart Game", "description": "Restart from first room"},
-        {"type": "show_highscore", "name": "Show Highscore", "description": "Display highscore table"},
-        {"type": "clear_highscore", "name": "Clear Highscore", "description": "Reset highscore table"},
+        {"type": "game_end", "name": "End Game", "description": "Close the game", "implemented": True},
+        {"type": "game_restart", "name": "Restart Game", "description": "Restart from first room", "implemented": True},
+        {"type": "show_highscore", "name": "Show Highscore", "description": "Display highscore table", "implemented": True},
+        {"type": "clear_highscore", "name": "Clear Highscore", "description": "Reset highscore table", "implemented": True},
     ],
 }
+
+
+def get_implemented_blocks() -> Set[str]:
+    """Get set of all implemented block types"""
+    implemented = set()
+    for blocks in BLOCK_REGISTRY.values():
+        for block in blocks:
+            if block.get("implemented", True):
+                implemented.add(block["type"])
+    return implemented
+
+
+def is_block_implemented(block_type: str) -> bool:
+    """Check if a specific block is implemented"""
+    for blocks in BLOCK_REGISTRY.values():
+        for block in blocks:
+            if block["type"] == block_type:
+                return block.get("implemented", True)
+    return True  # Default to True if not found
 
 # Block dependencies - some blocks require others
 BLOCK_DEPENDENCIES: Dict[str, List[str]] = {
@@ -548,6 +568,29 @@ class BlocklyConfig:
 
         return config
 
+    @classmethod
+    def get_implemented_only(cls) -> 'BlocklyConfig':
+        """Implemented Only preset - only includes blocks that are fully implemented.
+
+        This preset automatically enables all blocks marked as implemented=True
+        and excludes any blocks marked as implemented=False in the BLOCK_REGISTRY.
+        """
+        config = cls(preset_name="implemented_only")
+
+        implemented_blocks = get_implemented_blocks()
+
+        # Enable all implemented blocks and track categories
+        for category, blocks in BLOCK_REGISTRY.items():
+            category_has_blocks = False
+            for block in blocks:
+                if block["type"] in implemented_blocks:
+                    config.enable_block(block["type"])
+                    category_has_blocks = True
+            if category_has_blocks:
+                config.enabled_categories.add(category)
+
+        return config
+
 
 # ============================================================================
 # PRESET REGISTRY
@@ -561,6 +604,7 @@ PRESETS: Dict[str, BlocklyConfig] = {
     "grid_rpg": BlocklyConfig.get_grid_rpg(),
     "sokoban": BlocklyConfig.get_sokoban(),
     "testing": BlocklyConfig.get_testing(),
+    "implemented_only": BlocklyConfig.get_implemented_only(),
 }
 
 
