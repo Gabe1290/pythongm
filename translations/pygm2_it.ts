@@ -3651,12 +3651,12 @@ Alcune modifiche potrebbero richiedere il riavvio dell&apos;IDE per avere effett
     <message>
         <location filename="../core/ide_window.py" line="252"/>
         <source>&amp;About PyGameMaker</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Informazioni su PyGameMaker</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="369"/>
         <source>Translation Not Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Traduzione non disponibile</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="373"/>
@@ -4400,12 +4400,12 @@ Online documentation coming soon!</source>
     <message>
         <location filename="../core/ide_window.py" line="2150"/>
         <source>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version 0.10.0-alpha&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A comprehensive visual game development environment&lt;br&gt;inspired by GameMaker Studio, built with Python.&lt;/p&gt;&lt;p&gt;&lt;a href=&apos;https://github.com/Gabe1290/pythongm&apos;&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Features&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Dual Programming Modes:&lt;/b&gt; Visual (Blockly) and Traditional Events&lt;/li&gt;&lt;li&gt;&lt;b&gt;Asset Management:&lt;/b&gt; Sprites, sounds, objects, and rooms&lt;/li&gt;&lt;li&gt;&lt;b&gt;Cross-Platform Export:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Flexible Configuration:&lt;/b&gt; Customizable block/event visibility&lt;/li&gt;&lt;li&gt;&lt;b&gt;Real-time Testing:&lt;/b&gt; Run games directly from the IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technology Stack&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Game Engine:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Visual Programming:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Language:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Project Information&lt;/h3&gt;&lt;p&gt;PyGameMaker is an educational tool designed to make&lt;br&gt;game development accessible to beginners while providing&lt;br&gt;powerful features for experienced developers.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Built with ❤️ using Python and Qt&lt;/small&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Versione 0.10.0-alpha&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Un ambiente di sviluppo di giochi visuale completo&lt;br&gt;ispirato a GameMaker Studio, costruito con Python.&lt;/p&gt;&lt;p&gt;&lt;a href=&apos;https://github.com/Gabe1290/pythongm&apos;&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Funzionalità&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Doppia modalità di programmazione:&lt;/b&gt; Visuale (Blockly) ed Eventi tradizionali&lt;/li&gt;&lt;li&gt;&lt;b&gt;Gestione risorse:&lt;/b&gt; Sprite, suoni, oggetti e stanze&lt;/li&gt;&lt;li&gt;&lt;b&gt;Esportazione multipiattaforma:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Configurazione flessibile:&lt;/b&gt; Visibilità personalizzabile di blocchi/eventi&lt;/li&gt;&lt;li&gt;&lt;b&gt;Test in tempo reale:&lt;/b&gt; Esegui i giochi direttamente dall&apos;IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Stack tecnologico&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Motore di gioco:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Programmazione visuale:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Esportazione:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Linguaggio:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Informazioni sul progetto&lt;/h3&gt;&lt;p&gt;PyGameMaker è uno strumento educativo progettato per rendere&lt;br&gt;lo sviluppo di giochi accessibile ai principianti offrendo al contempo&lt;br&gt;funzionalità potenti per sviluppatori esperti.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Creato con ❤️ usando Python e Qt&lt;/small&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2157"/>
         <source>Imported {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} importato</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2189"/>

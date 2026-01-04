@@ -3554,12 +3554,12 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
     </message>
     <message>
         <source>&amp;About</source>
-        <translation type="vanished">À &amp;propos</translation>
+        <translation type="vanished">&amp;Acerca de</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2150"/>
         <source>About PyGameMaker</source>
-        <translation>À propos de PyGameMaker</translation>
+        <translation>Acerca de PyGameMaker</translation>
     </message>
     <message>
         <source>PyGameMaker IDE</source>
@@ -3651,12 +3651,12 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
     <message>
         <location filename="../core/ide_window.py" line="252"/>
         <source>&amp;About PyGameMaker</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Acerca de PyGameMaker</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="369"/>
         <source>Translation Not Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Traducción no disponible</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="373"/>
@@ -4400,12 +4400,12 @@ Online documentation coming soon!</source>
     <message>
         <location filename="../core/ide_window.py" line="2150"/>
         <source>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version 0.10.0-alpha&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A comprehensive visual game development environment&lt;br&gt;inspired by GameMaker Studio, built with Python.&lt;/p&gt;&lt;p&gt;&lt;a href=&apos;https://github.com/Gabe1290/pythongm&apos;&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Features&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Dual Programming Modes:&lt;/b&gt; Visual (Blockly) and Traditional Events&lt;/li&gt;&lt;li&gt;&lt;b&gt;Asset Management:&lt;/b&gt; Sprites, sounds, objects, and rooms&lt;/li&gt;&lt;li&gt;&lt;b&gt;Cross-Platform Export:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Flexible Configuration:&lt;/b&gt; Customizable block/event visibility&lt;/li&gt;&lt;li&gt;&lt;b&gt;Real-time Testing:&lt;/b&gt; Run games directly from the IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technology Stack&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Game Engine:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Visual Programming:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Language:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Project Information&lt;/h3&gt;&lt;p&gt;PyGameMaker is an educational tool designed to make&lt;br&gt;game development accessible to beginners while providing&lt;br&gt;powerful features for experienced developers.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Built with ❤️ using Python and Qt&lt;/small&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Versión 0.10.0-alpha&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Un entorno de desarrollo de juegos visual completo&lt;br&gt;inspirado en GameMaker Studio, construido con Python.&lt;/p&gt;&lt;p&gt;&lt;a href=&apos;https://github.com/Gabe1290/pythongm&apos;&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Características&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Doble modo de programación:&lt;/b&gt; Visual (Blockly) y Eventos tradicionales&lt;/li&gt;&lt;li&gt;&lt;b&gt;Gestión de recursos:&lt;/b&gt; Sprites, sonidos, objetos y habitaciones&lt;/li&gt;&lt;li&gt;&lt;b&gt;Exportación multiplataforma:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Configuración flexible:&lt;/b&gt; Visibilidad personalizable de bloques/eventos&lt;/li&gt;&lt;li&gt;&lt;b&gt;Pruebas en tiempo real:&lt;/b&gt; Ejecuta juegos directamente desde el IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Tecnologías utilizadas&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Motor de juego:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Programación visual:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Exportación:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Lenguaje:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Información del proyecto&lt;/h3&gt;&lt;p&gt;PyGameMaker es una herramienta educativa diseñada para hacer&lt;br&gt;el desarrollo de juegos accesible para principiantes mientras ofrece&lt;br&gt;funciones potentes para desarrolladores experimentados.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Creado con ❤️ usando Python y Qt&lt;/small&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2157"/>
         <source>Imported {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} importado</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2189"/>
