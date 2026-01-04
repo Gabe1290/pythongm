@@ -19,8 +19,8 @@
     </message>
     <message>
         <location filename="../dialogs/about.py" line="37"/>
-        <source>Version 0.9.0</source>
-        <translation>Versión 0.9.0</translation>
+        <source>Version 0.10.0-alpha</source>
+        <translation>Versión 0.10.0-alpha</translation>
     </message>
     <message>
         <location filename="../dialogs/about.py" line="56"/>
@@ -4399,7 +4399,7 @@ Online documentation coming soon!</source>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2150"/>
-        <source>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version 0.9.0&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A comprehensive visual game development environment&lt;br&gt;inspired by GameMaker Studio, built with Python.&lt;/p&gt;&lt;p&gt;&lt;a href=&apos;https://github.com/Gabe1290/pythongm&apos;&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Features&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Dual Programming Modes:&lt;/b&gt; Visual (Blockly) and Traditional Events&lt;/li&gt;&lt;li&gt;&lt;b&gt;Asset Management:&lt;/b&gt; Sprites, sounds, objects, and rooms&lt;/li&gt;&lt;li&gt;&lt;b&gt;Cross-Platform Export:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Flexible Configuration:&lt;/b&gt; Customizable block/event visibility&lt;/li&gt;&lt;li&gt;&lt;b&gt;Real-time Testing:&lt;/b&gt; Run games directly from the IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technology Stack&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Game Engine:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Visual Programming:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Language:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Project Information&lt;/h3&gt;&lt;p&gt;PyGameMaker is an educational tool designed to make&lt;br&gt;game development accessible to beginners while providing&lt;br&gt;powerful features for experienced developers.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Built with ❤️ using Python and Qt&lt;/small&gt;&lt;/p&gt;</source>
+        <source>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version 0.10.0-alpha&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A comprehensive visual game development environment&lt;br&gt;inspired by GameMaker Studio, built with Python.&lt;/p&gt;&lt;p&gt;&lt;a href=&apos;https://github.com/Gabe1290/pythongm&apos;&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Features&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Dual Programming Modes:&lt;/b&gt; Visual (Blockly) and Traditional Events&lt;/li&gt;&lt;li&gt;&lt;b&gt;Asset Management:&lt;/b&gt; Sprites, sounds, objects, and rooms&lt;/li&gt;&lt;li&gt;&lt;b&gt;Cross-Platform Export:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Flexible Configuration:&lt;/b&gt; Customizable block/event visibility&lt;/li&gt;&lt;li&gt;&lt;b&gt;Real-time Testing:&lt;/b&gt; Run games directly from the IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technology Stack&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Game Engine:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Visual Programming:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Language:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Project Information&lt;/h3&gt;&lt;p&gt;PyGameMaker is an educational tool designed to make&lt;br&gt;game development accessible to beginners while providing&lt;br&gt;powerful features for experienced developers.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Built with ❤️ using Python and Qt&lt;/small&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

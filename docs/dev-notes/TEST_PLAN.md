@@ -1,4 +1,4 @@
-# PyGameMaker IDE v0.9.0 - Complete Test Plan
+# PyGameMaker IDE v0.10.0-alpha - Complete Test Plan
 
 **Document Version:** 1.0
 **Date:** November 2025
@@ -83,7 +83,7 @@ python3 main.py
 #### Help Menu
 | Test | Action | Expected Result | Pass/Fail | Notes |
 |------|--------|-----------------|-----------|-------|
-| About | Help > About PyGameMaker | About dialog shows v0.9.0 | | |
+| About | Help > About PyGameMaker | About dialog shows v0.10.0-alpha | | |
 | GitHub link | Click GitHub URL in About | Opens browser to repository | | |
 | Documentation | Help > Documentation | Documentation opens | | |
 
@@ -678,7 +678,7 @@ When reporting bugs, please use this template:
 ```
 ### Bug Report
 
-**Version:** 0.9.0
+**Version:** 0.10.0-alpha
 **OS:** [Windows/Linux/macOS] [version]
 **Python Version:**
 

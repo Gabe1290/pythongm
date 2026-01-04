@@ -2245,7 +2245,7 @@ class PyGameMakerIDE(QMainWindow):
         """Show comprehensive About PyGameMaker dialog"""
         about_text = self.tr(
             "<h2>PyGameMaker IDE</h2>"
-            "<p><b>Version 0.9.0</b></p>"
+            "<p><b>Version 0.10.0-alpha</b></p>"
             "<p>A comprehensive visual game development environment<br>"
             "inspired by GameMaker Studio, built with Python.</p>"
 
