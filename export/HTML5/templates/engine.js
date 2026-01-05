@@ -11,6 +11,8 @@ class GameObject {
         this.x = x;
         this.y = y;
         this.sprite = null;
+        // Sprite metadata (origin, dimensions) - set when sprite is assigned
+        this.spriteInfo = null;
         // Instance visibility starts from instance data
         this.visible = data.visible !== false;
         // Apply object-level visibility: if object has visible=false, instance is invisible
@@ -239,25 +241,28 @@ class GameObject {
     }
 
     handleKeyboardEvent(key, eventData, game) {
-        // Map browser keys to event key names
+        // Map browser keys to event key names (both formats)
         const keyMap = {
-            'ArrowLeft': 'LEFT',
-            'ArrowRight': 'RIGHT',
-            'ArrowUp': 'UP',
-            'ArrowDown': 'DOWN',
-            ' ': 'SPACE',
-            'Enter': 'ENTER',
-            'Escape': 'ESCAPE',
-            'Backspace': 'BACKSPACE',
-            'Tab': 'TAB',
-            'Delete': 'DELETE'
+            'ArrowLeft': ['LEFT', 'left'],
+            'ArrowRight': ['RIGHT', 'right'],
+            'ArrowUp': ['UP', 'up'],
+            'ArrowDown': ['DOWN', 'down'],
+            ' ': ['SPACE', 'space'],
+            'Enter': ['ENTER', 'enter'],
+            'Escape': ['ESCAPE', 'escape'],
+            'Backspace': ['BACKSPACE', 'backspace'],
+            'Tab': ['TAB', 'tab'],
+            'Delete': ['DELETE', 'delete']
         };
 
         // Handle letter keys (a-z)
         if (key.length === 1 && /[a-zA-Z]/.test(key)) {
             const upperKey = key.toUpperCase();
+            const lowerKey = key.toLowerCase();
             if (eventData[upperKey] && eventData[upperKey].actions) {
                 this.executeActions(eventData[upperKey].actions, game);
+            } else if (eventData[lowerKey] && eventData[lowerKey].actions) {
+                this.executeActions(eventData[lowerKey].actions, game);
             }
             return;
         }
@@ -270,16 +275,13 @@ class GameObject {
             return;
         }
 
-        // Handle special keys
-        const mappedKey = keyMap[key] || key;
-        if (eventData[mappedKey] && eventData[mappedKey].actions) {
-            this.executeActions(eventData[mappedKey].actions, game);
-        }
-
-        // Also try legacy lowercase format for arrow keys
-        const legacyKey = mappedKey.toLowerCase();
-        if (eventData[legacyKey] && eventData[legacyKey].actions) {
-            this.executeActions(eventData[legacyKey].actions, game);
+        // Handle special keys - try all possible formats
+        const mappedKeys = keyMap[key] || [key];
+        for (const mappedKey of mappedKeys) {
+            if (eventData[mappedKey] && eventData[mappedKey].actions) {
+                this.executeActions(eventData[mappedKey].actions, game);
+                return;  // Execute only once
+            }
         }
     }
 
@@ -335,22 +337,10 @@ class GameObject {
             }
         }
 
-        // Apply hspeed/vspeed
+        // Apply hspeed/vspeed - always move, collision events will handle response
         if (this._hspeed !== 0 || this._vspeed !== 0) {
-            let newX = this.x + this._hspeed;
-            let newY = this.y + this._vspeed;
-
-            // Check solid collision
-            if (this.solid) {
-                const canMove = !this.checkCollisionAt(newX, newY, game);
-                if (canMove) {
-                    this.x = newX;
-                    this.y = newY;
-                }
-            } else {
-                this.x = newX;
-                this.y = newY;
-            }
+            this.x += this._hspeed;
+            this.y += this._vspeed;
         }
     }
 
@@ -590,11 +580,11 @@ class GameObject {
         switch(actionType) {
             // GAMEMAKER 7.0: Movement actions
             case 'set_hspeed':
-                this.hspeed = params.speed || params.value || 0;
+                this.hspeed = parseFloat(params.hspeed ?? params.speed ?? params.value ?? 0);
                 break;
 
             case 'set_vspeed':
-                this.vspeed = params.speed || params.value || 0;
+                this.vspeed = parseFloat(params.vspeed ?? params.speed ?? params.value ?? 0);
                 break;
 
             case 'set_speed':
@@ -657,16 +647,132 @@ class GameObject {
                 this.vspeed = -this.vspeed;
                 break;
 
+            case 'bounce':
+                // GAMEMAKER 7.0: Bounce off solid objects
+                // Use movement direction to determine bounce axis
+                if (this._collision_other) {
+                    const other = this._collision_other;
+                    // Use bounding boxes for collision calculation
+                    const myBox = this.getBoundingBox();
+                    const otherBox = other.getBoundingBox();
+
+                    // Store original speeds before reversing
+                    const origHspeed = this._hspeed;
+                    const origVspeed = this._vspeed;
+
+                    // Determine bounce direction based on current speed
+                    const movingHorizontal = Math.abs(origHspeed) > 0.1;
+                    const movingVertical = Math.abs(origVspeed) > 0.1;
+
+                    // Get my origin for position adjustment
+                    const myOriginX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
+                    const myOriginY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
+
+                    if (movingHorizontal && !movingVertical) {
+                        // Moving purely horizontally - bounce horizontally
+                        this._hspeed = -origHspeed;
+                        // Push out based on ORIGINAL direction (before bounce)
+                        if (origHspeed > 0) {
+                            // Was moving right, push left - set my right edge to other's left edge
+                            this.x = otherBox.x - myBox.width + myOriginX;
+                        } else {
+                            // Was moving left, push right - set my left edge to other's right edge
+                            this.x = otherBox.x + otherBox.width + myOriginX;
+                        }
+                    } else if (movingVertical && !movingHorizontal) {
+                        // Moving purely vertically - bounce vertically
+                        this._vspeed = -origVspeed;
+                        if (origVspeed > 0) {
+                            this.y = otherBox.y - myBox.height + myOriginY;
+                        } else {
+                            this.y = otherBox.y + otherBox.height + myOriginY;
+                        }
+                    } else if (movingHorizontal && movingVertical) {
+                        // Moving diagonally - use overlap to determine which axis
+                        const overlapX = Math.min(
+                            myBox.x + myBox.width - otherBox.x,
+                            otherBox.x + otherBox.width - myBox.x
+                        );
+                        const overlapY = Math.min(
+                            myBox.y + myBox.height - otherBox.y,
+                            otherBox.y + otherBox.height - myBox.y
+                        );
+
+                        if (overlapX < overlapY) {
+                            this._hspeed = -origHspeed;
+                            if (origHspeed > 0) {
+                                this.x = otherBox.x - myBox.width + myOriginX;
+                            } else {
+                                this.x = otherBox.x + otherBox.width + myOriginX;
+                            }
+                        } else {
+                            this._vspeed = -origVspeed;
+                            if (origVspeed > 0) {
+                                this.y = otherBox.y - myBox.height + myOriginY;
+                            } else {
+                                this.y = otherBox.y + otherBox.height + myOriginY;
+                            }
+                        }
+                    } else {
+                        // Not moving - just push out based on overlap
+                        const overlapLeft = (myBox.x + myBox.width) - otherBox.x;
+                        const overlapRight = (otherBox.x + otherBox.width) - myBox.x;
+                        const overlapTop = (myBox.y + myBox.height) - otherBox.y;
+                        const overlapBottom = (otherBox.y + otherBox.height) - myBox.y;
+                        const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+
+                        if (minOverlap === overlapLeft) this.x = otherBox.x - myBox.width + myOriginX;
+                        else if (minOverlap === overlapRight) this.x = otherBox.x + otherBox.width + myOriginX;
+                        else if (minOverlap === overlapTop) this.y = otherBox.y - myBox.height + myOriginY;
+                        else this.y = otherBox.y + otherBox.height + myOriginY;
+                    }
+                    this.syncSpeedDirectionFromComponents();
+                } else {
+                    // No collision other - just reverse both
+                    this._hspeed = -this._hspeed;
+                    this._vspeed = -this._vspeed;
+                    this.syncSpeedDirectionFromComponents();
+                }
+                break;
+
             case 'stop_movement':
+                // Push out of collision first if we have collision info
+                if (this._collision_other) {
+                    const other = this._collision_other;
+                    // Use bounding boxes for collision calculation
+                    const myBox = this.getBoundingBox();
+                    const otherBox = other.getBoundingBox();
+
+                    // Get my origin for position adjustment
+                    const myOriginX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
+                    const myOriginY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
+
+                    // Calculate overlaps using bounding boxes
+                    const overlapLeft = (myBox.x + myBox.width) - otherBox.x;
+                    const overlapRight = (otherBox.x + otherBox.width) - myBox.x;
+                    const overlapTop = (myBox.y + myBox.height) - otherBox.y;
+                    const overlapBottom = (otherBox.y + otherBox.height) - myBox.y;
+
+                    // Find smallest overlap to push out
+                    const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+
+                    if (minOverlap === overlapLeft && overlapLeft > 0) {
+                        this.x = otherBox.x - myBox.width + myOriginX;
+                    } else if (minOverlap === overlapRight && overlapRight > 0) {
+                        this.x = otherBox.x + otherBox.width + myOriginX;
+                    } else if (minOverlap === overlapTop && overlapTop > 0) {
+                        this.y = otherBox.y - myBox.height + myOriginY;
+                    } else if (minOverlap === overlapBottom && overlapBottom > 0) {
+                        this.y = otherBox.y + otherBox.height + myOriginY;
+                    }
+                }
+
                 this.hspeed = 0;
                 this.vspeed = 0;
                 this.speed = 0;
                 this.targetX = null;
                 this.targetY = null;
-                // Snap to nearest grid position when stopping
-                const stopGridSize = 32;
-                this.x = Math.round(this.x / stopGridSize) * stopGridSize;
-                this.y = Math.round(this.y / stopGridSize) * stopGridSize;
+                // Don't snap to grid - it can push player back into walls
                 break;
 
             case 'jump_to_position':
@@ -1023,18 +1129,83 @@ class GameObject {
                 }
                 break;
 
+            // GAMEMAKER 7.0: Score, Lives, Health actions
+            case 'set_score':
+                if (params.relative) {
+                    game.score += parseFloat(params.value) || 0;
+                } else {
+                    game.score = parseFloat(params.value) || 0;
+                }
+                console.log(`📊 Score: ${game.score}`);
+                break;
+
+            case 'set_lives':
+                if (params.relative) {
+                    game.lives += parseFloat(params.value) || 0;
+                } else {
+                    game.lives = parseFloat(params.value) || 0;
+                }
+                console.log(`❤️ Lives: ${game.lives}`);
+                // Check for no more lives
+                if (game.lives <= 0 && this.events && this.events.no_more_lives) {
+                    const noLivesEvent = this.events.no_more_lives;
+                    this.executeActions(noLivesEvent.actions || [], game);
+                }
+                break;
+
+            case 'set_health':
+                if (params.relative) {
+                    game.health += parseFloat(params.value) || 0;
+                } else {
+                    game.health = parseFloat(params.value) || 0;
+                }
+                game.health = Math.max(0, Math.min(100, game.health));
+                console.log(`💚 Health: ${game.health}`);
+                break;
+
+            case 'jump_to_start':
+                // Return to starting position
+                if (this._startX !== undefined && this._startY !== undefined) {
+                    this.x = this._startX;
+                    this.y = this._startY;
+                }
+                this.hspeed = 0;
+                this.vspeed = 0;
+                this.speed = 0;
+                break;
+
+            case 'restart_game':
+                // Reload the page to restart
+                window.location.reload();
+                break;
+
+            case 'end_game':
+                game.running = false;
+                alert('Game Over!');
+                break;
+
+            case 'show_highscore':
+                alert(`High Score: ${game.score}`);
+                break;
+
             default:
                 console.warn(`Unknown action: ${actionType}`);
         }
     }
 
     checkCollisionAt(x, y, game) {
-        const testRect = { x: x + 2, y: y + 2, width: 28, height: 28 };
+        // Get my bounding box dimensions and origin
+        const myW = this.sprite ? this.sprite.width : 32;
+        const myH = this.sprite ? this.sprite.height : 32;
+        const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
+        const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
+        // Test rect at position (x, y) accounting for origin
+        const testRect = { x: x - originX, y: y - originY, width: myW, height: myH };
         if (!game.currentRoom) return false;
 
         for (const other of game.currentRoom.instances) {
             if (other === this || !other.solid) continue;
-            const otherRect = { x: other.x + 2, y: other.y + 2, width: 28, height: 28 };
+            const otherRect = other.getBoundingBox();
             if (this.rectsCollide(testRect, otherRect)) {
                 return true;
             }
@@ -1045,12 +1216,18 @@ class GameObject {
     getObjectAt(x, y, game) {
         if (!game.currentRoom) return null;
 
-        const testRect = { x: x + 2, y: y + 2, width: 28, height: 28 };
+        // Get my bounding box dimensions and origin
+        const myW = this.sprite ? this.sprite.width : 32;
+        const myH = this.sprite ? this.sprite.height : 32;
+        const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
+        const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
+        // Test rect at position (x, y) accounting for origin
+        const testRect = { x: x - originX, y: y - originY, width: myW, height: myH };
         const colliding = [];
 
         for (const other of game.currentRoom.instances) {
             if (other === this) continue;
-            const otherRect = { x: other.x + 2, y: other.y + 2, width: 28, height: 28 };
+            const otherRect = other.getBoundingBox();
             if (this.rectsCollide(testRect, otherRect)) {
                 colliding.push(other);
             }
@@ -1072,19 +1249,37 @@ class GameObject {
                r1.y < r2.y + r2.height && r1.y + r1.height > r2.y;
     }
 
+    // Get bounding box accounting for sprite origin
+    getBoundingBox() {
+        const w = this.sprite ? this.sprite.width : 32;
+        const h = this.sprite ? this.sprite.height : 32;
+        const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
+        const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
+        return {
+            x: this.x - originX,
+            y: this.y - originY,
+            width: w,
+            height: h
+        };
+    }
+
     render(ctx) {
         // Don't render if not visible or no sprite assigned
         if (!this.visible) return;
         if (!this.sprite || !this.sprite.complete) return;
 
-        const width = this.sprite.width;
-        const height = this.sprite.height;
+        // Get sprite origin (default to 0,0 if not set - top-left)
+        const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
+        const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
+
+        // Draw position: x,y is where the origin is, so top-left is (x - originX, y - originY)
+        const drawX = Math.floor(this.x - originX);
+        const drawY = Math.floor(this.y - originY);
 
         if (this.rotation !== 0 || this.scale_x !== 1.0 || this.scale_y !== 1.0) {
             ctx.save();
-            const centerX = Math.floor(this.x) + (width * this.scale_x) / 2;
-            const centerY = Math.floor(this.y) + (height * this.scale_y) / 2;
-            ctx.translate(centerX, centerY);
+            // Translate to the origin point (where x,y is)
+            ctx.translate(Math.floor(this.x), Math.floor(this.y));
 
             if (this.rotation !== 0) {
                 ctx.rotate((this.rotation * Math.PI) / 180);
@@ -1094,17 +1289,19 @@ class GameObject {
                 ctx.scale(this.scale_x, this.scale_y);
             }
 
-            ctx.drawImage(this.sprite, -width / 2, -height / 2);
+            // Draw with origin offset
+            ctx.drawImage(this.sprite, -originX, -originY);
             ctx.restore();
         } else {
-            ctx.drawImage(this.sprite, Math.floor(this.x), Math.floor(this.y));
+            ctx.drawImage(this.sprite, drawX, drawY);
         }
     }
 
     checkCollisions(game) {
         if (!game.currentRoom || !this.events) return;
 
-        const myRect = { x: this.x + 2, y: this.y + 2, width: 28, height: 28 };
+        // Use bounding box that accounts for sprite origin
+        const myRect = this.getBoundingBox();
 
         // First pass: Detect all collisions and capture speeds BEFORE any events run
         const collisionsToProcess = [];
@@ -1112,7 +1309,7 @@ class GameObject {
         for (const other of game.currentRoom.instances) {
             if (other === this || other.toDestroy) continue;
 
-            const otherRect = { x: other.x + 2, y: other.y + 2, width: 28, height: 28 };
+            const otherRect = other.getBoundingBox();
 
             if (this.rectsCollide(myRect, otherRect)) {
                 const collisionKey = `collision_with_${other.name}`;
@@ -1266,6 +1463,11 @@ class Game {
         this.frameCount = 0;
         this.lastFpsUpdate = Date.now();
 
+        // GAMEMAKER 7.0: Game state variables
+        this.score = 0;
+        this.lives = 3;
+        this.health = 100;
+
         this.setupKeyboard();
         this.loadGame();
     }
@@ -1304,6 +1506,17 @@ class Game {
 
         this.sprites = {};
         this.gameData = gameData;
+
+        // Load game settings
+        const settings = gameData.settings || {};
+        this.score = settings.starting_score || 0;
+        this.lives = settings.starting_lives || 3;
+        this.health = settings.starting_health || 100;
+        this.showScoreInCaption = settings.show_score_in_caption !== false;
+        this.showLivesInCaption = settings.show_lives_in_caption !== false;
+        this.showHealthInCaption = settings.show_health_in_caption || false;
+        console.log(`⚙️ Settings: score=${this.score}, lives=${this.lives}, health=${this.health}`);
+
         const sprites = this.sprites;
         const spriteNames = Object.keys(spritesData);
         console.log(`Loading ${spriteNames.length} sprites...`);
@@ -1338,9 +1551,22 @@ class Game {
                 );
 
                 inst._gameRef = this;
+                // Store starting position for jump_to_start
+                inst._startX = instData.x;
+                inst._startY = instData.y;
 
                 if (objectData && objectData.sprite && sprites[objectData.sprite]) {
                     inst.sprite = sprites[objectData.sprite];
+                    // Also store sprite metadata (origin, dimensions) from gameData
+                    const spriteMetadata = gameData.assets.sprites[objectData.sprite];
+                    if (spriteMetadata) {
+                        inst.spriteInfo = {
+                            origin_x: spriteMetadata.origin_x || 0,
+                            origin_y: spriteMetadata.origin_y || 0,
+                            width: spriteMetadata.width || inst.sprite.width,
+                            height: spriteMetadata.height || inst.sprite.height
+                        };
+                    }
                 }
 
                 room.instances.push(inst);
@@ -1394,6 +1620,9 @@ class Game {
             this.currentRoom.render(this.ctx);
         }
 
+        // Draw score, lives, health HUD
+        this.drawHUD();
+
         if (this.paused) {
             this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -1404,6 +1633,23 @@ class Game {
         }
 
         requestAnimationFrame(() => this.gameLoop());
+    }
+
+    drawHUD() {
+        // Update HTML HUD elements instead of drawing on canvas
+        const scoreEl = document.getElementById('scoreValue');
+        const livesEl = document.getElementById('livesValue');
+        const healthEl = document.getElementById('healthValue');
+        const healthDisplay = document.getElementById('healthDisplay');
+
+        if (scoreEl) scoreEl.textContent = this.score;
+        if (livesEl) livesEl.textContent = this.lives;
+        if (healthEl) healthEl.textContent = this.health;
+
+        // Show/hide health based on settings
+        if (healthDisplay) {
+            healthDisplay.style.display = this.showHealthInCaption ? 'flex' : 'none';
+        }
     }
 
     processKeyboard() {

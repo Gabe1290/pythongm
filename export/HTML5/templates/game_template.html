@@ -27,18 +27,53 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 10px;
             padding: 20px;
+        }
+
+        #gameWrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
         }
 
         #gameCanvas {
             border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
+            border-radius: 0 0 8px 8px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             image-rendering: pixelated;
             image-rendering: crisp-edges;
             background: #000;
+            display: block;
+            box-sizing: content-box;
+            margin-top: -4px;
         }
+
+        #hudBar {
+            background: rgba(0, 0, 0, 0.8);
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            padding: 8px 15px;
+            display: flex;
+            gap: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            min-height: 36px;
+            width: {width}px;
+            box-sizing: border-box;
+            margin-bottom: 0;
+        }
+
+        #hudBar .hud-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        #hudBar .score { color: #FFD700; }
+        #hudBar .lives { color: #FF6B6B; }
+        #hudBar .health { color: #4CAF50; }
 
         #controls {
             background: rgba(255, 255, 255, 0.1);
@@ -97,7 +132,14 @@
 <body>
     <div id="gameContainer">
         <div class="title">{game_name}</div>
-        <canvas id="gameCanvas" width="{width}" height="{height}"></canvas>
+        <div id="gameWrapper">
+            <div id="hudBar">
+                <div class="hud-item score"><span>Score:</span> <span id="scoreValue">0</span></div>
+                <div class="hud-item lives"><span>Lives:</span> <span id="livesValue">3</span></div>
+                <div class="hud-item health" id="healthDisplay" style="display:none;"><span>Health:</span> <span id="healthValue">100</span></div>
+            </div>
+            <canvas id="gameCanvas" width="{width}" height="{height}"></canvas>
+        </div>
         <div class="instructions">
             Use Arrow Keys to move • Press ESC to pause • F5 to restart
         </div>

@@ -30,6 +30,9 @@ class HTML5Exporter:
                 with open(project_file, 'r', encoding='utf-8') as f:
                     project_data = json.load(f)
 
+                # Load room instances from external files
+                self._load_room_instances(project_path, project_data)
+
                 print(f"  ✓ Loaded project: {project_data['name']}")
 
                 # Encode sprites as base64
@@ -37,7 +40,7 @@ class HTML5Exporter:
                 sprites_data = self.encode_sprites(project_path, project_data)
                 print(f"  ✓ Encoded {len(sprites_data)} sprites")
 
-                # Get window size from first room if settings not available
+                # Get window size from settings or room dimensions
                 settings = project_data.get('settings', {})
                 width = settings.get('window_width')
                 height = settings.get('window_height')
@@ -50,7 +53,6 @@ class HTML5Exporter:
                         width = first_room.get('width', 1024)
                         height = first_room.get('height', 768)
                     else:
-                        settings = project_data.get('settings', {})
                         width = settings.get('window_width', 1024)
                         height = settings.get('window_height', 768)
 
@@ -111,6 +113,31 @@ class HTML5Exporter:
                 import traceback
                 traceback.print_exc()
                 return False
+
+    def _load_room_instances(self, project_path: Path, project_data: Dict) -> None:
+        """Load room instances from external room files into project_data"""
+        rooms_data = project_data.get('assets', {}).get('rooms', {})
+        rooms_dir = project_path / "rooms"
+
+        for room_name, room_data in rooms_data.items():
+            # Check if this room has an external file reference
+            external_file = room_data.get('_external_file')
+            if external_file:
+                room_file = project_path / external_file
+            else:
+                # Try default location
+                room_file = rooms_dir / f"{room_name}.json"
+
+            if room_file.exists():
+                try:
+                    with open(room_file, 'r', encoding='utf-8') as f:
+                        external_room_data = json.load(f)
+                    # Merge instances from external file
+                    if 'instances' in external_room_data:
+                        room_data['instances'] = external_room_data['instances']
+                        print(f"  📂 Loaded {len(room_data['instances'])} instances for room: {room_name}")
+                except Exception as e:
+                    print(f"  ⚠️  Failed to load room file {room_file}: {e}")
 
     def encode_sprites(self, project_path: Path, project_data: Dict) -> Dict[str, str]:
         """Encode sprites and backgrounds as base64 data URLs"""
