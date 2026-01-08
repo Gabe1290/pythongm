@@ -22,6 +22,8 @@ from .gm80_events_panel import GM80EventsPanel
 from .python_syntax_highlighter import PythonSyntaxHighlighter
 from .blockly_widget import BlocklyVisualProgrammingTab
 from ..object_editor_components import ActionListWidget, VisualScriptingArea
+from .python_code_parser import PythonToActionsParser, ActionsToPythonGenerator, events_to_python
+from .sync_coordinator import SyncCoordinator, SyncSource, SyncContext
 # from visual_programming import (
 #     VisualCanvas, NodePalette, NodePropertiesPanel,
 #     create_node_from_type, VisualCodeGenerator
@@ -61,6 +63,9 @@ class ObjectEditor(BaseEditor):
         self.current_object_properties = {}
         self._pending_events_data = None
         self.view_code_enabled = False
+
+        # Initialize sync coordinator for preventing infinite sync loops
+        self.sync_coordinator = SyncCoordinator()
 
         # Call parent constructor (this sets up base UI including toolbar)
         super().__init__(project_path, parent)
@@ -425,9 +430,12 @@ class ObjectEditor(BaseEditor):
 
             code_tab_layout.addLayout(event_selector_layout)
 
-            code_tab_index = self.center_tabs.addTab(code_tab, self.tr("💻 Code Editor"))
-            self.center_tabs.setTabEnabled(code_tab_index, True)  # ENABLED!
-            self.center_tabs.setTabToolTip(code_tab_index, self.tr("Edit Python code or view generated code"))
+            self.code_tab_index = self.center_tabs.addTab(code_tab, self.tr("💻 Code Editor"))
+            self.center_tabs.setTabEnabled(self.code_tab_index, True)  # ENABLED!
+            self.center_tabs.setTabToolTip(self.code_tab_index, self.tr("Edit Python code or view generated code"))
+
+            # Connect tab change to update code view when Code Editor tab is selected
+            self.center_tabs.currentChanged.connect(self._on_tab_changed)
             print("DEBUG: Code editor tab created with syntax highlighting and edit mode")
         except Exception as e:
             print(f"ERROR creating code editor tab: {e}")
@@ -1022,16 +1030,21 @@ class ObjectEditor(BaseEditor):
 
     def on_events_modified(self):
         """Handle events modification from the events panel"""
+        # Skip if this change is from a sync operation (not user-initiated)
+        if self.sync_coordinator.should_skip_for(SyncSource.EVENTS):
+            return
+
         self.data_modified.emit(self.asset_name)
 
         # Auto-update code view if View Code is enabled
         if hasattr(self, 'view_code_enabled') and self.view_code_enabled:
-            self.view_generated_code(auto_switch_tab=False)
+            self._update_code_view()
 
-        # Sync events to Blockly (bidirectional sync: Events → Blockly)
-        # Only sync if not already syncing from Blockly
-        if not getattr(self, '_syncing_from_blockly', False):
-            self._sync_events_to_blockly()
+        # Sync events to Blockly and Code (bidirectional sync: Events → Others)
+        with SyncContext(self.sync_coordinator, SyncSource.EVENTS) as can_sync:
+            if can_sync:
+                self._sync_events_to_blockly()
+                self._update_code_view()
 
     def _sync_events_to_blockly(self):
         """Sync current events to Blockly visual programming tab"""
@@ -1050,29 +1063,30 @@ class ObjectEditor(BaseEditor):
 
     def on_blockly_events_modified(self, events: dict):
         """Handle events modified from Blockly visual programming"""
+        # Skip if this change is from a sync operation (not user-initiated)
+        if self.sync_coordinator.should_skip_for(SyncSource.BLOCKLY):
+            return
 
-        if hasattr(self, 'events_panel') and self.events_panel:
-            # Set flag to prevent infinite sync loop
-            self._syncing_from_blockly = True
+        with SyncContext(self.sync_coordinator, SyncSource.BLOCKLY) as can_sync:
+            if can_sync and hasattr(self, 'events_panel') and self.events_panel:
+                # Merge Blockly events with existing events
+                current_events = self.events_panel.get_events_data()
 
-            # Merge Blockly events with existing events
-            current_events = self.events_panel.get_events_data()
+                # Update with Blockly events (Blockly takes priority for overlapping events)
+                for event_name, event_data in events.items():
+                    current_events[event_name] = event_data
 
-            # Update with Blockly events (Blockly takes priority for overlapping events)
-            for event_name, event_data in events.items():
-                current_events[event_name] = event_data
+                # Reload events panel
+                self.events_panel.load_events_data(current_events)
 
-            # Reload events panel
-            self.events_panel.load_events_data(current_events)
+                # Update code view
+                self._update_code_view()
 
-            # Clear the sync flag
-            self._syncing_from_blockly = False
+                # Mark as modified
+                self.mark_modified()
 
-            # Mark as modified
-            self.mark_modified()
-
-            # Update status
-            self.update_status(self.tr("Applied {0} events from visual blocks").format(len(events)))
+                # Update status
+                self.update_status(self.tr("Applied {0} events from visual blocks").format(len(events)))
 
     def on_script_modified(self):
         """Handle script modification"""
@@ -1090,8 +1104,39 @@ class ObjectEditor(BaseEditor):
         # ✅ TRANSLATABLE: Status message
         self.update_status(self.tr("Object testing not implemented yet"))
 
+    def _update_code_view(self):
+        """Update the code editor with generated Python code from events.
+
+        This is called automatically when events change and View Code is enabled,
+        or when syncing from other sources.
+        """
+        if not hasattr(self, 'code_editor') or not self.code_editor:
+            return
+
+        # Only update if in View mode (not Edit mode)
+        if hasattr(self, 'code_mode_combo') and self.code_mode_combo.currentIndex() == 1:
+            return  # In edit mode, don't overwrite user's code
+
+        if not hasattr(self, 'events_panel') or not self.events_panel:
+            return
+
+        events_data = self.events_panel.get_events_data()
+
+        if not events_data or len(events_data) == 0:
+            code_text = self.tr("# No events or actions have been added yet.\n"
+                               "# Add events in the Object Events panel to see generated code here.")
+            self.code_editor.setPlainText(code_text)
+            return
+
+        # Use the new parser to generate Python code
+        object_name = self.asset_name or 'obj_object'
+        code_text = events_to_python(object_name, events_data)
+
+        # Show in code editor
+        self.code_editor.setPlainText(code_text)
+
     def view_generated_code(self, auto_switch_tab=True):
-        """View generated Python/Kivy code"""
+        """View generated Python code - triggered by toolbar button"""
         if not hasattr(self, 'events_panel') or not self.events_panel:
             return
 
@@ -1101,22 +1146,12 @@ class ObjectEditor(BaseEditor):
             # ✅ TRANSLATABLE: Placeholder text
             code_text = self.tr("# No events or actions have been added yet.\n"
                                "# Add events in the Object Events panel to see generated code here.")
-            self.code_editor.setText(code_text)
-            return
-
-        # Generate Python/Kivy code representation
-        code_text = f"# Generated Python/Kivy code for {self.asset_name}\n"
-        code_text += "# This code is automatically generated from your events\n\n"
-        code_text += "from game.objects.base_object import GameObject\n\n"
-        code_text += f"class {self.asset_name}(GameObject):\n"
-        code_text += "    \"\"\"Object: {self.asset_name}\"\"\"\n\n"
-
-        # Generate code for each event
-        for event_name, event_data in events_data.items():
-            code_text += self._generate_event_code(event_name, event_data)
-
-        # Show in code editor tab
-        self.code_editor.setText(code_text)
+            self.code_editor.setPlainText(code_text)
+        else:
+            # Use the new parser to generate Python code
+            object_name = self.asset_name or 'obj_object'
+            code_text = events_to_python(object_name, events_data)
+            self.code_editor.setPlainText(code_text)
 
         # Optionally switch to code editor tab
         if auto_switch_tab:
@@ -1214,6 +1249,13 @@ class ObjectEditor(BaseEditor):
 
         return code
 
+    def _on_tab_changed(self, index):
+        """Handle tab change - update code view when Code Editor tab is selected"""
+        if hasattr(self, 'code_tab_index') and index == self.code_tab_index:
+            # Only update if in View mode (not Edit mode)
+            if hasattr(self, 'code_mode_combo') and self.code_mode_combo.currentIndex() == 0:
+                self._update_code_view()
+
     def on_code_mode_changed(self, index):
         """Handle code editor mode change"""
         is_edit_mode = (index == 1)  # 0=View, 1=Edit
@@ -1223,36 +1265,38 @@ class ObjectEditor(BaseEditor):
             self.code_editor.setReadOnly(False)
             self.apply_code_button.setVisible(True)
             self.refresh_code_button.setVisible(False)
-            self.code_event_combo.setVisible(True)
+            self.code_event_combo.setVisible(False)  # Hide event selector - full class editing
 
-            # Load custom code for current event
-            event_name = self.code_event_combo.currentText()
-            custom_code = self.custom_code_by_event.get(event_name, "")
+            # Generate current code from events as starting point for editing
+            if hasattr(self, 'events_panel') and self.events_panel:
+                events_data = self.events_panel.get_events_data()
+                if events_data:
+                    object_name = self.asset_name or 'obj_object'
+                    current_code = events_to_python(object_name, events_data)
+                    self.code_editor.setPlainText(current_code)
+                else:
+                    # Provide template code for empty object
+                    template_code = f"""# Python code for {self.asset_name or 'obj_object'}
+# Edit this code and click 'Apply Changes' to update events
 
-            if not custom_code:
-                # Provide template code
-                custom_code = """# Custom Python code for {event_name} event
-# You have access to:
-#   self - the current instance
-#   game - the game runner object
-#   game.score, game.lives, game.health - global game state
+class {self.asset_name or 'obj_object'}(GameObject):
+    \"\"\"Game object with event handlers\"\"\"
 
-# Example: Increase score
-# game.score += 10
+    def on_create(self):
+        \"\"\"Called when instance is created\"\"\"
+        pass
 
-# Example: Move instance
-# self.x += 5
-# self.y -= 3
+    def on_step(self):
+        \"\"\"Called every frame\"\"\"
+        pass
 
-# Example: Check conditions
-# if game.lives <= 0:
-#     print("Game Over!")
-
-# Write your code here:
+    def on_draw(self):
+        \"\"\"Called to draw the instance\"\"\"
+        pass
 """
+                    self.code_editor.setPlainText(template_code)
 
-            self.code_editor.setPlainText(custom_code)
-            self.update_status(self.tr("Edit mode: Write custom Python code"))
+            self.update_status(self.tr("Edit mode: Modify Python code and click Apply"))
 
         else:
             # Switch to View Generated Code mode
@@ -1262,8 +1306,8 @@ class ObjectEditor(BaseEditor):
             self.code_event_combo.setVisible(False)
 
             # Show generated code
-            self.view_generated_code(auto_switch_tab=False)
-            self.update_status(self.tr("View mode: Showing generated code from events"))
+            self._update_code_view()
+            self.update_status(self.tr("View mode: Switch to 'Edit Custom Code' to modify and apply code"))
 
     def on_code_event_changed(self, event_name):
         """Handle event selection change in code editor"""
@@ -1290,56 +1334,114 @@ class ObjectEditor(BaseEditor):
             self.apply_code_button.setEnabled(True)
 
     def apply_code_changes(self):
-        """Apply custom code changes to events"""
-        event_name = self.code_event_combo.currentText()
+        """Apply Python code changes to events - parses code and updates Events panel and Blockly"""
         custom_code = self.code_editor.toPlainText()
 
-        # Store custom code
-        self.custom_code_by_event[event_name] = custom_code
-
-        # Create or update "execute_code" action in the event
-        if hasattr(self, 'events_panel') and self.events_panel:
-            # Get current events data
-            events_data = self.events_panel.get_events_data()
-
-            # Ensure event exists
-            if event_name not in events_data:
-                events_data[event_name] = {'actions': []}
-
-            # Find existing execute_code action or add new one
-            actions = events_data[event_name].get('actions', [])
-            found_code_action = False
-
-            for i, action in enumerate(actions):
-                if isinstance(action, dict) and action.get('action') == 'execute_code':
-                    # Update existing code action
-                    action['parameters'] = {'code': custom_code}
-                    found_code_action = True
-                    break
-
-            if not found_code_action:
-                # Add new execute_code action
-                actions.append({
-                    'action': 'execute_code',
-                    'parameters': {'code': custom_code}
-                })
-
-            events_data[event_name]['actions'] = actions
-
-            # Reload events data
-            self.events_panel.load_events_data(events_data)
-
-            # Mark as modified
-            self.mark_modified()
-
-            # Show confirmation
-            self.update_status(self.tr("Custom code applied to {0} event").format(event_name))
-            QMessageBox.information(
+        if not custom_code.strip():
+            QMessageBox.warning(
                 self,
-                self.tr("Code Applied"),
-                self.tr("Custom Python code has been applied to the {0} event.\n\n"
-                       "The code will execute when the event triggers during gameplay.").format(event_name)
+                self.tr("No Code"),
+                self.tr("The code editor is empty. Please write some Python code first.")
             )
+            return
+
+        # Use the new parser to convert Python code to events
+        parser = PythonToActionsParser()
+        try:
+            result = parser.parse_full_class(custom_code)
+            parsed_events = result.events
+
+            if result.errors:
+                # Show parsing errors but continue if we got some events
+                error_text = "\n".join(result.errors[:5])  # Show first 5 errors
+                if not parsed_events:
+                    QMessageBox.warning(
+                        self,
+                        self.tr("Parse Error"),
+                        self.tr("Could not parse the Python code:\n\n{0}").format(error_text)
+                    )
+                    return
+        except Exception as e:
+            import traceback
+            print(f"DEBUG: Exception during parsing: {e}")
+            traceback.print_exc()
+            QMessageBox.warning(
+                self,
+                self.tr("Parse Error"),
+                self.tr("Could not parse the Python code:\n\n{0}\n\n"
+                       "Please check the syntax and try again.").format(str(e))
+            )
+            return
+
+        if not parsed_events:
+            QMessageBox.warning(
+                self,
+                self.tr("No Events Found"),
+                self.tr("No recognizable event methods found in the code.\n\n"
+                       "Make sure your code includes a class with event methods like:\n\n"
+                       "class obj_player:\n"
+                       "    def on_create(self):\n"
+                       "        pass\n\n"
+                       "    def on_step(self):\n"
+                       "        pass\n\n"
+                       "    def on_keyboard_left(self):\n"
+                       "        self.hspeed = -4")
+            )
+            return
+
+        # Apply the parsed events using sync coordinator
+        with SyncContext(self.sync_coordinator, SyncSource.CODE) as can_sync:
+            if not can_sync:
+                QMessageBox.warning(
+                    self,
+                    self.tr("Sync in Progress"),
+                    self.tr("Another synchronization is currently in progress. Please wait and try again.")
+                )
+                return
+            if can_sync and hasattr(self, 'events_panel') and self.events_panel:
+                # Get current events data and merge with parsed events
+                current_events = self.events_panel.get_events_data()
+
+                # Update with parsed events (code takes priority for overlapping events)
+                for event_name, event_data in parsed_events.items():
+                    current_events[event_name] = event_data
+
+                # Reload events panel
+                self.events_panel.load_events_data(current_events)
+
+                # Sync to Blockly
+                self._sync_events_to_blockly()
+
+                # Mark as modified
+                self.mark_modified()
+
+                # Show confirmation
+                event_count = len(parsed_events)
+                # Build list of event names for display
+                event_list = []
+                for event_name, event_data in parsed_events.items():
+                    if event_name in ('keyboard', 'keyboard_press', 'keyboard_release'):
+                        # For keyboard events, show the keys
+                        if isinstance(event_data, dict):
+                            keys = [k for k in event_data.keys() if k != 'actions']
+                            if keys:
+                                event_list.append(f"{event_name} ({', '.join(keys)})")
+                            else:
+                                event_list.append(event_name)
+                    else:
+                        event_list.append(event_name)
+
+                event_list_str = "\n".join(f"  • {e}" for e in event_list)
+                self.update_status(self.tr("Applied {0} events from code").format(event_count))
+                QMessageBox.information(
+                    self,
+                    self.tr("Code Applied"),
+                    self.tr("Python code has been parsed and applied:\n\n"
+                           "Events updated:\n{0}\n\n"
+                           "• Events panel synchronized\n"
+                           "• Blockly workspace synchronized\n\n"
+                           "The code will execute when events trigger during gameplay.").format(event_list_str)
+                )
 
     def _generate_action_code(self, action, indent=8) -> str:
         """Generate code for a single action"""

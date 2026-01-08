@@ -1136,6 +1136,20 @@
             }
         };
 
+        // ============ EXECUTE CODE BLOCK ============
+        Blockly.Blocks['execute_code'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField(getBlockMessage('execute_code_prefix', window.BLOCKLY_LANG) || "Execute Python code:");
+                this.appendDummyInput()
+                    .appendField(new Blockly.FieldMultilineInput("# Write your Python code here\n"), "CODE");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#4A90D9");  // Blue color for code blocks
+                this.setTooltip(getBlockMessage('execute_code_tooltip', window.BLOCKLY_LANG) || "Execute custom Python code");
+            }
+        };
+
         // ============ ALARM EVENT BLOCK ============
         Blockly.Blocks['event_alarm'] = {
             init: function() {
@@ -1630,7 +1644,8 @@
             'set_gravity': 'set_gravity',
             'set_friction': 'set_friction',
             'reverse_horizontal': 'reverse_horizontal',
-            'reverse_vertical': 'reverse_vertical'
+            'reverse_vertical': 'reverse_vertical',
+            'execute_code': 'execute_code'
         };
 
         // Map event names to block types
@@ -1955,10 +1970,18 @@
             // Set parameters based on block type
             switch (blockType) {
                 case 'move_set_hspeed':
+                    // Handle different parameter naming: 'value', 'speed', 'hspeed'
+                    var hspeedValue = params.value !== undefined ? params.value :
+                                     (params.hspeed !== undefined ? params.hspeed :
+                                     (params.speed !== undefined ? params.speed : 0));
+                    connectNumberBlock('SPEED', hspeedValue);
+                    break;
                 case 'move_set_vspeed':
-                    // Handle both 'value' (create event format) and 'speed' (keyboard event format)
-                    var speedValue = params.value !== undefined ? params.value : (params.speed || 0);
-                    connectNumberBlock('SPEED', speedValue);
+                    // Handle different parameter naming: 'value', 'speed', 'vspeed'
+                    var vspeedValue = params.value !== undefined ? params.value :
+                                     (params.vspeed !== undefined ? params.vspeed :
+                                     (params.speed !== undefined ? params.speed : 0));
+                    connectNumberBlock('SPEED', vspeedValue);
                     break;
 
                 case 'move_direction':
@@ -2116,6 +2139,16 @@
 
                 case 'set_friction':
                     connectNumberBlock('FRICTION', params.friction || 0);
+                    break;
+
+                case 'execute_code':
+                    // Set the code field for execute_code block
+                    if (params.code) {
+                        var codeField = block.getField('CODE');
+                        if (codeField) {
+                            codeField.setValue(params.code);
+                        }
+                    }
                     break;
 
                 // reverse_horizontal and reverse_vertical have no parameters

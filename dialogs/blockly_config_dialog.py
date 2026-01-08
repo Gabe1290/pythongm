@@ -73,6 +73,8 @@ class BlocklyConfigDialog(QDialog):
             self.tr("Sokoban (Box Puzzle)"),
             self.tr("Testing (Validated Only)"),
             self.tr("Implemented Only"),
+            self.tr("Code Editor"),
+            self.tr("Blockly Editor"),
             self.tr("Custom")
         ])
         self.preset_combo.blockSignals(False)
@@ -252,7 +254,9 @@ class BlocklyConfigDialog(QDialog):
             "sokoban": 5,
             "testing": 6,
             "implemented_only": 7,
-        }.get(self.config.preset_name, 8)  # 8 = Custom
+            "code_editor": 8,
+            "blockly_editor": 9,
+        }.get(self.config.preset_name, 10)  # 10 = Custom
         self.preset_combo.setCurrentIndex(preset_index)
 
         self.tree.blockSignals(False)
@@ -273,6 +277,8 @@ class BlocklyConfigDialog(QDialog):
             self.tr("Sokoban (Box Puzzle)"): "sokoban",
             self.tr("Testing (Validated Only)"): "testing",
             self.tr("Implemented Only"): "implemented_only",
+            self.tr("Code Editor"): "code_editor",
+            self.tr("Blockly Editor"): "blockly_editor",
         }
 
         if text == self.tr("Custom"):
@@ -314,9 +320,9 @@ class BlocklyConfigDialog(QDialog):
 
         # Mark as custom ONLY if user manually changed something (not during load)
         # Check if tree signals are blocked - if so, we're loading, not user action
-        if not self.tree.signalsBlocked() and self.preset_combo.currentIndex() != 8:
+        if not self.tree.signalsBlocked() and self.preset_combo.currentIndex() != 10:
             self.tree.blockSignals(True)
-            self.preset_combo.setCurrentIndex(8)  # Custom
+            self.preset_combo.setCurrentIndex(10)  # Custom
             self.config.preset_name = "custom"
             self.tree.blockSignals(False)
 

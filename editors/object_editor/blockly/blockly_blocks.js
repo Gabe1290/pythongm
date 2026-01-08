@@ -948,3 +948,17 @@ Blockly.Blocks['output_message'] = {
         this.setTooltip("Show a message");
     }
 };
+
+// ============ EXECUTE CODE BLOCK ============
+Blockly.Blocks['execute_code'] = {
+    init: function() {
+        this.appendDummyInput()
+            .appendField("Execute Python code:");
+        this.appendDummyInput()
+            .appendField(new Blockly.FieldMultilineInput("# Write your Python code here\n"), "CODE");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour("#4A90D9");  // Blue color for code blocks
+        this.setTooltip("Execute custom Python code");
+    }
+};

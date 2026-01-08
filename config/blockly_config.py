@@ -103,6 +103,7 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
     ],
     "Output": [
         {"type": "output_message", "name": "Show Message", "description": "Display message dialog", "implemented": True},
+        {"type": "execute_code", "name": "Execute Code", "description": "Execute custom Python code", "implemented": True},
     ],
     "Game": [
         {"type": "game_end", "name": "End Game", "description": "Close the game", "implemented": True},
@@ -260,6 +261,7 @@ class BlocklyConfig:
 
         # Output
         config.enable_block("output_message")
+        config.enable_block("execute_code")
 
         # Enable categories that have blocks
         config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Output"}
@@ -387,6 +389,7 @@ class BlocklyConfig:
 
         # Output
         config.enable_block("output_message")
+        config.enable_block("execute_code")
 
         # Sound
         config.enable_block("sound_play")
@@ -431,6 +434,7 @@ class BlocklyConfig:
 
         # Output - for win messages
         config.enable_block("output_message")
+        config.enable_block("execute_code")
 
         config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Score/Lives/Health", "Output"}
 
@@ -563,6 +567,7 @@ class BlocklyConfig:
 
         # Output (useful for testing)
         config.enable_block("output_message")
+        config.enable_block("execute_code")
 
         config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Output"}
 
@@ -591,6 +596,270 @@ class BlocklyConfig:
 
         return config
 
+    @classmethod
+    def get_code_editor(cls) -> 'BlocklyConfig':
+        """Code Editor preset - only includes events and actions that the
+        Python Code Editor can display and parse bidirectionally.
+
+        All events and actions in this preset can be:
+        1. Generated from Blockly/Events Panel to Python code
+        2. Parsed from Python code back to Blockly/Events Panel
+
+        Supported actions (from python_code_parser.py ACTION_TO_PYTHON):
+        - Movement: set_hspeed, set_vspeed, stop_movement, reverse_horizontal,
+                   reverse_vertical, set_gravity, set_friction, jump_to_position,
+                   snap_to_grid, set_direction_speed
+        - Instance: destroy_instance, create_instance
+        - Room: next_room, previous_room, restart_room, goto_room
+        - Game: end_game, restart_game
+        - Score/Lives/Health: set_score, set_lives, set_health
+        - Drawing: draw_score, draw_lives, draw_health_bar, set_sprite, set_alpha
+        - Alarm: set_alarm
+        - Sound: play_sound, play_music, stop_music
+        - Output: display_message, execute_code
+
+        Supported events:
+        - create, destroy, step, begin_step, end_step, draw
+        - alarm_0 through alarm_11
+        - keyboard_<key>, keyboard_pressed_<key>, keyboard_released_<key>
+        - collision_with_<object>
+        """
+        config = cls(preset_name="code_editor")
+
+        # =====================================================================
+        # EVENTS - All events supported by the code editor
+        # =====================================================================
+        config.enable_block("event_create")
+        config.enable_block("event_destroy")
+        config.enable_block("event_step")
+        config.enable_block("event_draw")
+        config.enable_block("event_alarm")
+        config.enable_block("event_keyboard_held")
+        config.enable_block("event_keyboard_press")
+        config.enable_block("event_keyboard_release")
+        config.enable_block("event_collision")
+
+        # =====================================================================
+        # MOVEMENT - Actions with Python code templates
+        # =====================================================================
+        config.enable_block("move_set_hspeed")      # set_hspeed
+        config.enable_block("move_set_vspeed")      # set_vspeed
+        config.enable_block("move_stop")            # stop_movement
+        config.enable_block("reverse_horizontal")   # reverse_horizontal
+        config.enable_block("reverse_vertical")     # reverse_vertical
+        config.enable_block("set_gravity")          # set_gravity
+        config.enable_block("set_friction")         # set_friction
+        config.enable_block("move_jump_to")         # jump_to_position
+        config.enable_block("move_snap_to_grid")    # snap_to_grid
+        config.enable_block("move_direction")       # set_direction_speed
+
+        # =====================================================================
+        # INSTANCE - Create/destroy actions
+        # =====================================================================
+        config.enable_block("instance_destroy")     # destroy_instance
+        config.enable_block("instance_create")      # create_instance
+
+        # =====================================================================
+        # ROOM - Navigation actions
+        # =====================================================================
+        config.enable_block("room_goto_next")       # next_room
+        config.enable_block("room_goto_previous")   # previous_room
+        config.enable_block("room_restart")         # restart_room
+        config.enable_block("room_goto")            # goto_room
+
+        # =====================================================================
+        # GAME CONTROL
+        # =====================================================================
+        config.enable_block("game_end")             # end_game
+        config.enable_block("game_restart")         # restart_game
+
+        # =====================================================================
+        # SCORE/LIVES/HEALTH
+        # =====================================================================
+        config.enable_block("score_set")            # set_score
+        config.enable_block("score_add")            # set_score (relative)
+        config.enable_block("lives_set")            # set_lives
+        config.enable_block("lives_add")            # set_lives (relative)
+        config.enable_block("health_set")           # set_health
+        config.enable_block("health_add")           # set_health (relative)
+        config.enable_block("draw_score")           # draw_score
+        config.enable_block("draw_lives")           # draw_lives
+        config.enable_block("draw_health_bar")      # draw_health_bar
+
+        # =====================================================================
+        # SPRITE/APPEARANCE
+        # =====================================================================
+        config.enable_block("set_sprite")           # set_sprite
+        config.enable_block("set_alpha")            # set_alpha (image_alpha)
+
+        # =====================================================================
+        # TIMING
+        # =====================================================================
+        config.enable_block("set_alarm")            # set_alarm
+
+        # =====================================================================
+        # SOUND
+        # =====================================================================
+        config.enable_block("sound_play")           # play_sound
+        config.enable_block("music_play")           # play_music
+        config.enable_block("music_stop")           # stop_music
+
+        # =====================================================================
+        # OUTPUT
+        # =====================================================================
+        config.enable_block("output_message")       # display_message
+        config.enable_block("execute_code")         # execute_code (passthrough)
+
+        # Enable all categories that have blocks
+        config.enabled_categories = {
+            "Events", "Movement", "Instance", "Room", "Game",
+            "Score/Lives/Health", "Drawing", "Timing", "Sound", "Output"
+        }
+
+        return config
+
+    @classmethod
+    def get_blockly_editor(cls) -> 'BlocklyConfig':
+        """Blockly Editor preset - includes all events and actions that work
+        in the Blockly visual programming editor.
+
+        This preset includes all implemented blocks that can be used in Blockly.
+        Some blocks may not have Python code equivalents (use Code Editor preset
+        for bidirectional Python sync).
+
+        Includes:
+        - All implemented events (create, step, draw, destroy, keyboard, mouse,
+          collision, alarm, other)
+        - All implemented movement actions (including grid movement helpers)
+        - All implemented instance actions
+        - All implemented room actions (including conditional checks)
+        - All implemented score/lives/health actions
+        - All implemented sprite/appearance actions
+        - All implemented timing actions
+        - All implemented sound actions
+        - All implemented output actions
+        - All implemented game control actions
+        - All value blocks for reading game state
+        """
+        config = cls(preset_name="blockly_editor")
+
+        # =====================================================================
+        # EVENTS - All implemented events
+        # =====================================================================
+        config.enable_block("event_create")
+        config.enable_block("event_step")
+        config.enable_block("event_draw")
+        config.enable_block("event_destroy")
+        config.enable_block("event_keyboard_nokey")
+        config.enable_block("event_keyboard_anykey")
+        config.enable_block("event_keyboard_held")
+        config.enable_block("event_keyboard_press")
+        config.enable_block("event_keyboard_release")
+        config.enable_block("event_mouse")
+        config.enable_block("event_collision")
+        config.enable_block("event_alarm")
+        config.enable_block("event_other")
+
+        # =====================================================================
+        # MOVEMENT - All implemented movement actions
+        # =====================================================================
+        config.enable_block("move_set_hspeed")
+        config.enable_block("move_set_vspeed")
+        config.enable_block("move_stop")
+        config.enable_block("move_direction")
+        config.enable_block("move_snap_to_grid")
+        config.enable_block("move_jump_to")
+        config.enable_block("grid_stop_if_no_keys")
+        config.enable_block("grid_check_keys_and_move")
+        config.enable_block("grid_if_on_grid")
+        config.enable_block("set_gravity")
+        config.enable_block("set_friction")
+        config.enable_block("reverse_horizontal")
+        config.enable_block("reverse_vertical")
+        config.enable_block("bounce")
+        config.enable_block("wrap_around_room")
+
+        # =====================================================================
+        # TIMING
+        # =====================================================================
+        config.enable_block("set_alarm")
+
+        # =====================================================================
+        # DRAWING/SPRITE
+        # =====================================================================
+        config.enable_block("set_sprite")
+
+        # =====================================================================
+        # SCORE/LIVES/HEALTH
+        # =====================================================================
+        config.enable_block("score_set")
+        config.enable_block("score_add")
+        config.enable_block("lives_set")
+        config.enable_block("lives_add")
+        config.enable_block("health_set")
+        config.enable_block("health_add")
+        config.enable_block("draw_score")
+        config.enable_block("draw_lives")
+        config.enable_block("draw_health_bar")
+
+        # =====================================================================
+        # INSTANCE
+        # =====================================================================
+        config.enable_block("instance_destroy")
+        config.enable_block("instance_destroy_other")
+        config.enable_block("instance_create")
+
+        # =====================================================================
+        # ROOM
+        # =====================================================================
+        config.enable_block("room_goto_next")
+        config.enable_block("room_goto_previous")
+        config.enable_block("room_restart")
+        config.enable_block("room_if_next_exists")
+        config.enable_block("room_if_previous_exists")
+
+        # =====================================================================
+        # VALUES - For reading game state
+        # =====================================================================
+        config.enable_block("value_x")
+        config.enable_block("value_y")
+        config.enable_block("value_hspeed")
+        config.enable_block("value_vspeed")
+        config.enable_block("value_score")
+        config.enable_block("value_lives")
+        config.enable_block("value_health")
+        config.enable_block("value_mouse_x")
+        config.enable_block("value_mouse_y")
+
+        # =====================================================================
+        # SOUND
+        # =====================================================================
+        config.enable_block("sound_play")
+        config.enable_block("music_play")
+        config.enable_block("music_stop")
+
+        # =====================================================================
+        # OUTPUT
+        # =====================================================================
+        config.enable_block("output_message")
+        config.enable_block("execute_code")
+
+        # =====================================================================
+        # GAME CONTROL
+        # =====================================================================
+        config.enable_block("game_end")
+        config.enable_block("game_restart")
+        config.enable_block("show_highscore")
+        config.enable_block("clear_highscore")
+
+        # Enable all categories that have blocks
+        config.enabled_categories = {
+            "Events", "Movement", "Timing", "Drawing", "Score/Lives/Health",
+            "Instance", "Room", "Values", "Sound", "Output", "Game"
+        }
+
+        return config
+
 
 # ============================================================================
 # PRESET REGISTRY
@@ -605,6 +874,8 @@ PRESETS: Dict[str, BlocklyConfig] = {
     "sokoban": BlocklyConfig.get_sokoban(),
     "testing": BlocklyConfig.get_testing(),
     "implemented_only": BlocklyConfig.get_implemented_only(),
+    "code_editor": BlocklyConfig.get_code_editor(),
+    "blockly_editor": BlocklyConfig.get_blockly_editor(),
 }
 
 
