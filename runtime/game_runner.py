@@ -1836,13 +1836,13 @@ class GameRunner:
             self.lives -= 1
             print(f"💔 Lives remaining: {self.lives}")
 
+            # Trigger no_more_lives event if lives reach 0
             if self.lives <= 0:
-                # Game over - show message then stop
-                print("☠️ GAME OVER - showing dialog...")
-                self.show_message_dialog("Game Over!")
-                print("☠️ Dialog closed, stopping game...")
-                self.stop_game()
-                return
+                print("💀 Lives reached 0, triggering no_more_lives event...")
+                # Trigger the event for all instances that have it
+                self.trigger_no_more_lives_event()
+                # Note: Projects should handle game over in the no_more_lives event
+                # (e.g., show message, restart game, go to game over room, etc.)
 
         room_name = self.current_room.name
         print(f"🔄 Restarting room: {room_name}")
