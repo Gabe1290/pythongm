@@ -1,0 +1,249 @@
+{
+  "name": "obj_all_actions",
+  "asset_type": "object",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "",
+  "sprite": "spr_object_c",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": 0,
+            "relative": false
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": 3,
+            "relative": false
+          }
+        },
+        {
+          "action": "set_health",
+          "parameters": {
+            "value": 100,
+            "relative": false
+          }
+        }
+      ]
+    },
+    "draw": {
+      "actions": [
+        {
+          "action": "draw_score",
+          "parameters": {
+            "x": "10",
+            "y": "10",
+            "caption": "Score: "
+          }
+        },
+        {
+          "action": "draw_lives",
+          "parameters": {
+            "x": "10",
+            "y": "40"
+          }
+        },
+        {
+          "action": "draw_health_bar",
+          "parameters": {
+            "x1": "10",
+            "y1": "70",
+            "x2": "210",
+            "y2": "90"
+          }
+        }
+      ]
+    },
+    "keyboard_press": {
+      "1": {
+        "actions": [
+          {
+            "action": "set_score",
+            "parameters": {
+              "value": 100,
+              "relative": true
+            }
+          }
+        ]
+      },
+      "2": {
+        "actions": [
+          {
+            "action": "set_lives",
+            "parameters": {
+              "value": 1,
+              "relative": true
+            }
+          }
+        ]
+      },
+      "3": {
+        "actions": [
+          {
+            "action": "set_health",
+            "parameters": {
+              "value": 10,
+              "relative": true
+            }
+          }
+        ]
+      },
+      "4": {
+        "actions": [
+          {
+            "action": "set_lives",
+            "parameters": {
+              "value": -1,
+              "relative": true
+            }
+          }
+        ]
+      },
+      "5": {
+        "actions": [
+          {
+            "action": "set_health",
+            "parameters": {
+              "value": -10,
+              "relative": true
+            }
+          }
+        ]
+      },
+      "m": {
+        "actions": [
+          {
+            "action": "display_message",
+            "parameters": {
+              "message": "This is a test message for bidirectional sync!"
+            }
+          }
+        ]
+      },
+      "c": {
+        "actions": [
+          {
+            "action": "create_instance",
+            "parameters": {
+              "object": "obj_simple_movement",
+              "x": "self.x + 50",
+              "y": "self.y"
+            }
+          }
+        ]
+      },
+      "d": {
+        "actions": [
+          {
+            "action": "destroy_instance",
+            "parameters": {
+              "target": "self"
+            }
+          }
+        ]
+      },
+      "a": {
+        "actions": [
+          {
+            "action": "set_alpha",
+            "parameters": {
+              "alpha": "0.5"
+            }
+          }
+        ]
+      },
+      "s": {
+        "actions": [
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "spr_object_a"
+            }
+          }
+        ]
+      },
+      "g": {
+        "actions": [
+          {
+            "action": "snap_to_grid",
+            "parameters": {
+              "grid_x": "32",
+              "grid_y": "32"
+            }
+          }
+        ]
+      },
+      "j": {
+        "actions": [
+          {
+            "action": "jump_to_position",
+            "parameters": {
+              "x": "400",
+              "y": "300"
+            }
+          }
+        ]
+      }
+    },
+    "keyboard": {
+      "left": {
+        "actions": [
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "-4"
+            }
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "4"
+            }
+          }
+        ]
+      },
+      "up": {
+        "actions": [
+          {
+            "action": "set_vspeed",
+            "parameters": {
+              "vspeed": "-4"
+            }
+          }
+        ]
+      },
+      "down": {
+        "actions": [
+          {
+            "action": "set_vspeed",
+            "parameters": {
+              "vspeed": "4"
+            }
+          }
+        ]
+      },
+      "nokey": {
+        "actions": [
+          {
+            "action": "stop_movement",
+            "parameters": {}
+          }
+        ]
+      }
+    }
+  }
+}

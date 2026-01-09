@@ -1,0 +1,177 @@
+{
+  "name": "obj_player",
+  "asset_type": "object",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "",
+  "sprite": "spr_player_right",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "play_music",
+          "parameters": {
+            "music": "mus_background"
+          }
+        }
+      ]
+    },
+    "keyboard": {
+      "left": {
+        "actions": [
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "-4"
+            }
+          },
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "spr_player_left"
+            }
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "4"
+            }
+          },
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "spr_player_right"
+            }
+          }
+        ]
+      },
+      "up": {
+        "actions": [
+          {
+            "action": "set_vspeed",
+            "parameters": {
+              "vspeed": "-4"
+            }
+          },
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "spr_player_up"
+            }
+          }
+        ]
+      },
+      "down": {
+        "actions": [
+          {
+            "action": "set_vspeed",
+            "parameters": {
+              "vspeed": "4"
+            }
+          },
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "spr_player_down"
+            }
+          }
+        ]
+      },
+      "nokey": {
+        "actions": [
+          {
+            "action": "stop_movement",
+            "parameters": {}
+          }
+        ]
+      }
+    },
+    "keyboard_press": {
+      "m": {
+        "actions": [
+          {
+            "action": "stop_music",
+            "parameters": {}
+          }
+        ]
+      },
+      "p": {
+        "actions": [
+          {
+            "action": "play_music",
+            "parameters": {
+              "music": "mus_background"
+            }
+          }
+        ]
+      },
+      "s": {
+        "actions": [
+          {
+            "action": "play_sound",
+            "parameters": {
+              "sound": "snd_explosion"
+            }
+          }
+        ]
+      },
+      "1": {
+        "actions": [
+          {
+            "action": "set_alpha",
+            "parameters": {
+              "alpha": "1.0"
+            }
+          }
+        ]
+      },
+      "2": {
+        "actions": [
+          {
+            "action": "set_alpha",
+            "parameters": {
+              "alpha": "0.5"
+            }
+          }
+        ]
+      },
+      "3": {
+        "actions": [
+          {
+            "action": "set_alpha",
+            "parameters": {
+              "alpha": "0.25"
+            }
+          }
+        ]
+      }
+    },
+    "collision_with_obj_pickup": {
+      "actions": [
+        {
+          "action": "play_sound",
+          "parameters": {
+            "sound": "snd_pickup"
+          }
+        },
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": 10,
+            "relative": true
+          }
+        }
+      ],
+      "target_object": "obj_pickup"
+    }
+  }
+}

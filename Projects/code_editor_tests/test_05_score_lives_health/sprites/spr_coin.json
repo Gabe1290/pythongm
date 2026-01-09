@@ -1,0 +1,14 @@
+{
+  "name": "spr_coin",
+  "asset_type": "sprite",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "sprites/spr_coin.gif",
+  "width": 32,
+  "height": 32,
+  "origin_x": 16,
+  "origin_y": 16,
+  "animation_type": "single",
+  "frame_count": 1
+}

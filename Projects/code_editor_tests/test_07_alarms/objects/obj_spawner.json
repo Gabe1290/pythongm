@@ -1,0 +1,45 @@
+{
+  "name": "obj_spawner",
+  "asset_type": "object",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "",
+  "sprite": "spr_spawner",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "alarm": "0",
+            "steps": "60"
+          }
+        }
+      ]
+    },
+    "alarm_0": {
+      "actions": [
+        {
+          "action": "create_instance",
+          "parameters": {
+            "object": "obj_particle",
+            "x": "self.x",
+            "y": "self.y"
+          }
+        },
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "alarm": "0",
+            "steps": "60"
+          }
+        }
+      ]
+    }
+  }
+}

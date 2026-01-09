@@ -1,0 +1,119 @@
+{
+  "name": "test_06_sound_sprite",
+  "version": "1.0.0",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "settings": {
+    "window_title": "Code Editor Test - Sound & Sprite Actions",
+    "window_width": 800,
+    "window_height": 600,
+    "room_speed": 60,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": true,
+    "starting_health": 100,
+    "show_health_in_caption": false
+  },
+  "assets": {
+    "sprites": {
+      "spr_player_right": {
+        "name": "spr_player_right",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_player_right.json",
+        "file_path": "sprites/spr_player_right.gif"
+      },
+      "spr_player_left": {
+        "name": "spr_player_left",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_player_left.json",
+        "file_path": "sprites/spr_player_left.gif"
+      },
+      "spr_player_up": {
+        "name": "spr_player_up",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_player_up.json",
+        "file_path": "sprites/spr_player_up.gif"
+      },
+      "spr_player_down": {
+        "name": "spr_player_down",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_player_down.json",
+        "file_path": "sprites/spr_player_down.gif"
+      },
+      "spr_pickup": {
+        "name": "spr_pickup",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_pickup.json",
+        "file_path": "sprites/spr_pickup.gif"
+      }
+    },
+    "sounds": {
+      "snd_pickup": {
+        "name": "snd_pickup",
+        "asset_type": "sound",
+        "_external_file": "sounds/snd_pickup.json",
+        "file_path": "sounds/snd_pickup.wav"
+      },
+      "snd_step": {
+        "name": "snd_step",
+        "asset_type": "sound",
+        "_external_file": "sounds/snd_step.json",
+        "file_path": "sounds/snd_step.wav"
+      },
+      "snd_explosion": {
+        "name": "snd_explosion",
+        "asset_type": "sound",
+        "_external_file": "sounds/snd_explosion.json",
+        "file_path": "sounds/snd_explosion.wav"
+      },
+      "mus_background": {
+        "name": "mus_background",
+        "asset_type": "sound",
+        "_external_file": "sounds/mus_background.json",
+        "file_path": "sounds/mus_background.wav"
+      }
+    },
+    "backgrounds": {},
+    "objects": {
+      "obj_player": {
+        "name": "obj_player",
+        "asset_type": "object",
+        "_external_file": "objects/obj_player.json",
+        "sprite": "spr_player_right"
+      },
+      "obj_pickup": {
+        "name": "obj_pickup",
+        "asset_type": "object",
+        "_external_file": "objects/obj_pickup.json",
+        "sprite": "spr_pickup"
+      }
+    },
+    "rooms": {
+      "room_main": {
+        "name": "room_main",
+        "asset_type": "room",
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000",
+        "imported": true,
+        "file_path": "",
+        "width": 800,
+        "height": 600,
+        "background_color": "#2c3e50",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 6,
+        "instances": [],
+        "_external_file": "rooms/room_main.json"
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  },
+  "description": "Tests sound actions (play_sound, play_music, stop_music) and sprite actions (set_sprite, set_alpha)",
+  "auto_save": true,
+  "target_platform": "Desktop"
+}

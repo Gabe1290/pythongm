@@ -17,8 +17,9 @@ __pycache__/
 .cleanup_backup/
 
 # LO Writer & Calc files
-*.odt
 *.ods
+# Allow specific ODT documentation files
+!docs/code_editor_test_projects.odt
 
 # Distribution / packaging
 venv/
@@ -40,6 +41,7 @@ docs/*.html
 
 # Work folders
 Projects/
+!Projects/code_editor_tests/
 Tutorial1/
 
 # IDE files

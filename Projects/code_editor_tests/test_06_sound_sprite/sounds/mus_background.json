@@ -1,0 +1,12 @@
+{
+  "name": "mus_background",
+  "asset_type": "sound",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "sounds/mus_background.wav",
+  "kind": "music",
+  "preload": true,
+  "volume": 0.7,
+  "pan": 0.0
+}

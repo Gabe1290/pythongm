@@ -1,0 +1,120 @@
+{
+  "name": "obj_player",
+  "asset_type": "object",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "",
+  "sprite": "spr_player",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "keyboard": {
+      "left": {
+        "actions": [
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "-4"
+            }
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "4"
+            }
+          }
+        ]
+      },
+      "up": {
+        "actions": [
+          {
+            "action": "set_vspeed",
+            "parameters": {
+              "vspeed": "-4"
+            }
+          }
+        ]
+      },
+      "down": {
+        "actions": [
+          {
+            "action": "set_vspeed",
+            "parameters": {
+              "vspeed": "4"
+            }
+          }
+        ]
+      },
+      "nokey": {
+        "actions": [
+          {
+            "action": "stop_movement",
+            "parameters": {}
+          }
+        ]
+      }
+    },
+    "keyboard_press": {
+      "r": {
+        "actions": [
+          {
+            "action": "restart_room",
+            "parameters": {}
+          }
+        ]
+      },
+      "g": {
+        "actions": [
+          {
+            "action": "restart_game",
+            "parameters": {}
+          }
+        ]
+      },
+      "escape": {
+        "actions": [
+          {
+            "action": "end_game",
+            "parameters": {}
+          }
+        ]
+      }
+    },
+    "collision_with_obj_door_next": {
+      "actions": [
+        {
+          "action": "next_room",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_door_next"
+    },
+    "collision_with_obj_door_prev": {
+      "actions": [
+        {
+          "action": "previous_room",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_door_prev"
+    },
+    "collision_with_obj_door_goto": {
+      "actions": [
+        {
+          "action": "goto_room",
+          "parameters": {
+            "room": "room_1"
+          }
+        }
+      ],
+      "target_object": "obj_door_goto"
+    }
+  }
+}

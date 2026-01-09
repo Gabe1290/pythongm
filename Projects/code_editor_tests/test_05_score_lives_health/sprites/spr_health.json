@@ -1,0 +1,14 @@
+{
+  "name": "spr_health",
+  "asset_type": "sprite",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "sprites/spr_health.gif",
+  "width": 16,
+  "height": 16,
+  "origin_x": 8,
+  "origin_y": 8,
+  "animation_type": "single",
+  "frame_count": 1
+}

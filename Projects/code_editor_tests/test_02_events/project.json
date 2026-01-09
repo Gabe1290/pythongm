@@ -1,0 +1,100 @@
+{
+  "name": "test_02_events",
+  "version": "1.0.0",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "settings": {
+    "window_title": "Code Editor Test - All Events",
+    "window_width": 800,
+    "window_height": 600,
+    "room_speed": 60,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": true,
+    "starting_score": 0,
+    "show_score_in_caption": true,
+    "starting_health": 100,
+    "show_health_in_caption": true
+  },
+  "assets": {
+    "sprites": {
+      "spr_player": {
+        "name": "spr_player",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_player.json",
+        "file_path": "sprites/spr_player.gif"
+      },
+      "spr_enemy": {
+        "name": "spr_enemy",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_enemy.json",
+        "file_path": "sprites/spr_enemy.gif"
+      },
+      "spr_dot": {
+        "name": "spr_dot",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_dot.json",
+        "file_path": "sprites/spr_dot.gif"
+      },
+      "spr_wall": {
+        "name": "spr_wall",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_wall.json",
+        "file_path": "sprites/spr_wall.gif"
+      }
+    },
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "obj_player": {
+        "name": "obj_player",
+        "asset_type": "object",
+        "_external_file": "objects/obj_player.json",
+        "sprite": "spr_player"
+      },
+      "obj_enemy": {
+        "name": "obj_enemy",
+        "asset_type": "object",
+        "_external_file": "objects/obj_enemy.json",
+        "sprite": "spr_enemy"
+      },
+      "obj_dot": {
+        "name": "obj_dot",
+        "asset_type": "object",
+        "_external_file": "objects/obj_dot.json",
+        "sprite": "spr_dot"
+      },
+      "obj_wall": {
+        "name": "obj_wall",
+        "asset_type": "object",
+        "_external_file": "objects/obj_wall.json",
+        "sprite": "spr_wall"
+      }
+    },
+    "rooms": {
+      "room_main": {
+        "name": "room_main",
+        "asset_type": "room",
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000",
+        "imported": true,
+        "file_path": "",
+        "width": 800,
+        "height": 600,
+        "background_color": "#0f0f23",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 10,
+        "instances": [],
+        "_external_file": "rooms/room_main.json"
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  },
+  "description": "Tests all event types: create, destroy, step, begin_step, end_step, draw, keyboard held/press/release, collision",
+  "auto_save": true,
+  "target_platform": "Desktop"
+}

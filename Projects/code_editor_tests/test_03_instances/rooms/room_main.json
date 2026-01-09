@@ -1,0 +1,127 @@
+{
+  "name": "room_main",
+  "asset_type": "room",
+  "width": 800,
+  "height": 600,
+  "background_color": "#16213e",
+  "instances": [
+    {
+      "instance_id": 3000001,
+      "object_name": "obj_shooter",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 400,
+      "y": 550
+    },
+    {
+      "instance_id": 3000002,
+      "object_name": "obj_target",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 100,
+      "y": 100
+    },
+    {
+      "instance_id": 3000003,
+      "object_name": "obj_target",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 200,
+      "y": 100
+    },
+    {
+      "instance_id": 3000004,
+      "object_name": "obj_target",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 300,
+      "y": 100
+    },
+    {
+      "instance_id": 3000005,
+      "object_name": "obj_target",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 400,
+      "y": 100
+    },
+    {
+      "instance_id": 3000006,
+      "object_name": "obj_target",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 500,
+      "y": 100
+    },
+    {
+      "instance_id": 3000007,
+      "object_name": "obj_target",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 600,
+      "y": 100
+    },
+    {
+      "instance_id": 3000008,
+      "object_name": "obj_target",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 700,
+      "y": 100
+    },
+    {
+      "instance_id": 3000009,
+      "object_name": "obj_target",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 150,
+      "y": 180
+    },
+    {
+      "instance_id": 3000010,
+      "object_name": "obj_target",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 350,
+      "y": 180
+    },
+    {
+      "instance_id": 3000011,
+      "object_name": "obj_target",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 550,
+      "y": 180
+    }
+  ],
+  "creation_code": "",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "background_image": "",
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "instance_count": 11
+}

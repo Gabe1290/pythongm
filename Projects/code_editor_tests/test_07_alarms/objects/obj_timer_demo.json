@@ -1,0 +1,280 @@
+{
+  "name": "obj_timer_demo",
+  "asset_type": "object",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "",
+  "sprite": "spr_timer_icon",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "alarm": "0",
+            "steps": "30"
+          }
+        },
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "alarm": "1",
+            "steps": "60"
+          }
+        },
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "alarm": "2",
+            "steps": "90"
+          }
+        },
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "alarm": "3",
+            "steps": "120"
+          }
+        },
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "alarm": "4",
+            "steps": "150"
+          }
+        },
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "alarm": "5",
+            "steps": "180"
+          }
+        }
+      ]
+    },
+    "alarm_0": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": 10,
+            "relative": true
+          }
+        },
+        {
+          "action": "display_message",
+          "parameters": {
+            "message": "Alarm 0 triggered!"
+          }
+        }
+      ]
+    },
+    "alarm_1": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": 20,
+            "relative": true
+          }
+        },
+        {
+          "action": "display_message",
+          "parameters": {
+            "message": "Alarm 1 triggered!"
+          }
+        }
+      ]
+    },
+    "alarm_2": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": 30,
+            "relative": true
+          }
+        },
+        {
+          "action": "display_message",
+          "parameters": {
+            "message": "Alarm 2 triggered!"
+          }
+        }
+      ]
+    },
+    "alarm_3": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": 40,
+            "relative": true
+          }
+        },
+        {
+          "action": "display_message",
+          "parameters": {
+            "message": "Alarm 3 triggered!"
+          }
+        }
+      ]
+    },
+    "alarm_4": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": 50,
+            "relative": true
+          }
+        },
+        {
+          "action": "display_message",
+          "parameters": {
+            "message": "Alarm 4 triggered!"
+          }
+        }
+      ]
+    },
+    "alarm_5": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": 60,
+            "relative": true
+          }
+        },
+        {
+          "action": "display_message",
+          "parameters": {
+            "message": "Alarm 5 triggered!"
+          }
+        }
+      ]
+    },
+    "keyboard_press": {
+      "6": {
+        "actions": [
+          {
+            "action": "set_alarm",
+            "parameters": {
+              "alarm": "6",
+              "steps": "30"
+            }
+          }
+        ]
+      },
+      "7": {
+        "actions": [
+          {
+            "action": "set_alarm",
+            "parameters": {
+              "alarm": "7",
+              "steps": "30"
+            }
+          }
+        ]
+      },
+      "8": {
+        "actions": [
+          {
+            "action": "set_alarm",
+            "parameters": {
+              "alarm": "8",
+              "steps": "30"
+            }
+          }
+        ]
+      },
+      "9": {
+        "actions": [
+          {
+            "action": "set_alarm",
+            "parameters": {
+              "alarm": "9",
+              "steps": "30"
+            }
+          }
+        ]
+      },
+      "0": {
+        "actions": [
+          {
+            "action": "set_alarm",
+            "parameters": {
+              "alarm": "10",
+              "steps": "30"
+            }
+          }
+        ]
+      }
+    },
+    "alarm_6": {
+      "actions": [
+        {
+          "action": "display_message",
+          "parameters": {
+            "message": "Alarm 6 triggered!"
+          }
+        }
+      ]
+    },
+    "alarm_7": {
+      "actions": [
+        {
+          "action": "display_message",
+          "parameters": {
+            "message": "Alarm 7 triggered!"
+          }
+        }
+      ]
+    },
+    "alarm_8": {
+      "actions": [
+        {
+          "action": "display_message",
+          "parameters": {
+            "message": "Alarm 8 triggered!"
+          }
+        }
+      ]
+    },
+    "alarm_9": {
+      "actions": [
+        {
+          "action": "display_message",
+          "parameters": {
+            "message": "Alarm 9 triggered!"
+          }
+        }
+      ]
+    },
+    "alarm_10": {
+      "actions": [
+        {
+          "action": "display_message",
+          "parameters": {
+            "message": "Alarm 10 triggered!"
+          }
+        }
+      ]
+    },
+    "alarm_11": {
+      "actions": [
+        {
+          "action": "display_message",
+          "parameters": {
+            "message": "Alarm 11 triggered!"
+          }
+        }
+      ]
+    }
+  }
+}

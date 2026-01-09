@@ -1,0 +1,88 @@
+{
+  "name": "test_01_movement_physics",
+  "version": "1.0.0",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "settings": {
+    "window_title": "Code Editor Test - Movement & Physics",
+    "window_width": 800,
+    "window_height": 600,
+    "room_speed": 60,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": true,
+    "starting_health": 100,
+    "show_health_in_caption": false
+  },
+  "assets": {
+    "sprites": {
+      "spr_ball": {
+        "name": "spr_ball",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_ball.json",
+        "file_path": "sprites/spr_ball.gif"
+      },
+      "spr_wall": {
+        "name": "spr_wall",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_wall.json",
+        "file_path": "sprites/spr_wall.gif"
+      },
+      "spr_target": {
+        "name": "spr_target",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_target.json",
+        "file_path": "sprites/spr_target.gif"
+      }
+    },
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "obj_ball": {
+        "name": "obj_ball",
+        "asset_type": "object",
+        "_external_file": "objects/obj_ball.json",
+        "sprite": "spr_ball"
+      },
+      "obj_wall": {
+        "name": "obj_wall",
+        "asset_type": "object",
+        "_external_file": "objects/obj_wall.json",
+        "sprite": "spr_wall"
+      },
+      "obj_target": {
+        "name": "obj_target",
+        "asset_type": "object",
+        "_external_file": "objects/obj_target.json",
+        "sprite": "spr_target"
+      }
+    },
+    "rooms": {
+      "room_main": {
+        "name": "room_main",
+        "asset_type": "room",
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000",
+        "imported": true,
+        "file_path": "",
+        "width": 800,
+        "height": 600,
+        "background_color": "#1a1a2e",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 5,
+        "instances": [],
+        "_external_file": "rooms/room_main.json"
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  },
+  "description": "Tests all movement and physics actions: hspeed, vspeed, gravity, friction, direction, snap to grid, jump to position, reverse",
+  "auto_save": true,
+  "target_platform": "Desktop"
+}

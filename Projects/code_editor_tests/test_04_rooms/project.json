@@ -1,0 +1,122 @@
+{
+  "name": "test_04_rooms",
+  "version": "1.0.0",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "settings": {
+    "window_title": "Code Editor Test - Room Navigation",
+    "window_width": 800,
+    "window_height": 600,
+    "room_speed": 60,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": true,
+    "starting_health": 100,
+    "show_health_in_caption": false
+  },
+  "assets": {
+    "sprites": {
+      "spr_player": {
+        "name": "spr_player",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_player.json",
+        "file_path": "sprites/spr_player.gif"
+      },
+      "spr_door": {
+        "name": "spr_door",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_door.json",
+        "file_path": "sprites/spr_door.gif"
+      }
+    },
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "obj_player": {
+        "name": "obj_player",
+        "asset_type": "object",
+        "_external_file": "objects/obj_player.json",
+        "sprite": "spr_player"
+      },
+      "obj_door_next": {
+        "name": "obj_door_next",
+        "asset_type": "object",
+        "_external_file": "objects/obj_door_next.json",
+        "sprite": "spr_door"
+      },
+      "obj_door_prev": {
+        "name": "obj_door_prev",
+        "asset_type": "object",
+        "_external_file": "objects/obj_door_prev.json",
+        "sprite": "spr_door"
+      },
+      "obj_door_goto": {
+        "name": "obj_door_goto",
+        "asset_type": "object",
+        "_external_file": "objects/obj_door_goto.json",
+        "sprite": "spr_door"
+      }
+    },
+    "rooms": {
+      "room_1": {
+        "name": "room_1",
+        "asset_type": "room",
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000",
+        "imported": true,
+        "file_path": "",
+        "width": 800,
+        "height": 600,
+        "background_color": "#2d3436",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 3,
+        "instances": [],
+        "_external_file": "rooms/room_1.json"
+      },
+      "room_2": {
+        "name": "room_2",
+        "asset_type": "room",
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000",
+        "imported": true,
+        "file_path": "",
+        "width": 800,
+        "height": 600,
+        "background_color": "#6c5ce7",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 3,
+        "instances": [],
+        "_external_file": "rooms/room_2.json"
+      },
+      "room_3": {
+        "name": "room_3",
+        "asset_type": "room",
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000",
+        "imported": true,
+        "file_path": "",
+        "width": 800,
+        "height": 600,
+        "background_color": "#00b894",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 3,
+        "instances": [],
+        "_external_file": "rooms/room_3.json"
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  },
+  "description": "Tests room navigation: next_room, previous_room, restart_room, goto_room",
+  "auto_save": true,
+  "target_platform": "Desktop"
+}

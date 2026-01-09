@@ -1,0 +1,104 @@
+{
+  "name": "obj_complex_events",
+  "asset_type": "object",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "",
+  "sprite": "spr_object_b",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_gravity",
+          "parameters": {
+            "gravity": "0.3",
+            "direction": "270"
+          }
+        },
+        {
+          "action": "set_friction",
+          "parameters": {
+            "friction": "0.05"
+          }
+        },
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "alarm": "0",
+            "steps": "120"
+          }
+        }
+      ]
+    },
+    "step": {
+      "actions": []
+    },
+    "begin_step": {
+      "actions": []
+    },
+    "end_step": {
+      "actions": []
+    },
+    "alarm_0": {
+      "actions": [
+        {
+          "action": "jump_to_position",
+          "parameters": {
+            "x": "400",
+            "y": "100"
+          }
+        },
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "alarm": "0",
+            "steps": "120"
+          }
+        }
+      ]
+    },
+    "keyboard": {
+      "left": {
+        "actions": [
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "-5"
+            }
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "5"
+            }
+          }
+        ]
+      }
+    },
+    "collision_with_obj_simple_movement": {
+      "actions": [
+        {
+          "action": "reverse_vertical",
+          "parameters": {}
+        },
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": 10,
+            "relative": true
+          }
+        }
+      ],
+      "target_object": "obj_simple_movement"
+    }
+  }
+}

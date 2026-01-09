@@ -1,0 +1,43 @@
+{
+  "name": "obj_particle",
+  "asset_type": "object",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "",
+  "sprite": "spr_particle",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_direction_speed",
+          "parameters": {
+            "direction": "90",
+            "speed": "2"
+          }
+        },
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "alarm": "0",
+            "steps": "120"
+          }
+        }
+      ]
+    },
+    "alarm_0": {
+      "actions": [
+        {
+          "action": "destroy_instance",
+          "parameters": {
+            "target": "self"
+          }
+        }
+      ]
+    }
+  }
+}

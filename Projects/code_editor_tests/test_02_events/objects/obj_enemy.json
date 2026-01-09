@@ -1,0 +1,37 @@
+{
+  "name": "obj_enemy",
+  "asset_type": "object",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "",
+  "sprite": "spr_enemy",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_hspeed",
+          "parameters": {
+            "hspeed": "2"
+          }
+        }
+      ]
+    },
+    "step": {
+      "actions": []
+    },
+    "collision_with_obj_wall": {
+      "actions": [
+        {
+          "action": "reverse_horizontal",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_wall"
+    }
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "name": "room_main",
+  "asset_type": "room",
+  "width": 800,
+  "height": 600,
+  "background_color": "#2c3e50",
+  "instances": [
+    {
+      "instance_id": 6000001,
+      "object_name": "obj_player",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 400,
+      "y": 300
+    },
+    {
+      "instance_id": 6000002,
+      "object_name": "obj_pickup",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 100,
+      "y": 100
+    },
+    {
+      "instance_id": 6000003,
+      "object_name": "obj_pickup",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 200,
+      "y": 150
+    },
+    {
+      "instance_id": 6000004,
+      "object_name": "obj_pickup",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 300,
+      "y": 200
+    },
+    {
+      "instance_id": 6000005,
+      "object_name": "obj_pickup",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 500,
+      "y": 400
+    },
+    {
+      "instance_id": 6000006,
+      "object_name": "obj_pickup",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 600,
+      "y": 450
+    },
+    {
+      "instance_id": 6000007,
+      "object_name": "obj_pickup",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 700,
+      "y": 500
+    }
+  ],
+  "creation_code": "",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "background_image": "",
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "instance_count": 7
+}

@@ -1,0 +1,107 @@
+{
+  "name": "room_main",
+  "asset_type": "room",
+  "width": 800,
+  "height": 600,
+  "background_color": "#1e272e",
+  "instances": [
+    {
+      "instance_id": 5000001,
+      "object_name": "obj_player",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 400,
+      "y": 450
+    },
+    {
+      "instance_id": 5000002,
+      "object_name": "obj_coin",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 150,
+      "y": 200
+    },
+    {
+      "instance_id": 5000003,
+      "object_name": "obj_coin",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 300,
+      "y": 200
+    },
+    {
+      "instance_id": 5000004,
+      "object_name": "obj_coin",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 500,
+      "y": 200
+    },
+    {
+      "instance_id": 5000005,
+      "object_name": "obj_coin",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 650,
+      "y": 200
+    },
+    {
+      "instance_id": 5000006,
+      "object_name": "obj_enemy",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 200,
+      "y": 350
+    },
+    {
+      "instance_id": 5000007,
+      "object_name": "obj_enemy",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 600,
+      "y": 350
+    },
+    {
+      "instance_id": 5000008,
+      "object_name": "obj_life_pickup",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 100,
+      "y": 500
+    },
+    {
+      "instance_id": 5000009,
+      "object_name": "obj_health_pickup",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 700,
+      "y": 500
+    }
+  ],
+  "creation_code": "",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "background_image": "",
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "instance_count": 9
+}

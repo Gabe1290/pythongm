@@ -1,0 +1,238 @@
+{
+  "name": "obj_player",
+  "asset_type": "object",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "",
+  "sprite": "spr_player",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "display_message",
+          "parameters": {
+            "message": "Create Event: Player initialized!"
+          }
+        }
+      ]
+    },
+    "destroy": {
+      "actions": [
+        {
+          "action": "display_message",
+          "parameters": {
+            "message": "Destroy Event: Player destroyed!"
+          }
+        }
+      ]
+    },
+    "step": {
+      "actions": []
+    },
+    "begin_step": {
+      "actions": []
+    },
+    "end_step": {
+      "actions": []
+    },
+    "draw": {
+      "actions": [
+        {
+          "action": "draw_score",
+          "parameters": {
+            "x": "10",
+            "y": "10",
+            "caption": "Score: "
+          }
+        },
+        {
+          "action": "draw_lives",
+          "parameters": {
+            "x": "10",
+            "y": "40"
+          }
+        },
+        {
+          "action": "draw_health_bar",
+          "parameters": {
+            "x1": "10",
+            "y1": "70",
+            "x2": "210",
+            "y2": "90"
+          }
+        }
+      ]
+    },
+    "keyboard": {
+      "left": {
+        "actions": [
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "-4"
+            }
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "4"
+            }
+          }
+        ]
+      },
+      "up": {
+        "actions": [
+          {
+            "action": "set_vspeed",
+            "parameters": {
+              "vspeed": "-4"
+            }
+          }
+        ]
+      },
+      "down": {
+        "actions": [
+          {
+            "action": "set_vspeed",
+            "parameters": {
+              "vspeed": "4"
+            }
+          }
+        ]
+      },
+      "w": {
+        "actions": [
+          {
+            "action": "set_vspeed",
+            "parameters": {
+              "vspeed": "-4"
+            }
+          }
+        ]
+      },
+      "a": {
+        "actions": [
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "-4"
+            }
+          }
+        ]
+      },
+      "s": {
+        "actions": [
+          {
+            "action": "set_vspeed",
+            "parameters": {
+              "vspeed": "4"
+            }
+          }
+        ]
+      },
+      "d": {
+        "actions": [
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "4"
+            }
+          }
+        ]
+      },
+      "nokey": {
+        "actions": [
+          {
+            "action": "stop_movement",
+            "parameters": {}
+          }
+        ]
+      }
+    },
+    "keyboard_press": {
+      "space": {
+        "actions": [
+          {
+            "action": "set_score",
+            "parameters": {
+              "value": 10,
+              "relative": true
+            }
+          }
+        ]
+      },
+      "enter": {
+        "actions": [
+          {
+            "action": "display_message",
+            "parameters": {
+              "message": "Enter key pressed!"
+            }
+          }
+        ]
+      },
+      "escape": {
+        "actions": [
+          {
+            "action": "end_game",
+            "parameters": {}
+          }
+        ]
+      }
+    },
+    "keyboard_release": {
+      "space": {
+        "actions": [
+          {
+            "action": "display_message",
+            "parameters": {
+              "message": "Space key released!"
+            }
+          }
+        ]
+      }
+    },
+    "collision_with_obj_dot": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": 50,
+            "relative": true
+          }
+        }
+      ],
+      "target_object": "obj_dot"
+    },
+    "collision_with_obj_enemy": {
+      "actions": [
+        {
+          "action": "set_health",
+          "parameters": {
+            "value": -10,
+            "relative": true
+          }
+        }
+      ],
+      "target_object": "obj_enemy"
+    },
+    "collision_with_obj_wall": {
+      "actions": [
+        {
+          "action": "stop_movement",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_wall"
+    }
+  }
+}

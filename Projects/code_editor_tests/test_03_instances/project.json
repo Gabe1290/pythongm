@@ -1,0 +1,100 @@
+{
+  "name": "test_03_instances",
+  "version": "1.0.0",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "settings": {
+    "window_title": "Code Editor Test - Instance Management",
+    "window_width": 800,
+    "window_height": 600,
+    "room_speed": 60,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": true,
+    "starting_health": 100,
+    "show_health_in_caption": false
+  },
+  "assets": {
+    "sprites": {
+      "spr_shooter": {
+        "name": "spr_shooter",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_shooter.json",
+        "file_path": "sprites/spr_shooter.gif"
+      },
+      "spr_bullet": {
+        "name": "spr_bullet",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_bullet.json",
+        "file_path": "sprites/spr_bullet.gif"
+      },
+      "spr_target": {
+        "name": "spr_target",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_target.json",
+        "file_path": "sprites/spr_target.gif"
+      },
+      "spr_explosion": {
+        "name": "spr_explosion",
+        "asset_type": "sprite",
+        "_external_file": "sprites/spr_explosion.json",
+        "file_path": "sprites/spr_explosion.gif"
+      }
+    },
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "obj_shooter": {
+        "name": "obj_shooter",
+        "asset_type": "object",
+        "_external_file": "objects/obj_shooter.json",
+        "sprite": "spr_shooter"
+      },
+      "obj_bullet": {
+        "name": "obj_bullet",
+        "asset_type": "object",
+        "_external_file": "objects/obj_bullet.json",
+        "sprite": "spr_bullet"
+      },
+      "obj_target": {
+        "name": "obj_target",
+        "asset_type": "object",
+        "_external_file": "objects/obj_target.json",
+        "sprite": "spr_target"
+      },
+      "obj_explosion": {
+        "name": "obj_explosion",
+        "asset_type": "object",
+        "_external_file": "objects/obj_explosion.json",
+        "sprite": "spr_explosion"
+      }
+    },
+    "rooms": {
+      "room_main": {
+        "name": "room_main",
+        "asset_type": "room",
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000",
+        "imported": true,
+        "file_path": "",
+        "width": 800,
+        "height": 600,
+        "background_color": "#16213e",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 5,
+        "instances": [],
+        "_external_file": "rooms/room_main.json"
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  },
+  "description": "Tests instance management: create_instance, destroy_instance (self and other), spawning objects",
+  "auto_save": true,
+  "target_platform": "Desktop"
+}

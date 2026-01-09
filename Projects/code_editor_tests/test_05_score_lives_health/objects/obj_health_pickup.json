@@ -1,0 +1,26 @@
+{
+  "name": "obj_health_pickup",
+  "asset_type": "object",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "",
+  "sprite": "spr_health",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "collision_with_obj_player": {
+      "actions": [
+        {
+          "action": "destroy_instance",
+          "parameters": {
+            "target": "self"
+          }
+        }
+      ],
+      "target_object": "obj_player"
+    }
+  }
+}

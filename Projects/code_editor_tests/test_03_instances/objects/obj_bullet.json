@@ -1,0 +1,46 @@
+{
+  "name": "obj_bullet",
+  "asset_type": "object",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "",
+  "sprite": "spr_bullet",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_vspeed",
+          "parameters": {
+            "vspeed": "-10"
+          }
+        }
+      ]
+    },
+    "step": {
+      "actions": []
+    },
+    "collision_with_obj_target": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": 100,
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_instance",
+          "parameters": {
+            "target": "self"
+          }
+        }
+      ],
+      "target_object": "obj_target"
+    }
+  }
+}

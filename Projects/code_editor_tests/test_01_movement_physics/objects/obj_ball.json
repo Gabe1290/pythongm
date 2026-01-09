@@ -1,0 +1,161 @@
+{
+  "name": "obj_ball",
+  "asset_type": "object",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "",
+  "sprite": "spr_ball",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_hspeed",
+          "parameters": {
+            "hspeed": "3"
+          }
+        },
+        {
+          "action": "set_vspeed",
+          "parameters": {
+            "vspeed": "2"
+          }
+        },
+        {
+          "action": "set_gravity",
+          "parameters": {
+            "gravity": "0.1",
+            "direction": "270"
+          }
+        },
+        {
+          "action": "set_friction",
+          "parameters": {
+            "friction": "0.02"
+          }
+        }
+      ]
+    },
+    "step": {
+      "actions": []
+    },
+    "keyboard": {
+      "left": {
+        "actions": [
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "-5"
+            }
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "5"
+            }
+          }
+        ]
+      },
+      "up": {
+        "actions": [
+          {
+            "action": "set_vspeed",
+            "parameters": {
+              "vspeed": "-8"
+            }
+          }
+        ]
+      },
+      "down": {
+        "actions": [
+          {
+            "action": "set_vspeed",
+            "parameters": {
+              "vspeed": "5"
+            }
+          }
+        ]
+      }
+    },
+    "keyboard_press": {
+      "space": {
+        "actions": [
+          {
+            "action": "stop_movement",
+            "parameters": {}
+          }
+        ]
+      },
+      "r": {
+        "actions": [
+          {
+            "action": "reverse_horizontal",
+            "parameters": {}
+          }
+        ]
+      },
+      "t": {
+        "actions": [
+          {
+            "action": "reverse_vertical",
+            "parameters": {}
+          }
+        ]
+      },
+      "g": {
+        "actions": [
+          {
+            "action": "snap_to_grid",
+            "parameters": {
+              "grid_x": "32",
+              "grid_y": "32"
+            }
+          }
+        ]
+      },
+      "j": {
+        "actions": [
+          {
+            "action": "jump_to_position",
+            "parameters": {
+              "x": "400",
+              "y": "300"
+            }
+          }
+        ]
+      },
+      "d": {
+        "actions": [
+          {
+            "action": "set_direction_speed",
+            "parameters": {
+              "direction": "45",
+              "speed": "6"
+            }
+          }
+        ]
+      }
+    },
+    "collision_with_obj_wall": {
+      "actions": [
+        {
+          "action": "reverse_horizontal",
+          "parameters": {}
+        },
+        {
+          "action": "reverse_vertical",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_wall"
+    }
+  }
+}

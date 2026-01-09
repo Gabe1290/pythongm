@@ -1,0 +1,47 @@
+{
+  "name": "room_3",
+  "asset_type": "room",
+  "width": 800,
+  "height": 600,
+  "background_color": "#00b894",
+  "instances": [
+    {
+      "instance_id": 4003001,
+      "object_name": "obj_player",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 400,
+      "y": 300
+    },
+    {
+      "instance_id": 4003002,
+      "object_name": "obj_door_prev",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 50,
+      "y": 300
+    },
+    {
+      "instance_id": 4003003,
+      "object_name": "obj_door_goto",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 750,
+      "y": 300
+    }
+  ],
+  "creation_code": "",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "background_image": "",
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "instance_count": 3
+}

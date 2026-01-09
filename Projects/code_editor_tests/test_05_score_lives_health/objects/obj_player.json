@@ -1,0 +1,201 @@
+{
+  "name": "obj_player",
+  "asset_type": "object",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "",
+  "sprite": "spr_player",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": 0,
+            "relative": false
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": 3,
+            "relative": false
+          }
+        },
+        {
+          "action": "set_health",
+          "parameters": {
+            "value": 100,
+            "relative": false
+          }
+        }
+      ]
+    },
+    "draw": {
+      "actions": [
+        {
+          "action": "draw_score",
+          "parameters": {
+            "x": "10",
+            "y": "10",
+            "caption": "Score: "
+          }
+        },
+        {
+          "action": "draw_lives",
+          "parameters": {
+            "x": "10",
+            "y": "40"
+          }
+        },
+        {
+          "action": "draw_health_bar",
+          "parameters": {
+            "x1": "10",
+            "y1": "70",
+            "x2": "210",
+            "y2": "90"
+          }
+        }
+      ]
+    },
+    "keyboard": {
+      "left": {
+        "actions": [
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "-4"
+            }
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "4"
+            }
+          }
+        ]
+      },
+      "up": {
+        "actions": [
+          {
+            "action": "set_vspeed",
+            "parameters": {
+              "vspeed": "-4"
+            }
+          }
+        ]
+      },
+      "down": {
+        "actions": [
+          {
+            "action": "set_vspeed",
+            "parameters": {
+              "vspeed": "4"
+            }
+          }
+        ]
+      },
+      "nokey": {
+        "actions": [
+          {
+            "action": "stop_movement",
+            "parameters": {}
+          }
+        ]
+      }
+    },
+    "keyboard_press": {
+      "1": {
+        "actions": [
+          {
+            "action": "set_score",
+            "parameters": {
+              "value": 1000,
+              "relative": false
+            }
+          }
+        ]
+      },
+      "2": {
+        "actions": [
+          {
+            "action": "set_lives",
+            "parameters": {
+              "value": 5,
+              "relative": false
+            }
+          }
+        ]
+      },
+      "3": {
+        "actions": [
+          {
+            "action": "set_health",
+            "parameters": {
+              "value": 50,
+              "relative": false
+            }
+          }
+        ]
+      }
+    },
+    "collision_with_obj_coin": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": 100,
+            "relative": true
+          }
+        }
+      ],
+      "target_object": "obj_coin"
+    },
+    "collision_with_obj_enemy": {
+      "actions": [
+        {
+          "action": "set_health",
+          "parameters": {
+            "value": -25,
+            "relative": true
+          }
+        }
+      ],
+      "target_object": "obj_enemy"
+    },
+    "collision_with_obj_life_pickup": {
+      "actions": [
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": 1,
+            "relative": true
+          }
+        }
+      ],
+      "target_object": "obj_life_pickup"
+    },
+    "collision_with_obj_health_pickup": {
+      "actions": [
+        {
+          "action": "set_health",
+          "parameters": {
+            "value": 25,
+            "relative": true
+          }
+        }
+      ],
+      "target_object": "obj_health_pickup"
+    }
+  }
+}

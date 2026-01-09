@@ -1,0 +1,47 @@
+{
+  "name": "room_main",
+  "asset_type": "room",
+  "width": 800,
+  "height": 600,
+  "background_color": "#1a1a1a",
+  "instances": [
+    {
+      "instance_id": 8000001,
+      "object_name": "obj_simple_movement",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 100,
+      "y": 200
+    },
+    {
+      "instance_id": 8000002,
+      "object_name": "obj_complex_events",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 400,
+      "y": 100
+    },
+    {
+      "instance_id": 8000003,
+      "object_name": "obj_all_actions",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 400,
+      "y": 400
+    }
+  ],
+  "creation_code": "",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "background_image": "",
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "instance_count": 3
+}

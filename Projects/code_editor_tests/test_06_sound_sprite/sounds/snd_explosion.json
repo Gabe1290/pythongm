@@ -1,0 +1,12 @@
+{
+  "name": "snd_explosion",
+  "asset_type": "sound",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "sounds/snd_explosion.wav",
+  "kind": "sound",
+  "preload": true,
+  "volume": 1.0,
+  "pan": 0.0
+}
