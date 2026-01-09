@@ -18,8 +18,6 @@ __pycache__/
 
 # LO Writer & Calc files
 *.ods
-# Allow specific ODT documentation files
-!docs/code_editor_test_projects.odt
 
 # Distribution / packaging
 venv/
@@ -43,6 +41,19 @@ docs/*.html
 Projects/
 !Projects/code_editor_tests/
 Tutorial1/
+resources/
+HTML/
+OpenBoard/
+
+# Local documentation files
+GameMakerPy - description.odt
+Kivy-export-issues.odt
+kivy-export-documentation.odt
+PyGameMaker-Test-Setup.odt
+docs/*.docx
+docs/blockly_editor_test_checklist.md
+docs/test_checklist.md
+docs/code_editor_test_projects.odt
 
 # IDE files
 .vscode/
