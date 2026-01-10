@@ -3,6 +3,70 @@
 // PyGameMaker HTML5 Engine - GAMEMAKER 7.0 COMPATIBLE
 // ============================================================================
 
+// Translation strings for game messages (matches Python runtime translations)
+const ENGINE_TRANSLATIONS = {
+    'en': {
+        'score': 'Score',
+        'lives': 'Lives',
+        'health': 'Health',
+        'room': 'Room',
+        'game_over': 'Game Over',
+        'high_score': 'High Score',
+        'yes_or_no': 'Yes or No?'
+    },
+    'de': {
+        'score': 'Punkte',
+        'lives': 'Leben',
+        'health': 'Gesundheit',
+        'room': 'Raum',
+        'game_over': 'Spiel vorbei',
+        'high_score': 'Highscore',
+        'yes_or_no': 'Ja oder Nein?'
+    },
+    'fr': {
+        'score': 'Score',
+        'lives': 'Vies',
+        'health': 'Santé',
+        'room': 'Niveau',
+        'game_over': 'Fin de partie',
+        'high_score': 'Meilleur score',
+        'yes_or_no': 'Oui ou Non?'
+    },
+    'it': {
+        'score': 'Punteggio',
+        'lives': 'Vite',
+        'health': 'Salute',
+        'room': 'Stanza',
+        'game_over': 'Fine del gioco',
+        'high_score': 'Punteggio più alto',
+        'yes_or_no': 'Sì o No?'
+    },
+    'sl': {
+        'score': 'Točke',
+        'lives': 'Življenja',
+        'health': 'Zdravje',
+        'room': 'Soba',
+        'game_over': 'Konec igre',
+        'high_score': 'Najboljši rezultat',
+        'yes_or_no': 'Da ali Ne?'
+    },
+    'uk': {
+        'score': 'Рахунок',
+        'lives': 'Життя',
+        'health': "Здоров'я",
+        'room': 'Кімната',
+        'game_over': 'Гра закінчена',
+        'high_score': 'Найкращий результат',
+        'yes_or_no': 'Так чи Ні?'
+    }
+};
+
+// Get translated text (falls back to English)
+function getTranslation(key, language = 'en') {
+    const lang = ENGINE_TRANSLATIONS[language] || ENGINE_TRANSLATIONS['en'];
+    return lang[key] || ENGINE_TRANSLATIONS['en'][key] || key;
+}
+
 console.log('🎮 Game engine loading...');
 
 class GameObject {
@@ -564,7 +628,7 @@ class GameObject {
 
             case 'if_question':
                 // Show a yes/no dialog and return result
-                const question = params.message || params.question || 'Yes or No?';
+                const question = params.message || params.question || game.translate('yes_or_no');
                 return confirm(question);
 
             default:
@@ -1181,11 +1245,11 @@ class GameObject {
 
             case 'end_game':
                 game.running = false;
-                alert('Game Over!');
+                alert(game.translate('game_over'));
                 break;
 
             case 'show_highscore':
-                alert(`High Score: ${game.score}`);
+                alert(`${game.translate('high_score')}: ${game.score}`);
                 break;
 
             default:
@@ -1468,8 +1532,16 @@ class Game {
         this.lives = 3;
         this.health = 100;
 
+        // Language for translations (default English, can be set from gameData)
+        this.language = 'en';
+
         this.setupKeyboard();
         this.loadGame();
+    }
+
+    // Get translated text for the current language
+    translate(key) {
+        return getTranslation(key, this.language);
     }
 
     setupKeyboard() {
@@ -1484,10 +1556,6 @@ class Game {
                 this.keysPressed[e.key] = true;
             }
             this.keys[e.key] = true;
-
-            if (e.key === 'Escape') {
-                this.togglePause();
-            }
         });
 
         window.addEventListener('keyup', (e) => {

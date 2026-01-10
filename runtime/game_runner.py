@@ -1014,22 +1014,8 @@ class GameRunner:
             if event.type == pygame.QUIT:
                 self.stop_game()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.stop_game()
-                elif event.key == pygame.K_F1:
-                    self.show_debug_info()
-                elif event.key == pygame.K_r:
-                    # Restart current level (costs one life)
-                    self.restart_current_room(use_life=True)
-                elif event.key == pygame.K_n:
-                    # Go to next room
-                    self.goto_next_room()
-                elif event.key == pygame.K_p:
-                    # Go to previous room
-                    self.goto_previous_room()
-                else:
-                    # Handle keyboard press events for all instances
-                    self.handle_keyboard_press(event.key)
+                # Handle keyboard press events for all instances
+                self.handle_keyboard_press(event.key)
             elif event.type == pygame.KEYUP:
                 # Handle keyboard release events
                 self.handle_keyboard_release(event.key)
@@ -1043,20 +1029,67 @@ class GameRunner:
                 # Handle mouse movement
                 self.handle_mouse_motion(event.pos)
 
+    def _get_key_name(self, key):
+        """Map pygame key code to key name string"""
+        # Arrow keys
+        arrow_keys = {
+            pygame.K_LEFT: "left",
+            pygame.K_RIGHT: "right",
+            pygame.K_UP: "up",
+            pygame.K_DOWN: "down",
+        }
+        if key in arrow_keys:
+            return arrow_keys[key]
+
+        # Letter keys (a-z)
+        if pygame.K_a <= key <= pygame.K_z:
+            return chr(key)
+
+        # Number keys (0-9)
+        if pygame.K_0 <= key <= pygame.K_9:
+            return chr(key)
+
+        # Special keys
+        special_keys = {
+            pygame.K_SPACE: "space",
+            pygame.K_RETURN: "enter",
+            pygame.K_ESCAPE: "escape",
+            pygame.K_TAB: "tab",
+            pygame.K_BACKSPACE: "backspace",
+            pygame.K_DELETE: "delete",
+            pygame.K_INSERT: "insert",
+            pygame.K_HOME: "home",
+            pygame.K_END: "end",
+            pygame.K_PAGEUP: "pageup",
+            pygame.K_PAGEDOWN: "pagedown",
+            pygame.K_F1: "f1",
+            pygame.K_F2: "f2",
+            pygame.K_F3: "f3",
+            pygame.K_F4: "f4",
+            pygame.K_F5: "f5",
+            pygame.K_F6: "f6",
+            pygame.K_F7: "f7",
+            pygame.K_F8: "f8",
+            pygame.K_F9: "f9",
+            pygame.K_F10: "f10",
+            pygame.K_F11: "f11",
+            pygame.K_F12: "f12",
+            pygame.K_LSHIFT: "shift",
+            pygame.K_RSHIFT: "shift",
+            pygame.K_LCTRL: "control",
+            pygame.K_RCTRL: "control",
+            pygame.K_LALT: "alt",
+            pygame.K_RALT: "alt",
+        }
+        return special_keys.get(key)
+
     def handle_keyboard_press(self, key):
         """Handle keyboard press event"""
         if not self.current_room:
             return
 
         # Map pygame keys to sub-event keys
-        key_map = {
-            pygame.K_LEFT: "left",
-            pygame.K_RIGHT: "right",
-            pygame.K_UP: "up",
-            pygame.K_DOWN: "down",
-        }
-
-        sub_key = key_map.get(key)
+        sub_key = self._get_key_name(key)
         if not sub_key:
             return
 
@@ -1066,32 +1099,6 @@ class GameRunner:
         for instance in self.current_room.instances:
             if hasattr(instance, "keys_pressed"):
                 instance.keys_pressed.add(sub_key)
-
-        # Execute keyboard events for all instances
-        events_found = False
-        for instance in self.current_room.instances:
-            if not instance.object_data:
-                continue
-
-            events = instance.object_data.get('events', {})
-
-            # Check if this is a direction reversal (moving left and pressing right, or vice versa)
-            is_direction_reversal = False
-            if sub_key == "left" and hasattr(instance, 'hspeed') and instance.hspeed > 0:
-                is_direction_reversal = True
-            elif sub_key == "right" and hasattr(instance, 'hspeed') and instance.hspeed < 0:
-                is_direction_reversal = True
-            elif sub_key == "up" and hasattr(instance, 'vspeed') and instance.vspeed > 0:
-                is_direction_reversal = True
-            elif sub_key == "down" and hasattr(instance, 'vspeed') and instance.vspeed < 0:
-                is_direction_reversal = True
-
-            # If reversing direction, snap to grid first for clean movement
-            if is_direction_reversal:
-                grid_size = 32  # Default grid size
-                instance.x = round(instance.x / grid_size) * grid_size
-                instance.y = round(instance.y / grid_size) * grid_size
-                print(f"  🔄 Direction reversal: snapped {instance.object_name} to grid ({instance.x}, {instance.y})")
 
             # Helper to find key in dict (case-insensitive)
             def find_key_in_event(event_dict, key):
@@ -1134,25 +1141,18 @@ class GameRunner:
             print(f"  ℹ️  No objects have keyboard events for '{sub_key}'")
 
     def handle_keyboard_release(self, key):
-        """Handle keyboard release event - stop movement immediately AND trigger JSON events"""
+        """Handle keyboard release event - trigger user-defined keyboard_release events"""
         if not self.current_room:
             return
 
-        # Map pygame keys
-        key_map = {
-            pygame.K_LEFT: "left",
-            pygame.K_RIGHT: "right",
-            pygame.K_UP: "up",
-            pygame.K_DOWN: "down",
-        }
-
-        sub_key = key_map.get(key)
+        # Map pygame keys to sub-event keys
+        sub_key = self._get_key_name(key)
         if not sub_key:
             return
 
         print(f"\n⌨️  Keyboard released: {sub_key}")
 
-        # Stop movement immediately and snap to grid for responsive controls
+        # Execute keyboard_release events for all instances
         for instance in self.current_room.instances:
             if not instance.object_data:
                 continue
@@ -1821,28 +1821,10 @@ class GameRunner:
 
         return False
 
-    def restart_current_room(self, use_life: bool = True):
-        """Restart the current room
-
-        Args:
-            use_life: If True, decrement lives and check for game over.
-                     Set to False when restarting without penalty (e.g., from code).
-        """
+    def restart_current_room(self):
+        """Restart the current room"""
         if not self.current_room:
             return
-
-        # Check and decrement lives if enabled
-        if use_life:
-            self.lives -= 1
-            print(f"💔 Lives remaining: {self.lives}")
-
-            # Trigger no_more_lives event if lives reach 0
-            if self.lives <= 0:
-                print("💀 Lives reached 0, triggering no_more_lives event...")
-                # Trigger the event for all instances that have it
-                self.trigger_no_more_lives_event()
-                # Note: Projects should handle game over in the no_more_lives event
-                # (e.g., show message, restart game, go to game over room, etc.)
 
         room_name = self.current_room.name
         print(f"🔄 Restarting room: {room_name}")

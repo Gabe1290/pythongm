@@ -421,13 +421,8 @@ class GameRunner:
             if event.type == pygame.QUIT:
                 self.stop_game()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.stop_game()
-                elif event.key == pygame.K_F1:
-                    self.show_debug_info()
-                else:
-                    # Handle keyboard press events for all instances
-                    self.handle_keyboard_press(event.key)
+                # Handle keyboard press events for all instances
+                self.handle_keyboard_press(event.key)
             elif event.type == pygame.KEYUP:
                 # Handle keyboard release events
                 self.handle_keyboard_release(event.key)
@@ -438,18 +433,20 @@ class GameRunner:
             return
 
         # Map pygame keys to sub-event keys used in IDE
-        key_map = {
-            pygame.K_LEFT: "left",
-            pygame.K_RIGHT: "right",
-            pygame.K_UP: "up",
-            pygame.K_DOWN: "down",
-        }
-
-        sub_key = key_map.get(key)
+        sub_key = self._get_key_name(key)
         if not sub_key:
             return
 
         print(f"\n⌨️  Key pressed: {sub_key}")
+
+        # Helper to find key in dict (case-insensitive)
+        def find_key_in_event(event_dict, key):
+            if key in event_dict:
+                return key
+            upper_key = key.upper()
+            if upper_key in event_dict:
+                return upper_key
+            return None
 
         # Execute keyboard event for all instances
         for instance in self.current_room.instances:
@@ -462,64 +459,128 @@ class GameRunner:
             if "keyboard_press" in events:
                 keyboard_press_event = events["keyboard_press"]
 
-                # Check if it has sub-events for specific keys
-                if isinstance(keyboard_press_event, dict) and sub_key in keyboard_press_event:
-                    print(f"  ✅ Found keyboard_press.{sub_key} for {instance.object_name}")
-                    # Execute the sub-event
-                    sub_event_data = keyboard_press_event[sub_key]
-                    if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
-                        actions = sub_event_data["actions"]
-                        print(f"  → Executing {len(actions)} actions from keyboard_press.{sub_key}")
-                        for action_data in actions:
-                            print(f"    - Action: {action_data.get('action', 'unknown')}")
-                            instance.action_executor.execute_action(instance, action_data)
+                if isinstance(keyboard_press_event, dict):
+                    found_key = find_key_in_event(keyboard_press_event, sub_key)
+                    if found_key:
+                        print(f"  ✅ Found keyboard_press.{found_key} for {instance.object_name}")
+                        sub_event_data = keyboard_press_event[found_key]
+                        if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
+                            actions = sub_event_data["actions"]
+                            print(f"  → Executing {len(actions)} actions from keyboard_press.{found_key}")
+                            for action_data in actions:
+                                print(f"    - Action: {action_data.get('action', 'unknown')}")
+                                instance.action_executor.execute_action(instance, action_data)
 
             # ALSO check for keyboard (held) event - might be used instead
             if "keyboard" in events:
                 keyboard_event = events["keyboard"]
 
-                # Check if it has sub-events for specific keys
-                if isinstance(keyboard_event, dict) and sub_key in keyboard_event:
-                    print(f"  ✅ Found keyboard.{sub_key} for {instance.object_name}")
-                    # Execute the sub-event
-                    sub_event_data = keyboard_event[sub_key]
-                    if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
-                        actions = sub_event_data["actions"]
-                        print(f"  → Executing {len(actions)} actions from keyboard.{sub_key}")
-                        for action_data in actions:
-                            print(f"    - Action: {action_data.get('action', 'unknown')}")
-                            instance.action_executor.execute_action(instance, action_data)
-                # Removed error messages - it's normal for an object to not handle every key
+                if isinstance(keyboard_event, dict):
+                    found_key = find_key_in_event(keyboard_event, sub_key)
+                    if found_key:
+                        print(f"  ✅ Found keyboard.{found_key} for {instance.object_name}")
+                        sub_event_data = keyboard_event[found_key]
+                        if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
+                            actions = sub_event_data["actions"]
+                            print(f"  → Executing {len(actions)} actions from keyboard.{found_key}")
+                            for action_data in actions:
+                                print(f"    - Action: {action_data.get('action', 'unknown')}")
+                                instance.action_executor.execute_action(instance, action_data)
 
     def handle_keyboard_release(self, key):
-        """Handle keyboard release event - stop movement"""
+        """Handle keyboard release event - execute user-defined keyboard_release events"""
         if not self.current_room:
             return
 
-        # Map pygame keys
-        key_map = {
+        # Map pygame keys to sub-event keys
+        sub_key = self._get_key_name(key)
+        if not sub_key:
+            return
+
+        print(f"\n⌨️  Key released: {sub_key}")
+
+        # Execute keyboard_release events for all instances
+        for instance in self.current_room.instances:
+            if not instance.object_data:
+                continue
+
+            events = instance.object_data.get('events', {})
+
+            # Check for keyboard_release event with sub-events
+            if "keyboard_release" in events:
+                keyboard_release_event = events["keyboard_release"]
+
+                # Helper to find key in dict (case-insensitive)
+                def find_key_in_event(event_dict, key):
+                    if key in event_dict:
+                        return key
+                    upper_key = key.upper()
+                    if upper_key in event_dict:
+                        return upper_key
+                    return None
+
+                if isinstance(keyboard_release_event, dict):
+                    found_key = find_key_in_event(keyboard_release_event, sub_key)
+                    if found_key:
+                        print(f"  ✅ Executing keyboard_release.{found_key} for {instance.object_name}")
+                        sub_event_data = keyboard_release_event[found_key]
+                        if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
+                            for action_data in sub_event_data["actions"]:
+                                instance.action_executor.execute_action(instance, action_data)
+
+    def _get_key_name(self, key):
+        """Map pygame key code to key name string"""
+        # Arrow keys
+        arrow_keys = {
             pygame.K_LEFT: "left",
             pygame.K_RIGHT: "right",
             pygame.K_UP: "up",
             pygame.K_DOWN: "down",
         }
+        if key in arrow_keys:
+            return arrow_keys[key]
 
-        sub_key = key_map.get(key)
-        if not sub_key:
-            return
+        # Letter keys (a-z)
+        if pygame.K_a <= key <= pygame.K_z:
+            return chr(key)
 
-        # Stop movement for all instances when key is released
-        for instance in self.current_room.instances:
-            if not instance.object_data:
-                continue
+        # Number keys (0-9)
+        if pygame.K_0 <= key <= pygame.K_9:
+            return chr(key)
 
-            # Stop the corresponding movement direction
-            if sub_key in ["left", "right"]:
-                if hasattr(instance, 'hspeed'):
-                    instance.hspeed = 0
-            elif sub_key in ["up", "down"]:
-                if hasattr(instance, 'vspeed'):
-                    instance.vspeed = 0
+        # Special keys
+        special_keys = {
+            pygame.K_SPACE: "space",
+            pygame.K_RETURN: "enter",
+            pygame.K_ESCAPE: "escape",
+            pygame.K_TAB: "tab",
+            pygame.K_BACKSPACE: "backspace",
+            pygame.K_DELETE: "delete",
+            pygame.K_INSERT: "insert",
+            pygame.K_HOME: "home",
+            pygame.K_END: "end",
+            pygame.K_PAGEUP: "pageup",
+            pygame.K_PAGEDOWN: "pagedown",
+            pygame.K_F1: "f1",
+            pygame.K_F2: "f2",
+            pygame.K_F3: "f3",
+            pygame.K_F4: "f4",
+            pygame.K_F5: "f5",
+            pygame.K_F6: "f6",
+            pygame.K_F7: "f7",
+            pygame.K_F8: "f8",
+            pygame.K_F9: "f9",
+            pygame.K_F10: "f10",
+            pygame.K_F11: "f11",
+            pygame.K_F12: "f12",
+            pygame.K_LSHIFT: "shift",
+            pygame.K_RSHIFT: "shift",
+            pygame.K_LCTRL: "control",
+            pygame.K_RCTRL: "control",
+            pygame.K_LALT: "alt",
+            pygame.K_RALT: "alt",
+        }
+        return special_keys.get(key)
 
     def update(self):
         """Update game logic"""
