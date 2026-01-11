@@ -231,7 +231,7 @@ class PyGameMakerIDE(QMainWindow):
         tools_menu = menubar.addMenu(self.tr("&Tools"))
         tools_menu.addAction(self.create_action(self.tr("&Preferences..."), None, self.preferences))
         tools_menu.addAction(self.create_action(self.tr("&Asset Manager..."), None, self.show_asset_manager))
-        tools_menu.addAction(self.create_action(self.tr("Configure &Blockly Blocks..."), None, self.configure_blockly))
+        tools_menu.addAction(self.create_action(self.tr("Configure &Action Blocks..."), None, self.configure_blockly))
         tools_menu.addSeparator()
         tools_menu.addAction(self.create_action(self.tr("&Validate Project"), None, self.validate_project))
         tools_menu.addAction(self.create_action(self.tr("&Clean Project"), None, self.clean_project))
