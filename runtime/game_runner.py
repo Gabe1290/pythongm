@@ -326,24 +326,162 @@ class GameInstance:
 
     def render(self, screen: pygame.Surface):
         """Render this instance"""
-        if not self.visible or not self.sprite:
+        if not self.visible:
             return
 
-        # Calculate render position
-        render_x = int(self.x)
-        render_y = int(self.y)
+        # Render sprite if present
+        if self.sprite:
+            # Calculate render position
+            render_x = int(self.x)
+            render_y = int(self.y)
 
-        # Get current animation frame
-        current_frame = self.sprite.get_frame(self.image_index)
+            # Get current animation frame
+            current_frame = self.sprite.get_frame(self.image_index)
 
-        # Handle scaling (basic implementation)
-        if self.scale_x != 1.0 or self.scale_y != 1.0:
-            scaled_width = int(self.sprite.width * self.scale_x)
-            scaled_height = int(self.sprite.height * self.scale_y)
-            scaled_surface = pygame.transform.scale(current_frame, (scaled_width, scaled_height))
-            screen.blit(scaled_surface, (render_x, render_y))
+            # Handle scaling (basic implementation)
+            if self.scale_x != 1.0 or self.scale_y != 1.0:
+                scaled_width = int(self.sprite.width * self.scale_x)
+                scaled_height = int(self.sprite.height * self.scale_y)
+                scaled_surface = pygame.transform.scale(current_frame, (scaled_width, scaled_height))
+                screen.blit(scaled_surface, (render_x, render_y))
+            else:
+                screen.blit(current_frame, (render_x, render_y))
+
+        # Execute draw event for this instance
+        if self.object_data and "events" in self.object_data:
+            events = self.object_data["events"]
+            if "draw" in events:
+                # Clear draw queue before executing draw event
+                self._draw_queue = []
+                self.action_executor.execute_event(self, "draw", events)
+
+                # Process draw queue
+                self._process_draw_queue(screen)
+
+    def _process_draw_queue(self, screen: pygame.Surface):
+        """Process queued draw commands from draw event actions"""
+        if not hasattr(self, '_draw_queue'):
+            return
+
+        for cmd in self._draw_queue:
+            cmd_type = cmd.get('type')
+
+            if cmd_type == 'text':
+                # Draw text (from draw_score, draw_text, etc.)
+                self._draw_text(screen, cmd)
+
+            elif cmd_type == 'lives':
+                # Draw lives as sprite or text
+                self._draw_lives(screen, cmd)
+
+            elif cmd_type == 'health_bar':
+                # Draw health bar
+                self._draw_health_bar(screen, cmd)
+
+            elif cmd_type == 'rectangle':
+                # Draw rectangle
+                self._draw_rectangle(screen, cmd)
+
+            elif cmd_type == 'circle':
+                # Draw circle
+                self._draw_circle(screen, cmd)
+
+        # Clear the queue after processing
+        self._draw_queue = []
+
+    def _draw_text(self, screen: pygame.Surface, cmd: dict):
+        """Draw text on screen"""
+        try:
+            font = pygame.font.Font(None, 24)
+        except Exception:
+            font = pygame.font.SysFont('arial', 18)
+
+        text = cmd.get('text', '')
+        x = cmd.get('x', 0)
+        y = cmd.get('y', 0)
+        color = self._parse_color(cmd.get('color', '#FFFFFF'))
+
+        text_surface = font.render(str(text), True, color)
+        screen.blit(text_surface, (x, y))
+
+    def _draw_lives(self, screen: pygame.Surface, cmd: dict):
+        """Draw lives (as text for now)"""
+        try:
+            font = pygame.font.Font(None, 24)
+        except Exception:
+            font = pygame.font.SysFont('arial', 18)
+
+        count = cmd.get('count', 0)
+        x = cmd.get('x', 0)
+        y = cmd.get('y', 0)
+
+        text_surface = font.render(f"Lives: {count}", True, (255, 255, 255))
+        screen.blit(text_surface, (x, y))
+
+    def _draw_health_bar(self, screen: pygame.Surface, cmd: dict):
+        """Draw health bar"""
+        x1 = cmd.get('x1', 0)
+        y1 = cmd.get('y1', 0)
+        x2 = cmd.get('x2', 100)
+        y2 = cmd.get('y2', 20)
+        health = cmd.get('health', 100)
+        back_color = self._parse_color(cmd.get('back_color', '#FF0000'))
+        bar_color = self._parse_color(cmd.get('bar_color', '#00FF00'))
+
+        # Draw background (full bar)
+        bar_width = x2 - x1
+        bar_height = y2 - y1
+        pygame.draw.rect(screen, back_color, (x1, y1, bar_width, bar_height))
+
+        # Draw health portion
+        health_width = int(bar_width * (health / 100.0))
+        if health_width > 0:
+            pygame.draw.rect(screen, bar_color, (x1, y1, health_width, bar_height))
+
+        # Draw border
+        pygame.draw.rect(screen, (0, 0, 0), (x1, y1, bar_width, bar_height), 1)
+
+    def _draw_rectangle(self, screen: pygame.Surface, cmd: dict):
+        """Draw a rectangle"""
+        x1 = cmd.get('x1', 0)
+        y1 = cmd.get('y1', 0)
+        x2 = cmd.get('x2', 100)
+        y2 = cmd.get('y2', 100)
+        color = self._parse_color(cmd.get('color', '#FFFFFF'))
+        filled = cmd.get('filled', True)
+
+        width = x2 - x1
+        height = y2 - y1
+
+        if filled:
+            pygame.draw.rect(screen, color, (x1, y1, width, height))
         else:
-            screen.blit(current_frame, (render_x, render_y))
+            pygame.draw.rect(screen, color, (x1, y1, width, height), 1)
+
+    def _draw_circle(self, screen: pygame.Surface, cmd: dict):
+        """Draw a circle"""
+        x = cmd.get('x', 0)
+        y = cmd.get('y', 0)
+        radius = cmd.get('radius', 10)
+        color = self._parse_color(cmd.get('color', '#FFFFFF'))
+        filled = cmd.get('filled', True)
+
+        if filled:
+            pygame.draw.circle(screen, color, (x, y), radius)
+        else:
+            pygame.draw.circle(screen, color, (x, y), radius, 1)
+
+    def _parse_color(self, color_str: str) -> tuple:
+        """Parse color string to RGB tuple"""
+        if isinstance(color_str, tuple):
+            return color_str
+        if isinstance(color_str, str) and color_str.startswith('#'):
+            try:
+                hex_color = color_str.lstrip('#')
+                return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+            except Exception:
+                pass
+        return (255, 255, 255)  # Default to white
 
 class GameRoom:
     """Represents a game room with instances"""
@@ -750,8 +888,10 @@ class GameRunner:
         objects_dir = self.project_path / "objects"
 
         if not objects_dir.exists():
+            print(f"📂 Objects directory not found: {objects_dir}")
             return
 
+        print(f"📂 Loading objects from: {objects_dir}")
         objects_data = self.project_data.get('assets', {}).get('objects', {})
 
         for object_name, object_data in objects_data.items():
@@ -2148,7 +2288,12 @@ class GameRunner:
                 instance.action_executor.execute_event(instance, 'no_more_lives', events)
 
     def trigger_no_more_health_event(self, triggering_instance=None):
-        """Trigger the no_more_health event for all instances that have it defined"""
+        """Trigger the no_more_health event for all instances that have it defined
+
+        Note: This only triggers custom no_more_health events. Any behavior like
+        decrementing lives or resetting health must be explicitly programmed
+        by the user in their no_more_health event actions.
+        """
         if not self.current_room:
             return
 
@@ -2232,10 +2377,12 @@ class GameRunner:
         # Clear any pending events to prevent accidental dismissal
         pygame.event.clear()
 
-        # Stop all instances when showing a message dialog
-        # This prevents other instances from continuing to move while dialog is open
+        # Store and pause all instance speeds during dialog
+        # This prevents instances from moving while dialog is open, but restores speeds afterward
+        saved_speeds = {}
         if self.current_room:
             for instance in self.current_room.instances:
+                saved_speeds[id(instance)] = (instance.hspeed, instance.vspeed)
                 instance.hspeed = 0
                 instance.vspeed = 0
 
@@ -2345,6 +2492,12 @@ class GameRunner:
             pygame.display.flip()
             if self.clock:
                 self.clock.tick(60)
+
+        # Restore instance speeds after dialog is dismissed
+        if self.current_room:
+            for instance in self.current_room.instances:
+                if id(instance) in saved_speeds:
+                    instance.hspeed, instance.vspeed = saved_speeds[id(instance)]
 
     # ==================== HIGHSCORE SYSTEM ====================
 

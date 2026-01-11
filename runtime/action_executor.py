@@ -67,7 +67,8 @@ class ActionExecutor:
 
         # DEBUG: Show which event is being executed
         if event_name == "create":
-            print(f"🎬 Executing CREATE event for {instance.__class__.__name__}")
+            obj_name = getattr(instance, 'object_name', instance.__class__.__name__)
+            print(f"🎬 Executing CREATE event for {obj_name}")
             print(f"   Actions: {len(actions)} action(s)")
             if actions:
                 print(f"   First action: {actions[0].get('action', 'unknown')}")
@@ -459,6 +460,46 @@ class ActionExecutor:
 
         instance.friction = friction
         print(f"  🛑 {instance.object_name} friction set to {friction}")
+
+    def execute_set_direction_speed_action(self, instance, parameters: Dict[str, Any]):
+        """Set exact direction and speed for movement
+
+        Direction angles (GameMaker standard):
+        - 0° = right
+        - 90° = up
+        - 180° = left
+        - 270° = down
+
+        Parameters:
+            direction: Direction in degrees (0-360)
+            speed: Movement speed
+        """
+        import math
+
+        direction = parameters.get("direction", 0)
+        speed = parameters.get("speed", 4.0)
+
+        # Parse values (can be expressions)
+        direction = self._parse_value(str(direction), instance)
+        speed = self._parse_value(str(speed), instance)
+
+        try:
+            direction = float(direction)
+            speed = float(speed)
+        except (ValueError, TypeError):
+            print(f"⚠️ set_direction_speed: Invalid values direction={direction}, speed={speed}")
+            return
+
+        # Convert angle to radians (GameMaker uses degrees, 0° is right, 90° is up)
+        angle_rad = math.radians(direction)
+
+        # Calculate horizontal and vertical speed components
+        # Note: In screen coordinates, y increases downward, so we negate sin
+        instance.hspeed = math.cos(angle_rad) * speed
+        instance.vspeed = -math.sin(angle_rad) * speed
+
+        print(f"  🧭 {instance.object_name} set direction={direction}° speed={speed}")
+        print(f"      hspeed={instance.hspeed:.2f}, vspeed={instance.vspeed:.2f}")
 
     def execute_reverse_horizontal_action(self, instance, parameters: Dict[str, Any]):
         """Reverse horizontal movement direction"""

@@ -32,8 +32,7 @@ MOVE_ACTIONS = {
         parameters=[
             ActionParameter("direction", "float", "Direction", "Direction in degrees (0-360)", default=0),
             ActionParameter("speed", "float", "Speed", "Movement speed", default=4.0)
-        ],
-        implemented=False
+        ]
     ),
     "move_towards_point": ActionDefinition(
         name="move_towards_point",
