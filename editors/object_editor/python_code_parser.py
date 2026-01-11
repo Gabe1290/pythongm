@@ -79,6 +79,7 @@ ACTION_TO_PYTHON = {
     'snap_to_grid': 'self.x = round(self.x / {grid_x}) * {grid_x}\nself.y = round(self.y / {grid_y}) * {grid_y}',
     'start_moving_direction': 'self.direction = {direction}\nself.speed = {speed}',
     'set_direction_speed': 'self.direction = {direction}\nself.speed = {speed}',
+    'wrap_around_room': 'self.wrap_around_room(horizontal={horizontal}, vertical={vertical})',
 
     # Instance
     'destroy_instance': 'self.destroy()',

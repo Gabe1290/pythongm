@@ -115,6 +115,8 @@ class ActionConverter:
             'move_left_smooth': self._convert_move_left_smooth,
             'move_up_smooth': self._convert_move_up_smooth,
             'move_down_smooth': self._convert_move_down_smooth,
+            # Room wrapping
+            'wrap_around_room': self._convert_wrap_around_room,
         }
 
         converter = converter_map.get(action_type)
@@ -324,6 +326,34 @@ class ActionConverter:
         code_lines = []
         code_lines.append(self._indent(f"self.vspeed = -{speed}", indent_level))  # Negative for down in Kivy
         code_lines.append(self._indent("self.hspeed = 0", indent_level))
+        return '\n'.join(code_lines)
+
+    def _convert_wrap_around_room(self, params: Dict[str, Any], indent_level: int) -> str:
+        """Convert wrap_around_room action - wraps instance to opposite side of room."""
+        horizontal = params.get('horizontal', True)
+        vertical = params.get('vertical', True)
+
+        code_lines = []
+        code_lines.append(self._indent("# Wrap around room boundaries", indent_level))
+        code_lines.append(self._indent("_room_width = game.room_width", indent_level))
+        code_lines.append(self._indent("_room_height = game.room_height", indent_level))
+        code_lines.append(self._indent("_width = self.width", indent_level))
+        code_lines.append(self._indent("_height = self.height", indent_level))
+
+        if horizontal:
+            code_lines.append(self._indent("# Horizontal wrapping", indent_level))
+            code_lines.append(self._indent("if self.x + _width < 0:", indent_level))
+            code_lines.append(self._indent("    self.x = _room_width", indent_level + 1))
+            code_lines.append(self._indent("elif self.x > _room_width:", indent_level))
+            code_lines.append(self._indent("    self.x = -_width", indent_level + 1))
+
+        if vertical:
+            code_lines.append(self._indent("# Vertical wrapping", indent_level))
+            code_lines.append(self._indent("if self.y + _height < 0:", indent_level))
+            code_lines.append(self._indent("    self.y = _room_height", indent_level + 1))
+            code_lines.append(self._indent("elif self.y > _room_height:", indent_level))
+            code_lines.append(self._indent("    self.y = -_height", indent_level + 1))
+
         return '\n'.join(code_lines)
 
     def _indent(self, text: str, level: int) -> str:
