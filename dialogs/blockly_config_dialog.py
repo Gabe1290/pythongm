@@ -71,6 +71,7 @@ class BlocklyConfigDialog(QDialog):
             self.tr("Platformer Game"),
             self.tr("Grid-based RPG"),
             self.tr("Sokoban (Box Puzzle)"),
+            self.tr("Thymio Robot"),
             self.tr("Testing (Validated Only)"),
             self.tr("Implemented Only"),
             self.tr("Code Editor"),
@@ -252,11 +253,12 @@ class BlocklyConfigDialog(QDialog):
             "platformer": 3,
             "grid_rpg": 4,
             "sokoban": 5,
-            "testing": 6,
-            "implemented_only": 7,
-            "code_editor": 8,
-            "blockly_editor": 9,
-        }.get(self.config.preset_name, 10)  # 10 = Custom
+            "thymio": 6,
+            "testing": 7,
+            "implemented_only": 8,
+            "code_editor": 9,
+            "blockly_editor": 10,
+        }.get(self.config.preset_name, 11)  # 11 = Custom
         self.preset_combo.setCurrentIndex(preset_index)
 
         self.tree.blockSignals(False)
@@ -275,6 +277,7 @@ class BlocklyConfigDialog(QDialog):
             self.tr("Platformer Game"): "platformer",
             self.tr("Grid-based RPG"): "grid_rpg",
             self.tr("Sokoban (Box Puzzle)"): "sokoban",
+            self.tr("Thymio Robot"): "thymio",
             self.tr("Testing (Validated Only)"): "testing",
             self.tr("Implemented Only"): "implemented_only",
             self.tr("Code Editor"): "code_editor",
@@ -320,9 +323,9 @@ class BlocklyConfigDialog(QDialog):
 
         # Mark as custom ONLY if user manually changed something (not during load)
         # Check if tree signals are blocked - if so, we're loading, not user action
-        if not self.tree.signalsBlocked() and self.preset_combo.currentIndex() != 10:
+        if not self.tree.signalsBlocked() and self.preset_combo.currentIndex() != 11:
             self.tree.blockSignals(True)
-            self.preset_combo.setCurrentIndex(10)  # Custom
+            self.preset_combo.setCurrentIndex(11)  # Custom
             self.config.preset_name = "custom"
             self.tree.blockSignals(False)
 
