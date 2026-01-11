@@ -1560,11 +1560,13 @@ class ActionExecutor:
         """Set an alarm to trigger after N steps
 
         Parameters:
-            alarm_number: Which alarm (0-11)
+            alarm_number (or alarm): Which alarm (0-11)
             steps: Number of steps until alarm triggers (-1 to disable)
             relative: If True, add to current alarm value
         """
-        alarm_number = int(parameters.get("alarm_number", 0))
+        # Accept both "alarm_number" and "alarm" parameter names for flexibility
+        alarm_number = parameters.get("alarm_number", parameters.get("alarm", 0))
+        alarm_number = int(alarm_number)
         steps_param = parameters.get("steps", "30")
         relative = parameters.get("relative", False)
 
@@ -1955,16 +1957,16 @@ class ActionExecutor:
         """Execute destroy instance action
 
         Parameters:
-            target: "sel" or "other" - which instance to destroy
+            target: "self"/"sel" or "other" - which instance to destroy
         """
-        target = parameters.get("target", "sel")
+        target = parameters.get("target", "self")
 
         if target == "other" and hasattr(self, '_collision_other') and self._collision_other:
             # Destroy the other instance in a collision context
             print(f"💀 Destroying other instance: {self._collision_other.object_name}")
             self._collision_other.to_destroy = True
         else:
-            # Destroy self (default behavior)
+            # Destroy self (default behavior) - accept both "self" and "sel"
             print(f"💀 Destroying instance: {instance.object_name}")
             instance.to_destroy = True
 
@@ -2422,11 +2424,13 @@ class ActionExecutor:
         parameters = action_data.get("parameters", {})
 
         if action_name == "destroy_instance":
-            target = parameters.get("target", "sel")
+            target = parameters.get("target", "self")
 
-            if target == "sel":
+            if target in ("self", "sel"):
+                print(f"  💀 Destroying instance: {instance.object_name}")
                 instance.to_destroy = True
             elif target == "other":
+                print(f"  💀 Destroying other instance: {other_instance.object_name}")
                 other_instance.to_destroy = True
             return None
         else:
