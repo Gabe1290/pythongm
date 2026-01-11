@@ -241,9 +241,9 @@ class TestMovementActions:
         instance = MockInstance()
 
         executor.execute_jump_to_position_action(instance, {"x": 200, "y": 300, "relative": False})
-        # Position is snapped to grid (32px)
-        assert instance.x == 192.0  # 200 snapped to nearest 32
-        assert instance.y == 288.0  # 300 snapped to nearest 32
+        # Position is set directly (no grid snapping outside collision events)
+        assert instance.x == 200.0
+        assert instance.y == 300.0
 
     def test_jump_to_position_relative(self):
         """jump_to_position with relative coordinates"""
