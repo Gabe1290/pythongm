@@ -122,6 +122,13 @@ a = Analysis(
         'IPython',
         'notebook',
         'jupyter',
+        # Exclude Kivy - causes OpenGL detection issues on CI runners
+        # and adds significant bloat. Kivy exports can be done separately.
+        'kivy',
+        'kivy_deps',
+        'kivy_deps.angle',
+        'kivy_deps.glew',
+        'kivy_deps.sdl2',
     ],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
