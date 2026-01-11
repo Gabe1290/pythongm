@@ -73,7 +73,7 @@ jobs:
   # ============================================================================
   build-macos-intel:
     name: Build macOS (Intel)
-    runs-on: macos-13  # Intel-based macOS runner
+    runs-on: macos-15-intel  # Intel-based macOS runner
 
     steps:
       - name: Checkout code
