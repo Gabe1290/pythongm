@@ -1,17 +1,24 @@
 # -*- mode: python ; coding: utf-8 -*-
 """
-PyInstaller spec file for PyGameMaker IDE - LITE BUILD (CI/GitHub Actions)
+PyInstaller spec file for PyGameMaker IDE - FULL BUILD with Kivy
 
-This is the LITE build configuration used by GitHub Actions.
-Kivy is EXCLUDED because CI runners don't have GPUs (OpenGL detection fails).
+This is the FULL build configuration for LOCAL builds only.
+Includes Kivy for complete EXE export functionality.
 
-For a FULL build with Kivy (enables EXE export), use PyGameMaker-full.spec
-on a local machine with a GPU (Windows or macOS with VS Code).
+REQUIREMENTS:
+  - Must be built on a machine with a GPU (OpenGL 2.0+ support)
+  - Windows or macOS with VS Code or terminal access
+  - Cannot be built on GitHub Actions (no GPU available)
+
+For CI/GitHub Actions builds, use PyGameMaker.spec (lite version).
 
 See docs/BUILDING.md for complete documentation.
 
 To build:
-    pyinstaller PyGameMaker.spec
+    pyinstaller PyGameMaker-full.spec
+
+Note: Build time will be longer and executable will be larger (~300-500MB)
+due to Kivy and its dependencies being bundled.
 """
 
 import sys
@@ -32,6 +39,10 @@ pyside6_datas = collect_data_files('PySide6')
 # Collect PySide6 submodules for QtWebEngine
 pyside6_hiddenimports = collect_submodules('PySide6')
 
+# Collect Kivy data files and submodules (for EXE export functionality)
+kivy_datas = collect_data_files('kivy')
+kivy_hiddenimports = collect_submodules('kivy')
+
 # Data files to include
 datas = [
     # Translation files (.qm)
@@ -44,6 +55,9 @@ datas = [
 
 # Add PySide6 data files
 datas.extend(pyside6_datas)
+
+# Add Kivy data files
+datas.extend(kivy_datas)
 
 # Hidden imports that PyInstaller may not detect
 hiddenimports = [
@@ -88,6 +102,13 @@ hiddenimports = [
     'jinja2',
     'jinja2.ext',
 
+    # Kivy core (for EXE export)
+    'kivy',
+    'kivy.app',
+    'kivy.uix',
+    'kivy.core',
+    'kivy.graphics',
+
     # Standard library modules that may be missed
     'json',
     'pathlib',
@@ -109,6 +130,9 @@ hiddenimports = [
 # Add all PySide6 submodules
 hiddenimports.extend(pyside6_hiddenimports)
 
+# Add all Kivy submodules
+hiddenimports.extend(kivy_hiddenimports)
+
 # Analysis configuration
 a = Analysis(
     [str(main_script)],
@@ -129,13 +153,6 @@ a = Analysis(
         'IPython',
         'notebook',
         'jupyter',
-        # Exclude Kivy - causes OpenGL detection issues on CI runners
-        # and adds significant bloat. Kivy exports can be done separately.
-        'kivy',
-        'kivy_deps',
-        'kivy_deps.angle',
-        'kivy_deps.glew',
-        'kivy_deps.sdl2',
     ],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
@@ -161,7 +178,7 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=False,  # Disabled - UPX on large Qt apps is extremely slow
+    upx=True,  # Enable UPX for local builds - slower but smaller exe
     upx_exclude=[],
     runtime_tmpdir=None,
     console=False,  # GUI application, no console window
