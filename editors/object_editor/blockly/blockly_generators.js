@@ -203,6 +203,11 @@ function generateActionCode(block) {
             return {action: 'reverse_horizontal', parameters: {}};
         case 'reverse_vertical':
             return {action: 'reverse_vertical', parameters: {}};
+        case 'wrap_around_room':
+            return {action: 'wrap_around_room', parameters: {
+                horizontal: block.getFieldValue('HORIZONTAL') === 'TRUE',
+                vertical: block.getFieldValue('VERTICAL') === 'TRUE'
+            }};
         case 'execute_code':
             return {action: 'execute_code', parameters: {code: block.getFieldValue('CODE') || ''}};
         default:

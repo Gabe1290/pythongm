@@ -420,6 +420,21 @@ Blockly.Blocks['reverse_vertical'] = {
     }
 };
 
+Blockly.Blocks['wrap_around_room'] = {
+    init: function() {
+        this.appendDummyInput()
+            .appendField("Wrap around room")
+            .appendField(new Blockly.FieldCheckbox("TRUE"), "HORIZONTAL")
+            .appendField("horizontal")
+            .appendField(new Blockly.FieldCheckbox("FALSE"), "VERTICAL")
+            .appendField("vertical");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour("#5C81A6");
+        this.setTooltip("Wrap instance to opposite side when leaving room boundaries");
+    }
+};
+
 // ============================================================================
 // TIMING BLOCKS
 // ============================================================================

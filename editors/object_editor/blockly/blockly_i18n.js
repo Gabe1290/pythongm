@@ -87,6 +87,10 @@ const BLOCK_MESSAGES = {
         'reverse_horizontal_tooltip': 'Inverse la direction horizontale',
         'reverse_vertical': 'Inverser mouvement vertical',
         'reverse_vertical_tooltip': 'Inverse la direction verticale',
+        'wrap_around_room': 'Reboucler dans la salle',
+        'wrap_around_room_tooltip': "Téléporte l'instance du côté opposé quand elle quitte les limites de la salle",
+        'horizontal': 'horizontal',
+        'vertical': 'vertical',
 
         // Timing blocks
         'set_alarm_prefix': 'Définir alarme',
@@ -335,6 +339,10 @@ const BLOCK_MESSAGES = {
         'reverse_horizontal_tooltip': 'Kehrt die horizontale Richtung um',
         'reverse_vertical': 'Vertikale Bewegung umkehren',
         'reverse_vertical_tooltip': 'Kehrt die vertikale Richtung um',
+        'wrap_around_room': 'Im Raum umbrechen',
+        'wrap_around_room_tooltip': 'Teleportiert die Instanz zur gegenüberliegenden Seite wenn sie den Raum verlässt',
+        'horizontal': 'horizontal',
+        'vertical': 'vertikal',
 
         // Timing blocks
         'set_alarm_prefix': 'Setze Alarm',
@@ -562,6 +570,10 @@ const BLOCK_MESSAGES = {
         'reverse_horizontal_tooltip': 'Inverte la direzione orizzontale',
         'reverse_vertical': 'Inverti movimento verticale',
         'reverse_vertical_tooltip': 'Inverte la direzione verticale',
+        'wrap_around_room': 'Avvolgi nella stanza',
+        'wrap_around_room_tooltip': "Teletrasporta l'istanza sul lato opposto quando esce dai confini della stanza",
+        'horizontal': 'orizzontale',
+        'vertical': 'verticale',
 
         // Timing blocks
         'set_alarm_prefix': 'Imposta allarme',
@@ -1020,6 +1032,10 @@ const CATEGORY_MESSAGES = {
         'reverse_horizontal_tooltip': 'Обертає горизонтальний напрямок',
         'reverse_vertical': 'Обернути вертикальний рух',
         'reverse_vertical_tooltip': 'Обертає вертикальний напрямок',
+        'wrap_around_room': 'Обгортання в кімнаті',
+        'wrap_around_room_tooltip': 'Телепортує екземпляр на протилежну сторону коли він виходить за межі кімнати',
+        'horizontal': 'горизонтально',
+        'vertical': 'вертикально',
 
         // Timing blocks
         'set_alarm_prefix': 'Встановити будильник',

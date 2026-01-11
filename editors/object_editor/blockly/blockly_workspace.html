@@ -217,6 +217,10 @@
             </block>
             <block type="reverse_horizontal"></block>
             <block type="reverse_vertical"></block>
+            <block type="wrap_around_room">
+                <field name="HORIZONTAL">TRUE</field>
+                <field name="VERTICAL">FALSE</field>
+            </block>
         </category>
 
         <!-- Timing Category -->
@@ -1335,6 +1339,21 @@
             }
         };
 
+        Blockly.Blocks['wrap_around_room'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField(getBlockMessage('wrap_around_room', window.BLOCKLY_LANG) || "Wrap around room")
+                    .appendField(new Blockly.FieldCheckbox("TRUE"), "HORIZONTAL")
+                    .appendField(getBlockMessage('horizontal', window.BLOCKLY_LANG) || "horizontal")
+                    .appendField(new Blockly.FieldCheckbox("FALSE"), "VERTICAL")
+                    .appendField(getBlockMessage('vertical', window.BLOCKLY_LANG) || "vertical");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5C81A6");
+                this.setTooltip(getBlockMessage('wrap_around_room_tooltip', window.BLOCKLY_LANG) || "Wrap instance to opposite side when leaving room boundaries");
+            }
+        };
+
         // Apply translations to Blockly.Msg for built-in blocks (Math, Logic, Text)
         // This must happen after Blockly loads but before workspace is created
         if (typeof applyBlocklyMsgTranslations === 'function') {
@@ -1565,6 +1584,11 @@
                     return {action: 'reverse_horizontal', parameters: {}};
                 case 'reverse_vertical':
                     return {action: 'reverse_vertical', parameters: {}};
+                case 'wrap_around_room':
+                    return {action: 'wrap_around_room', parameters: {
+                        horizontal: block.getFieldValue('HORIZONTAL') === 'TRUE',
+                        vertical: block.getFieldValue('VERTICAL') === 'TRUE'
+                    }};
                 default:
                     return null;
             }
@@ -1645,6 +1669,7 @@
             'set_friction': 'set_friction',
             'reverse_horizontal': 'reverse_horizontal',
             'reverse_vertical': 'reverse_vertical',
+            'wrap_around_room': 'wrap_around_room',
             'execute_code': 'execute_code'
         };
 
@@ -2151,6 +2176,18 @@
                     }
                     break;
 
+                case 'wrap_around_room':
+                    // Set checkbox fields for wrap_around_room
+                    var horizField = block.getField('HORIZONTAL');
+                    var vertField = block.getField('VERTICAL');
+                    if (horizField) {
+                        horizField.setValue(params.horizontal !== false ? 'TRUE' : 'FALSE');
+                    }
+                    if (vertField) {
+                        vertField.setValue(params.vertical === true ? 'TRUE' : 'FALSE');
+                    }
+                    break;
+
                 // reverse_horizontal and reverse_vertical have no parameters
             }
         }
@@ -2220,7 +2257,8 @@
                         '<block type="set_gravity"><value name="DIRECTION"><shadow type="math_number"><field name="NUM">270</field></shadow></value><value name="STRENGTH"><shadow type="math_number"><field name="NUM">0.5</field></shadow></value></block>',
                         '<block type="set_friction"><value name="FRICTION"><shadow type="math_number"><field name="NUM">0.1</field></shadow></value></block>',
                         '<block type="reverse_horizontal"></block>',
-                        '<block type="reverse_vertical"></block>'
+                        '<block type="reverse_vertical"></block>',
+                        '<block type="wrap_around_room"><field name="HORIZONTAL">TRUE</field><field name="VERTICAL">FALSE</field></block>'
                     ]
                 },
                 'Timing': {
