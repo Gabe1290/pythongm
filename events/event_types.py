@@ -9,6 +9,7 @@ from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
 from events.keyboard_events_complete import PYGAME_KEY_CODES, get_all_keyboard_events
 from events.mouse_events_complete import PYGAME_MOUSE_BUTTONS, get_all_mouse_events
+from events.thymio_events import THYMIO_EVENT_TYPES
 
 @dataclass
 class EventType:
@@ -217,7 +218,12 @@ EVENT_TYPES = {
         category="Other",
         icon="💔",
         parameters=[]
-    )
+    ),
+
+    # ========================================================================
+    # THYMIO ROBOT EVENTS
+    # ========================================================================
+    **THYMIO_EVENT_TYPES
 }
 
 def get_event_type(event_name: str) -> Optional[EventType]:

@@ -34,6 +34,7 @@ from actions.timing_actions import TIMING_ACTIONS
 from actions.particles_actions import PARTICLES_ACTIONS
 from actions.info_actions import INFO_ACTIONS
 from actions.resources_actions import RESOURCES_ACTIONS
+from actions.thymio_actions import THYMIO_ACTIONS, THYMIO_TAB
 
 
 # Combined dictionary of all actions (for backward compatibility)
@@ -51,6 +52,7 @@ GM80_ALL_ACTIONS = {
     **PARTICLES_ACTIONS,
     **INFO_ACTIONS,
     **RESOURCES_ACTIONS,
+    **THYMIO_ACTIONS,
 }
 
 
@@ -84,6 +86,8 @@ __all__ = [
     'PARTICLES_ACTIONS',
     'INFO_ACTIONS',
     'RESOURCES_ACTIONS',
+    'THYMIO_ACTIONS',
+    'THYMIO_TAB',
     'get_actions_by_tab',
     'get_actions_by_tab_v2',
     'get_action_tabs_ordered',

@@ -122,6 +122,12 @@ GM80_ACTION_TABS = {
         "icon": "📦",
         "order": 13,
         "description": "Resource replacement"
+    },
+    "thymio": {
+        "name": "Thymio",
+        "icon": "🤖",
+        "order": 100,
+        "description": "Thymio robot control actions"
     }
 }
 

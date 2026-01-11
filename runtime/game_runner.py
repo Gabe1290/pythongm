@@ -24,6 +24,9 @@ from typing import Dict, List, Optional, Tuple, Any
 from runtime.action_executor import ActionExecutor
 from events.plugin_loader import load_all_plugins
 from config.blockly_translations import get_runtime_translation
+from runtime.thymio_simulator import ThymioSimulator
+from runtime.thymio_renderer import ThymioRenderer
+from runtime.thymio_action_handlers import register_thymio_actions
 
 # Translation strings for game caption (key: language code)
 CAPTION_TRANSLATIONS = {
@@ -377,6 +380,19 @@ class GameRoom:
                 instance_data,
                 action_executor=self.action_executor
             )
+
+            # Check if this is a Thymio robot (by object name or special property)
+            if instance_data.get('object_name', '').lower().startswith('thymio') or \
+               instance_data.get('is_thymio', False):
+                # Attach Thymio simulator to this instance
+                instance.thymio_simulator = ThymioSimulator(
+                    x=instance.x,
+                    y=instance.y,
+                    angle=0  # Initial angle
+                )
+                instance.is_thymio = True
+                print(f"🤖 Created Thymio robot: {instance.object_name}")
+
             self.instances.append(instance)
 
         # Build initial spatial grid
@@ -570,7 +586,16 @@ class GameRoom:
         # In GameMaker, lower depth values are drawn on top (in front)
         sorted_instances = sorted(self.instances, key=lambda inst: getattr(inst, 'depth', 0), reverse=True)
         for instance in sorted_instances:
-            instance.render(screen)
+            # Regular instances render their sprites
+            if not getattr(instance, 'is_thymio', False):
+                instance.render(screen)
+
+        # Render Thymio robots separately (on top)
+        for instance in self.instances:
+            if getattr(instance, 'is_thymio', False) and hasattr(instance, 'thymio_simulator'):
+                # Get render data from simulator and pass to renderer
+                # Note: thymio_renderer is accessed from game_runner
+                pass  # Will be handled by game_runner's render method
 
 class GameRunner:
     """Enhanced game runner that properly renders rooms with objects"""
@@ -596,6 +621,9 @@ class GameRunner:
         # Shared action executor for all instances (pass self for global state access)
         self.action_executor = ActionExecutor(game_runner=self)
 
+        # Register Thymio action handlers
+        register_thymio_actions(self.action_executor)
+
         # Load plugins
         print("🔌 Loading action/event plugins...")
         self.plugin_loader = load_all_plugins(self.action_executor)
@@ -604,6 +632,9 @@ class GameRunner:
         self.sprites: Dict[str, GameSprite] = {}
         self.rooms: Dict[str, GameRoom] = {}
         self.current_room = None
+
+        # Thymio robot renderer (shared for all Thymio robots)
+        self.thymio_renderer = ThymioRenderer()
 
         # Game settings
         self.fps = 60
@@ -962,6 +993,9 @@ class GameRunner:
                 for instance in self.current_room.instances:
                     instance.step()
 
+                # Update Thymio simulators and trigger events
+                self.update_thymio_robots()
+
                 # Execute end_step events (after step, before rendering)
                 for instance in self.current_room.instances:
                     if instance.object_data and "events" in instance.object_data:
@@ -1014,6 +1048,9 @@ class GameRunner:
             if event.type == pygame.QUIT:
                 self.stop_game()
             elif event.type == pygame.KEYDOWN:
+                # Check for ESC key to quit game
+                if event.key == pygame.K_ESCAPE:
+                    self.stop_game()
                 # Handle keyboard press events for all instances
                 self.handle_keyboard_press(event.key)
             elif event.type == pygame.KEYUP:
@@ -1095,10 +1132,14 @@ class GameRunner:
 
         print(f"\n⌨️  Keyboard pressed: {sub_key}")
 
+        events_found = False
+
         # Track which keys are pressed
         for instance in self.current_room.instances:
             if hasattr(instance, "keys_pressed"):
                 instance.keys_pressed.add(sub_key)
+
+            events = instance.object_data.get('events', {})
 
             # Helper to find key in dict (case-insensitive)
             def find_key_in_event(event_dict, key):
@@ -1136,6 +1177,26 @@ class GameRunner:
                             for action_data in sub_event_data["actions"]:
                                 instance.action_executor.execute_action(instance, action_data)
                 # Removed error messages - it's normal for an object to not handle every key
+
+            # Handle Thymio button events (keyboard mapping)
+            if getattr(instance, 'is_thymio', False) and hasattr(instance, 'thymio_simulator'):
+                thymio_button_map = {
+                    'up': ('forward', 'thymio_button_forward'),
+                    'down': ('backward', 'thymio_button_backward'),
+                    'left': ('left', 'thymio_button_left'),
+                    'right': ('right', 'thymio_button_right'),
+                    'space': ('center', 'thymio_button_center')
+                }
+
+                if sub_key in thymio_button_map:
+                    button_name, event_name = thymio_button_map[sub_key]
+                    instance.thymio_simulator.set_button(button_name, True)
+
+                    # Trigger Thymio button event
+                    if event_name in events:
+                        print(f"  🤖 Executing {event_name} for {instance.object_name}")
+                        events_found = True
+                        instance.action_executor.execute_event(instance, event_name, events)
 
         if not events_found:
             print(f"  ℹ️  No objects have keyboard events for '{sub_key}'")
@@ -1183,6 +1244,20 @@ class GameRunner:
                         if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
                             for action_data in sub_event_data["actions"]:
                                 instance.action_executor.execute_action(instance, action_data)
+
+            # Handle Thymio button release
+            if getattr(instance, 'is_thymio', False) and hasattr(instance, 'thymio_simulator'):
+                thymio_button_map = {
+                    'up': 'forward',
+                    'down': 'backward',
+                    'left': 'left',
+                    'right': 'right',
+                    'space': 'center'
+                }
+
+                if sub_key in thymio_button_map:
+                    button_name = thymio_button_map[sub_key]
+                    instance.thymio_simulator.set_button(button_name, False)
 
     def handle_mouse_press(self, button, pos):
         """Handle mouse button press event"""
@@ -2047,6 +2122,12 @@ class GameRunner:
         # Render current room
         self.current_room.render(self.screen)
 
+        # Render Thymio robots (on top of regular sprites)
+        for instance in self.current_room.instances:
+            if getattr(instance, 'is_thymio', False) and hasattr(instance, 'thymio_simulator'):
+                render_data = instance.thymio_simulator.get_render_data()
+                self.thymio_renderer.render(self.screen, render_data)
+
         # Update display
         pygame.display.flip()
 
@@ -2736,6 +2817,63 @@ class GameRunner:
                 self.clock.tick(60)
 
         return ""
+
+    def update_thymio_robots(self):
+        """Update all Thymio robot simulators and trigger events"""
+        if not self.current_room:
+            return
+
+        # Get obstacles for collision detection (all solid instances that aren't Thymio)
+        obstacles = []
+        for instance in self.current_room.instances:
+            if getattr(instance, 'solid', False) and not getattr(instance, 'is_thymio', False):
+                if instance.sprite:
+                    rect = pygame.Rect(
+                        int(instance.x - instance.sprite.width / 2),
+                        int(instance.y - instance.sprite.height / 2),
+                        instance.sprite.width,
+                        instance.sprite.height
+                    )
+                    obstacles.append(rect)
+
+        # Update each Thymio robot
+        for instance in self.current_room.instances:
+            if not getattr(instance, 'is_thymio', False) or not hasattr(instance, 'thymio_simulator'):
+                continue
+
+            # Update simulator (returns dict of events that occurred)
+            dt = 1/60  # 60 FPS
+            thymio_events = instance.thymio_simulator.update(dt, obstacles, self.screen)
+
+            # Sync instance position with simulator
+            instance.x = instance.thymio_simulator.x
+            instance.y = instance.thymio_simulator.y
+
+            # Trigger Thymio events if they occurred
+            if not instance.object_data or "events" not in instance.object_data:
+                continue
+
+            events = instance.object_data["events"]
+
+            if thymio_events.get('proximity_update'):
+                if 'thymio_proximity_update' in events:
+                    instance.action_executor.execute_event(instance, 'thymio_proximity_update', events)
+
+            if thymio_events.get('ground_update'):
+                if 'thymio_ground_update' in events:
+                    instance.action_executor.execute_event(instance, 'thymio_ground_update', events)
+
+            if thymio_events.get('timer_0'):
+                if 'thymio_timer_0' in events:
+                    instance.action_executor.execute_event(instance, 'thymio_timer_0', events)
+
+            if thymio_events.get('timer_1'):
+                if 'thymio_timer_1' in events:
+                    instance.action_executor.execute_event(instance, 'thymio_timer_1', events)
+
+            if thymio_events.get('sound_finished'):
+                if 'thymio_sound_finished' in events:
+                    instance.action_executor.execute_event(instance, 'thymio_sound_finished', events)
 
     def cleanup(self):
         """Clean up pygame resources"""
