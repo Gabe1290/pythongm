@@ -111,6 +111,62 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "show_highscore", "name": "Show Highscore", "description": "Display highscore table", "implemented": True},
         {"type": "clear_highscore", "name": "Clear Highscore", "description": "Reset highscore table", "implemented": True},
     ],
+    "Thymio Events": [
+        {"type": "thymio_button_forward", "name": "Forward Button", "description": "Forward button pressed", "implemented": True},
+        {"type": "thymio_button_backward", "name": "Backward Button", "description": "Backward button pressed", "implemented": True},
+        {"type": "thymio_button_left", "name": "Left Button", "description": "Left button pressed", "implemented": True},
+        {"type": "thymio_button_right", "name": "Right Button", "description": "Right button pressed", "implemented": True},
+        {"type": "thymio_button_center", "name": "Center Button", "description": "Center button pressed", "implemented": True},
+        {"type": "thymio_any_button", "name": "Any Button", "description": "Any button state changed", "implemented": True},
+        {"type": "thymio_proximity_update", "name": "Proximity Update", "description": "Proximity sensors updated (10 Hz)", "implemented": True},
+        {"type": "thymio_ground_update", "name": "Ground Update", "description": "Ground sensors updated (10 Hz)", "implemented": True},
+        {"type": "thymio_timer_0", "name": "Timer 0", "description": "Timer 0 triggered", "implemented": True},
+        {"type": "thymio_timer_1", "name": "Timer 1", "description": "Timer 1 triggered", "implemented": True},
+        {"type": "thymio_tap", "name": "Tap Detected", "description": "Robot tapped/shaken", "implemented": True},
+        {"type": "thymio_sound_detected", "name": "Sound Detected", "description": "Microphone threshold exceeded", "implemented": True},
+        {"type": "thymio_sound_finished", "name": "Sound Finished", "description": "Sound playback completed", "implemented": True},
+        {"type": "thymio_message_received", "name": "Message Received", "description": "IR message received", "implemented": True},
+    ],
+    "Thymio Motors": [
+        {"type": "thymio_set_motor_speed", "name": "Set Motor Speeds", "description": "Set left and right motor speeds", "implemented": True},
+        {"type": "thymio_move_forward", "name": "Move Forward", "description": "Move forward at speed", "implemented": True},
+        {"type": "thymio_move_backward", "name": "Move Backward", "description": "Move backward at speed", "implemented": True},
+        {"type": "thymio_turn_left", "name": "Turn Left", "description": "Turn left at speed", "implemented": True},
+        {"type": "thymio_turn_right", "name": "Turn Right", "description": "Turn right at speed", "implemented": True},
+        {"type": "thymio_stop_motors", "name": "Stop Motors", "description": "Stop both motors", "implemented": True},
+    ],
+    "Thymio LEDs": [
+        {"type": "thymio_set_led_top", "name": "Set Top LED", "description": "Set top RGB LED color", "implemented": True},
+        {"type": "thymio_set_led_bottom_left", "name": "Set Bottom Left LED", "description": "Set bottom left RGB LED", "implemented": True},
+        {"type": "thymio_set_led_bottom_right", "name": "Set Bottom Right LED", "description": "Set bottom right RGB LED", "implemented": True},
+        {"type": "thymio_set_led_circle", "name": "Set Circle LED", "description": "Set one circle LED", "implemented": True},
+        {"type": "thymio_set_led_circle_all", "name": "Set All Circle LEDs", "description": "Set all 8 circle LEDs", "implemented": True},
+        {"type": "thymio_leds_off", "name": "Turn Off LEDs", "description": "Turn off all LEDs", "implemented": True},
+    ],
+    "Thymio Sound": [
+        {"type": "thymio_play_tone", "name": "Play Tone", "description": "Play frequency tone", "implemented": True},
+        {"type": "thymio_play_system_sound", "name": "Play System Sound", "description": "Play built-in sound", "implemented": True},
+        {"type": "thymio_stop_sound", "name": "Stop Sound", "description": "Stop sound playback", "implemented": True},
+    ],
+    "Thymio Sensors": [
+        {"type": "thymio_read_proximity", "name": "Read Proximity", "description": "Read proximity sensor value", "implemented": True},
+        {"type": "thymio_read_ground", "name": "Read Ground", "description": "Read ground sensor value", "implemented": True},
+        {"type": "thymio_read_button", "name": "Read Button", "description": "Read button state", "implemented": True},
+        {"type": "thymio_if_proximity", "name": "If Proximity", "description": "Check proximity sensor", "implemented": True},
+        {"type": "thymio_if_ground_dark", "name": "If Ground Dark", "description": "Check if ground is dark", "implemented": True},
+        {"type": "thymio_if_ground_light", "name": "If Ground Light", "description": "Check if ground is light", "implemented": True},
+        {"type": "thymio_if_button_pressed", "name": "If Button Pressed", "description": "Check if button pressed", "implemented": True},
+        {"type": "thymio_if_button_released", "name": "If Button Released", "description": "Check if button released", "implemented": True},
+    ],
+    "Thymio Timers": [
+        {"type": "thymio_set_timer_period", "name": "Set Timer Period", "description": "Set timer period (ms)", "implemented": True},
+    ],
+    "Thymio Variables": [
+        {"type": "thymio_set_variable", "name": "Set Variable", "description": "Set variable value", "implemented": True},
+        {"type": "thymio_increase_variable", "name": "Increase Variable", "description": "Increment variable", "implemented": True},
+        {"type": "thymio_decrease_variable", "name": "Decrease Variable", "description": "Decrement variable", "implemented": True},
+        {"type": "thymio_if_variable", "name": "If Variable", "description": "Check variable condition", "implemented": True},
+    ],
 }
 
 
@@ -437,6 +493,32 @@ class BlocklyConfig:
         config.enable_block("execute_code")
 
         config.enabled_categories = {"Events", "Movement", "Instance", "Room", "Score/Lives/Health", "Output"}
+
+        return config
+
+    @classmethod
+    def get_thymio(cls) -> 'BlocklyConfig':
+        """Thymio robot programming preset - only Thymio events and actions"""
+        config = cls(preset_name="thymio")
+
+        # Essential create event for initialization
+        config.enable_block("event_create")
+
+        # All Thymio events
+        config.enable_category("Thymio Events")
+
+        # All Thymio actions
+        config.enable_category("Thymio Motors")
+        config.enable_category("Thymio LEDs")
+        config.enable_category("Thymio Sound")
+        config.enable_category("Thymio Sensors")
+        config.enable_category("Thymio Timers")
+        config.enable_category("Thymio Variables")
+
+        # Add control flow blocks for conditionals
+        config.enable_block("start_block")
+        config.enable_block("end_block")
+        config.enable_block("else")
 
         return config
 
@@ -872,6 +954,7 @@ PRESETS: Dict[str, BlocklyConfig] = {
     "platformer": BlocklyConfig.get_platformer(),
     "grid_rpg": BlocklyConfig.get_grid_rpg(),
     "sokoban": BlocklyConfig.get_sokoban(),
+    "thymio": BlocklyConfig.get_thymio(),
     "testing": BlocklyConfig.get_testing(),
     "implemented_only": BlocklyConfig.get_implemented_only(),
     "code_editor": BlocklyConfig.get_code_editor(),
