@@ -20,6 +20,7 @@ import json
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Any
+from PIL import Image
 
 from runtime.action_executor import ActionExecutor
 from events.plugin_loader import load_all_plugins
@@ -59,34 +60,88 @@ class GameSprite:
         """Load the sprite image and extract frames if animated"""
         try:
             if Path(self.path).exists():
-                self.surface = pygame.image.load(self.path).convert_alpha()
-                full_width = self.surface.get_width()
-                full_height = self.surface.get_height()
-
-                # Get animation data from sprite_data
-                self.frame_count = self.sprite_data.get('frames', 1)
-                self.frame_width = self.sprite_data.get('frame_width', full_width)
-                self.frame_height = self.sprite_data.get('frame_height', full_height)
-                self.speed = self.sprite_data.get('speed', 10.0)
-                self.animation_type = self.sprite_data.get('animation_type', 'single')
-
-                # Set display dimensions to frame size
-                self.width = self.frame_width
-                self.height = self.frame_height
-
-                # Extract frames based on animation type
-                if self.frame_count > 1:
-                    self._extract_frames(full_width, full_height)
+                # Check if it's an animated GIF
+                if self.path.lower().endswith('.gif'):
+                    self._load_animated_gif()
                 else:
-                    # Single frame - just use the whole surface
-                    self.frames = [self.surface]
-                    self.frame_count = 1
+                    self._load_static_or_sheet()
             else:
                 print(f"Sprite not found: {self.path}")
                 self.create_default_sprite()
         except Exception as e:
             print(f"Error loading sprite {self.path}: {e}")
+            import traceback
+            traceback.print_exc()
             self.create_default_sprite()
+
+    def _load_animated_gif(self):
+        """Load an animated GIF using PIL to extract all frames"""
+        try:
+            pil_image = Image.open(self.path)
+
+            # Check if it's actually animated
+            is_animated = getattr(pil_image, 'is_animated', False)
+            n_frames = getattr(pil_image, 'n_frames', 1)
+
+            if is_animated and n_frames > 1:
+                # Extract all frames from the animated GIF
+                self.frames = []
+                for frame_idx in range(n_frames):
+                    pil_image.seek(frame_idx)
+                    # Convert to RGBA for transparency support
+                    frame_rgba = pil_image.convert('RGBA')
+                    # Convert PIL image to pygame surface
+                    frame_data = frame_rgba.tobytes()
+                    frame_surface = pygame.image.fromstring(
+                        frame_data, frame_rgba.size, 'RGBA'
+                    ).convert_alpha()
+                    self.frames.append(frame_surface)
+
+                self.frame_count = len(self.frames)
+                self.surface = self.frames[0]
+                self.width = self.surface.get_width()
+                self.height = self.surface.get_height()
+                self.frame_width = self.width
+                self.frame_height = self.height
+
+                # Get animation speed from sprite data
+                self.speed = self.sprite_data.get('speed', 10.0)
+                self.animation_type = self.sprite_data.get('animation_type', 'loop')
+
+                print(f"  🎬 Loaded animated GIF: {Path(self.path).name} ({self.frame_count} frames)")
+            else:
+                # Not animated, load as static
+                self._load_static_or_sheet()
+
+        except Exception as e:
+            print(f"Error loading animated GIF {self.path}: {e}")
+            # Fall back to static loading
+            self._load_static_or_sheet()
+
+    def _load_static_or_sheet(self):
+        """Load a static image or sprite sheet"""
+        self.surface = pygame.image.load(self.path).convert_alpha()
+        full_width = self.surface.get_width()
+        full_height = self.surface.get_height()
+
+        # Get animation data from sprite_data
+        self.frame_count = self.sprite_data.get('frames', 1)
+        self.frame_width = self.sprite_data.get('frame_width', full_width)
+        self.frame_height = self.sprite_data.get('frame_height', full_height)
+        self.speed = self.sprite_data.get('speed', 10.0)
+        self.animation_type = self.sprite_data.get('animation_type', 'single')
+
+        # Set display dimensions to frame size
+        self.width = self.frame_width
+        self.height = self.frame_height
+
+        # Extract frames based on animation type
+        if self.frame_count > 1:
+            self._extract_frames(full_width, full_height)
+        else:
+            # Single frame - just use the whole surface
+            self.frames = [self.surface]
+            self.frame_count = 1
 
     def _extract_frames(self, full_width: int, full_height: int):
         """Extract individual frames from sprite sheet"""
