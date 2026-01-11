@@ -11,11 +11,12 @@ This package contains:
 - Asset management system
 - Visual programming interface
 - Project management tools
+- Thymio educational robot support
 """
 
-__version__ = "0.10.1-alpha"
+__version__ = "0.12.0-alpha"
 __author__ = "Gabriel Thullen"
-__description__ = "GameMaker-style IDE for Python game development"
+__description__ = "GameMaker-style IDE for Python game development with Thymio robot support"
 
 # Import main application class for easy access
 from .main import GameMakerIDE
