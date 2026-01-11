@@ -211,8 +211,8 @@
       <translation>&amp;Gestione risorse...</translation>
     </message>
     <message>
-      <source>Configure &amp;Blockly Blocks...</source>
-      <translation>Configura &amp;blocchi Blockly...</translation>
+      <source>Configure &amp;Action Blocks...</source>
+      <translation>Configura &amp;blocchi azione...</translation>
     </message>
     <message>
       <source>&amp;Validate Project</source>
@@ -231,8 +231,8 @@
       <translation>&amp;Lingua</translation>
     </message>
     <message>
-      <source>Configure Blockly Blocks...</source>
-      <translation>Configura blocchi Blockly...</translation>
+      <source>Configure Action Blocks...</source>
+      <translation>Configura blocchi azione...</translation>
     </message>
     <message>
       <source>&amp;Help</source>

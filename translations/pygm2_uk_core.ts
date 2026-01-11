@@ -224,8 +224,8 @@
     </message>
     <message>
       <location filename="../core/ide_window.py" line="238" />
-      <source>Configure &amp;Blockly Blocks...</source>
-      <translation>Налаштувати блоки &amp;Blockly...</translation>
+      <source>Configure &amp;Action Blocks...</source>
+      <translation>Налаштувати &amp;блоки дій...</translation>
     </message>
     <message>
       <location filename="../core/ide_window.py" line="240" />

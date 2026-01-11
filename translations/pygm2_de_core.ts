@@ -211,8 +211,8 @@
       <translation>&amp;Asset-Manager...</translation>
     </message>
     <message>
-      <source>Configure &amp;Blockly Blocks...</source>
-      <translation>&amp;Blockly-Blöcke konfigurieren...</translation>
+      <source>Configure &amp;Action Blocks...</source>
+      <translation>&amp;Aktionsblöcke konfigurieren...</translation>
     </message>
     <message>
       <source>&amp;Validate Project</source>
@@ -231,8 +231,8 @@
       <translation>&amp;Sprache</translation>
     </message>
     <message>
-      <source>Configure Blockly Blocks...</source>
-      <translation>Blockly-Blöcke konfigurieren...</translation>
+      <source>Configure Action Blocks...</source>
+      <translation>Aktionsblöcke konfigurieren...</translation>
     </message>
     <message>
       <source>&amp;Help</source>

@@ -211,8 +211,8 @@
       <translation>&amp;Upravitelj sredstev...</translation>
     </message>
     <message>
-      <source>Configure &amp;Blockly Blocks...</source>
-      <translation>Nastavi &amp;Blockly bloke...</translation>
+      <source>Configure &amp;Action Blocks...</source>
+      <translation>Konfiguriraj &amp;akcijske bloke...</translation>
     </message>
     <message>
       <source>&amp;Validate Project</source>
@@ -231,8 +231,8 @@
       <translation>&amp;Jezik</translation>
     </message>
     <message>
-      <source>Configure Blockly Blocks...</source>
-      <translation>Nastavi Blockly bloke...</translation>
+      <source>Configure Action Blocks...</source>
+      <translation>Konfiguriraj akcijske bloke...</translation>
     </message>
     <message>
       <source>&amp;Help</source>
