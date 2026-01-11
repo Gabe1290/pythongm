@@ -1,15 +1,7 @@
 {
   "name": "obj_target",
   "asset_type": "object",
-  "created": "2026-01-09T12:00:00.000000",
-  "modified": "2026-01-09T12:00:00.000000",
-  "imported": true,
-  "file_path": "",
   "sprite": "spr_target",
-  "visible": true,
-  "solid": false,
-  "persistent": false,
-  "depth": 0,
   "events": {
     "create": {
       "actions": [
@@ -22,7 +14,15 @@
       ]
     },
     "step": {
-      "actions": []
+      "actions": [
+        {
+          "action": "wrap_around_room",
+          "parameters": {
+            "horizontal": true,
+            "vertical": false
+          }
+        }
+      ]
     },
     "collision_with_obj_bullet": {
       "actions": [
@@ -43,5 +43,12 @@
       ],
       "target_object": "obj_bullet"
     }
-  }
+  },
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "imported": true,
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-11T22:11:45.372046"
 }

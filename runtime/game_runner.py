@@ -1679,6 +1679,9 @@ class GameRunner:
         # This is much faster than rebuilding the entire grid every frame
         self.current_room.update_dirty_instances()
 
+        # Check for outside_room events
+        self.check_outside_room_events()
+
         # NOTE: Step events are executed in the main game loop, not here
         # (see run_game_loop where instance.step() is called)
 
@@ -1807,6 +1810,47 @@ class GameRunner:
             moving_inst.y = static_inst.y - h1
         elif min_overlap == overlap_bottom and overlap_bottom > 0:
             moving_inst.y = static_inst.y + h2
+
+    def check_outside_room_events(self):
+        """Check for instances that have moved outside the room boundaries.
+
+        Triggers outside_room event when an instance is completely outside the room.
+        GameMaker convention: triggers when the instance's sprite is fully outside.
+        """
+        if not self.current_room:
+            return
+
+        room_width = self.current_room.width
+        room_height = self.current_room.height
+
+        for instance in self.current_room.instances:
+            # Skip if no object data or events
+            if not instance.object_data or "events" not in instance.object_data:
+                continue
+
+            events = instance.object_data["events"]
+            if "outside_room" not in events:
+                continue
+
+            # Get instance bounds
+            w = instance._cached_width
+            h = instance._cached_height
+
+            # Check if completely outside room (not just partially)
+            # Right edge is to the left of room left edge (x + w < 0)
+            # Left edge is to the right of room right edge (x > room_width)
+            # Bottom edge is above room top (y + h < 0)
+            # Top edge is below room bottom (y > room_height)
+            outside = (
+                instance.x + w < 0 or          # Completely off left
+                instance.x > room_width or     # Completely off right
+                instance.y + h < 0 or          # Completely off top
+                instance.y > room_height       # Completely off bottom
+            )
+
+            if outside:
+                print(f"📤 outside_room event for {instance.object_name} at ({instance.x}, {instance.y})")
+                instance.action_executor.execute_event(instance, "outside_room", events)
 
     def detect_collisions_for_instance(self, instance, objects_data: dict) -> list:
         """Detect collisions for an instance and capture speeds

@@ -2,7 +2,7 @@
   "name": "test_03_instances",
   "version": "1.0.0",
   "created": "2026-01-09T12:00:00.000000",
-  "modified": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-11T22:11:45.372280",
   "settings": {
     "window_title": "Code Editor Test - Instance Management",
     "window_width": 800,
@@ -21,26 +21,50 @@
       "spr_shooter": {
         "name": "spr_shooter",
         "asset_type": "sprite",
-        "_external_file": "sprites/spr_shooter.json",
-        "file_path": "sprites/spr_shooter.gif"
+        "file_path": "sprites/spr_shooter.gif",
+        "width": 64,
+        "height": 16,
+        "origin_x": 32,
+        "origin_y": 8,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       },
       "spr_bullet": {
         "name": "spr_bullet",
         "asset_type": "sprite",
-        "_external_file": "sprites/spr_bullet.json",
-        "file_path": "sprites/spr_bullet.gif"
+        "file_path": "sprites/spr_bullet.gif",
+        "width": 8,
+        "height": 16,
+        "origin_x": 4,
+        "origin_y": 8,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       },
       "spr_target": {
         "name": "spr_target",
         "asset_type": "sprite",
-        "_external_file": "sprites/spr_target.json",
-        "file_path": "sprites/spr_target.gif"
+        "file_path": "sprites/spr_target.gif",
+        "width": 32,
+        "height": 32,
+        "origin_x": 16,
+        "origin_y": 16,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       },
       "spr_explosion": {
         "name": "spr_explosion",
         "asset_type": "sprite",
-        "_external_file": "sprites/spr_explosion.json",
-        "file_path": "sprites/spr_explosion.gif"
+        "file_path": "sprites/spr_explosion.gif",
+        "width": 32,
+        "height": 32,
+        "origin_x": 16,
+        "origin_y": 16,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       }
     },
     "sounds": {},
@@ -49,26 +73,201 @@
       "obj_shooter": {
         "name": "obj_shooter",
         "asset_type": "object",
-        "_external_file": "objects/obj_shooter.json",
-        "sprite": "spr_shooter"
+        "sprite": "spr_shooter",
+        "events": {
+          "create": {
+            "actions": []
+          },
+          "keyboard": {
+            "left": {
+              "actions": [
+                {
+                  "action": "set_hspeed",
+                  "parameters": {
+                    "hspeed": "-5"
+                  }
+                }
+              ]
+            },
+            "right": {
+              "actions": [
+                {
+                  "action": "set_hspeed",
+                  "parameters": {
+                    "hspeed": "5"
+                  }
+                }
+              ]
+            },
+            "nokey": {
+              "actions": [
+                {
+                  "action": "stop_movement",
+                  "parameters": {}
+                }
+              ]
+            }
+          },
+          "keyboard_press": {
+            "space": {
+              "actions": [
+                {
+                  "action": "create_instance",
+                  "parameters": {
+                    "object": "obj_bullet",
+                    "x": "self.x",
+                    "y": "self.y - 20"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       },
       "obj_bullet": {
         "name": "obj_bullet",
         "asset_type": "object",
-        "_external_file": "objects/obj_bullet.json",
-        "sprite": "spr_bullet"
+        "sprite": "spr_bullet",
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_vspeed",
+                "parameters": {
+                  "vspeed": "-10"
+                }
+              }
+            ]
+          },
+          "step": {
+            "actions": []
+          },
+          "collision_with_obj_target": {
+            "actions": [
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": 100,
+                  "relative": true
+                }
+              },
+              {
+                "action": "destroy_instance",
+                "parameters": {
+                  "target": "self"
+                }
+              }
+            ],
+            "target_object": "obj_target"
+          }
+        },
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       },
       "obj_target": {
         "name": "obj_target",
         "asset_type": "object",
-        "_external_file": "objects/obj_target.json",
-        "sprite": "spr_target"
+        "sprite": "spr_target",
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_hspeed",
+                "parameters": {
+                  "hspeed": "2"
+                }
+              }
+            ]
+          },
+          "step": {
+            "actions": []
+          },
+          "collision_with_obj_bullet": {
+            "actions": [
+              {
+                "action": "create_instance",
+                "parameters": {
+                  "object": "obj_explosion",
+                  "x": "self.x",
+                  "y": "self.y"
+                }
+              },
+              {
+                "action": "destroy_instance",
+                "parameters": {
+                  "target": "self"
+                }
+              }
+            ],
+            "target_object": "obj_bullet"
+          },
+          "outside_room": {
+            "actions": [
+              {
+                "action": "jump_to_position",
+                "parameters": {
+                  "x": "-900",
+                  "y": "0",
+                  "relative": true
+                }
+              }
+            ]
+          }
+        },
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-11T22:11:45.372046"
       },
       "obj_explosion": {
         "name": "obj_explosion",
         "asset_type": "object",
-        "_external_file": "objects/obj_explosion.json",
-        "sprite": "spr_explosion"
+        "sprite": "spr_explosion",
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_alarm",
+                "parameters": {
+                  "alarm": "0",
+                  "steps": "30"
+                }
+              }
+            ]
+          },
+          "alarm_0": {
+            "actions": [
+              {
+                "action": "destroy_instance",
+                "parameters": {
+                  "target": "self"
+                }
+              }
+            ]
+          }
+        },
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       }
     },
     "rooms": {
@@ -85,7 +284,7 @@
         "background_image": "",
         "tile_horizontal": false,
         "tile_vertical": false,
-        "instance_count": 5,
+        "instance_count": 11,
         "instances": [],
         "_external_file": "rooms/room_main.json"
       }

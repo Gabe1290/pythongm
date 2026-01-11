@@ -1,15 +1,7 @@
 {
   "name": "obj_bullet",
   "asset_type": "object",
-  "created": "2026-01-09T12:00:00.000000",
-  "modified": "2026-01-09T12:00:00.000000",
-  "imported": true,
-  "file_path": "",
   "sprite": "spr_bullet",
-  "visible": true,
-  "solid": false,
-  "persistent": false,
-  "depth": 0,
   "events": {
     "create": {
       "actions": [
@@ -42,5 +34,12 @@
       ],
       "target_object": "obj_target"
     }
-  }
+  },
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "imported": true,
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000"
 }

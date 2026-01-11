@@ -1,9 +1,17 @@
 {
   "name": "room_main",
   "asset_type": "room",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-09T12:00:00.000000",
+  "imported": true,
+  "file_path": "",
   "width": 800,
   "height": 600,
   "background_color": "#16213e",
+  "background_image": "",
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "instance_count": 5,
   "instances": [
     {
       "instance_id": 3000001,
@@ -115,13 +123,5 @@
       "x": 550,
       "y": 180
     }
-  ],
-  "creation_code": "",
-  "created": "2026-01-09T12:00:00.000000",
-  "modified": "2026-01-09T12:00:00.000000",
-  "imported": true,
-  "background_image": "",
-  "tile_horizontal": false,
-  "tile_vertical": false,
-  "instance_count": 11
+  ]
 }

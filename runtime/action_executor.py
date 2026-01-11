@@ -608,12 +608,13 @@ class ActionExecutor:
             instance.y = y_value
             print(f"  📍 {instance.object_name} jumped to ({instance.x}, {instance.y})")
 
-        # Snap to grid after jump to prevent off-grid drift
-        # This is important for grid-based games like Sokoban
-        grid_size = 32
-        instance.x = round(instance.x / grid_size) * grid_size
-        instance.y = round(instance.y / grid_size) * grid_size
-        print(f"  📐 Snapped to grid: ({instance.x}, {instance.y})")
+        # Snap to grid after jump only during collision events with push_other
+        # This is important for grid-based games like Sokoban but not for general use
+        if push_other and hasattr(self, '_collision_other') and self._collision_other:
+            grid_size = 32
+            instance.x = round(instance.x / grid_size) * grid_size
+            instance.y = round(instance.y / grid_size) * grid_size
+            print(f"  📐 Snapped to grid: ({instance.x}, {instance.y})")
 
         # Sokoban-style push: move the "other" instance (pusher) to fill the gap
         # This only happens during collision events when push_other is True
@@ -687,6 +688,54 @@ class ActionExecutor:
         instance.y = float(new_y)
 
         print(f"  🎲 {instance.object_name} jumped to random position ({new_x}, {new_y})")
+
+    def execute_wrap_around_room_action(self, instance, parameters: Dict[str, Any]):
+        """Wrap instance to opposite side when leaving room boundaries
+
+        Parameters:
+            horizontal: Wrap horizontally (default True)
+            vertical: Wrap vertically (default True)
+        """
+        horizontal = parameters.get("horizontal", True)
+        vertical = parameters.get("vertical", True)
+
+        # Get room dimensions
+        room_width = 640
+        room_height = 480
+        if self.game_runner and self.game_runner.current_room:
+            room_width = self.game_runner.current_room.width
+            room_height = self.game_runner.current_room.height
+
+        # Get instance dimensions
+        width = getattr(instance, '_cached_width', 32)
+        height = getattr(instance, '_cached_height', 32)
+
+        wrapped = False
+
+        # Horizontal wrapping
+        if horizontal:
+            if instance.x + width < 0:
+                # Exited left side - wrap to right
+                instance.x = room_width
+                wrapped = True
+            elif instance.x > room_width:
+                # Exited right side - wrap to left
+                instance.x = -width
+                wrapped = True
+
+        # Vertical wrapping
+        if vertical:
+            if instance.y + height < 0:
+                # Exited top - wrap to bottom
+                instance.y = room_height
+                wrapped = True
+            elif instance.y > room_height:
+                # Exited bottom - wrap to top
+                instance.y = -height
+                wrapped = True
+
+        if wrapped:
+            print(f"  🔄 {instance.object_name} wrapped to ({instance.x}, {instance.y})")
 
     def execute_start_moving_direction_action(self, instance, parameters: Dict[str, Any]):
         """Start moving in a specific direction
