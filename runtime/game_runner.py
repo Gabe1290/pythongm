@@ -84,12 +84,43 @@ class GameSprite:
             n_frames = getattr(pil_image, 'n_frames', 1)
 
             if is_animated and n_frames > 1:
+                # Determine the transparent color
+                # First check if there's a transparency index in the GIF
+                transparent_color = None
+                if 'transparency' in pil_image.info:
+                    trans_idx = pil_image.info['transparency']
+                    palette = pil_image.getpalette()
+                    if palette and isinstance(trans_idx, int):
+                        transparent_color = tuple(palette[trans_idx*3:trans_idx*3+3])
+
+                # If no transparency defined, use the top-left pixel as background
+                if transparent_color is None:
+                    pil_image.seek(0)
+                    first_frame = pil_image.convert('RGB')
+                    transparent_color = first_frame.getpixel((0, 0))
+
                 # Extract all frames from the animated GIF
                 self.frames = []
                 for frame_idx in range(n_frames):
                     pil_image.seek(frame_idx)
                     # Convert to RGBA for transparency support
                     frame_rgba = pil_image.convert('RGBA')
+
+                    # Make the background color transparent
+                    if transparent_color:
+                        datas = frame_rgba.getdata()
+                        new_data = []
+                        for item in datas:
+                            # Check if pixel matches transparent color (with some tolerance)
+                            if (abs(item[0] - transparent_color[0]) < 5 and
+                                abs(item[1] - transparent_color[1]) < 5 and
+                                abs(item[2] - transparent_color[2]) < 5):
+                                # Make it fully transparent
+                                new_data.append((item[0], item[1], item[2], 0))
+                            else:
+                                new_data.append(item)
+                        frame_rgba.putdata(new_data)
+
                     # Convert PIL image to pygame surface
                     frame_data = frame_rgba.tobytes()
                     frame_surface = pygame.image.fromstring(
@@ -108,13 +139,15 @@ class GameSprite:
                 self.speed = self.sprite_data.get('speed', 10.0)
                 self.animation_type = self.sprite_data.get('animation_type', 'loop')
 
-                print(f"  🎬 Loaded animated GIF: {Path(self.path).name} ({self.frame_count} frames)")
+                print(f"  🎬 Loaded animated GIF: {Path(self.path).name} ({self.frame_count} frames, transparent={transparent_color})")
             else:
                 # Not animated, load as static
                 self._load_static_or_sheet()
 
         except Exception as e:
             print(f"Error loading animated GIF {self.path}: {e}")
+            import traceback
+            traceback.print_exc()
             # Fall back to static loading
             self._load_static_or_sheet()
 
