@@ -2,7 +2,7 @@
   "name": "test_03_instances",
   "version": "1.0.0",
   "created": "2026-01-09T12:00:00.000000",
-  "modified": "2026-01-11T22:11:45.372280",
+  "modified": "2026-01-11T23:35:31.010192",
   "settings": {
     "window_title": "Code Editor Test - Instance Management",
     "window_width": 800,
@@ -166,6 +166,16 @@
               }
             ],
             "target_object": "obj_target"
+          },
+          "outside_room": {
+            "actions": [
+              {
+                "action": "destroy_instance",
+                "parameters": {
+                  "target": "self"
+                }
+              }
+            ]
           }
         },
         "visible": true,
@@ -174,7 +184,7 @@
         "depth": 0,
         "imported": true,
         "created": "2026-01-09T12:00:00.000000",
-        "modified": "2026-01-09T12:00:00.000000"
+        "modified": "2026-01-11T23:35:31.009131"
       },
       "obj_target": {
         "name": "obj_target",
@@ -192,7 +202,15 @@
             ]
           },
           "step": {
-            "actions": []
+            "actions": [
+              {
+                "action": "wrap_around_room",
+                "parameters": {
+                  "horizontal": true,
+                  "vertical": false
+                }
+              }
+            ]
           },
           "collision_with_obj_bullet": {
             "actions": [
@@ -212,18 +230,6 @@
               }
             ],
             "target_object": "obj_bullet"
-          },
-          "outside_room": {
-            "actions": [
-              {
-                "action": "jump_to_position",
-                "parameters": {
-                  "x": "-900",
-                  "y": "0",
-                  "relative": true
-                }
-              }
-            ]
           }
         },
         "visible": true,
