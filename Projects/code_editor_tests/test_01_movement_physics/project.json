@@ -2,7 +2,7 @@
   "name": "test_01_movement_physics",
   "version": "1.0.0",
   "created": "2026-01-09T12:00:00.000000",
-  "modified": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-11T20:08:19.662613",
   "settings": {
     "window_title": "Code Editor Test - Movement & Physics",
     "window_width": 800,
@@ -21,20 +21,38 @@
       "spr_ball": {
         "name": "spr_ball",
         "asset_type": "sprite",
-        "_external_file": "sprites/spr_ball.json",
-        "file_path": "sprites/spr_ball.gif"
+        "file_path": "sprites/spr_ball.gif",
+        "width": 16,
+        "height": 16,
+        "origin_x": 8,
+        "origin_y": 8,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       },
       "spr_wall": {
         "name": "spr_wall",
         "asset_type": "sprite",
-        "_external_file": "sprites/spr_wall.json",
-        "file_path": "sprites/spr_wall.gif"
+        "file_path": "sprites/spr_wall.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       },
       "spr_target": {
         "name": "spr_target",
         "asset_type": "sprite",
-        "_external_file": "sprites/spr_target.json",
-        "file_path": "sprites/spr_target.gif"
+        "file_path": "sprites/spr_target.gif",
+        "width": 32,
+        "height": 32,
+        "origin_x": 16,
+        "origin_y": 16,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       }
     },
     "sounds": {},
@@ -43,20 +61,188 @@
       "obj_ball": {
         "name": "obj_ball",
         "asset_type": "object",
-        "_external_file": "objects/obj_ball.json",
-        "sprite": "spr_ball"
+        "sprite": "spr_ball",
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_hspeed",
+                "parameters": {
+                  "hspeed": "3"
+                }
+              },
+              {
+                "action": "set_vspeed",
+                "parameters": {
+                  "vspeed": "2"
+                }
+              },
+              {
+                "action": "set_gravity",
+                "parameters": {
+                  "gravity": "0.1",
+                  "direction": "270"
+                }
+              },
+              {
+                "action": "set_friction",
+                "parameters": {
+                  "friction": "0.02"
+                }
+              }
+            ]
+          },
+          "step": {
+            "actions": []
+          },
+          "keyboard": {
+            "left": {
+              "actions": [
+                {
+                  "action": "set_hspeed",
+                  "parameters": {
+                    "hspeed": "-5"
+                  }
+                }
+              ]
+            },
+            "right": {
+              "actions": [
+                {
+                  "action": "set_hspeed",
+                  "parameters": {
+                    "hspeed": "5"
+                  }
+                }
+              ]
+            },
+            "up": {
+              "actions": [
+                {
+                  "action": "set_vspeed",
+                  "parameters": {
+                    "vspeed": "-8"
+                  }
+                }
+              ]
+            },
+            "down": {
+              "actions": [
+                {
+                  "action": "set_vspeed",
+                  "parameters": {
+                    "vspeed": "5"
+                  }
+                }
+              ]
+            }
+          },
+          "keyboard_press": {
+            "space": {
+              "actions": [
+                {
+                  "action": "stop_movement",
+                  "parameters": {}
+                }
+              ]
+            },
+            "r": {
+              "actions": [
+                {
+                  "action": "reverse_horizontal",
+                  "parameters": {}
+                }
+              ]
+            },
+            "t": {
+              "actions": [
+                {
+                  "action": "reverse_vertical",
+                  "parameters": {}
+                }
+              ]
+            },
+            "g": {
+              "actions": [
+                {
+                  "action": "snap_to_grid",
+                  "parameters": {
+                    "grid_x": "32",
+                    "grid_y": "32"
+                  }
+                }
+              ]
+            },
+            "j": {
+              "actions": [
+                {
+                  "action": "jump_to_position",
+                  "parameters": {
+                    "x": "400",
+                    "y": "300"
+                  }
+                }
+              ]
+            },
+            "d": {
+              "actions": [
+                {
+                  "action": "set_direction_speed",
+                  "parameters": {
+                    "direction": "45",
+                    "speed": "6"
+                  }
+                }
+              ]
+            }
+          },
+          "collision_with_obj_wall": {
+            "actions": [
+              {
+                "action": "reverse_horizontal",
+                "parameters": {}
+              },
+              {
+                "action": "reverse_vertical",
+                "parameters": {}
+              }
+            ],
+            "target_object": "obj_wall"
+          }
+        },
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       },
       "obj_wall": {
         "name": "obj_wall",
         "asset_type": "object",
-        "_external_file": "objects/obj_wall.json",
-        "sprite": "spr_wall"
+        "sprite": "spr_wall",
+        "events": {},
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       },
       "obj_target": {
         "name": "obj_target",
         "asset_type": "object",
-        "_external_file": "objects/obj_target.json",
-        "sprite": "spr_target"
+        "sprite": "spr_target",
+        "events": {},
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       }
     },
     "rooms": {
@@ -64,7 +250,7 @@
         "name": "room_main",
         "asset_type": "room",
         "created": "2026-01-09T12:00:00.000000",
-        "modified": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-11T20:08:19.658546",
         "imported": true,
         "file_path": "",
         "width": 800,
@@ -73,7 +259,7 @@
         "background_image": "",
         "tile_horizontal": false,
         "tile_vertical": false,
-        "instance_count": 5,
+        "instance_count": 113,
         "instances": [],
         "_external_file": "rooms/room_main.json"
       }

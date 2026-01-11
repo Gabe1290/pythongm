@@ -1,15 +1,7 @@
 {
   "name": "obj_player",
   "asset_type": "object",
-  "created": "2026-01-09T12:00:00.000000",
-  "modified": "2026-01-09T12:00:00.000000",
-  "imported": true,
-  "file_path": "",
   "sprite": "spr_player",
-  "visible": true,
-  "solid": false,
-  "persistent": false,
-  "depth": 0,
   "events": {
     "create": {
       "actions": [
@@ -218,7 +210,7 @@
         {
           "action": "set_health",
           "parameters": {
-            "value": -10,
+            "value": -20.0,
             "relative": true
           }
         }
@@ -233,6 +225,43 @@
         }
       ],
       "target_object": "obj_wall"
+    },
+    "no_more_health": {
+      "actions": [
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": -1,
+            "relative": true
+          }
+        },
+        {
+          "action": "set_health",
+          "parameters": {
+            "value": 100.0,
+            "relative": false
+          }
+        }
+      ]
+    },
+    "no_more_lives": {
+      "actions": [
+        {
+          "action": "show_highscore",
+          "parameters": {}
+        },
+        {
+          "action": "end_game",
+          "parameters": {}
+        }
+      ]
     }
-  }
+  },
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "imported": true,
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-11T21:35:36.711121"
 }

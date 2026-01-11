@@ -1,9 +1,17 @@
 {
   "name": "room_main",
   "asset_type": "room",
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-11T21:51:02.381568",
+  "imported": true,
+  "file_path": "",
   "width": 800,
   "height": 600,
   "background_color": "#0f0f23",
+  "background_image": "",
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "instance_count": 118,
   "instances": [
     {
       "instance_id": 2000001,
@@ -32,8 +40,8 @@
       "scale_x": 1.0,
       "scale_y": 1.0,
       "visible": true,
-      "x": 100,
-      "y": 100
+      "x": 96,
+      "y": 128
     },
     {
       "instance_id": 2000004,
@@ -42,8 +50,8 @@
       "scale_x": 1.0,
       "scale_y": 1.0,
       "visible": true,
-      "x": 200,
-      "y": 100
+      "x": 192,
+      "y": 128
     },
     {
       "instance_id": 2000005,
@@ -52,8 +60,8 @@
       "scale_x": 1.0,
       "scale_y": 1.0,
       "visible": true,
-      "x": 300,
-      "y": 100
+      "x": 320,
+      "y": 128
     },
     {
       "instance_id": 2000006,
@@ -114,14 +122,1106 @@
       "visible": true,
       "x": 704,
       "y": 400
+    },
+    {
+      "instance_id": 126843823864624,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 288,
+      "y": 0
+    },
+    {
+      "instance_id": 126843823864864,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 320,
+      "y": 0
+    },
+    {
+      "instance_id": 126843823865104,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 352,
+      "y": 0
+    },
+    {
+      "instance_id": 126843823865296,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 384,
+      "y": 0
+    },
+    {
+      "instance_id": 126843823865584,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 384,
+      "y": 32
+    },
+    {
+      "instance_id": 126843823865824,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 416,
+      "y": 32
+    },
+    {
+      "instance_id": 126843824390416,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 448,
+      "y": 32
+    },
+    {
+      "instance_id": 126843824390656,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 480,
+      "y": 0
+    },
+    {
+      "instance_id": 126843824390848,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 512,
+      "y": 0
+    },
+    {
+      "instance_id": 126843824391088,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 544,
+      "y": 0
+    },
+    {
+      "instance_id": 126843828508176,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 576,
+      "y": 0
+    },
+    {
+      "instance_id": 126843824391520,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 448,
+      "y": 0
+    },
+    {
+      "instance_id": 126843824391760,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 416,
+      "y": -32
+    },
+    {
+      "instance_id": 126843824392000,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 384,
+      "y": -32
+    },
+    {
+      "instance_id": 126843828981632,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 416,
+      "y": 0
+    },
+    {
+      "instance_id": 126843823865392,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 96
+    },
+    {
+      "instance_id": 126843824395024,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 128
+    },
+    {
+      "instance_id": 126843824395168,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": -32,
+      "y": 128
+    },
+    {
+      "instance_id": 126843823865632,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": -32,
+      "y": 160
+    },
+    {
+      "instance_id": 126843824390896,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 160
+    },
+    {
+      "instance_id": 126843828675280,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 192
+    },
+    {
+      "instance_id": 126843824395456,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 224
+    },
+    {
+      "instance_id": 126843824391808,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 32,
+      "y": 224
+    },
+    {
+      "instance_id": 126843824391136,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 32,
+      "y": 192
+    },
+    {
+      "instance_id": 126843823862704,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 32,
+      "y": 256
+    },
+    {
+      "instance_id": 126843824395696,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 256
+    },
+    {
+      "instance_id": 126843824395840,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 288
+    },
+    {
+      "instance_id": 126843824395984,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 320
+    },
+    {
+      "instance_id": 126843828524848,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 352
+    },
+    {
+      "instance_id": 126843824396224,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 384
+    },
+    {
+      "instance_id": 126843824393728,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 416
+    },
+    {
+      "instance_id": 126843829070080,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 448
+    },
+    {
+      "instance_id": 126843824394928,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 480
+    },
+    {
+      "instance_id": 126843824396512,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 512
+    },
+    {
+      "instance_id": 126843824393440,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 32,
+      "y": 512
+    },
+    {
+      "instance_id": 126843824393344,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 32,
+      "y": 544
+    },
+    {
+      "instance_id": 126843824395504,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 544
+    },
+    {
+      "instance_id": 126843824395552,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 0,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824390224,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 32,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824393248,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 64,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824395888,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 96,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824395360,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 128,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824391568,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 160,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824397280,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 192,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824397424,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 224,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824395216,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 256,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824395744,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 288,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824392384,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 320,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824392288,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 352,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824397904,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 384,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824398048,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 416,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824398144,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 448,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824398288,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 480,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824398384,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 512,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824398528,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 544,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824398912,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 576,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824399056,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 608,
+      "y": 576
+    },
+    {
+      "instance_id": 126843828510240,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 32,
+      "y": 384
+    },
+    {
+      "instance_id": 126843824403136,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 64,
+      "y": 384
+    },
+    {
+      "instance_id": 126843824403280,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 32,
+      "y": 416
+    },
+    {
+      "instance_id": 126843828693152,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 32,
+      "y": 448
+    },
+    {
+      "instance_id": 126843824403424,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 64,
+      "y": 448
+    },
+    {
+      "instance_id": 126843823862176,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 64,
+      "y": 352
+    },
+    {
+      "instance_id": 126843824397712,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 32,
+      "y": 352
+    },
+    {
+      "instance_id": 126843824398720,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 32,
+      "y": 480
+    },
+    {
+      "instance_id": 126843824399152,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 608,
+      "y": 0
+    },
+    {
+      "instance_id": 126843824404480,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 640,
+      "y": 0
+    },
+    {
+      "instance_id": 126843824404528,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 672,
+      "y": 0
+    },
+    {
+      "instance_id": 126843824401840,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 704,
+      "y": 0
+    },
+    {
+      "instance_id": 126843823862464,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 736,
+      "y": 0
+    },
+    {
+      "instance_id": 126843824404816,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 0
+    },
+    {
+      "instance_id": 126843824400832,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 32
+    },
+    {
+      "instance_id": 126843824405008,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 64
+    },
+    {
+      "instance_id": 126843823862416,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 96
+    },
+    {
+      "instance_id": 126843824405200,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 128
+    },
+    {
+      "instance_id": 126843828676336,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 160
+    },
+    {
+      "instance_id": 126843824405296,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 192
+    },
+    {
+      "instance_id": 126843824405440,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 800,
+      "y": 192
+    },
+    {
+      "instance_id": 126843824405536,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 800,
+      "y": 224
+    },
+    {
+      "instance_id": 126843824405680,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 800,
+      "y": 256
+    },
+    {
+      "instance_id": 126843824400688,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 224
+    },
+    {
+      "instance_id": 126843824404336,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 256
+    },
+    {
+      "instance_id": 126843824404672,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 288
+    },
+    {
+      "instance_id": 126843824400064,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 320
+    },
+    {
+      "instance_id": 126843824400592,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 352
+    },
+    {
+      "instance_id": 126843824404864,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 384
+    },
+    {
+      "instance_id": 126843824406016,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 416
+    },
+    {
+      "instance_id": 126843824406160,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 448
+    },
+    {
+      "instance_id": 126843824404912,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 480
+    },
+    {
+      "instance_id": 126843824405104,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 512
+    },
+    {
+      "instance_id": 126843824405248,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 544
+    },
+    {
+      "instance_id": 126843824406256,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 768,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824405488,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 736,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824405584,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 704,
+      "y": 576
+    },
+    {
+      "instance_id": 126843824405728,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 672,
+      "y": 576
+    },
+    {
+      "instance_id": 126843823863472,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 640,
+      "y": 576
+    },
+    {
+      "instance_id": 123677770632128,
+      "object_name": "obj_dot",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 224,
+      "y": 448
+    },
+    {
+      "instance_id": 123677766496240,
+      "object_name": "obj_dot",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 128,
+      "y": 384
+    },
+    {
+      "instance_id": 123677771159728,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 32,
+      "y": 96
+    },
+    {
+      "instance_id": 123677766495712,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 64,
+      "y": 96
+    },
+    {
+      "instance_id": 123677766496288,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 96,
+      "y": 96
+    },
+    {
+      "instance_id": 123677771125136,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 128,
+      "y": 96
+    },
+    {
+      "instance_id": 123677771156464,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 160,
+      "y": 96
+    },
+    {
+      "instance_id": 123677766492592,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 192,
+      "y": 96
+    },
+    {
+      "instance_id": 123677766496384,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 256,
+      "y": 96
+    },
+    {
+      "instance_id": 123677766495856,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 192,
+      "y": 96
+    },
+    {
+      "instance_id": 123677766485008,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 224,
+      "y": 96
+    },
+    {
+      "instance_id": 123677766494224,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 256,
+      "y": 0
+    },
+    {
+      "instance_id": 123677766458720,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 256,
+      "y": 32
+    },
+    {
+      "instance_id": 123677766492976,
+      "object_name": "obj_wall",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
+      "x": 256,
+      "y": 64
     }
-  ],
-  "creation_code": "",
-  "created": "2026-01-09T12:00:00.000000",
-  "modified": "2026-01-09T12:00:00.000000",
-  "imported": true,
-  "background_image": "",
-  "tile_horizontal": false,
-  "tile_vertical": false,
-  "instance_count": 11
+  ]
 }
