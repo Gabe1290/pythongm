@@ -151,9 +151,59 @@ class GameSprite:
             # Fall back to static loading
             self._load_static_or_sheet()
 
+    def _load_gif_with_transparency(self) -> pygame.Surface:
+        """Load a single-frame GIF with proper transparency handling using PIL"""
+        try:
+            pil_image = Image.open(self.path)
+
+            # Determine the transparent color
+            transparent_color = None
+            if 'transparency' in pil_image.info:
+                trans_idx = pil_image.info['transparency']
+                palette = pil_image.getpalette()
+                if palette and isinstance(trans_idx, int):
+                    transparent_color = tuple(palette[trans_idx*3:trans_idx*3+3])
+
+            # If no transparency defined, use the top-left pixel as background
+            if transparent_color is None:
+                rgb_image = pil_image.convert('RGB')
+                transparent_color = rgb_image.getpixel((0, 0))
+
+            # Convert to RGBA and make background transparent
+            frame_rgba = pil_image.convert('RGBA')
+            if transparent_color:
+                datas = frame_rgba.getdata()
+                new_data = []
+                for item in datas:
+                    # Check if pixel matches transparent color (with tolerance)
+                    if (abs(item[0] - transparent_color[0]) < 5 and
+                        abs(item[1] - transparent_color[1]) < 5 and
+                        abs(item[2] - transparent_color[2]) < 5):
+                        new_data.append((item[0], item[1], item[2], 0))
+                    else:
+                        new_data.append(item)
+                frame_rgba.putdata(new_data)
+
+            # Convert PIL image to pygame surface
+            frame_data = frame_rgba.tobytes()
+            surface = pygame.image.fromstring(
+                frame_data, frame_rgba.size, 'RGBA'
+            ).convert_alpha()
+
+            print(f"  🖼️ Loaded GIF with transparency: {Path(self.path).name} (bg={transparent_color})")
+            return surface
+
+        except Exception as e:
+            print(f"Error loading GIF with PIL, falling back to pygame: {e}")
+            return pygame.image.load(self.path).convert_alpha()
+
     def _load_static_or_sheet(self):
         """Load a static image or sprite sheet"""
-        self.surface = pygame.image.load(self.path).convert_alpha()
+        # For GIF files, use PIL to handle transparency properly
+        if self.path.lower().endswith('.gif'):
+            self.surface = self._load_gif_with_transparency()
+        else:
+            self.surface = pygame.image.load(self.path).convert_alpha()
         full_width = self.surface.get_width()
         full_height = self.surface.get_height()
 
