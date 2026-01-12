@@ -906,6 +906,8 @@ class GameRunner:
 
         # Game assets
         self.sprites: Dict[str, GameSprite] = {}
+        self.sounds: Dict[str, Any] = {}  # pygame.mixer.Sound objects
+        self.music_files: Dict[str, str] = {}  # music name -> file path
         self.rooms: Dict[str, GameRoom] = {}
         self.current_room = None
 
@@ -1116,6 +1118,59 @@ class GameRunner:
             except Exception as e:
                 print(f"  âŒ Error loading sprite {sprite_name}: {e}")
 
+    def load_sounds(self):
+        """Load all sounds from the project (called after pygame.mixer is initialized)"""
+        sounds_data = self.project_data.get('assets', {}).get('sounds', {})
+
+        if not sounds_data:
+            return
+
+        print(f"Loading {len(sounds_data)} sounds...")
+
+        for sound_name, sound_info in sounds_data.items():
+            try:
+                file_path = sound_info.get('file_path', '')
+                
+                # Try to load full sound metadata from individual JSON file
+                kind = sound_info.get('kind', None)
+                volume = sound_info.get('volume', 1.0)
+                
+                if kind is None:
+                    # Load from individual sound JSON file
+                    sound_json_path = self.project_path / 'sounds' / f'{sound_name}.json'
+                    if sound_json_path.exists():
+                        with open(sound_json_path, 'r') as f:
+                            sound_metadata = json.load(f)
+                            kind = sound_metadata.get('kind', 'sound')
+                            volume = sound_metadata.get('volume', volume)
+                            if not file_path:
+                                file_path = sound_metadata.get('file_path', '')
+                    else:
+                        kind = 'sound'  # Default to sound effect
+
+                if file_path:
+                    full_path = self.project_path / file_path
+
+                    if not full_path.exists():
+                        print(f"  ⚠️  Sound file not found: {full_path}")
+                        continue
+
+                    if kind == 'music':
+                        # Music is streamed, just store the path
+                        self.music_files[sound_name] = str(full_path)
+                        print(f"  🎵 Loaded music: {sound_name}")
+                    else:
+                        # Sound effects are loaded into memory
+                        sound = pygame.mixer.Sound(str(full_path))
+                        # Apply default volume from sound definition
+                        sound.set_volume(float(volume))
+                        self.sounds[sound_name] = sound
+                        print(f"  🔊 Loaded sound: {sound_name}")
+                else:
+                    print(f"  ⚠️  Sound {sound_name} has no file path")
+            except Exception as e:
+                print(f"  ❌ Error loading sound {sound_name}: {e}")
+
     def load_rooms_without_sprites(self):
         """Load rooms but don't assign sprites to instances yet"""
         rooms_data = self.project_data.get('assets', {}).get('rooms', {})
@@ -1212,6 +1267,13 @@ class GameRunner:
             # Initialize pygame
             pygame.init()
 
+            # Initialize mixer for audio (after pygame.init)
+            try:
+                pygame.mixer.init()
+                print("🔊 Audio mixer initialized")
+            except Exception as e:
+                print(f"⚠️  Audio mixer failed to initialize: {e}")
+
             # Create display
             self.screen = pygame.display.set_mode((self.window_width, self.window_height))
             pygame.display.set_caption(f"PyGameMaker - {self.project_data.get('name', 'Game')}")
@@ -1224,6 +1286,9 @@ class GameRunner:
             # NOW load sprites (after pygame.display is initialized)
             print("\n🎮 Loading sprites after pygame.display initialization...")
             self.load_sprites()
+
+            # Load sounds (after mixer is initialized)
+            self.load_sounds()
 
             # Load background images for all rooms
             self.load_room_backgrounds()

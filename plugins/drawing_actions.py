@@ -181,6 +181,12 @@ PLUGIN_ACTIONS = {
 class PluginExecutor:
     """Handles execution of drawing actions"""
 
+    def _get_game_runner(self, instance):
+        """Get the game runner from instance"""
+        if hasattr(instance, 'action_executor') and hasattr(instance.action_executor, 'game_runner'):
+            return instance.action_executor.game_runner
+        return None
+
     def execute_draw_text_action(self, instance, parameters):
         """Draw text on screen"""
         text = parameters.get("text", "")
@@ -270,12 +276,14 @@ class PluginExecutor:
         if sprite_name != "<self>" and sprite_name:
             print(f"🖼️  Setting sprite to: {sprite_name}")
             try:
-                if hasattr(instance, 'game') and hasattr(instance.game, 'sprites'):
-                    if sprite_name in instance.game.sprites:
-                        instance.sprite = instance.game.sprites[sprite_name]
-                        instance.sprite_name = sprite_name
+                game_runner = self._get_game_runner(instance)
+                if game_runner and hasattr(game_runner, 'sprites'):
+                    if sprite_name in game_runner.sprites:
+                        instance.set_sprite(game_runner.sprites[sprite_name])
                     else:
                         print(f"⚠️  Sprite not found: {sprite_name}")
+                else:
+                    print(f"⚠️  No game sprite system available")
             except Exception as e:
                 print(f"❌ Error setting sprite: {e}")
 

@@ -107,6 +107,12 @@ PLUGIN_ACTIONS = {
 class PluginExecutor:
     """Handles execution of audio actions"""
 
+    def _get_game_runner(self, instance):
+        """Get the game runner from instance"""
+        if hasattr(instance, 'action_executor') and hasattr(instance.action_executor, 'game_runner'):
+            return instance.action_executor.game_runner
+        return None
+
     def execute_play_sound_action(self, instance, parameters):
         """Play a sound effect"""
         sound_name = parameters.get("sound", "")
@@ -115,11 +121,10 @@ class PluginExecutor:
         print(f"🔊 Playing sound: {sound_name} at volume {volume}")
 
         try:
-            pass
-            # Get sound from game manager
-            if hasattr(instance, 'game') and hasattr(instance.game, 'sounds'):
-                if sound_name in instance.game.sounds:
-                    sound = instance.game.sounds[sound_name]
+            game_runner = self._get_game_runner(instance)
+            if game_runner and hasattr(game_runner, 'sounds'):
+                if sound_name in game_runner.sounds:
+                    sound = game_runner.sounds[sound_name]
                     sound.set_volume(volume)
                     sound.play()
                 else:
@@ -139,10 +144,10 @@ class PluginExecutor:
 
         try:
             import pygame
-            # Music is handled differently in pygame
-            if hasattr(instance, 'game') and hasattr(instance.game, 'music_files'):
-                if music_name in instance.game.music_files:
-                    music_file = instance.game.music_files[music_name]
+            game_runner = self._get_game_runner(instance)
+            if game_runner and hasattr(game_runner, 'music_files'):
+                if music_name in game_runner.music_files:
+                    music_file = game_runner.music_files[music_name]
                     pygame.mixer.music.load(music_file)
                     pygame.mixer.music.set_volume(volume)
                     pygame.mixer.music.play(-1 if loop else 0)
@@ -175,8 +180,9 @@ class PluginExecutor:
             pygame.mixer.music.set_volume(volume)
 
             # Set sound volume for all loaded sounds
-            if hasattr(instance, 'game') and hasattr(instance.game, 'sounds'):
-                for sound in instance.game.sounds.values():
+            game_runner = self._get_game_runner(instance)
+            if game_runner and hasattr(game_runner, 'sounds'):
+                for sound in game_runner.sounds.values():
                     sound.set_volume(volume)
         except Exception as e:
             print(f"❌ Error setting volume: {e}")
