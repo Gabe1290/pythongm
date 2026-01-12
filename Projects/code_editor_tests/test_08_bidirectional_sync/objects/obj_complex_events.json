@@ -1,22 +1,14 @@
 {
   "name": "obj_complex_events",
   "asset_type": "object",
-  "created": "2026-01-09T12:00:00.000000",
-  "modified": "2026-01-09T12:00:00.000000",
-  "imported": true,
-  "file_path": "",
   "sprite": "spr_object_b",
-  "visible": true,
-  "solid": false,
-  "persistent": false,
-  "depth": 0,
   "events": {
     "create": {
       "actions": [
         {
           "action": "set_gravity",
           "parameters": {
-            "gravity": "0.3",
+            "gravity": "0.1",
             "direction": "270"
           }
         },
@@ -59,6 +51,10 @@
             "alarm": "0",
             "steps": "120"
           }
+        },
+        {
+          "action": "stop_movement",
+          "parameters": {}
         }
       ]
     },
@@ -100,5 +96,12 @@
       ],
       "target_object": "obj_simple_movement"
     }
-  }
+  },
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "imported": true,
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-12T23:02:49.047687"
 }
