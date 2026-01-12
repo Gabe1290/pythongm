@@ -2,7 +2,7 @@
   "name": "test_05_score_lives_health",
   "version": "1.0.0",
   "created": "2026-01-09T12:00:00.000000",
-  "modified": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-12T17:13:02.807647",
   "settings": {
     "window_title": "Code Editor Test - Score/Lives/Health",
     "window_width": 800,
@@ -14,39 +14,70 @@
     "starting_score": 0,
     "show_score_in_caption": true,
     "starting_health": 100,
-    "show_health_in_caption": true
+    "show_health_in_caption": true,
+    "blockly_preset": "full"
   },
   "assets": {
     "sprites": {
       "spr_player": {
         "name": "spr_player",
         "asset_type": "sprite",
-        "_external_file": "sprites/spr_player.json",
-        "file_path": "sprites/spr_player.gif"
+        "file_path": "sprites/spr_player.gif",
+        "width": 32,
+        "height": 32,
+        "origin_x": 16,
+        "origin_y": 16,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       },
       "spr_coin": {
         "name": "spr_coin",
         "asset_type": "sprite",
-        "_external_file": "sprites/spr_coin.json",
-        "file_path": "sprites/spr_coin.gif"
+        "file_path": "sprites/spr_coin.gif",
+        "width": 32,
+        "height": 32,
+        "origin_x": 16,
+        "origin_y": 16,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       },
       "spr_enemy": {
         "name": "spr_enemy",
         "asset_type": "sprite",
-        "_external_file": "sprites/spr_enemy.json",
-        "file_path": "sprites/spr_enemy.gif"
+        "file_path": "sprites/spr_enemy.gif",
+        "width": 32,
+        "height": 32,
+        "origin_x": 16,
+        "origin_y": 16,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       },
       "spr_life": {
         "name": "spr_life",
         "asset_type": "sprite",
-        "_external_file": "sprites/spr_life.json",
-        "file_path": "sprites/spr_life.gif"
+        "file_path": "sprites/spr_life.gif",
+        "width": 16,
+        "height": 16,
+        "origin_x": 8,
+        "origin_y": 8,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       },
       "spr_health": {
         "name": "spr_health",
         "asset_type": "sprite",
-        "_external_file": "sprites/spr_health.json",
-        "file_path": "sprites/spr_health.gif"
+        "file_path": "sprites/spr_health.gif",
+        "width": 16,
+        "height": 16,
+        "origin_x": 8,
+        "origin_y": 8,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       }
     },
     "sounds": {},
@@ -55,32 +86,312 @@
       "obj_player": {
         "name": "obj_player",
         "asset_type": "object",
-        "_external_file": "objects/obj_player.json",
-        "sprite": "spr_player"
+        "sprite": "spr_player",
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": 0,
+                  "relative": false
+                }
+              },
+              {
+                "action": "set_lives",
+                "parameters": {
+                  "value": 3,
+                  "relative": false
+                }
+              },
+              {
+                "action": "set_health",
+                "parameters": {
+                  "value": 100,
+                  "relative": false
+                }
+              }
+            ]
+          },
+          "draw": {
+            "actions": [
+              {
+                "action": "draw_score",
+                "parameters": {
+                  "x": "10",
+                  "y": "10",
+                  "caption": "Score: "
+                }
+              },
+              {
+                "action": "draw_lives",
+                "parameters": {
+                  "x": "10",
+                  "y": "40"
+                }
+              },
+              {
+                "action": "draw_health_bar",
+                "parameters": {
+                  "x1": "10",
+                  "y1": "70",
+                  "x2": "210",
+                  "y2": "90"
+                }
+              }
+            ]
+          },
+          "keyboard": {
+            "left": {
+              "actions": [
+                {
+                  "action": "set_hspeed",
+                  "parameters": {
+                    "hspeed": "-4"
+                  }
+                }
+              ]
+            },
+            "right": {
+              "actions": [
+                {
+                  "action": "set_hspeed",
+                  "parameters": {
+                    "hspeed": "4"
+                  }
+                }
+              ]
+            },
+            "up": {
+              "actions": [
+                {
+                  "action": "set_vspeed",
+                  "parameters": {
+                    "vspeed": "-4"
+                  }
+                }
+              ]
+            },
+            "down": {
+              "actions": [
+                {
+                  "action": "set_vspeed",
+                  "parameters": {
+                    "vspeed": "4"
+                  }
+                }
+              ]
+            },
+            "nokey": {
+              "actions": [
+                {
+                  "action": "stop_movement",
+                  "parameters": {}
+                }
+              ]
+            }
+          },
+          "keyboard_press": {
+            "1": {
+              "actions": [
+                {
+                  "action": "set_score",
+                  "parameters": {
+                    "value": 1000,
+                    "relative": false
+                  }
+                }
+              ]
+            },
+            "2": {
+              "actions": [
+                {
+                  "action": "set_lives",
+                  "parameters": {
+                    "value": 5,
+                    "relative": false
+                  }
+                }
+              ]
+            },
+            "3": {
+              "actions": [
+                {
+                  "action": "set_health",
+                  "parameters": {
+                    "value": 50,
+                    "relative": false
+                  }
+                }
+              ]
+            }
+          },
+          "collision_with_obj_coin": {
+            "actions": [
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": 100,
+                  "relative": true
+                }
+              }
+            ],
+            "target_object": "obj_coin"
+          },
+          "collision_with_obj_enemy": {
+            "actions": [
+              {
+                "action": "set_health",
+                "parameters": {
+                  "value": -25,
+                  "relative": true
+                }
+              }
+            ],
+            "target_object": "obj_enemy"
+          },
+          "collision_with_obj_life_pickup": {
+            "actions": [
+              {
+                "action": "set_lives",
+                "parameters": {
+                  "value": 1,
+                  "relative": true
+                }
+              }
+            ],
+            "target_object": "obj_life_pickup"
+          },
+          "collision_with_obj_health_pickup": {
+            "actions": [
+              {
+                "action": "set_health",
+                "parameters": {
+                  "value": 25,
+                  "relative": true
+                }
+              }
+            ],
+            "target_object": "obj_health_pickup"
+          }
+        },
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       },
       "obj_coin": {
         "name": "obj_coin",
         "asset_type": "object",
-        "_external_file": "objects/obj_coin.json",
-        "sprite": "spr_coin"
+        "sprite": "spr_coin",
+        "events": {
+          "collision_with_obj_player": {
+            "actions": [
+              {
+                "action": "destroy_instance",
+                "parameters": {
+                  "target": "self"
+                }
+              }
+            ],
+            "target_object": "obj_player"
+          }
+        },
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       },
       "obj_enemy": {
         "name": "obj_enemy",
         "asset_type": "object",
-        "_external_file": "objects/obj_enemy.json",
-        "sprite": "spr_enemy"
+        "sprite": "spr_enemy",
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_hspeed",
+                "parameters": {
+                  "hspeed": "2"
+                }
+              }
+            ]
+          },
+          "step": {
+            "actions": [
+              {
+                "action": "wrap_around_room",
+                "parameters": {
+                  "horizontal": true,
+                  "vertical": true
+                }
+              }
+            ]
+          }
+        },
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-12T17:13:02.806958"
       },
       "obj_life_pickup": {
         "name": "obj_life_pickup",
         "asset_type": "object",
-        "_external_file": "objects/obj_life_pickup.json",
-        "sprite": "spr_life"
+        "sprite": "spr_life",
+        "events": {
+          "collision_with_obj_player": {
+            "actions": [
+              {
+                "action": "destroy_instance",
+                "parameters": {
+                  "target": "self"
+                }
+              }
+            ],
+            "target_object": "obj_player"
+          }
+        },
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       },
       "obj_health_pickup": {
         "name": "obj_health_pickup",
         "asset_type": "object",
-        "_external_file": "objects/obj_health_pickup.json",
-        "sprite": "spr_health"
+        "sprite": "spr_health",
+        "events": {
+          "collision_with_obj_player": {
+            "actions": [
+              {
+                "action": "destroy_instance",
+                "parameters": {
+                  "target": "self"
+                }
+              }
+            ],
+            "target_object": "obj_player"
+          }
+        },
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "imported": true,
+        "created": "2026-01-09T12:00:00.000000",
+        "modified": "2026-01-09T12:00:00.000000"
       }
     },
     "rooms": {
@@ -97,7 +408,7 @@
         "background_image": "",
         "tile_horizontal": false,
         "tile_vertical": false,
-        "instance_count": 10,
+        "instance_count": 9,
         "instances": [],
         "_external_file": "rooms/room_main.json"
       }

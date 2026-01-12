@@ -1,15 +1,7 @@
 {
   "name": "obj_enemy",
   "asset_type": "object",
-  "created": "2026-01-09T12:00:00.000000",
-  "modified": "2026-01-09T12:00:00.000000",
-  "imported": true,
-  "file_path": "",
   "sprite": "spr_enemy",
-  "visible": true,
-  "solid": false,
-  "persistent": false,
-  "depth": 0,
   "events": {
     "create": {
       "actions": [
@@ -20,6 +12,24 @@
           }
         }
       ]
+    },
+    "step": {
+      "actions": [
+        {
+          "action": "wrap_around_room",
+          "parameters": {
+            "horizontal": true,
+            "vertical": true
+          }
+        }
+      ]
     }
-  }
+  },
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "imported": true,
+  "created": "2026-01-09T12:00:00.000000",
+  "modified": "2026-01-12T17:13:02.806958"
 }
