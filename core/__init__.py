@@ -35,7 +35,7 @@ from .event_system import (
 )
 
 # Package version
-__version__ = "0.10.1-alpha"
+__version__ = "1.0.0-rc.1"
 
 # Export main components
 __all__ = [
