@@ -10,6 +10,9 @@ import gzip
 from pathlib import Path
 from typing import Dict
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 class HTML5Exporter:
     """Export PyGameMaker projects to HTML5"""
@@ -23,7 +26,7 @@ class HTML5Exporter:
     def export(self, project_path: Path, output_path: Path) -> bool:
             """Export project to HTML5"""
             try:
-                print(f"📦 Exporting {project_path.name} to HTML5...")
+                logger.info(f"Exporting {project_path.name} to HTML5...")
 
                 # Load project
                 project_file = project_path / "project.json"
@@ -33,12 +36,12 @@ class HTML5Exporter:
                 # Load room instances from external files
                 self._load_room_instances(project_path, project_data)
 
-                print(f"  ✓ Loaded project: {project_data['name']}")
+                logger.info(f"  Loaded project: {project_data['name']}")
 
                 # Encode sprites as base64
-                print("  📸 Encoding sprites...")
+                logger.info("  Encoding sprites...")
                 sprites_data = self.encode_sprites(project_path, project_data)
-                print(f"  ✓ Encoded {len(sprites_data)} sprites")
+                logger.info(f"  Encoded {len(sprites_data)} sprites")
 
                 # Get window size from settings or room dimensions
                 settings = project_data.get('settings', {})
@@ -56,18 +59,18 @@ class HTML5Exporter:
                         width = settings.get('window_width', 1024)
                         height = settings.get('window_height', 768)
 
-                print(f"  📐 Canvas size: {width}x{height}")
+                logger.info(f"  Canvas size: {width}x{height}")
 
                 # Generate HTML
-                print("  🎨 Generating HTML...")
+                logger.info("  Generating HTML...")
 
                 # Serialize the data
                 game_data_json = json.dumps(project_data, separators=(',', ':'))
                 sprites_data_json = json.dumps(sprites_data, separators=(',', ':'))
 
-                print("  📊 Original sizes:")
-                print(f"     Game data: {len(game_data_json):,} bytes")
-                print(f"     Sprites data: {len(sprites_data_json):,} bytes")
+                logger.debug("  Original sizes:")
+                logger.debug(f"     Game data: {len(game_data_json):,} bytes")
+                logger.debug(f"     Sprites data: {len(sprites_data_json):,} bytes")
 
                 # Compress the data using gzip
                 game_data_compressed = base64.b64encode(
@@ -81,10 +84,10 @@ class HTML5Exporter:
                 compression_ratio_game = (len(game_data_compressed) * 100) // len(game_data_json)
                 compression_ratio_sprites = (len(sprites_data_compressed) * 100) // len(sprites_data_json)
 
-                print("  📦 Compressed sizes:")
-                print(f"     Game data: {len(game_data_compressed):,} bytes ({compression_ratio_game}%)")
-                print(f"     Sprites data: {len(sprites_data_compressed):,} bytes ({compression_ratio_sprites}%)")
-                print(f"  💾 Total size reduction: {len(game_data_json) + len(sprites_data_json) - len(game_data_compressed) - len(sprites_data_compressed):,} bytes saved")
+                logger.debug("  Compressed sizes:")
+                logger.debug(f"     Game data: {len(game_data_compressed):,} bytes ({compression_ratio_game}%)")
+                logger.debug(f"     Sprites data: {len(sprites_data_compressed):,} bytes ({compression_ratio_sprites}%)")
+                logger.debug(f"  Total size reduction: {len(game_data_json) + len(sprites_data_json) - len(game_data_compressed) - len(sprites_data_compressed):,} bytes saved")
 
                 # Replace placeholders
                 html_content = self.template_html.replace('{game_name}', project_data['name'])
@@ -101,15 +104,15 @@ class HTML5Exporter:
 
                 file_size_kb = output_file.stat().st_size / 1024
 
-                print("  ✅ Export complete!")
-                print(f"  📄 File: {output_file.name}")
-                print(f"  💾 Size: {file_size_kb:.1f} KB")
-                print(f"\n🎮 Open {output_file.name} in a web browser to play!")
+                logger.info("  Export complete!")
+                logger.info(f"  File: {output_file.name}")
+                logger.info(f"  Size: {file_size_kb:.1f} KB")
+                logger.info(f"Open {output_file.name} in a web browser to play!")
 
                 return True
 
             except Exception as e:
-                print(f"❌ Export failed: {e}")
+                logger.error(f"Export failed: {e}")
                 import traceback
                 traceback.print_exc()
                 return False
@@ -135,9 +138,9 @@ class HTML5Exporter:
                     # Merge instances from external file
                     if 'instances' in external_room_data:
                         room_data['instances'] = external_room_data['instances']
-                        print(f"  📂 Loaded {len(room_data['instances'])} instances for room: {room_name}")
+                        logger.debug(f"  Loaded {len(room_data['instances'])} instances for room: {room_name}")
                 except Exception as e:
-                    print(f"  ⚠️  Failed to load room file {room_file}: {e}")
+                    logger.warning(f"  Failed to load room file {room_file}: {e}")
 
     def encode_sprites(self, project_path: Path, project_data: Dict) -> Dict[str, str]:
         """Encode sprites and backgrounds as base64 data URLs"""
@@ -165,7 +168,7 @@ class HTML5Exporter:
 
                             encoded[sprite_name] = f"data:{mime_type};base64,{b64}"
                     except Exception as e:
-                        print(f"  ⚠️  Failed to encode {sprite_name}: {e}")
+                        logger.warning(f"  Failed to encode {sprite_name}: {e}")
 
         # Encode backgrounds
         backgrounds_data = project_data.get('assets', {}).get('backgrounds', {})
@@ -186,7 +189,7 @@ class HTML5Exporter:
 
                             encoded[bg_name] = f"data:{mime_type};base64,{b64}"
                     except Exception as e:
-                        print(f"  ⚠️  Failed to encode background {bg_name}: {e}")
+                        logger.warning(f"  Failed to encode background {bg_name}: {e}")
 
         return encoded
 
@@ -196,14 +199,14 @@ if __name__ == "__main__":
     import sys
 
     if len(sys.argv) < 3:
-        print("Usage: python html5_exporter.py <project_path> <output_directory>")
+        logger.info("Usage: python html5_exporter.py <project_path> <output_directory>")
         sys.exit(1)
 
     project_path = Path(sys.argv[1])
     output_path = Path(sys.argv[2])
 
     if not project_path.exists():
-        print(f"❌ Project path not found: {project_path}")
+        logger.error(f"Project path not found: {project_path}")
         sys.exit(1)
 
     if not output_path.exists():

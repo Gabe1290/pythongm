@@ -24,6 +24,9 @@ from editors.room_editor import RoomEditor
 from editors.object_editor import ObjectEditor
 from runtime.game_runner import GameRunner
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 class PyGameMakerIDE(QMainWindow):
 
     def __init__(self):
@@ -37,7 +40,7 @@ class PyGameMakerIDE(QMainWindow):
         try:
             self.project_manager.set_asset_manager(self.asset_manager)
         except Exception as e:
-            print(f"ERROR in set_asset_manager: {e}")
+            logger.error(f"ERROR in set_asset_manager: {e}")
             import traceback
             traceback.print_exc()
 
@@ -78,7 +81,7 @@ class PyGameMakerIDE(QMainWindow):
                 self.auto_save_action.setChecked(auto_save_enabled)
 
         except Exception as e:
-            print(f"ERROR in create_menu_bar: {e}")
+            logger.error(f"ERROR in create_menu_bar: {e}")
             import traceback
             traceback.print_exc()
             raise
@@ -86,7 +89,7 @@ class PyGameMakerIDE(QMainWindow):
         try:
             self.create_toolbar()
         except Exception as e:
-            print(f"ERROR in create_toolbar: {e}")
+            logger.error(f"ERROR in create_toolbar: {e}")
             import traceback
             traceback.print_exc()
             raise
@@ -94,7 +97,7 @@ class PyGameMakerIDE(QMainWindow):
         try:
             self.create_main_widget()
         except Exception as e:
-            print(f"ERROR in create_main_widget: {e}")
+            logger.error(f"ERROR in create_main_widget: {e}")
             import traceback
             traceback.print_exc()
             raise
@@ -102,7 +105,7 @@ class PyGameMakerIDE(QMainWindow):
         try:
             self.create_status_bar()
         except Exception as e:
-            print(f"ERROR in create_status_bar: {e}")
+            logger.error(f"ERROR in create_status_bar: {e}")
             import traceback
             traceback.print_exc()
             raise
@@ -390,7 +393,7 @@ class PyGameMakerIDE(QMainWindow):
                 # Save config to ensure language setting is persisted
                 from utils.config import Config
                 Config.save()
-                print("💾 Config saved before restart")
+                logger.info("💾 Config saved before restart")
 
                 # Restart the application
                 QCoreApplication.quit()
@@ -642,11 +645,11 @@ class PyGameMakerIDE(QMainWindow):
 
         # Left panel - Asset tree (unchanged)
         try:
-            print("DEBUG: About to create AssetTreeWidget...")
+            logger.debug("DEBUG: About to create AssetTreeWidget...")
             self.asset_tree = AssetTreeWidget(self)
-            print("DEBUG: AssetTreeWidget created successfully!")
+            logger.debug("DEBUG: AssetTreeWidget created successfully!")
         except Exception as e:
-            print(f"ERROR creating AssetTreeWidget: {e}")
+            logger.error(f"ERROR creating AssetTreeWidget: {e}")
             import traceback
             traceback.print_exc()
         self.asset_tree.setMinimumWidth(200)
@@ -787,7 +790,7 @@ class PyGameMakerIDE(QMainWindow):
                     self.properties_panel.set_room_editor_context(widget, room_name, room_data)
 
                 except Exception as e:
-                    print(f"Error setting room editor context: {e}")
+                    logger.error(f"Error setting room editor context: {e}")
 
             elif editor_class == 'ObjectEditor':
                 # Object editor is active - COLLAPSE right panel (object editor has its own properties)
@@ -901,11 +904,11 @@ class PyGameMakerIDE(QMainWindow):
                         action.setIcon(icon)
                 else:
                     # Invalid icon name provided
-                    print(f"⚠️ Warning: Invalid icon name '{icon_name}' - no such StandardPixmap")
+                    logger.warning(f"⚠️ Warning: Invalid icon name '{icon_name}' - no such StandardPixmap")
             except AttributeError as e:
-                print(f"⚠️ Warning: Could not access QStyle.StandardPixmap.{icon_name}: {e}")
+                logger.warning(f"⚠️ Warning: Could not access QStyle.StandardPixmap.{icon_name}: {e}")
             except Exception as e:
-                print(f"⚠️ Warning: Could not load icon '{icon_name}': {e}")
+                logger.warning(f"⚠️ Warning: Could not load icon '{icon_name}': {e}")
 
         if slot:
             action.triggered.connect(slot)
@@ -932,7 +935,7 @@ class PyGameMakerIDE(QMainWindow):
         dialog = NewProjectDialog(self)
         if dialog.exec():
             project_info = dialog.get_project_info()
-            print(f"DEBUG new_project: project_info = {project_info}")
+            logger.debug(f"DEBUG new_project: project_info = {project_info}")
 
             if self.project_manager.create_project(
                 project_info["name"],
@@ -942,19 +945,19 @@ class PyGameMakerIDE(QMainWindow):
                 # Update IDE state with newly created project
                 project_path = self.project_manager.current_project_path
                 project_data = self.project_manager.current_project_data
-                print(f"DEBUG new_project: project_path = {project_path}")
-                print(f"DEBUG new_project: project_data keys = {list(project_data.keys()) if project_data else None}")
+                logger.debug(f"DEBUG new_project: project_path = {project_path}")
+                logger.debug(f"DEBUG new_project: project_data keys = {list(project_data.keys()) if project_data else None}")
 
                 # Call on_project_loaded to properly initialize the IDE
                 self.on_project_loaded(project_path, project_data)
-                print("DEBUG new_project: on_project_loaded called")
+                logger.debug("DEBUG new_project: on_project_loaded called")
 
                 # Add to recent projects
                 self.add_to_recent_projects(str(project_path))
 
                 self.update_status(self.tr("Project created successfully"))
             else:
-                print("DEBUG new_project: create_project returned False")
+                logger.debug("DEBUG new_project: create_project returned False")
                 QMessageBox.warning(self, self.tr("Error"), self.tr("Failed to create project"))
 
     def open_project(self):
@@ -987,15 +990,15 @@ class PyGameMakerIDE(QMainWindow):
         self.load_project(Path(project_path))
 
     def load_project(self, project_path):
-        print(f"DEBUG load_project: Attempting to load from {project_path}")
+        logger.debug(f"DEBUG load_project: Attempting to load from {project_path}")
         if self.project_manager.load_project(project_path):
-            print("DEBUG load_project: project_manager.load_project succeeded")
+            logger.debug("DEBUG load_project: project_manager.load_project succeeded")
             self.asset_tree.project_manager = self.project_manager
 
             Config.set("last_project_directory", str(project_path.parent))
             self.add_to_recent_projects(str(project_path))
         else:
-            print("DEBUG load_project: project_manager.load_project FAILED")
+            logger.debug("DEBUG load_project: project_manager.load_project FAILED")
             QMessageBox.warning(self, self.tr("Error"), self.tr("Failed to load project"))
 
     def save_project(self):
@@ -1072,7 +1075,7 @@ class PyGameMakerIDE(QMainWindow):
             if reply == QMessageBox.Yes:
                 self.new_project()
             else:
-                print("🔥 User cancelled")
+                logger.debug("🔥 User cancelled")
             return
 
         self.import_asset("sprites")
@@ -1100,12 +1103,12 @@ class PyGameMakerIDE(QMainWindow):
                 if files:
                     self.asset_tree.import_asset(files, asset_type, self.current_project_path)
                 else:
-                    print("No files selected")
+                    logger.debug("No files selected")
             else:
-                print("Import cancelled")
+                logger.debug("Import cancelled")
 
         except Exception as e:
-            print(f"Error in import_asset: {e}")
+            logger.error(f"Error in import_asset: {e}")
 
     def on_asset_renamed(self, old_name, new_name, asset_type):
             """Handle asset rename signal - refresh UI components"""
@@ -1126,7 +1129,7 @@ class PyGameMakerIDE(QMainWindow):
                                 self.properties_panel.set_asset(updated_asset_item.asset_data)
 
             except Exception as e:
-                print(f"❌ Error handling asset rename in main window: {e}")
+                logger.error(f"❌ Error handling asset rename in main window: {e}")
 
     def find_renamed_asset(self, asset_name, asset_type):
         """Find an asset item by name and type in the asset tree"""
@@ -1156,13 +1159,13 @@ class PyGameMakerIDE(QMainWindow):
             return None
 
         except Exception as e:
-            print(f"❌ Error finding renamed asset: {e}")
+            logger.error(f"❌ Error finding renamed asset: {e}")
             return None
 
     def on_asset_deleted(self, asset_type: str, asset_name: str):
         """Handle asset deletion - update open editors that reference the deleted asset"""
         try:
-            print(f"🗑️ IDE: Asset deleted - {asset_type}/{asset_name}")
+            logger.debug(f"🗑️ IDE: Asset deleted - {asset_type}/{asset_name}")
 
             # If a sprite was deleted, refresh all open object editors
             if asset_type == "sprites":
@@ -1171,7 +1174,7 @@ class PyGameMakerIDE(QMainWindow):
                         # Reload sprites in the object editor
                         if hasattr(editor, 'load_project_assets'):
                             editor.load_project_assets()
-                            print(f"🔄 Refreshed sprites in object editor: {editor_name}")
+                            logger.debug(f"🔄 Refreshed sprites in object editor: {editor_name}")
 
                         # If this object was using the deleted sprite, update its data
                         if hasattr(editor, 'current_object_properties'):
@@ -1180,16 +1183,16 @@ class PyGameMakerIDE(QMainWindow):
                                 # Refresh the properties panel to show "None"
                                 if hasattr(editor, 'properties_panel'):
                                     editor.properties_panel.load_properties(editor.current_object_properties)
-                                print(f"🔄 Cleared sprite reference in object: {editor_name}")
+                                logger.debug(f"🔄 Cleared sprite reference in object: {editor_name}")
 
             # If an object was deleted and it's open, close its editor
             elif asset_type == "objects":
                 if asset_name in self.open_editors:
                     self.close_editor_by_name(asset_name)
-                    print(f"🔄 Closed deleted object's editor: {asset_name}")
+                    logger.debug(f"🔄 Closed deleted object's editor: {asset_name}")
 
         except Exception as e:
-            print(f"❌ Error handling asset deletion: {e}")
+            logger.error(f"❌ Error handling asset deletion: {e}")
             import traceback
             traceback.print_exc()
 
@@ -1269,7 +1272,7 @@ class PyGameMakerIDE(QMainWindow):
 
             # Add to project data
             if not self.current_project_data:
-                print("No project data available")
+                logger.warning("No project data available")
                 return
 
             assets = self.current_project_data.setdefault('assets', {})
@@ -1285,7 +1288,7 @@ class PyGameMakerIDE(QMainWindow):
                     from collections import OrderedDict
                     cache[asset_type] = OrderedDict()
                 cache[asset_type][asset_name] = asset_data
-                print(f"✅ Added {asset_name} to asset_manager cache")
+                logger.debug(f"✅ Added {asset_name} to asset_manager cache")
 
             # Mark project as dirty and save
             self.project_manager.mark_dirty()
@@ -1301,10 +1304,10 @@ class PyGameMakerIDE(QMainWindow):
                 if asset_type == 'objects':
                     self._refresh_room_editor_objects()
             else:
-                print(f"Failed to save project after creating {asset_name}")
+                logger.error(f"Failed to save project after creating {asset_name}")
 
         except Exception as e:
-            print(f"Error creating {asset_type[:-1]}: {e}")
+            logger.error(f"Error creating {asset_type[:-1]}: {e}")
             QMessageBox.warning(self, self.tr("Error"),
                             self.tr("Failed to create {0}: {1}").format(asset_type[:-1], e))
 
@@ -1315,9 +1318,9 @@ class PyGameMakerIDE(QMainWindow):
                 widget = self.editor_tabs.widget(i)
                 if hasattr(widget, 'load_available_objects'):
                     widget.load_available_objects()
-                    print(f"✅ Refreshed object palette in room editor tab {i}")
+                    logger.debug(f"✅ Refreshed object palette in room editor tab {i}")
         except Exception as e:
-            print(f"⚠️ Could not refresh room editor objects: {e}")
+            logger.warning(f"⚠️ Could not refresh room editor objects: {e}")
 
     def test_game(self):
         """Test the current game"""
@@ -1372,7 +1375,7 @@ class PyGameMakerIDE(QMainWindow):
                 file_dir.startswith('/tmp/') or  # Nuitka onefile extraction
                 (temp_dir and file_dir.startswith(temp_dir))  # Windows temp (avoid empty string match)
             )
-            print(f"🔍 Packaged detection: frozen={getattr(sys, 'frozen', False)}, exe_exists={exe_exists}, file_dir={file_dir}, is_packaged={is_packaged}")
+            logger.debug(f"🔍 Packaged detection: frozen={getattr(sys, 'frozen', False)}, exe_exists={exe_exists}, file_dir={file_dir}, is_packaged={is_packaged}")
 
             if is_packaged:
                 # When packaged, run game in-process using the game runner
@@ -1392,7 +1395,7 @@ class PyGameMakerIDE(QMainWindow):
             )
 
             if result.returncode != 0:
-                print(f"Game exited with code: {result.returncode}")
+                logger.debug(f"Game exited with code: {result.returncode}")
 
             self.update_status(self.tr("Game closed"))
 
@@ -1402,7 +1405,7 @@ class PyGameMakerIDE(QMainWindow):
                 self.tr("Game Test Error"),
                 self.tr("Failed to run game:\n\n{0}\n\nCheck console for details.").format(str(e))
             )
-            print(f"❌ Game test error: {e}")
+            logger.error(f"❌ Game test error: {e}")
             import traceback
             traceback.print_exc()
             self.update_status(self.tr("Game test failed"))
@@ -1894,7 +1897,7 @@ class PyGameMakerIDE(QMainWindow):
                 pass
 
         # Default: project-level undo (if implemented)
-        print("Undo (no editor-specific undo available)")
+        logger.debug("Undo (no editor-specific undo available)")
 
     def redo(self):
         """Handle redo - delegate to active editor if applicable"""
@@ -1915,7 +1918,7 @@ class PyGameMakerIDE(QMainWindow):
                 pass
 
         # Default: project-level redo (if implemented)
-        print("Redo (no editor-specific redo available)")
+        logger.debug("Redo (no editor-specific redo available)")
 
     def cut(self):
         """Handle cut - delegate to active editor if applicable"""
@@ -2006,7 +2009,7 @@ class PyGameMakerIDE(QMainWindow):
                 return
 
         # For other editors, could implement duplicate functionality here
-        print("Duplicate action (no room editor active)")
+        logger.debug("Duplicate action (no room editor active)")
 
     def find(self):
         """Find text in current editor - to be implemented"""
@@ -2082,7 +2085,7 @@ class PyGameMakerIDE(QMainWindow):
                     self.current_project_data['settings'] = {}
                 self.current_project_data['settings']['blockly_preset'] = new_config.preset_name
                 self.save_project()
-                print(f"✅ Saved Blockly preset '{new_config.preset_name}' to project")
+                logger.info(f"✅ Saved Blockly preset '{new_config.preset_name}' to project")
 
             # Refresh any open GM80 events panels
             self.refresh_event_panels_config()
@@ -2098,9 +2101,9 @@ class PyGameMakerIDE(QMainWindow):
                         "Changes apply immediately to currently open editors.")
             )
 
-            print(f"✅ Blockly configuration updated: {new_config.preset_name} preset")
-            print(f"   Enabled blocks: {len(new_config.enabled_blocks)}")
-            print(f"   Enabled categories: {', '.join(new_config.enabled_categories)}")
+            logger.info(f"✅ Blockly configuration updated: {new_config.preset_name} preset")
+            logger.debug(f"   Enabled blocks: {len(new_config.enabled_blocks)}")
+            logger.debug(f"   Enabled categories: {', '.join(new_config.enabled_categories)}")
 
     def refresh_event_panels_config(self):
         """Refresh configuration in all open GM80 events panels"""
@@ -2111,7 +2114,7 @@ class PyGameMakerIDE(QMainWindow):
             if hasattr(widget, 'gm80_events_panel'):
                 # Reload configuration in the events panel
                 widget.gm80_events_panel.reload_config()
-                print(f"   ♻️ Reloaded event panel config for: {self.editor_tabs.tabText(i)}")
+                logger.debug(f"   ♻️ Reloaded event panel config for: {self.editor_tabs.tabText(i)}")
 
 
     def validate_project(self):
@@ -2286,7 +2289,7 @@ class PyGameMakerIDE(QMainWindow):
 
     def on_asset_imported(self, asset_name, asset_type, asset_data):
         """Handle asset import with correct signal signature"""
-        print(f"📥 on_asset_imported called: {asset_type}/{asset_name}")
+        logger.debug(f"📥 on_asset_imported called: {asset_type}/{asset_name}")
         self.update_status(self.tr("Imported {0}").format(asset_name))
 
         # Update current_project_data with the new asset
@@ -2301,10 +2304,10 @@ class PyGameMakerIDE(QMainWindow):
         if asset_type == 'sprites':
             if hasattr(self, 'properties_panel') and hasattr(self.properties_panel, 'refresh_sprite_combo'):
                 self.properties_panel.refresh_sprite_combo()
-                print(f"Refreshed sprite combo after importing {asset_name}")
+                logger.debug(f"Refreshed sprite combo after importing {asset_name}")
 
             # Also refresh open object editors so they see the new sprite
-            print("🔄 Refreshing open object editors after sprite import...")
+            logger.debug("🔄 Refreshing open object editors after sprite import...")
             self.refresh_open_object_editors()
 
     def on_asset_double_clicked(self, asset_data):
@@ -2360,7 +2363,7 @@ class PyGameMakerIDE(QMainWindow):
             self.update_status(self.tr("Opened room: {0}").format(room_name))
 
         except Exception as e:
-            print(f"Error opening room editor: {e}")
+            logger.error(f"Error opening room editor: {e}")
             import traceback
             traceback.print_exc()
             QMessageBox.critical(self, self.tr("Error"),
@@ -2413,9 +2416,9 @@ class PyGameMakerIDE(QMainWindow):
 
     def on_object_editor_activated(self, object_name: str, object_properties: dict):
         """Handle object editor activation"""
-        print(f"🚨🚨🚨 IDE: on_object_editor_activated called for {object_name}")
-        print(f"🚨 IDE: properties_panel exists? {hasattr(self, 'properties_panel')}")
-        print(f"🚨 IDE: properties_panel type: {type(self.properties_panel).__name__ if hasattr(self, 'properties_panel') else 'N/A'}")
+        logger.debug(f"🚨🚨🚨 IDE: on_object_editor_activated called for {object_name}")
+        logger.debug(f"🚨 IDE: properties_panel exists? {hasattr(self, 'properties_panel')}")
+        logger.debug(f"🚨 IDE: properties_panel type: {type(self.properties_panel).__name__ if hasattr(self, 'properties_panel') else 'N/A'}")
 
         # Find the object editor widget
         for i in range(self.editor_tabs.count()):
@@ -2449,7 +2452,7 @@ class PyGameMakerIDE(QMainWindow):
         """Handle save request from editors"""
 
         if not self.project_manager:
-            print("ERROR: No project manager available")
+            logger.error("ERROR: No project manager available")
             return
 
         try:
@@ -2472,10 +2475,10 @@ class PyGameMakerIDE(QMainWindow):
                 else:
                     asset_category = asset_type_field + 's'
             else:
-                print("Could not determine asset type")
+                logger.warning("Could not determine asset type")
                 return
 
-            print(f"💾 Saving: category='{asset_category}', type_field='{asset_type_field}'")
+            logger.debug(f"💾 Saving: category='{asset_category}', type_field='{asset_type_field}'")
 
             # Ensure required fields with CORRECT singular asset_type
             asset_data['imported'] = True
@@ -2484,15 +2487,15 @@ class PyGameMakerIDE(QMainWindow):
 
             # Debug: Print what we're about to save
             if asset_category == 'rooms':
-                print(f"💾 Room data keys: {list(asset_data.keys())}")
-                print(f"💾 Background color: {asset_data.get('background_color', 'NOT SET')}")
-                print(f"💾 Instances count: {len(asset_data.get('instances', []))}")
+                logger.debug(f"💾 Room data keys: {list(asset_data.keys())}")
+                logger.debug(f"💾 Background color: {asset_data.get('background_color', 'NOT SET')}")
+                logger.debug(f"💾 Instances count: {len(asset_data.get('instances', []))}")
 
             # Use the project manager's update method with PLURAL category
             if self.project_manager.update_asset(asset_category, asset_name, asset_data):
                 pass  # Success
             else:
-                print(f"Failed to update asset {asset_name}")
+                logger.error(f"Failed to update asset {asset_name}")
                 return
 
             # Force immediate save
@@ -2518,16 +2521,16 @@ class PyGameMakerIDE(QMainWindow):
                         self.editor_tabs.setTabText(i, asset_name)
                         break
 
-                print(f"✅ Save completed successfully for {asset_name}")
+                logger.info(f"✅ Save completed successfully for {asset_name}")
 
             else:
-                print("Project save FAILED")
+                logger.error("Project save FAILED")
                 QMessageBox.warning(self, self.tr("Save Error"),
                                   self.tr("Failed to save project to disk"))
                 return
 
         except Exception as e:
-            print(f"Error in save: {e}")
+            logger.error(f"Error in save: {e}")
             import traceback
             traceback.print_exc()
             QMessageBox.warning(self, self.tr("Save Error"),
@@ -2554,7 +2557,7 @@ class PyGameMakerIDE(QMainWindow):
                 break
 
     def on_project_loaded(self, project_path, project_data):
-        print(f"DEBUG on_project_loaded: START - path={project_path}, data_keys={list(project_data.keys()) if project_data else None}")
+        logger.debug(f"DEBUG on_project_loaded: START - path={project_path}, data_keys={list(project_data.keys()) if project_data else None}")
         self.current_project_path = project_path
         self.current_project_data = project_data
 
@@ -2563,20 +2566,20 @@ class PyGameMakerIDE(QMainWindow):
             project_json = Path(project_path) / "project.json"
             if project_json.exists():
                 self.game_runner = GameRunner(str(project_json))
-                print(f"Game runner initialized for project: {project_json}")
+                logger.debug(f"Game runner initialized for project: {project_json}")
             else:
-                print(f"Warning: project.json not found at {project_json}")
+                logger.warning(f"Warning: project.json not found at {project_json}")
                 self.game_runner = None
         except Exception as e:
-            print(f"Error initializing game runner: {e}")
+            logger.error(f"Error initializing game runner: {e}")
             import traceback
             traceback.print_exc()
             self.game_runner = None
 
         # Load assets into asset tree (order is preserved through OrderedDict)
-        print("DEBUG on_project_loaded: calling asset_tree.set_project")
+        logger.debug("DEBUG on_project_loaded: calling asset_tree.set_project")
         self.asset_tree.set_project(str(project_path), project_data)
-        print("DEBUG on_project_loaded: asset_tree.set_project done")
+        logger.debug("DEBUG on_project_loaded: asset_tree.set_project done")
 
         # Set project base path for properties panel
         if hasattr(self.properties_panel, 'set_project_base_path'):
@@ -2585,7 +2588,7 @@ class PyGameMakerIDE(QMainWindow):
         self.update_window_title()
         self.update_ui_state()
         self.update_status(self.tr("Project loaded: {0}").format(project_data['name']))
-        print("DEBUG on_project_loaded: END")
+        logger.debug("DEBUG on_project_loaded: END")
 
     def on_project_saved(self):
         self.update_status(self.tr("Project saved"))
@@ -2654,11 +2657,11 @@ class PyGameMakerIDE(QMainWindow):
             # Check if this is an object editor (has load_project_assets method)
             if hasattr(widget, 'load_project_assets'):
                 widget.load_project_assets()
-                print(f"🔄 Refreshed sprites in object editor: {self.editor_tabs.tabText(i)}")
+                logger.debug(f"🔄 Refreshed sprites in object editor: {self.editor_tabs.tabText(i)}")
 
     def refresh_object_sprites(self, object_name: str, old_sprite: str, new_sprite: str):
         """Refresh object sprites in room editors when they change"""
-        print(f"Refreshing sprite for object {object_name}: {old_sprite} -> {new_sprite}")
+        logger.debug(f"Refreshing sprite for object {object_name}: {old_sprite} -> {new_sprite}")
 
         # Refresh all room editors
         for i in range(self.editor_tabs.count()):
@@ -2794,7 +2797,7 @@ class PyGameMakerIDE(QMainWindow):
 
         if event.type() == QEvent.Type.LanguageChange:
             # Recreate menu bar with new translations
-            print("🔄 Language change event detected, recreating menus...")
+            logger.info("🔄 Language change event detected, recreating menus...")
             self.menuBar().clear()
             self.create_menu_bar()
 
@@ -2807,7 +2810,7 @@ class PyGameMakerIDE(QMainWindow):
 
             # Update UI state to enable/disable actions based on project state
             self.update_ui_state()
-            print("✅ Menus and toolbars recreated with new language")
+            logger.info("✅ Menus and toolbars recreated with new language")
 
         # Call parent class handler
         super().changeEvent(event)

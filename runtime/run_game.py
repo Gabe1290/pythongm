@@ -14,18 +14,20 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
 from runtime.game_runner import GameRunner
+from core.logger import get_logger
+logger = get_logger(__name__)
 
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python run_game.py <path_to_project.json> [language_code]")
+        logger.error("Usage: python run_game.py <path_to_project.json> [language_code]")
         sys.exit(1)
 
     project_json = sys.argv[1]
     language = sys.argv[2] if len(sys.argv) > 2 else 'en'
 
     if not os.path.exists(project_json):
-        print(f"Error: Project file not found: {project_json}")
+        logger.error(f"Error: Project file not found: {project_json}")
         sys.exit(1)
 
     try:
@@ -34,7 +36,7 @@ def main():
         runner.run()
         sys.exit(0)
     except Exception as e:
-        print(f"Game error: {e}")
+        logger.error(f"Game error: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

@@ -33,6 +33,9 @@ def get_action_def(action_name: str):
 # Import Blockly configuration for filtering
 from config.blockly_config import load_config
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 # ============================================================================
 # BLOCKLY TO GM80 EVENT MAPPING
@@ -263,8 +266,8 @@ class GM80EventsPanel(QWidget):
     def apply_config(self, config):
         """Apply a specific Blockly configuration directly (without loading from file)"""
         self.blockly_config = config
-        print(f"✅ Events panel updated with config: {config.preset_name}")
-        print(f"   Enabled blocks: {len(config.enabled_blocks)} blocks")
+        logger.info(f"Events panel updated with config: {config.preset_name}")
+        logger.debug(f"Enabled blocks: {len(config.enabled_blocks)} blocks")
 
     def is_action_enabled(self, action_name: str) -> bool:
         """Check if a GM80 action is enabled based on Blockly configuration"""
@@ -489,7 +492,7 @@ class GM80EventsPanel(QWidget):
                         action_item = tab_menu.addAction(f"{action.icon} {action.display_name} (not implemented)")
                         action_item.setEnabled(False)
 
-            print(f"🎯 Action filtering: {filtered_actions}/{total_actions} actions enabled")
+            logger.debug(f"Action filtering: {filtered_actions}/{total_actions} actions enabled")
 
             # Show warning if no actions are enabled
             if not has_enabled_actions:
@@ -828,9 +831,9 @@ class GM80EventsPanel(QWidget):
 
                                 action_item.setData(0, Qt.UserRole, action_data)
 
-                # Debug: print which keys were added
+                # Debug: log which keys were added
                 if keys_added:
-                    print(f"DEBUG: Added {len(keys_added)} keyboard keys to tree: {keys_added}")
+                    logger.debug(f"Added {len(keys_added)} keyboard keys to tree: {keys_added}")
 
             elif event_name.startswith("collision_with_"):
                 # Collision event

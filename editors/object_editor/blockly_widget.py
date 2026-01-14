@@ -15,6 +15,9 @@ from PySide6.QtWebEngineCore import QWebEngineSettings
 from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtGui import QCloseEvent
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 class BlocklyBridge(QObject):
     """Bridge between Python and JavaScript for Blockly communication"""
@@ -178,7 +181,7 @@ class BlocklyWidget(QWidget):
                 url.setQuery(f"lang={current_lang}")
                 self.web_view.setUrl(url)
             else:
-                print(f"ERROR: Blockly HTML not found at {blockly_html}")
+                logger.error(f"Blockly HTML not found at {blockly_html}")
                 self.web_view.setHtml("<h1>Blockly not found</h1><p>Could not load blockly_workspace.html</p>")
 
     def on_load_finished(self, ok: bool):
@@ -203,7 +206,7 @@ class BlocklyWidget(QWidget):
         language_manager = get_language_manager()
         current_lang = language_manager.get_current_language()
 
-        print(f"[Blockly] Setting language to: {current_lang}")
+        logger.debug(f"Setting Blockly language to: {current_lang}")
 
         # Call JavaScript function to set the language
         self.web_view.page().runJavaScript(
@@ -236,7 +239,7 @@ class BlocklyWidget(QWidget):
             self.blocks_modified.emit()
             self.update_status(self.tr("Blocks updated - {0} events").format(len(self.events_data)))
         except json.JSONDecodeError as e:
-            print(f"Error parsing blocks JSON: {e}")
+            logger.error(f"Error parsing blocks JSON: {e}")
 
     def apply_blocks_to_events(self):
         """Apply the current blocks to the object's events"""
@@ -255,7 +258,7 @@ class BlocklyWidget(QWidget):
                 self.events_generated.emit(events)
                 self.update_status(self.tr("Applied {0} events").format(len(events)))
             except json.JSONDecodeError as e:
-                print(f"Error parsing code JSON: {e}")
+                logger.error(f"Error parsing code JSON: {e}")
 
     def clear_workspace(self):
         """Clear the Blockly workspace"""
@@ -303,8 +306,8 @@ class BlocklyWidget(QWidget):
             self.update_status(self.tr("No events to load"))
             return
 
-        # Debug: Print the events data being sent
-        print(f"[Blockly] Loading events data: {json.dumps(events_data, indent=2)}")
+        # Debug: Log the events data being sent
+        logger.debug(f"Loading events data: {json.dumps(events_data, indent=2)}")
 
         # Convert events data to JSON and send to Blockly
         self._loading = True
@@ -314,7 +317,7 @@ class BlocklyWidget(QWidget):
 
         def on_load_complete(result):
             self._loading = False
-            print(f"[Blockly] Load complete, result: {result}")
+            logger.debug(f"Blockly load complete, result: {result}")
             if result is not None:
                 self.update_status(self.tr("Loaded {0} events as blocks").format(result))
             else:
@@ -387,7 +390,7 @@ class BlocklyWidget(QWidget):
                         data = json.load(f)
                     return data.get('settings', {}).get('blockly_preset')
         except Exception as e:
-            print(f"Error loading project preset: {e}")
+            logger.error(f"Error loading project preset: {e}")
         return None
 
     def _save_project_preset(self, preset_name: str):
@@ -410,9 +413,9 @@ class BlocklyWidget(QWidget):
 
                     with open(project_file, 'w') as f:
                         json.dump(data, f, indent=2)
-                    print(f"✅ Saved Blockly preset '{preset_name}' to project")
+                    logger.info(f"Saved Blockly preset '{preset_name}' to project")
         except Exception as e:
-            print(f"Error saving project preset: {e}")
+            logger.error(f"Error saving project preset: {e}")
 
     def apply_configuration(self, config):
         """Apply a new block configuration to the toolbox"""

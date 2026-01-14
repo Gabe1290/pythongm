@@ -15,6 +15,9 @@ from PySide6.QtGui import QFont, QColor
 
 from actions import ActionDefinition, ActionParameter
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 class GM80ActionDialog(QDialog):
     """Dialog for configuring GM8.0 action parameters"""
@@ -140,7 +143,7 @@ class GM80ActionDialog(QDialog):
         elif param_type in ["object", "sprite", "sound", "room", "background",
                            "font", "script", "timeline"]:
             # Resource selector dropdown
-            print(f"🔧 Creating QComboBox for param_type='{param_type}'")
+            logger.debug(f"Creating QComboBox for param_type='{param_type}'")
             widget = QComboBox()
             # NOT editable - this ensures the dropdown arrow is always visible
             widget.setEditable(False)
@@ -161,7 +164,7 @@ class GM80ActionDialog(QDialog):
 
             # Get available resources from project
             resources = self.get_available_resources(param_type)
-            print(f"🔧 Found {len(resources)} resources: {resources}")
+            logger.debug(f"Found {len(resources)} resources: {resources}")
             if resources:
                 widget.addItems(resources)
 
@@ -169,7 +172,7 @@ class GM80ActionDialog(QDialog):
             if default_value:
                 widget.setCurrentText(str(default_value))
 
-            print(f"🔧 QComboBox created with {widget.count()} items, isEditable={widget.isEditable()}")
+            logger.debug(f"QComboBox created with {widget.count()} items, isEditable={widget.isEditable()}")
 
             return widget
 

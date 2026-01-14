@@ -8,10 +8,9 @@ from typing import Dict, List, Optional, Any
 from PySide6.QtCore import QObject, Signal
 from PIL import Image, ImageOps
 import pygame
-import logging
 
-# Module logger
-logger = logging.getLogger(__name__)
+from core.logger import get_logger
+logger = get_logger(__name__)
 
 
 class AssetManager(QObject):
@@ -159,10 +158,10 @@ class AssetManager(QObject):
 
         except Exception as e:
             error_msg = f"Failed to import {file_path.name}: {str(e)}"
-            print(f"❌ IMPORT ERROR: {error_msg}")
-            print(f"❌ Exception type: {type(e).__name__}")
-            print(f"❌ File path: {file_path}")
-            print(f"❌ Asset type: {asset_type}")
+            logger.error(f"❌ IMPORT ERROR: {error_msg}")
+            logger.error(f"❌ Exception type: {type(e).__name__}")
+            logger.error(f"❌ File path: {file_path}")
+            logger.error(f"❌ Asset type: {asset_type}")
             import traceback
             traceback.print_exc()
             self.status_changed.emit(error_msg)
@@ -191,7 +190,7 @@ class AssetManager(QObject):
                 old_abs_path = self.get_absolute_path(old_file_path)
                 if old_abs_path.exists():
                     old_abs_path.unlink()
-                    print(f"🗑️ Deleted old sprite file: {old_abs_path}")
+                    logger.debug(f"🗑️ Deleted old sprite file: {old_abs_path}")
 
             # Delete old thumbnail if it exists
             old_thumbnail = existing_sprite.get("thumbnail")
@@ -199,13 +198,13 @@ class AssetManager(QObject):
                 old_thumb_path = self.get_absolute_path(old_thumbnail)
                 if old_thumb_path.exists():
                     old_thumb_path.unlink()
-                    print(f"🗑️ Deleted old thumbnail: {old_thumb_path}")
+                    logger.debug(f"🗑️ Deleted old thumbnail: {old_thumb_path}")
 
             # Copy new image to project directory
             relative_path = f"sprites/{sprite_name}{file_path.suffix}"
             dest_path = self.get_absolute_path(relative_path)
             shutil.copy2(file_path, dest_path)
-            print(f"📁 Copied new image: {dest_path}")
+            logger.debug(f"📁 Copied new image: {dest_path}")
 
             # Update sprite data
             existing_sprite["file_path"] = relative_path
@@ -231,7 +230,7 @@ class AssetManager(QObject):
 
         except Exception as e:
             error_msg = f"Failed to replace sprite image: {str(e)}"
-            print(f"❌ REPLACE ERROR: {error_msg}")
+            logger.error(f"❌ REPLACE ERROR: {error_msg}")
             import traceback
             traceback.print_exc()
             self.status_changed.emit(error_msg)
@@ -390,7 +389,7 @@ class AssetManager(QObject):
                 self.asset_updated.emit("objects", obj_name, obj_data)
 
         if updated_objects:
-            print(f"🔄 Cleared sprite reference from objects: {', '.join(updated_objects)}")
+            logger.debug(f"🔄 Cleared sprite reference from objects: {', '.join(updated_objects)}")
 
     def rename_asset(self, asset_type: str, old_name: str, new_name: str) -> bool:
         """Rename an asset and update file paths"""
@@ -401,10 +400,10 @@ class AssetManager(QObject):
             return True
 
         # DEBUG: Check state before rename
-        print(f"🔍 RENAME DEBUG: Attempting to rename {asset_type}")
-        print(f"  Old name: {old_name}")
-        print(f"  New name: {new_name}")
-        print(f"  Cache before: {list(self.assets_cache.get(asset_type, {}).keys())}")
+        logger.debug(f"🔍 RENAME DEBUG: Attempting to rename {asset_type}")
+        logger.debug(f"  Old name: {old_name}")
+        logger.debug(f"  New name: {new_name}")
+        logger.debug(f"  Cache before: {list(self.assets_cache.get(asset_type, {}).keys())}")
 
         if self.asset_exists(asset_type, new_name):
             self.status_changed.emit(f"Asset {new_name} already exists")
@@ -413,10 +412,10 @@ class AssetManager(QObject):
         try:
             asset_data = self.get_asset(asset_type, old_name)
             if not asset_data:
-                print(f"❌ Asset not found in cache: {old_name}")
+                logger.error(f"❌ Asset not found in cache: {old_name}")
                 return False
 
-            print(f"✅ Found asset data for {old_name}")
+            logger.debug(f"✅ Found asset data for {old_name}")
 
             # Rename main file
             if asset_data.get("file_path"):
@@ -425,7 +424,7 @@ class AssetManager(QObject):
                     new_file_path = old_file_path.parent / f"{new_name}{old_file_path.suffix}"
                     old_file_path.rename(new_file_path)
                     asset_data["file_path"] = self.get_relative_path(new_file_path)
-                    print(f"✅ Renamed file: {old_file_path.name} → {new_file_path.name}")
+                    logger.debug(f"✅ Renamed file: {old_file_path.name} → {new_file_path.name}")
 
             # Rename thumbnail
             if asset_data.get("thumbnail"):
@@ -447,14 +446,14 @@ class AssetManager(QObject):
                 # Remove old key
                 if old_name in self.assets_cache[asset_type]:
                     del self.assets_cache[asset_type][old_name]
-                    print(f"✅ Removed old key from cache: {old_name}")
+                    logger.debug(f"✅ Removed old key from cache: {old_name}")
 
                 # Add new key
                 self.assets_cache[asset_type][new_name] = updated_data
-                print(f"✅ Added new key to cache: {new_name}")
+                logger.debug(f"✅ Added new key to cache: {new_name}")
 
                 # Verify the update
-                print(f"  Cache after: {list(self.assets_cache.get(asset_type, {}).keys())}")
+                logger.debug(f"  Cache after: {list(self.assets_cache.get(asset_type, {}).keys())}")
 
             # Update references in other assets (e.g., objects using this sprite)
             self._update_asset_references(asset_type, old_name, new_name)
@@ -466,7 +465,7 @@ class AssetManager(QObject):
 
         except Exception as e:
             self.status_changed.emit(f"Failed to rename {old_name}: {str(e)}")
-            print(f"❌ Rename exception: {e}")
+            logger.error(f"❌ Rename exception: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -481,7 +480,7 @@ class AssetManager(QObject):
                     if obj_data.get("sprite") == old_name:
                         obj_data["sprite"] = new_name
                         obj_data["modified"] = datetime.now().isoformat()
-                        print(f"  📝 Updated sprite reference in object '{obj_name}': {old_name} → {new_name}")
+                        logger.debug(f"  📝 Updated sprite reference in object '{obj_name}': {old_name} → {new_name}")
 
                 # Update sprite references in room instances
                 rooms = self.assets_cache.get("rooms", {})
@@ -500,7 +499,7 @@ class AssetManager(QObject):
                         if instance.get("object_name") == old_name:
                             instance["object_name"] = new_name
                             updated = True
-                            print(f"  📝 Updated object reference in room '{room_name}' instance: {old_name} → {new_name}")
+                            logger.debug(f"  📝 Updated object reference in room '{room_name}' instance: {old_name} → {new_name}")
                     if updated:
                         room_data["modified"] = datetime.now().isoformat()
 
@@ -520,13 +519,13 @@ class AssetManager(QObject):
                         # Rename collision_with_X events
                         if event_name == f"collision_with_{old_name}":
                             new_event_name = f"collision_with_{new_name}"
-                            print(f"  📝 Updated event name in object '{obj_name}': {event_name} → {new_event_name}")
+                            logger.debug(f"  📝 Updated event name in object '{obj_name}': {event_name} → {new_event_name}")
                             obj_modified = True
 
                         # Update target_object in event data
                         if event_data.get("target_object") == old_name:
                             event_data["target_object"] = new_name
-                            print(f"  📝 Updated target_object in object '{obj_name}' event '{new_event_name}': {old_name} → {new_name}")
+                            logger.debug(f"  📝 Updated target_object in object '{obj_name}' event '{new_event_name}': {old_name} → {new_name}")
                             obj_modified = True
 
                         # Update object references in action parameters
@@ -536,7 +535,7 @@ class AssetManager(QObject):
                             # Check 'object' parameter (used in if_collision, create_instance, etc.)
                             if params.get("object") == old_name:
                                 params["object"] = new_name
-                                print(f"  📝 Updated action parameter in object '{obj_name}': object={old_name} → {new_name}")
+                                logger.debug(f"  📝 Updated action parameter in object '{obj_name}': object={old_name} → {new_name}")
                                 obj_modified = True
                             # Check 'target_object' parameter
                             if params.get("target_object") == old_name:
@@ -561,10 +560,10 @@ class AssetManager(QObject):
                     if room_data.get("background_image") == old_name:
                         room_data["background_image"] = new_name
                         room_data["modified"] = datetime.now().isoformat()
-                        print(f"  📝 Updated background reference in room '{room_name}': {old_name} → {new_name}")
+                        logger.debug(f"  📝 Updated background reference in room '{room_name}': {old_name} → {new_name}")
 
         except Exception as e:
-            print(f"⚠️ Error updating asset references: {e}")
+            logger.warning(f"⚠️ Error updating asset references: {e}")
 
     def duplicate_asset(self, asset_type: str, asset_name: str) -> Optional[Dict[str, Any]]:
         """Create a copy of an existing asset"""
@@ -673,7 +672,7 @@ class AssetManager(QObject):
                 # DEBUG: Verify room order is preserved
                 if asset_type == 'rooms':
                     room_order = list(assets_of_type.keys())
-                    print(f"💾 AssetManager: Saving room order: {room_order}")
+                    logger.debug(f"💾 AssetManager: Saving room order: {room_order}")
             else:
                 assets_for_json[asset_type] = assets_of_type
 

@@ -11,6 +11,9 @@ from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QPixmap
 from typing import Dict, Any, Optional
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 from utils.room_preview_generator import RoomPreviewGenerator
 
 class EnhancedPropertiesPanel(QWidget):
@@ -131,7 +134,7 @@ class EnhancedPropertiesPanel(QWidget):
 
         # Connect to the NEW room editor's update method
         self.room_property_changed.connect(room_editor.update_room_property_from_ide)
-        print(f"✅ Connected properties panel to room editor: {room_name}")
+        logger.debug(f"Connected properties panel to room editor: {room_name}")
 
         # Update info
         self.name_label.setText(room_name)
@@ -256,7 +259,7 @@ class EnhancedPropertiesPanel(QWidget):
                 parent = parent.parent()
             return {}
         except Exception as e:
-            print(f"❌ Error getting available backgrounds: {e}")
+            logger.error(f"Error getting available backgrounds: {e}")
             return {}
 
     def update_room_preview(self):
@@ -290,7 +293,7 @@ class EnhancedPropertiesPanel(QWidget):
                 self.preview_label.setText(self.tr("Preview\nNot Available"))
 
         except Exception as e:
-            print(f"Error updating room preview: {e}")
+            logger.error(f"Error updating room preview: {e}")
             self.preview_label.setText(self.tr("Preview\nUpdate Error"))
 
     def _generate_room_asset_preview(self, room_name: str, room_data: Dict[str, Any]):
@@ -337,7 +340,7 @@ class EnhancedPropertiesPanel(QWidget):
                 self.preview_label.setText(self.tr("Preview generation failed"))
 
         except Exception as e:
-            print(f"Error generating room asset preview: {e}")
+            logger.error(f"Error generating room asset preview: {e}")
             self.preview_label.setPixmap(QPixmap())
             self.preview_label.setText(self.tr("Room: {0}\n{1} x {2}").format(
                 room_name,
@@ -351,7 +354,7 @@ class EnhancedPropertiesPanel(QWidget):
         if getattr(self, '_setting_room_properties', False):
             return
 
-        print(f"Properties panel: {property_name} changed to {value}")
+        logger.debug(f"Properties panel: {property_name} changed to {value}")
 
         # Emit signal that room editor will catch
         self.room_property_changed.emit(property_name, value)
@@ -555,7 +558,7 @@ class EnhancedPropertiesPanel(QWidget):
                 self.preview_label.setText(f"Cannot determine project path for {asset_name}")
                 return
         else:
-            print("❌ DEBUG: No 'project_path' or 'file_path' in asset_data")
+            logger.debug("No 'project_path' or 'file_path' in asset_data")
 
         if not image_path:
             self.preview_label.setText(self.tr("No image file path found for {0}").format(asset_name))
@@ -594,7 +597,7 @@ class EnhancedPropertiesPanel(QWidget):
             self.preview_label.setToolTip(info_text)
 
         except Exception as e:
-            print(f"❌ DEBUG: Exception loading image: {e}")
+            logger.error(f"Exception loading image: {e}")
             import traceback
             traceback.print_exc()
             self.preview_label.setText(self.tr("Error loading image:\n{0}").format(str(e)))
@@ -727,14 +730,14 @@ class EnhancedPropertiesPanel(QWidget):
 
                 parent = parent.parent()
                 if level > 10:  # Safety limit
-                    print("⚠️ DEBUG: Too many parent levels, stopping")
+                    logger.debug("Too many parent levels, stopping")
                     break
 
             # Fallback: empty dict
-            print("⚠️ DEBUG: No parent with current_project_data found")
+            logger.debug("No parent with current_project_data found")
             return {}
         except Exception as e:
-            print(f"❌ Error getting available sprites: {e}")
+            logger.error(f"Error getting available sprites: {e}")
             import traceback
             traceback.print_exc()
             return {}
@@ -800,7 +803,7 @@ class EnhancedPropertiesPanel(QWidget):
                 self.preview_label.setToolTip(tooltip_text)
                 return
             else:
-                print(f"⚠️ DEBUG: Sprite '{sprite_name}' not found in available sprites")
+                logger.debug(f"Sprite '{sprite_name}' not found in available sprites")
 
         # Show default object preview (no sprite or sprite not found)
         self.preview_label.setPixmap(QPixmap())  # Clear pixmap
@@ -830,11 +833,11 @@ class EnhancedPropertiesPanel(QWidget):
 
     def on_object_property_changed(self, property_name: str, value):
         """Handle object property changes and notify ONLY the current object editor"""
-        print(f"Properties panel: object {property_name} changed to {value}")
+        logger.debug(f"Properties panel: object {property_name} changed to {value}")
 
         # Special handling for sprite changes
         if property_name == 'sprite':
-            print(f"Sprite change detected: {value}")
+            logger.debug(f"Sprite change detected: {value}")
 
             # Update the preview immediately
             if hasattr(self, 'current_asset') and self.current_asset:

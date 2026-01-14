@@ -11,6 +11,9 @@ from PySide6.QtWidgets import QTreeWidget, QMenu, QMessageBox
 from PySide6.QtCore import Qt, Signal, QSize
 from PySide6.QtGui import QAction
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 from .asset_tree_item import AssetTreeItem
 from .asset_operations import AssetOperations
 from .asset_dialogs import AssetPropertiesDialog
@@ -49,7 +52,7 @@ class AssetTreeWidget(QTreeWidget):
         self.setup_categories()
         self.setup_connections()
 
-        print("🔧 AssetTreeWidget: Initialized with operations handler")
+        logger.debug("AssetTreeWidget: Initialized with operations handler")
 
     def setup_ui(self):
         """Setup the tree widget UI"""
@@ -145,30 +148,30 @@ class AssetTreeWidget(QTreeWidget):
 
     def show_context_menu(self, position):
         """Show right-click context menu for asset management"""
-        print(f"🖱️ Context menu requested at position: {position}")
+        logger.debug(f"Context menu requested at position: {position}")
 
         item = self.itemAt(position)
-        print(f"   Item at position: {item}")
+        logger.debug(f"Item at position: {item}")
 
         if not item:
-            print("   ❌ No item found at position")
+            logger.debug("No item found at position")
             return
 
-        print(f"   Item type: {type(item)}")
-        print(f"   Is AssetTreeItem: {isinstance(item, AssetTreeItem)}")
+        logger.debug(f"Item type: {type(item)}")
+        logger.debug(f"Is AssetTreeItem: {isinstance(item, AssetTreeItem)}")
 
         if not isinstance(item, AssetTreeItem):
-            print("   ❌ Item is not an AssetTreeItem")
+            logger.debug("Item is not an AssetTreeItem")
             return
 
-        print(f"   Is category: {item.is_category}")
+        logger.debug(f"Is category: {item.is_category}")
 
         # Create context menu
         context_menu = QMenu(self)
 
         if item.is_category:
             # Category menu - show create and import options
-            print(f"   ✅ Showing category menu for: {item.asset_type}")
+            logger.debug(f"Showing category menu for: {item.asset_type}")
 
             # Get singular form for display (remove trailing 's')
             singular_type = item.asset_type.rstrip('s')
@@ -193,7 +196,7 @@ class AssetTreeWidget(QTreeWidget):
 
         else:
             # Asset item menu - show rename, delete, properties
-            print(f"   ✅ Showing context menu for: {item.asset_name}")
+            logger.debug(f"Showing context menu for: {item.asset_name}")
 
             # Rename action
             rename_action = QAction(self.tr("✏️ Rename"), self)
@@ -276,13 +279,13 @@ class AssetTreeWidget(QTreeWidget):
             properties_action.triggered.connect(lambda: self.show_asset_properties(item))
             context_menu.addAction(properties_action)
 
-        print("   📋 Executing menu at global position")
+        logger.debug("Executing menu at global position")
         context_menu.exec(self.mapToGlobal(position))
-        print("   ✅ Menu closed")
+        logger.debug("Menu closed")
 
     def trigger_create_for_category(self, asset_type: str):
         """Trigger create dialog for a specific asset category"""
-        print(f"➕ Create requested for category: {asset_type}")
+        logger.debug(f"Create requested for category: {asset_type}")
 
         # Get the parent IDE window to access the create functionality
         parent = self.parent()
@@ -297,7 +300,7 @@ class AssetTreeWidget(QTreeWidget):
             if hasattr(self, 'create_asset'):
                 self.create_asset(asset_type)
             else:
-                print("⚠️ Could not find parent with create_asset method")
+                logger.warning("Could not find parent with create_asset method")
                 QMessageBox.information(
                     self,
                     self.tr("Create Asset"),
@@ -306,7 +309,7 @@ class AssetTreeWidget(QTreeWidget):
 
     def trigger_import_for_category(self, asset_type: str):
         """Trigger import dialog for a specific asset category"""
-        print(f"📥 Import requested for category: {asset_type}")
+        logger.debug(f"Import requested for category: {asset_type}")
 
         # Get the parent IDE window to access the import functionality
         parent = self.parent()
@@ -316,7 +319,7 @@ class AssetTreeWidget(QTreeWidget):
         if parent and hasattr(parent, 'import_assets'):
             parent.import_assets(asset_type)
         else:
-            print("⚠️ Could not find parent with import_assets method")
+            logger.warning("Could not find parent with import_assets method")
             QMessageBox.information(
                 self,
                 self.tr("Import Assets"),
@@ -619,10 +622,10 @@ class AssetTreeWidget(QTreeWidget):
                     asset_item = category_item.child(j)
                     if isinstance(asset_item, AssetTreeItem) and asset_item.asset_name == asset_name:
                         category_item.removeChild(asset_item)
-                        print(f"✅ Removed {asset_name} from {asset_type} category")
+                        logger.debug(f"Removed {asset_name} from {asset_type} category")
                         return
 
-        print(f"❌ Could not find {asset_name} in {asset_type} category")
+        logger.error(f"Could not find {asset_name} in {asset_type} category")
 
     def clear_assets(self):
         """Clear all assets but keep categories"""
@@ -690,13 +693,13 @@ class AssetTreeWidget(QTreeWidget):
 
     def _reorder_room(self, room_name: str, direction):
         """Reorder rooms in project data and save"""
-        print(f"🔧 DEBUG: _reorder_room called with room_name='{room_name}', direction={direction}")
+        logger.debug(f"_reorder_room called with room_name='{room_name}', direction={direction}")
         try:
             from collections import OrderedDict
 
             project_file = Path(self.project_path) / "project.json"
             if not project_file.exists():
-                print(f"❌ DEBUG: project.json not found at {project_file}")
+                logger.error(f"project.json not found at {project_file}")
                 return
 
             # Load project data with order preservation
@@ -705,14 +708,14 @@ class AssetTreeWidget(QTreeWidget):
 
             rooms = project_data.get('assets', {}).get('rooms', OrderedDict())
             room_list = list(rooms.keys())
-            print(f"🔍 DEBUG: Current room order (before reorder): {room_list}")
+            logger.debug(f"Current room order (before reorder): {room_list}")
 
             if room_name not in room_list:
-                print(f"❌ DEBUG: room_name '{room_name}' not found in room_list")
+                logger.error(f"room_name '{room_name}' not found in room_list")
                 return
 
             current_index = room_list.index(room_name)
-            print(f"🔍 DEBUG: Current index of '{room_name}': {current_index}")
+            logger.debug(f"Current index of '{room_name}': {current_index}")
 
             # Remove from current position
             room_list.remove(room_name)
@@ -727,7 +730,7 @@ class AssetTreeWidget(QTreeWidget):
 
             # Insert at new position
             room_list.insert(new_index, room_name)
-            print(f"🔍 DEBUG: New room order (after reorder): {room_list}")
+            logger.debug(f"New room order (after reorder): {room_list}")
 
             # Rebuild rooms OrderedDict in new order
             new_rooms = OrderedDict()
@@ -735,13 +738,13 @@ class AssetTreeWidget(QTreeWidget):
                 new_rooms[room_key] = rooms[room_key]
 
             project_data['assets']['rooms'] = new_rooms
-            print(f"🔍 DEBUG: Built new_rooms OrderedDict with keys: {list(new_rooms.keys())}")
+            logger.debug(f"Built new_rooms OrderedDict with keys: {list(new_rooms.keys())}")
 
             # Save project back to file with order preservation
             with open(project_file, 'w') as f:
                 json.dump(project_data, f, indent=2, sort_keys=False)
 
-            print(f"✅ Saved new room order to project.json: {room_list}")
+            logger.debug(f"Saved new room order to project.json: {room_list}")
 
             # Find the IDE parent window
             ide_window = self.parent()
@@ -749,25 +752,25 @@ class AssetTreeWidget(QTreeWidget):
                 ide_window = ide_window.parent()
 
             if ide_window:
-                print("🔍 DEBUG: Found IDE window")
+                logger.debug("Found IDE window")
 
                 # CRITICAL: Update the asset manager's cache directly
                 if hasattr(ide_window, 'asset_manager'):
-                    print("🔍 DEBUG: IDE has asset_manager attribute")
+                    logger.debug("IDE has asset_manager attribute")
                     if ide_window.asset_manager:
-                        print("🔍 DEBUG: asset_manager is not None")
+                        logger.debug("asset_manager is not None")
                         if hasattr(ide_window.asset_manager, 'assets_cache'):
-                            print("🔍 DEBUG: asset_manager has assets_cache attribute")
+                            logger.debug("asset_manager has assets_cache attribute")
                             # Update the cache with the new room order
                             ide_window.asset_manager.assets_cache['rooms'] = new_rooms
-                            print("✅ Updated asset manager cache with new room order")
-                            print(f"🔍 DEBUG: New cache room order: {list(new_rooms.keys())}")
+                            logger.debug("Updated asset manager cache with new room order")
+                            logger.debug(f"New cache room order: {list(new_rooms.keys())}")
                         else:
-                            print("❌ DEBUG: asset_manager does NOT have assets_cache attribute")
+                            logger.debug("asset_manager does NOT have assets_cache attribute")
                     else:
-                        print("❌ DEBUG: asset_manager is None")
+                        logger.debug("asset_manager is None")
                 else:
-                    print("❌ DEBUG: IDE does NOT have asset_manager attribute")
+                    logger.debug("IDE does NOT have asset_manager attribute")
 
                 # Update the IDE's project data
                 ide_window.current_project_data = project_data
@@ -779,7 +782,7 @@ class AssetTreeWidget(QTreeWidget):
 
                     # Force save to ensure asset manager syncs
                     if ide_window.project_manager.save_project():
-                        print("✅ Project saved with new room order")
+                        logger.debug("Project saved with new room order")
 
                 # Refresh the entire asset tree from the updated data
                 self.refresh_from_project(project_data)
@@ -788,12 +791,12 @@ class AssetTreeWidget(QTreeWidget):
                 if hasattr(ide_window, 'update_status'):
                     ide_window.update_status(f"Reordered room: {room_name}")
             else:
-                print("❌ DEBUG: Could not find IDE window")
+                logger.error("Could not find IDE window")
                 # Fallback to local refresh if we can't find IDE
                 self._refresh_room_display()
 
         except Exception as e:
-            print(f"Error reordering room: {e}")
+            logger.error(f"Error reordering room: {e}")
             import traceback
             traceback.print_exc()
 
@@ -844,7 +847,7 @@ class AssetTreeWidget(QTreeWidget):
                 self.expandItem(rooms_category)
 
         except Exception as e:
-            print(f"Error refreshing room display: {e}")
+            logger.error(f"Error refreshing room display: {e}")
 
     # Project management methods
     def set_project(self, project_path: str, project_data: Dict):
@@ -855,12 +858,12 @@ class AssetTreeWidget(QTreeWidget):
 
             # DEBUG: Check room order when receiving project data
             rooms = project_data.get('assets', {}).get('rooms', {})
-            print(f"DEBUG asset_tree set_project: room order = {list(rooms.keys())}")
+            logger.debug(f"asset_tree set_project: room order = {list(rooms.keys())}")
 
             if isinstance(project_data, dict):
                 self.refresh_from_project(project_data)
             else:
-                print("⚠️ Invalid project_data, clearing assets")
+                logger.warning("Invalid project_data, clearing assets")
                 self.clear_assets()
 
         except Exception:
@@ -881,11 +884,11 @@ class AssetTreeWidget(QTreeWidget):
                     current_path = project_manager.get_current_project_path()
                     if current_path:
                         project_manager.load_project(current_path)
-                        print("🔄 Forced project manager to reload")
+                        logger.debug("Forced project manager to reload")
                     break
                 parent = parent.parent()
         except Exception as e:
-            print(f"⚠️ Could not force refresh: {e}")
+            logger.warning(f"Could not force refresh: {e}")
 
     # Compatibility methods for existing code
     def update_asset_manager_cache(self, asset_name: str, asset_type: str, asset_data: Dict):

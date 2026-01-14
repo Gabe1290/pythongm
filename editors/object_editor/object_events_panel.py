@@ -21,6 +21,9 @@ from events.action_editor import ActionConfigDialog
 # Import formatter
 from .object_actions_formatter import ActionParametersFormatter
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 class ObjectEventsPanel(QWidget):
     """Panel for managing object events and their actions"""
@@ -141,7 +144,7 @@ class ObjectEventsPanel(QWidget):
             self.move_down_shortcut = QShortcut(QKeySequence(self.tr("Ctrl+Down")), self)
             self.move_down_shortcut.activated.connect(self.move_action_down)
         except Exception as e:
-            print(self.tr(f"Warning: Could not setup shortcuts: {e}"))
+            logger.warning(f"Could not setup shortcuts: {e}")
 
     def add_event(self, event_name: str):
         """Add a regular event (not a sub-event)"""
@@ -994,7 +997,7 @@ class ObjectEventsPanel(QWidget):
 
                     actions.insert(target_index, action)
 
-                    print(f"Reordered action in {event_name}: {source_index} → {target_index}")
+                    logger.debug(f"Reordered action in {event_name}: {source_index} -> {target_index}")
                     self.refresh_events_display()
                     self.events_modified.emit()
 
@@ -1018,7 +1021,7 @@ class ObjectEventsPanel(QWidget):
 
                     actions.insert(target_index, action)
 
-                    print(f"Reordered action in {event_name}/{sub_key}: {source_index} → {target_index}")
+                    logger.debug(f"Reordered action in {event_name}/{sub_key}: {source_index} -> {target_index}")
                     self.refresh_events_display()
                     self.events_modified.emit()
 
@@ -1097,7 +1100,7 @@ class ObjectEventsPanel(QWidget):
                     # Simple swap
                     actions[index1], actions[index2] = actions[index2], actions[index1]
 
-                    print(f"Swapped actions in {event_name}: {index1} ↔ {index2}")
+                    logger.debug(f"Swapped actions in {event_name}: {index1} <-> {index2}")
                     self.refresh_events_display()
                     self.events_modified.emit()
 
@@ -1115,7 +1118,7 @@ class ObjectEventsPanel(QWidget):
                     # Simple swap
                     actions[index1], actions[index2] = actions[index2], actions[index1]
 
-                    print(f"Swapped actions in {event_name}/{sub_key}: {index1} ↔ {index2}")
+                    logger.debug(f"Swapped actions in {event_name}/{sub_key}: {index1} <-> {index2}")
                     self.refresh_events_display()
                     self.events_modified.emit()
 
@@ -1194,7 +1197,7 @@ class ObjectEventsPanel(QWidget):
 
     def load_events_data(self, events_data: Dict[str, Any]):
         """Load events data into the panel"""
-        print(f"ObjectEventsPanel: Loading events data with {len(events_data)} events")
+        logger.debug(f"ObjectEventsPanel: Loading events data with {len(events_data)} events")
 
         # Deep copy to avoid reference issues
         import copy
@@ -1204,7 +1207,7 @@ class ObjectEventsPanel(QWidget):
         for event_name, event_info in self.current_events_data.items():
             if isinstance(event_info, dict):
                 action_count = len(event_info.get('actions', []))
-                print(f"  - {event_name}: {action_count} actions")
+                logger.debug(f"  - {event_name}: {action_count} actions")
 
         # Force refresh the display
         self.refresh_events_display()
@@ -1212,7 +1215,7 @@ class ObjectEventsPanel(QWidget):
         # Collapse all by default - only show event names, not actions
         self.events_tree.collapseAll()
 
-        print(f"✓ Events display refreshed, tree should now show {len(events_data)} events")
+        logger.debug(f"Events display refreshed, tree should now show {len(events_data)} events")
 
     def get_events_data(self) -> Dict[str, Any]:
         """Get current events data"""

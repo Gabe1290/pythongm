@@ -8,6 +8,9 @@ import json
 from pathlib import Path
 from typing import Dict, Optional, Tuple, List
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 def validate_asset_name(name: str) -> Tuple[bool, str]:
     """
@@ -112,13 +115,13 @@ def load_project_data(project_file: Path) -> Optional[Dict]:
             with open(project_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
         else:
-            print(f"Project file does not exist: {project_file}")
+            logger.error(f"Project file does not exist: {project_file}")
             return None
     except json.JSONDecodeError as e:
-        print(f"JSON decode error in {project_file}: {e}")
+        logger.error(f"JSON decode error in {project_file}: {e}")
         return None
     except Exception as e:
-        print(f"Error loading project file {project_file}: {e}")
+        logger.error(f"Error loading project file {project_file}: {e}")
         return None
 
 
@@ -136,7 +139,7 @@ def save_project_data(project_file: Path, project_data: Dict) -> bool:
 
         return True
     except Exception as e:
-        print(f"Error saving project file {project_file}: {e}")
+        logger.error(f"Error saving project file {project_file}: {e}")
         return False
 
 

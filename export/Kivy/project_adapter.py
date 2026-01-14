@@ -3,6 +3,10 @@ Project Data Adapter for Kivy Export - ULTIMATE VERSION
 Works with your actual project structure where rooms/sprites/etc are in 'assets'
 """
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
+
 def parse_color(color_value):
     """
     Convert any color format to [R, G, B, A] floats (0.0 to 1.0)
@@ -49,7 +53,7 @@ def parse_color(color_value):
                 a = int(color_value[6:8], 16) / 255.0
                 return [r, g, b, a]
         except (ValueError, IndexError):
-            print(f"⚠️  Failed to parse color '{color_value}', using black")
+            logger.warning(f"Failed to parse color '{color_value}', using black")
 
     # Default to black
     return [0.0, 0.0, 0.0, 1.0]
@@ -74,7 +78,7 @@ def adapt_project_for_kivy_export(project_manager):
         if hasattr(project_manager, attr_name):
             project = getattr(project_manager, attr_name)
             if isinstance(project, dict):
-                print(f"ℹ️  Found project data in attribute: {attr_name}")
+                logger.debug(f"Found project data in attribute: {attr_name}")
                 break
 
     if not project or not isinstance(project, dict):
@@ -91,16 +95,16 @@ def adapt_project_for_kivy_export(project_manager):
         import os
         project_path = os.getcwd()
 
-    print(f"✓ Found project: {project.get('name', 'Unknown')}")
-    print(f"✓ Project path: {project_path}")
-    print(f"📋 Project keys: {list(project.keys())}")
+    logger.debug(f"Found project: {project.get('name', 'Unknown')}")
+    logger.debug(f"Project path: {project_path}")
+    logger.debug(f"Project keys: {list(project.keys())}")
 
     # Get project name
     project_name = project.get('name', 'MyGame')
 
     # YOUR STRUCTURE: Everything is in 'assets'!
     assets = project.get('assets', {})
-    print(f"📋 Assets keys: {list(assets.keys()) if assets else 'None'}")
+    logger.debug(f"Assets keys: {list(assets.keys()) if assets else 'None'}")
 
     # Get rooms from assets
     rooms_data = {}
@@ -116,7 +120,7 @@ def adapt_project_for_kivy_export(project_manager):
                     'instances': room_info.get('instances', [])
                 }
 
-    print(f"📋 Found {len(rooms_data)} room(s)")
+    logger.debug(f"Found {len(rooms_data)} room(s)")
 
     # Get objects from assets
     objects_data = {}
@@ -124,16 +128,16 @@ def adapt_project_for_kivy_export(project_manager):
 
     if isinstance(objects_source, dict):
         objects_data = objects_source
-        print(f"📋 Found {len(objects_data)} object(s) in assets")
+        logger.debug(f"Found {len(objects_data)} object(s) in assets")
 
     # If still no objects, infer from room instances
     if not objects_data and rooms_data:
-        print("ℹ️  Inferring objects from room instances...")
+        logger.debug("Inferring objects from room instances...")
         object_types = set()
 
         for room_name, room_info in rooms_data.items():
             instances = room_info.get('instances', [])
-            print(f"  📋 Room '{room_name}': {len(instances)} instances")
+            logger.debug(f"  Room '{room_name}': {len(instances)} instances")
 
             for instance in instances:
                 obj_type = (instance.get('object_name') or
@@ -152,7 +156,7 @@ def adapt_project_for_kivy_export(project_manager):
                 'events': {}
             }
 
-        print(f"✅ Created {len(objects_data)} object definition(s) from instances")
+        logger.debug(f"Created {len(objects_data)} object definition(s) from instances")
 
     # Get sprites from assets
     sprites_data = {}
@@ -240,18 +244,18 @@ def adapt_project_for_kivy_export(project_manager):
         }
     }
 
-    print("\n📊 Adapted Project Data:")
-    print(f"  - Name: {project_name}")
-    print(f"  - Rooms: {len(rooms_data)}")
-    print(f"  - Objects: {len(objects_data)}")
-    print(f"  - Sprites: {len(sprites_data)}")
-    print(f"  - Sounds: {len(sounds_data)}")
-    print(f"  - Backgrounds: {len(backgrounds_data)}")
-    print("\n📦 Assets structure:")
-    print(f"  - adapted_data['assets'] keys: {list(adapted_data['assets'].keys())}")
+    logger.debug("Adapted Project Data:")
+    logger.debug(f"  - Name: {project_name}")
+    logger.debug(f"  - Rooms: {len(rooms_data)}")
+    logger.debug(f"  - Objects: {len(objects_data)}")
+    logger.debug(f"  - Sprites: {len(sprites_data)}")
+    logger.debug(f"  - Sounds: {len(sounds_data)}")
+    logger.debug(f"  - Backgrounds: {len(backgrounds_data)}")
+    logger.debug("Assets structure:")
+    logger.debug(f"  - adapted_data['assets'] keys: {list(adapted_data['assets'].keys())}")
     for asset_type, asset_dict in adapted_data['assets'].items():
         if asset_dict:
-            print(f"    • {asset_type}: {list(asset_dict.keys())[:5]}")  # Show first 5
+            logger.debug(f"    - {asset_type}: {list(asset_dict.keys())[:5]}")  # Show first 5
 
     return adapted_data
 
@@ -272,7 +276,7 @@ def export_with_adapter(project_manager, output_path):
 
     try:
         # Adapt project data
-        print("🔄 Adapting project data for Kivy export...")
+        logger.info("Adapting project data for Kivy export...")
         adapted_project = adapt_project_for_kivy_export(project_manager)
 
         # Get project path
@@ -291,8 +295,8 @@ def export_with_adapter(project_manager, output_path):
         sig = inspect.signature(KivyExporter.__init__)
         param_count = len(sig.parameters) - 1  # Subtract 'self'
 
-        print(f"📦 Exporting to: {output_path}")
-        print(f"ℹ️  KivyExporter expects {param_count} arguments")
+        logger.info(f"Exporting to: {output_path}")
+        logger.debug(f"KivyExporter expects {param_count} arguments")
 
         # Call with correct number of arguments
         if param_count == 2:
@@ -307,15 +311,15 @@ def export_with_adapter(project_manager, output_path):
         success = exporter.export()
 
         if success:
-            print("✅ Export successful!")
-            print(f"📂 Output: {output_path}")
+            logger.info("Export successful!")
+            logger.info(f"Output: {output_path}")
             return True
         else:
-            print("❌ Export failed")
+            logger.error("Export failed")
             return False
 
     except Exception as e:
-        print(f"❌ Export error: {e}")
+        logger.error(f"Export error: {e}")
         import traceback
         traceback.print_exc()
         return False

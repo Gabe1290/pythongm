@@ -3,6 +3,9 @@ from pathlib import Path
 from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout
 from PySide6.QtCore import Signal
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 class EventActionWidget(QWidget):
     actionSelected = Signal(str)
     eventSelected = Signal(str)
@@ -16,9 +19,9 @@ class EventActionWidget(QWidget):
         try:
             self.current_project_path = project_path
             self.current_project_data = project_data
-            print(f"✅ Event actions panel set to project: {Path(project_path).name}")
+            logger.debug(f"Event actions panel set to project: {Path(project_path).name}")
         except Exception as e:
-            print(f"❌ Error setting project in event actions panel: {e}")
+            logger.error(f"Error setting project in event actions panel: {e}")
 
 # All possible aliases
 EventActionsPanel = EventActionWidget

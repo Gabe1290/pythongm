@@ -11,6 +11,9 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
                                QScrollArea, QToolBar, QMessageBox, QLabel)
 from PySide6.QtCore import Qt, Signal, QTimer
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 from .room_canvas import RoomCanvas
 from .object_palette import ObjectPalette
 from .instance_properties import InstanceProperties
@@ -234,13 +237,13 @@ class RoomEditor(QWidget):
         self.delete_shortcut = QShortcut(QKeySequence(Qt.Key_Delete), self)
         self.delete_shortcut.activated.connect(self.delete_selected_instances)
 
-        print("✓ Room editor keyboard shortcuts registered (Delete key)")
+        logger.debug("Room editor keyboard shortcuts registered (Delete key)")
 
     def delete_selected_instances(self):
         """Delete currently selected instances"""
         if self.room_canvas.selected_instances:
             instances_to_delete = self.room_canvas.selected_instances.copy()
-            print(f"DELETE: Removing {len(instances_to_delete)} instance(s)")
+            logger.debug(f"DELETE: Removing {len(instances_to_delete)} instance(s)")
             self.room_canvas.remove_instances(instances_to_delete, use_undo=True)
             self.mark_modified()
             count = len(instances_to_delete)
@@ -257,7 +260,7 @@ class RoomEditor(QWidget):
         self.object_palette.refresh_object_list()
         self.room_canvas.update()
 
-        print(f"Refreshed sprites for object: {object_name}")
+        logger.debug(f"Refreshed sprites for object: {object_name}")
 
     def load_asset(self, asset_name, asset_data):
         """Load room asset data"""
@@ -322,7 +325,7 @@ class RoomEditor(QWidget):
                 self.update_status(self.tr("Loaded {0} objects").format(len(objects)))
 
         except Exception as e:
-            print(f"Error loading objects: {e}")
+            logger.error(f"Error loading objects: {e}")
             self.update_status(self.tr("Error loading objects: {0}").format(e), 5000)
 
     def on_object_selected(self, object_name):
@@ -413,14 +416,14 @@ class RoomEditor(QWidget):
             self.update_status(self.tr("Room '{0}' saved successfully").format(self.asset_name))
             return True
         except Exception as e:
-            print(f"Error saving room: {e}")
+            logger.error(f"Error saving room: {e}")
             self.update_status(self.tr("Error saving room: {0}").format(e), 5000)
             QMessageBox.critical(self, self.tr("Save Error"), self.tr("Failed to save room:\n{0}").format(e))
             return False
 
     def update_room_property_from_ide(self, property_name, value):
         """Update room property from IDE properties panel"""
-        print(f"Room editor updating property: {property_name} = {value}")
+        logger.debug(f"Room editor updating property: {property_name} = {value}")
 
         self.current_room_properties[property_name] = value
 
@@ -433,7 +436,7 @@ class RoomEditor(QWidget):
                 self.current_room_properties.get('tile_horizontal', False),
                 self.current_room_properties.get('tile_vertical', False)
             )
-            print(f"Canvas updated with new {property_name}: {value}")
+            logger.debug(f"Canvas updated with new {property_name}: {value}")
 
         self.mark_modified()
 

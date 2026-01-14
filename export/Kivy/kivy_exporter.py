@@ -8,6 +8,8 @@ import shutil
 from pathlib import Path
 from typing import Dict, List, Any
 
+from core.logger import get_logger
+logger = get_logger(__name__)
 
 from export.Kivy.code_generator import ActionCodeGenerator
 
@@ -24,23 +26,23 @@ class KivyExporter:
         """Export project to Kivy format"""
         try:
 
-            print("=" * 60)
-            print("Starting Kivy Export")
-            print("=" * 60)
+            logger.info("=" * 60)
+            logger.info("Starting Kivy Export")
+            logger.info("=" * 60)
 
             # Diagnostic output
-            print("\n📊 Project Data Diagnostic:")
-            print(f"  Project name: {self.project_data.get('name', 'Unknown')}")
-            print(f"  Output path: {self.output_path}")
-            print(f"  Project path: {self.project_path}")
+            logger.debug("Project Data Diagnostic:")
+            logger.debug(f"  Project name: {self.project_data.get('name', 'Unknown')}")
+            logger.debug(f"  Output path: {self.output_path}")
+            logger.debug(f"  Project path: {self.project_path}")
 
             assets = self.project_data.get('assets', {})
-            print("\n📦 Assets found:")
+            logger.debug("Assets found:")
             for asset_type, asset_dict in assets.items():
-                print(f"  - {asset_type}: {len(asset_dict)} items")
+                logger.debug(f"  - {asset_type}: {len(asset_dict)} items")
                 if asset_type in ['rooms', 'objects']:
                     for name in asset_dict.keys():
-                        print(f"    • {name}")
+                        logger.debug(f"    - {name}")
                         # Show event info for objects
                         if asset_type == 'objects':
                             obj_data = asset_dict[name]
@@ -48,58 +50,58 @@ class KivyExporter:
                                 events = obj_data.get('events', [])
                                 if events:
                                     if isinstance(events, list):
-                                        print(f"      └─ {len(events)} event(s)")
+                                        logger.debug(f"      - {len(events)} event(s)")
                                     elif isinstance(events, dict):
-                                        print(f"      └─ {len(events)} event(s) in dict (keys: {list(events.keys())[:3]}...)")
+                                        logger.debug(f"      - {len(events)} event(s) in dict (keys: {list(events.keys())[:3]}...)")
                                     else:
-                                        print(f"      └─ events is {type(events).__name__} (expected list or dict)")
+                                        logger.debug(f"      - events is {type(events).__name__} (expected list or dict)")
 
-            print()
+            logger.debug("")
 
             # Create directory structure
             self._create_directory_structure()
-            print("✓ Directory structure created")
+            logger.info("Directory structure created")
 
             # Export assets
             self._export_assets()
-            print(f"✓ Exported {self._count_assets()} asset(s)")
+            logger.info(f"Exported {self._count_assets()} asset(s)")
 
             # Generate main application
             self._generate_main_app()
-            print("✓ Main application generated")
+            logger.info("Main application generated")
 
             # Generate game scenes/rooms
             self._generate_scenes()
-            print(f"✓ Generated {len(self.project_data.get('assets', {}).get('rooms', {}))} room(s)")
+            logger.info(f"Generated {len(self.project_data.get('assets', {}).get('rooms', {}))} room(s)")
 
             # Generate object classes
             self._generate_objects()
-            print(f"✓ Generated {len(self.project_data.get('assets', {}).get('objects', {}))} object type(s)")
+            logger.info(f"Generated {len(self.project_data.get('assets', {}).get('objects', {}))} object type(s)")
 
             # Generate utility files
             self._generate_utils()
-            print("✓ Game logic utilities generated")
+            logger.info("Game logic utilities generated")
 
             # Generate build configuration
             self._generate_buildozer_spec()
-            print("✓ Buildozer spec generated")
+            logger.info("Buildozer spec generated")
 
             # Generate requirements file
             self._generate_requirements()
-            print("✓ Requirements file generated")
+            logger.info("Requirements file generated")
 
             # Generate README
             self._generate_readme()
-            print("✓ README created")
+            logger.info("README created")
 
-            print("=" * 60)
-            print("Export completed successfully!")
-            print("=" * 60)
+            logger.info("=" * 60)
+            logger.info("Export completed successfully!")
+            logger.info("=" * 60)
 
             return True
 
         except Exception as e:
-            print(f"✗ Export failed: {e}")
+            logger.error(f"Export failed: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -117,7 +119,7 @@ class KivyExporter:
 
         for dir_path in dirs:
             dir_path.mkdir(parents=True, exist_ok=True)
-            print(f"  Created: {dir_path}")
+            logger.debug(f"  Created: {dir_path}")
 
         # Create __init__.py files to make directories Python packages
         package_dirs = [
@@ -128,7 +130,7 @@ class KivyExporter:
         for pkg_dir in package_dirs:
             init_file = pkg_dir / "__init__.py"
             init_file.write_text("# Auto-generated package file\n")
-            print(f"  Created: {init_file}")
+            logger.debug(f"  Created: {init_file}")
 
     def _count_assets(self) -> int:
         """Count total number of assets"""
@@ -574,16 +576,16 @@ if __name__ == '__main__':
         rooms = self.project_data.get('assets', {}).get('rooms', {})
 
         if not rooms:
-            print("  Warning: No rooms found in project data")
+            logger.warning("No rooms found in project data")
             return
 
         for room_name, room_data in rooms.items():
             try:
-                print(f"  Generating scene: {room_name}")
+                logger.debug(f"  Generating scene: {room_name}")
                 self._generate_scene(room_name, room_data)
-                print(f"  ✓ Scene {room_name} generated")
+                logger.debug(f"  Scene {room_name} generated")
             except Exception as e:
-                print(f"  ✗ Failed to generate scene {room_name}: {e}")
+                logger.error(f"  Failed to generate scene {room_name}: {e}")
                 import traceback
                 traceback.print_exc()
 
@@ -599,12 +601,12 @@ if __name__ == '__main__':
         # Import statements for object types used in this room
         object_imports = set()
 
-        print(f"    Room has {len(instances)} instances")
+        logger.debug(f"    Room has {len(instances)} instances")
         if instances and len(instances) > 0:
             # Debug: show structure of first instance
             first_inst = instances[0]
-            print(f"    First instance keys: {list(first_inst.keys()) if isinstance(first_inst, dict) else 'not a dict'}")
-            print(f"    First instance sample: {first_inst}")
+            logger.debug(f"    First instance keys: {list(first_inst.keys()) if isinstance(first_inst, dict) else 'not a dict'}")
+            logger.debug(f"    First instance sample: {first_inst}")
 
         for instance in instances:
             # Try multiple possible key names for object type
@@ -617,9 +619,9 @@ if __name__ == '__main__':
 
             if obj_type:
                 object_imports.add(obj_type)
-                print(f"      Found object type: {obj_type}")
+                logger.debug(f"      Found object type: {obj_type}")
 
-        print(f"    Total unique object types: {len(object_imports)}")
+        logger.debug(f"    Total unique object types: {len(object_imports)}")
 
         import_lines = '\n'.join([
             f"from objects.{obj} import {self._get_object_class_name(obj)}"
@@ -852,11 +854,11 @@ class {class_name}(Widget):
         """Generate object class files"""
         # First generate base object class
         try:
-            print("  Generating base object class...")
+            logger.debug("  Generating base object class...")
             self._generate_base_object()
-            print("  ✓ Base object generated")
+            logger.debug("  Base object generated")
         except Exception as e:
-            print(f"  ✗ CRITICAL ERROR: Failed to generate base object: {e}")
+            logger.error(f"  CRITICAL ERROR: Failed to generate base object: {e}")
             import traceback
             traceback.print_exc()
             raise RuntimeError(f"Failed to generate base object class: {e}")
@@ -865,17 +867,17 @@ class {class_name}(Widget):
         objects = self.project_data.get('assets', {}).get('objects', {})
 
         if not objects:
-            print("  Warning: No objects found in project data")
+            logger.warning("  No objects found in project data")
             return
 
         failed_objects = []
         for obj_name, obj_data in objects.items():
             try:
-                print(f"  Generating object: {obj_name}")
+                logger.debug(f"  Generating object: {obj_name}")
                 self._generate_object(obj_name, obj_data)
-                print(f"  ✓ Object {obj_name} generated")
+                logger.debug(f"  Object {obj_name} generated")
             except Exception as e:
-                print(f"  ✗ CRITICAL ERROR: Failed to generate object {obj_name}: {e}")
+                logger.error(f"  CRITICAL ERROR: Failed to generate object {obj_name}: {e}")
                 import traceback
                 traceback.print_exc()
                 failed_objects.append(obj_name)
@@ -1279,18 +1281,18 @@ class GameObject(Widget):
         # Generate event handlers from object's events
         events = obj_data.get('events', [])
 
-        print(f"    Raw events for {obj_name}: {type(events).__name__}")
+        logger.debug(f"    Raw events for {obj_name}: {type(events).__name__}")
 
         # Handle different event storage formats
         if isinstance(events, dict):
             # Events stored as dict/OrderedDict - convert to list
-            print(f"    Converting events dict to list for {obj_name}")
-            print(f"    Event keys in dict: {list(events.keys())}")
+            logger.debug(f"    Converting events dict to list for {obj_name}")
+            logger.debug(f"    Event keys in dict: {list(events.keys())}")
             events_list = []
             for event_key, event_data in events.items():
-                print(f"      Processing event '{event_key}': {type(event_data).__name__}")
+                logger.debug(f"      Processing event '{event_key}': {type(event_data).__name__}")
                 if isinstance(event_data, dict):
-                    print(f"        Event data keys: {list(event_data.keys())}")
+                    logger.debug(f"        Event data keys: {list(event_data.keys())}")
 
                     # Special handling for keyboard events
                     if event_key == 'keyboard':
@@ -1305,36 +1307,36 @@ class GameObject(Widget):
                                     'actions': key_data.get('actions', []),
                                 }
                                 events_list.append(key_event)
-                                print(f"        Added keyboard sub-event for '{key_name}' with {len(key_event['actions'])} actions")
+                                logger.debug(f"        Added keyboard sub-event for '{key_name}' with {len(key_event['actions'])} actions")
                     else:
                         # Regular event - add the event type if not present
                         if 'event_type' not in event_data:
                             event_data['event_type'] = event_key
                         events_list.append(event_data)
                         actions_count = len(event_data.get('actions', []))
-                        print(f"        Added event with type: {event_data.get('event_type')} ({actions_count} actions)")
+                        logger.debug(f"        Added event with type: {event_data.get('event_type')} ({actions_count} actions)")
                 elif isinstance(event_data, list):
                     # Event data is already a list of event dicts
-                    print(f"        Event data is a list with {len(event_data)} items")
+                    logger.debug(f"        Event data is a list with {len(event_data)} items")
                     for evt in event_data:
                         if isinstance(evt, dict):
                             if 'event_type' not in evt:
                                 evt['event_type'] = event_key
                             events_list.append(evt)
                 else:
-                    print(f"        Warning: Skipping event '{event_key}' - data is {type(event_data).__name__}")
+                    logger.debug(f"        Warning: Skipping event '{event_key}' - data is {type(event_data).__name__}")
             events = events_list
-            print(f"    Final events list has {len(events)} event(s)")
+            logger.debug(f"    Final events list has {len(events)} event(s)")
         elif not isinstance(events, list):
-            print(f"    Warning: events for {obj_name} is {type(events).__name__}, converting to empty list")
+            logger.debug(f"    Warning: events for {obj_name} is {type(events).__name__}, converting to empty list")
             events = []
 
         # Show what events we're working with
         if events:
-            print(f"    Processing {len(events)} event(s):")
+            logger.debug(f"    Processing {len(events)} event(s):")
             for i, evt in enumerate(events[:3]):  # Show first 3
                 if isinstance(evt, dict):
-                    print(f"      Event {i}: type={evt.get('event_type')}, actions={len(evt.get('actions', []))}")
+                    logger.debug(f"      Event {i}: type={evt.get('event_type')}, actions={len(evt.get('actions', []))}")
 
         event_methods = self._generate_event_methods(obj_name, events)
 
@@ -1388,21 +1390,21 @@ class {class_name}(GameObject):
         """Generate event handler methods from event data"""
         methods = []
 
-        print(f"    _generate_event_methods called with {len(events)} events")
+        logger.debug(f"    _generate_event_methods called with {len(events)} events")
 
         # Filter out any non-dict events (malformed data)
         valid_events = []
         for i, event in enumerate(events):
             if isinstance(event, dict):
-                print(f"      Event {i}: {event.get('event_type', 'unknown')} (key: {event.get('key_name', 'N/A')}) with {len(event.get('actions', []))} actions")
+                logger.debug(f"      Event {i}: {event.get('event_type', 'unknown')} (key: {event.get('key_name', 'N/A')}) with {len(event.get('actions', []))} actions")
                 valid_events.append(event)
             else:
-                print(f"      Warning: Skipping malformed event in {obj_name}: {type(event).__name__}")
+                logger.debug(f"      Warning: Skipping malformed event in {obj_name}: {type(event).__name__}")
 
         events = valid_events
 
         if not events:
-            print("      No valid events found, returning pass")
+            logger.debug("      No valid events found, returning pass")
             return "    pass\n"
 
         # Group keyboard events together (but NOT nokey - that's handled separately)
@@ -1412,13 +1414,13 @@ class {class_name}(GameObject):
 
         # Generate consolidated keyboard handler if there are keyboard events
         if keyboard_events:
-            print(f"      Generating consolidated keyboard handler for {len(keyboard_events)} key(s)")
+            logger.debug(f"      Generating consolidated keyboard handler for {len(keyboard_events)} key(s)")
             keyboard_method = self._generate_keyboard_handler(keyboard_events)
             methods.append(keyboard_method)
 
         # Generate on_nokey method for nokey events
         if nokey_events:
-            print("      Generating nokey handler")
+            logger.debug("      Generating nokey handler")
             nokey_event = nokey_events[0]  # There should only be one nokey event
             actions = nokey_event.get('actions', [])
             if actions:
@@ -1719,24 +1721,24 @@ class {class_name}(GameObject):
         if not actions:
             return "        pass"
 
-        print(f"        _generate_action_code: {len(actions)} actions for event {event_type}")
+        logger.debug(f"        _generate_action_code: {len(actions)} actions for event {event_type}")
 
         # Use the new ActionCodeGenerator for proper block/indentation handling
         generator = ActionCodeGenerator(base_indent=2)
 
         for i, action in enumerate(actions):
-            print(f"          Action {i}: {type(action).__name__}")
+            logger.debug(f"          Action {i}: {type(action).__name__}")
 
             if isinstance(action, dict):
                 action_type = action.get('action_type', action.get('action', ''))
-                print(f"            Type: '{action_type}'")
+                logger.debug(f"            Type: '{action_type}'")
 
                 # Process action with block system
                 generator.process_action(action, event_type)
 
             elif isinstance(action, str):
                 # String action - add as raw code
-                print(f"            String action: '{action[:80]}'")
+                logger.debug(f"            String action: '{action[:80]}'")
                 if action.strip():
                     generator.add_line(action)
 
@@ -1745,7 +1747,7 @@ class {class_name}(GameObject):
 
         # CRITICAL: Always return valid Python code with at least 'pass'
         if not code or not code.strip():
-            print(f"          Warning: No code generated for event {event_type}, using 'pass'")
+            logger.debug(f"          Warning: No code generated for event {event_type}, using 'pass'")
             return "        pass"
 
         return code
@@ -1983,9 +1985,9 @@ def load_image(path):
             _image_cache[path] = img
             return img
         else:
-            print(f"Image not found: {abs_path}")
+            pass  # Image not found - silently handle
     except Exception as e:
-        print(f"Failed to load image {abs_path}: {e}")
+        pass  # Failed to load image - silently handle
 
     return None
 

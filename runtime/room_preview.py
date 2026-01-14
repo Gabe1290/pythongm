@@ -10,6 +10,8 @@ from pathlib import Path
 from typing import Optional, Dict, Any
 from PySide6.QtCore import QObject, Signal, QProcess
 from PySide6.QtWidgets import QMessageBox
+from core.logger import get_logger
+logger = get_logger(__name__)
 
 
 class RoomPreviewRunner(QObject):
@@ -96,10 +98,10 @@ class RoomPreviewRunner(QObject):
         python_exe = sys.executable
         args = [str(runner_script), "--preview", str(preview_config_path)]
 
-        print(f"🎮 Starting room preview: {room_name}")
+        logger.info(f"🎮 Starting room preview: {room_name}")
         if start_instance_id:
-            print(f"   Starting from instance: {start_instance_id}")
-        print(f"   Command: {python_exe} {' '.join(args)}")
+            logger.info(f"   Starting from instance: {start_instance_id}")
+        logger.debug(f"   Command: {python_exe} {' '.join(args)}")
 
         self.process.start(python_exe, args)
 
@@ -113,12 +115,12 @@ class RoomPreviewRunner(QObject):
     def stop_preview(self):
         """Stop the current preview"""
         if self.process and self.process.state() == QProcess.Running:
-            print("🛑 Stopping room preview...")
+            logger.info("🛑 Stopping room preview...")
             self.process.terminate()
 
             # Wait for graceful termination
             if not self.process.waitForFinished(2000):
-                print("⚠️  Process didn't terminate gracefully, killing...")
+                logger.warning("⚠️  Process didn't terminate gracefully, killing...")
                 self.process.kill()
 
             return True
@@ -174,7 +176,7 @@ class RoomPreviewRunner(QObject):
         if self.process:
             output = bytes(self.process.readAllStandardOutput()).decode('utf-8', errors='ignore')
             if output.strip():
-                print(f"[Preview] {output.strip()}")
+                logger.debug(f"[Preview] {output.strip()}")
                 self.preview_output.emit(output)
 
     def on_stderr(self):
@@ -182,12 +184,12 @@ class RoomPreviewRunner(QObject):
         if self.process:
             output = bytes(self.process.readAllStandardError()).decode('utf-8', errors='ignore')
             if output.strip():
-                print(f"[Preview Error] {output.strip()}")
+                logger.error(f"[Preview Error] {output.strip()}")
                 self.preview_output.emit(output)
 
     def on_finished(self, exit_code, exit_status):
         """Handle preview process finished"""
-        print(f"🏁 Room preview finished (exit code: {exit_code})")
+        logger.info(f"🏁 Room preview finished (exit code: {exit_code})")
         self.preview_finished.emit(exit_code)
         self.current_room = None
         self.start_instance_id = None
@@ -204,5 +206,5 @@ class RoomPreviewRunner(QObject):
         }
 
         error_msg = error_messages.get(error, f"Preview error: {error}")
-        print(f"❌ {error_msg}")
+        logger.error(f"❌ {error_msg}")
         self.preview_error.emit(error_msg)

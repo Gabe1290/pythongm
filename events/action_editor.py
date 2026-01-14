@@ -13,6 +13,9 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QColor
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 from .action_types import ActionType
 
 class ActionConfigDialog(QDialog):
@@ -368,7 +371,7 @@ class ActionConfigDialog(QDialog):
         if dialog.exec() == QDialog.Accepted:
             # Store the configured parameters
             self.nested_action_params[param_key] = dialog.get_parameter_values()
-            print(f"✅ Configured {action_name}: {self.nested_action_params[param_key]}")
+            logger.debug(f"Configured {action_name}: {self.nested_action_params[param_key]}")
 
     def choose_color(self, button_widget):
         """Open color picker dialog"""
@@ -506,9 +509,9 @@ class ActionConfigDialog(QDialog):
         for key, params in self.nested_action_params.items():
             if params:  # Only add if there are parameters
                 values[key] = params
-                print(f"   Adding nested param: {key} = {params}")  # ← ADD DEBUG
+                logger.debug(f"Adding nested param: {key} = {params}")
 
-        print(f"DEBUG: Final values being returned: {values}")  # ← ADD DEBUG
+        logger.debug(f"Final values being returned: {values}")
         return values
 
     def configure_action_list(self, param_name: str):
@@ -525,8 +528,8 @@ class ActionConfigDialog(QDialog):
         if dialog.exec() == QDialog.Accepted:
             # Store the configured action list
             self.nested_action_params[param_name] = dialog.get_action_list()
-            print(f"✅ Configured {len(self.nested_action_params[param_name])} actions for {param_name}")
-            print(f"   Actions: {self.nested_action_params[param_name]}")  # ← ADD DEBUG
+            logger.debug(f"Configured {len(self.nested_action_params[param_name])} actions for {param_name}")
+            logger.debug(f"Actions: {self.nested_action_params[param_name]}")
 
 class MultiActionEditor(QDialog):
     """Dialog for editing a list of actions (for Then/Else branches)"""

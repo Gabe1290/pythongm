@@ -14,6 +14,9 @@ from PySide6.QtWidgets import (QTreeWidget, QMenu, QMessageBox, QInputDialog,
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QAction
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 from .asset_tree_item import AssetTreeItem
 
 
@@ -49,32 +52,32 @@ class AssetTreeWidget(QTreeWidget):
         # Enable context menu
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.show_context_menu)
-        print("🔧 AssetTreeWidget: Context menu enabled")
+        logger.debug("AssetTreeWidget: Context menu enabled")
 
     def show_context_menu(self, position):
         """Show right-click context menu for asset management"""
-        print(f"🖱️  Context menu requested at position: {position}")
+        logger.debug(f"Context menu requested at position: {position}")
 
         item = self.itemAt(position)
 
         if not item:
-            print("❌ No item found at click position")
+            logger.debug("No item found at click position")
             return
 
         if not hasattr(item, 'asset_data'):
-            print("❌ No asset_data found at click position")
+            logger.debug("No asset_data found at click position")
             return
 
         # Check if this is an AssetTreeItem and not a category
         if not isinstance(item, AssetTreeItem):
-            print("❌ Not an AssetTreeItem")
+            logger.debug("Not an AssetTreeItem")
             return
 
         if item.is_category:
-            print("ℹ️  Right-clicked on category, no deletion allowed")
+            logger.debug("Right-clicked on category, no deletion allowed")
             return  # Don't allow deletion of categories
 
-        print(f"🖱️  Right-click on asset: {item.asset_name} (type: {item.asset_type})")
+        logger.debug(f"Right-click on asset: {item.asset_name} (type: {item.asset_type})")
 
         # Create context menu
         context_menu = QMenu(self)
@@ -100,26 +103,26 @@ class AssetTreeWidget(QTreeWidget):
         properties_action.triggered.connect(lambda: self.show_asset_properties_simple(item))
         context_menu.addAction(properties_action)
 
-        print(f"📋 Showing context menu with {len(context_menu.actions())} options")
+        logger.debug(f"Showing context menu with {len(context_menu.actions())} options")
         context_menu.exec(self.mapToGlobal(position))
 
     def delete_asset(self, item):
         """Delete an asset from both UI and project data"""
-        print("🎯 DELETE_ASSET METHOD CALLED!")
+        logger.debug("DELETE_ASSET METHOD CALLED!")
 
         # Work with AssetTreeItem directly
         if not isinstance(item, AssetTreeItem):
-            print("❌ Not an AssetTreeItem")
+            logger.debug("Not an AssetTreeItem")
             return
 
         if item.is_category:
-            print("❌ Cannot delete category")
+            logger.debug("Cannot delete category")
             return
 
         asset_name = item.asset_name
         asset_category = item.asset_type
 
-        print(f"🗑️ DELETE REQUEST: {asset_category}/{asset_name}")
+        logger.debug(f"DELETE REQUEST: {asset_category}/{asset_name}")
 
         # Confirm deletion with user
         reply = QMessageBox.question(
@@ -131,7 +134,7 @@ class AssetTreeWidget(QTreeWidget):
         )
 
         if reply != QMessageBox.Yes:
-            print("❌ User cancelled deletion")
+            logger.debug("User cancelled deletion")
             return
 
         try:
@@ -143,7 +146,7 @@ class AssetTreeWidget(QTreeWidget):
                 parent = item.parent()
                 if parent:
                     parent.removeChild(item)
-                    print(f"✅ Removed {asset_name} from UI")
+                    logger.debug(f"Removed {asset_name} from UI")
 
                 # Step 3: Force refresh to sync everything
                 self.force_project_refresh()
@@ -151,12 +154,12 @@ class AssetTreeWidget(QTreeWidget):
                 # Step 4: Emit signal for other components
                 self.assetDeleted.emit(asset_category, asset_name)
 
-                print(f"🎉 Successfully deleted: {asset_category}/{asset_name}")
+                logger.debug(f"Successfully deleted: {asset_category}/{asset_name}")
             else:
-                print(f"❌ Failed to delete {asset_name} from project data")
+                logger.error(f"Failed to delete {asset_name} from project data")
 
         except Exception as e:
-            print(f"❌ Error during deletion: {e}")
+            logger.error(f"Error during deletion: {e}")
             import traceback
             traceback.print_exc()
             QMessageBox.critical(
@@ -167,7 +170,7 @@ class AssetTreeWidget(QTreeWidget):
 
     def remove_asset_from_project(self, asset_category, asset_name):
         """Remove asset from project data and save to file - WORKING VERSION"""
-        print(f"🗑️ Removing {asset_category}/{asset_name} from project data...")
+        logger.debug(f"Removing {asset_category}/{asset_name} from project data...")
 
         # Skip unreliable ProjectManager - go straight to direct file approach
         from pathlib import Path
@@ -177,11 +180,11 @@ class AssetTreeWidget(QTreeWidget):
         project_file = Path.home() / "Documents" / "PyGameMaker Projects" / "project.json"
 
         if not project_file.exists():
-            print(f"❌ Project file not found: {project_file}")
+            logger.error(f"Project file not found: {project_file}")
             return False
 
         try:
-            print(f"🔍 Modifying project file: {project_file}")
+            logger.debug(f"Modifying project file: {project_file}")
 
             # Load current project data
             with open(project_file, 'r', encoding='utf-8') as f:
@@ -190,33 +193,33 @@ class AssetTreeWidget(QTreeWidget):
             # Check if asset exists in data
             assets = project_data.get('assets', {})
             if asset_category not in assets:
-                print(f"❌ Category {asset_category} not found")
+                logger.error(f"Category {asset_category} not found")
                 return False
 
             if asset_name not in assets[asset_category]:
-                print(f"❌ Asset {asset_name} not found in {asset_category}")
+                logger.error(f"Asset {asset_name} not found in {asset_category}")
                 return False
 
             # Get asset info before deleting
             asset_data = assets[asset_category][asset_name]
-            print(f"📄 Found asset data: {asset_data.get('project_path', 'No path')}")
+            logger.debug(f"Found asset data: {asset_data.get('project_path', 'No path')}")
 
             # Delete physical file if it exists
             if 'project_path' in asset_data:
                 file_path = Path(asset_data['project_path'])
                 if file_path.exists():
                     file_path.unlink()
-                    print(f"🗑️ Deleted file: {file_path}")
+                    logger.debug(f"Deleted file: {file_path}")
 
             # Remove from project data
             del assets[asset_category][asset_name]
-            print(f"✅ Removed {asset_name} from project data")
+            logger.debug(f"Removed {asset_name} from project data")
 
             # Save modified data back to file
             with open(project_file, 'w', encoding='utf-8') as f:
                 json.dump(project_data, f, indent=2, ensure_ascii=False)
 
-            print("💾 Saved changes to project.json")
+            logger.debug("Saved changes to project.json")
 
             # Verify the save worked by reading the file back
             with open(project_file, 'r', encoding='utf-8') as f:
@@ -224,14 +227,14 @@ class AssetTreeWidget(QTreeWidget):
 
             verify_assets = verify_data.get('assets', {}).get(asset_category, {})
             if asset_name in verify_assets:
-                print(f"❌ SAVE FAILED: {asset_name} still in file!")
+                logger.error(f"SAVE FAILED: {asset_name} still in file!")
                 return False
             else:
-                print(f"✅ VERIFIED: {asset_name} successfully removed from project.json")
+                logger.debug(f"VERIFIED: {asset_name} successfully removed from project.json")
                 return True
 
         except Exception as e:
-            print(f"❌ Error during deletion: {e}")
+            logger.error(f"Error during deletion: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -255,13 +258,13 @@ class AssetTreeWidget(QTreeWidget):
             current_name = asset_data['name']
             asset_type = asset_data['asset_type']
 
-            print(f"📝 Renaming {asset_type}: {current_name}")
+            logger.debug(f"Renaming {asset_type}: {current_name}")
 
             # Show rename dialog
             dialog = AssetRenameDialog(current_name, asset_type, self)
 
             if dialog.exec_() != QDialog.Accepted or not dialog.new_name:
-                print("❌ Rename cancelled")
+                logger.debug("Rename cancelled")
                 return
 
             new_name = dialog.new_name
@@ -288,13 +291,13 @@ class AssetTreeWidget(QTreeWidget):
                     # Refresh the visual representation
                     self.refresh_asset_item_after_rename(item, new_name)
 
-                    print(f"✅ Asset renamed: {current_name} → {new_name}")
-                    print(f"🔗 Updated paths: {updated_asset_data.get('project_path', 'No path')}")
+                    logger.debug(f"Asset renamed: {current_name} -> {new_name}")
+                    logger.debug(f"Updated paths: {updated_asset_data.get('project_path', 'No path')}")
 
                     # Emit signal for UI refresh
                     self.asset_renamed.emit(current_name, new_name, asset_type)
                 else:
-                    print("❌ Failed to get updated asset data")
+                    logger.error("Failed to get updated asset data")
 
             else:
                 QMessageBox.critical(self, "Rename Failed",
@@ -302,7 +305,7 @@ class AssetTreeWidget(QTreeWidget):
                                 "Please check the console for details.")
 
         except Exception as e:
-            print(f"❌ Error renaming asset: {e}")
+            logger.error(f"Error renaming asset: {e}")
             QMessageBox.critical(self, "Error", f"Error renaming asset: {e}")
 
     def refresh_asset_item_after_rename(self, item, new_name):
@@ -311,7 +314,7 @@ class AssetTreeWidget(QTreeWidget):
             asset_data = item.asset_data
             asset_type = asset_data.get('asset_type', '')
 
-            print(f"🔄 Refreshing asset item visual for: {new_name}")
+            logger.debug(f"Refreshing asset item visual for: {new_name}")
 
             # Update the asset name in the data
             item.asset_name = new_name
@@ -334,10 +337,10 @@ class AssetTreeWidget(QTreeWidget):
             else:
                 item.setText(0, new_name)
 
-            print(f"✅ Asset item text refreshed for: {new_name}")
+            logger.debug(f"Asset item text refreshed for: {new_name}")
 
         except Exception as e:
-            print(f"❌ Error refreshing asset item visual: {e}")
+            logger.error(f"Error refreshing asset item visual: {e}")
 
     def get_updated_asset_data(self, asset_name, asset_type):
         """Get the updated asset data from the project file after rename"""
@@ -356,7 +359,7 @@ class AssetTreeWidget(QTreeWidget):
             return assets.get(asset_name)
 
         except Exception as e:
-            print(f"❌ Error getting updated asset data: {e}")
+            logger.error(f"Error getting updated asset data: {e}")
             return None
 
     def asset_name_exists(self, name, asset_type):
@@ -376,7 +379,7 @@ class AssetTreeWidget(QTreeWidget):
             return name in assets
 
         except Exception as e:
-            print(f"❌ Error checking asset name: {e}")
+            logger.error(f"Error checking asset name: {e}")
             return False
 
     def perform_asset_rename(self, asset_data, new_name):
@@ -390,22 +393,22 @@ class AssetTreeWidget(QTreeWidget):
 
             # Use project_manager for rename (handles references and auto-saves)
             if hasattr(self, 'project_manager') and self.project_manager:
-                print(f"🔧 Using project_manager to rename: {current_name} → {new_name}")
+                logger.debug(f"Using project_manager to rename: {current_name} -> {new_name}")
                 success = self.project_manager.rename_asset(category, current_name, new_name)
                 if success:
-                    print("💾 Project file updated with renamed asset")
+                    logger.debug("Project file updated with renamed asset")
                     return True
                 else:
-                    print("❌ Project manager rename failed")
+                    logger.error("Project manager rename failed")
                     return False
 
             # Fallback to direct file access if project_manager not available
-            print("⚠️ Warning: project_manager not available, using direct file access")
+            logger.warning("project_manager not available, using direct file access")
             project_path = Path(self.project_path)
             project_file = project_path / "project.json"
 
             if not project_file.exists():
-                print(f"❌ Project file not found: {project_file}")
+                logger.error(f"Project file not found: {project_file}")
                 return False
 
             # Load project data
@@ -413,13 +416,13 @@ class AssetTreeWidget(QTreeWidget):
                 project_data = json.load(f)
 
             if category not in project_data.get('assets', {}):
-                print(f"❌ Asset category not found: {category}")
+                logger.error(f"Asset category not found: {category}")
                 return False
 
             assets = project_data['assets'][category]
 
             if current_name not in assets:
-                print(f"❌ Asset not found in project: {current_name}")
+                logger.error(f"Asset not found in project: {current_name}")
                 return False
 
             # Get the asset data
@@ -440,7 +443,7 @@ class AssetTreeWidget(QTreeWidget):
                     # Rename the actual file
                     try:
                         shutil.move(str(old_file), str(new_file_path))
-                        print(f"🔗 File renamed: {old_file.name} → {new_file_path.name}")
+                        logger.debug(f"File renamed: {old_file.name} -> {new_file_path.name}")
 
                         # Update file paths in asset data
                         asset_info['project_path'] = str(new_file_path)
@@ -450,7 +453,7 @@ class AssetTreeWidget(QTreeWidget):
                             asset_info['file_path'] = str(relative_path)
 
                     except Exception as e:
-                        print(f"❌ Error renaming file: {e}")
+                        logger.error(f"Error renaming file: {e}")
                         return False
 
             # Remove old asset entry and add new one
@@ -461,11 +464,11 @@ class AssetTreeWidget(QTreeWidget):
             with open(project_file, 'w') as f:
                 json.dump(project_data, f, indent=2)
 
-            print("💾 Project file updated with renamed asset")
+            logger.debug("Project file updated with renamed asset")
             return True
 
         except Exception as e:
-            print(f"❌ Error performing asset rename: {e}")
+            logger.error(f"Error performing asset rename: {e}")
             return False
 
     def setup_ui(self):
@@ -575,18 +578,18 @@ class AssetTreeWidget(QTreeWidget):
 
             # Add to tree
             self.add_asset(asset_type, asset_name, asset_data)
-            print(f"✅ Imported {correct_type}: {asset_name}")
+            logger.debug(f"Imported {correct_type}: {asset_name}")
 
             # Save to project.json
             self.save_asset_to_project(asset_name, asset_type, asset_data, project_path)
-            print(f"💾 Saved {asset_name} to project.json")
+            logger.debug(f"Saved {asset_name} to project.json")
 
             # Update the asset manager's cache
             self.update_asset_manager_cache(asset_name, asset_type, asset_data)
 
     def update_asset_manager_cache(self, asset_name, asset_type, asset_data):
         """Update the asset manager's cache - simplified version"""
-        print("Cache update for {asset_name} - skipping (not required)")
+        logger.debug(f"Cache update for {asset_name} - skipping (not required)")
         # Asset import works fine without cache updates
         # This method exists for compatibility but doesn't need to do anything
 
@@ -620,11 +623,11 @@ class AssetTreeWidget(QTreeWidget):
             with open(project_file, 'w') as f:
                 json.dump(project_data, f, indent=2)
 
-            print(f"✅ Successfully saved asset {asset_name} to project.json")
+            logger.debug(f"Successfully saved asset {asset_name} to project.json")
             return True
 
         except Exception as e:
-            print(f"❌ ERROR in save_asset_to_project: {e}")
+            logger.error(f"ERROR in save_asset_to_project: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -668,9 +671,9 @@ class AssetTreeWidget(QTreeWidget):
             # Expand the category to show the new asset
             self.expandItem(category_item)
 
-            print(f"✅ Added {asset_name} to {asset_type} category")
+            logger.debug(f"Added {asset_name} to {asset_type} category")
         else:
-            print(f"❌ Could not find {asset_type} category")
+            logger.error(f"Could not find {asset_type} category")
 
     def remove_asset(self, asset_type: str, asset_name: str):
         """Remove an asset from the tree"""
@@ -682,10 +685,10 @@ class AssetTreeWidget(QTreeWidget):
                     asset_item = category_item.child(j)
                     if isinstance(asset_item, AssetTreeItem) and asset_item.asset_name == asset_name:
                         category_item.removeChild(asset_item)
-                        print(f"✅ Removed {asset_name} from {asset_type} category")
+                        logger.debug(f"Removed {asset_name} from {asset_type} category")
                         return
 
-        print(f"❌ Could not find {asset_name} in {asset_type} category")
+        logger.error(f"Could not find {asset_name} in {asset_type} category")
 
     def clear_assets(self):
         """Clear all assets but keep categories"""
@@ -706,7 +709,7 @@ class AssetTreeWidget(QTreeWidget):
             for asset_name, asset_data in asset_list.items():
                 self.add_asset(asset_type, asset_name, asset_data)
 
-        print("✅ Asset tree refreshed from project data")
+        logger.debug("Asset tree refreshed from project data")
 
     def get_asset_data(self, asset_type: str, asset_name: str) -> Optional[Dict]:
         """Get asset data by type and name"""
@@ -738,13 +741,13 @@ class AssetTreeWidget(QTreeWidget):
 
             if isinstance(project_data, dict):
                 self.refresh_from_project(project_data)
-                print(f"✅ Asset tree set to project: {Path(project_path).name}")
+                logger.debug(f"Asset tree set to project: {Path(project_path).name}")
             else:
-                print("⚠️  Invalid project_data, clearing assets")
+                logger.warning("Invalid project_data, clearing assets")
                 self.clear_assets()
 
         except Exception as e:
-            print(f"❌ Error setting project in asset tree: {e}")
+            logger.error(f"Error setting project in asset tree: {e}")
             # Fallback - just clear assets
             self.clear_assets()
 
@@ -759,11 +762,11 @@ class AssetTreeWidget(QTreeWidget):
                     current_path = project_manager.get_current_project_path()
                     if current_path:
                         project_manager.load_project(current_path)
-                        print("🔄 Forced project manager to reload")
+                        logger.debug("Forced project manager to reload")
                     break
                 parent = parent.parent()
         except Exception as e:
-            print(f"⚠️ Could not force refresh: {e}")
+            logger.warning(f"Could not force refresh: {e}")
 
 
 class AssetRenameDialog(QDialog):

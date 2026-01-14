@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 from runtime.action_executor import ActionExecutor
+from core.logger import get_logger
+logger = get_logger(__name__)
 
 class GameSprite:
     """Represents a loaded sprite"""
@@ -28,10 +30,10 @@ class GameSprite:
                 self.width = self.surface.get_width()
                 self.height = self.surface.get_height()
             else:
-                print(f"Sprite not found: {self.path}")
+                logger.debug(f"Sprite not found: {self.path}")
                 self.create_default_sprite()
         except Exception as e:
-            print(f"Error loading sprite {self.path}: {e}")
+            logger.error(f"Error loading sprite {self.path}: {e}")
             self.create_default_sprite()
 
     def create_default_sprite(self):
@@ -230,18 +232,18 @@ class GameRunner:
                 self.project_path = path.parent
                 project_file = path
             else:
-                print(f"Invalid project path: {project_path}")
+                logger.error(f"Invalid project path: {project_path}")
                 return False
 
             if not project_file.exists():
-                print(f"Project file not found: {project_file}")
+                logger.error(f"Project file not found: {project_file}")
                 return False
 
             # Load project data
             with open(project_file, 'r') as f:
                 self.project_data = json.load(f)
 
-            print(f"Loaded project: {self.project_data.get('name', 'Untitled')}")
+            logger.info(f"Loaded project: {self.project_data.get('name', 'Untitled')}")
 
             # Only load rooms (without sprites for instances yet)
             self.load_rooms_without_sprites()
@@ -249,7 +251,7 @@ class GameRunner:
             return True
 
         except Exception as e:
-            print(f"Error loading project: {e}")
+            logger.error(f"Error loading project: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -258,7 +260,7 @@ class GameRunner:
         """Load all sprites from the project (called after pygame.display is initialized)"""
         sprites_data = self.project_data.get('assets', {}).get('sprites', {})
 
-        print(f"Loading {len(sprites_data)} sprites...")
+        logger.info(f"Loading {len(sprites_data)} sprites...")
 
         for sprite_name, sprite_info in sprites_data.items():
             try:
@@ -268,26 +270,26 @@ class GameRunner:
                     # Pass sprite_info to enable animation support
                     sprite = GameSprite(str(full_path), sprite_info)
                     self.sprites[sprite_name] = sprite
-                    print(f"  âœ… Loaded sprite: {sprite_name} ({sprite.width}x{sprite.height})")
+                    logger.debug(f"  ✅ Loaded sprite: {sprite_name} ({sprite.width}x{sprite.height})")
                 else:
-                    print(f"  âš ï¸  Sprite {sprite_name} has no file path")
+                    logger.warning(f"  Sprite {sprite_name} has no file path")
             except Exception as e:
-                print(f"  âŒ Error loading sprite {sprite_name}: {e}")
+                logger.error(f"  Error loading sprite {sprite_name}: {e}")
 
     def load_rooms_without_sprites(self):
         """Load rooms but don't assign sprites to instances yet"""
         rooms_data = self.project_data.get('assets', {}).get('rooms', {})
 
-        print(f"Loading {len(rooms_data)} rooms...")
+        logger.info(f"Loading {len(rooms_data)} rooms...")
 
         for room_name, room_info in rooms_data.items():
             try:
                 room = GameRoom(room_name, room_info)
                 # Don't set sprites yet - will do this after pygame.display is ready
                 self.rooms[room_name] = room
-                print(f"  Loaded room: {room_name} ({len(room.instances)} instances)")
+                logger.info(f"  Loaded room: {room_name} ({len(room.instances)} instances)")
             except Exception as e:
-                print(f"  Error loading room {room_name}: {e}")
+                logger.error(f"  Error loading room {room_name}: {e}")
                 import traceback
                 traceback.print_exc()
 
@@ -295,13 +297,13 @@ class GameRunner:
         """Assign loaded sprites to room instances"""
         objects_data = self.project_data.get('assets', {}).get('objects', {})
 
-        print("Assigning sprites to room instances...")
+        logger.info("Assigning sprites to room instances...")
         for room_name, room in self.rooms.items():
             room.set_sprites_for_instances(self.sprites, objects_data)
 
             # Count instances with sprites
             sprites_assigned = sum(1 for instance in room.instances if instance.sprite)
-            print(f"  Room {room_name}: {sprites_assigned}/{len(room.instances)} instances have sprites")
+            logger.debug(f"  Room {room_name}: {sprites_assigned}/{len(room.instances)} instances have sprites")
 
     def find_starting_room(self) -> Optional[str]:
         """Find a room to start the game in - uses room_order if available"""
@@ -322,20 +324,20 @@ class GameRunner:
 
     def test_game(self, project_path: str) -> bool:
         """Test run the game from project"""
-        print(f"Testing game from project: {project_path}")
+        logger.info(f"Testing game from project: {project_path}")
 
         # Load project data (but not sprites yet)
         if not self.load_project_data_only(project_path):
-            print("Failed to load project")
+            logger.error("Failed to load project")
             return False
 
         # Find starting room
         starting_room = self.find_starting_room()
         if not starting_room:
-            print("No rooms found in project")
+            logger.error("No rooms found in project")
             return False
 
-        print(f"Starting with room: {starting_room}")
+        logger.info(f"Starting with room: {starting_room}")
         self.current_room = self.rooms[starting_room]
 
         # Set window size based on room
@@ -358,17 +360,17 @@ class GameRunner:
             # Initialize clock
             self.clock = pygame.time.Clock()
 
-            print(f"Game window: {self.window_width}x{self.window_height}")
+            logger.info(f"Game window: {self.window_width}x{self.window_height}")
 
             # NOW load sprites (after pygame.display is initialized)
-            print("\nðŸŽ® Loading sprites after pygame.display initialization...")
+            logger.info("🎮 Loading sprites after pygame.display initialization...")
             self.load_sprites()
 
             # Assign sprites to room instances
             self.assign_sprites_to_rooms()
 
-            print(f"\nCurrent room: {self.current_room.name}")
-            print(f"Room instances: {len(self.current_room.instances)}")
+            logger.debug(f"Current room: {self.current_room.name}")
+            logger.debug(f"Room instances: {len(self.current_room.instances)}")
 
             # Count instances by type for summary
             instance_counts = {}
@@ -376,9 +378,9 @@ class GameRunner:
                 obj_name = instance.object_name
                 instance_counts[obj_name] = instance_counts.get(obj_name, 0) + 1
 
-            print("Instance summary:")
+            logger.debug("Instance summary:")
             for obj_name, count in sorted(instance_counts.items()):
-                print(f"  {obj_name}: {count}")
+                logger.debug(f"  {obj_name}: {count}")
 
 
             self.running = True
@@ -407,7 +409,7 @@ class GameRunner:
             return True
 
         except Exception as e:
-            print(f"Error in game loop: {e}")
+            logger.error(f"Error in game loop: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -437,7 +439,7 @@ class GameRunner:
         if not sub_key:
             return
 
-        print(f"\n⌨️  Key pressed: {sub_key}")
+        logger.debug(f"⌨️  Key pressed: {sub_key}")
 
         # Helper to find key in dict (case-insensitive)
         def find_key_in_event(event_dict, key):
@@ -462,13 +464,13 @@ class GameRunner:
                 if isinstance(keyboard_press_event, dict):
                     found_key = find_key_in_event(keyboard_press_event, sub_key)
                     if found_key:
-                        print(f"  ✅ Found keyboard_press.{found_key} for {instance.object_name}")
+                        logger.debug(f"  ✅ Found keyboard_press.{found_key} for {instance.object_name}")
                         sub_event_data = keyboard_press_event[found_key]
                         if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
                             actions = sub_event_data["actions"]
-                            print(f"  → Executing {len(actions)} actions from keyboard_press.{found_key}")
+                            logger.debug(f"  → Executing {len(actions)} actions from keyboard_press.{found_key}")
                             for action_data in actions:
-                                print(f"    - Action: {action_data.get('action', 'unknown')}")
+                                logger.debug(f"    - Action: {action_data.get('action', 'unknown')}")
                                 instance.action_executor.execute_action(instance, action_data)
 
             # ALSO check for keyboard (held) event - might be used instead
@@ -478,13 +480,13 @@ class GameRunner:
                 if isinstance(keyboard_event, dict):
                     found_key = find_key_in_event(keyboard_event, sub_key)
                     if found_key:
-                        print(f"  ✅ Found keyboard.{found_key} for {instance.object_name}")
+                        logger.debug(f"  ✅ Found keyboard.{found_key} for {instance.object_name}")
                         sub_event_data = keyboard_event[found_key]
                         if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
                             actions = sub_event_data["actions"]
-                            print(f"  → Executing {len(actions)} actions from keyboard.{found_key}")
+                            logger.debug(f"  → Executing {len(actions)} actions from keyboard.{found_key}")
                             for action_data in actions:
-                                print(f"    - Action: {action_data.get('action', 'unknown')}")
+                                logger.debug(f"    - Action: {action_data.get('action', 'unknown')}")
                                 instance.action_executor.execute_action(instance, action_data)
 
     def handle_keyboard_release(self, key):
@@ -497,7 +499,7 @@ class GameRunner:
         if not sub_key:
             return
 
-        print(f"\n⌨️  Key released: {sub_key}")
+        logger.debug(f"⌨️  Key released: {sub_key}")
 
         # Execute keyboard_release events for all instances
         for instance in self.current_room.instances:
@@ -522,7 +524,7 @@ class GameRunner:
                 if isinstance(keyboard_release_event, dict):
                     found_key = find_key_in_event(keyboard_release_event, sub_key)
                     if found_key:
-                        print(f"  ✅ Executing keyboard_release.{found_key} for {instance.object_name}")
+                        logger.debug(f"  ✅ Executing keyboard_release.{found_key} for {instance.object_name}")
                         sub_event_data = keyboard_release_event[found_key]
                         if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
                             for action_data in sub_event_data["actions"]:
@@ -593,12 +595,12 @@ class GameRunner:
         # Check for room restart/transition flags FIRST
         for instance in self.current_room.instances:
             if hasattr(instance, 'restart_room_flag') and instance.restart_room_flag:
-                print("🔄 Restarting room...")
+                logger.info("🔄 Restarting room...")
                 self.restart_current_room()
                 return
 
             if hasattr(instance, 'next_room_flag') and instance.next_room_flag:
-                print("➡️  Going to next room...")
+                logger.info("➡️  Going to next room...")
                 self.goto_next_room()
                 return
 
@@ -616,11 +618,11 @@ class GameRunner:
                 can_move = self.check_movement_collision(instance, objects_data)
 
                 if can_move:
-                    print(f"✅ Movement allowed: {instance.object_name} → ({instance.intended_x}, {instance.intended_y})")
+                    logger.debug(f"✅ Movement allowed: {instance.object_name} → ({instance.intended_x}, {instance.intended_y})")
                     instance.x = instance.intended_x
                     instance.y = instance.intended_y
                 else:
-                    print(f"❌ Movement blocked: {instance.object_name} (hit solid object)")
+                    logger.debug(f"❌ Movement blocked: {instance.object_name} (hit solid object)")
 
                 # Clear intended movement
                 delattr(instance, 'intended_x')
@@ -685,7 +687,7 @@ class GameRunner:
 
                     if other_instance.object_name == target_object:
                         if self.instances_overlap(instance, other_instance):
-                            print(f"💥 Collision: {instance.object_name} with {target_object}")
+                            logger.debug(f"💥 Collision: {instance.object_name} with {target_object}")
                             instance.action_executor.execute_event(instance, event_name, events)
                             break
 
@@ -732,7 +734,7 @@ class GameRunner:
             next_room_name = room_list[next_index]
             self.change_room(next_room_name)
         except ValueError:
-            print(f"Current room '{self.current_room.name}' not in room list")
+            logger.error(f"Current room '{self.current_room.name}' not in room list")
 
     def get_room_list(self) -> List[str]:
         """Get ordered list of room names"""
@@ -750,7 +752,7 @@ class GameRunner:
     def change_room(self, room_name: str):
         """Change to a different room"""
         if room_name in self.rooms:
-            print(f"🚪 Changing to room: {room_name}")
+            logger.info(f"🚪 Changing to room: {room_name}")
             self.current_room = self.rooms[room_name]
 
             # Execute create events for all instances
@@ -772,39 +774,39 @@ class GameRunner:
 
     def show_debug_info(self):
         """Print debug information"""
-        print("\n=== DEBUG INFO ===")
-        print(f"Project: {self.project_data.get('name', 'Unknown')}")
-        print(f"Current room: {self.current_room.name if self.current_room else 'None'}")
+        logger.debug("=== DEBUG INFO ===")
+        logger.debug(f"Project: {self.project_data.get('name', 'Unknown')}")
+        logger.debug(f"Current room: {self.current_room.name if self.current_room else 'None'}")
 
         if self.current_room:
-            print(f"Room size: {self.current_room.width}x{self.current_room.height}")
-            print(f"Background: {self.current_room.background_color}")
-            print(f"Instances: {len(self.current_room.instances)}")
+            logger.debug(f"Room size: {self.current_room.width}x{self.current_room.height}")
+            logger.debug(f"Background: {self.current_room.background_color}")
+            logger.debug(f"Instances: {len(self.current_room.instances)}")
 
             for i, instance in enumerate(self.current_room.instances):
                 sprite_info = "no sprite" if not instance.sprite else "sprite loaded"
-                print(f"  {i+1}. {instance.object_name} at ({instance.x}, {instance.y}) - {sprite_info}")
+                logger.debug(f"  {i+1}. {instance.object_name} at ({instance.x}, {instance.y}) - {sprite_info}")
 
-        print("===================\n")
+        logger.debug("===================")
 
     def stop_game(self):
         """Stop the game"""
-        print("Stopping game...")
+        logger.info("Stopping game...")
         self.running = False
 
     def run(self):
         """Run the game - main entry point called by IDE"""
         if not self.project_data:
-            print("❌ No project loaded. Cannot run game.")
+            logger.error("❌ No project loaded. Cannot run game.")
             return False
 
         # Find starting room
         starting_room = self.find_starting_room()
         if not starting_room:
-            print("❌ No rooms found in project")
+            logger.error("❌ No rooms found in project")
             return False
 
-        print(f"🎮 Starting game with room: {starting_room}")
+        logger.info(f"🎮 Starting game with room: {starting_room}")
         self.current_room = self.rooms[starting_room]
 
         # Set window size based on room
@@ -819,9 +821,9 @@ class GameRunner:
         try:
             if pygame.get_init():
                 pygame.quit()
-            print("Game cleanup complete")
+            logger.info("Game cleanup complete")
         except Exception as e:
-            print(f"Error during cleanup: {e}")
+            logger.error(f"Error during cleanup: {e}")
 
 # Test function
 def test_runner():
@@ -834,8 +836,8 @@ def test_runner():
     if Path(test_project).exists():
         runner.test_game(test_project)
     else:
-        print(f"Test project not found: {test_project}")
-        print("Please update the test_project path")
+        logger.error(f"Test project not found: {test_project}")
+        logger.info("Please update the test_project path")
 
 if __name__ == "__main__":
     test_runner()

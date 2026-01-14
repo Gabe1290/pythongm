@@ -11,6 +11,9 @@ from pathlib import Path
 from typing import Dict
 from PySide6.QtCore import QObject, Signal
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 class ExeExporter(QObject):
     """Handles exporting games as Windows EXE files using Kivy runtime"""
@@ -169,13 +172,13 @@ class ExeExporter(QObject):
                     break
                 except PermissionError:
                     if attempt < 2:
-                        print(f"Build directory locked, retrying in 2 seconds... (attempt {attempt + 1}/3)")
+                        logger.debug(f"Build directory locked, retrying in 2 seconds... (attempt {attempt + 1}/3)")
                         time.sleep(2)
                     else:
                         # Try using a different directory name
                         import uuid
                         build_dir = project_dir / f"build_temp_exe_{uuid.uuid4().hex[:8]}"
-                        print(f"Using alternate build directory: {build_dir}")
+                        logger.debug(f"Using alternate build directory: {build_dir}")
 
         build_dir.mkdir(parents=True, exist_ok=True)
         return build_dir
@@ -204,25 +207,25 @@ class ExeExporter(QObject):
             success = exporter.export()
 
             if not success:
-                print("KivyExporter.export() returned False")
+                logger.error("KivyExporter.export() returned False")
                 return False
 
             # Verify that the game directory was created
             game_dir = build_dir / "game"
             if not game_dir.exists():
-                print(f"Error: Game directory not created at {game_dir}")
+                logger.error(f"Game directory not created at {game_dir}")
                 return False
 
             # Verify main.py exists
             main_py = game_dir / "main.py"
             if not main_py.exists():
-                print(f"Error: main.py not found at {main_py}")
+                logger.error(f"main.py not found at {main_py}")
                 return False
 
             return True
 
         except Exception as e:
-            print(f"Error generating Kivy game: {e}")
+            logger.error(f"Error generating Kivy game: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -438,11 +441,11 @@ exe = EXE(
     def _run_pyinstaller(self, spec_file: Path) -> bool:
         """Run PyInstaller to build the executable"""
         try:
-            print("\n" + "="*60)
-            print("Running PyInstaller (this may take 5-10 minutes)...")
-            print("Building with Kivy is memory-intensive.")
-            print("If the process is killed, try closing other applications.")
-            print("="*60 + "\n")
+            logger.info("=" * 60)
+            logger.info("Running PyInstaller (this may take 5-10 minutes)...")
+            logger.info("Building with Kivy is memory-intensive.")
+            logger.info("If the process is killed, try closing other applications.")
+            logger.info("=" * 60)
 
             # Use the same Python interpreter that's running this script
             # This ensures we use the venv's pyinstaller
@@ -461,30 +464,30 @@ exe = EXE(
 
             # Stream output in real-time
             for line in process.stdout:
-                print(line.rstrip())
+                logger.debug(line.rstrip())
 
             # Wait for completion with longer timeout (10 minutes)
             process.wait(timeout=600)
 
             if process.returncode != 0:
-                print(f"\nPyInstaller failed with return code: {process.returncode}")
+                logger.error(f"PyInstaller failed with return code: {process.returncode}")
                 return False
 
-            print("\n✅ PyInstaller build completed successfully!")
+            logger.info("PyInstaller build completed successfully!")
             return True
 
         except subprocess.TimeoutExpired:
-            print("\n❌ PyInstaller timed out after 10 minutes")
-            print("This usually means the build is too memory-intensive for your system.")
-            print("\nTry:")
-            print("1. Close other applications to free up memory")
-            print("2. Increase system swap space")
-            print("3. Build on a machine with more RAM (recommended: 8GB+)")
+            logger.error("PyInstaller timed out after 10 minutes")
+            logger.error("This usually means the build is too memory-intensive for your system.")
+            logger.info("Try:")
+            logger.info("1. Close other applications to free up memory")
+            logger.info("2. Increase system swap space")
+            logger.info("3. Build on a machine with more RAM (recommended: 8GB+)")
             if process:
                 process.kill()
             return False
         except Exception as e:
-            print(f"\n❌ Error running PyInstaller: {e}")
+            logger.error(f"Error running PyInstaller: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -509,11 +512,11 @@ exe = EXE(
                         break  # Success
                     except PermissionError as e:
                         if attempt < 4:
-                            print(f"File locked, retrying in 1 second... ({item.name})")
+                            logger.debug(f"File locked, retrying in 1 second... ({item.name})")
                             time.sleep(1)
                         else:
-                            print(f"Warning: Could not copy {item.name}: {e}")
-                            print(f"The EXE is available at: {dist_dir / item.name}")
+                            logger.warning(f"Could not copy {item.name}: {e}")
+                            logger.info(f"The EXE is available at: {dist_dir / item.name}")
 
     def _cleanup(self, build_dir: Path):
         """Clean up temporary build files"""
@@ -521,4 +524,4 @@ exe = EXE(
             if build_dir.exists():
                 shutil.rmtree(build_dir)
         except Exception as e:
-            print(f"Warning: Could not clean up build directory: {e}")
+            logger.warning(f"Could not clean up build directory: {e}")

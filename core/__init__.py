@@ -14,6 +14,9 @@ Core functionality and business logic:
 - Visual programming logic
 """
 
+# Import logging first
+from .logger import get_logger, configure_logging, enable_debug, disable_debug
+
 # Import main IDE window
 from .ide_window import PyGameMakerIDE
 
@@ -46,5 +49,9 @@ __all__ = [
     'ActionRegistry',
     'event_system',
     'get_event_system',
-    'get_action_registry'
+    'get_action_registry',
+    'get_logger',
+    'configure_logging',
+    'enable_debug',
+    'disable_debug'
 ]

@@ -15,6 +15,9 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Signal, QTimer
 from PySide6.QtGui import QKeySequence, QShortcut, QUndoCommand, QUndoStack
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 class EditorUndoCommand(QUndoCommand):
     """Base undo command for editor operations"""
@@ -258,7 +261,7 @@ class BaseEditor(QWidget):
             return
 
         if self.is_modified and not self.is_read_only:
-            print(f"Auto-saving: {self.asset_name}")
+            logger.info(f"Auto-saving: {self.asset_name}")
             success = self.save()
             if success:
                 self.update_status(f"Auto-saved: {self.asset_name}")
@@ -403,7 +406,7 @@ class BaseEditor(QWidget):
                 with open(project_file, 'r') as f:
                     return json.load(f)
         except Exception as e:
-            print(f"Error loading project data: {e}")
+            logger.error(f"Error loading project data: {e}")
 
         return {}
 

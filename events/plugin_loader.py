@@ -10,6 +10,9 @@ from pathlib import Path
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 from .event_types import EVENT_TYPES, EventType
 from .action_types import ACTION_TYPES, ActionType
 
@@ -44,13 +47,13 @@ class PluginLoader:
             Number of plugins loaded
         """
         if not plugin_dir.exists():
-            print(f"Plugin directory not found: {plugin_dir}")
+            logger.debug(f"Plugin directory not found: {plugin_dir}")
             # Don't create the directory - just skip loading plugins
             return 0
 
         plugin_files = list(plugin_dir.glob("*.py"))
         if not plugin_files:
-            print(f"No plugin files found in {plugin_dir}")
+            logger.debug(f"No plugin files found in {plugin_dir}")
             return 0
 
         loaded_count = 0
@@ -79,7 +82,7 @@ class PluginLoader:
             spec = importlib.util.spec_from_file_location(module_name, plugin_file)
 
             if spec is None or spec.loader is None:
-                print(f"❌ Could not load plugin spec: {plugin_file.name}")
+                logger.error(f"Could not load plugin spec: {plugin_file.name}")
                 return False
 
             module = importlib.util.module_from_spec(spec)
@@ -109,13 +112,13 @@ class PluginLoader:
             self.loaded_plugins.append(plugin_info)
             self.plugin_modules.append(module)
 
-            print(f"✅ Loaded plugin: {plugin_info.name} v{plugin_info.version}")
-            print(f"   Events: {events_loaded}, Actions: {actions_loaded}")
+            logger.info(f"Loaded plugin: {plugin_info.name} v{plugin_info.version}")
+            logger.debug(f"   Events: {events_loaded}, Actions: {actions_loaded}")
 
             return True
 
         except Exception as e:
-            print(f"❌ Error loading plugin {plugin_file.name}: {e}")
+            logger.error(f"Error loading plugin {plugin_file.name}: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -135,12 +138,12 @@ class PluginLoader:
         count = 0
         for event_name, event_type in plugin_events.items():
             if event_name in EVENT_TYPES:
-                print(f"⚠️  Event '{event_name}' already exists, skipping...")
+                logger.warning(f"Event '{event_name}' already exists, skipping...")
                 continue
 
             EVENT_TYPES[event_name] = event_type
             count += 1
-            print(f"   📌 Registered event: {event_name}")
+            logger.debug(f"Registered event: {event_name}")
 
         return count
 
@@ -149,19 +152,19 @@ class PluginLoader:
         count = 0
         for action_name, action_type in plugin_actions.items():
             if action_name in ACTION_TYPES:
-                print(f"⚠️  Action '{action_name}' already exists, skipping...")
+                logger.warning(f"Action '{action_name}' already exists, skipping...")
                 continue
 
             ACTION_TYPES[action_name] = action_type
             count += 1
-            print(f"   📌 Registered action: {action_name}")
+            logger.debug(f"Registered action: {action_name}")
 
         return count
 
     def _register_action_handlers(self, executor_class):
         """Register action handlers from plugin executor"""
         if not self.action_executor:
-            print("⚠️  No action executor available, handlers not registered")
+            logger.warning("No action executor available, handlers not registered")
             return
 
         # Create an instance of the plugin executor
@@ -214,12 +217,12 @@ def load_all_plugins(action_executor=None) -> PluginLoader:
     loader = PluginLoader(action_executor)
     plugin_dir = get_plugin_directory()
 
-    print(f"🔌 Loading plugins from: {plugin_dir}")
+    logger.info(f"Loading plugins from: {plugin_dir}")
     count = loader.load_plugins_from_directory(plugin_dir)
 
     if count > 0:
-        print(f"✅ Loaded {count} plugin(s)")
+        logger.info(f"Loaded {count} plugin(s)")
     else:
-        print("ℹ️  No plugins loaded")
+        logger.debug("No plugins loaded")
 
     return loader

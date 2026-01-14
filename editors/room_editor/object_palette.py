@@ -9,6 +9,9 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QListWidget, QListWi
 from PySide6.QtCore import Qt, Signal, QSize
 from PySide6.QtGui import QFont, QPixmap, QPainter, QColor, QPen
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 class ObjectPalette(QWidget):
     """Widget for selecting objects to place"""
@@ -48,7 +51,7 @@ class ObjectPalette(QWidget):
         self.project_data = project_data
         if hasattr(self, 'sprite_cache'):
             self.sprite_cache.clear()
-        print("Updated project info, cleared sprite cache")
+        logger.debug("Updated project info, cleared sprite cache")
 
     def set_available_objects(self, objects_dict):
         """Set available objects from project data"""
@@ -105,7 +108,7 @@ class ObjectPalette(QWidget):
             return self.create_default_icon(object_name)
 
         except Exception as e:
-            print(f"Error loading sprite icon for {object_name}: {e}")
+            logger.error(f"Error loading sprite icon for {object_name}: {e}")
             return self.create_default_icon(object_name)
 
     def create_default_icon(self, object_name):

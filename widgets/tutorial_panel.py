@@ -11,6 +11,9 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QDesktopServices
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 class TutorialPanel(QWidget):
     """Panel for displaying HTML tutorials like GameMaker 8"""
@@ -169,7 +172,7 @@ class TutorialPanel(QWidget):
                     self.tutorial_list.addItem(item)
                 return
             except Exception as e:
-                print(f"Error loading tutorials index: {e}")
+                logger.error(f"Error loading tutorials index: {e}")
 
         # Fallback: scan for tutorial folders
         for folder in sorted(self.tutorials_path.iterdir()):
@@ -185,7 +188,7 @@ class TutorialPanel(QWidget):
                             item.setData(Qt.UserRole, tutorial_data)
                             self.tutorial_list.addItem(item)
                     except Exception as e:
-                        print(f"Error loading tutorial {folder}: {e}")
+                        logger.error(f"Error loading tutorial {folder}: {e}")
                 else:
                     # Check if folder contains HTML files
                     html_files = list(folder.glob("*.html"))

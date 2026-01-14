@@ -10,6 +10,9 @@ from PySide6.QtWidgets import QTreeWidgetItem
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 class AssetTreeItem(QTreeWidgetItem):
     """Custom tree item for assets"""
@@ -116,16 +119,16 @@ class AssetTreeItem(QTreeWidgetItem):
                 from PySide6.QtGui import QPixmap, QIcon
 
                 if not file_path:
-                    print(f"⚠️ SPRITE: no file_path provided")
+                    logger.debug("SPRITE: no file_path provided")
                     return False
 
                 # Get the tree widget to access project path
                 tree_widget = self.treeWidget()
                 if not tree_widget:
-                    print(f"⚠️ SPRITE: no tree_widget for {file_path}")
+                    logger.debug(f"SPRITE: no tree_widget for {file_path}")
                     return False
                 if not hasattr(tree_widget, 'project_path'):
-                    print(f"⚠️ SPRITE: tree_widget has no project_path for {file_path}")
+                    logger.debug(f"SPRITE: tree_widget has no project_path for {file_path}")
                     return False
 
                 # Construct absolute path from relative file_path
@@ -138,7 +141,7 @@ class AssetTreeItem(QTreeWidgetItem):
                     abs_path = project_root / file_path
 
                 if not abs_path.exists():
-                    print(f"⚠️ Thumbnail file not found: {abs_path}")
+                    logger.debug(f"Thumbnail file not found: {abs_path}")
                     return False
 
                 # Load image from disk
@@ -158,10 +161,10 @@ class AssetTreeItem(QTreeWidgetItem):
                     self.setIcon(0, QIcon(scaled_pixmap))
                     return True
                 else:
-                    print(f"⚠️ Failed to load pixmap from: {abs_path}")
+                    logger.debug(f"Failed to load pixmap from: {abs_path}")
 
             except Exception as e:
-                print(f"⚠️ Failed to load sprite thumbnail: {e}")
+                logger.debug(f"Failed to load sprite thumbnail: {e}")
 
             return False
 
@@ -215,7 +218,7 @@ class AssetTreeItem(QTreeWidgetItem):
                 abs_path = project_root / sprite_file_path
 
             if not abs_path.exists():
-                print(f"⚠️ Object sprite thumbnail not found: {abs_path}")
+                logger.debug(f"Object sprite thumbnail not found: {abs_path}")
                 return False
 
             # Load image from disk
@@ -240,9 +243,9 @@ class AssetTreeItem(QTreeWidgetItem):
                 self.setIcon(0, QIcon(scaled_pixmap))
                 return True
             else:
-                print(f"⚠️ Failed to load pixmap for object sprite: {sprite_name}")
+                logger.debug(f"Failed to load pixmap for object sprite: {sprite_name}")
 
         except Exception as e:
-            print(f"⚠️ Failed to load object sprite thumbnail: {e}")
+            logger.debug(f"Failed to load object sprite thumbnail: {e}")
 
         return False

@@ -9,6 +9,9 @@ from PySide6.QtCore import QObject, Signal, QTimer
 
 from utils.project_compression import ProjectCompressor
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 class ProjectManager(QObject):
     """
     Manages PyGameMaker projects - creation, loading, saving, and metadata
@@ -160,11 +163,11 @@ class ProjectManager(QObject):
         """Load an existing project (compatibility method)"""
         try:
             project_path = Path(project_path)
-            print(f"DEBUG PM load_project: path={project_path}")
+            logger.debug(f"DEBUG PM load_project: path={project_path}")
 
             # Check if project file exists
             project_file = project_path / self.PROJECT_FILE
-            print(f"DEBUG PM load_project: checking for {project_file}, exists={project_file.exists()}")
+            logger.debug(f"DEBUG PM load_project: checking for {project_file}, exists={project_file.exists()}")
             if not project_file.exists():
                 self.status_changed.emit(f"Project file not found: {project_file}")
                 return False
@@ -173,7 +176,7 @@ class ProjectManager(QObject):
             with open(project_file, 'r', encoding='utf-8') as f:
                 from collections import OrderedDict
                 project_data = json.load(f, object_pairs_hook=OrderedDict)
-            print(f"DEBUG PM load_project: loaded data keys={list(project_data.keys())}")
+            logger.debug(f"DEBUG PM load_project: loaded data keys={list(project_data.keys())}")
 
             # Load asset data from separate files if they exist
             self._load_rooms_from_files(project_path, project_data)
@@ -182,10 +185,10 @@ class ProjectManager(QObject):
 
             # Validate project data
             if not self._validate_project_data(project_data):
-                print("DEBUG PM load_project: validation FAILED")
+                logger.debug("DEBUG PM load_project: validation FAILED")
                 self.status_changed.emit("Invalid project file format")
                 return False
-            print("DEBUG PM load_project: validation passed")
+            logger.debug("DEBUG PM load_project: validation passed")
 
             # Update asset manager with project location FIRST
             if self.asset_manager:
@@ -216,7 +219,7 @@ class ProjectManager(QObject):
         rooms_dir = project_path / "rooms"
 
         if not rooms_dir.exists():
-            print("DEBUG: No rooms/ directory found, using embedded room data")
+            logger.debug("DEBUG: No rooms/ directory found, using embedded room data")
             return
 
         rooms_data = project_data.get('assets', {}).get('rooms', {})
@@ -233,7 +236,7 @@ class ProjectManager(QObject):
                     # Merge file data into room data (file takes precedence for instances)
                     if 'instances' in file_room_data:
                         room_data['instances'] = file_room_data['instances']
-                        print(f"📂 Loaded room: {room_name} ({len(room_data['instances'])} instances from file)")
+                        logger.debug(f"📂 Loaded room: {room_name} ({len(room_data['instances'])} instances from file)")
 
                     # Also copy other room properties from file if present
                     for key in ['width', 'height', 'background_color', 'background_image',
@@ -246,20 +249,20 @@ class ProjectManager(QObject):
                         del room_data['_external_file']
 
                 except Exception as e:
-                    print(f"⚠️ Failed to load room file {room_file}: {e}")
+                    logger.warning(f"⚠️ Failed to load room file {room_file}: {e}")
             else:
                 # No external file - check if instances are embedded (legacy format)
                 if room_data.get('instances'):
-                    print(f"📂 Room {room_name}: using embedded instances ({len(room_data['instances'])} instances)")
+                    logger.debug(f"📂 Room {room_name}: using embedded instances ({len(room_data['instances'])} instances)")
                 else:
-                    print(f"⚠️ Room {room_name}: no instances found")
+                    logger.warning(f"⚠️ Room {room_name}: no instances found")
 
     def _load_objects_from_files(self, project_path: Path, project_data: dict) -> None:
         """Load object data from separate files in objects/ directory"""
         objects_dir = project_path / "objects"
 
         if not objects_dir.exists():
-            print("DEBUG: No objects/ directory found, using embedded object data")
+            logger.debug("DEBUG: No objects/ directory found, using embedded object data")
             return
 
         objects_data = project_data.get('assets', {}).get('objects', {})
@@ -281,25 +284,25 @@ class ProjectManager(QObject):
                             object_data[key] = file_object_data[key]
 
                     event_count = len(file_object_data.get('events', {}))
-                    print(f"📂 Loaded object: {object_name} ({event_count} events from file)")
+                    logger.debug(f"📂 Loaded object: {object_name} ({event_count} events from file)")
 
                     # Clean up external file marker
                     if '_external_file' in object_data:
                         del object_data['_external_file']
 
                 except Exception as e:
-                    print(f"⚠️ Failed to load object file {object_file}: {e}")
+                    logger.warning(f"⚠️ Failed to load object file {object_file}: {e}")
             else:
                 # No external file - use embedded data
                 if object_data.get('events'):
-                    print(f"📂 Object {object_name}: using embedded events")
+                    logger.debug(f"📂 Object {object_name}: using embedded events")
 
     def _load_sprites_from_files(self, project_path: Path, project_data: dict) -> None:
         """Load sprite data from separate files in sprites/ directory"""
         sprites_dir = project_path / "sprites"
 
         if not sprites_dir.exists():
-            print("DEBUG: No sprites/ directory found, using embedded sprite data")
+            logger.debug("DEBUG: No sprites/ directory found, using embedded sprite data")
             return
 
         sprites_data = project_data.get('assets', {}).get('sprites', {})
@@ -321,14 +324,14 @@ class ProjectManager(QObject):
                             sprite_data[key] = file_sprite_data[key]
 
                     frame_count = len(file_sprite_data.get('frames', []))
-                    print(f"📂 Loaded sprite: {sprite_name} ({frame_count} frames from file)")
+                    logger.debug(f"📂 Loaded sprite: {sprite_name} ({frame_count} frames from file)")
 
                     # Clean up external file marker
                     if '_external_file' in sprite_data:
                         del sprite_data['_external_file']
 
                 except Exception as e:
-                    print(f"⚠️ Failed to load sprite file {sprite_file}: {e}")
+                    logger.warning(f"⚠️ Failed to load sprite file {sprite_file}: {e}")
 
     def save_project(self, project_path: Optional[Path] = None) -> bool:
         """
@@ -336,24 +339,24 @@ class ProjectManager(QObject):
         If auto-save-as-zip is enabled and project was loaded from zip,
         saves directly back to the zip file
         """
-        print(f"💾 DEBUG: save_project called with path: {project_path}")
+        logger.debug(f"💾 DEBUG: save_project called with path: {project_path}")
 
         if not self.current_project_path and not project_path:
-            print("❌ DEBUG: No project to save")
+            logger.debug("❌ DEBUG: No project to save")
             self.status_changed.emit("No project to save")
             return False
 
         try:
             # Check if we should save as zip
             if self._auto_save_as_zip and self._original_zip_path and not project_path:
-                print(f"💾 Auto-saving to zip: {self._original_zip_path}")
+                logger.info(f"💾 Auto-saving to zip: {self._original_zip_path}")
                 return self._save_to_zip()
             else:
                 # Regular folder save
                 return self._save_to_folder(project_path)
 
         except Exception as e:
-            print(f"💥 DEBUG: Save failed with error: {e}")
+            logger.error(f"💥 DEBUG: Save failed with error: {e}")
             import traceback
             traceback.print_exc()
             self.status_changed.emit(f"Failed to save project: {str(e)}")
@@ -365,28 +368,28 @@ class ProjectManager(QObject):
             save_path = Path(project_path) if project_path else self.current_project_path
             project_file = save_path / self.PROJECT_FILE
 
-            print(f"💾 DEBUG: Saving to {project_file}")
+            logger.debug(f"💾 DEBUG: Saving to {project_file}")
 
             # Update project metadata
             self.current_project_data["modified"] = datetime.now().isoformat()
 
             # Get latest asset data from asset manager
             if self.asset_manager:
-                print("💾 DEBUG: Getting assets from asset manager...")
+                logger.debug("💾 DEBUG: Getting assets from asset manager...")
                 # Use save_assets_to_project_data to preserve order
                 self.asset_manager.save_assets_to_project_data(self.current_project_data)
 
                 # DEBUG: Check room order being saved
                 rooms_data = self.current_project_data.get('assets', {}).get('rooms', {})
                 room_order = list(rooms_data.keys())
-                print(f"💾 DEBUG: Saving room order: {room_order}")
+                logger.debug(f"💾 DEBUG: Saving room order: {room_order}")
 
                 # DEBUG: Check what sprite values are actually being saved
                 objects_data = self.current_project_data.get('assets', {}).get('objects', {})
-                print(f"💾 DEBUG: Asset data updated. Objects in project: {list(objects_data.keys())}")
+                logger.debug(f"💾 DEBUG: Asset data updated. Objects in project: {list(objects_data.keys())}")
                 for obj_name, obj_data in objects_data.items():
                     sprite = obj_data.get('sprite', 'none')
-                    print(f"💾 DEBUG: Object '{obj_name}' has sprite: '{sprite}'")
+                    logger.debug(f"💾 DEBUG: Object '{obj_name}' has sprite: '{sprite}'")
 
             # Save rooms to separate files
             self._save_rooms_to_files(save_path)
@@ -402,7 +405,7 @@ class ProjectManager(QObject):
             with open(project_file, 'w', encoding='utf-8') as f:
                 json.dump(project_data_for_save, f, indent=2, ensure_ascii=False, sort_keys=False)
 
-            print(f"✅ DEBUG: Project saved successfully to {project_file}")
+            logger.info(f"✅ DEBUG: Project saved successfully to {project_file}")
 
             # Update state
             self.is_dirty_flag = False
@@ -416,7 +419,7 @@ class ProjectManager(QObject):
             return True
 
         except Exception as e:
-            print(f"💥 DEBUG: Folder save failed: {e}")
+            logger.error(f"💥 DEBUG: Folder save failed: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -446,21 +449,21 @@ class ProjectManager(QObject):
                     existing_instances = existing_data.get('instances', [])
                     if existing_instances:
                         # Merge: use current metadata but preserve existing instances
-                        print(f"⚠️ Preserving {len(existing_instances)} instances from existing file for {room_name}")
+                        logger.warning(f"⚠️ Preserving {len(existing_instances)} instances from existing file for {room_name}")
                         room_data_to_save = dict(room_data)
                         room_data_to_save['instances'] = existing_instances
                         with open(room_file, 'w', encoding='utf-8') as f:
                             json.dump(room_data_to_save, f, indent=2, ensure_ascii=False)
-                        print(f"💾 Saved room: {room_name} ({len(existing_instances)} instances preserved)")
+                        logger.debug(f"💾 Saved room: {room_name} ({len(existing_instances)} instances preserved)")
                         continue
                 except Exception as e:
-                    print(f"⚠️ Could not read existing room file {room_file}: {e}")
+                    logger.warning(f"⚠️ Could not read existing room file {room_file}: {e}")
 
             # Save full room data including instances
             with open(room_file, 'w', encoding='utf-8') as f:
                 json.dump(room_data, f, indent=2, ensure_ascii=False)
 
-            print(f"💾 Saved room: {room_name} ({len(instances_to_save)} instances)")
+            logger.debug(f"💾 Saved room: {room_name} ({len(instances_to_save)} instances)")
 
     def _save_objects_to_files(self, project_path: Path) -> None:
         """Save each object's data to a separate file in objects/ directory
@@ -485,7 +488,7 @@ class ProjectManager(QObject):
                 json.dump(object_data, f, indent=2, ensure_ascii=False)
 
             event_count = len(object_data.get('events', {}))
-            print(f"💾 Saved object: {object_name} ({event_count} events)")
+            logger.debug(f"💾 Saved object: {object_name} ({event_count} events)")
 
     def _prepare_project_data_for_save(self) -> dict:
         """Prepare project data for saving - rooms store only metadata, not instances"""
@@ -511,7 +514,7 @@ class ProjectManager(QObject):
         """Save project directly to zip file"""
         try:
             if not self._original_zip_path:
-                print("No original zip path")
+                logger.warning("No original zip path")
                 return False
 
             # First save to the temporary extraction directory
@@ -527,16 +530,16 @@ class ProjectManager(QObject):
             if ProjectCompressor.compress_project(self._temp_extraction_dir, self._original_zip_path):
                 # Remove backup on success
                 backup_path.unlink()
-                print(f"✅ Project saved to zip: {self._original_zip_path}")
+                logger.info(f"✅ Project saved to zip: {self._original_zip_path}")
                 return True
             else:
                 # Restore backup on failure
                 backup_path.replace(self._original_zip_path)
-                print("❌ Failed to save to zip, backup restored")
+                logger.error("❌ Failed to save to zip, backup restored")
                 return False
 
         except Exception as e:
-            print(f"Error saving to zip: {e}")
+            logger.error(f"Error saving to zip: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -549,7 +552,7 @@ class ProjectManager(QObject):
 
             # Cleanup temp files from zip extraction
             if self._temp_extraction_dir and self._temp_extraction_dir.exists():
-                print(f"🧹 Cleaning up temp extraction: {self._temp_extraction_dir}")
+                logger.info(f"🧹 Cleaning up temp extraction: {self._temp_extraction_dir}")
                 shutil.rmtree(self._temp_extraction_dir, ignore_errors=True)
 
             self._original_zip_path = None
@@ -648,7 +651,7 @@ class ProjectManager(QObject):
                 return False
 
         except Exception as e:
-            print(f"Error in save_project_as: {e}")
+            logger.error(f"Error in save_project_as: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -674,25 +677,25 @@ class ProjectManager(QObject):
 
     def update_asset(self, asset_type: str, asset_name: str, asset_data: Dict[str, Any]) -> bool:
         """Update an asset's data with proper type handling"""
-        print(f"🔧 DEBUG: update_asset called with: {asset_type}, {asset_name}")
-        print(f"🔧 DEBUG: Asset data keys: {list(asset_data.keys())}")
+        logger.debug(f"🔧 DEBUG: update_asset called with: {asset_type}, {asset_name}")
+        logger.debug(f"🔧 DEBUG: Asset data keys: {list(asset_data.keys())}")
 
         try:
             # Validate asset manager exists
             if not self.asset_manager:
-                print("❌ DEBUG: No asset manager available")
+                logger.error("❌ DEBUG: No asset manager available")
                 self.status_changed.emit("No asset manager available")
                 return False
 
-            print("✅ DEBUG: Asset manager exists, checking for asset...")
+            logger.debug("✅ DEBUG: Asset manager exists, checking for asset...")
 
             # Check if asset manager has assets cache
             if not hasattr(self.asset_manager, 'assets_cache'):
-                print("❌ DEBUG: Asset manager has no assets_cache")
+                logger.error("❌ DEBUG: Asset manager has no assets_cache")
                 self.status_changed.emit("Asset manager not properly initialized")
                 return False
 
-            print(f"📊 DEBUG: Assets cache contains: {list(self.asset_manager.assets_cache.keys())}")
+            logger.debug(f"📊 DEBUG: Assets cache contains: {list(self.asset_manager.assets_cache.keys())}")
 
             # Normalize asset type to plural form for storage
             # The asset_type parameter should already be plural (e.g., 'objects', 'rooms')
@@ -725,14 +728,14 @@ class ProjectManager(QObject):
             if asset_type_plural in plural_to_singular_map:
                 asset_type_singular = plural_to_singular_map[asset_type_plural]
 
-            print(f"🔧 DEBUG: Using plural form '{asset_type_plural}' for storage")
-            print(f"🔧 DEBUG: Using singular form '{asset_type_singular}' for asset_type field")
+            logger.debug(f"🔧 DEBUG: Using plural form '{asset_type_plural}' for storage")
+            logger.debug(f"🔧 DEBUG: Using singular form '{asset_type_singular}' for asset_type field")
 
             # Get existing asset from cache
             existing_asset = self.asset_manager.get_asset(asset_type_plural, asset_name)
 
             if existing_asset:
-                print(f"✅ DEBUG: Found existing asset: {asset_name}")
+                logger.debug(f"✅ DEBUG: Found existing asset: {asset_name}")
 
                 # Preserve important fields from existing asset
                 preserved_fields = ['created', 'file_path', 'imported', 'file_hash']
@@ -754,14 +757,14 @@ class ProjectManager(QObject):
 
                 self.asset_manager.assets_cache[asset_type_plural][asset_name] = existing_asset
 
-                print("✅ DEBUG: Updated existing asset in cache")
+                logger.debug("✅ DEBUG: Updated existing asset in cache")
 
                 # Emit update signal
                 self.asset_manager.asset_updated.emit(asset_type_plural, asset_name, existing_asset)
 
             else:
                 # Asset doesn't exist, create new one
-                print(f"⚠️ DEBUG: Asset '{asset_name}' not found in '{asset_type_plural}', creating new asset")
+                logger.debug(f"⚠️ DEBUG: Asset '{asset_name}' not found in '{asset_type_plural}', creating new asset")
 
                 # Create complete asset data
                 new_asset_data = {
@@ -822,7 +825,7 @@ class ProjectManager(QObject):
                 # Ensure asset_type is singular
                 new_asset_data['asset_type'] = asset_type_singular
 
-                print(f"📝 DEBUG: New asset data created with keys: {list(new_asset_data.keys())}")
+                logger.debug(f"📝 DEBUG: New asset data created with keys: {list(new_asset_data.keys())}")
 
                 # Initialize cache structure if needed
                 if not self.asset_manager.assets_cache:
@@ -834,8 +837,8 @@ class ProjectManager(QObject):
                 # Add to cache
                 self.asset_manager.assets_cache[asset_type_plural][asset_name] = new_asset_data
 
-                print(f"💾 DEBUG: Added to cache under '{asset_type_plural}' category")
-                print(f"💾 DEBUG: Cache now has: {list(self.asset_manager.assets_cache.get(asset_type_plural, {}).keys())}")
+                logger.debug(f"💾 DEBUG: Added to cache under '{asset_type_plural}' category")
+                logger.debug(f"💾 DEBUG: Cache now has: {list(self.asset_manager.assets_cache.get(asset_type_plural, {}).keys())}")
 
                 # Emit creation signal
                 self.asset_manager.asset_imported.emit(asset_type_plural, asset_name, new_asset_data)
@@ -843,23 +846,23 @@ class ProjectManager(QObject):
             # Mark project as dirty
             self.mark_dirty()
 
-            print(f"✅ DEBUG: Successfully updated asset '{asset_name}' in category '{asset_type_plural}'")
+            logger.debug(f"✅ DEBUG: Successfully updated asset '{asset_name}' in category '{asset_type_plural}'")
             self.status_changed.emit(f"Updated {asset_name}")
 
             # Verify the update
             verification = self.asset_manager.get_asset(asset_type_plural, asset_name)
             if verification:
-                print("✅ DEBUG: Verification successful - asset exists in cache")
-                print(f"✅ DEBUG: Asset type field: {verification.get('asset_type', 'NOT SET')}")
+                logger.debug("✅ DEBUG: Verification successful - asset exists in cache")
+                logger.debug(f"✅ DEBUG: Asset type field: {verification.get('asset_type', 'NOT SET')}")
             else:
-                print("❌ DEBUG: Verification failed - asset not found in cache")
+                logger.error("❌ DEBUG: Verification failed - asset not found in cache")
 
             return True
 
         except Exception as e:
             error_msg = f"Exception in update_asset: {str(e)}"
-            print(f"💥 DEBUG: {error_msg}")
-            print(f"💥 DEBUG: Exception type: {type(e)}")
+            logger.error(f"💥 DEBUG: {error_msg}")
+            logger.error(f"💥 DEBUG: Exception type: {type(e)}")
             import traceback
             traceback.print_exc()
             self.status_changed.emit(f"Failed to update asset {asset_name}: {str(e)}")
@@ -1053,12 +1056,12 @@ class ProjectManager(QObject):
             True if successful, False otherwise
         """
         if not self.current_project_path:
-            print("No project loaded")
+            logger.warning("No project loaded")
             return False
 
         # Save project first
         if not self.save_project():
-            print("Failed to save project before export")
+            logger.error("Failed to save project before export")
             return False
 
         # Compress project
@@ -1083,7 +1086,7 @@ class ProjectManager(QObject):
             temp_dir = ProjectCompressor.create_temporary_extraction(zip_path)
 
             if not temp_dir:
-                print("Failed to extract project")
+                logger.error("Failed to extract project")
                 return False
 
             # Store the original zip path for auto-save
@@ -1104,7 +1107,7 @@ class ProjectManager(QObject):
             return success
 
         except Exception as e:
-            print(f"Error loading project from zip: {e}")
+            logger.error(f"Error loading project from zip: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -1120,7 +1123,7 @@ class ProjectManager(QObject):
     def set_auto_save_as_zip(self, enabled: bool):
         """Enable/disable auto-save as zip"""
         self._auto_save_as_zip = enabled
-        print(f"📦 Auto-save as zip: {'enabled' if enabled else 'disabled'}")
+        logger.info(f"📦 Auto-save as zip: {'enabled' if enabled else 'disabled'}")
 
     def is_auto_save_as_zip(self) -> bool:
         """Check if auto-save as zip is enabled"""

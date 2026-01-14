@@ -5,6 +5,8 @@ Converts visual actions into runtime behavior
 """
 
 from typing import Dict, Any
+from core.logger import get_logger
+logger = get_logger(__name__)
 
 class ActionExecutor:
     """Executes visual actions during gameplay with auto-discovery"""
@@ -19,7 +21,7 @@ class ActionExecutor:
         # Auto-discover all action handler methods
         self._register_action_handlers()
 
-        print(f"✅ ActionExecutor initialized with {len(self.action_handlers)} action handlers")
+        logger.info(f"✅ ActionExecutor initialized with {len(self.action_handlers)} action handlers")
 
     def _register_action_handlers(self):
         """Automatically discover and register action handler methods
@@ -45,7 +47,7 @@ class ActionExecutor:
                 # Verify it's callable
                 if callable(method):
                     self.action_handlers[action_name] = method
-                    print(f"  📌 Registered action handler: {action_name}")
+                    logger.debug(f"  📌 Registered action handler: {action_name}")
 
     def register_custom_action(self, action_name: str, handler_func):
         """Register a custom action handler dynamically (for plugins)
@@ -55,7 +57,7 @@ class ActionExecutor:
             handler_func: A function with signature (instance, parameters) -> None
         """
         self.action_handlers[action_name] = handler_func
-        print(f"  🔌 Registered custom action: {action_name}")
+        logger.info(f"  🔌 Registered custom action: {action_name}")
 
     def execute_event(self, instance, event_name: str, events_data: Dict[str, Any]):
         """Execute all actions in an event"""
@@ -68,10 +70,10 @@ class ActionExecutor:
         # DEBUG: Show which event is being executed
         if event_name == "create":
             obj_name = getattr(instance, 'object_name', instance.__class__.__name__)
-            print(f"🎬 Executing CREATE event for {obj_name}")
-            print(f"   Actions: {len(actions)} action(s)")
+            logger.debug(f"🎬 Executing CREATE event for {obj_name}")
+            logger.debug(f"   Actions: {len(actions)} action(s)")
             if actions:
-                print(f"   First action: {actions[0].get('action', 'unknown')}")
+                logger.debug(f"   First action: {actions[0].get('action', 'unknown')}")
 
         # Execute actions with conditional flow support
         self.execute_action_list(instance, actions)
@@ -158,7 +160,7 @@ class ActionExecutor:
         # Parse the times parameter (can be a number or variable)
         times = self._parse_value(str(times_param), instance)
         if not isinstance(times, (int, float)):
-            print(f"⚠️ Repeat: Invalid times value '{times_param}', defaulting to 1")
+            logger.warning(f"⚠️ Repeat: Invalid times value '{times_param}', defaulting to 1")
             times = 1
         times = int(times)
 
@@ -187,7 +189,7 @@ class ActionExecutor:
             end_block_index = self._find_matching_end_block(actions, next_index)
             block_actions = actions[next_index + 1:end_block_index]  # Actions between { and }
 
-            print(f"🔁 Repeat block {times} times ({len(block_actions)} actions)")
+            logger.debug(f"🔁 Repeat block {times} times ({len(block_actions)} actions)")
             for iteration in range(times):
                 self.execute_action_list(instance, block_actions)
 
@@ -195,7 +197,7 @@ class ActionExecutor:
         else:
             # Repeat a single action
             single_action = actions[next_index]
-            print(f"🔁 Repeat '{next_action}' {times} times")
+            logger.debug(f"🔁 Repeat '{next_action}' {times} times")
             for iteration in range(times):
                 self.execute_action(instance, single_action)
 
@@ -237,7 +239,7 @@ class ActionExecutor:
         parameters = action_data.get("parameters", {})
 
         if not action_name:
-            print(f"⚠️ Action missing 'action' field: {action_data}")
+            logger.debug(f"⚠️ Action missing 'action' field: {action_data}")
             return None
 
         # Apply action name aliases
@@ -245,13 +247,13 @@ class ActionExecutor:
             action_name = self.ACTION_ALIASES[action_name]
 
         if action_name not in self.action_handlers:
-            print(f"❌ Unknown action: {action_name}")
-            print(f"   Available actions: {', '.join(sorted(self.action_handlers.keys()))}")
+            logger.error(f"❌ Unknown action: {action_name}")
+            logger.debug(f"   Available actions: {', '.join(sorted(self.action_handlers.keys()))}")
             return None
 
         # Validate instance has required attributes for this action
         if not self._validate_action_requirements(instance, action_name):
-            print(f"⚠️ Instance missing requirements for action '{action_name}'")
+            logger.debug(f"⚠️ Instance missing requirements for action '{action_name}'")
             return None
 
         # Execute the action with error handling
@@ -259,11 +261,11 @@ class ActionExecutor:
             result = self.action_handlers[action_name](instance, parameters)
             return result  # Return result for conditional flow
         except AttributeError as e:
-            print(f"❌ Attribute error in action {action_name}: {e}")
-            print("   Instance may be missing required attributes")
+            logger.debug(f"❌ Attribute error in action {action_name}: {e}")
+            logger.debug("   Instance may be missing required attributes")
             return None
         except Exception as e:
-            print(f"❌ Error executing action {action_name}: {e}")
+            logger.error(f"❌ Error executing action {action_name}: {e}")
             import traceback
             traceback.print_exc()
             return None
@@ -303,7 +305,7 @@ class ActionExecutor:
         # Check if instance has all required attributes
         for attr in required_attrs:
             if not hasattr(instance, attr):
-                print(f"   Missing attribute: {attr}")
+                logger.debug(f"   Missing attribute: {attr}")
                 return False
 
         return True
@@ -339,19 +341,19 @@ class ActionExecutor:
         """
         # Accept 'hspeed', 'value', or 'speed' parameters
         speed_value = parameters.get("hspeed", parameters.get("value", parameters.get("speed", "0")))
-        print(f"  🔍 set_hspeed: raw value = '{speed_value}', _collision_other = {getattr(self, '_collision_other', None)}")
+        logger.debug(f"  🔍 set_hspeed: raw value = '{speed_value}', _collision_other = {getattr(self, '_collision_other', None)}")
         speed = self._parse_value(str(speed_value), instance)
-        print(f"  🔍 set_hspeed: parsed value = {speed}")
+        logger.debug(f"  🔍 set_hspeed: parsed value = {speed}")
         try:
             speed = float(speed)
         except (ValueError, TypeError):
-            print(f"⚠️  set_hspeed: Invalid speed value '{speed_value}'")
+            logger.warning(f"⚠️  set_hspeed: Invalid speed value '{speed_value}'")
             return
         old_speed = instance.hspeed
         instance.hspeed = speed
         # Only print when speed changes
         if old_speed != speed:
-            print(f"  🏃 {instance.object_name} hspeed: {old_speed} → {speed}")
+            logger.debug(f"  🏃 {instance.object_name} hspeed: {old_speed} → {speed}")
 
     def execute_set_vspeed_action(self, instance, parameters: Dict[str, Any]):
         """Set vertical speed for smooth movement
@@ -360,19 +362,19 @@ class ActionExecutor:
         """
         # Accept 'vspeed', 'value', or 'speed' parameters
         speed_value = parameters.get("vspeed", parameters.get("value", parameters.get("speed", "0")))
-        print(f"  🔍 set_vspeed: raw value = '{speed_value}', _collision_other = {getattr(self, '_collision_other', None)}")
+        logger.debug(f"  🔍 set_vspeed: raw value = '{speed_value}', _collision_other = {getattr(self, '_collision_other', None)}")
         speed = self._parse_value(str(speed_value), instance)
-        print(f"  🔍 set_vspeed: parsed value = {speed}")
+        logger.debug(f"  🔍 set_vspeed: parsed value = {speed}")
         try:
             speed = float(speed)
         except (ValueError, TypeError):
-            print(f"⚠️  set_vspeed: Invalid speed value '{speed_value}'")
+            logger.warning(f"⚠️  set_vspeed: Invalid speed value '{speed_value}'")
             return
         old_speed = instance.vspeed
         instance.vspeed = speed
         # Only print when speed changes
         if old_speed != speed:
-            print(f"  🏃 {instance.object_name} vspeed: {old_speed} → {speed}")
+            logger.debug(f"  🏃 {instance.object_name} vspeed: {old_speed} → {speed}")
 
     def execute_stop_movement_action(self, instance, parameters: Dict[str, Any]):
         """Stop all movement by setting speeds to zero"""
@@ -403,25 +405,25 @@ class ActionExecutor:
                 # Corner collision - reverse both components
                 instance.hspeed = -hspeed
                 instance.vspeed = -vspeed
-                print(f"  🏓 {instance.object_name} bounced corner, hspeed: {hspeed} → {instance.hspeed}, vspeed: {vspeed} → {instance.vspeed}")
+                logger.debug(f"  🏓 {instance.object_name} bounced corner, hspeed: {hspeed} → {instance.hspeed}, vspeed: {vspeed} → {instance.vspeed}")
             elif h_blocked:
                 # Only horizontal blocked - reverse horizontal
                 instance.hspeed = -hspeed
-                print(f"  🏓 {instance.object_name} bounced horizontally, hspeed: {hspeed} → {instance.hspeed}")
+                logger.debug(f"  🏓 {instance.object_name} bounced horizontally, hspeed: {hspeed} → {instance.hspeed}")
             elif v_blocked:
                 # Only vertical blocked - reverse vertical
                 instance.vspeed = -vspeed
-                print(f"  🏓 {instance.object_name} bounced vertically, vspeed: {vspeed} → {instance.vspeed}")
+                logger.debug(f"  🏓 {instance.object_name} bounced vertically, vspeed: {vspeed} → {instance.vspeed}")
             else:
                 # Fallback: no flags, use legacy behavior (primary direction)
                 if abs(hspeed) >= abs(vspeed):
                     instance.hspeed = -hspeed
-                    print(f"  🏓 {instance.object_name} bounced horizontally (fallback), hspeed: {hspeed} → {instance.hspeed}")
+                    logger.debug(f"  🏓 {instance.object_name} bounced horizontally (fallback), hspeed: {hspeed} → {instance.hspeed}")
                 else:
                     instance.vspeed = -vspeed
-                    print(f"  🏓 {instance.object_name} bounced vertically (fallback), vspeed: {vspeed} → {instance.vspeed}")
+                    logger.debug(f"  🏓 {instance.object_name} bounced vertically (fallback), vspeed: {vspeed} → {instance.vspeed}")
         else:
-            print(f"  ⚠️ {instance.object_name} bounce: no velocity to reverse")
+            logger.debug(f"  ⚠️ {instance.object_name} bounce: no velocity to reverse")
 
     def execute_set_gravity_action(self, instance, parameters: Dict[str, Any]):
         """Set gravity for the instance
@@ -437,12 +439,12 @@ class ActionExecutor:
             direction = float(direction)
             gravity = float(gravity)
         except (ValueError, TypeError):
-            print(f"⚠️  set_gravity: Invalid values direction={direction}, gravity={gravity}")
+            logger.warning(f"⚠️  set_gravity: Invalid values direction={direction}, gravity={gravity}")
             return
 
         instance.gravity = gravity
         instance.gravity_direction = direction
-        print(f"  ⬇️ {instance.object_name} gravity set to {gravity} at {direction}°")
+        logger.debug(f"  ⬇️ {instance.object_name} gravity set to {gravity} at {direction}°")
 
     def execute_set_friction_action(self, instance, parameters: Dict[str, Any]):
         """Set friction for the instance
@@ -455,11 +457,11 @@ class ActionExecutor:
         try:
             friction = float(friction)
         except (ValueError, TypeError):
-            print(f"⚠️  set_friction: Invalid friction value '{friction}'")
+            logger.warning(f"⚠️  set_friction: Invalid friction value '{friction}'")
             return
 
         instance.friction = friction
-        print(f"  🛑 {instance.object_name} friction set to {friction}")
+        logger.debug(f"  🛑 {instance.object_name} friction set to {friction}")
 
     def execute_set_direction_speed_action(self, instance, parameters: Dict[str, Any]):
         """Set exact direction and speed for movement
@@ -487,7 +489,7 @@ class ActionExecutor:
             direction = float(direction)
             speed = float(speed)
         except (ValueError, TypeError):
-            print(f"⚠️ set_direction_speed: Invalid values direction={direction}, speed={speed}")
+            logger.warning(f"⚠️ set_direction_speed: Invalid values direction={direction}, speed={speed}")
             return
 
         # Convert angle to radians (GameMaker uses degrees, 0° is right, 90° is up)
@@ -498,8 +500,8 @@ class ActionExecutor:
         instance.hspeed = math.cos(angle_rad) * speed
         instance.vspeed = -math.sin(angle_rad) * speed
 
-        print(f"  🧭 {instance.object_name} set direction={direction}° speed={speed}")
-        print(f"      hspeed={instance.hspeed:.2f}, vspeed={instance.vspeed:.2f}")
+        logger.debug(f"  🧭 {instance.object_name} set direction={direction}° speed={speed}")
+        logger.debug(f"      hspeed={instance.hspeed:.2f}, vspeed={instance.vspeed:.2f}")
 
     def execute_move_towards_point_action(self, instance, parameters: Dict[str, Any]):
         """Move towards a specific point at given speed
@@ -528,7 +530,7 @@ class ActionExecutor:
             target_y = float(target_y)
             speed = float(speed)
         except (ValueError, TypeError):
-            print(f"⚠️  move_towards_point: Invalid values x={target_x}, y={target_y}, speed={speed}")
+            logger.warning(f"⚠️  move_towards_point: Invalid values x={target_x}, y={target_y}, speed={speed}")
             return
 
         # Calculate direction to target
@@ -542,7 +544,7 @@ class ActionExecutor:
             # Already at target, stop movement
             instance.hspeed = 0
             instance.vspeed = 0
-            print(f"  🎯 {instance.object_name} already at target ({target_x}, {target_y})")
+            logger.debug(f"  🎯 {instance.object_name} already at target ({target_x}, {target_y})")
             return
 
         # Calculate normalized direction vector
@@ -556,8 +558,8 @@ class ActionExecutor:
         # Calculate angle for display
         angle = math.degrees(math.atan2(-dy, dx))  # Negative dy for screen coordinates
 
-        print(f"  🎯 {instance.object_name} moving towards ({target_x}, {target_y}) at speed {speed}")
-        print(f"      angle={angle:.1f}°, hspeed={instance.hspeed:.2f}, vspeed={instance.vspeed:.2f}")
+        logger.debug(f"  🎯 {instance.object_name} moving towards ({target_x}, {target_y}) at speed {speed}")
+        logger.debug(f"      angle={angle:.1f}°, hspeed={instance.hspeed:.2f}, vspeed={instance.vspeed:.2f}")
 
     def execute_move_to_contact_action(self, instance, parameters: Dict[str, Any]):
         """Move in a direction until touching an object
@@ -587,11 +589,11 @@ class ActionExecutor:
             direction = float(direction)
             max_distance = float(max_distance)
         except (ValueError, TypeError):
-            print(f"⚠️  move_to_contact: Invalid values direction={direction}, max_distance={max_distance}")
+            logger.warning(f"⚠️  move_to_contact: Invalid values direction={direction}, max_distance={max_distance}")
             return False
 
         if not self.game_runner:
-            print("⚠️  move_to_contact: No game runner available")
+            logger.debug("⚠️  move_to_contact: No game runner available")
             return False
 
         # Calculate movement vector (1 pixel per step)
@@ -647,8 +649,8 @@ class ActionExecutor:
 
             if collision_found:
                 # Stop at current position (before collision)
-                print(f"  👉 {instance.object_name} moved to contact at ({instance.x:.1f}, {instance.y:.1f})")
-                print(f"      direction={direction}°, distance={distance_moved:.1f}px")
+                logger.debug(f"  👉 {instance.object_name} moved to contact at ({instance.x:.1f}, {instance.y:.1f})")
+                logger.debug(f"      direction={direction}°, distance={distance_moved:.1f}px")
                 return True
 
             # No collision, move to test position
@@ -657,21 +659,21 @@ class ActionExecutor:
             distance_moved += 1
 
         # Reached max distance without contact
-        print(f"  👉 {instance.object_name} reached max distance {max_distance}px without contact")
-        print(f"      moved from ({start_x:.1f}, {start_y:.1f}) to ({instance.x:.1f}, {instance.y:.1f})")
+        logger.debug(f"  👉 {instance.object_name} reached max distance {max_distance}px without contact")
+        logger.debug(f"      moved from ({start_x:.1f}, {start_y:.1f}) to ({instance.x:.1f}, {instance.y:.1f})")
         return False
 
     def execute_reverse_horizontal_action(self, instance, parameters: Dict[str, Any]):
         """Reverse horizontal movement direction"""
         old_hspeed = instance.hspeed
         instance.hspeed = -instance.hspeed
-        print(f"  ↔️ {instance.object_name} reversed hspeed: {old_hspeed} → {instance.hspeed}")
+        logger.debug(f"  ↔️ {instance.object_name} reversed hspeed: {old_hspeed} → {instance.hspeed}")
 
     def execute_reverse_vertical_action(self, instance, parameters: Dict[str, Any]):
         """Reverse vertical movement direction"""
         old_vspeed = instance.vspeed
         instance.vspeed = -instance.vspeed
-        print(f"  ↕️ {instance.object_name} reversed vspeed: {old_vspeed} → {instance.vspeed}")
+        logger.debug(f"  ↕️ {instance.object_name} reversed vspeed: {old_vspeed} → {instance.vspeed}")
 
     def execute_wrap_around_room_action(self, instance, parameters: Dict[str, Any]):
         """Wrap instance to opposite side when leaving room
@@ -711,7 +713,7 @@ class ActionExecutor:
                 wrapped = True
 
         if wrapped:
-            print(f"  🔄 {instance.object_name} wrapped to ({instance.x}, {instance.y})")
+            logger.debug(f"  🔄 {instance.object_name} wrapped to ({instance.x}, {instance.y})")
 
     def execute_jump_to_position_action(self, instance, parameters: Dict[str, Any]):
         """Jump to a specific position instantly
@@ -734,39 +736,39 @@ class ActionExecutor:
         # Debug: Show stored collision speeds
         collision_speeds = getattr(self, '_collision_speeds', {})
         if collision_speeds:
-            print(f"  🔍 jump_to_position: Using collision speeds: {collision_speeds}")
+            logger.debug(f"  🔍 jump_to_position: Using collision speeds: {collision_speeds}")
 
         # Evaluate X expression
         try:
             x_value = self._parse_value(x_expr, instance)
-            print(f"  🔍 X expression '{x_expr}' evaluated to: {x_value}")
+            logger.debug(f"  🔍 X expression '{x_expr}' evaluated to: {x_value}")
             if x_value is None or isinstance(x_value, str):
                 x_value = 0
             x_value = float(x_value)
         except Exception as e:
-            print(f"⚠️ Error evaluating X expression '{x_expr}': {e}")
+            logger.error(f"⚠️ Error evaluating X expression '{x_expr}': {e}")
             x_value = 0.0
 
         # Evaluate Y expression
         try:
             y_value = self._parse_value(y_expr, instance)
-            print(f"  🔍 Y expression '{y_expr}' evaluated to: {y_value}")
+            logger.debug(f"  🔍 Y expression '{y_expr}' evaluated to: {y_value}")
             if y_value is None or isinstance(y_value, str):
                 y_value = 0
             y_value = float(y_value)
         except Exception as e:
-            print(f"⚠️ Error evaluating Y expression '{y_expr}': {e}")
+            logger.error(f"⚠️ Error evaluating Y expression '{y_expr}': {e}")
             y_value = 0.0
 
         # Apply position
         if relative:
             instance.x += x_value
             instance.y += y_value
-            print(f"  📍 {instance.object_name} jumped relatively by ({x_value}, {y_value}) → ({instance.x}, {instance.y})")
+            logger.debug(f"  📍 {instance.object_name} jumped relatively by ({x_value}, {y_value}) → ({instance.x}, {instance.y})")
         else:
             instance.x = x_value
             instance.y = y_value
-            print(f"  📍 {instance.object_name} jumped to ({instance.x}, {instance.y})")
+            logger.debug(f"  📍 {instance.object_name} jumped to ({instance.x}, {instance.y})")
 
         # Snap to grid after jump only during collision events with push_other
         # This is important for grid-based games like Sokoban but not for general use
@@ -774,7 +776,7 @@ class ActionExecutor:
             grid_size = 32
             instance.x = round(instance.x / grid_size) * grid_size
             instance.y = round(instance.y / grid_size) * grid_size
-            print(f"  📐 Snapped to grid: ({instance.x}, {instance.y})")
+            logger.debug(f"  📐 Snapped to grid: ({instance.x}, {instance.y})")
 
         # Sokoban-style push: move the "other" instance (pusher) to fill the gap
         # This only happens during collision events when push_other is True
@@ -787,7 +789,7 @@ class ActionExecutor:
                 # Stop the pusher's movement
                 other.hspeed = 0
                 other.vspeed = 0
-                print(f"  🚶 Pusher {other.object_name} moved to ({old_x}, {old_y}) and stopped")
+                logger.debug(f"  🚶 Pusher {other.object_name} moved to ({old_x}, {old_y}) and stopped")
 
     def execute_jump_to_start_action(self, instance, parameters: Dict[str, Any]):
         """Jump to the instance's starting position (where it was created)
@@ -801,7 +803,7 @@ class ActionExecutor:
         instance.x = start_x
         instance.y = start_y
 
-        print(f"  🏠 {instance.object_name} jumped to start position ({start_x}, {start_y})")
+        logger.debug(f"  🏠 {instance.object_name} jumped to start position ({start_x}, {start_y})")
 
     def execute_jump_to_random_action(self, instance, parameters: Dict[str, Any]):
         """Jump to a random position in the room
@@ -847,7 +849,7 @@ class ActionExecutor:
         instance.x = float(new_x)
         instance.y = float(new_y)
 
-        print(f"  🎲 {instance.object_name} jumped to random position ({new_x}, {new_y})")
+        logger.debug(f"  🎲 {instance.object_name} jumped to random position ({new_x}, {new_y})")
 
     def execute_wrap_around_room_action(self, instance, parameters: Dict[str, Any]):
         """Wrap instance to opposite side when leaving room boundaries
@@ -895,7 +897,7 @@ class ActionExecutor:
                 wrapped = True
 
         if wrapped:
-            print(f"  🔄 {instance.object_name} wrapped to ({instance.x}, {instance.y})")
+            logger.debug(f"  🔄 {instance.object_name} wrapped to ({instance.x}, {instance.y})")
 
     def execute_start_moving_direction_action(self, instance, parameters: Dict[str, Any]):
         """Start moving in a specific direction
@@ -949,7 +951,7 @@ class ActionExecutor:
                 if not direction_expr:
                     instance.hspeed = 0
                     instance.vspeed = 0
-                    print("   ➡️ Start Moving Direction: stopped (empty directions)")
+                    logger.debug("   ➡️ Start Moving Direction: stopped (empty directions)")
                     return
             # Pick random direction from list
             chosen = random.choice(directions)
@@ -978,7 +980,7 @@ class ActionExecutor:
             if is_expression and directions.lower() not in direction_map:
                 direction = self._evaluate_expression(directions, instance)
                 if not isinstance(direction, (int, float)):
-                    print(f"   ⚠️ Could not evaluate direction expression: {directions}")
+                    logger.debug(f"   ⚠️ Could not evaluate direction expression: {directions}")
                     direction = 0
             else:
                 direction = direction_map.get(directions.lower(), 0)
@@ -989,7 +991,7 @@ class ActionExecutor:
         if direction == -1:
             instance.hspeed = 0
             instance.vspeed = 0
-            print("   ➡️ Start Moving Direction: stopped")
+            logger.debug("   ➡️ Start Moving Direction: stopped")
             return
 
         # Convert angle to radians (GameMaker uses degrees, 0° is right, 90° is up)
@@ -1001,8 +1003,8 @@ class ActionExecutor:
         instance.vspeed = -math.sin(angle_rad) * speed
 
         # DEBUG
-        print(f"   ➡️ Start Moving Direction: {direction}° at speed {speed}")
-        print(f"      hspeed={instance.hspeed:.2f}, vspeed={instance.vspeed:.2f}")
+        logger.debug(f"   ➡️ Start Moving Direction: {direction}° at speed {speed}")
+        logger.debug(f"      hspeed={instance.hspeed:.2f}, vspeed={instance.vspeed:.2f}")
 
     # ==================== GRID UTILITIES ====================
 
@@ -1141,28 +1143,28 @@ class ActionExecutor:
         # Debug: Show stored collision speeds
         collision_speeds = getattr(self, '_collision_speeds', {})
         if collision_speeds:
-            print(f"  🔍 if_collision: Using collision speeds: {collision_speeds}")
+            logger.debug(f"  🔍 if_collision: Using collision speeds: {collision_speeds}")
 
         # Evaluate X offset expression using _parse_value
         try:
             x_offset = self._parse_value(x_expr, instance)
-            print(f"  🔍 X expression '{x_expr}' evaluated to: {x_offset}")
+            logger.debug(f"  🔍 X expression '{x_expr}' evaluated to: {x_offset}")
             if x_offset is None or isinstance(x_offset, str):
                 x_offset = 0
             x_offset = float(x_offset)
         except Exception as e:
-            print(f"⚠️ Error evaluating X expression '{x_expr}': {e}")
+            logger.error(f"⚠️ Error evaluating X expression '{x_expr}': {e}")
             x_offset = 0.0
 
         # Evaluate Y offset expression using _parse_value
         try:
             y_offset = self._parse_value(y_expr, instance)
-            print(f"  🔍 Y expression '{y_expr}' evaluated to: {y_offset}")
+            logger.debug(f"  🔍 Y expression '{y_expr}' evaluated to: {y_offset}")
             if y_offset is None or isinstance(y_offset, str):
                 y_offset = 0
             y_offset = float(y_offset)
         except Exception as e:
-            print(f"⚠️ Error evaluating Y expression '{y_expr}': {e}")
+            logger.error(f"⚠️ Error evaluating Y expression '{y_expr}': {e}")
             y_offset = 0.0
 
         # Calculate check position
@@ -1179,12 +1181,12 @@ class ActionExecutor:
                 instance, check_x, check_y, object_type, exclude_instance
             )
         else:
-            print("  ⚠️ if_collision: game_runner is None! Cannot check collisions.")
+            logger.debug("  ⚠️ if_collision: game_runner is None! Cannot check collisions.")
 
         # Apply NOT flag
         result = not has_collision if not_flag else has_collision
 
-        print(f"  ❓ if_collision at ({check_x}, {check_y}) for '{object_type}': collision={has_collision}, not_flag={not_flag}, result={result}")
+        logger.debug(f"  ❓ if_collision at ({check_x}, {check_y}) for '{object_type}': collision={has_collision}, not_flag={not_flag}, result={result}")
 
         return result
 
@@ -1221,7 +1223,7 @@ class ActionExecutor:
         not_flag = parameters.get("not_flag", False)
 
         if not object_type:
-            print("  ⚠️ if_object_exists: No object type specified")
+            logger.debug("  ⚠️ if_object_exists: No object type specified")
             return False
 
         # Count instances of the specified object type
@@ -1235,7 +1237,7 @@ class ActionExecutor:
         # Apply NOT flag
         result = not exists if not_flag else exists
 
-        print(f"  ❓ if_object_exists: '{object_type}' exists={exists}, not_flag={not_flag}, result={result}")
+        logger.debug(f"  ❓ if_object_exists: '{object_type}' exists={exists}, not_flag={not_flag}, result={result}")
 
         return result
 
@@ -1244,7 +1246,7 @@ class ActionExecutor:
     def execute_show_message_action(self, instance, parameters: Dict[str, Any]):
         """Execute show message action"""
         message = parameters.get("message", "")
-        print(f"💬 MESSAGE: {message}")
+        logger.info(f"💬 MESSAGE: {message}")
 
         # Store message for game runner to display
         if not hasattr(instance, 'pending_messages'):
@@ -1253,17 +1255,17 @@ class ActionExecutor:
 
     def execute_restart_room_action(self, instance, parameters: Dict[str, Any]):
         """Execute restart room action - resets current level"""
-        print(f"🔄 Restart room requested by {instance.object_name}")
+        logger.debug(f"🔄 Restart room requested by {instance.object_name}")
         instance.restart_room_flag = True
 
     def execute_next_room_action(self, instance, parameters: Dict[str, Any]):
         """Execute next room action - advances to next level"""
-        print(f"➡️  Next room requested by {instance.object_name}")
+        logger.debug(f"➡️  Next room requested by {instance.object_name}")
         instance.next_room_flag = True
 
     def execute_previous_room_action(self, instance, parameters: Dict[str, Any]):
         """Execute previous room action - goes to previous level"""
-        print(f"⬅️  Previous room requested by {instance.object_name}")
+        logger.debug(f"⬅️  Previous room requested by {instance.object_name}")
         instance.previous_room_flag = True
 
     def execute_if_next_room_exists_action(self, instance, parameters: Dict[str, Any]):
@@ -1276,7 +1278,7 @@ class ActionExecutor:
         Also supports nested then_actions/else_actions for Blockly-style conditionals.
         """
         if not self.game_runner:
-            print("⚠️  Warning: if_next_room_exists requires game_runner reference")
+            logger.warning("⚠️  Warning: if_next_room_exists requires game_runner reference")
             return False
 
         room_list = self.game_runner.get_room_list()
@@ -1290,7 +1292,7 @@ class ActionExecutor:
             except ValueError:
                 pass
 
-        print(f"❓ Next room exists: {next_exists}")
+        logger.debug(f"❓ Next room exists: {next_exists}")
 
         # If there are nested actions (Blockly-style), execute them
         then_actions = parameters.get('then_actions', [])
@@ -1318,7 +1320,7 @@ class ActionExecutor:
         Also supports nested then_actions/else_actions for Blockly-style conditionals.
         """
         if not self.game_runner:
-            print("⚠️  Warning: if_previous_room_exists requires game_runner reference")
+            logger.warning("⚠️  Warning: if_previous_room_exists requires game_runner reference")
             return False
 
         room_list = self.game_runner.get_room_list()
@@ -1332,7 +1334,7 @@ class ActionExecutor:
             except ValueError:
                 pass
 
-        print(f"❓ Previous room exists: {prev_exists}")
+        logger.debug(f"❓ Previous room exists: {prev_exists}")
 
         # If there are nested actions (Blockly-style), execute them
         then_actions = parameters.get('then_actions', [])
@@ -1537,10 +1539,10 @@ class ActionExecutor:
                 result = eval(expr_substituted, {"__builtins__": {}}, safe_namespace)
                 return result
             else:
-                print(f"⚠️ Unsafe expression: {expr_substituted}")
+                logger.debug(f"⚠️ Unsafe expression: {expr_substituted}")
                 return 0
         except Exception as e:
-            print(f"⚠️ Error evaluating expression '{expr_str}': {e}")
+            logger.error(f"⚠️ Error evaluating expression '{expr_str}': {e}")
             return 0
 
     def _get_variable_value(self, var_ref: str, instance=None):
@@ -1600,7 +1602,7 @@ class ActionExecutor:
         relative = parameters.get("relative", False)
 
         if not variable:
-            print("⚠️  set_variable: No variable name specified")
+            logger.debug("⚠️  set_variable: No variable name specified")
             return
 
         # Parse the value
@@ -1608,7 +1610,7 @@ class ActionExecutor:
 
         if scope == "global":
             if not self.game_runner:
-                print("⚠️  set_variable: Cannot access global variables without game_runner")
+                logger.debug("⚠️  set_variable: Cannot access global variables without game_runner")
                 return
 
             if relative:
@@ -1616,17 +1618,17 @@ class ActionExecutor:
                 try:
                     value = current + value
                 except TypeError:
-                    print(f"⚠️  set_variable: Cannot add {type(value)} to {type(current)}")
+                    logger.debug(f"⚠️  set_variable: Cannot add {type(value)} to {type(current)}")
                     return
 
             self.game_runner.global_variables[variable] = value
-            print(f"🌐 Global variable '{variable}' = {value}")
+            logger.debug(f"🌐 Global variable '{variable}' = {value}")
 
         elif scope == "other":
             # Get the "other" instance from collision context
             other = getattr(self, '_collision_other', None)
             if not other:
-                print("⚠️  set_variable: 'other' scope only available in collision events")
+                logger.debug("⚠️  set_variable: 'other' scope only available in collision events")
                 return
 
             if relative:
@@ -1634,11 +1636,11 @@ class ActionExecutor:
                 try:
                     value = current + value
                 except TypeError:
-                    print(f"⚠️  set_variable: Cannot add {type(value)} to {type(current)}")
+                    logger.debug(f"⚠️  set_variable: Cannot add {type(value)} to {type(current)}")
                     return
 
             setattr(other, variable, value)
-            print(f"📝 Other instance variable '{variable}' = {value}")
+            logger.debug(f"📝 Other instance variable '{variable}' = {value}")
 
         else:  # scope == "sel"
             if relative:
@@ -1646,11 +1648,11 @@ class ActionExecutor:
                 try:
                     value = current + value
                 except TypeError:
-                    print(f"⚠️  set_variable: Cannot add {type(value)} to {type(current)}")
+                    logger.debug(f"⚠️  set_variable: Cannot add {type(value)} to {type(current)}")
                     return
 
             setattr(instance, variable, value)
-            print(f"📝 Instance variable '{variable}' = {value}")
+            logger.debug(f"📝 Instance variable '{variable}' = {value}")
 
     def execute_test_variable_action(self, instance, parameters: Dict[str, Any]):
         """Test an instance or global variable
@@ -1669,7 +1671,7 @@ class ActionExecutor:
         operation = parameters.get("operation", "equal")
 
         if not variable:
-            print("⚠️  test_variable: No variable name specified")
+            logger.debug("⚠️  test_variable: No variable name specified")
             return False
 
         # Get current value based on scope
@@ -1681,7 +1683,7 @@ class ActionExecutor:
             # Get the "other" instance from collision context
             other = getattr(self, '_collision_other', None)
             if not other:
-                print("⚠️  test_variable: 'other' scope only available in collision events")
+                logger.debug("⚠️  test_variable: 'other' scope only available in collision events")
                 return False
             current = getattr(other, variable, 0)
         else:  # scope == "sel"
@@ -1711,7 +1713,7 @@ class ActionExecutor:
             result = False
 
         scope_label = "other" if scope == "other" else ("global" if scope == "global" else "sel")
-        print(f"❓ Test {scope_label}.{variable} ({current}) {operation} {compare_value}: {result}")
+        logger.debug(f"❓ Test {scope_label}.{variable} ({current}) {operation} {compare_value}: {result}")
         return result
 
     # ==================== ALARM ACTIONS ====================
@@ -1732,13 +1734,13 @@ class ActionExecutor:
 
         # Validate alarm number
         if alarm_number < 0 or alarm_number > 11:
-            print(f"⚠️ set_alarm: Invalid alarm number {alarm_number} (must be 0-11)")
+            logger.warning(f"⚠️ set_alarm: Invalid alarm number {alarm_number} (must be 0-11)")
             return
 
         # Parse steps (can be a number or variable)
         steps = self._parse_value(str(steps_param), instance)
         if not isinstance(steps, (int, float)):
-            print(f"⚠️ set_alarm: Invalid steps value '{steps_param}', defaulting to 30")
+            logger.warning(f"⚠️ set_alarm: Invalid steps value '{steps_param}', defaulting to 30")
             steps = 30
         steps = int(steps)
 
@@ -1755,16 +1757,16 @@ class ActionExecutor:
         instance.alarm[alarm_number] = steps
 
         if steps < 0:
-            print(f"⏰ Alarm {alarm_number} disabled for {instance.object_name}")
+            logger.debug(f"⏰ Alarm {alarm_number} disabled for {instance.object_name}")
         else:
-            print(f"⏰ Alarm {alarm_number} set to {steps} steps for {instance.object_name}")
+            logger.debug(f"⏰ Alarm {alarm_number} set to {steps} steps for {instance.object_name}")
 
     # ==================== SCORE/LIVES/HEALTH ACTIONS ====================
 
     def execute_set_score_action(self, instance, parameters: Dict[str, Any]):
         """Set the score value"""
         if not self.game_runner:
-            print("⚠️  Warning: set_score requires game_runner reference")
+            logger.warning("⚠️  Warning: set_score requires game_runner reference")
             return
 
         value = int(parameters.get("value", 0))
@@ -1778,7 +1780,7 @@ class ActionExecutor:
         # Auto-enable score in caption when score is used
         self.game_runner.show_score_in_caption = True
 
-        print(f"🏆 Score set to: {self.game_runner.score}")
+        logger.debug(f"🏆 Score set to: {self.game_runner.score}")
 
     def execute_test_score_action(self, instance, parameters: Dict[str, Any]):
         """Test score value and execute conditional actions
@@ -1834,7 +1836,7 @@ class ActionExecutor:
     def execute_set_lives_action(self, instance, parameters: Dict[str, Any]):
         """Set the lives value"""
         if not self.game_runner:
-            print("⚠️  Warning: set_lives requires game_runner reference")
+            logger.warning("⚠️  Warning: set_lives requires game_runner reference")
             return
 
         value = int(parameters.get("value", 3))
@@ -1853,11 +1855,11 @@ class ActionExecutor:
         # Auto-enable lives in caption when lives are used
         self.game_runner.show_lives_in_caption = True
 
-        print(f"❤️  Lives set to: {self.game_runner.lives}")
+        logger.debug(f"❤️  Lives set to: {self.game_runner.lives}")
 
         # Trigger no_more_lives event if lives just reached 0
         if old_lives > 0 and self.game_runner.lives <= 0:
-            print("💀 No more lives! Triggering no_more_lives event...")
+            logger.debug("💀 No more lives! Triggering no_more_lives event...")
             self.game_runner.trigger_no_more_lives_event(instance)
 
     def execute_test_lives_action(self, instance, parameters: Dict[str, Any]):
@@ -1911,7 +1913,7 @@ class ActionExecutor:
     def execute_set_health_action(self, instance, parameters: Dict[str, Any]):
         """Set health value (0-100)"""
         if not self.game_runner:
-            print("⚠️  Warning: set_health requires game_runner reference")
+            logger.warning("⚠️  Warning: set_health requires game_runner reference")
             return
 
         value = float(parameters.get("value", 100))
@@ -1930,11 +1932,11 @@ class ActionExecutor:
         # Auto-enable health in caption when health is used
         self.game_runner.show_health_in_caption = True
 
-        print(f"💚 Health set to: {self.game_runner.health}")
+        logger.debug(f"💚 Health set to: {self.game_runner.health}")
 
         # Trigger no_more_health event if health just reached 0
         if old_health > 0 and self.game_runner.health <= 0:
-            print("💔 No more health! Triggering no_more_health event...")
+            logger.debug("💔 No more health! Triggering no_more_health event...")
             self.game_runner.trigger_no_more_health_event(instance)
 
     def execute_test_health_action(self, instance, parameters: Dict[str, Any]):
@@ -2002,7 +2004,7 @@ class ActionExecutor:
         self.game_runner.show_health_in_caption = parameters.get("show_health", False)
         self.game_runner.window_caption = parameters.get("caption", "")
 
-        print(f"🪟 Caption settings updated: score={self.game_runner.show_score_in_caption}, "
+        logger.debug(f"🪟 Caption settings updated: score={self.game_runner.show_score_in_caption}, "
               f"lives={self.game_runner.show_lives_in_caption}, health={self.game_runner.show_health_in_caption}")
 
     def execute_show_highscore_action(self, instance, parameters: Dict[str, Any]):
@@ -2032,7 +2034,7 @@ class ActionExecutor:
         other_color = hex_to_rgb(parameters.get('other_color'), (0, 0, 0))
         allow_new_entry = parameters.get('allow_new_entry', True)
 
-        print(f"🏆 Show highscore action - current score: {self.game_runner.score}")
+        logger.debug(f"🏆 Show highscore action - current score: {self.game_runner.score}")
 
         # Show the dialog
         self.game_runner.show_highscore_dialog(
@@ -2056,7 +2058,7 @@ class ActionExecutor:
         if not self.game_runner:
             return
 
-        print("🚪 Ending game...")
+        logger.debug("🚪 Ending game...")
         self.game_runner.running = False
 
     def execute_restart_game_action(self, instance, parameters: Dict[str, Any]):
@@ -2064,7 +2066,7 @@ class ActionExecutor:
         if not self.game_runner:
             return
 
-        print("🔄 Restart game requested...")
+        logger.debug("🔄 Restart game requested...")
         # Set flag for game loop to handle the restart
         # This ensures the room is properly recreated with fresh instances
         instance.restart_game_flag = True
@@ -2107,7 +2109,7 @@ class ActionExecutor:
                     setattr(instance, key, value)
 
         except Exception as e:
-            print(f"⚠️  Error executing custom code: {e}")
+            logger.error(f"⚠️  Error executing custom code: {e}")
             import traceback
             traceback.print_exc()
 
@@ -2123,11 +2125,11 @@ class ActionExecutor:
 
         if target == "other" and hasattr(self, '_collision_other') and self._collision_other:
             # Destroy the other instance in a collision context
-            print(f"💀 Destroying other instance: {self._collision_other.object_name}")
+            logger.debug(f"💀 Destroying other instance: {self._collision_other.object_name}")
             self._collision_other.to_destroy = True
         else:
             # Destroy self (default behavior) - accept both "self" and "sel"
-            print(f"💀 Destroying instance: {instance.object_name}")
+            logger.debug(f"💀 Destroying instance: {instance.object_name}")
             instance.to_destroy = True
 
     def execute_create_instance_action(self, instance, parameters: Dict[str, Any]):
@@ -2145,11 +2147,11 @@ class ActionExecutor:
         relative = parameters.get("relative", False)
 
         if not object_name:
-            print("⚠️ create_instance: No object specified")
+            logger.debug("⚠️ create_instance: No object specified")
             return
 
         if not self.game_runner:
-            print("⚠️ create_instance: No game_runner reference")
+            logger.debug("⚠️ create_instance: No game_runner reference")
             return
 
         # Parse position values (can be expressions)
@@ -2171,7 +2173,7 @@ class ActionExecutor:
         # Get the object's data
         objects_data = self.game_runner.project_data.get('assets', {}).get('objects', {})
         if object_name not in objects_data:
-            print(f"⚠️ create_instance: Object '{object_name}' not found")
+            logger.debug(f"⚠️ create_instance: Object '{object_name}' not found")
             return
 
         object_data = objects_data[object_name]
@@ -2213,9 +2215,9 @@ class ActionExecutor:
             if 'create' in events:
                 self.execute_event(new_instance, 'create', events)
 
-            print(f"➕ Created instance of '{object_name}' at ({x}, {y})")
+            logger.debug(f"➕ Created instance of '{object_name}' at ({x}, {y})")
         else:
-            print("⚠️ create_instance: No current room to add instance to")
+            logger.debug("⚠️ create_instance: No current room to add instance to")
 
     def execute_change_instance_action(self, instance, parameters: Dict[str, Any]):
         """Change instance into a different object type
@@ -2233,7 +2235,7 @@ class ActionExecutor:
         target = parameters.get("target", "sel")
 
         if not new_object_name:
-            print("⚠️ change_instance: No object specified")
+            logger.debug("⚠️ change_instance: No object specified")
             return
 
         # Determine which instance to change
@@ -2242,17 +2244,17 @@ class ActionExecutor:
         else:
             target_instance = instance
 
-        print(f"🔄 Changing {target_instance.object_name} into {new_object_name}")
+        logger.debug(f"🔄 Changing {target_instance.object_name} into {new_object_name}")
 
         # Get the game runner to access objects data and room
         if not self.game_runner:
-            print("⚠️ change_instance: No game_runner reference")
+            logger.debug("⚠️ change_instance: No game_runner reference")
             return
 
         # Get the new object's data
         objects_data = self.game_runner.project_data.get('assets', {}).get('objects', {})
         if new_object_name not in objects_data:
-            print(f"⚠️ change_instance: Object '{new_object_name}' not found")
+            logger.debug(f"⚠️ change_instance: Object '{new_object_name}' not found")
             return
 
         new_object_data = objects_data[new_object_name]
@@ -2261,7 +2263,7 @@ class ActionExecutor:
         if perform_events and target_instance.object_data:
             events = target_instance.object_data.get('events', {})
             if 'destroy' in events:
-                print(f"  💥 Executing destroy event for {target_instance.object_name}")
+                logger.debug(f"  💥 Executing destroy event for {target_instance.object_name}")
                 self.execute_event(target_instance, 'destroy', events)
 
         # Store current position and properties
@@ -2278,7 +2280,7 @@ class ActionExecutor:
         if sprite_name and sprite_name in self.game_runner.sprites:
             # Use set_sprite to properly update cached dimensions (_cached_width, _cached_height)
             target_instance.set_sprite(self.game_runner.sprites[sprite_name])
-            print(f"  🖼️ Updated sprite to: {sprite_name}")
+            logger.debug(f"  🖼️ Updated sprite to: {sprite_name}")
 
         # Reset collision tracking for the changed instance
         if hasattr(target_instance, '_active_collisions'):
@@ -2290,10 +2292,10 @@ class ActionExecutor:
         if perform_events:
             events = new_object_data.get('events', {})
             if 'create' in events:
-                print(f"  🎬 Executing create event for {new_object_name}")
+                logger.debug(f"  🎬 Executing create event for {new_object_name}")
                 self.execute_event(target_instance, 'create', events)
 
-        print(f"  ✅ Changed to {new_object_name} at ({old_x}, {old_y})")
+        logger.debug(f"  ✅ Changed to {new_object_name} at ({old_x}, {old_y})")
 
     # ==================== DRAWING ACTIONS ====================
 
@@ -2324,7 +2326,7 @@ class ActionExecutor:
         if self.game_runner:
             self.game_runner.draw_color = rgb_color
 
-        print(f"🎨 Set drawing color to {color} ({rgb_color}) for {instance.object_name}")
+        logger.debug(f"🎨 Set drawing color to {color} ({rgb_color}) for {instance.object_name}")
 
     def execute_draw_text_action(self, instance, parameters: Dict[str, Any]):
         """Draw text at specified position
@@ -2356,7 +2358,7 @@ class ActionExecutor:
             'color': color
         })
 
-        print(f"📝 Queued draw_text: '{text}' at ({x}, {y}) with color {color}")
+        logger.debug(f"📝 Queued draw_text: '{text}' at ({x}, {y}) with color {color}")
 
     def execute_draw_rectangle_action(self, instance, parameters: Dict[str, Any]):
         """Draw a rectangle (filled or outlined)
@@ -2399,7 +2401,7 @@ class ActionExecutor:
         })
 
         fill_type = "filled" if filled else "outline"
-        print(f"📐 Queued draw_rectangle: {fill_type} rect ({x1}, {y1}) to ({x2}, {y2}) with color {color}")
+        logger.debug(f"📐 Queued draw_rectangle: {fill_type} rect ({x1}, {y1}) to ({x2}, {y2}) with color {color}")
 
     def execute_draw_ellipse_action(self, instance, parameters: Dict[str, Any]):
         """Draw an ellipse or circle (filled or outlined)
@@ -2442,7 +2444,7 @@ class ActionExecutor:
         })
 
         fill_type = "filled" if filled else "outline"
-        print(f"⭕ Queued draw_ellipse: {fill_type} ellipse ({x1}, {y1}) to ({x2}, {y2}) with color {color}")
+        logger.debug(f"⭕ Queued draw_ellipse: {fill_type} ellipse ({x1}, {y1}) to ({x2}, {y2}) with color {color}")
 
     def execute_draw_line_action(self, instance, parameters: Dict[str, Any]):
         """Draw a line between two points
@@ -2477,7 +2479,7 @@ class ActionExecutor:
             'color': color
         })
 
-        print(f"➖ Queued draw_line: from ({x1}, {y1}) to ({x2}, {y2}) with color {color}")
+        logger.debug(f"➖ Queued draw_line: from ({x1}, {y1}) to ({x2}, {y2}) with color {color}")
 
     def execute_draw_sprite_action(self, instance, parameters: Dict[str, Any]):
         """Draw a sprite at specified position
@@ -2508,7 +2510,7 @@ class ActionExecutor:
             'subimage': subimage
         })
 
-        print(f"🖼️ Queued draw_sprite: '{sprite_name}' at ({x}, {y}) frame {subimage}")
+        logger.debug(f"🖼️ Queued draw_sprite: '{sprite_name}' at ({x}, {y}) frame {subimage}")
 
     # ==================== AUDIO ACTIONS ====================
 
@@ -2521,11 +2523,11 @@ class ActionExecutor:
         sound_name = parameters.get("sound", "")
 
         if not sound_name:
-            print("⚠️ stop_sound: No sound specified")
+            logger.debug("⚠️ stop_sound: No sound specified")
             return
 
         if not self.game_runner:
-            print("⚠️ stop_sound: No game_runner reference")
+            logger.debug("⚠️ stop_sound: No game_runner reference")
             return
 
         # Get the sound from the asset manager
@@ -2533,14 +2535,14 @@ class ActionExecutor:
             sound = self.game_runner.sounds[sound_name]
             if hasattr(sound, 'stop'):
                 sound.stop()
-                print(f"🔇 Stopped sound: {sound_name}")
+                logger.debug(f"🔇 Stopped sound: {sound_name}")
             else:
                 # Try pygame.mixer.stop for all sounds
                 import pygame
                 pygame.mixer.stop()
-                print(f"🔇 Stopped all sounds (trying to stop: {sound_name})")
+                logger.debug(f"🔇 Stopped all sounds (trying to stop: {sound_name})")
         else:
-            print(f"⚠️ stop_sound: Sound '{sound_name}' not found")
+            logger.debug(f"⚠️ stop_sound: Sound '{sound_name}' not found")
 
     # ==================== ROOM CONFIGURATION ACTIONS ====================
 
@@ -2551,7 +2553,7 @@ class ActionExecutor:
             caption: Caption text to display
         """
         if not self.game_runner:
-            print("⚠️ set_room_caption: No game_runner reference")
+            logger.debug("⚠️ set_room_caption: No game_runner reference")
             return
 
         # Get caption directly (no expression parsing for text)
@@ -2563,7 +2565,7 @@ class ActionExecutor:
         # Update the display caption immediately
         self.game_runner.update_caption()
 
-        print(f"🏷️ Set room caption: '{caption}'")
+        logger.debug(f"🏷️ Set room caption: '{caption}'")
 
     def execute_set_room_speed_action(self, instance, parameters: Dict[str, Any]):
         """Set game speed (frames per second)
@@ -2572,7 +2574,7 @@ class ActionExecutor:
             speed: Target FPS (default: 30)
         """
         if not self.game_runner:
-            print("⚠️ set_room_speed: No game_runner reference")
+            logger.debug("⚠️ set_room_speed: No game_runner reference")
             return
 
         # Parse speed with expression support
@@ -2590,7 +2592,7 @@ class ActionExecutor:
         # Update the game FPS
         self.game_runner.fps = speed
 
-        print(f"⏱️ Set room speed: {speed} FPS")
+        logger.debug(f"⏱️ Set room speed: {speed} FPS")
 
     def execute_set_background_color_action(self, instance, parameters: Dict[str, Any]):
         """Set room background color
@@ -2600,7 +2602,7 @@ class ActionExecutor:
             show_color: Whether to display the color (default: True)
         """
         if not self.game_runner or not self.game_runner.current_room:
-            print("⚠️ set_background_color: No current room")
+            logger.debug("⚠️ set_background_color: No current room")
             return
 
         # Parse parameters
@@ -2620,7 +2622,7 @@ class ActionExecutor:
         # If show_color is False, we could hide the background, but for now just update the color
         # (GameMaker's "show_color" typically controls whether solid color or image is displayed)
 
-        print(f"🎨 Set background color: {color_str} → {color_rgb}, show={show_color}")
+        logger.debug(f"🎨 Set background color: {color_str} → {color_rgb}, show={show_color}")
 
     def execute_set_background_action(self, instance, parameters: Dict[str, Any]):
         """Set room background image with tiling and scrolling options
@@ -2635,7 +2637,7 @@ class ActionExecutor:
             vspeed: Vertical scroll speed (default: 0)
         """
         if not self.game_runner or not self.game_runner.current_room:
-            print("⚠️ set_background: No current room")
+            logger.debug("⚠️ set_background: No current room")
             return
 
         # Parse parameters
@@ -2680,7 +2682,7 @@ class ActionExecutor:
                         try:
                             background_surface = pygame.image.load(str(full_path)).convert()
                         except Exception as e:
-                            print(f"⚠️ Error loading background '{background_name}': {e}")
+                            logger.error(f"⚠️ Error loading background '{background_name}': {e}")
 
         if background_surface and visible:
             # Update room background
@@ -2691,17 +2693,17 @@ class ActionExecutor:
 
             # Note: foreground, hspeed, vspeed would require additional room properties
             # For now, we'll just acknowledge them
-            print(f"🖼️ Set background: '{background_name}', visible={visible}, "
+            logger.debug(f"🖼️ Set background: '{background_name}', visible={visible}, "
                   f"tiled_h={tiled_h}, tiled_v={tiled_v}, foreground={foreground}")
 
             if hspeed != 0 or vspeed != 0:
-                print(f"   Scroll speed: h={hspeed}, v={vspeed} (scrolling not yet implemented)")
+                logger.debug(f"   Scroll speed: h={hspeed}, v={vspeed} (scrolling not yet implemented)")
         elif not visible:
             # Clear background
             self.game_runner.current_room.background_surface = None
-            print(f"🖼️ Background hidden")
+            logger.debug(f"🖼️ Background hidden")
         else:
-            print(f"⚠️ set_background: Background '{background_name}' not found")
+            logger.debug(f"⚠️ set_background: Background '{background_name}' not found")
 
     def _parse_color(self, color_str: str) -> tuple:
         """Parse color string to RGB tuple (helper method)"""
@@ -2746,7 +2748,7 @@ class ActionExecutor:
         roll = random.randint(1, sides)
         result = (roll == 1)
 
-        print(f"🎲 Test chance (1 in {sides}): rolled {roll}, result={result}")
+        logger.debug(f"🎲 Test chance (1 in {sides}): rolled {roll}, result={result}")
         return result
 
     def execute_test_expression_action(self, instance, parameters: Dict[str, Any]):
@@ -2766,7 +2768,7 @@ class ActionExecutor:
         expression = parameters.get("expression", "")
 
         if not expression or not expression.strip():
-            print("⚠️  test_expression: Empty expression")
+            logger.debug("⚠️  test_expression: Empty expression")
             return False
 
         try:
@@ -2808,11 +2810,11 @@ class ActionExecutor:
             # Convert to boolean
             result_bool = bool(result)
 
-            print(f"📝 Test expression '{expression}' = {result} (bool: {result_bool})")
+            logger.debug(f"📝 Test expression '{expression}' = {result} (bool: {result_bool})")
             return result_bool
 
         except Exception as e:
-            print(f"⚠️  test_expression: Error evaluating '{expression}': {e}")
+            logger.error(f"⚠️  test_expression: Error evaluating '{expression}': {e}")
             return False
 
     def execute_test_question_action(self, instance, parameters: Dict[str, Any]):
@@ -2832,7 +2834,7 @@ class ActionExecutor:
 
             # Check if QApplication exists
             if QApplication.instance() is None:
-                print(f"⚠️  test_question: No QApplication, defaulting to True for '{question}'")
+                logger.debug(f"⚠️  test_question: No QApplication, defaulting to True for '{question}'")
                 return True
 
             # Create message box
@@ -2847,15 +2849,15 @@ class ActionExecutor:
             result = msg_box.exec()
             answer = (result == QMessageBox.Yes)
 
-            print(f"❔ Question: '{question}' → {'Yes' if answer else 'No'}")
+            logger.debug(f"❔ Question: '{question}' → {'Yes' if answer else 'No'}")
             return answer
 
         except ImportError:
             # Fallback for environments without Qt (like testing)
-            print(f"⚠️  test_question: Qt not available, defaulting to True for '{question}'")
+            logger.debug(f"⚠️  test_question: Qt not available, defaulting to True for '{question}'")
             return True
         except Exception as e:
-            print(f"⚠️  test_question: Error showing dialog: {e}")
+            logger.error(f"⚠️  test_question: Error showing dialog: {e}")
             return True
 
     def execute_test_instance_count_action(self, instance, parameters: Dict[str, Any]):
@@ -2877,18 +2879,18 @@ class ActionExecutor:
         operation = parameters.get("operation", "equal")
 
         if not object_type:
-            print("⚠️  test_instance_count: No object type specified")
+            logger.debug("⚠️  test_instance_count: No object type specified")
             return False
 
         try:
             target_count = int(target_count)
         except (ValueError, TypeError):
-            print(f"⚠️  test_instance_count: Invalid number '{target_count}'")
+            logger.warning(f"⚠️  test_instance_count: Invalid number '{target_count}'")
             return False
 
         # Count instances of this object type
         if not self.game_runner or not hasattr(self.game_runner, 'instances'):
-            print("⚠️  test_instance_count: No game runner or instances available")
+            logger.debug("⚠️  test_instance_count: No game runner or instances available")
             return False
 
         # Count instances matching the object type
@@ -2910,10 +2912,10 @@ class ActionExecutor:
         elif operation == "not_equal":
             result = (actual_count != target_count)
         else:
-            print(f"⚠️  test_instance_count: Unknown operation '{operation}'")
+            logger.debug(f"⚠️  test_instance_count: Unknown operation '{operation}'")
             return False
 
-        print(f"🔢 Test instance count: {object_type} count={actual_count} {operation} {target_count} → {result}")
+        logger.debug(f"🔢 Test instance count: {object_type} count={actual_count} {operation} {target_count} → {result}")
         return result
 
     # ==================== ANIMATION ACTIONS ====================
@@ -2927,7 +2929,7 @@ class ActionExecutor:
             frame = 0
 
         instance.image_index = float(frame)
-        print(f"🎬 Set image_index to {frame} for {instance.object_name}")
+        logger.debug(f"🎬 Set image_index to {frame} for {instance.object_name}")
 
     def execute_set_image_speed_action(self, instance, parameters: Dict[str, Any]):
         """Set the animation speed multiplier"""
@@ -2938,17 +2940,17 @@ class ActionExecutor:
             speed = 1.0
 
         instance.image_speed = speed
-        print(f"⏩ Set image_speed to {speed} for {instance.object_name}")
+        logger.debug(f"⏩ Set image_speed to {speed} for {instance.object_name}")
 
     def execute_stop_animation_action(self, instance, parameters: Dict[str, Any]):
         """Stop the sprite animation"""
         instance.image_speed = 0.0
-        print(f"⏸️ Stopped animation for {instance.object_name}")
+        logger.debug(f"⏸️ Stopped animation for {instance.object_name}")
 
     def execute_start_animation_action(self, instance, parameters: Dict[str, Any]):
         """Start/resume the sprite animation"""
         instance.image_speed = 1.0
-        print(f"▶️ Started animation for {instance.object_name}")
+        logger.debug(f"▶️ Started animation for {instance.object_name}")
 
     def execute_set_sprite_action(self, instance, parameters: Dict[str, Any]):
         """Set the sprite for an instance or modify current sprite animation
@@ -2981,14 +2983,14 @@ class ActionExecutor:
         if sprite_name != "<self>" and sprite_name:
             if self.game_runner and sprite_name in self.game_runner.sprites:
                 instance.set_sprite(self.game_runner.sprites[sprite_name])
-                print(f"🖼️ Set sprite to '{sprite_name}' for {instance.object_name}")
+                logger.debug(f"🖼️ Set sprite to '{sprite_name}' for {instance.object_name}")
             else:
-                print(f"⚠️ set_sprite: Sprite '{sprite_name}' not found")
+                logger.debug(f"⚠️ set_sprite: Sprite '{sprite_name}' not found")
 
         # Handle subimage (frame index)
         if subimage >= 0:
             instance.image_index = float(subimage)
-            print(f"🎬 Set image_index to {subimage} for {instance.object_name}")
+            logger.debug(f"🎬 Set image_index to {subimage} for {instance.object_name}")
 
         # Handle animation speed (only print when value changes)
         if speed >= 0:
@@ -2996,9 +2998,9 @@ class ActionExecutor:
             if old_speed != speed:
                 instance.image_speed = speed
                 if speed == 0:
-                    print(f"⏸️ Stopped animation for {instance.object_name}")
+                    logger.debug(f"⏸️ Stopped animation for {instance.object_name}")
                 else:
-                    print(f"⏩ Set image_speed to {speed} for {instance.object_name}")
+                    logger.debug(f"⏩ Set image_speed to {speed} for {instance.object_name}")
             else:
                 instance.image_speed = speed  # Still set it, just don't print
 
@@ -3015,17 +3017,17 @@ class ActionExecutor:
                 - other_hspeed, other_vspeed: Other instance's speeds at collision
         """
         if event_name not in events_data:
-            print(f"  ⚠️ Event '{event_name}' not found in events_data. Available: {list(events_data.keys())}")
+            logger.debug(f"  ⚠️ Event '{event_name}' not found in events_data. Available: {list(events_data.keys())}")
             return
 
         event_data = events_data[event_name]
         actions = event_data.get("actions", [])
 
         if not actions:
-            print(f"  ⚠️ No actions defined for event '{event_name}'")
+            logger.debug(f"  ⚠️ No actions defined for event '{event_name}'")
             return
 
-        print(f"  🎬 Executing {len(actions)} action(s) for {event_name}")
+        logger.debug(f"  🎬 Executing {len(actions)} action(s) for {event_name}")
 
         # Store reference to other instance for collision-specific actions
         self._collision_other = other_instance
@@ -3118,10 +3120,10 @@ class ActionExecutor:
             target = parameters.get("target", "self")
 
             if target in ("self", "sel"):
-                print(f"  💀 Destroying instance: {instance.object_name}")
+                logger.debug(f"  💀 Destroying instance: {instance.object_name}")
                 instance.to_destroy = True
             elif target == "other":
-                print(f"  💀 Destroying other instance: {other_instance.object_name}")
+                logger.debug(f"  💀 Destroying other instance: {other_instance.object_name}")
                 other_instance.to_destroy = True
             return None
         else:

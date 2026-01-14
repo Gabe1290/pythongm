@@ -9,6 +9,9 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                QPushButton, QListWidget, QListWidgetItem)
 from PySide6.QtCore import Qt
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 class TutorialDialog(QDialog):
     """Dialog for selecting tutorials - displays in preview panel when selected"""
@@ -118,7 +121,7 @@ class TutorialDialog(QDialog):
                     self.tutorial_list.addItem(item)
                 return
             except Exception as e:
-                print(f"Error loading tutorials index: {e}")
+                logger.error(f"Error loading tutorials index: {e}")
 
         # Fallback: scan for tutorial folders
         for folder in sorted(self.tutorials_path.iterdir()):

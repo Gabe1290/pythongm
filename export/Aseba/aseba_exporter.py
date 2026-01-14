@@ -9,6 +9,9 @@ from pathlib import Path
 from typing import Dict, List, Set, Any
 from datetime import datetime
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 class AsebaExporter:
     """Export PyGameMaker Thymio projects to Aseba AESL code"""
@@ -33,7 +36,7 @@ class AsebaExporter:
         # Load project
         project_path = Path(project_path)
         if not project_path.exists():
-            print(f"❌ Project not found: {project_path}")
+            logger.error(f"Project not found: {project_path}")
             return False
 
         with open(project_path, 'r') as f:
@@ -47,23 +50,23 @@ class AsebaExporter:
 
         output_path.mkdir(exist_ok=True)
 
-        print(f"📦 Exporting Thymio project to Aseba...")
-        print(f"   Source: {project_path}")
-        print(f"   Output: {output_path}")
+        logger.info(f"Exporting Thymio project to Aseba...")
+        logger.info(f"   Source: {project_path}")
+        logger.info(f"   Output: {output_path}")
 
         # Find all Thymio objects
         thymio_objects = self._find_thymio_objects(project_data)
 
         if not thymio_objects:
-            print("⚠️  No Thymio objects found in project")
+            logger.warning("No Thymio objects found in project")
             return False
 
-        print(f"   Found {len(thymio_objects)} Thymio object(s)")
+        logger.info(f"   Found {len(thymio_objects)} Thymio object(s)")
 
         # Export each Thymio object to separate .aesl file
         success_count = 0
         for obj_name, obj_data in thymio_objects.items():
-            print(f"\n🤖 Exporting {obj_name}...")
+            logger.info(f"Exporting {obj_name}...")
 
             # Reset state for this object
             self.variables = set()
@@ -78,15 +81,15 @@ class AsebaExporter:
             with open(output_file, 'w', encoding='utf-8') as f:
                 f.write(aesl_code)
 
-            print(f"   ✅ Exported to: {output_file}")
+            logger.info(f"   Exported to: {output_file}")
             success_count += 1
 
         # Generate README
         readme_path = output_path / "README.md"
         self._generate_readme(readme_path, project_data, thymio_objects)
 
-        print(f"\n✅ Export complete! {success_count}/{len(thymio_objects)} object(s) exported")
-        print(f"📄 See {readme_path} for instructions")
+        logger.info(f"Export complete! {success_count}/{len(thymio_objects)} object(s) exported")
+        logger.info(f"See {readme_path} for instructions")
 
         return True
 
@@ -570,10 +573,10 @@ def main():
     import sys
 
     if len(sys.argv) < 2:
-        print("Usage: python aseba_exporter.py <project.json> [output_dir]")
-        print("\nExample:")
-        print("  python aseba_exporter.py my_project/project.json")
-        print("  python aseba_exporter.py my_project/project.json export/")
+        logger.info("Usage: python aseba_exporter.py <project.json> [output_dir]")
+        logger.info("\nExample:")
+        logger.info("  python aseba_exporter.py my_project/project.json")
+        logger.info("  python aseba_exporter.py my_project/project.json export/")
         return
 
     project_path = sys.argv[1]
@@ -583,10 +586,10 @@ def main():
     success = exporter.export(project_path, output_path)
 
     if success:
-        print("\n✅ Export successful!")
+        logger.info("Export successful!")
         sys.exit(0)
     else:
-        print("\n❌ Export failed")
+        logger.error("Export failed")
         sys.exit(1)
 
 

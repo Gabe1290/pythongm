@@ -7,6 +7,9 @@ Safe implementation that prevents segfaults during deletion
 from PySide6.QtCore import QTimer
 from PySide6.QtGui import QUndoCommand
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 class AddInstanceCommand(QUndoCommand):
     """Command for adding an instance to the room"""
@@ -29,7 +32,7 @@ class AddInstanceCommand(QUndoCommand):
             # Safely update canvas after a delay
             QTimer.singleShot(0, self.canvas.update)
         except (RuntimeError, AttributeError) as e:
-            print(f"Error in AddInstanceCommand.undo: {e}")
+            logger.error(f"Error in AddInstanceCommand.undo: {e}")
 
     def redo(self):
         """Re-add the instance"""
@@ -42,7 +45,7 @@ class AddInstanceCommand(QUndoCommand):
             # Safely update canvas after a delay
             QTimer.singleShot(0, self.canvas.update)
         except (RuntimeError, AttributeError) as e:
-            print(f"Error in AddInstanceCommand.redo: {e}")
+            logger.error(f"Error in AddInstanceCommand.redo: {e}")
 
 
 class RemoveInstanceCommand(QUndoCommand):
@@ -69,7 +72,7 @@ class RemoveInstanceCommand(QUndoCommand):
             # Update canvas after a delay
             QTimer.singleShot(0, self.canvas.update)
         except (RuntimeError, AttributeError) as e:
-            print(f"Error in RemoveInstanceCommand.undo: {e}")
+            logger.error(f"Error in RemoveInstanceCommand.undo: {e}")
 
     def redo(self):
         """Remove the instance again"""
@@ -89,7 +92,7 @@ class RemoveInstanceCommand(QUndoCommand):
             # Update canvas after a delay
             QTimer.singleShot(0, self.canvas.update)
         except (RuntimeError, AttributeError) as e:
-            print(f"Error in RemoveInstanceCommand.redo: {e}")
+            logger.error(f"Error in RemoveInstanceCommand.redo: {e}")
 
     def _safe_emit_selected(self, instance):
         """Safely emit instance_selected signal"""
@@ -119,7 +122,7 @@ class MoveInstanceCommand(QUndoCommand):
             self.instance.y = self.new_y
             QTimer.singleShot(0, self.canvas.update)
         except (RuntimeError, AttributeError) as e:
-            print(f"Error in MoveInstanceCommand.redo: {e}")
+            logger.error(f"Error in MoveInstanceCommand.redo: {e}")
 
     def undo(self):
         """Move back to old position"""
@@ -128,7 +131,7 @@ class MoveInstanceCommand(QUndoCommand):
             self.instance.y = self.old_y
             QTimer.singleShot(0, self.canvas.update)
         except (RuntimeError, AttributeError) as e:
-            print(f"Error in MoveInstanceCommand.undo: {e}")
+            logger.error(f"Error in MoveInstanceCommand.undo: {e}")
 
 
 class ChangeInstancePropertyCommand(QUndoCommand):
@@ -148,7 +151,7 @@ class ChangeInstancePropertyCommand(QUndoCommand):
             setattr(self.instance, self.property_name, self.new_value)
             QTimer.singleShot(0, self.canvas.update)
         except (RuntimeError, AttributeError) as e:
-            print(f"Error in ChangeInstancePropertyCommand.redo: {e}")
+            logger.error(f"Error in ChangeInstancePropertyCommand.redo: {e}")
 
     def undo(self):
         """Restore old value"""
@@ -156,7 +159,7 @@ class ChangeInstancePropertyCommand(QUndoCommand):
             setattr(self.instance, self.property_name, self.old_value)
             QTimer.singleShot(0, self.canvas.update)
         except (RuntimeError, AttributeError) as e:
-            print(f"Error in ChangeInstancePropertyCommand.undo: {e}")
+            logger.error(f"Error in ChangeInstancePropertyCommand.undo: {e}")
 
 
 class BatchAddInstancesCommand(QUndoCommand):
@@ -180,7 +183,7 @@ class BatchAddInstancesCommand(QUndoCommand):
 
             QTimer.singleShot(0, self.canvas.update)
         except (RuntimeError, AttributeError) as e:
-            print(f"Error in BatchAddInstancesCommand.undo: {e}")
+            logger.error(f"Error in BatchAddInstancesCommand.undo: {e}")
 
     def redo(self):
         """Re-add all instances"""
@@ -192,7 +195,7 @@ class BatchAddInstancesCommand(QUndoCommand):
 
             QTimer.singleShot(0, self.canvas.update)
         except (RuntimeError, AttributeError) as e:
-            print(f"Error in BatchAddInstancesCommand.redo: {e}")
+            logger.error(f"Error in BatchAddInstancesCommand.redo: {e}")
 
 
 class BatchRemoveInstancesCommand(QUndoCommand):
@@ -222,17 +225,17 @@ class BatchRemoveInstancesCommand(QUndoCommand):
 
             QTimer.singleShot(0, self.canvas.update)
         except (RuntimeError, AttributeError) as e:
-            print(f"Error in BatchRemoveInstancesCommand.undo: {e}")
+            logger.error(f"Error in BatchRemoveInstancesCommand.undo: {e}")
 
     def redo(self):
         """Remove all instances again"""
         try:
-            print(f"DEBUG: BatchRemoveInstancesCommand.redo() - removing {len(self.instances)} instances")
+            logger.debug(f"BatchRemoveInstancesCommand.redo() - removing {len(self.instances)} instances")
 
             for instance in self.instances:
                 if instance in self.canvas.instances:
                     self.canvas.instances.remove(instance)
-                    print(f"  Removed {instance.object_name}")
+                    logger.debug(f"  Removed {instance.object_name}")
                 if instance in self.canvas.selected_instances:
                     self.canvas.selected_instances.remove(instance)
 
@@ -243,7 +246,7 @@ class BatchRemoveInstancesCommand(QUndoCommand):
             # Update canvas after a delay
             QTimer.singleShot(0, self.canvas.update)
         except (RuntimeError, AttributeError) as e:
-            print(f"Error in BatchRemoveInstancesCommand.redo: {e}")
+            logger.error(f"Error in BatchRemoveInstancesCommand.redo: {e}")
 
     def _safe_emit_selected(self, instance):
         """Safely emit instance_selected signal"""
@@ -270,7 +273,7 @@ class BatchMoveInstancesCommand(QUndoCommand):
                 instance.y = old_y
             QTimer.singleShot(0, self.canvas.update)
         except (RuntimeError, AttributeError) as e:
-            print(f"Error in BatchMoveInstancesCommand.undo: {e}")
+            logger.error(f"Error in BatchMoveInstancesCommand.undo: {e}")
 
     def redo(self):
         """Move all instances to new positions"""
@@ -280,4 +283,4 @@ class BatchMoveInstancesCommand(QUndoCommand):
                 instance.y = new_y
             QTimer.singleShot(0, self.canvas.update)
         except (RuntimeError, AttributeError) as e:
-            print(f"Error in BatchMoveInstancesCommand.redo: {e}")
+            logger.error(f"Error in BatchMoveInstancesCommand.redo: {e}")

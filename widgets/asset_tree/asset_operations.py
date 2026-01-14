@@ -11,6 +11,9 @@ from PySide6.QtWidgets import QMessageBox, QDialog
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap, QIcon
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 from .asset_dialogs import AssetRenameDialog
 from .asset_utils import validate_asset_name, load_project_data, save_project_data
 
@@ -29,7 +32,7 @@ class AssetOperations:
         # Get AssetManager from parent IDE window
         asset_manager = self._get_asset_manager()
         if not asset_manager:
-            print("❌ No AssetManager available")
+            logger.error("No AssetManager available")
             QMessageBox.warning(
                 self.tree,
                 "Import Error",
@@ -51,18 +54,18 @@ class AssetOperations:
 
                     # Add to tree UI
                     self.tree.add_asset(asset_type, asset_name, asset_data)
-                    print(f"✅ Imported {asset_type}: {asset_name}")
+                    logger.debug(f"Imported {asset_type}: {asset_name}")
 
                     # Emit signal for UI updates
                     self.tree.asset_imported.emit(asset_name, asset_type, asset_data)
-                    print(f"📢 Emitted asset_imported signal for {asset_name}")
+                    logger.debug(f"Emitted asset_imported signal for {asset_name}")
 
                     success_count += 1
                 else:
-                    print(f"❌ AssetManager failed to import {file_path_obj.name}")
+                    logger.error(f"AssetManager failed to import {file_path_obj.name}")
 
             except Exception as e:
-                print(f"❌ Error importing {file_path}: {e}")
+                logger.error(f"Error importing {file_path}: {e}")
                 import traceback
                 traceback.print_exc()
                 QMessageBox.warning(
@@ -91,28 +94,28 @@ class AssetOperations:
             return None
 
         except Exception as e:
-            print(f"❌ Error getting AssetManager: {e}")
+            logger.error(f"Error getting AssetManager: {e}")
             return None
 
     def delete_asset(self, item) -> bool:
         """Delete an asset from both UI and project data"""
         from .asset_tree_item import AssetTreeItem
 
-        print("🎯 DELETE_ASSET METHOD CALLED!")
+        logger.debug("DELETE_ASSET METHOD CALLED!")
 
         # Work with AssetTreeItem directly
         if not isinstance(item, AssetTreeItem):
-            print("❌ Not an AssetTreeItem")
+            logger.debug("Not an AssetTreeItem")
             return False
 
         if item.is_category:
-            print("❌ Cannot delete category")
+            logger.debug("Cannot delete category")
             return False
 
         asset_name = item.asset_name
         asset_category = item.asset_type
 
-        print(f"🗑️ DELETE REQUEST: {asset_category}/{asset_name}")
+        logger.debug(f"DELETE REQUEST: {asset_category}/{asset_name}")
 
         # CHECK: If this is a room, see if it's open in an editor
         parent = self.tree.parent()
@@ -122,7 +125,7 @@ class AssetOperations:
         if parent and hasattr(parent, 'open_editors'):
             if asset_name in parent.open_editors:
                 # Close the editor first
-                print("⚠️ Asset is open in editor, closing it first...")
+                logger.debug("Asset is open in editor, closing it first...")
                 parent.close_editor_by_name(asset_name)
 
         # Confirm deletion with user
@@ -135,7 +138,7 @@ class AssetOperations:
         )
 
         if reply != QMessageBox.Yes:
-            print("❌ User cancelled deletion")
+            logger.debug("User cancelled deletion")
             return False
 
         try:
@@ -147,7 +150,7 @@ class AssetOperations:
                 parent = item.parent()
                 if parent:
                     parent.removeChild(item)
-                    print(f"✅ Removed {asset_name} from UI")
+                    logger.debug(f"Removed {asset_name} from UI")
 
                 # Step 3: Force refresh to sync everything
                 self.tree.force_project_refresh()
@@ -155,14 +158,14 @@ class AssetOperations:
                 # Step 4: Emit signal for other components
                 self.tree.assetDeleted.emit(asset_category, asset_name)
 
-                print(f"🎉 Successfully deleted: {asset_category}/{asset_name}")
+                logger.debug(f"Successfully deleted: {asset_category}/{asset_name}")
                 return True
             else:
-                print(f"❌ Failed to delete {asset_name} from project data")
+                logger.error(f"Failed to delete {asset_name} from project data")
                 return False
 
         except Exception as e:
-            print(f"❌ Error during deletion: {e}")
+            logger.error(f"Error during deletion: {e}")
             import traceback
             traceback.print_exc()
             QMessageBox.critical(
@@ -184,13 +187,13 @@ class AssetOperations:
             current_name = asset_data['name']
             asset_type = asset_data['asset_type']
 
-            print(f"📝 Renaming {asset_type}: {current_name}")
+            logger.debug(f"Renaming {asset_type}: {current_name}")
 
             # Show rename dialog
             dialog = AssetRenameDialog(current_name, asset_type, self.tree)
 
             if dialog.exec() != QDialog.Accepted or not dialog.new_name:
-                print("❌ Rename cancelled")
+                logger.debug("Rename cancelled")
                 return False
 
             new_name = dialog.new_name
@@ -223,14 +226,14 @@ class AssetOperations:
                     # Refresh the visual representation
                     self.refresh_asset_item_after_rename(item, new_name)
 
-                    print(f"✅ Asset renamed: {current_name} → {new_name}")
-                    print(f"🔗 Updated paths: {updated_asset_data.get('project_path', 'No path')}")
+                    logger.debug(f"Asset renamed: {current_name} -> {new_name}")
+                    logger.debug(f"Updated paths: {updated_asset_data.get('project_path', 'No path')}")
 
                     # Emit signal for UI refresh
                     self.tree.asset_renamed.emit(current_name, new_name, asset_type)
                     return True
                 else:
-                    print("❌ Failed to get updated asset data")
+                    logger.error("Failed to get updated asset data")
                     return False
 
             else:
@@ -240,23 +243,23 @@ class AssetOperations:
                 return False
 
         except Exception as e:
-            print(f"❌ Error renaming asset: {e}")
+            logger.error(f"Error renaming asset: {e}")
             QMessageBox.critical(self.tree, "Error", f"Error renaming asset: {e}")
             return False
 
     def remove_asset_from_project(self, asset_category: str, asset_name: str) -> bool:
         """Remove asset from project data and save to file"""
-        print(f"🗑️ Removing {asset_category}/{asset_name} from project data...")
+        logger.debug(f"Removing {asset_category}/{asset_name} from project data...")
 
         # Find the project.json file
         project_file = Path(self.tree.project_path) / "project.json"
 
         if not project_file.exists():
-            print(f"❌ Project file not found: {project_file}")
+            logger.error(f"Project file not found: {project_file}")
             return False
 
         try:
-            print(f"🔍 Modifying project file: {project_file}")
+            logger.debug(f"Modifying project file: {project_file}")
 
             # Load current project data
             project_data = load_project_data(project_file)
@@ -266,18 +269,18 @@ class AssetOperations:
             # Check if asset exists in data
             assets = project_data.get('assets', {})
             if asset_category not in assets:
-                print(f"❌ Category {asset_category} not found")
+                logger.error(f"Category {asset_category} not found")
                 return False
 
             if asset_name not in assets[asset_category]:
-                print(f"❌ Asset {asset_name} not found in {asset_category}")
+                logger.error(f"Asset {asset_name} not found in {asset_category}")
                 return False
 
             # Get asset info before deleting
             asset_data = assets[asset_category][asset_name]
             # Check both 'file_path' (sprites/sounds) and 'project_path' (legacy)
             rel_file_path = asset_data.get('file_path') or asset_data.get('project_path')
-            print(f"📄 Found asset data: {rel_file_path or 'No path'}")
+            logger.debug(f"Found asset data: {rel_file_path or 'No path'}")
 
             # Delete physical file if it exists
             if rel_file_path:
@@ -285,7 +288,7 @@ class AssetOperations:
                 file_path = Path(self.tree.project_path) / rel_file_path
                 if file_path.exists():
                     file_path.unlink()
-                    print(f"🗑️ Deleted file: {file_path}")
+                    logger.debug(f"Deleted file: {file_path}")
 
             # Delete thumbnail if it exists
             thumbnail_path = asset_data.get('thumbnail')
@@ -293,11 +296,11 @@ class AssetOperations:
                 thumb_file = Path(self.tree.project_path) / thumbnail_path
                 if thumb_file.exists():
                     thumb_file.unlink()
-                    print(f"🗑️ Deleted thumbnail: {thumb_file}")
+                    logger.debug(f"Deleted thumbnail: {thumb_file}")
 
             # Remove from project data
             del assets[asset_category][asset_name]
-            print(f"✅ Removed {asset_name} from project data")
+            logger.debug(f"Removed {asset_name} from project data")
 
             # If deleting a sprite, clear references from objects that use it
             if asset_category == "sprites":
@@ -308,7 +311,7 @@ class AssetOperations:
                         obj_data["sprite"] = ""
                         updated_objects.append(obj_name)
                 if updated_objects:
-                    print(f"🔄 Cleared sprite reference from objects: {', '.join(updated_objects)}")
+                    logger.debug(f"Cleared sprite reference from objects: {', '.join(updated_objects)}")
 
             # CRITICAL: Also remove from AssetManager cache
             parent = self.tree.parent()
@@ -321,35 +324,35 @@ class AssetOperations:
                     if asset_category in asset_manager.assets_cache:
                         if asset_name in asset_manager.assets_cache[asset_category]:
                             del asset_manager.assets_cache[asset_category][asset_name]
-                            print(f"✅ Removed {asset_name} from AssetManager cache")
+                            logger.debug(f"Removed {asset_name} from AssetManager cache")
 
                     # Also update object cache if we cleared sprite references
                     if asset_category == "sprites" and "objects" in asset_manager.assets_cache:
                         for obj_name in updated_objects:
                             if obj_name in asset_manager.assets_cache["objects"]:
                                 asset_manager.assets_cache["objects"][obj_name]["sprite"] = ""
-                                print(f"✅ Updated {obj_name} in AssetManager cache")
+                                logger.debug(f"Updated {obj_name} in AssetManager cache")
 
             # Save modified data back to file
             if save_project_data(project_file, project_data):
-                print("💾 Saved changes to project.json")
+                logger.debug("Saved changes to project.json")
 
                 # Verify the save worked
                 verify_data = load_project_data(project_file)
                 if verify_data:
                     verify_assets = verify_data.get('assets', {}).get(asset_category, {})
                     if asset_name in verify_assets:
-                        print(f"❌ SAVE FAILED: {asset_name} still in file!")
+                        logger.error(f"SAVE FAILED: {asset_name} still in file!")
                         return False
                     else:
-                        print(f"✅ VERIFIED: {asset_name} successfully removed from project.json")
+                        logger.debug(f"VERIFIED: {asset_name} successfully removed from project.json")
                         return True
                 return False
             else:
                 return False
 
         except Exception as e:
-            print(f"❌ Error during deletion: {e}")
+            logger.error(f"Error during deletion: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -365,23 +368,23 @@ class AssetOperations:
 
             # USE PROJECT MANAGER INSTEAD OF DIRECT FILE ACCESS
             if hasattr(self.tree, 'project_manager') and self.tree.project_manager:
-                print(f"🔧 Using project_manager to rename: {current_name} → {new_name}")
+                logger.debug(f"Using project_manager to rename: {current_name} -> {new_name}")
                 success = self.tree.project_manager.rename_asset(category, current_name, new_name)
 
                 if success:
-                    print("💾 Project file updated with renamed asset")
+                    logger.debug("Project file updated with renamed asset")
                     return True
                 else:
-                    print("❌ Project manager rename failed")
+                    logger.error("Project manager rename failed")
                     return False
 
             # FALLBACK: Old direct file method (if project_manager not available)
-            print("⚠️  Warning: project_manager not available, using direct file access")
+            logger.warning("project_manager not available, using direct file access")
             project_path = Path(self.tree.project_path)
             project_file = project_path / "project.json"
 
             if not project_file.exists():
-                print(f"❌ Project file not found: {project_file}")
+                logger.error(f"Project file not found: {project_file}")
                 return False
 
             # Load project data
@@ -390,13 +393,13 @@ class AssetOperations:
                 return False
 
             if category not in project_data.get('assets', {}):
-                print(f"❌ Asset category not found: {category}")
+                logger.error(f"Asset category not found: {category}")
                 return False
 
             assets = project_data['assets'][category]
 
             if current_name not in assets:
-                print(f"❌ Asset not found in project: {current_name}")
+                logger.error(f"Asset not found in project: {current_name}")
                 return False
 
             # Get the asset data
@@ -417,7 +420,7 @@ class AssetOperations:
                     # Rename the actual file
                     try:
                         shutil.move(str(old_file), str(new_file_path))
-                        print(f"🔗 File renamed: {old_file.name} → {new_file_path.name}")
+                        logger.debug(f"File renamed: {old_file.name} -> {new_file_path.name}")
 
                         # Update file paths in asset data
                         asset_info['project_path'] = str(new_file_path)
@@ -427,7 +430,7 @@ class AssetOperations:
                             asset_info['file_path'] = str(relative_path)
 
                     except Exception as e:
-                        print(f"❌ Error renaming file: {e}")
+                        logger.error(f"Error renaming file: {e}")
                         return False
 
             # Remove old asset entry and add new one
@@ -436,13 +439,13 @@ class AssetOperations:
 
             # Save the updated project file
             if save_project_data(project_file, project_data):
-                print("💾 Project file updated with renamed asset (direct method)")
+                logger.debug("Project file updated with renamed asset (direct method)")
                 return True
             else:
                 return False
 
         except Exception as e:
-            print(f"❌ Error in perform_asset_rename: {e}")
+            logger.error(f"Error in perform_asset_rename: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -458,7 +461,7 @@ class AssetOperations:
 
                     asset_data = self.tree.project_manager.asset_manager.get_asset(category, asset_name)
                     if asset_data:
-                        print(f"✅ Got updated asset data from cache: {asset_name}")
+                        logger.debug(f"Got updated asset data from cache: {asset_name}")
                         return asset_data
 
             # Fallback: read from file
@@ -476,12 +479,12 @@ class AssetOperations:
 
             asset_data = assets.get(asset_name)
             if asset_data:
-                print(f"✅ Got updated asset data from file: {asset_name}")
+                logger.debug(f"Got updated asset data from file: {asset_name}")
 
             return asset_data
 
         except Exception as e:
-            print(f"❌ Error getting updated asset data: {e}")
+            logger.error(f"Error getting updated asset data: {e}")
             import traceback
             traceback.print_exc()
             return None
@@ -504,7 +507,7 @@ class AssetOperations:
             return name in assets
 
         except Exception as e:
-            print(f"❌ Error checking asset name: {e}")
+            logger.error(f"Error checking asset name: {e}")
             return False
 
     def refresh_asset_item_after_rename(self, item, new_name: str):
@@ -513,17 +516,17 @@ class AssetOperations:
                 asset_data = item.asset_data
                 asset_type = asset_data.get('asset_type', '')
 
-                print(f"🔄 Refreshing asset item visual for: {new_name}")
-                print(f"   Asset type from data: '{asset_type}'")
-                print(f"   Full asset_data keys: {list(asset_data.keys())}")
-                print(f"   file_path in data: {asset_data.get('file_path', 'NOT FOUND')}")
+                logger.debug(f"Refreshing asset item visual for: {new_name}")
+                logger.debug(f"Asset type from data: '{asset_type}'")
+                logger.debug(f"Full asset_data keys: {list(asset_data.keys())}")
+                logger.debug(f"file_path in data: {asset_data.get('file_path', 'NOT FOUND')}")
 
                 # Update the asset name in the data
                 item.asset_name = new_name
 
                 # For sprites and backgrounds, reload the thumbnail
                 if asset_type in ["sprite", "background", "sprites", "backgrounds"]:
-                    print("   ✓ Asset type matches sprite/background check")
+                    logger.debug("Asset type matches sprite/background check")
 
                     # Build the new file path using the new name
                     project_root = Path(self.tree.project_path)
@@ -537,7 +540,7 @@ class AssetOperations:
                             new_file_path = Path(file_path)
                         else:
                             new_file_path = project_root / file_path
-                        print(f"   Method 1 (from asset_data): {new_file_path}")
+                        logger.debug(f"Method 1 (from asset_data): {new_file_path}")
                     else:
                         # Method 2: Construct from scratch
                         if asset_type in ["sprite", "sprites"]:
@@ -546,10 +549,10 @@ class AssetOperations:
                             asset_folder = "backgrounds"
 
                         new_file_path = project_root / "assets" / asset_folder / f"{new_name}.png"
-                        print(f"   Method 2 (constructed): {new_file_path}")
+                        logger.debug(f"Method 2 (constructed): {new_file_path}")
 
-                    print(f"   Final path to check: {new_file_path}")
-                    print(f"   Path exists: {new_file_path.exists()}")
+                    logger.debug(f"Final path to check: {new_file_path}")
+                    logger.debug(f"Path exists: {new_file_path.exists()}")
 
                     if new_file_path.exists():
                         try:
@@ -560,13 +563,13 @@ class AssetOperations:
                             with open(new_file_path, 'rb') as f:
                                 image_data = f.read()
 
-                            print(f"   Read {len(image_data)} bytes from file")
+                            logger.debug(f"Read {len(image_data)} bytes from file")
 
                             # Load pixmap from the raw data
                             pixmap = QPixmap()
                             pixmap.loadFromData(image_data)
 
-                            print(f"   Pixmap null: {pixmap.isNull()}, size: {pixmap.width()}x{pixmap.height()}")
+                            logger.debug(f"Pixmap null: {pixmap.isNull()}, size: {pixmap.width()}x{pixmap.height()}")
 
                             if not pixmap.isNull():
                                 # Scale to thumbnail size
@@ -579,20 +582,20 @@ class AssetOperations:
                                 item.setIcon(0, QIcon(scaled_pixmap))
                                 # Set text without emoji since we have thumbnail
                                 item.setText(0, new_name)
-                                print("   ✅ Thumbnail icon set successfully")
+                                logger.debug("Thumbnail icon set successfully")
                             else:
-                                print("   ⚠️ Pixmap is null after loading")
+                                logger.debug("Pixmap is null after loading")
                                 item.setText(0, f"🖼️ {new_name}")
                         except Exception as e:
-                            print(f"   ⚠️ Exception loading thumbnail: {e}")
+                            logger.warning(f"Exception loading thumbnail: {e}")
                             import traceback
                             traceback.print_exc()
                             item.setText(0, f"🖼️ {new_name}")
                     else:
-                        print("   ⚠️ File does not exist at path")
+                        logger.debug("File does not exist at path")
                         item.setText(0, f"🖼️ {new_name}")
                 else:
-                    print("   ✗ Asset type did not match sprite/background check")
+                    logger.debug("Asset type did not match sprite/background check")
 
                     # For other asset types, use emoji approach
                     if asset_type == "sound":
@@ -608,10 +611,10 @@ class AssetOperations:
                     else:
                         item.setText(0, new_name)
 
-                print(f"✅ Asset item text and icon refreshed for: {new_name}")
+                logger.debug(f"Asset item text and icon refreshed for: {new_name}")
 
             except Exception as e:
-                print(f"❌ Error refreshing asset item: {e}")
+                logger.error(f"Error refreshing asset item: {e}")
                 import traceback
                 traceback.print_exc()
 
@@ -638,20 +641,20 @@ class AssetOperations:
 
             # Save back to file
             if save_project_data(project_file, project_data):
-                print(f"✅ Successfully saved asset {asset_name} to project.json")
+                logger.debug(f"Successfully saved asset {asset_name} to project.json")
                 return True
             else:
                 return False
 
         except Exception as e:
-            print(f"❌ ERROR in save_asset_to_project: {e}")
+            logger.error(f"ERROR in save_asset_to_project: {e}")
             import traceback
             traceback.print_exc()
             return False
 
     def update_asset_manager_cache(self, asset_name: str, asset_type: str, asset_data: Dict):
         """Update the asset manager's cache - simplified version"""
-        print(f"Cache update for {asset_name} - skipping (not required)")
+        logger.debug(f"Cache update for {asset_name} - skipping (not required)")
         # Asset import works fine without cache updates
         # This method exists for compatibility but doesn't need to do anything
 
@@ -672,7 +675,7 @@ class AssetOperations:
             result = asset_manager.replace_sprite_image(file_path, sprite_name)
 
             if result:
-                print(f"✅ Successfully replaced image for sprite: {sprite_name}")
+                logger.debug(f"Successfully replaced image for sprite: {sprite_name}")
 
                 # Update the tree item
                 for i in range(self.tree.topLevelItemCount()):
@@ -705,7 +708,7 @@ class AssetOperations:
                 return False
 
         except Exception as e:
-            print(f"❌ Error importing sprite image: {e}")
+            logger.error(f"Error importing sprite image: {e}")
             import traceback
             traceback.print_exc()
             QMessageBox.critical(

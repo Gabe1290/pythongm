@@ -9,6 +9,9 @@ from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
 from PySide6.QtCore import QObject, Signal
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 class EventType(Enum):
     """Minimal event types for labyrinth game"""
 
@@ -292,7 +295,7 @@ class EventSystem(QObject):
             return True
 
         except Exception as e:
-            print(f"Error importing events: {e}")
+            logger.error(f"Error importing events: {e}")
             return False
 
     def generate_code(self, object_name: str) -> str:

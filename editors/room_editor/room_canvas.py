@@ -15,6 +15,9 @@ from editors.room_undo_commands import (
 )
 from .object_instance import ObjectInstance
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 class RoomCanvas(QWidget):
     """Canvas widget for displaying and editing the room"""
@@ -120,7 +123,7 @@ class RoomCanvas(QWidget):
     def remove_instance(self, instance, use_undo=True):
         """Remove an object instance from the room"""
         if instance not in self.instances:
-            print(f"DEBUG: Instance {instance.object_name} not in instances list")
+            logger.debug(f"Instance {instance.object_name} not in instances list")
             return
 
         if use_undo:
@@ -136,10 +139,10 @@ class RoomCanvas(QWidget):
 
     def remove_instances(self, instances, use_undo=True):
         """Remove multiple instances at once"""
-        print(f"DEBUG: remove_instances called with {len(instances)} instances, use_undo={use_undo}")
+        logger.debug(f"remove_instances called with {len(instances)} instances, use_undo={use_undo}")
 
         if not instances:
-            print("DEBUG: No instances to remove")
+            logger.debug("No instances to remove")
             return
 
         # Make a copy of the list to avoid modification during iteration
@@ -149,20 +152,20 @@ class RoomCanvas(QWidget):
         valid_instances = [inst for inst in instances_to_remove if inst in self.instances]
 
         if not valid_instances:
-            print("DEBUG: No valid instances found to remove")
+            logger.debug("No valid instances found to remove")
             return
 
         if use_undo:
             if len(valid_instances) > 1:
-                print(f"DEBUG: Creating BatchRemoveInstancesCommand for {len(valid_instances)} instances")
+                logger.debug(f"Creating BatchRemoveInstancesCommand for {len(valid_instances)} instances")
                 command = BatchRemoveInstancesCommand(self, valid_instances)
                 self.undo_stack.push(command)
             else:
-                print("DEBUG: Creating RemoveInstanceCommand for 1 instance")
+                logger.debug("Creating RemoveInstanceCommand for 1 instance")
                 command = RemoveInstanceCommand(self, valid_instances[0])
                 self.undo_stack.push(command)
         else:
-            print(f"DEBUG: Removing {len(valid_instances)} instances directly (no undo)")
+            logger.debug(f"Removing {len(valid_instances)} instances directly (no undo)")
             for instance in valid_instances:
                 if instance in self.instances:
                     self.instances.remove(instance)
@@ -255,7 +258,7 @@ class RoomCanvas(QWidget):
         """Copy the selected instance to clipboard"""
         if self.selected_instance:
             self.clipboard_instances = [self.selected_instance.to_dict()]
-            print(f"Copied {self.selected_instance.object_name} to clipboard")
+            logger.debug(f"Copied {self.selected_instance.object_name} to clipboard")
             return True
         return False
 
@@ -263,14 +266,14 @@ class RoomCanvas(QWidget):
         """Copy the selected instances to clipboard"""
         if self.selected_instances:
             self.clipboard_instances = [inst.to_dict() for inst in self.selected_instances]
-            print(f"Copied {len(self.selected_instances)} instance(s) to clipboard")
+            logger.debug(f"Copied {len(self.selected_instances)} instance(s) to clipboard")
             return True
         return False
 
     def paste_instances(self):
         """Paste instances from clipboard at mouse position"""
         if not self.clipboard_instances:
-            print("Clipboard is empty")
+            logger.debug("Clipboard is empty")
             return False
 
         paste_pos = self.snap_to_grid_pos(self.last_mouse_pos)
@@ -305,13 +308,13 @@ class RoomCanvas(QWidget):
             self.instance_selected.emit(self.selected_instance)
 
         self.update()
-        print(f"Pasted {len(pasted_instances)} instance(s)")
+        logger.debug(f"Pasted {len(pasted_instances)} instance(s)")
         return True
 
     def cut_selected_instance(self):
         """Cut the selected instance (copy + delete)"""
         if not self.selected_instance:
-            print("No instance selected to cut")
+            logger.debug("No instance selected to cut")
             return False
 
         self.clipboard_instances = [self.selected_instance.to_dict()]
@@ -319,13 +322,13 @@ class RoomCanvas(QWidget):
         command = RemoveInstanceCommand(self, instance_to_cut, f"Cut {instance_to_cut.object_name}")
         self.undo_stack.push(command)
 
-        print(f"Cut {instance_to_cut.object_name} to clipboard")
+        logger.debug(f"Cut {instance_to_cut.object_name} to clipboard")
         return True
 
     def cut_selected_instances(self):
         """Cut the selected instances (copy + delete)"""
         if not self.selected_instances:
-            print("No instances selected to cut")
+            logger.debug("No instances selected to cut")
             return False
 
         self.clipboard_instances = [inst.to_dict() for inst in self.selected_instances]
@@ -337,14 +340,14 @@ class RoomCanvas(QWidget):
             command = RemoveInstanceCommand(self, instances_to_cut[0], f"Cut {instances_to_cut[0].object_name}")
 
         self.undo_stack.push(command)
-        print(f"Cut {len(instances_to_cut)} instance(s) to clipboard")
+        logger.debug(f"Cut {len(instances_to_cut)} instance(s) to clipboard")
         return True
 
 
     def duplicate_selected_instance(self):
         """Duplicate the selected instance (copy + paste at offset)"""
         if not self.selected_instance:
-            print("No instance selected to duplicate")
+            logger.debug("No instance selected to duplicate")
             return False
 
         self.clipboard_instances = [self.selected_instance.to_dict()]
@@ -370,13 +373,13 @@ class RoomCanvas(QWidget):
         self.instance_selected.emit(new_instance)
 
         self.update()
-        print(f"Duplicated {new_instance.object_name}")
+        logger.debug(f"Duplicated {new_instance.object_name}")
         return True
 
     def duplicate_selected_instances(self):
         """Duplicate the selected instances (copy + paste at offset)"""
         if not self.selected_instances:
-            print("No instances selected to duplicate")
+            logger.debug("No instances selected to duplicate")
             return False
 
         self.clipboard_instances = [inst.to_dict() for inst in self.selected_instances]
@@ -410,7 +413,7 @@ class RoomCanvas(QWidget):
         self.instance_selected.emit(self.selected_instances[0] if self.selected_instances else None)
 
         self.update()
-        print(f"Duplicated {len(duplicated_instances)} instance(s)")
+        logger.debug(f"Duplicated {len(duplicated_instances)} instance(s)")
         return True
 
     # Paint event and drawing methods
@@ -498,7 +501,7 @@ class RoomCanvas(QWidget):
                                 return pixmap
             return None
         except Exception as e:
-            print(f"Error loading background image {image_name}: {e}")
+            logger.error(f"Error loading background image {image_name}: {e}")
             return None
 
     def draw_grid(self, painter):
@@ -711,7 +714,7 @@ class RoomCanvas(QWidget):
             return pixmap
 
         except Exception as e:
-            print(f"Error loading sprite for {object_name}: {e}")
+            logger.error(f"Error loading sprite for {object_name}: {e}")
             pixmap = self.create_default_sprite(object_name)
             self.sprite_cache[object_name] = pixmap
             return pixmap
@@ -721,10 +724,10 @@ class RoomCanvas(QWidget):
         if object_name:
             if object_name in self.sprite_cache:
                 del self.sprite_cache[object_name]
-                print(f"Cleared sprite cache for {object_name}")
+                logger.debug(f"Cleared sprite cache for {object_name}")
         else:
             self.sprite_cache.clear()
-            print("Cleared all sprite cache")
+            logger.debug("Cleared all sprite cache")
 
     def create_default_sprite(self, object_name):
         """Create a default sprite for objects without sprites"""

@@ -6,6 +6,9 @@ Exports projects to Kivy format for mobile deployment
 
 from typing import Dict
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 class ActionCodeGenerator:
     """
@@ -475,7 +478,7 @@ if dist > 0:
 
         # DEFAULT
         else:
-            print(f"            Warning: Unknown action type '{action_type}'")
+            logger.warning(f"Unknown action type '{action_type}'")
             return f"pass  # TODO: {action_type}"
 
 

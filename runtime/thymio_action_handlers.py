@@ -4,6 +4,9 @@ Thymio Action Handlers
 Implements all 28 Thymio robot actions for the ActionExecutor
 """
 
+from core.logger import get_logger
+logger = get_logger(__name__)
+
 
 def register_thymio_actions(action_executor):
     """
@@ -378,7 +381,7 @@ def register_thymio_actions(action_executor):
     for action_name, handler in handlers.items():
         action_executor.register_custom_action(action_name, handler)
 
-    print(f"✅ Registered {len(handlers)} Thymio action handlers")
+    logger.info(f"✅ Registered {len(handlers)} Thymio action handlers")
 
 
 # ============================================================================
