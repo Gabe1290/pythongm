@@ -391,13 +391,13 @@ class ObjectEditor(BaseEditor):
             code_font.setStyleHint(QFont.Monospace)
             self.code_editor.setFont(code_font)
 
-            # Set professional code editor colors
+            # Set professional code editor colors with light background
             self.code_editor.setStyleSheet("""
                 QTextEdit {
-                    background-color: #2b2b2b;
-                    color: #a9b7c6;
-                    border: 1px solid #555;
-                    selection-background-color: #214283;
+                    background-color: #ffffff;
+                    color: #000000;
+                    border: 1px solid #cccccc;
+                    selection-background-color: #b4d5fe;
                 }
             """)
 

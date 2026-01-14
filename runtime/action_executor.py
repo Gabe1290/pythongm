@@ -501,6 +501,166 @@ class ActionExecutor:
         print(f"  🧭 {instance.object_name} set direction={direction}° speed={speed}")
         print(f"      hspeed={instance.hspeed:.2f}, vspeed={instance.vspeed:.2f}")
 
+    def execute_move_towards_point_action(self, instance, parameters: Dict[str, Any]):
+        """Move towards a specific point at given speed
+
+        Parameters:
+            x: Target X coordinate
+            y: Target Y coordinate
+            speed: Movement speed
+
+        This calculates the direction from current position to target and sets
+        hspeed/vspeed to move in that direction at the specified speed.
+        """
+        import math
+
+        target_x = parameters.get("x", 0)
+        target_y = parameters.get("y", 0)
+        speed = parameters.get("speed", 4.0)
+
+        # Parse values (can be expressions)
+        target_x = self._parse_value(str(target_x), instance)
+        target_y = self._parse_value(str(target_y), instance)
+        speed = self._parse_value(str(speed), instance)
+
+        try:
+            target_x = float(target_x)
+            target_y = float(target_y)
+            speed = float(speed)
+        except (ValueError, TypeError):
+            print(f"⚠️  move_towards_point: Invalid values x={target_x}, y={target_y}, speed={speed}")
+            return
+
+        # Calculate direction to target
+        dx = target_x - instance.x
+        dy = target_y - instance.y
+
+        # Calculate distance to target
+        distance = math.sqrt(dx*dx + dy*dy)
+
+        if distance == 0:
+            # Already at target, stop movement
+            instance.hspeed = 0
+            instance.vspeed = 0
+            print(f"  🎯 {instance.object_name} already at target ({target_x}, {target_y})")
+            return
+
+        # Calculate normalized direction vector
+        dir_x = dx / distance
+        dir_y = dy / distance
+
+        # Set speed components
+        instance.hspeed = dir_x * speed
+        instance.vspeed = dir_y * speed
+
+        # Calculate angle for display
+        angle = math.degrees(math.atan2(-dy, dx))  # Negative dy for screen coordinates
+
+        print(f"  🎯 {instance.object_name} moving towards ({target_x}, {target_y}) at speed {speed}")
+        print(f"      angle={angle:.1f}°, hspeed={instance.hspeed:.2f}, vspeed={instance.vspeed:.2f}")
+
+    def execute_move_to_contact_action(self, instance, parameters: Dict[str, Any]):
+        """Move in a direction until touching an object
+
+        Parameters:
+            direction: Direction to move in degrees (0=right, 90=up, 180=left, 270=down)
+            max_distance: Maximum distance to move in pixels
+            object: Object type to stop at ("all" for any object, "solid" for solid objects, or specific object name)
+
+        This moves the instance pixel-by-pixel in the specified direction until:
+        - It touches the specified object type, OR
+        - It reaches max_distance
+
+        Returns True if contact was made, False if max distance reached
+        """
+        import math
+
+        direction = parameters.get("direction", 0)
+        max_distance = parameters.get("max_distance", 1000)
+        object_type = parameters.get("object", "all")
+
+        # Parse values
+        direction = self._parse_value(str(direction), instance)
+        max_distance = self._parse_value(str(max_distance), instance)
+
+        try:
+            direction = float(direction)
+            max_distance = float(max_distance)
+        except (ValueError, TypeError):
+            print(f"⚠️  move_to_contact: Invalid values direction={direction}, max_distance={max_distance}")
+            return False
+
+        if not self.game_runner:
+            print("⚠️  move_to_contact: No game runner available")
+            return False
+
+        # Calculate movement vector (1 pixel per step)
+        angle_rad = math.radians(direction)
+        step_x = math.cos(angle_rad)
+        step_y = -math.sin(angle_rad)  # Negative for screen coordinates
+
+        # Store starting position
+        start_x = instance.x
+        start_y = instance.y
+        distance_moved = 0
+
+        # Move pixel by pixel until contact or max distance
+        while distance_moved < max_distance:
+            # Try moving one pixel
+            test_x = instance.x + step_x
+            test_y = instance.y + step_y
+
+            # Check if this position would cause a collision
+            collision_found = False
+
+            for other in self.game_runner.instances:
+                if other is instance:
+                    continue
+
+                # Check object type filter
+                if object_type == "all":
+                    should_check = True
+                elif object_type == "solid":
+                    should_check = getattr(other, 'solid', False)
+                else:
+                    should_check = (getattr(other, 'object_name', '') == object_type)
+
+                if not should_check:
+                    continue
+
+                # Simple bounding box collision check at test position
+                # Get instance bounds at test position
+                inst_width = getattr(instance, '_cached_width', 32)
+                inst_height = getattr(instance, '_cached_height', 32)
+
+                # Get other instance bounds
+                other_width = getattr(other, '_cached_width', 32)
+                other_height = getattr(other, '_cached_height', 32)
+
+                # Check collision
+                if (test_x < other.x + other_width and
+                    test_x + inst_width > other.x and
+                    test_y < other.y + other_height and
+                    test_y + inst_height > other.y):
+                    collision_found = True
+                    break
+
+            if collision_found:
+                # Stop at current position (before collision)
+                print(f"  👉 {instance.object_name} moved to contact at ({instance.x:.1f}, {instance.y:.1f})")
+                print(f"      direction={direction}°, distance={distance_moved:.1f}px")
+                return True
+
+            # No collision, move to test position
+            instance.x = test_x
+            instance.y = test_y
+            distance_moved += 1
+
+        # Reached max distance without contact
+        print(f"  👉 {instance.object_name} reached max distance {max_distance}px without contact")
+        print(f"      moved from ({start_x:.1f}, {start_y:.1f}) to ({instance.x:.1f}, {instance.y:.1f})")
+        return False
+
     def execute_reverse_horizontal_action(self, instance, parameters: Dict[str, Any]):
         """Reverse horizontal movement direction"""
         old_hspeed = instance.hspeed
@@ -2166,6 +2326,190 @@ class ActionExecutor:
 
         print(f"🎨 Set drawing color to {color} ({rgb_color}) for {instance.object_name}")
 
+    def execute_draw_text_action(self, instance, parameters: Dict[str, Any]):
+        """Draw text at specified position
+
+        Parameters:
+            x: X coordinate (default: instance.x)
+            y: Y coordinate (default: instance.y)
+            text: Text string to draw (supports expressions)
+        """
+        import pygame
+
+        # Parse parameters with expression support
+        x = self._parse_value(parameters.get("x", instance.x), instance)
+        y = self._parse_value(parameters.get("y", instance.y), instance)
+        text = str(self._parse_value(parameters.get("text", ""), instance))
+
+        # Get drawing color (from instance or default black)
+        color = getattr(instance, 'draw_color', (0, 0, 0))
+
+        # Queue drawing command for draw event
+        if not hasattr(instance, '_draw_queue'):
+            instance._draw_queue = []
+
+        instance._draw_queue.append({
+            'type': 'text',
+            'x': x,
+            'y': y,
+            'text': text,
+            'color': color
+        })
+
+        print(f"📝 Queued draw_text: '{text}' at ({x}, {y}) with color {color}")
+
+    def execute_draw_rectangle_action(self, instance, parameters: Dict[str, Any]):
+        """Draw a rectangle (filled or outlined)
+
+        Parameters:
+            x1: Left X coordinate
+            y1: Top Y coordinate
+            x2: Right X coordinate
+            y2: Bottom Y coordinate
+            filled: True for filled, False for outline (default: True)
+        """
+        import pygame
+
+        # Parse parameters with expression support
+        x1 = self._parse_value(parameters.get("x1", 0), instance)
+        y1 = self._parse_value(parameters.get("y1", 0), instance)
+        x2 = self._parse_value(parameters.get("x2", 100), instance)
+        y2 = self._parse_value(parameters.get("y2", 100), instance)
+        filled = self._parse_value(parameters.get("filled", True), instance)
+
+        # Convert to boolean if string
+        if isinstance(filled, str):
+            filled = filled.lower() in ('true', '1', 'yes')
+
+        # Get drawing color (from instance or default black)
+        color = getattr(instance, 'draw_color', (0, 0, 0))
+
+        # Queue drawing command for draw event
+        if not hasattr(instance, '_draw_queue'):
+            instance._draw_queue = []
+
+        instance._draw_queue.append({
+            'type': 'rectangle',
+            'x1': x1,
+            'y1': y1,
+            'x2': x2,
+            'y2': y2,
+            'filled': filled,
+            'color': color
+        })
+
+        fill_type = "filled" if filled else "outline"
+        print(f"📐 Queued draw_rectangle: {fill_type} rect ({x1}, {y1}) to ({x2}, {y2}) with color {color}")
+
+    def execute_draw_ellipse_action(self, instance, parameters: Dict[str, Any]):
+        """Draw an ellipse or circle (filled or outlined)
+
+        Parameters:
+            x1: Left X coordinate
+            y1: Top Y coordinate
+            x2: Right X coordinate
+            y2: Bottom Y coordinate
+            filled: True for filled, False for outline (default: True)
+        """
+        import pygame
+
+        # Parse parameters with expression support
+        x1 = self._parse_value(parameters.get("x1", 0), instance)
+        y1 = self._parse_value(parameters.get("y1", 0), instance)
+        x2 = self._parse_value(parameters.get("x2", 100), instance)
+        y2 = self._parse_value(parameters.get("y2", 100), instance)
+        filled = self._parse_value(parameters.get("filled", True), instance)
+
+        # Convert to boolean if string
+        if isinstance(filled, str):
+            filled = filled.lower() in ('true', '1', 'yes')
+
+        # Get drawing color (from instance or default black)
+        color = getattr(instance, 'draw_color', (0, 0, 0))
+
+        # Queue drawing command for draw event
+        if not hasattr(instance, '_draw_queue'):
+            instance._draw_queue = []
+
+        instance._draw_queue.append({
+            'type': 'ellipse',
+            'x1': x1,
+            'y1': y1,
+            'x2': x2,
+            'y2': y2,
+            'filled': filled,
+            'color': color
+        })
+
+        fill_type = "filled" if filled else "outline"
+        print(f"⭕ Queued draw_ellipse: {fill_type} ellipse ({x1}, {y1}) to ({x2}, {y2}) with color {color}")
+
+    def execute_draw_line_action(self, instance, parameters: Dict[str, Any]):
+        """Draw a line between two points
+
+        Parameters:
+            x1: Start X coordinate
+            y1: Start Y coordinate
+            x2: End X coordinate
+            y2: End Y coordinate
+        """
+        import pygame
+
+        # Parse parameters with expression support
+        x1 = self._parse_value(parameters.get("x1", 0), instance)
+        y1 = self._parse_value(parameters.get("y1", 0), instance)
+        x2 = self._parse_value(parameters.get("x2", 100), instance)
+        y2 = self._parse_value(parameters.get("y2", 100), instance)
+
+        # Get drawing color (from instance or default black)
+        color = getattr(instance, 'draw_color', (0, 0, 0))
+
+        # Queue drawing command for draw event
+        if not hasattr(instance, '_draw_queue'):
+            instance._draw_queue = []
+
+        instance._draw_queue.append({
+            'type': 'line',
+            'x1': x1,
+            'y1': y1,
+            'x2': x2,
+            'y2': y2,
+            'color': color
+        })
+
+        print(f"➖ Queued draw_line: from ({x1}, {y1}) to ({x2}, {y2}) with color {color}")
+
+    def execute_draw_sprite_action(self, instance, parameters: Dict[str, Any]):
+        """Draw a sprite at specified position
+
+        Parameters:
+            sprite: Name of the sprite to draw
+            x: X coordinate (default: 0)
+            y: Y coordinate (default: 0)
+            subimage: Frame index for animated sprites (default: 0)
+        """
+        import pygame
+
+        # Parse parameters with expression support
+        sprite_name = self._parse_value(parameters.get("sprite", ""), instance)
+        x = self._parse_value(parameters.get("x", 0), instance)
+        y = self._parse_value(parameters.get("y", 0), instance)
+        subimage = self._parse_value(parameters.get("subimage", 0), instance)
+
+        # Queue drawing command for draw event
+        if not hasattr(instance, '_draw_queue'):
+            instance._draw_queue = []
+
+        instance._draw_queue.append({
+            'type': 'sprite',
+            'sprite_name': sprite_name,
+            'x': x,
+            'y': y,
+            'subimage': subimage
+        })
+
+        print(f"🖼️ Queued draw_sprite: '{sprite_name}' at ({x}, {y}) frame {subimage}")
+
     # ==================== AUDIO ACTIONS ====================
 
     def execute_stop_sound_action(self, instance, parameters: Dict[str, Any]):
@@ -2198,6 +2542,186 @@ class ActionExecutor:
         else:
             print(f"⚠️ stop_sound: Sound '{sound_name}' not found")
 
+    # ==================== ROOM CONFIGURATION ACTIONS ====================
+
+    def execute_set_room_caption_action(self, instance, parameters: Dict[str, Any]):
+        """Set room/window caption text
+
+        Parameters:
+            caption: Caption text to display
+        """
+        if not self.game_runner:
+            print("⚠️ set_room_caption: No game_runner reference")
+            return
+
+        # Get caption directly (no expression parsing for text)
+        caption = str(parameters.get("caption", ""))
+
+        # Update the window caption
+        self.game_runner.window_caption = caption
+
+        # Update the display caption immediately
+        self.game_runner.update_caption()
+
+        print(f"🏷️ Set room caption: '{caption}'")
+
+    def execute_set_room_speed_action(self, instance, parameters: Dict[str, Any]):
+        """Set game speed (frames per second)
+
+        Parameters:
+            speed: Target FPS (default: 30)
+        """
+        if not self.game_runner:
+            print("⚠️ set_room_speed: No game_runner reference")
+            return
+
+        # Parse speed with expression support
+        speed = self._parse_value(parameters.get("speed", 30), instance)
+
+        try:
+            speed = int(speed)
+            if speed < 1:
+                speed = 1
+            if speed > 240:
+                speed = 240  # Cap at reasonable maximum
+        except (ValueError, TypeError):
+            speed = 30
+
+        # Update the game FPS
+        self.game_runner.fps = speed
+
+        print(f"⏱️ Set room speed: {speed} FPS")
+
+    def execute_set_background_color_action(self, instance, parameters: Dict[str, Any]):
+        """Set room background color
+
+        Parameters:
+            color: Background color (hex string like "#87CEEB")
+            show_color: Whether to display the color (default: True)
+        """
+        if not self.game_runner or not self.game_runner.current_room:
+            print("⚠️ set_background_color: No current room")
+            return
+
+        # Parse parameters
+        color_str = parameters.get("color", "#000000")
+        show_color = parameters.get("show_color", True)
+
+        # Convert to boolean if string
+        if isinstance(show_color, str):
+            show_color = show_color.lower() in ('true', '1', 'yes')
+
+        # Parse color
+        color_rgb = self._parse_color(color_str)
+
+        # Update room background color
+        self.game_runner.current_room.background_color = color_rgb
+
+        # If show_color is False, we could hide the background, but for now just update the color
+        # (GameMaker's "show_color" typically controls whether solid color or image is displayed)
+
+        print(f"🎨 Set background color: {color_str} → {color_rgb}, show={show_color}")
+
+    def execute_set_background_action(self, instance, parameters: Dict[str, Any]):
+        """Set room background image with tiling and scrolling options
+
+        Parameters:
+            background: Background/sprite name to use
+            visible: Show background (default: True)
+            foreground: Draw in front of objects (default: False)
+            tiled_h: Tile horizontally (default: False)
+            tiled_v: Tile vertically (default: False)
+            hspeed: Horizontal scroll speed (default: 0)
+            vspeed: Vertical scroll speed (default: 0)
+        """
+        if not self.game_runner or not self.game_runner.current_room:
+            print("⚠️ set_background: No current room")
+            return
+
+        # Parse parameters
+        background_name = str(self._parse_value(parameters.get("background", ""), instance))
+        visible = self._parse_value(parameters.get("visible", True), instance)
+        foreground = self._parse_value(parameters.get("foreground", False), instance)
+        tiled_h = self._parse_value(parameters.get("tiled_h", False), instance)
+        tiled_v = self._parse_value(parameters.get("tiled_v", False), instance)
+        hspeed = self._parse_value(parameters.get("hspeed", 0), instance)
+        vspeed = self._parse_value(parameters.get("vspeed", 0), instance)
+
+        # Convert booleans
+        if isinstance(visible, str):
+            visible = visible.lower() in ('true', '1', 'yes')
+        if isinstance(foreground, str):
+            foreground = foreground.lower() in ('true', '1', 'yes')
+        if isinstance(tiled_h, str):
+            tiled_h = tiled_h.lower() in ('true', '1', 'yes')
+        if isinstance(tiled_v, str):
+            tiled_v = tiled_v.lower() in ('true', '1', 'yes')
+
+        # Look up the background/sprite
+        import pygame
+        from pathlib import Path
+
+        background_surface = None
+
+        # Try to load from sprites or backgrounds
+        if hasattr(self.game_runner, 'sprites') and background_name in self.game_runner.sprites:
+            sprite = self.game_runner.sprites[background_name]
+            if sprite.surface:
+                background_surface = sprite.surface
+        elif hasattr(self.game_runner, 'project_data'):
+            # Try to load from backgrounds in project data
+            backgrounds = self.game_runner.project_data.get('assets', {}).get('backgrounds', {})
+            if background_name in backgrounds:
+                bg_data = backgrounds[background_name]
+                file_path = bg_data.get('file_path', '')
+                if file_path:
+                    full_path = self.game_runner.project_path / file_path
+                    if full_path.exists():
+                        try:
+                            background_surface = pygame.image.load(str(full_path)).convert()
+                        except Exception as e:
+                            print(f"⚠️ Error loading background '{background_name}': {e}")
+
+        if background_surface and visible:
+            # Update room background
+            self.game_runner.current_room.background_surface = background_surface
+            self.game_runner.current_room.background_image_name = background_name
+            self.game_runner.current_room.tile_horizontal = tiled_h
+            self.game_runner.current_room.tile_vertical = tiled_v
+
+            # Note: foreground, hspeed, vspeed would require additional room properties
+            # For now, we'll just acknowledge them
+            print(f"🖼️ Set background: '{background_name}', visible={visible}, "
+                  f"tiled_h={tiled_h}, tiled_v={tiled_v}, foreground={foreground}")
+
+            if hspeed != 0 or vspeed != 0:
+                print(f"   Scroll speed: h={hspeed}, v={vspeed} (scrolling not yet implemented)")
+        elif not visible:
+            # Clear background
+            self.game_runner.current_room.background_surface = None
+            print(f"🖼️ Background hidden")
+        else:
+            print(f"⚠️ set_background: Background '{background_name}' not found")
+
+    def _parse_color(self, color_str: str) -> tuple:
+        """Parse color string to RGB tuple (helper method)"""
+        if isinstance(color_str, tuple):
+            return color_str
+
+        if isinstance(color_str, str) and color_str.startswith('#'):
+            try:
+                hex_color = color_str.lstrip('#')
+                if len(hex_color) == 6:
+                    r = int(hex_color[0:2], 16)
+                    g = int(hex_color[2:4], 16)
+                    b = int(hex_color[4:6], 16)
+                    return (r, g, b)
+            except (ValueError, IndexError):
+                pass
+
+        # Default to black
+        return (0, 0, 0)
+
     # ==================== CONTROL ACTIONS (Additional) ====================
 
     def execute_test_chance_action(self, instance, parameters: Dict[str, Any]):
@@ -2223,6 +2747,173 @@ class ActionExecutor:
         result = (roll == 1)
 
         print(f"🎲 Test chance (1 in {sides}): rolled {roll}, result={result}")
+        return result
+
+    def execute_test_expression_action(self, instance, parameters: Dict[str, Any]):
+        """Test/evaluate a GML-style expression
+
+        Parameters:
+            expression: String expression to evaluate (can access instance variables)
+
+        Returns True if expression evaluates to truthy value, False otherwise
+
+        Supported expressions:
+        - Variable comparisons: "x < 100", "score >= 1000"
+        - Math expressions: "x + y > 200", "hspeed * 2 < 10"
+        - Boolean expressions: "lives > 0 and health > 50"
+        - Instance properties: "self.x", "self.y", "self.hspeed"
+        """
+        expression = parameters.get("expression", "")
+
+        if not expression or not expression.strip():
+            print("⚠️  test_expression: Empty expression")
+            return False
+
+        try:
+            # Build safe namespace for evaluation
+            namespace = {
+                # Instance properties
+                'self': instance,
+                'x': instance.x,
+                'y': instance.y,
+                'hspeed': getattr(instance, 'hspeed', 0),
+                'vspeed': getattr(instance, 'vspeed', 0),
+                'speed': getattr(instance, 'speed', 0),
+                'direction': getattr(instance, 'direction', 0),
+                'image_index': getattr(instance, 'image_index', 0),
+                'image_speed': getattr(instance, 'image_speed', 1.0),
+
+                # Game state (if available)
+                'score': getattr(self.game_runner, 'score', 0) if self.game_runner else 0,
+                'lives': getattr(self.game_runner, 'lives', 0) if self.game_runner else 0,
+                'health': getattr(self.game_runner, 'health', 100) if self.game_runner else 100,
+
+                # Room info (if available)
+                'room_width': getattr(self.game_runner.current_room, 'width', 0) if self.game_runner and self.game_runner.current_room else 0,
+                'room_height': getattr(self.game_runner.current_room, 'height', 0) if self.game_runner and self.game_runner.current_room else 0,
+
+                # Math functions
+                'abs': abs,
+                'min': min,
+                'max': max,
+                'round': round,
+
+                # Custom instance variables
+                **{k: v for k, v in instance.__dict__.items() if not k.startswith('_')}
+            }
+
+            # Evaluate the expression
+            result = eval(expression, {"__builtins__": {}}, namespace)
+
+            # Convert to boolean
+            result_bool = bool(result)
+
+            print(f"📝 Test expression '{expression}' = {result} (bool: {result_bool})")
+            return result_bool
+
+        except Exception as e:
+            print(f"⚠️  test_expression: Error evaluating '{expression}': {e}")
+            return False
+
+    def execute_test_question_action(self, instance, parameters: Dict[str, Any]):
+        """Show a yes/no question dialog to the user
+
+        Parameters:
+            question: Question text to display
+
+        Returns True if user clicks Yes, False if user clicks No
+
+        This displays a modal dialog with Yes/No buttons.
+        """
+        question = parameters.get("question", "Continue?")
+
+        try:
+            from PySide6.QtWidgets import QMessageBox, QApplication
+
+            # Check if QApplication exists
+            if QApplication.instance() is None:
+                print(f"⚠️  test_question: No QApplication, defaulting to True for '{question}'")
+                return True
+
+            # Create message box
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle("Question")
+            msg_box.setText(question)
+            msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            msg_box.setDefaultButton(QMessageBox.Yes)
+            msg_box.setIcon(QMessageBox.Question)
+
+            # Show dialog and get result
+            result = msg_box.exec()
+            answer = (result == QMessageBox.Yes)
+
+            print(f"❔ Question: '{question}' → {'Yes' if answer else 'No'}")
+            return answer
+
+        except ImportError:
+            # Fallback for environments without Qt (like testing)
+            print(f"⚠️  test_question: Qt not available, defaulting to True for '{question}'")
+            return True
+        except Exception as e:
+            print(f"⚠️  test_question: Error showing dialog: {e}")
+            return True
+
+    def execute_test_instance_count_action(self, instance, parameters: Dict[str, Any]):
+        """Test the number of instances of a specific object type
+
+        Parameters:
+            object: Object type name to count
+            number: Number to compare against
+            operation: Comparison operator (equal, less, greater, less_equal, greater_equal, not_equal)
+
+        Returns True if condition is met, False otherwise
+
+        Example:
+            - Check if there are exactly 5 enemies: object="obj_enemy", number=5, operation="equal"
+            - Check if there are less than 10 bullets: object="obj_bullet", number=10, operation="less"
+        """
+        object_type = parameters.get("object", "")
+        target_count = parameters.get("number", 0)
+        operation = parameters.get("operation", "equal")
+
+        if not object_type:
+            print("⚠️  test_instance_count: No object type specified")
+            return False
+
+        try:
+            target_count = int(target_count)
+        except (ValueError, TypeError):
+            print(f"⚠️  test_instance_count: Invalid number '{target_count}'")
+            return False
+
+        # Count instances of this object type
+        if not self.game_runner or not hasattr(self.game_runner, 'instances'):
+            print("⚠️  test_instance_count: No game runner or instances available")
+            return False
+
+        # Count instances matching the object type
+        actual_count = sum(1 for inst in self.game_runner.instances
+                          if getattr(inst, 'object_name', '') == object_type)
+
+        # Perform comparison
+        result = False
+        if operation == "equal":
+            result = (actual_count == target_count)
+        elif operation == "less":
+            result = (actual_count < target_count)
+        elif operation == "greater":
+            result = (actual_count > target_count)
+        elif operation == "less_equal":
+            result = (actual_count <= target_count)
+        elif operation == "greater_equal":
+            result = (actual_count >= target_count)
+        elif operation == "not_equal":
+            result = (actual_count != target_count)
+        else:
+            print(f"⚠️  test_instance_count: Unknown operation '{operation}'")
+            return False
+
+        print(f"🔢 Test instance count: {object_type} count={actual_count} {operation} {target_count} → {result}")
         return result
 
     # ==================== ANIMATION ACTIONS ====================

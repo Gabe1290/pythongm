@@ -19,8 +19,7 @@ DRAW_ACTIONS = {
             ActionParameter("x", "int", "X", "X position", default=0),
             ActionParameter("y", "int", "Y", "Y position", default=0),
             ActionParameter("subimage", "int", "Subimage", "Frame index", default=0)
-        ],
-        implemented=False
+        ]
     ),
     "draw_background": ActionDefinition(
         name="draw_background",
@@ -94,8 +93,7 @@ DRAW_ACTIONS = {
             ActionParameter("x2", "int", "X2", "Right", default=100),
             ActionParameter("y2", "int", "Y2", "Bottom", default=100),
             ActionParameter("filled", "boolean", "Filled", "Fill ellipse", default=False)
-        ],
-        implemented=False
+        ]
     ),
     "draw_line": ActionDefinition(
         name="draw_line",
@@ -109,8 +107,7 @@ DRAW_ACTIONS = {
             ActionParameter("y1", "int", "Y1", "Start Y", default=0),
             ActionParameter("x2", "int", "X2", "End X", default=100),
             ActionParameter("y2", "int", "Y2", "End Y", default=100)
-        ],
-        implemented=False
+        ]
     ),
     "draw_arrow": ActionDefinition(
         name="draw_arrow",

@@ -386,33 +386,12 @@ class GameInstance:
 
         if self.object_data and "events" in self.object_data:
             # Execute regular step event
+            # NOTE: Alarms are now processed in main game loop (before step)
+            # to match GameMaker 7.0 event execution order
             self.action_executor.execute_event(self, "step", self.object_data["events"])
 
-            # Process alarms - decrement and trigger when reaching 0
-            events = self.object_data["events"]
-            for alarm_num in range(12):
-                if self.alarm[alarm_num] > 0:
-                    self.alarm[alarm_num] -= 1
-                    if self.alarm[alarm_num] == 0:
-                        # Alarm triggered! Execute alarm event
-                        self.alarm[alarm_num] = -1  # Reset to disabled
-                        alarm_key = f"alarm_{alarm_num}"
-
-                        # Check for alarm event in different structures:
-                        # 1. Nested: events["alarm"]["alarm_0"]
-                        # 2. Flat: events["alarm_0"]
-                        alarm_event = None
-                        if "alarm" in events and alarm_key in events["alarm"]:
-                            alarm_event = events["alarm"][alarm_key]
-                        elif alarm_key in events:
-                            alarm_event = events[alarm_key]
-
-                        if alarm_event and isinstance(alarm_event, dict) and "actions" in alarm_event:
-                            print(f"⏰ Alarm {alarm_num} triggered for {self.object_name}")
-                            for action_data in alarm_event["actions"]:
-                                self.action_executor.execute_action(self, action_data)
-
             # Check for "nokey" event (GameMaker compatibility)
+            events = self.object_data["events"]
             # This event triggers when no keyboard keys are currently pressed
             if "keyboard" in events and "nokey" in events["keyboard"]:
                 # Check if no keys are currently pressed
@@ -524,6 +503,18 @@ class GameInstance:
                 # Draw circle
                 self._draw_circle(screen, cmd)
 
+            elif cmd_type == 'ellipse':
+                # Draw ellipse
+                self._draw_ellipse(screen, cmd)
+
+            elif cmd_type == 'line':
+                # Draw line
+                self._draw_line(screen, cmd)
+
+            elif cmd_type == 'sprite':
+                # Draw sprite
+                self._draw_sprite(screen, cmd)
+
         # Clear the queue after processing
         self._draw_queue = []
 
@@ -608,6 +599,61 @@ class GameInstance:
             pygame.draw.circle(screen, color, (x, y), radius)
         else:
             pygame.draw.circle(screen, color, (x, y), radius, 1)
+
+    def _draw_ellipse(self, screen: pygame.Surface, cmd: dict):
+        """Draw an ellipse"""
+        x1 = cmd.get('x1', 0)
+        y1 = cmd.get('y1', 0)
+        x2 = cmd.get('x2', 100)
+        y2 = cmd.get('y2', 100)
+        color = self._parse_color(cmd.get('color', '#FFFFFF'))
+        filled = cmd.get('filled', True)
+
+        width = x2 - x1
+        height = y2 - y1
+
+        # pygame.draw.ellipse expects a rect (x, y, width, height)
+        if filled:
+            pygame.draw.ellipse(screen, color, (x1, y1, width, height))
+        else:
+            pygame.draw.ellipse(screen, color, (x1, y1, width, height), 1)
+
+    def _draw_line(self, screen: pygame.Surface, cmd: dict):
+        """Draw a line between two points"""
+        x1 = cmd.get('x1', 0)
+        y1 = cmd.get('y1', 0)
+        x2 = cmd.get('x2', 100)
+        y2 = cmd.get('y2', 100)
+        color = self._parse_color(cmd.get('color', '#FFFFFF'))
+
+        # Draw line with width of 1 pixel
+        pygame.draw.line(screen, color, (int(x1), int(y1)), (int(x2), int(y2)), 1)
+
+    def _draw_sprite(self, screen: pygame.Surface, cmd: dict):
+        """Draw a sprite at specified position"""
+        sprite_name = cmd.get('sprite_name', '')
+        x = cmd.get('x', 0)
+        y = cmd.get('y', 0)
+        subimage = cmd.get('subimage', 0)
+
+        # Look up the sprite in the loaded sprites
+        if sprite_name not in self.sprites:
+            print(f"⚠️ Warning: Sprite '{sprite_name}' not found for draw_sprite")
+            return
+
+        sprite = self.sprites[sprite_name]
+
+        # Handle animated sprites (multiple frames)
+        if len(sprite.frames) > 0:
+            # Use the specified subimage (frame index)
+            frame_index = int(subimage) % len(sprite.frames)
+            frame_surface = sprite.frames[frame_index]
+            screen.blit(frame_surface, (int(x), int(y)))
+        elif sprite.surface:
+            # Single frame sprite
+            screen.blit(sprite.surface, (int(x), int(y)))
+        else:
+            print(f"⚠️ Warning: Sprite '{sprite_name}' has no surface to draw")
 
     def _parse_color(self, color_str: str) -> tuple:
         """Parse color string to RGB tuple"""
@@ -1315,31 +1361,64 @@ class GameRunner:
                 if instance.object_data and "events" in instance.object_data:
                     self.action_executor.execute_event(instance, "create", instance.object_data["events"])
 
+            # Execute room_start event for all instances (after create events)
+            print(f"🚪 Triggering room_start events for starting room: {self.current_room.name}")
+            self.trigger_room_start_event()
+
             self.running = True
 
             # Main game loop
             while self.running:
-                # Execute begin_step events (before everything else)
+                # ========== GameMaker 7.0 Event Execution Order ==========
+                # 1. BEGIN STEP (before everything else)
                 for instance in self.current_room.instances:
                     if instance.object_data and "events" in instance.object_data:
                         events = instance.object_data["events"]
                         if "begin_step" in events:
                             instance.action_executor.execute_event(instance, "begin_step", events)
 
-                # Handle events (keyboard, mouse, etc.)
+                # 2. ALARMS (countdown and trigger before keyboard/step)
+                for instance in self.current_room.instances:
+                    if instance.object_data and "events" in instance.object_data:
+                        events = instance.object_data["events"]
+                        # Process all 12 alarms
+                        for alarm_num in range(12):
+                            if instance.alarm[alarm_num] > 0:
+                                instance.alarm[alarm_num] -= 1
+                                if instance.alarm[alarm_num] == 0:
+                                    # Alarm triggered! Execute alarm event
+                                    instance.alarm[alarm_num] = -1  # Reset to disabled
+                                    alarm_key = f"alarm_{alarm_num}"
+
+                                    # Check for alarm event in different structures:
+                                    # 1. Nested: events["alarm"]["alarm_0"]
+                                    # 2. Flat: events["alarm_0"]
+                                    alarm_event = None
+                                    if "alarm" in events and alarm_key in events["alarm"]:
+                                        alarm_event = events["alarm"][alarm_key]
+                                    elif alarm_key in events:
+                                        alarm_event = events[alarm_key]
+
+                                    if alarm_event and isinstance(alarm_event, dict) and "actions" in alarm_event:
+                                        print(f"⏰ Alarm {alarm_num} triggered for {instance.object_name}")
+                                        for action_data in alarm_event["actions"]:
+                                            instance.action_executor.execute_action(instance, action_data)
+
+                # 3. KEYBOARD/MOUSE EVENTS
                 self.handle_events()
 
-                # Update (collision checking, movement, etc.)
-                self.update()
-
-                # Execute step events for all instances
+                # 4. STEP EVENT (main game logic)
                 for instance in self.current_room.instances:
                     instance.step()
+
+                # 5. MOVEMENT (apply physics: gravity, friction, hspeed/vspeed)
+                # 6. COLLISION (detect and execute collision events)
+                self.update()
 
                 # Update Thymio simulators and trigger events
                 self.update_thymio_robots()
 
-                # Execute end_step events (after step, before rendering)
+                # 7. END STEP (after collisions, before drawing)
                 for instance in self.current_room.instances:
                     if instance.object_data and "events" in instance.object_data:
                         events = instance.object_data["events"]
@@ -2322,6 +2401,9 @@ class GameRunner:
                 if instance.object_data and "events" in instance.object_data:
                     instance.action_executor.execute_event(instance, "create", instance.object_data["events"])
 
+            # Execute room_start event for all instances (after create events)
+            self.trigger_room_start_event()
+
             print(f"✅ Room {room_name} restarted with {len(new_room.instances)} instances")
 
     def restart_game(self):
@@ -2383,6 +2465,9 @@ class GameRunner:
             for instance in self.current_room.instances:
                 if instance.object_data and "events" in instance.object_data:
                     instance.action_executor.execute_event(instance, "create", instance.object_data["events"])
+
+            # Execute room_start event for all instances (after create events)
+            self.trigger_room_start_event()
 
             print(f"  ✅ Game restarted with room '{first_room_name}' ({len(new_room.instances)} instances)")
         else:
@@ -2451,9 +2536,31 @@ class GameRunner:
         else:
             return list(rooms_data.keys())
 
+    def trigger_room_end_event(self):
+        """Trigger room_end event on all instances in current room"""
+        if not self.current_room:
+            return
+
+        for instance in self.current_room.instances:
+            if instance.object_data and "events" in instance.object_data:
+                instance.action_executor.execute_event(instance, "room_end", instance.object_data["events"])
+
+    def trigger_room_start_event(self):
+        """Trigger room_start event on all instances in current room"""
+        if not self.current_room:
+            return
+
+        for instance in self.current_room.instances:
+            if instance.object_data and "events" in instance.object_data:
+                instance.action_executor.execute_event(instance, "room_start", instance.object_data["events"])
+
     def change_room(self, room_name: str):
         """Change to a different room"""
         if room_name in self.rooms:
+            # Trigger room_end event in the current room before leaving
+            if self.current_room:
+                self.trigger_room_end_event()
+
             print(f"🚪 Changing to room: {room_name}")
             self.current_room = self.rooms[room_name]
 
@@ -2472,6 +2579,9 @@ class GameRunner:
             for instance in self.current_room.instances:
                 if instance.object_data and "events" in instance.object_data:
                     instance.action_executor.execute_event(instance, "create", instance.object_data["events"])
+
+            # Execute room_start event for all instances (after create events)
+            self.trigger_room_start_event()
 
 
     def get_caption_text(self, key: str) -> str:
