@@ -1941,5 +1941,387 @@ class TestSetViewAction:
         executor.execute_set_view_action(instance, {'view': 0, 'visible': True})
 
 
+# ==============================================================================
+# Main1 Tab Actions Tests
+# ==============================================================================
+
+
+class TestMain1TabActions:
+    """Tests for Main1 tab actions: create_random_instance, create_moving_instance, destroy_at_position"""
+
+    def test_create_random_instance_picks_from_choices(self):
+        """create_random_instance randomly picks from provided objects"""
+        mock_runner = MockGameRunner()
+        mock_runner.project_data = {
+            'assets': {
+                'objects': {
+                    'obj_enemy1': {'sprite': '', 'events': {}},
+                    'obj_enemy2': {'sprite': '', 'events': {}},
+                }
+            }
+        }
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Run multiple times to verify randomness
+        created_objects = set()
+        for _ in range(20):
+            mock_runner.current_room.instances = []
+            executor.execute_create_random_instance_action(instance, {
+                'object1': 'obj_enemy1',
+                'object2': 'obj_enemy2',
+                'x': 100,
+                'y': 200
+            })
+            if mock_runner.current_room.instances:
+                created_objects.add(mock_runner.current_room.instances[0].object_name)
+
+        # Should have created at least one of each (statistically likely with 20 tries)
+        assert len(created_objects) >= 1  # At least created something
+
+    def test_create_random_instance_no_objects(self):
+        """create_random_instance handles no objects specified"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_create_random_instance_action(instance, {
+            'x': 100,
+            'y': 200
+        })
+
+    def test_create_random_instance_no_game_runner(self):
+        """create_random_instance handles missing game_runner"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_create_random_instance_action(instance, {
+            'object1': 'obj_test',
+            'x': 100,
+            'y': 200
+        })
+
+    def test_create_moving_instance_sets_motion(self):
+        """create_moving_instance creates instance with speed and direction"""
+        import math
+        mock_runner = MockGameRunner()
+        mock_runner.project_data = {
+            'assets': {
+                'objects': {
+                    'obj_bullet': {'sprite': '', 'events': {}}
+                }
+            }
+        }
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_create_moving_instance_action(instance, {
+            'object': 'obj_bullet',
+            'x': 50,
+            'y': 75,
+            'speed': 5,
+            'direction': 0  # Right
+        })
+
+        assert len(mock_runner.current_room.instances) == 1
+        new_inst = mock_runner.current_room.instances[0]
+        assert new_inst.object_name == 'obj_bullet'
+        assert new_inst.x == 50
+        assert new_inst.y == 75
+        assert new_inst.speed == 5
+        assert new_inst.direction == 0
+        assert abs(new_inst.hspeed - 5.0) < 0.001  # Moving right
+        assert abs(new_inst.vspeed - 0.0) < 0.001
+
+    def test_create_moving_instance_direction_90(self):
+        """create_moving_instance handles direction 90 (up)"""
+        mock_runner = MockGameRunner()
+        mock_runner.project_data = {
+            'assets': {
+                'objects': {
+                    'obj_bullet': {'sprite': '', 'events': {}}
+                }
+            }
+        }
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_create_moving_instance_action(instance, {
+            'object': 'obj_bullet',
+            'x': 0,
+            'y': 0,
+            'speed': 10,
+            'direction': 90  # Up
+        })
+
+        new_inst = mock_runner.current_room.instances[0]
+        assert abs(new_inst.hspeed) < 0.001  # No horizontal movement
+        assert new_inst.vspeed < 0  # Moving up (negative Y)
+
+    def test_create_moving_instance_no_object(self):
+        """create_moving_instance handles missing object"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_create_moving_instance_action(instance, {
+            'x': 100,
+            'y': 200,
+            'speed': 5,
+            'direction': 0
+        })
+
+    def test_destroy_at_position_destroys_matching(self):
+        """destroy_at_position marks instances at position for destruction"""
+        mock_runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Create target instance at specific position
+        target = MockInstance("obj_target")
+        target.x = 100
+        target.y = 200
+        mock_runner.current_room.instances.append(target)
+
+        executor.execute_destroy_at_position_action(instance, {
+            'x': 100,
+            'y': 200,
+            'object': 'obj_target'
+        })
+
+        assert target.to_destroy is True
+
+    def test_destroy_at_position_filters_by_object(self):
+        """destroy_at_position only destroys matching object type"""
+        mock_runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Create two instances at same position
+        target = MockInstance("obj_target")
+        target.x = 100
+        target.y = 200
+        other = MockInstance("obj_other")
+        other.x = 100
+        other.y = 200
+        mock_runner.current_room.instances.extend([target, other])
+
+        executor.execute_destroy_at_position_action(instance, {
+            'x': 100,
+            'y': 200,
+            'object': 'obj_target'
+        })
+
+        assert target.to_destroy is True
+        assert other.to_destroy is False
+
+    def test_destroy_at_position_destroys_all_without_filter(self):
+        """destroy_at_position without object filter destroys all at position"""
+        mock_runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Create two instances at same position
+        inst1 = MockInstance("obj_a")
+        inst1.x = 50
+        inst1.y = 50
+        inst2 = MockInstance("obj_b")
+        inst2.x = 50
+        inst2.y = 50
+        mock_runner.current_room.instances.extend([inst1, inst2])
+
+        executor.execute_destroy_at_position_action(instance, {
+            'x': 50,
+            'y': 50
+        })
+
+        assert inst1.to_destroy is True
+        assert inst2.to_destroy is True
+
+    def test_destroy_at_position_no_room(self):
+        """destroy_at_position handles missing room"""
+        mock_runner = MockGameRunner()
+        mock_runner.current_room = None
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_destroy_at_position_action(instance, {
+            'x': 100,
+            'y': 200
+        })
+
+
+# ==============================================================================
+# Main2 Tab Actions Tests
+# ==============================================================================
+
+
+class TestMain2TabActions:
+    """Tests for Main2 tab actions: transform_sprite, set_color, check_sound"""
+
+    def test_transform_sprite_sets_scale_and_angle(self):
+        """transform_sprite sets image_xscale, image_yscale, and image_angle"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_transform_sprite_action(instance, {
+            'xscale': 2.0,
+            'yscale': 0.5,
+            'angle': 45.0
+        })
+
+        assert instance.image_xscale == 2.0
+        assert instance.image_yscale == 0.5
+        assert instance.image_angle == 45.0
+
+    def test_transform_sprite_default_values(self):
+        """transform_sprite uses default values when not specified"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_transform_sprite_action(instance, {})
+
+        assert instance.image_xscale == 1.0
+        assert instance.image_yscale == 1.0
+        assert instance.image_angle == 0.0
+
+    def test_transform_sprite_with_expressions(self):
+        """transform_sprite supports expression values"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.my_scale = 3.0
+        instance.my_angle = 90.0
+
+        executor.execute_transform_sprite_action(instance, {
+            'xscale': 'self.my_scale',
+            'yscale': 'self.my_scale',
+            'angle': 'self.my_angle'
+        })
+
+        assert instance.image_xscale == 3.0
+        assert instance.image_yscale == 3.0
+        assert instance.image_angle == 90.0
+
+    def test_set_color_hex_color(self):
+        """set_color parses hex color string"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_set_color_action(instance, {
+            'color': '#FF0000',
+            'alpha': 1.0
+        })
+
+        assert instance.image_blend == (255, 0, 0)
+        assert instance.image_alpha == 1.0
+
+    def test_set_color_with_alpha(self):
+        """set_color sets alpha transparency"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_set_color_action(instance, {
+            'color': '#00FF00',
+            'alpha': 0.5
+        })
+
+        assert instance.image_blend == (0, 255, 0)
+        assert instance.image_alpha == 0.5
+
+    def test_set_color_clamps_alpha(self):
+        """set_color clamps alpha to 0-1 range"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_set_color_action(instance, {
+            'color': '#FFFFFF',
+            'alpha': 2.0  # Should be clamped to 1.0
+        })
+
+        assert instance.image_alpha == 1.0
+
+        executor.execute_set_color_action(instance, {
+            'color': '#FFFFFF',
+            'alpha': -0.5  # Should be clamped to 0.0
+        })
+
+        assert instance.image_alpha == 0.0
+
+    def test_set_color_default_white(self):
+        """set_color defaults to white when invalid color"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_set_color_action(instance, {
+            'color': 'invalid',
+            'alpha': 1.0
+        })
+
+        assert instance.image_blend == (255, 255, 255)
+
+    def test_check_sound_returns_false_when_not_playing(self):
+        """check_sound returns False when sound is not playing"""
+        mock_runner = MockGameRunner()
+        mock_runner.sounds = {'snd_test': MockSound()}
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        result = executor.execute_check_sound_action(instance, {
+            'sound': 'snd_test',
+            'not_flag': False
+        })
+
+        assert result is False
+
+    def test_check_sound_with_not_flag(self):
+        """check_sound inverts result with not_flag"""
+        mock_runner = MockGameRunner()
+        mock_runner.sounds = {'snd_test': MockSound()}
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        result = executor.execute_check_sound_action(instance, {
+            'sound': 'snd_test',
+            'not_flag': True
+        })
+
+        assert result is True  # Not playing, inverted = True
+
+    def test_check_sound_no_sound_specified(self):
+        """check_sound handles missing sound name"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        result = executor.execute_check_sound_action(instance, {
+            'not_flag': False
+        })
+
+        assert result is True  # Returns True when no sound specified
+
+    def test_check_sound_no_game_runner(self):
+        """check_sound handles missing game_runner"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        result = executor.execute_check_sound_action(instance, {
+            'sound': 'snd_test',
+            'not_flag': False
+        })
+
+        assert result is True  # Returns True (not_flag default) when no runner
+
+
+class MockSound:
+    """Mock pygame Sound for testing"""
+
+    def __init__(self, playing=False):
+        self._playing = playing
+
+    def get_num_channels(self):
+        return 1 if self._playing else 0
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

@@ -3910,3 +3910,349 @@ class ActionExecutor:
         else:
             # For all other actions, use the regular action executor
             return self.execute_action(instance, action_data)
+
+    # ==================== MAIN1 TAB ACTIONS ====================
+
+    def execute_create_random_instance_action(self, instance, parameters: Dict[str, Any]):
+        """Create a random instance from up to four object choices
+
+        Parameters:
+            object1, object2, object3, object4: Object types to randomly choose from
+            x: X position for the new instance
+            y: Y position for the new instance
+        """
+        import random
+
+        # Collect non-empty object choices
+        objects = []
+        for i in range(1, 5):
+            obj_name = parameters.get(f"object{i}", "")
+            if obj_name:
+                objects.append(obj_name)
+
+        if not objects:
+            logger.debug("⚠️ create_random_instance: No objects specified")
+            return
+
+        # Pick a random object
+        object_name = random.choice(objects)
+
+        x_param = parameters.get("x", 0)
+        y_param = parameters.get("y", 0)
+
+        if not self.game_runner:
+            logger.debug("⚠️ create_random_instance: No game_runner reference")
+            return
+
+        # Parse position values
+        x = self._parse_value(str(x_param), instance)
+        y = self._parse_value(str(y_param), instance)
+
+        try:
+            x = float(x) if x is not None else 0.0
+            y = float(y) if y is not None else 0.0
+        except (ValueError, TypeError):
+            x = 0.0
+            y = 0.0
+
+        # Get the object's data
+        objects_data = self.game_runner.project_data.get('assets', {}).get('objects', {})
+        if object_name not in objects_data:
+            logger.debug(f"⚠️ create_random_instance: Object '{object_name}' not found")
+            return
+
+        object_data = objects_data[object_name]
+
+        # Import GameInstance locally to avoid circular imports
+        from runtime.game_runner import GameInstance
+
+        # Create new instance
+        instance_data = {
+            'object_name': object_name,
+            'x': x,
+            'y': y,
+            'instance_id': id(object_data) + int(x * 1000) + int(y * 1000000)
+        }
+
+        new_instance = GameInstance(
+            object_name,
+            x,
+            y,
+            instance_data,
+            action_executor=self
+        )
+
+        # Set up the new instance with object data and sprite
+        new_instance.set_object_data(object_data)
+
+        # Get sprite for the new instance
+        sprite_name = object_data.get('sprite', '')
+        if sprite_name and sprite_name in self.game_runner.sprites:
+            new_instance.set_sprite(self.game_runner.sprites[sprite_name])
+
+        # Add to current room
+        if self.game_runner.current_room:
+            self.game_runner.current_room.instances.append(new_instance)
+            self.game_runner.current_room._add_to_grid(new_instance)
+
+            # Execute create event for the new instance
+            events = object_data.get('events', {})
+            if 'create' in events:
+                self.execute_event(new_instance, 'create', events)
+
+            logger.debug(f"🎲 Created random instance of '{object_name}' at ({x}, {y})")
+        else:
+            logger.debug("⚠️ create_random_instance: No current room to add instance to")
+
+    def execute_create_moving_instance_action(self, instance, parameters: Dict[str, Any]):
+        """Create a new instance with initial motion
+
+        Parameters:
+            object: The object type to create
+            x: X position for the new instance
+            y: Y position for the new instance
+            speed: Initial speed
+            direction: Initial direction in degrees
+        """
+        import math
+
+        object_name = parameters.get("object", "")
+        x_param = parameters.get("x", 0)
+        y_param = parameters.get("y", 0)
+        speed_param = parameters.get("speed", 0)
+        direction_param = parameters.get("direction", 0)
+
+        if not object_name:
+            logger.debug("⚠️ create_moving_instance: No object specified")
+            return
+
+        if not self.game_runner:
+            logger.debug("⚠️ create_moving_instance: No game_runner reference")
+            return
+
+        # Parse values
+        x = self._parse_value(str(x_param), instance)
+        y = self._parse_value(str(y_param), instance)
+        speed = self._parse_value(str(speed_param), instance)
+        direction = self._parse_value(str(direction_param), instance)
+
+        try:
+            x = float(x) if x is not None else 0.0
+            y = float(y) if y is not None else 0.0
+            speed = float(speed) if speed is not None else 0.0
+            direction = float(direction) if direction is not None else 0.0
+        except (ValueError, TypeError):
+            x, y, speed, direction = 0.0, 0.0, 0.0, 0.0
+
+        # Get the object's data
+        objects_data = self.game_runner.project_data.get('assets', {}).get('objects', {})
+        if object_name not in objects_data:
+            logger.debug(f"⚠️ create_moving_instance: Object '{object_name}' not found")
+            return
+
+        object_data = objects_data[object_name]
+
+        # Import GameInstance locally to avoid circular imports
+        from runtime.game_runner import GameInstance
+
+        # Create new instance
+        instance_data = {
+            'object_name': object_name,
+            'x': x,
+            'y': y,
+            'instance_id': id(object_data) + int(x * 1000) + int(y * 1000000)
+        }
+
+        new_instance = GameInstance(
+            object_name,
+            x,
+            y,
+            instance_data,
+            action_executor=self
+        )
+
+        # Set up the new instance with object data and sprite
+        new_instance.set_object_data(object_data)
+
+        # Set initial motion (convert direction to hspeed/vspeed)
+        # GameMaker uses degrees where 0 = right, 90 = up
+        rad = math.radians(direction)
+        new_instance.hspeed = speed * math.cos(rad)
+        new_instance.vspeed = -speed * math.sin(rad)  # Negative because Y increases downward
+        new_instance.speed = speed
+        new_instance.direction = direction
+
+        # Get sprite for the new instance
+        sprite_name = object_data.get('sprite', '')
+        if sprite_name and sprite_name in self.game_runner.sprites:
+            new_instance.set_sprite(self.game_runner.sprites[sprite_name])
+
+        # Add to current room
+        if self.game_runner.current_room:
+            self.game_runner.current_room.instances.append(new_instance)
+            self.game_runner.current_room._add_to_grid(new_instance)
+
+            # Execute create event for the new instance
+            events = object_data.get('events', {})
+            if 'create' in events:
+                self.execute_event(new_instance, 'create', events)
+
+            logger.debug(f"🚀 Created moving instance of '{object_name}' at ({x}, {y}) with speed={speed}, dir={direction}")
+        else:
+            logger.debug("⚠️ create_moving_instance: No current room to add instance to")
+
+    def execute_destroy_at_position_action(self, instance, parameters: Dict[str, Any]):
+        """Destroy all instances of a specific object at a position
+
+        Parameters:
+            x: X position to check
+            y: Y position to check
+            object: Object type to destroy (optional - if empty, destroys all)
+        """
+        x_param = parameters.get("x", 0)
+        y_param = parameters.get("y", 0)
+        object_name = parameters.get("object", "")
+
+        if not self.game_runner or not self.game_runner.current_room:
+            logger.debug("⚠️ destroy_at_position: No game_runner or current_room")
+            return
+
+        # Parse position values
+        x = self._parse_value(str(x_param), instance)
+        y = self._parse_value(str(y_param), instance)
+
+        try:
+            x = float(x) if x is not None else 0.0
+            y = float(y) if y is not None else 0.0
+        except (ValueError, TypeError):
+            x = 0.0
+            y = 0.0
+
+        # Find and destroy instances at this position
+        destroyed_count = 0
+        for inst in self.game_runner.current_room.instances:
+            # Check if instance is at this position (with small tolerance)
+            if abs(inst.x - x) < 1 and abs(inst.y - y) < 1:
+                # Check object type filter
+                if not object_name or inst.object_name == object_name:
+                    inst.to_destroy = True
+                    destroyed_count += 1
+
+        if destroyed_count > 0:
+            logger.debug(f"💣 Destroyed {destroyed_count} instance(s) at ({x}, {y})")
+        else:
+            logger.debug(f"💣 No instances found at ({x}, {y})")
+
+    # ==================== MAIN2 TAB ACTIONS ====================
+
+    def execute_transform_sprite_action(self, instance, parameters: Dict[str, Any]):
+        """Transform the sprite with scaling and rotation
+
+        Parameters:
+            xscale: Horizontal scale factor (1.0 = normal)
+            yscale: Vertical scale factor (1.0 = normal)
+            angle: Rotation angle in degrees
+        """
+        xscale_param = parameters.get("xscale", 1.0)
+        yscale_param = parameters.get("yscale", 1.0)
+        angle_param = parameters.get("angle", 0.0)
+
+        # Parse values
+        xscale = self._parse_value(str(xscale_param), instance)
+        yscale = self._parse_value(str(yscale_param), instance)
+        angle = self._parse_value(str(angle_param), instance)
+
+        try:
+            xscale = float(xscale) if xscale is not None else 1.0
+            yscale = float(yscale) if yscale is not None else 1.0
+            angle = float(angle) if angle is not None else 0.0
+        except (ValueError, TypeError):
+            xscale, yscale, angle = 1.0, 1.0, 0.0
+
+        # Apply to instance
+        instance.image_xscale = xscale
+        instance.image_yscale = yscale
+        instance.image_angle = angle
+
+        logger.debug(f"🔄 Transform sprite for {instance.object_name}: scale=({xscale}, {yscale}), angle={angle}")
+
+    def execute_set_color_action(self, instance, parameters: Dict[str, Any]):
+        """Set the blend color and alpha for the sprite
+
+        Parameters:
+            color: Blend color (hex string like "#RRGGBB")
+            alpha: Transparency (0.0 = invisible, 1.0 = fully opaque)
+        """
+        color_param = parameters.get("color", "#FFFFFF")
+        alpha_param = parameters.get("alpha", 1.0)
+
+        # Parse values
+        color = self._parse_value(str(color_param), instance)
+        alpha = self._parse_value(str(alpha_param), instance)
+
+        # Parse color if it's a hex string
+        if isinstance(color, str) and color.startswith('#'):
+            try:
+                # Convert hex to RGB tuple
+                hex_color = color.lstrip('#')
+                r = int(hex_color[0:2], 16)
+                g = int(hex_color[2:4], 16)
+                b = int(hex_color[4:6], 16)
+                instance.image_blend = (r, g, b)
+            except (ValueError, IndexError):
+                instance.image_blend = (255, 255, 255)
+        else:
+            instance.image_blend = (255, 255, 255)
+
+        # Parse alpha
+        try:
+            alpha = float(alpha) if alpha is not None else 1.0
+            alpha = max(0.0, min(1.0, alpha))  # Clamp to 0-1
+        except (ValueError, TypeError):
+            alpha = 1.0
+
+        instance.image_alpha = alpha
+
+        logger.debug(f"🎨 Set color for {instance.object_name}: blend={instance.image_blend}, alpha={alpha}")
+
+    def execute_check_sound_action(self, instance, parameters: Dict[str, Any]):
+        """Check if a sound is currently playing
+
+        Parameters:
+            sound: The sound name to check
+            not_flag: If True, inverts the result (checks if NOT playing)
+
+        Returns:
+            True if sound is playing (or not playing if not_flag is True)
+        """
+        import pygame
+
+        sound_name = parameters.get("sound", "")
+        not_flag = parameters.get("not_flag", False)
+
+        if isinstance(not_flag, str):
+            not_flag = not_flag.lower() in ('true', '1', 'yes')
+
+        if not sound_name:
+            logger.debug("⚠️ check_sound: No sound specified")
+            return not not_flag  # Return True if NOT checking, False otherwise
+
+        if not self.game_runner:
+            logger.debug("⚠️ check_sound: No game_runner reference")
+            return not not_flag
+
+        is_playing = False
+
+        # Check if the sound exists and is playing
+        if hasattr(self.game_runner, 'sounds') and sound_name in self.game_runner.sounds:
+            sound = self.game_runner.sounds[sound_name]
+            if hasattr(sound, 'get_num_channels'):
+                # pygame.mixer.Sound object
+                is_playing = sound.get_num_channels() > 0
+            elif pygame.mixer.get_init():
+                # Check if any channel is busy (fallback)
+                is_playing = pygame.mixer.get_busy()
+
+        result = is_playing if not not_flag else not is_playing
+        logger.debug(f"🎵 Check sound '{sound_name}': playing={is_playing}, not_flag={not_flag}, result={result}")
+        return result

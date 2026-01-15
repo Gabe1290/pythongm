@@ -38,8 +38,7 @@ MAIN1_ACTIONS = {
             ActionParameter("object4", "object", "Object 4", "Fourth object choice"),
             ActionParameter("x", "float", "X", "X position", default=0),
             ActionParameter("y", "float", "Y", "Y position", default=0)
-        ],
-        implemented=False
+        ]
     ),
     "create_moving_instance": ActionDefinition(
         name="create_moving_instance",
@@ -54,8 +53,7 @@ MAIN1_ACTIONS = {
             ActionParameter("y", "float", "Y", "Y position", default=0),
             ActionParameter("speed", "float", "Speed", "Initial speed", default=0),
             ActionParameter("direction", "float", "Direction", "Initial direction", default=0)
-        ],
-        implemented=False
+        ]
     ),
     "change_instance": ActionDefinition(
         name="change_instance",
@@ -93,8 +91,7 @@ MAIN1_ACTIONS = {
             ActionParameter("x", "float", "X", "X position", default=0),
             ActionParameter("y", "float", "Y", "Y position", default=0),
             ActionParameter("object", "object", "Object", "Object type to destroy")
-        ],
-        implemented=False
+        ]
     ),
 }
 
