@@ -2600,5 +2600,202 @@ class TestDrawTabActions:
         assert cmd['y'] == 250
 
 
+# ==============================================================================
+# Extra Tab Actions Tests
+# ==============================================================================
+
+
+class TestExtraTabActions:
+    """Tests for Extra tab actions: draw_variable, goto_room, check_room"""
+
+    def test_draw_variable_queues_text_command(self):
+        """draw_variable queues a text draw command with variable value"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.my_score = 100
+
+        executor.execute_draw_variable_action(instance, {
+            'x': 50,
+            'y': 100,
+            'variable': 'self.my_score'
+        })
+
+        assert hasattr(instance, '_draw_queue')
+        assert len(instance._draw_queue) == 1
+        cmd = instance._draw_queue[0]
+        assert cmd['type'] == 'text'
+        assert cmd['x'] == 50
+        assert cmd['y'] == 100
+        assert cmd['text'] == '100'
+
+    def test_draw_variable_global_variable(self):
+        """draw_variable can display global variables"""
+        mock_runner = MockGameRunner()
+        mock_runner.global_variables['player_name'] = 'Hero'
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_draw_variable_action(instance, {
+            'x': 0,
+            'y': 0,
+            'variable': 'global.player_name'
+        })
+
+        cmd = instance._draw_queue[0]
+        assert cmd['text'] == 'Hero'
+
+    def test_draw_variable_empty_variable(self):
+        """draw_variable handles empty variable name"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_draw_variable_action(instance, {
+            'x': 0,
+            'y': 0,
+            'variable': ''
+        })
+
+        cmd = instance._draw_queue[0]
+        assert cmd['text'] == ''
+
+    def test_draw_variable_uses_draw_color(self):
+        """draw_variable uses instance draw_color"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.draw_color = (255, 0, 0)
+        instance.value = 42
+
+        executor.execute_draw_variable_action(instance, {
+            'x': 0,
+            'y': 0,
+            'variable': 'self.value'
+        })
+
+        cmd = instance._draw_queue[0]
+        assert cmd['color'] == (255, 0, 0)
+
+    def test_goto_room_sets_target(self):
+        """goto_room sets target room on instance"""
+        mock_runner = MockGameRunner()
+        mock_runner._room_list = ['room1', 'room2', 'room3']
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_goto_room_action(instance, {
+            'room': 'room2',
+            'transition': 'create_from_left'
+        })
+
+        assert instance.goto_room_target == 'room2'
+        assert instance.goto_room_transition == 'create_from_left'
+
+    def test_goto_room_no_room_specified(self):
+        """goto_room handles missing room name"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise or set any flags
+        executor.execute_goto_room_action(instance, {
+            'transition': 'none'
+        })
+
+        assert not hasattr(instance, 'goto_room_target')
+
+    def test_goto_room_room_not_found(self):
+        """goto_room handles non-existent room"""
+        mock_runner = MockGameRunner()
+        mock_runner._room_list = ['room1', 'room2']
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_goto_room_action(instance, {
+            'room': 'nonexistent_room',
+            'transition': 'none'
+        })
+
+        assert not hasattr(instance, 'goto_room_target')
+
+    def test_goto_room_no_game_runner(self):
+        """goto_room handles missing game_runner"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_goto_room_action(instance, {
+            'room': 'some_room'
+        })
+
+        assert not hasattr(instance, 'goto_room_target')
+
+    def test_check_room_returns_true_when_in_room(self):
+        """check_room returns True when in specified room"""
+        mock_runner = MockGameRunner()
+        mock_runner.current_room = MockRoomWithViews()
+        mock_runner.current_room.name = 'test_room'
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        result = executor.execute_check_room_action(instance, {
+            'room': 'test_room',
+            'not_flag': False
+        })
+
+        assert result is True
+
+    def test_check_room_returns_false_when_not_in_room(self):
+        """check_room returns False when not in specified room"""
+        mock_runner = MockGameRunner()
+        mock_runner.current_room = MockRoomWithViews()
+        mock_runner.current_room.name = 'current_room'
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        result = executor.execute_check_room_action(instance, {
+            'room': 'different_room',
+            'not_flag': False
+        })
+
+        assert result is False
+
+    def test_check_room_with_not_flag(self):
+        """check_room inverts result with not_flag"""
+        mock_runner = MockGameRunner()
+        mock_runner.current_room = MockRoomWithViews()
+        mock_runner.current_room.name = 'test_room'
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Not in 'other_room', with NOT flag = True
+        result = executor.execute_check_room_action(instance, {
+            'room': 'other_room',
+            'not_flag': True
+        })
+
+        assert result is True  # NOT in other_room = True
+
+    def test_check_room_no_room_specified(self):
+        """check_room handles missing room name"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        result = executor.execute_check_room_action(instance, {
+            'not_flag': False
+        })
+
+        assert result is True  # Default when no room specified
+
+    def test_check_room_no_game_runner(self):
+        """check_room handles missing game_runner"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        result = executor.execute_check_room_action(instance, {
+            'room': 'test_room',
+            'not_flag': False
+        })
+
+        assert result is True  # Default when no game_runner
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

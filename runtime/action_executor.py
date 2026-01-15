@@ -4423,3 +4423,111 @@ class ActionExecutor:
         })
 
         logger.debug(f"✨ Queued create_effect: {effect_type} at ({x}, {y}), size={size}, color={color}")
+
+    # ==================== EXTRA TAB ACTIONS ====================
+
+    def execute_draw_variable_action(self, instance, parameters: Dict[str, Any]):
+        """Draw a variable value on screen
+
+        Parameters:
+            x: X coordinate
+            y: Y coordinate
+            variable: Variable name to display (supports self.var, global.var, or bare names)
+        """
+        # Parse position
+        x = self._parse_value(parameters.get("x", 0), instance)
+        y = self._parse_value(parameters.get("y", 0), instance)
+        variable_name = parameters.get("variable", "")
+
+        try:
+            x = int(x) if x is not None else 0
+            y = int(y) if y is not None else 0
+        except (ValueError, TypeError):
+            x, y = 0, 0
+
+        # Get the variable value
+        if not variable_name:
+            value = ""
+        else:
+            # Use _parse_value to resolve the variable reference
+            value = self._parse_value(variable_name, instance)
+
+        # Convert to string for display
+        text = str(value)
+
+        # Get drawing color (from instance or default black)
+        color = getattr(instance, 'draw_color', (0, 0, 0))
+
+        # Queue drawing command for draw event
+        if not hasattr(instance, '_draw_queue'):
+            instance._draw_queue = []
+
+        instance._draw_queue.append({
+            'type': 'text',
+            'x': x,
+            'y': y,
+            'text': text,
+            'color': color
+        })
+
+        logger.debug(f"📊 Queued draw_variable: '{variable_name}' = '{text}' at ({x}, {y})")
+
+    def execute_goto_room_action(self, instance, parameters: Dict[str, Any]):
+        """Go to a specific room
+
+        Parameters:
+            room: Target room name
+            transition: Transition effect (not yet implemented)
+        """
+        room_name = parameters.get("room", "")
+        transition = parameters.get("transition", "none")
+
+        if not room_name:
+            logger.debug("⚠️ goto_room: No room specified")
+            return
+
+        if not self.game_runner:
+            logger.debug("⚠️ goto_room: No game_runner reference")
+            return
+
+        # Check if room exists
+        room_list = self.game_runner.get_room_list()
+        if room_name not in room_list:
+            logger.debug(f"⚠️ goto_room: Room '{room_name}' not found")
+            return
+
+        # Set the target room for navigation
+        instance.goto_room_target = room_name
+        instance.goto_room_transition = transition
+
+        logger.debug(f"🚪 Go to room '{room_name}' requested (transition: {transition})")
+
+    def execute_check_room_action(self, instance, parameters: Dict[str, Any]):
+        """Check if currently in a specific room
+
+        Parameters:
+            room: Room name to check
+            not_flag: If True, inverts the result (checks if NOT in room)
+
+        Returns:
+            True if in the specified room (or not in it if not_flag is True)
+        """
+        room_name = parameters.get("room", "")
+        not_flag = parameters.get("not_flag", False)
+
+        if isinstance(not_flag, str):
+            not_flag = not_flag.lower() in ('true', '1', 'yes')
+
+        if not room_name:
+            logger.debug("⚠️ check_room: No room specified")
+            return not not_flag
+
+        if not self.game_runner or not self.game_runner.current_room:
+            logger.debug("⚠️ check_room: No game_runner or current_room")
+            return not not_flag
+
+        is_in_room = (self.game_runner.current_room.name == room_name)
+        result = is_in_room if not not_flag else not is_in_room
+
+        logger.debug(f"❓ Check room '{room_name}': in_room={is_in_room}, not_flag={not_flag}, result={result}")
+        return result

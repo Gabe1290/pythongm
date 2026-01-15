@@ -45,8 +45,7 @@ EXTRA_ACTIONS = {
             ActionParameter("x", "int", "X", "X position", default=0),
             ActionParameter("y", "int", "Y", "Y position", default=0),
             ActionParameter("variable", "string", "Variable", "Variable to display", default="")
-        ],
-        implemented=False
+        ]
     ),
     "previous_room": ActionDefinition(
         name="previous_room",
@@ -99,8 +98,7 @@ EXTRA_ACTIONS = {
             ActionParameter("transition", "choice", "Transition", "Transition effect",
                           default="none",
                           options=["none", "create_from_left", "create_from_right", "create_from_top", "create_from_bottom"])
-        ],
-        implemented=False
+        ]
     ),
     "check_room": ActionDefinition(
         name="check_room",
@@ -112,8 +110,7 @@ EXTRA_ACTIONS = {
         parameters=[
             ActionParameter("room", "room", "Room", "Room to check"),
             ActionParameter("not_flag", "boolean", "NOT", "Invert condition", default=False)
-        ],
-        implemented=False
+        ]
     ),
     "if_next_room_exists": ActionDefinition(
         name="if_next_room_exists",
