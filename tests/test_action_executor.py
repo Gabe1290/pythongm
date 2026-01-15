@@ -1520,5 +1520,138 @@ class TestDrawScaledTextAction:
         assert cmd['yscale'] == 1.0
 
 
+# ==============================================================================
+# Resource Replacement Tests
+# ==============================================================================
+
+
+class TestReplaceSpriteAction:
+    """Tests for replace_sprite action"""
+
+    def test_replace_sprite_no_sprite_specified(self):
+        """replace_sprite handles missing sprite name"""
+        mock_runner = MockGameRunner()
+        mock_runner.sprites = {}
+        mock_runner.project_path = None
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_replace_sprite_action(instance, {
+            'sprite': '',
+            'filename': 'test.png'
+        })
+
+    def test_replace_sprite_no_filename_specified(self):
+        """replace_sprite handles missing filename"""
+        mock_runner = MockGameRunner()
+        mock_runner.sprites = {}
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_replace_sprite_action(instance, {
+            'sprite': 'spr_test',
+            'filename': ''
+        })
+
+    def test_replace_sprite_no_game_runner(self):
+        """replace_sprite handles missing game_runner"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_replace_sprite_action(instance, {
+            'sprite': 'spr_test',
+            'filename': 'test.png'
+        })
+
+
+class TestReplaceSoundAction:
+    """Tests for replace_sound action"""
+
+    def test_replace_sound_no_sound_specified(self):
+        """replace_sound handles missing sound name"""
+        mock_runner = MockGameRunner()
+        mock_runner.sounds = {}
+        mock_runner.music_files = {}
+        mock_runner.project_path = None
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_replace_sound_action(instance, {
+            'sound': '',
+            'filename': 'test.wav'
+        })
+
+    def test_replace_sound_no_filename_specified(self):
+        """replace_sound handles missing filename"""
+        mock_runner = MockGameRunner()
+        mock_runner.sounds = {}
+        mock_runner.music_files = {}
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_replace_sound_action(instance, {
+            'sound': 'snd_test',
+            'filename': ''
+        })
+
+    def test_replace_sound_no_game_runner(self):
+        """replace_sound handles missing game_runner"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_replace_sound_action(instance, {
+            'sound': 'snd_test',
+            'filename': 'test.wav'
+        })
+
+
+class TestReplaceBackgroundAction:
+    """Tests for replace_background action"""
+
+    def test_replace_background_no_background_specified(self):
+        """replace_background handles missing background name"""
+        mock_runner = MockGameRunner()
+        mock_runner.backgrounds = {}
+        mock_runner.project_path = None
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_replace_background_action(instance, {
+            'background': '',
+            'filename': 'test.png'
+        })
+
+    def test_replace_background_no_filename_specified(self):
+        """replace_background handles missing filename"""
+        mock_runner = MockGameRunner()
+        mock_runner.backgrounds = {}
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_replace_background_action(instance, {
+            'background': 'bg_test',
+            'filename': ''
+        })
+
+    def test_replace_background_no_game_runner(self):
+        """replace_background handles missing game_runner"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_replace_background_action(instance, {
+            'background': 'bg_test',
+            'filename': 'test.png'
+        })
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

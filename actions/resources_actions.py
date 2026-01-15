@@ -20,8 +20,7 @@ RESOURCES_ACTIONS = {
             ActionParameter("frames", "int", "Number of Frames", "Animation frames", default=1),
             ActionParameter("remove_background", "boolean", "Remove Background", "Make transparent", default=False),
             ActionParameter("smooth_edges", "boolean", "Smooth Edges", "Anti-alias edges", default=False)
-        ],
-        implemented=False
+        ]
     ),
     "replace_sound": ActionDefinition(
         name="replace_sound",
@@ -35,8 +34,7 @@ RESOURCES_ACTIONS = {
             ActionParameter("filename", "string", "Filename", "Audio file path", default=""),
             ActionParameter("kind", "choice", "Kind", "Sound type",
                           default="normal", options=["normal", "background", "3d", "mmplayer"])
-        ],
-        implemented=False
+        ]
     ),
     "replace_background": ActionDefinition(
         name="replace_background",
@@ -50,8 +48,7 @@ RESOURCES_ACTIONS = {
             ActionParameter("filename", "string", "Filename", "Image file path", default=""),
             ActionParameter("remove_background", "boolean", "Remove Background", "Make transparent", default=False),
             ActionParameter("smooth_edges", "boolean", "Smooth Edges", "Anti-alias edges", default=False)
-        ],
-        implemented=False
+        ]
     ),
 }
 

@@ -2706,6 +2706,223 @@ class ActionExecutor:
         else:
             logger.debug(f"⚠️ stop_sound: Sound '{sound_name}' not found")
 
+    # ==================== RESOURCE REPLACEMENT ACTIONS ====================
+
+    def execute_replace_sprite_action(self, instance, parameters: Dict[str, Any]):
+        """Replace a sprite by loading a new image from file
+
+        Parameters:
+            sprite: Name of the sprite to replace
+            filename: Path to the image file
+            frames: Number of animation frames (default: 1)
+            remove_background: Remove background color to make transparent (default: False)
+            smooth_edges: Apply anti-aliasing to edges (default: False)
+        """
+        import pygame
+        from pathlib import Path
+
+        sprite_name = self._parse_value(parameters.get("sprite", ""), instance)
+        filename = self._parse_value(parameters.get("filename", ""), instance)
+        frames = self._parse_value(parameters.get("frames", 1), instance)
+        remove_background = self._parse_value(parameters.get("remove_background", False), instance)
+        smooth_edges = self._parse_value(parameters.get("smooth_edges", False), instance)
+
+        if not sprite_name:
+            logger.debug("⚠️ replace_sprite: No sprite specified")
+            return
+
+        if not filename:
+            logger.debug("⚠️ replace_sprite: No filename specified")
+            return
+
+        if not self.game_runner:
+            logger.debug("⚠️ replace_sprite: No game_runner reference")
+            return
+
+        # Convert to boolean if string
+        if isinstance(remove_background, str):
+            remove_background = remove_background.lower() in ('true', '1', 'yes')
+        if isinstance(smooth_edges, str):
+            smooth_edges = smooth_edges.lower() in ('true', '1', 'yes')
+
+        try:
+            frames = int(frames)
+        except (ValueError, TypeError):
+            frames = 1
+
+        # Resolve the file path (relative to project or absolute)
+        file_path = Path(filename)
+        if not file_path.is_absolute() and self.game_runner.project_path:
+            file_path = self.game_runner.project_path / filename
+
+        if not file_path.exists():
+            logger.warning(f"⚠️ replace_sprite: File not found: {file_path}")
+            return
+
+        try:
+            # Load the image
+            surface = pygame.image.load(str(file_path)).convert_alpha()
+
+            # Apply remove_background if requested (make top-left pixel color transparent)
+            if remove_background:
+                bg_color = surface.get_at((0, 0))[:3]
+                surface.set_colorkey(bg_color)
+
+            # Create sprite data for GameSprite-like behavior
+            sprite_data = {
+                'frame_count': frames,
+                'animation_type': 'strip_h' if frames > 1 else 'single',
+            }
+
+            # Create a simple sprite object or update existing
+            # For simplicity, we store the surface directly
+            # GameSprite expects frames list for animation
+            if frames > 1:
+                # Split horizontal strip into frames
+                frame_width = surface.get_width() // frames
+                frame_height = surface.get_height()
+                frame_list = []
+                for i in range(frames):
+                    frame_surface = surface.subsurface((i * frame_width, 0, frame_width, frame_height)).copy()
+                    frame_list.append(frame_surface)
+
+                # Create a sprite-like object
+                class ReplacedSprite:
+                    pass
+                new_sprite = ReplacedSprite()
+                new_sprite.surface = surface
+                new_sprite.frames = frame_list
+                new_sprite.frame_count = frames
+                new_sprite.width = frame_width
+                new_sprite.height = frame_height
+                new_sprite.speed = 10.0
+            else:
+                # Single frame sprite
+                class ReplacedSprite:
+                    pass
+                new_sprite = ReplacedSprite()
+                new_sprite.surface = surface
+                new_sprite.frames = [surface]
+                new_sprite.frame_count = 1
+                new_sprite.width = surface.get_width()
+                new_sprite.height = surface.get_height()
+                new_sprite.speed = 10.0
+
+            self.game_runner.sprites[sprite_name] = new_sprite
+            logger.debug(f"🖼️ Replaced sprite '{sprite_name}' from {filename} ({frames} frames)")
+
+        except Exception as e:
+            logger.error(f"❌ Error replacing sprite '{sprite_name}': {e}")
+
+    def execute_replace_sound_action(self, instance, parameters: Dict[str, Any]):
+        """Replace a sound by loading a new audio file
+
+        Parameters:
+            sound: Name of the sound to replace
+            filename: Path to the audio file
+            kind: Type of sound (normal, background, 3d, mmplayer)
+        """
+        import pygame
+        from pathlib import Path
+
+        sound_name = self._parse_value(parameters.get("sound", ""), instance)
+        filename = self._parse_value(parameters.get("filename", ""), instance)
+        kind = self._parse_value(parameters.get("kind", "normal"), instance)
+
+        if not sound_name:
+            logger.debug("⚠️ replace_sound: No sound specified")
+            return
+
+        if not filename:
+            logger.debug("⚠️ replace_sound: No filename specified")
+            return
+
+        if not self.game_runner:
+            logger.debug("⚠️ replace_sound: No game_runner reference")
+            return
+
+        # Resolve the file path (relative to project or absolute)
+        file_path = Path(filename)
+        if not file_path.is_absolute() and self.game_runner.project_path:
+            file_path = self.game_runner.project_path / filename
+
+        if not file_path.exists():
+            logger.warning(f"⚠️ replace_sound: File not found: {file_path}")
+            return
+
+        try:
+            if kind == 'music' or kind == 'background':
+                # Music is streamed, store the path
+                self.game_runner.music_files[sound_name] = str(file_path)
+                logger.debug(f"🎵 Replaced music '{sound_name}' from {filename}")
+            else:
+                # Sound effects are loaded into memory
+                sound = pygame.mixer.Sound(str(file_path))
+                self.game_runner.sounds[sound_name] = sound
+                logger.debug(f"🔊 Replaced sound '{sound_name}' from {filename}")
+
+        except Exception as e:
+            logger.error(f"❌ Error replacing sound '{sound_name}': {e}")
+
+    def execute_replace_background_action(self, instance, parameters: Dict[str, Any]):
+        """Replace a background by loading a new image from file
+
+        Parameters:
+            background: Name of the background to replace
+            filename: Path to the image file
+            remove_background: Remove background color to make transparent (default: False)
+            smooth_edges: Apply anti-aliasing to edges (default: False)
+        """
+        import pygame
+        from pathlib import Path
+
+        bg_name = self._parse_value(parameters.get("background", ""), instance)
+        filename = self._parse_value(parameters.get("filename", ""), instance)
+        remove_background = self._parse_value(parameters.get("remove_background", False), instance)
+        smooth_edges = self._parse_value(parameters.get("smooth_edges", False), instance)
+
+        if not bg_name:
+            logger.debug("⚠️ replace_background: No background specified")
+            return
+
+        if not filename:
+            logger.debug("⚠️ replace_background: No filename specified")
+            return
+
+        if not self.game_runner:
+            logger.debug("⚠️ replace_background: No game_runner reference")
+            return
+
+        # Convert to boolean if string
+        if isinstance(remove_background, str):
+            remove_background = remove_background.lower() in ('true', '1', 'yes')
+        if isinstance(smooth_edges, str):
+            smooth_edges = smooth_edges.lower() in ('true', '1', 'yes')
+
+        # Resolve the file path (relative to project or absolute)
+        file_path = Path(filename)
+        if not file_path.is_absolute() and self.game_runner.project_path:
+            file_path = self.game_runner.project_path / filename
+
+        if not file_path.exists():
+            logger.warning(f"⚠️ replace_background: File not found: {file_path}")
+            return
+
+        try:
+            # Load the image
+            surface = pygame.image.load(str(file_path)).convert_alpha()
+
+            # Apply remove_background if requested (make top-left pixel color transparent)
+            if remove_background:
+                bg_color = surface.get_at((0, 0))[:3]
+                surface.set_colorkey(bg_color)
+
+            self.game_runner.backgrounds[bg_name] = surface
+            logger.debug(f"🖼️ Replaced background '{bg_name}' from {filename} ({surface.get_width()}x{surface.get_height()})")
+
+        except Exception as e:
+            logger.error(f"❌ Error replacing background '{bg_name}': {e}")
+
     # ==================== ROOM CONFIGURATION ACTIONS ====================
 
     def execute_set_room_caption_action(self, instance, parameters: Dict[str, Any]):
