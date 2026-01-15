@@ -4875,3 +4875,128 @@ class ActionExecutor:
         instance._particle_system['emitters'][emitter_id]['stream_count'] = number
 
         logger.debug(f"🌊 Stream {number} particles/step of type {particle_type} from emitter {emitter_id}")
+
+    # ==================== TIMING TAB ACTIONS (TIMELINE) ====================
+
+    def execute_set_timeline_action(self, instance, parameters: Dict[str, Any]):
+        """Set the timeline for an instance
+
+        Parameters:
+            timeline: The timeline resource name to use
+
+        Sets the timeline_index property on the instance.
+        """
+        timeline = parameters.get("timeline", None)
+
+        # Initialize timeline properties if not present
+        if not hasattr(instance, 'timeline_index'):
+            instance.timeline_index = None
+        if not hasattr(instance, 'timeline_position'):
+            instance.timeline_position = 0
+        if not hasattr(instance, 'timeline_speed'):
+            instance.timeline_speed = 1.0
+        if not hasattr(instance, 'timeline_running'):
+            instance.timeline_running = False
+
+        instance.timeline_index = timeline
+
+        # Reset position when setting a new timeline
+        instance.timeline_position = 0
+
+        logger.debug(f"⏱️ Set timeline to '{timeline}'")
+
+    def execute_set_timeline_position_action(self, instance, parameters: Dict[str, Any]):
+        """Set the timeline position
+
+        Parameters:
+            position: The position in the timeline (in steps)
+            relative: If True, add to current position instead of setting absolute
+        """
+        position = self._parse_value(parameters.get("position", 0), instance)
+        relative = parameters.get("relative", False)
+
+        if isinstance(relative, str):
+            relative = relative.lower() in ('true', '1', 'yes')
+
+        try:
+            position = int(position) if position is not None else 0
+        except (ValueError, TypeError):
+            position = 0
+
+        # Initialize timeline_position if not present
+        if not hasattr(instance, 'timeline_position'):
+            instance.timeline_position = 0
+
+        if relative:
+            instance.timeline_position += position
+        else:
+            instance.timeline_position = position
+
+        # Ensure position is not negative
+        if instance.timeline_position < 0:
+            instance.timeline_position = 0
+
+        logger.debug(f"⏱️ Set timeline position to {instance.timeline_position} (relative={relative})")
+
+    def execute_set_timeline_speed_action(self, instance, parameters: Dict[str, Any]):
+        """Set the timeline playback speed
+
+        Parameters:
+            speed: The speed multiplier (1.0 = normal, 0.5 = half speed, 2.0 = double speed)
+        """
+        speed = self._parse_value(parameters.get("speed", 1.0), instance)
+
+        try:
+            speed = float(speed) if speed is not None else 1.0
+        except (ValueError, TypeError):
+            speed = 1.0
+
+        # Initialize timeline_speed if not present
+        if not hasattr(instance, 'timeline_speed'):
+            instance.timeline_speed = 1.0
+
+        instance.timeline_speed = speed
+
+        logger.debug(f"⏱️ Set timeline speed to {speed}")
+
+    def execute_start_timeline_action(self, instance, parameters: Dict[str, Any]):
+        """Start timeline playback
+
+        Begins or resumes playback of the instance's timeline from the current position.
+        """
+        # Initialize timeline_running if not present
+        if not hasattr(instance, 'timeline_running'):
+            instance.timeline_running = False
+
+        instance.timeline_running = True
+
+        logger.debug("▶️ Started timeline playback")
+
+    def execute_pause_timeline_action(self, instance, parameters: Dict[str, Any]):
+        """Pause timeline playback
+
+        Pauses the timeline at the current position. Can be resumed with start_timeline.
+        """
+        # Initialize timeline_running if not present
+        if not hasattr(instance, 'timeline_running'):
+            instance.timeline_running = False
+
+        instance.timeline_running = False
+
+        logger.debug("⏸️ Paused timeline")
+
+    def execute_stop_timeline_action(self, instance, parameters: Dict[str, Any]):
+        """Stop and reset the timeline
+
+        Stops playback and resets the timeline position to 0.
+        """
+        # Initialize timeline properties if not present
+        if not hasattr(instance, 'timeline_running'):
+            instance.timeline_running = False
+        if not hasattr(instance, 'timeline_position'):
+            instance.timeline_position = 0
+
+        instance.timeline_running = False
+        instance.timeline_position = 0
+
+        logger.debug("⏹️ Stopped and reset timeline")

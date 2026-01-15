@@ -3185,5 +3185,240 @@ class TestParticlesTabActions:
             assert len(instance._particle_system['particles']) == 3, f"Failed for shape: {shape}"
 
 
+# ==============================================================================
+# Timing Tab Actions Tests (Timeline)
+# ==============================================================================
+
+
+class TestTimingTabActions:
+    """Tests for Timing tab actions: set_timeline, set_timeline_position,
+    set_timeline_speed, start_timeline, pause_timeline, stop_timeline"""
+
+    def test_set_timeline_sets_timeline_index(self):
+        """set_timeline sets the timeline_index property"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_set_timeline_action(instance, {'timeline': 'tl_player_animation'})
+
+        assert instance.timeline_index == 'tl_player_animation'
+        assert instance.timeline_position == 0
+        assert instance.timeline_speed == 1.0
+        assert instance.timeline_running is False
+
+    def test_set_timeline_resets_position(self):
+        """set_timeline resets position when setting new timeline"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Set initial timeline and position
+        executor.execute_set_timeline_action(instance, {'timeline': 'tl_first'})
+        instance.timeline_position = 50
+
+        # Set new timeline
+        executor.execute_set_timeline_action(instance, {'timeline': 'tl_second'})
+
+        assert instance.timeline_index == 'tl_second'
+        assert instance.timeline_position == 0
+
+    def test_set_timeline_none(self):
+        """set_timeline can clear the timeline by setting None"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_set_timeline_action(instance, {'timeline': None})
+
+        assert instance.timeline_index is None
+
+    def test_set_timeline_position_absolute(self):
+        """set_timeline_position sets absolute position"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.timeline_position = 10
+
+        executor.execute_set_timeline_position_action(instance, {
+            'position': 50,
+            'relative': False
+        })
+
+        assert instance.timeline_position == 50
+
+    def test_set_timeline_position_relative(self):
+        """set_timeline_position adds to current position when relative"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.timeline_position = 30
+
+        executor.execute_set_timeline_position_action(instance, {
+            'position': 20,
+            'relative': True
+        })
+
+        assert instance.timeline_position == 50
+
+    def test_set_timeline_position_relative_negative(self):
+        """set_timeline_position handles negative relative values"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.timeline_position = 30
+
+        executor.execute_set_timeline_position_action(instance, {
+            'position': -10,
+            'relative': True
+        })
+
+        assert instance.timeline_position == 20
+
+    def test_set_timeline_position_clamps_to_zero(self):
+        """set_timeline_position clamps position to minimum of 0"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.timeline_position = 10
+
+        executor.execute_set_timeline_position_action(instance, {
+            'position': -50,
+            'relative': True
+        })
+
+        assert instance.timeline_position == 0
+
+    def test_set_timeline_position_default(self):
+        """set_timeline_position uses default values"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_set_timeline_position_action(instance, {})
+
+        assert instance.timeline_position == 0
+
+    def test_set_timeline_speed_sets_speed(self):
+        """set_timeline_speed sets the timeline speed multiplier"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_set_timeline_speed_action(instance, {'speed': 2.0})
+
+        assert instance.timeline_speed == 2.0
+
+    def test_set_timeline_speed_half(self):
+        """set_timeline_speed can set half speed"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_set_timeline_speed_action(instance, {'speed': 0.5})
+
+        assert instance.timeline_speed == 0.5
+
+    def test_set_timeline_speed_default(self):
+        """set_timeline_speed uses default of 1.0"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_set_timeline_speed_action(instance, {})
+
+        assert instance.timeline_speed == 1.0
+
+    def test_start_timeline_sets_running_true(self):
+        """start_timeline sets timeline_running to True"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.timeline_running = False
+
+        executor.execute_start_timeline_action(instance, {})
+
+        assert instance.timeline_running is True
+
+    def test_start_timeline_initializes_if_missing(self):
+        """start_timeline initializes timeline_running if not present"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_start_timeline_action(instance, {})
+
+        assert instance.timeline_running is True
+
+    def test_pause_timeline_sets_running_false(self):
+        """pause_timeline sets timeline_running to False"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.timeline_running = True
+
+        executor.execute_pause_timeline_action(instance, {})
+
+        assert instance.timeline_running is False
+
+    def test_pause_timeline_preserves_position(self):
+        """pause_timeline preserves the current position"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.timeline_running = True
+        instance.timeline_position = 75
+
+        executor.execute_pause_timeline_action(instance, {})
+
+        assert instance.timeline_running is False
+        assert instance.timeline_position == 75
+
+    def test_stop_timeline_stops_and_resets(self):
+        """stop_timeline stops playback and resets position to 0"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.timeline_running = True
+        instance.timeline_position = 100
+
+        executor.execute_stop_timeline_action(instance, {})
+
+        assert instance.timeline_running is False
+        assert instance.timeline_position == 0
+
+    def test_stop_timeline_on_stopped_timeline(self):
+        """stop_timeline works even if already stopped"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.timeline_running = False
+        instance.timeline_position = 50
+
+        executor.execute_stop_timeline_action(instance, {})
+
+        assert instance.timeline_running is False
+        assert instance.timeline_position == 0
+
+    def test_timeline_workflow(self):
+        """Test complete timeline workflow: set, start, pause, stop"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Set timeline
+        executor.execute_set_timeline_action(instance, {'timeline': 'tl_cutscene'})
+        assert instance.timeline_index == 'tl_cutscene'
+        assert instance.timeline_running is False
+
+        # Set speed
+        executor.execute_set_timeline_speed_action(instance, {'speed': 1.5})
+        assert instance.timeline_speed == 1.5
+
+        # Start
+        executor.execute_start_timeline_action(instance, {})
+        assert instance.timeline_running is True
+
+        # Simulate position advancement
+        instance.timeline_position = 30
+
+        # Pause
+        executor.execute_pause_timeline_action(instance, {})
+        assert instance.timeline_running is False
+        assert instance.timeline_position == 30
+
+        # Resume
+        executor.execute_start_timeline_action(instance, {})
+        assert instance.timeline_running is True
+        assert instance.timeline_position == 30
+
+        # Stop
+        executor.execute_stop_timeline_action(instance, {})
+        assert instance.timeline_running is False
+        assert instance.timeline_position == 0
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
