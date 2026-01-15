@@ -779,6 +779,31 @@ class GameRoom:
         self.grid_cell_size = 64
         self.spatial_grid: Dict[Tuple[int, int], List[GameInstance]] = {}
 
+        # Room persistence - if True, room state is preserved when leaving
+        self.persistent = room_data.get('persistent', False)
+
+        # View system - 8 views like GameMaker
+        self.views_enabled = room_data.get('views_enabled', False)
+        self.views = []
+        for i in range(8):
+            view_data = room_data.get('views', {}).get(f'view_{i}', {})
+            self.views.append({
+                'visible': view_data.get('visible', i == 0),  # View 0 visible by default
+                'view_x': view_data.get('view_x', 0),
+                'view_y': view_data.get('view_y', 0),
+                'view_w': view_data.get('view_w', self.width),
+                'view_h': view_data.get('view_h', self.height),
+                'port_x': view_data.get('port_x', 0),
+                'port_y': view_data.get('port_y', 0),
+                'port_w': view_data.get('port_w', self.width),
+                'port_h': view_data.get('port_h', self.height),
+                'follow': view_data.get('follow', None),
+                'hborder': view_data.get('hborder', 32),
+                'vborder': view_data.get('vborder', 32),
+                'hspeed': view_data.get('hspeed', -1),
+                'vspeed': view_data.get('vspeed', -1),
+            })
+
         # Don't load background image here - pygame display may not be ready yet
         # Background will be loaded later via load_background_image()
 

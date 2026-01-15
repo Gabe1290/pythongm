@@ -3356,6 +3356,136 @@ class ActionExecutor:
         else:
             logger.debug(f"⚠️ set_background: Background '{background_name}' not found")
 
+    def execute_set_room_persistent_action(self, instance, parameters: Dict[str, Any]):
+        """Set whether the current room is persistent
+
+        Parameters:
+            persistent: If True, room state is preserved when leaving (default: True)
+
+        When a room is persistent:
+        - Instance positions and states are preserved when leaving
+        - The room is not recreated when re-entering
+        - Useful for keeping progress in a level
+        """
+        if not self.game_runner or not self.game_runner.current_room:
+            logger.debug("⚠️ set_room_persistent: No current room")
+            return
+
+        # Parse parameter
+        persistent = self._parse_value(parameters.get("persistent", True), instance)
+
+        # Convert to boolean if string
+        if isinstance(persistent, str):
+            persistent = persistent.lower() in ('true', '1', 'yes')
+
+        # Set room persistence
+        self.game_runner.current_room.persistent = bool(persistent)
+
+        logger.debug(f"💾 Set room persistent: {persistent}")
+
+    def execute_enable_views_action(self, instance, parameters: Dict[str, Any]):
+        """Enable or disable the view system for the current room
+
+        Parameters:
+            enable: True to enable views, False to disable (default: True)
+
+        When views are enabled:
+        - The game can display portions of the room
+        - Multiple viewports can be shown simultaneously
+        - Views can follow objects (like the player)
+        """
+        if not self.game_runner or not self.game_runner.current_room:
+            logger.debug("⚠️ enable_views: No current room")
+            return
+
+        # Parse parameter
+        enable = self._parse_value(parameters.get("enable", True), instance)
+
+        # Convert to boolean if string
+        if isinstance(enable, str):
+            enable = enable.lower() in ('true', '1', 'yes')
+
+        # Set views enabled state
+        self.game_runner.current_room.views_enabled = bool(enable)
+
+        logger.debug(f"👁️ Views enabled: {enable}")
+
+    def execute_set_view_action(self, instance, parameters: Dict[str, Any]):
+        """Configure a view in the current room
+
+        Parameters:
+            view: View index 0-7 (default: 0)
+            visible: Enable this view (default: True)
+            view_x, view_y: Position in room to view
+            view_w, view_h: Size of the view area in the room
+            port_x, port_y: Position on screen to draw the view
+            port_w, port_h: Size of the viewport on screen
+            follow: Object name to follow (camera tracking)
+            hborder, vborder: Border before view starts scrolling
+            hspeed, vspeed: Maximum scroll speed (-1 = instant)
+        """
+        if not self.game_runner or not self.game_runner.current_room:
+            logger.debug("⚠️ set_view: No current room")
+            return
+
+        # Parse view index
+        view_index = self._parse_value(parameters.get("view", 0), instance)
+        try:
+            view_index = int(view_index)
+        except (ValueError, TypeError):
+            view_index = 0
+
+        # Validate view index (0-7)
+        if view_index < 0 or view_index > 7:
+            logger.warning(f"⚠️ set_view: Invalid view index {view_index}, must be 0-7")
+            return
+
+        # Get the view to modify
+        view = self.game_runner.current_room.views[view_index]
+
+        # Parse and apply each parameter
+        if "visible" in parameters:
+            visible = self._parse_value(parameters["visible"], instance)
+            if isinstance(visible, str):
+                visible = visible.lower() in ('true', '1', 'yes')
+            view['visible'] = bool(visible)
+
+        if "view_x" in parameters:
+            view['view_x'] = int(self._parse_value(parameters["view_x"], instance))
+        if "view_y" in parameters:
+            view['view_y'] = int(self._parse_value(parameters["view_y"], instance))
+        if "view_w" in parameters:
+            view['view_w'] = int(self._parse_value(parameters["view_w"], instance))
+        if "view_h" in parameters:
+            view['view_h'] = int(self._parse_value(parameters["view_h"], instance))
+
+        if "port_x" in parameters:
+            view['port_x'] = int(self._parse_value(parameters["port_x"], instance))
+        if "port_y" in parameters:
+            view['port_y'] = int(self._parse_value(parameters["port_y"], instance))
+        if "port_w" in parameters:
+            view['port_w'] = int(self._parse_value(parameters["port_w"], instance))
+        if "port_h" in parameters:
+            view['port_h'] = int(self._parse_value(parameters["port_h"], instance))
+
+        if "follow" in parameters:
+            follow = self._parse_value(parameters["follow"], instance)
+            view['follow'] = str(follow) if follow else None
+
+        if "hborder" in parameters:
+            view['hborder'] = int(self._parse_value(parameters["hborder"], instance))
+        if "vborder" in parameters:
+            view['vborder'] = int(self._parse_value(parameters["vborder"], instance))
+        if "hspeed" in parameters:
+            view['hspeed'] = int(self._parse_value(parameters["hspeed"], instance))
+        if "vspeed" in parameters:
+            view['vspeed'] = int(self._parse_value(parameters["vspeed"], instance))
+
+        logger.debug(f"🔭 Set view {view_index}: visible={view['visible']}, "
+                    f"view=({view['view_x']},{view['view_y']},{view['view_w']}x{view['view_h']}), "
+                    f"port=({view['port_x']},{view['port_y']},{view['port_w']}x{view['port_h']}), "
+                    f"follow={view['follow']}")
+
     def _parse_color(self, color_str: str) -> tuple:
         """Parse color string to RGB tuple (helper method)"""
         if isinstance(color_str, tuple):

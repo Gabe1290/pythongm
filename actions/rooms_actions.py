@@ -38,8 +38,7 @@ ROOMS_ACTIONS = {
         icon="💾",
         parameters=[
             ActionParameter("persistent", "boolean", "Persistent", "Keep room state", default=True)
-        ],
-        implemented=False
+        ]
     ),
     "set_background_color": ActionDefinition(
         name="set_background_color",
@@ -79,8 +78,7 @@ ROOMS_ACTIONS = {
         icon="👁️",
         parameters=[
             ActionParameter("enable", "boolean", "Enable", "Enable views", default=True)
-        ],
-        implemented=False
+        ]
     ),
     "set_view": ActionDefinition(
         name="set_view",
@@ -105,8 +103,7 @@ ROOMS_ACTIONS = {
             ActionParameter("vborder", "int", "V Border", "Vertical border", default=32),
             ActionParameter("hspeed", "int", "H Speed", "Max horizontal speed", default=-1),
             ActionParameter("vspeed", "int", "V Speed", "Max vertical speed", default=-1)
-        ],
-        implemented=False
+        ]
     ),
 }
 

@@ -1782,5 +1782,164 @@ class TestLoadGameAction:
         executor.execute_load_game_action(instance, {'filename': 'nonexistent.sav'})
 
 
+# ==============================================================================
+# Rooms Actions Tests
+# ==============================================================================
+
+
+class MockRoom:
+    """Mock room for testing room actions"""
+    def __init__(self):
+        self.persistent = False
+        self.views_enabled = False
+        self.views = []
+        for i in range(8):
+            self.views.append({
+                'visible': i == 0,
+                'view_x': 0, 'view_y': 0,
+                'view_w': 640, 'view_h': 480,
+                'port_x': 0, 'port_y': 0,
+                'port_w': 640, 'port_h': 480,
+                'follow': None,
+                'hborder': 32, 'vborder': 32,
+                'hspeed': -1, 'vspeed': -1,
+            })
+
+
+class TestSetRoomPersistentAction:
+    """Tests for set_room_persistent action"""
+
+    def test_set_room_persistent_true(self):
+        """set_room_persistent sets persistent flag to True"""
+        mock_runner = MockGameRunner()
+        mock_runner.current_room = MockRoom()
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_set_room_persistent_action(instance, {'persistent': True})
+        assert mock_runner.current_room.persistent is True
+
+    def test_set_room_persistent_false(self):
+        """set_room_persistent sets persistent flag to False"""
+        mock_runner = MockGameRunner()
+        mock_runner.current_room = MockRoom()
+        mock_runner.current_room.persistent = True  # Start with True
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_set_room_persistent_action(instance, {'persistent': False})
+        assert mock_runner.current_room.persistent is False
+
+    def test_set_room_persistent_no_room(self):
+        """set_room_persistent handles missing room"""
+        mock_runner = MockGameRunner()
+        mock_runner.current_room = None
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_set_room_persistent_action(instance, {'persistent': True})
+
+
+class TestEnableViewsAction:
+    """Tests for enable_views action"""
+
+    def test_enable_views_true(self):
+        """enable_views enables view system"""
+        mock_runner = MockGameRunner()
+        mock_runner.current_room = MockRoom()
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_enable_views_action(instance, {'enable': True})
+        assert mock_runner.current_room.views_enabled is True
+
+    def test_enable_views_false(self):
+        """enable_views disables view system"""
+        mock_runner = MockGameRunner()
+        mock_runner.current_room = MockRoom()
+        mock_runner.current_room.views_enabled = True
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_enable_views_action(instance, {'enable': False})
+        assert mock_runner.current_room.views_enabled is False
+
+    def test_enable_views_no_room(self):
+        """enable_views handles missing room"""
+        mock_runner = MockGameRunner()
+        mock_runner.current_room = None
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_enable_views_action(instance, {'enable': True})
+
+
+class TestSetViewAction:
+    """Tests for set_view action"""
+
+    def test_set_view_basic(self):
+        """set_view configures a view"""
+        mock_runner = MockGameRunner()
+        mock_runner.current_room = MockRoom()
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_set_view_action(instance, {
+            'view': 0,
+            'visible': True,
+            'view_x': 100,
+            'view_y': 200,
+            'view_w': 320,
+            'view_h': 240
+        })
+
+        view = mock_runner.current_room.views[0]
+        assert view['visible'] is True
+        assert view['view_x'] == 100
+        assert view['view_y'] == 200
+        assert view['view_w'] == 320
+        assert view['view_h'] == 240
+
+    def test_set_view_follow_object(self):
+        """set_view can set follow object"""
+        mock_runner = MockGameRunner()
+        mock_runner.current_room = MockRoom()
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_set_view_action(instance, {
+            'view': 1,
+            'follow': 'obj_player'
+        })
+
+        view = mock_runner.current_room.views[1]
+        assert view['follow'] == 'obj_player'
+
+    def test_set_view_invalid_index(self):
+        """set_view handles invalid view index"""
+        mock_runner = MockGameRunner()
+        mock_runner.current_room = MockRoom()
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Should not raise, just log warning
+        executor.execute_set_view_action(instance, {
+            'view': 10,  # Invalid - must be 0-7
+            'visible': True
+        })
+
+    def test_set_view_no_room(self):
+        """set_view handles missing room"""
+        mock_runner = MockGameRunner()
+        mock_runner.current_room = None
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_set_view_action(instance, {'view': 0, 'visible': True})
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
