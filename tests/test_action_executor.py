@@ -1210,5 +1210,131 @@ class TestIfObjectExistsAction:
         assert result is True
 
 
+# ==============================================================================
+# Execute Script Tests
+# ==============================================================================
+
+
+class TestExecuteScriptAction:
+    """Tests for execute_script action"""
+
+    def test_execute_script_basic(self):
+        """execute_script executes script code from project data"""
+        mock_runner = MockGameRunner()
+        mock_runner.project_data = {
+            'assets': {
+                'objects': {},
+                'scripts': {
+                    'scr_test': {
+                        'name': 'scr_test',
+                        'code': 'test_var = 42'
+                    }
+                }
+            }
+        }
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_execute_script_action(instance, {'script': 'scr_test'})
+        assert instance.test_var == 42
+
+    def test_execute_script_with_arguments(self):
+        """execute_script passes arguments to script"""
+        mock_runner = MockGameRunner()
+        mock_runner.project_data = {
+            'assets': {
+                'objects': {},
+                'scripts': {
+                    'scr_add': {
+                        'name': 'scr_add',
+                        'code': 'result = argument0 + argument1'
+                    }
+                }
+            }
+        }
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_execute_script_action(instance, {
+            'script': 'scr_add',
+            'arg0': '10',
+            'arg1': '20'
+        })
+        assert instance.result == 30
+
+    def test_execute_script_accesses_instance(self):
+        """execute_script can access and modify instance properties"""
+        mock_runner = MockGameRunner()
+        mock_runner.project_data = {
+            'assets': {
+                'objects': {},
+                'scripts': {
+                    'scr_move': {
+                        'name': 'scr_move',
+                        'code': 'instance.x = 200\ninstance.y = 300'
+                    }
+                }
+            }
+        }
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+        instance.x = 100
+        instance.y = 100
+
+        executor.execute_execute_script_action(instance, {'script': 'scr_move'})
+        assert instance.x == 200
+        assert instance.y == 300
+
+    def test_execute_script_not_found(self):
+        """execute_script handles missing script gracefully"""
+        mock_runner = MockGameRunner()
+        mock_runner.project_data = {
+            'assets': {
+                'objects': {},
+                'scripts': {}
+            }
+        }
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Should not raise, just log warning
+        executor.execute_execute_script_action(instance, {'script': 'nonexistent'})
+
+    def test_execute_script_no_script_specified(self):
+        """execute_script handles empty script parameter"""
+        mock_runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_execute_script_action(instance, {'script': ''})
+        executor.execute_execute_script_action(instance, {})
+
+    def test_execute_script_argument_count(self):
+        """execute_script provides argument_count variable"""
+        mock_runner = MockGameRunner()
+        mock_runner.project_data = {
+            'assets': {
+                'objects': {},
+                'scripts': {
+                    'scr_count': {
+                        'name': 'scr_count',
+                        'code': 'count = argument_count'
+                    }
+                }
+            }
+        }
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_execute_script_action(instance, {
+            'script': 'scr_count',
+            'arg0': '1',
+            'arg1': '2',
+            'arg2': '3'
+        })
+        assert instance.count == 3
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

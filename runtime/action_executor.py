@@ -2113,6 +2113,90 @@ class ActionExecutor:
             import traceback
             traceback.print_exc()
 
+    def execute_execute_script_action(self, instance, parameters: Dict[str, Any]):
+        """Execute a script from the project's scripts assets
+
+        Parameters:
+            script: Name of the script to execute
+            arg0-arg4: Optional arguments to pass to the script
+
+        The script code has access to:
+        - self/sel/instance: the current instance
+        - game: the game runner object
+        - argument0-argument4: the passed arguments
+        - All Python built-ins
+        """
+        script_name = parameters.get('script', '')
+
+        if not script_name:
+            logger.debug("⚠️ execute_script: No script specified")
+            return
+
+        if not self.game_runner or not self.game_runner.project_data:
+            logger.debug("⚠️ execute_script: No game_runner or project data")
+            return
+
+        # Get the script from project data
+        scripts_data = self.game_runner.project_data.get('assets', {}).get('scripts', {})
+        script_data = scripts_data.get(script_name)
+
+        if not script_data:
+            logger.warning(f"⚠️ execute_script: Script '{script_name}' not found")
+            return
+
+        code = script_data.get('code', '')
+
+        if not code or not code.strip():
+            logger.debug(f"⚠️ execute_script: Script '{script_name}' has no code")
+            return
+
+        # Parse arguments (up to 5: arg0-arg4)
+        arguments = []
+        for i in range(5):
+            arg_key = f'arg{i}'
+            arg_value = parameters.get(arg_key, '')
+            if arg_value != '':
+                # Parse the argument value (could be a number, string, or variable reference)
+                parsed_value = self._parse_value(str(arg_value), instance)
+                arguments.append(parsed_value)
+            else:
+                arguments.append(None)
+
+        # Create execution environment
+        exec_globals = {
+            '__builtins__': __builtins__,
+            'sel': instance,
+            'game': self.game_runner,
+            'instance': instance,
+            # Add common modules for convenience
+            'math': __import__('math'),
+            'random': __import__('random'),
+            # GameMaker-style argument variables
+            'argument0': arguments[0],
+            'argument1': arguments[1],
+            'argument2': arguments[2],
+            'argument3': arguments[3],
+            'argument4': arguments[4],
+            'argument_count': sum(1 for a in arguments if a is not None),
+        }
+
+        exec_locals = {}
+
+        try:
+            logger.debug(f"📜 Executing script: {script_name}")
+            # Execute the script code
+            exec(code, exec_globals, exec_locals)
+
+            # Apply any changes to instance variables from locals
+            for key, value in exec_locals.items():
+                if not key.startswith('__'):
+                    setattr(instance, key, value)
+
+        except Exception as e:
+            logger.error(f"⚠️ Error executing script '{script_name}': {e}")
+            import traceback
+            traceback.print_exc()
+
     # ==================== INSTANCE ACTIONS ====================
 
     def execute_destroy_instance_action(self, instance, parameters: Dict[str, Any]):

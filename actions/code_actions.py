@@ -32,8 +32,7 @@ CODE_ACTIONS = {
             ActionParameter("arg2", "string", "Argument 2", "Third argument", default=""),
             ActionParameter("arg3", "string", "Argument 3", "Fourth argument", default=""),
             ActionParameter("arg4", "string", "Argument 4", "Fifth argument", default="")
-        ],
-        implemented=False
+        ]
     ),
     "comment": ActionDefinition(
         name="comment",
