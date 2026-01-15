@@ -521,6 +521,10 @@ class GameInstance:
                 # Draw background (possibly tiled)
                 self._draw_background(screen, cmd)
 
+            elif cmd_type == 'scaled_text':
+                # Draw scaled text
+                self._draw_scaled_text(screen, cmd)
+
         # Clear the queue after processing
         self._draw_queue = []
 
@@ -538,6 +542,38 @@ class GameInstance:
 
         text_surface = font.render(str(text), True, color)
         screen.blit(text_surface, (x, y))
+
+    def _draw_scaled_text(self, screen: pygame.Surface, cmd: dict):
+        """Draw scaled text on screen"""
+        try:
+            font = pygame.font.Font(None, 24)
+        except Exception:
+            font = pygame.font.SysFont('arial', 18)
+
+        text = cmd.get('text', '')
+        x = cmd.get('x', 0)
+        y = cmd.get('y', 0)
+        xscale = cmd.get('xscale', 1.0)
+        yscale = cmd.get('yscale', 1.0)
+        color = self._parse_color(cmd.get('color', '#FFFFFF'))
+
+        # Render text at normal size first
+        text_surface = font.render(str(text), True, color)
+
+        # Apply scaling if not 1.0
+        if xscale != 1.0 or yscale != 1.0:
+            original_width = text_surface.get_width()
+            original_height = text_surface.get_height()
+            new_width = int(original_width * xscale)
+            new_height = int(original_height * yscale)
+
+            # Ensure minimum size of 1 pixel
+            new_width = max(1, new_width)
+            new_height = max(1, new_height)
+
+            text_surface = pygame.transform.scale(text_surface, (new_width, new_height))
+
+        screen.blit(text_surface, (int(x), int(y)))
 
     def _draw_lives(self, screen: pygame.Surface, cmd: dict):
         """Draw lives (as text for now)"""

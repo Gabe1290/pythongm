@@ -2444,6 +2444,50 @@ class ActionExecutor:
 
         logger.debug(f"📝 Queued draw_text: '{text}' at ({x}, {y}) with color {color}")
 
+    def execute_draw_scaled_text_action(self, instance, parameters: Dict[str, Any]):
+        """Draw scaled text at specified position
+
+        Parameters:
+            x: X coordinate (default: 0)
+            y: Y coordinate (default: 0)
+            text: Text string to draw (supports expressions)
+            xscale: Horizontal scale factor (default: 1.0)
+            yscale: Vertical scale factor (default: 1.0)
+        """
+        # Parse parameters with expression support
+        x = self._parse_value(parameters.get("x", 0), instance)
+        y = self._parse_value(parameters.get("y", 0), instance)
+        text = str(self._parse_value(parameters.get("text", ""), instance))
+        xscale = self._parse_value(parameters.get("xscale", 1.0), instance)
+        yscale = self._parse_value(parameters.get("yscale", 1.0), instance)
+
+        # Convert scale values to float
+        try:
+            xscale = float(xscale)
+            yscale = float(yscale)
+        except (ValueError, TypeError):
+            xscale = 1.0
+            yscale = 1.0
+
+        # Get drawing color (from instance or default black)
+        color = getattr(instance, 'draw_color', (0, 0, 0))
+
+        # Queue drawing command for draw event
+        if not hasattr(instance, '_draw_queue'):
+            instance._draw_queue = []
+
+        instance._draw_queue.append({
+            'type': 'scaled_text',
+            'x': x,
+            'y': y,
+            'text': text,
+            'xscale': xscale,
+            'yscale': yscale,
+            'color': color
+        })
+
+        logger.debug(f"📝 Queued draw_scaled_text: '{text}' at ({x}, {y}) scale ({xscale}, {yscale})")
+
     def execute_draw_rectangle_action(self, instance, parameters: Dict[str, Any]):
         """Draw a rectangle (filled or outlined)
 

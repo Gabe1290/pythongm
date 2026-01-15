@@ -1417,5 +1417,108 @@ class TestDrawBackgroundAction:
         assert cmd['y'] == 200
 
 
+# ==============================================================================
+# Draw Scaled Text Tests
+# ==============================================================================
+
+
+class TestDrawScaledTextAction:
+    """Tests for draw_scaled_text action"""
+
+    def test_draw_scaled_text_queues_command(self):
+        """draw_scaled_text queues a draw command"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_draw_scaled_text_action(instance, {
+            'x': 50,
+            'y': 100,
+            'text': 'Hello',
+            'xscale': 2.0,
+            'yscale': 1.5
+        })
+
+        assert hasattr(instance, '_draw_queue')
+        assert len(instance._draw_queue) == 1
+        cmd = instance._draw_queue[0]
+        assert cmd['type'] == 'scaled_text'
+        assert cmd['x'] == 50
+        assert cmd['y'] == 100
+        assert cmd['text'] == 'Hello'
+        assert cmd['xscale'] == 2.0
+        assert cmd['yscale'] == 1.5
+
+    def test_draw_scaled_text_default_scale(self):
+        """draw_scaled_text defaults to scale 1.0"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_draw_scaled_text_action(instance, {
+            'x': 0,
+            'y': 0,
+            'text': 'Test'
+        })
+
+        cmd = instance._draw_queue[0]
+        assert cmd['xscale'] == 1.0
+        assert cmd['yscale'] == 1.0
+
+    def test_draw_scaled_text_with_expressions(self):
+        """draw_scaled_text supports expression values"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.x = 150
+        instance.y = 250
+        instance.scale_factor = 3.0
+
+        executor.execute_draw_scaled_text_action(instance, {
+            'x': 'self.x',
+            'y': 'self.y',
+            'text': 'Scaled',
+            'xscale': 'self.scale_factor',
+            'yscale': 2.0
+        })
+
+        cmd = instance._draw_queue[0]
+        assert cmd['x'] == 150
+        assert cmd['y'] == 250
+        assert cmd['xscale'] == 3.0
+        assert cmd['yscale'] == 2.0
+
+    def test_draw_scaled_text_uses_draw_color(self):
+        """draw_scaled_text uses instance draw_color"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.draw_color = (255, 0, 0)
+
+        executor.execute_draw_scaled_text_action(instance, {
+            'x': 0,
+            'y': 0,
+            'text': 'Red',
+            'xscale': 1.0,
+            'yscale': 1.0
+        })
+
+        cmd = instance._draw_queue[0]
+        assert cmd['color'] == (255, 0, 0)
+
+    def test_draw_scaled_text_invalid_scale_defaults(self):
+        """draw_scaled_text handles invalid scale values"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_draw_scaled_text_action(instance, {
+            'x': 0,
+            'y': 0,
+            'text': 'Test',
+            'xscale': 'invalid',
+            'yscale': 'also_invalid'
+        })
+
+        cmd = instance._draw_queue[0]
+        assert cmd['xscale'] == 1.0
+        assert cmd['yscale'] == 1.0
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

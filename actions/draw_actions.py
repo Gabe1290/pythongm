@@ -61,8 +61,7 @@ DRAW_ACTIONS = {
             ActionParameter("text", "string", "Text", "Text to display", default=""),
             ActionParameter("xscale", "float", "X Scale", "Horizontal scale", default=1.0),
             ActionParameter("yscale", "float", "Y Scale", "Vertical scale", default=1.0)
-        ],
-        implemented=False
+        ]
     ),
     "draw_rectangle": ActionDefinition(
         name="draw_rectangle",
