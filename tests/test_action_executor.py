@@ -2797,5 +2797,393 @@ class TestExtraTabActions:
         assert result is True  # Default when no game_runner
 
 
+# ==============================================================================
+# Particles Tab Actions Tests
+# ==============================================================================
+
+
+class TestParticlesTabActions:
+    """Tests for Particles tab actions: create_particle_system, destroy_particle_system,
+    clear_particles, create_particle_type, create_emitter, destroy_emitter,
+    burst_particles, stream_particles"""
+
+    def test_create_particle_system_initializes_system(self):
+        """create_particle_system initializes a particle system on instance"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_create_particle_system_action(instance, {'depth': 100})
+
+        assert hasattr(instance, '_particle_system')
+        assert instance._particle_system is not None
+        assert instance._particle_system['depth'] == 100
+        assert instance._particle_system['particle_types'] == {}
+        assert instance._particle_system['emitters'] == {}
+        assert instance._particle_system['particles'] == []
+
+    def test_create_particle_system_default_depth(self):
+        """create_particle_system uses default depth of 0"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_create_particle_system_action(instance, {})
+
+        assert instance._particle_system['depth'] == 0
+
+    def test_destroy_particle_system_removes_system(self):
+        """destroy_particle_system clears the particle system"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # First create a system
+        executor.execute_create_particle_system_action(instance, {'depth': 50})
+        assert instance._particle_system is not None
+
+        # Now destroy it
+        executor.execute_destroy_particle_system_action(instance, {})
+
+        assert instance._particle_system is None
+
+    def test_destroy_particle_system_no_system(self):
+        """destroy_particle_system handles case when no system exists"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_destroy_particle_system_action(instance, {})
+
+    def test_clear_particles_empties_particle_list(self):
+        """clear_particles removes all active particles"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Create system with some fake particles
+        executor.execute_create_particle_system_action(instance, {})
+        instance._particle_system['particles'] = [{'x': 0, 'y': 0}, {'x': 10, 'y': 10}]
+
+        executor.execute_clear_particles_action(instance, {})
+
+        assert instance._particle_system['particles'] == []
+        # Types and emitters should still exist
+        assert instance._particle_system['particle_types'] == {}
+        assert instance._particle_system['emitters'] == {}
+
+    def test_clear_particles_no_system(self):
+        """clear_particles handles case when no system exists"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_clear_particles_action(instance, {})
+
+    def test_create_particle_type_creates_type(self):
+        """create_particle_type creates a particle type definition"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # First create a system
+        executor.execute_create_particle_system_action(instance, {})
+
+        # Create particle type
+        type_id = executor.execute_create_particle_type_action(instance, {
+            'sprite': 'spr_particle',
+            'size_min': 0.5,
+            'size_max': 2.0,
+            'color': '#FF0000',
+            'alpha': 0.8,
+            'speed_min': 1,
+            'speed_max': 5,
+            'life_min': 30,
+            'life_max': 60
+        })
+
+        assert type_id == 0
+        assert 0 in instance._particle_system['particle_types']
+        ptype = instance._particle_system['particle_types'][0]
+        assert ptype['sprite'] == 'spr_particle'
+        assert ptype['size_min'] == 0.5
+        assert ptype['size_max'] == 2.0
+        assert ptype['color'] == (255, 0, 0)
+        assert ptype['alpha'] == 0.8
+        assert ptype['life_min'] == 30
+        assert ptype['life_max'] == 60
+
+    def test_create_particle_type_no_system(self):
+        """create_particle_type returns -1 when no system exists"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        result = executor.execute_create_particle_type_action(instance, {})
+
+        assert result == -1
+
+    def test_create_particle_type_increments_id(self):
+        """create_particle_type increments type ID for each new type"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_create_particle_system_action(instance, {})
+
+        id1 = executor.execute_create_particle_type_action(instance, {})
+        id2 = executor.execute_create_particle_type_action(instance, {})
+        id3 = executor.execute_create_particle_type_action(instance, {})
+
+        assert id1 == 0
+        assert id2 == 1
+        assert id3 == 2
+
+    def test_create_emitter_creates_emitter(self):
+        """create_emitter creates a particle emitter"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_create_particle_system_action(instance, {})
+
+        emitter_id = executor.execute_create_emitter_action(instance, {
+            'x': 100,
+            'y': 200,
+            'width': 50,
+            'height': 30,
+            'shape': 'ellipse'
+        })
+
+        assert emitter_id == 0
+        assert 0 in instance._particle_system['emitters']
+        emitter = instance._particle_system['emitters'][0]
+        assert emitter['x'] == 100
+        assert emitter['y'] == 200
+        assert emitter['width'] == 50
+        assert emitter['height'] == 30
+        assert emitter['shape'] == 'ellipse'
+
+    def test_create_emitter_no_system(self):
+        """create_emitter returns -1 when no system exists"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        result = executor.execute_create_emitter_action(instance, {})
+
+        assert result == -1
+
+    def test_create_emitter_default_shape(self):
+        """create_emitter uses rectangle as default shape"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_create_particle_system_action(instance, {})
+        executor.execute_create_emitter_action(instance, {'x': 0, 'y': 0})
+
+        emitter = instance._particle_system['emitters'][0]
+        assert emitter['shape'] == 'rectangle'
+
+    def test_create_emitter_invalid_shape_uses_default(self):
+        """create_emitter uses rectangle for invalid shape"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_create_particle_system_action(instance, {})
+        executor.execute_create_emitter_action(instance, {
+            'x': 0,
+            'y': 0,
+            'shape': 'invalid_shape'
+        })
+
+        emitter = instance._particle_system['emitters'][0]
+        assert emitter['shape'] == 'rectangle'
+
+    def test_destroy_emitter_removes_emitter(self):
+        """destroy_emitter removes the last created emitter"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_create_particle_system_action(instance, {})
+        executor.execute_create_emitter_action(instance, {'x': 0, 'y': 0})
+        assert 0 in instance._particle_system['emitters']
+
+        executor.execute_destroy_emitter_action(instance, {})
+
+        assert 0 not in instance._particle_system['emitters']
+        assert instance._last_emitter_id is None
+
+    def test_destroy_emitter_no_system(self):
+        """destroy_emitter handles case when no system exists"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_destroy_emitter_action(instance, {})
+
+    def test_destroy_emitter_no_emitter(self):
+        """destroy_emitter handles case when no emitter exists"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_create_particle_system_action(instance, {})
+
+        # Should not raise
+        executor.execute_destroy_emitter_action(instance, {})
+
+    def test_burst_particles_creates_particles(self):
+        """burst_particles creates the specified number of particles"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Setup: create system, type, and emitter
+        executor.execute_create_particle_system_action(instance, {})
+        executor.execute_create_particle_type_action(instance, {
+            'size_min': 1.0,
+            'size_max': 1.0,
+            'speed_min': 0,
+            'speed_max': 0,
+            'life_min': 10,
+            'life_max': 10
+        })
+        executor.execute_create_emitter_action(instance, {
+            'x': 100,
+            'y': 100,
+            'width': 10,
+            'height': 10
+        })
+
+        executor.execute_burst_particles_action(instance, {
+            'particle_type': 0,
+            'number': 5
+        })
+
+        assert len(instance._particle_system['particles']) == 5
+
+    def test_burst_particles_no_system(self):
+        """burst_particles handles case when no system exists"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_burst_particles_action(instance, {
+            'particle_type': 0,
+            'number': 10
+        })
+
+    def test_burst_particles_no_emitter(self):
+        """burst_particles handles case when no emitter exists"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_create_particle_system_action(instance, {})
+        executor.execute_create_particle_type_action(instance, {})
+
+        # Should not raise, no particles created
+        executor.execute_burst_particles_action(instance, {
+            'particle_type': 0,
+            'number': 10
+        })
+
+        assert len(instance._particle_system['particles']) == 0
+
+    def test_burst_particles_invalid_type(self):
+        """burst_particles handles invalid particle type"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_create_particle_system_action(instance, {})
+        executor.execute_create_emitter_action(instance, {'x': 0, 'y': 0})
+
+        # Should not raise, no particles created
+        executor.execute_burst_particles_action(instance, {
+            'particle_type': 999,  # Non-existent type
+            'number': 10
+        })
+
+        assert len(instance._particle_system['particles']) == 0
+
+    def test_stream_particles_sets_stream_config(self):
+        """stream_particles configures emitter for continuous emission"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_create_particle_system_action(instance, {})
+        executor.execute_create_particle_type_action(instance, {})
+        executor.execute_create_emitter_action(instance, {'x': 50, 'y': 50})
+
+        executor.execute_stream_particles_action(instance, {
+            'particle_type': 0,
+            'number': 3
+        })
+
+        emitter = instance._particle_system['emitters'][0]
+        assert emitter['stream_type'] == 0
+        assert emitter['stream_count'] == 3
+
+    def test_stream_particles_no_system(self):
+        """stream_particles handles case when no system exists"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_stream_particles_action(instance, {
+            'particle_type': 0,
+            'number': 5
+        })
+
+    def test_stream_particles_no_emitter(self):
+        """stream_particles handles case when no emitter exists"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_create_particle_system_action(instance, {})
+        executor.execute_create_particle_type_action(instance, {})
+
+        # Should not raise
+        executor.execute_stream_particles_action(instance, {
+            'particle_type': 0,
+            'number': 5
+        })
+
+    def test_stream_particles_invalid_type(self):
+        """stream_particles handles invalid particle type"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_create_particle_system_action(instance, {})
+        executor.execute_create_emitter_action(instance, {'x': 0, 'y': 0})
+
+        # Should not raise
+        executor.execute_stream_particles_action(instance, {
+            'particle_type': 999,  # Non-existent type
+            'number': 5
+        })
+
+        # Stream should not be set
+        emitter = instance._particle_system['emitters'][0]
+        assert emitter['stream_type'] is None
+        assert emitter['stream_count'] == 0
+
+    def test_burst_particles_with_different_shapes(self):
+        """burst_particles works with different emitter shapes"""
+        executor = ActionExecutor()
+
+        for shape in ['rectangle', 'ellipse', 'diamond', 'line']:
+            instance = MockInstance()
+
+            executor.execute_create_particle_system_action(instance, {})
+            executor.execute_create_particle_type_action(instance, {
+                'life_min': 10,
+                'life_max': 10
+            })
+            executor.execute_create_emitter_action(instance, {
+                'x': 100,
+                'y': 100,
+                'width': 50,
+                'height': 50,
+                'shape': shape
+            })
+
+            executor.execute_burst_particles_action(instance, {
+                'particle_type': 0,
+                'number': 3
+            })
+
+            assert len(instance._particle_system['particles']) == 3, f"Failed for shape: {shape}"
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

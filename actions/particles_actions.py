@@ -16,8 +16,7 @@ PARTICLES_ACTIONS = {
         icon="✨",
         parameters=[
             ActionParameter("depth", "int", "Depth", "Drawing depth", default=0)
-        ],
-        implemented=False
+        ]
     ),
     "destroy_particle_system": ActionDefinition(
         name="destroy_particle_system",
@@ -25,8 +24,7 @@ PARTICLES_ACTIONS = {
         category="particles",
         tab="particles",
         description="Remove particle system",
-        icon="💥",
-        implemented=False
+        icon="💥"
     ),
     "clear_particles": ActionDefinition(
         name="clear_particles",
@@ -34,8 +32,7 @@ PARTICLES_ACTIONS = {
         category="particles",
         tab="particles",
         description="Remove all particles",
-        icon="🧹",
-        implemented=False
+        icon="🧹"
     ),
     "create_particle_type": ActionDefinition(
         name="create_particle_type",
@@ -57,8 +54,7 @@ PARTICLES_ACTIONS = {
             ActionParameter("direction_max", "float", "Max Direction", "Max angle", default=360),
             ActionParameter("life_min", "int", "Min Life", "Min lifetime (steps)", default=100),
             ActionParameter("life_max", "int", "Max Life", "Max lifetime (steps)", default=100)
-        ],
-        implemented=False
+        ]
     ),
     "create_emitter": ActionDefinition(
         name="create_emitter",
@@ -74,8 +70,7 @@ PARTICLES_ACTIONS = {
             ActionParameter("height", "int", "Height", "Emitter height", default=0),
             ActionParameter("shape", "choice", "Shape", "Emitter shape",
                           default="rectangle", options=["rectangle", "ellipse", "diamond", "line"])
-        ],
-        implemented=False
+        ]
     ),
     "destroy_emitter": ActionDefinition(
         name="destroy_emitter",
@@ -83,8 +78,7 @@ PARTICLES_ACTIONS = {
         category="particles",
         tab="particles",
         description="Remove particle emitter",
-        icon="💥",
-        implemented=False
+        icon="💥"
     ),
     "burst_particles": ActionDefinition(
         name="burst_particles",
@@ -96,8 +90,7 @@ PARTICLES_ACTIONS = {
         parameters=[
             ActionParameter("particle_type", "int", "Particle Type", "Type to emit", default=0),
             ActionParameter("number", "int", "Number", "Number of particles", default=10)
-        ],
-        implemented=False
+        ]
     ),
     "stream_particles": ActionDefinition(
         name="stream_particles",
@@ -109,8 +102,7 @@ PARTICLES_ACTIONS = {
         parameters=[
             ActionParameter("particle_type", "int", "Particle Type", "Type to emit", default=0),
             ActionParameter("number", "int", "Number", "Particles per step", default=1)
-        ],
-        implemented=False
+        ]
     ),
 }
 
