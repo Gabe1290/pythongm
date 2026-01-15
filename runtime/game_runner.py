@@ -517,6 +517,10 @@ class GameInstance:
                 # Draw sprite
                 self._draw_sprite(screen, cmd)
 
+            elif cmd_type == 'background':
+                # Draw background (possibly tiled)
+                self._draw_background(screen, cmd)
+
         # Clear the queue after processing
         self._draw_queue = []
 
@@ -656,6 +660,54 @@ class GameInstance:
             screen.blit(sprite.surface, (int(x), int(y)))
         else:
             logger.warning(f"⚠️ Warning: Sprite '{sprite_name}' has no surface to draw")
+
+    def _draw_background(self, screen: pygame.Surface, cmd: dict):
+        """Draw a background image at specified position, optionally tiled"""
+        bg_name = cmd.get('background_name', '')
+        x = cmd.get('x', 0)
+        y = cmd.get('y', 0)
+        tiled = cmd.get('tiled', False)
+
+        # Look up the background in the game runner's backgrounds
+        # The game runner reference is stored when action_executor is set
+        game_runner = getattr(self, 'action_executor', None)
+        if game_runner:
+            game_runner = getattr(game_runner, 'game_runner', None)
+
+        if not game_runner or bg_name not in game_runner.backgrounds:
+            logger.warning(f"⚠️ Warning: Background '{bg_name}' not found for draw_background")
+            return
+
+        bg_surface = game_runner.backgrounds[bg_name]
+        bg_width = bg_surface.get_width()
+        bg_height = bg_surface.get_height()
+
+        if tiled:
+            # Tile the background across the entire screen
+            screen_width = screen.get_width()
+            screen_height = screen.get_height()
+
+            # Calculate starting position (handle negative x, y for seamless scrolling)
+            start_x = int(x) % bg_width - bg_width if x < 0 else int(x) % bg_width
+            start_y = int(y) % bg_height - bg_height if y < 0 else int(y) % bg_height
+
+            # If start position is positive, we need to start from a negative offset
+            if start_x > 0:
+                start_x -= bg_width
+            if start_y > 0:
+                start_y -= bg_height
+
+            # Draw tiles
+            current_y = start_y
+            while current_y < screen_height:
+                current_x = start_x
+                while current_x < screen_width:
+                    screen.blit(bg_surface, (current_x, current_y))
+                    current_x += bg_width
+                current_y += bg_height
+        else:
+            # Draw single background at position
+            screen.blit(bg_surface, (int(x), int(y)))
 
     def _parse_color(self, color_str: str) -> tuple:
         """Parse color string to RGB tuple"""
@@ -954,6 +1006,7 @@ class GameRunner:
 
         # Game assets
         self.sprites: Dict[str, GameSprite] = {}
+        self.backgrounds: Dict[str, pygame.Surface] = {}  # Background surfaces
         self.sounds: Dict[str, Any] = {}  # pygame.mixer.Sound objects
         self.music_files: Dict[str, str] = {}  # music name -> file path
         self.rooms: Dict[str, GameRoom] = {}
@@ -1166,6 +1219,31 @@ class GameRunner:
             except Exception as e:
                 logger.error(f"  âŒ Error loading sprite {sprite_name}: {e}")
 
+    def load_backgrounds(self):
+        """Load all background images from the project (called after pygame.display is initialized)"""
+        backgrounds_data = self.project_data.get('assets', {}).get('backgrounds', {})
+
+        if not backgrounds_data:
+            return
+
+        logger.info(f"Loading {len(backgrounds_data)} backgrounds...")
+
+        for bg_name, bg_info in backgrounds_data.items():
+            try:
+                file_path = bg_info.get('file_path', '')
+                if file_path:
+                    full_path = self.project_path / file_path
+                    if full_path.exists():
+                        surface = pygame.image.load(str(full_path)).convert_alpha()
+                        self.backgrounds[bg_name] = surface
+                        logger.debug(f"  âœ… Loaded background: {bg_name} ({surface.get_width()}x{surface.get_height()})")
+                    else:
+                        logger.debug(f"  âš ï¸  Background file not found: {full_path}")
+                else:
+                    logger.debug(f"  âš ï¸  Background {bg_name} has no file path")
+            except Exception as e:
+                logger.error(f"  âŒ Error loading background {bg_name}: {e}")
+
     def load_sounds(self):
         """Load all sounds from the project (called after pygame.mixer is initialized)"""
         sounds_data = self.project_data.get('assets', {}).get('sounds', {})
@@ -1334,6 +1412,9 @@ class GameRunner:
             # NOW load sprites (after pygame.display is initialized)
             logger.info("\n🎮 Loading sprites after pygame.display initialization...")
             self.load_sprites()
+
+            # Load background images (after pygame.display is initialized)
+            self.load_backgrounds()
 
             # Load sounds (after mixer is initialized)
             self.load_sounds()

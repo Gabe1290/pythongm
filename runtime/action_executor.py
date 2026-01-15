@@ -2596,6 +2596,40 @@ class ActionExecutor:
 
         logger.debug(f"🖼️ Queued draw_sprite: '{sprite_name}' at ({x}, {y}) frame {subimage}")
 
+    def execute_draw_background_action(self, instance, parameters: Dict[str, Any]):
+        """Draw a background image at specified position with optional tiling
+
+        Parameters:
+            background: Name of the background to draw
+            x: X coordinate (default: 0)
+            y: Y coordinate (default: 0)
+            tiled: Whether to tile the background across the screen (default: False)
+        """
+        # Parse parameters with expression support
+        bg_name = self._parse_value(parameters.get("background", ""), instance)
+        x = self._parse_value(parameters.get("x", 0), instance)
+        y = self._parse_value(parameters.get("y", 0), instance)
+        tiled = self._parse_value(parameters.get("tiled", False), instance)
+
+        # Convert tiled to boolean if string
+        if isinstance(tiled, str):
+            tiled = tiled.lower() in ('true', '1', 'yes')
+
+        # Queue drawing command for draw event
+        if not hasattr(instance, '_draw_queue'):
+            instance._draw_queue = []
+
+        instance._draw_queue.append({
+            'type': 'background',
+            'background_name': bg_name,
+            'x': x,
+            'y': y,
+            'tiled': tiled
+        })
+
+        tiled_str = " (tiled)" if tiled else ""
+        logger.debug(f"🖼️ Queued draw_background: '{bg_name}' at ({x}, {y}){tiled_str}")
+
     # ==================== AUDIO ACTIONS ====================
 
     def execute_stop_sound_action(self, instance, parameters: Dict[str, Any]):

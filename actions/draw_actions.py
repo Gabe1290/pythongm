@@ -33,8 +33,7 @@ DRAW_ACTIONS = {
             ActionParameter("x", "int", "X", "X position", default=0),
             ActionParameter("y", "int", "Y", "Y position", default=0),
             ActionParameter("tiled", "boolean", "Tiled", "Tile the background", default=False)
-        ],
-        implemented=False
+        ]
     ),
     "draw_text": ActionDefinition(
         name="draw_text",

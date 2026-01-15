@@ -1336,5 +1336,86 @@ class TestExecuteScriptAction:
         assert instance.count == 3
 
 
+# ==============================================================================
+# Draw Background Tests
+# ==============================================================================
+
+
+class TestDrawBackgroundAction:
+    """Tests for draw_background action"""
+
+    def test_draw_background_queues_command(self):
+        """draw_background queues a draw command"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_draw_background_action(instance, {
+            'background': 'bg_sky',
+            'x': 0,
+            'y': 0,
+            'tiled': False
+        })
+
+        assert hasattr(instance, '_draw_queue')
+        assert len(instance._draw_queue) == 1
+        cmd = instance._draw_queue[0]
+        assert cmd['type'] == 'background'
+        assert cmd['background_name'] == 'bg_sky'
+        assert cmd['x'] == 0
+        assert cmd['y'] == 0
+        assert cmd['tiled'] is False
+
+    def test_draw_background_with_tiling(self):
+        """draw_background with tiled=True"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_draw_background_action(instance, {
+            'background': 'bg_grass',
+            'x': 10,
+            'y': 20,
+            'tiled': True
+        })
+
+        assert len(instance._draw_queue) == 1
+        cmd = instance._draw_queue[0]
+        assert cmd['tiled'] is True
+        assert cmd['x'] == 10
+        assert cmd['y'] == 20
+
+    def test_draw_background_tiled_string_conversion(self):
+        """draw_background converts string 'true' to boolean"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_draw_background_action(instance, {
+            'background': 'bg_pattern',
+            'x': 0,
+            'y': 0,
+            'tiled': 'true'
+        })
+
+        cmd = instance._draw_queue[0]
+        assert cmd['tiled'] is True
+
+    def test_draw_background_with_expressions(self):
+        """draw_background supports expression values for position"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.x = 100
+        instance.y = 200
+
+        executor.execute_draw_background_action(instance, {
+            'background': 'bg_test',
+            'x': 'self.x',
+            'y': 'self.y',
+            'tiled': False
+        })
+
+        cmd = instance._draw_queue[0]
+        assert cmd['x'] == 100
+        assert cmd['y'] == 200
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
