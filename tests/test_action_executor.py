@@ -1787,9 +1787,13 @@ class TestLoadGameAction:
 # ==============================================================================
 
 
-class MockRoom:
-    """Mock room for testing room actions"""
+class MockRoomWithViews:
+    """Mock room for testing room actions with view support"""
     def __init__(self):
+        self.name = "test_room"
+        self.width = 640
+        self.height = 480
+        self.instances = []
         self.persistent = False
         self.views_enabled = False
         self.views = []
@@ -1805,6 +1809,9 @@ class MockRoom:
                 'hspeed': -1, 'vspeed': -1,
             })
 
+    def _add_to_grid(self, instance):
+        pass
+
 
 class TestSetRoomPersistentAction:
     """Tests for set_room_persistent action"""
@@ -1812,7 +1819,7 @@ class TestSetRoomPersistentAction:
     def test_set_room_persistent_true(self):
         """set_room_persistent sets persistent flag to True"""
         mock_runner = MockGameRunner()
-        mock_runner.current_room = MockRoom()
+        mock_runner.current_room = MockRoomWithViews()
         executor = ActionExecutor(game_runner=mock_runner)
         instance = MockInstance()
 
@@ -1822,7 +1829,7 @@ class TestSetRoomPersistentAction:
     def test_set_room_persistent_false(self):
         """set_room_persistent sets persistent flag to False"""
         mock_runner = MockGameRunner()
-        mock_runner.current_room = MockRoom()
+        mock_runner.current_room = MockRoomWithViews()
         mock_runner.current_room.persistent = True  # Start with True
         executor = ActionExecutor(game_runner=mock_runner)
         instance = MockInstance()
@@ -1847,7 +1854,7 @@ class TestEnableViewsAction:
     def test_enable_views_true(self):
         """enable_views enables view system"""
         mock_runner = MockGameRunner()
-        mock_runner.current_room = MockRoom()
+        mock_runner.current_room = MockRoomWithViews()
         executor = ActionExecutor(game_runner=mock_runner)
         instance = MockInstance()
 
@@ -1857,7 +1864,7 @@ class TestEnableViewsAction:
     def test_enable_views_false(self):
         """enable_views disables view system"""
         mock_runner = MockGameRunner()
-        mock_runner.current_room = MockRoom()
+        mock_runner.current_room = MockRoomWithViews()
         mock_runner.current_room.views_enabled = True
         executor = ActionExecutor(game_runner=mock_runner)
         instance = MockInstance()
@@ -1882,7 +1889,7 @@ class TestSetViewAction:
     def test_set_view_basic(self):
         """set_view configures a view"""
         mock_runner = MockGameRunner()
-        mock_runner.current_room = MockRoom()
+        mock_runner.current_room = MockRoomWithViews()
         executor = ActionExecutor(game_runner=mock_runner)
         instance = MockInstance()
 
@@ -1905,7 +1912,7 @@ class TestSetViewAction:
     def test_set_view_follow_object(self):
         """set_view can set follow object"""
         mock_runner = MockGameRunner()
-        mock_runner.current_room = MockRoom()
+        mock_runner.current_room = MockRoomWithViews()
         executor = ActionExecutor(game_runner=mock_runner)
         instance = MockInstance()
 
@@ -1920,7 +1927,7 @@ class TestSetViewAction:
     def test_set_view_invalid_index(self):
         """set_view handles invalid view index"""
         mock_runner = MockGameRunner()
-        mock_runner.current_room = MockRoom()
+        mock_runner.current_room = MockRoomWithViews()
         executor = ActionExecutor(game_runner=mock_runner)
         instance = MockInstance()
 
