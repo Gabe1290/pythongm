@@ -122,10 +122,23 @@ def import_module_directly(module_path: str, module_name: str = None):
     if module_name is None:
         module_name = Path(module_path).stem + "_direct"
 
-    spec = importlib.util.spec_from_file_location(module_name, str(full_path))
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+    # Temporarily add project root to sys.path so the module can resolve
+    # its own imports (e.g., 'from core.logger import get_logger')
+    project_root_str = str(PROJECT_ROOT)
+    path_added = False
+    if project_root_str not in sys.path:
+        sys.path.insert(0, project_root_str)
+        path_added = True
+
+    try:
+        spec = importlib.util.spec_from_file_location(module_name, str(full_path))
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+    finally:
+        # Remove project root from sys.path if we added it
+        if path_added and project_root_str in sys.path:
+            sys.path.remove(project_root_str)
 
 
 # ============================================================================
