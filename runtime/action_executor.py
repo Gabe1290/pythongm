@@ -2071,6 +2071,278 @@ class ActionExecutor:
         # This ensures the room is properly recreated with fresh instances
         instance.restart_game_flag = True
 
+    # ==================== INFO ACTIONS ====================
+
+    def execute_show_info_action(self, instance, parameters: Dict[str, Any]):
+        """Display game information screen
+
+        Shows the game info defined in project settings.
+        In GameMaker, this displays an RTF document with game information.
+        We'll show a simple info dialog with project metadata.
+        """
+        if not self.game_runner or not self.game_runner.project_data:
+            logger.debug("⚠️ show_info: No project data available")
+            return
+
+        # Get game info from project data
+        project = self.game_runner.project_data
+        name = project.get('name', 'Unknown Game')
+        version = project.get('version', '1.0.0')
+        author = project.get('author', 'Unknown')
+        description = project.get('description', '')
+
+        # Build info message
+        info_text = f"{name}\nVersion: {version}\nBy: {author}"
+        if description:
+            info_text += f"\n\n{description}"
+
+        logger.info(f"ℹ️ GAME INFO:\n{info_text}")
+
+        # Store as pending message for display
+        if not hasattr(instance, 'pending_messages'):
+            instance.pending_messages = []
+        instance.pending_messages.append(info_text)
+
+    def execute_show_video_action(self, instance, parameters: Dict[str, Any]):
+        """Play a video file
+
+        Parameters:
+            filename: Path to the video file
+            fullscreen: Whether to play in fullscreen mode
+
+        Note: Video playback requires additional libraries (moviepy/opencv).
+        This implementation logs the request but actual playback may be limited.
+        """
+        from pathlib import Path
+
+        filename = self._parse_value(parameters.get("filename", ""), instance)
+        fullscreen = self._parse_value(parameters.get("fullscreen", False), instance)
+
+        if not filename:
+            logger.debug("⚠️ show_video: No filename specified")
+            return
+
+        # Convert to boolean if string
+        if isinstance(fullscreen, str):
+            fullscreen = fullscreen.lower() in ('true', '1', 'yes')
+
+        # Resolve the file path
+        file_path = Path(filename)
+        if not file_path.is_absolute() and self.game_runner and self.game_runner.project_path:
+            file_path = self.game_runner.project_path / filename
+
+        if not file_path.exists():
+            logger.warning(f"⚠️ show_video: Video file not found: {file_path}")
+            return
+
+        logger.info(f"🎬 Video playback requested: {file_path} (fullscreen={fullscreen})")
+
+        # Try to play video using available methods
+        try:
+            # Attempt to use system default video player
+            import webbrowser
+            import sys
+            import subprocess
+
+            if sys.platform == 'win32':
+                import os
+                os.startfile(str(file_path))
+            elif sys.platform == 'darwin':
+                subprocess.call(['open', str(file_path)])
+            else:
+                subprocess.call(['xdg-open', str(file_path)])
+
+            logger.debug(f"🎬 Opened video with system player: {file_path}")
+        except Exception as e:
+            logger.warning(f"⚠️ Could not play video: {e}")
+
+    def execute_open_webpage_action(self, instance, parameters: Dict[str, Any]):
+        """Open a URL in the default web browser
+
+        Parameters:
+            url: The web address to open
+        """
+        import webbrowser
+
+        url = self._parse_value(parameters.get("url", ""), instance)
+
+        if not url:
+            logger.debug("⚠️ open_webpage: No URL specified")
+            return
+
+        # Ensure URL has a protocol
+        if not url.startswith(('http://', 'https://', 'file://')):
+            url = 'https://' + url
+
+        logger.info(f"🌐 Opening web page: {url}")
+
+        try:
+            webbrowser.open(url)
+        except Exception as e:
+            logger.warning(f"⚠️ Could not open web page: {e}")
+
+    def execute_save_game_action(self, instance, parameters: Dict[str, Any]):
+        """Save the current game state to a file
+
+        Parameters:
+            filename: Name of the save file (default: savegame.sav)
+
+        Saves:
+        - Current room name
+        - Score, lives, health
+        - Global variables
+        - Instance positions and states
+        """
+        import json
+        from pathlib import Path
+
+        filename = self._parse_value(parameters.get("filename", "savegame.sav"), instance)
+
+        if not self.game_runner:
+            logger.debug("⚠️ save_game: No game_runner reference")
+            return
+
+        # Determine save path (in project directory or user's save folder)
+        if self.game_runner.project_path:
+            save_dir = self.game_runner.project_path / "saves"
+            save_dir.mkdir(exist_ok=True)
+            save_path = save_dir / filename
+        else:
+            save_path = Path(filename)
+
+        # Build save data
+        save_data = {
+            'version': '1.0',
+            'current_room': self.game_runner.current_room.name if self.game_runner.current_room else None,
+            'score': self.game_runner.score,
+            'lives': self.game_runner.lives,
+            'health': self.game_runner.health,
+            'global_variables': dict(self.game_runner.global_variables),
+            'instances': []
+        }
+
+        # Save instance data
+        if self.game_runner.current_room:
+            for inst in self.game_runner.current_room.instances:
+                inst_data = {
+                    'object_name': inst.object_name,
+                    'x': inst.x,
+                    'y': inst.y,
+                    'hspeed': getattr(inst, 'hspeed', 0),
+                    'vspeed': getattr(inst, 'vspeed', 0),
+                    'alarm': list(getattr(inst, 'alarm', [-1] * 12)),
+                    'visible': getattr(inst, 'visible', True),
+                    'image_index': getattr(inst, 'image_index', 0),
+                }
+                # Save custom instance variables
+                custom_vars = {}
+                for key, value in vars(inst).items():
+                    if not key.startswith('_') and key not in ['object_name', 'x', 'y', 'hspeed', 'vspeed',
+                                                                'alarm', 'visible', 'image_index', 'sprite',
+                                                                'object_data', 'action_executor', 'to_destroy',
+                                                                'keys_pressed', 'pending_messages']:
+                        if isinstance(value, (int, float, str, bool, list, dict)):
+                            custom_vars[key] = value
+                if custom_vars:
+                    inst_data['custom_vars'] = custom_vars
+                save_data['instances'].append(inst_data)
+
+        try:
+            with open(save_path, 'w') as f:
+                json.dump(save_data, f, indent=2)
+            logger.info(f"💾 Game saved to: {save_path}")
+        except Exception as e:
+            logger.error(f"❌ Error saving game: {e}")
+
+    def execute_load_game_action(self, instance, parameters: Dict[str, Any]):
+        """Load game state from a file
+
+        Parameters:
+            filename: Name of the save file (default: savegame.sav)
+
+        Restores:
+        - Current room
+        - Score, lives, health
+        - Global variables
+        - Instance positions and states
+        """
+        import json
+        from pathlib import Path
+
+        filename = self._parse_value(parameters.get("filename", "savegame.sav"), instance)
+
+        if not self.game_runner:
+            logger.debug("⚠️ load_game: No game_runner reference")
+            return
+
+        # Determine save path
+        if self.game_runner.project_path:
+            save_path = self.game_runner.project_path / "saves" / filename
+        else:
+            save_path = Path(filename)
+
+        if not save_path.exists():
+            logger.warning(f"⚠️ load_game: Save file not found: {save_path}")
+            return
+
+        try:
+            with open(save_path, 'r') as f:
+                save_data = json.load(f)
+
+            # Restore game state
+            self.game_runner.score = save_data.get('score', 0)
+            self.game_runner.lives = save_data.get('lives', 3)
+            self.game_runner.health = save_data.get('health', 100)
+            self.game_runner.global_variables = save_data.get('global_variables', {})
+
+            # Change to saved room
+            saved_room = save_data.get('current_room')
+            if saved_room and saved_room != (self.game_runner.current_room.name if self.game_runner.current_room else None):
+                if saved_room in self.game_runner.rooms:
+                    # Set flag to change room (will be handled by game loop)
+                    instance._load_room_name = saved_room
+                    instance._load_instances = save_data.get('instances', [])
+                    logger.debug(f"📂 Will load room: {saved_room}")
+            else:
+                # Restore instances in current room
+                self._restore_instances(save_data.get('instances', []))
+
+            logger.info(f"📂 Game loaded from: {save_path}")
+
+        except json.JSONDecodeError as e:
+            logger.error(f"❌ Invalid save file format: {e}")
+        except Exception as e:
+            logger.error(f"❌ Error loading game: {e}")
+
+    def _restore_instances(self, instances_data: list):
+        """Restore instance states from save data"""
+        if not self.game_runner or not self.game_runner.current_room:
+            return
+
+        # Match saved instances with current instances by object name and approximate position
+        for inst_data in instances_data:
+            for inst in self.game_runner.current_room.instances:
+                if inst.object_name == inst_data.get('object_name'):
+                    # Restore position and state
+                    inst.x = inst_data.get('x', inst.x)
+                    inst.y = inst_data.get('y', inst.y)
+                    inst.hspeed = inst_data.get('hspeed', 0)
+                    inst.vspeed = inst_data.get('vspeed', 0)
+                    inst.visible = inst_data.get('visible', True)
+                    inst.image_index = inst_data.get('image_index', 0)
+
+                    # Restore alarms
+                    alarms = inst_data.get('alarm', [-1] * 12)
+                    for i, alarm_val in enumerate(alarms[:12]):
+                        inst.alarm[i] = alarm_val
+
+                    # Restore custom variables
+                    custom_vars = inst_data.get('custom_vars', {})
+                    for key, value in custom_vars.items():
+                        setattr(inst, key, value)
+
+                    break  # Found and restored this instance
+
     # ==================== CODE EXECUTION ACTIONS ====================
 
     def execute_execute_code_action(self, instance, parameters: Dict[str, Any]):

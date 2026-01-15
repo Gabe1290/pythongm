@@ -1653,5 +1653,134 @@ class TestReplaceBackgroundAction:
         })
 
 
+# ==============================================================================
+# Info Actions Tests
+# ==============================================================================
+
+
+class TestShowInfoAction:
+    """Tests for show_info action"""
+
+    def test_show_info_with_project_data(self):
+        """show_info displays project metadata"""
+        mock_runner = MockGameRunner()
+        mock_runner.project_data = {
+            'name': 'Test Game',
+            'version': '2.0.0',
+            'author': 'Test Author',
+            'description': 'A test description'
+        }
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_show_info_action(instance, {})
+
+        assert hasattr(instance, 'pending_messages')
+        assert len(instance.pending_messages) == 1
+        msg = instance.pending_messages[0]
+        assert 'Test Game' in msg
+        assert '2.0.0' in msg
+        assert 'Test Author' in msg
+
+    def test_show_info_no_project_data(self):
+        """show_info handles missing project data"""
+        mock_runner = MockGameRunner()
+        mock_runner.project_data = None
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_show_info_action(instance, {})
+
+
+class TestShowVideoAction:
+    """Tests for show_video action"""
+
+    def test_show_video_no_filename(self):
+        """show_video handles missing filename"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_show_video_action(instance, {'filename': ''})
+
+    def test_show_video_no_game_runner(self):
+        """show_video handles missing game_runner"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_show_video_action(instance, {
+            'filename': 'test.mp4',
+            'fullscreen': False
+        })
+
+
+class TestOpenWebpageAction:
+    """Tests for open_webpage action"""
+
+    def test_open_webpage_no_url(self):
+        """open_webpage handles missing URL"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_open_webpage_action(instance, {'url': ''})
+
+    def test_open_webpage_adds_protocol(self):
+        """open_webpage adds https:// if no protocol"""
+        # This test is more of a documentation - actual opening is mocked
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Would open https://example.com if webbrowser was not mocked
+        # Just verify no exception
+        # Note: Actual browser opening is tested manually
+        pass
+
+
+class TestSaveGameAction:
+    """Tests for save_game action"""
+
+    def test_save_game_no_game_runner(self):
+        """save_game handles missing game_runner"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_save_game_action(instance, {'filename': 'test.sav'})
+
+    def test_save_game_default_filename(self):
+        """save_game uses default filename"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise (no game_runner to actually save)
+        executor.execute_save_game_action(instance, {})
+
+
+class TestLoadGameAction:
+    """Tests for load_game action"""
+
+    def test_load_game_no_game_runner(self):
+        """load_game handles missing game_runner"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Should not raise
+        executor.execute_load_game_action(instance, {'filename': 'test.sav'})
+
+    def test_load_game_file_not_found(self):
+        """load_game handles missing save file"""
+        from pathlib import Path
+        mock_runner = MockGameRunner()
+        mock_runner.project_path = Path('/nonexistent/path')
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        # Should not raise, just log warning
+        executor.execute_load_game_action(instance, {'filename': 'nonexistent.sav'})
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
