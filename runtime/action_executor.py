@@ -4256,3 +4256,170 @@ class ActionExecutor:
         result = is_playing if not not_flag else not is_playing
         logger.debug(f"🎵 Check sound '{sound_name}': playing={is_playing}, not_flag={not_flag}, result={result}")
         return result
+
+    # ==================== DRAW TAB ACTIONS ====================
+
+    def execute_draw_arrow_action(self, instance, parameters: Dict[str, Any]):
+        """Draw an arrow from one point to another with configurable tip
+
+        Parameters:
+            x1: Start X coordinate
+            y1: Start Y coordinate
+            x2: End X coordinate (arrow head)
+            y2: End Y coordinate (arrow head)
+            tip_size: Size of the arrow tip (default: 10)
+        """
+        import math
+
+        # Parse parameters with expression support
+        x1 = self._parse_value(parameters.get("x1", 0), instance)
+        y1 = self._parse_value(parameters.get("y1", 0), instance)
+        x2 = self._parse_value(parameters.get("x2", 100), instance)
+        y2 = self._parse_value(parameters.get("y2", 100), instance)
+        tip_size = self._parse_value(parameters.get("tip_size", 10), instance)
+
+        try:
+            x1 = int(x1) if x1 is not None else 0
+            y1 = int(y1) if y1 is not None else 0
+            x2 = int(x2) if x2 is not None else 100
+            y2 = int(y2) if y2 is not None else 100
+            tip_size = int(tip_size) if tip_size is not None else 10
+        except (ValueError, TypeError):
+            x1, y1, x2, y2, tip_size = 0, 0, 100, 100, 10
+
+        # Get drawing color (from instance or default black)
+        color = getattr(instance, 'draw_color', (0, 0, 0))
+
+        # Calculate arrow tip points
+        angle = math.atan2(y2 - y1, x2 - x1)
+        tip_angle = math.pi / 6  # 30 degrees
+
+        # Calculate the two points of the arrow tip
+        tip1_x = x2 - tip_size * math.cos(angle - tip_angle)
+        tip1_y = y2 - tip_size * math.sin(angle - tip_angle)
+        tip2_x = x2 - tip_size * math.cos(angle + tip_angle)
+        tip2_y = y2 - tip_size * math.sin(angle + tip_angle)
+
+        # Queue drawing command for draw event
+        if not hasattr(instance, '_draw_queue'):
+            instance._draw_queue = []
+
+        instance._draw_queue.append({
+            'type': 'arrow',
+            'x1': x1,
+            'y1': y1,
+            'x2': x2,
+            'y2': y2,
+            'tip1_x': tip1_x,
+            'tip1_y': tip1_y,
+            'tip2_x': tip2_x,
+            'tip2_y': tip2_y,
+            'color': color
+        })
+
+        logger.debug(f"➡️ Queued draw_arrow: from ({x1}, {y1}) to ({x2}, {y2}) with tip_size={tip_size}")
+
+    def execute_set_draw_font_action(self, instance, parameters: Dict[str, Any]):
+        """Set the font and alignment for text drawing
+
+        Parameters:
+            font: Font name/asset to use
+            halign: Horizontal alignment (left, center, right)
+            valign: Vertical alignment (top, middle, bottom)
+        """
+        font_name = self._parse_value(parameters.get("font", ""), instance)
+        halign = self._parse_value(parameters.get("halign", "left"), instance)
+        valign = self._parse_value(parameters.get("valign", "top"), instance)
+
+        # Store font settings on the instance
+        instance.draw_font = font_name if font_name else None
+        instance.draw_halign = halign if halign in ('left', 'center', 'right') else 'left'
+        instance.draw_valign = valign if valign in ('top', 'middle', 'bottom') else 'top'
+
+        logger.debug(f"🔤 Set draw font: '{font_name}', halign={halign}, valign={valign}")
+
+    def execute_fill_color_action(self, instance, parameters: Dict[str, Any]):
+        """Fill the entire screen with a color
+
+        Parameters:
+            color: Fill color (hex string like "#RRGGBB")
+        """
+        color_param = self._parse_value(parameters.get("color", "#000000"), instance)
+
+        # Parse color if it's a hex string
+        if isinstance(color_param, str) and color_param.startswith('#'):
+            try:
+                hex_color = color_param.lstrip('#')
+                r = int(hex_color[0:2], 16)
+                g = int(hex_color[2:4], 16)
+                b = int(hex_color[4:6], 16)
+                color = (r, g, b)
+            except (ValueError, IndexError):
+                color = (0, 0, 0)
+        else:
+            color = (0, 0, 0)
+
+        # Queue drawing command for draw event
+        if not hasattr(instance, '_draw_queue'):
+            instance._draw_queue = []
+
+        instance._draw_queue.append({
+            'type': 'fill',
+            'color': color
+        })
+
+        logger.debug(f"🎨 Queued fill_color: {color}")
+
+    def execute_create_effect_action(self, instance, parameters: Dict[str, Any]):
+        """Create a visual particle effect
+
+        Parameters:
+            effect: Effect type (explosion, ring, ellipse, firework, smoke, smoke_up, star, spark, flare, cloud, rain, snow)
+            x: X position
+            y: Y position
+            size: Effect size (small, medium, large)
+            color: Effect color
+        """
+        effect_type = self._parse_value(parameters.get("effect", "explosion"), instance)
+        x = self._parse_value(parameters.get("x", 0), instance)
+        y = self._parse_value(parameters.get("y", 0), instance)
+        size = self._parse_value(parameters.get("size", "medium"), instance)
+        color_param = self._parse_value(parameters.get("color", "#FFFFFF"), instance)
+
+        try:
+            x = int(x) if x is not None else 0
+            y = int(y) if y is not None else 0
+        except (ValueError, TypeError):
+            x, y = 0, 0
+
+        # Parse color
+        if isinstance(color_param, str) and color_param.startswith('#'):
+            try:
+                hex_color = color_param.lstrip('#')
+                r = int(hex_color[0:2], 16)
+                g = int(hex_color[2:4], 16)
+                b = int(hex_color[4:6], 16)
+                color = (r, g, b)
+            except (ValueError, IndexError):
+                color = (255, 255, 255)
+        else:
+            color = (255, 255, 255)
+
+        # Convert size to multiplier
+        size_multipliers = {'small': 0.5, 'medium': 1.0, 'large': 2.0}
+        size_mult = size_multipliers.get(size, 1.0)
+
+        # Queue effect command for draw event
+        if not hasattr(instance, '_draw_queue'):
+            instance._draw_queue = []
+
+        instance._draw_queue.append({
+            'type': 'effect',
+            'effect_type': effect_type,
+            'x': x,
+            'y': y,
+            'size': size_mult,
+            'color': color
+        })
+
+        logger.debug(f"✨ Queued create_effect: {effect_type} at ({x}, {y}), size={size}, color={color}")

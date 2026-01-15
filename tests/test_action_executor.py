@@ -2323,5 +2323,275 @@ class MockSound:
         return 1 if self._playing else 0
 
 
+# ==============================================================================
+# Draw Tab Actions Tests
+# ==============================================================================
+
+
+class TestDrawTabActions:
+    """Tests for Draw tab actions: draw_arrow, set_draw_font, fill_color, create_effect"""
+
+    def test_draw_arrow_queues_command(self):
+        """draw_arrow queues an arrow draw command"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_draw_arrow_action(instance, {
+            'x1': 10,
+            'y1': 20,
+            'x2': 100,
+            'y2': 50,
+            'tip_size': 15
+        })
+
+        assert hasattr(instance, '_draw_queue')
+        assert len(instance._draw_queue) == 1
+        cmd = instance._draw_queue[0]
+        assert cmd['type'] == 'arrow'
+        assert cmd['x1'] == 10
+        assert cmd['y1'] == 20
+        assert cmd['x2'] == 100
+        assert cmd['y2'] == 50
+        assert 'tip1_x' in cmd
+        assert 'tip1_y' in cmd
+        assert 'tip2_x' in cmd
+        assert 'tip2_y' in cmd
+
+    def test_draw_arrow_calculates_tip_points(self):
+        """draw_arrow calculates arrow tip points correctly"""
+        import math
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Arrow pointing right (0 degrees)
+        executor.execute_draw_arrow_action(instance, {
+            'x1': 0,
+            'y1': 0,
+            'x2': 100,
+            'y2': 0,
+            'tip_size': 10
+        })
+
+        cmd = instance._draw_queue[0]
+        # For a horizontal arrow pointing right, tip points should be behind x2
+        assert cmd['tip1_x'] < 100
+        assert cmd['tip2_x'] < 100
+
+    def test_draw_arrow_uses_draw_color(self):
+        """draw_arrow uses instance draw_color"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.draw_color = (255, 0, 0)
+
+        executor.execute_draw_arrow_action(instance, {
+            'x1': 0,
+            'y1': 0,
+            'x2': 100,
+            'y2': 100
+        })
+
+        cmd = instance._draw_queue[0]
+        assert cmd['color'] == (255, 0, 0)
+
+    def test_draw_arrow_default_values(self):
+        """draw_arrow uses default values when not specified"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_draw_arrow_action(instance, {})
+
+        cmd = instance._draw_queue[0]
+        assert cmd['x1'] == 0
+        assert cmd['y1'] == 0
+        assert cmd['x2'] == 100
+        assert cmd['y2'] == 100
+
+    def test_set_draw_font_sets_font_properties(self):
+        """set_draw_font sets font name and alignment"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_set_draw_font_action(instance, {
+            'font': 'Arial',
+            'halign': 'center',
+            'valign': 'middle'
+        })
+
+        assert instance.draw_font == 'Arial'
+        assert instance.draw_halign == 'center'
+        assert instance.draw_valign == 'middle'
+
+    def test_set_draw_font_default_alignment(self):
+        """set_draw_font defaults to left/top alignment"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_set_draw_font_action(instance, {
+            'font': 'TestFont'
+        })
+
+        assert instance.draw_font == 'TestFont'
+        assert instance.draw_halign == 'left'
+        assert instance.draw_valign == 'top'
+
+    def test_set_draw_font_invalid_alignment(self):
+        """set_draw_font handles invalid alignment values"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_set_draw_font_action(instance, {
+            'font': 'Font',
+            'halign': 'invalid',
+            'valign': 'wrong'
+        })
+
+        assert instance.draw_halign == 'left'  # Default
+        assert instance.draw_valign == 'top'   # Default
+
+    def test_set_draw_font_empty_font(self):
+        """set_draw_font handles empty font name"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_set_draw_font_action(instance, {
+            'font': ''
+        })
+
+        assert instance.draw_font is None
+
+    def test_fill_color_queues_command(self):
+        """fill_color queues a fill command"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_fill_color_action(instance, {
+            'color': '#FF0000'
+        })
+
+        assert hasattr(instance, '_draw_queue')
+        assert len(instance._draw_queue) == 1
+        cmd = instance._draw_queue[0]
+        assert cmd['type'] == 'fill'
+        assert cmd['color'] == (255, 0, 0)
+
+    def test_fill_color_parses_hex(self):
+        """fill_color parses hex color correctly"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_fill_color_action(instance, {
+            'color': '#00FF00'
+        })
+
+        cmd = instance._draw_queue[0]
+        assert cmd['color'] == (0, 255, 0)
+
+    def test_fill_color_default_black(self):
+        """fill_color defaults to black"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_fill_color_action(instance, {})
+
+        cmd = instance._draw_queue[0]
+        assert cmd['color'] == (0, 0, 0)
+
+    def test_fill_color_invalid_color(self):
+        """fill_color handles invalid color"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_fill_color_action(instance, {
+            'color': 'invalid'
+        })
+
+        cmd = instance._draw_queue[0]
+        assert cmd['color'] == (0, 0, 0)  # Default black
+
+    def test_create_effect_queues_command(self):
+        """create_effect queues an effect command"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_create_effect_action(instance, {
+            'effect': 'explosion',
+            'x': 100,
+            'y': 200,
+            'size': 'large',
+            'color': '#FFFF00'
+        })
+
+        assert hasattr(instance, '_draw_queue')
+        assert len(instance._draw_queue) == 1
+        cmd = instance._draw_queue[0]
+        assert cmd['type'] == 'effect'
+        assert cmd['effect_type'] == 'explosion'
+        assert cmd['x'] == 100
+        assert cmd['y'] == 200
+        assert cmd['size'] == 2.0  # large = 2.0
+        assert cmd['color'] == (255, 255, 0)
+
+    def test_create_effect_size_multipliers(self):
+        """create_effect converts size to multiplier"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        # Test small
+        executor.execute_create_effect_action(instance, {
+            'effect': 'spark',
+            'size': 'small'
+        })
+        assert instance._draw_queue[0]['size'] == 0.5
+
+        # Test medium
+        instance._draw_queue = []
+        executor.execute_create_effect_action(instance, {
+            'effect': 'spark',
+            'size': 'medium'
+        })
+        assert instance._draw_queue[0]['size'] == 1.0
+
+        # Test large
+        instance._draw_queue = []
+        executor.execute_create_effect_action(instance, {
+            'effect': 'spark',
+            'size': 'large'
+        })
+        assert instance._draw_queue[0]['size'] == 2.0
+
+    def test_create_effect_default_values(self):
+        """create_effect uses default values"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+
+        executor.execute_create_effect_action(instance, {})
+
+        cmd = instance._draw_queue[0]
+        assert cmd['effect_type'] == 'explosion'
+        assert cmd['x'] == 0
+        assert cmd['y'] == 0
+        assert cmd['size'] == 1.0  # medium default
+        assert cmd['color'] == (255, 255, 255)  # white default
+
+    def test_create_effect_with_expressions(self):
+        """create_effect supports expression values"""
+        executor = ActionExecutor()
+        instance = MockInstance()
+        instance.x = 150
+        instance.y = 250
+
+        executor.execute_create_effect_action(instance, {
+            'effect': 'firework',
+            'x': 'self.x',
+            'y': 'self.y',
+            'size': 'medium',
+            'color': '#0000FF'
+        })
+
+        cmd = instance._draw_queue[0]
+        assert cmd['x'] == 150
+        assert cmd['y'] == 250
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

@@ -120,8 +120,7 @@ DRAW_ACTIONS = {
             ActionParameter("x2", "int", "X2", "End X", default=100),
             ActionParameter("y2", "int", "Y2", "End Y", default=100),
             ActionParameter("tip_size", "int", "Tip Size", "Arrow tip size", default=10)
-        ],
-        implemented=False
+        ]
     ),
     "set_draw_color": ActionDefinition(
         name="set_draw_color",
@@ -147,8 +146,7 @@ DRAW_ACTIONS = {
                           default="left", options=["left", "center", "right"]),
             ActionParameter("valign", "choice", "Vertical Align", "Vertical alignment",
                           default="top", options=["top", "middle", "bottom"])
-        ],
-        implemented=False
+        ]
     ),
     "fill_color": ActionDefinition(
         name="fill_color",
@@ -159,8 +157,7 @@ DRAW_ACTIONS = {
         icon="🎨",
         parameters=[
             ActionParameter("color", "color", "Color", "Fill color", default="#000000")
-        ],
-        implemented=False
+        ]
     ),
     "create_effect": ActionDefinition(
         name="create_effect",
@@ -177,8 +174,7 @@ DRAW_ACTIONS = {
             ActionParameter("size", "choice", "Size", "Effect size",
                           default="medium", options=["small", "medium", "large"]),
             ActionParameter("color", "color", "Color", "Effect color", default="#FFFFFF")
-        ],
-        implemented=False
+        ]
     ),
     # Animation actions
     "set_image_index": ActionDefinition(
