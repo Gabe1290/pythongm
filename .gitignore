@@ -70,3 +70,6 @@ dist/
 export_output/
 test_thymio_project.json
 test_thymio_project/
+
+# One-off translation scripts
+scripts/complete_french_translations.py
