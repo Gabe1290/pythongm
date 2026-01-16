@@ -18,6 +18,7 @@ CATEGORY_TRANSLATIONS = {
         "Values": "Werte",
         "Sound": "Klang",
         "Output": "Ausgabe",
+        "Particles": "Partikel",
     },
     "es": {
         "Events": "Eventos",
@@ -30,6 +31,7 @@ CATEGORY_TRANSLATIONS = {
         "Values": "Valores",
         "Sound": "Sonido",
         "Output": "Salida",
+        "Particles": "Partículas",
     },
     "fr": {
         "Events": "Événements",
@@ -42,6 +44,7 @@ CATEGORY_TRANSLATIONS = {
         "Values": "Valeurs",
         "Sound": "Son",
         "Output": "Sortie",
+        "Particles": "Particules",
     },
     "it": {
         "Events": "Eventi",
@@ -54,6 +57,7 @@ CATEGORY_TRANSLATIONS = {
         "Values": "Valori",
         "Sound": "Suono",
         "Output": "Output",
+        "Particles": "Particelle",
     },
     "ru": {
         "Events": "События",
@@ -66,6 +70,7 @@ CATEGORY_TRANSLATIONS = {
         "Values": "Значения",
         "Sound": "Звук",
         "Output": "Вывод",
+        "Particles": "Частицы",
     },
     "sl": {
         "Events": "Dogodki",
@@ -78,6 +83,7 @@ CATEGORY_TRANSLATIONS = {
         "Values": "Vrednosti",
         "Sound": "Zvok",
         "Output": "Izhod",
+        "Particles": "Delci",
     },
     "uk": {
         "Events": "Події",
@@ -90,6 +96,7 @@ CATEGORY_TRANSLATIONS = {
         "Values": "Значення",
         "Sound": "Звук",
         "Output": "Вивід",
+        "Particles": "Частинки",
     },
 }
 
@@ -354,6 +361,88 @@ BLOCK_TRANSLATIONS = {
     "output_message": {
         "name": {"de": "Nachricht anzeigen", "es": "Mostrar mensaje", "fr": "Afficher message", "it": "Mostra messaggio", "ru": "Показать сообщение", "sl": "Prikaži sporočilo", "uk": "Показати повідомлення"},
         "description": {"de": "Nachrichtendialog anzeigen", "es": "Mostrar diálogo de mensaje", "fr": "Afficher dialogue de message", "it": "Visualizza dialogo messaggio", "ru": "Показать диалог сообщения", "sl": "Prikaži pogovorno okno", "uk": "Показати діалог повідомлення"}
+    },
+
+    # Extra Tab - Variables
+    "draw_variable": {
+        "name": {"de": "Variable anzeigen", "es": "Dibujar variable", "fr": "Afficher variable", "it": "Visualizza variabile", "ru": "Показать переменную", "sl": "Nariši spremenljivko", "uk": "Показати змінну"},
+        "description": {"de": "Variable auf Bildschirm anzeigen", "es": "Dibujar valor de variable", "fr": "Afficher valeur de variable", "it": "Visualizza valore variabile", "ru": "Показать значение переменной", "sl": "Nariši vrednost spremenljivke", "uk": "Показати значення змінної"}
+    },
+    "goto_room": {
+        "name": {"de": "Zu Raum wechseln", "es": "Ir a sala", "fr": "Aller à la salle", "it": "Vai alla stanza", "ru": "Перейти в комнату", "sl": "Pojdi v sobo", "uk": "Перейти до кімнати"},
+        "description": {"de": "Zu bestimmtem Raum wechseln", "es": "Ir a una sala específica", "fr": "Aller à une salle spécifique", "it": "Vai a una stanza specifica", "ru": "Перейти в указанную комнату", "sl": "Pojdi v določeno sobo", "uk": "Перейти до певної кімнати"}
+    },
+    "check_room": {
+        "name": {"de": "Raum prüfen", "es": "Comprobar sala", "fr": "Vérifier salle", "it": "Controlla stanza", "ru": "Проверить комнату", "sl": "Preveri sobo", "uk": "Перевірити кімнату"},
+        "description": {"de": "Prüfen ob in bestimmtem Raum", "es": "Comprobar si en sala específica", "fr": "Vérifier si dans la salle", "it": "Controlla se in stanza specifica", "ru": "Проверить нахождение в комнате", "sl": "Preveri če v določeni sobi", "uk": "Перевірити чи в певній кімнаті"}
+    },
+    "if_next_room_exists": {
+        "name": {"de": "Wenn nächster Raum existiert", "es": "Si existe sala siguiente", "fr": "Si salle suivante existe", "it": "Se stanza successiva esiste", "ru": "Если есть следующая комната", "sl": "Če naslednja soba obstaja", "uk": "Якщо наступна кімната існує"},
+        "description": {"de": "Prüfen ob nächster Raum existiert", "es": "Comprobar si hay sala siguiente", "fr": "Vérifier si salle suivante existe", "it": "Controlla se esiste stanza successiva", "ru": "Проверить существование следующей комнаты", "sl": "Preveri če obstaja naslednja soba", "uk": "Перевірити чи існує наступна кімната"}
+    },
+    "if_previous_room_exists": {
+        "name": {"de": "Wenn vorheriger Raum existiert", "es": "Si existe sala anterior", "fr": "Si salle précédente existe", "it": "Se stanza precedente esiste", "ru": "Если есть предыдущая комната", "sl": "Če prejšnja soba obstaja", "uk": "Якщо попередня кімната існує"},
+        "description": {"de": "Prüfen ob vorheriger Raum existiert", "es": "Comprobar si hay sala anterior", "fr": "Vérifier si salle précédente existe", "it": "Controlla se esiste stanza precedente", "ru": "Проверить существование предыдущей комнаты", "sl": "Preveri če obstaja prejšnja soba", "uk": "Перевірити чи існує попередня кімната"}
+    },
+
+    # Particles Tab
+    "create_particle_system": {
+        "name": {"de": "Partikelsystem erstellen", "es": "Crear sistema de partículas", "fr": "Créer système de particules", "it": "Crea sistema particelle", "ru": "Создать систему частиц", "sl": "Ustvari sistem delcev", "uk": "Створити систему частинок"},
+        "description": {"de": "Neues Partikelsystem erstellen", "es": "Crear nuevo sistema de partículas", "fr": "Créer nouveau système de particules", "it": "Crea nuovo sistema di particelle", "ru": "Создать новую систему частиц", "sl": "Ustvari nov sistem delcev", "uk": "Створити нову систему частинок"}
+    },
+    "destroy_particle_system": {
+        "name": {"de": "Partikelsystem zerstören", "es": "Destruir sistema de partículas", "fr": "Détruire système de particules", "it": "Distruggi sistema particelle", "ru": "Уничтожить систему частиц", "sl": "Uniči sistem delcev", "uk": "Знищити систему частинок"},
+        "description": {"de": "Partikelsystem entfernen", "es": "Eliminar sistema de partículas", "fr": "Supprimer système de particules", "it": "Rimuovi sistema particelle", "ru": "Удалить систему частиц", "sl": "Odstrani sistem delcev", "uk": "Видалити систему частинок"}
+    },
+    "clear_particles": {
+        "name": {"de": "Alle Partikel löschen", "es": "Borrar todas las partículas", "fr": "Effacer toutes les particules", "it": "Cancella tutte le particelle", "ru": "Очистить все частицы", "sl": "Počisti vse delce", "uk": "Очистити всі частинки"},
+        "description": {"de": "Alle aktiven Partikel entfernen", "es": "Eliminar todas las partículas activas", "fr": "Supprimer toutes les particules actives", "it": "Rimuovi tutte le particelle attive", "ru": "Удалить все активные частицы", "sl": "Odstrani vse aktivne delce", "uk": "Видалити всі активні частинки"}
+    },
+    "create_particle_type": {
+        "name": {"de": "Partikeltyp erstellen", "es": "Crear tipo de partícula", "fr": "Créer type de particule", "it": "Crea tipo particella", "ru": "Создать тип частицы", "sl": "Ustvari vrsto delca", "uk": "Створити тип частинки"},
+        "description": {"de": "Neuen Partikeltyp definieren", "es": "Definir nuevo tipo de partícula", "fr": "Définir nouveau type de particule", "it": "Definisci nuovo tipo di particella", "ru": "Определить новый тип частицы", "sl": "Določi novo vrsto delca", "uk": "Визначити новий тип частинки"}
+    },
+    "create_emitter": {
+        "name": {"de": "Emitter erstellen", "es": "Crear emisor", "fr": "Créer émetteur", "it": "Crea emettitore", "ru": "Создать эмиттер", "sl": "Ustvari oddajnik", "uk": "Створити емітер"},
+        "description": {"de": "Partikelemitter erstellen", "es": "Crear emisor de partículas", "fr": "Créer émetteur de particules", "it": "Crea emettitore particelle", "ru": "Создать эмиттер частиц", "sl": "Ustvari oddajnik delcev", "uk": "Створити емітер частинок"}
+    },
+    "destroy_emitter": {
+        "name": {"de": "Emitter zerstören", "es": "Destruir emisor", "fr": "Détruire émetteur", "it": "Distruggi emettitore", "ru": "Уничтожить эмиттер", "sl": "Uniči oddajnik", "uk": "Знищити емітер"},
+        "description": {"de": "Partikelemitter entfernen", "es": "Eliminar emisor de partículas", "fr": "Supprimer émetteur de particules", "it": "Rimuovi emettitore particelle", "ru": "Удалить эмиттер частиц", "sl": "Odstrani oddajnik delcev", "uk": "Видалити емітер частинок"}
+    },
+    "burst_particles": {
+        "name": {"de": "Partikelexplosion", "es": "Explosión de partículas", "fr": "Explosion de particules", "it": "Esplosione particelle", "ru": "Взрыв частиц", "sl": "Eksplozija delcev", "uk": "Вибух частинок"},
+        "description": {"de": "Einmalige Partikelemission", "es": "Emitir partículas una vez", "fr": "Émettre particules une fois", "it": "Emetti particelle una volta", "ru": "Одноразовый выброс частиц", "sl": "Enkratna emisija delcev", "uk": "Одноразовий викид частинок"}
+    },
+    "stream_particles": {
+        "name": {"de": "Partikelstrom", "es": "Flujo de partículas", "fr": "Flux de particules", "it": "Flusso particelle", "ru": "Поток частиц", "sl": "Tok delcev", "uk": "Потік частинок"},
+        "description": {"de": "Kontinuierliche Partikelemission", "es": "Emitir partículas continuamente", "fr": "Émettre particules en continu", "it": "Emetti particelle continuamente", "ru": "Непрерывный поток частиц", "sl": "Neprekinjeno oddajanje delcev", "uk": "Безперервний потік частинок"}
+    },
+
+    # Timing Tab - Timelines
+    "set_timeline": {
+        "name": {"de": "Timeline setzen", "es": "Establecer línea de tiempo", "fr": "Définir timeline", "it": "Imposta timeline", "ru": "Установить таймлайн", "sl": "Nastavi časovnico", "uk": "Встановити таймлайн"},
+        "description": {"de": "Timeline für Instanz setzen", "es": "Establecer línea de tiempo de instancia", "fr": "Définir la timeline de l'instance", "it": "Imposta timeline dell'istanza", "ru": "Установить таймлайн экземпляра", "sl": "Nastavi časovnico primerka", "uk": "Встановити таймлайн екземпляра"}
+    },
+    "set_timeline_position": {
+        "name": {"de": "Timeline-Position setzen", "es": "Establecer posición de línea de tiempo", "fr": "Définir position timeline", "it": "Imposta posizione timeline", "ru": "Установить позицию таймлайна", "sl": "Nastavi položaj časovnice", "uk": "Встановити позицію таймлайну"},
+        "description": {"de": "Aktuelle Position in Timeline setzen", "es": "Establecer posición actual en línea de tiempo", "fr": "Définir position actuelle dans timeline", "it": "Imposta posizione corrente nella timeline", "ru": "Установить текущую позицию таймлайна", "sl": "Nastavi trenutni položaj v časovnici", "uk": "Встановити поточну позицію таймлайну"}
+    },
+    "set_timeline_speed": {
+        "name": {"de": "Timeline-Geschwindigkeit setzen", "es": "Establecer velocidad de línea de tiempo", "fr": "Définir vitesse timeline", "it": "Imposta velocità timeline", "ru": "Установить скорость таймлайна", "sl": "Nastavi hitrost časovnice", "uk": "Встановити швидкість таймлайну"},
+        "description": {"de": "Abspielgeschwindigkeit der Timeline", "es": "Velocidad de reproducción de línea de tiempo", "fr": "Vitesse de lecture de la timeline", "it": "Velocità di riproduzione timeline", "ru": "Скорость воспроизведения таймлайна", "sl": "Hitrost predvajanja časovnice", "uk": "Швидкість відтворення таймлайну"}
+    },
+    "start_timeline": {
+        "name": {"de": "Timeline starten", "es": "Iniciar línea de tiempo", "fr": "Démarrer timeline", "it": "Avvia timeline", "ru": "Запустить таймлайн", "sl": "Zaženi časovnico", "uk": "Запустити таймлайн"},
+        "description": {"de": "Timeline-Wiedergabe starten", "es": "Iniciar reproducción de línea de tiempo", "fr": "Démarrer lecture de timeline", "it": "Avvia riproduzione timeline", "ru": "Запустить воспроизведение таймлайна", "sl": "Zaženi predvajanje časovnice", "uk": "Запустити відтворення таймлайну"}
+    },
+    "pause_timeline": {
+        "name": {"de": "Timeline pausieren", "es": "Pausar línea de tiempo", "fr": "Mettre en pause timeline", "it": "Pausa timeline", "ru": "Приостановить таймлайн", "sl": "Zaustavi časovnico", "uk": "Призупинити таймлайн"},
+        "description": {"de": "Timeline-Wiedergabe pausieren", "es": "Pausar reproducción de línea de tiempo", "fr": "Mettre en pause lecture de timeline", "it": "Metti in pausa riproduzione timeline", "ru": "Приостановить воспроизведение таймлайна", "sl": "Zaustavi predvajanje časovnice", "uk": "Призупинити відтворення таймлайну"}
+    },
+    "stop_timeline": {
+        "name": {"de": "Timeline stoppen", "es": "Detener línea de tiempo", "fr": "Arrêter timeline", "it": "Ferma timeline", "ru": "Остановить таймлайн", "sl": "Ustavi časovnico", "uk": "Зупинити таймлайн"},
+        "description": {"de": "Timeline stoppen und zurücksetzen", "es": "Detener y reiniciar línea de tiempo", "fr": "Arrêter et réinitialiser timeline", "it": "Ferma e reimposta timeline", "ru": "Остановить и сбросить таймлайн", "sl": "Ustavi in ponastavi časovnico", "uk": "Зупинити та скинути таймлайн"}
     },
 }
 
