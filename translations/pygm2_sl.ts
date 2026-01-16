@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="fr_FR">
+<TS version="2.1" language="sl_SI">
 <context>
     <name>AboutDialog</name>
     <message>
         <location filename="../dialogs/about.py" line="18" />
         <source>About PyGameMaker IDE</source>
-        <translation>À propos de PyGameMaker IDE</translation>
+        <translation>O PyGameMaker IDE</translation>
     </message>
     <message>
         <location filename="../dialogs/about.py" line="28" />
@@ -20,7 +20,7 @@
     <message>
         <location filename="../dialogs/about.py" line="37" />
         <source>Version 0.10.1-alpha</source>
-        <translation>Version 0.10.1-alpha</translation>
+        <translation>Različica 0.10.1-alpha</translation>
     </message>
     <message>
         <location filename="../dialogs/about.py" line="56" />
@@ -30,7 +30,7 @@
     <message>
         <location filename="../dialogs/about.py" line="59" />
         <source>About</source>
-        <translation>À propos</translation>
+        <translation>O programu</translation>
     </message>
     <message>
         <location filename="../dialogs/about.py" line="67" />
@@ -76,12 +76,12 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
     <message>
         <location filename="../dialogs/about.py" line="70" />
         <source>Credits</source>
-        <translation>Crédits</translation>
+        <translation>Zasluge</translation>
     </message>
     <message>
         <location filename="../dialogs/about.py" line="76" />
         <source>Close</source>
-        <translation>Fermer</translation>
+        <translation>Zapri</translation>
     </message>
 </context>
 <context>
@@ -152,7 +152,7 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
     <message>
         <location filename="../editors/object_editor_components.py" line="23" />
         <source>Actions are now managed through the Events panel</source>
-        <translation>Les actions sont maintenant gérées via le panneau Événements</translation>
+        <translation>Akcije se zdaj upravljajo preko plošče Dogodki</translation>
     </message>
 </context>
 <context>
@@ -200,7 +200,7 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="155" />
         <source>Close</source>
-        <translation>Fermer</translation>
+        <translation>Zapri</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="171" />
@@ -269,12 +269,12 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="50" />
         <source>Cancel</source>
-        <translation>Annuler</translation>
+        <translation>Prekliči</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="54" />
         <source>Rename</source>
-        <translation>Renommer</translation>
+        <translation>Preimenuj</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="90" />
@@ -337,7 +337,7 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="193" />
         <source>📦 Import {0} Package...</source>
-        <translation>📦 Importer le package {0}...</translation>
+        <translation>📦 Uvozi paket {0}...</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="202" />
@@ -352,17 +352,17 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="213" />
         <source>🎬 Configure Animation...</source>
-        <translation>🎬 Configurer l'animation...</translation>
+        <translation>🎬 Nastavi animacijo...</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="218" />
         <source>🗑️ Delete</source>
-        <translation>🗑️ Supprimer</translation>
+        <translation>🗑️ Izbriši</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="226" />
         <source>📦 Export Package...</source>
-        <translation>📦 Exporter le package...</translation>
+        <translation>📦 Izvozi paket...</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="250" />
@@ -432,42 +432,42 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="377" />
         <source>No Sprite Data</source>
-        <translation>Aucune donnée de sprite</translation>
+        <translation>Ni podatkov o spritu</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="378" />
         <source>Could not load sprite data for '{0}'</source>
-        <translation>Impossible de charger les données du sprite '{0}'</translation>
+        <translation>Ni mogoče naložiti podatkov o spritu '{0}'</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="387" />
         <source>No Image</source>
-        <translation>Aucune image</translation>
+        <translation>Ni slike</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="388" />
         <source>Sprite '{0}' has no image file. Please import an image first.</source>
-        <translation>Le sprite '{0}' n'a pas de fichier image. Veuillez d'abord importer une image.</translation>
+        <translation>Sprit '{0}' nima slikovne datoteke. Najprej uvozite sliko.</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="402" />
         <source>Image Not Found</source>
-        <translation>Image non trouvée</translation>
+        <translation>Slika ni najdena</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="403" />
         <source>Could not find image file: {0}</source>
-        <translation>Impossible de trouver le fichier image : {0}</translation>
+        <translation>Ni mogoče najti slikovne datoteke: {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="432" />
         <source>Animation Configured</source>
-        <translation>Animation configurée</translation>
+        <translation>Animacija nastavljena</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="433" />
         <source>Sprite '{0}' configured with {1} frames at {2} FPS</source>
-        <translation>Sprite '{0}' configuré avec {1} images à {2} FPS</translation>
+        <translation>Sprit '{0}' nastavljen z {1} okvirji pri {2} FPS</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="445" />
@@ -511,27 +511,27 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="518" />
         <source>Import {0} Package</source>
-        <translation>Importer le package {0}</translation>
+        <translation>Uvozi paket {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="538" />
         <source>Import Successful</source>
-        <translation>Importation réussie</translation>
+        <translation>Uvoz uspešen</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="539" />
         <source>{0} '{1}' imported successfully!</source>
-        <translation>{0} '{1}' importé avec succès !</translation>
+        <translation>{0} '{1}' uspešno uvožen!</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="544" />
         <source>Import Failed</source>
-        <translation>Échec de l'importation</translation>
+        <translation>Uvoz neuspešen</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="545" />
         <source>Failed to import {0} package</source>
-        <translation>Échec de l'importation du package {0}</translation>
+        <translation>Napaka pri uvozu paketa {0}</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_tree_widget.py" line="587" />
@@ -622,7 +622,7 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
     <message>
         <location filename="../editors/base_editor.py" line="206" />
         <source>Loaded: {0}</source>
-        <translation>Chargé : {0}</translation>
+        <translation>Naloženo: {0}</translation>
     </message>
     <message>
         <location filename="../editors/base_editor.py" line="117" />
@@ -675,7 +675,7 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="32" />
         <source>Configure Events &amp; Actions</source>
-        <translation>Configurer les événements et actions</translation>
+        <translation>Nastavi dogodke in dejanja</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="62" />
@@ -716,7 +716,7 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
         <location filename="../dialogs/blockly_config_dialog.py" line="73" />
         <location filename="../dialogs/blockly_config_dialog.py" line="279" />
         <source>Sokoban (Box Puzzle)</source>
-        <translation>Sokoban (Puzzle de boîtes)</translation>
+        <translation>Sokoban (uganka s škatlami)</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="74" />
@@ -728,25 +728,25 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
         <location filename="../dialogs/blockly_config_dialog.py" line="75" />
         <location filename="../dialogs/blockly_config_dialog.py" line="281" />
         <source>Testing (Validated Only)</source>
-        <translation>Test (validé uniquement)</translation>
+        <translation>Testiranje (samo preverjeno)</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="76" />
         <location filename="../dialogs/blockly_config_dialog.py" line="282" />
         <source>Implemented Only</source>
-        <translation>Implémenté uniquement</translation>
+        <translation>Samo implementirano</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="77" />
         <location filename="../dialogs/blockly_config_dialog.py" line="283" />
         <source>Code Editor</source>
-        <translation>Éditeur de code</translation>
+        <translation>Urejevalnik kode</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="78" />
         <location filename="../dialogs/blockly_config_dialog.py" line="284" />
         <source>Blockly Editor</source>
-        <translation>Éditeur Blockly</translation>
+        <translation>Urejevalnik Blockly</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="79" />
@@ -782,12 +782,12 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="128" />
         <source>Save</source>
-        <translation>Enregistrer</translation>
+        <translation>Shrani</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="133" />
         <source>Cancel</source>
-        <translation>Annuler</translation>
+        <translation>Prekliči</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="155" />
@@ -797,7 +797,7 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="198" />
         <source>[Not implemented] {0}</source>
-        <translation>[Non implémenté] {0}</translation>
+        <translation>[Ni implementirano] {0}</translation>
     </message>
     <message>
         <location filename="../dialogs/blockly_config_dialog.py" line="214" />
@@ -847,27 +847,27 @@ Voulez-vous enregistrer quand même ?</translation>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="491" />
         <source>Editor is detached. Close the detached window to return it here.</source>
-        <translation>L'éditeur est détaché. Fermez la fenêtre détachée pour le ramener ici.</translation>
+        <translation>Urejevalnik je ločen. Zaprite ločeno okno, da ga vrnete sem.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="527" />
         <source>📥 Attach</source>
-        <translation>📥 Rattacher</translation>
+        <translation>📥 Pripni</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="528" />
         <source>Return editor to the tab</source>
-        <translation>Ramener l'éditeur dans l'onglet</translation>
+        <translation>Vrni urejevalnik v zavihek</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="552" />
         <source>⬜ Detach</source>
-        <translation>⬜ Détacher</translation>
+        <translation>⬜ Loči</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="553" />
         <source>Open Blockly editor in a separate window</source>
-        <translation>Ouvrir l'éditeur Blockly dans une fenêtre séparée</translation>
+        <translation>Odpri urejevalnik Blockly v ločenem oknu</translation>
     </message>
 </context>
 <context>
@@ -915,12 +915,12 @@ Voulez-vous enregistrer quand même ?</translation>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="133" />
         <source>⬜ Detach</source>
-        <translation>⬜ Détacher</translation>
+        <translation>⬜ Loči</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="134" />
         <source>Open Blockly editor in a separate window</source>
-        <translation>Ouvrir l'éditeur Blockly dans une fenêtre séparée</translation>
+        <translation>Odpri urejevalnik Blockly v ločenem oknu</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="198" />
@@ -1114,7 +1114,7 @@ Voulez-vous enregistrer quand même ?</translation>
     </message>
     <message>
         <source>Object:</source>
-        <translation type="vanished">Objet :</translation>
+        <translation type="vanished">Objekt:</translation>
     </message>
     <message>
         <source>Count is:</source>
@@ -1166,7 +1166,7 @@ Voulez-vous enregistrer quand même ?</translation>
     </message>
     <message>
         <source>Y:</source>
-        <translation type="vanished">Y :</translation>
+        <translation type="vanished">Y:</translation>
     </message>
     <message>
         <source>Key:</source>
@@ -1288,12 +1288,12 @@ Exemple : x &gt; 100 &amp;&amp; y &lt; 200</translation>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="258" />
         <source>Cancel</source>
-        <translation>Annuler</translation>
+        <translation>Prekliči</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="262" />
         <source>Create</source>
-        <translation>Créer</translation>
+        <translation>Ustvari</translation>
     </message>
     <message>
         <location filename="../widgets/asset_tree/asset_dialogs.py" line="289" />
@@ -1306,7 +1306,7 @@ Exemple : x &gt; 100 &amp;&amp; y &lt; 200</translation>
     <message>
         <location filename="../editors/object_editor/blockly_widget.py" line="45" />
         <source>Visual Block Programming (Detached)</source>
-        <translation>Programmation visuelle par blocs (Détaché)</translation>
+        <translation>Vizualno programiranje z bloki (Ločeno)</translation>
     </message>
 </context>
 <context>
@@ -1366,12 +1366,12 @@ Exemple : x &gt; 100 &amp;&amp; y &lt; 200</translation>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="82" />
         <source>Name:</source>
-        <translation>Nom :</translation>
+        <translation>Ime:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="83" />
         <source>Type:</source>
-        <translation>Type :</translation>
+        <translation>Tip:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="84" />
@@ -1381,7 +1381,7 @@ Exemple : x &gt; 100 &amp;&amp; y &lt; 200</translation>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="89" />
         <source>Properties</source>
-        <translation>Propriétés</translation>
+        <translation>Lastnosti</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="94" />
@@ -1435,7 +1435,7 @@ Exemple : x &gt; 100 &amp;&amp; y &lt; 200</translation>
         <location filename="../widgets/enhanced_properties_panel.py" line="469" />
         <location filename="../widgets/enhanced_properties_panel.py" line="505" />
         <source>Width:</source>
-        <translation>Largeur :</translation>
+        <translation>Širina:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="213" />
@@ -1443,22 +1443,22 @@ Exemple : x &gt; 100 &amp;&amp; y &lt; 200</translation>
         <location filename="../widgets/enhanced_properties_panel.py" line="470" />
         <location filename="../widgets/enhanced_properties_panel.py" line="506" />
         <source>Height:</source>
-        <translation>Hauteur :</translation>
+        <translation>Višina:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="438" />
         <source>Background:</source>
-        <translation>Arrière-plan :</translation>
+        <translation>Ozadje:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="218" />
         <source>Enable Views:</source>
-        <translation>Activer les vues :</translation>
+        <translation>Omogoči poglede:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="214" />
         <source>Background Color:</source>
-        <translation>Couleur d'arrière-plan :</translation>
+        <translation>Barva ozadja:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="222" />
@@ -1518,23 +1518,23 @@ Erreur de mise à jour</translation>
         <source>Room: {0}
 {1} x {2}
 {3} instances</source>
-        <translation>Salle : {0}
+        <translation>Soba: {0}
 {1} x {2}
-{3} instances</translation>
+{3} primerkov</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="331" />
         <source>Room: {0}
 {1}x{2}
 {3} instances</source>
-        <translation>Salle : {0}
+        <translation>Soba: {0}
 {1}x{2}
-{3} instances</translation>
+{3} primerkov</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="340" />
         <source>Preview generation failed</source>
-        <translation>Échec de la génération de l'aperçu</translation>
+        <translation>Generiranje predogleda neuspešno</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="471" />
@@ -1554,32 +1554,32 @@ Erreur de mise à jour</translation>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="474" />
         <source>Speed:</source>
-        <translation>Vitesse :</translation>
+        <translation>Hitrost:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="480" />
         <source>Horizontal Strip</source>
-        <translation>Bande horizontale</translation>
+        <translation>Vodoravni trak</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="481" />
         <source>Vertical Strip</source>
-        <translation>Bande verticale</translation>
+        <translation>Navpični trak</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="482" />
         <source>Grid</source>
-        <translation>Grille</translation>
+        <translation>Mreža</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="483" />
         <source>Single Frame</source>
-        <translation>Image unique</translation>
+        <translation>En okvir</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="487" />
         <source>Animation:</source>
-        <translation>Animation :</translation>
+        <translation>Animacija:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="493" />
@@ -1633,7 +1633,7 @@ Erreur de mise à jour</translation>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="667" />
         <source>Sprite:</source>
-        <translation>Sprite :</translation>
+        <translation>Animacija:</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="673" />
@@ -1699,12 +1699,12 @@ Taille : {2}x{3}
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="824" />
         <source>Visible</source>
-        <translation>Visible</translation>
+        <translation>Vidno</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="826" />
         <source>Solid</source>
-        <translation>Solide</translation>
+        <translation>Trdno</translation>
     </message>
 </context>
 <context>
@@ -1795,7 +1795,7 @@ Taille : {2}x{3}
     <message>
         <location filename="../dialogs/project_dialogs.py" line="474" />
         <source>Export</source>
-        <translation>Exporter</translation>
+        <translation>Izvozi</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="496" />
@@ -1939,7 +1939,7 @@ Voulez-vous ouvrir le répertoire d'export ?</translation>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="702" />
         <source>Cancel</source>
-        <translation>Annuler</translation>
+        <translation>Prekliči</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="706" />
@@ -2004,12 +2004,12 @@ Voulez-vous ouvrir le répertoire d'export ?</translation>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="197" />
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="230" />
         <source>{0} actions</source>
-        <translation>{0} actions</translation>
+        <translation>{0} akcij</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="202" />
         <source>📋 Configure...</source>
-        <translation>📋 Configurer...</translation>
+        <translation>📋 Nastavi...</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_action_dialog.py" line="217" />
@@ -2022,7 +2022,7 @@ Voulez-vous ouvrir le répertoire d'export ?</translation>
     <message>
         <location filename="../editors/object_editor/gm80_events_panel.py" line="165" />
         <source>Object Events</source>
-        <translation>Événements de l'objet</translation>
+        <translation>Dogodki objekta</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_events_panel.py" line="171" />
@@ -2091,7 +2091,7 @@ Voulez-vous ouvrir le répertoire d'export ?</translation>
     <message>
         <location filename="../editors/object_editor/gm80_events_panel.py" line="499" />
         <source>⚠️ No actions enabled</source>
-        <translation>⚠️ Aucune action activée</translation>
+        <translation>⚠️ Nobeno dejanje ni omogočeno</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_events_panel.py" line="503" />
@@ -2108,12 +2108,12 @@ Voulez-vous ouvrir le répertoire d'export ?</translation>
     <message>
         <location filename="../editors/object_editor/gm80_events_panel.py" line="514" />
         <source>Move Up</source>
-        <translation>Déplacer vers le haut</translation>
+        <translation>Premakni gor</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_events_panel.py" line="517" />
         <source>Move Down</source>
-        <translation>Déplacer vers le bas</translation>
+        <translation>Premakni dol</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_events_panel.py" line="529" />
@@ -2129,7 +2129,7 @@ Voulez-vous ouvrir le répertoire d'export ?</translation>
     <message>
         <location filename="../editors/object_editor/gm80_events_panel.py" line="694" />
         <source>Are you sure you want to remove the {0} {1} event?</source>
-        <translation>Êtes-vous sûr de vouloir supprimer l'événement {0} {1} ?</translation>
+        <translation>Ali ste prepričani, da želite odstraniti dogodek {0} {1}?</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_events_panel.py" line="710" />
@@ -2146,7 +2146,7 @@ Voulez-vous ouvrir le répertoire d'export ?</translation>
         <location filename="../editors/object_editor/gm80_events_panel.py" line="843" />
         <location filename="../editors/object_editor/gm80_events_panel.py" line="868" />
         <source>{0} actions</source>
-        <translation>{0} actions</translation>
+        <translation>{0} akcij</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/gm80_events_panel.py" line="842" />
@@ -2168,14 +2168,14 @@ Select which events you want available in both the
 visual programming editor and this traditional event editor.
 
 Changes will take effect immediately.</source>
-        <translation>Pour activer/désactiver des événements, allez dans :
+        <translation>Za omogočanje/onemogočanje dogodkov pojdite na:
 
-Outils → Configurer les événements et actions
+Orodja → Nastavi dogodke in dejanja
 
-Sélectionnez les événements disponibles dans l'éditeur de
-programmation visuelle et l'éditeur d'événements traditionnel.
+Izberite, kateri dogodki naj bodo na voljo tako v
+vizualnem urejevalniku programiranja kot v tem tradicionalnem urejevalniku dogodkov.
 
-Les modifications prendront effet immédiatement.</translation>
+Spremembe bodo začele veljati takoj.</translation>
     </message>
     <message>
         <source>To enable/disable events, go to:
@@ -2242,12 +2242,12 @@ Les changements prendront effet immédiatement.</translation>
     <message>
         <location filename="../dialogs/import_dialogs.py" line="73" />
         <source>Cancel</source>
-        <translation>Annuler</translation>
+        <translation>Prekliči</translation>
     </message>
     <message>
         <location filename="../dialogs/import_dialogs.py" line="76" />
         <source>Import</source>
-        <translation>Importer</translation>
+        <translation>Uvozi</translation>
     </message>
     <message>
         <location filename="../dialogs/import_dialogs.py" line="92" />
@@ -2282,18 +2282,18 @@ Les changements prendront effet immédiatement.</translation>
         <location filename="../editors/room_editor/instance_properties.py" line="42" />
         <location filename="../editors/room_editor/instance_properties.py" line="77" />
         <source>X:</source>
-        <translation>X :</translation>
+        <translation>X:</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="48" />
         <location filename="../editors/room_editor/instance_properties.py" line="85" />
         <source>Y:</source>
-        <translation>Y :</translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="57" />
         <source>Visible</source>
-        <translation>Visible</translation>
+        <translation>Vidno</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/instance_properties.py" line="63" />
@@ -2512,26 +2512,26 @@ Les changements prendront effet immédiatement.</translation>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="243" />
         <source>Object Events</source>
-        <translation>Événements de l'objet</translation>
+        <translation>Dogodki objekta</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="290" />
         <source>Object: Not loaded</source>
-        <translation>Objet : Non chargé</translation>
+        <translation>Objekt: Ni naložen</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="294" />
         <source>No event selected</source>
-        <translation>Aucun événement sélectionné</translation>
+        <translation>Noben dogodek ni izbran</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="316" />
         <source>Actions are managed through the Object Events panel on the left.
 
 Select an event and right-click to add actions.</source>
-        <translation>Les actions sont gérées via le panneau Événements de l'objet à gauche.
+        <translation>Akcije se upravljajo preko plošče Dogodki objekta na levi.
 
-Sélectionnez un événement et faites un clic droit pour ajouter des actions.</translation>
+Izberite dogodek in kliknite desno tipko za dodajanje akcij.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="331" />
@@ -2541,212 +2541,212 @@ Sélectionnez un événement et faites un clic droit pour ajouter des actions.</
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="337" />
         <source>🧩 Visual Programming</source>
-        <translation>🧩 Programmation visuelle</translation>
+        <translation>🧩 Vizualno programiranje</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="339" />
         <source>Scratch-like block programming</source>
-        <translation>Programmation par blocs de type Scratch</translation>
+        <translation>Programiranje z bloki v stilu Scratch</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="358" />
         <source>Mode:</source>
-        <translation>Mode :</translation>
+        <translation>Način:</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="362" />
         <source>📖 View Generated Code</source>
-        <translation>📖 Voir le code généré</translation>
+        <translation>📖 Ogled ustvarjene kode</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="363" />
         <source>✏️ Edit Custom Code</source>
-        <translation>✏️ Modifier le code personnalisé</translation>
+        <translation>✏️ Uredi lastno kodo</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="370" />
         <source>✅ Apply Changes</source>
-        <translation>✅ Appliquer les modifications</translation>
+        <translation>✅ Uporabi spremembe</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="376" />
         <source>🔄 Refresh</source>
-        <translation>🔄 Actualiser</translation>
+        <translation>🔄 Osveži</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="386" />
         <source># Python code editor
 # Switch to 'Edit Custom Code' mode to write your own Python code
 # Or view generated code from visual events</source>
-        <translation># Éditeur de code Python
-# Passez en mode 'Modifier le code personnalisé' pour écrire votre propre code Python
-# Ou consultez le code généré à partir des événements visuels</translation>
+        <translation># Urejevalnik kode Python
+# Preklopite v način 'Uredi lastno kodo' za pisanje lastne kode Python
+# Ali si oglejte ustvarjeno kodo iz vizualnih dogodkov</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="421" />
         <source>Event for custom code:</source>
-        <translation>Événement pour le code personnalisé :</translation>
+        <translation>Dogodek za lastno kodo:</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="436" />
         <source>💻 Code Editor</source>
-        <translation>💻 Éditeur de code</translation>
+        <translation>💻 Urejevalnik kode</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="438" />
         <source>Edit Python code or view generated code</source>
-        <translation>Modifier le code Python ou afficher le code généré</translation>
+        <translation>Uredi kodo Python ali si oglej ustvarjeno kodo</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="622" />
         <source>Validation Error</source>
-        <translation>Erreur de validation</translation>
+        <translation>Napaka pri preverjanju</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="623" />
         <source>Cannot save: {0}</source>
-        <translation>Impossible d'enregistrer : {0}</translation>
+        <translation>Ni mogoče shraniti: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="650" />
         <source>Saved: {0}</source>
-        <translation>Enregistré : {0}</translation>
+        <translation>Shranjeno: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="662" />
         <source>Save Error</source>
-        <translation>Erreur d'enregistrement</translation>
+        <translation>Napaka pri shranjevanju</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="663" />
         <source>Error saving object: {0}</source>
-        <translation>Erreur lors de l'enregistrement de l'objet : {0}</translation>
+        <translation>Napaka pri shranjevanju objekta: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="704" />
         <source>Loaded {0} sprites</source>
-        <translation>{0} sprites chargés</translation>
+        <translation>Naloženih {0} animacij</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="719" />
         <source>Error loading assets: {0}</source>
-        <translation>Erreur lors du chargement des ressources : {0}</translation>
+        <translation>Napaka pri nalaganju virov: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="869" />
         <source>Object name is required</source>
-        <translation>Le nom de l'objet est requis</translation>
+        <translation>Ime objekta je obvezno</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="875" />
         <source>Referenced sprite '{0}' does not exist</source>
-        <translation>Le sprite référencé '{0}' n'existe pas</translation>
+        <translation>Referenčna animacija '{0}' ne obstaja</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="882" />
         <source>Event '{0}' has invalid data structure</source>
-        <translation>L'événement '{0}' a une structure de données invalide</translation>
+        <translation>Dogodek '{0}' ima neveljavno podatkovno strukturo</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="887" />
         <source>Event '{0}' has invalid actions data</source>
-        <translation>L'événement '{0}' a des données d'actions invalides</translation>
+        <translation>Dogodek '{0}' ima neveljavne podatke akcij</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="893" />
         <source>Validation error: {0}</source>
-        <translation>Erreur de validation : {0}</translation>
+        <translation>Napaka pri preverjanju: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1016" />
         <source>Object: {0} | Sprite: {1}</source>
-        <translation>Objet : {0} | Sprite : {1}</translation>
+        <translation>Objekt: {0} | Animacija: {1}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1018" />
         <source>Visible</source>
-        <translation>Visible</translation>
+        <translation>Vidno</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1020" />
         <source>Solid</source>
-        <translation>Solide</translation>
+        <translation>Trdno</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1022" />
         <source>Persistent</source>
-        <translation>Persistant</translation>
+        <translation>Obstojen</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1031" />
         <source>Event: {0}</source>
-        <translation>Événement : {0}</translation>
+        <translation>Dogodek: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1032" />
         <source>Editing event: {0}</source>
-        <translation>Modification de l'événement : {0}</translation>
+        <translation>Urejanje dogodka: {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1092" />
         <source>Applied {0} events from visual blocks</source>
-        <translation>{0} événements appliqués depuis les blocs visuels</translation>
+        <translation>Uporabljenih {0} dogodkov iz vizualnih blokov</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1102" />
         <source>Selected action: {0} ({1})</source>
-        <translation>Action sélectionnée : {0} ({1})</translation>
+        <translation>Izbrana akcija: {0} ({1})</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1108" />
         <source>Object testing not implemented yet</source>
-        <translation>Test d'objet pas encore implémenté</translation>
+        <translation>Testiranje objekta še ni implementirano</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1129" />
         <location filename="../editors/object_editor/object_editor_main.py" line="1150" />
         <source># No events or actions have been added yet.
 # Add events in the Object Events panel to see generated code here.</source>
-        <translation># Aucun événement ou action n'a encore été ajouté.
-# Ajoutez des événements dans le panneau Événements de l'objet pour voir le code généré ici.</translation>
+        <translation># Še ni dodanih dogodkov ali akcij.
+# Dodajte dogodke v plošči Dogodki objekta za ogled ustvarjene kode tukaj.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1168" />
         <source>Generated code view updated</source>
-        <translation>Vue du code généré mise à jour</translation>
+        <translation>Pogled ustvarjene kode posodobljen</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1302" />
         <source>Edit mode: Modify Python code and click Apply</source>
-        <translation>Mode édition : Modifiez le code Python et cliquez sur Appliquer</translation>
+        <translation>Način urejanja: Spremenite Python kodo in kliknite Uporabi</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1313" />
         <source>View mode: Switch to 'Edit Custom Code' to modify and apply code</source>
-        <translation>Mode affichage : Passez à 'Éditer le code personnalisé' pour modifier et appliquer le code</translation>
+        <translation>Način ogleda: Preklopite na 'Uredi kodo po meri' za spreminjanje in uporabo kode</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1346" />
         <source>No Code</source>
-        <translation>Aucun code</translation>
+        <translation>Ni kode</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1347" />
         <source>The code editor is empty. Please write some Python code first.</source>
-        <translation>L'éditeur de code est vide. Veuillez d'abord écrire du code Python.</translation>
+        <translation>Urejevalnik kode je prazen. Najprej napišite Python kodo.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1363" />
         <location filename="../editors/object_editor/object_editor_main.py" line="1373" />
         <source>Parse Error</source>
-        <translation>Erreur d'analyse</translation>
+        <translation>Napaka pri razčlenjevanju</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1364" />
         <source>Could not parse the Python code:
 
 {0}</source>
-        <translation>Impossible d'analyser le code Python :
+        <translation>Ni mogoče razčleniti Python kode:
 
 {0}</translation>
     </message>
@@ -2757,16 +2757,16 @@ Sélectionnez un événement et faites un clic droit pour ajouter des actions.</
 {0}
 
 Please check the syntax and try again.</source>
-        <translation>Impossible d'analyser le code Python :
+        <translation>Ni mogoče razčleniti Python kode:
 
 {0}
 
-Veuillez vérifier la syntaxe et réessayer.</translation>
+Preverite sintakso in poskusite znova.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1382" />
         <source>No Events Found</source>
-        <translation>Aucun événement trouvé</translation>
+        <translation>Ni najdenih dogodkov</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1383" />
@@ -2783,9 +2783,9 @@ class obj_player:
 
     def on_keyboard_left(self):
         self.hspeed = -4</source>
-        <translation>Aucune méthode d'événement reconnaissable dans le code.
+        <translation>V kodi ni najdenih prepoznavnih metod dogodkov.
 
-Assurez-vous que votre code inclut une classe avec des méthodes d'événement comme :
+Prepričajte se, da vaša koda vsebuje razred z metodami dogodkov, kot so:
 
 class obj_player:
     def on_create(self):
@@ -2800,17 +2800,17 @@ class obj_player:
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1400" />
         <source>Sync in Progress</source>
-        <translation>Synchronisation en cours</translation>
+        <translation>Sinhronizacija poteka</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1401" />
         <source>Another synchronization is currently in progress. Please wait and try again.</source>
-        <translation>Une autre synchronisation est en cours. Veuillez patienter et réessayer.</translation>
+        <translation>Druga sinhronizacija že poteka. Počakajte in poskusite znova.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1438" />
         <source>Applied {0} events from code</source>
-        <translation>{0} événements appliqués depuis le code</translation>
+        <translation>Uporabljenih {0} dogodkov iz kode</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1442" />
@@ -2823,45 +2823,45 @@ Events updated:
 • Blockly workspace synchronized
 
 The code will execute when events trigger during gameplay.</source>
-        <translation>Le code Python a été analysé et appliqué :
+        <translation>Python koda je bila razčlenjena in uporabljena:
 
-Événements mis à jour :
+Posodobljeni dogodki:
 {0}
 
-• Panneau d'événements synchronisé
-• Espace de travail Blockly synchronisé
+• Plošča dogodkov sinhronizirana
+• Blockly delovno območje sinhronizirano
 
-Le code s'exécutera lorsque les événements se déclencheront pendant le jeu.</translation>
+Koda se bo izvršila, ko se bodo dogodki sprožili med igranjem.</translation>
     </message>
     <message>
         <source>Edit mode: Write custom Python code</source>
-        <translation type="vanished">Mode édition : Écrire du code Python personnalisé</translation>
+        <translation type="vanished">Način urejanja: Pisanje lastne kode Python</translation>
     </message>
     <message>
         <source>View mode: Showing generated code from events</source>
-        <translation type="vanished">Mode affichage : Affichage du code généré à partir des événements</translation>
+        <translation type="vanished">Način ogleda: Prikaz ustvarjene kode iz dogodkov</translation>
     </message>
     <message>
         <source>Custom code applied to {0} event</source>
-        <translation type="vanished">Code personnalisé appliqué à l'événement {0}</translation>
+        <translation type="vanished">Lastna koda uporabljena za dogodek {0}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1441" />
         <source>Code Applied</source>
-        <translation>Code appliqué</translation>
+        <translation>Koda uporabljena</translation>
     </message>
     <message>
         <source>Custom Python code has been applied to the {0} event.
 
 The code will execute when the event triggers during gameplay.</source>
-        <translation type="vanished">Le code Python personnalisé a été appliqué à l'événement {0}.
+        <translation type="vanished">Lastna koda Python je bila uporabljena za dogodek {0}.
 
-Le code s'exécutera lorsque l'événement se déclenchera pendant le jeu.</translation>
+Koda se bo izvršila, ko se dogodek sproži med igro.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="1524" />
         <source>Assets loaded: {0} sprites</source>
-        <translation>Ressources chargées : {0} sprites</translation>
+        <translation>Viri naloženi: {0} animacij</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_editor_main.py" line="232" />
@@ -2874,7 +2874,7 @@ Le code s'exécutera lorsque l'événement se déclenchera pendant le jeu.</tran
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="50" />
         <source>Object Events</source>
-        <translation>Événements de l'objet</translation>
+        <translation>Dogodki objekta</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="56" />
@@ -2899,36 +2899,36 @@ Le code s'exécutera lorsque l'événement se déclenchera pendant le jeu.</tran
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="123" />
         <source>↑ Move Up</source>
-        <translation>↑ Monter</translation>
+        <translation>↑ Premakni gor</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="126" />
         <source>Move selected action up (Ctrl+Up)</source>
-        <translation>Déplacer l'action sélectionnée vers le haut (Ctrl+Haut)</translation>
+        <translation>Premakni izbrano akcijo gor (Ctrl+Gor)</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="129" />
         <source>↓ Move Down</source>
-        <translation>↓ Descendre</translation>
+        <translation>↓ Premakni dol</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="132" />
         <source>Move selected action down (Ctrl+Down)</source>
-        <translation>Déplacer l'action sélectionnée vers le bas (Ctrl+Bas)</translation>
+        <translation>Premakni izbrano akcijo dol (Ctrl+Dol)</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="141" />
         <source>Ctrl+Up</source>
-        <translation>Ctrl+Haut</translation>
+        <translation>Ctrl+Gor</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="144" />
         <source>Ctrl+Down</source>
-        <translation>Ctrl+Bas</translation>
+        <translation>Ctrl+Dol</translation>
     </message>
     <message>
         <source>Warning: Could not setup shortcuts: {e}</source>
-        <translation type="vanished">Avertissement : Impossible de configurer les raccourcis : {e}</translation>
+        <translation type="vanished">Opozorilo: Bližnjic ni bilo mogoče nastaviti: {e}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="155" />
@@ -2943,7 +2943,7 @@ Le code s'exécutera lorsque l'événement se déclenchera pendant le jeu.</tran
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="176" />
         <source>{event_type.icon} Collision With...</source>
-        <translation>{event_type.icon} Collision avec...</translation>
+        <translation>{event_type.icon} Trk z...</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="188" />
@@ -2954,27 +2954,27 @@ Le code s'exécutera lorsque l'événement se déclenchera pendant le jeu.</tran
         <location filename="../editors/object_editor/object_events_panel.py" line="250" />
         <location filename="../editors/object_editor/object_events_panel.py" line="277" />
         <source>Key Event Exists</source>
-        <translation>L'événement clavier existe déjà</translation>
+        <translation>Dogodek tipke že obstaja</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="251" />
         <source>The {0} arrow key event already exists.</source>
-        <translation>L'événement de la touche fléchée {0} existe déjà.</translation>
+        <translation>Dogodek puščične tipke {0} že obstaja.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="278" />
         <source>The {0} key event already exists for {1}.</source>
-        <translation>L'événement de la touche {0} existe déjà pour {1}.</translation>
+        <translation>Dogodek tipke {0} že obstaja za {1}.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="319" />
         <source>Mouse Event Exists</source>
-        <translation>L'événement souris existe déjà</translation>
+        <translation>Dogodek miške že obstaja</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="320" />
         <source>This mouse event already exists.</source>
-        <translation>Cet événement souris existe déjà.</translation>
+        <translation>Ta dogodek miške že obstaja.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="343" />
@@ -2985,7 +2985,7 @@ Le code s'exécutera lorsque l'événement se déclenchera pendant le jeu.</tran
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="344" />
         <source>Are you sure you want to remove the {0} event and all its actions?</source>
-        <translation>Êtes-vous sûr de vouloir supprimer l'événement {0} et toutes ses actions ?</translation>
+        <translation>Ali ste prepričani, da želite odstraniti dogodek {0} in vse njegove akcije?</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="371" />
@@ -2999,18 +2999,18 @@ Le code s'exécutera lorsque l'événement se déclenchera pendant le jeu.</tran
         <location filename="../editors/object_editor/object_events_panel.py" line="384" />
         <location filename="../editors/object_editor/object_events_panel.py" line="1323" />
         <source>Remove Collision Event</source>
-        <translation>Supprimer l'événement de collision</translation>
+        <translation>Odstrani dogodek trka</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="402" />
         <location filename="../editors/object_editor/object_events_panel.py" line="1376" />
         <source>Remove Mouse Event</source>
-        <translation>Supprimer l'événement souris</translation>
+        <translation>Odstrani dogodek miške</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="452" />
         <source>Remove {sub_event_key.title()} Arrow Event</source>
-        <translation>Supprimer l'événement de flèche {sub_event_key.title()}</translation>
+        <translation>Odstrani dogodek puščice {sub_event_key.title()}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="457" />
@@ -3029,7 +3029,7 @@ Le code s'exécutera lorsque l'événement se déclenchera pendant le jeu.</tran
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="493" />
         <source>Cannot Add Action</source>
-        <translation>Impossible d'ajouter une action</translation>
+        <translation>Ni mogoče dodati akcije</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="494" />
@@ -3037,20 +3037,20 @@ Le code s'exécutera lorsque l'événement se déclenchera pendant le jeu.</tran
 
 Please add actions to specific arrow keys instead:
 Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
-        <translation>Impossible d'ajouter des actions directement à %1.
+        <translation>Ni mogoče dodati akcij neposredno v %1.
 
-Veuillez plutôt ajouter des actions à des touches fléchées spécifiques :
-Faites un clic droit sur Flèche gauche, Flèche droite, Flèche haut ou Flèche bas.</translation>
+Prosimo, dodajte akcije posameznim puščičnim tipkam:
+Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puščico dol.</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="581" />
         <source>Remove Key Event</source>
-        <translation>Supprimer l'événement clavier</translation>
+        <translation>Odstrani dogodek tipke</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="582" />
         <source>Are you sure you want to remove the {0} arrow key event and all its actions?</source>
-        <translation>Êtes-vous sûr de vouloir supprimer l'événement de la touche fléchée {0} et toutes ses actions ?</translation>
+        <translation>Ali ste prepričani, da želite odstraniti dogodek puščične tipke {0} in vse njegove akcije?</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="652" />
@@ -3061,19 +3061,19 @@ Faites un clic droit sur Flèche gauche, Flèche droite, Flèche haut ou Flèche
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="694" />
         <source>❌ NOT Colliding with {target_object}</source>
-        <translation>❌ PAS en collision avec {target_object}</translation>
+        <translation>❌ NI trka z {target_object}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="698" />
         <source>💥 Collision with {target_object}</source>
-        <translation>💥 Collision avec {target_object}</translation>
+        <translation>💥 Trk z {target_object}</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="700" />
         <location filename="../editors/object_editor/object_events_panel.py" line="756" />
         <location filename="../editors/object_editor/object_events_panel.py" line="783" />
         <source>{0} actions</source>
-        <translation>{0} actions</translation>
+        <translation>{0} akcij</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="709" />
@@ -3083,49 +3083,49 @@ Faites un clic droit sur Flèche gauche, Flèche droite, Flèche haut ou Flèche
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="732" />
         <source>{0} total actions</source>
-        <translation>{0} actions au total</translation>
+        <translation>{0} akcij skupaj</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="815" />
         <location filename="../editors/object_editor/object_events_panel.py" line="1282" />
         <source>actions</source>
-        <translation>actions</translation>
+        <translation>akcije</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="817" />
         <location filename="../editors/object_editor/object_events_panel.py" line="826" />
         <source>action</source>
-        <translation>action</translation>
+        <translation>akcija</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="823" />
         <source>parameters</source>
-        <translation>paramètres</translation>
+        <translation>parametri</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1245" />
         <source>Collision Event Options</source>
-        <translation>Options de l'événement de collision</translation>
+        <translation>Možnosti dogodka trka</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1248" />
         <source>&lt;b&gt;Collision with: {0}&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Collision avec : {0}&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Trk z: {0}&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1251" />
         <source>❌ NOT colliding (trigger when NOT touching)</source>
-        <translation>❌ PAS en collision (déclencher quand PAS en contact)</translation>
+        <translation>❌ NI trka (sproži, ko se NE dotika)</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1252" />
         <source>Check this to trigger actions when the object is NOT colliding with the target</source>
-        <translation>Cochez ceci pour déclencher les actions lorsque l'objet n'est PAS en collision avec la cible</translation>
+        <translation>Označite to za sprožitev akcij, ko se objekt NE trči s ciljem</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1275" />
         <source>Collision Event Exists</source>
-        <translation>L'événement de collision existe déjà</translation>
+        <translation>Dogodek trka že obstaja</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1276" />
@@ -3135,17 +3135,17 @@ Faites un clic droit sur Flèche gauche, Flèche droite, Flèche haut ou Flèche
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1283" />
         <source>target_object</source>
-        <translation>objet_cible</translation>
+        <translation>ciljni_objekt</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1284" />
         <source>negate</source>
-        <translation>inverser</translation>
+        <translation>negiraj</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1324" />
         <source>Are you sure you want to remove the collision event with {0}?</source>
-        <translation>Êtes-vous sûr de vouloir supprimer l'événement de collision avec {0} ?</translation>
+        <translation>Ali ste prepričani, da želite odstraniti dogodek trka z {0}?</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_events_panel.py" line="1377" />
@@ -3171,57 +3171,57 @@ Faites un clic droit sur Flèche gauche, Flèche droite, Flèche haut ou Flèche
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="24" />
         <source>Object Properties</source>
-        <translation>Propriétés de l'objet</translation>
+        <translation>Lastnosti objekta</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="37" />
         <source>Sprite to display for this object</source>
-        <translation>Sprite à afficher pour cet objet</translation>
+        <translation>Animacija za prikaz tega objekta</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="40" />
         <source>Sprite:</source>
-        <translation>Sprite :</translation>
+        <translation>Animacija:</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="48" />
         <source>Visible</source>
-        <translation>Visible</translation>
+        <translation>Vidno</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="50" />
         <source>Object is visible in the game</source>
-        <translation>L'objet est visible dans le jeu</translation>
+        <translation>Objekt je viden v igri</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="57" />
         <source>Persistent</source>
-        <translation>Persistant</translation>
+        <translation>Obstojen</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="59" />
         <source>Object persists between rooms</source>
-        <translation>L'objet persiste entre les salles</translation>
+        <translation>Objekt ostane med sobami</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="66" />
         <source>Solid</source>
-        <translation>Solide</translation>
+        <translation>Trdno</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="68" />
         <source>Solid objects block movement</source>
-        <translation>Les objets solides bloquent le mouvement</translation>
+        <translation>Trdni objekti blokirajo gibanje</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="81" />
         <source>View Code</source>
-        <translation>Voir le code</translation>
+        <translation>Ogled kode</translation>
     </message>
     <message>
         <location filename="../editors/object_editor/object_properties_panel.py" line="83" />
         <source>Show generated code in Code Editor tab</source>
-        <translation>Afficher le code généré dans l'onglet Éditeur de code</translation>
+        <translation>Prikaži ustvarjeno kodo v zavihku Urejevalnik kode</translation>
     </message>
 </context>
 <context>
@@ -3234,7 +3234,7 @@ Faites un clic droit sur Flèche gauche, Flèche droite, Flèche haut ou Flèche
     <message>
         <location filename="../dialogs/project_dialogs.py" line="145" />
         <source>Recent Projects</source>
-        <translation>Projets récents</translation>
+        <translation>Nedavni projekti</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="153" />
@@ -3510,7 +3510,7 @@ Certains changements peuvent nécessiter de redémarrer l'IDE pour prendre effet
     <message>
         <location filename="../dialogs/project_dialogs.py" line="277" />
         <source>Settings</source>
-        <translation>Paramètres</translation>
+        <translation>Nastavitve</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="281" />
@@ -3540,37 +3540,37 @@ Certains changements peuvent nécessiter de redémarrer l'IDE pour prendre effet
     <message>
         <location filename="../dialogs/project_dialogs.py" line="290" />
         <source>Game Settings</source>
-        <translation>Paramètres du jeu</translation>
+        <translation>Nastavitve igre</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="296" />
         <source>Starting Lives:</source>
-        <translation>Vies de départ :</translation>
+        <translation>Začetna življenja:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="299" />
         <source>Show Lives in Caption:</source>
-        <translation>Afficher les vies dans le titre :</translation>
+        <translation>Prikaži življenja v naslovu:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="304" />
         <source>Starting Score:</source>
-        <translation>Score de départ :</translation>
+        <translation>Začetni rezultat:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="307" />
         <source>Show Score in Caption:</source>
-        <translation>Afficher le score dans le titre :</translation>
+        <translation>Prikaži rezultat v naslovu:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="312" />
         <source>Starting Health:</source>
-        <translation>Santé de départ :</translation>
+        <translation>Začetno zdravje:</translation>
     </message>
     <message>
         <location filename="../dialogs/project_dialogs.py" line="315" />
         <source>Show Health in Caption:</source>
-        <translation>Afficher la santé dans le titre :</translation>
+        <translation>Prikaži zdravje v naslovu:</translation>
     </message>
 </context>
 <context>
@@ -3578,32 +3578,32 @@ Certains changements peuvent nécessiter de redémarrer l'IDE pour prendre effet
     <message>
         <location filename="../core/ide_window.py" line="119" />
         <source>&amp;File</source>
-        <translation>&amp;Fichier</translation>
+        <translation>&amp;Datoteka</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="120" />
         <source>&amp;New Project...</source>
-        <translation>&amp;Nouveau projet...</translation>
+        <translation>&amp;Nov projekt...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="121" />
         <source>&amp;Open Project...</source>
-        <translation>&amp;Ouvrir un projet...</translation>
+        <translation>&amp;Odpri projekt...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="123" />
         <source>&amp;Save Project</source>
-        <translation>&amp;Enregistrer le projet</translation>
+        <translation>&amp;Shrani projekt</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="124" />
         <source>Save Project &amp;As...</source>
-        <translation>Enregistrer le projet &amp;sous...</translation>
+        <translation>Shrani projekt &amp;kot...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="127" />
         <source>Recent Projects</source>
-        <translation>Projets récents</translation>
+        <translation>Nedavni projekti</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="133" />
@@ -3653,12 +3653,12 @@ Certains changements peuvent nécessiter de redémarrer l'IDE pour prendre effet
     <message>
         <location filename="../core/ide_window.py" line="168" />
         <source>E&amp;xit</source>
-        <translation>&amp;Quitter</translation>
+        <translation>I&amp;zhod</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="170" />
         <source>&amp;Edit</source>
-        <translation>&amp;Édition</translation>
+        <translation>&amp;Uredi</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="171" />
@@ -3695,7 +3695,7 @@ Certains changements peuvent nécessiter de redémarrer l'IDE pour prendre effet
     </message>
     <message>
         <source>&amp;View</source>
-        <translation type="vanished">&amp;Affichage</translation>
+        <translation type="vanished">&amp;Pogled</translation>
     </message>
     <message>
         <source>Show &amp;Grid</source>
@@ -3730,17 +3730,17 @@ Certains changements peuvent nécessiter de redémarrer l'IDE pour prendre effet
     <message>
         <location filename="../core/ide_window.py" line="177" />
         <source>&amp;Duplicate</source>
-        <translation>&amp;Dupliquer</translation>
+        <translation>&amp;Podvoji</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="179" />
         <source>&amp;Find...</source>
-        <translation>&amp;Rechercher...</translation>
+        <translation>&amp;Najdi...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="180" />
         <source>Find and &amp;Replace...</source>
-        <translation>Rechercher et &amp;Remplacer...</translation>
+        <translation>Najdi in &amp;zamenjaj...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="184" />
@@ -3808,7 +3808,7 @@ Certains changements peuvent nécessiter de redémarrer l'IDE pour prendre effet
     </message>
     <message>
         <source>&amp;Run</source>
-        <translation type="vanished">&amp;Exécuter</translation>
+        <translation type="vanished">&amp;Zaženi</translation>
     </message>
     <message>
         <source>&amp;Run Game</source>
@@ -3826,7 +3826,7 @@ Certains changements peuvent nécessiter de redémarrer l'IDE pour prendre effet
     <message>
         <location filename="../core/ide_window.py" line="234" />
         <source>&amp;Tools</source>
-        <translation>&amp;Outils</translation>
+        <translation>&amp;Orodja</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="235" />
@@ -3868,7 +3868,7 @@ Certains changements peuvent nécessiter de redémarrer l'IDE pour prendre effet
     <message>
         <location filename="../core/ide_window.py" line="247" />
         <source>&amp;Help</source>
-        <translation>&amp;Aide</translation>
+        <translation>&amp;Pomoč</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="248" />
@@ -3900,7 +3900,7 @@ Certains changements peuvent nécessiter de redémarrer l'IDE pour prendre effet
     </message>
     <message>
         <source>Properties</source>
-        <translation type="vanished">Propriétés</translation>
+        <translation type="vanished">Lastnosti</translation>
     </message>
     <message>
         <source>No asset selected</source>
@@ -3936,44 +3936,44 @@ Certains changements peuvent nécessiter de redémarrer l'IDE pour prendre effet
     </message>
     <message>
         <source>Yes</source>
-        <translation type="vanished">Oui</translation>
+        <translation type="vanished">Da</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="vanished">Non</translation>
+        <translation type="vanished">Ne</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1633" />
         <source>Cancel</source>
-        <translation>Annuler</translation>
+        <translation>Prekliči</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="vanished">OK</translation>
+        <translation type="vanished">V redu</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="vanished">Fermer</translation>
+        <translation type="vanished">Zapri</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="616" />
         <source>Save</source>
-        <translation>Enregistrer</translation>
+        <translation>Shrani</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="189" />
         <source>Create S&amp;cript...</source>
-        <translation>Créer un s&amp;cript...</translation>
+        <translation>Ustvari s&amp;kripto...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="237" />
         <source>Configure &amp;Action Blocks...</source>
-        <translation>Configurer les blocs d'&amp;action...</translation>
+        <translation>Nastavi &amp;akcijske bloke...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="249" />
         <source>&amp;Tutorials</source>
-        <translation>&amp;Tutoriels</translation>
+        <translation>&amp;Vodniki</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="251" />
@@ -3992,75 +3992,75 @@ Certains changements peuvent nécessiter de redémarrer l'IDE pour prendre effet
 The language has been set, but the interface will remain in English until a translation file is provided.
 
 Expected file: translations/pygamemaker_{1}.qm</source>
-        <translation>Le fichier de traduction pour {0} n'est pas disponible.
+        <translation>Prevajalska datoteka za {0} ni na voljo.
 
-La langue a été définie, mais l'interface restera en anglais jusqu'à ce qu'un fichier de traduction soit fourni.
+Jezik je bil nastavljen, vendar bo vmesnik ostal v angleščini, dokler ne bo zagotovljena prevajalska datoteka.
 
-Fichier attendu : translations/pygamemaker_{1}.qm</translation>
+Pričakovana datoteka: translations/pygamemaker_{1}.qm</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="446" />
         <source>Auto-Save to Zip Enabled</source>
-        <translation>Sauvegarde automatique en zip activée</translation>
+        <translation>Samodejno shranjevanje v ZIP omogočeno</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="447" />
         <source>The project will now automatically save to the original zip file.</source>
-        <translation>Le projet sera maintenant automatiquement sauvegardé dans le fichier zip original.</translation>
+        <translation>Projekt se bo zdaj samodejno shranil v izvirno datoteko zip.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="453" />
         <source>Export as Zip?</source>
-        <translation>Exporter en zip ?</translation>
+        <translation>Izvozi kot ZIP?</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="454" />
         <source>Would you like to export the current project as a zip file now?
 
 This will allow auto-save to work with the zip file.</source>
-        <translation>Voulez-vous exporter le projet actuel en tant que fichier zip maintenant ?
+        <translation>Ali želite zdaj izvoziti trenutni projekt kot datoteko zip?
 
-Cela permettra à la sauvegarde automatique de fonctionner avec le fichier zip.</translation>
+To bo omogočilo samodejno shranjevanje z datoteko zip.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="462" />
         <source>Auto-save to zip disabled</source>
-        <translation>Sauvegarde automatique en zip désactivée</translation>
+        <translation>Samodejno shranjevanje v ZIP onemogočeno</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="474" />
         <source>Auto-save enabled</source>
-        <translation>Sauvegarde automatique activée</translation>
+        <translation>Samodejno shranjevanje omogočeno</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="477" />
         <source>Auto-Save Enabled</source>
-        <translation>Sauvegarde automatique activée</translation>
+        <translation>Samodejno shranjevanje omogočeno</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="478" />
         <source>Your project will be automatically saved every {0} seconds.</source>
-        <translation>Votre projet sera automatiquement sauvegardé toutes les {0} secondes.</translation>
+        <translation>Vaš projekt bo samodejno shranjen vsakih {0} sekund.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="481" />
         <source>Auto-save disabled</source>
-        <translation>Sauvegarde automatique désactivée</translation>
+        <translation>Samodejno shranjevanje onemogočeno</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="484" />
         <source>Auto-Save Disabled</source>
-        <translation>Sauvegarde automatique désactivée</translation>
+        <translation>Samodejno shranjevanje onemogočeno</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="485" />
         <source>Remember to save your project manually (Ctrl+S).</source>
-        <translation>N'oubliez pas de sauvegarder votre projet manuellement (Ctrl+S).</translation>
+        <translation>Ne pozabite ročno shraniti projekta (Ctrl+S).</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="517" />
         <source>Auto-save settings updated</source>
-        <translation>Paramètres de sauvegarde automatique mis à jour</translation>
+        <translation>Nastavitve samodejnega shranjevanja posodobljene</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="522" />
@@ -4083,38 +4083,38 @@ Cela permettra à la sauvegarde automatique de fonctionner avec le fichier zip.<
         <location filename="../core/ide_window.py" line="1049" />
         <location filename="../core/ide_window.py" line="1221" />
         <source>Please open a project first</source>
-        <translation>Veuillez d'abord ouvrir un projet</translation>
+        <translation>Prosimo, najprej odprite projekt</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="527" />
         <source>Import Object Package</source>
-        <translation>Importer un package d'objet</translation>
+        <translation>Uvozi paket objekta</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="529" />
         <source>GameMaker Objects (*.gmobj)</source>
-        <translation>Objets GameMaker (*.gmobj)</translation>
+        <translation>Objekti GameMaker (*.gmobj)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="535" />
         <source>Importing object...</source>
-        <translation>Importation de l'objet...</translation>
+        <translation>Uvažanje objekta...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="548" />
         <location filename="../core/ide_window.py" line="589" />
         <source>Import Successful</source>
-        <translation>Importation réussie</translation>
+        <translation>Uvoz uspešen</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="549" />
         <source>Object '{0}' imported successfully!</source>
-        <translation>L'objet '{0}' a été importé avec succès !</translation>
+        <translation>Objekt '{0}' uspešno uvožen!</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="551" />
         <source>Object imported: {0}</source>
-        <translation>Objet importé : {0}</translation>
+        <translation>Objekt uvožen: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="555" />
@@ -4125,63 +4125,63 @@ Cela permettra à la sauvegarde automatique de fonctionner avec le fichier zip.<
     <message>
         <location filename="../core/ide_window.py" line="556" />
         <source>Failed to import object package</source>
-        <translation>Échec de l'importation du package d'objet</translation>
+        <translation>Uvoz paketa objekta ni uspel</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="558" />
         <location filename="../core/ide_window.py" line="599" />
         <source>Import failed</source>
-        <translation>Échec de l'importation</translation>
+        <translation>Uvoz ni uspel</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="568" />
         <source>Import Room Package</source>
-        <translation>Importer un package de salle</translation>
+        <translation>Uvozi paket sobe</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="570" />
         <source>GameMaker Rooms (*.gmroom)</source>
-        <translation>Salles GameMaker (*.gmroom)</translation>
+        <translation>Sobe GameMaker (*.gmroom)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="576" />
         <source>Importing room...</source>
-        <translation>Importation de la salle...</translation>
+        <translation>Uvažanje sobe...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="590" />
         <source>Room '{0}' imported successfully!</source>
-        <translation>La salle '{0}' a été importée avec succès !</translation>
+        <translation>Soba '{0}' uspešno uvožena!</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="592" />
         <source>Room imported: {0}</source>
-        <translation>Salle importée : {0}</translation>
+        <translation>Soba uvožena: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="597" />
         <source>Failed to import room package</source>
-        <translation>Échec de l'importation du package de salle</translation>
+        <translation>Uvoz paketa sobe ni uspel</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="602" />
         <source>Main</source>
-        <translation>Principal</translation>
+        <translation>Glavno</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="614" />
         <source>New</source>
-        <translation>Nouveau</translation>
+        <translation>Novo</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="615" />
         <source>Open</source>
-        <translation>Ouvrir</translation>
+        <translation>Odpri</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="624" />
         <source>Test</source>
-        <translation>Tester</translation>
+        <translation>Test</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="625" />
@@ -4191,84 +4191,84 @@ Cela permettra à la sauvegarde automatique de fonctionner avec le fichier zip.<
     <message>
         <location filename="../core/ide_window.py" line="629" />
         <source>Import Sprite</source>
-        <translation>Importer un sprite</translation>
+        <translation>Uvozi animacijo</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="630" />
         <source>Import Sound</source>
-        <translation>Importer un son</translation>
+        <translation>Uvozi zvok</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="733" />
         <source>"{0}" has unsaved changes. Save before closing?</source>
-        <translation>"{0}" a des modifications non enregistrées. Enregistrer avant de fermer ?</translation>
+        <translation>"{0}" ima neshranjene spremembe. Shrani pred zapiranjem?</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="769" />
         <source>Welcome</source>
-        <translation>Bienvenue</translation>
+        <translation>Dobrodošli</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="924" />
         <source>No recent projects</source>
-        <translation>Aucun projet récent</translation>
+        <translation>Ni nedavnih projektov</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="958" />
         <source>Project created successfully</source>
-        <translation>Projet créé avec succès</translation>
+        <translation>Projekt uspešno ustvarjen</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="961" />
         <source>Failed to create project</source>
-        <translation>Échec de la création du projet</translation>
+        <translation>Ustvarjanje projekta ni uspelo</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="967" />
         <source>Project Files (project.json);;Zip Files (*.zip);;All Files (*)</source>
-        <translation>Fichiers projet (project.json);;Fichiers zip (*.zip);;Tous les fichiers (*)</translation>
+        <translation>Projektne datoteke (project.json);;Datoteke ZIP (*.zip);;Vse datoteke (*)</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="981" />
         <source>Failed to load project from zip</source>
-        <translation>Échec du chargement du projet depuis le zip</translation>
+        <translation>Nalaganje projekta iz ZIP ni uspelo</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="983" />
         <source>Invalid Zip</source>
-        <translation>Zip invalide</translation>
+        <translation>Neveljavna datoteka ZIP</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="984" />
         <source>This zip file does not contain a valid PyGameMaker project</source>
-        <translation>Ce fichier zip ne contient pas de projet PyGameMaker valide</translation>
+        <translation>Ta datoteka zip ne vsebuje veljavnega projekta PyGameMaker</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1012" />
         <location filename="../core/ide_window.py" line="1038" />
         <location filename="../core/ide_window.py" line="2594" />
         <source>Project saved</source>
-        <translation>Projet enregistré</translation>
+        <translation>Projekt shranjen</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1031" />
         <source>Save Project As</source>
-        <translation>Enregistrer le projet sous</translation>
+        <translation>Shrani projekt kot</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1068" />
         <location filename="../core/ide_window.py" line="2767" />
         <source>No Project Loaded</source>
-        <translation>Aucun projet chargé</translation>
+        <translation>Noben projekt ni naložen</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1069" />
         <source>You need to create or open a project before importing sprites.
 
 Would you like to create a new project now?</source>
-        <translation>Vous devez créer ou ouvrir un projet avant d'importer des sprites.
+        <translation>Pred uvozom animacij morate ustvariti ali odpreti projekt.
 
-Voulez-vous créer un nouveau projet maintenant ?</translation>
+Ali želite zdaj ustvariti nov projekt?</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1229" />
@@ -4283,43 +4283,43 @@ Voulez-vous créer un nouveau projet maintenant ?</translation>
     <message>
         <location filename="../core/ide_window.py" line="1301" />
         <source>Created {0}</source>
-        <translation>{0} créé</translation>
+        <translation>Ustvarjeno {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1312" />
         <source>Failed to create {0}: {1}</source>
-        <translation>Échec de la création de {0} : {1}</translation>
+        <translation>Ustvarjanje {0} ni uspelo: {1}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1332" />
         <source>Please open or create a project first before testing a game.</source>
-        <translation>Veuillez d'abord ouvrir ou créer un projet avant de tester un jeu.</translation>
+        <translation>Prosimo, najprej odprite ali ustvarite projekt pred testiranjem igre.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1344" />
         <source>Running game...</source>
-        <translation>Exécution du jeu...</translation>
+        <translation>Zagon igre...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1351" />
         <source>Project Error</source>
-        <translation>Erreur de projet</translation>
+        <translation>Napaka projekta</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1352" />
         <source>project.json not found in project directory</source>
-        <translation>project.json introuvable dans le répertoire du projet</translation>
+        <translation>project.json ni najden v mapi projekta</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1384" />
         <location filename="../core/ide_window.py" line="1400" />
         <source>Game closed</source>
-        <translation>Jeu fermé</translation>
+        <translation>Igra zaprta</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1405" />
         <source>Game Test Error</source>
-        <translation>Erreur de test du jeu</translation>
+        <translation>Napaka pri testiranju igre</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1406" />
@@ -4328,37 +4328,37 @@ Voulez-vous créer un nouveau projet maintenant ?</translation>
 {0}
 
 Check console for details.</source>
-        <translation>Échec de l'exécution du jeu :
+        <translation>Zagon igre ni uspel:
 
 {0}
 
-Vérifiez la console pour plus de détails.</translation>
+Preverite konzolo za podrobnosti.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1386" />
         <location filename="../core/ide_window.py" line="1411" />
         <source>Game test failed</source>
-        <translation>Échec du test du jeu</translation>
+        <translation>Testiranje igre ni uspelo</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1418" />
         <source>Game Running</source>
-        <translation>Jeu en cours d'exécution</translation>
+        <translation>Igra teče</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1419" />
         <source>A game is already running. Please stop it first.</source>
-        <translation>Un jeu est déjà en cours d'exécution. Veuillez d'abord l'arrêter.</translation>
+        <translation>Igra že teče. Prosimo, najprej jo ustavite.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1429" />
         <source>Starting game in debug mode...</source>
-        <translation>Démarrage du jeu en mode débogage...</translation>
+        <translation>Zagon igre v načinu razhroščevanja...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1433" />
         <source>Debug Mode</source>
-        <translation>Mode débogage</translation>
+        <translation>Način razhroščevanja</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1434" />
@@ -4371,56 +4371,56 @@ Future features:
 • Performance profiling
 
 For now, check the console for debug messages.</source>
-        <translation>Le mode débogage démarrera le jeu avec une sortie console détaillée.
+        <translation>Način razhroščevanja bo zagnal igro z razširjenim izpisom v konzolo.
 
-Fonctionnalités futures :
-• Points d'arrêt
-• Inspection des variables
-• Exécution pas à pas
-• Profilage des performances
+Prihodnje funkcije:
+• Prekinitvene točke
+• Pregled spremenljivk
+• Izvajanje po korakih
+• Profiliranje zmogljivosti
 
-Pour l'instant, vérifiez la console pour les messages de débogage.</translation>
+Zaenkrat preverite konzolo za sporočila razhroščevanja.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1445" />
         <source>Game started in debug mode - Check console for debug output</source>
-        <translation>Jeu démarré en mode débogage - Vérifiez la console pour la sortie de débogage</translation>
+        <translation>Igra zagnana v načinu razhroščevanja - Preverite konzolo za izpis razhroščevanja</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1447" />
         <source>Failed to start game</source>
-        <translation>Échec du démarrage du jeu</translation>
+        <translation>Zagon igre ni uspel</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1450" />
         <source>Game Error</source>
-        <translation>Erreur de jeu</translation>
+        <translation>Napaka igre</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1451" />
         <source>Failed to start the game. Check console for details.</source>
-        <translation>Échec du démarrage du jeu. Vérifiez la console pour plus de détails.</translation>
+        <translation>Zagon igre ni uspel. Preverite konzolo za podrobnosti.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1461" />
         <source>You have unsaved changes. Save before building?</source>
-        <translation>Vous avez des modifications non enregistrées. Enregistrer avant de construire ?</translation>
+        <translation>Imate neshranjene spremembe. Shrani pred gradnjo?</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1474" />
         <source>Select Build Output Directory</source>
-        <translation>Sélectionner le répertoire de sortie de construction</translation>
+        <translation>Izberite izhodno mapo gradnje</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1481" />
         <source>Building game...</source>
-        <translation>Construction du jeu...</translation>
+        <translation>Gradnja igre...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1486" />
         <location filename="../core/ide_window.py" line="2614" />
         <source>Build Game</source>
-        <translation>Construire le jeu</translation>
+        <translation>Zgradi igro</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1487" />
@@ -4437,24 +4437,24 @@ Future build targets:
 • Android .apk
 
 Would you like to export as HTML5 instead?</source>
-        <translation>La construction d'exécutable autonome n'est pas encore implémentée.
+        <translation>Gradnja samostojne izvršljive datoteke še ni implementirana.
 
-Solution de contournement actuelle :
-• Utilisez 'Exporter en HTML5' pour créer une version web
-• Utilisez 'Tester le jeu' pour exécuter depuis les sources
+Trenutna rešitev:
+• Uporabite 'Izvozi kot HTML5' za ustvarjanje spletne različice
+• Uporabite 'Testiraj igro' za zagon iz izvorne kode
 
-Cibles de construction futures :
+Prihodnji cilji gradnje:
 • Windows .exe
-• Binaire Linux
+• Linux binarni
 • macOS .app
 • Android .apk
 
-Voulez-vous exporter en HTML5 à la place ?</translation>
+Ali želite namesto tega izvoziti kot HTML5?</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1499" />
         <source>Build cancelled - use HTML5 export instead</source>
-        <translation>Construction annulée - utilisez l'export HTML5 à la place</translation>
+        <translation>Gradnja preklicana - namesto tega uporabite izvoz HTML5</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1506" />
@@ -4463,111 +4463,111 @@ Voulez-vous exporter en HTML5 à la place ?</translation>
 Building may take several minutes.
 
 Continue?</source>
-        <translation>Cela construira un exécutable autonome et l'exécutera.
+        <translation>To bo zgradilo samostojno izvršljivo datoteko in jo zagnalo.
 
-La construction peut prendre plusieurs minutes.
+Gradnja lahko traja več minut.
 
-Continuer ?</translation>
+Nadaljuj?</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1520" />
         <source>Building and running game...</source>
-        <translation>Construction et exécution du jeu...</translation>
+        <translation>Gradnja in zagon igre...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1526" />
         <source>Standalone build is not yet implemented.
 
 Running game in test mode instead...</source>
-        <translation>La construction autonome n'est pas encore implémentée.
+        <translation>Samostojna gradnja še ni implementirana.
 
-Exécution du jeu en mode test à la place...</translation>
+Namesto tega zagon igre v testnem načinu...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1548" />
         <source>Errors:</source>
-        <translation>Erreurs :</translation>
+        <translation>Napake:</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1554" />
         <source>Warnings:</source>
-        <translation>Avertissements :</translation>
+        <translation>Opozorila:</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1564" />
         <source>Project Validation Issues</source>
-        <translation>Problèmes de validation du projet</translation>
+        <translation>Težave pri preverjanju projekta</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1571" />
         <source>Project Validation Warnings</source>
-        <translation>Avertissements de validation du projet</translation>
+        <translation>Opozorila pri preverjanju projekta</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1582" />
         <source>Please open or create a project first before exporting a game.</source>
-        <translation>Veuillez d'abord ouvrir ou créer un projet avant d'exporter un jeu.</translation>
+        <translation>Prosimo, najprej odprite ali ustvarite projekt pred izvozom igre.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1593" />
         <source>Export Game</source>
-        <translation>Exporter le jeu</translation>
+        <translation>Izvozi igro</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1598" />
         <source>&lt;h3&gt;Export Game&lt;/h3&gt;</source>
-        <translation>&lt;h3&gt;Exporter le jeu&lt;/h3&gt;</translation>
+        <translation>&lt;h3&gt;Izvozi igro&lt;/h3&gt;</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1599" />
         <source>Choose export format:</source>
-        <translation>Choisir le format d'exportation :</translation>
+        <translation>Izberite obliko izvoza:</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1604" />
         <source>HTML5 (Web Browser) - ✅ Available</source>
-        <translation>HTML5 (Navigateur web) - ✅ Disponible</translation>
+        <translation>HTML5 (Spletni brskalnik) - ✅ Na voljo</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1609" />
         <source>Windows Executable (.exe) - ✅ Available</source>
-        <translation>Exécutable Windows (.exe) - ✅ Disponible</translation>
+        <translation>Izvršljiva datoteka Windows (.exe) - ✅ Na voljo</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1614" />
         <source>Linux Binary - ✅ Available</source>
-        <translation>Binaire Linux - ✅ Disponible</translation>
+        <translation>Binarna datoteka Linux - ✅ Na voljo</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1619" />
         <source>macOS Application (.app) - 🚧 Coming Soon</source>
-        <translation>Application macOS (.app) - 🚧 Bientôt disponible</translation>
+        <translation>Aplikacija macOS (.app) - 🚧 Kmalu</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1624" />
         <source>Android Package (.apk) - 🚧 Coming Soon</source>
-        <translation>Package Android (.apk) - 🚧 Bientôt disponible</translation>
+        <translation>Paket Android (.apk) - 🚧 Kmalu</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1651" />
         <location filename="../core/ide_window.py" line="2186" />
         <source>Coming Soon</source>
-        <translation>Bientôt disponible</translation>
+        <translation>Kmalu</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1652" />
         <source>This export format is not yet available.
 
 Please use HTML5, Windows EXE, or Linux Binary export for now.</source>
-        <translation>Ce format d'exportation n'est pas encore disponible.
+        <translation>Ta oblika izvoza še ni na voljo.
 
-Veuillez utiliser l'exportation HTML5, EXE Windows ou Binaire Linux pour l'instant.</translation>
+Prosimo, zaenkrat uporabite izvoz HTML5, Windows EXE ali Linux binarno datoteko.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1663" />
         <location filename="../core/ide_window.py" line="1779" />
         <source>Please open or create a project first.</source>
-        <translation>Veuillez d'abord ouvrir ou créer un projet.</translation>
+        <translation>Prosimo, najprej odprite ali ustvarite projekt.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1673" />
@@ -4579,25 +4579,25 @@ Veuillez utiliser l'exportation HTML5, EXE Windows ou Binaire Linux pour l'insta
         <location filename="../core/ide_window.py" line="1693" />
         <location filename="../core/ide_window.py" line="1809" />
         <source>Exporting Game</source>
-        <translation>Exportation du jeu</translation>
+        <translation>Izvoz igre</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1699" />
         <location filename="../core/ide_window.py" line="1815" />
         <source>Preparing export...</source>
-        <translation>Préparation de l'exportation...</translation>
+        <translation>Priprava izvoza...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1720" />
         <location filename="../core/ide_window.py" line="1836" />
         <source>Export Complete</source>
-        <translation>Exportation terminée</translation>
+        <translation>Izvoz zaključen</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1721" />
         <location filename="../core/ide_window.py" line="1837" />
         <source>Would you like to open the output folder?</source>
-        <translation>Voulez-vous ouvrir le dossier de sortie ?</translation>
+        <translation>Ali želite odpreti izhodno mapo?</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="1736" />
@@ -4609,27 +4609,27 @@ Veuillez utiliser l'exportation HTML5, EXE Windows ou Binaire Linux pour l'insta
         <location filename="../core/ide_window.py" line="2018" />
         <location filename="../core/ide_window.py" line="2026" />
         <source>Not Implemented</source>
-        <translation>Non implémenté</translation>
+        <translation>Ni implementirano</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2019" />
         <source>Find functionality is not yet implemented.</source>
-        <translation>La fonctionnalité de recherche n'est pas encore implémentée.</translation>
+        <translation>Funkcija iskanja še ni implementirana.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2027" />
         <source>Find and Replace functionality is not yet implemented.</source>
-        <translation>La fonctionnalité Rechercher et Remplacer n'est pas encore implémentée.</translation>
+        <translation>Funkcija najdi in zamenjaj še ni implementirana.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2042" />
         <source>Please open a project first to manage assets.</source>
-        <translation>Veuillez d'abord ouvrir un projet pour gérer les ressources.</translation>
+        <translation>Prosimo, najprej odprite projekt za upravljanje virov.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2048" />
         <source>Asset Manager</source>
-        <translation>Gestionnaire de ressources</translation>
+        <translation>Upravitelj virov</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2049" />
@@ -4643,21 +4643,21 @@ Future features:
 • Asset search and filter
 • Asset usage tracking
 • Unused asset cleanup</source>
-        <translation>Le gestionnaire de ressources n'est pas encore implémenté.
+        <translation>Upravitelj virov še ni implementiran.
 
-Solution de contournement actuelle :
-Utilisez le panneau Arbre des ressources à gauche pour gérer vos ressources.
+Trenutna rešitev:
+Uporabite ploščo Drevo virov na levi za upravljanje virov.
 
-Fonctionnalités futures :
-• Opérations en masse sur les ressources
-• Recherche et filtrage des ressources
-• Suivi de l'utilisation des ressources
-• Nettoyage des ressources inutilisées</translation>
+Prihodnje funkcije:
+• Skupinske operacije z viri
+• Iskanje in filtriranje virov
+• Sledenje uporabi virov
+• Čiščenje neuporabljenih virov</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2096" />
         <source>Configuration Saved</source>
-        <translation>Configuration enregistrée</translation>
+        <translation>Konfiguracija shranjena</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2097" />
@@ -4668,37 +4668,37 @@ The new event/block selection is now active in:
 • Traditional event editor
 
 Changes apply immediately to currently open editors.</source>
-        <translation>La configuration Blockly a été enregistrée.
+        <translation>Konfiguracija Blockly je bila shranjena.
 
-La nouvelle sélection d'événements/blocs est maintenant active dans :
-• L'éditeur de programmation visuelle (Blockly)
-• L'éditeur d'événements traditionnel
+Nova izbira dogodkov/blokov je zdaj aktivna v:
+• Vizualnem urejevalniku programiranja (Blockly)
+• Tradicionalnem urejevalniku dogodkov
 
-Les modifications s'appliquent immédiatement aux éditeurs actuellement ouverts.</translation>
+Spremembe se takoj uporabijo za trenutno odprte urejevalnike.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2126" />
         <source>Please open a project first to validate.</source>
-        <translation>Veuillez d'abord ouvrir un projet pour valider.</translation>
+        <translation>Prosimo, najprej odprite projekt za preverjanje.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2148" />
         <source>Validation Issues Found</source>
-        <translation>Problèmes de validation trouvés</translation>
+        <translation>Najdene težave pri preverjanju</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2149" />
         <source>Project validation found the following issues:
 
 </source>
-        <translation>La validation du projet a trouvé les problèmes suivants :
+        <translation>Preverjanje projekta je našlo naslednje težave:
 
 </translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2154" />
         <source>Validation Passed</source>
-        <translation>Validation réussie</translation>
+        <translation>Preverjanje uspešno</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2155" />
@@ -4706,20 +4706,20 @@ Les modifications s'appliquent immédiatement aux éditeurs actuellement ouverts
 
 ✓ All required directories exist
 ✓ project.json is present</source>
-        <translation>La structure du projet est valide !
+        <translation>Struktura projekta je veljavna!
 
-✓ Tous les répertoires requis existent
-✓ project.json est présent</translation>
+✓ Vse zahtevane mape obstajajo
+✓ project.json je prisoten</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2166" />
         <source>Please open a project first to clean.</source>
-        <translation>Veuillez d'abord ouvrir un projet pour nettoyer.</translation>
+        <translation>Prosimo, najprej odprite projekt za čiščenje.</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2172" />
         <source>Clean Project</source>
-        <translation>Nettoyer le projet</translation>
+        <translation>Počisti projekt</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2173" />
@@ -4732,15 +4732,15 @@ Future features:
 • Optimize project size
 
 Would you like to learn more?</source>
-        <translation>Le nettoyage de projet n'est pas encore implémenté.
+        <translation>Čiščenje projekta še ni implementirano.
 
-Fonctionnalités futures :
-• Supprimer les fichiers temporaires
-• Supprimer les ressources inutilisées
-• Nettoyer les artefacts de construction
-• Optimiser la taille du projet
+Prihodnje funkcije:
+• Odstranitev začasnih datotek
+• Brisanje neuporabljenih virov
+• Čiščenje artefaktov gradnje
+• Optimizacija velikosti projekta
 
-Voulez-vous en savoir plus ?</translation>
+Ali želite izvedeti več?</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2187" />
@@ -4750,17 +4750,17 @@ For now, you can manually delete temporary files from:
 • .cache/ directory
 • __pycache__/ directories
 • *.pyc files</source>
-        <translation>Cette fonctionnalité sera disponible dans une future mise à jour.
+        <translation>Ta funkcija bo na voljo v prihodnjem posodobitvi.
 
-Pour l'instant, vous pouvez supprimer manuellement les fichiers temporaires depuis :
-• Le répertoire .cache/
-• Les répertoires __pycache__/
-• Les fichiers *.pyc</translation>
+Zaenkrat lahko ročno izbrišete začasne datoteke iz:
+• Mape .cache/
+• Map __pycache__/
+• Datotek *.pyc</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2198" />
         <source>Documentation</source>
-        <translation>Documentation</translation>
+        <translation>Dokumentacija</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2199" />
@@ -4775,35 +4775,35 @@ Quick Help:
 • Right-click for more options
 
 Online documentation coming soon!</source>
-        <translation>La documentation n'est pas encore disponible.
+        <translation>Dokumentacija še ni na voljo.
 
-Aide rapide :
-• F1 : Ouvrir cette aide
-• Ctrl+N : Nouveau projet
-• Ctrl+O : Ouvrir un projet
-• Ctrl+S : Enregistrer le projet
-• Double-cliquez sur les ressources pour les modifier
-• Clic droit pour plus d'options
+Hitra pomoč:
+• F1: Odpri to pomoč
+• Ctrl+N: Nov projekt
+• Ctrl+O: Odpri projekt
+• Ctrl+S: Shrani projekt
+• Dvojni klik na vire za urejanje
+• Desni klik za več možnosti
 
-Documentation en ligne bientôt disponible !</translation>
+Spletna dokumentacija kmalu!</translation>
     </message>
     <message>
         <source>Tutorials</source>
-        <translation type="vanished">Tutoriels</translation>
+        <translation type="vanished">Vodniki</translation>
     </message>
     <message>
         <source>&lt;h3&gt;PyGameMaker Tutorials&lt;/h3&gt;</source>
-        <translation type="vanished">&lt;h3&gt;Tutoriels PyGameMaker&lt;/h3&gt;</translation>
+        <translation type="vanished">&lt;h3&gt;Vodniki PyGameMaker&lt;/h3&gt;</translation>
     </message>
     <message>
         <source>Coming soon! Tutorials will include:</source>
-        <translation type="vanished">Bientôt disponible ! Les tutoriels incluront :</translation>
+        <translation type="vanished">Kmalu! Vodniki bodo vključevali:</translation>
     </message>
     <message>
         <source>
 💡 Tip: Check the documentation (F1) for quick help!</source>
         <translation type="vanished">
-💡 Astuce : Consultez la documentation (F1) pour une aide rapide !</translation>
+💡 Namig: Preverite dokumentacijo (F1) za hitro pomoč!</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2250" />
@@ -4813,7 +4813,7 @@ Documentation en ligne bientôt disponible !</translation>
     <message>
         <location filename="../core/ide_window.py" line="2293" />
         <source>Imported {0}</source>
-        <translation>{0} importé</translation>
+        <translation>Uvoženo {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2326" />
@@ -4824,89 +4824,89 @@ Documentation en ligne bientôt disponible !</translation>
         <location filename="../core/ide_window.py" line="2327" />
         <source>Editor for {0} not yet implemented.
 Asset: {1}</source>
-        <translation>L'éditeur pour {0} n'est pas encore implémenté.
-Ressource : {1}</translation>
+        <translation>Urejevalnik za {0} še ni implementiran.
+Vir: {1}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2363" />
         <source>Opened room: {0}</source>
-        <translation>Salle ouverte : {0}</translation>
+        <translation>Soba odprta: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2370" />
         <source>Failed to open room editor: {0}</source>
-        <translation>Échec de l'ouverture de l'éditeur de salle : {0}</translation>
+        <translation>Odpiranje urejevalnika sobe ni uspelo: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2409" />
         <source>Opened object: {0}</source>
-        <translation>Objet ouvert : {0}</translation>
+        <translation>Objekt odprt: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2415" />
         <source>Failed to open object editor: {0}</source>
-        <translation>Échec de l'ouverture de l'éditeur d'objet : {0}</translation>
+        <translation>Odpiranje urejevalnika objekta ni uspelo: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2528" />
         <location filename="../core/ide_window.py" line="2536" />
         <source>Save Error</source>
-        <translation>Erreur d'enregistrement</translation>
+        <translation>Napaka pri shranjevanju</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2529" />
         <source>Failed to save project to disk</source>
-        <translation>Échec de l'enregistrement du projet sur le disque</translation>
+        <translation>Shranjevanje projekta na disk ni uspelo</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2537" />
         <source>Failed to save {0}: {1}</source>
-        <translation>Échec de l'enregistrement de {0} : {1}</translation>
+        <translation>Shranjevanje {0} ni uspelo: {1}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2590" />
         <source>Project loaded: {0}</source>
-        <translation>Projet chargé : {0}</translation>
+        <translation>Projekt naložen: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2610" />
         <source>Save Project As...</source>
-        <translation>Enregistrer le projet sous...</translation>
+        <translation>Shrani projekt kot...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2610" />
         <source>Project Settings...</source>
-        <translation>Paramètres du projet...</translation>
+        <translation>Nastavitve projekta...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2612" />
         <source>Create</source>
-        <translation>Créer</translation>
+        <translation>Ustvari</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2614" />
         <source>Test Game</source>
-        <translation>Tester le jeu</translation>
+        <translation>Testiraj igro</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2614" />
         <source>Debug Game</source>
-        <translation>Déboguer le jeu</translation>
+        <translation>Razhroščuj igro</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2615" />
         <source>Export Game...</source>
-        <translation>Exporter le jeu...</translation>
+        <translation>Izvozi igro...</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2644" />
         <source>Project: {0}</source>
-        <translation>Projet : {0}</translation>
+        <translation>Projekt: {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2741" />
         <source>You have unsaved changes. Do you want to save before closing?</source>
-        <translation>Vous avez des modifications non enregistrées. Voulez-vous enregistrer avant de fermer ?</translation>
+        <translation>Imate neshranjene spremembe. Ali želite shraniti pred zapiranjem?</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2768" />
@@ -4915,29 +4915,29 @@ Ressource : {1}</translation>
 Would you like to:
 • Create a new project, or
 • Open an existing project?</source>
-        <translation>Vous devez créer ou ouvrir un projet avant {0}.
+        <translation>Pred {0} morate ustvariti ali odpreti projekt.
 
-Voulez-vous :
-• Créer un nouveau projet, ou
-• Ouvrir un projet existant ?</translation>
+Ali želite:
+• Ustvariti nov projekt, ali
+• Odpreti obstoječi projekt?</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2780" />
         <source>Create or Open Project</source>
-        <translation>Créer ou ouvrir un projet</translation>
+        <translation>Ustvari ali odpri projekt</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="2781" />
         <source>Choose project action:</source>
-        <translation>Choisir l'action du projet :</translation>
+        <translation>Izberite dejanje projekta:</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="vanished">Supprimer</translation>
+        <translation type="vanished">Izbriši</translation>
     </message>
     <message>
         <source>Rename</source>
-        <translation type="vanished">Renommer</translation>
+        <translation type="vanished">Preimenuj</translation>
     </message>
     <message>
         <source>Duplicate</source>
@@ -4946,13 +4946,13 @@ Voulez-vous :
     <message>
         <location filename="../core/ide_window.py" line="2612" />
         <source>Import</source>
-        <translation>Importer</translation>
+        <translation>Uvozi</translation>
     </message>
     <message>
         <location filename="../core/ide_window.py" line="626" />
         <location filename="../core/ide_window.py" line="1631" />
         <source>Export</source>
-        <translation>Exporter</translation>
+        <translation>Izvozi</translation>
     </message>
     <message>
         <source>New Project</source>
@@ -5059,7 +5059,7 @@ Voulez-vous redémarrer maintenant ?</translation>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="99" />
         <source>Room Editor</source>
-        <translation>Éditeur de salle</translation>
+        <translation>Urejevalnik sobe</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="104" />
@@ -5272,7 +5272,7 @@ Voulez-vous redémarrer maintenant ?</translation>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="421" />
         <source>Save Error</source>
-        <translation>Erreur d'enregistrement</translation>
+        <translation>Napaka pri shranjevanju</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="421" />
@@ -5284,12 +5284,12 @@ Voulez-vous redémarrer maintenant ?</translation>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="448" />
         <source>Undo</source>
-        <translation>Annuler</translation>
+        <translation>Razveljavi</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="455" />
         <source>Redo</source>
-        <translation>Rétablir</translation>
+        <translation>Uveljavi</translation>
     </message>
     <message>
         <location filename="../editors/room_editor/__init__.py" line="468" />
@@ -5332,117 +5332,117 @@ Voulez-vous redémarrer maintenant ?</translation>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="208" />
         <source>Configure Sprite Strip</source>
-        <translation>Configurer la bande de sprite</translation>
+        <translation>Nastavi trak spritov</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="221" />
         <source>Sprite Sheet Preview</source>
-        <translation>Aperçu de la feuille de sprites</translation>
+        <translation>Predogled lista spritov</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="229" />
         <source>Frame:</source>
-        <translation>Image :</translation>
+        <translation>Okvir:</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="241" />
         <source>Animation Preview</source>
-        <translation>Aperçu de l'animation</translation>
+        <translation>Predogled animacije</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="248" />
         <source>Play</source>
-        <translation>Lecture</translation>
+        <translation>Predvajaj</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="250" />
         <source>Stop</source>
-        <translation>Arrêt</translation>
+        <translation>Ustavi</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="263" />
         <source>Image Info</source>
-        <translation>Info image</translation>
+        <translation>Info o sliki</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="267" />
         <source>Width:</source>
-        <translation>Largeur :</translation>
+        <translation>Širina:</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="268" />
         <source>Height:</source>
-        <translation>Hauteur :</translation>
+        <translation>Višina:</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="272" />
         <source>Frame Configuration</source>
-        <translation>Configuration des images</translation>
+        <translation>Nastavitev okvirjev</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="277" />
         <source>Horizontal Strip</source>
-        <translation>Bande horizontale</translation>
+        <translation>Vodoravni trak</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="278" />
         <source>Vertical Strip</source>
-        <translation>Bande verticale</translation>
+        <translation>Navpični trak</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="279" />
         <source>Grid (Rows x Columns)</source>
-        <translation>Grille (lignes x colonnes)</translation>
+        <translation>Mreža (vrstice x stolpci)</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="281" />
         <source>Strip Type:</source>
-        <translation>Type de bande :</translation>
+        <translation>Vrsta traku:</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="288" />
         <source>Frame Width:</source>
-        <translation>Largeur d'image :</translation>
+        <translation>Širina okvirja:</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="294" />
         <source>Frame Height:</source>
-        <translation>Hauteur d'image :</translation>
+        <translation>Višina okvirja:</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="301" />
         <source>Columns:</source>
-        <translation>Colonnes :</translation>
+        <translation>Stolpci:</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="307" />
         <source>Rows:</source>
-        <translation>Lignes :</translation>
+        <translation>Vrstice:</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="311" />
         <source>Total Frames:</source>
-        <translation>Total d'images :</translation>
+        <translation>Skupaj okvirjev:</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="316" />
         <source>Animation Settings</source>
-        <translation>Paramètres d'animation</translation>
+        <translation>Nastavitve animacije</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="324" />
         <source>Animation Speed:</source>
-        <translation>Vitesse d'animation :</translation>
+        <translation>Hitrost animacije:</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="332" />
         <source>Cancel</source>
-        <translation>Annuler</translation>
+        <translation>Prekliči</translation>
     </message>
     <message>
         <location filename="../dialogs/sprite_strip_dialog.py" line="334" />
         <source>OK</source>
-        <translation>OK</translation>
+        <translation>V redu</translation>
     </message>
 </context>
 <context>
@@ -5450,42 +5450,42 @@ Voulez-vous redémarrer maintenant ?</translation>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="25" />
         <source>Tutorials</source>
-        <translation>Tutoriels</translation>
+        <translation>Vadnice</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="62" />
         <source>&lt;h2&gt;PyGameMaker Tutorials&lt;/h2&gt;</source>
-        <translation>&lt;h2&gt;Tutoriels PyGameMaker&lt;/h2&gt;</translation>
+        <translation>&lt;h2&gt;PyGameMaker vadnice&lt;/h2&gt;</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="66" />
         <source>Double-click a tutorial to start:</source>
-        <translation>Double-cliquez sur un tutoriel pour commencer :</translation>
+        <translation>Dvokliknite vadnico za začetek:</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="85" />
         <source>Tip: Check the documentation (F1) for quick help!</source>
-        <translation>Astuce : Consultez la documentation (F1) pour une aide rapide !</translation>
+        <translation>Nasvet: Pritisnite F1 za hitro pomoč!</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="93" />
         <source>Close</source>
-        <translation>Fermer</translation>
+        <translation>Zapri</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="102" />
         <source>Select a tutorial to see its description.</source>
-        <translation>Sélectionnez un tutoriel pour voir sa description.</translation>
+        <translation>Izberite vadnico za ogled njenega opisa.</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="105" />
         <source>No tutorials folder found</source>
-        <translation>Aucun dossier de tutoriels trouvé</translation>
+        <translation>Mapa z vadnicami ni najdena</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_dialog.py" line="144" />
         <source>No tutorials available</source>
-        <translation>Aucun tutoriel disponible</translation>
+        <translation>Ni razpoložljivih vadnic</translation>
     </message>
 </context>
 <context>
@@ -5493,52 +5493,52 @@ Voulez-vous redémarrer maintenant ?</translation>
     <message>
         <location filename="../widgets/tutorial_panel.py" line="42" />
         <source>&lt;b&gt;Tutorials&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Tutoriels&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Vadnice&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_panel.py" line="48" />
         <source>Close</source>
-        <translation>Fermer</translation>
+        <translation>Zapri</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_panel.py" line="63" />
         <source>Select a tutorial:</source>
-        <translation>Sélectionnez un tutoriel :</translation>
+        <translation>Izberite vadnico:</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_panel.py" line="70" />
         <source>Open Tutorial</source>
-        <translation>Ouvrir le tutoriel</translation>
+        <translation>Odpri vadnico</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_panel.py" line="103" />
         <source>Back to List</source>
-        <translation>Retour à la liste</translation>
+        <translation>Nazaj na seznam</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_panel.py" line="109" />
         <source>&lt; Previous</source>
-        <translation>&lt; Précédent</translation>
+        <translation>&lt; Prejšnji</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_panel.py" line="113" />
         <source>Next &gt;</source>
-        <translation>Suivant &gt;</translation>
+        <translation>Naslednji &gt;</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_panel.py" line="159" />
         <source>No tutorials folder found</source>
-        <translation>Aucun dossier de tutoriels trouvé</translation>
+        <translation>Mapa z vadnicami ni najdena</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_panel.py" line="201" />
         <source>No tutorials available</source>
-        <translation>Aucun tutoriel disponible</translation>
+        <translation>Ni razpoložljivih vadnic</translation>
     </message>
     <message>
         <location filename="../widgets/tutorial_panel.py" line="298" />
         <source>Page {0} of {1}</source>
-        <translation>Page {0} sur {1}</translation>
+        <translation>Stran {0} od {1}</translation>
     </message>
 </context>
 <context>
@@ -5546,7 +5546,7 @@ Voulez-vous redémarrer maintenant ?</translation>
     <message>
         <location filename="../editors/object_editor_components.py" line="41" />
         <source>Visual scripting is now managed through the Events panel</source>
-        <translation>La programmation visuelle est maintenant gérée via le panneau Événements</translation>
+        <translation>Vizualno programiranje se zdaj upravlja preko plošče Dogodki</translation>
     </message>
 </context>
 <context>
@@ -5589,7 +5589,7 @@ Voulez-vous redémarrer maintenant ?</translation>
     <message>
         <location filename="../widgets/welcome_tab.py" line="78" />
         <source>No recent projects</source>
-        <translation>Aucun projet récent</translation>
+        <translation>Ni nedavnih projektov</translation>
     </message>
 </context>
 <context>
@@ -5602,17 +5602,17 @@ Voulez-vous redémarrer maintenant ?</translation>
     <message>
         <location filename="../core/ide_exporters.py" line="40" />
         <source>Please open or create a project first before exporting.</source>
-        <translation>Veuillez d'abord ouvrir ou créer un projet avant d'exporter.</translation>
+        <translation>Prosimo, najprej odprite ali ustvarite projekt pred izvozom.</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="48" />
         <source>Select Export Directory</source>
-        <translation>Sélectionner le répertoire d'exportation</translation>
+        <translation>Izberite mapo za izvoz</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="56" />
         <source>Exporting to HTML5...</source>
-        <translation>Exportation en HTML5...</translation>
+        <translation>Izvoz v HTML5...</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="63" />
@@ -5627,16 +5627,16 @@ Voulez-vous redémarrer maintenant ?</translation>
 {0}
 
 Open in browser now?</source>
-        <translation>Jeu exporté en HTML5 !
+        <translation>Igra izvožena kot HTML5!
 
 {0}
 
-Ouvrir dans le navigateur maintenant ?</translation>
+Odpri v brskalniku zdaj?</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="72" />
         <source>HTML5 export complete</source>
-        <translation>Exportation HTML5 terminée</translation>
+        <translation>Izvoz HTML5 zaključen</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="76" />
@@ -5647,71 +5647,71 @@ Ouvrir dans le navigateur maintenant ?</translation>
     <message>
         <location filename="../core/ide_exporters.py" line="77" />
         <source>Failed to export game as HTML5. Check console for details.</source>
-        <translation>Échec de l'exportation du jeu en HTML5. Vérifiez la console pour plus de détails.</translation>
+        <translation>Izvoz igre kot HTML5 ni uspel. Preverite konzolo za podrobnosti.</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="79" />
         <location filename="../core/ide_exporters.py" line="138" />
         <source>Export failed</source>
-        <translation>Échec de l'exportation</translation>
+        <translation>Izvoz ni uspel</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="113" />
         <source>Export Project as Zip</source>
-        <translation>Exporter le projet en zip</translation>
+        <translation>Izvozi projekt kot ZIP</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="115" />
         <location filename="../core/ide_exporters.py" line="146" />
         <source>Zip Files (*.zip)</source>
-        <translation>Fichiers zip (*.zip)</translation>
+        <translation>Datoteke ZIP (*.zip)</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="122" />
         <source>Exporting project...</source>
-        <translation>Exportation du projet...</translation>
+        <translation>Izvoz projekta...</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="129" />
         <source>Project exported to:
 {0}</source>
-        <translation>Projet exporté vers :
+        <translation>Projekt izvožen v:
 {0}</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="131" />
         <source>Project exported</source>
-        <translation>Projet exporté</translation>
+        <translation>Projekt izvožen</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="136" />
         <source>Failed to export project as zip</source>
-        <translation>Échec de l'exportation du projet en zip</translation>
+        <translation>Izvoz projekta kot ZIP ni uspel</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="144" />
         <source>Open Zip Project</source>
-        <translation>Ouvrir un projet zip</translation>
+        <translation>Odpri projekt ZIP</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="157" />
         <source>Invalid Zip</source>
-        <translation>Zip invalide</translation>
+        <translation>Neveljavna datoteka ZIP</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="158" />
         <source>This zip file does not contain a valid PyGameMaker project</source>
-        <translation>Ce fichier zip ne contient pas de projet PyGameMaker valide</translation>
+        <translation>Ta datoteka zip ne vsebuje veljavnega projekta PyGameMaker</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="163" />
         <source>Loading project from zip...</source>
-        <translation>Chargement du projet depuis le zip...</translation>
+        <translation>Nalaganje projekta iz ZIP...</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="168" />
         <source>Project loaded from zip</source>
-        <translation>Projet chargé depuis le zip</translation>
+        <translation>Projekt naložen iz ZIP</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="172" />
@@ -5721,12 +5721,12 @@ Ouvrir dans le navigateur maintenant ?</translation>
     <message>
         <location filename="../core/ide_exporters.py" line="173" />
         <source>Failed to load project from zip</source>
-        <translation>Échec du chargement du projet depuis le zip</translation>
+        <translation>Nalaganje projekta iz ZIP ni uspelo</translation>
     </message>
     <message>
         <location filename="../core/ide_exporters.py" line="175" />
         <source>Failed to load</source>
-        <translation>Échec du chargement</translation>
+        <translation>Nalaganje ni uspelo</translation>
     </message>
 </context>
 </TS>

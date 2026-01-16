@@ -4,12 +4,12 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../dialogs/about.py" line="18"/>
+        <location filename="../dialogs/about.py" line="18" />
         <source>About PyGameMaker IDE</source>
         <translation>Über PyGameMaker IDE</translation>
     </message>
     <message>
-        <location filename="../dialogs/about.py" line="28"/>
+        <location filename="../dialogs/about.py" line="28" />
         <source>PyGameMaker IDE</source>
         <translation>PyGameMaker IDE</translation>
     </message>
@@ -18,22 +18,22 @@
         <translation type="vanished">Version 1.0.0</translation>
     </message>
     <message>
-        <location filename="../dialogs/about.py" line="37"/>
+        <location filename="../dialogs/about.py" line="37" />
         <source>Version 0.10.1-alpha</source>
-        <translation type="unfinished"></translation>
+        <translation>Version 0.10.1-alpha</translation>
     </message>
     <message>
-        <location filename="../dialogs/about.py" line="56"/>
+        <location filename="../dialogs/about.py" line="56" />
         <source>&lt;h3&gt;PyGameMaker IDE&lt;/h3&gt;&lt;p&gt;A GameMaker-inspired IDE for creating 2D games with Python.&lt;/p&gt;&lt;h4&gt;Features:&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Visual scripting with events and actions&lt;/li&gt;&lt;li&gt;Asset management for sprites, sounds, and objects&lt;/li&gt;&lt;li&gt;Room-based game development&lt;/li&gt;&lt;li&gt;Export to standalone Python games&lt;/li&gt;&lt;/ul&gt;&lt;h4&gt;Built with:&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;PySide6 for the user interface&lt;/li&gt;&lt;li&gt;Pygame for game runtime&lt;/li&gt;&lt;li&gt;Python 3.11+&lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h3&gt;PyGameMaker IDE&lt;/h3&gt;&lt;p&gt;Eine von GameMaker inspirierte IDE zum Erstellen von 2D-Spielen mit Python.&lt;/p&gt;&lt;h4&gt;Funktionen:&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Visuelle Skripterstellung mit Ereignissen und Aktionen&lt;/li&gt;&lt;li&gt;Asset-Verwaltung für Sprites, Sounds und Objekte&lt;/li&gt;&lt;li&gt;Raumbasierte Spieleentwicklung&lt;/li&gt;&lt;li&gt;Export in eigenständige Python-Spiele&lt;/li&gt;&lt;/ul&gt;&lt;h4&gt;Entwickelt mit:&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;PySide6 für die Benutzeroberfläche&lt;/li&gt;&lt;li&gt;Pygame für die Spiellaufzeit&lt;/li&gt;&lt;li&gt;Python 3.11+&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../dialogs/about.py" line="59"/>
+        <location filename="../dialogs/about.py" line="59" />
         <source>About</source>
         <translation>Über</translation>
     </message>
     <message>
-        <location filename="../dialogs/about.py" line="67"/>
+        <location filename="../dialogs/about.py" line="67" />
         <source>Credits:
 
 Development:
@@ -74,12 +74,12 @@ Diese Software wird unter der GNU General Public License v3 (GPLv3) veröffentli
 Copyright (C) 2024-2025 Gabriel Thullen</translation>
     </message>
     <message>
-        <location filename="../dialogs/about.py" line="70"/>
+        <location filename="../dialogs/about.py" line="70" />
         <source>Credits</source>
         <translation>Mitwirkende</translation>
     </message>
     <message>
-        <location filename="../dialogs/about.py" line="76"/>
+        <location filename="../dialogs/about.py" line="76" />
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
@@ -150,101 +150,101 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
 <context>
     <name>ActionListWidget</name>
     <message>
-        <location filename="../editors/object_editor_components.py" line="23"/>
+        <location filename="../editors/object_editor_components.py" line="23" />
         <source>Actions are now managed through the Events panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktionen werden jetzt über das Ereignis-Panel verwaltet</translation>
     </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="115"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="114" />
         <source>{0} Properties - {1}</source>
         <translation>{0} Eigenschaften - {1}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="127"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="126" />
         <source>Type: {0}</source>
         <translation>Typ: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="132"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="131" />
         <source>File: {0}</source>
         <translation>Datei: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="137"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="136" />
         <source>Imported</source>
         <translation>Importiert</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="138"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="136" />
         <source>Not imported</source>
         <translation>Nicht importiert</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="138"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="137" />
         <source>Status: {0}</source>
         <translation>Status: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="146"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="143" />
         <source>📥 Import Image...</source>
         <translation>📥 Bild importieren...</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="153"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="150" />
         <source>Created: {0}</source>
         <translation>Erstellt: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="158"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="155" />
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="174"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="171" />
         <source>Select Sprite Image</source>
         <translation>Sprite-Bild auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="177"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="173" />
         <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
         <translation>Bilddateien (*.png *.jpg *.jpeg *.bmp *.gif);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="201"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="198" />
         <source>Success</source>
         <translation>Erfolg</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="202"/>
-        <source>Image imported successfully for sprite &apos;{0}&apos;</source>
-        <translation>Bild erfolgreich für Sprite &apos;{0}&apos; importiert</translation>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="199" />
+        <source>Image imported successfully for sprite '{0}'</source>
+        <translation>Bild erfolgreich für Sprite '{0}' importiert</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="210"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="207" />
         <source>Import Failed</source>
         <translation>Import fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="212"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="208" />
         <source>Failed to import the image. Please try again.</source>
         <translation>Fehler beim Importieren des Bildes. Bitte versuchen Sie es erneut.</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="216"/>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="222"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="213" />
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="219" />
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="217"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="214" />
         <source>Error importing image: {0}</source>
         <translation>Fehler beim Importieren des Bildes: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="224"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="220" />
         <source>Could not access asset manager. Please try again.</source>
         <translation>Konnte nicht auf Asset-Manager zugreifen. Bitte versuchen Sie es erneut.</translation>
     </message>
@@ -252,32 +252,32 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
 <context>
     <name>AssetRenameDialog</name>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="26"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="25" />
         <source>Rename {0}</source>
         <translation>{0} umbenennen</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="35"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="34" />
         <source>Current name: &lt;b&gt;{0}&lt;/b&gt;</source>
         <translation>Aktueller Name: &lt;b&gt;{0}&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="39"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="38" />
         <source>New name:</source>
         <translation>Neuer Name:</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="51"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="50" />
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="55"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="54" />
         <source>Rename</source>
         <translation>Umbenennen</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="91"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="90" />
         <source>Invalid Name</source>
         <translation>Ungültiger Name</translation>
     </message>
@@ -285,184 +285,261 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
 <context>
     <name>AssetTreeWidget</name>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="57"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="59" />
         <source>Assets</source>
         <translation>Assets</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="74"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="79" />
         <source>Sprites</source>
         <translation>Sprites</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="75"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="80" />
         <source>Sounds</source>
         <translation>Sounds</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="76"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="81" />
         <source>Backgrounds</source>
         <translation>Hintergründe</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="78"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="83" />
         <source>Objects</source>
         <translation>Objekte</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="79"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="84" />
         <source>Rooms</source>
         <translation>Räume</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="81"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="86" />
         <source>Scripts</source>
         <translation>Skripte</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="82"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="87" />
         <source>Fonts</source>
         <translation>Schriftarten</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="175"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="180" />
         <source>➕ Create New {0}...</source>
         <translation>➕ Neues {0} erstellen...</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="180"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="186" />
         <source>📥 Import {0}...</source>
         <translation>📥 {0} importieren...</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="189"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="193" />
+        <source>📦 Import {0} Package...</source>
+        <translation>📦 {0}-Paket importieren...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="202" />
         <source>✏️ Rename</source>
         <translation>✏️ Umbenennen</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="195"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="208" />
         <source>📥 Import Image...</source>
         <translation>📥 Bild importieren...</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="200"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="213" />
+        <source>🎬 Configure Animation...</source>
+        <translation>🎬 Animation konfigurieren...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="218" />
         <source>🗑️ Delete</source>
         <translation>🗑️ Löschen</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="208"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="226" />
         <source>📦 Export Package...</source>
-        <translation type="unfinished"></translation>
+        <translation>📦 Paket exportieren...</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="232"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="250" />
         <source>⬆️ Move Up</source>
         <translation>⬆️ Nach oben verschieben</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="238"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="256" />
         <source>⬇️ Move Down</source>
         <translation>⬇️ Nach unten verschieben</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="246"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="264" />
         <source>⏫ Move to Top</source>
         <translation>⏫ Ganz nach oben verschieben</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="252"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="270" />
         <source>⏬ Move to Bottom</source>
         <translation>⏬ Ganz nach unten verschieben</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="260"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="278" />
         <source>⚙️ Properties...</source>
         <translation>⚙️ Eigenschaften...</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="288"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="306" />
         <source>Create Asset</source>
         <translation>Asset erstellen</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="289"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="307" />
         <source>Asset creation for {0} is not yet implemented.</source>
         <translation>Asset-Erstellung für {0} ist noch nicht implementiert.</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="307"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="325" />
         <source>Import Assets</source>
         <translation>Assets importieren</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="308"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="326" />
         <source>Please use the File menu to import {0}</source>
         <translation>Bitte verwenden Sie das Datei-Menü, um {0} zu importieren</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="330"/>
-        <source>Select Image for Sprite &apos;{0}&apos;</source>
-        <translation>Bild für Sprite &apos;{0}&apos; auswählen</translation>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="348" />
+        <source>Select Image for Sprite '{0}'</source>
+        <translation>Bild für Sprite '{0}' auswählen</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="333"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="350" />
         <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
         <translation>Bilddateien (*.png *.jpg *.jpeg *.bmp *.gif);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="344"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="362" />
         <source>Success</source>
         <translation>Erfolg</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="345"/>
-        <source>Image imported successfully for sprite &apos;{0}&apos;</source>
-        <translation>Bild erfolgreich für Sprite &apos;{0}&apos; importiert</translation>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="363" />
+        <source>Image imported successfully for sprite '{0}'</source>
+        <translation>Bild erfolgreich für Sprite '{0}' importiert</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="355"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="377" />
+        <source>No Sprite Data</source>
+        <translation>Keine Sprite-Daten</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="378" />
+        <source>Could not load sprite data for '{0}'</source>
+        <translation>Sprite-Daten für '{0}' konnten nicht geladen werden</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="387" />
+        <source>No Image</source>
+        <translation>Kein Bild</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="388" />
+        <source>Sprite '{0}' has no image file. Please import an image first.</source>
+        <translation>Sprite '{0}' hat keine Bilddatei. Bitte importieren Sie zuerst ein Bild.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="402" />
+        <source>Image Not Found</source>
+        <translation>Bild nicht gefunden</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="403" />
+        <source>Could not find image file: {0}</source>
+        <translation>Bilddatei konnte nicht gefunden werden: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="432" />
+        <source>Animation Configured</source>
+        <translation>Animation konfiguriert</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="433" />
+        <source>Sprite '{0}' configured with {1} frames at {2} FPS</source>
+        <translation>Sprite '{0}' mit {1} Frames bei {2} FPS konfiguriert</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="445" />
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="500" />
         <source>No Project</source>
         <translation>Kein Projekt</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="355"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="445" />
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="500" />
         <source>No project is currently loaded</source>
         <translation>Derzeit ist kein Projekt geladen</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="376"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="466" />
         <source>Export {0}</source>
         <translation>{0} exportieren</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="393"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="483" />
         <source>Export Successful</source>
         <translation>Export erfolgreich</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="394"/>
-        <source>{0} &apos;{1}&apos; exported to:
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="484" />
+        <source>{0} '{1}' exported to:
 {2}</source>
-        <translation>{0} &apos;{1}&apos; exportiert nach:
+        <translation>{0} '{1}' exportiert nach:
 {2}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="399"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="489" />
         <source>Export Failed</source>
         <translation>Export fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="400"/>
-        <source>Failed to export {0} &apos;{1}&apos;</source>
-        <translation>Fehler beim Exportieren von {0} &apos;{1}&apos;</translation>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="490" />
+        <source>Failed to export {0} '{1}'</source>
+        <translation>Fehler beim Exportieren von {0} '{1}'</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="442"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="518" />
+        <source>Import {0} Package</source>
+        <translation>{0}-Paket importieren</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="538" />
+        <source>Import Successful</source>
+        <translation>Import erfolgreich</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="539" />
+        <source>{0} '{1}' imported successfully!</source>
+        <translation>{0} '{1}' erfolgreich importiert!</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="544" />
+        <source>Import Failed</source>
+        <translation>Import fehlgeschlagen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="545" />
+        <source>Failed to import {0} package</source>
+        <translation>{0}-Paket konnte nicht importiert werden</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="587" />
         <source>Create {0}</source>
         <translation>{0} erstellen</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="443"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="588" />
         <source>Enter name for new {0}:</source>
         <translation>Name für neues {0} eingeben:</translation>
     </message>
@@ -470,72 +547,72 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
 <context>
     <name>AutoSaveSettingsDialog</name>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="18"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="17" />
         <source>Auto-Save Settings</source>
         <translation>Auto-Speichern-Einstellungen</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="28"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="27" />
         <source>Auto-Save</source>
         <translation>Auto-Speichern</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="31"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="30" />
         <source>Enable automatic saving</source>
         <translation>Automatisches Speichern aktivieren</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="36"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="35" />
         <source>When enabled, your project will be saved automatically at regular intervals.</source>
         <translation>Wenn aktiviert, wird Ihr Projekt automatisch in regelmäßigen Abständen gespeichert.</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="44"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="43" />
         <source>Save Interval</source>
         <translation>Speicherintervall</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="51"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="50" />
         <source> seconds</source>
         <translation> Sekunden</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="54"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="53" />
         <source>Save every:</source>
         <translation>Speichern alle:</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="59"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="58" />
         <source>15s</source>
         <translation>15s</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="63"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="62" />
         <source>30s</source>
         <translation>30s</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="67"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="66" />
         <source>1m</source>
         <translation>1m</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="71"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="70" />
         <source>2m</source>
         <translation>2m</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="75"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="74" />
         <source>5m</source>
         <translation>5m</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="79"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="78" />
         <source>Presets:</source>
         <translation>Voreinstellungen:</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="84"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="83" />
         <source>⚠️  Shorter intervals may impact performance on large projects.</source>
         <translation>⚠️  Kürzere Intervalle können die Leistung bei großen Projekten beeinträchtigen.</translation>
     </message>
@@ -543,165 +620,210 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
 <context>
     <name>BaseEditor</name>
     <message>
-        <location filename="../editors/base_editor.py" line="115"/>
+        <location filename="../editors/base_editor.py" line="117" />
         <source>💾 Save</source>
         <translation>💾 Speichern</translation>
     </message>
     <message>
-        <location filename="../editors/base_editor.py" line="120"/>
-        <location filename="../editors/base_editor.py" line="145"/>
+        <location filename="../editors/base_editor.py" line="122" />
+        <location filename="../editors/base_editor.py" line="147" />
         <source>🔄 Auto-save: ON</source>
         <translation>🔄 Auto-Speichern: AN</translation>
     </message>
     <message>
-        <location filename="../editors/base_editor.py" line="123"/>
+        <location filename="../editors/base_editor.py" line="125" />
         <source>Toggle automatic saving (currently every 3 seconds)</source>
         <translation>Automatisches Speichern umschalten (derzeit alle 3 Sekunden)</translation>
     </message>
     <message>
-        <location filename="../editors/base_editor.py" line="131"/>
+        <location filename="../editors/base_editor.py" line="133" />
         <source>↶ Undo</source>
         <translation>↶ Rückgängig</translation>
     </message>
     <message>
-        <location filename="../editors/base_editor.py" line="135"/>
+        <location filename="../editors/base_editor.py" line="137" />
         <source>↷ Redo</source>
         <translation>↷ Wiederherstellen</translation>
     </message>
     <message>
-        <location filename="../editors/base_editor.py" line="146"/>
+        <location filename="../editors/base_editor.py" line="148" />
         <source>Auto-save is enabled. Click to disable.</source>
         <translation>Auto-Speichern ist aktiviert. Klicken zum Deaktivieren.</translation>
     </message>
     <message>
-        <location filename="../editors/base_editor.py" line="148"/>
+        <location filename="../editors/base_editor.py" line="150" />
         <source>⏸️ Auto-save: OFF</source>
         <translation>⏸️ Auto-Speichern: AUS</translation>
     </message>
     <message>
-        <location filename="../editors/base_editor.py" line="149"/>
+        <location filename="../editors/base_editor.py" line="151" />
         <source>Auto-save is disabled. Click to enable.</source>
         <translation>Auto-Speichern ist deaktiviert. Klicken zum Aktivieren.</translation>
     </message>
     <message>
-        <location filename="../editors/base_editor.py" line="204"/>
+        <location filename="../editors/base_editor.py" line="206" />
         <source>Loaded: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Geladen: {0}</translation>
     </message>
 </context>
 <context>
     <name>BlocklyConfigDialog</name>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="32"/>
         <source>Configure Blockly Blocks</source>
-        <translation>Blockly-Blöcke konfigurieren</translation>
+        <translation type="vanished">Blockly-Blöcke konfigurieren</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="62"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="32" />
+        <source>Configure Events &amp; Actions</source>
+        <translation>Ereignisse und Aktionen konfigurieren</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="62" />
         <source>Preset:</source>
         <translation>Voreinstellung:</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="66"/>
-        <location filename="../dialogs/blockly_config_dialog.py" line="238"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="68" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="274" />
         <source>Full (All Blocks)</source>
         <translation>Vollständig (Alle Blöcke)</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="67"/>
-        <location filename="../dialogs/blockly_config_dialog.py" line="239"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="69" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="275" />
         <source>Beginner (Basic Blocks)</source>
         <translation>Anfänger (Grundlegende Blöcke)</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="68"/>
-        <location filename="../dialogs/blockly_config_dialog.py" line="240"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="70" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="276" />
         <source>Intermediate (More Features)</source>
         <translation>Fortgeschritten (Mehr Funktionen)</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="69"/>
-        <location filename="../dialogs/blockly_config_dialog.py" line="241"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="71" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="277" />
         <source>Platformer Game</source>
         <translation>Plattformspiel</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="70"/>
-        <location filename="../dialogs/blockly_config_dialog.py" line="242"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="72" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="278" />
         <source>Grid-based RPG</source>
         <translation>Rasterbasisiertes RPG</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="72"/>
-        <location filename="../dialogs/blockly_config_dialog.py" line="247"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="73" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="279" />
+        <source>Sokoban (Box Puzzle)</source>
+        <translation>Sokoban (Kistenpuzzle)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="74" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="280" />
+        <source>Thymio Robot</source>
+        <translation>Thymio-Roboter</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="75" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="281" />
+        <source>Testing (Validated Only)</source>
+        <translation>Test (nur validiert)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="76" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="282" />
+        <source>Implemented Only</source>
+        <translation>Nur implementiert</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="77" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="283" />
+        <source>Code Editor</source>
+        <translation>Code-Editor</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="78" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="284" />
+        <source>Blockly Editor</source>
+        <translation>Blockly-Editor</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="79" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="287" />
         <source>Custom</source>
         <translation>Benutzerdefiniert</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="86"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="95" />
         <source>Select blocks to enable:</source>
         <translation>Blöcke zum Aktivieren auswählen:</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="91"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="100" />
         <source>Block</source>
         <translation>Block</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="91"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="100" />
         <source>Description</source>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="109"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="118" />
         <source>Select All</source>
         <translation>Alle auswählen</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="113"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="122" />
         <source>Select None</source>
         <translation>Keine auswählen</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="119"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="128" />
         <source>Save</source>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="124"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="133" />
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="143"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="155" />
         <source>{0} blocks</source>
         <translation>{0} Blöcke</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="189"/>
-        <location filename="../dialogs/blockly_config_dialog.py" line="190"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="198" />
+        <source>[Not implemented] {0}</source>
+        <translation>[Nicht implementiert] {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="214" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="215" />
         <source>Requires: {0}</source>
         <translation>Erfordert: {0}</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="303"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="347" />
         <source>⚠️ Warning: Some blocks are missing dependencies:
 {0}</source>
         <translation>⚠️ Warnung: Einige Blöcke haben fehlende Abhängigkeiten:
 {0}</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="313"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="357" />
         <source>{0} blocks, {1} categories</source>
         <translation>{0} Blöcke, {1} Kategorien</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="332"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="376" />
         <source>Missing Dependencies</source>
         <translation>Fehlende Abhängigkeiten</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="335"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="377" />
         <source>Some enabled blocks are missing their dependencies. The blocks may not work correctly.
 
 Do you want to save anyway?</source>
@@ -713,145 +835,145 @@ Möchten Sie trotzdem speichern?</translation>
 <context>
     <name>BlocklyVisualProgrammingTab</name>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="420"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="478" />
         <source>Visual Block Programming</source>
         <translation>Visuelle Blockprogrammierung</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="426"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="484" />
         <source>Drag blocks from the toolbox on the left to create game logic</source>
         <translation>Ziehe Blöcke aus der Werkzeugleiste links, um Spiellogik zu erstellen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="433"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="491" />
         <source>Editor is detached. Close the detached window to return it here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor ist abgetrennt. Schließen Sie das abgetrennte Fenster, um es hierher zurückzubringen.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="468"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="527" />
         <source>📥 Attach</source>
-        <translation type="unfinished"></translation>
+        <translation>📥 Anhängen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="469"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="528" />
         <source>Return editor to the tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor zum Tab zurückbringen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="493"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="552" />
         <source>⬜ Detach</source>
-        <translation type="unfinished"></translation>
+        <translation>⬜ Abtrennen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="494"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="553" />
         <source>Open Blockly editor in a separate window</source>
-        <translation type="unfinished"></translation>
+        <translation>Blockly-Editor in einem separaten Fenster öffnen</translation>
     </message>
 </context>
 <context>
     <name>BlocklyWidget</name>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="99"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="103" />
         <source>Apply to Events →</source>
         <translation>Auf Ereignisse anwenden →</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="100"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="104" />
         <source>Apply block changes to the Events panel</source>
         <translation>Blockänderungen auf das Ereignis-Panel anwenden</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="105"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="109" />
         <source>← Sync from Events</source>
         <translation>← Von Ereignissen synchronisieren</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="106"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="110" />
         <source>Load events from the Events panel into blocks</source>
         <translation>Ereignisse aus dem Ereignis-Panel in Blöcke laden</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="111"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="115" />
         <source>Clear All</source>
         <translation>Alles löschen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="116"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="120" />
         <source>Reload</source>
         <translation>Neu laden</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="121"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="125" />
         <source>Configure Blocks...</source>
         <translation>Blöcke konfigurieren...</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="122"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="126" />
         <source>Choose which blocks are available in the toolbox</source>
         <translation>Wähle aus, welche Blöcke in der Werkzeugleiste verfügbar sind</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="129"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="133" />
         <source>⬜ Detach</source>
-        <translation type="unfinished"></translation>
+        <translation>⬜ Abtrennen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="130"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="134" />
         <source>Open Blockly editor in a separate window</source>
-        <translation type="unfinished"></translation>
+        <translation>Blockly-Editor in einem separaten Fenster öffnen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="194"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="198" />
         <source>Drag blocks from the toolbox on the left to create game logic!</source>
         <translation>Ziehe Blöcke aus der Werkzeugleiste links, um Spiellogik zu erstellen!</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="196"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="200" />
         <source>Error loading Blockly - click Reload to try again</source>
         <translation>Fehler beim Laden von Blockly - klicke auf Neu laden, um es erneut zu versuchen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="214"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="218" />
         <source>Reloading Blockly...</source>
         <translation>Blockly wird neu geladen...</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="236"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="240" />
         <source>Blocks updated - {0} events</source>
         <translation>Blöcke aktualisiert - {0} Ereignisse</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="255"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="259" />
         <source>Applied {0} events</source>
         <translation>{0} Ereignisse angewendet</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="263"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="267" />
         <source>Workspace cleared</source>
         <translation>Arbeitsbereich gelöscht</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="302"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="306" />
         <source>No events to load</source>
         <translation>Keine Ereignisse zum Laden</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="318"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="322" />
         <source>Loaded {0} events as blocks</source>
         <translation>{0} Ereignisse als Blöcke geladen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="320"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="324" />
         <source>Loaded {0} events - some may not have block equivalents</source>
         <translation>{0} Ereignisse geladen - einige haben möglicherweise keine Block-Entsprechungen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="352"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="355" />
         <source>Requesting sync from events...</source>
         <translation>Synchronisation von Ereignissen wird angefordert...</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="385"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="439" />
         <source>Configuration applied: {0} blocks, {1} categories</source>
         <translation>Konfiguration angewendet: {0} Blöcke, {1} Kategorien</translation>
     </message>
@@ -859,67 +981,67 @@ Möchten Sie trotzdem speichern?</translation>
 <context>
     <name>BuildProjectDialog</name>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="786"/>
+        <location filename="../dialogs/project_dialogs.py" line="783" />
         <source>Build Project</source>
         <translation>Projekt erstellen</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="797"/>
+        <location filename="../dialogs/project_dialogs.py" line="794" />
         <source>Build Configuration</source>
         <translation>Build-Konfiguration</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="801"/>
+        <location filename="../dialogs/project_dialogs.py" line="798" />
         <source>Debug</source>
         <translation>Debuggen</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="801"/>
+        <location filename="../dialogs/project_dialogs.py" line="798" />
         <source>Release</source>
         <translation>Release</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="802"/>
+        <location filename="../dialogs/project_dialogs.py" line="799" />
         <source>Build Type:</source>
         <translation>Build-Typ:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="805"/>
+        <location filename="../dialogs/project_dialogs.py" line="802" />
         <source>None</source>
         <translation>Keine</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="805"/>
+        <location filename="../dialogs/project_dialogs.py" line="802" />
         <source>Basic</source>
         <translation>Grundlegend</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="805"/>
+        <location filename="../dialogs/project_dialogs.py" line="802" />
         <source>Full</source>
         <translation>Vollständig</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="806"/>
+        <location filename="../dialogs/project_dialogs.py" line="803" />
         <source>Optimization:</source>
         <translation>Optimierung:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="811"/>
+        <location filename="../dialogs/project_dialogs.py" line="808" />
         <source>Build Options</source>
         <translation>Build-Optionen</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="815"/>
+        <location filename="../dialogs/project_dialogs.py" line="812" />
         <source>Clean Build:</source>
         <translation>Sauberer Build:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="818"/>
+        <location filename="../dialogs/project_dialogs.py" line="815" />
         <source>Verbose Output:</source>
         <translation>Ausführliche Ausgabe:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="830"/>
+        <location filename="../dialogs/project_dialogs.py" line="827" />
         <source>Build</source>
         <translation>Erstellen</translation>
     </message>
@@ -1144,37 +1266,37 @@ Beispiel: x &gt; 100 &amp;&amp; y &lt; 200</translation>
 <context>
     <name>CreateAssetDialog</name>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="237"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="234" />
         <source>Create {0}</source>
         <translation>{0} erstellen</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="246"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="243" />
         <source>&lt;h3&gt;Create New {0}&lt;/h3&gt;</source>
         <translation>&lt;h3&gt;Neues {0} erstellen&lt;/h3&gt;</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="250"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="247" />
         <source>Asset name:</source>
         <translation>Asset-Name:</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="254"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="251" />
         <source>Enter {0} name...</source>
         <translation>{0}-Name eingeben...</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="261"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="258" />
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="265"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="262" />
         <source>Create</source>
         <translation>Erstellen</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="292"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="289" />
         <source>Invalid Name</source>
         <translation>Ungültiger Name</translation>
     </message>
@@ -1182,48 +1304,48 @@ Beispiel: x &gt; 100 &amp;&amp; y &lt; 200</translation>
 <context>
     <name>DetachedBlocklyWindow</name>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="42"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="45" />
         <source>Visual Block Programming (Detached)</source>
-        <translation type="unfinished"></translation>
+        <translation>Visuelle Blockprogrammierung (Abgetrennt)</translation>
     </message>
 </context>
 <context>
     <name>EditorStatusWidget</name>
     <message>
-        <location filename="../editors/editor_status_widget.py" line="35"/>
-        <location filename="../editors/editor_status_widget.py" line="61"/>
-        <location filename="../editors/editor_status_widget.py" line="89"/>
+        <location filename="../editors/editor_status_widget.py" line="35" />
+        <location filename="../editors/editor_status_widget.py" line="61" />
+        <location filename="../editors/editor_status_widget.py" line="89" />
         <source>Saved</source>
         <translation>Gespeichert</translation>
     </message>
     <message>
-        <location filename="../editors/editor_status_widget.py" line="41"/>
-        <location filename="../editors/editor_status_widget.py" line="69"/>
+        <location filename="../editors/editor_status_widget.py" line="41" />
+        <location filename="../editors/editor_status_widget.py" line="69" />
         <source>🔄 Auto-save: ON</source>
         <translation>🔄 Auto-Speichern: EIN</translation>
     </message>
     <message>
-        <location filename="../editors/editor_status_widget.py" line="53"/>
+        <location filename="../editors/editor_status_widget.py" line="53" />
         <source>Unsaved (auto-save in 3s)</source>
         <translation>Nicht gespeichert (Auto-Speichern in 3s)</translation>
     </message>
     <message>
-        <location filename="../editors/editor_status_widget.py" line="58"/>
+        <location filename="../editors/editor_status_widget.py" line="58" />
         <source>Unsaved - press Ctrl+S</source>
         <translation>Nicht gespeichert - drücken Sie Strg+S</translation>
     </message>
     <message>
-        <location filename="../editors/editor_status_widget.py" line="72"/>
+        <location filename="../editors/editor_status_widget.py" line="72" />
         <source>⏸️ Auto-save: OFF</source>
         <translation>⏸️ Auto-Speichern: AUS</translation>
     </message>
     <message>
-        <location filename="../editors/editor_status_widget.py" line="77"/>
+        <location filename="../editors/editor_status_widget.py" line="77" />
         <source>Saving...</source>
         <translation>Speichern...</translation>
     </message>
     <message>
-        <location filename="../editors/editor_status_widget.py" line="84"/>
+        <location filename="../editors/editor_status_widget.py" line="84" />
         <source>Saved ✓</source>
         <translation>Gespeichert ✓</translation>
     </message>
@@ -1231,125 +1353,126 @@ Beispiel: x &gt; 100 &amp;&amp; y &lt; 200</translation>
 <context>
     <name>EnhancedPropertiesPanel</name>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="57"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="75" />
         <source>Asset Information</source>
         <translation>Asset-Informationen</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="60"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="299"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="78" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="375" />
         <source>No asset selected</source>
         <translation>Kein Asset ausgewählt</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="64"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="82" />
         <source>Name:</source>
         <translation>Name:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="65"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="83" />
         <source>Type:</source>
         <translation>Typ:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="66"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="84" />
         <source>Status:</source>
         <translation>Status:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="71"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="89" />
         <source>Properties</source>
         <translation>Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="76"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="94" />
         <source>Preview</source>
         <translation>Vorschau</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="79"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="309"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="97" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="385" />
         <source>No preview available</source>
         <translation>Keine Vorschau verfügbar</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="124"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="141" />
         <source>Room (Editor)</source>
         <translation>Raum (Editor)</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="125"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="507"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="142" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="614" />
         <source>Active</source>
         <translation>Aktiv</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="160"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="174"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="533"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="590"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="654"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="180" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="194" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="640" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="697" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="761" />
         <source>None</source>
         <translation>Keine</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="195"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="215" />
         <source>Background Image:</source>
         <translation>Hintergrundbild:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="196"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="216" />
         <source>Tile Horizontal:</source>
         <translation>Horizontal kacheln:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="197"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="217" />
         <source>Tile Vertical:</source>
         <translation>Vertikal kacheln:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="192"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="352"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="375"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="398"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="212" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="436" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="469" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="505" />
         <source>Width:</source>
         <translation>Breite:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="193"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="353"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="376"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="399"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="213" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="437" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="470" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="506" />
         <source>Height:</source>
         <translation>Höhe:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="354"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="438" />
         <source>Background:</source>
         <translation>Hintergrund:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="198"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="218" />
         <source>Enable Views:</source>
         <translation>Ansichten aktivieren:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="194"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="214" />
         <source>Background Color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hintergrundfarbe:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="202"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="222" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="439" />
         <source>Instances:</source>
         <translation>Instanzen:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="210"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="230" />
         <source>Choose Background Color</source>
         <translation>Hintergrundfarbe wählen</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="268"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="288" />
         <source>Room Preview
 {0}x{1}
 {2} instances</source>
@@ -1358,144 +1481,192 @@ Beispiel: x &gt; 100 &amp;&amp; y &lt; 200</translation>
 {2} Instanzen</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="271"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="291" />
         <source>Preview
 Generation Failed</source>
         <translation>Vorschau
 Generierung fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="273"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="293" />
         <source>Preview
 Not Available</source>
         <translation>Vorschau
 Nicht verfügbar</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="277"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="297" />
         <source>Preview
 Update Error</source>
         <translation>Vorschau
 Aktualisierungsfehler</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="338"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="414" />
         <source>Loaded</source>
         <translation>Geladen</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="358"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="345" />
         <source>Room: {0}
 {1} x {2}</source>
         <translation>Raum: {0}
 {1} x {2}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="377"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="308" />
+        <source>Room: {0}
+{1} x {2}
+{3} instances</source>
+        <translation>Raum: {0}
+{1} x {2}
+{3} Instanzen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="331" />
+        <source>Room: {0}
+{1}x{2}
+{3} instances</source>
+        <translation>Raum: {0}
+{1}x{2}
+{3} Instanzen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="340" />
+        <source>Preview generation failed</source>
+        <translation>Vorschau-Generierung fehlgeschlagen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="471" />
         <source>Frames:</source>
         <translation>Frames:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="378"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="472" />
         <source>Origin X:</source>
         <translation>Ursprung X:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="379"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="473" />
         <source>Origin Y:</source>
         <translation>Ursprung Y:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="380"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="474" />
         <source>Speed:</source>
         <translation>Geschwindigkeit:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="386"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="405"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="480" />
+        <source>Horizontal Strip</source>
+        <translation>Horizontaler Streifen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="481" />
+        <source>Vertical Strip</source>
+        <translation>Vertikaler Streifen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="482" />
+        <source>Grid</source>
+        <translation>Raster</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="483" />
+        <source>Single Frame</source>
+        <translation>Einzelbild</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="487" />
+        <source>Animation:</source>
+        <translation>Animation:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="493" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="512" />
         <source>File:</source>
         <translation>Datei:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="422"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="529" />
         <source>{0}: {1}</source>
         <translation>{0}: {1}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="457"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="564" />
         <source>No image file path found for {0}</source>
         <translation>Kein Bilddateipfad für {0} gefunden</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="462"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="569" />
         <source>Image file not found:
 {0}</source>
         <translation>Bilddatei nicht gefunden:
 {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="470"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="577" />
         <source>Failed to load image:
 {0}</source>
         <translation>Fehler beim Laden des Bildes:
 {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="489"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="596" />
         <source>{0}
 {1}x{2}</source>
         <translation>{0}
 {1}x{2}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="496"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="603" />
         <source>Error loading image:
 {0}</source>
         <translation>Fehler beim Laden des Bildes:
 {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="506"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="613" />
         <source>Object (Editor)</source>
         <translation>Objekt (Editor)</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="560"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="667" />
         <source>Sprite:</source>
         <translation>Sprite:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="566"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="673" />
         <source>{0} x {1}</source>
         <translation>{0} x {1}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="568"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="675" />
         <source>Sprite Size:</source>
         <translation>Sprite-Größe:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="570"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="677" />
         <source>Visible:</source>
         <translation>Sichtbar:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="571"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="678" />
         <source>Solid:</source>
         <translation>Fest:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="572"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="679" />
         <source>Persistent:</source>
         <translation>Persistent:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="576"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="683" />
         <source>Events:</source>
         <translation>Ereignisse:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="693"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="800" />
         <source>Object: {0}
 Sprite: {1}
 Size: {2}x{3}
@@ -1506,32 +1677,32 @@ Größe: {2}x{3}
 Ereignisse: {4}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="708"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="815" />
         <source>Object: {0}</source>
         <translation>Objekt: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="710"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="817" />
         <source>Sprite: {0}</source>
         <translation>Sprite: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="712"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="819" />
         <source>No sprite assigned</source>
         <translation>Kein Sprite zugewiesen</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="713"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="820" />
         <source>Events: {0}</source>
         <translation>Ereignisse: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="717"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="824" />
         <source>Visible</source>
         <translation>Sichtbar</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="719"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="826" />
         <source>Solid</source>
         <translation>Fest</translation>
     </message>
@@ -1539,7 +1710,7 @@ Ereignisse: {4}</translation>
 <context>
     <name>EventActionWidget</name>
     <message>
-        <location filename="../widgets/event_actions.py" line="12"/>
+        <location filename="../widgets/event_actions.py" line="15" />
         <source>Events &amp; Actions</source>
         <translation>Ereignisse &amp; Aktionen</translation>
     </message>
@@ -1547,127 +1718,127 @@ Ereignisse: {4}</translation>
 <context>
     <name>ExportProjectDialog</name>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="408"/>
+        <location filename="../dialogs/project_dialogs.py" line="405" />
         <source>Export Project</source>
         <translation>Projekt exportieren</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="419"/>
+        <location filename="../dialogs/project_dialogs.py" line="416" />
         <source>Export Target</source>
         <translation>Export-Ziel</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="424"/>
+        <location filename="../dialogs/project_dialogs.py" line="421" />
         <source>Desktop Executable (.exe/.app)</source>
         <translation>Desktop-Anwendung (.exe/.app)</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="425"/>
+        <location filename="../dialogs/project_dialogs.py" line="422" />
         <source>Web (HTML5)</source>
         <translation>Web (HTML5)</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="426"/>
+        <location filename="../dialogs/project_dialogs.py" line="423" />
         <source>Mobile (Kivy)</source>
         <translation>Mobil (Kivy)</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="427"/>
+        <location filename="../dialogs/project_dialogs.py" line="424" />
         <source>Mobile (APK)</source>
         <translation>Mobil (APK)</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="429"/>
+        <location filename="../dialogs/project_dialogs.py" line="425" />
         <source>Source Code (.zip)</source>
         <translation>Quellcode (.zip)</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="430"/>
+        <location filename="../dialogs/project_dialogs.py" line="427" />
         <source>Target Platform:</source>
         <translation>Zielplattform:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="435"/>
+        <location filename="../dialogs/project_dialogs.py" line="432" />
         <source>Choose export location...</source>
         <translation>Export-Ort wählen...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="437"/>
+        <location filename="../dialogs/project_dialogs.py" line="434" />
         <source>Browse...</source>
         <translation>Durchsuchen...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="442"/>
+        <location filename="../dialogs/project_dialogs.py" line="439" />
         <source>Output Location:</source>
         <translation>Ausgabeort:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="447"/>
+        <location filename="../dialogs/project_dialogs.py" line="444" />
         <source>Export Options</source>
         <translation>Export-Optionen</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="452"/>
+        <location filename="../dialogs/project_dialogs.py" line="449" />
         <source>Include Assets:</source>
         <translation>Assets einschließen:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="456"/>
+        <location filename="../dialogs/project_dialogs.py" line="453" />
         <source>Optimize for Release:</source>
         <translation>Für Release optimieren:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="460"/>
+        <location filename="../dialogs/project_dialogs.py" line="457" />
         <source>Include Debug Info:</source>
         <translation>Debug-Informationen einschließen:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="477"/>
+        <location filename="../dialogs/project_dialogs.py" line="474" />
         <source>Export</source>
         <translation>Exportieren</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="499"/>
+        <location filename="../dialogs/project_dialogs.py" line="496" />
         <source>Choose Export Location</source>
         <translation>Export-Ort wählen</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="513"/>
+        <location filename="../dialogs/project_dialogs.py" line="510" />
         <source>Invalid Output</source>
         <translation>Ungültige Ausgabe</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="513"/>
+        <location filename="../dialogs/project_dialogs.py" line="510" />
         <source>Please choose an export location.</source>
         <translation>Bitte wählen Sie einen Export-Ort.</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="553"/>
-        <location filename="../dialogs/project_dialogs.py" line="583"/>
-        <location filename="../dialogs/project_dialogs.py" line="624"/>
-        <location filename="../dialogs/project_dialogs.py" line="664"/>
-        <location filename="../dialogs/project_dialogs.py" line="669"/>
-        <location filename="../dialogs/project_dialogs.py" line="687"/>
-        <location filename="../dialogs/project_dialogs.py" line="768"/>
+        <location filename="../dialogs/project_dialogs.py" line="550" />
+        <location filename="../dialogs/project_dialogs.py" line="580" />
+        <location filename="../dialogs/project_dialogs.py" line="621" />
+        <location filename="../dialogs/project_dialogs.py" line="661" />
+        <location filename="../dialogs/project_dialogs.py" line="666" />
+        <location filename="../dialogs/project_dialogs.py" line="684" />
+        <location filename="../dialogs/project_dialogs.py" line="765" />
         <source>Export Error</source>
         <translation>Export-Fehler</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="554"/>
-        <location filename="../dialogs/project_dialogs.py" line="665"/>
+        <location filename="../dialogs/project_dialogs.py" line="551" />
+        <location filename="../dialogs/project_dialogs.py" line="662" />
         <source>Could not access project manager</source>
         <translation>Konnte nicht auf Projekt-Manager zugreifen</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="563"/>
-        <location filename="../dialogs/project_dialogs.py" line="602"/>
-        <location filename="../dialogs/project_dialogs.py" line="644"/>
-        <location filename="../dialogs/project_dialogs.py" line="740"/>
+        <location filename="../dialogs/project_dialogs.py" line="560" />
+        <location filename="../dialogs/project_dialogs.py" line="599" />
+        <location filename="../dialogs/project_dialogs.py" line="641" />
+        <location filename="../dialogs/project_dialogs.py" line="737" />
         <source>Export Successful</source>
         <translation>Export erfolgreich</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="564"/>
+        <location filename="../dialogs/project_dialogs.py" line="561" />
         <source>Kivy project exported to:
 {0}
 
@@ -1678,20 +1849,20 @@ Would you like to open the export directory?</source>
 Möchten Sie das Export-Verzeichnis öffnen?</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="578"/>
-        <location filename="../dialogs/project_dialogs.py" line="619"/>
-        <location filename="../dialogs/project_dialogs.py" line="661"/>
-        <location filename="../dialogs/project_dialogs.py" line="759"/>
+        <location filename="../dialogs/project_dialogs.py" line="575" />
+        <location filename="../dialogs/project_dialogs.py" line="616" />
+        <location filename="../dialogs/project_dialogs.py" line="658" />
+        <location filename="../dialogs/project_dialogs.py" line="756" />
         <source>Export Failed</source>
         <translation>Export fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="579"/>
+        <location filename="../dialogs/project_dialogs.py" line="576" />
         <source>Failed to export project. Check console for errors.</source>
         <translation>Fehler beim Exportieren des Projekts. Überprüfen Sie die Konsole auf Fehler.</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="584"/>
+        <location filename="../dialogs/project_dialogs.py" line="581" />
         <source>Error during export:
 {0}
 
@@ -1702,7 +1873,7 @@ Möchten Sie das Export-Verzeichnis öffnen?</translation>
 {1}</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="603"/>
+        <location filename="../dialogs/project_dialogs.py" line="600" />
         <source>HTML5 game exported to:
 {0}
 
@@ -1713,12 +1884,12 @@ Would you like to open the export directory?</source>
 Möchten Sie das Export-Verzeichnis öffnen?</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="620"/>
+        <location filename="../dialogs/project_dialogs.py" line="617" />
         <source>Failed to export HTML5 game. Check console for errors.</source>
         <translation>Fehler beim Exportieren des HTML5-Spiels. Überprüfen Sie die Konsole auf Fehler.</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="625"/>
+        <location filename="../dialogs/project_dialogs.py" line="622" />
         <source>Error during HTML5 export:
 {0}
 
@@ -1729,7 +1900,7 @@ Möchten Sie das Export-Verzeichnis öffnen?</translation>
 {1}</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="645"/>
+        <location filename="../dialogs/project_dialogs.py" line="642" />
         <source>Project exported to:
 {0}
 
@@ -1740,12 +1911,12 @@ Would you like to open the export directory?</source>
 Möchten Sie das Export-Verzeichnis öffnen?</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="662"/>
+        <location filename="../dialogs/project_dialogs.py" line="659" />
         <source>Failed to export ZIP file. Check console for errors.</source>
         <translation>Fehler beim Exportieren der ZIP-Datei. Überprüfen Sie die Konsole auf Fehler.</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="670"/>
+        <location filename="../dialogs/project_dialogs.py" line="667" />
         <source>Error during ZIP export:
 {0}
 
@@ -1756,27 +1927,27 @@ Möchten Sie das Export-Verzeichnis öffnen?</translation>
 {1}</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="688"/>
+        <location filename="../dialogs/project_dialogs.py" line="685" />
         <source>Project file not found: {0}</source>
         <translation>Projektdatei nicht gefunden: {0}</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="704"/>
+        <location filename="../dialogs/project_dialogs.py" line="701" />
         <source>Initializing export...</source>
         <translation>Export wird initialisiert...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="705"/>
+        <location filename="../dialogs/project_dialogs.py" line="702" />
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="709"/>
+        <location filename="../dialogs/project_dialogs.py" line="706" />
         <source>Exporting Executable</source>
         <translation>Ausführbare Datei exportieren</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="741"/>
+        <location filename="../dialogs/project_dialogs.py" line="738" />
         <source>Executable exported to:
 {0}
 
@@ -1787,7 +1958,7 @@ Would you like to open the export directory?</source>
 Möchten Sie das Export-Verzeichnis öffnen?</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="760"/>
+        <location filename="../dialogs/project_dialogs.py" line="757" />
         <source>Failed to export executable:
 
 {0}</source>
@@ -1796,7 +1967,7 @@ Möchten Sie das Export-Verzeichnis öffnen?</translation>
 {0}</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="769"/>
+        <location filename="../dialogs/project_dialogs.py" line="766" />
         <source>Error during executable export:
 {0}
 
@@ -1810,38 +1981,38 @@ Möchten Sie das Export-Verzeichnis öffnen?</translation>
 <context>
     <name>GM80ActionDialog</name>
     <message>
-        <location filename="../editors/object_editor/gm80_action_dialog.py" line="35"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="37" />
         <source>Configure: {0}</source>
         <translation>Konfigurieren: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_action_dialog.py" line="53"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="55" />
         <source>Parameters</source>
         <translation>Parameter</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_action_dialog.py" line="68"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="70" />
         <source>This action has no parameters.</source>
         <translation>Diese Aktion hat keine Parameter.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_action_dialog.py" line="134"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="136" />
         <source>Pick Color...</source>
         <translation>Farbe wählen...</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_action_dialog.py" line="189"/>
-        <location filename="../editors/object_editor/gm80_action_dialog.py" line="222"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="197" />
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="230" />
         <source>{0} actions</source>
-        <translation type="unfinished">{0} Aktionen</translation>
+        <translation>{0} Aktionen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_action_dialog.py" line="194"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="202" />
         <source>📋 Configure...</source>
-        <translation type="unfinished"></translation>
+        <translation>📋 Konfigurieren...</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_action_dialog.py" line="209"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="217" />
         <source>Pick Color</source>
         <translation>Farbe wählen</translation>
     </message>
@@ -1849,135 +2020,164 @@ Möchten Sie das Export-Verzeichnis öffnen?</translation>
 <context>
     <name>GM80EventsPanel</name>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="86"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="165" />
         <source>Object Events</source>
         <translation>Objekt-Ereignisse</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="92"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="171" />
         <source>Event</source>
         <translation>Ereignis</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="92"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="171" />
         <source>Actions</source>
         <translation>Aktionen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="131"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="210" />
         <source>+ Add Event</source>
         <translation>+ Ereignis hinzufügen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="135"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="214" />
         <source>- Remove Event</source>
         <translation>- Ereignis entfernen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="209"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="322" />
         <source>⚠️ No events enabled</source>
         <translation>⚠️ Keine Ereignisse aktiviert</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="212"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="325" />
         <source>Configure enabled events...</source>
         <translation>Aktivierte Ereignisse konfigurieren...</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="229"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="342" />
         <source>No objects available</source>
         <translation>Keine Objekte verfügbar</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="260"/>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="288"/>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="301"/>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="327"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="373" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="401" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="414" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="438" />
         <source>Event Exists</source>
         <translation>Ereignis existiert</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="261"/>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="289"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="374" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="402" />
         <source>The {0} event already exists.</source>
         <translation>Das {0} Ereignis existiert bereits.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="302"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="415" />
         <source>This collision event already exists.</source>
         <translation>Dieses Kollisionsereignis existiert bereits.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="328"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="439" />
         <source>The {0} key event already exists.</source>
         <translation>Das {0} Tastenereignis existiert bereits.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="348"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="459" />
         <source>Add Action</source>
         <translation>Aktion hinzufügen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="364"/>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="529"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="499" />
+        <source>⚠️ No actions enabled</source>
+        <translation>⚠️ Keine Aktionen aktiviert</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="503" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="693" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="709" />
         <source>Remove Event</source>
         <translation>Ereignis entfernen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="369"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="508" />
         <source>Edit Action</source>
         <translation>Aktion bearbeiten</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="375"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="514" />
         <source>Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach oben</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="378"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="517" />
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach unten</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="390"/>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="470"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="529" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="628" />
         <source>Remove Action</source>
         <translation>Aktion entfernen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="471"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="629" />
         <source>Are you sure you want to remove this action?</source>
         <translation>Möchten Sie diese Aktion wirklich entfernen?</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="530"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="694" />
+        <source>Are you sure you want to remove the {0} {1} event?</source>
+        <translation>Möchten Sie das Ereignis {0} {1} wirklich entfernen?</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="710" />
         <source>Are you sure you want to remove the {0} event?</source>
         <translation>Möchten Sie wirklich das {0} Ereignis entfernen?</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="619"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="799" />
         <source>{0} keys</source>
         <translation>{0} Tasten</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="634"/>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="663"/>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="688"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="814" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="843" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="868" />
         <source>{0} actions</source>
         <translation>{0} Aktionen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="662"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="842" />
         <source>💥 Collision with {0}</source>
         <translation>💥 Kollision mit {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="724"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="905" />
         <source>Configure Events</source>
         <translation>Ereignisse konfigurieren</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="730"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="906" />
+        <source>To enable/disable events, go to:
+
+Tools → Configure Events &amp; Actions
+
+Select which events you want available in both the
+visual programming editor and this traditional event editor.
+
+Changes will take effect immediately.</source>
+        <translation>Um Ereignisse zu aktivieren/deaktivieren, gehen Sie zu:
+
+Werkzeuge → Ereignisse und Aktionen konfigurieren
+
+Wählen Sie, welche Ereignisse im visuellen Programmier-
+editor und im traditionellen Ereigniseditor verfügbar sein sollen.
+
+Änderungen werden sofort wirksam.</translation>
+    </message>
+    <message>
         <source>To enable/disable events, go to:
 
 Tools → Configure Blockly Blocks
@@ -1986,7 +2186,7 @@ Select which events you want available in both the
 visual programming editor and this traditional event editor.
 
 Changes will take effect immediately.</source>
-        <translation>Um Ereignisse zu aktivieren/deaktivieren, gehen Sie zu:
+        <translation type="vanished">Um Ereignisse zu aktivieren/deaktivieren, gehen Sie zu:
 
 Tools → Blockly-Blöcke konfigurieren
 
@@ -1999,63 +2199,63 @@ diesem traditionellen Ereignis-Editor verfügbar sein sollen.
 <context>
     <name>ImportAssetsDialog</name>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="23"/>
+        <location filename="../dialogs/import_dialogs.py" line="22" />
         <source>Import Assets</source>
         <translation>Assets importieren</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="33"/>
-        <location filename="../dialogs/import_dialogs.py" line="91"/>
+        <location filename="../dialogs/import_dialogs.py" line="32" />
+        <location filename="../dialogs/import_dialogs.py" line="90" />
         <source>Select Files to Import</source>
         <translation>Zu importierende Dateien auswählen</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="41"/>
+        <location filename="../dialogs/import_dialogs.py" line="40" />
         <source>Add Files...</source>
         <translation>Dateien hinzufügen...</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="45"/>
+        <location filename="../dialogs/import_dialogs.py" line="44" />
         <source>Add Folder...</source>
         <translation>Ordner hinzufügen...</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="49"/>
+        <location filename="../dialogs/import_dialogs.py" line="48" />
         <source>Clear All</source>
         <translation>Alle löschen</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="58"/>
+        <location filename="../dialogs/import_dialogs.py" line="57" />
         <source>Import Options</source>
         <translation>Import-Optionen</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="61"/>
+        <location filename="../dialogs/import_dialogs.py" line="60" />
         <source>Auto-detect asset type</source>
         <translation>Asset-Typ automatisch erkennen</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="65"/>
+        <location filename="../dialogs/import_dialogs.py" line="64" />
         <source>Copy files to project folder</source>
         <translation>Dateien in Projektordner kopieren</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="74"/>
+        <location filename="../dialogs/import_dialogs.py" line="73" />
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="77"/>
+        <location filename="../dialogs/import_dialogs.py" line="76" />
         <source>Import</source>
         <translation>Importieren</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="94"/>
+        <location filename="../dialogs/import_dialogs.py" line="92" />
         <source>Images (*.png *.jpg *.jpeg *.bmp *.gif);;Sounds (*.wav *.mp3 *.ogg);;All Files (*)</source>
         <translation>Bilder (*.png *.jpg *.jpeg *.bmp *.gif);;Sounds (*.wav *.mp3 *.ogg);;Alle Dateien (*)</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="108"/>
+        <location filename="../dialogs/import_dialogs.py" line="107" />
         <source>Select Folder</source>
         <translation>Ordner auswählen</translation>
     </message>
@@ -2063,55 +2263,55 @@ diesem traditionellen Ereignis-Editor verfügbar sein sollen.
 <context>
     <name>InstanceProperties</name>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="27"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="27" />
         <source>Instance Properties</source>
         <translation>Instanz-Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="35"/>
-        <location filename="../editors/room_editor/instance_properties.py" line="135"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="35" />
+        <location filename="../editors/room_editor/instance_properties.py" line="135" />
         <source>Object: None</source>
         <translation>Objekt: Keine</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="39"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="39" />
         <source>Position</source>
         <translation>Position</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="42"/>
-        <location filename="../editors/room_editor/instance_properties.py" line="77"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="42" />
+        <location filename="../editors/room_editor/instance_properties.py" line="77" />
         <source>X:</source>
         <translation>X:</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="48"/>
-        <location filename="../editors/room_editor/instance_properties.py" line="85"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="48" />
+        <location filename="../editors/room_editor/instance_properties.py" line="85" />
         <source>Y:</source>
         <translation>Y:</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="57"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="57" />
         <source>Visible</source>
         <translation>Sichtbar</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="63"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="63" />
         <source>Rotation</source>
         <translation>Rotation</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="74"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="74" />
         <source>Scale</source>
         <translation>Skalierung</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="96"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="96" />
         <source>Delete Instance</source>
         <translation>Instanz löschen</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="117"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="117" />
         <source>Object: {0}</source>
         <translation>Objekt: {0}</translation>
     </message>
@@ -2119,32 +2319,32 @@ diesem traditionellen Ereignis-Editor verfügbar sein sollen.
 <context>
     <name>KeySelectorDialog</name>
     <message>
-        <location filename="../dialogs/key_selector_dialog.py" line="29"/>
+        <location filename="../dialogs/key_selector_dialog.py" line="29" />
         <source>Select Key</source>
         <translation>Taste auswählen</translation>
     </message>
     <message>
-        <location filename="../dialogs/key_selector_dialog.py" line="35"/>
+        <location filename="../dialogs/key_selector_dialog.py" line="35" />
         <source>Select which key to respond to:</source>
         <translation>Taste auswählen, auf die reagiert werden soll:</translation>
     </message>
     <message>
-        <location filename="../dialogs/key_selector_dialog.py" line="41"/>
+        <location filename="../dialogs/key_selector_dialog.py" line="41" />
         <source>Search:</source>
         <translation>Suchen:</translation>
     </message>
     <message>
-        <location filename="../dialogs/key_selector_dialog.py" line="45"/>
+        <location filename="../dialogs/key_selector_dialog.py" line="45" />
         <source>Type to filter keys...</source>
         <translation>Eingeben, um Tasten zu filtern...</translation>
     </message>
     <message>
-        <location filename="../dialogs/key_selector_dialog.py" line="134"/>
+        <location filename="../dialogs/key_selector_dialog.py" line="134" />
         <source>No Selection</source>
         <translation>Keine Auswahl</translation>
     </message>
     <message>
-        <location filename="../dialogs/key_selector_dialog.py" line="136"/>
+        <location filename="../dialogs/key_selector_dialog.py" line="135" />
         <source>Please select a key first.</source>
         <translation>Bitte wählen Sie zuerst eine Taste.</translation>
     </message>
@@ -2152,32 +2352,32 @@ diesem traditionellen Ereignis-Editor verfügbar sein sollen.
 <context>
     <name>MouseEventSelectorDialog</name>
     <message>
-        <location filename="../dialogs/mouse_event_selector_dialog.py" line="28"/>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="28" />
         <source>Select Mouse Event</source>
         <translation>Maus-Ereignis auswählen</translation>
     </message>
     <message>
-        <location filename="../dialogs/mouse_event_selector_dialog.py" line="34"/>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="34" />
         <source>Select which mouse event to respond to:</source>
         <translation>Maus-Ereignis auswählen, auf das reagiert werden soll:</translation>
     </message>
     <message>
-        <location filename="../dialogs/mouse_event_selector_dialog.py" line="40"/>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="40" />
         <source>Search:</source>
         <translation>Suchen:</translation>
     </message>
     <message>
-        <location filename="../dialogs/mouse_event_selector_dialog.py" line="44"/>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="44" />
         <source>Type to filter events...</source>
         <translation>Eingeben, um Ereignisse zu filtern...</translation>
     </message>
     <message>
-        <location filename="../dialogs/mouse_event_selector_dialog.py" line="141"/>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="141" />
         <source>No Selection</source>
         <translation>Keine Auswahl</translation>
     </message>
     <message>
-        <location filename="../dialogs/mouse_event_selector_dialog.py" line="143"/>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="142" />
         <source>Please select a mouse event first.</source>
         <translation>Bitte wählen Sie zuerst ein Maus-Ereignis.</translation>
     </message>
@@ -2224,68 +2424,68 @@ diesem traditionellen Ereignis-Editor verfügbar sein sollen.
 <context>
     <name>NewProjectDialog</name>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="27"/>
+        <location filename="../dialogs/project_dialogs.py" line="24" />
         <source>New Project</source>
         <translation>Neues Projekt</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="37"/>
+        <location filename="../dialogs/project_dialogs.py" line="34" />
         <source>Project Details</source>
         <translation>Projektdetails</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="41"/>
+        <location filename="../dialogs/project_dialogs.py" line="38" />
         <source>Enter project name...</source>
         <translation>Projektnamen eingeben...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="42"/>
+        <location filename="../dialogs/project_dialogs.py" line="39" />
         <source>Project Name:</source>
         <translation>Projektname:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="46"/>
+        <location filename="../dialogs/project_dialogs.py" line="43" />
         <source>Choose project location...</source>
         <translation>Projekt-Ort wählen...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="48"/>
+        <location filename="../dialogs/project_dialogs.py" line="45" />
         <source>Browse...</source>
         <translation>Durchsuchen...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="53"/>
+        <location filename="../dialogs/project_dialogs.py" line="50" />
         <source>Location:</source>
         <translation>Ort:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="57"/>
+        <location filename="../dialogs/project_dialogs.py" line="54" />
         <source>Optional project description...</source>
         <translation>Optionale Projektbeschreibung...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="58"/>
+        <location filename="../dialogs/project_dialogs.py" line="55" />
         <source>Description:</source>
         <translation>Beschreibung:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="97"/>
+        <location filename="../dialogs/project_dialogs.py" line="94" />
         <source>Choose Project Location</source>
         <translation>Projekt-Ort wählen</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="106"/>
-        <location filename="../dialogs/project_dialogs.py" line="110"/>
+        <location filename="../dialogs/project_dialogs.py" line="103" />
+        <location filename="../dialogs/project_dialogs.py" line="107" />
         <source>Invalid Input</source>
         <translation>Ungültige Eingabe</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="106"/>
+        <location filename="../dialogs/project_dialogs.py" line="103" />
         <source>Please enter a project name.</source>
         <translation>Bitte geben Sie einen Projektnamen ein.</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="110"/>
+        <location filename="../dialogs/project_dialogs.py" line="107" />
         <source>Please choose a project location.</source>
         <translation>Bitte wählen Sie einen Projekt-Ort.</translation>
     </message>
@@ -2293,256 +2493,378 @@ diesem traditionellen Ereignis-Editor verfügbar sein sollen.
 <context>
     <name>ObjectEditor</name>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="212"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="233" />
         <source>📋 View Code</source>
         <translation>📋 Code anzeigen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="164"/>
-        <location filename="../editors/object_editor/object_editor_main.py" line="513"/>
-        <location filename="../editors/object_editor/object_editor_main.py" line="527"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="185" />
+        <location filename="../editors/object_editor/object_editor_main.py" line="578" />
+        <location filename="../editors/object_editor/object_editor_main.py" line="592" />
         <source>💾 Save</source>
         <translation>💾 Speichern</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="166"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="187" />
         <source>Save object (Ctrl+S)</source>
         <translation>Objekt speichern (Strg+S)</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="222"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="243" />
         <source>Object Events</source>
-        <translation type="unfinished">Objekt-Ereignisse</translation>
+        <translation>Objekt-Ereignisse</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="266"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="290" />
         <source>Object: Not loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt: Nicht geladen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="270"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="294" />
         <source>No event selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Ereignis ausgewählt</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="294"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="316" />
         <source>Actions are managed through the Object Events panel on the left.
 
 Select an event and right-click to add actions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktionen werden über das Objektereignis-Panel auf der linken Seite verwaltet.
+
+Wählen Sie ein Ereignis aus und klicken Sie mit der rechten Maustaste, um Aktionen hinzuzufügen.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="307"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="331" />
         <source>📋 Event List</source>
         <translation>📋 Ereignisliste</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="313"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="337" />
         <source>🧩 Visual Programming</source>
         <translation>🧩 Visuelle Programmierung</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="315"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="339" />
         <source>Scratch-like block programming</source>
-        <translation type="unfinished"></translation>
+        <translation>Scratch-ähnliche Blockprogrammierung</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="334"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="358" />
         <source>Mode:</source>
-        <translation type="unfinished"></translation>
+        <translation>Modus:</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="338"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="362" />
         <source>📖 View Generated Code</source>
-        <translation type="unfinished"></translation>
+        <translation>📖 Generierten Code anzeigen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="339"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="363" />
         <source>✏️ Edit Custom Code</source>
-        <translation type="unfinished"></translation>
+        <translation>✏️ Benutzerdefinierten Code bearbeiten</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="346"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="370" />
         <source>✅ Apply Changes</source>
-        <translation type="unfinished"></translation>
+        <translation>✅ Änderungen anwenden</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="352"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="376" />
         <source>🔄 Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>🔄 Aktualisieren</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="365"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="386" />
         <source># Python code editor
-# Switch to &apos;Edit Custom Code&apos; mode to write your own Python code
+# Switch to 'Edit Custom Code' mode to write your own Python code
 # Or view generated code from visual events</source>
-        <translation type="unfinished"></translation>
+        <translation># Python-Code-Editor
+# Wechseln Sie in den Modus 'Benutzerdefinierten Code bearbeiten', um Ihren eigenen Python-Code zu schreiben
+# Oder sehen Sie den generierten Code von visuellen Ereignissen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="397"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="421" />
         <source>Event for custom code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ereignis für benutzerdefinierten Code:</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="412"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="436" />
         <source>💻 Code Editor</source>
         <translation>💻 Code-Editor</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="414"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="438" />
         <source>Edit Python code or view generated code</source>
-        <translation type="unfinished"></translation>
+        <translation>Python-Code bearbeiten oder generierten Code anzeigen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="557"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="622" />
         <source>Validation Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Validierungsfehler</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="558"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="623" />
         <source>Cannot save: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern nicht möglich: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="585"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="650" />
         <source>Saved: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Gespeichert: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="597"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="662" />
         <source>Save Error</source>
-        <translation type="unfinished">Speicherfehler</translation>
+        <translation>Speicherfehler</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="598"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="663" />
         <source>Error saving object: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Speichern des Objekts: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="638"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="704" />
         <source>Loaded {0} sprites</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} Sprites geladen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="643"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="719" />
         <source>Error loading assets: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Laden der Assets: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="799"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="869" />
         <source>Object name is required</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektname ist erforderlich</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="802"/>
-        <source>Referenced sprite &apos;{0}&apos; does not exist</source>
-        <translation type="unfinished"></translation>
+        <location filename="../editors/object_editor/object_editor_main.py" line="875" />
+        <source>Referenced sprite '{0}' does not exist</source>
+        <translation>Referenzierter Sprite '{0}' existiert nicht</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="809"/>
-        <source>Event &apos;{0}&apos; has invalid data structure</source>
-        <translation type="unfinished"></translation>
+        <location filename="../editors/object_editor/object_editor_main.py" line="882" />
+        <source>Event '{0}' has invalid data structure</source>
+        <translation>Ereignis '{0}' hat ungültige Datenstruktur</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="814"/>
-        <source>Event &apos;{0}&apos; has invalid actions data</source>
-        <translation type="unfinished"></translation>
+        <location filename="../editors/object_editor/object_editor_main.py" line="887" />
+        <source>Event '{0}' has invalid actions data</source>
+        <translation>Ereignis '{0}' hat ungültige Aktionsdaten</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="820"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="893" />
         <source>Validation error: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Validierungsfehler: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="943"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1016" />
         <source>Object: {0} | Sprite: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt: {0} | Sprite: {1}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="946"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1018" />
         <source>Visible</source>
-        <translation type="unfinished">Sichtbar</translation>
+        <translation>Sichtbar</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="948"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1020" />
         <source>Solid</source>
-        <translation type="unfinished">Fest</translation>
+        <translation>Fest</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="951"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1022" />
         <source>Persistent</source>
-        <translation type="unfinished"></translation>
+        <translation>Persistent</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="958"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1031" />
         <source>Event: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Ereignis: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="959"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1032" />
         <source>Editing event: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Ereignis bearbeiten: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1014"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1092" />
         <source>Applied {0} events from visual blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} Ereignisse von visuellen Blöcken angewendet</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1024"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1102" />
         <source>Selected action: {0} ({1})</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgewählte Aktion: {0} ({1})</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1030"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1108" />
         <source>Object testing not implemented yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekttest noch nicht implementiert</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1043"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1129" />
+        <location filename="../editors/object_editor/object_editor_main.py" line="1150" />
         <source># No events or actions have been added yet.
 # Add events in the Object Events panel to see generated code here.</source>
-        <translation type="unfinished"></translation>
+        <translation># Es wurden noch keine Ereignisse oder Aktionen hinzugefügt.
+# Fügen Sie Ereignisse im Objektereignis-Panel hinzu, um den generierten Code hier zu sehen.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1069"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1168" />
         <source>Generated code view updated</source>
-        <translation type="unfinished"></translation>
+        <translation>Ansicht des generierten Codes aktualisiert</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1194"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1302" />
+        <source>Edit mode: Modify Python code and click Apply</source>
+        <translation>Bearbeitungsmodus: Python-Code ändern und auf Anwenden klicken</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1313" />
+        <source>View mode: Switch to 'Edit Custom Code' to modify and apply code</source>
+        <translation>Ansichtsmodus: Wechseln Sie zu 'Benutzerdefinierten Code bearbeiten', um Code zu ändern und anzuwenden</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1346" />
+        <source>No Code</source>
+        <translation>Kein Code</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1347" />
+        <source>The code editor is empty. Please write some Python code first.</source>
+        <translation>Der Code-Editor ist leer. Bitte schreiben Sie zuerst Python-Code.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1363" />
+        <location filename="../editors/object_editor/object_editor_main.py" line="1373" />
+        <source>Parse Error</source>
+        <translation>Analysefehler</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1364" />
+        <source>Could not parse the Python code:
+
+{0}</source>
+        <translation>Python-Code konnte nicht analysiert werden:
+
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1374" />
+        <source>Could not parse the Python code:
+
+{0}
+
+Please check the syntax and try again.</source>
+        <translation>Python-Code konnte nicht analysiert werden:
+
+{0}
+
+Bitte überprüfen Sie die Syntax und versuchen Sie es erneut.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1382" />
+        <source>No Events Found</source>
+        <translation>Keine Ereignisse gefunden</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1383" />
+        <source>No recognizable event methods found in the code.
+
+Make sure your code includes a class with event methods like:
+
+class obj_player:
+    def on_create(self):
+        pass
+
+    def on_step(self):
+        pass
+
+    def on_keyboard_left(self):
+        self.hspeed = -4</source>
+        <translation>Keine erkennbaren Ereignismethoden im Code gefunden.
+
+Stellen Sie sicher, dass Ihr Code eine Klasse mit Ereignismethoden enthält wie:
+
+class obj_player:
+    def on_create(self):
+        pass
+
+    def on_step(self):
+        pass
+
+    def on_keyboard_left(self):
+        self.hspeed = -4</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1400" />
+        <source>Sync in Progress</source>
+        <translation>Synchronisation läuft</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1401" />
+        <source>Another synchronization is currently in progress. Please wait and try again.</source>
+        <translation>Eine andere Synchronisation läuft gerade. Bitte warten Sie und versuchen Sie es erneut.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1438" />
+        <source>Applied {0} events from code</source>
+        <translation>{0} Ereignisse aus dem Code angewendet</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1442" />
+        <source>Python code has been parsed and applied:
+
+Events updated:
+{0}
+
+• Events panel synchronized
+• Blockly workspace synchronized
+
+The code will execute when events trigger during gameplay.</source>
+        <translation>Python-Code wurde analysiert und angewendet:
+
+Aktualisierte Ereignisse:
+{0}
+
+• Ereignis-Panel synchronisiert
+• Blockly-Arbeitsbereich synchronisiert
+
+Der Code wird ausgeführt, wenn Ereignisse während des Spiels ausgelöst werden.</translation>
+    </message>
+    <message>
         <source>Edit mode: Write custom Python code</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Bearbeitungsmodus: Benutzerdefinierten Python-Code schreiben</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1205"/>
         <source>View mode: Showing generated code from events</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Ansichtsmodus: Generierter Code von Ereignissen wird angezeigt</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1275"/>
         <source>Custom code applied to {0} event</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Benutzerdefinierter Code auf Ereignis {0} angewendet</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1278"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1441" />
         <source>Code Applied</source>
-        <translation type="unfinished"></translation>
+        <translation>Code angewendet</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1280"/>
         <source>Custom Python code has been applied to the {0} event.
 
 The code will execute when the event triggers during gameplay.</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Benutzerdefinierter Python-Code wurde auf das Ereignis {0} angewendet.
+
+Der Code wird ausgeführt, wenn das Ereignis während des Spiels ausgelöst wird.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1358"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1524" />
         <source>Assets loaded: {0} sprites</source>
-        <translation type="unfinished"></translation>
+        <translation>Assets geladen: {0} Sprites</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="211"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="232" />
         <source>🎮 Test Object</source>
         <translation>🎮 Objekt testen</translation>
     </message>
@@ -2550,294 +2872,296 @@ The code will execute when the event triggers during gameplay.</source>
 <context>
     <name>ObjectEventsPanel</name>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="48"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="50" />
         <source>Object Events</source>
-        <translation type="unfinished">Objekt-Ereignisse</translation>
+        <translation>Objekt-Ereignisse</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="54"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="56" />
         <source>Event</source>
-        <translation type="unfinished">Ereignis</translation>
+        <translation>Ereignis</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="54"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="56" />
         <source>Actions</source>
-        <translation type="unfinished">Aktionen</translation>
+        <translation>Aktionen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="108"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="110" />
         <source>+ Add Event</source>
-        <translation type="unfinished">+ Ereignis hinzufügen</translation>
+        <translation>+ Ereignis hinzufügen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="112"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="114" />
         <source>- Remove Event</source>
-        <translation type="unfinished">- Ereignis entfernen</translation>
+        <translation>- Ereignis entfernen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="121"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="123" />
         <source>↑ Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation>↑ Nach oben</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="124"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="126" />
         <source>Move selected action up (Ctrl+Up)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgewählte Aktion nach oben verschieben (Strg+Oben)</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="127"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="129" />
         <source>↓ Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation>↓ Nach unten</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="130"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="132" />
         <source>Move selected action down (Ctrl+Down)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgewählte Aktion nach unten verschieben (Strg+Unten)</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="139"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="141" />
         <source>Ctrl+Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Oben</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="142"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="144" />
         <source>Ctrl+Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+Unten</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="145"/>
         <source>Warning: Could not setup shortcuts: {e}</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Warnung: Tastenkürzel konnten nicht eingerichtet werden: {e}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="153"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="155" />
         <source>Event Exists</source>
-        <translation type="unfinished">Ereignis existiert</translation>
+        <translation>Ereignis existiert</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="154"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="156" />
         <source>The {0} event already exists.</source>
-        <translation type="unfinished">Das {0} Ereignis existiert bereits.</translation>
+        <translation>Das {0} Ereignis existiert bereits.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="174"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="176" />
         <source>{event_type.icon} Collision With...</source>
-        <translation type="unfinished"></translation>
+        <translation>{event_type.icon} Kollision mit...</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="186"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="188" />
         <source>No objects available</source>
-        <translation type="unfinished">Keine Objekte verfügbar</translation>
+        <translation>Keine Objekte verfügbar</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="248"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="279"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="250" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="277" />
         <source>Key Event Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Tastenereignis existiert bereits</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="249"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="251" />
         <source>The {0} arrow key event already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Pfeiltasten-Ereignis {0} existiert bereits.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="280"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="278" />
         <source>The {0} key event already exists for {1}.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Tastenereignis {0} existiert bereits für {1}.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="321"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="319" />
         <source>Mouse Event Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Mausereignis existiert bereits</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="323"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="320" />
         <source>This mouse event already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Mausereignis existiert bereits.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="345"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="422"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="343" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="420" />
         <source>Remove Event</source>
-        <translation type="unfinished">Ereignis entfernen</translation>
+        <translation>Ereignis entfernen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="346"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="344" />
         <source>Are you sure you want to remove the {0} event and all its actions?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sind Sie sicher, dass Sie das Ereignis {0} und alle seine Aktionen entfernen möchten?</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="373"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="391"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="409"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="440"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="371" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="389" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="407" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="438" />
         <source>Add Action</source>
-        <translation type="unfinished">Aktion hinzufügen</translation>
+        <translation>Aktion hinzufügen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="386"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1325"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="384" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="1323" />
         <source>Remove Collision Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollisionsereignis entfernen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="404"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1378"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="402" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="1376" />
         <source>Remove Mouse Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Mausereignis entfernen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="454"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="452" />
         <source>Remove {sub_event_key.title()} Arrow Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Pfeilereignis {sub_event_key.title()} entfernen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="459"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="469"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="457" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="467" />
         <source>Edit Action</source>
-        <translation type="unfinished">Aktion bearbeiten</translation>
+        <translation>Aktion bearbeiten</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="462"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="472"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="653"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="673"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="460" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="470" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="651" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="671" />
         <source>Remove Action</source>
-        <translation type="unfinished">Aktion entfernen</translation>
+        <translation>Aktion entfernen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="495"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="493" />
         <source>Cannot Add Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktion kann nicht hinzugefügt werden</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="499"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="494" />
         <source>Cannot add actions directly to %1.
 
 Please add actions to specific arrow keys instead:
 Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktionen können nicht direkt zu %1 hinzugefügt werden.
+
+Bitte fügen Sie Aktionen stattdessen zu bestimmten Pfeiltasten hinzu:
+Klicken Sie mit der rechten Maustaste auf Pfeil links, Pfeil rechts, Pfeil oben oder Pfeil unten.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="583"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="581" />
         <source>Remove Key Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Tastenereignis entfernen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="584"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="582" />
         <source>Are you sure you want to remove the {0} arrow key event and all its actions?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sind Sie sicher, dass Sie das Pfeiltasten-Ereignis {0} und alle seine Aktionen entfernen möchten?</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="654"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="674"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="652" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="672" />
         <source>Are you sure you want to remove this action?</source>
-        <translation type="unfinished">Möchten Sie diese Aktion wirklich entfernen?</translation>
+        <translation>Möchten Sie diese Aktion wirklich entfernen?</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="696"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="694" />
         <source>❌ NOT Colliding with {target_object}</source>
-        <translation type="unfinished"></translation>
+        <translation>❌ KEINE Kollision mit {target_object}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="700"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="698" />
         <source>💥 Collision with {target_object}</source>
-        <translation type="unfinished"></translation>
+        <translation>💥 Kollision mit {target_object}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="702"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="758"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="785"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="700" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="756" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="783" />
         <source>{0} actions</source>
-        <translation type="unfinished">{0} Aktionen</translation>
+        <translation>{0} Aktionen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="711"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="709" />
         <source>{action_type.icon} {action_type.display_name}</source>
-        <translation type="unfinished"></translation>
+        <translation>{action_type.icon} {action_type.display_name}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="734"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="732" />
         <source>{0} total actions</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} Aktionen insgesamt</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="817"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1284"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="815" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="1282" />
         <source>actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktionen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="819"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="828"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="817" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="826" />
         <source>action</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktion</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="825"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="823" />
         <source>parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameter</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1247"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1245" />
         <source>Collision Event Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollisionsereignis-Optionen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1250"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1248" />
         <source>&lt;b&gt;Collision with: {0}&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Kollision mit: {0}&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1253"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1251" />
         <source>❌ NOT colliding (trigger when NOT touching)</source>
-        <translation type="unfinished"></translation>
+        <translation>❌ KEINE Kollision (auslösen wenn NICHT berührend)</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1254"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1252" />
         <source>Check this to trigger actions when the object is NOT colliding with the target</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivieren Sie dies, um Aktionen auszulösen, wenn das Objekt NICHT mit dem Ziel kollidiert</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1277"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1275" />
         <source>Collision Event Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollisionsereignis existiert bereits</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1279"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1276" />
         <source>This collision event already exists.</source>
-        <translation type="unfinished">Dieses Kollisionsereignis existiert bereits.</translation>
+        <translation>Dieses Kollisionsereignis existiert bereits.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1285"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1283" />
         <source>target_object</source>
-        <translation type="unfinished"></translation>
+        <translation>Zielobjekt</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1286"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1284" />
         <source>negate</source>
-        <translation type="unfinished"></translation>
+        <translation>negieren</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1326"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1324" />
         <source>Are you sure you want to remove the collision event with {0}?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sind Sie sicher, dass Sie das Kollisionsereignis mit {0} entfernen möchten?</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1379"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1377" />
         <source>Are you sure you want to remove the {0} event?</source>
-        <translation type="unfinished">Möchten Sie wirklich das {0} Ereignis entfernen?</translation>
+        <translation>Möchten Sie wirklich das {0} Ereignis entfernen?</translation>
     </message>
 </context>
 <context>
     <name>ObjectPalette</name>
     <message>
-        <location filename="../editors/room_editor/object_palette.py" line="30"/>
+        <location filename="../editors/room_editor/object_palette.py" line="33" />
         <source>Objects</source>
         <translation>Objekte</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/object_palette.py" line="41"/>
+        <location filename="../editors/room_editor/object_palette.py" line="44" />
         <source>Clear Selection</source>
         <translation>Auswahl aufheben</translation>
     </message>
@@ -2845,111 +3169,111 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
 <context>
     <name>ObjectPropertiesPanel</name>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="24"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="24" />
         <source>Object Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekteigenschaften</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="37"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="37" />
         <source>Sprite to display for this object</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprite, der für dieses Objekt angezeigt werden soll</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="40"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="40" />
         <source>Sprite:</source>
-        <translation type="unfinished">Sprite:</translation>
+        <translation>Sprite:</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="48"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="48" />
         <source>Visible</source>
-        <translation type="unfinished">Sichtbar</translation>
+        <translation>Sichtbar</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="50"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="50" />
         <source>Object is visible in the game</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt ist im Spiel sichtbar</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="57"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="57" />
         <source>Persistent</source>
-        <translation type="unfinished"></translation>
+        <translation>Persistent</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="59"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="59" />
         <source>Object persists between rooms</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt bleibt zwischen Räumen erhalten</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="66"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="66" />
         <source>Solid</source>
-        <translation type="unfinished">Fest</translation>
+        <translation>Fest</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="68"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="68" />
         <source>Solid objects block movement</source>
-        <translation type="unfinished"></translation>
+        <translation>Solide Objekte blockieren Bewegung</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="81"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="81" />
         <source>View Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Code anzeigen</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="83"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="83" />
         <source>Show generated code in Code Editor tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Generierten Code im Code-Editor-Tab anzeigen</translation>
     </message>
 </context>
 <context>
     <name>OpenProjectDialog</name>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="138"/>
+        <location filename="../dialogs/project_dialogs.py" line="135" />
         <source>Open Project</source>
         <translation>Projekt öffnen</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="148"/>
+        <location filename="../dialogs/project_dialogs.py" line="145" />
         <source>Recent Projects</source>
         <translation>Letzte Projekte</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="156"/>
+        <location filename="../dialogs/project_dialogs.py" line="153" />
         <source>Browse for Project</source>
         <translation>Nach Projekt durchsuchen</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="160"/>
+        <location filename="../dialogs/project_dialogs.py" line="157" />
         <source>Select project file...</source>
         <translation>Projektdatei auswählen...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="162"/>
+        <location filename="../dialogs/project_dialogs.py" line="159" />
         <source>Browse...</source>
         <translation>Durchsuchen...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="192"/>
+        <location filename="../dialogs/project_dialogs.py" line="189" />
         <source>Open PyGameMaker Project</source>
         <translation>PyGameMaker-Projekt öffnen</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="194"/>
+        <location filename="../dialogs/project_dialogs.py" line="190" />
         <source>PyGameMaker Projects (*.json);;All Files (*)</source>
         <translation>PyGameMaker-Projekte (*.json);;Alle Dateien (*)</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="210"/>
-        <location filename="../dialogs/project_dialogs.py" line="214"/>
+        <location filename="../dialogs/project_dialogs.py" line="207" />
+        <location filename="../dialogs/project_dialogs.py" line="211" />
         <source>Invalid Input</source>
         <translation>Ungültige Eingabe</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="210"/>
+        <location filename="../dialogs/project_dialogs.py" line="207" />
         <source>Please enter a project name.</source>
         <translation>Bitte geben Sie einen Projektnamen ein.</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="214"/>
+        <location filename="../dialogs/project_dialogs.py" line="211" />
         <source>Please choose a project location.</source>
         <translation>Bitte wählen Sie einen Projekt-Ort.</translation>
     </message>
@@ -2957,197 +3281,197 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
 <context>
     <name>PreferencesDialog</name>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="22"/>
+        <location filename="../dialogs/preferences_dialog.py" line="21" />
         <source>Preferences</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="46"/>
+        <location filename="../dialogs/preferences_dialog.py" line="45" />
         <source>Note: Some settings require restarting the IDE to take effect.</source>
         <translation>Hinweis: Einige Einstellungen erfordern einen Neustart der IDE, um wirksam zu werden.</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="62"/>
+        <location filename="../dialogs/preferences_dialog.py" line="61" />
         <source>Font Settings</source>
         <translation>Schriftart-Einstellungen</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="69"/>
+        <location filename="../dialogs/preferences_dialog.py" line="68" />
         <source>Font Size:</source>
         <translation>Schriftgröße:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="74"/>
+        <location filename="../dialogs/preferences_dialog.py" line="73" />
         <source>System Default</source>
         <translation>Systemstandard</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="77"/>
+        <location filename="../dialogs/preferences_dialog.py" line="76" />
         <source>Font Family:</source>
         <translation>Schriftfamilie:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="80"/>
+        <location filename="../dialogs/preferences_dialog.py" line="79" />
         <source>Preview: The quick brown fox jumps over the lazy dog</source>
         <translation>Vorschau: Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="82"/>
+        <location filename="../dialogs/preferences_dialog.py" line="81" />
         <source>Preview:</source>
         <translation>Vorschau:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="87"/>
+        <location filename="../dialogs/preferences_dialog.py" line="86" />
         <source>Theme Settings</source>
         <translation>Design-Einstellungen</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="93"/>
+        <location filename="../dialogs/preferences_dialog.py" line="92" />
         <source>Theme:</source>
         <translation>Design:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="100"/>
+        <location filename="../dialogs/preferences_dialog.py" line="99" />
         <source>UI Scale:</source>
         <translation>UI-Skalierung:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="103"/>
+        <location filename="../dialogs/preferences_dialog.py" line="102" />
         <source>Show tooltips</source>
         <translation>Tooltips anzeigen</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="109"/>
+        <location filename="../dialogs/preferences_dialog.py" line="108" />
         <source>Appearance</source>
         <translation>Aussehen</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="117"/>
+        <location filename="../dialogs/preferences_dialog.py" line="116" />
         <source>Auto-Save Settings</source>
         <translation>Auto-Speichern-Einstellungen</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="120"/>
+        <location filename="../dialogs/preferences_dialog.py" line="119" />
         <source>Enable auto-save</source>
         <translation>Auto-Speichern aktivieren</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="125"/>
+        <location filename="../dialogs/preferences_dialog.py" line="124" />
         <source> minutes</source>
         <translation> Minuten</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="126"/>
+        <location filename="../dialogs/preferences_dialog.py" line="125" />
         <source>Auto-save interval:</source>
         <translation>Auto-Speichern-Intervall:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="131"/>
+        <location filename="../dialogs/preferences_dialog.py" line="130" />
         <source>Grid &amp; Snapping</source>
         <translation>Raster &amp; Einrasten</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="134"/>
+        <location filename="../dialogs/preferences_dialog.py" line="133" />
         <source>Show grid in editors</source>
         <translation>Raster in Editoren anzeigen</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="140"/>
+        <location filename="../dialogs/preferences_dialog.py" line="139" />
         <source>Grid size:</source>
         <translation>Rastergröße:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="142"/>
+        <location filename="../dialogs/preferences_dialog.py" line="141" />
         <source>Snap to grid</source>
         <translation>Am Raster einrasten</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="145"/>
+        <location filename="../dialogs/preferences_dialog.py" line="144" />
         <source>Show collision boxes</source>
         <translation>Kollisionsboxen anzeigen</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="151"/>
+        <location filename="../dialogs/preferences_dialog.py" line="150" />
         <source>Editor</source>
         <translation>Editor</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="159"/>
+        <location filename="../dialogs/preferences_dialog.py" line="158" />
         <source>Project Paths</source>
         <translation>Projektpfade</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="165"/>
+        <location filename="../dialogs/preferences_dialog.py" line="164" />
         <source>Browse...</source>
         <translation>Durchsuchen...</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="169"/>
+        <location filename="../dialogs/preferences_dialog.py" line="168" />
         <source>Default projects folder:</source>
         <translation>Standard-Projektordner:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="174"/>
+        <location filename="../dialogs/preferences_dialog.py" line="173" />
         <source>Project Settings</source>
         <translation>Projekteinstellungen</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="179"/>
+        <location filename="../dialogs/preferences_dialog.py" line="178" />
         <source>Recent projects limit:</source>
         <translation>Grenze für letzte Projekte:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="181"/>
+        <location filename="../dialogs/preferences_dialog.py" line="180" />
         <source>Create backup on save</source>
         <translation>Sicherung beim Speichern erstellen</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="187"/>
+        <location filename="../dialogs/preferences_dialog.py" line="186" />
         <source>Project</source>
         <translation>Projekt</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="195"/>
+        <location filename="../dialogs/preferences_dialog.py" line="194" />
         <source>Debug Settings</source>
         <translation>Debug-Einstellungen</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="198"/>
+        <location filename="../dialogs/preferences_dialog.py" line="197" />
         <source>Enable debug mode</source>
         <translation>Debug-Modus aktivieren</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="201"/>
+        <location filename="../dialogs/preferences_dialog.py" line="200" />
         <source>Show console output</source>
         <translation>Konsolenausgabe anzeigen</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="207"/>
+        <location filename="../dialogs/preferences_dialog.py" line="206" />
         <source>Performance</source>
         <translation>Leistung</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="212"/>
+        <location filename="../dialogs/preferences_dialog.py" line="211" />
         <source>Maximum undo steps:</source>
         <translation>Maximale Rückgängig-Schritte:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="217"/>
+        <location filename="../dialogs/preferences_dialog.py" line="216" />
         <source>Advanced</source>
         <translation>Erweitert</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="291"/>
+        <location filename="../dialogs/preferences_dialog.py" line="290" />
         <source>Select Default Projects Directory</source>
         <translation>Standard-Projektverzeichnis auswählen</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="340"/>
+        <location filename="../dialogs/preferences_dialog.py" line="339" />
         <source>Settings Saved</source>
         <translation>Einstellungen gespeichert</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="343"/>
+        <location filename="../dialogs/preferences_dialog.py" line="340" />
         <source>Settings have been saved successfully.
 
 Some changes may require restarting the IDE to take effect.</source>
@@ -3159,205 +3483,205 @@ Einige Änderungen erfordern möglicherweise einen Neustart der IDE, um wirksam 
 <context>
     <name>ProjectSettingsDialog</name>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="254"/>
+        <location filename="../dialogs/project_dialogs.py" line="251" />
         <source>Project Settings</source>
         <translation>Projekteinstellungen</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="264"/>
+        <location filename="../dialogs/project_dialogs.py" line="261" />
         <source>Project Information</source>
         <translation>Projektinformationen</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="268"/>
+        <location filename="../dialogs/project_dialogs.py" line="265" />
         <source>Project Name:</source>
         <translation>Projektname:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="272"/>
+        <location filename="../dialogs/project_dialogs.py" line="269" />
         <source>Project Path:</source>
         <translation>Projektpfad:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="276"/>
+        <location filename="../dialogs/project_dialogs.py" line="273" />
         <source>Description:</source>
         <translation>Beschreibung:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="280"/>
+        <location filename="../dialogs/project_dialogs.py" line="277" />
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="284"/>
+        <location filename="../dialogs/project_dialogs.py" line="281" />
         <source>Auto-save:</source>
         <translation>Auto-Speichern:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="287"/>
+        <location filename="../dialogs/project_dialogs.py" line="284" />
         <source>Desktop</source>
         <translation>Desktop</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="287"/>
+        <location filename="../dialogs/project_dialogs.py" line="284" />
         <source>Web</source>
         <translation>Web</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="287"/>
+        <location filename="../dialogs/project_dialogs.py" line="284" />
         <source>Mobile</source>
         <translation>Mobil</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="288"/>
+        <location filename="../dialogs/project_dialogs.py" line="285" />
         <source>Target Platform:</source>
         <translation>Zielplattform:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="293"/>
+        <location filename="../dialogs/project_dialogs.py" line="290" />
         <source>Game Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Spieleinstellungen</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="299"/>
+        <location filename="../dialogs/project_dialogs.py" line="296" />
         <source>Starting Lives:</source>
-        <translation type="unfinished"></translation>
+        <translation>Anfangsleben:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="302"/>
+        <location filename="../dialogs/project_dialogs.py" line="299" />
         <source>Show Lives in Caption:</source>
-        <translation type="unfinished"></translation>
+        <translation>Leben in Titelleiste anzeigen:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="307"/>
+        <location filename="../dialogs/project_dialogs.py" line="304" />
         <source>Starting Score:</source>
-        <translation type="unfinished"></translation>
+        <translation>Anfangspunktzahl:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="310"/>
+        <location filename="../dialogs/project_dialogs.py" line="307" />
         <source>Show Score in Caption:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktzahl in Titelleiste anzeigen:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="315"/>
+        <location filename="../dialogs/project_dialogs.py" line="312" />
         <source>Starting Health:</source>
-        <translation type="unfinished"></translation>
+        <translation>Anfangsgesundheit:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="318"/>
+        <location filename="../dialogs/project_dialogs.py" line="315" />
         <source>Show Health in Caption:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gesundheit in Titelleiste anzeigen:</translation>
     </message>
 </context>
 <context>
     <name>PyGameMakerIDE</name>
     <message>
-        <location filename="../core/ide_window.py" line="120"/>
+        <location filename="../core/ide_window.py" line="119" />
         <source>&amp;File</source>
         <translation>&amp;Datei</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="121"/>
+        <location filename="../core/ide_window.py" line="120" />
         <source>&amp;New Project...</source>
         <translation>&amp;Neues Projekt...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="122"/>
+        <location filename="../core/ide_window.py" line="121" />
         <source>&amp;Open Project...</source>
         <translation>Projekt &amp;öffnen...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="124"/>
+        <location filename="../core/ide_window.py" line="123" />
         <source>&amp;Save Project</source>
         <translation>Projekt &amp;speichern</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="125"/>
+        <location filename="../core/ide_window.py" line="124" />
         <source>Save Project &amp;As...</source>
         <translation>Projekt speichern &amp;unter...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="128"/>
+        <location filename="../core/ide_window.py" line="127" />
         <source>Recent Projects</source>
         <translation>Zuletzt geöffnete Projekte</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="134"/>
+        <location filename="../core/ide_window.py" line="133" />
         <source>Export as HTML5...</source>
         <translation>Als HTML5 exportieren...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="135"/>
+        <location filename="../core/ide_window.py" line="134" />
         <source>Export as &amp;Zip...</source>
         <translation>Als &amp;Zip exportieren...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="136"/>
+        <location filename="../core/ide_window.py" line="135" />
         <source>Export to Kivy...</source>
         <translation>Nach Kivy exportieren...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="137"/>
+        <location filename="../core/ide_window.py" line="136" />
         <source>Export Project...</source>
         <translation>Projekt exportieren...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="144"/>
+        <location filename="../core/ide_window.py" line="143" />
         <source>Open &amp;Zip Project...</source>
         <translation>&amp;Zip-Projekt öffnen...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="148"/>
+        <location filename="../core/ide_window.py" line="147" />
         <source>Auto-Save to Zip</source>
         <translation>Automatisch als Zip speichern</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="155"/>
+        <location filename="../core/ide_window.py" line="154" />
         <source>Enable Auto-Save</source>
         <translation>Automatisches Speichern aktivieren</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="162"/>
+        <location filename="../core/ide_window.py" line="161" />
         <source>Auto-Save Settings...</source>
         <translation>Automatisches Speichern Einstellungen...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="167"/>
+        <location filename="../core/ide_window.py" line="166" />
         <source>Project &amp;Settings...</source>
         <translation>Projekt&amp;einstellungen...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="169"/>
+        <location filename="../core/ide_window.py" line="168" />
         <source>E&amp;xit</source>
         <translation>&amp;Beenden</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="171"/>
+        <location filename="../core/ide_window.py" line="170" />
         <source>&amp;Edit</source>
         <translation>&amp;Bearbeiten</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="172"/>
+        <location filename="../core/ide_window.py" line="171" />
         <source>&amp;Undo</source>
         <translation>&amp;Rückgängig</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="173"/>
+        <location filename="../core/ide_window.py" line="172" />
         <source>&amp;Redo</source>
         <translation>&amp;Wiederholen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="175"/>
+        <location filename="../core/ide_window.py" line="174" />
         <source>Cu&amp;t</source>
         <translation>&amp;Ausschneiden</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="176"/>
+        <location filename="../core/ide_window.py" line="175" />
         <source>&amp;Copy</source>
         <translation>&amp;Kopieren</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="177"/>
+        <location filename="../core/ide_window.py" line="176" />
         <source>&amp;Paste</source>
         <translation>&amp;Einfügen</translation>
     </message>
@@ -3394,47 +3718,47 @@ Einige Änderungen erfordern möglicherweise einen Neustart der IDE, um wirksam 
         <translation type="vanished">Zoom &amp;zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="202"/>
+        <location filename="../core/ide_window.py" line="201" />
         <source>&amp;Assets</source>
         <translation>&amp;Ressourcen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="184"/>
+        <location filename="../core/ide_window.py" line="183" />
         <source>Import &amp;Sprite...</source>
         <translation>&amp;Sprite importieren...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="178"/>
+        <location filename="../core/ide_window.py" line="177" />
         <source>&amp;Duplicate</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Duplizieren</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="180"/>
+        <location filename="../core/ide_window.py" line="179" />
         <source>&amp;Find...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Suchen...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="181"/>
+        <location filename="../core/ide_window.py" line="180" />
         <source>Find and &amp;Replace...</source>
-        <translation type="unfinished"></translation>
+        <translation>Suchen und &amp;Ersetzen...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="185"/>
+        <location filename="../core/ide_window.py" line="184" />
         <source>Import &amp;Sound...</source>
         <translation>&amp;Sound importieren...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="186"/>
+        <location filename="../core/ide_window.py" line="185" />
         <source>Import &amp;Background...</source>
         <translation>&amp;Hintergrund importieren...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="187"/>
+        <location filename="../core/ide_window.py" line="186" />
         <source>Create &amp;Object...</source>
         <translation>&amp;Objekt erstellen...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="188"/>
+        <location filename="../core/ide_window.py" line="187" />
         <source>Create &amp;Room...</source>
         <translation>&amp;Raum erstellen...</translation>
     </message>
@@ -3443,42 +3767,42 @@ Einige Änderungen erfordern möglicherweise einen Neustart der IDE, um wirksam 
         <translation type="vanished">S&amp;kript erstellen...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="191"/>
+        <location filename="../core/ide_window.py" line="190" />
         <source>Create &amp;Font...</source>
         <translation>Schrift&amp;art erstellen...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="214"/>
+        <location filename="../core/ide_window.py" line="213" />
         <source>Import Object Package...</source>
         <translation>Objektpaket importieren...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="215"/>
+        <location filename="../core/ide_window.py" line="214" />
         <source>Import Room Package...</source>
         <translation>Raumpaket importieren...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="219"/>
+        <location filename="../core/ide_window.py" line="218" />
         <source>&amp;Build</source>
         <translation>&amp;Erstellen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="221"/>
+        <location filename="../core/ide_window.py" line="220" />
         <source>&amp;Test Game</source>
         <translation>Spiel &amp;testen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="223"/>
+        <location filename="../core/ide_window.py" line="222" />
         <source>&amp;Build Game...</source>
         <translation>Spiel &amp;erstellen...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="224"/>
+        <location filename="../core/ide_window.py" line="223" />
         <source>Build and &amp;Run</source>
         <translation>Erstellen und &amp;ausführen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="225"/>
+        <location filename="../core/ide_window.py" line="224" />
         <source>&amp;Export Game...</source>
         <translation>Spiel &amp;exportieren...</translation>
     </message>
@@ -3491,7 +3815,7 @@ Einige Änderungen erfordern möglicherweise einen Neustart der IDE, um wirksam 
         <translation type="vanished">Spiel &amp;starten</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="222"/>
+        <location filename="../core/ide_window.py" line="221" />
         <source>&amp;Debug Game</source>
         <translation>Spiel &amp;debuggen</translation>
     </message>
@@ -3500,37 +3824,36 @@ Einige Änderungen erfordern möglicherweise einen Neustart der IDE, um wirksam 
         <translation type="vanished">Spiel &amp;stoppen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="235"/>
+        <location filename="../core/ide_window.py" line="234" />
         <source>&amp;Tools</source>
         <translation>&amp;Werkzeuge</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="236"/>
+        <location filename="../core/ide_window.py" line="235" />
         <source>&amp;Preferences...</source>
         <translation>&amp;Einstellungen...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="237"/>
+        <location filename="../core/ide_window.py" line="236" />
         <source>&amp;Asset Manager...</source>
         <translation>&amp;Asset-Manager...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="238"/>
         <source>Configure &amp;Blockly Blocks...</source>
-        <translation>&amp;Blockly-Blöcke konfigurieren...</translation>
+        <translation type="vanished">&amp;Blockly-Blöcke konfigurieren...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="240"/>
+        <location filename="../core/ide_window.py" line="239" />
         <source>&amp;Validate Project</source>
         <translation>Projekt &amp;validieren</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="241"/>
+        <location filename="../core/ide_window.py" line="240" />
         <source>&amp;Clean Project</source>
         <translation>Projekt &amp;bereinigen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="245"/>
+        <location filename="../core/ide_window.py" line="244" />
         <source>🌐 &amp;Language</source>
         <translation>🌐 &amp;Sprache</translation>
     </message>
@@ -3543,12 +3866,12 @@ Einige Änderungen erfordern möglicherweise einen Neustart der IDE, um wirksam 
         <translation type="vanished">Blockly-Blöcke konfigurieren...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="248"/>
+        <location filename="../core/ide_window.py" line="247" />
         <source>&amp;Help</source>
         <translation>&amp;Hilfe</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="249"/>
+        <location filename="../core/ide_window.py" line="248" />
         <source>&amp;Documentation</source>
         <translation>&amp;Dokumentation</translation>
     </message>
@@ -3557,7 +3880,7 @@ Einige Änderungen erfordern möglicherweise einen Neustart der IDE, um wirksam 
         <translation type="vanished">&amp;Über</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2150"/>
+        <location filename="../core/ide_window.py" line="2285" />
         <source>About PyGameMaker</source>
         <translation>Über PyGameMaker</translation>
     </message>
@@ -3566,8 +3889,8 @@ Einige Änderungen erfordern möglicherweise einen Neustart der IDE, um wirksam 
         <translation type="vanished">PyGameMaker IDE</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="808"/>
-        <location filename="../core/ide_window.py" line="2515"/>
+        <location filename="../core/ide_window.py" line="857" />
+        <location filename="../core/ide_window.py" line="2651" />
         <source>Ready</source>
         <translation>Bereit</translation>
     </message>
@@ -3584,14 +3907,14 @@ Einige Änderungen erfordern möglicherweise einen Neustart der IDE, um wirksam 
         <translation type="vanished">Kein Asset ausgewählt</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="910"/>
-        <location filename="../core/ide_window.py" line="930"/>
-        <location filename="../core/ide_window.py" line="951"/>
-        <location filename="../core/ide_window.py" line="964"/>
-        <location filename="../core/ide_window.py" line="990"/>
-        <location filename="../core/ide_window.py" line="1224"/>
-        <location filename="../core/ide_window.py" line="2232"/>
-        <location filename="../core/ide_window.py" line="2278"/>
+        <location filename="../core/ide_window.py" line="961" />
+        <location filename="../core/ide_window.py" line="981" />
+        <location filename="../core/ide_window.py" line="1002" />
+        <location filename="../core/ide_window.py" line="1015" />
+        <location filename="../core/ide_window.py" line="1041" />
+        <location filename="../core/ide_window.py" line="1311" />
+        <location filename="../core/ide_window.py" line="2369" />
+        <location filename="../core/ide_window.py" line="2414" />
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
@@ -3620,7 +3943,7 @@ Einige Änderungen erfordern möglicherweise einen Neustart der IDE, um wirksam 
         <translation type="vanished">Nein</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1516"/>
+        <location filename="../core/ide_window.py" line="1633" />
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -3629,399 +3952,416 @@ Einige Änderungen erfordern möglicherweise einen Neustart der IDE, um wirksam 
         <translation type="vanished">OK</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2106"/>
         <source>Close</source>
-        <translation>Schließen</translation>
+        <translation type="vanished">Schließen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="609"/>
+        <location filename="../core/ide_window.py" line="616" />
         <source>Save</source>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="190"/>
+        <location filename="../core/ide_window.py" line="189" />
         <source>Create S&amp;cript...</source>
-        <translation type="unfinished"></translation>
+        <translation>S&amp;kript erstellen...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="250"/>
+        <location filename="../core/ide_window.py" line="237" />
+        <source>Configure &amp;Action Blocks...</source>
+        <translation>&amp;Aktionsblöcke konfigurieren...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="249" />
         <source>&amp;Tutorials</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tutorials</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="252"/>
+        <location filename="../core/ide_window.py" line="251" />
         <source>&amp;About PyGameMaker</source>
         <translation>&amp;Über PyGameMaker</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="369"/>
+        <location filename="../core/ide_window.py" line="406" />
         <source>Translation Not Available</source>
         <translation>Übersetzung nicht verfügbar</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="373"/>
+        <location filename="../core/ide_window.py" line="407" />
         <source>Translation file for {0} is not available.
 
 The language has been set, but the interface will remain in English until a translation file is provided.
 
 Expected file: translations/pygamemaker_{1}.qm</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Übersetzungsdatei für {0} ist nicht verfügbar.
+
+Die Sprache wurde eingestellt, aber die Oberfläche bleibt auf Englisch, bis eine Übersetzungsdatei bereitgestellt wird.
+
+Erwartete Datei: translations/pygamemaker_{1}.qm</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="408"/>
+        <location filename="../core/ide_window.py" line="446" />
         <source>Auto-Save to Zip Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisches Speichern in ZIP aktiviert</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="410"/>
+        <location filename="../core/ide_window.py" line="447" />
         <source>The project will now automatically save to the original zip file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Projekt wird jetzt automatisch in der ursprünglichen ZIP-Datei gespeichert.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="415"/>
+        <location filename="../core/ide_window.py" line="453" />
         <source>Export as Zip?</source>
-        <translation type="unfinished"></translation>
+        <translation>Als ZIP exportieren?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="417"/>
+        <location filename="../core/ide_window.py" line="454" />
         <source>Would you like to export the current project as a zip file now?
 
 This will allow auto-save to work with the zip file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Möchten Sie das aktuelle Projekt jetzt als ZIP-Datei exportieren?
+
+Dadurch kann das automatische Speichern mit der ZIP-Datei funktionieren.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="424"/>
+        <location filename="../core/ide_window.py" line="462" />
         <source>Auto-save to zip disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisches Speichern in ZIP deaktiviert</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="436"/>
+        <location filename="../core/ide_window.py" line="474" />
         <source>Auto-save enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisches Speichern aktiviert</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="439"/>
+        <location filename="../core/ide_window.py" line="477" />
         <source>Auto-Save Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisches Speichern aktiviert</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="440"/>
+        <location filename="../core/ide_window.py" line="478" />
         <source>Your project will be automatically saved every {0} seconds.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ihr Projekt wird alle {0} Sekunden automatisch gespeichert.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="443"/>
+        <location filename="../core/ide_window.py" line="481" />
         <source>Auto-save disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisches Speichern deaktiviert</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="446"/>
+        <location filename="../core/ide_window.py" line="484" />
         <source>Auto-Save Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisches Speichern deaktiviert</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="448"/>
+        <location filename="../core/ide_window.py" line="485" />
         <source>Remember to save your project manually (Ctrl+S).</source>
-        <translation type="unfinished"></translation>
+        <translation>Denken Sie daran, Ihr Projekt manuell zu speichern (Strg+S).</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="479"/>
-        <location filename="../core/ide_window.py" line="592"/>
+        <location filename="../core/ide_window.py" line="517" />
         <source>Auto-save settings updated</source>
-        <translation type="unfinished"></translation>
+        <translation>Einstellungen für automatisches Speichern aktualisiert</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="484"/>
-        <location filename="../core/ide_window.py" line="525"/>
-        <location filename="../core/ide_window.py" line="998"/>
-        <location filename="../core/ide_window.py" line="1134"/>
-        <location filename="../core/ide_window.py" line="1244"/>
-        <location filename="../core/ide_window.py" line="1464"/>
-        <location filename="../core/ide_window.py" line="1545"/>
-        <location filename="../core/ide_window.py" line="1661"/>
-        <location filename="../core/ide_window.py" line="1925"/>
-        <location filename="../core/ide_window.py" line="1992"/>
-        <location filename="../core/ide_window.py" line="2032"/>
+        <location filename="../core/ide_window.py" line="522" />
+        <location filename="../core/ide_window.py" line="563" />
+        <location filename="../core/ide_window.py" line="1049" />
+        <location filename="../core/ide_window.py" line="1221" />
+        <location filename="../core/ide_window.py" line="1331" />
+        <location filename="../core/ide_window.py" line="1581" />
+        <location filename="../core/ide_window.py" line="1662" />
+        <location filename="../core/ide_window.py" line="1778" />
+        <location filename="../core/ide_window.py" line="2041" />
+        <location filename="../core/ide_window.py" line="2125" />
+        <location filename="../core/ide_window.py" line="2165" />
         <source>No Project</source>
-        <translation type="unfinished">Kein Projekt</translation>
+        <translation>Kein Projekt</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="484"/>
-        <location filename="../core/ide_window.py" line="525"/>
-        <location filename="../core/ide_window.py" line="998"/>
-        <location filename="../core/ide_window.py" line="1134"/>
+        <location filename="../core/ide_window.py" line="522" />
+        <location filename="../core/ide_window.py" line="563" />
+        <location filename="../core/ide_window.py" line="1049" />
+        <location filename="../core/ide_window.py" line="1221" />
         <source>Please open a project first</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitte öffnen Sie zuerst ein Projekt</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="489"/>
+        <location filename="../core/ide_window.py" line="527" />
         <source>Import Object Package</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektpaket importieren</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="492"/>
+        <location filename="../core/ide_window.py" line="529" />
         <source>GameMaker Objects (*.gmobj)</source>
-        <translation type="unfinished"></translation>
+        <translation>GameMaker-Objekte (*.gmobj)</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="497"/>
+        <location filename="../core/ide_window.py" line="535" />
         <source>Importing object...</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt wird importiert...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="510"/>
-        <location filename="../core/ide_window.py" line="551"/>
+        <location filename="../core/ide_window.py" line="548" />
+        <location filename="../core/ide_window.py" line="589" />
         <source>Import Successful</source>
-        <translation type="unfinished"></translation>
+        <translation>Import erfolgreich</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="511"/>
-        <source>Object &apos;{0}&apos; imported successfully!</source>
-        <translation type="unfinished"></translation>
+        <location filename="../core/ide_window.py" line="549" />
+        <source>Object '{0}' imported successfully!</source>
+        <translation>Objekt '{0}' erfolgreich importiert!</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="513"/>
+        <location filename="../core/ide_window.py" line="551" />
         <source>Object imported: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt importiert: {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="517"/>
-        <location filename="../core/ide_window.py" line="558"/>
+        <location filename="../core/ide_window.py" line="555" />
+        <location filename="../core/ide_window.py" line="596" />
         <source>Import Failed</source>
-        <translation type="unfinished">Import fehlgeschlagen</translation>
+        <translation>Import fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="519"/>
+        <location filename="../core/ide_window.py" line="556" />
         <source>Failed to import object package</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektpaket konnte nicht importiert werden</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="520"/>
-        <location filename="../core/ide_window.py" line="561"/>
+        <location filename="../core/ide_window.py" line="558" />
+        <location filename="../core/ide_window.py" line="599" />
         <source>Import failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Import fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="530"/>
+        <location filename="../core/ide_window.py" line="568" />
         <source>Import Room Package</source>
-        <translation type="unfinished"></translation>
+        <translation>Raumpaket importieren</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="533"/>
+        <location filename="../core/ide_window.py" line="570" />
         <source>GameMaker Rooms (*.gmroom)</source>
-        <translation type="unfinished"></translation>
+        <translation>GameMaker-Räume (*.gmroom)</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="538"/>
+        <location filename="../core/ide_window.py" line="576" />
         <source>Importing room...</source>
-        <translation type="unfinished"></translation>
+        <translation>Raum wird importiert...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="552"/>
-        <source>Room &apos;{0}&apos; imported successfully!</source>
-        <translation type="unfinished"></translation>
+        <location filename="../core/ide_window.py" line="590" />
+        <source>Room '{0}' imported successfully!</source>
+        <translation>Raum '{0}' erfolgreich importiert!</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="554"/>
+        <location filename="../core/ide_window.py" line="592" />
         <source>Room imported: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Raum importiert: {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="560"/>
+        <location filename="../core/ide_window.py" line="597" />
         <source>Failed to import room package</source>
-        <translation type="unfinished"></translation>
+        <translation>Raumpaket konnte nicht importiert werden</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="595"/>
+        <location filename="../core/ide_window.py" line="602" />
         <source>Main</source>
-        <translation type="unfinished"></translation>
+        <translation>Hauptmenü</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="607"/>
+        <location filename="../core/ide_window.py" line="614" />
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Neu</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="608"/>
+        <location filename="../core/ide_window.py" line="615" />
         <source>Open</source>
         <translation>Öffnen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="617"/>
+        <location filename="../core/ide_window.py" line="624" />
         <source>Test</source>
-        <translation type="unfinished"></translation>
+        <translation>Testen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="618"/>
+        <location filename="../core/ide_window.py" line="625" />
         <source>Debug</source>
-        <translation type="unfinished">Debuggen</translation>
+        <translation>Debuggen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="622"/>
+        <location filename="../core/ide_window.py" line="629" />
         <source>Import Sprite</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprite importieren</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="623"/>
+        <location filename="../core/ide_window.py" line="630" />
         <source>Import Sound</source>
-        <translation type="unfinished"></translation>
+        <translation>Sound importieren</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="708"/>
-        <source>&quot;{0}&quot; has unsaved changes. Save before closing?</source>
-        <translation type="unfinished"></translation>
+        <location filename="../core/ide_window.py" line="733" />
+        <source>"{0}" has unsaved changes. Save before closing?</source>
+        <translation>"{0}" hat ungespeicherte Änderungen. Vor dem Schließen speichern?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="744"/>
+        <location filename="../core/ide_window.py" line="769" />
         <source>Welcome</source>
-        <translation type="unfinished"></translation>
+        <translation>Willkommen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="873"/>
+        <location filename="../core/ide_window.py" line="924" />
         <source>No recent projects</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine kürzlichen Projekte</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="907"/>
+        <location filename="../core/ide_window.py" line="958" />
         <source>Project created successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt erfolgreich erstellt</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="910"/>
+        <location filename="../core/ide_window.py" line="961" />
         <source>Failed to create project</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt konnte nicht erstellt werden</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="917"/>
+        <location filename="../core/ide_window.py" line="967" />
         <source>Project Files (project.json);;Zip Files (*.zip);;All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektdateien (project.json);;ZIP-Dateien (*.zip);;Alle Dateien (*)</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="930"/>
+        <location filename="../core/ide_window.py" line="981" />
         <source>Failed to load project from zip</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt konnte nicht aus ZIP geladen werden</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="932"/>
+        <location filename="../core/ide_window.py" line="983" />
         <source>Invalid Zip</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige ZIP-Datei</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="933"/>
+        <location filename="../core/ide_window.py" line="984" />
         <source>This zip file does not contain a valid PyGameMaker project</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese ZIP-Datei enthält kein gültiges PyGameMaker-Projekt</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="961"/>
-        <location filename="../core/ide_window.py" line="987"/>
-        <location filename="../core/ide_window.py" line="2458"/>
+        <location filename="../core/ide_window.py" line="1012" />
+        <location filename="../core/ide_window.py" line="1038" />
+        <location filename="../core/ide_window.py" line="2594" />
         <source>Project saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt gespeichert</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="980"/>
+        <location filename="../core/ide_window.py" line="1031" />
         <source>Save Project As</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt speichern unter</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1014"/>
-        <location filename="../core/ide_window.py" line="2631"/>
+        <location filename="../core/ide_window.py" line="1068" />
+        <location filename="../core/ide_window.py" line="2767" />
         <source>No Project Loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Projekt geladen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1016"/>
+        <location filename="../core/ide_window.py" line="1069" />
         <source>You need to create or open a project before importing sprites.
 
 Would you like to create a new project now?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sie müssen ein Projekt erstellen oder öffnen, bevor Sie Sprites importieren können.
+
+Möchten Sie jetzt ein neues Projekt erstellen?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1142"/>
+        <location filename="../core/ide_window.py" line="1229" />
         <source>Create {0}</source>
-        <translation type="unfinished">{0} erstellen</translation>
+        <translation>{0} erstellen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1143"/>
+        <location filename="../core/ide_window.py" line="1230" />
         <source>Enter name for new {0}:</source>
-        <translation type="unfinished">Name für neues {0} eingeben:</translation>
+        <translation>Name für neues {0} eingeben:</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1214"/>
+        <location filename="../core/ide_window.py" line="1301" />
         <source>Created {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} erstellt</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1225"/>
+        <location filename="../core/ide_window.py" line="1312" />
         <source>Failed to create {0}: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} konnte nicht erstellt werden: {1}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1246"/>
+        <location filename="../core/ide_window.py" line="1332" />
         <source>Please open or create a project first before testing a game.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitte öffnen oder erstellen Sie zuerst ein Projekt, bevor Sie ein Spiel testen.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1257"/>
+        <location filename="../core/ide_window.py" line="1344" />
         <source>Running game...</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel wird ausgeführt...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1264"/>
+        <location filename="../core/ide_window.py" line="1351" />
         <source>Project Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektfehler</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1266"/>
+        <location filename="../core/ide_window.py" line="1352" />
         <source>project.json not found in project directory</source>
-        <translation type="unfinished"></translation>
+        <translation>project.json nicht im Projektverzeichnis gefunden</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1283"/>
+        <location filename="../core/ide_window.py" line="1384" />
+        <location filename="../core/ide_window.py" line="1400" />
         <source>Game closed</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel geschlossen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1288"/>
+        <location filename="../core/ide_window.py" line="1405" />
         <source>Game Test Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Spieltestfehler</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1289"/>
+        <location filename="../core/ide_window.py" line="1406" />
         <source>Failed to run game:
 
 {0}
 
 Check console for details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel konnte nicht ausgeführt werden:
+
+{0}
+
+Details in der Konsole prüfen.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1294"/>
+        <location filename="../core/ide_window.py" line="1386" />
+        <location filename="../core/ide_window.py" line="1411" />
         <source>Game test failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Spieltest fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1301"/>
+        <location filename="../core/ide_window.py" line="1418" />
         <source>Game Running</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel läuft</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1303"/>
+        <location filename="../core/ide_window.py" line="1419" />
         <source>A game is already running. Please stop it first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Spiel läuft bereits. Bitte stoppen Sie es zuerst.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1312"/>
+        <location filename="../core/ide_window.py" line="1429" />
         <source>Starting game in debug mode...</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel wird im Debug-Modus gestartet...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1316"/>
+        <location filename="../core/ide_window.py" line="1433" />
         <source>Debug Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Debug-Modus</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1324"/>
+        <location filename="../core/ide_window.py" line="1434" />
         <source>Debug mode will start the game with verbose console output.
 
 Future features:
@@ -4031,56 +4371,64 @@ Future features:
 • Performance profiling
 
 For now, check the console for debug messages.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Debug-Modus startet das Spiel mit ausführlicher Konsolenausgabe.
+
+Zukünftige Funktionen:
+• Haltepunkte
+• Variableninspektion
+• Schrittweise Ausführung
+• Leistungsanalyse
+
+Prüfen Sie vorerst die Konsole für Debug-Meldungen.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1328"/>
+        <location filename="../core/ide_window.py" line="1445" />
         <source>Game started in debug mode - Check console for debug output</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel im Debug-Modus gestartet - Konsole für Debug-Ausgabe prüfen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1330"/>
+        <location filename="../core/ide_window.py" line="1447" />
         <source>Failed to start game</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel konnte nicht gestartet werden</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1333"/>
+        <location filename="../core/ide_window.py" line="1450" />
         <source>Game Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Spielfehler</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1335"/>
+        <location filename="../core/ide_window.py" line="1451" />
         <source>Failed to start the game. Check console for details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Spiel konnte nicht gestartet werden. Details in der Konsole prüfen.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1344"/>
+        <location filename="../core/ide_window.py" line="1461" />
         <source>You have unsaved changes. Save before building?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sie haben ungespeicherte Änderungen. Vor dem Erstellen speichern?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1357"/>
+        <location filename="../core/ide_window.py" line="1474" />
         <source>Select Build Output Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Build-Ausgabeverzeichnis auswählen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1364"/>
+        <location filename="../core/ide_window.py" line="1481" />
         <source>Building game...</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel wird erstellt...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1369"/>
-        <location filename="../core/ide_window.py" line="2478"/>
+        <location filename="../core/ide_window.py" line="1486" />
+        <location filename="../core/ide_window.py" line="2614" />
         <source>Build Game</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel erstellen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1380"/>
+        <location filename="../core/ide_window.py" line="1487" />
         <source>Standalone executable building is not yet implemented.
 
 Current workaround:
-• Use &apos;Export as HTML5&apos; to create a web version
-• Use &apos;Test Game&apos; to run from source
+• Use 'Export as HTML5' to create a web version
+• Use 'Test Game' to run from source
 
 Future build targets:
 • Windows .exe
@@ -4089,182 +4437,202 @@ Future build targets:
 • Android .apk
 
 Would you like to export as HTML5 instead?</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Erstellen eigenständiger Anwendungen ist noch nicht implementiert.
+
+Aktuelle Problemumgehung:
+• Verwenden Sie 'Als HTML5 exportieren' für eine Webversion
+• Verwenden Sie 'Spiel testen' zum Ausführen aus dem Quellcode
+
+Zukünftige Build-Ziele:
+• Windows .exe
+• Linux-Binary
+• macOS .app
+• Android .apk
+
+Möchten Sie stattdessen als HTML5 exportieren?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1382"/>
+        <location filename="../core/ide_window.py" line="1499" />
         <source>Build cancelled - use HTML5 export instead</source>
-        <translation type="unfinished"></translation>
+        <translation>Build abgebrochen - verwenden Sie stattdessen HTML5-Export</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1391"/>
+        <location filename="../core/ide_window.py" line="1506" />
         <source>This will build a standalone executable and run it.
 
 Building may take several minutes.
 
 Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Dies erstellt eine eigenständige Anwendung und führt sie aus.
+
+Das Erstellen kann einige Minuten dauern.
+
+Fortfahren?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1403"/>
+        <location filename="../core/ide_window.py" line="1520" />
         <source>Building and running game...</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel wird erstellt und ausgeführt...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1411"/>
+        <location filename="../core/ide_window.py" line="1526" />
         <source>Standalone build is not yet implemented.
 
 Running game in test mode instead...</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigenständiger Build ist noch nicht implementiert.
+
+Spiel wird stattdessen im Testmodus ausgeführt...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1431"/>
+        <location filename="../core/ide_window.py" line="1548" />
         <source>Errors:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler:</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1437"/>
+        <location filename="../core/ide_window.py" line="1554" />
         <source>Warnings:</source>
-        <translation type="unfinished"></translation>
+        <translation>Warnungen:</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1447"/>
+        <location filename="../core/ide_window.py" line="1564" />
         <source>Project Validation Issues</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektvalidierungsprobleme</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1454"/>
+        <location filename="../core/ide_window.py" line="1571" />
         <source>Project Validation Warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektvalidierungswarnungen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1466"/>
+        <location filename="../core/ide_window.py" line="1582" />
         <source>Please open or create a project first before exporting a game.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitte öffnen oder erstellen Sie zuerst ein Projekt, bevor Sie ein Spiel exportieren.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1476"/>
+        <location filename="../core/ide_window.py" line="1593" />
         <source>Export Game</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel exportieren</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1481"/>
+        <location filename="../core/ide_window.py" line="1598" />
         <source>&lt;h3&gt;Export Game&lt;/h3&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Spiel exportieren&lt;/h3&gt;</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1482"/>
+        <location filename="../core/ide_window.py" line="1599" />
         <source>Choose export format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportformat wählen:</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1487"/>
+        <location filename="../core/ide_window.py" line="1604" />
         <source>HTML5 (Web Browser) - ✅ Available</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML5 (Webbrowser) - ✅ Verfügbar</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1492"/>
+        <location filename="../core/ide_window.py" line="1609" />
         <source>Windows Executable (.exe) - ✅ Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows-Anwendung (.exe) - ✅ Verfügbar</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1497"/>
+        <location filename="../core/ide_window.py" line="1614" />
         <source>Linux Binary - ✅ Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Linux-Binary - ✅ Verfügbar</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1502"/>
+        <location filename="../core/ide_window.py" line="1619" />
         <source>macOS Application (.app) - 🚧 Coming Soon</source>
-        <translation type="unfinished"></translation>
+        <translation>macOS-Anwendung (.app) - 🚧 Demnächst</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1507"/>
+        <location filename="../core/ide_window.py" line="1624" />
         <source>Android Package (.apk) - 🚧 Coming Soon</source>
-        <translation type="unfinished"></translation>
+        <translation>Android-Paket (.apk) - 🚧 Demnächst</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1534"/>
-        <location filename="../core/ide_window.py" line="2053"/>
+        <location filename="../core/ide_window.py" line="1651" />
+        <location filename="../core/ide_window.py" line="2186" />
         <source>Coming Soon</source>
-        <translation type="unfinished"></translation>
+        <translation>Demnächst verfügbar</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1537"/>
+        <location filename="../core/ide_window.py" line="1652" />
         <source>This export format is not yet available.
 
 Please use HTML5, Windows EXE, or Linux Binary export for now.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Exportformat ist noch nicht verfügbar.
+
+Bitte verwenden Sie vorerst HTML5-, Windows-EXE- oder Linux-Binary-Export.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1547"/>
-        <location filename="../core/ide_window.py" line="1663"/>
+        <location filename="../core/ide_window.py" line="1663" />
+        <location filename="../core/ide_window.py" line="1779" />
         <source>Please open or create a project first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitte öffnen oder erstellen Sie zuerst ein Projekt.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1556"/>
-        <location filename="../core/ide_window.py" line="1672"/>
+        <location filename="../core/ide_window.py" line="1673" />
+        <location filename="../core/ide_window.py" line="1789" />
         <source>Choose Export Location</source>
-        <translation type="unfinished">Export-Ort wählen</translation>
+        <translation>Export-Ort wählen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1576"/>
-        <location filename="../core/ide_window.py" line="1692"/>
+        <location filename="../core/ide_window.py" line="1693" />
+        <location filename="../core/ide_window.py" line="1809" />
         <source>Exporting Game</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel wird exportiert</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1582"/>
-        <location filename="../core/ide_window.py" line="1698"/>
+        <location filename="../core/ide_window.py" line="1699" />
+        <location filename="../core/ide_window.py" line="1815" />
         <source>Preparing export...</source>
-        <translation type="unfinished"></translation>
+        <translation>Export wird vorbereitet...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1603"/>
-        <location filename="../core/ide_window.py" line="1719"/>
+        <location filename="../core/ide_window.py" line="1720" />
+        <location filename="../core/ide_window.py" line="1836" />
         <source>Export Complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Export abgeschlossen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1604"/>
-        <location filename="../core/ide_window.py" line="1720"/>
+        <location filename="../core/ide_window.py" line="1721" />
+        <location filename="../core/ide_window.py" line="1837" />
         <source>Would you like to open the output folder?</source>
-        <translation type="unfinished"></translation>
+        <translation>Möchten Sie den Ausgabeordner öffnen?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1619"/>
-        <location filename="../core/ide_window.py" line="1729"/>
+        <location filename="../core/ide_window.py" line="1736" />
+        <location filename="../core/ide_window.py" line="1845" />
         <source>Export Failed</source>
-        <translation type="unfinished">Export fehlgeschlagen</translation>
+        <translation>Export fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1902"/>
-        <location filename="../core/ide_window.py" line="1910"/>
+        <location filename="../core/ide_window.py" line="2018" />
+        <location filename="../core/ide_window.py" line="2026" />
         <source>Not Implemented</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht implementiert</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1904"/>
+        <location filename="../core/ide_window.py" line="2019" />
         <source>Find functionality is not yet implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Suchfunktion ist noch nicht implementiert.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1912"/>
+        <location filename="../core/ide_window.py" line="2027" />
         <source>Find and Replace functionality is not yet implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Suchen-und-Ersetzen-Funktion ist noch nicht implementiert.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1927"/>
+        <location filename="../core/ide_window.py" line="2042" />
         <source>Please open a project first to manage assets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitte öffnen Sie zuerst ein Projekt, um Assets zu verwalten.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1932"/>
+        <location filename="../core/ide_window.py" line="2048" />
         <source>Asset Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Asset-Verwaltung</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1941"/>
+        <location filename="../core/ide_window.py" line="2049" />
         <source>Asset Manager is not yet implemented.
 
 Current workaround:
@@ -4275,15 +4643,24 @@ Future features:
 • Asset search and filter
 • Asset usage tracking
 • Unused asset cleanup</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Asset-Verwaltung ist noch nicht implementiert.
+
+Aktuelle Problemumgehung:
+Verwenden Sie das Asset-Baum-Panel auf der linken Seite, um Ihre Assets zu verwalten.
+
+Zukünftige Funktionen:
+• Massenoperationen für Assets
+• Asset-Suche und -Filter
+• Asset-Nutzungsverfolgung
+• Bereinigung ungenutzter Assets</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1963"/>
+        <location filename="../core/ide_window.py" line="2096" />
         <source>Configuration Saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfiguration gespeichert</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1969"/>
+        <location filename="../core/ide_window.py" line="2097" />
         <source>Blockly configuration has been saved.
 
 The new event/block selection is now active in:
@@ -4291,50 +4668,61 @@ The new event/block selection is now active in:
 • Traditional event editor
 
 Changes apply immediately to currently open editors.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Blockly-Konfiguration wurde gespeichert.
+
+Die neue Ereignis-/Blockauswahl ist jetzt aktiv in:
+• Visueller Programmier-Editor (Blockly)
+• Traditioneller Ereignis-Editor
+
+Änderungen werden sofort auf aktuell geöffnete Editoren angewendet.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1994"/>
+        <location filename="../core/ide_window.py" line="2126" />
         <source>Please open a project first to validate.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitte öffnen Sie zuerst ein Projekt zur Validierung.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2015"/>
+        <location filename="../core/ide_window.py" line="2148" />
         <source>Validation Issues Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Validierungsprobleme gefunden</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2016"/>
+        <location filename="../core/ide_window.py" line="2149" />
         <source>Project validation found the following issues:
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Die Projektvalidierung hat folgende Probleme gefunden:
+
+</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2021"/>
+        <location filename="../core/ide_window.py" line="2154" />
         <source>Validation Passed</source>
-        <translation type="unfinished"></translation>
+        <translation>Validierung bestanden</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2025"/>
+        <location filename="../core/ide_window.py" line="2155" />
         <source>Project structure is valid!
 
 ✓ All required directories exist
 ✓ project.json is present</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Projektstruktur ist gültig!
+
+✓ Alle erforderlichen Verzeichnisse existieren
+✓ project.json ist vorhanden</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2034"/>
+        <location filename="../core/ide_window.py" line="2166" />
         <source>Please open a project first to clean.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitte öffnen Sie zuerst ein Projekt zum Bereinigen.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2039"/>
+        <location filename="../core/ide_window.py" line="2172" />
         <source>Clean Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt bereinigen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2046"/>
+        <location filename="../core/ide_window.py" line="2173" />
         <source>Project cleanup is not yet implemented.
 
 Future features:
@@ -4344,25 +4732,38 @@ Future features:
 • Optimize project size
 
 Would you like to learn more?</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Projektbereinigung ist noch nicht implementiert.
+
+Zukünftige Funktionen:
+• Temporäre Dateien entfernen
+• Ungenutzte Assets löschen
+• Build-Artefakte bereinigen
+• Projektgröße optimieren
+
+Möchten Sie mehr erfahren?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2059"/>
+        <location filename="../core/ide_window.py" line="2187" />
         <source>This feature will be available in a future update.
 
 For now, you can manually delete temporary files from:
 • .cache/ directory
 • __pycache__/ directories
 • *.pyc files</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Funktion wird in einem zukünftigen Update verfügbar sein.
+
+Vorerst können Sie temporäre Dateien manuell löschen aus:
+• .cache/-Verzeichnis
+• __pycache__/-Verzeichnisse
+• *.pyc-Dateien</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2065"/>
+        <location filename="../core/ide_window.py" line="2198" />
         <source>Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokumentation</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2075"/>
+        <location filename="../core/ide_window.py" line="2199" />
         <source>Documentation is not yet available.
 
 Quick Help:
@@ -4374,149 +4775,161 @@ Quick Help:
 • Right-click for more options
 
 Online documentation coming soon!</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Dokumentation ist noch nicht verfügbar.
+
+Schnellhilfe:
+• F1: Diese Hilfe öffnen
+• Strg+N: Neues Projekt
+• Strg+O: Projekt öffnen
+• Strg+S: Projekt speichern
+• Doppelklick auf Assets zum Bearbeiten
+• Rechtsklick für weitere Optionen
+
+Online-Dokumentation kommt bald!</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2082"/>
         <source>Tutorials</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Tutorials</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2087"/>
         <source>&lt;h3&gt;PyGameMaker Tutorials&lt;/h3&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">&lt;h3&gt;PyGameMaker-Tutorials&lt;/h3&gt;</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2088"/>
         <source>Coming soon! Tutorials will include:</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Demnächst! Tutorials werden enthalten:</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2104"/>
         <source>
 💡 Tip: Check the documentation (F1) for quick help!</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">
+💡 Tipp: Prüfen Sie die Dokumentation (F1) für schnelle Hilfe!</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2150"/>
-        <source>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version 0.10.1-alpha&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A comprehensive visual game development environment&lt;br&gt;inspired by GameMaker Studio, built with Python.&lt;/p&gt;&lt;p&gt;&lt;a href=&apos;https://github.com/Gabe1290/pythongm&apos;&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Features&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Dual Programming Modes:&lt;/b&gt; Visual (Blockly) and Traditional Events&lt;/li&gt;&lt;li&gt;&lt;b&gt;Asset Management:&lt;/b&gt; Sprites, sounds, objects, and rooms&lt;/li&gt;&lt;li&gt;&lt;b&gt;Cross-Platform Export:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Flexible Configuration:&lt;/b&gt; Customizable block/event visibility&lt;/li&gt;&lt;li&gt;&lt;b&gt;Real-time Testing:&lt;/b&gt; Run games directly from the IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technology Stack&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Game Engine:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Visual Programming:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Language:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Project Information&lt;/h3&gt;&lt;p&gt;PyGameMaker is an educational tool designed to make&lt;br&gt;game development accessible to beginners while providing&lt;br&gt;powerful features for experienced developers.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Built with ❤️ using Python and Qt&lt;/small&gt;&lt;/p&gt;</source>
-        <translation>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version 0.10.1-alpha&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Eine umfassende visuelle Spieleentwicklungsumgebung,&lt;br&gt;inspiriert von GameMaker Studio, entwickelt mit Python.&lt;/p&gt;&lt;p&gt;&lt;a href=&apos;https://github.com/Gabe1290/pythongm&apos;&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Funktionen&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Zwei Programmiermodi:&lt;/b&gt; Visuell (Blockly) und traditionelle Ereignisse&lt;/li&gt;&lt;li&gt;&lt;b&gt;Asset-Verwaltung:&lt;/b&gt; Sprites, Sounds, Objekte und Räume&lt;/li&gt;&lt;li&gt;&lt;b&gt;Plattformübergreifender Export:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Flexible Konfiguration:&lt;/b&gt; Anpassbare Block-/Ereignis-Sichtbarkeit&lt;/li&gt;&lt;li&gt;&lt;b&gt;Echtzeit-Tests:&lt;/b&gt; Spiele direkt aus der IDE starten&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technologie-Stack&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Spiel-Engine:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Visuelle Programmierung:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Sprache:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Projektinformationen&lt;/h3&gt;&lt;p&gt;PyGameMaker ist ein Lernwerkzeug, das entwickelt wurde, um&lt;br&gt;Spieleentwicklung für Anfänger zugänglich zu machen und gleichzeitig&lt;br&gt;leistungsstarke Funktionen für erfahrene Entwickler zu bieten.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Erstellt mit ❤️ unter Verwendung von Python und Qt&lt;/small&gt;&lt;/p&gt;</translation>
+        <location filename="../core/ide_window.py" line="2250" />
+        <source>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version 0.10.1-alpha&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A comprehensive visual game development environment&lt;br&gt;inspired by GameMaker Studio, built with Python.&lt;/p&gt;&lt;p&gt;&lt;a href='https://github.com/Gabe1290/pythongm'&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Features&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Dual Programming Modes:&lt;/b&gt; Visual (Blockly) and Traditional Events&lt;/li&gt;&lt;li&gt;&lt;b&gt;Asset Management:&lt;/b&gt; Sprites, sounds, objects, and rooms&lt;/li&gt;&lt;li&gt;&lt;b&gt;Cross-Platform Export:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Flexible Configuration:&lt;/b&gt; Customizable block/event visibility&lt;/li&gt;&lt;li&gt;&lt;b&gt;Real-time Testing:&lt;/b&gt; Run games directly from the IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technology Stack&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Game Engine:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Visual Programming:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Language:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Project Information&lt;/h3&gt;&lt;p&gt;PyGameMaker is an educational tool designed to make&lt;br&gt;game development accessible to beginners while providing&lt;br&gt;powerful features for experienced developers.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Built with ❤️ using Python and Qt&lt;/small&gt;&lt;/p&gt;</source>
+        <translation>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version 0.10.1-alpha&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Eine umfassende visuelle Spieleentwicklungsumgebung,&lt;br&gt;inspiriert von GameMaker Studio, entwickelt mit Python.&lt;/p&gt;&lt;p&gt;&lt;a href='https://github.com/Gabe1290/pythongm'&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Funktionen&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Zwei Programmiermodi:&lt;/b&gt; Visuell (Blockly) und traditionelle Ereignisse&lt;/li&gt;&lt;li&gt;&lt;b&gt;Asset-Verwaltung:&lt;/b&gt; Sprites, Sounds, Objekte und Räume&lt;/li&gt;&lt;li&gt;&lt;b&gt;Plattformübergreifender Export:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Flexible Konfiguration:&lt;/b&gt; Anpassbare Block-/Ereignis-Sichtbarkeit&lt;/li&gt;&lt;li&gt;&lt;b&gt;Echtzeit-Tests:&lt;/b&gt; Spiele direkt aus der IDE starten&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technologie-Stack&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Spiel-Engine:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Visuelle Programmierung:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Sprache:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Projektinformationen&lt;/h3&gt;&lt;p&gt;PyGameMaker ist ein Lernwerkzeug, das entwickelt wurde, um&lt;br&gt;Spieleentwicklung für Anfänger zugänglich zu machen und gleichzeitig&lt;br&gt;leistungsstarke Funktionen für erfahrene Entwickler zu bieten.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Erstellt mit ❤️ unter Verwendung von Python und Qt&lt;/small&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2157"/>
+        <location filename="../core/ide_window.py" line="2293" />
         <source>Imported {0}</source>
         <translation>{0} importiert</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2189"/>
+        <location filename="../core/ide_window.py" line="2326" />
         <source>Editor</source>
-        <translation type="unfinished">Editor</translation>
+        <translation>Editor</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2191"/>
+        <location filename="../core/ide_window.py" line="2327" />
         <source>Editor for {0} not yet implemented.
 Asset: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor für {0} noch nicht implementiert.
+Asset: {1}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2226"/>
+        <location filename="../core/ide_window.py" line="2363" />
         <source>Opened room: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Raum geöffnet: {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2233"/>
+        <location filename="../core/ide_window.py" line="2370" />
         <source>Failed to open room editor: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Raum-Editor konnte nicht geöffnet werden: {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2273"/>
+        <location filename="../core/ide_window.py" line="2409" />
         <source>Opened object: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt geöffnet: {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2279"/>
+        <location filename="../core/ide_window.py" line="2415" />
         <source>Failed to open object editor: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt-Editor konnte nicht geöffnet werden: {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2392"/>
-        <location filename="../core/ide_window.py" line="2400"/>
+        <location filename="../core/ide_window.py" line="2528" />
+        <location filename="../core/ide_window.py" line="2536" />
         <source>Save Error</source>
-        <translation type="unfinished">Speicherfehler</translation>
+        <translation>Speicherfehler</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2393"/>
+        <location filename="../core/ide_window.py" line="2529" />
         <source>Failed to save project to disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt konnte nicht auf der Festplatte gespeichert werden</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2401"/>
+        <location filename="../core/ide_window.py" line="2537" />
         <source>Failed to save {0}: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} konnte nicht gespeichert werden: {1}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2454"/>
+        <location filename="../core/ide_window.py" line="2590" />
         <source>Project loaded: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt geladen: {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2474"/>
+        <location filename="../core/ide_window.py" line="2610" />
         <source>Save Project As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt speichern unter...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2475"/>
+        <location filename="../core/ide_window.py" line="2610" />
         <source>Project Settings...</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekteinstellungen...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2476"/>
+        <location filename="../core/ide_window.py" line="2612" />
         <source>Create</source>
         <translation>Erstellen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2478"/>
+        <location filename="../core/ide_window.py" line="2614" />
         <source>Test Game</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel testen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2478"/>
+        <location filename="../core/ide_window.py" line="2614" />
         <source>Debug Game</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel debuggen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2480"/>
+        <location filename="../core/ide_window.py" line="2615" />
         <source>Export Game...</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel exportieren...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2508"/>
+        <location filename="../core/ide_window.py" line="2644" />
         <source>Project: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt: {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2605"/>
+        <location filename="../core/ide_window.py" line="2741" />
         <source>You have unsaved changes. Do you want to save before closing?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sie haben ungespeicherte Änderungen. Möchten Sie vor dem Schließen speichern?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2635"/>
+        <location filename="../core/ide_window.py" line="2768" />
         <source>You need to create or open a project before {0}.
 
 Would you like to:
 • Create a new project, or
 • Open an existing project?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sie müssen ein Projekt erstellen oder öffnen, bevor Sie {0}.
+
+Möchten Sie:
+• Ein neues Projekt erstellen, oder
+• Ein bestehendes Projekt öffnen?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2644"/>
+        <location filename="../core/ide_window.py" line="2780" />
         <source>Create or Open Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt erstellen oder öffnen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2645"/>
+        <location filename="../core/ide_window.py" line="2781" />
         <source>Choose project action:</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektaktion wählen:</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -4531,13 +4944,13 @@ Would you like to:
         <translation type="vanished">Duplizieren</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2476"/>
+        <location filename="../core/ide_window.py" line="2612" />
         <source>Import</source>
         <translation>Importieren</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="619"/>
-        <location filename="../core/ide_window.py" line="1514"/>
+        <location filename="../core/ide_window.py" line="626" />
+        <location filename="../core/ide_window.py" line="1631" />
         <source>Export</source>
         <translation>Exportieren</translation>
     </message>
@@ -4546,12 +4959,12 @@ Would you like to:
         <translation type="vanished">Neues Projekt</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="914"/>
+        <location filename="../core/ide_window.py" line="965" />
         <source>Open Project</source>
         <translation>Projekt öffnen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2474"/>
+        <location filename="../core/ide_window.py" line="2610" />
         <source>Save Project</source>
         <translation>Projekt speichern</translation>
     </message>
@@ -4560,8 +4973,8 @@ Would you like to:
         <translation type="vanished">Projekt erfolgreich gespeichert</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="964"/>
-        <location filename="../core/ide_window.py" line="990"/>
+        <location filename="../core/ide_window.py" line="1015" />
+        <location filename="../core/ide_window.py" line="1041" />
         <source>Failed to save project</source>
         <translation>Projekt konnte nicht gespeichert werden</translation>
     </message>
@@ -4570,14 +4983,14 @@ Would you like to:
         <translation type="vanished">Projekt erfolgreich geladen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="951"/>
+        <location filename="../core/ide_window.py" line="1002" />
         <source>Failed to load project</source>
         <translation>Projekt konnte nicht geladen werden</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="707"/>
-        <location filename="../core/ide_window.py" line="1343"/>
-        <location filename="../core/ide_window.py" line="2604"/>
+        <location filename="../core/ide_window.py" line="732" />
+        <location filename="../core/ide_window.py" line="1460" />
+        <location filename="../core/ide_window.py" line="2740" />
         <source>Unsaved Changes</source>
         <translation>Ungespeicherte Änderungen</translation>
     </message>
@@ -4602,9 +5015,9 @@ Would you like to:
         <translation type="vanished">Projekt &amp;erstellen</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1388"/>
-        <location filename="../core/ide_window.py" line="1408"/>
-        <location filename="../core/ide_window.py" line="2479"/>
+        <location filename="../core/ide_window.py" line="1505" />
+        <location filename="../core/ide_window.py" line="1525" />
+        <location filename="../core/ide_window.py" line="2615" />
         <source>Build and Run</source>
         <translation>Erstellen und Ausführen</translation>
     </message>
@@ -4613,8 +5026,8 @@ Would you like to:
         <translation type="vanished">Build-Cache leeren</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="815"/>
-        <location filename="../core/ide_window.py" line="2510"/>
+        <location filename="../core/ide_window.py" line="864" />
+        <location filename="../core/ide_window.py" line="2646" />
         <source>No project loaded</source>
         <translation>Kein Projekt geladen</translation>
     </message>
@@ -4623,12 +5036,12 @@ Would you like to:
         <translation type="vanished">Bitte erstellen oder öffnen Sie zuerst ein Projekt</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="341"/>
+        <location filename="../core/ide_window.py" line="378" />
         <source>Language Changed</source>
         <translation>Sprache geändert</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="344"/>
+        <location filename="../core/ide_window.py" line="379" />
         <source>Language changed to {0}.
 
 The IDE needs to restart for the language change to take effect.
@@ -4644,457 +5057,676 @@ Möchten Sie jetzt neu starten?</translation>
 <context>
     <name>RoomEditor</name>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="98"/>
+        <location filename="../editors/room_editor/__init__.py" line="99" />
         <source>Room Editor</source>
         <translation>Raum-Editor</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="103"/>
+        <location filename="../editors/room_editor/__init__.py" line="104" />
         <source>💾 Save</source>
         <translation>💾 Speichern</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="104"/>
+        <location filename="../editors/room_editor/__init__.py" line="105" />
         <source>Save room (Ctrl+S)</source>
         <translation>Raum speichern (Strg+S)</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="110"/>
-        <location filename="../editors/room_editor/__init__.py" line="484"/>
+        <location filename="../editors/room_editor/__init__.py" line="111" />
+        <location filename="../editors/room_editor/__init__.py" line="470" />
         <source>↶ Undo</source>
         <translation>↶ Rückgängig</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="111"/>
+        <location filename="../editors/room_editor/__init__.py" line="112" />
         <source>Undo (Ctrl+Z)</source>
         <translation>Rückgängig (Strg+Z)</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="115"/>
-        <location filename="../editors/room_editor/__init__.py" line="490"/>
+        <location filename="../editors/room_editor/__init__.py" line="116" />
+        <location filename="../editors/room_editor/__init__.py" line="476" />
         <source>↷ Redo</source>
         <translation>↷ Wiederherstellen</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="116"/>
+        <location filename="../editors/room_editor/__init__.py" line="117" />
         <source>Redo (Ctrl+Y)</source>
         <translation>Wiederherstellen (Strg+Y)</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="123"/>
+        <location filename="../editors/room_editor/__init__.py" line="124" />
         <source>✂️ Cut</source>
         <translation>✂️ Ausschneiden</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="124"/>
+        <location filename="../editors/room_editor/__init__.py" line="125" />
         <source>Cut selected instance (Ctrl+X)</source>
         <translation>Ausgewählte Instanz ausschneiden (Strg+X)</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="128"/>
+        <location filename="../editors/room_editor/__init__.py" line="129" />
         <source>📋 Copy</source>
         <translation>📋 Kopieren</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="129"/>
+        <location filename="../editors/room_editor/__init__.py" line="130" />
         <source>Copy selected instance (Ctrl+C)</source>
         <translation>Ausgewählte Instanz kopieren (Strg+C)</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="133"/>
+        <location filename="../editors/room_editor/__init__.py" line="134" />
         <source>📄 Paste</source>
         <translation>📄 Einfügen</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="134"/>
+        <location filename="../editors/room_editor/__init__.py" line="135" />
         <source>Paste instance (Ctrl+V)</source>
         <translation>Instanz einfügen (Strg+V)</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="138"/>
+        <location filename="../editors/room_editor/__init__.py" line="139" />
         <source>⎘ Duplicate</source>
         <translation>⎘ Duplizieren</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="139"/>
+        <location filename="../editors/room_editor/__init__.py" line="140" />
         <source>Duplicate selected instance (Ctrl+D)</source>
         <translation>Ausgewählte Instanz duplizieren (Strg+D)</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="146"/>
+        <location filename="../editors/room_editor/__init__.py" line="147" />
         <source>🔲 Grid</source>
         <translation>🔲 Raster</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="149"/>
+        <location filename="../editors/room_editor/__init__.py" line="150" />
         <source>Toggle grid visibility</source>
         <translation>Rasteransicht umschalten</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="153"/>
+        <location filename="../editors/room_editor/__init__.py" line="154" />
         <source>🧲 Snap</source>
         <translation>🧲 Einrasten</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="156"/>
+        <location filename="../editors/room_editor/__init__.py" line="157" />
         <source>Toggle snap to grid</source>
         <translation>Einrasten am Raster umschalten</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="162"/>
+        <location filename="../editors/room_editor/__init__.py" line="163" />
         <source>🗑️ Clear All</source>
         <translation>🗑️ Alle löschen</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="163"/>
+        <location filename="../editors/room_editor/__init__.py" line="164" />
         <source>Remove all object instances</source>
         <translation>Alle Objektinstanzen entfernen</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="169"/>
-        <location filename="../editors/room_editor/__init__.py" line="205"/>
+        <location filename="../editors/room_editor/__init__.py" line="170" />
+        <location filename="../editors/room_editor/__init__.py" line="206" />
         <source>Ready</source>
         <translation>Bereit</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="188"/>
+        <location filename="../editors/room_editor/__init__.py" line="189" />
         <source>Clear All Instances</source>
         <translation>Alle Instanzen löschen</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="189"/>
+        <location filename="../editors/room_editor/__init__.py" line="190" />
         <source>Are you sure you want to remove all {0} object instances?</source>
         <translation>Möchten Sie wirklich alle {0} Objektinstanzen entfernen?</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="198"/>
+        <location filename="../editors/room_editor/__init__.py" line="199" />
         <source>All instances cleared</source>
         <translation>Alle Instanzen gelöscht</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="265"/>
+        <location filename="../editors/room_editor/__init__.py" line="251" />
         <source>Deleted {0}</source>
         <translation>{0} gelöscht</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="267"/>
+        <location filename="../editors/room_editor/__init__.py" line="253" />
         <source>Deleted {0} instances</source>
         <translation>{0} Instanzen gelöscht</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="309"/>
-        <source>Loaded room &apos;{0}&apos; with {1} instances</source>
-        <translation>Raum &apos;{0}&apos; mit {1} Instanzen geladen</translation>
+        <location filename="../editors/room_editor/__init__.py" line="295" />
+        <source>Loaded room '{0}' with {1} instances</source>
+        <translation>Raum '{0}' mit {1} Instanzen geladen</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="339"/>
+        <location filename="../editors/room_editor/__init__.py" line="325" />
         <source>Loaded {0} objects</source>
         <translation>{0} Objekte geladen</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="343"/>
+        <location filename="../editors/room_editor/__init__.py" line="329" />
         <source>Error loading objects: {0}</source>
         <translation>Fehler beim Laden der Objekte: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="349"/>
-        <source>Selected &apos;{0}&apos; - Click in room to place</source>
-        <translation>&apos;{0}&apos; ausgewählt - Klicken Sie im Raum, um zu platzieren</translation>
+        <location filename="../editors/room_editor/__init__.py" line="335" />
+        <source>Selected '{0}' - Click in room to place</source>
+        <translation>'{0}' ausgewählt - Klicken Sie im Raum, um zu platzieren</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="351"/>
+        <location filename="../editors/room_editor/__init__.py" line="337" />
         <source>No object selected</source>
         <translation>Kein Objekt ausgewählt</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="368"/>
+        <location filename="../editors/room_editor/__init__.py" line="354" />
         <source>Selected {0} at ({1}, {2})</source>
         <translation>{0} bei ({1}, {2}) ausgewählt</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="370"/>
+        <location filename="../editors/room_editor/__init__.py" line="356" />
         <source>Selected {0} instances</source>
         <translation>{0} Instanzen ausgewählt</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="372"/>
+        <location filename="../editors/room_editor/__init__.py" line="358" />
         <source>No instance selected</source>
         <translation>Keine Instanz ausgewählt</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="378"/>
+        <location filename="../editors/room_editor/__init__.py" line="364" />
         <source>Moved {0} to ({1}, {2})</source>
         <translation>{0} nach ({1}, {2}) verschoben</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="383"/>
+        <location filename="../editors/room_editor/__init__.py" line="369" />
         <source>Added {0} at ({1}, {2})</source>
         <translation>{0} hinzugefügt bei ({1}, {2})</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="390"/>
+        <location filename="../editors/room_editor/__init__.py" line="376" />
         <source>Deleted {0} instance</source>
         <translation>{0} Instanz gelöscht</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="392"/>
+        <location filename="../editors/room_editor/__init__.py" line="378" />
         <source>Updated {0} {1}: {2}</source>
         <translation>{0} {1} aktualisiert: {2}</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="426"/>
+        <location filename="../editors/room_editor/__init__.py" line="412" />
         <source>Saving room...</source>
         <translation>Raum speichern...</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="430"/>
-        <source>Room &apos;{0}&apos; saved successfully</source>
-        <translation>Raum &apos;{0}&apos; erfolgreich gespeichert</translation>
+        <location filename="../editors/room_editor/__init__.py" line="416" />
+        <source>Room '{0}' saved successfully</source>
+        <translation>Raum '{0}' erfolgreich gespeichert</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="434"/>
+        <location filename="../editors/room_editor/__init__.py" line="420" />
         <source>Error saving room: {0}</source>
         <translation>Fehler beim Speichern des Raums: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="435"/>
+        <location filename="../editors/room_editor/__init__.py" line="421" />
         <source>Save Error</source>
         <translation>Speicherfehler</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="435"/>
+        <location filename="../editors/room_editor/__init__.py" line="421" />
         <source>Failed to save room:
 {0}</source>
         <translation>Fehler beim Speichern des Raums:
 {0}</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="462"/>
+        <location filename="../editors/room_editor/__init__.py" line="448" />
         <source>Undo</source>
         <translation>Rückgängig</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="469"/>
+        <location filename="../editors/room_editor/__init__.py" line="455" />
         <source>Redo</source>
         <translation>Wiederherstellen</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="482"/>
+        <location filename="../editors/room_editor/__init__.py" line="468" />
         <source>↶ Undo: {0}</source>
         <translation>↶ Rückgängig: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="488"/>
+        <location filename="../editors/room_editor/__init__.py" line="474" />
         <source>↷ Redo: {0}</source>
         <translation>↷ Wiederherstellen: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="499"/>
+        <location filename="../editors/room_editor/__init__.py" line="485" />
         <source>Cut {0} instance(s) to clipboard</source>
         <translation>{0} Instanz(en) in Zwischenablage ausgeschnitten</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="507"/>
+        <location filename="../editors/room_editor/__init__.py" line="493" />
         <source>Copied {0} instance(s) to clipboard</source>
         <translation>{0} Instanz(en) in Zwischenablage kopiert</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="518"/>
+        <location filename="../editors/room_editor/__init__.py" line="504" />
         <source>Instance pasted</source>
         <translation>Instanz eingefügt</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="520"/>
+        <location filename="../editors/room_editor/__init__.py" line="506" />
         <source>Pasted {0} instances</source>
         <translation>{0} Instanzen eingefügt</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="528"/>
+        <location filename="../editors/room_editor/__init__.py" line="514" />
         <source>Duplicated {0} instance(s)</source>
         <translation>{0} Instanz(en) dupliziert</translation>
     </message>
 </context>
 <context>
+    <name>SpriteStripDialog</name>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="208" />
+        <source>Configure Sprite Strip</source>
+        <translation>Sprite-Streifen konfigurieren</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="221" />
+        <source>Sprite Sheet Preview</source>
+        <translation>Sprite-Sheet-Vorschau</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="229" />
+        <source>Frame:</source>
+        <translation>Frame:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="241" />
+        <source>Animation Preview</source>
+        <translation>Animationsvorschau</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="248" />
+        <source>Play</source>
+        <translation>Abspielen</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="250" />
+        <source>Stop</source>
+        <translation>Stopp</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="263" />
+        <source>Image Info</source>
+        <translation>Bildinfo</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="267" />
+        <source>Width:</source>
+        <translation>Breite:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="268" />
+        <source>Height:</source>
+        <translation>Höhe:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="272" />
+        <source>Frame Configuration</source>
+        <translation>Frame-Konfiguration</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="277" />
+        <source>Horizontal Strip</source>
+        <translation>Horizontaler Streifen</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="278" />
+        <source>Vertical Strip</source>
+        <translation>Vertikaler Streifen</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="279" />
+        <source>Grid (Rows x Columns)</source>
+        <translation>Raster (Zeilen x Spalten)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="281" />
+        <source>Strip Type:</source>
+        <translation>Streifen-Typ:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="288" />
+        <source>Frame Width:</source>
+        <translation>Frame-Breite:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="294" />
+        <source>Frame Height:</source>
+        <translation>Frame-Höhe:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="301" />
+        <source>Columns:</source>
+        <translation>Spalten:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="307" />
+        <source>Rows:</source>
+        <translation>Zeilen:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="311" />
+        <source>Total Frames:</source>
+        <translation>Gesamtframes:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="316" />
+        <source>Animation Settings</source>
+        <translation>Animationseinstellungen</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="324" />
+        <source>Animation Speed:</source>
+        <translation>Animationsgeschwindigkeit:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="332" />
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="334" />
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+</context>
+<context>
+    <name>TutorialDialog</name>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="25" />
+        <source>Tutorials</source>
+        <translation>Tutorials</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="62" />
+        <source>&lt;h2&gt;PyGameMaker Tutorials&lt;/h2&gt;</source>
+        <translation>&lt;h2&gt;PyGameMaker-Tutorials&lt;/h2&gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="66" />
+        <source>Double-click a tutorial to start:</source>
+        <translation>Doppelklicken Sie auf ein Tutorial, um zu starten:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="85" />
+        <source>Tip: Check the documentation (F1) for quick help!</source>
+        <translation>Tipp: Drücken Sie F1 für schnelle Hilfe!</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="93" />
+        <source>Close</source>
+        <translation>Schließen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="102" />
+        <source>Select a tutorial to see its description.</source>
+        <translation>Wählen Sie ein Tutorial, um seine Beschreibung zu sehen.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="105" />
+        <source>No tutorials folder found</source>
+        <translation>Kein Tutorial-Ordner gefunden</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="144" />
+        <source>No tutorials available</source>
+        <translation>Keine Tutorials verfügbar</translation>
+    </message>
+</context>
+<context>
+    <name>TutorialPanel</name>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="42" />
+        <source>&lt;b&gt;Tutorials&lt;/b&gt;</source>
+        <translation>&lt;b&gt;Tutorials&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="48" />
+        <source>Close</source>
+        <translation>Schließen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="63" />
+        <source>Select a tutorial:</source>
+        <translation>Tutorial auswählen:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="70" />
+        <source>Open Tutorial</source>
+        <translation>Tutorial öffnen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="103" />
+        <source>Back to List</source>
+        <translation>Zurück zur Liste</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="109" />
+        <source>&lt; Previous</source>
+        <translation>&lt; Zurück</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="113" />
+        <source>Next &gt;</source>
+        <translation>Weiter &gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="159" />
+        <source>No tutorials folder found</source>
+        <translation>Kein Tutorial-Ordner gefunden</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="201" />
+        <source>No tutorials available</source>
+        <translation>Keine Tutorials verfügbar</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="298" />
+        <source>Page {0} of {1}</source>
+        <translation>Seite {0} von {1}</translation>
+    </message>
+</context>
+<context>
     <name>VisualScriptingArea</name>
     <message>
-        <location filename="../editors/object_editor_components.py" line="41"/>
+        <location filename="../editors/object_editor_components.py" line="41" />
         <source>Visual scripting is now managed through the Events panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Visuelle Programmierung wird jetzt über das Ereignis-Panel verwaltet</translation>
     </message>
 </context>
 <context>
     <name>WelcomeTab</name>
     <message>
-        <location filename="../widgets/welcome_tab.py" line="24"/>
+        <location filename="../widgets/welcome_tab.py" line="24" />
         <source>Welcome to PyGameMaker IDE</source>
         <translation>Willkommen bei PyGameMaker IDE</translation>
     </message>
     <message>
-        <location filename="../widgets/welcome_tab.py" line="28"/>
+        <location filename="../widgets/welcome_tab.py" line="28" />
         <source>Create amazing 2D games with visual scripting</source>
         <translation>Erstellen Sie tolle 2D-Spiele mit visueller Programmierung</translation>
     </message>
     <message>
-        <location filename="../widgets/welcome_tab.py" line="38"/>
+        <location filename="../widgets/welcome_tab.py" line="38" />
         <source>Quick Actions</source>
         <translation>Schnellaktionen</translation>
     </message>
     <message>
-        <location filename="../widgets/welcome_tab.py" line="42"/>
+        <location filename="../widgets/welcome_tab.py" line="42" />
         <source>🆕 New Project (Ctrl+N)</source>
         <translation>🆕 Neues Projekt (Ctrl+N)</translation>
     </message>
     <message>
-        <location filename="../widgets/welcome_tab.py" line="43"/>
+        <location filename="../widgets/welcome_tab.py" line="43" />
         <source>📂 Open Project (Ctrl+O)</source>
         <translation>📂 Projekt öffnen (Ctrl+O)</translation>
     </message>
     <message>
-        <location filename="../widgets/welcome_tab.py" line="44"/>
+        <location filename="../widgets/welcome_tab.py" line="44" />
         <source>📋 Recent Projects</source>
         <translation>📋 Zuletzt geöffnete Projekte</translation>
     </message>
     <message>
-        <location filename="../widgets/welcome_tab.py" line="45"/>
+        <location filename="../widgets/welcome_tab.py" line="45" />
         <source>🏠 Create Room (Ctrl+R)</source>
         <translation>🏠 Raum erstellen (Ctrl+R)</translation>
     </message>
     <message>
-        <location filename="../widgets/welcome_tab.py" line="78"/>
+        <location filename="../widgets/welcome_tab.py" line="78" />
         <source>No recent projects</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine kürzlichen Projekte</translation>
     </message>
 </context>
 <context>
     <name>self.ide</name>
     <message>
-        <location filename="../core/ide_exporters.py" line="40"/>
+        <location filename="../core/ide_exporters.py" line="39" />
         <source>No Project</source>
-        <translation type="unfinished">Kein Projekt</translation>
+        <translation>Kein Projekt</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="42"/>
+        <location filename="../core/ide_exporters.py" line="40" />
         <source>Please open or create a project first before exporting.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitte öffnen oder erstellen Sie zuerst ein Projekt vor dem Exportieren.</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="49"/>
+        <location filename="../core/ide_exporters.py" line="48" />
         <source>Select Export Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportverzeichnis auswählen</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="57"/>
+        <location filename="../core/ide_exporters.py" line="56" />
         <source>Exporting to HTML5...</source>
-        <translation type="unfinished"></translation>
+        <translation>Export nach HTML5...</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="64"/>
-        <location filename="../core/ide_exporters.py" line="129"/>
+        <location filename="../core/ide_exporters.py" line="63" />
+        <location filename="../core/ide_exporters.py" line="128" />
         <source>Export Successful</source>
-        <translation type="unfinished">Export erfolgreich</translation>
+        <translation>Export erfolgreich</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="65"/>
+        <location filename="../core/ide_exporters.py" line="64" />
         <source>Game exported as HTML5!
 
 {0}
 
 Open in browser now?</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel als HTML5 exportiert!
+
+{0}
+
+Jetzt im Browser öffnen?</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="73"/>
+        <location filename="../core/ide_exporters.py" line="72" />
         <source>HTML5 export complete</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML5-Export abgeschlossen</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="77"/>
-        <location filename="../core/ide_exporters.py" line="136"/>
+        <location filename="../core/ide_exporters.py" line="76" />
+        <location filename="../core/ide_exporters.py" line="135" />
         <source>Export Failed</source>
-        <translation type="unfinished">Export fehlgeschlagen</translation>
+        <translation>Export fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="79"/>
+        <location filename="../core/ide_exporters.py" line="77" />
         <source>Failed to export game as HTML5. Check console for details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiel konnte nicht als HTML5 exportiert werden. Details in der Konsole prüfen.</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="80"/>
-        <location filename="../core/ide_exporters.py" line="139"/>
+        <location filename="../core/ide_exporters.py" line="79" />
+        <location filename="../core/ide_exporters.py" line="138" />
         <source>Export failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Export fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="114"/>
+        <location filename="../core/ide_exporters.py" line="113" />
         <source>Export Project as Zip</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt als ZIP exportieren</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="117"/>
-        <location filename="../core/ide_exporters.py" line="148"/>
+        <location filename="../core/ide_exporters.py" line="115" />
+        <location filename="../core/ide_exporters.py" line="146" />
         <source>Zip Files (*.zip)</source>
-        <translation type="unfinished"></translation>
+        <translation>ZIP-Dateien (*.zip)</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="123"/>
+        <location filename="../core/ide_exporters.py" line="122" />
         <source>Exporting project...</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt wird exportiert...</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="130"/>
+        <location filename="../core/ide_exporters.py" line="129" />
         <source>Project exported to:
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt exportiert nach:
+{0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="132"/>
+        <location filename="../core/ide_exporters.py" line="131" />
         <source>Project exported</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt exportiert</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="138"/>
+        <location filename="../core/ide_exporters.py" line="136" />
         <source>Failed to export project as zip</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt konnte nicht als ZIP exportiert werden</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="145"/>
+        <location filename="../core/ide_exporters.py" line="144" />
         <source>Open Zip Project</source>
-        <translation type="unfinished"></translation>
+        <translation>ZIP-Projekt öffnen</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="158"/>
+        <location filename="../core/ide_exporters.py" line="157" />
         <source>Invalid Zip</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige ZIP-Datei</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="160"/>
+        <location filename="../core/ide_exporters.py" line="158" />
         <source>This zip file does not contain a valid PyGameMaker project</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese ZIP-Datei enthält kein gültiges PyGameMaker-Projekt</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="164"/>
+        <location filename="../core/ide_exporters.py" line="163" />
         <source>Loading project from zip...</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt wird aus ZIP geladen...</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="169"/>
+        <location filename="../core/ide_exporters.py" line="168" />
         <source>Project loaded from zip</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt aus ZIP geladen</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="173"/>
+        <location filename="../core/ide_exporters.py" line="172" />
         <source>Error</source>
-        <translation type="unfinished">Fehler</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="175"/>
+        <location filename="../core/ide_exporters.py" line="173" />
         <source>Failed to load project from zip</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekt konnte nicht aus ZIP geladen werden</translation>
     </message>
     <message>
-        <location filename="../core/ide_exporters.py" line="176"/>
+        <location filename="../core/ide_exporters.py" line="175" />
         <source>Failed to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Laden fehlgeschlagen</translation>
     </message>
 </context>
 </TS>

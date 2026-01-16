@@ -4,32 +4,32 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../dialogs/about.py" line="18"/>
+        <location filename="../dialogs/about.py" line="18" />
         <source>About PyGameMaker IDE</source>
-        <translation type="unfinished"></translation>
+        <translation>Про PyGameMaker IDE</translation>
     </message>
     <message>
-        <location filename="../dialogs/about.py" line="28"/>
+        <location filename="../dialogs/about.py" line="28" />
         <source>PyGameMaker IDE</source>
-        <translation type="unfinished"></translation>
+        <translation>PyGameMaker IDE</translation>
     </message>
     <message>
-        <location filename="../dialogs/about.py" line="37"/>
+        <location filename="../dialogs/about.py" line="37" />
         <source>Version 0.10.1-alpha</source>
-        <translation type="unfinished"></translation>
+        <translation>Версія 0.10.1-alpha</translation>
     </message>
     <message>
-        <location filename="../dialogs/about.py" line="56"/>
+        <location filename="../dialogs/about.py" line="56" />
         <source>&lt;h3&gt;PyGameMaker IDE&lt;/h3&gt;&lt;p&gt;A GameMaker-inspired IDE for creating 2D games with Python.&lt;/p&gt;&lt;h4&gt;Features:&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Visual scripting with events and actions&lt;/li&gt;&lt;li&gt;Asset management for sprites, sounds, and objects&lt;/li&gt;&lt;li&gt;Room-based game development&lt;/li&gt;&lt;li&gt;Export to standalone Python games&lt;/li&gt;&lt;/ul&gt;&lt;h4&gt;Built with:&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;PySide6 for the user interface&lt;/li&gt;&lt;li&gt;Pygame for game runtime&lt;/li&gt;&lt;li&gt;Python 3.11+&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;PyGameMaker IDE&lt;/h3&gt;&lt;p&gt;IDE для створення 2D ігор на Python, натхненний GameMaker.&lt;/p&gt;&lt;h4&gt;Можливості:&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Візуальне програмування з подіями та діями&lt;/li&gt;&lt;li&gt;Керування ресурсами для спрайтів, звуків та об'єктів&lt;/li&gt;&lt;li&gt;Розробка ігор на основі кімнат&lt;/li&gt;&lt;li&gt;Експорт у автономні ігри Python&lt;/li&gt;&lt;/ul&gt;&lt;h4&gt;Створено з використанням:&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;PySide6 для інтерфейсу користувача&lt;/li&gt;&lt;li&gt;Pygame для виконання гри&lt;/li&gt;&lt;li&gt;Python 3.11+&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../dialogs/about.py" line="59"/>
+        <location filename="../dialogs/about.py" line="59" />
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>Про програму</translation>
     </message>
     <message>
-        <location filename="../dialogs/about.py" line="67"/>
+        <location filename="../dialogs/about.py" line="67" />
         <source>Credits:
 
 Development:
@@ -70,1591 +70,1830 @@ Copyright (C) 2024-2025 Gabriel Thullen</source>
 Copyright (C) 2024-2025 Gabriel Thullen</translation>
     </message>
     <message>
-        <location filename="../dialogs/about.py" line="70"/>
+        <location filename="../dialogs/about.py" line="70" />
         <source>Credits</source>
-        <translation type="unfinished"></translation>
+        <translation>Подяки</translation>
     </message>
     <message>
-        <location filename="../dialogs/about.py" line="76"/>
+        <location filename="../dialogs/about.py" line="76" />
         <source>Close</source>
-        <translation type="unfinished">Закрити</translation>
+        <translation>Закрити</translation>
     </message>
 </context>
 <context>
     <name>ActionListWidget</name>
     <message>
-        <location filename="../editors/object_editor_components.py" line="23"/>
+        <location filename="../editors/object_editor_components.py" line="23" />
         <source>Actions are now managed through the Events panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Дії тепер керуються через панель Подій</translation>
     </message>
 </context>
 <context>
     <name>AssetPropertiesDialog</name>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="115"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="114" />
         <source>{0} Properties - {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Властивості {0} - {1}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="127"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="126" />
         <source>Type: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="132"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="131" />
         <source>File: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="137"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="136" />
         <source>Imported</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпортовано</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="138"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="136" />
         <source>Not imported</source>
-        <translation type="unfinished"></translation>
+        <translation>Не імпортовано</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="138"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="137" />
         <source>Status: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Статус: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="146"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="143" />
         <source>📥 Import Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>📥 Імпортувати зображення...</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="153"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="150" />
         <source>Created: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Створено: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="158"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="155" />
         <source>Close</source>
-        <translation type="unfinished">Закрити</translation>
+        <translation>Закрити</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="174"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="171" />
         <source>Select Sprite Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть зображення спрайта</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="177"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="173" />
         <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файли зображень (*.png *.jpg *.jpeg *.bmp *.gif);;Усі файли (*.*)</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="201"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="198" />
         <source>Success</source>
-        <translation type="unfinished"></translation>
+        <translation>Успіх</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="202"/>
-        <source>Image imported successfully for sprite &apos;{0}&apos;</source>
-        <translation type="unfinished"></translation>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="199" />
+        <source>Image imported successfully for sprite '{0}'</source>
+        <translation>Зображення успішно імпортовано для спрайта '{0}'</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="210"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="207" />
         <source>Import Failed</source>
-        <translation type="unfinished">Помилка імпорту</translation>
+        <translation>Помилка імпорту</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="212"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="208" />
         <source>Failed to import the image. Please try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося імпортувати зображення. Спробуйте ще раз.</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="216"/>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="222"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="213" />
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="219" />
         <source>Error</source>
-        <translation type="unfinished">Помилка</translation>
+        <translation>Помилка</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="217"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="214" />
         <source>Error importing image: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка імпорту зображення: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="224"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="220" />
         <source>Could not access asset manager. Please try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося отримати доступ до менеджера ресурсів. Спробуйте ще раз.</translation>
     </message>
 </context>
 <context>
     <name>AssetRenameDialog</name>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="26"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="25" />
         <source>Rename {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейменувати {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="35"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="34" />
         <source>Current name: &lt;b&gt;{0}&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Поточна назва: &lt;b&gt;{0}&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="39"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="38" />
         <source>New name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Нова назва:</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="51"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="50" />
         <source>Cancel</source>
-        <translation type="unfinished">Скасувати</translation>
+        <translation>Скасувати</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="55"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="54" />
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейменувати</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="91"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="90" />
         <source>Invalid Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Недійсна назва</translation>
     </message>
 </context>
 <context>
     <name>AssetTreeWidget</name>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="57"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="59" />
         <source>Assets</source>
-        <translation type="unfinished"></translation>
+        <translation>Ресурси</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="74"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="79" />
         <source>Sprites</source>
-        <translation type="unfinished"></translation>
+        <translation>Спрайти</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="75"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="80" />
         <source>Sounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Звуки</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="76"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="81" />
         <source>Backgrounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Фони</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="78"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="83" />
         <source>Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Об'єкти</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="79"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="84" />
         <source>Rooms</source>
-        <translation type="unfinished"></translation>
+        <translation>Кімнати</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="81"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="86" />
         <source>Scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Скрипти</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="82"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="87" />
         <source>Fonts</source>
-        <translation type="unfinished"></translation>
+        <translation>Шрифти</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="175"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="180" />
         <source>➕ Create New {0}...</source>
-        <translation type="unfinished"></translation>
+        <translation>➕ Створити новий {0}...</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="180"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="186" />
         <source>📥 Import {0}...</source>
-        <translation type="unfinished"></translation>
+        <translation>📥 Імпортувати {0}...</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="189"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="193" />
+        <source>📦 Import {0} Package...</source>
+        <translation>📦 Імпортувати пакет {0}...</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="202" />
         <source>✏️ Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>✏️ Перейменувати</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="195"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="208" />
         <source>📥 Import Image...</source>
         <translation>📥 Імпортувати зображення...</translation>
     </message>
     <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="213" />
         <source>🎬 Configure Animation...</source>
         <translation>🎬 Налаштувати анімацію...</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="200"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="218" />
         <source>🗑️ Delete</source>
         <translation>🗑️ Видалити</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="208"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="226" />
         <source>📦 Export Package...</source>
-        <translation type="unfinished"></translation>
+        <translation>📦 Експортувати пакет...</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="232"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="250" />
         <source>⬆️ Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation>⬆️ Вгору</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="238"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="256" />
         <source>⬇️ Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation>⬇️ Вниз</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="246"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="264" />
         <source>⏫ Move to Top</source>
-        <translation type="unfinished"></translation>
+        <translation>⏫ На початок</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="252"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="270" />
         <source>⏬ Move to Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>⏬ В кінець</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="260"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="278" />
         <source>⚙️ Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>⚙️ Властивості...</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="288"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="306" />
         <source>Create Asset</source>
-        <translation type="unfinished"></translation>
+        <translation>Створити ресурс</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="289"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="307" />
         <source>Asset creation for {0} is not yet implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Створення ресурсів для {0} ще не реалізовано.</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="307"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="325" />
         <source>Import Assets</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпортувати ресурси</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="308"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="326" />
         <source>Please use the File menu to import {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, використовуйте меню Файл для імпорту {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="330"/>
-        <source>Select Image for Sprite &apos;{0}&apos;</source>
-        <translation type="unfinished"></translation>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="348" />
+        <source>Select Image for Sprite '{0}'</source>
+        <translation>Виберіть зображення для спрайта '{0}'</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="333"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="350" />
         <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файли зображень (*.png *.jpg *.jpeg *.bmp *.gif);;Усі файли (*.*)</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="344"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="362" />
         <source>Success</source>
-        <translation type="unfinished"></translation>
+        <translation>Успіх</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="345"/>
-        <source>Image imported successfully for sprite &apos;{0}&apos;</source>
-        <translation type="unfinished"></translation>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="363" />
+        <source>Image imported successfully for sprite '{0}'</source>
+        <translation>Зображення успішно імпортовано для спрайта '{0}'</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="355"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="377" />
+        <source>No Sprite Data</source>
+        <translation>Немає даних спрайта</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="378" />
+        <source>Could not load sprite data for '{0}'</source>
+        <translation>Не вдалося завантажити дані спрайта '{0}'</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="387" />
+        <source>No Image</source>
+        <translation>Немає зображення</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="388" />
+        <source>Sprite '{0}' has no image file. Please import an image first.</source>
+        <translation>Спрайт '{0}' не має файлу зображення. Спочатку імпортуйте зображення.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="402" />
+        <source>Image Not Found</source>
+        <translation>Зображення не знайдено</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="403" />
+        <source>Could not find image file: {0}</source>
+        <translation>Не вдалося знайти файл зображення: {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="432" />
+        <source>Animation Configured</source>
+        <translation>Анімацію налаштовано</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="433" />
+        <source>Sprite '{0}' configured with {1} frames at {2} FPS</source>
+        <translation>Спрайт '{0}' налаштовано з {1} кадрами при {2} FPS</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="445" />
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="500" />
         <source>No Project</source>
-        <translation type="unfinished">Немає проекту</translation>
+        <translation>Немає проекту</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="355"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="445" />
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="500" />
         <source>No project is currently loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Наразі не завантажено жодного проекту</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="376"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="466" />
         <source>Export {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортувати {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="393"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="483" />
         <source>Export Successful</source>
-        <translation type="unfinished"></translation>
+        <translation>Експорт успішний</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="394"/>
-        <source>{0} &apos;{1}&apos; exported to:
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="484" />
+        <source>{0} '{1}' exported to:
 {2}</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} '{1}' експортовано до:
+{2}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="399"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="489" />
         <source>Export Failed</source>
-        <translation type="unfinished">Помилка експорту</translation>
+        <translation>Помилка експорту</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="400"/>
-        <source>Failed to export {0} &apos;{1}&apos;</source>
-        <translation type="unfinished"></translation>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="490" />
+        <source>Failed to export {0} '{1}'</source>
+        <translation>Не вдалося експортувати {0} '{1}'</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="442"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="518" />
+        <source>Import {0} Package</source>
+        <translation>Імпортувати пакет {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="538" />
+        <source>Import Successful</source>
+        <translation>Імпорт успішний</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="539" />
+        <source>{0} '{1}' imported successfully!</source>
+        <translation>{0} '{1}' успішно імпортовано!</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="544" />
+        <source>Import Failed</source>
+        <translation>Помилка імпорту</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="545" />
+        <source>Failed to import {0} package</source>
+        <translation>Не вдалося імпортувати пакет {0}</translation>
+    </message>
+    <message>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="587" />
         <source>Create {0}</source>
-        <translation type="unfinished">Створити {0}</translation>
+        <translation>Створити {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="443"/>
+        <location filename="../widgets/asset_tree/asset_tree_widget.py" line="588" />
         <source>Enter name for new {0}:</source>
-        <translation type="unfinished">Введіть ім&apos;я для нового {0}:</translation>
+        <translation>Введіть ім'я для нового {0}:</translation>
     </message>
 </context>
 <context>
     <name>AutoSaveSettingsDialog</name>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="18"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="17" />
         <source>Auto-Save Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування автозбереження</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="28"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="27" />
         <source>Auto-Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Автозбереження</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="31"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="30" />
         <source>Enable automatic saving</source>
-        <translation type="unfinished"></translation>
+        <translation>Увімкнути автоматичне збереження</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="36"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="35" />
         <source>When enabled, your project will be saved automatically at regular intervals.</source>
-        <translation type="unfinished"></translation>
+        <translation>Коли увімкнено, ваш проект буде автоматично зберігатися через регулярні інтервали.</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="44"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="43" />
         <source>Save Interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Інтервал збереження</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="51"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="50" />
         <source> seconds</source>
-        <translation type="unfinished"></translation>
+        <translation> секунд</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="54"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="53" />
         <source>Save every:</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберігати кожні:</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="59"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="58" />
         <source>15s</source>
-        <translation type="unfinished"></translation>
+        <translation>15с</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="63"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="62" />
         <source>30s</source>
-        <translation type="unfinished"></translation>
+        <translation>30с</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="67"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="66" />
         <source>1m</source>
-        <translation type="unfinished"></translation>
+        <translation>1хв</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="71"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="70" />
         <source>2m</source>
-        <translation type="unfinished"></translation>
+        <translation>2хв</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="75"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="74" />
         <source>5m</source>
-        <translation type="unfinished"></translation>
+        <translation>5хв</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="79"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="78" />
         <source>Presets:</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаблони:</translation>
     </message>
     <message>
-        <location filename="../dialogs/auto_save_dialog.py" line="84"/>
+        <location filename="../dialogs/auto_save_dialog.py" line="83" />
         <source>⚠️  Shorter intervals may impact performance on large projects.</source>
-        <translation type="unfinished"></translation>
+        <translation>⚠️  Коротші інтервали можуть вплинути на продуктивність у великих проектах.</translation>
     </message>
 </context>
 <context>
     <name>BaseEditor</name>
     <message>
-        <location filename="../editors/base_editor.py" line="115"/>
+        <location filename="../editors/base_editor.py" line="117" />
         <source>💾 Save</source>
-        <translation type="unfinished">💾 Зберегти</translation>
+        <translation>💾 Зберегти</translation>
     </message>
     <message>
-        <location filename="../editors/base_editor.py" line="120"/>
-        <location filename="../editors/base_editor.py" line="145"/>
+        <location filename="../editors/base_editor.py" line="122" />
+        <location filename="../editors/base_editor.py" line="147" />
         <source>🔄 Auto-save: ON</source>
-        <translation type="unfinished"></translation>
+        <translation>🔄 Автозбереження: УВІМК</translation>
     </message>
     <message>
-        <location filename="../editors/base_editor.py" line="123"/>
+        <location filename="../editors/base_editor.py" line="125" />
         <source>Toggle automatic saving (currently every 3 seconds)</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемкнути автоматичне збереження (наразі кожні 3 секунди)</translation>
     </message>
     <message>
-        <location filename="../editors/base_editor.py" line="131"/>
+        <location filename="../editors/base_editor.py" line="133" />
         <source>↶ Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>↶ Скасувати</translation>
     </message>
     <message>
-        <location filename="../editors/base_editor.py" line="135"/>
+        <location filename="../editors/base_editor.py" line="137" />
         <source>↷ Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>↷ Повторити</translation>
     </message>
     <message>
-        <location filename="../editors/base_editor.py" line="146"/>
+        <location filename="../editors/base_editor.py" line="148" />
         <source>Auto-save is enabled. Click to disable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Автозбереження увімкнено. Натисніть, щоб вимкнути.</translation>
     </message>
     <message>
-        <location filename="../editors/base_editor.py" line="148"/>
+        <location filename="../editors/base_editor.py" line="150" />
         <source>⏸️ Auto-save: OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>⏸️ Автозбереження: ВИМК</translation>
     </message>
     <message>
-        <location filename="../editors/base_editor.py" line="149"/>
+        <location filename="../editors/base_editor.py" line="151" />
         <source>Auto-save is disabled. Click to enable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Автозбереження вимкнено. Натисніть, щоб увімкнути.</translation>
     </message>
     <message>
-        <location filename="../editors/base_editor.py" line="204"/>
+        <location filename="../editors/base_editor.py" line="206" />
         <source>Loaded: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажено: {0}</translation>
     </message>
 </context>
 <context>
     <name>BlocklyConfigDialog</name>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="32"/>
         <source>Configure Blockly Blocks</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Налаштувати блоки Blockly</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="62"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="32" />
+        <source>Configure Events &amp; Actions</source>
+        <translation>Налаштувати події та дії</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="62" />
         <source>Preset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаблон:</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="66"/>
-        <location filename="../dialogs/blockly_config_dialog.py" line="238"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="68" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="274" />
         <source>Full (All Blocks)</source>
-        <translation type="unfinished"></translation>
+        <translation>Повний (Усі блоки)</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="67"/>
-        <location filename="../dialogs/blockly_config_dialog.py" line="239"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="69" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="275" />
         <source>Beginner (Basic Blocks)</source>
-        <translation type="unfinished"></translation>
+        <translation>Початківець (Базові блоки)</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="68"/>
-        <location filename="../dialogs/blockly_config_dialog.py" line="240"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="70" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="276" />
         <source>Intermediate (More Features)</source>
-        <translation type="unfinished"></translation>
+        <translation>Середній (Більше можливостей)</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="69"/>
-        <location filename="../dialogs/blockly_config_dialog.py" line="241"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="71" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="277" />
         <source>Platformer Game</source>
-        <translation type="unfinished"></translation>
+        <translation>Платформер</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="70"/>
-        <location filename="../dialogs/blockly_config_dialog.py" line="242"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="72" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="278" />
         <source>Grid-based RPG</source>
-        <translation type="unfinished"></translation>
+        <translation>RPG на сітці</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="72"/>
-        <location filename="../dialogs/blockly_config_dialog.py" line="247"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="73" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="279" />
+        <source>Sokoban (Box Puzzle)</source>
+        <translation>Сокобан (головоломка з ящиками)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="74" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="280" />
+        <source>Thymio Robot</source>
+        <translation>Робот Thymio</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="75" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="281" />
+        <source>Testing (Validated Only)</source>
+        <translation>Тестування (лише перевірені)</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="76" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="282" />
+        <source>Implemented Only</source>
+        <translation>Лише реалізовані</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="77" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="283" />
+        <source>Code Editor</source>
+        <translation>Редактор коду</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="78" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="284" />
+        <source>Blockly Editor</source>
+        <translation>Редактор Blockly</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="79" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="287" />
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>Власний</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="86"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="95" />
         <source>Select blocks to enable:</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть блоки для увімкнення:</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="91"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="100" />
         <source>Block</source>
-        <translation type="unfinished"></translation>
+        <translation>Блок</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="91"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="100" />
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation>Опис</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="109"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="118" />
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати все</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="113"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="122" />
         <source>Select None</source>
-        <translation type="unfinished"></translation>
+        <translation>Зняти вибір</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="119"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="128" />
         <source>Save</source>
-        <translation type="unfinished">Зберегти</translation>
+        <translation>Зберегти</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="124"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="133" />
         <source>Cancel</source>
-        <translation type="unfinished">Скасувати</translation>
+        <translation>Скасувати</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="143"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="155" />
         <source>{0} blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} блоків</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="189"/>
-        <location filename="../dialogs/blockly_config_dialog.py" line="190"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="198" />
+        <source>[Not implemented] {0}</source>
+        <translation>[Не реалізовано] {0}</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/blockly_config_dialog.py" line="214" />
+        <location filename="../dialogs/blockly_config_dialog.py" line="215" />
         <source>Requires: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Потребує: {0}</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="303"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="347" />
         <source>⚠️ Warning: Some blocks are missing dependencies:
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>⚠️ Попередження: Деякі блоки не мають залежностей:
+{0}</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="313"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="357" />
         <source>{0} blocks, {1} categories</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} блоків, {1} категорій</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="332"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="376" />
         <source>Missing Dependencies</source>
-        <translation type="unfinished"></translation>
+        <translation>Відсутні залежності</translation>
     </message>
     <message>
-        <location filename="../dialogs/blockly_config_dialog.py" line="335"/>
+        <location filename="../dialogs/blockly_config_dialog.py" line="377" />
         <source>Some enabled blocks are missing their dependencies. The blocks may not work correctly.
 
 Do you want to save anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>Деякі увімкнені блоки не мають залежностей. Блоки можуть працювати неправильно.
+
+Зберегти все одно?</translation>
     </message>
 </context>
 <context>
     <name>BlocklyVisualProgrammingTab</name>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="420"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="478" />
         <source>Visual Block Programming</source>
-        <translation type="unfinished"></translation>
+        <translation>Візуальне блочне програмування</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="426"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="484" />
         <source>Drag blocks from the toolbox on the left to create game logic</source>
-        <translation type="unfinished"></translation>
+        <translation>Перетягніть блоки з панелі інструментів зліва для створення ігрової логіки</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="433"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="491" />
         <source>Editor is detached. Close the detached window to return it here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор від'єднаний. Закрийте від'єднане вікно, щоб повернути його сюди.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="468"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="527" />
         <source>📥 Attach</source>
-        <translation type="unfinished"></translation>
+        <translation>📥 Приєднати</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="469"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="528" />
         <source>Return editor to the tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Повернути редактор до вкладки</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="493"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="552" />
         <source>⬜ Detach</source>
-        <translation type="unfinished"></translation>
+        <translation>⬜ Від'єднати</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="494"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="553" />
         <source>Open Blockly editor in a separate window</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити редактор Blockly в окремому вікні</translation>
     </message>
 </context>
 <context>
     <name>BlocklyWidget</name>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="99"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="103" />
         <source>Apply to Events →</source>
-        <translation type="unfinished"></translation>
+        <translation>Застосувати до подій →</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="100"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="104" />
         <source>Apply block changes to the Events panel</source>
-        <translation type="unfinished"></translation>
+        <translation>Застосувати зміни блоків до панелі подій</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="105"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="109" />
         <source>← Sync from Events</source>
-        <translation type="unfinished"></translation>
+        <translation>← Синхронізувати з подій</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="106"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="110" />
         <source>Load events from the Events panel into blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажити події з панелі подій у блоки</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="111"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="115" />
         <source>Clear All</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистити все</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="116"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="120" />
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезавантажити</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="121"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="125" />
         <source>Configure Blocks...</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштувати блоки...</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="122"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="126" />
         <source>Choose which blocks are available in the toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть, які блоки доступні на панелі інструментів</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="129"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="133" />
         <source>⬜ Detach</source>
-        <translation type="unfinished"></translation>
+        <translation>⬜ Від'єднати</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="130"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="134" />
         <source>Open Blockly editor in a separate window</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити редактор Blockly в окремому вікні</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="194"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="198" />
         <source>Drag blocks from the toolbox on the left to create game logic!</source>
-        <translation type="unfinished"></translation>
+        <translation>Перетягніть блоки з панелі інструментів зліва для створення ігрової логіки!</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="196"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="200" />
         <source>Error loading Blockly - click Reload to try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка завантаження Blockly - натисніть Перезавантажити, щоб спробувати знову</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="214"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="218" />
         <source>Reloading Blockly...</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезавантаження Blockly...</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="236"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="240" />
         <source>Blocks updated - {0} events</source>
-        <translation type="unfinished"></translation>
+        <translation>Блоки оновлено - {0} подій</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="255"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="259" />
         <source>Applied {0} events</source>
-        <translation type="unfinished"></translation>
+        <translation>Застосовано {0} подій</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="263"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="267" />
         <source>Workspace cleared</source>
-        <translation type="unfinished"></translation>
+        <translation>Робочу область очищено</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="302"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="306" />
         <source>No events to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Немає подій для завантаження</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="318"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="322" />
         <source>Loaded {0} events as blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажено {0} подій як блоки</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="320"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="324" />
         <source>Loaded {0} events - some may not have block equivalents</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажено {0} подій - деякі можуть не мати блокових еквівалентів</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="352"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="355" />
         <source>Requesting sync from events...</source>
-        <translation type="unfinished"></translation>
+        <translation>Запит синхронізації з подій...</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="385"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="439" />
         <source>Configuration applied: {0} blocks, {1} categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Конфігурацію застосовано: {0} блоків, {1} категорій</translation>
     </message>
 </context>
 <context>
     <name>BuildProjectDialog</name>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="786"/>
+        <location filename="../dialogs/project_dialogs.py" line="783" />
         <source>Build Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Зібрати проект</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="797"/>
+        <location filename="../dialogs/project_dialogs.py" line="794" />
         <source>Build Configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Конфігурація збірки</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="801"/>
+        <location filename="../dialogs/project_dialogs.py" line="798" />
         <source>Debug</source>
-        <translation type="unfinished">Налагодження</translation>
+        <translation>Налагодження</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="801"/>
+        <location filename="../dialogs/project_dialogs.py" line="798" />
         <source>Release</source>
-        <translation type="unfinished"></translation>
+        <translation>Реліз</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="802"/>
+        <location filename="../dialogs/project_dialogs.py" line="799" />
         <source>Build Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип збірки:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="805"/>
+        <location filename="../dialogs/project_dialogs.py" line="802" />
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Немає</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="805"/>
+        <location filename="../dialogs/project_dialogs.py" line="802" />
         <source>Basic</source>
-        <translation type="unfinished"></translation>
+        <translation>Базова</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="805"/>
+        <location filename="../dialogs/project_dialogs.py" line="802" />
         <source>Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Повна</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="806"/>
+        <location filename="../dialogs/project_dialogs.py" line="803" />
         <source>Optimization:</source>
-        <translation type="unfinished"></translation>
+        <translation>Оптимізація:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="811"/>
+        <location filename="../dialogs/project_dialogs.py" line="808" />
         <source>Build Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметри збірки</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="815"/>
+        <location filename="../dialogs/project_dialogs.py" line="812" />
         <source>Clean Build:</source>
-        <translation type="unfinished"></translation>
+        <translation>Чиста збірка:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="818"/>
+        <location filename="../dialogs/project_dialogs.py" line="815" />
         <source>Verbose Output:</source>
-        <translation type="unfinished"></translation>
+        <translation>Детальний вивід:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="830"/>
+        <location filename="../dialogs/project_dialogs.py" line="827" />
         <source>Build</source>
-        <translation type="unfinished">Збірка</translation>
+        <translation>Збірка</translation>
     </message>
 </context>
 <context>
     <name>CreateAssetDialog</name>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="237"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="234" />
         <source>Create {0}</source>
-        <translation type="unfinished">Створити {0}</translation>
+        <translation>Створити {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="246"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="243" />
         <source>&lt;h3&gt;Create New {0}&lt;/h3&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Створити новий {0}&lt;/h3&gt;</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="250"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="247" />
         <source>Asset name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва ресурсу:</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="254"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="251" />
         <source>Enter {0} name...</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть назву {0}...</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="261"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="258" />
         <source>Cancel</source>
-        <translation type="unfinished">Скасувати</translation>
+        <translation>Скасувати</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="265"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="262" />
         <source>Create</source>
-        <translation type="unfinished">Створити</translation>
+        <translation>Створити</translation>
     </message>
     <message>
-        <location filename="../widgets/asset_tree/asset_dialogs.py" line="292"/>
+        <location filename="../widgets/asset_tree/asset_dialogs.py" line="289" />
         <source>Invalid Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Недійсна назва</translation>
     </message>
 </context>
 <context>
     <name>DetachedBlocklyWindow</name>
     <message>
-        <location filename="../editors/object_editor/blockly_widget.py" line="42"/>
+        <location filename="../editors/object_editor/blockly_widget.py" line="45" />
         <source>Visual Block Programming (Detached)</source>
-        <translation type="unfinished"></translation>
+        <translation>Візуальне блочне програмування (Від'єднано)</translation>
     </message>
 </context>
 <context>
     <name>EditorStatusWidget</name>
     <message>
-        <location filename="../editors/editor_status_widget.py" line="35"/>
-        <location filename="../editors/editor_status_widget.py" line="61"/>
-        <location filename="../editors/editor_status_widget.py" line="89"/>
+        <location filename="../editors/editor_status_widget.py" line="35" />
+        <location filename="../editors/editor_status_widget.py" line="61" />
+        <location filename="../editors/editor_status_widget.py" line="89" />
         <source>Saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Збережено</translation>
     </message>
     <message>
-        <location filename="../editors/editor_status_widget.py" line="41"/>
-        <location filename="../editors/editor_status_widget.py" line="69"/>
+        <location filename="../editors/editor_status_widget.py" line="41" />
+        <location filename="../editors/editor_status_widget.py" line="69" />
         <source>🔄 Auto-save: ON</source>
-        <translation type="unfinished"></translation>
+        <translation>🔄 Автозбереження: УВІМК</translation>
     </message>
     <message>
-        <location filename="../editors/editor_status_widget.py" line="53"/>
+        <location filename="../editors/editor_status_widget.py" line="53" />
         <source>Unsaved (auto-save in 3s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Не збережено (автозбереження через 3с)</translation>
     </message>
     <message>
-        <location filename="../editors/editor_status_widget.py" line="58"/>
+        <location filename="../editors/editor_status_widget.py" line="58" />
         <source>Unsaved - press Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Не збережено - натисніть Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../editors/editor_status_widget.py" line="72"/>
+        <location filename="../editors/editor_status_widget.py" line="72" />
         <source>⏸️ Auto-save: OFF</source>
-        <translation type="unfinished"></translation>
+        <translation>⏸️ Автозбереження: ВИМК</translation>
     </message>
     <message>
-        <location filename="../editors/editor_status_widget.py" line="77"/>
+        <location filename="../editors/editor_status_widget.py" line="77" />
         <source>Saving...</source>
-        <translation type="unfinished"></translation>
+        <translation>Збереження...</translation>
     </message>
     <message>
-        <location filename="../editors/editor_status_widget.py" line="84"/>
+        <location filename="../editors/editor_status_widget.py" line="84" />
         <source>Saved ✓</source>
-        <translation type="unfinished"></translation>
+        <translation>Збережено ✓</translation>
     </message>
 </context>
 <context>
     <name>EnhancedPropertiesPanel</name>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="57"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="75" />
         <source>Asset Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Інформація про ресурс</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="60"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="299"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="78" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="375" />
         <source>No asset selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Ресурс не вибрано</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="64"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="82" />
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="65"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="83" />
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="66"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="84" />
         <source>Status:</source>
-        <translation type="unfinished"></translation>
+        <translation>Статус:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="71"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="89" />
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Властивості</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="76"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="94" />
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередній перегляд</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="79"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="309"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="97" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="385" />
         <source>No preview available</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередній перегляд недоступний</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="124"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="141" />
         <source>Room (Editor)</source>
-        <translation type="unfinished"></translation>
+        <translation>Кімната (Редактор)</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="125"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="507"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="142" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="614" />
         <source>Active</source>
-        <translation type="unfinished"></translation>
+        <translation>Активна</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="160"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="174"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="533"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="590"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="654"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="180" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="194" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="640" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="697" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="761" />
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Немає</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="192"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="352"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="375"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="398"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="212" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="436" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="469" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="505" />
         <source>Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="193"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="353"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="376"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="399"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="213" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="437" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="470" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="506" />
         <source>Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>Висота:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="194"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="214" />
         <source>Background Color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Колір фону:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="195"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="215" />
         <source>Background Image:</source>
-        <translation type="unfinished"></translation>
+        <translation>Зображення фону:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="196"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="216" />
         <source>Tile Horizontal:</source>
-        <translation type="unfinished"></translation>
+        <translation>Мозаїка горизонтально:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="197"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="217" />
         <source>Tile Vertical:</source>
-        <translation type="unfinished"></translation>
+        <translation>Мозаїка вертикально:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="198"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="218" />
         <source>Enable Views:</source>
-        <translation type="unfinished"></translation>
+        <translation>Увімкнути види:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="202"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="222" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="439" />
         <source>Instances:</source>
-        <translation type="unfinished"></translation>
+        <translation>Екземпляри:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="210"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="230" />
         <source>Choose Background Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати колір фону</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="268"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="288" />
         <source>Room Preview
 {0}x{1}
 {2} instances</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередній перегляд кімнати
+{0}x{1}
+{2} екземплярів</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="271"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="291" />
         <source>Preview
 Generation Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередній перегляд
+Генерація не вдалася</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="273"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="293" />
         <source>Preview
 Not Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередній перегляд
+Недоступний</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="277"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="297" />
         <source>Preview
 Update Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередній перегляд
+Помилка оновлення</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="338"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="414" />
         <source>Loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажено</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="354"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="438" />
         <source>Background:</source>
-        <translation type="unfinished"></translation>
+        <translation>Фон:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="358"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="345" />
         <source>Room: {0}
 {1} x {2}</source>
-        <translation type="unfinished"></translation>
+        <translation>Кімната: {0}
+{1} x {2}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="377"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="308" />
+        <source>Room: {0}
+{1} x {2}
+{3} instances</source>
+        <translation>Кімната: {0}
+{1} x {2}
+{3} екземплярів</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="331" />
+        <source>Room: {0}
+{1}x{2}
+{3} instances</source>
+        <translation>Кімната: {0}
+{1}x{2}
+{3} екземплярів</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="340" />
+        <source>Preview generation failed</source>
+        <translation>Помилка генерації попереднього перегляду</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="471" />
         <source>Frames:</source>
-        <translation type="unfinished"></translation>
+        <translation>Кадри:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="378"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="472" />
         <source>Origin X:</source>
-        <translation type="unfinished"></translation>
+        <translation>Початок X:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="379"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="473" />
         <source>Origin Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Початок Y:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="380"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="474" />
         <source>Speed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Швидкість:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="386"/>
-        <location filename="../widgets/enhanced_properties_panel.py" line="405"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="480" />
+        <source>Horizontal Strip</source>
+        <translation>Горизонтальна смуга</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="481" />
+        <source>Vertical Strip</source>
+        <translation>Вертикальна смуга</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="482" />
+        <source>Grid</source>
+        <translation>Сітка</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="483" />
+        <source>Single Frame</source>
+        <translation>Один кадр</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="487" />
+        <source>Animation:</source>
+        <translation>Анімація:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/enhanced_properties_panel.py" line="493" />
+        <location filename="../widgets/enhanced_properties_panel.py" line="512" />
         <source>File:</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="422"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="529" />
         <source>{0}: {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>{0}: {1}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="457"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="564" />
         <source>No image file path found for {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Шлях до файлу зображення не знайдено для {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="462"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="569" />
         <source>Image file not found:
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл зображення не знайдено:
+{0}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="470"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="577" />
         <source>Failed to load image:
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося завантажити зображення:
+{0}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="489"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="596" />
         <source>{0}
 {1}x{2}</source>
-        <translation type="unfinished"></translation>
+        <translation>{0}
+{1}x{2}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="496"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="603" />
         <source>Error loading image:
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка завантаження зображення:
+{0}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="506"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="613" />
         <source>Object (Editor)</source>
-        <translation type="unfinished"></translation>
+        <translation>Об'єкт (Редактор)</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="560"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="667" />
         <source>Sprite:</source>
-        <translation type="unfinished"></translation>
+        <translation>Спрайт:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="566"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="673" />
         <source>{0} x {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} x {1}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="568"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="675" />
         <source>Sprite Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Розмір спрайта:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="570"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="677" />
         <source>Visible:</source>
-        <translation type="unfinished"></translation>
+        <translation>Видимий:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="571"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="678" />
         <source>Solid:</source>
-        <translation type="unfinished"></translation>
+        <translation>Твердий:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="572"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="679" />
         <source>Persistent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Постійна:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="576"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="683" />
         <source>Events:</source>
-        <translation type="unfinished"></translation>
+        <translation>Події:</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="693"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="800" />
         <source>Object: {0}
 Sprite: {1}
 Size: {2}x{3}
 Events: {4}</source>
-        <translation type="unfinished"></translation>
+        <translation>Об'єкт: {0}
+Спрайт: {1}
+Розмір: {2}x{3}
+Події: {4}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="708"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="815" />
         <source>Object: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Об'єкт: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="710"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="817" />
         <source>Sprite: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Спрайт: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="712"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="819" />
         <source>No sprite assigned</source>
-        <translation type="unfinished"></translation>
+        <translation>Спрайт не призначено</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="713"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="820" />
         <source>Events: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Подій: {0}</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="717"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="824" />
         <source>Visible</source>
-        <translation type="unfinished">Видимий</translation>
+        <translation>Видимий</translation>
     </message>
     <message>
-        <location filename="../widgets/enhanced_properties_panel.py" line="719"/>
+        <location filename="../widgets/enhanced_properties_panel.py" line="826" />
         <source>Solid</source>
-        <translation type="unfinished">Твердий</translation>
+        <translation>Твердий</translation>
     </message>
 </context>
 <context>
     <name>EventActionWidget</name>
     <message>
-        <location filename="../widgets/event_actions.py" line="12"/>
+        <location filename="../widgets/event_actions.py" line="15" />
         <source>Events &amp; Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Події та дії</translation>
     </message>
 </context>
 <context>
     <name>ExportProjectDialog</name>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="408"/>
+        <location filename="../dialogs/project_dialogs.py" line="405" />
         <source>Export Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Експорт проекту</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="419"/>
+        <location filename="../dialogs/project_dialogs.py" line="416" />
         <source>Export Target</source>
-        <translation type="unfinished"></translation>
+        <translation>Ціль експорту</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="424"/>
+        <location filename="../dialogs/project_dialogs.py" line="421" />
         <source>Desktop Executable (.exe/.app)</source>
-        <translation type="unfinished"></translation>
+        <translation>Виконуваний файл (.exe/.app)</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="425"/>
+        <location filename="../dialogs/project_dialogs.py" line="422" />
         <source>Web (HTML5)</source>
-        <translation type="unfinished"></translation>
+        <translation>Веб (HTML5)</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="426"/>
+        <location filename="../dialogs/project_dialogs.py" line="423" />
         <source>Mobile (Kivy)</source>
-        <translation type="unfinished"></translation>
+        <translation>Мобільний (Kivy)</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="427"/>
+        <location filename="../dialogs/project_dialogs.py" line="424" />
         <source>Mobile (APK)</source>
-        <translation type="unfinished"></translation>
+        <translation>Мобільний (APK)</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="429"/>
+        <location filename="../dialogs/project_dialogs.py" line="425" />
         <source>Source Code (.zip)</source>
-        <translation type="unfinished"></translation>
+        <translation>Вихідний код (.zip)</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="430"/>
+        <location filename="../dialogs/project_dialogs.py" line="427" />
         <source>Target Platform:</source>
-        <translation type="unfinished"></translation>
+        <translation>Цільова платформа:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="435"/>
+        <location filename="../dialogs/project_dialogs.py" line="432" />
         <source>Choose export location...</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть місце експорту...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="437"/>
+        <location filename="../dialogs/project_dialogs.py" line="434" />
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Огляд...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="442"/>
+        <location filename="../dialogs/project_dialogs.py" line="439" />
         <source>Output Location:</source>
-        <translation type="unfinished"></translation>
+        <translation>Місце виводу:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="447"/>
+        <location filename="../dialogs/project_dialogs.py" line="444" />
         <source>Export Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметри експорту</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="452"/>
+        <location filename="../dialogs/project_dialogs.py" line="449" />
         <source>Include Assets:</source>
-        <translation type="unfinished"></translation>
+        <translation>Включити ресурси:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="456"/>
+        <location filename="../dialogs/project_dialogs.py" line="453" />
         <source>Optimize for Release:</source>
-        <translation type="unfinished"></translation>
+        <translation>Оптимізувати для релізу:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="460"/>
+        <location filename="../dialogs/project_dialogs.py" line="457" />
         <source>Include Debug Info:</source>
-        <translation type="unfinished"></translation>
+        <translation>Включити інформацію для налагодження:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="477"/>
+        <location filename="../dialogs/project_dialogs.py" line="474" />
         <source>Export</source>
-        <translation type="unfinished">Експорт</translation>
+        <translation>Експорт</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="499"/>
+        <location filename="../dialogs/project_dialogs.py" line="496" />
         <source>Choose Export Location</source>
-        <translation type="unfinished">Виберіть місце експорту</translation>
+        <translation>Виберіть місце експорту</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="513"/>
+        <location filename="../dialogs/project_dialogs.py" line="510" />
         <source>Invalid Output</source>
-        <translation type="unfinished"></translation>
+        <translation>Недійсний вивід</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="513"/>
+        <location filename="../dialogs/project_dialogs.py" line="510" />
         <source>Please choose an export location.</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, виберіть місце експорту.</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="553"/>
-        <location filename="../dialogs/project_dialogs.py" line="583"/>
-        <location filename="../dialogs/project_dialogs.py" line="624"/>
-        <location filename="../dialogs/project_dialogs.py" line="664"/>
-        <location filename="../dialogs/project_dialogs.py" line="669"/>
-        <location filename="../dialogs/project_dialogs.py" line="687"/>
-        <location filename="../dialogs/project_dialogs.py" line="768"/>
+        <location filename="../dialogs/project_dialogs.py" line="550" />
+        <location filename="../dialogs/project_dialogs.py" line="580" />
+        <location filename="../dialogs/project_dialogs.py" line="621" />
+        <location filename="../dialogs/project_dialogs.py" line="661" />
+        <location filename="../dialogs/project_dialogs.py" line="666" />
+        <location filename="../dialogs/project_dialogs.py" line="684" />
+        <location filename="../dialogs/project_dialogs.py" line="765" />
         <source>Export Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка експорту</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="554"/>
-        <location filename="../dialogs/project_dialogs.py" line="665"/>
+        <location filename="../dialogs/project_dialogs.py" line="551" />
+        <location filename="../dialogs/project_dialogs.py" line="662" />
         <source>Could not access project manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося отримати доступ до менеджера проектів</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="563"/>
-        <location filename="../dialogs/project_dialogs.py" line="602"/>
-        <location filename="../dialogs/project_dialogs.py" line="644"/>
-        <location filename="../dialogs/project_dialogs.py" line="740"/>
+        <location filename="../dialogs/project_dialogs.py" line="560" />
+        <location filename="../dialogs/project_dialogs.py" line="599" />
+        <location filename="../dialogs/project_dialogs.py" line="641" />
+        <location filename="../dialogs/project_dialogs.py" line="737" />
         <source>Export Successful</source>
-        <translation type="unfinished"></translation>
+        <translation>Експорт успішний</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="564"/>
+        <location filename="../dialogs/project_dialogs.py" line="561" />
         <source>Kivy project exported to:
 {0}
 
 Would you like to open the export directory?</source>
-        <translation type="unfinished"></translation>
+        <translation>Проект Kivy експортовано до:
+{0}
+
+Відкрити директорію експорту?</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="578"/>
-        <location filename="../dialogs/project_dialogs.py" line="619"/>
-        <location filename="../dialogs/project_dialogs.py" line="661"/>
-        <location filename="../dialogs/project_dialogs.py" line="759"/>
+        <location filename="../dialogs/project_dialogs.py" line="575" />
+        <location filename="../dialogs/project_dialogs.py" line="616" />
+        <location filename="../dialogs/project_dialogs.py" line="658" />
+        <location filename="../dialogs/project_dialogs.py" line="756" />
         <source>Export Failed</source>
-        <translation type="unfinished">Помилка експорту</translation>
+        <translation>Помилка експорту</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="579"/>
+        <location filename="../dialogs/project_dialogs.py" line="576" />
         <source>Failed to export project. Check console for errors.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося експортувати проект. Перевірте консоль на помилки.</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="584"/>
+        <location filename="../dialogs/project_dialogs.py" line="581" />
         <source>Error during export:
 {0}
 
 {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка під час експорту:
+{0}
+
+{1}</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="603"/>
+        <location filename="../dialogs/project_dialogs.py" line="600" />
         <source>HTML5 game exported to:
 {0}
 
 Would you like to open the export directory?</source>
-        <translation type="unfinished"></translation>
+        <translation>Гру HTML5 експортовано до:
+{0}
+
+Відкрити директорію експорту?</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="620"/>
+        <location filename="../dialogs/project_dialogs.py" line="617" />
         <source>Failed to export HTML5 game. Check console for errors.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося експортувати гру HTML5. Перевірте консоль на помилки.</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="625"/>
+        <location filename="../dialogs/project_dialogs.py" line="622" />
         <source>Error during HTML5 export:
 {0}
 
 {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка під час експорту HTML5:
+{0}
+
+{1}</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="645"/>
+        <location filename="../dialogs/project_dialogs.py" line="642" />
         <source>Project exported to:
 {0}
 
 Would you like to open the export directory?</source>
-        <translation type="unfinished"></translation>
+        <translation>Проект експортовано до:
+{0}
+
+Відкрити директорію експорту?</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="662"/>
+        <location filename="../dialogs/project_dialogs.py" line="659" />
         <source>Failed to export ZIP file. Check console for errors.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося експортувати ZIP файл. Перевірте консоль на помилки.</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="670"/>
+        <location filename="../dialogs/project_dialogs.py" line="667" />
         <source>Error during ZIP export:
 {0}
 
 {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка під час експорту ZIP:
+{0}
+
+{1}</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="688"/>
+        <location filename="../dialogs/project_dialogs.py" line="685" />
         <source>Project file not found: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл проекту не знайдено: {0}</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="704"/>
+        <location filename="../dialogs/project_dialogs.py" line="701" />
         <source>Initializing export...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ініціалізація експорту...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="705"/>
+        <location filename="../dialogs/project_dialogs.py" line="702" />
         <source>Cancel</source>
-        <translation type="unfinished">Скасувати</translation>
+        <translation>Скасувати</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="709"/>
+        <location filename="../dialogs/project_dialogs.py" line="706" />
         <source>Exporting Executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Експорт виконуваного файлу</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="741"/>
+        <location filename="../dialogs/project_dialogs.py" line="738" />
         <source>Executable exported to:
 {0}
 
 Would you like to open the export directory?</source>
-        <translation type="unfinished"></translation>
+        <translation>Виконуваний файл експортовано до:
+{0}
+
+Відкрити директорію експорту?</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="760"/>
+        <location filename="../dialogs/project_dialogs.py" line="757" />
         <source>Failed to export executable:
 
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося експортувати виконуваний файл:
+
+{0}</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="769"/>
+        <location filename="../dialogs/project_dialogs.py" line="766" />
         <source>Error during executable export:
 {0}
 
 {1}</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка під час експорту виконуваного файлу:
+{0}
+
+{1}</translation>
     </message>
 </context>
 <context>
     <name>GM80ActionDialog</name>
     <message>
-        <location filename="../editors/object_editor/gm80_action_dialog.py" line="35"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="37" />
         <source>Configure: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштувати: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_action_dialog.py" line="53"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="55" />
         <source>Parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметри</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_action_dialog.py" line="68"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="70" />
         <source>This action has no parameters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ця дія не має параметрів.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_action_dialog.py" line="134"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="136" />
         <source>Pick Color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати колір...</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_action_dialog.py" line="189"/>
-        <location filename="../editors/object_editor/gm80_action_dialog.py" line="222"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="197" />
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="230" />
         <source>{0} actions</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} дій</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_action_dialog.py" line="194"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="202" />
         <source>📋 Configure...</source>
-        <translation type="unfinished"></translation>
+        <translation>📋 Налаштувати...</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_action_dialog.py" line="209"/>
+        <location filename="../editors/object_editor/gm80_action_dialog.py" line="217" />
         <source>Pick Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати колір</translation>
     </message>
 </context>
 <context>
     <name>GM80EventsPanel</name>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="86"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="165" />
         <source>Object Events</source>
-        <translation type="unfinished">Події об&apos;єкта</translation>
+        <translation>Події об'єкта</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="92"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="171" />
         <source>Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="92"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="171" />
         <source>Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Дії</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="131"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="210" />
         <source>+ Add Event</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Додати подію</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="135"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="214" />
         <source>- Remove Event</source>
-        <translation type="unfinished"></translation>
+        <translation>- Видалити подію</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="209"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="322" />
         <source>⚠️ No events enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>⚠️ Немає увімкнених подій</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="212"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="325" />
         <source>Configure enabled events...</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштувати увімкнені події...</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="229"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="342" />
         <source>No objects available</source>
-        <translation type="unfinished"></translation>
+        <translation>Немає доступних об'єктів</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="260"/>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="288"/>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="301"/>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="327"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="373" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="401" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="414" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="438" />
         <source>Event Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія існує</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="261"/>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="289"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="374" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="402" />
         <source>The {0} event already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія {0} вже існує.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="302"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="415" />
         <source>This collision event already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ця подія зіткнення вже існує.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="328"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="439" />
         <source>The {0} key event already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія клавіші {0} вже існує.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="348"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="459" />
         <source>Add Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати дію</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="364"/>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="529"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="499" />
+        <source>⚠️ No actions enabled</source>
+        <translation>⚠️ Дії не увімкнені</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="503" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="693" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="709" />
         <source>Remove Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити подію</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="369"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="508" />
         <source>Edit Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Редагувати дію</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="375"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="514" />
         <source>Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити вгору</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="378"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="517" />
         <source>Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити вниз</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="390"/>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="470"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="529" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="628" />
         <source>Remove Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити дію</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="471"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="629" />
         <source>Are you sure you want to remove this action?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви впевнені, що хочете видалити цю дію?</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="530"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="694" />
+        <source>Are you sure you want to remove the {0} {1} event?</source>
+        <translation>Ви впевнені, що хочете видалити подію {0} {1}?</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="710" />
         <source>Are you sure you want to remove the {0} event?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви впевнені, що хочете видалити подію {0}?</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="619"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="799" />
         <source>{0} keys</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} клавіш</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="634"/>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="663"/>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="688"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="814" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="843" />
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="868" />
         <source>{0} actions</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} дій</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="662"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="842" />
         <source>💥 Collision with {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>💥 Зіткнення з {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="724"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="905" />
         <source>Configure Events</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштувати події</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/gm80_events_panel.py" line="730"/>
+        <location filename="../editors/object_editor/gm80_events_panel.py" line="906" />
+        <source>To enable/disable events, go to:
+
+Tools → Configure Events &amp; Actions
+
+Select which events you want available in both the
+visual programming editor and this traditional event editor.
+
+Changes will take effect immediately.</source>
+        <translation>Щоб увімкнути/вимкнути події, перейдіть до:
+
+Інструменти → Налаштувати події та дії
+
+Виберіть, які події мають бути доступні як у
+візуальному редакторі програмування, так і в цьому традиційному редакторі подій.
+
+Зміни набудуть чинності негайно.</translation>
+    </message>
+    <message>
         <source>To enable/disable events, go to:
 
 Tools → Configure Blockly Blocks
@@ -1663,524 +1902,646 @@ Select which events you want available in both the
 visual programming editor and this traditional event editor.
 
 Changes will take effect immediately.</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Щоб увімкнути/вимкнути події, перейдіть до:
+
+Інструменти → Налаштувати блоки Blockly
+
+Виберіть, які події мають бути доступні як у
+візуальному редакторі програмування, так і в цьому традиційному редакторі подій.
+
+Зміни набудуть чинності негайно.</translation>
     </message>
 </context>
 <context>
     <name>ImportAssetsDialog</name>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="23"/>
+        <location filename="../dialogs/import_dialogs.py" line="22" />
         <source>Import Assets</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпортувати ресурси</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="33"/>
-        <location filename="../dialogs/import_dialogs.py" line="91"/>
+        <location filename="../dialogs/import_dialogs.py" line="32" />
+        <location filename="../dialogs/import_dialogs.py" line="90" />
         <source>Select Files to Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати файли для імпорту</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="41"/>
+        <location filename="../dialogs/import_dialogs.py" line="40" />
         <source>Add Files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати файли...</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="45"/>
+        <location filename="../dialogs/import_dialogs.py" line="44" />
         <source>Add Folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати папку...</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="49"/>
+        <location filename="../dialogs/import_dialogs.py" line="48" />
         <source>Clear All</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистити все</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="58"/>
+        <location filename="../dialogs/import_dialogs.py" line="57" />
         <source>Import Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметри імпорту</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="61"/>
+        <location filename="../dialogs/import_dialogs.py" line="60" />
         <source>Auto-detect asset type</source>
-        <translation type="unfinished"></translation>
+        <translation>Автовизначення типу ресурсу</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="65"/>
+        <location filename="../dialogs/import_dialogs.py" line="64" />
         <source>Copy files to project folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Копіювати файли до папки проекту</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="74"/>
+        <location filename="../dialogs/import_dialogs.py" line="73" />
         <source>Cancel</source>
-        <translation type="unfinished">Скасувати</translation>
+        <translation>Скасувати</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="77"/>
+        <location filename="../dialogs/import_dialogs.py" line="76" />
         <source>Import</source>
-        <translation type="unfinished">Імпорт</translation>
+        <translation>Імпорт</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="94"/>
+        <location filename="../dialogs/import_dialogs.py" line="92" />
         <source>Images (*.png *.jpg *.jpeg *.bmp *.gif);;Sounds (*.wav *.mp3 *.ogg);;All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Зображення (*.png *.jpg *.jpeg *.bmp *.gif);;Звуки (*.wav *.mp3 *.ogg);;Усі файли (*)</translation>
     </message>
     <message>
-        <location filename="../dialogs/import_dialogs.py" line="108"/>
+        <location filename="../dialogs/import_dialogs.py" line="107" />
         <source>Select Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати папку</translation>
     </message>
 </context>
 <context>
     <name>InstanceProperties</name>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="27"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="27" />
         <source>Instance Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Властивості екземпляра</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="35"/>
-        <location filename="../editors/room_editor/instance_properties.py" line="135"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="35" />
+        <location filename="../editors/room_editor/instance_properties.py" line="135" />
         <source>Object: None</source>
-        <translation type="unfinished"></translation>
+        <translation>Об'єкт: Немає</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="39"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="39" />
         <source>Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Позиція</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="42"/>
-        <location filename="../editors/room_editor/instance_properties.py" line="77"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="42" />
+        <location filename="../editors/room_editor/instance_properties.py" line="77" />
         <source>X:</source>
-        <translation type="unfinished"></translation>
+        <translation>X:</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="48"/>
-        <location filename="../editors/room_editor/instance_properties.py" line="85"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="48" />
+        <location filename="../editors/room_editor/instance_properties.py" line="85" />
         <source>Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y:</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="57"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="57" />
         <source>Visible</source>
-        <translation type="unfinished">Видимий</translation>
+        <translation>Видимий</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="63"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="63" />
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Обертання</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="74"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="74" />
         <source>Scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Масштабувати</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="96"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="96" />
         <source>Delete Instance</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити екземпляр</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/instance_properties.py" line="117"/>
+        <location filename="../editors/room_editor/instance_properties.py" line="117" />
         <source>Object: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Об'єкт: {0}</translation>
     </message>
 </context>
 <context>
     <name>KeySelectorDialog</name>
     <message>
-        <location filename="../dialogs/key_selector_dialog.py" line="29"/>
+        <location filename="../dialogs/key_selector_dialog.py" line="29" />
         <source>Select Key</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати клавішу</translation>
     </message>
     <message>
-        <location filename="../dialogs/key_selector_dialog.py" line="35"/>
+        <location filename="../dialogs/key_selector_dialog.py" line="35" />
         <source>Select which key to respond to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть клавішу для реагування:</translation>
     </message>
     <message>
-        <location filename="../dialogs/key_selector_dialog.py" line="41"/>
+        <location filename="../dialogs/key_selector_dialog.py" line="41" />
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Пошук:</translation>
     </message>
     <message>
-        <location filename="../dialogs/key_selector_dialog.py" line="45"/>
+        <location filename="../dialogs/key_selector_dialog.py" line="45" />
         <source>Type to filter keys...</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть для фільтрації клавіш...</translation>
     </message>
     <message>
-        <location filename="../dialogs/key_selector_dialog.py" line="134"/>
+        <location filename="../dialogs/key_selector_dialog.py" line="134" />
         <source>No Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Немає вибору</translation>
     </message>
     <message>
-        <location filename="../dialogs/key_selector_dialog.py" line="136"/>
+        <location filename="../dialogs/key_selector_dialog.py" line="135" />
         <source>Please select a key first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Спочатку виберіть клавішу.</translation>
     </message>
 </context>
 <context>
     <name>MouseEventSelectorDialog</name>
     <message>
-        <location filename="../dialogs/mouse_event_selector_dialog.py" line="28"/>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="28" />
         <source>Select Mouse Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати подію миші</translation>
     </message>
     <message>
-        <location filename="../dialogs/mouse_event_selector_dialog.py" line="34"/>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="34" />
         <source>Select which mouse event to respond to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть подію миші для реагування:</translation>
     </message>
     <message>
-        <location filename="../dialogs/mouse_event_selector_dialog.py" line="40"/>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="40" />
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Пошук:</translation>
     </message>
     <message>
-        <location filename="../dialogs/mouse_event_selector_dialog.py" line="44"/>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="44" />
         <source>Type to filter events...</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть для фільтрації подій...</translation>
     </message>
     <message>
-        <location filename="../dialogs/mouse_event_selector_dialog.py" line="141"/>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="141" />
         <source>No Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Немає вибору</translation>
     </message>
     <message>
-        <location filename="../dialogs/mouse_event_selector_dialog.py" line="143"/>
+        <location filename="../dialogs/mouse_event_selector_dialog.py" line="142" />
         <source>Please select a mouse event first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Спочатку виберіть подію миші.</translation>
     </message>
 </context>
 <context>
     <name>NewProjectDialog</name>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="27"/>
+        <location filename="../dialogs/project_dialogs.py" line="24" />
         <source>New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Новий проект</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="37"/>
+        <location filename="../dialogs/project_dialogs.py" line="34" />
         <source>Project Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Деталі проекту</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="41"/>
+        <location filename="../dialogs/project_dialogs.py" line="38" />
         <source>Enter project name...</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть назву проекту...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="42"/>
+        <location filename="../dialogs/project_dialogs.py" line="39" />
         <source>Project Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва проекту:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="46"/>
+        <location filename="../dialogs/project_dialogs.py" line="43" />
         <source>Choose project location...</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть розташування проекту...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="48"/>
+        <location filename="../dialogs/project_dialogs.py" line="45" />
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Огляд...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="53"/>
+        <location filename="../dialogs/project_dialogs.py" line="50" />
         <source>Location:</source>
-        <translation type="unfinished"></translation>
+        <translation>Розташування:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="57"/>
+        <location filename="../dialogs/project_dialogs.py" line="54" />
         <source>Optional project description...</source>
-        <translation type="unfinished"></translation>
+        <translation>Необов'язковий опис проекту...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="58"/>
+        <location filename="../dialogs/project_dialogs.py" line="55" />
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Опис:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="97"/>
+        <location filename="../dialogs/project_dialogs.py" line="94" />
         <source>Choose Project Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати розташування проекту</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="106"/>
-        <location filename="../dialogs/project_dialogs.py" line="110"/>
+        <location filename="../dialogs/project_dialogs.py" line="103" />
+        <location filename="../dialogs/project_dialogs.py" line="107" />
         <source>Invalid Input</source>
-        <translation type="unfinished"></translation>
+        <translation>Недійсне введення</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="106"/>
+        <location filename="../dialogs/project_dialogs.py" line="103" />
         <source>Please enter a project name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, введіть назву проекту.</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="110"/>
+        <location filename="../dialogs/project_dialogs.py" line="107" />
         <source>Please choose a project location.</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, виберіть розташування проекту.</translation>
     </message>
 </context>
 <context>
     <name>ObjectEditor</name>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="164"/>
-        <location filename="../editors/object_editor/object_editor_main.py" line="513"/>
-        <location filename="../editors/object_editor/object_editor_main.py" line="527"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="185" />
+        <location filename="../editors/object_editor/object_editor_main.py" line="578" />
+        <location filename="../editors/object_editor/object_editor_main.py" line="592" />
         <source>💾 Save</source>
         <translation>💾 Зберегти</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="166"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="187" />
         <source>Save object (Ctrl+S)</source>
-        <translation>Зберегти об&apos;єкт (Ctrl+S)</translation>
+        <translation>Зберегти об'єкт (Ctrl+S)</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="211"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="232" />
         <source>🎮 Test Object</source>
-        <translation>🎮 Тестувати об&apos;єкт</translation>
+        <translation>🎮 Тестувати об'єкт</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="212"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="233" />
         <source>📋 View Code</source>
         <translation>📋 Переглянути код</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="222"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="243" />
         <source>Object Events</source>
-        <translation>Події об&apos;єкта</translation>
+        <translation>Події об'єкта</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="266"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="290" />
         <source>Object: Not loaded</source>
-        <translation>Об&apos;єкт: не завантажено</translation>
+        <translation>Об'єкт: не завантажено</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="270"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="294" />
         <source>No event selected</source>
         <translation>Подію не вибрано</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="294"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="316" />
         <source>Actions are managed through the Object Events panel on the left.
 
 Select an event and right-click to add actions.</source>
-        <translation>Дії керуються через панель подій об&apos;єкта зліва.
+        <translation>Дії керуються через панель подій об'єкта зліва.
 
 Виберіть подію та клацніть правою кнопкою миші, щоб додати дії.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="307"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="331" />
         <source>📋 Event List</source>
         <translation>📋 Список подій</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="313"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="337" />
         <source>🧩 Visual Programming</source>
         <translation>🧩 Візуальне програмування</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="315"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="339" />
         <source>Scratch-like block programming</source>
         <translation>Блочне програмування у стилі Scratch</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="334"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="358" />
         <source>Mode:</source>
         <translation>Режим:</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="338"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="362" />
         <source>📖 View Generated Code</source>
         <translation>📖 Переглянути згенерований код</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="339"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="363" />
         <source>✏️ Edit Custom Code</source>
         <translation>✏️ Редагувати власний код</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="346"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="370" />
         <source>✅ Apply Changes</source>
         <translation>✅ Застосувати зміни</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="352"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="376" />
         <source>🔄 Refresh</source>
         <translation>🔄 Оновити</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="365"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="386" />
         <source># Python code editor
-# Switch to &apos;Edit Custom Code&apos; mode to write your own Python code
+# Switch to 'Edit Custom Code' mode to write your own Python code
 # Or view generated code from visual events</source>
         <translation># Редактор коду Python
-# Перейдіть у режим &apos;Редагувати власний код&apos;, щоб написати свій код Python
+# Перейдіть у режим 'Редагувати власний код', щоб написати свій код Python
 # Або перегляньте згенерований код із візуальних подій</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="397"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="421" />
         <source>Event for custom code:</source>
         <translation>Подія для власного коду:</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="412"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="436" />
         <source>💻 Code Editor</source>
         <translation>💻 Редактор коду</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="414"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="438" />
         <source>Edit Python code or view generated code</source>
         <translation>Редагуйте код Python або переглядайте згенерований код</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="557"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="622" />
         <source>Validation Error</source>
         <translation>Помилка перевірки</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="558"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="623" />
         <source>Cannot save: {0}</source>
         <translation>Неможливо зберегти: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="585"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="650" />
         <source>Saved: {0}</source>
         <translation>Збережено: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="597"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="662" />
         <source>Save Error</source>
         <translation>Помилка збереження</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="598"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="663" />
         <source>Error saving object: {0}</source>
-        <translation>Помилка збереження об&apos;єкта: {0}</translation>
+        <translation>Помилка збереження об'єкта: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="638"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="704" />
         <source>Loaded {0} sprites</source>
         <translation>Завантажено {0} спрайтів</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="643"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="719" />
         <source>Error loading assets: {0}</source>
         <translation>Помилка завантаження ресурсів: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="799"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="869" />
         <source>Object name is required</source>
-        <translation>Ім&apos;я об&apos;єкта є обов&apos;язковим</translation>
+        <translation>Ім'я об'єкта є обов'язковим</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="802"/>
-        <source>Referenced sprite &apos;{0}&apos; does not exist</source>
-        <translation>Вказаний спрайт &apos;{0}&apos; не існує</translation>
+        <location filename="../editors/object_editor/object_editor_main.py" line="875" />
+        <source>Referenced sprite '{0}' does not exist</source>
+        <translation>Вказаний спрайт '{0}' не існує</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="809"/>
-        <source>Event &apos;{0}&apos; has invalid data structure</source>
-        <translation>Подія &apos;{0}&apos; має недійсну структуру даних</translation>
+        <location filename="../editors/object_editor/object_editor_main.py" line="882" />
+        <source>Event '{0}' has invalid data structure</source>
+        <translation>Подія '{0}' має недійсну структуру даних</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="814"/>
-        <source>Event &apos;{0}&apos; has invalid actions data</source>
-        <translation>Подія &apos;{0}&apos; має недійсні дані дій</translation>
+        <location filename="../editors/object_editor/object_editor_main.py" line="887" />
+        <source>Event '{0}' has invalid actions data</source>
+        <translation>Подія '{0}' має недійсні дані дій</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="820"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="893" />
         <source>Validation error: {0}</source>
         <translation>Помилка перевірки: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="943"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1016" />
         <source>Object: {0} | Sprite: {1}</source>
-        <translation>Об&apos;єкт: {0} | Спрайт: {1}</translation>
+        <translation>Об'єкт: {0} | Спрайт: {1}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="946"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1018" />
         <source>Visible</source>
         <translation>Видимий</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="948"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1020" />
         <source>Solid</source>
         <translation>Твердий</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="951"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1022" />
         <source>Persistent</source>
         <translation>Постійний</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="958"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1031" />
         <source>Event: {0}</source>
         <translation>Подія: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="959"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1032" />
         <source>Editing event: {0}</source>
         <translation>Редагування події: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1014"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1092" />
         <source>Applied {0} events from visual blocks</source>
         <translation>Застосовано {0} подій з візуальних блоків</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1024"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1102" />
         <source>Selected action: {0} ({1})</source>
         <translation>Вибрана дія: {0} ({1})</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1030"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1108" />
         <source>Object testing not implemented yet</source>
-        <translation>Тестування об&apos;єктів ще не реалізовано</translation>
+        <translation>Тестування об'єктів ще не реалізовано</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1043"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1129" />
+        <location filename="../editors/object_editor/object_editor_main.py" line="1150" />
         <source># No events or actions have been added yet.
 # Add events in the Object Events panel to see generated code here.</source>
         <translation># Ще не додано жодних подій або дій.
-# Додайте події на панелі подій об&apos;єкта, щоб побачити згенерований код тут.</translation>
+# Додайте події на панелі подій об'єкта, щоб побачити згенерований код тут.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1069"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1168" />
         <source>Generated code view updated</source>
         <translation>Перегляд згенерованого коду оновлено</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1194"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1302" />
+        <source>Edit mode: Modify Python code and click Apply</source>
+        <translation>Режим редагування: Змініть код Python і натисніть Застосувати</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1313" />
+        <source>View mode: Switch to 'Edit Custom Code' to modify and apply code</source>
+        <translation>Режим перегляду: Перейдіть до 'Редагувати власний код' для зміни та застосування коду</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1346" />
+        <source>No Code</source>
+        <translation>Немає коду</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1347" />
+        <source>The code editor is empty. Please write some Python code first.</source>
+        <translation>Редактор коду порожній. Спочатку напишіть код Python.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1363" />
+        <location filename="../editors/object_editor/object_editor_main.py" line="1373" />
+        <source>Parse Error</source>
+        <translation>Помилка розбору</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1364" />
+        <source>Could not parse the Python code:
+
+{0}</source>
+        <translation>Не вдалося розібрати код Python:
+
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1374" />
+        <source>Could not parse the Python code:
+
+{0}
+
+Please check the syntax and try again.</source>
+        <translation>Не вдалося розібрати код Python:
+
+{0}
+
+Перевірте синтаксис і спробуйте знову.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1382" />
+        <source>No Events Found</source>
+        <translation>Подій не знайдено</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1383" />
+        <source>No recognizable event methods found in the code.
+
+Make sure your code includes a class with event methods like:
+
+class obj_player:
+    def on_create(self):
+        pass
+
+    def on_step(self):
+        pass
+
+    def on_keyboard_left(self):
+        self.hspeed = -4</source>
+        <translation>У коді не знайдено розпізнаваних методів подій.
+
+Переконайтеся, що ваш код містить клас з методами подій, наприклад:
+
+class obj_player:
+    def on_create(self):
+        pass
+
+    def on_step(self):
+        pass
+
+    def on_keyboard_left(self):
+        self.hspeed = -4</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1400" />
+        <source>Sync in Progress</source>
+        <translation>Синхронізація виконується</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1401" />
+        <source>Another synchronization is currently in progress. Please wait and try again.</source>
+        <translation>Інша синхронізація вже виконується. Зачекайте і спробуйте знову.</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1438" />
+        <source>Applied {0} events from code</source>
+        <translation>Застосовано {0} подій з коду</translation>
+    </message>
+    <message>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1442" />
+        <source>Python code has been parsed and applied:
+
+Events updated:
+{0}
+
+• Events panel synchronized
+• Blockly workspace synchronized
+
+The code will execute when events trigger during gameplay.</source>
+        <translation>Код Python було розібрано та застосовано:
+
+Оновлені події:
+{0}
+
+• Панель подій синхронізовано
+• Робочу область Blockly синхронізовано
+
+Код виконуватиметься при спрацюванні подій під час гри.</translation>
+    </message>
+    <message>
         <source>Edit mode: Write custom Python code</source>
-        <translation>Режим редагування: написання власного коду Python</translation>
+        <translation type="vanished">Режим редагування: написання власного коду Python</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1205"/>
         <source>View mode: Showing generated code from events</source>
-        <translation>Режим перегляду: показ згенерованого коду з подій</translation>
+        <translation type="vanished">Режим перегляду: показ згенерованого коду з подій</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1275"/>
         <source>Custom code applied to {0} event</source>
-        <translation>Власний код застосовано до події {0}</translation>
+        <translation type="vanished">Власний код застосовано до події {0}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1278"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1441" />
         <source>Code Applied</source>
         <translation>Код застосовано</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1280"/>
         <source>Custom Python code has been applied to the {0} event.
 
 The code will execute when the event triggers during gameplay.</source>
-        <translation>Власний код Python було застосовано до події {0}.
+        <translation type="vanished">Власний код Python було застосовано до події {0}.
 
 Код виконуватиметься, коли подія спрацює під час гри.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_editor_main.py" line="1358"/>
+        <location filename="../editors/object_editor/object_editor_main.py" line="1524" />
         <source>Assets loaded: {0} sprites</source>
         <translation>Ресурси завантажено: {0} спрайтів</translation>
     </message>
@@ -2188,972 +2549,975 @@ The code will execute when the event triggers during gameplay.</source>
 <context>
     <name>ObjectEventsPanel</name>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="48"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="50" />
         <source>Object Events</source>
-        <translation type="unfinished">Події об&apos;єкта</translation>
+        <translation>Події об'єкта</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="54"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="56" />
         <source>Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="54"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="56" />
         <source>Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Дії</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="108"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="110" />
         <source>+ Add Event</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Додати подію</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="112"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="114" />
         <source>- Remove Event</source>
-        <translation type="unfinished"></translation>
+        <translation>- Видалити подію</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="121"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="123" />
         <source>↑ Move Up</source>
-        <translation type="unfinished"></translation>
+        <translation>↑ Перемістити вгору</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="124"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="126" />
         <source>Move selected action up (Ctrl+Up)</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити вибрану дію вгору (Ctrl+Вгору)</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="127"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="129" />
         <source>↓ Move Down</source>
-        <translation type="unfinished"></translation>
+        <translation>↓ Перемістити вниз</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="130"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="132" />
         <source>Move selected action down (Ctrl+Down)</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемістити вибрану дію вниз (Ctrl+Вниз)</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="139"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="141" />
         <source>Ctrl+Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Вгору</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="142"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="144" />
         <source>Ctrl+Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Вниз</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="145"/>
         <source>Warning: Could not setup shortcuts: {e}</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Попередження: Не вдалося налаштувати гарячі клавіші: {e}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="153"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="155" />
         <source>Event Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія існує</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="154"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="156" />
         <source>The {0} event already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія {0} вже існує.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="174"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="176" />
         <source>{event_type.icon} Collision With...</source>
-        <translation type="unfinished"></translation>
+        <translation>{event_type.icon} Зіткнення з...</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="186"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="188" />
         <source>No objects available</source>
-        <translation type="unfinished"></translation>
+        <translation>Немає доступних об'єктів</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="248"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="279"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="250" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="277" />
         <source>Key Event Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія клавіші вже існує</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="249"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="251" />
         <source>The {0} arrow key event already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія клавіші стрілки {0} вже існує.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="280"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="278" />
         <source>The {0} key event already exists for {1}.</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія клавіші {0} вже існує для {1}.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="321"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="319" />
         <source>Mouse Event Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія миші вже існує</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="323"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="320" />
         <source>This mouse event already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ця подія миші вже існує.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="345"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="422"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="343" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="420" />
         <source>Remove Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити подію</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="346"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="344" />
         <source>Are you sure you want to remove the {0} event and all its actions?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви впевнені, що хочете видалити подію {0} та всі її дії?</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="373"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="391"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="409"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="440"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="371" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="389" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="407" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="438" />
         <source>Add Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати дію</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="386"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1325"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="384" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="1323" />
         <source>Remove Collision Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити подію зіткнення</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="404"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1378"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="402" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="1376" />
         <source>Remove Mouse Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити подію миші</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="454"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="452" />
         <source>Remove {sub_event_key.title()} Arrow Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити подію стрілки {sub_event_key.title()}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="459"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="469"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="457" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="467" />
         <source>Edit Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Редагувати дію</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="462"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="472"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="653"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="673"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="460" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="470" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="651" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="671" />
         <source>Remove Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити дію</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="495"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="493" />
         <source>Cannot Add Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо додати дію</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="499"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="494" />
         <source>Cannot add actions directly to %1.
 
 Please add actions to specific arrow keys instead:
 Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо додати дії безпосередньо до %1.
+
+Будь ласка, додайте дії до конкретних клавіш стрілок:
+Натисніть правою кнопкою миші на Стрілку вліво, Стрілку вправо, Стрілку вгору або Стрілку вниз.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="583"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="581" />
         <source>Remove Key Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити подію клавіші</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="584"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="582" />
         <source>Are you sure you want to remove the {0} arrow key event and all its actions?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви впевнені, що хочете видалити подію клавіші стрілки {0} та всі її дії?</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="654"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="674"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="652" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="672" />
         <source>Are you sure you want to remove this action?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви впевнені, що хочете видалити цю дію?</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="696"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="694" />
         <source>❌ NOT Colliding with {target_object}</source>
-        <translation type="unfinished"></translation>
+        <translation>❌ НЕ стикається з {target_object}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="700"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="698" />
         <source>💥 Collision with {target_object}</source>
-        <translation type="unfinished"></translation>
+        <translation>💥 Зіткнення з {target_object}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="702"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="758"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="785"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="700" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="756" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="783" />
         <source>{0} actions</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} дій</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="711"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="709" />
         <source>{action_type.icon} {action_type.display_name}</source>
-        <translation type="unfinished"></translation>
+        <translation>{action_type.icon} {action_type.display_name}</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="734"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="732" />
         <source>{0} total actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Всього {0} дій</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="817"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1284"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="815" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="1282" />
         <source>actions</source>
-        <translation type="unfinished"></translation>
+        <translation>дії</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="819"/>
-        <location filename="../editors/object_editor/object_events_panel.py" line="828"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="817" />
+        <location filename="../editors/object_editor/object_events_panel.py" line="826" />
         <source>action</source>
-        <translation type="unfinished"></translation>
+        <translation>дія</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="825"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="823" />
         <source>parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>параметри</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1247"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1245" />
         <source>Collision Event Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметри події зіткнення</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1250"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1248" />
         <source>&lt;b&gt;Collision with: {0}&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Зіткнення з: {0}&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1253"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1251" />
         <source>❌ NOT colliding (trigger when NOT touching)</source>
-        <translation type="unfinished"></translation>
+        <translation>❌ НЕ стикається (спрацьовує коли НЕ торкається)</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1254"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1252" />
         <source>Check this to trigger actions when the object is NOT colliding with the target</source>
-        <translation type="unfinished"></translation>
+        <translation>Позначте це, щоб дії спрацьовували, коли об'єкт НЕ стикається з ціллю</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1277"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1275" />
         <source>Collision Event Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія зіткнення вже існує</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1279"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1276" />
         <source>This collision event already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ця подія зіткнення вже існує.</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1285"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1283" />
         <source>target_object</source>
-        <translation type="unfinished"></translation>
+        <translation>цільовий_об'єкт</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1286"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1284" />
         <source>negate</source>
-        <translation type="unfinished"></translation>
+        <translation>інвертувати</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1326"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1324" />
         <source>Are you sure you want to remove the collision event with {0}?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви впевнені, що хочете видалити подію зіткнення з {0}?</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_events_panel.py" line="1379"/>
+        <location filename="../editors/object_editor/object_events_panel.py" line="1377" />
         <source>Are you sure you want to remove the {0} event?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви впевнені, що хочете видалити подію {0}?</translation>
     </message>
 </context>
 <context>
     <name>ObjectPalette</name>
     <message>
-        <location filename="../editors/room_editor/object_palette.py" line="30"/>
+        <location filename="../editors/room_editor/object_palette.py" line="33" />
         <source>Objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Об'єкти</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/object_palette.py" line="41"/>
+        <location filename="../editors/room_editor/object_palette.py" line="44" />
         <source>Clear Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистити вибір</translation>
     </message>
 </context>
 <context>
     <name>ObjectPropertiesPanel</name>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="24"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="24" />
         <source>Object Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Властивості об'єкта</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="37"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="37" />
         <source>Sprite to display for this object</source>
-        <translation type="unfinished"></translation>
+        <translation>Спрайт для відображення цього об'єкта</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="40"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="40" />
         <source>Sprite:</source>
-        <translation type="unfinished"></translation>
+        <translation>Спрайт:</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="48"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="48" />
         <source>Visible</source>
-        <translation type="unfinished">Видимий</translation>
+        <translation>Видимий</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="50"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="50" />
         <source>Object is visible in the game</source>
-        <translation type="unfinished"></translation>
+        <translation>Об'єкт видимий у грі</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="57"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="57" />
         <source>Persistent</source>
-        <translation type="unfinished">Постійний</translation>
+        <translation>Постійний</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="59"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="59" />
         <source>Object persists between rooms</source>
-        <translation type="unfinished"></translation>
+        <translation>Об'єкт зберігається між кімнатами</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="66"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="66" />
         <source>Solid</source>
-        <translation type="unfinished">Твердий</translation>
+        <translation>Твердий</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="68"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="68" />
         <source>Solid objects block movement</source>
-        <translation type="unfinished"></translation>
+        <translation>Тверді об'єкти блокують рух</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="81"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="81" />
         <source>View Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Переглянути код</translation>
     </message>
     <message>
-        <location filename="../editors/object_editor/object_properties_panel.py" line="83"/>
+        <location filename="../editors/object_editor/object_properties_panel.py" line="83" />
         <source>Show generated code in Code Editor tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати згенерований код у вкладці Редактора коду</translation>
     </message>
 </context>
 <context>
     <name>OpenProjectDialog</name>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="138"/>
+        <location filename="../dialogs/project_dialogs.py" line="135" />
         <source>Open Project</source>
-        <translation type="unfinished">Відкрити проект</translation>
+        <translation>Відкрити проект</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="148"/>
+        <location filename="../dialogs/project_dialogs.py" line="145" />
         <source>Recent Projects</source>
-        <translation type="unfinished">Останні проекти</translation>
+        <translation>Останні проекти</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="156"/>
+        <location filename="../dialogs/project_dialogs.py" line="153" />
         <source>Browse for Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Знайти проект</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="160"/>
+        <location filename="../dialogs/project_dialogs.py" line="157" />
         <source>Select project file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати файл проекту...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="162"/>
+        <location filename="../dialogs/project_dialogs.py" line="159" />
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Огляд...</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="192"/>
+        <location filename="../dialogs/project_dialogs.py" line="189" />
         <source>Open PyGameMaker Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити проект PyGameMaker</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="194"/>
+        <location filename="../dialogs/project_dialogs.py" line="190" />
         <source>PyGameMaker Projects (*.json);;All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Проекти PyGameMaker (*.json);;Усі файли (*)</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="210"/>
-        <location filename="../dialogs/project_dialogs.py" line="214"/>
+        <location filename="../dialogs/project_dialogs.py" line="207" />
+        <location filename="../dialogs/project_dialogs.py" line="211" />
         <source>Invalid Input</source>
-        <translation type="unfinished"></translation>
+        <translation>Недійсне введення</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="210"/>
+        <location filename="../dialogs/project_dialogs.py" line="207" />
         <source>Please enter a project name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, введіть назву проекту.</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="214"/>
+        <location filename="../dialogs/project_dialogs.py" line="211" />
         <source>Please choose a project location.</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, виберіть розташування проекту.</translation>
     </message>
 </context>
 <context>
     <name>PreferencesDialog</name>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="22"/>
+        <location filename="../dialogs/preferences_dialog.py" line="21" />
         <source>Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="46"/>
+        <location filename="../dialogs/preferences_dialog.py" line="45" />
         <source>Note: Some settings require restarting the IDE to take effect.</source>
-        <translation type="unfinished"></translation>
+        <translation>Примітка: Деякі налаштування вимагають перезапуску IDE для набуття чинності.</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="62"/>
+        <location filename="../dialogs/preferences_dialog.py" line="61" />
         <source>Font Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування шрифту</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="69"/>
+        <location filename="../dialogs/preferences_dialog.py" line="68" />
         <source>Font Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Розмір шрифту:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="74"/>
+        <location filename="../dialogs/preferences_dialog.py" line="73" />
         <source>System Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Системний за замовчуванням</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="77"/>
+        <location filename="../dialogs/preferences_dialog.py" line="76" />
         <source>Font Family:</source>
-        <translation type="unfinished"></translation>
+        <translation>Сімейство шрифтів:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="80"/>
+        <location filename="../dialogs/preferences_dialog.py" line="79" />
         <source>Preview: The quick brown fox jumps over the lazy dog</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередній перегляд: Швидкий рудий лис стрибає через лінивого собаку</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="82"/>
+        <location filename="../dialogs/preferences_dialog.py" line="81" />
         <source>Preview:</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередній перегляд:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="87"/>
+        <location filename="../dialogs/preferences_dialog.py" line="86" />
         <source>Theme Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування теми</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="93"/>
+        <location filename="../dialogs/preferences_dialog.py" line="92" />
         <source>Theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тема:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="100"/>
+        <location filename="../dialogs/preferences_dialog.py" line="99" />
         <source>UI Scale:</source>
-        <translation type="unfinished"></translation>
+        <translation>Масштаб інтерфейсу:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="103"/>
+        <location filename="../dialogs/preferences_dialog.py" line="102" />
         <source>Show tooltips</source>
-        <translation type="unfinished"></translation>
+        <translation>Показувати підказки</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="109"/>
+        <location filename="../dialogs/preferences_dialog.py" line="108" />
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Зовнішній вигляд</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="117"/>
+        <location filename="../dialogs/preferences_dialog.py" line="116" />
         <source>Auto-Save Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування автозбереження</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="120"/>
+        <location filename="../dialogs/preferences_dialog.py" line="119" />
         <source>Enable auto-save</source>
-        <translation type="unfinished"></translation>
+        <translation>Увімкнути автозбереження</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="125"/>
+        <location filename="../dialogs/preferences_dialog.py" line="124" />
         <source> minutes</source>
-        <translation type="unfinished"></translation>
+        <translation> хвилин</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="126"/>
+        <location filename="../dialogs/preferences_dialog.py" line="125" />
         <source>Auto-save interval:</source>
-        <translation type="unfinished"></translation>
+        <translation>Інтервал автозбереження:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="131"/>
+        <location filename="../dialogs/preferences_dialog.py" line="130" />
         <source>Grid &amp; Snapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Сітка та прив'язка</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="134"/>
+        <location filename="../dialogs/preferences_dialog.py" line="133" />
         <source>Show grid in editors</source>
-        <translation type="unfinished"></translation>
+        <translation>Показувати сітку в редакторах</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="140"/>
+        <location filename="../dialogs/preferences_dialog.py" line="139" />
         <source>Grid size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Розмір сітки:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="142"/>
+        <location filename="../dialogs/preferences_dialog.py" line="141" />
         <source>Snap to grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Прив'язка до сітки</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="145"/>
+        <location filename="../dialogs/preferences_dialog.py" line="144" />
         <source>Show collision boxes</source>
-        <translation type="unfinished"></translation>
+        <translation>Показувати рамки зіткнень</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="151"/>
+        <location filename="../dialogs/preferences_dialog.py" line="150" />
         <source>Editor</source>
-        <translation type="unfinished">Редактор</translation>
+        <translation>Редактор</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="159"/>
+        <location filename="../dialogs/preferences_dialog.py" line="158" />
         <source>Project Paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Шляхи проекту</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="165"/>
+        <location filename="../dialogs/preferences_dialog.py" line="164" />
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Огляд...</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="169"/>
+        <location filename="../dialogs/preferences_dialog.py" line="168" />
         <source>Default projects folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка проектів за замовчуванням:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="174"/>
+        <location filename="../dialogs/preferences_dialog.py" line="173" />
         <source>Project Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування проекту</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="179"/>
+        <location filename="../dialogs/preferences_dialog.py" line="178" />
         <source>Recent projects limit:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ліміт недавніх проектів:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="181"/>
+        <location filename="../dialogs/preferences_dialog.py" line="180" />
         <source>Create backup on save</source>
-        <translation type="unfinished"></translation>
+        <translation>Створювати резервну копію при збереженні</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="187"/>
+        <location filename="../dialogs/preferences_dialog.py" line="186" />
         <source>Project</source>
-        <translation type="unfinished"></translation>
+        <translation>Проект</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="195"/>
+        <location filename="../dialogs/preferences_dialog.py" line="194" />
         <source>Debug Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування налагодження</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="198"/>
+        <location filename="../dialogs/preferences_dialog.py" line="197" />
         <source>Enable debug mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Увімкнути режим налагодження</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="201"/>
+        <location filename="../dialogs/preferences_dialog.py" line="200" />
         <source>Show console output</source>
-        <translation type="unfinished"></translation>
+        <translation>Показувати вивід консолі</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="207"/>
+        <location filename="../dialogs/preferences_dialog.py" line="206" />
         <source>Performance</source>
-        <translation type="unfinished"></translation>
+        <translation>Продуктивність</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="212"/>
+        <location filename="../dialogs/preferences_dialog.py" line="211" />
         <source>Maximum undo steps:</source>
-        <translation type="unfinished"></translation>
+        <translation>Максимум кроків скасування:</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="217"/>
+        <location filename="../dialogs/preferences_dialog.py" line="216" />
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>Додатково</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="291"/>
+        <location filename="../dialogs/preferences_dialog.py" line="290" />
         <source>Select Default Projects Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати папку проектів за замовчуванням</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="340"/>
+        <location filename="../dialogs/preferences_dialog.py" line="339" />
         <source>Settings Saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування збережено</translation>
     </message>
     <message>
-        <location filename="../dialogs/preferences_dialog.py" line="343"/>
+        <location filename="../dialogs/preferences_dialog.py" line="340" />
         <source>Settings have been saved successfully.
 
 Some changes may require restarting the IDE to take effect.</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування успішно збережено.
+
+Деякі зміни можуть вимагати перезапуску IDE для набуття чинності.</translation>
     </message>
 </context>
 <context>
     <name>ProjectSettingsDialog</name>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="254"/>
+        <location filename="../dialogs/project_dialogs.py" line="251" />
         <source>Project Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування проекту</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="264"/>
+        <location filename="../dialogs/project_dialogs.py" line="261" />
         <source>Project Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Інформація про проект</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="268"/>
+        <location filename="../dialogs/project_dialogs.py" line="265" />
         <source>Project Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва проекту:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="272"/>
+        <location filename="../dialogs/project_dialogs.py" line="269" />
         <source>Project Path:</source>
-        <translation type="unfinished"></translation>
+        <translation>Шлях проекту:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="276"/>
+        <location filename="../dialogs/project_dialogs.py" line="273" />
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Опис:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="280"/>
+        <location filename="../dialogs/project_dialogs.py" line="277" />
         <source>Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="284"/>
+        <location filename="../dialogs/project_dialogs.py" line="281" />
         <source>Auto-save:</source>
-        <translation type="unfinished"></translation>
+        <translation>Автозбереження:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="287"/>
+        <location filename="../dialogs/project_dialogs.py" line="284" />
         <source>Desktop</source>
-        <translation type="unfinished"></translation>
+        <translation>Комп'ютер</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="287"/>
+        <location filename="../dialogs/project_dialogs.py" line="284" />
         <source>Web</source>
-        <translation type="unfinished"></translation>
+        <translation>Веб</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="287"/>
+        <location filename="../dialogs/project_dialogs.py" line="284" />
         <source>Mobile</source>
-        <translation type="unfinished"></translation>
+        <translation>Мобільний</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="288"/>
+        <location filename="../dialogs/project_dialogs.py" line="285" />
         <source>Target Platform:</source>
-        <translation type="unfinished"></translation>
+        <translation>Цільова платформа:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="293"/>
+        <location filename="../dialogs/project_dialogs.py" line="290" />
         <source>Game Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування гри</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="299"/>
+        <location filename="../dialogs/project_dialogs.py" line="296" />
         <source>Starting Lives:</source>
-        <translation type="unfinished"></translation>
+        <translation>Початкові життя:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="302"/>
+        <location filename="../dialogs/project_dialogs.py" line="299" />
         <source>Show Lives in Caption:</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати життя в заголовку:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="307"/>
+        <location filename="../dialogs/project_dialogs.py" line="304" />
         <source>Starting Score:</source>
-        <translation type="unfinished"></translation>
+        <translation>Початковий рахунок:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="310"/>
+        <location filename="../dialogs/project_dialogs.py" line="307" />
         <source>Show Score in Caption:</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати рахунок в заголовку:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="315"/>
+        <location filename="../dialogs/project_dialogs.py" line="312" />
         <source>Starting Health:</source>
-        <translation type="unfinished"></translation>
+        <translation>Початкове здоров'я:</translation>
     </message>
     <message>
-        <location filename="../dialogs/project_dialogs.py" line="318"/>
+        <location filename="../dialogs/project_dialogs.py" line="315" />
         <source>Show Health in Caption:</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати здоров'я в заголовку:</translation>
     </message>
 </context>
 <context>
     <name>PyGameMakerIDE</name>
     <message>
-        <location filename="../core/ide_window.py" line="120"/>
+        <location filename="../core/ide_window.py" line="119" />
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="121"/>
+        <location filename="../core/ide_window.py" line="120" />
         <source>&amp;New Project...</source>
         <translation>&amp;Новий проект...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="122"/>
+        <location filename="../core/ide_window.py" line="121" />
         <source>&amp;Open Project...</source>
         <translation>&amp;Відкрити проект...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="124"/>
+        <location filename="../core/ide_window.py" line="123" />
         <source>&amp;Save Project</source>
         <translation>&amp;Зберегти проект</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="125"/>
+        <location filename="../core/ide_window.py" line="124" />
         <source>Save Project &amp;As...</source>
         <translation>Зберегти проект &amp;як...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="128"/>
+        <location filename="../core/ide_window.py" line="127" />
         <source>Recent Projects</source>
         <translation>Останні проекти</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="134"/>
+        <location filename="../core/ide_window.py" line="133" />
         <source>Export as HTML5...</source>
         <translation>Експортувати як HTML5...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="135"/>
+        <location filename="../core/ide_window.py" line="134" />
         <source>Export as &amp;Zip...</source>
         <translation>Експортувати як &amp;Zip...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="136"/>
+        <location filename="../core/ide_window.py" line="135" />
         <source>Export to Kivy...</source>
         <translation>Експортувати в Kivy...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="137"/>
+        <location filename="../core/ide_window.py" line="136" />
         <source>Export Project...</source>
         <translation>Експортувати проект...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="144"/>
+        <location filename="../core/ide_window.py" line="143" />
         <source>Open &amp;Zip Project...</source>
         <translation>Відкрити &amp;Zip-проект...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="148"/>
+        <location filename="../core/ide_window.py" line="147" />
         <source>Auto-Save to Zip</source>
         <translation>Автозбереження в Zip</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="155"/>
+        <location filename="../core/ide_window.py" line="154" />
         <source>Enable Auto-Save</source>
         <translation>Увімкнути автозбереження</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="162"/>
+        <location filename="../core/ide_window.py" line="161" />
         <source>Auto-Save Settings...</source>
         <translation>Налаштування автозбереження...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="167"/>
+        <location filename="../core/ide_window.py" line="166" />
         <source>Project &amp;Settings...</source>
         <translation>Налаштування &amp;проекту...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="169"/>
+        <location filename="../core/ide_window.py" line="168" />
         <source>E&amp;xit</source>
         <translation>В&amp;ихід</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="171"/>
+        <location filename="../core/ide_window.py" line="170" />
         <source>&amp;Edit</source>
         <translation>&amp;Редагування</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="172"/>
+        <location filename="../core/ide_window.py" line="171" />
         <source>&amp;Undo</source>
         <translation>&amp;Скасувати</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="173"/>
+        <location filename="../core/ide_window.py" line="172" />
         <source>&amp;Redo</source>
         <translation>П&amp;овторити</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="175"/>
+        <location filename="../core/ide_window.py" line="174" />
         <source>Cu&amp;t</source>
         <translation>Вир&amp;ізати</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="176"/>
+        <location filename="../core/ide_window.py" line="175" />
         <source>&amp;Copy</source>
         <translation>&amp;Копіювати</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="177"/>
+        <location filename="../core/ide_window.py" line="176" />
         <source>&amp;Paste</source>
         <translation>Вс&amp;тавити</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="178"/>
+        <location filename="../core/ide_window.py" line="177" />
         <source>&amp;Duplicate</source>
         <translation>&amp;Дублювати</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="180"/>
+        <location filename="../core/ide_window.py" line="179" />
         <source>&amp;Find...</source>
         <translation>&amp;Знайти...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="181"/>
+        <location filename="../core/ide_window.py" line="180" />
         <source>Find and &amp;Replace...</source>
         <translation>Знайти та &amp;замінити...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="184"/>
+        <location filename="../core/ide_window.py" line="183" />
         <source>Import &amp;Sprite...</source>
         <translation>Імпортувати &amp;спрайт...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="185"/>
+        <location filename="../core/ide_window.py" line="184" />
         <source>Import &amp;Sound...</source>
         <translation>Імпортувати &amp;звук...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="186"/>
+        <location filename="../core/ide_window.py" line="185" />
         <source>Import &amp;Background...</source>
         <translation>Імпортувати &amp;фон...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="187"/>
+        <location filename="../core/ide_window.py" line="186" />
         <source>Create &amp;Object...</source>
-        <translation>Створити &amp;об&apos;єкт...</translation>
+        <translation>Створити &amp;об'єкт...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="188"/>
+        <location filename="../core/ide_window.py" line="187" />
         <source>Create &amp;Room...</source>
         <translation>Створити &amp;кімнату...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="190"/>
+        <location filename="../core/ide_window.py" line="189" />
         <source>Create S&amp;cript...</source>
         <translation>Створити с&amp;крипт...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="191"/>
+        <location filename="../core/ide_window.py" line="190" />
         <source>Create &amp;Font...</source>
         <translation>Створити &amp;шрифт...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="202"/>
+        <location filename="../core/ide_window.py" line="201" />
         <source>&amp;Assets</source>
         <translation>&amp;Ресурси</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="214"/>
+        <location filename="../core/ide_window.py" line="213" />
         <source>Import Object Package...</source>
-        <translation>Імпортувати пакет об&apos;єктів...</translation>
+        <translation>Імпортувати пакет об'єктів...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="215"/>
+        <location filename="../core/ide_window.py" line="214" />
         <source>Import Room Package...</source>
         <translation>Імпортувати пакет кімнат...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="219"/>
+        <location filename="../core/ide_window.py" line="218" />
         <source>&amp;Build</source>
         <translation>&amp;Збірка</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="221"/>
+        <location filename="../core/ide_window.py" line="220" />
         <source>&amp;Test Game</source>
         <translation>&amp;Тестувати гру</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="222"/>
+        <location filename="../core/ide_window.py" line="221" />
         <source>&amp;Debug Game</source>
         <translation>&amp;Налагодити гру</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="223"/>
+        <location filename="../core/ide_window.py" line="222" />
         <source>&amp;Build Game...</source>
         <translation>&amp;Зібрати гру...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="224"/>
+        <location filename="../core/ide_window.py" line="223" />
         <source>Build and &amp;Run</source>
         <translation>Зібрати та &amp;запустити</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="225"/>
+        <location filename="../core/ide_window.py" line="224" />
         <source>&amp;Export Game...</source>
         <translation>&amp;Експортувати гру...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="235"/>
+        <location filename="../core/ide_window.py" line="234" />
         <source>&amp;Tools</source>
         <translation>&amp;Інструменти</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="236"/>
+        <location filename="../core/ide_window.py" line="235" />
         <source>&amp;Preferences...</source>
         <translation>&amp;Налаштування...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="237"/>
+        <location filename="../core/ide_window.py" line="236" />
         <source>&amp;Asset Manager...</source>
         <translation>Менеджер &amp;ресурсів...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="238"/>
         <source>Configure &amp;Blockly Blocks...</source>
-        <translation>Налаштувати блоки &amp;Blockly...</translation>
+        <translation type="vanished">Налаштувати блоки &amp;Blockly...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="240"/>
+        <location filename="../core/ide_window.py" line="239" />
         <source>&amp;Validate Project</source>
         <translation>&amp;Перевірити проект</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="241"/>
+        <location filename="../core/ide_window.py" line="240" />
         <source>&amp;Clean Project</source>
         <translation>О&amp;чистити проект</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="245"/>
+        <location filename="../core/ide_window.py" line="244" />
         <source>🌐 &amp;Language</source>
         <translation>🌐 &amp;Мова</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="248"/>
+        <location filename="../core/ide_window.py" line="247" />
         <source>&amp;Help</source>
         <translation>&amp;Довідка</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="249"/>
+        <location filename="../core/ide_window.py" line="248" />
         <source>&amp;Documentation</source>
         <translation>&amp;Документація</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="250"/>
+        <location filename="../core/ide_window.py" line="249" />
         <source>&amp;Tutorials</source>
         <translation>&amp;Посібники</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="252"/>
+        <location filename="../core/ide_window.py" line="251" />
         <source>&amp;About PyGameMaker</source>
         <translation>&amp;Про PyGameMaker</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="341"/>
+        <location filename="../core/ide_window.py" line="378" />
         <source>Language Changed</source>
         <translation>Мову змінено</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="344"/>
+        <location filename="../core/ide_window.py" line="379" />
         <source>Language changed to {0}.
 
 The IDE needs to restart for the language change to take effect.
@@ -3166,12 +3530,12 @@ IDE потрібно перезапустити, щоб зміна мови на
 Бажаєте перезапустити зараз?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="369"/>
+        <location filename="../core/ide_window.py" line="406" />
         <source>Translation Not Available</source>
         <translation>Переклад недоступний</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="373"/>
+        <location filename="../core/ide_window.py" line="407" />
         <source>Translation file for {0} is not available.
 
 The language has been set, but the interface will remain in English until a translation file is provided.
@@ -3184,22 +3548,22 @@ Expected file: translations/pygamemaker_{1}.qm</source>
 Очікуваний файл: translations/pygamemaker_{1}.qm</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="408"/>
+        <location filename="../core/ide_window.py" line="446" />
         <source>Auto-Save to Zip Enabled</source>
         <translation>Автозбереження в Zip увімкнено</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="410"/>
+        <location filename="../core/ide_window.py" line="447" />
         <source>The project will now automatically save to the original zip file.</source>
         <translation>Проект тепер автоматично зберігатиметься в оригінальний zip-файл.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="415"/>
+        <location filename="../core/ide_window.py" line="453" />
         <source>Export as Zip?</source>
         <translation>Експортувати як Zip?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="417"/>
+        <location filename="../core/ide_window.py" line="454" />
         <source>Would you like to export the current project as a zip file now?
 
 This will allow auto-save to work with the zip file.</source>
@@ -3208,310 +3572,311 @@ This will allow auto-save to work with the zip file.</source>
 Це дозволить автозбереженню працювати з zip-файлом.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="424"/>
+        <location filename="../core/ide_window.py" line="462" />
         <source>Auto-save to zip disabled</source>
         <translation>Автозбереження в zip вимкнено</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="436"/>
+        <location filename="../core/ide_window.py" line="474" />
         <source>Auto-save enabled</source>
         <translation>Автозбереження увімкнено</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="439"/>
+        <location filename="../core/ide_window.py" line="477" />
         <source>Auto-Save Enabled</source>
         <translation>Автозбереження увімкнено</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="440"/>
+        <location filename="../core/ide_window.py" line="478" />
         <source>Your project will be automatically saved every {0} seconds.</source>
         <translation>Ваш проект автоматично зберігатиметься кожні {0} секунд.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="443"/>
+        <location filename="../core/ide_window.py" line="481" />
         <source>Auto-save disabled</source>
         <translation>Автозбереження вимкнено</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="446"/>
+        <location filename="../core/ide_window.py" line="484" />
         <source>Auto-Save Disabled</source>
         <translation>Автозбереження вимкнено</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="448"/>
+        <location filename="../core/ide_window.py" line="485" />
         <source>Remember to save your project manually (Ctrl+S).</source>
         <translation>Не забувайте зберігати проект вручну (Ctrl+S).</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="479"/>
-        <location filename="../core/ide_window.py" line="592"/>
+        <location filename="../core/ide_window.py" line="517" />
         <source>Auto-save settings updated</source>
         <translation>Налаштування автозбереження оновлено</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="484"/>
-        <location filename="../core/ide_window.py" line="525"/>
-        <location filename="../core/ide_window.py" line="998"/>
-        <location filename="../core/ide_window.py" line="1134"/>
-        <location filename="../core/ide_window.py" line="1244"/>
-        <location filename="../core/ide_window.py" line="1464"/>
-        <location filename="../core/ide_window.py" line="1545"/>
-        <location filename="../core/ide_window.py" line="1661"/>
-        <location filename="../core/ide_window.py" line="1925"/>
-        <location filename="../core/ide_window.py" line="1992"/>
-        <location filename="../core/ide_window.py" line="2032"/>
+        <location filename="../core/ide_window.py" line="522" />
+        <location filename="../core/ide_window.py" line="563" />
+        <location filename="../core/ide_window.py" line="1049" />
+        <location filename="../core/ide_window.py" line="1221" />
+        <location filename="../core/ide_window.py" line="1331" />
+        <location filename="../core/ide_window.py" line="1581" />
+        <location filename="../core/ide_window.py" line="1662" />
+        <location filename="../core/ide_window.py" line="1778" />
+        <location filename="../core/ide_window.py" line="2041" />
+        <location filename="../core/ide_window.py" line="2125" />
+        <location filename="../core/ide_window.py" line="2165" />
         <source>No Project</source>
         <translation>Немає проекту</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="484"/>
-        <location filename="../core/ide_window.py" line="525"/>
-        <location filename="../core/ide_window.py" line="998"/>
-        <location filename="../core/ide_window.py" line="1134"/>
+        <location filename="../core/ide_window.py" line="522" />
+        <location filename="../core/ide_window.py" line="563" />
+        <location filename="../core/ide_window.py" line="1049" />
+        <location filename="../core/ide_window.py" line="1221" />
         <source>Please open a project first</source>
         <translation>Спочатку відкрийте проект</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="489"/>
+        <location filename="../core/ide_window.py" line="527" />
         <source>Import Object Package</source>
-        <translation>Імпортувати пакет об&apos;єктів</translation>
+        <translation>Імпортувати пакет об'єктів</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="492"/>
+        <location filename="../core/ide_window.py" line="529" />
         <source>GameMaker Objects (*.gmobj)</source>
-        <translation>Об&apos;єкти GameMaker (*.gmobj)</translation>
+        <translation>Об'єкти GameMaker (*.gmobj)</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="497"/>
+        <location filename="../core/ide_window.py" line="535" />
         <source>Importing object...</source>
-        <translation>Імпортування об&apos;єкта...</translation>
+        <translation>Імпортування об'єкта...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="510"/>
-        <location filename="../core/ide_window.py" line="551"/>
+        <location filename="../core/ide_window.py" line="548" />
+        <location filename="../core/ide_window.py" line="589" />
         <source>Import Successful</source>
         <translation>Імпорт успішний</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="511"/>
-        <source>Object &apos;{0}&apos; imported successfully!</source>
-        <translation>Об&apos;єкт &apos;{0}&apos; успішно імпортовано!</translation>
+        <location filename="../core/ide_window.py" line="549" />
+        <source>Object '{0}' imported successfully!</source>
+        <translation>Об'єкт '{0}' успішно імпортовано!</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="513"/>
+        <location filename="../core/ide_window.py" line="551" />
         <source>Object imported: {0}</source>
-        <translation>Об&apos;єкт імпортовано: {0}</translation>
+        <translation>Об'єкт імпортовано: {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="517"/>
-        <location filename="../core/ide_window.py" line="558"/>
+        <location filename="../core/ide_window.py" line="555" />
+        <location filename="../core/ide_window.py" line="596" />
         <source>Import Failed</source>
         <translation>Помилка імпорту</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="519"/>
+        <location filename="../core/ide_window.py" line="556" />
         <source>Failed to import object package</source>
-        <translation>Не вдалося імпортувати пакет об&apos;єктів</translation>
+        <translation>Не вдалося імпортувати пакет об'єктів</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="520"/>
-        <location filename="../core/ide_window.py" line="561"/>
+        <location filename="../core/ide_window.py" line="558" />
+        <location filename="../core/ide_window.py" line="599" />
         <source>Import failed</source>
         <translation>Помилка імпорту</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="530"/>
+        <location filename="../core/ide_window.py" line="568" />
         <source>Import Room Package</source>
         <translation>Імпортувати пакет кімнат</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="533"/>
+        <location filename="../core/ide_window.py" line="570" />
         <source>GameMaker Rooms (*.gmroom)</source>
         <translation>Кімнати GameMaker (*.gmroom)</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="538"/>
+        <location filename="../core/ide_window.py" line="576" />
         <source>Importing room...</source>
         <translation>Імпортування кімнати...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="552"/>
-        <source>Room &apos;{0}&apos; imported successfully!</source>
-        <translation>Кімнату &apos;{0}&apos; успішно імпортовано!</translation>
+        <location filename="../core/ide_window.py" line="590" />
+        <source>Room '{0}' imported successfully!</source>
+        <translation>Кімнату '{0}' успішно імпортовано!</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="554"/>
+        <location filename="../core/ide_window.py" line="592" />
         <source>Room imported: {0}</source>
         <translation>Кімнату імпортовано: {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="560"/>
+        <location filename="../core/ide_window.py" line="597" />
         <source>Failed to import room package</source>
         <translation>Не вдалося імпортувати пакет кімнат</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="595"/>
+        <location filename="../core/ide_window.py" line="602" />
         <source>Main</source>
         <translation>Головна</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="607"/>
+        <location filename="../core/ide_window.py" line="614" />
         <source>New</source>
         <translation>Новий</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="608"/>
+        <location filename="../core/ide_window.py" line="615" />
         <source>Open</source>
         <translation>Відкрити</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="609"/>
+        <location filename="../core/ide_window.py" line="616" />
         <source>Save</source>
         <translation>Зберегти</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="617"/>
+        <location filename="../core/ide_window.py" line="624" />
         <source>Test</source>
         <translation>Тест</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="618"/>
+        <location filename="../core/ide_window.py" line="625" />
         <source>Debug</source>
         <translation>Налагодження</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1537"/>
+        <location filename="../core/ide_window.py" line="1652" />
         <source>This export format is not yet available.
 
 Please use HTML5, Windows EXE, or Linux Binary export for now.</source>
-        <translation type="unfinished"></translation>
+        <translation>Цей формат експорту поки недоступний.
+
+Будь ласка, використовуйте експорт HTML5, Windows EXE або Linux Binary.</translation>
     </message>
     <message>
         <source>Build</source>
         <translation type="vanished">Збірка</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="622"/>
+        <location filename="../core/ide_window.py" line="629" />
         <source>Import Sprite</source>
         <translation>Імпортувати спрайт</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="623"/>
+        <location filename="../core/ide_window.py" line="630" />
         <source>Import Sound</source>
         <translation>Імпортувати звук</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="707"/>
-        <location filename="../core/ide_window.py" line="1343"/>
-        <location filename="../core/ide_window.py" line="2604"/>
+        <location filename="../core/ide_window.py" line="732" />
+        <location filename="../core/ide_window.py" line="1460" />
+        <location filename="../core/ide_window.py" line="2740" />
         <source>Unsaved Changes</source>
         <translation>Незбережені зміни</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="708"/>
-        <source>&quot;{0}&quot; has unsaved changes. Save before closing?</source>
-        <translation>&quot;{0}&quot; має незбережені зміни. Зберегти перед закриттям?</translation>
+        <location filename="../core/ide_window.py" line="733" />
+        <source>"{0}" has unsaved changes. Save before closing?</source>
+        <translation>"{0}" має незбережені зміни. Зберегти перед закриттям?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="744"/>
+        <location filename="../core/ide_window.py" line="769" />
         <source>Welcome</source>
         <translation>Ласкаво просимо</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="808"/>
-        <location filename="../core/ide_window.py" line="2515"/>
+        <location filename="../core/ide_window.py" line="857" />
+        <location filename="../core/ide_window.py" line="2651" />
         <source>Ready</source>
         <translation>Готово</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="815"/>
-        <location filename="../core/ide_window.py" line="2510"/>
+        <location filename="../core/ide_window.py" line="864" />
+        <location filename="../core/ide_window.py" line="2646" />
         <source>No project loaded</source>
         <translation>Проект не завантажено</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="873"/>
+        <location filename="../core/ide_window.py" line="924" />
         <source>No recent projects</source>
         <translation>Немає останніх проектів</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="907"/>
+        <location filename="../core/ide_window.py" line="958" />
         <source>Project created successfully</source>
         <translation>Проект успішно створено</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="910"/>
-        <location filename="../core/ide_window.py" line="930"/>
-        <location filename="../core/ide_window.py" line="951"/>
-        <location filename="../core/ide_window.py" line="964"/>
-        <location filename="../core/ide_window.py" line="990"/>
-        <location filename="../core/ide_window.py" line="1224"/>
-        <location filename="../core/ide_window.py" line="2232"/>
-        <location filename="../core/ide_window.py" line="2278"/>
+        <location filename="../core/ide_window.py" line="961" />
+        <location filename="../core/ide_window.py" line="981" />
+        <location filename="../core/ide_window.py" line="1002" />
+        <location filename="../core/ide_window.py" line="1015" />
+        <location filename="../core/ide_window.py" line="1041" />
+        <location filename="../core/ide_window.py" line="1311" />
+        <location filename="../core/ide_window.py" line="2369" />
+        <location filename="../core/ide_window.py" line="2414" />
         <source>Error</source>
         <translation>Помилка</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="910"/>
+        <location filename="../core/ide_window.py" line="961" />
         <source>Failed to create project</source>
         <translation>Не вдалося створити проект</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="914"/>
+        <location filename="../core/ide_window.py" line="965" />
         <source>Open Project</source>
         <translation>Відкрити проект</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="917"/>
+        <location filename="../core/ide_window.py" line="967" />
         <source>Project Files (project.json);;Zip Files (*.zip);;All Files (*)</source>
         <translation>Файли проекту (project.json);;Zip-файли (*.zip);;Усі файли (*)</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="930"/>
+        <location filename="../core/ide_window.py" line="981" />
         <source>Failed to load project from zip</source>
         <translation>Не вдалося завантажити проект із zip</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="932"/>
+        <location filename="../core/ide_window.py" line="983" />
         <source>Invalid Zip</source>
         <translation>Недійсний Zip</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="933"/>
+        <location filename="../core/ide_window.py" line="984" />
         <source>This zip file does not contain a valid PyGameMaker project</source>
         <translation>Цей zip-файл не містить дійсного проекту PyGameMaker</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="951"/>
+        <location filename="../core/ide_window.py" line="1002" />
         <source>Failed to load project</source>
         <translation>Не вдалося завантажити проект</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="961"/>
-        <location filename="../core/ide_window.py" line="987"/>
-        <location filename="../core/ide_window.py" line="2458"/>
+        <location filename="../core/ide_window.py" line="1012" />
+        <location filename="../core/ide_window.py" line="1038" />
+        <location filename="../core/ide_window.py" line="2594" />
         <source>Project saved</source>
         <translation>Проект збережено</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="964"/>
-        <location filename="../core/ide_window.py" line="990"/>
+        <location filename="../core/ide_window.py" line="1015" />
+        <location filename="../core/ide_window.py" line="1041" />
         <source>Failed to save project</source>
         <translation>Не вдалося зберегти проект</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="980"/>
+        <location filename="../core/ide_window.py" line="1031" />
         <source>Save Project As</source>
         <translation>Зберегти проект як</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1014"/>
-        <location filename="../core/ide_window.py" line="2631"/>
+        <location filename="../core/ide_window.py" line="1068" />
+        <location filename="../core/ide_window.py" line="2767" />
         <source>No Project Loaded</source>
         <translation>Проект не завантажено</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1016"/>
+        <location filename="../core/ide_window.py" line="1069" />
         <source>You need to create or open a project before importing sprites.
 
 Would you like to create a new project now?</source>
@@ -3520,57 +3885,58 @@ Would you like to create a new project now?</source>
 Бажаєте створити новий проект зараз?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1142"/>
+        <location filename="../core/ide_window.py" line="1229" />
         <source>Create {0}</source>
         <translation>Створити {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1143"/>
+        <location filename="../core/ide_window.py" line="1230" />
         <source>Enter name for new {0}:</source>
-        <translation>Введіть ім&apos;я для нового {0}:</translation>
+        <translation>Введіть ім'я для нового {0}:</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1214"/>
+        <location filename="../core/ide_window.py" line="1301" />
         <source>Created {0}</source>
         <translation>Створено {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1225"/>
+        <location filename="../core/ide_window.py" line="1312" />
         <source>Failed to create {0}: {1}</source>
         <translation>Не вдалося створити {0}: {1}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1246"/>
+        <location filename="../core/ide_window.py" line="1332" />
         <source>Please open or create a project first before testing a game.</source>
         <translation>Спочатку відкрийте або створіть проект перед тестуванням гри.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1257"/>
+        <location filename="../core/ide_window.py" line="1344" />
         <source>Running game...</source>
         <translation>Запуск гри...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1264"/>
+        <location filename="../core/ide_window.py" line="1351" />
         <source>Project Error</source>
         <translation>Помилка проекту</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1266"/>
+        <location filename="../core/ide_window.py" line="1352" />
         <source>project.json not found in project directory</source>
         <translation>project.json не знайдено в каталозі проекту</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1283"/>
+        <location filename="../core/ide_window.py" line="1384" />
+        <location filename="../core/ide_window.py" line="1400" />
         <source>Game closed</source>
         <translation>Гру закрито</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1288"/>
+        <location filename="../core/ide_window.py" line="1405" />
         <source>Game Test Error</source>
         <translation>Помилка тестування гри</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1289"/>
+        <location filename="../core/ide_window.py" line="1406" />
         <source>Failed to run game:
 
 {0}
@@ -3583,32 +3949,38 @@ Check console for details.</source>
 Перевірте консоль для деталей.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1294"/>
+        <location filename="../core/ide_window.py" line="1386" />
+        <location filename="../core/ide_window.py" line="1411" />
         <source>Game test failed</source>
         <translation>Тест гри не вдався</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1301"/>
+        <location filename="../core/ide_window.py" line="237" />
+        <source>Configure &amp;Action Blocks...</source>
+        <translation>Налаштувати блоки &amp;дій...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_window.py" line="1418" />
         <source>Game Running</source>
         <translation>Гра запущена</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1303"/>
+        <location filename="../core/ide_window.py" line="1419" />
         <source>A game is already running. Please stop it first.</source>
         <translation>Гра вже запущена. Спочатку зупиніть її.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1312"/>
+        <location filename="../core/ide_window.py" line="1429" />
         <source>Starting game in debug mode...</source>
         <translation>Запуск гри в режимі налагодження...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1316"/>
+        <location filename="../core/ide_window.py" line="1433" />
         <source>Debug Mode</source>
         <translation>Режим налагодження</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1324"/>
+        <location filename="../core/ide_window.py" line="1434" />
         <source>Debug mode will start the game with verbose console output.
 
 Future features:
@@ -3629,53 +4001,53 @@ For now, check the console for debug messages.</source>
 Наразі перевіряйте консоль для повідомлень налагодження.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1328"/>
+        <location filename="../core/ide_window.py" line="1445" />
         <source>Game started in debug mode - Check console for debug output</source>
         <translation>Гру запущено в режимі налагодження - перевірте консоль для виводу налагодження</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1330"/>
+        <location filename="../core/ide_window.py" line="1447" />
         <source>Failed to start game</source>
         <translation>Не вдалося запустити гру</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1333"/>
+        <location filename="../core/ide_window.py" line="1450" />
         <source>Game Error</source>
         <translation>Помилка гри</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1335"/>
+        <location filename="../core/ide_window.py" line="1451" />
         <source>Failed to start the game. Check console for details.</source>
         <translation>Не вдалося запустити гру. Перевірте консоль для деталей.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1344"/>
+        <location filename="../core/ide_window.py" line="1461" />
         <source>You have unsaved changes. Save before building?</source>
         <translation>У вас є незбережені зміни. Зберегти перед збіркою?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1357"/>
+        <location filename="../core/ide_window.py" line="1474" />
         <source>Select Build Output Directory</source>
         <translation>Виберіть каталог виводу збірки</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1364"/>
+        <location filename="../core/ide_window.py" line="1481" />
         <source>Building game...</source>
         <translation>Збірка гри...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1369"/>
-        <location filename="../core/ide_window.py" line="2478"/>
+        <location filename="../core/ide_window.py" line="1486" />
+        <location filename="../core/ide_window.py" line="2614" />
         <source>Build Game</source>
         <translation>Зібрати гру</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1380"/>
+        <location filename="../core/ide_window.py" line="1487" />
         <source>Standalone executable building is not yet implemented.
 
 Current workaround:
-• Use &apos;Export as HTML5&apos; to create a web version
-• Use &apos;Test Game&apos; to run from source
+• Use 'Export as HTML5' to create a web version
+• Use 'Test Game' to run from source
 
 Future build targets:
 • Windows .exe
@@ -3687,8 +4059,8 @@ Would you like to export as HTML5 instead?</source>
         <translation>Збірка автономного виконуваного файлу ще не реалізована.
 
 Поточне рішення:
-• Використовуйте &apos;Експортувати як HTML5&apos; для створення веб-версії
-• Використовуйте &apos;Тестувати гру&apos; для запуску з вихідного коду
+• Використовуйте 'Експортувати як HTML5' для створення веб-версії
+• Використовуйте 'Тестувати гру' для запуску з вихідного коду
 
 Майбутні цілі збірки:
 • Windows .exe
@@ -3699,19 +4071,19 @@ Would you like to export as HTML5 instead?</source>
 Бажаєте натомість експортувати як HTML5?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1382"/>
+        <location filename="../core/ide_window.py" line="1499" />
         <source>Build cancelled - use HTML5 export instead</source>
         <translation>Збірку скасовано - використовуйте натомість експорт HTML5</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1388"/>
-        <location filename="../core/ide_window.py" line="1408"/>
-        <location filename="../core/ide_window.py" line="2479"/>
+        <location filename="../core/ide_window.py" line="1505" />
+        <location filename="../core/ide_window.py" line="1525" />
+        <location filename="../core/ide_window.py" line="2615" />
         <source>Build and Run</source>
         <translation>Зібрати та запустити</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1391"/>
+        <location filename="../core/ide_window.py" line="1506" />
         <source>This will build a standalone executable and run it.
 
 Building may take several minutes.
@@ -3724,12 +4096,12 @@ Continue?</source>
 Продовжити?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1403"/>
+        <location filename="../core/ide_window.py" line="1520" />
         <source>Building and running game...</source>
         <translation>Збірка та запуск гри...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1411"/>
+        <location filename="../core/ide_window.py" line="1526" />
         <source>Standalone build is not yet implemented.
 
 Running game in test mode instead...</source>
@@ -3738,52 +4110,52 @@ Running game in test mode instead...</source>
 Натомість запуск гри в тестовому режимі...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1431"/>
+        <location filename="../core/ide_window.py" line="1548" />
         <source>Errors:</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилки:</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1437"/>
+        <location filename="../core/ide_window.py" line="1554" />
         <source>Warnings:</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередження:</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1447"/>
+        <location filename="../core/ide_window.py" line="1564" />
         <source>Project Validation Issues</source>
-        <translation type="unfinished"></translation>
+        <translation>Проблеми валідації проекту</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1454"/>
+        <location filename="../core/ide_window.py" line="1571" />
         <source>Project Validation Warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередження валідації проекту</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1466"/>
+        <location filename="../core/ide_window.py" line="1582" />
         <source>Please open or create a project first before exporting a game.</source>
         <translation>Спочатку відкрийте або створіть проект перед експортом гри.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1476"/>
+        <location filename="../core/ide_window.py" line="1593" />
         <source>Export Game</source>
         <translation>Експортувати гру</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1481"/>
+        <location filename="../core/ide_window.py" line="1598" />
         <source>&lt;h3&gt;Export Game&lt;/h3&gt;</source>
         <translation>&lt;h3&gt;Експортувати гру&lt;/h3&gt;</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1482"/>
+        <location filename="../core/ide_window.py" line="1599" />
         <source>Choose export format:</source>
         <translation>Виберіть формат експорту:</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1487"/>
+        <location filename="../core/ide_window.py" line="1604" />
         <source>HTML5 (Web Browser) - ✅ Available</source>
         <translation>HTML5 (Веб-браузер) - ✅ Доступно</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1492"/>
+        <location filename="../core/ide_window.py" line="1609" />
         <source>Windows Executable (.exe) - ✅ Available</source>
         <translation>Виконуваний файл Windows (.exe) - ✅ Доступно</translation>
     </message>
@@ -3792,34 +4164,34 @@ Running game in test mode instead...</source>
         <translation type="vanished">Бінарний файл Linux - 🚧 Незабаром</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1502"/>
+        <location filename="../core/ide_window.py" line="1619" />
         <source>macOS Application (.app) - 🚧 Coming Soon</source>
         <translation>Програма macOS (.app) - 🚧 Незабаром</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1507"/>
+        <location filename="../core/ide_window.py" line="1624" />
         <source>Android Package (.apk) - 🚧 Coming Soon</source>
         <translation>Пакет Android (.apk) - 🚧 Незабаром</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="619"/>
-        <location filename="../core/ide_window.py" line="1514"/>
+        <location filename="../core/ide_window.py" line="626" />
+        <location filename="../core/ide_window.py" line="1631" />
         <source>Export</source>
         <translation>Експорт</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1497"/>
+        <location filename="../core/ide_window.py" line="1614" />
         <source>Linux Binary - ✅ Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Бінарний файл Linux - ✅ Доступно</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1516"/>
+        <location filename="../core/ide_window.py" line="1633" />
         <source>Cancel</source>
         <translation>Скасувати</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1534"/>
-        <location filename="../core/ide_window.py" line="2053"/>
+        <location filename="../core/ide_window.py" line="1651" />
+        <location filename="../core/ide_window.py" line="2186" />
         <source>Coming Soon</source>
         <translation>Незабаром</translation>
     </message>
@@ -3832,75 +4204,75 @@ Please use HTML5 or Windows EXE export for now.</source>
 Наразі використовуйте експорт HTML5 або Windows EXE.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1547"/>
-        <location filename="../core/ide_window.py" line="1663"/>
+        <location filename="../core/ide_window.py" line="1663" />
+        <location filename="../core/ide_window.py" line="1779" />
         <source>Please open or create a project first.</source>
         <translation>Спочатку відкрийте або створіть проект.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1556"/>
-        <location filename="../core/ide_window.py" line="1672"/>
+        <location filename="../core/ide_window.py" line="1673" />
+        <location filename="../core/ide_window.py" line="1789" />
         <source>Choose Export Location</source>
         <translation>Виберіть місце експорту</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1576"/>
-        <location filename="../core/ide_window.py" line="1692"/>
+        <location filename="../core/ide_window.py" line="1693" />
+        <location filename="../core/ide_window.py" line="1809" />
         <source>Exporting Game</source>
         <translation>Експорт гри</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1582"/>
-        <location filename="../core/ide_window.py" line="1698"/>
+        <location filename="../core/ide_window.py" line="1699" />
+        <location filename="../core/ide_window.py" line="1815" />
         <source>Preparing export...</source>
         <translation>Підготовка експорту...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1603"/>
-        <location filename="../core/ide_window.py" line="1719"/>
+        <location filename="../core/ide_window.py" line="1720" />
+        <location filename="../core/ide_window.py" line="1836" />
         <source>Export Complete</source>
         <translation>Експорт завершено</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1604"/>
-        <location filename="../core/ide_window.py" line="1720"/>
+        <location filename="../core/ide_window.py" line="1721" />
+        <location filename="../core/ide_window.py" line="1837" />
         <source>Would you like to open the output folder?</source>
         <translation>Бажаєте відкрити папку виводу?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1619"/>
-        <location filename="../core/ide_window.py" line="1729"/>
+        <location filename="../core/ide_window.py" line="1736" />
+        <location filename="../core/ide_window.py" line="1845" />
         <source>Export Failed</source>
         <translation>Помилка експорту</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1902"/>
-        <location filename="../core/ide_window.py" line="1910"/>
+        <location filename="../core/ide_window.py" line="2018" />
+        <location filename="../core/ide_window.py" line="2026" />
         <source>Not Implemented</source>
         <translation>Не реалізовано</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1904"/>
+        <location filename="../core/ide_window.py" line="2019" />
         <source>Find functionality is not yet implemented.</source>
         <translation>Функція пошуку ще не реалізована.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1912"/>
+        <location filename="../core/ide_window.py" line="2027" />
         <source>Find and Replace functionality is not yet implemented.</source>
         <translation>Функція пошуку та заміни ще не реалізована.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1927"/>
+        <location filename="../core/ide_window.py" line="2042" />
         <source>Please open a project first to manage assets.</source>
         <translation>Спочатку відкрийте проект для керування ресурсами.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1932"/>
+        <location filename="../core/ide_window.py" line="2048" />
         <source>Asset Manager</source>
         <translation>Менеджер ресурсів</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1941"/>
+        <location filename="../core/ide_window.py" line="2049" />
         <source>Asset Manager is not yet implemented.
 
 Current workaround:
@@ -3923,12 +4295,12 @@ Future features:
 • Очищення невикористаних ресурсів</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1963"/>
+        <location filename="../core/ide_window.py" line="2096" />
         <source>Configuration Saved</source>
         <translation>Конфігурацію збережено</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1969"/>
+        <location filename="../core/ide_window.py" line="2097" />
         <source>Blockly configuration has been saved.
 
 The new event/block selection is now active in:
@@ -3945,17 +4317,17 @@ Changes apply immediately to currently open editors.</source>
 Зміни негайно застосовуються до поточно відкритих редакторів.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="1994"/>
+        <location filename="../core/ide_window.py" line="2126" />
         <source>Please open a project first to validate.</source>
         <translation>Спочатку відкрийте проект для перевірки.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2015"/>
+        <location filename="../core/ide_window.py" line="2148" />
         <source>Validation Issues Found</source>
         <translation>Знайдено проблеми перевірки</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2016"/>
+        <location filename="../core/ide_window.py" line="2149" />
         <source>Project validation found the following issues:
 
 </source>
@@ -3964,12 +4336,12 @@ Changes apply immediately to currently open editors.</source>
 </translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2021"/>
+        <location filename="../core/ide_window.py" line="2154" />
         <source>Validation Passed</source>
         <translation>Перевірку пройдено</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2025"/>
+        <location filename="../core/ide_window.py" line="2155" />
         <source>Project structure is valid!
 
 ✓ All required directories exist
@@ -3980,17 +4352,17 @@ Changes apply immediately to currently open editors.</source>
 ✓ project.json присутній</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2034"/>
+        <location filename="../core/ide_window.py" line="2166" />
         <source>Please open a project first to clean.</source>
         <translation>Спочатку відкрийте проект для очищення.</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2039"/>
+        <location filename="../core/ide_window.py" line="2172" />
         <source>Clean Project</source>
         <translation>Очистити проект</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2046"/>
+        <location filename="../core/ide_window.py" line="2173" />
         <source>Project cleanup is not yet implemented.
 
 Future features:
@@ -4011,7 +4383,7 @@ Would you like to learn more?</source>
 Бажаєте дізнатися більше?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2059"/>
+        <location filename="../core/ide_window.py" line="2187" />
         <source>This feature will be available in a future update.
 
 For now, you can manually delete temporary files from:
@@ -4026,12 +4398,12 @@ For now, you can manually delete temporary files from:
 • Файлів *.pyc</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2065"/>
+        <location filename="../core/ide_window.py" line="2198" />
         <source>Documentation</source>
         <translation>Документація</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2075"/>
+        <location filename="../core/ide_window.py" line="2199" />
         <source>Documentation is not yet available.
 
 Quick Help:
@@ -4056,156 +4428,151 @@ Online documentation coming soon!</source>
 Онлайн-документація незабаром!</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2082"/>
         <source>Tutorials</source>
-        <translation>Посібники</translation>
+        <translation type="vanished">Посібники</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2087"/>
         <source>&lt;h3&gt;PyGameMaker Tutorials&lt;/h3&gt;</source>
-        <translation>&lt;h3&gt;Посібники PyGameMaker&lt;/h3&gt;</translation>
+        <translation type="vanished">&lt;h3&gt;Посібники PyGameMaker&lt;/h3&gt;</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2088"/>
         <source>Coming soon! Tutorials will include:</source>
-        <translation>Незабаром! Посібники включатимуть:</translation>
+        <translation type="vanished">Незабаром! Посібники включатимуть:</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2104"/>
         <source>
 💡 Tip: Check the documentation (F1) for quick help!</source>
-        <translation>
+        <translation type="vanished">
 💡 Порада: Перегляньте документацію (F1) для швидкої довідки!</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2106"/>
         <source>Close</source>
-        <translation>Закрити</translation>
+        <translation type="vanished">Закрити</translation>
     </message>
     <message>
         <source>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version 1.0.0&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A comprehensive visual game development environment&lt;br&gt;inspired by GameMaker Studio, built with Python.&lt;/p&gt;&lt;h3&gt;Features&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Dual Programming Modes:&lt;/b&gt; Visual (Blockly) and Traditional Events&lt;/li&gt;&lt;li&gt;&lt;b&gt;Asset Management:&lt;/b&gt; Sprites, sounds, objects, and rooms&lt;/li&gt;&lt;li&gt;&lt;b&gt;Cross-Platform Export:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Flexible Configuration:&lt;/b&gt; Customizable block/event visibility&lt;/li&gt;&lt;li&gt;&lt;b&gt;Real-time Testing:&lt;/b&gt; Run games directly from the IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technology Stack&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Game Engine:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Visual Programming:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Language:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Project Information&lt;/h3&gt;&lt;p&gt;PyGameMaker is an educational tool designed to make&lt;br&gt;game development accessible to beginners while providing&lt;br&gt;powerful features for experienced developers.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Built with ❤️ using Python and Qt&lt;/small&gt;&lt;/p&gt;</source>
-        <translation type="vanished">&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Версія 1.0.0&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Комплексне візуальне середовище розробки ігор,&lt;br&gt;натхненне GameMaker Studio, створене на Python.&lt;/p&gt;&lt;h3&gt;Функції&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Подвійні режими програмування:&lt;/b&gt; Візуальний (Blockly) та традиційні події&lt;/li&gt;&lt;li&gt;&lt;b&gt;Керування ресурсами:&lt;/b&gt; Спрайти, звуки, об&apos;єкти та кімнати&lt;/li&gt;&lt;li&gt;&lt;b&gt;Кросплатформний експорт:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Гнучка конфігурація:&lt;/b&gt; Налаштовувана видимість блоків/подій&lt;/li&gt;&lt;li&gt;&lt;b&gt;Тестування в реальному часі:&lt;/b&gt; Запуск ігор безпосередньо з IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Технологічний стек&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Ігровий рушій:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Візуальне програмування:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Експорт:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Мова:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Інформація про проект&lt;/h3&gt;&lt;p&gt;PyGameMaker — це освітній інструмент, розроблений для того, щоб&lt;br&gt;зробити розробку ігор доступною для початківців, водночас надаючи&lt;br&gt;потужні функції для досвідчених розробників.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Створено з ❤️ за допомогою Python та Qt&lt;/small&gt;&lt;/p&gt;</translation>
+        <translation type="vanished">&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Версія 1.0.0&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Комплексне візуальне середовище розробки ігор,&lt;br&gt;натхненне GameMaker Studio, створене на Python.&lt;/p&gt;&lt;h3&gt;Функції&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Подвійні режими програмування:&lt;/b&gt; Візуальний (Blockly) та традиційні події&lt;/li&gt;&lt;li&gt;&lt;b&gt;Керування ресурсами:&lt;/b&gt; Спрайти, звуки, об'єкти та кімнати&lt;/li&gt;&lt;li&gt;&lt;b&gt;Кросплатформний експорт:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Гнучка конфігурація:&lt;/b&gt; Налаштовувана видимість блоків/подій&lt;/li&gt;&lt;li&gt;&lt;b&gt;Тестування в реальному часі:&lt;/b&gt; Запуск ігор безпосередньо з IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Технологічний стек&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Ігровий рушій:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Візуальне програмування:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Експорт:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Мова:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Інформація про проект&lt;/h3&gt;&lt;p&gt;PyGameMaker — це освітній інструмент, розроблений для того, щоб&lt;br&gt;зробити розробку ігор доступною для початківців, водночас надаючи&lt;br&gt;потужні функції для досвідчених розробників.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Створено з ❤️ за допомогою Python та Qt&lt;/small&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2150"/>
+        <location filename="../core/ide_window.py" line="2285" />
         <source>About PyGameMaker</source>
         <translation>Про PyGameMaker</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2150"/>
-        <source>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version 0.10.1-alpha&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A comprehensive visual game development environment&lt;br&gt;inspired by GameMaker Studio, built with Python.&lt;/p&gt;&lt;p&gt;&lt;a href=&apos;https://github.com/Gabe1290/pythongm&apos;&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Features&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Dual Programming Modes:&lt;/b&gt; Visual (Blockly) and Traditional Events&lt;/li&gt;&lt;li&gt;&lt;b&gt;Asset Management:&lt;/b&gt; Sprites, sounds, objects, and rooms&lt;/li&gt;&lt;li&gt;&lt;b&gt;Cross-Platform Export:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Flexible Configuration:&lt;/b&gt; Customizable block/event visibility&lt;/li&gt;&lt;li&gt;&lt;b&gt;Real-time Testing:&lt;/b&gt; Run games directly from the IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technology Stack&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Game Engine:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Visual Programming:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Language:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Project Information&lt;/h3&gt;&lt;p&gt;PyGameMaker is an educational tool designed to make&lt;br&gt;game development accessible to beginners while providing&lt;br&gt;powerful features for experienced developers.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Built with ❤️ using Python and Qt&lt;/small&gt;&lt;/p&gt;</source>
-        <translation>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Версія 0.10.1-alpha&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Повноцінне візуальне середовище розробки ігор,&lt;br&gt;натхнене GameMaker Studio, створене на Python.&lt;/p&gt;&lt;p&gt;&lt;a href=&apos;https://github.com/Gabe1290/pythongm&apos;&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Можливості&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Два режими програмування:&lt;/b&gt; Візуальний (Blockly) та Традиційні події&lt;/li&gt;&lt;li&gt;&lt;b&gt;Керування ресурсами:&lt;/b&gt; Спрайти, звуки, об&apos;єкти та кімнати&lt;/li&gt;&lt;li&gt;&lt;b&gt;Кросплатформний експорт:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Гнучке налаштування:&lt;/b&gt; Налаштовувана видимість блоків/подій&lt;/li&gt;&lt;li&gt;&lt;b&gt;Тестування в реальному часі:&lt;/b&gt; Запуск ігор безпосередньо з IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Технологічний стек&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Ігровий рушій:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Візуальне програмування:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Експорт:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Мова:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Інформація про проект&lt;/h3&gt;&lt;p&gt;PyGameMaker — це освітній інструмент, створений для того,&lt;br&gt;щоб зробити розробку ігор доступною для початківців,&lt;br&gt;надаючи при цьому потужні можливості для досвідчених розробників.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Створено з ❤️ на Python та Qt&lt;/small&gt;&lt;/p&gt;</translation>
+        <location filename="../core/ide_window.py" line="2250" />
+        <source>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Version 0.10.1-alpha&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A comprehensive visual game development environment&lt;br&gt;inspired by GameMaker Studio, built with Python.&lt;/p&gt;&lt;p&gt;&lt;a href='https://github.com/Gabe1290/pythongm'&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Features&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Dual Programming Modes:&lt;/b&gt; Visual (Blockly) and Traditional Events&lt;/li&gt;&lt;li&gt;&lt;b&gt;Asset Management:&lt;/b&gt; Sprites, sounds, objects, and rooms&lt;/li&gt;&lt;li&gt;&lt;b&gt;Cross-Platform Export:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Flexible Configuration:&lt;/b&gt; Customizable block/event visibility&lt;/li&gt;&lt;li&gt;&lt;b&gt;Real-time Testing:&lt;/b&gt; Run games directly from the IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Technology Stack&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Game Engine:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Visual Programming:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Export:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Language:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Project Information&lt;/h3&gt;&lt;p&gt;PyGameMaker is an educational tool designed to make&lt;br&gt;game development accessible to beginners while providing&lt;br&gt;powerful features for experienced developers.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Built with ❤️ using Python and Qt&lt;/small&gt;&lt;/p&gt;</source>
+        <translation>&lt;h2&gt;PyGameMaker IDE&lt;/h2&gt;&lt;p&gt;&lt;b&gt;Версія 0.10.1-alpha&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Повноцінне візуальне середовище розробки ігор,&lt;br&gt;натхнене GameMaker Studio, створене на Python.&lt;/p&gt;&lt;p&gt;&lt;a href='https://github.com/Gabe1290/pythongm'&gt;https://github.com/Gabe1290/pythongm&lt;/a&gt;&lt;/p&gt;&lt;h3&gt;Можливості&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;Два режими програмування:&lt;/b&gt; Візуальний (Blockly) та Традиційні події&lt;/li&gt;&lt;li&gt;&lt;b&gt;Керування ресурсами:&lt;/b&gt; Спрайти, звуки, об'єкти та кімнати&lt;/li&gt;&lt;li&gt;&lt;b&gt;Кросплатформний експорт:&lt;/b&gt; Windows, Linux, macOS, Android, iOS&lt;/li&gt;&lt;li&gt;&lt;b&gt;Гнучке налаштування:&lt;/b&gt; Налаштовувана видимість блоків/подій&lt;/li&gt;&lt;li&gt;&lt;b&gt;Тестування в реальному часі:&lt;/b&gt; Запуск ігор безпосередньо з IDE&lt;/li&gt;&lt;/ul&gt;&lt;h3&gt;Технологічний стек&lt;/h3&gt;&lt;p&gt;• &lt;b&gt;IDE:&lt;/b&gt; PySide6 (Qt 6)&lt;br&gt;• &lt;b&gt;Ігровий рушій:&lt;/b&gt; Pygame&lt;br&gt;• &lt;b&gt;Візуальне програмування:&lt;/b&gt; Blockly&lt;br&gt;• &lt;b&gt;Експорт:&lt;/b&gt; PyInstaller, Kivy&lt;br&gt;• &lt;b&gt;Мова:&lt;/b&gt; Python 3.11+&lt;/p&gt;&lt;h3&gt;Інформація про проект&lt;/h3&gt;&lt;p&gt;PyGameMaker — це освітній інструмент, створений для того,&lt;br&gt;щоб зробити розробку ігор доступною для початківців,&lt;br&gt;надаючи при цьому потужні можливості для досвідчених розробників.&lt;/p&gt;&lt;p&gt;&lt;small&gt;Створено з ❤️ на Python та Qt&lt;/small&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2157"/>
+        <location filename="../core/ide_window.py" line="2293" />
         <source>Imported {0}</source>
         <translation>Імпортовано {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2189"/>
+        <location filename="../core/ide_window.py" line="2326" />
         <source>Editor</source>
         <translation>Редактор</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2191"/>
+        <location filename="../core/ide_window.py" line="2327" />
         <source>Editor for {0} not yet implemented.
 Asset: {1}</source>
         <translation>Редактор для {0} ще не реалізований.
 Ресурс: {1}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2226"/>
+        <location filename="../core/ide_window.py" line="2363" />
         <source>Opened room: {0}</source>
         <translation>Відкрито кімнату: {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2233"/>
+        <location filename="../core/ide_window.py" line="2370" />
         <source>Failed to open room editor: {0}</source>
         <translation>Не вдалося відкрити редактор кімнат: {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2273"/>
+        <location filename="../core/ide_window.py" line="2409" />
         <source>Opened object: {0}</source>
-        <translation>Відкрито об&apos;єкт: {0}</translation>
+        <translation>Відкрито об'єкт: {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2279"/>
+        <location filename="../core/ide_window.py" line="2415" />
         <source>Failed to open object editor: {0}</source>
-        <translation>Не вдалося відкрити редактор об&apos;єктів: {0}</translation>
+        <translation>Не вдалося відкрити редактор об'єктів: {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2392"/>
-        <location filename="../core/ide_window.py" line="2400"/>
+        <location filename="../core/ide_window.py" line="2528" />
+        <location filename="../core/ide_window.py" line="2536" />
         <source>Save Error</source>
         <translation>Помилка збереження</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2393"/>
+        <location filename="../core/ide_window.py" line="2529" />
         <source>Failed to save project to disk</source>
         <translation>Не вдалося зберегти проект на диск</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2401"/>
+        <location filename="../core/ide_window.py" line="2537" />
         <source>Failed to save {0}: {1}</source>
         <translation>Не вдалося зберегти {0}: {1}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2454"/>
+        <location filename="../core/ide_window.py" line="2590" />
         <source>Project loaded: {0}</source>
         <translation>Проект завантажено: {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2474"/>
+        <location filename="../core/ide_window.py" line="2610" />
         <source>Save Project</source>
         <translation>Зберегти проект</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2474"/>
+        <location filename="../core/ide_window.py" line="2610" />
         <source>Save Project As...</source>
         <translation>Зберегти проект як...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2475"/>
+        <location filename="../core/ide_window.py" line="2610" />
         <source>Project Settings...</source>
         <translation>Налаштування проекту...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2476"/>
+        <location filename="../core/ide_window.py" line="2612" />
         <source>Import</source>
         <translation>Імпорт</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2476"/>
+        <location filename="../core/ide_window.py" line="2612" />
         <source>Create</source>
         <translation>Створити</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2478"/>
+        <location filename="../core/ide_window.py" line="2614" />
         <source>Test Game</source>
         <translation>Тестувати гру</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2478"/>
+        <location filename="../core/ide_window.py" line="2614" />
         <source>Debug Game</source>
         <translation>Налагодити гру</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2480"/>
+        <location filename="../core/ide_window.py" line="2615" />
         <source>Export Game...</source>
         <translation>Експортувати гру...</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2508"/>
+        <location filename="../core/ide_window.py" line="2644" />
         <source>Project: {0}</source>
         <translation>Проект: {0}</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2605"/>
+        <location filename="../core/ide_window.py" line="2741" />
         <source>You have unsaved changes. Do you want to save before closing?</source>
         <translation>У вас є незбережені зміни. Бажаєте зберегти перед закриттям?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2635"/>
+        <location filename="../core/ide_window.py" line="2768" />
         <source>You need to create or open a project before {0}.
 
 Would you like to:
@@ -4218,12 +4585,12 @@ Would you like to:
 • Відкрити існуючий проект?</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2644"/>
+        <location filename="../core/ide_window.py" line="2780" />
         <source>Create or Open Project</source>
         <translation>Створити або відкрити проект</translation>
     </message>
     <message>
-        <location filename="../core/ide_window.py" line="2645"/>
+        <location filename="../core/ide_window.py" line="2781" />
         <source>Choose project action:</source>
         <translation>Виберіть дію проекту:</translation>
     </message>
@@ -4231,551 +4598,676 @@ Would you like to:
 <context>
     <name>RoomEditor</name>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="98"/>
+        <location filename="../editors/room_editor/__init__.py" line="99" />
         <source>Room Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактор кімнат</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="103"/>
+        <location filename="../editors/room_editor/__init__.py" line="104" />
         <source>💾 Save</source>
-        <translation type="unfinished">💾 Зберегти</translation>
+        <translation>💾 Зберегти</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="104"/>
+        <location filename="../editors/room_editor/__init__.py" line="105" />
         <source>Save room (Ctrl+S)</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти кімнату (Ctrl+S)</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="110"/>
-        <location filename="../editors/room_editor/__init__.py" line="484"/>
+        <location filename="../editors/room_editor/__init__.py" line="111" />
+        <location filename="../editors/room_editor/__init__.py" line="470" />
         <source>↶ Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>↶ Скасувати</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="111"/>
+        <location filename="../editors/room_editor/__init__.py" line="112" />
         <source>Undo (Ctrl+Z)</source>
-        <translation type="unfinished"></translation>
+        <translation>Скасувати (Ctrl+Z)</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="115"/>
-        <location filename="../editors/room_editor/__init__.py" line="490"/>
+        <location filename="../editors/room_editor/__init__.py" line="116" />
+        <location filename="../editors/room_editor/__init__.py" line="476" />
         <source>↷ Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>↷ Повторити</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="116"/>
+        <location filename="../editors/room_editor/__init__.py" line="117" />
         <source>Redo (Ctrl+Y)</source>
-        <translation type="unfinished"></translation>
+        <translation>Повторити (Ctrl+Y)</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="123"/>
+        <location filename="../editors/room_editor/__init__.py" line="124" />
         <source>✂️ Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>✂️ Вирізати</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="124"/>
+        <location filename="../editors/room_editor/__init__.py" line="125" />
         <source>Cut selected instance (Ctrl+X)</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирізати вибраний екземпляр (Ctrl+X)</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="128"/>
+        <location filename="../editors/room_editor/__init__.py" line="129" />
         <source>📋 Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>📋 Копіювати</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="129"/>
+        <location filename="../editors/room_editor/__init__.py" line="130" />
         <source>Copy selected instance (Ctrl+C)</source>
-        <translation type="unfinished"></translation>
+        <translation>Копіювати вибраний екземпляр (Ctrl+C)</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="133"/>
+        <location filename="../editors/room_editor/__init__.py" line="134" />
         <source>📄 Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>📄 Вставити</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="134"/>
+        <location filename="../editors/room_editor/__init__.py" line="135" />
         <source>Paste instance (Ctrl+V)</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставити екземпляр (Ctrl+V)</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="138"/>
+        <location filename="../editors/room_editor/__init__.py" line="139" />
         <source>⎘ Duplicate</source>
-        <translation type="unfinished"></translation>
+        <translation>⎘ Дублювати</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="139"/>
+        <location filename="../editors/room_editor/__init__.py" line="140" />
         <source>Duplicate selected instance (Ctrl+D)</source>
-        <translation type="unfinished"></translation>
+        <translation>Дублювати вибраний екземпляр (Ctrl+D)</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="146"/>
+        <location filename="../editors/room_editor/__init__.py" line="147" />
         <source>🔲 Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>🔲 Сітка</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="149"/>
+        <location filename="../editors/room_editor/__init__.py" line="150" />
         <source>Toggle grid visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемкнути видимість сітки</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="153"/>
+        <location filename="../editors/room_editor/__init__.py" line="154" />
         <source>🧲 Snap</source>
-        <translation type="unfinished"></translation>
+        <translation>🧲 Прив'язка</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="156"/>
+        <location filename="../editors/room_editor/__init__.py" line="157" />
         <source>Toggle snap to grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемкнути прив'язку до сітки</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="162"/>
+        <location filename="../editors/room_editor/__init__.py" line="163" />
         <source>🗑️ Clear All</source>
-        <translation type="unfinished"></translation>
+        <translation>🗑️ Очистити все</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="163"/>
+        <location filename="../editors/room_editor/__init__.py" line="164" />
         <source>Remove all object instances</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити всі екземпляри об'єктів</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="169"/>
-        <location filename="../editors/room_editor/__init__.py" line="205"/>
+        <location filename="../editors/room_editor/__init__.py" line="170" />
+        <location filename="../editors/room_editor/__init__.py" line="206" />
         <source>Ready</source>
-        <translation type="unfinished">Готово</translation>
+        <translation>Готово</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="188"/>
+        <location filename="../editors/room_editor/__init__.py" line="189" />
         <source>Clear All Instances</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистити всі екземпляри</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="189"/>
+        <location filename="../editors/room_editor/__init__.py" line="190" />
         <source>Are you sure you want to remove all {0} object instances?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви впевнені, що хочете видалити всі {0} екземплярів об'єктів?</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="198"/>
+        <location filename="../editors/room_editor/__init__.py" line="199" />
         <source>All instances cleared</source>
-        <translation type="unfinished"></translation>
+        <translation>Усі екземпляри очищено</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="265"/>
+        <location filename="../editors/room_editor/__init__.py" line="251" />
         <source>Deleted {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалено {0}</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="267"/>
+        <location filename="../editors/room_editor/__init__.py" line="253" />
         <source>Deleted {0} instances</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалено {0} екземплярів</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="309"/>
-        <source>Loaded room &apos;{0}&apos; with {1} instances</source>
-        <translation type="unfinished"></translation>
+        <location filename="../editors/room_editor/__init__.py" line="295" />
+        <source>Loaded room '{0}' with {1} instances</source>
+        <translation>Завантажено кімнату '{0}' з {1} екземплярами</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="339"/>
+        <location filename="../editors/room_editor/__init__.py" line="325" />
         <source>Loaded {0} objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажено {0} об'єктів</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="343"/>
+        <location filename="../editors/room_editor/__init__.py" line="329" />
         <source>Error loading objects: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка завантаження об'єктів: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="349"/>
-        <source>Selected &apos;{0}&apos; - Click in room to place</source>
-        <translation type="unfinished"></translation>
+        <location filename="../editors/room_editor/__init__.py" line="335" />
+        <source>Selected '{0}' - Click in room to place</source>
+        <translation>Вибрано '{0}' - Натисніть у кімнаті для розміщення</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="351"/>
+        <location filename="../editors/room_editor/__init__.py" line="337" />
         <source>No object selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Об'єкт не вибрано</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="368"/>
+        <location filename="../editors/room_editor/__init__.py" line="354" />
         <source>Selected {0} at ({1}, {2})</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрано {0} на ({1}, {2})</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="370"/>
+        <location filename="../editors/room_editor/__init__.py" line="356" />
         <source>Selected {0} instances</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрано {0} екземплярів</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="372"/>
+        <location filename="../editors/room_editor/__init__.py" line="358" />
         <source>No instance selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Екземпляр не вибрано</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="378"/>
+        <location filename="../editors/room_editor/__init__.py" line="364" />
         <source>Moved {0} to ({1}, {2})</source>
-        <translation type="unfinished"></translation>
+        <translation>Переміщено {0} до ({1}, {2})</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="383"/>
+        <location filename="../editors/room_editor/__init__.py" line="369" />
         <source>Added {0} at ({1}, {2})</source>
-        <translation type="unfinished"></translation>
+        <translation>Додано {0} на ({1}, {2})</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="390"/>
+        <location filename="../editors/room_editor/__init__.py" line="376" />
         <source>Deleted {0} instance</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалено екземпляр {0}</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="392"/>
+        <location filename="../editors/room_editor/__init__.py" line="378" />
         <source>Updated {0} {1}: {2}</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновлено {0} {1}: {2}</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="426"/>
+        <location filename="../editors/room_editor/__init__.py" line="412" />
         <source>Saving room...</source>
-        <translation type="unfinished"></translation>
+        <translation>Збереження кімнати...</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="430"/>
-        <source>Room &apos;{0}&apos; saved successfully</source>
-        <translation type="unfinished"></translation>
+        <location filename="../editors/room_editor/__init__.py" line="416" />
+        <source>Room '{0}' saved successfully</source>
+        <translation>Кімнату '{0}' успішно збережено</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="434"/>
+        <location filename="../editors/room_editor/__init__.py" line="420" />
         <source>Error saving room: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка збереження кімнати: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="435"/>
+        <location filename="../editors/room_editor/__init__.py" line="421" />
         <source>Save Error</source>
-        <translation type="unfinished">Помилка збереження</translation>
+        <translation>Помилка збереження</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="435"/>
+        <location filename="../editors/room_editor/__init__.py" line="421" />
         <source>Failed to save room:
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося зберегти кімнату:
+{0}</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="462"/>
+        <location filename="../editors/room_editor/__init__.py" line="448" />
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Скасувати</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="469"/>
+        <location filename="../editors/room_editor/__init__.py" line="455" />
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Повторити</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="482"/>
+        <location filename="../editors/room_editor/__init__.py" line="468" />
         <source>↶ Undo: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>↶ Скасувати: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="488"/>
+        <location filename="../editors/room_editor/__init__.py" line="474" />
         <source>↷ Redo: {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>↷ Повторити: {0}</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="499"/>
+        <location filename="../editors/room_editor/__init__.py" line="485" />
         <source>Cut {0} instance(s) to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирізано {0} екземпляр(ів) до буфера обміну</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="507"/>
+        <location filename="../editors/room_editor/__init__.py" line="493" />
         <source>Copied {0} instance(s) to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Скопійовано {0} екземпляр(ів) до буфера обміну</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="518"/>
+        <location filename="../editors/room_editor/__init__.py" line="504" />
         <source>Instance pasted</source>
-        <translation type="unfinished"></translation>
+        <translation>Екземпляр вставлено</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="520"/>
+        <location filename="../editors/room_editor/__init__.py" line="506" />
         <source>Pasted {0} instances</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставлено {0} екземплярів</translation>
     </message>
     <message>
-        <location filename="../editors/room_editor/__init__.py" line="528"/>
+        <location filename="../editors/room_editor/__init__.py" line="514" />
         <source>Duplicated {0} instance(s)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VisualScriptingArea</name>
-    <message>
-        <location filename="../editors/object_editor_components.py" line="41"/>
-        <source>Visual scripting is now managed through the Events panel</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>WelcomeTab</name>
-    <message>
-        <location filename="../widgets/welcome_tab.py" line="24"/>
-        <source>Welcome to PyGameMaker IDE</source>
-        <translation>Ласкаво просимо до PyGameMaker IDE</translation>
-    </message>
-    <message>
-        <location filename="../widgets/welcome_tab.py" line="28"/>
-        <source>Create amazing 2D games with visual scripting</source>
-        <translation>Створюйте чудові 2D-ігри з візуальним програмуванням</translation>
-    </message>
-    <message>
-        <location filename="../widgets/welcome_tab.py" line="38"/>
-        <source>Quick Actions</source>
-        <translation>Швидкі дії</translation>
-    </message>
-    <message>
-        <location filename="../widgets/welcome_tab.py" line="42"/>
-        <source>🆕 New Project (Ctrl+N)</source>
-        <translation>🆕 Новий проект (Ctrl+N)</translation>
-    </message>
-    <message>
-        <location filename="../widgets/welcome_tab.py" line="43"/>
-        <source>📂 Open Project (Ctrl+O)</source>
-        <translation>📂 Відкрити проект (Ctrl+O)</translation>
-    </message>
-    <message>
-        <location filename="../widgets/welcome_tab.py" line="44"/>
-        <source>📋 Recent Projects</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../widgets/welcome_tab.py" line="45"/>
-        <source>🏠 Create Room (Ctrl+R)</source>
-        <translation>🏠 Створити кімнату (Ctrl+R)</translation>
-    </message>
-    <message>
-        <location filename="../widgets/welcome_tab.py" line="78"/>
-        <source>No recent projects</source>
-        <translation type="unfinished">Немає останніх проектів</translation>
-    </message>
-</context>
-<context>
-    <name>self.ide</name>
-    <message>
-        <location filename="../core/ide_exporters.py" line="40"/>
-        <source>No Project</source>
-        <translation type="unfinished">Немає проекту</translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="42"/>
-        <source>Please open or create a project first before exporting.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="49"/>
-        <source>Select Export Directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="57"/>
-        <source>Exporting to HTML5...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="64"/>
-        <location filename="../core/ide_exporters.py" line="129"/>
-        <source>Export Successful</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="65"/>
-        <source>Game exported as HTML5!
-
-{0}
-
-Open in browser now?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="73"/>
-        <source>HTML5 export complete</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="77"/>
-        <location filename="../core/ide_exporters.py" line="136"/>
-        <source>Export Failed</source>
-        <translation type="unfinished">Помилка експорту</translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="79"/>
-        <source>Failed to export game as HTML5. Check console for details.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="80"/>
-        <location filename="../core/ide_exporters.py" line="139"/>
-        <source>Export failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="114"/>
-        <source>Export Project as Zip</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="117"/>
-        <location filename="../core/ide_exporters.py" line="148"/>
-        <source>Zip Files (*.zip)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="123"/>
-        <source>Exporting project...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="130"/>
-        <source>Project exported to:
-{0}</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="132"/>
-        <source>Project exported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="138"/>
-        <source>Failed to export project as zip</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="145"/>
-        <source>Open Zip Project</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="158"/>
-        <source>Invalid Zip</source>
-        <translation type="unfinished">Недійсний Zip</translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="160"/>
-        <source>This zip file does not contain a valid PyGameMaker project</source>
-        <translation type="unfinished">Цей zip-файл не містить дійсного проекту PyGameMaker</translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="164"/>
-        <source>Loading project from zip...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="169"/>
-        <source>Project loaded from zip</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="173"/>
-        <source>Error</source>
-        <translation type="unfinished">Помилка</translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="175"/>
-        <source>Failed to load project from zip</source>
-        <translation type="unfinished">Не вдалося завантажити проект із zip</translation>
-    </message>
-    <message>
-        <location filename="../core/ide_exporters.py" line="176"/>
-        <source>Failed to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Дубльовано {0} екземпляр(ів)</translation>
     </message>
 </context>
 <context>
     <name>SpriteStripDialog</name>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="208" />
         <source>Configure Sprite Strip</source>
         <translation>Налаштувати стрічку спрайту</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="221" />
         <source>Sprite Sheet Preview</source>
         <translation>Попередній перегляд аркуша спрайтів</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="229" />
         <source>Frame:</source>
         <translation>Кадр:</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="241" />
         <source>Animation Preview</source>
         <translation>Попередній перегляд анімації</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="248" />
         <source>Play</source>
         <translation>Відтворити</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="250" />
         <source>Stop</source>
         <translation>Зупинити</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="263" />
         <source>Image Info</source>
         <translation>Інформація про зображення</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="267" />
         <source>Width:</source>
         <translation>Ширина:</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="268" />
         <source>Height:</source>
         <translation>Висота:</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="272" />
         <source>Frame Configuration</source>
         <translation>Налаштування кадру</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="277" />
         <source>Horizontal Strip</source>
         <translation>Горизонтальна стрічка</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="278" />
         <source>Vertical Strip</source>
         <translation>Вертикальна стрічка</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="279" />
         <source>Grid (Rows x Columns)</source>
         <translation>Сітка (Рядки x Стовпці)</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="281" />
         <source>Strip Type:</source>
         <translation>Тип стрічки:</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="288" />
         <source>Frame Width:</source>
         <translation>Ширина кадру:</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="294" />
         <source>Frame Height:</source>
         <translation>Висота кадру:</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="301" />
         <source>Columns:</source>
         <translation>Стовпці:</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="307" />
         <source>Rows:</source>
         <translation>Рядки:</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="311" />
         <source>Total Frames:</source>
         <translation>Всього кадрів:</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="316" />
         <source>Animation Settings</source>
         <translation>Налаштування анімації</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="324" />
         <source>Animation Speed:</source>
         <translation>Швидкість анімації:</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="332" />
         <source>Cancel</source>
         <translation>Скасувати</translation>
     </message>
     <message>
+        <location filename="../dialogs/sprite_strip_dialog.py" line="334" />
         <source>OK</source>
         <translation>OK</translation>
+    </message>
+</context>
+<context>
+    <name>TutorialDialog</name>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="25" />
+        <source>Tutorials</source>
+        <translation>Посібники</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="62" />
+        <source>&lt;h2&gt;PyGameMaker Tutorials&lt;/h2&gt;</source>
+        <translation>&lt;h2&gt;Посібники PyGameMaker&lt;/h2&gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="66" />
+        <source>Double-click a tutorial to start:</source>
+        <translation>Двічі клацніть посібник, щоб почати:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="85" />
+        <source>Tip: Check the documentation (F1) for quick help!</source>
+        <translation>Порада: Натисніть F1 для швидкої довідки!</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="93" />
+        <source>Close</source>
+        <translation>Закрити</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="102" />
+        <source>Select a tutorial to see its description.</source>
+        <translation>Виберіть посібник, щоб побачити його опис.</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="105" />
+        <source>No tutorials folder found</source>
+        <translation>Папку посібників не знайдено</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_dialog.py" line="144" />
+        <source>No tutorials available</source>
+        <translation>Посібники недоступні</translation>
+    </message>
+</context>
+<context>
+    <name>TutorialPanel</name>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="42" />
+        <source>&lt;b&gt;Tutorials&lt;/b&gt;</source>
+        <translation>&lt;b&gt;Посібники&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="48" />
+        <source>Close</source>
+        <translation>Закрити</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="63" />
+        <source>Select a tutorial:</source>
+        <translation>Виберіть посібник:</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="70" />
+        <source>Open Tutorial</source>
+        <translation>Відкрити посібник</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="103" />
+        <source>Back to List</source>
+        <translation>Повернутися до списку</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="109" />
+        <source>&lt; Previous</source>
+        <translation>&lt; Назад</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="113" />
+        <source>Next &gt;</source>
+        <translation>Далі &gt;</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="159" />
+        <source>No tutorials folder found</source>
+        <translation>Папку посібників не знайдено</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="201" />
+        <source>No tutorials available</source>
+        <translation>Посібники недоступні</translation>
+    </message>
+    <message>
+        <location filename="../widgets/tutorial_panel.py" line="298" />
+        <source>Page {0} of {1}</source>
+        <translation>Сторінка {0} з {1}</translation>
+    </message>
+</context>
+<context>
+    <name>VisualScriptingArea</name>
+    <message>
+        <location filename="../editors/object_editor_components.py" line="41" />
+        <source>Visual scripting is now managed through the Events panel</source>
+        <translation>Візуальне програмування тепер керується через панель Подій</translation>
+    </message>
+</context>
+<context>
+    <name>WelcomeTab</name>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="24" />
+        <source>Welcome to PyGameMaker IDE</source>
+        <translation>Ласкаво просимо до PyGameMaker IDE</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="28" />
+        <source>Create amazing 2D games with visual scripting</source>
+        <translation>Створюйте чудові 2D-ігри з візуальним програмуванням</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="38" />
+        <source>Quick Actions</source>
+        <translation>Швидкі дії</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="42" />
+        <source>🆕 New Project (Ctrl+N)</source>
+        <translation>🆕 Новий проект (Ctrl+N)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="43" />
+        <source>📂 Open Project (Ctrl+O)</source>
+        <translation>📂 Відкрити проект (Ctrl+O)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="44" />
+        <source>📋 Recent Projects</source>
+        <translation>📋 Недавні проекти</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="45" />
+        <source>🏠 Create Room (Ctrl+R)</source>
+        <translation>🏠 Створити кімнату (Ctrl+R)</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="78" />
+        <source>No recent projects</source>
+        <translation>Немає останніх проектів</translation>
+    </message>
+</context>
+<context>
+    <name>self.ide</name>
+    <message>
+        <location filename="../core/ide_exporters.py" line="39" />
+        <source>No Project</source>
+        <translation>Немає проекту</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="40" />
+        <source>Please open or create a project first before exporting.</source>
+        <translation>Спочатку відкрийте або створіть проект перед експортом.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="48" />
+        <source>Select Export Directory</source>
+        <translation>Виберіть директорію експорту</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="56" />
+        <source>Exporting to HTML5...</source>
+        <translation>Експорт в HTML5...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="63" />
+        <location filename="../core/ide_exporters.py" line="128" />
+        <source>Export Successful</source>
+        <translation>Експорт успішний</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="64" />
+        <source>Game exported as HTML5!
+
+{0}
+
+Open in browser now?</source>
+        <translation>Гру експортовано як HTML5!
+
+{0}
+
+Відкрити в браузері зараз?</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="72" />
+        <source>HTML5 export complete</source>
+        <translation>Експорт HTML5 завершено</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="76" />
+        <location filename="../core/ide_exporters.py" line="135" />
+        <source>Export Failed</source>
+        <translation>Помилка експорту</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="77" />
+        <source>Failed to export game as HTML5. Check console for details.</source>
+        <translation>Не вдалося експортувати гру як HTML5. Перевірте консоль для деталей.</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="79" />
+        <location filename="../core/ide_exporters.py" line="138" />
+        <source>Export failed</source>
+        <translation>Експорт не вдався</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="113" />
+        <source>Export Project as Zip</source>
+        <translation>Експорт проекту як ZIP</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="115" />
+        <location filename="../core/ide_exporters.py" line="146" />
+        <source>Zip Files (*.zip)</source>
+        <translation>ZIP-файли (*.zip)</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="122" />
+        <source>Exporting project...</source>
+        <translation>Експорт проекту...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="129" />
+        <source>Project exported to:
+{0}</source>
+        <translation>Проект експортовано до:
+{0}</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="131" />
+        <source>Project exported</source>
+        <translation>Проект експортовано</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="136" />
+        <source>Failed to export project as zip</source>
+        <translation>Не вдалося експортувати проект як ZIP</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="144" />
+        <source>Open Zip Project</source>
+        <translation>Відкрити ZIP-проект</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="157" />
+        <source>Invalid Zip</source>
+        <translation>Невірний ZIP</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="158" />
+        <source>This zip file does not contain a valid PyGameMaker project</source>
+        <translation>Цей zip-файл не містить коректний проект PyGameMaker</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="163" />
+        <source>Loading project from zip...</source>
+        <translation>Завантаження проекту з ZIP...</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="168" />
+        <source>Project loaded from zip</source>
+        <translation>Проект завантажено з ZIP</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="172" />
+        <source>Error</source>
+        <translation>Помилка</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="173" />
+        <source>Failed to load project from zip</source>
+        <translation>Не вдалося завантажити проект з ZIP</translation>
+    </message>
+    <message>
+        <location filename="../core/ide_exporters.py" line="175" />
+        <source>Failed to load</source>
+        <translation>Не вдалося завантажити</translation>
     </message>
 </context>
 </TS>
