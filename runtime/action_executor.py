@@ -2565,6 +2565,7 @@ class ActionExecutor:
         if self.game_runner.current_room:
             self.game_runner.current_room.instances.append(new_instance)
             self.game_runner.current_room._add_to_grid(new_instance)
+            self.game_runner.current_room._depth_dirty = True  # Mark for re-sort
 
             # Execute create event for the new instance
             events = object_data.get('events', {})

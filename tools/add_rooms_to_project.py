@@ -1,16 +1,27 @@
 #!/usr/bin/env python3
 """
-Add room references to project.json from rooms/ directory
+Add room references to project.json from rooms/ directory.
+
+This tool scans the rooms/ directory for room JSON files and adds
+corresponding entries to the project.json assets section.
 """
 
 import json
 from pathlib import Path
 from collections import OrderedDict
 from datetime import datetime
+from typing import Tuple, Union
 
 
-def add_rooms_to_project(project_path: str):
-    """Add room entries to project.json for all room files in rooms/ directory"""
+def add_rooms_to_project(project_path: str) -> bool:
+    """Add room entries to project.json for all room files in rooms/ directory.
+
+    Args:
+        project_path: Path to the project directory
+
+    Returns:
+        True if successful, False otherwise
+    """
 
     project_dir = Path(project_path)
     project_file = project_dir / "project.json"
@@ -79,7 +90,8 @@ def add_rooms_to_project(project_path: str):
         added += 1
 
     # Sort rooms: 'start' first, then levels in numeric order
-    def room_sort_key(name):
+    def room_sort_key(name: str) -> Tuple[int, Union[int, str]]:
+        """Sort key for room ordering."""
         if name == 'start':
             return (0, 0)
         elif name.startswith('level'):

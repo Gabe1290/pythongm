@@ -15,11 +15,12 @@ else:  # Linux and other Unix-like systems
     os.environ['SDL_VIDEODRIVER'] = 'x11'
 os.environ['SDL_RENDER_DRIVER'] = 'software'
 
+import math
 import pygame
 import json
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Optional, Set, Tuple, Any
 from PIL import Image
 
 from runtime.action_executor import ActionExecutor
@@ -35,11 +36,35 @@ logger = get_logger(__name__)
 CAPTION_TRANSLATIONS = {
     'en': {'score': 'Score', 'lives': 'Lives', 'health': 'Health', 'room': 'Room'},
     'de': {'score': 'Punkte', 'lives': 'Leben', 'health': 'Gesundheit', 'room': 'Raum'},
+    'es': {'score': 'Puntuación', 'lives': 'Vidas', 'health': 'Salud', 'room': 'Sala'},
     'fr': {'score': 'Score', 'lives': 'Vies', 'health': 'Santé', 'room': 'Niveau'},
     'it': {'score': 'Punteggio', 'lives': 'Vite', 'health': 'Salute', 'room': 'Stanza'},
+    'ru': {'score': 'Очки', 'lives': 'Жизни', 'health': 'Здоровье', 'room': 'Комната'},
     'sl': {'score': 'Točke', 'lives': 'Življenja', 'health': 'Zdravje', 'room': 'Soba'},
     'uk': {'score': 'Рахунок', 'lives': 'Життя', 'health': 'Здоров\'я', 'room': 'Кімната'},
 }
+
+# Pre-computed alarm key strings to avoid f-string creation in hot loops
+ALARM_KEYS = tuple(f"alarm_{i}" for i in range(12))
+
+
+def __find_key_in_event(event_dict: dict, key: str) -> Optional[str]:
+    """Find key in event dict, checking both lowercase and uppercase.
+
+    Args:
+        event_dict: Dictionary of event handlers keyed by key name
+        key: Key to search for (e.g., 'left', 'space')
+
+    Returns:
+        The matching key from event_dict, or None if not found
+    """
+    if key in event_dict:
+        return key
+    upper_key = key.upper()
+    if upper_key in event_dict:
+        return upper_key
+    return None
+
 
 class GameSprite:
     """Represents a loaded sprite with animation support"""
@@ -324,10 +349,16 @@ class GameInstance:
         self._collision_targets = {}  # Pre-parsed collision events: {target_object_name: event_data}
         self.to_destroy = False
         self.depth = 0  # Drawing depth (higher = drawn behind, lower = drawn in front)
+        self.is_thymio = False  # Default false, set true for Thymio robot instances
+        self.thymio_simulator = None  # Thymio simulator (set for Thymio instances)
 
         # Cached dimensions (updated when sprite is set)
         self._cached_width = 32
         self._cached_height = 32
+
+        # Scaled surface cache: (frame_idx, scale_x, scale_y) -> pygame.Surface
+        self._scaled_cache: Dict[Tuple[int, float, float], Any] = {}
+        self._last_scale = (1.0, 1.0)  # Track scale changes to invalidate cache
 
         # Animation properties
         self.image_index = 0.0  # Current animation frame (can be fractional for smooth interpolation)
@@ -347,6 +378,23 @@ class GameInstance:
 
         # Alarms - 12 alarms (0-11), -1 means disabled
         self.alarm = [-1] * 12
+
+        # Room/game control flags (set by actions, checked in update loop)
+        self.restart_room_flag = False
+        self.next_room_flag = False
+        self.previous_room_flag = False
+        self.restart_game_flag = False
+
+        # Movement intent (set before collision check)
+        self.intended_x = float(x)
+        self.intended_y = float(y)
+
+        # Collision tracking
+        self._active_collisions = set()
+        self._collision_cooldowns = {}
+
+        # Message queue for show_message actions
+        self.pending_messages = []
 
         # Action executor - use shared instance or create new one
         self.action_executor = action_executor if action_executor else ActionExecutor()
@@ -408,6 +456,8 @@ class GameInstance:
     def set_sprite(self, sprite: GameSprite):
         """Set the sprite for this instance"""
         self.sprite = sprite
+        # Clear scaled surface cache when sprite changes
+        self._scaled_cache.clear()
         # Cache dimensions for faster collision detection
         if sprite:
             self._cached_width = sprite.width
@@ -455,13 +505,25 @@ class GameInstance:
             render_y = int(self.y)
 
             # Get current animation frame
+            frame_idx = int(self.image_index)
             current_frame = self.sprite.get_frame(self.image_index)
 
-            # Handle scaling (basic implementation)
+            # Handle scaling with caching
             if self.scale_x != 1.0 or self.scale_y != 1.0:
-                scaled_width = int(self.sprite.width * self.scale_x)
-                scaled_height = int(self.sprite.height * self.scale_y)
-                scaled_surface = pygame.transform.scale(current_frame, (scaled_width, scaled_height))
+                # Invalidate cache if scale changed
+                current_scale = (self.scale_x, self.scale_y)
+                if current_scale != self._last_scale:
+                    self._scaled_cache.clear()
+                    self._last_scale = current_scale
+
+                # Check cache first
+                cache_key = (frame_idx, self.scale_x, self.scale_y)
+                scaled_surface = self._scaled_cache.get(cache_key)
+                if scaled_surface is None:
+                    scaled_width = int(self.sprite.width * self.scale_x)
+                    scaled_height = int(self.sprite.height * self.scale_y)
+                    scaled_surface = pygame.transform.scale(current_frame, (scaled_width, scaled_height))
+                    self._scaled_cache[cache_key] = scaled_surface
                 screen.blit(scaled_surface, (render_x, render_y))
             else:
                 screen.blit(current_frame, (render_x, render_y))
@@ -477,63 +539,58 @@ class GameInstance:
                 # Process draw queue
                 self._process_draw_queue(screen)
 
+    # Draw command dispatch table - maps command types to handler methods
+    _DRAW_HANDLERS = {
+        'text': '_draw_text',
+        'lives': '_draw_lives',
+        'health_bar': '_draw_health_bar',
+        'rectangle': '_draw_rectangle',
+        'circle': '_draw_circle',
+        'ellipse': '_draw_ellipse',
+        'line': '_draw_line',
+        'sprite': '_draw_sprite',
+        'background': '_draw_background',
+        'scaled_text': '_draw_scaled_text',
+    }
+
     def _process_draw_queue(self, screen: pygame.Surface):
-        """Process queued draw commands from draw event actions"""
+        """Process queued draw commands from draw event actions.
+
+        Uses a dispatch table to map command types to handler methods,
+        reducing nesting depth and improving maintainability.
+        """
         if not hasattr(self, '_draw_queue'):
             return
 
         for cmd in self._draw_queue:
             cmd_type = cmd.get('type')
-
-            if cmd_type == 'text':
-                # Draw text (from draw_score, draw_text, etc.)
-                self._draw_text(screen, cmd)
-
-            elif cmd_type == 'lives':
-                # Draw lives as sprite or text
-                self._draw_lives(screen, cmd)
-
-            elif cmd_type == 'health_bar':
-                # Draw health bar
-                self._draw_health_bar(screen, cmd)
-
-            elif cmd_type == 'rectangle':
-                # Draw rectangle
-                self._draw_rectangle(screen, cmd)
-
-            elif cmd_type == 'circle':
-                # Draw circle
-                self._draw_circle(screen, cmd)
-
-            elif cmd_type == 'ellipse':
-                # Draw ellipse
-                self._draw_ellipse(screen, cmd)
-
-            elif cmd_type == 'line':
-                # Draw line
-                self._draw_line(screen, cmd)
-
-            elif cmd_type == 'sprite':
-                # Draw sprite
-                self._draw_sprite(screen, cmd)
-
-            elif cmd_type == 'background':
-                # Draw background (possibly tiled)
-                self._draw_background(screen, cmd)
-
-            elif cmd_type == 'scaled_text':
-                # Draw scaled text
-                self._draw_scaled_text(screen, cmd)
+            handler_name = self._DRAW_HANDLERS.get(cmd_type)
+            if handler_name:
+                handler = getattr(self, handler_name)
+                handler(screen, cmd)
 
         # Clear the queue after processing
         self._draw_queue = []
 
+    def _get_cached_font(self, size: int) -> pygame.font.Font:
+        """Get a cached font of the specified size, creating if needed.
+
+        Args:
+            size: Font size in points
+
+        Returns:
+            Cached pygame Font object
+        """
+        if size not in self._font_cache:
+            try:
+                self._font_cache[size] = pygame.font.Font(None, size)
+            except Exception:
+                self._font_cache[size] = pygame.font.SysFont('arial', size - 6)
+        return self._font_cache[size]
+
     def _draw_text(self, screen: pygame.Surface, cmd: dict):
         """Draw text on screen"""
-        try:
-            font = pygame.font.Font(None, 24)
-        except Exception:
-            font = pygame.font.SysFont('arial', 18)
+        font = self._get_cached_font(24)
 
         text = cmd.get('text', '')
         x = cmd.get('x', 0)
@@ -545,10 +602,7 @@ class GameInstance:
 
     def _draw_scaled_text(self, screen: pygame.Surface, cmd: dict):
         """Draw scaled text on screen"""
-        try:
-            font = pygame.font.Font(None, 24)
-        except Exception:
-            font = pygame.font.SysFont('arial', 18)
+        font = self._get_cached_font(24)
 
         text = cmd.get('text', '')
         x = cmd.get('x', 0)
@@ -577,10 +631,7 @@ class GameInstance:
 
     def _draw_lives(self, screen: pygame.Surface, cmd: dict):
         """Draw lives (as text for now)"""
-        try:
-            font = pygame.font.Font(None, 24)
-        except Exception:
-            font = pygame.font.SysFont('arial', 18)
+        font = self._get_cached_font(24)
 
         count = cmd.get('count', 0)
         x = cmd.get('x', 0)
@@ -774,13 +825,22 @@ class GameRoom:
         self.instances: List[GameInstance] = []
         self.action_executor = action_executor
 
+        # Depth-sorted instance cache (invalidated when instances change)
+        self._sorted_instances: Optional[List[GameInstance]] = None
+        self._depth_dirty = True  # Flag to trigger re-sort
+
         # Spatial grid for collision optimization
         # Cell size of 64 pixels works well for 32x32 sprites
         self.grid_cell_size = 64
         self.spatial_grid: Dict[Tuple[int, int], List[GameInstance]] = {}
+        # Reverse mapping: instance -> set of cells it occupies (for O(k) removal)
+        self._instance_cells: Dict[int, Set[Tuple[int, int]]] = {}
 
         # Room persistence - if True, room state is preserved when leaving
         self.persistent = room_data.get('persistent', False)
+
+        # Font cache to avoid repeated allocations (key: size, value: pygame.font.Font)
+        self._font_cache: Dict[int, pygame.font.Font] = {}
 
         # View system - 8 views like GameMaker
         self.views_enabled = room_data.get('views_enabled', False)
@@ -838,8 +898,11 @@ class GameRoom:
     def rebuild_spatial_grid(self):
         """Rebuild the entire spatial grid from all instances"""
         self.spatial_grid.clear()
+        self._instance_cells.clear()
         for instance in self.instances:
             self._add_to_grid(instance)
+        # Mark depth sorting as dirty since instance list changed
+        self._depth_dirty = True
 
     def _get_grid_cells(self, x: float, y: float, w: int = 32, h: int = 32) -> List[Tuple[int, int]]:
         """Get all grid cells that an object at (x, y) with size (w, h) occupies"""
@@ -861,18 +924,34 @@ class GameRoom:
         w = instance._cached_width
         h = instance._cached_height
         cells = self._get_grid_cells(instance.x, instance.y, w, h)
+        instance_id = id(instance)
+
+        # Track which cells this instance occupies
+        if instance_id not in self._instance_cells:
+            self._instance_cells[instance_id] = set()
+
         for cell in cells:
             if cell not in self.spatial_grid:
                 self.spatial_grid[cell] = []
             if instance not in self.spatial_grid[cell]:
                 self.spatial_grid[cell].append(instance)
+            self._instance_cells[instance_id].add(cell)
 
     def _remove_from_grid(self, instance: 'GameInstance'):
-        """Remove an instance from the spatial grid"""
-        # Remove from all cells (brute force but simple)
-        for cell_instances in self.spatial_grid.values():
-            if instance in cell_instances:
-                cell_instances.remove(instance)
+        """Remove an instance from the spatial grid in O(k) time.
+
+        Uses the reverse mapping to only check cells the instance actually occupies,
+        instead of iterating all cells in the grid.
+        """
+        instance_id = id(instance)
+        cells = self._instance_cells.get(instance_id)
+        if cells:
+            for cell in cells:
+                if cell in self.spatial_grid:
+                    cell_instances = self.spatial_grid[cell]
+                    if instance in cell_instances:
+                        cell_instances.remove(instance)
+            self._instance_cells[instance_id].clear()
 
     def update_instance_grid_position(self, instance: 'GameInstance'):
         """Update an instance's position in the spatial grid"""
@@ -1021,15 +1100,18 @@ class GameRoom:
 
         # Render all instances sorted by depth (higher depth = drawn first/behind)
         # In GameMaker, lower depth values are drawn on top (in front)
-        sorted_instances = sorted(self.instances, key=lambda inst: getattr(inst, 'depth', 0), reverse=True)
-        for instance in sorted_instances:
+        # Use cached sorted list if available, otherwise sort and cache
+        if self._depth_dirty or self._sorted_instances is None:
+            self._sorted_instances = sorted(self.instances, key=lambda inst: inst.depth, reverse=True)
+            self._depth_dirty = False
+        for instance in self._sorted_instances:
             # Regular instances render their sprites
-            if not getattr(instance, 'is_thymio', False):
+            if not instance.is_thymio:
                 instance.render(screen)
 
         # Render Thymio robots separately (on top)
         for instance in self.instances:
-            if getattr(instance, 'is_thymio', False) and hasattr(instance, 'thymio_simulator'):
+            if instance.is_thymio and instance.thymio_simulator:
                 # Get render data from simulator and pass to renderer
                 # Note: thymio_renderer is accessed from game_runner
                 pass  # Will be handled by game_runner's render method
@@ -1090,6 +1172,9 @@ class GameRunner:
 
         # Language for caption translations (default to English)
         self.language = 'en'
+
+        # Caption caching - only update pygame caption when values change
+        self._last_caption_state = None  # (score, lives, health, caption, flags)
 
         # If project path provided, load it
         if project_path:
@@ -1514,46 +1599,38 @@ class GameRunner:
             # Main game loop
             while self.running:
                 # ========== GameMaker 7.0 Event Execution Order ==========
-                # 1. BEGIN STEP (before everything else)
+                # Merged loop: begin_step -> alarms -> step (per instance)
+                # This reduces 3 separate instance iterations to 1
                 for instance in self.current_room.instances:
-                    if instance.object_data and "events" in instance.object_data:
-                        events = instance.object_data["events"]
-                        if "begin_step" in events:
-                            instance.action_executor.execute_event(instance, "begin_step", events)
+                    obj_data = instance.object_data
+                    if obj_data:
+                        events = obj_data.get("events")
+                        if events:
+                            # 1. BEGIN STEP
+                            if "begin_step" in events:
+                                instance.action_executor.execute_event(instance, "begin_step", events)
 
-                # 2. ALARMS (countdown and trigger before keyboard/step)
-                for instance in self.current_room.instances:
-                    if instance.object_data and "events" in instance.object_data:
-                        events = instance.object_data["events"]
-                        # Process all 12 alarms
-                        for alarm_num in range(12):
-                            if instance.alarm[alarm_num] > 0:
-                                instance.alarm[alarm_num] -= 1
-                                if instance.alarm[alarm_num] == 0:
-                                    # Alarm triggered! Execute alarm event
-                                    instance.alarm[alarm_num] = -1  # Reset to disabled
-                                    alarm_key = f"alarm_{alarm_num}"
+                            # 2. ALARMS (countdown and trigger)
+                            # Use pre-computed ALARM_KEYS to avoid f-string creation
+                            alarm_events = events.get("alarm", {})
+                            for alarm_num in range(12):
+                                if instance.alarm[alarm_num] > 0:
+                                    instance.alarm[alarm_num] -= 1
+                                    if instance.alarm[alarm_num] == 0:
+                                        instance.alarm[alarm_num] = -1
+                                        alarm_key = ALARM_KEYS[alarm_num]
+                                        # Check nested first, then flat structure
+                                        alarm_event = alarm_events.get(alarm_key) or events.get(alarm_key)
+                                        if alarm_event and "actions" in alarm_event:
+                                            logger.debug(f"⏰ Alarm {alarm_num} triggered for {instance.object_name}")
+                                            for action_data in alarm_event["actions"]:
+                                                instance.action_executor.execute_action(instance, action_data)
 
-                                    # Check for alarm event in different structures:
-                                    # 1. Nested: events["alarm"]["alarm_0"]
-                                    # 2. Flat: events["alarm_0"]
-                                    alarm_event = None
-                                    if "alarm" in events and alarm_key in events["alarm"]:
-                                        alarm_event = events["alarm"][alarm_key]
-                                    elif alarm_key in events:
-                                        alarm_event = events[alarm_key]
-
-                                    if alarm_event and isinstance(alarm_event, dict) and "actions" in alarm_event:
-                                        logger.debug(f"⏰ Alarm {alarm_num} triggered for {instance.object_name}")
-                                        for action_data in alarm_event["actions"]:
-                                            instance.action_executor.execute_action(instance, action_data)
-
-                # 3. KEYBOARD/MOUSE EVENTS
-                self.handle_events()
-
-                # 4. STEP EVENT (main game logic)
-                for instance in self.current_room.instances:
+                    # 3. STEP EVENT (always call - handles nokey internally)
                     instance.step()
+
+                # 4. KEYBOARD/MOUSE EVENTS
+                self.handle_events()
 
                 # 5. MOVEMENT (apply physics: gravity, friction, hspeed/vspeed)
                 # 6. COLLISION (detect and execute collision events)
@@ -1562,27 +1639,26 @@ class GameRunner:
                 # Update Thymio simulators and trigger events
                 self.update_thymio_robots()
 
-                # 7. END STEP (after collisions, before drawing)
+                # 7. END STEP and DESTROY events (merged loop)
+                has_destroyed = False
                 for instance in self.current_room.instances:
-                    if instance.object_data and "events" in instance.object_data:
-                        events = instance.object_data["events"]
-                        if "end_step" in events:
-                            instance.action_executor.execute_event(instance, "end_step", events)
+                    obj_data = instance.object_data
+                    if obj_data:
+                        events = obj_data.get("events")
+                        if events:
+                            if "end_step" in events:
+                                instance.action_executor.execute_event(instance, "end_step", events)
+                            if instance.to_destroy:
+                                has_destroyed = True
+                                if "destroy" in events:
+                                    logger.debug(f"💥 Triggering destroy event for {instance.object_name}")
+                                    instance.action_executor.execute_event(instance, "destroy", events)
+                    elif instance.to_destroy:
+                        has_destroyed = True
 
-                # Trigger destroy events for instances marked for destruction
-                for instance in self.current_room.instances:
-                    if instance.to_destroy:
-                        if instance.object_data and "events" in instance.object_data:
-                            events = instance.object_data["events"]
-                            if "destroy" in events:
-                                logger.debug(f"💥 Triggering destroy event for {instance.object_name}")
-                                instance.action_executor.execute_event(instance, "destroy", events)
-
-                # Remove destroyed instances
-                old_count = len(self.current_room.instances)
-                self.current_room.instances = [inst for inst in self.current_room.instances if not inst.to_destroy]
-                if len(self.current_room.instances) != old_count:
-                    # Rebuild spatial grid after removing instances
+                # Remove destroyed instances only if any were marked
+                if has_destroyed:
+                    self.current_room.instances = [inst for inst in self.current_room.instances if not inst.to_destroy]
                     self.current_room.rebuild_spatial_grid()
 
                 # Clear screen
@@ -1702,26 +1778,16 @@ class GameRunner:
 
         # Track which keys are pressed
         for instance in self.current_room.instances:
-            if hasattr(instance, "keys_pressed"):
-                instance.keys_pressed.add(sub_key)
+            # keys_pressed is always initialized in __init__
+            instance.keys_pressed.add(sub_key)
 
             events = instance.object_data.get('events', {})
-
-            # Helper to find key in dict (case-insensitive)
-            def find_key_in_event(event_dict, key):
-                """Find key in event dict, checking both lowercase and uppercase"""
-                if key in event_dict:
-                    return key
-                upper_key = key.upper()
-                if upper_key in event_dict:
-                    return upper_key
-                return None
 
             # Check for keyboard_press event
             if "keyboard_press" in events:
                 keyboard_press_event = events["keyboard_press"]
                 if isinstance(keyboard_press_event, dict):
-                    found_key = find_key_in_event(keyboard_press_event, sub_key)
+                    found_key = _find_key_in_event(keyboard_press_event, sub_key)
                     if found_key:
                         logger.debug(f"  ✅ Executing keyboard_press.{found_key} for {instance.object_name}")
                         events_found = True
@@ -1734,7 +1800,7 @@ class GameRunner:
             if "keyboard" in events:
                 keyboard_event = events["keyboard"]
                 if isinstance(keyboard_event, dict):
-                    found_key = find_key_in_event(keyboard_event, sub_key)
+                    found_key = _find_key_in_event(keyboard_event, sub_key)
                     if found_key:
                         logger.debug(f"  ✅ Executing keyboard.{found_key} for {instance.object_name}")
                         events_found = True
@@ -1745,7 +1811,7 @@ class GameRunner:
                 # Removed error messages - it's normal for an object to not handle every key
 
             # Handle Thymio button events (keyboard mapping)
-            if getattr(instance, 'is_thymio', False) and hasattr(instance, 'thymio_simulator'):
+            if instance.is_thymio and instance.thymio_simulator:
                 thymio_button_map = {
                     'up': ('forward', 'thymio_button_forward'),
                     'down': ('backward', 'thymio_button_backward'),
@@ -1784,26 +1850,16 @@ class GameRunner:
             if not instance.object_data:
                 continue
 
-            # Remove key from pressed set
-            if hasattr(instance, "keys_pressed"):
-                instance.keys_pressed.discard(sub_key)
+            # Remove key from pressed set (keys_pressed is always initialized in __init__)
+            instance.keys_pressed.discard(sub_key)
 
             events = instance.object_data.get('events', {})
-
-            # Helper to find key in dict (case-insensitive)
-            def find_key_in_event(event_dict, key):
-                if key in event_dict:
-                    return key
-                upper_key = key.upper()
-                if upper_key in event_dict:
-                    return upper_key
-                return None
 
             # Execute keyboard_release events from JSON (custom actions only)
             if "keyboard_release" in events:
                 keyboard_release_event = events["keyboard_release"]
                 if isinstance(keyboard_release_event, dict):
-                    found_key = find_key_in_event(keyboard_release_event, sub_key)
+                    found_key = _find_key_in_event(keyboard_release_event, sub_key)
                     if found_key:
                         logger.debug(f"  ✅ Executing keyboard_release.{found_key} for {instance.object_name}")
                         sub_event_data = keyboard_release_event[found_key]
@@ -1812,7 +1868,7 @@ class GameRunner:
                                 instance.action_executor.execute_action(instance, action_data)
 
             # Handle Thymio button release
-            if getattr(instance, 'is_thymio', False) and hasattr(instance, 'thymio_simulator'):
+            if instance.is_thymio and instance.thymio_simulator:
                 thymio_button_map = {
                     'up': 'forward',
                     'down': 'backward',
@@ -1932,24 +1988,24 @@ class GameRunner:
 
         # Check for room restart/transition flags FIRST
         for instance in self.current_room.instances:
-            if hasattr(instance, 'restart_room_flag') and instance.restart_room_flag:
+            if instance.restart_room_flag:
                 logger.info("🔄 Restarting room...")
                 self.restart_current_room()
                 return
 
-            if hasattr(instance, 'next_room_flag') and instance.next_room_flag:
+            if instance.next_room_flag:
                 instance.next_room_flag = False  # Clear the flag first
                 logger.info("➡️  Going to next room...")
                 self.goto_next_room()
                 return
 
-            if hasattr(instance, 'previous_room_flag') and instance.previous_room_flag:
+            if instance.previous_room_flag:
                 instance.previous_room_flag = False  # Clear the flag first
                 logger.info("⬅️  Going to previous room...")
                 self.goto_previous_room()
                 return
 
-            if hasattr(instance, 'restart_game_flag') and instance.restart_game_flag:
+            if instance.restart_game_flag:
                 instance.restart_game_flag = False  # Clear the flag first
                 logger.info("🔄 Restarting game...")
                 self.restart_game()
@@ -1957,17 +2013,16 @@ class GameRunner:
 
 
         # Apply physics (gravity and friction) to all instances
-        import math
         for instance in self.current_room.instances:
-            # Apply gravity
-            if hasattr(instance, 'gravity') and instance.gravity != 0:
-                gravity_dir = getattr(instance, 'gravity_direction', 270)
+            # Apply gravity (instance.gravity is always defined, default 0)
+            if instance.gravity != 0:
+                gravity_dir = instance.gravity_direction
                 rad = math.radians(gravity_dir)
                 instance.hspeed += instance.gravity * math.cos(rad)
                 instance.vspeed -= instance.gravity * math.sin(rad)  # Negative because Y increases downward
 
-            # Apply friction
-            if hasattr(instance, 'friction') and instance.friction != 0:
+            # Apply friction (instance.friction is always defined, default 0)
+            if instance.friction != 0:
                 speed = math.sqrt(instance.hspeed ** 2 + instance.vspeed ** 2)
                 if speed > 0:
                     # Reduce speed by friction amount
@@ -1988,7 +2043,8 @@ class GameRunner:
         blocked_collisions_map = {}
 
         for instance in self.current_room.instances:
-            if hasattr(instance, 'hspeed') and instance.hspeed != 0:
+            # hspeed and vspeed are always defined (default 0)
+            if instance.hspeed != 0:
                 # Store intended position
                 instance.intended_x = instance.x + instance.hspeed
                 instance.intended_y = instance.y
@@ -2011,11 +2067,7 @@ class GameRunner:
                         }
                     blocked_collisions_map[key]['h_blocked'] = True
 
-                # Clean up
-                delattr(instance, 'intended_x')
-                delattr(instance, 'intended_y')
-
-            if hasattr(instance, 'vspeed') and instance.vspeed != 0:
+            if instance.vspeed != 0:
                 # Store intended position
                 instance.intended_x = instance.x
                 instance.intended_y = instance.y + instance.vspeed
@@ -2037,10 +2089,6 @@ class GameRunner:
                             'v_blocked': False,
                         }
                     blocked_collisions_map[key]['v_blocked'] = True
-
-                # Clean up
-                delattr(instance, 'intended_x')
-                delattr(instance, 'intended_y')
 
         # Fire collision events for blocked movements (deduplicated)
         for collision in blocked_collisions_map.values():
@@ -2293,24 +2341,22 @@ class GameRunner:
         if not collision_targets:
             return collisions
 
-        # Initialize collision tracking set if not exists
-        if not hasattr(instance, '_active_collisions'):
-            instance._active_collisions = set()
-
-        # Initialize collision cooldown dict if not exists
-        # Maps collision_key -> frames remaining in cooldown
-        if not hasattr(instance, '_collision_cooldowns'):
-            instance._collision_cooldowns = {}
+        # _active_collisions and _collision_cooldowns are now initialized in __init__
 
         # Track which collisions are currently active this frame
         current_collisions = set()
 
-        # Decrement cooldowns
-        expired_keys = [key for key, frames in instance._collision_cooldowns.items() if frames <= 1]
-        for key in expired_keys:
-            del instance._collision_cooldowns[key]
-        for key in instance._collision_cooldowns:
-            instance._collision_cooldowns[key] -= 1
+        # Decrement cooldowns in single pass (avoid multiple iterations)
+        cooldowns = instance._collision_cooldowns
+        if cooldowns:
+            keys_to_delete = []
+            for key, frames in cooldowns.items():
+                if frames <= 1:
+                    keys_to_delete.append(key)
+                else:
+                    cooldowns[key] = frames - 1
+            for key in keys_to_delete:
+                del cooldowns[key]
 
         # Get nearby instances using spatial grid for faster detection
         # Use cached dimensions instead of sprite lookup
@@ -2734,7 +2780,28 @@ class GameRunner:
         return translations.get(key, key.capitalize())
 
     def update_caption(self):
-        """Update window caption with score/lives/health if enabled"""
+        """Update window caption with score/lives/health if enabled.
+
+        Uses caching to avoid rebuilding and setting the caption every frame
+        when the values haven't changed.
+        """
+        # Build current state tuple for comparison
+        current_state = (
+            self.score,
+            self.lives,
+            int(self.health),
+            self.window_caption,
+            self.show_score_in_caption,
+            self.show_lives_in_caption,
+            self.show_health_in_caption,
+        )
+
+        # Skip update if nothing changed
+        if current_state == self._last_caption_state:
+            return
+
+        self._last_caption_state = current_state
+
         parts = []
 
         if self.window_caption:
@@ -2765,7 +2832,7 @@ class GameRunner:
 
         # Render Thymio robots (on top of regular sprites)
         for instance in self.current_room.instances:
-            if getattr(instance, 'is_thymio', False) and hasattr(instance, 'thymio_simulator'):
+            if instance.is_thymio and instance.thymio_simulator:
                 render_data = instance.thymio_simulator.get_render_data()
                 self.thymio_renderer.render(self.screen, render_data)
 
@@ -2856,7 +2923,8 @@ class GameRunner:
     def process_pending_messages(self):
         """Check all instances for pending messages and display them"""
         for instance in self.current_room.instances:
-            if hasattr(instance, 'pending_messages') and instance.pending_messages:
+            # pending_messages is now always initialized in __init__
+            if instance.pending_messages:
                 # Get the first pending message
                 message = instance.pending_messages.pop(0)
                 # Display the message dialog (this pauses the game)
@@ -3480,7 +3548,10 @@ class GameRunner:
         # Get obstacles for collision detection (all solid instances that aren't Thymio)
         obstacles = []
         for instance in self.current_room.instances:
-            if getattr(instance, 'solid', False) and not getattr(instance, 'is_thymio', False):
+            # Check solid from cached object data
+            obj_data = instance._cached_object_data
+            is_solid = obj_data.get('solid', False) if obj_data else False
+            if is_solid and not instance.is_thymio:
                 if instance.sprite:
                     rect = pygame.Rect(
                         int(instance.x - instance.sprite.width / 2),
@@ -3492,7 +3563,7 @@ class GameRunner:
 
         # Update each Thymio robot
         for instance in self.current_room.instances:
-            if not getattr(instance, 'is_thymio', False) or not hasattr(instance, 'thymio_simulator'):
+            if not instance.is_thymio or not instance.thymio_simulator:
                 continue
 
             # Update simulator (returns dict of events that occurred)

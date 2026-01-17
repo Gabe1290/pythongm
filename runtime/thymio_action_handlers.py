@@ -1,16 +1,25 @@
 #!/usr/bin/env python3
 """
 Thymio Action Handlers
-Implements all 28 Thymio robot actions for the ActionExecutor
+
+Implements all 28 Thymio robot actions for the ActionExecutor.
+These handlers control the Thymio robot simulator including motors,
+LEDs, sounds, and sensor readings.
 """
 
+from typing import Any, Dict, Union
+
 from core.logger import get_logger
+
 logger = get_logger(__name__)
 
+# Type aliases for clarity
+Instance = Any  # Game instance with thymio_simulator attribute
+Parameters = Dict[str, Any]
 
-def register_thymio_actions(action_executor):
-    """
-    Register all Thymio action handlers with the ActionExecutor
+
+def register_thymio_actions(action_executor: Any) -> None:
+    """Register all Thymio action handlers with the ActionExecutor.
 
     Args:
         action_executor: ActionExecutor instance to register handlers with
@@ -388,8 +397,16 @@ def register_thymio_actions(action_executor):
 # HELPER FUNCTIONS
 # ============================================================================
 
-def _parse_value(value, instance):
-    """Parse a value that might be a string, number, or variable reference"""
+def _parse_value(value: Any, instance: Instance) -> Union[int, float]:
+    """Parse a value that might be a string, number, or variable reference.
+
+    Args:
+        value: The value to parse (string, int, or float)
+        instance: Game instance for variable resolution
+
+    Returns:
+        Parsed numeric value (int or float), defaults to 0
+    """
     if isinstance(value, (int, float)):
         return value
 
@@ -408,8 +425,17 @@ def _parse_value(value, instance):
     return 0
 
 
-def _compare_values(value1, comparison, value2):
-    """Compare two values using the specified comparison operator"""
+def _compare_values(value1: Union[int, float], comparison: str, value2: Union[int, float]) -> bool:
+    """Compare two values using the specified comparison operator.
+
+    Args:
+        value1: First value to compare
+        comparison: Comparison operator (>, >=, <, <=, ==, !=)
+        value2: Second value to compare
+
+    Returns:
+        Result of the comparison
+    """
     if comparison == '>':
         return value1 > value2
     elif comparison == '>=':

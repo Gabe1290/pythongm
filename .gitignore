@@ -73,3 +73,8 @@ test_thymio_project/
 
 # One-off translation scripts
 scripts/complete_french_translations.py
+
+# Intermediate refactoring files (work in progress)
+runtime/action_executor_legacy.py
+runtime/action_executor_new.py
+runtime/action_executor_refactored.py

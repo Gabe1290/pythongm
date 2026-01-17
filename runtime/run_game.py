@@ -18,7 +18,13 @@ from core.logger import get_logger
 logger = get_logger(__name__)
 
 
-def main():
+def main() -> None:
+    """Entry point for standalone game runner.
+
+    Expects command line arguments:
+        <path_to_project.json> - Path to the project JSON file
+        [language_code] - Optional language code (default: 'en')
+    """
     if len(sys.argv) < 2:
         logger.error("Usage: python run_game.py <path_to_project.json> [language_code]")
         sys.exit(1)
