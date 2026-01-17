@@ -93,6 +93,20 @@ DRAW_ACTIONS = {
             ActionParameter("filled", "boolean", "Filled", "Fill ellipse", default=False)
         ]
     ),
+    "draw_circle": ActionDefinition(
+        name="draw_circle",
+        display_name="Draw Circle",
+        category="drawing",
+        tab="draw",
+        description="Draw a circle",
+        icon="⚫",
+        parameters=[
+            ActionParameter("x", "int", "X", "Center X", default=0),
+            ActionParameter("y", "int", "Y", "Center Y", default=0),
+            ActionParameter("radius", "int", "Radius", "Circle radius", default=50),
+            ActionParameter("filled", "boolean", "Filled", "Fill circle", default=True)
+        ]
+    ),
     "draw_line": ActionDefinition(
         name="draw_line",
         display_name="Draw Line",
@@ -216,6 +230,17 @@ DRAW_ACTIONS = {
         description="Start/resume the sprite animation",
         icon="▶️",
         parameters=[]
+    ),
+    "set_alpha": ActionDefinition(
+        name="set_alpha",
+        display_name="Set Transparency",
+        category="drawing",
+        tab="draw",
+        description="Set sprite transparency (alpha)",
+        icon="👻",
+        parameters=[
+            ActionParameter("alpha", "float", "Alpha", "Transparency (0=invisible, 1=opaque)", default=1.0)
+        ]
     ),
 }
 

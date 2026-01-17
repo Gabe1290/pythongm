@@ -2846,6 +2846,46 @@ class ActionExecutor:
         fill_type = "filled" if filled else "outline"
         logger.debug(f"⭕ Queued draw_ellipse: {fill_type} ellipse ({x1}, {y1}) to ({x2}, {y2}) with color {color}")
 
+    def execute_draw_circle_action(self, instance, parameters: Dict[str, Any]):
+        """Draw a circle (filled or outlined)
+
+        Parameters:
+            x: Center X coordinate
+            y: Center Y coordinate
+            radius: Circle radius
+            filled: True for filled, False for outline (default: True)
+        """
+        import pygame
+
+        # Parse parameters with expression support
+        x = self._parse_value(parameters.get("x", 0), instance)
+        y = self._parse_value(parameters.get("y", 0), instance)
+        radius = self._parse_value(parameters.get("radius", 50), instance)
+        filled = self._parse_value(parameters.get("filled", True), instance)
+
+        # Convert to boolean if string
+        if isinstance(filled, str):
+            filled = filled.lower() in ('true', '1', 'yes')
+
+        # Get drawing color (from instance or default black)
+        color = getattr(instance, 'draw_color', (0, 0, 0))
+
+        # Queue drawing command for draw event
+        if not hasattr(instance, '_draw_queue'):
+            instance._draw_queue = []
+
+        instance._draw_queue.append({
+            'type': 'circle',
+            'x': x,
+            'y': y,
+            'radius': radius,
+            'filled': filled,
+            'color': color
+        })
+
+        fill_type = "filled" if filled else "outline"
+        logger.debug(f"⚫ Queued draw_circle: {fill_type} circle at ({x}, {y}) radius {radius} with color {color}")
+
     def execute_draw_line_action(self, instance, parameters: Dict[str, Any]):
         """Draw a line between two points
 
@@ -4214,6 +4254,28 @@ class ActionExecutor:
         instance.image_alpha = alpha
 
         logger.debug(f"🎨 Set color for {instance.object_name}: blend={instance.image_blend}, alpha={alpha}")
+
+    def execute_set_alpha_action(self, instance, parameters: Dict[str, Any]):
+        """Set the transparency (alpha) for the sprite
+
+        Parameters:
+            alpha: Transparency (0.0 = invisible, 1.0 = fully opaque)
+        """
+        alpha_param = parameters.get("alpha", 1.0)
+
+        # Parse value
+        alpha = self._parse_value(str(alpha_param), instance)
+
+        # Parse alpha
+        try:
+            alpha = float(alpha) if alpha is not None else 1.0
+            alpha = max(0.0, min(1.0, alpha))  # Clamp to 0-1
+        except (ValueError, TypeError):
+            alpha = 1.0
+
+        instance.image_alpha = alpha
+
+        logger.debug(f"👻 Set alpha for {instance.object_name}: alpha={alpha}")
 
     def execute_check_sound_action(self, instance, parameters: Dict[str, Any]):
         """Check if a sound is currently playing

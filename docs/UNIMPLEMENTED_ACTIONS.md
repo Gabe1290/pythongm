@@ -1,17 +1,17 @@
 # Unimplemented Actions
 
-**Summary:** 20 unimplemented / 120 total actions (83% implemented)
+**Summary:** 0 unimplemented / 120 total actions (100% implemented)
 
 This document tracks all actions that are currently marked as unimplemented (grayed out in the IDE).
 Check the box when an action has been implemented and tested.
 
 ---
 
-## Control (4 actions)
+## Control (4 actions) - ✅ ALL IMPLEMENTED
 
 | Action | Type | Description | Status |
 |--------|------|-------------|--------|
-| Ask Question | `control` | Show yes/no dialog | [ ] |
+| Ask Question | `control` | Show yes/no dialog | [x] |
 | Test Chance | `control` | Random probability test | [x] |
 | Test Expression | `control` | Evaluate GML expression | [x] |
 | Test Instance Count | `control` | Compare number of instances | [x] |
@@ -131,16 +131,15 @@ Check the box when an action has been implemented and tested.
 
 ---
 
-## Remaining Unimplemented Actions (20 total)
+## Remaining Unimplemented Actions (0 total)
 
-### Control (1 action)
-- [ ] Ask Question - Show yes/no dialog (requires UI popup)
+**All GM80 actions have been implemented!** 🎉
 
-### Info (0 actions)
-All Info actions are now implemented.
+---
 
-### Other Potentially Missing Actions
-Some actions may still be unimplemented in specific categories. Check the action definition files for `implemented=False` flags.
+## Blockly Config Unimplemented Blocks (0 total)
+
+**All Blockly blocks are now implemented!** 🎉
 
 ---
 
