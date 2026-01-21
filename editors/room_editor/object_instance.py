@@ -34,8 +34,10 @@ class ObjectInstance:
     @classmethod
     def from_dict(cls, data):
         """Create instance from dictionary"""
+        # Support both 'object' and 'object_name' keys for compatibility
+        object_name = data.get('object') or data.get('object_name')
         instance = cls(
-            data['object_name'],
+            object_name,
             data['x'],
             data['y'],
             data.get('instance_id')

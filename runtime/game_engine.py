@@ -122,8 +122,10 @@ class GameRoom:
         # Load instances
         instances_data = room_data.get('instances', [])
         for instance_data in instances_data:
+            # Support both 'object' and 'object_name' keys for compatibility
+            object_name = instance_data.get('object') or instance_data.get('object_name')
             instance = GameInstance(
-                instance_data['object_name'],
+                object_name,
                 instance_data['x'],
                 instance_data['y'],
                 instance_data

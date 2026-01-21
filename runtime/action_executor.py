@@ -1535,6 +1535,7 @@ class ActionExecutor:
                     'gm_random': gm_random,
                     'gm_irandom': gm_irandom,
                     'gm_choose': gm_choose,
+                    'random': random_module,  # Allow Python random module access
                 }
                 result = eval(expr_substituted, {"__builtins__": {}}, safe_namespace)
                 return result
@@ -1781,6 +1782,20 @@ class ActionExecutor:
         self.game_runner.show_score_in_caption = True
 
         logger.debug(f"🏆 Score set to: {self.game_runner.score}")
+
+    def execute_add_score_action(self, instance, parameters: Dict[str, Any]):
+        """Add to the score value"""
+        if not self.game_runner:
+            logger.warning("⚠️  Warning: add_score requires game_runner reference")
+            return
+
+        value = int(parameters.get("value", 0))
+        self.game_runner.score += value
+
+        # Auto-enable score in caption when score is used
+        self.game_runner.show_score_in_caption = True
+
+        logger.debug(f"🏆 Score increased by {value}, now: {self.game_runner.score}")
 
     def execute_test_score_action(self, instance, parameters: Dict[str, Any]):
         """Test score value and execute conditional actions

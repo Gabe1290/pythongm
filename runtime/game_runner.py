@@ -48,7 +48,7 @@ CAPTION_TRANSLATIONS = {
 ALARM_KEYS = tuple(f"alarm_{i}" for i in range(12))
 
 
-def __find_key_in_event(event_dict: dict, key: str) -> Optional[str]:
+def _find_key_in_event(event_dict: dict, key: str) -> Optional[str]:
     """Find key in event dict, checking both lowercase and uppercase.
 
     Args:
@@ -359,6 +359,9 @@ class GameInstance:
         # Scaled surface cache: (frame_idx, scale_x, scale_y) -> pygame.Surface
         self._scaled_cache: Dict[Tuple[int, float, float], Any] = {}
         self._last_scale = (1.0, 1.0)  # Track scale changes to invalidate cache
+
+        # Font cache for draw_text rendering
+        self._font_cache: Dict[int, Any] = {}
 
         # Animation properties
         self.image_index = 0.0  # Current animation frame (can be fractional for smooth interpolation)
@@ -870,8 +873,10 @@ class GameRoom:
         # Load instances
         instances_data = room_data.get('instances', [])
         for instance_data in instances_data:
+            # Support both 'object' and 'object_name' keys for compatibility
+            object_name = instance_data.get('object') or instance_data.get('object_name')
             instance = GameInstance(
-                instance_data['object_name'],
+                object_name,
                 instance_data['x'],
                 instance_data['y'],
                 instance_data,
@@ -879,7 +884,7 @@ class GameRoom:
             )
 
             # Check if this is a Thymio robot (by object name or special property)
-            if instance_data.get('object_name', '').lower().startswith('thymio') or \
+            if (object_name or '').lower().startswith('thymio') or \
                instance_data.get('is_thymio', False):
                 # Attach Thymio simulator to this instance
                 instance.thymio_simulator = ThymioSimulator(
@@ -1861,7 +1866,6 @@ class GameRunner:
                 if isinstance(keyboard_release_event, dict):
                     found_key = _find_key_in_event(keyboard_release_event, sub_key)
                     if found_key:
-                        logger.debug(f"  ✅ Executing keyboard_release.{found_key} for {instance.object_name}")
                         sub_event_data = keyboard_release_event[found_key]
                         if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
                             for action_data in sub_event_data["actions"]:
@@ -2747,12 +2751,44 @@ class GameRunner:
     def change_room(self, room_name: str):
         """Change to a different room"""
         if room_name in self.rooms:
-            # Trigger room_end event in the current room before leaving
+            # Collect persistent instances from the current room before leaving
+            persistent_instances = []
             if self.current_room:
+                for instance in self.current_room.instances:
+                    # Check if object is marked as persistent
+                    if instance.object_data and instance.object_data.get('persistent', False):
+                        persistent_instances.append(instance)
+                        logger.debug(f"  💾 Carrying persistent instance: {instance.object_name}")
+
+                # Trigger room_end event in the current room before leaving
                 self.trigger_room_end_event()
 
             logger.info(f"🚪 Changing to room: {room_name}")
             self.current_room = self.rooms[room_name]
+
+            # Add persistent instances to the new room
+            objects_data = self.project_data.get('assets', {}).get('objects', {})
+            for persistent_inst in persistent_instances:
+                # Remove any existing instances of the same object type that are NOT persistent
+                # This ensures the persistent instance replaces the room's default instance
+                self.current_room.instances = [
+                    inst for inst in self.current_room.instances
+                    if not (inst.object_name == persistent_inst.object_name and
+                            not inst.object_data.get('persistent', False))
+                ]
+
+                # IMPORTANT: Refresh the persistent instance's object_data from project
+                # This ensures any changes to events/properties are picked up
+                if persistent_inst.object_name in objects_data:
+                    persistent_inst.set_object_data(objects_data[persistent_inst.object_name])
+
+                # Check if this exact persistent instance is already in the new room
+                if persistent_inst not in self.current_room.instances:
+                    self.current_room.instances.append(persistent_inst)
+                    logger.debug(f"  ➕ Added persistent instance to new room: {persistent_inst.object_name}")
+
+            # Rebuild spatial grid with the new instances
+            self.current_room.rebuild_spatial_grid()
 
             # Resize the window if room size is different
             if self.screen:
@@ -2765,10 +2801,11 @@ class GameRunner:
                     self.screen = pygame.display.set_mode((room_width, room_height))
                     logger.debug(f"✅ Window resized to {room_width}x{room_height}")
 
-            # Execute create events for all instances
+            # Execute create events for NEW instances only (not persistent ones that carried over)
             for instance in self.current_room.instances:
-                if instance.object_data and "events" in instance.object_data:
-                    instance.action_executor.execute_event(instance, "create", instance.object_data["events"])
+                if instance not in persistent_instances:
+                    if instance.object_data and "events" in instance.object_data:
+                        instance.action_executor.execute_event(instance, "create", instance.object_data["events"])
 
             # Execute room_start event for all instances (after create events)
             self.trigger_room_start_event()

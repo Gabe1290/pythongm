@@ -476,9 +476,11 @@ class ProjectManager(QObject):
         # Only save to external files if the directory already exists
         # This maintains backward compatibility with projects that don't use this feature
         if not objects_dir.exists():
+            logger.debug(f"💾 DEBUG _save_objects_to_files: objects_dir does not exist: {objects_dir}")
             return
 
         objects_data = self.current_project_data.get('assets', {}).get('objects', {})
+        logger.debug(f"💾 DEBUG _save_objects_to_files: Found {len(objects_data)} objects to save")
 
         for object_name, object_data in objects_data.items():
             object_file = objects_dir / f"{object_name}.json"
