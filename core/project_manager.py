@@ -673,6 +673,66 @@ class ProjectManager(QObject):
         else:
             self.auto_save_timer.stop()
 
+    def migrate_to_external_files(self) -> bool:
+        """Migrate project to use external files for objects and rooms.
+
+        Creates objects/ and rooms/ directories if they don't exist,
+        then saves all object and room data to separate JSON files.
+        This enables the modular project structure.
+
+        Returns:
+            True if migration was successful, False otherwise.
+        """
+        if not self.current_project_path:
+            logger.error("No project loaded to migrate")
+            return False
+
+        try:
+            project_path = self.current_project_path
+
+            # Create objects/ directory if it doesn't exist
+            objects_dir = project_path / "objects"
+            if not objects_dir.exists():
+                objects_dir.mkdir(parents=True, exist_ok=True)
+                logger.info(f"📁 Created objects directory: {objects_dir}")
+
+            # Create rooms/ directory if it doesn't exist
+            rooms_dir = project_path / "rooms"
+            if not rooms_dir.exists():
+                rooms_dir.mkdir(parents=True, exist_ok=True)
+                logger.info(f"📁 Created rooms directory: {rooms_dir}")
+
+            # Save objects to external files
+            objects_data = self.current_project_data.get('assets', {}).get('objects', {})
+            for object_name, object_data in objects_data.items():
+                object_file = objects_dir / f"{object_name}.json"
+                with open(object_file, 'w', encoding='utf-8') as f:
+                    json.dump(object_data, f, indent=2, ensure_ascii=False)
+                event_count = len(object_data.get('events', {}))
+                logger.info(f"💾 Migrated object: {object_name} ({event_count} events)")
+
+            # Save rooms to external files
+            rooms_data = self.current_project_data.get('assets', {}).get('rooms', {})
+            for room_name, room_data in rooms_data.items():
+                room_file = rooms_dir / f"{room_name}.json"
+                with open(room_file, 'w', encoding='utf-8') as f:
+                    json.dump(room_data, f, indent=2, ensure_ascii=False)
+                instance_count = len(room_data.get('instances', []))
+                logger.info(f"💾 Migrated room: {room_name} ({instance_count} instances)")
+
+            # Now save the project (which will use the external files)
+            self.save_project()
+
+            logger.info(f"✅ Project migrated to external files structure")
+            self.status_changed.emit("Project migrated to modular structure")
+            return True
+
+        except Exception as e:
+            logger.error(f"Error migrating project: {e}")
+            import traceback
+            traceback.print_exc()
+            return False
+
     def on_asset_changed(self, *args):
         """Handle asset changes from asset manager"""
         self.mark_dirty()

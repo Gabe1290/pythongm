@@ -21,7 +21,7 @@ logger = get_logger(__name__)
 
 from ..base_editor import BaseEditor, EditorUndoCommand
 from .object_properties_panel import ObjectPropertiesPanel
-from .gm80_events_panel import GM80EventsPanel
+from .object_events_panel import ObjectEventsPanel
 from .python_syntax_highlighter import PythonSyntaxHighlighter
 from .blockly_widget import BlocklyVisualProgrammingTab
 from ..object_editor_components import ActionListWidget, VisualScriptingArea
@@ -245,7 +245,7 @@ class ObjectEditor(BaseEditor):
         events_layout.setContentsMargins(5, 5, 5, 5)
 
         # Create the events panel
-        self.events_panel = GM80EventsPanel()
+        self.events_panel = ObjectEventsPanel()
         self.events_panel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         events_layout.addWidget(self.events_panel)
 

@@ -1181,6 +1181,10 @@ class GameRunner:
         # Caption caching - only update pygame caption when values change
         self._last_caption_state = None  # (score, lives, health, caption, flags)
 
+        # Room transition grace period - skip collision detection for N frames after room change
+        # This prevents immediate collision triggers when player spawns on top of a portal/door
+        self._room_transition_grace_frames = 0
+
         # If project path provided, load it
         if project_path:
             self.load_project_data_only(project_path)
@@ -1662,6 +1666,12 @@ class GameRunner:
                         has_destroyed = True
 
                 # Remove destroyed instances only if any were marked
+                # Also check ALL instances for to_destroy flag (not just those with events)
+                for inst in self.current_room.instances:
+                    if inst.to_destroy:
+                        has_destroyed = True
+                        break
+
                 if has_destroyed:
                     self.current_room.instances = [inst for inst in self.current_room.instances if not inst.to_destroy]
                     self.current_room.rebuild_spatial_grid()
@@ -2139,19 +2149,25 @@ class GameRunner:
                 delattr(instance, 'intended_y')
 
         # Check collision events - use global two-pass approach
-        # First pass: Detect ALL collisions for ALL instances and capture speeds
-        all_collisions = []
-        for instance in self.current_room.instances:
-            collisions = self.detect_collisions_for_instance(instance, objects_data)
-            all_collisions.extend(collisions)
+        # Skip collision detection during room transition grace period
+        # This prevents immediate triggers when player spawns on top of a portal
+        if self._room_transition_grace_frames > 0:
+            self._room_transition_grace_frames -= 1
+            logger.debug(f"⏳ Room transition grace period: skipping collision detection ({self._room_transition_grace_frames} frames remaining)")
+        else:
+            # First pass: Detect ALL collisions for ALL instances and capture speeds
+            all_collisions = []
+            for instance in self.current_room.instances:
+                collisions = self.detect_collisions_for_instance(instance, objects_data)
+                all_collisions.extend(collisions)
 
-        # Second pass: Process ALL collision events with stored speeds
-        for collision_data in all_collisions:
-            self.process_collision_event(collision_data)
+            # Second pass: Process ALL collision events with stored speeds
+            for collision_data in all_collisions:
+                self.process_collision_event(collision_data)
 
-        # Third pass: Separate overlapping instances that have collision events
-        # This handles the case where soko pushes box into wall - soko should be pushed back
-        self.separate_overlapping_instances(objects_data)
+            # Third pass: Separate overlapping instances that have collision events
+            # This handles the case where soko pushes box into wall - soko should be pushed back
+            self.separate_overlapping_instances(objects_data)
 
         # Update spatial grid only for instances that moved (lazy update)
         # This is much faster than rebuilding the entire grid every frame
@@ -2598,6 +2614,10 @@ class GameRunner:
             # Execute room_start event for all instances (after create events)
             self.trigger_room_start_event()
 
+            # Set grace period to skip collision detection for 1 frame
+            # This prevents immediate collision triggers when player spawns on a portal
+            self._room_transition_grace_frames = 1
+
             logger.debug(f"✅ Room {room_name} restarted with {len(new_room.instances)} instances")
 
     def restart_game(self):
@@ -2662,6 +2682,10 @@ class GameRunner:
 
             # Execute room_start event for all instances (after create events)
             self.trigger_room_start_event()
+
+            # Set grace period to skip collision detection for 1 frame
+            # This prevents immediate collision triggers when player spawns on a portal
+            self._room_transition_grace_frames = 1
 
             logger.debug(f"  ✅ Game restarted with room '{first_room_name}' ({len(new_room.instances)} instances)")
         else:
@@ -2782,6 +2806,12 @@ class GameRunner:
                 if persistent_inst.object_name in objects_data:
                     persistent_inst.set_object_data(objects_data[persistent_inst.object_name])
 
+                # Reset velocity when entering a new room to prevent momentum carry-over
+                # This fixes the bug where player bounces back onto a door due to residual speed
+                persistent_inst.hspeed = 0
+                persistent_inst.vspeed = 0
+                logger.debug(f"  🛑 Reset velocity for persistent instance: {persistent_inst.object_name}")
+
                 # Check if this exact persistent instance is already in the new room
                 if persistent_inst not in self.current_room.instances:
                     self.current_room.instances.append(persistent_inst)
@@ -2809,6 +2839,10 @@ class GameRunner:
 
             # Execute room_start event for all instances (after create events)
             self.trigger_room_start_event()
+
+            # Set grace period to skip collision detection for 1 frame
+            # This prevents immediate collision triggers when player spawns on a portal
+            self._room_transition_grace_frames = 1
 
 
     def get_caption_text(self, key: str) -> str:

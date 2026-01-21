@@ -725,6 +725,247 @@ ACTION_TYPES = {
             )
         ]
     ),
+
+    # SCORE/LIVES/HEALTH ACTIONS
+    "set_score": ActionType(
+        name="set_score",
+        display_name="Set Score",
+        description="Set the score value",
+        category="Score",
+        icon="🏆",
+        parameters=[
+            ActionParameter(
+                name="value",
+                display_name="Score Value",
+                param_type="number",
+                default_value=0,
+                description="Score value to set"
+            )
+        ]
+    ),
+
+    "add_score": ActionType(
+        name="add_score",
+        display_name="Add to Score",
+        description="Add points to score",
+        category="Score",
+        icon="➕🏆",
+        parameters=[
+            ActionParameter(
+                name="value",
+                display_name="Points",
+                param_type="number",
+                default_value=10,
+                description="Points to add (can be negative)"
+            )
+        ]
+    ),
+
+    "set_lives": ActionType(
+        name="set_lives",
+        display_name="Set Lives",
+        description="Set number of lives",
+        category="Score",
+        icon="❤️",
+        parameters=[
+            ActionParameter(
+                name="value",
+                display_name="Lives",
+                param_type="number",
+                default_value=3,
+                description="Number of lives"
+            )
+        ]
+    ),
+
+    "add_lives": ActionType(
+        name="add_lives",
+        display_name="Add Lives",
+        description="Add or remove lives",
+        category="Score",
+        icon="➕❤️",
+        parameters=[
+            ActionParameter(
+                name="value",
+                display_name="Lives",
+                param_type="number",
+                default_value=1,
+                description="Lives to add (can be negative)"
+            )
+        ]
+    ),
+
+    "set_health": ActionType(
+        name="set_health",
+        display_name="Set Health",
+        description="Set health value",
+        category="Score",
+        icon="💚",
+        parameters=[
+            ActionParameter(
+                name="value",
+                display_name="Health",
+                param_type="number",
+                default_value=100,
+                description="Health value (0-100)"
+            )
+        ]
+    ),
+
+    "add_health": ActionType(
+        name="add_health",
+        display_name="Add Health",
+        description="Add or remove health",
+        category="Score",
+        icon="➕💚",
+        parameters=[
+            ActionParameter(
+                name="value",
+                display_name="Health",
+                param_type="number",
+                default_value=10,
+                description="Health to add (can be negative)"
+            )
+        ]
+    ),
+
+    # INSTANCE ACTIONS
+    "destroy_instance": ActionType(
+        name="destroy_instance",
+        display_name="Destroy Instance",
+        description="Destroy an instance",
+        category="Instance",
+        icon="💥",
+        parameters=[
+            ActionParameter(
+                name="target",
+                display_name="Target",
+                param_type="choice",
+                default_value="self",
+                description="Which instance to destroy",
+                choices=["self", "other"]
+            )
+        ]
+    ),
+
+    "create_instance": ActionType(
+        name="create_instance",
+        display_name="Create Instance",
+        description="Create a new instance",
+        category="Instance",
+        icon="✨",
+        parameters=[
+            ActionParameter(
+                name="object",
+                display_name="Object",
+                param_type="object",
+                default_value="",
+                description="Object to create"
+            ),
+            ActionParameter(
+                name="x",
+                display_name="X",
+                param_type="number",
+                default_value=0,
+                description="X position"
+            ),
+            ActionParameter(
+                name="y",
+                display_name="Y",
+                param_type="number",
+                default_value=0,
+                description="Y position"
+            )
+        ]
+    ),
+
+    # POSITION ACTIONS
+    "jump_to_position": ActionType(
+        name="jump_to_position",
+        display_name="Jump to Position",
+        description="Move instantly to a position",
+        category="Movement",
+        icon="📍",
+        parameters=[
+            ActionParameter(
+                name="x",
+                display_name="X",
+                param_type="number",
+                default_value=0,
+                description="X position"
+            ),
+            ActionParameter(
+                name="y",
+                display_name="Y",
+                param_type="number",
+                default_value=0,
+                description="Y position"
+            )
+        ]
+    ),
+
+    # ROOM ACTIONS
+    "room_restart": ActionType(
+        name="room_restart",
+        display_name="Restart Room",
+        description="Restart the current room",
+        category="Room",
+        icon="🔄",
+        parameters=[]
+    ),
+
+    "room_goto_next": ActionType(
+        name="room_goto_next",
+        display_name="Next Room",
+        description="Go to the next room",
+        category="Room",
+        icon="➡️🚪",
+        parameters=[]
+    ),
+
+    "room_goto_previous": ActionType(
+        name="room_goto_previous",
+        display_name="Previous Room",
+        description="Go to the previous room",
+        category="Room",
+        icon="⬅️🚪",
+        parameters=[]
+    ),
+
+    "room_goto": ActionType(
+        name="room_goto",
+        display_name="Go to Room",
+        description="Go to a specific room",
+        category="Room",
+        icon="🚪",
+        parameters=[
+            ActionParameter(
+                name="room",
+                display_name="Room",
+                param_type="room",
+                default_value="",
+                description="Room to go to"
+            )
+        ]
+    ),
+
+    "game_restart": ActionType(
+        name="game_restart",
+        display_name="Restart Game",
+        description="Restart the game from the beginning",
+        category="Room",
+        icon="🔄🎮",
+        parameters=[]
+    ),
+
+    "game_end": ActionType(
+        name="game_end",
+        display_name="End Game",
+        description="End the game",
+        category="Room",
+        icon="🛑🎮",
+        parameters=[]
+    ),
 }
 
 def get_action_type(action_name: str) -> Optional[ActionType]:

@@ -538,8 +538,8 @@ class BlocklyVisualProgrammingTab(QWidget):
         if not self.is_detached:
             return
 
-        # Get widget from detached window
-        if self.detached_window:
+        # Get widget from detached window (defensive check for None)
+        if self.detached_window is not None:
             widget = self.detached_window.take_widget()
             if widget:
                 # Hide placeholder

@@ -238,6 +238,7 @@ class PyGameMakerIDE(QMainWindow):
         tools_menu.addSeparator()
         tools_menu.addAction(self.create_action(self.tr("&Validate Project"), None, self.validate_project))
         tools_menu.addAction(self.create_action(self.tr("&Clean Project"), None, self.clean_project))
+        tools_menu.addAction(self.create_action(self.tr("&Migrate to Modular Structure"), None, self.migrate_project_structure))
         tools_menu.addSeparator()
 
         # Language submenu
@@ -2106,15 +2107,16 @@ class PyGameMakerIDE(QMainWindow):
             logger.debug(f"   Enabled categories: {', '.join(new_config.enabled_categories)}")
 
     def refresh_event_panels_config(self):
-        """Refresh configuration in all open GM80 events panels"""
-        # Find all open object editors with GM80 events panels
+        """Refresh configuration in all open object events panels"""
+        # Find all open object editors with events panels
         for i in range(self.editor_tabs.count()):
             widget = self.editor_tabs.widget(i)
-            # Check if it's an object editor
-            if hasattr(widget, 'gm80_events_panel'):
-                # Reload configuration in the events panel
-                widget.gm80_events_panel.reload_config()
-                logger.debug(f"   ♻️ Reloaded event panel config for: {self.editor_tabs.tabText(i)}")
+            # Check if it's an object editor with events_panel
+            if hasattr(widget, 'events_panel'):
+                # Reload configuration in the events panel if it has that method
+                if hasattr(widget.events_panel, 'reload_config'):
+                    widget.events_panel.reload_config()
+                    logger.debug(f"   ♻️ Reloaded event panel config for: {self.editor_tabs.tabText(i)}")
 
 
     def validate_project(self):
@@ -2190,6 +2192,43 @@ class PyGameMakerIDE(QMainWindow):
                         "• __pycache__/ directories\n"
                         "• *.pyc files")
             )
+
+    def migrate_project_structure(self):
+        """Migrate project to use external files for objects and rooms"""
+        if not self.current_project_path:
+            QMessageBox.information(
+                self,
+                self.tr("No Project"),
+                self.tr("Please open a project first to migrate.")
+            )
+            return
+
+        reply = QMessageBox.question(
+            self,
+            self.tr("Migrate Project Structure"),
+            self.tr("This will migrate your project to use a modular file structure:\n\n"
+                    "• Objects will be saved to objects/*.json\n"
+                    "• Rooms will be saved to rooms/*.json\n\n"
+                    "This makes the project easier to manage and version control.\n\n"
+                    "Do you want to continue?"),
+            QMessageBox.Yes | QMessageBox.No
+        )
+
+        if reply == QMessageBox.Yes:
+            if self.project_manager.migrate_to_external_files():
+                QMessageBox.information(
+                    self,
+                    self.tr("Migration Complete"),
+                    self.tr("Project has been migrated to modular structure.\n\n"
+                            "Objects and rooms are now stored in separate files.")
+                )
+            else:
+                QMessageBox.warning(
+                    self,
+                    self.tr("Migration Failed"),
+                    self.tr("Failed to migrate project structure.\n"
+                            "Check the console for error details.")
+                )
 
     def show_documentation(self):
         """Open documentation window or website"""

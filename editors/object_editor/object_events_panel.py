@@ -15,8 +15,32 @@ from PySide6.QtGui import QFont
 
 # Import our new event/action system
 from events.event_types import get_available_events, get_event_type
-from events.action_types import get_action_type, get_actions_by_category
+from events.action_types import get_action_type as _get_action_type, get_actions_by_category
 from events.action_editor import ActionConfigDialog
+
+# Action name aliases (alternative names -> canonical names)
+ACTION_ALIASES = {
+    'add_score': 'set_score',
+    'add_lives': 'set_lives',
+    'add_health': 'set_health',
+    'room_restart': 'restart_room',
+    'room_goto_next': 'next_room',
+    'room_goto_previous': 'previous_room',
+    'room_goto': 'goto_room',
+}
+
+def get_action_type(action_name: str):
+    """Get action type with alias support"""
+    # Try the original name first
+    result = _get_action_type(action_name)
+    if result:
+        return result
+
+    # Try the alias if available
+    if action_name in ACTION_ALIASES:
+        return _get_action_type(ACTION_ALIASES[action_name])
+
+    return None
 
 # Import formatter
 from .object_actions_formatter import ActionParametersFormatter
@@ -697,26 +721,31 @@ class ObjectEventsPanel(QWidget):
                     event_item = QTreeWidgetItem(self.events_tree)
                     event_item.setText(0, self.tr(f"💥 Collision with {target_object}"))
 
-                event_item.setText(1, self.tr("{0} actions").format(len(event_data.get('actions', []))))
+                actions = event_data.get("actions", [])
+                event_item.setText(1, self.tr("{0} actions").format(len(actions)))
                 event_item.setData(0, Qt.UserRole, event_name)
 
                 # Add action items
-                actions = event_data.get("actions", [])
                 for action_data in actions:
-                    action_type = get_action_type(action_data["action"])
+                    action_name = action_data.get("action", "unknown")
+                    action_type = get_action_type(action_name)
+
+                    action_item = QTreeWidgetItem(event_item)
                     if action_type:
-                        action_item = QTreeWidgetItem(event_item)
-                        action_item.setText(0, self.tr(f"{action_type.icon} {action_type.display_name}"))
+                        action_item.setText(0, f"{action_type.icon} {action_type.display_name}")
+                    else:
+                        # Fallback display for unknown action types
+                        action_item.setText(0, f"❓ {action_name}")
 
-                        # Use smart parameter formatting
-                        params = action_data.get("parameters", {})
-                        if params:
-                            param_summary = ActionParametersFormatter.format_action_parameters(
-                                action_data["action"], params
-                            )
-                            action_item.setText(1, param_summary)
+                    # Use smart parameter formatting
+                    params = action_data.get("parameters", {})
+                    if params:
+                        param_summary = ActionParametersFormatter.format_action_parameters(
+                            action_name, params
+                        )
+                        action_item.setText(1, param_summary)
 
-                        action_item.setData(0, Qt.UserRole, action_data)
+                    action_item.setData(0, Qt.UserRole, action_data)
 
             # Handle keyboard events (keyboard, keyboard_press, keyboard_release)
             elif event_name in ["keyboard", "keyboard_press", "keyboard_release"] and isinstance(event_data, dict) and not event_data.get("actions"):
@@ -757,20 +786,24 @@ class ObjectEventsPanel(QWidget):
                     sub_item.setData(0, Qt.UserRole, f"{event_name}_{key}")
 
                     for action_data in sub_data.get("actions", []):
-                        action_type = get_action_type(action_data["action"])
+                        action_name = action_data.get("action", "unknown")
+                        action_type = get_action_type(action_name)
+
+                        action_item = QTreeWidgetItem(sub_item)
                         if action_type:
-                            action_item = QTreeWidgetItem(sub_item)
                             action_item.setText(0, f"  {action_type.icon} {action_type.display_name}")
+                        else:
+                            action_item.setText(0, f"  ❓ {action_name}")
 
-                            # Use smart parameter formatting
-                            params = action_data.get("parameters", {})
-                            if params:
-                                param_summary = ActionParametersFormatter.format_action_parameters(
-                                    action_data["action"], params
-                                )
-                                action_item.setText(1, param_summary)
+                        # Use smart parameter formatting
+                        params = action_data.get("parameters", {})
+                        if params:
+                            param_summary = ActionParametersFormatter.format_action_parameters(
+                                action_name, params
+                            )
+                            action_item.setText(1, param_summary)
 
-                            action_item.setData(0, Qt.UserRole, action_data)
+                        action_item.setData(0, Qt.UserRole, action_data)
 
             # Handle mouse events
             elif event_name.startswith("mouse_") and isinstance(event_data, dict):
@@ -786,20 +819,24 @@ class ObjectEventsPanel(QWidget):
                 # Add action items
                 actions = event_data.get("actions", [])
                 for action_data in actions:
-                    action_type = get_action_type(action_data["action"])
+                    action_name = action_data.get("action", "unknown")
+                    action_type = get_action_type(action_name)
+
+                    action_item = QTreeWidgetItem(event_item)
                     if action_type:
-                        action_item = QTreeWidgetItem(event_item)
                         action_item.setText(0, f"{action_type.icon} {action_type.display_name}")
+                    else:
+                        action_item.setText(0, f"❓ {action_name}")
 
-                        # Use smart parameter formatting
-                        params = action_data.get("parameters", {})
-                        if params:
-                            param_summary = ActionParametersFormatter.format_action_parameters(
-                                action_data["action"], params
-                            )
-                            action_item.setText(1, param_summary)
+                    # Use smart parameter formatting
+                    params = action_data.get("parameters", {})
+                    if params:
+                        param_summary = ActionParametersFormatter.format_action_parameters(
+                            action_name, params
+                        )
+                        action_item.setText(1, param_summary)
 
-                        action_item.setData(0, Qt.UserRole, action_data)
+                    action_item.setData(0, Qt.UserRole, action_data)
 
             else:
                 # Regular events
@@ -814,20 +851,24 @@ class ObjectEventsPanel(QWidget):
 
                 actions = event_data.get(self.tr("actions"), [])
                 for action_data in actions:
-                    action_type = get_action_type(action_data[self.tr("action")])
+                    action_name = action_data.get(self.tr("action"), "unknown")
+                    action_type = get_action_type(action_name)
+
+                    action_item = QTreeWidgetItem(event_item)
                     if action_type:
-                        action_item = QTreeWidgetItem(event_item)
                         action_item.setText(0, f"{action_type.icon} {action_type.display_name}")
+                    else:
+                        action_item.setText(0, f"❓ {action_name}")
 
-                        # Use smart parameter formatting
-                        params = action_data.get(self.tr("parameters"), {})
-                        if params:
-                            param_summary = ActionParametersFormatter.format_action_parameters(
-                                action_data[self.tr("action")], params
-                            )
-                            action_item.setText(1, param_summary)
+                    # Use smart parameter formatting
+                    params = action_data.get(self.tr("parameters"), {})
+                    if params:
+                        param_summary = ActionParametersFormatter.format_action_parameters(
+                            action_name, params
+                        )
+                        action_item.setText(1, param_summary)
 
-                        action_item.setData(0, Qt.UserRole, action_data)
+                    action_item.setData(0, Qt.UserRole, action_data)
 
         self.events_tree.collapseAll()
 
@@ -1220,6 +1261,12 @@ class ObjectEventsPanel(QWidget):
     def get_events_data(self) -> Dict[str, Any]:
         """Get current events data"""
         return self.current_events_data.copy()
+
+    def apply_config(self, config):
+        """Apply a Blockly configuration (for compatibility with object editor)"""
+        # Store config for potential future use
+        self.blockly_config = config
+        logger.debug(f"ObjectEventsPanel: Applied config: {config.preset_name if hasattr(config, 'preset_name') else 'unknown'}")
 
     def get_available_objects(self):
         """Get list of available objects from the project"""

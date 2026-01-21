@@ -225,6 +225,15 @@ class ActionExecutor:
         "goto_next_room": "next_room",
         "goto_previous_room": "previous_room",
         "goto_room": "next_room",  # Will be handled specially if room_name param exists
+        # Score/Lives/Health aliases
+        "add_score": "add_score",  # Direct mapping (executor exists)
+        "add_lives": "add_lives",  # Direct mapping (executor exists)
+        "add_health": "add_health",  # Direct mapping (executor exists)
+        # Room action aliases (GameMaker naming convention)
+        "room_restart": "restart_room",
+        "room_goto_next": "next_room",
+        "room_goto_previous": "previous_room",
+        "room_goto": "goto_room",
     }
 
     def execute_action(self, instance, action_data: Dict[str, Any]):
@@ -1258,15 +1267,30 @@ class ActionExecutor:
         logger.debug(f"🔄 Restart room requested by {instance.object_name}")
         instance.restart_room_flag = True
 
+    # Alias for room_restart (GameMaker naming convention)
+    def execute_room_restart_action(self, instance, parameters: Dict[str, Any]):
+        """Alias for restart_room (GameMaker naming convention)"""
+        return self.execute_restart_room_action(instance, parameters)
+
     def execute_next_room_action(self, instance, parameters: Dict[str, Any]):
         """Execute next room action - advances to next level"""
         logger.debug(f"➡️  Next room requested by {instance.object_name}")
         instance.next_room_flag = True
 
+    # Alias for room_goto_next (GameMaker naming convention)
+    def execute_room_goto_next_action(self, instance, parameters: Dict[str, Any]):
+        """Alias for next_room (GameMaker naming convention)"""
+        return self.execute_next_room_action(instance, parameters)
+
     def execute_previous_room_action(self, instance, parameters: Dict[str, Any]):
         """Execute previous room action - goes to previous level"""
         logger.debug(f"⬅️  Previous room requested by {instance.object_name}")
         instance.previous_room_flag = True
+
+    # Alias for room_goto_previous (GameMaker naming convention)
+    def execute_room_goto_previous_action(self, instance, parameters: Dict[str, Any]):
+        """Alias for previous_room (GameMaker naming convention)"""
+        return self.execute_previous_room_action(instance, parameters)
 
     def execute_if_next_room_exists_action(self, instance, parameters: Dict[str, Any]):
         """Check if next room exists
@@ -1796,6 +1820,52 @@ class ActionExecutor:
         self.game_runner.show_score_in_caption = True
 
         logger.debug(f"🏆 Score increased by {value}, now: {self.game_runner.score}")
+
+    def execute_add_lives_action(self, instance, parameters: Dict[str, Any]):
+        """Add to the lives value"""
+        if not self.game_runner:
+            logger.warning("⚠️  Warning: add_lives requires game_runner reference")
+            return
+
+        value = int(parameters.get("value", 1))
+        old_lives = self.game_runner.lives
+        self.game_runner.lives += value
+
+        # Ensure lives doesn't go negative
+        self.game_runner.lives = max(0, self.game_runner.lives)
+
+        # Auto-enable lives in caption when lives are used
+        self.game_runner.show_lives_in_caption = True
+
+        logger.debug(f"❤️ Lives changed by {value}, now: {self.game_runner.lives}")
+
+        # Trigger no_more_lives event if lives just reached 0
+        if old_lives > 0 and self.game_runner.lives <= 0:
+            logger.debug("💀 No more lives! Triggering no_more_lives event...")
+            self.game_runner.trigger_no_more_lives_event(instance)
+
+    def execute_add_health_action(self, instance, parameters: Dict[str, Any]):
+        """Add to the health value"""
+        if not self.game_runner:
+            logger.warning("⚠️  Warning: add_health requires game_runner reference")
+            return
+
+        value = float(parameters.get("value", 10))
+        old_health = self.game_runner.health
+        self.game_runner.health += value
+
+        # Clamp health to 0-100
+        self.game_runner.health = max(0, min(100, self.game_runner.health))
+
+        # Auto-enable health in caption when health is used
+        self.game_runner.show_health_in_caption = True
+
+        logger.debug(f"💚 Health changed by {value}, now: {self.game_runner.health}")
+
+        # Trigger no_more_health event if health just reached 0
+        if old_health > 0 and self.game_runner.health <= 0:
+            logger.debug("💀 No more health! Triggering no_more_health event...")
+            self.game_runner.trigger_no_more_health_event(instance)
 
     def execute_test_score_action(self, instance, parameters: Dict[str, Any]):
         """Test score value and execute conditional actions
@@ -3957,10 +4027,8 @@ class ActionExecutor:
             target = parameters.get("target", "self")
 
             if target in ("self", "sel"):
-                logger.debug(f"  💀 Destroying instance: {instance.object_name}")
                 instance.to_destroy = True
             elif target == "other":
-                logger.debug(f"  💀 Destroying other instance: {other_instance.object_name}")
                 other_instance.to_destroy = True
             return None
         else:
@@ -4579,6 +4647,11 @@ class ActionExecutor:
         instance.goto_room_transition = transition
 
         logger.debug(f"🚪 Go to room '{room_name}' requested (transition: {transition})")
+
+    # Alias for room_goto (GameMaker naming convention)
+    def execute_room_goto_action(self, instance, parameters: Dict[str, Any]):
+        """Alias for goto_room (GameMaker naming convention)"""
+        return self.execute_goto_room_action(instance, parameters)
 
     def execute_check_room_action(self, instance, parameters: Dict[str, Any]):
         """Check if currently in a specific room
