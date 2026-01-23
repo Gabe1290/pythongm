@@ -1072,15 +1072,8 @@ class ObjectEditor(BaseEditor):
 
         with SyncContext(self.sync_coordinator, SyncSource.BLOCKLY) as can_sync:
             if can_sync and hasattr(self, 'events_panel') and self.events_panel:
-                # Merge Blockly events with existing events
-                current_events = self.events_panel.get_events_data()
-
-                # Update with Blockly events (Blockly takes priority for overlapping events)
-                for event_name, event_data in events.items():
-                    current_events[event_name] = event_data
-
-                # Reload events panel
-                self.events_panel.load_events_data(current_events)
+                # Replace events panel with Blockly events (handles deletions)
+                self.events_panel.load_events_data(events)
 
                 # Update code view
                 self._update_code_view()

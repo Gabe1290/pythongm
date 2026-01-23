@@ -538,6 +538,9 @@ class BlocklyVisualProgrammingTab(QWidget):
         if not self.is_detached:
             return
 
+        # Mark as attached early to prevent re-entry from Qt signals
+        self.is_detached = False
+
         # Get widget from detached window (defensive check for None)
         if self.detached_window is not None:
             widget = self.detached_window.take_widget()
@@ -558,8 +561,6 @@ class BlocklyVisualProgrammingTab(QWidget):
             self.detached_window.close()
             self.detached_window.deleteLater()
             self.detached_window = None
-
-        self.is_detached = False
 
     def on_events_generated(self, events: dict):
         """Handle events generated from blocks"""
