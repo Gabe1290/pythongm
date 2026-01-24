@@ -224,8 +224,14 @@ class ProjectManager(QObject):
 
         rooms_data = project_data.get('assets', {}).get('rooms', {})
 
-        for room_name, room_data in rooms_data.items():
+        for room_name, room_data in list(rooms_data.items()):
             room_file = rooms_dir / f"{room_name}.json"
+
+            # Handle case where room_data is a string path reference
+            if isinstance(room_data, str):
+                # Convert string reference to dict that can be populated
+                room_data = {"name": room_name, "asset_type": "room"}
+                rooms_data[room_name] = room_data
 
             if room_file.exists():
                 try:
@@ -267,8 +273,14 @@ class ProjectManager(QObject):
 
         objects_data = project_data.get('assets', {}).get('objects', {})
 
-        for object_name, object_data in objects_data.items():
+        for object_name, object_data in list(objects_data.items()):
             object_file = objects_dir / f"{object_name}.json"
+
+            # Handle case where object_data is a string path reference
+            if isinstance(object_data, str):
+                # Convert string reference to dict that can be populated
+                object_data = {"name": object_name, "asset_type": "object"}
+                objects_data[object_name] = object_data
 
             if object_file.exists():
                 try:

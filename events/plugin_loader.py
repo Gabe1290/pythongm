@@ -138,7 +138,7 @@ class PluginLoader:
         count = 0
         for event_name, event_type in plugin_events.items():
             if event_name in EVENT_TYPES:
-                logger.warning(f"Event '{event_name}' already exists, skipping...")
+                logger.debug(f"Event '{event_name}' already exists, skipping...")
                 continue
 
             EVENT_TYPES[event_name] = event_type
@@ -152,7 +152,7 @@ class PluginLoader:
         count = 0
         for action_name, action_type in plugin_actions.items():
             if action_name in ACTION_TYPES:
-                logger.warning(f"Action '{action_name}' already exists, skipping...")
+                logger.debug(f"Action '{action_name}' already exists, skipping...")
                 continue
 
             ACTION_TYPES[action_name] = action_type

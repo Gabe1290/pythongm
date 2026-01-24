@@ -18,7 +18,7 @@ Core functionality and business logic:
 from .logger import get_logger, configure_logging, enable_debug, disable_debug
 
 # Package version
-__version__ = "1.0.0-rc.1"
+__version__ = "1.0.0-beta.1"
 
 from typing import Any, Dict, Optional, Type
 

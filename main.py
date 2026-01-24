@@ -22,7 +22,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # This is needed for Nuitka onefile builds where resources are extracted to temp dir
 import sys
 import os
+import warnings
 from pathlib import Path
+
+# Suppress pygame's pkg_resources deprecation warning (not our code)
+warnings.filterwarnings("ignore", message="pkg_resources is deprecated", category=UserWarning)
 
 # Fix encoding issues for console output on Windows (especially in packaged builds)
 # This prevents UnicodeEncodeError with emoji characters in print statements
@@ -124,14 +128,43 @@ except ImportError:
     except Exception:
         print("⚠️ Could not apply Qt setup")
 from PySide6.QtWidgets import QApplication
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, qInstallMessageHandler, QtMsgType
 from PySide6.QtGui import QIcon
 
 from core.ide_window import PyGameMakerIDE
 from utils.config import Config, load_config
 
+# Custom Qt message handler to filter out harmless warnings
+def qt_message_handler(mode, context, message):
+    """Filter out known harmless Qt warnings"""
+    # Suppress known harmless messages
+    suppressed_patterns = [
+        "CreateFontFaceFromHDC",  # DirectWrite font warnings for legacy Windows fonts
+        "MS Sans Serif",          # Legacy Windows font
+        "blocklyApi not available",  # Blockly JS init message (not an error)
+        "mf_video_encoder",       # Chromium video encoder (not relevant)
+        "Set output type failed", # Chromium media foundation error
+        "was deprecated in v",    # Blockly internal deprecation warnings (library issue)
+    ]
+
+    for pattern in suppressed_patterns:
+        if pattern in message:
+            return  # Silently ignore
+
+    # Print other messages based on severity
+    if mode == QtMsgType.QtWarningMsg:
+        print(f"Qt Warning: {message}")
+    elif mode == QtMsgType.QtCriticalMsg:
+        print(f"Qt Critical: {message}")
+    elif mode == QtMsgType.QtFatalMsg:
+        print(f"Qt Fatal: {message}")
+    # Ignore QtDebugMsg and QtInfoMsg for cleaner output
+
 def setup_application():
     from PySide6.QtGui import QFont
+
+    # Install custom message handler before creating QApplication
+    qInstallMessageHandler(qt_message_handler)
 
     app = QApplication(sys.argv)
 
