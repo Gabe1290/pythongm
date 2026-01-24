@@ -173,6 +173,7 @@ ime_projekta/
 ### Vadnice in Vodniki
 - [Kako Začeti](Kako_Zaceti_sl) - Prvi koraki s PyGameMaker
 - [Ustvarite Svojo Prvo Igro](Prva_Igra_sl) - Vadnica korak za korakom
+- [Vadnica Breakout](Tutorial-Breakout_sl) - Ustvarite klasično igro Breakout
 - [Urejevalnik Objektov](Urejevalnik_Objektov_sl) - Delo z igralnimi objekti
 - [Urejevalnik Sob](Urejevalnik_Sob_sl) - Oblikovanje nivojev
 - [Dogodki in Akcije](Dogodki_in_Akcije_sl) - Referenca igralne logike

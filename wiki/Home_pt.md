@@ -173,6 +173,7 @@ nome_projeto/
 ### Tutoriais e Guias
 - [Primeiros Passos](Primeiros_Passos_pt) - Primeiros passos com PyGameMaker
 - [Crie Seu Primeiro Jogo](Primeiro_Jogo_pt) - Tutorial passo a passo
+- [Tutorial Breakout](Tutorial-Breakout_pt) - Crie um jogo Breakout clássico
 - [Editor de Objetos](Editor_Objetos_pt) - Trabalhar com objetos do jogo
 - [Editor de Salas](Editor_Salas_pt) - Projetar níveis
 - [Eventos e Ações](Eventos_e_Acoes_pt) - Referência de lógica do jogo
