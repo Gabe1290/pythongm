@@ -524,3 +524,5 @@ Wenn Sie mit dem Anfaenger-Preset vertraut sind, sollten Sie ein Upgrade auf **F
 - [Ereignisreferenz](Event-Reference_de) - Vollstaendige Ereignisliste
 - [Ereignisse und Aktionen](Events-and-Actions_de) - Kernkonzepte
 - [Erstellen Sie Ihr erstes Spiel](Creating-Your-First-Game_de) - Schritt-fuer-Schritt-Anleitung
+- [Breakout Tutorial](Tutorial-Breakout_de) - Erstellen Sie ein klassisches Breakout-Spiel
+- [Einfuehrung in die Spieleentwicklung](Getting-Started-Breakout_de) - Umfassendes Anfaenger-Tutorial

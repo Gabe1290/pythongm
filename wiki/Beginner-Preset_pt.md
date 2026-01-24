@@ -503,3 +503,5 @@ Quando estiver confortavel com o preset Iniciante, considere atualizar para **In
 - [Referencia de Eventos](Event-Reference_pt) - Lista completa de eventos
 - [Eventos e Acoes](Events-and-Actions_pt) - Conceitos fundamentais
 - [Criando Seu Primeiro Jogo](Creating-Your-First-Game_pt) - Tutorial passo a passo
+- [Tutorial Breakout](Tutorial-Breakout_pt) - Crie um jogo Breakout classico
+- [Introducao a Criacao de Jogos](Getting-Started-Breakout_pt) - Tutorial completo para iniciantes

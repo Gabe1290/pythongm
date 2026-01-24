@@ -86,3 +86,5 @@ Drücken Sie den Play-Button, um Ihr Spiel zu testen.
 - [Erste Schritte](Erste_Schritte_de) - Installation und Einrichtung
 - [Ereignisse und Aktionen](Events_und_Aktionen_de) - Grundkonzepte
 - [Ihr Erstes Spiel](Erstes_Spiel_de) - Tutorial
+- [Breakout Tutorial](Tutorial-Breakout_de) - Erstellen Sie ein klassisches Breakout-Spiel
+- [Einführung in die Spieleentwicklung](Getting-Started-Breakout_de) - Umfassendes Anfänger-Tutorial

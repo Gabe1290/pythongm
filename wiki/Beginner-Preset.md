@@ -503,3 +503,5 @@ When you're comfortable with the Beginner preset, consider upgrading to **Interm
 - [Event Reference](Event-Reference) - Complete event list
 - [Events and Actions](Events-and-Actions) - Core concepts
 - [Creating Your First Game](Creating-Your-First-Game) - Step-by-step tutorial
+- [Breakout Tutorial](Tutorial-Breakout) - Create a classic brick breaker game
+- [Introduction to Game Creation](Getting-Started-Breakout) - Comprehensive beginner tutorial

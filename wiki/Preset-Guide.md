@@ -86,3 +86,5 @@ Press the Play button to test your game.
 - [Getting Started](Getting-Started) - Installation and setup
 - [Events and Actions](Events-and-Actions) - Core concepts
 - [Creating Your First Game](Creating-Your-First-Game) - Tutorial
+- [Breakout Tutorial](Tutorial-Breakout) - Create a classic brick breaker game
+- [Introduction to Game Creation](Getting-Started-Breakout) - Comprehensive beginner tutorial

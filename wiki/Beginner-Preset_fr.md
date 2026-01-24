@@ -524,3 +524,5 @@ Lorsque vous etes a l'aise avec le preset Debutant, envisagez de passer au **Int
 - [Reference des Evenements](Event-Reference_fr) - Liste complete des evenements
 - [Evenements et Actions](Events-and-Actions_fr) - Concepts fondamentaux
 - [Creer Votre Premier Jeu](Creating-Your-First-Game_fr) - Tutoriel etape par etape
+- [Tutoriel Casse-Briques](Tutorial-Breakout_fr) - Creez un jeu de casse-briques classique
+- [Initiation a la Creation de Jeux](Getting-Started-Breakout_fr) - Tutoriel complet pour debutants

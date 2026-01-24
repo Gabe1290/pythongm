@@ -503,3 +503,5 @@
 - [Справочник Событий](Event-Reference_ru) - Полный список событий
 - [События и Действия](Events-and-Actions_ru) - Основные концепции
 - [Создание Вашей Первой Игры](Creating-Your-First-Game_ru) - Пошаговое руководство
+- [Руководство Breakout](Tutorial-Breakout_ru) - Создайте классическую игру Breakout
+- [Введение в Создание Игр](Getting-Started-Breakout_ru) - Полное руководство для начинающих

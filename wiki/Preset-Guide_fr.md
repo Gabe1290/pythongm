@@ -86,3 +86,5 @@ Appuyez sur le bouton Jouer pour tester votre jeu.
 - [Premiers Pas](Demarrage_fr) - Installation et configuration
 - [Événements et Actions](Evenements_Actions_fr) - Concepts de base
 - [Créer Votre Premier Jeu](Premier_Jeu_fr) - Tutoriel
+- [Tutoriel Casse-Briques](Tutorial-Breakout_fr) - Créez un jeu de casse-briques classique
+- [Initiation à la Création de Jeux](Getting-Started-Breakout_fr) - Tutoriel complet pour débutants

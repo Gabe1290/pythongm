@@ -503,3 +503,5 @@
 - [Довідка Подій](Event-Reference_uk) - Повний список подій
 - [Події та Дії](Events-and-Actions_uk) - Основні концепції
 - [Створення Вашої Першої Гри](Creating-Your-First-Game_uk) - Покроковий посібник
+- [Посібник Breakout](Tutorial-Breakout_uk) - Створіть класичну гру Breakout
+- [Вступ до Створення Ігор](Getting-Started-Breakout_uk) - Повний посібник для початківців

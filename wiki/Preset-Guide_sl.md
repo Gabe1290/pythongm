@@ -86,3 +86,5 @@ Pritisnite gumb Predvajaj za testiranje vaše igre.
 - [Kako Začeti](Kako_Zaceti_sl) - Namestitev in nastavitev
 - [Dogodki in Akcije](Dogodki_in_Akcije_sl) - Osnovni koncepti
 - [Ustvarite Svojo Prvo Igro](Prva_Igra_sl) - Vadnica
+- [Vadnica Breakout](Tutorial-Breakout_sl) - Ustvarite klasično igro Breakout
+- [Uvod v Ustvarjanje Iger](Getting-Started-Breakout_sl) - Celovita vadnica za začetnike

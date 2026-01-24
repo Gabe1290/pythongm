@@ -503,3 +503,5 @@ Ko boste zadovoljni z Zacetniskim presetom, razmislite o nadgradnji na **Srednji
 - [Referenca Dogodkov](Event-Reference_sl) - Celoten seznam dogodkov
 - [Dogodki in Akcije](Events-and-Actions_sl) - Temeljni koncepti
 - [Ustvarjanje Vase Prve Igre](Creating-Your-First-Game_sl) - Vodnik po korakih
+- [Vadnica Breakout](Tutorial-Breakout_sl) - Ustvarite klasicno igro Breakout
+- [Uvod v Ustvarjanje Iger](Getting-Started-Breakout_sl) - Celovita vadnica za zacetnike

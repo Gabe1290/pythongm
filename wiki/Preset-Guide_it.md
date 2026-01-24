@@ -86,3 +86,5 @@ Premi il pulsante Play per testare il tuo gioco.
 - [Per Iniziare](Per_Iniziare_it) - Installazione e configurazione
 - [Eventi e Azioni](Eventi_e_Azioni_it) - Concetti base
 - [Crea il Tuo Primo Gioco](Primo_Gioco_it) - Tutorial
+- [Tutorial Breakout](Tutorial-Breakout_it) - Crea un classico gioco Breakout
+- [Introduzione alla Creazione di Giochi](Getting-Started-Breakout_it) - Tutorial completo per principianti

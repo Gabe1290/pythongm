@@ -86,3 +86,5 @@ Presiona el botón Jugar para probar tu juego.
 - [Primeros Pasos](Primeros_Pasos_es) - Instalación y configuración
 - [Eventos y Acciones](Eventos_y_Acciones_es) - Conceptos básicos
 - [Crea Tu Primer Juego](Primer_Juego_es) - Tutorial
+- [Tutorial Breakout](Tutorial-Breakout_es) - Crea un juego Breakout clásico
+- [Introducción a la Creación de Juegos](Getting-Started-Breakout_es) - Tutorial completo para principiantes
