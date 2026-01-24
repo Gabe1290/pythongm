@@ -174,6 +174,7 @@ PyGameMaker інтегрує Google Blockly для візуального про
 - [Початок Роботи](Pochatok_Roboty_uk) - Перші кроки з PyGameMaker
 - [Створіть Свою Першу Гру](Persha_Gra_uk) - Покроковий посібник
 - [Посібник Breakout](Tutorial-Breakout_uk) - Створіть класичну гру Breakout
+- [Вступ до Створення Ігор](Getting-Started-Breakout_uk) - Повний посібник для початківців
 - [Редактор Об'єктів](Redaktor_Obiektiv_uk) - Робота з ігровими об'єктами
 - [Редактор Кімнат](Redaktor_Kimnat_uk) - Проектування рівнів
 - [Події та Дії](Podii_ta_Dii_uk) - Довідник ігрової логіки

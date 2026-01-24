@@ -174,6 +174,7 @@ projektname/
 - [Erste Schritte](Erste_Schritte_de) - Erste Schritte mit PyGameMaker
 - [Ihr Erstes Spiel](Erstes_Spiel_de) - Tutorial-Durchgang
 - [Breakout Tutorial](Tutorial-Breakout_de) - Erstellen Sie ein klassisches Casse-Briques Spiel
+- [Einführung in die Spieleentwicklung](Getting-Started-Breakout_de) - Umfassendes Anfänger-Tutorial
 - [Objekt-Editor](Objekt_Editor_de) - Arbeiten mit Spielobjekten
 - [Raum-Editor](Raum_Editor_de) - Level gestalten
 - [Ereignisse und Aktionen](Events_und_Aktionen_de) - Spiellogik-Referenz
