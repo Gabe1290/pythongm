@@ -173,6 +173,7 @@ nom_du_projet/
 ### Tutoriels et Guides
 - [Premiers Pas](Demarrage_fr) - Premiers pas avec PyGameMaker
 - [Créer Votre Premier Jeu](Premier_Jeu_fr) - Tutoriel pas à pas
+- [Tutoriel : Casse-Briques](Tutorial-Breakout_fr) - Créez un jeu de casse-briques classique
 - [Éditeur d'Objets](Editeur_Objets_fr) - Travailler avec les objets de jeu
 - [Éditeur de Salles](Editeur_Salles_fr) - Concevoir des niveaux
 - [Événements et Actions](Evenements_Actions_fr) - Référence de la logique de jeu
