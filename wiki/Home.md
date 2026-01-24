@@ -174,6 +174,7 @@ project_name/
 - [Getting-Started](Getting-Started) - First steps with PyGameMaker
 - [Creating-Your-First-Game](Creating-Your-First-Game) - Tutorial walkthrough
 - [Tutorial: Breakout Game](Tutorial-Breakout) - Create a classic brick breaker game
+- [Introduction to Game Creation](Getting-Started-Breakout) - Comprehensive beginner tutorial
 - [Object-Editor](Object-Editor) - Working with game objects
 - [Room-Editor](Room-Editor) - Designing levels
 - [Events-and-Actions](Events-and-Actions) - Game logic reference
