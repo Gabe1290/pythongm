@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <h1>Step 5: Collision Detection</h1>
+
+    <p>Handle landing on the pad and crashing into terrain.</p>
+
+    <h2>Collision with Landing Pad</h2>
+    <div class="step">
+        <p>In <code>obj_lander</code>:</p>
+        <ol>
+            <li>Add Event: <strong>Collision &gt; obj_pad</strong></li>
+            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+        </ol>
+        <pre>
+// Calculate total speed
+var total_speed = sqrt(hsp*hsp + vsp*vsp);
+
+if (total_speed <= safe_speed) {
+    // Safe landing!
+    landed = true;
+    hsp = 0;
+    vsp = 0;
+    show_message("Perfect Landing! You Win!");
+} else {
+    // Too fast - crash!
+    crashed = true;
+    show_message("Crashed! Too fast!");
+    room_restart();
+}</pre>
+    </div>
+
+    <h2>Collision with Ground (Crash)</h2>
+    <div class="danger">
+        <p>In <code>obj_lander</code>:</p>
+        <ol>
+            <li>Add Event: <strong>Collision &gt; obj_ground</strong></li>
+            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+        </ol>
+        <pre>
+crashed = true;
+show_message("Crashed into terrain!");
+room_restart();</pre>
+    </div>
+
+    <h2>Speed Calculation</h2>
+    <p>We use the Pythagorean theorem to get total speed:</p>
+    <pre>total_speed = sqrt(hsp*hsp + vsp*vsp)</pre>
+    <p>This combines horizontal and vertical speed into one value.</p>
+
+    <div class="highlight">
+        <strong>Safe speed is 2!</strong> If total_speed > 2, you crash even on the pad.
+    </div>
+
+    <div class="info">
+        Click "Next" to add the HUD display.
+    </div>
+</body>
+</html>

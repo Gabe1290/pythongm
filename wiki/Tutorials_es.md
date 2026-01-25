@@ -23,6 +23,7 @@ Estos tutoriales están diseñados para usuarios nuevos en el desarrollo de jueg
 | [**Sokoban**](Tutorial-Sokoban_es) | Crea un juego de puzzle de empujar cajas | Movimiento en cuadrícula, mecánicas de empuje, condiciones de victoria |
 | [**Laberinto**](Tutorial-Maze_es) | Navega por los pasillos hasta la salida | Movimiento fluido, colisión con paredes, coleccionables, temporizador |
 | [**Platformer**](Tutorial-Platformer_es) | Corre, salta y colecciona monedas | Gravedad, mecánicas de salto, colisión con plataformas |
+| [**Aterrizaje Lunar**](Tutorial-LunarLander_es) | Aterriza una nave en la luna | Física de impulso, gestión de combustible, control de velocidad |
 
 ### Guías Completas
 

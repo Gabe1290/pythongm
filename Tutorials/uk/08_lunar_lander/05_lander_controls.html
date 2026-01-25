@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <h1>Step 4: Lander Controls (Step Event)</h1>
+
+    <p>Add gravity, thrust, horizontal movement, and boundary checks.</p>
+
+    <h2>Add Step Event</h2>
+    <div class="step">
+        <p>In <code>obj_lander</code>:</p>
+        <ol>
+            <li>Add Event: <strong>Step &gt; Step</strong></li>
+            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+        </ol>
+        <pre>
+// Don't update if game is over
+if (landed || crashed) exit;
+
+// === GRAVITY ===
+vsp += gravity_force;
+
+// === THRUST (Up Arrow) ===
+if (keyboard_check(vk_up) && fuel > 0) {
+    vsp -= thrust_force;
+    fuel -= fuel_use;
+    if (fuel < 0) fuel = 0;
+}
+
+// === HORIZONTAL CONTROL ===
+if (keyboard_check(vk_left)) hsp -= 0.05;
+if (keyboard_check(vk_right)) hsp += 0.05;
+
+// === LIMIT SPEED ===
+hsp = clamp(hsp, -max_speed, max_speed);
+vsp = clamp(vsp, -max_speed, max_speed);
+
+// === APPLY MOVEMENT ===
+x += hsp;
+y += vsp;
+
+// === SCREEN BOUNDARIES ===
+if (x < 16) { x = 16; hsp = 0; }
+if (x > room_width - 16) { x = room_width - 16; hsp = 0; }
+if (y < 16) { y = 16; vsp = 0; }</pre>
+    </div>
+
+    <h2>How It Works</h2>
+    <ol>
+        <li><strong>Gravity:</strong> Adds to vsp every frame (falling)</li>
+        <li><strong>Thrust:</strong> Subtracts from vsp (rising), uses fuel</li>
+        <li><strong>Clamp:</strong> Limits speed to safe range</li>
+        <li><strong>Boundaries:</strong> Keeps lander on screen</li>
+    </ol>
+
+    <div class="highlight">
+        <strong>Key:</strong> The <code>clamp()</code> function limits a value between min and max!
+    </div>
+
+    <div class="info">
+        Click "Next" to add collision detection.
+    </div>
+</body>
+</html>

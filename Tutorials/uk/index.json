@@ -97,6 +97,21 @@
                 "07_game_controller.html",
                 "08_room_setup.html"
             ]
+        },
+        {
+            "title": "Lunar Lander: Посадка на Місяць",
+            "folder": "08_lunar_lander",
+            "description": "Керуйте тягою для безпечної посадки, керуйте паливом",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_lander_physics.html",
+                "05_lander_controls.html",
+                "06_collisions.html",
+                "07_game_controller.html",
+                "08_room_setup.html"
+            ]
         }
     ]
 }

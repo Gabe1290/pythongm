@@ -23,6 +23,7 @@ Te vadnice so zasnovane za uporabnike, ki so novi v razvoju iger. Uporabljajo **
 | [**Sokoban**](Tutorial-Sokoban_sl) | Ustvarite igro ugank s potiskanjem zabojev | Premikanje po mreži, mehanika potiskanja, pogoji zmage |
 | [**Labirint**](Tutorial-Maze_sl) | Navigirajte skozi hodnike do izhoda | Gladko gibanje, trk s stenami, zbirateljski predmeti, časovnik |
 | [**Platformer**](Tutorial-Platformer_sl) | Teci, skači in zbiraj kovance | Gravitacija, mehanika skakanja, trk s platformami |
+| [**Lunarni Pristanek**](Tutorial-LunarLander_sl) | Pristani plovilo na luni | Fizika potiska, upravljanje goriva, nadzor hitrosti |
 
 ### Obsežni vodniki
 

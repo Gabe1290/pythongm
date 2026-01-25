@@ -23,6 +23,7 @@ These tutorials are designed for users new to game development. They use the **B
 | [**Sokoban**](Tutorial-Sokoban) | Create a box-pushing puzzle game | Grid-based movement, push mechanics, win conditions |
 | [**Maze**](Tutorial-Maze) | Navigate through corridors to the exit | Smooth movement, wall collision, collectibles, timer |
 | [**Platformer**](Tutorial-Platformer) | Run, jump, and collect coins | Gravity, jumping mechanics, platform collision |
+| [**Lunar Lander**](Tutorial-LunarLander) | Land a spacecraft on the moon | Thrust physics, fuel management, velocity control |
 
 ### Comprehensive Guides
 

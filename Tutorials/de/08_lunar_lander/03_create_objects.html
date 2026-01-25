@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Step 2: Create Objects</h1>
+
+    <p>Now we create objects for all game elements.</p>
+
+    <h2>Ground Object (Dangerous)</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Objects</strong> > <strong>Create Object</strong></li>
+            <li>Name it <code>obj_ground</code></li>
+            <li>Set sprite to <code>spr_ground</code></li>
+            <li><strong>Check the "Solid" checkbox</strong></li>
+        </ol>
+    </div>
+
+    <h2>Landing Pad Object (Safe)</h2>
+    <div class="step">
+        <ol>
+            <li>Create <code>obj_pad</code></li>
+            <li>Set sprite to <code>spr_pad</code></li>
+            <li><strong>Check the "Solid" checkbox</strong></li>
+        </ol>
+    </div>
+
+    <h2>Lander Object (Player)</h2>
+    <div class="step">
+        <ol>
+            <li>Create <code>obj_lander</code></li>
+            <li>Set sprite to <code>spr_lander</code></li>
+        </ol>
+    </div>
+
+    <h2>Game Controller Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create <code>obj_game_controller</code></li>
+            <li>No sprite needed (invisible)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Key Difference:</strong> Landing on <code>obj_pad</code> = safe landing. Landing on <code>obj_ground</code> = crash!
+    </div>
+
+    <div class="info">
+        Click "Next" to add lander physics.
+    </div>
+</body>
+</html>

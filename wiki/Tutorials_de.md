@@ -23,6 +23,7 @@ Diese Tutorials sind für Benutzer gedacht, die neu in der Spieleentwicklung sin
 | [**Sokoban**](Tutorial-Sokoban_de) | Erstellen Sie ein Kisten-Schiebe-Puzzlespiel | Rasterbasierte Bewegung, Schiebe-Mechanik, Siegbedingungen |
 | [**Labyrinth**](Tutorial-Maze_de) | Navigieren Sie durch Korridore zum Ausgang | Flüssige Bewegung, Wandkollision, Sammelobjekte, Timer |
 | [**Platformer**](Tutorial-Platformer_de) | Laufen, springen und Münzen sammeln | Schwerkraft, Sprungmechanik, Plattformkollision |
+| [**Mondlandung**](Tutorial-LunarLander_de) | Lande ein Raumschiff auf dem Mond | Schubphysik, Treibstoffmanagement, Geschwindigkeitskontrolle |
 
 ### Umfassende Anleitungen
 

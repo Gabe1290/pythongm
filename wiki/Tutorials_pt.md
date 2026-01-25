@@ -23,6 +23,7 @@ Estes tutoriais foram projetados para usuários novos no desenvolvimento de jogo
 | [**Sokoban**](Tutorial-Sokoban_pt) | Crie um jogo de puzzle de empurrar caixas | Movimento em grade, mecânica de empurrar, condições de vitória |
 | [**Labirinto**](Tutorial-Maze_pt) | Navegue pelos corredores até a saída | Movimento suave, colisão com paredes, colecionáveis, cronômetro |
 | [**Platformer**](Tutorial-Platformer_pt) | Corra, pule e colete moedas | Gravidade, mecânicas de pulo, colisão com plataformas |
+| [**Pouso Lunar**](Tutorial-LunarLander_pt) | Pouse uma nave na lua | Física de impulso, gerenciamento de combustível, controle de velocidade |
 
 ### Guias Abrangentes
 
