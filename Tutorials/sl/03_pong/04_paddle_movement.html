@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Step 3: Add Paddle Movement</h1>
+
+    <p>We'll set up two-player controls using different keys for each paddle.</p>
+
+    <h2>Control Scheme</h2>
+    <table>
+        <tr>
+            <th>Player</th>
+            <th>Move Up</th>
+            <th>Move Down</th>
+        </tr>
+        <tr>
+            <td>Player 1 (Left)</td>
+            <td>W key</td>
+            <td>S key</td>
+        </tr>
+        <tr>
+            <td>Player 2 (Right)</td>
+            <td>Up Arrow</td>
+            <td>Down Arrow</td>
+        </tr>
+    </table>
+
+    <h2>Left Paddle Controls (obj_paddle_left)</h2>
+    <div class="step">
+        <p><strong>Move Up (W key):</strong></p>
+        <ol>
+            <li>Open <code>obj_paddle_left</code></li>
+            <li>Add Event: <strong>Keyboard &gt; Press W</strong></li>
+            <li>Add Action: <strong>Move &gt; Set Vertical Speed</strong></li>
+            <li>Set speed to <code>-8</code> (negative = up)</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Stop Moving (Release W):</strong></p>
+        <ol>
+            <li>Add Event: <strong>Keyboard &gt; Release W</strong></li>
+            <li>Add Action: <strong>Move &gt; Set Vertical Speed</strong></li>
+            <li>Set speed to <code>0</code></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Move Down (S key):</strong></p>
+        <ol>
+            <li>Add Event: <strong>Keyboard &gt; Press S</strong></li>
+            <li>Add Action: <strong>Move &gt; Set Vertical Speed</strong></li>
+            <li>Set speed to <code>8</code> (positive = down)</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Stop Moving (Release S):</strong></p>
+        <ol>
+            <li>Add Event: <strong>Keyboard &gt; Release S</strong></li>
+            <li>Add Action: <strong>Move &gt; Set Vertical Speed</strong></li>
+            <li>Set speed to <code>0</code></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Wall Collision:</strong></p>
+        <ol>
+            <li>Add Event: <strong>Collision &gt; obj_wall</strong></li>
+            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
+            <li>Select "Against solid objects"</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Now do the same for obj_paddle_right</strong>, but use Up Arrow and Down Arrow instead of W and S!
+    </div>
+
+    <div class="info">
+        Click "Next" to add ball movement and bouncing.
+    </div>
+</body>
+</html>

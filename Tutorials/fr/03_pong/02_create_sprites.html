@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Step 1: Create the Sprites</h1>
+
+    <p>We need four sprites for our Pong game: a ball, two paddles, and walls.</p>
+
+    <h2>Create the Ball Sprite</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click on <strong>Sprites</strong> in the Resource Tree</li>
+            <li>Select <strong>Create Sprite</strong></li>
+            <li>Name it <code>spr_ball</code></li>
+            <li>Click <strong>Edit Sprite</strong></li>
+            <li>Draw a small white circle (about 16x16 pixels)</li>
+            <li>Click <strong>OK</strong> to save</li>
+        </ol>
+    </div>
+
+    <h2>Create the Paddle Sprites</h2>
+    <div class="step">
+        <p><strong>Left Paddle (Player 1):</strong></p>
+        <ol>
+            <li>Create a new sprite named <code>spr_paddle_left</code></li>
+            <li>Draw a tall, thin rectangle (about 16x64 pixels)</li>
+            <li>Use blue color to identify Player 1</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Right Paddle (Player 2):</strong></p>
+        <ol>
+            <li>Create a new sprite named <code>spr_paddle_right</code></li>
+            <li>Draw a tall, thin rectangle (about 16x64 pixels)</li>
+            <li>Use red color to identify Player 2</li>
+        </ol>
+    </div>
+
+    <h2>Create the Wall Sprite</h2>
+    <div class="step">
+        <ol>
+            <li>Create a new sprite named <code>spr_wall</code></li>
+            <li>Draw a solid gray rectangle (32x32 pixels)</li>
+            <li>This will be stretched to form the top and bottom boundaries</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Tip:</strong> Keep all sprites simple! Classic Pong used basic shapes.
+    </div>
+
+    <div class="info">
+        Click "Next" to create the game objects.
+    </div>
+</body>
+</html>

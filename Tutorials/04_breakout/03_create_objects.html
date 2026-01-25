@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Step 2: Create the Objects</h1>
+
+    <p>Now we'll create all the game objects.</p>
+
+    <h2>Create the Wall Object</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click on <strong>Objects</strong> and select <strong>Create Object</strong></li>
+            <li>Name it <code>obj_wall</code></li>
+            <li>Set the sprite to <code>spr_wall</code></li>
+            <li><strong>Check "Solid"</strong></li>
+            <li>No events needed</li>
+        </ol>
+    </div>
+
+    <h2>Create the Parent Brick Object</h2>
+    <p>We'll use a parent object so all bricks share the same collision behavior.</p>
+    <div class="step">
+        <ol>
+            <li>Create object <code>obj_brick_parent</code></li>
+            <li>No sprite needed (it's just a template)</li>
+            <li><strong>Check "Solid"</strong></li>
+        </ol>
+    </div>
+
+    <h2>Create the Colored Brick Objects</h2>
+    <div class="step">
+        <p>For each brick color:</p>
+        <ol>
+            <li>Create <code>obj_brick_red</code> with <code>spr_brick_red</code></li>
+            <li>Set <strong>Parent</strong> to <code>obj_brick_parent</code></li>
+            <li>Check "Solid"</li>
+        </ol>
+        <p>Repeat for <code>obj_brick_orange</code>, <code>obj_brick_yellow</code>, and <code>obj_brick_green</code>.</p>
+    </div>
+
+    <h2>Create the Paddle Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create object <code>obj_paddle</code></li>
+            <li>Set sprite to <code>spr_paddle</code></li>
+            <li><strong>Check "Solid"</strong></li>
+        </ol>
+    </div>
+
+    <h2>Create the Ball Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create object <code>obj_ball</code></li>
+            <li>Set sprite to <code>spr_ball</code></li>
+            <li>Leave "Solid" unchecked</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Parent Objects:</strong> When the ball collides with <code>obj_brick_parent</code>, it will detect collisions with ALL brick types!
+    </div>
+
+    <div class="info">
+        Click "Next" to add paddle movement.
+    </div>
+</body>
+</html>

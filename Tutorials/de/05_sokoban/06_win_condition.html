@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Step 5: Win Condition</h1>
+
+    <p>The player wins when all crates are on target spots.</p>
+
+    <h2>Create Game Controller</h2>
+    <div class="step">
+        <ol>
+            <li>Create object <code>obj_game_controller</code></li>
+            <li>No sprite needed</li>
+        </ol>
+    </div>
+
+    <h2>Count Targets (Create Event)</h2>
+    <div class="step">
+        <p>In <code>obj_game_controller</code>:</p>
+        <ol>
+            <li>Add Event: <strong>Create</strong></li>
+            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Enter: <code>global.total_targets = instance_number(obj_target);</code></li>
+        </ol>
+    </div>
+
+    <h2>Check Win Condition (Step Event)</h2>
+    <div class="step">
+        <ol>
+            <li>Add Event: <strong>Step</strong></li>
+            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Enter this code:</li>
+        </ol>
+        <pre style="background-color: #2c3e50; color: #ecf0f1; padding: 10px; font-size: 11px; border-radius: 5px;">
+// Count crates on targets
+var crates_on_targets = 0;
+with (obj_crate) {
+    if (place_meeting(x, y, obj_target)) {
+        crates_on_targets += 1;
+    }
+}
+
+// Check if all targets have crates
+if (crates_on_targets >= global.total_targets
+    && global.total_targets > 0) {
+    show_message("Level Complete!");
+    room_restart();
+}</pre>
+    </div>
+
+    <h2>Draw Instructions (Draw Event)</h2>
+    <div class="step">
+        <ol>
+            <li>Add Event: <strong>Draw</strong></li>
+            <li>Add Action: <strong>Draw &gt; Draw Text</strong></li>
+            <li>Text: <code>Push crates onto targets!</code></li>
+            <li>X: <code>10</code>, Y: <code>10</code></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Tip:</strong> Make sure the number of crates equals the number of targets in your level!
+    </div>
+
+    <div class="info">
+        Click "Next" to set up the game room.
+    </div>
+</body>
+</html>

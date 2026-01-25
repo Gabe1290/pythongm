@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #7f8c8d; font-size: 13px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Step 7: Set Up the Room</h1>
+
+    <p>Now let's create the game room and place all our objects!</p>
+
+    <h2>Create the Room</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click on <strong>Rooms</strong> and select <strong>Create Room</strong></li>
+            <li>Name it <code>room_pong</code></li>
+            <li>Set size to 640x480 pixels</li>
+        </ol>
+    </div>
+
+    <h2>Room Layout</h2>
+    <pre>
++--[WALL WALL WALL WALL WALL WALL]--+
+|                                   |
+[G]  [P1]                    [P2]  [G]
+[O]  [  ]       (o)          [  ]  [O]
+[A]  [  ]                    [  ]  [A]
+[L]                                [L]
+|                                   |
++--[WALL WALL WALL WALL WALL WALL]--+
+    </pre>
+
+    <h2>Place the Objects</h2>
+
+    <h3>1. Walls (Top and Bottom)</h3>
+    <div class="step">
+        <p>Place <code>obj_wall</code> instances along the top and bottom edges.</p>
+    </div>
+
+    <h3>2. Paddles</h3>
+    <div class="step">
+        <ul>
+            <li><code>obj_paddle_left</code> - Near left edge, centered vertically</li>
+            <li><code>obj_paddle_right</code> - Near right edge, centered vertically</li>
+        </ul>
+    </div>
+
+    <h3>3. Ball</h3>
+    <div class="step">
+        <p>Place <code>obj_ball</code> in the center of the room.</p>
+    </div>
+
+    <h3>4. Goals</h3>
+    <div class="step">
+        <ul>
+            <li><code>obj_goal_left</code> - Stack along the left edge (behind paddle)</li>
+            <li><code>obj_goal_right</code> - Stack along the right edge (behind paddle)</li>
+        </ul>
+    </div>
+
+    <h3>5. Score Display</h3>
+    <div class="step">
+        <p>Place <code>obj_score</code> anywhere (it has no sprite, just draws text).</p>
+    </div>
+
+    <div class="success">
+        <strong>Congratulations!</strong> Your Pong game is ready to play!
+    </div>
+
+    <h2>Test Your Game</h2>
+    <ul>
+        <li>Press <strong>F5</strong> or click <strong>Run</strong></li>
+        <li>Player 1: <strong>W</strong> (up) and <strong>S</strong> (down)</li>
+        <li>Player 2: <strong>Up Arrow</strong> and <strong>Down Arrow</strong></li>
+    </ul>
+
+    <div class="info">
+        <strong>Well done!</strong> You've created a classic two-player Pong game!
+    </div>
+</body>
+</html>

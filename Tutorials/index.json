@@ -24,6 +24,50 @@
                 "06_scoring.html",
                 "07_finishing.html"
             ]
+        },
+        {
+            "title": "Classic Pong: Two-Player Game",
+            "folder": "03_pong",
+            "description": "Create the classic two-player Pong arcade game",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_paddle_movement.html",
+                "05_ball_movement.html",
+                "06_scoring.html",
+                "07_score_display.html",
+                "08_room_setup.html"
+            ]
+        },
+        {
+            "title": "Breakout: Brick Breaker",
+            "folder": "04_breakout",
+            "description": "Build a classic brick-breaking arcade game",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_paddle_movement.html",
+                "05_ball_movement.html",
+                "06_lives_system.html",
+                "07_score_display.html",
+                "08_room_setup.html"
+            ]
+        },
+        {
+            "title": "Sokoban: Box-Pushing Puzzle",
+            "folder": "05_sokoban",
+            "description": "Create a classic box-pushing puzzle game",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_crate_behavior.html",
+                "05_player_movement.html",
+                "06_win_condition.html",
+                "07_room_setup.html"
+            ]
         }
     ]
 }

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Step 1: Create the Sprites</h1>
+
+    <p>All sprites should be the same size (32x32 pixels) to create a proper grid.</p>
+
+    <h2>Create the Player Sprite</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click on <strong>Sprites</strong> in the Resource Tree</li>
+            <li>Select <strong>Create Sprite</strong></li>
+            <li>Name it <code>spr_player</code></li>
+            <li>Click <strong>Edit Sprite</strong></li>
+            <li>Draw a simple character (32x32 pixels)</li>
+            <li>Use a distinct color like blue</li>
+            <li>Click <strong>OK</strong> to save</li>
+        </ol>
+    </div>
+
+    <h2>Create the Crate Sprites</h2>
+    <div class="step">
+        <p><strong>Normal Crate:</strong></p>
+        <ol>
+            <li>Create sprite <code>spr_crate</code></li>
+            <li>Draw a wooden box shape (32x32 pixels)</li>
+            <li>Use brown or orange color</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Crate on Target:</strong></p>
+        <ol>
+            <li>Create sprite <code>spr_crate_ok</code></li>
+            <li>Draw the same crate but with green color</li>
+            <li>This shows when a crate is correctly placed</li>
+        </ol>
+    </div>
+
+    <h2>Create the Wall Sprite</h2>
+    <div class="step">
+        <ol>
+            <li>Create sprite <code>spr_wall</code></li>
+            <li>Draw a solid brick or stone pattern (32x32 pixels)</li>
+            <li>Use gray or dark color</li>
+        </ol>
+    </div>
+
+    <h2>Create the Target Sprite</h2>
+    <div class="step">
+        <ol>
+            <li>Create sprite <code>spr_target</code></li>
+            <li>Draw an X mark or goal indicator (32x32 pixels)</li>
+            <li>Use a bright color like red</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Important:</strong> Keep ALL sprites exactly 32x32 pixels for proper grid alignment!
+    </div>
+
+    <div class="info">
+        Click "Next" to create the game objects.
+    </div>
+</body>
+</html>

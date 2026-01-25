@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Step 2: Create the Objects</h1>
+
+    <p>Now we'll create the game objects. Each object uses a sprite and can have behaviors.</p>
+
+    <h2>Create the Wall Object</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click on <strong>Objects</strong> and select <strong>Create Object</strong></li>
+            <li>Name it <code>obj_wall</code></li>
+            <li>Set the sprite to <code>spr_wall</code></li>
+            <li><strong>Check the "Solid" checkbox</strong> - this is important!</li>
+            <li>No events needed - walls just block movement</li>
+        </ol>
+    </div>
+
+    <h2>Create the Ball Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create a new object named <code>obj_ball</code></li>
+            <li>Set the sprite to <code>spr_ball</code></li>
+            <li>Leave "Solid" unchecked</li>
+        </ol>
+    </div>
+
+    <h2>Create the Paddle Objects</h2>
+    <div class="step">
+        <p><strong>Left Paddle:</strong></p>
+        <ol>
+            <li>Create object <code>obj_paddle_left</code></li>
+            <li>Set sprite to <code>spr_paddle_left</code></li>
+            <li><strong>Check "Solid"</strong></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Right Paddle:</strong></p>
+        <ol>
+            <li>Create object <code>obj_paddle_right</code></li>
+            <li>Set sprite to <code>spr_paddle_right</code></li>
+            <li><strong>Check "Solid"</strong></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Important:</strong> The "Solid" checkbox is crucial for bouncing to work correctly!
+    </div>
+
+    <div class="info">
+        Click "Next" to add paddle movement controls.
+    </div>
+</body>
+</html>

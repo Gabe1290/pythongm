@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #7f8c8d; font-size: 13px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Step 7: Set Up the Room</h1>
+
+    <p>Time to create the game room and place all the objects!</p>
+
+    <h2>Create the Room</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click on <strong>Rooms</strong> and select <strong>Create Room</strong></li>
+            <li>Name it <code>room_breakout</code></li>
+            <li>Set size to 640x480 pixels</li>
+        </ol>
+    </div>
+
+    <h2>Room Layout</h2>
+    <pre>
++--[WALL]--------------------[WALL]--+
+|  [WALL]  [R][R][R][R][R]  [WALL]  |
+|  [WALL]  [O][O][O][O][O]  [WALL]  |
+|  [WALL]  [Y][Y][Y][Y][Y]  [WALL]  |
+|  [WALL]  [G][G][G][G][G]  [WALL]  |
+|  [WALL]                   [WALL]  |
+|  [WALL]        (o)        [WALL]  |
+|  [WALL]                   [WALL]  |
+|  [WALL]      [PADDLE]     [WALL]  |
++--[DEATH ZONE DEATH ZONE DEATH]----+
+    </pre>
+
+    <h2>Place the Objects</h2>
+
+    <h3>1. Walls</h3>
+    <div class="step">
+        <p>Place <code>obj_wall</code> along the top, left, and right edges.</p>
+    </div>
+
+    <h3>2. Death Zone</h3>
+    <div class="step">
+        <p>Place <code>obj_death_zone</code> along the bottom edge (it's invisible).</p>
+    </div>
+
+    <h3>3. Bricks</h3>
+    <div class="step">
+        <p>Arrange bricks in rows near the top:</p>
+        <ul>
+            <li>Top row: Red bricks (<code>obj_brick_red</code>)</li>
+            <li>Second row: Orange bricks</li>
+            <li>Third row: Yellow bricks</li>
+            <li>Fourth row: Green bricks</li>
+        </ul>
+    </div>
+
+    <h3>4. Paddle</h3>
+    <div class="step">
+        <p>Place <code>obj_paddle</code> near the bottom, centered horizontally.</p>
+    </div>
+
+    <h3>5. Ball</h3>
+    <div class="step">
+        <p>Place <code>obj_ball</code> just above the paddle.</p>
+    </div>
+
+    <h3>6. Game Controller</h3>
+    <div class="step">
+        <p>Place <code>obj_game_controller</code> anywhere (it has no sprite).</p>
+    </div>
+
+    <div class="success">
+        <strong>Congratulations!</strong> Your Breakout game is ready!
+    </div>
+
+    <h2>Test Your Game</h2>
+    <ul>
+        <li>Press <strong>F5</strong> or click <strong>Run</strong></li>
+        <li>Use <strong>Left</strong> and <strong>Right</strong> arrow keys to move</li>
+        <li>Break all the bricks to win!</li>
+    </ul>
+
+    <div class="info">
+        <strong>Great job!</strong> You've created a classic Breakout game!
+    </div>
+</body>
+</html>

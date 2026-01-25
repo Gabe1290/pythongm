@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Step 2: Create the Objects</h1>
+
+    <p>We need objects for the player, walls, crates, and targets.</p>
+
+    <h2>Create the Wall Object</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click on <strong>Objects</strong> and select <strong>Create Object</strong></li>
+            <li>Name it <code>obj_wall</code></li>
+            <li>Set the sprite to <code>spr_wall</code></li>
+            <li><strong>Check "Solid"</strong></li>
+            <li>No events needed</li>
+        </ol>
+    </div>
+
+    <h2>Create the Target Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create object <code>obj_target</code></li>
+            <li>Set sprite to <code>spr_target</code></li>
+            <li>Leave "Solid" unchecked (player and crates can be on top)</li>
+            <li>No events needed - it's just a marker</li>
+        </ol>
+    </div>
+
+    <h2>Create the Crate Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create object <code>obj_crate</code></li>
+            <li>Set sprite to <code>spr_crate</code></li>
+            <li><strong>Check "Solid"</strong></li>
+        </ol>
+    </div>
+
+    <h2>Create the Player Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create object <code>obj_player</code></li>
+            <li>Set sprite to <code>spr_player</code></li>
+            <li>Leave "Solid" unchecked</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Note:</strong> We'll add events to <code>obj_crate</code> and <code>obj_player</code> in the next steps.
+    </div>
+
+    <div class="info">
+        Click "Next" to add crate behavior.
+    </div>
+</body>
+</html>

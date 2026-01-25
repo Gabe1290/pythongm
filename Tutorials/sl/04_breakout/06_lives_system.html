@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Step 5: Add the Lives System</h1>
+
+    <p>The player loses a life when the ball falls off the bottom of the screen.</p>
+
+    <h2>Create a Death Zone</h2>
+    <div class="step">
+        <ol>
+            <li>Create a sprite <code>spr_death_zone</code> (32x32, any color)</li>
+            <li>Create object <code>obj_death_zone</code></li>
+            <li><strong>Uncheck "Visible"</strong> - it should be invisible</li>
+            <li>Check "Solid"</li>
+        </ol>
+    </div>
+
+    <h2>Ball Falls into Death Zone</h2>
+    <div class="step">
+        <p>In <code>obj_ball</code>:</p>
+        <ol>
+            <li>Add Event: <strong>Collision &gt; obj_death_zone</strong></li>
+            <li>Add Action: <strong>Score &gt; Subtract from Lives</strong></li>
+            <li>Value: <code>1</code></li>
+            <li>Add Action: <strong>Move &gt; Jump to Start Position</strong></li>
+        </ol>
+    </div>
+
+    <h2>Create a Game Controller</h2>
+    <div class="step">
+        <ol>
+            <li>Create object <code>obj_game_controller</code></li>
+            <li>No sprite needed</li>
+        </ol>
+    </div>
+
+    <h2>Initialize Lives (Create Event)</h2>
+    <div class="step">
+        <p>In <code>obj_game_controller</code>:</p>
+        <ol>
+            <li>Add Event: <strong>Create</strong></li>
+            <li>Add Action: <strong>Score &gt; Set Lives</strong></li>
+            <li>Value: <code>3</code></li>
+            <li>Add Action: <strong>Score &gt; Set Score</strong></li>
+            <li>Value: <code>0</code></li>
+        </ol>
+    </div>
+
+    <h2>Check for Game Over (Step Event)</h2>
+    <div class="step">
+        <ol>
+            <li>Add Event: <strong>Step</strong></li>
+            <li>Add Action: <strong>Control &gt; Test Lives</strong></li>
+            <li>Check if lives are less than or equal to 0</li>
+            <li>Add Action: <strong>Main2 &gt; Show Message</strong></li>
+            <li>Message: <code>Game Over!</code></li>
+            <li>Add Action: <strong>Main2 &gt; Restart Room</strong></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Remember:</strong> Place <code>obj_game_controller</code> in your room!
+    </div>
+
+    <div class="info">
+        Click "Next" to add score display.
+    </div>
+</body>
+</html>

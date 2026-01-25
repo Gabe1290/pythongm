@@ -3,6 +3,7 @@
         {
             "title": "Uvod",
             "folder": "01_getting_started",
+            "description": "Spoznajte osnove IDE PyGameMaker",
             "pages": [
                 "01_welcome.html",
                 "02_interface.html",
@@ -13,6 +14,7 @@
         {
             "title": "Tvoja prva igra",
             "folder": "02_first_game",
+            "description": "Ustvari preprosto igro, kjer loviš padajoče zvezde",
             "pages": [
                 "01_introduction.html",
                 "02_create_sprites.html",
@@ -21,6 +23,50 @@
                 "05_add_star.html",
                 "06_scoring.html",
                 "07_finishing.html"
+            ]
+        },
+        {
+            "title": "Klasični Pong: Igra za Dva Igralca",
+            "folder": "03_pong",
+            "description": "Ustvari klasično arkadno igro Pong za dva igralca",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_paddle_movement.html",
+                "05_ball_movement.html",
+                "06_scoring.html",
+                "07_score_display.html",
+                "08_room_setup.html"
+            ]
+        },
+        {
+            "title": "Breakout: Razbijač Opek",
+            "folder": "04_breakout",
+            "description": "Zgradi klasično arkadno igro razbijanja opek",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_paddle_movement.html",
+                "05_ball_movement.html",
+                "06_lives_system.html",
+                "07_score_display.html",
+                "08_room_setup.html"
+            ]
+        },
+        {
+            "title": "Sokoban: Uganka s Potiskanjem Zabojev",
+            "folder": "05_sokoban",
+            "description": "Ustvari klasično uganko s potiskanjem zabojev",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_crate_behavior.html",
+                "05_player_movement.html",
+                "06_win_condition.html",
+                "07_room_setup.html"
             ]
         }
     ]

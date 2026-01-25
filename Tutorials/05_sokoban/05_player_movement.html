@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Step 4: Player Movement</h1>
+
+    <p>The player moves in fixed 32-pixel steps (grid-based movement).</p>
+
+    <div class="highlight">
+        <strong>Important:</strong> In Sokoban, movement must check:<br>
+        1. Is there a wall? (Can't move)<br>
+        2. Is there a crate? (Can we push it?)<br>
+        3. Is there a wall/crate behind the crate? (Can't push)
+    </div>
+
+    <h2>Move Right (Right Arrow)</h2>
+    <div class="step">
+        <p>In <code>obj_player</code>:</p>
+        <ol>
+            <li>Add Event: <strong>Keyboard &gt; Press Right</strong></li>
+            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Enter this code:</li>
+        </ol>
+        <pre style="background-color: #2c3e50; color: #ecf0f1; padding: 10px; font-size: 11px; border-radius: 5px;">
+// Check if we can move right
+if (!place_meeting(x + 32, y, obj_wall)) {
+    var crate = instance_place(x + 32, y, obj_crate);
+    if (crate != noone) {
+        // There's a crate - can we push it?
+        if (!place_meeting(x + 64, y, obj_wall) &&
+            !place_meeting(x + 64, y, obj_crate)) {
+            crate.x += 32;
+            x += 32;
+        }
+    } else {
+        // No crate, just move
+        x += 32;
+    }
+}</pre>
+    </div>
+
+    <h2>Move Left (Left Arrow)</h2>
+    <div class="step">
+        <p>Same code but change:</p>
+        <ul>
+            <li><code>+ 32</code> becomes <code>- 32</code></li>
+            <li><code>+ 64</code> becomes <code>- 64</code></li>
+        </ul>
+    </div>
+
+    <h2>Move Up (Up Arrow)</h2>
+    <div class="step">
+        <p>Same code but use <code>y</code> instead of <code>x</code>:</p>
+        <ul>
+            <li><code>x + 32</code> becomes <code>y - 32</code></li>
+            <li><code>x + 64</code> becomes <code>y - 64</code></li>
+            <li><code>crate.x</code> becomes <code>crate.y</code></li>
+        </ul>
+    </div>
+
+    <h2>Move Down (Down Arrow)</h2>
+    <div class="step">
+        <p>Same as Up but with <code>+ 32</code> and <code>+ 64</code>.</p>
+    </div>
+
+    <div class="info">
+        Click "Next" to add win condition detection.
+    </div>
+</body>
+</html>

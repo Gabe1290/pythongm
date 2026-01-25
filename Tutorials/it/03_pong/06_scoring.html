@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Step 5: Add Scoring Goals</h1>
+
+    <p>We need invisible goals behind each paddle to detect when someone scores.</p>
+
+    <h2>Create Goal Sprite</h2>
+    <div class="step">
+        <ol>
+            <li>Create a new sprite named <code>spr_goal</code></li>
+            <li>Make it 32x32 pixels with any color</li>
+            <li>(It will be invisible in the game)</li>
+        </ol>
+    </div>
+
+    <h2>Create Left Goal Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create object <code>obj_goal_left</code></li>
+            <li>Set sprite to <code>spr_goal</code></li>
+            <li><strong>Uncheck "Visible"</strong> - goal should be invisible</li>
+            <li>Check "Solid"</li>
+        </ol>
+    </div>
+
+    <h2>Create Right Goal Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create object <code>obj_goal_right</code></li>
+            <li>Set sprite to <code>spr_goal</code></li>
+            <li><strong>Uncheck "Visible"</strong></li>
+            <li>Check "Solid"</li>
+        </ol>
+    </div>
+
+    <h2>Ball Collides with Left Goal (Player 2 Scores)</h2>
+    <div class="step">
+        <p>Go back to <code>obj_ball</code>:</p>
+        <ol>
+            <li>Add Event: <strong>Collision &gt; obj_goal_left</strong></li>
+            <li>Add Action: <strong>Move &gt; Jump to Start Position</strong></li>
+            <li>Add Action: <strong>Score &gt; Set Variable</strong></li>
+            <li>Variable: <code>global.p2score</code></li>
+            <li>Value: <code>1</code></li>
+            <li><strong>Check "Relative"</strong> (adds 1 to current score)</li>
+        </ol>
+    </div>
+
+    <h2>Ball Collides with Right Goal (Player 1 Scores)</h2>
+    <div class="step">
+        <ol>
+            <li>Add Event: <strong>Collision &gt; obj_goal_right</strong></li>
+            <li>Add Action: <strong>Move &gt; Jump to Start Position</strong></li>
+            <li>Add Action: <strong>Score &gt; Set Variable</strong></li>
+            <li>Variable: <code>global.p1score</code></li>
+            <li>Value: <code>1</code></li>
+            <li><strong>Check "Relative"</strong></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Note:</strong> The <code>global.</code> prefix means these variables are accessible from any object!
+    </div>
+
+    <div class="info">
+        Click "Next" to display the scores on screen.
+    </div>
+</body>
+</html>

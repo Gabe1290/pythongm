@@ -24,6 +24,50 @@
                 "06_scoring.html",
                 "07_finishing.html"
             ]
+        },
+        {
+            "title": "Klassisches Pong: Zwei-Spieler-Spiel",
+            "folder": "03_pong",
+            "description": "Erstelle das klassische Zwei-Spieler-Arcade-Spiel Pong",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_paddle_movement.html",
+                "05_ball_movement.html",
+                "06_scoring.html",
+                "07_score_display.html",
+                "08_room_setup.html"
+            ]
+        },
+        {
+            "title": "Breakout: Ziegelbrecher",
+            "folder": "04_breakout",
+            "description": "Baue ein klassisches Ziegelbrecher-Arcade-Spiel",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_paddle_movement.html",
+                "05_ball_movement.html",
+                "06_lives_system.html",
+                "07_score_display.html",
+                "08_room_setup.html"
+            ]
+        },
+        {
+            "title": "Sokoban: Kisten-Schiebe-Puzzle",
+            "folder": "05_sokoban",
+            "description": "Erstelle ein klassisches Kisten-Schiebe-Puzzlespiel",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_crate_behavior.html",
+                "05_player_movement.html",
+                "06_win_condition.html",
+                "07_room_setup.html"
+            ]
         }
     ]
 }
