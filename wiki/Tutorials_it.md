@@ -21,6 +21,7 @@ Questi tutorial sono progettati per gli utenti nuovi allo sviluppo di giochi. Ut
 | [**Pong**](Tutorial-Pong_it) | Crea un classico gioco Pong a due giocatori | Input da tastiera, rilevamento collisioni, tracciamento dei punteggi, variabili globali |
 | [**Breakout**](Tutorial-Breakout_it) | Costruisci un gioco di distruzione dei mattoni | Distruzione di oggetti, meccanica di rimbalzo, sistema di vite |
 | [**Sokoban**](Tutorial-Sokoban_it) | Crea un gioco puzzle di spinta scatole | Movimento a griglia, meccanica di spinta, condizioni di vittoria |
+| [**Labirinto**](Tutorial-Maze_it) | Naviga attraverso i corridoi fino all'uscita | Movimento fluido, collisione con i muri, collezionabili, timer |
 
 ### Guide Complete
 

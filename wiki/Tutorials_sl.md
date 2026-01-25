@@ -21,6 +21,7 @@ Te vadnice so zasnovane za uporabnike, ki so novi v razvoju iger. Uporabljajo **
 | [**Pong**](Tutorial-Pong_sl) | Ustvarite klasično igro Pong za dva igralca | Vnos s tipkovnico, zaznavanje trkov, sledenje rezultatom, globalne spremenljivke |
 | [**Breakout**](Tutorial-Breakout_sl) | Zgradite igro s premeščanjem opek | Uničenje predmetov, mehanika odboja, sistem življenj |
 | [**Sokoban**](Tutorial-Sokoban_sl) | Ustvarite igro ugank s potiskanjem zabojev | Premikanje po mreži, mehanika potiskanja, pogoji zmage |
+| [**Labirint**](Tutorial-Maze_sl) | Navigirajte skozi hodnike do izhoda | Gladko gibanje, trk s stenami, zbirateljski predmeti, časovnik |
 
 ### Obsežni vodniki
 

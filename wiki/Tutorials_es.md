@@ -21,6 +21,7 @@ Estos tutoriales están diseñados para usuarios nuevos en el desarrollo de jueg
 | [**Pong**](Tutorial-Pong_es) | Crea un clásico juego Pong para dos jugadores | Entrada de teclado, detección de colisiones, seguimiento de puntuación, variables globales |
 | [**Breakout**](Tutorial-Breakout_es) | Construye un juego tipo rompeladrillos | Destrucción de objetos, mecánicas de rebote, sistema de vidas |
 | [**Sokoban**](Tutorial-Sokoban_es) | Crea un juego de puzzle de empujar cajas | Movimiento en cuadrícula, mecánicas de empuje, condiciones de victoria |
+| [**Laberinto**](Tutorial-Maze_es) | Navega por los pasillos hasta la salida | Movimiento fluido, colisión con paredes, coleccionables, temporizador |
 
 ### Guías Completas
 

@@ -68,6 +68,20 @@
                 "06_win_condition.html",
                 "07_room_setup.html"
             ]
+        },
+        {
+            "title": "Labyrinthe : Trouvez la Sortie",
+            "folder": "06_maze",
+            "description": "Naviguez dans les couloirs, collectez des pièces, atteignez la sortie",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_player_movement.html",
+                "05_collectibles.html",
+                "06_game_controller.html",
+                "07_room_setup.html"
+            ]
         }
     ]
 }

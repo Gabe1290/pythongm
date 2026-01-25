@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 10px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Step 6: Room Setup</h1>
+
+    <p>Now create your maze level!</p>
+
+    <h2>Create the Room</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Rooms</strong> &gt; <strong>Create Room</strong></li>
+            <li>Name it <code>room_maze</code></li>
+            <li>Set size to 640x480</li>
+            <li>Enable <strong>Snap to Grid</strong>: 32x32</li>
+        </ol>
+    </div>
+
+    <h2>Build Your Maze</h2>
+    <div class="step">
+        <ol>
+            <li>Create a border of walls around the edges</li>
+            <li>Add internal walls to create corridors</li>
+            <li>Place coins along the paths</li>
+            <li>Place the exit at the end of the maze</li>
+            <li>Place the player near the entrance</li>
+            <li>Add the game controller (anywhere)</li>
+        </ol>
+    </div>
+
+    <h2>Example Layout</h2>
+    <pre>
+W W W W W W W W W W W W W W W W W W W W
+W P . . . . W . . . . . . . W . . . . W
+W . W W W . W . W W W W W . W . W W . W
+W . W . . . . . . . . C . . . . . W . W
+W . W . W W W W W . W W W W W W . W . W
+W . . . W . . . . . . . . C . W . . . W
+W W W . W . W W W W W W W . . W W W . W
+W C . . . . W . . . . . W . . . . . . W
+W . W W W W W . W W W . W W W W W W . W
+W . . . . . . . . C . . . . . . . . . W
+W . W W W W W W W W W . W W W W W W . W
+W . . . . . . . . . . . W . . . . . . W
+W W W W W W W W W W W . W . W W W W . W
+W . . . . . . . . . . . . . W . C . E W
+W W W W W W W W W W W W W W W W W W W W
+
+W = Wall   P = Player   E = Exit   C = Coin   . = Empty</pre>
+
+    <div class="success">
+        <strong>Congratulations!</strong> You've built a maze game!
+        <br><br>
+        Press <strong>F5</strong> to play:
+        <ul>
+            <li>Use arrow keys to move</li>
+            <li>Collect coins for points</li>
+            <li>Find the exit to win!</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>Challenge Ideas:</strong>
+        <ul>
+            <li>Add patrolling enemies</li>
+            <li>Create a countdown timer</li>
+            <li>Require all coins before exit opens</li>
+            <li>Add multiple levels</li>
+        </ul>
+    </div>
+</body>
+</html>

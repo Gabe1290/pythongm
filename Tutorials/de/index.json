@@ -68,6 +68,20 @@
                 "06_win_condition.html",
                 "07_room_setup.html"
             ]
+        },
+        {
+            "title": "Labyrinth: Finde den Ausgang",
+            "folder": "06_maze",
+            "description": "Navigiere durch Korridore, sammle Münzen, erreiche den Ausgang",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_player_movement.html",
+                "05_collectibles.html",
+                "06_game_controller.html",
+                "07_room_setup.html"
+            ]
         }
     ]
 }
