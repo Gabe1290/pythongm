@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Step 5: Collectibles and Hazards</h1>
+
+    <p>Now we add coins to collect, spikes to avoid, and a flag to reach.</p>
+
+    <h2>Coin - Collect for Points</h2>
+    <div class="step">
+        <p>In <code>obj_coin</code>:</p>
+        <ol>
+            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
+            <li>Add Action: <strong>Score &gt; Set Score</strong>
+                <ul>
+                    <li>New Score: <code>10</code></li>
+                    <li>Check "Relative"</li>
+                </ul>
+            </li>
+            <li>Add Action: <strong>Main1 &gt; Destroy Instance</strong>
+                <ul>
+                    <li>Applies to: Self</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <h2>Spike - Hurts the Player</h2>
+    <div class="danger">
+        <p>In <code>obj_spike</code>:</p>
+        <ol>
+            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
+            <li>Add Action: <strong>Main2 &gt; Show Message</strong>
+                <ul>
+                    <li>Message: <code>Ouch! You hit a spike!</code></li>
+                </ul>
+            </li>
+            <li>Add Action: <strong>Main1 &gt; Restart Room</strong></li>
+        </ol>
+    </div>
+
+    <h2>Flag - Level Complete</h2>
+    <div class="step">
+        <p>In <code>obj_flag</code>:</p>
+        <ol>
+            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
+            <li>Add Action: <strong>Main2 &gt; Show Message</strong>
+                <ul>
+                    <li>Message: <code>Level Complete!</code></li>
+                </ul>
+            </li>
+            <li>Add Action: <strong>Main1 &gt; Restart Room</strong> (or Next Room for multiple levels)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Tip:</strong> Place spikes near pits or on platforms to create challenge!
+    </div>
+
+    <div class="info">
+        Click "Next" to add the game controller for score display.
+    </div>
+</body>
+</html>

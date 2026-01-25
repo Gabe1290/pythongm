@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-size: 10px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Step 7: Room Setup</h1>
+
+    <p>Time to design your platformer level!</p>
+
+    <h2>Create the Room</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Rooms</strong> > <strong>Create Room</strong></li>
+            <li>Name it <code>room_level1</code></li>
+            <li>Set size: <strong>800 x 480</strong></li>
+            <li>Set background color to light blue (sky)</li>
+            <li>Enable "Snap to Grid" and set to 32x32</li>
+        </ol>
+    </div>
+
+    <h2>Example Level Layout</h2>
+    <pre>
+                                        F
+                                      ===
+                          C       C
+                        =====   =====
+            C                           C
+          ===== X     X         X     =====
+    P                   C
+  ====== === ===   ===   === === ===== ======
+  GGGGGG     GGG   GGG   GGG         GGGGGGGG
+
+G = Ground    P = Player    F = Flag    C = Coin
+X = Spike     === = Platform</pre>
+
+    <h2>Building Your Level</h2>
+    <div class="step">
+        <ol>
+            <li><strong>Ground:</strong> Place <code>obj_ground</code> along the bottom</li>
+            <li><strong>Gaps:</strong> Leave spaces for pits (death traps)</li>
+            <li><strong>Platforms:</strong> Place <code>obj_platform</code> in the air</li>
+            <li><strong>Coins:</strong> Scatter on platforms and hard-to-reach spots</li>
+            <li><strong>Spikes:</strong> Place near pits or on platforms</li>
+            <li><strong>Flag:</strong> Place at the end of the level</li>
+            <li><strong>Player:</strong> Place at the start (left side)</li>
+            <li><strong>Controller:</strong> Place <code>obj_game_controller</code> anywhere</li>
+        </ol>
+    </div>
+
+    <h2>Test Your Game!</h2>
+    <div class="success">
+        <p><strong>Press F5 or click Run!</strong></p>
+        <ul>
+            <li><strong>Left/Right Arrows:</strong> Move</li>
+            <li><strong>Up Arrow or Space:</strong> Jump</li>
+            <li>Collect coins for points</li>
+            <li>Avoid spikes!</li>
+            <li>Reach the flag to win!</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>Congratulations!</strong> You've created a platformer game with gravity, jumping, and collision!
+    </div>
+
+    <div class="info">
+        <strong>Challenge:</strong> Add more levels, moving platforms, or enemies!
+    </div>
+</body>
+</html>

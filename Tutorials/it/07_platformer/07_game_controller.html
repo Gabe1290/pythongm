@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Step 6: Game Controller</h1>
+
+    <p>The game controller displays the score on screen.</p>
+
+    <h2>Create the Controller Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create object <code>obj_game_controller</code></li>
+            <li>No sprite needed (invisible controller)</li>
+        </ol>
+    </div>
+
+    <h2>Draw the Score</h2>
+    <div class="step">
+        <p>In <code>obj_game_controller</code>:</p>
+        <ol>
+            <li>Add Event: <strong>Draw &gt; Draw</strong></li>
+            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+        </ol>
+        <pre>
+// Set text color
+draw_set_color(c_white);
+
+// Draw score at top-left
+draw_text(10, 10, "Score: " + string(score));
+
+// Optional: Draw instructions
+draw_text(10, 30, "Arrows: Move  |  Space: Jump");</pre>
+    </div>
+
+    <h2>Alternative: Using Actions</h2>
+    <div class="step">
+        <p>Instead of code, you can use:</p>
+        <ol>
+            <li>Add Action: <strong>Draw &gt; Set Color</strong> (White)</li>
+            <li>Add Action: <strong>Score &gt; Draw Score</strong>
+                <ul>
+                    <li>X: 10</li>
+                    <li>Y: 10</li>
+                    <li>Caption: "Score: "</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Remember:</strong> Place the game controller in your room! It won't appear by itself.
+    </div>
+
+    <div class="info">
+        Click "Next" to design your level.
+    </div>
+</body>
+</html>

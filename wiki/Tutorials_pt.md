@@ -22,6 +22,7 @@ Estes tutoriais foram projetados para usuários novos no desenvolvimento de jogo
 | [**Breakout**](Tutorial-Breakout_pt) | Construa um jogo de quebra-tijolos | Destruição de objetos, mecânica de ricochete, sistema de vidas |
 | [**Sokoban**](Tutorial-Sokoban_pt) | Crie um jogo de puzzle de empurrar caixas | Movimento em grade, mecânica de empurrar, condições de vitória |
 | [**Labirinto**](Tutorial-Maze_pt) | Navegue pelos corredores até a saída | Movimento suave, colisão com paredes, colecionáveis, cronômetro |
+| [**Platformer**](Tutorial-Platformer_pt) | Corra, pule e colete moedas | Gravidade, mecânicas de pulo, colisão com plataformas |
 
 ### Guias Abrangentes
 

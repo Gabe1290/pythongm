@@ -22,6 +22,7 @@ These tutorials are designed for users new to game development. They use the **B
 | [**Breakout**](Tutorial-Breakout) | Build a brick breaker game | Object destruction, bounce mechanics, lives system |
 | [**Sokoban**](Tutorial-Sokoban) | Create a box-pushing puzzle game | Grid-based movement, push mechanics, win conditions |
 | [**Maze**](Tutorial-Maze) | Navigate through corridors to the exit | Smooth movement, wall collision, collectibles, timer |
+| [**Platformer**](Tutorial-Platformer) | Run, jump, and collect coins | Gravity, jumping mechanics, platform collision |
 
 ### Comprehensive Guides
 

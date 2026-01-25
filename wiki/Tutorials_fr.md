@@ -22,6 +22,7 @@ Ces tutoriels sont conçus pour les utilisateurs novices en développement de je
 | [**Breakout**](Tutorial-Breakout_fr) | Construisez un jeu de casse-briques | Destruction d'objets, mécanique de rebond, système de vies |
 | [**Sokoban**](Tutorial-Sokoban_fr) | Créez un jeu de puzzle pousse-caisses | Mouvement en grille, mécanique de poussée, conditions de victoire |
 | [**Labyrinthe**](Tutorial-Maze_fr) | Naviguez à travers les couloirs jusqu'à la sortie | Mouvement fluide, collision avec les murs, objets à collecter, chronomètre |
+| [**Platformer**](Tutorial-Platformer_fr) | Courez, sautez et collectez des pièces | Gravité, mécanique de saut, collision avec plateformes |
 
 ### Guides Complets
 

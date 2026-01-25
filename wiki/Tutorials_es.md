@@ -22,6 +22,7 @@ Estos tutoriales están diseñados para usuarios nuevos en el desarrollo de jueg
 | [**Breakout**](Tutorial-Breakout_es) | Construye un juego tipo rompeladrillos | Destrucción de objetos, mecánicas de rebote, sistema de vidas |
 | [**Sokoban**](Tutorial-Sokoban_es) | Crea un juego de puzzle de empujar cajas | Movimiento en cuadrícula, mecánicas de empuje, condiciones de victoria |
 | [**Laberinto**](Tutorial-Maze_es) | Navega por los pasillos hasta la salida | Movimiento fluido, colisión con paredes, coleccionables, temporizador |
+| [**Platformer**](Tutorial-Platformer_es) | Corre, salta y colecciona monedas | Gravedad, mecánicas de salto, colisión con plataformas |
 
 ### Guías Completas
 

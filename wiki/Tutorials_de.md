@@ -22,6 +22,7 @@ Diese Tutorials sind für Benutzer gedacht, die neu in der Spieleentwicklung sin
 | [**Breakout**](Tutorial-Breakout_de) | Bauen Sie ein Ziegelstein-Brecher-Spiel | Objektvernichtung, Abprall-Mechanik, Leben-System |
 | [**Sokoban**](Tutorial-Sokoban_de) | Erstellen Sie ein Kisten-Schiebe-Puzzlespiel | Rasterbasierte Bewegung, Schiebe-Mechanik, Siegbedingungen |
 | [**Labyrinth**](Tutorial-Maze_de) | Navigieren Sie durch Korridore zum Ausgang | Flüssige Bewegung, Wandkollision, Sammelobjekte, Timer |
+| [**Platformer**](Tutorial-Platformer_de) | Laufen, springen und Münzen sammeln | Schwerkraft, Sprungmechanik, Plattformkollision |
 
 ### Umfassende Anleitungen
 

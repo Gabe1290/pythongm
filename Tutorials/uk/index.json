@@ -82,6 +82,21 @@
                 "06_game_controller.html",
                 "07_room_setup.html"
             ]
+        },
+        {
+            "title": "Платформер: Біжи, Стрибай, Збирай",
+            "folder": "07_platformer",
+            "description": "Стрибайте між платформами, уникайте небезпек, збирайте монети",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_player_physics.html",
+                "05_player_movement.html",
+                "06_collectibles_hazards.html",
+                "07_game_controller.html",
+                "08_room_setup.html"
+            ]
         }
     ]
 }

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #34495e; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Step 1: Create Sprites</h1>
+
+    <p>We need sprites for all our game elements.</p>
+
+    <table>
+        <tr>
+            <th>Sprite Name</th>
+            <th>Size</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td><code>spr_player</code></td>
+            <td>32x48</td>
+            <td>Simple character (rectangle with face)</td>
+        </tr>
+        <tr>
+            <td><code>spr_ground</code></td>
+            <td>32x32</td>
+            <td>Grass/dirt platform tile</td>
+        </tr>
+        <tr>
+            <td><code>spr_platform</code></td>
+            <td>64x16</td>
+            <td>Floating platform (wood/stone)</td>
+        </tr>
+        <tr>
+            <td><code>spr_coin</code></td>
+            <td>16x16</td>
+            <td>Yellow/gold circle</td>
+        </tr>
+        <tr>
+            <td><code>spr_spike</code></td>
+            <td>32x32</td>
+            <td>Triangular spikes pointing up</td>
+        </tr>
+        <tr>
+            <td><code>spr_flag</code></td>
+            <td>32x64</td>
+            <td>Flag on a pole (goal)</td>
+        </tr>
+    </table>
+
+    <h2>Create Player Sprite</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Sprites</strong> > <strong>Create Sprite</strong></li>
+            <li>Name it <code>spr_player</code></li>
+            <li>Click <strong>Edit Sprite</strong></li>
+            <li>Draw a character (32x48 pixels)</li>
+            <li>Use a bright color like blue or red</li>
+        </ol>
+    </div>
+
+    <h2>Create Ground Sprite</h2>
+    <div class="step">
+        <ol>
+            <li>Create sprite named <code>spr_ground</code></li>
+            <li>Size: 32x32 pixels</li>
+            <li>Draw a grass/dirt tile (green top, brown bottom)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Tip:</strong> The player is taller than wide (32x48) to look like a character!
+    </div>
+
+    <div class="info">
+        Click "Next" to create the game objects.
+    </div>
+</body>
+</html>
