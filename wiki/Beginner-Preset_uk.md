@@ -498,10 +498,12 @@
 
 ## Дивіться Також
 
+- [Посібники](Tutorials_uk) - Усі посібники в одному місці
 - [Проміжний Пресет](Intermediate-Preset_uk) - Функції наступного рівня
 - [Повна Довідка Дій](Full-Action-Reference_uk) - Повний список дій
 - [Довідка Подій](Event-Reference_uk) - Повний список подій
 - [Події та Дії](Events-and-Actions_uk) - Основні концепції
 - [Створення Вашої Першої Гри](Creating-Your-First-Game_uk) - Покроковий посібник
+- [Посібник Pong](Tutorial-Pong_uk) - Створіть класичну гру Pong для двох гравців
 - [Посібник Breakout](Tutorial-Breakout_uk) - Створіть класичну гру Breakout
 - [Вступ до Створення Ігор](Getting-Started-Breakout_uk) - Повний посібник для початківців

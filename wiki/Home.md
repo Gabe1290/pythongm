@@ -171,8 +171,10 @@ project_name/
 - [Full Action Reference](Full-Action-Reference) - Complete action documentation
 
 ### Tutorials & Guides
+- [**Tutorials**](Tutorials) - All tutorials in one place
 - [Getting-Started](Getting-Started) - First steps with PyGameMaker
 - [Creating-Your-First-Game](Creating-Your-First-Game) - Tutorial walkthrough
+- [Tutorial: Pong Game](Tutorial-Pong) - Create a classic two-player Pong game
 - [Tutorial: Breakout Game](Tutorial-Breakout) - Create a classic brick breaker game
 - [Introduction to Game Creation](Getting-Started-Breakout) - Comprehensive beginner tutorial
 - [Object-Editor](Object-Editor) - Working with game objects

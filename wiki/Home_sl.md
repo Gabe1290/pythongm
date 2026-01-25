@@ -171,8 +171,10 @@ ime_projekta/
 - [Referenca Akcij](Full-Action-Reference_sl) - Popolna dokumentacija akcij
 
 ### Vadnice in Vodniki
+- [**Vadnice**](Tutorials_sl) - Vse vadnice na enem mestu
 - [Kako Začeti](Kako_Zaceti_sl) - Prvi koraki s PyGameMaker
 - [Ustvarite Svojo Prvo Igro](Prva_Igra_sl) - Vadnica korak za korakom
+- [Vadnica Pong](Tutorial-Pong_sl) - Ustvarite klasično igro Pong za dva igralca
 - [Vadnica Breakout](Tutorial-Breakout_sl) - Ustvarite klasično igro Breakout
 - [Uvod v Ustvarjanje Iger](Getting-Started-Breakout_sl) - Celovita vadnica za začetnike
 - [Urejevalnik Objektov](Urejevalnik_Objektov_sl) - Delo z igralnimi objekti

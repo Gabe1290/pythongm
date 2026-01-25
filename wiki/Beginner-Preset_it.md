@@ -519,10 +519,12 @@ Quando ti senti a tuo agio con il preset Principiante, considera di passare all'
 
 ## Vedi Anche
 
+- [Tutorial](Tutorials_it) - Tutti i tutorial in un unico posto
 - [Preset Intermedio](Intermediate-Preset_it) - Funzionalita del livello successivo
 - [Riferimento Completo Azioni](Full-Action-Reference_it) - Lista completa delle azioni
 - [Riferimento Eventi](Event-Reference_it) - Lista completa degli eventi
 - [Eventi e Azioni](Events-and-Actions_it) - Concetti fondamentali
 - [Creare il Tuo Primo Gioco](Creating-Your-First-Game_it) - Tutorial passo-passo
+- [Tutorial Pong](Tutorial-Pong_it) - Crea un classico gioco Pong a due giocatori
 - [Tutorial Breakout](Tutorial-Breakout_it) - Crea un classico gioco Breakout
 - [Introduzione alla Creazione di Giochi](Getting-Started-Breakout_it) - Tutorial completo per principianti

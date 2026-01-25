@@ -519,10 +519,12 @@ Wenn Sie mit dem Anfaenger-Preset vertraut sind, sollten Sie ein Upgrade auf **F
 
 ## Siehe auch
 
+- [Tutorials](Tutorials_de) - Alle Tutorials an einem Ort
 - [Fortgeschrittenen-Preset](Intermediate-Preset_de) - Funktionen der naechsten Stufe
 - [Vollstaendige Aktionsreferenz](Full-Action-Reference_de) - Vollstaendige Aktionsliste
 - [Ereignisreferenz](Event-Reference_de) - Vollstaendige Ereignisliste
 - [Ereignisse und Aktionen](Events-and-Actions_de) - Kernkonzepte
 - [Erstellen Sie Ihr erstes Spiel](Creating-Your-First-Game_de) - Schritt-fuer-Schritt-Anleitung
+- [Pong Tutorial](Tutorial-Pong_de) - Erstellen Sie ein klassisches Zwei-Spieler Pong-Spiel
 - [Breakout Tutorial](Tutorial-Breakout_de) - Erstellen Sie ein klassisches Breakout-Spiel
 - [Einfuehrung in die Spieleentwicklung](Getting-Started-Breakout_de) - Umfassendes Anfaenger-Tutorial

@@ -171,8 +171,10 @@ nombre_proyecto/
 - [Referencia de Acciones](Full-Action-Reference_es) - Documentación completa de acciones
 
 ### Tutoriales y Guías
+- [**Tutoriales**](Tutorials_es) - Todos los tutoriales en un solo lugar
 - [Primeros Pasos](Primeros_Pasos_es) - Primeros pasos con PyGameMaker
 - [Crea Tu Primer Juego](Primer_Juego_es) - Tutorial paso a paso
+- [Tutorial Pong](Tutorial-Pong_es) - Crea un juego Pong clásico para dos jugadores
 - [Tutorial Breakout](Tutorial-Breakout_es) - Crea un juego Breakout clásico
 - [Introducción a la Creación de Juegos](Getting-Started-Breakout_es) - Tutorial completo para principiantes
 - [Editor de Objetos](Editor_Objetos_es) - Trabajar con objetos del juego

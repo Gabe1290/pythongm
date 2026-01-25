@@ -171,8 +171,10 @@ nom_du_projet/
 - [Référence des Actions](Full-Action-Reference_fr) - Documentation complète des actions
 
 ### Tutoriels et Guides
+- [**Tutoriels**](Tutorials_fr) - Tous les tutoriels en un seul endroit
 - [Premiers Pas](Demarrage_fr) - Premiers pas avec PyGameMaker
 - [Créer Votre Premier Jeu](Premier_Jeu_fr) - Tutoriel pas à pas
+- [Tutoriel : Pong](Tutorial-Pong_fr) - Créez un jeu Pong classique à deux joueurs
 - [Tutoriel : Casse-Briques](Tutorial-Breakout_fr) - Créez un jeu de casse-briques classique
 - [Initiation à la Création de Jeux](Getting-Started-Breakout_fr) - Tutoriel complet pour débutants
 - [Éditeur d'Objets](Editeur_Objets_fr) - Travailler avec les objets de jeu

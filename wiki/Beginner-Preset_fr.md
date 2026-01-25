@@ -519,10 +519,12 @@ Lorsque vous etes a l'aise avec le preset Debutant, envisagez de passer au **Int
 
 ## Voir Aussi
 
+- [Tutoriels](Tutorials_fr) - Tous les tutoriels en un seul endroit
 - [Preset Intermediaire](Intermediate-Preset_fr) - Fonctionnalites du niveau suivant
 - [Reference Complete des Actions](Full-Action-Reference_fr) - Liste complete des actions
 - [Reference des Evenements](Event-Reference_fr) - Liste complete des evenements
 - [Evenements et Actions](Events-and-Actions_fr) - Concepts fondamentaux
 - [Creer Votre Premier Jeu](Creating-Your-First-Game_fr) - Tutoriel etape par etape
+- [Tutoriel Pong](Tutorial-Pong_fr) - Creez un jeu Pong classique pour deux joueurs
 - [Tutoriel Casse-Briques](Tutorial-Breakout_fr) - Creez un jeu de casse-briques classique
 - [Initiation a la Creation de Jeux](Getting-Started-Breakout_fr) - Tutoriel complet pour debutants

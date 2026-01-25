@@ -171,8 +171,10 @@ projektname/
 - [Vollständige Aktions-Referenz](Full-Action-Reference_de) - Vollständige Aktionsdokumentation
 
 ### Tutorials & Anleitungen
+- [**Tutorials**](Tutorials_de) - Alle Tutorials an einem Ort
 - [Erste Schritte](Erste_Schritte_de) - Erste Schritte mit PyGameMaker
 - [Ihr Erstes Spiel](Erstes_Spiel_de) - Tutorial-Durchgang
+- [Pong Tutorial](Tutorial-Pong_de) - Erstellen Sie ein klassisches Zwei-Spieler Pong-Spiel
 - [Breakout Tutorial](Tutorial-Breakout_de) - Erstellen Sie ein klassisches Casse-Briques Spiel
 - [Einführung in die Spieleentwicklung](Getting-Started-Breakout_de) - Umfassendes Anfänger-Tutorial
 - [Objekt-Editor](Objekt_Editor_de) - Arbeiten mit Spielobjekten

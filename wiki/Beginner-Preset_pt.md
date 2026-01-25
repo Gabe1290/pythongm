@@ -498,10 +498,12 @@ Quando estiver confortavel com o preset Iniciante, considere atualizar para **In
 
 ## Veja Tambem
 
+- [Tutoriais](Tutorials_pt) - Todos os tutoriais em um so lugar
 - [Preset Intermediario](Intermediate-Preset_pt) - Recursos do proximo nivel
 - [Referencia Completa de Acoes](Full-Action-Reference_pt) - Lista completa de acoes
 - [Referencia de Eventos](Event-Reference_pt) - Lista completa de eventos
 - [Eventos e Acoes](Events-and-Actions_pt) - Conceitos fundamentais
 - [Criando Seu Primeiro Jogo](Creating-Your-First-Game_pt) - Tutorial passo a passo
+- [Tutorial Pong](Tutorial-Pong_pt) - Crie um jogo Pong classico para dois jogadores
 - [Tutorial Breakout](Tutorial-Breakout_pt) - Crie um jogo Breakout classico
 - [Introducao a Criacao de Jogos](Getting-Started-Breakout_pt) - Tutorial completo para iniciantes

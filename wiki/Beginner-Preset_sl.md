@@ -498,10 +498,12 @@ Ko boste zadovoljni z Zacetniskim presetom, razmislite o nadgradnji na **Srednji
 
 ## Oglejte si Tudi
 
+- [Vadnice](Tutorials_sl) - Vse vadnice na enem mestu
 - [Srednji Preset](Intermediate-Preset_sl) - Funkcije naslednje stopnje
 - [Popolna Referenca Akcij](Full-Action-Reference_sl) - Celoten seznam akcij
 - [Referenca Dogodkov](Event-Reference_sl) - Celoten seznam dogodkov
 - [Dogodki in Akcije](Events-and-Actions_sl) - Temeljni koncepti
 - [Ustvarjanje Vase Prve Igre](Creating-Your-First-Game_sl) - Vodnik po korakih
+- [Vadnica Pong](Tutorial-Pong_sl) - Ustvarite klasicno igro Pong za dva igralca
 - [Vadnica Breakout](Tutorial-Breakout_sl) - Ustvarite klasicno igro Breakout
 - [Uvod v Ustvarjanje Iger](Getting-Started-Breakout_sl) - Celovita vadnica za zacetnike

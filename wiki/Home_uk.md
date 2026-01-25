@@ -171,8 +171,10 @@ PyGameMaker інтегрує Google Blockly для візуального про
 - [Довідник Дій](Full-Action-Reference_uk) - Повна документація дій
 
 ### Посібники та Уроки
+- [**Посібники**](Tutorials_uk) - Усі посібники в одному місці
 - [Початок Роботи](Pochatok_Roboty_uk) - Перші кроки з PyGameMaker
 - [Створіть Свою Першу Гру](Persha_Gra_uk) - Покроковий посібник
+- [Посібник Pong](Tutorial-Pong_uk) - Створіть класичну гру Pong для двох гравців
 - [Посібник Breakout](Tutorial-Breakout_uk) - Створіть класичну гру Breakout
 - [Вступ до Створення Ігор](Getting-Started-Breakout_uk) - Повний посібник для початківців
 - [Редактор Об'єктів](Redaktor_Obiektiv_uk) - Робота з ігровими об'єктами
