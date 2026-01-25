@@ -176,6 +176,7 @@ PyGameMaker интегрирует Google Blockly для визуального 
 - [Создайте Свою Первую Игру](Pervaya_Igra_ru) - Пошаговое руководство
 - [Руководство Pong](Tutorial-Pong_ru) - Создайте классическую игру Pong для двух игроков
 - [Руководство Breakout](Tutorial-Breakout_ru) - Создайте классическую игру Breakout
+- [Руководство Sokoban](Tutorial-Sokoban_ru) - Создайте головоломку с толканием ящиков
 - [Введение в Создание Игр](Getting-Started-Breakout_ru) - Полное руководство для начинающих
 - [Редактор Объектов](Redaktor_Obiektov_ru) - Работа с игровыми объектами
 - [Редактор Комнат](Redaktor_Komnat_ru) - Проектирование уровней

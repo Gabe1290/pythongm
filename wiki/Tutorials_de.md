@@ -20,6 +20,7 @@ Diese Tutorials sind für Benutzer gedacht, die neu in der Spieleentwicklung sin
 |----------|-------------|----------------------|
 | [**Pong**](Tutorial-Pong_de) | Erstellen Sie ein klassisches Pong-Spiel für zwei Spieler | Tastatureingabe, Kollisionserkennung, Punkteverfolgung, globale Variablen |
 | [**Breakout**](Tutorial-Breakout_de) | Bauen Sie ein Ziegelstein-Brecher-Spiel | Objektvernichtung, Abprall-Mechanik, Leben-System |
+| [**Sokoban**](Tutorial-Sokoban_de) | Erstellen Sie ein Kisten-Schiebe-Puzzlespiel | Rasterbasierte Bewegung, Schiebe-Mechanik, Siegbedingungen |
 
 ### Umfassende Anleitungen
 

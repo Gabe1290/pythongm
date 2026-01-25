@@ -176,6 +176,7 @@ nome_progetto/
 - [Crea il Tuo Primo Gioco](Primo_Gioco_it) - Tutorial passo-passo
 - [Tutorial Pong](Tutorial-Pong_it) - Crea un classico gioco Pong a due giocatori
 - [Tutorial Breakout](Tutorial-Breakout_it) - Crea un classico gioco Breakout
+- [Tutorial Sokoban](Tutorial-Sokoban_it) - Crea un gioco puzzle di spinta scatole
 - [Introduzione alla Creazione di Giochi](Getting-Started-Breakout_it) - Tutorial completo per principianti
 - [Editor Oggetti](Editor_Oggetti_it) - Lavorare con oggetti di gioco
 - [Editor Stanze](Editor_Stanze_it) - Progettare livelli

@@ -20,6 +20,7 @@ Ces tutoriels sont conçus pour les utilisateurs novices en développement de je
 |----------|-------------|----------------|
 | [**Pong**](Tutorial-Pong_fr) | Créez un jeu Pong classique à deux joueurs | Entrée au clavier, détection de collision, suivi des points, variables globales |
 | [**Breakout**](Tutorial-Breakout_fr) | Construisez un jeu de casse-briques | Destruction d'objets, mécanique de rebond, système de vies |
+| [**Sokoban**](Tutorial-Sokoban_fr) | Créez un jeu de puzzle pousse-caisses | Mouvement en grille, mécanique de poussée, conditions de victoire |
 
 ### Guides Complets
 

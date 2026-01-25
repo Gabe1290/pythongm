@@ -176,6 +176,7 @@ projektname/
 - [Ihr Erstes Spiel](Erstes_Spiel_de) - Tutorial-Durchgang
 - [Pong Tutorial](Tutorial-Pong_de) - Erstellen Sie ein klassisches Zwei-Spieler Pong-Spiel
 - [Breakout Tutorial](Tutorial-Breakout_de) - Erstellen Sie ein klassisches Casse-Briques Spiel
+- [Sokoban Tutorial](Tutorial-Sokoban_de) - Erstellen Sie ein Kisten-Schiebe-Puzzlespiel
 - [Einführung in die Spieleentwicklung](Getting-Started-Breakout_de) - Umfassendes Anfänger-Tutorial
 - [Objekt-Editor](Objekt_Editor_de) - Arbeiten mit Spielobjekten
 - [Raum-Editor](Raum_Editor_de) - Level gestalten

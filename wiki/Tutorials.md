@@ -20,6 +20,7 @@ These tutorials are designed for users new to game development. They use the **B
 |----------|-------------|----------------|
 | [**Pong**](Tutorial-Pong) | Create a classic two-player Pong game | Keyboard input, collision detection, score tracking, global variables |
 | [**Breakout**](Tutorial-Breakout) | Build a brick breaker game | Object destruction, bounce mechanics, lives system |
+| [**Sokoban**](Tutorial-Sokoban) | Create a box-pushing puzzle game | Grid-based movement, push mechanics, win conditions |
 
 ### Comprehensive Guides
 

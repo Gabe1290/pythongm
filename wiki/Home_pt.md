@@ -176,6 +176,7 @@ nome_projeto/
 - [Crie Seu Primeiro Jogo](Primeiro_Jogo_pt) - Tutorial passo a passo
 - [Tutorial Pong](Tutorial-Pong_pt) - Crie um jogo Pong clássico para dois jogadores
 - [Tutorial Breakout](Tutorial-Breakout_pt) - Crie um jogo Breakout clássico
+- [Tutorial Sokoban](Tutorial-Sokoban_pt) - Crie um jogo de puzzle de empurrar caixas
 - [Introdução à Criação de Jogos](Getting-Started-Breakout_pt) - Tutorial completo para iniciantes
 - [Editor de Objetos](Editor_Objetos_pt) - Trabalhar com objetos do jogo
 - [Editor de Salas](Editor_Salas_pt) - Projetar níveis

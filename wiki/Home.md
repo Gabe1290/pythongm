@@ -176,6 +176,7 @@ project_name/
 - [Creating-Your-First-Game](Creating-Your-First-Game) - Tutorial walkthrough
 - [Tutorial: Pong Game](Tutorial-Pong) - Create a classic two-player Pong game
 - [Tutorial: Breakout Game](Tutorial-Breakout) - Create a classic brick breaker game
+- [Tutorial: Sokoban Game](Tutorial-Sokoban) - Create a box-pushing puzzle game
 - [Introduction to Game Creation](Getting-Started-Breakout) - Comprehensive beginner tutorial
 - [Object-Editor](Object-Editor) - Working with game objects
 - [Room-Editor](Room-Editor) - Designing levels

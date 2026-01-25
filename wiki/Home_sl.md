@@ -176,6 +176,7 @@ ime_projekta/
 - [Ustvarite Svojo Prvo Igro](Prva_Igra_sl) - Vadnica korak za korakom
 - [Vadnica Pong](Tutorial-Pong_sl) - Ustvarite klasično igro Pong za dva igralca
 - [Vadnica Breakout](Tutorial-Breakout_sl) - Ustvarite klasično igro Breakout
+- [Vadnica Sokoban](Tutorial-Sokoban_sl) - Ustvarite igro ugank s potiskanjem zabojev
 - [Uvod v Ustvarjanje Iger](Getting-Started-Breakout_sl) - Celovita vadnica za začetnike
 - [Urejevalnik Objektov](Urejevalnik_Objektov_sl) - Delo z igralnimi objekti
 - [Urejevalnik Sob](Urejevalnik_Sob_sl) - Oblikovanje nivojev

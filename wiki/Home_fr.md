@@ -176,6 +176,7 @@ nom_du_projet/
 - [Créer Votre Premier Jeu](Premier_Jeu_fr) - Tutoriel pas à pas
 - [Tutoriel : Pong](Tutorial-Pong_fr) - Créez un jeu Pong classique à deux joueurs
 - [Tutoriel : Casse-Briques](Tutorial-Breakout_fr) - Créez un jeu de casse-briques classique
+- [Tutoriel : Sokoban](Tutorial-Sokoban_fr) - Créez un jeu de puzzle pousse-caisses
 - [Initiation à la Création de Jeux](Getting-Started-Breakout_fr) - Tutoriel complet pour débutants
 - [Éditeur d'Objets](Editeur_Objets_fr) - Travailler avec les objets de jeu
 - [Éditeur de Salles](Editeur_Salles_fr) - Concevoir des niveaux
