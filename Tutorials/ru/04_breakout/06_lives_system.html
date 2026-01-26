@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 5: Добавление системы жизней</h1>
+
+    <p>Игрок теряет жизнь, когда мяч падает за нижний край экрана.</p>
+
+    <h2>Создание зоны смерти</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте спрайт <code>spr_death_zone</code> (32x32, любой цвет)</li>
+            <li>Создайте объект <code>obj_death_zone</code></li>
+            <li><strong>Снимите отметку «Видимый»</strong> — он должен быть невидимым</li>
+            <li>Отметьте «Твёрдый»</li>
+        </ol>
+    </div>
+
+    <h2>Мяч падает в зону смерти</h2>
+    <div class="step">
+        <p>В <code>obj_ball</code>:</p>
+        <ol>
+            <li>Добавьте событие: <strong>Столкновение &gt; obj_death_zone</strong></li>
+            <li>Добавьте действие: <strong>Счёт &gt; Вычесть из жизней</strong></li>
+            <li>Значение: <code>1</code></li>
+            <li>Добавьте действие: <strong>Движение &gt; Вернуться на начальную позицию</strong></li>
+        </ol>
+    </div>
+
+    <h2>Создание игрового контроллера</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте объект <code>obj_game_controller</code></li>
+            <li>Спрайт не нужен</li>
+        </ol>
+    </div>
+
+    <h2>Инициализация жизней (событие создания)</h2>
+    <div class="step">
+        <p>В <code>obj_game_controller</code>:</p>
+        <ol>
+            <li>Добавьте событие: <strong>Создать</strong></li>
+            <li>Добавьте действие: <strong>Счёт &gt; Установить жизни</strong></li>
+            <li>Значение: <code>3</code></li>
+            <li>Добавьте действие: <strong>Счёт &gt; Установить счёт</strong></li>
+            <li>Значение: <code>0</code></li>
+        </ol>
+    </div>
+
+    <h2>Проверка конца игры (событие шага)</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте событие: <strong>Шаг</strong></li>
+            <li>Добавьте действие: <strong>Управление &gt; Проверить жизни</strong></li>
+            <li>Проверьте, меньше или равно ли количество жизней 0</li>
+            <li>Добавьте действие: <strong>Main2 &gt; Показать сообщение</strong></li>
+            <li>Сообщение: <code>Игра окончена!</code></li>
+            <li>Добавьте действие: <strong>Main2 &gt; Перезапустить комнату</strong></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Помните:</strong> Поместите <code>obj_game_controller</code> в вашу комнату!
+    </div>
+
+    <div class="info">
+        Нажмите «Далее», чтобы добавить отображение счёта.
+    </div>
+</body>
+</html>

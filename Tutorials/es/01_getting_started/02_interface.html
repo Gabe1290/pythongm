@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 18px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 14px;
+        }
+        .panel {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .panel-title {
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        code {
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+  </head>
+  <body>
+    <h2>La interfaz de PyGameMaker</h2>
+    <p>La ventana de PyGameMaker esta dividida en tres areas principales:</p>
+    <div class="panel">
+      <div class="panel-title">1. Arbol de recursos (Panel izquierdo)</div>
+      <p>Este panel muestra todos los recursos de tu proyecto organizados por
+        tipo:</p>
+      <ul>
+        <li><strong>Sprites</strong> - Imagenes y animaciones para tu
+          juego</li>
+        <li><strong>Sonidos</strong> - Efectos de sonido y musica</li>
+        <li><strong>Objetos</strong> - Entidades del juego con comportamientos</li>
+        <li><strong>Habitaciones</strong> - Niveles y pantallas del juego</li>
+      </ul>
+      <p>Haz clic derecho en cualquier categoria para crear nuevos recursos.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-title">2. Area del editor (Centro)</div>
+      <p>Aqui es donde editas tus recursos. Los diferentes editores se abren en
+        pestanas:</p>
+      <ul>
+        <li><strong>Editor de Sprites</strong> - Ver y configurar sprites</li>
+        <li><strong>Editor de Objetos</strong> - Definir comportamientos de objetos
+          con eventos</li>
+        <li><strong>Editor de Habitaciones</strong> - Disenar los niveles de tu juego</li>
+      </ul>
+      <p>Haz doble clic en un recurso del arbol para abrir su editor.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-title">3. Panel de propiedades (Panel derecho)</div>
+      <p>Muestra las propiedades del recurso u objeto seleccionado actualmente. Puedes
+        modificar configuraciones aqui cuando editas habitaciones u objetos.</p>
+    </div>
+    <h2>Menus principales</h2>
+    <ul>
+      <li><code>Archivo</code> - Crear, abrir y guardar proyectos</li>
+      <li><code>Recursos</code> - Crear e importar recursos del juego</li>
+      <li><code>Compilar</code> - Probar y exportar tu juego</li>
+      <li><code>Ayuda</code> - Acceder a tutoriales y documentacion</li>
+    </ul>
+    <div class="highlight"> <strong>Atajo:</strong> Presiona <code>F5</code>
+      para probar tu juego rapidamente. </div>
+  </body>
+</html>

@@ -14,54 +14,54 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Ball Movement and Bouncing</h1>
+    <h1>Passo 4: Movimento e Rimbalzo della Palla</h1>
 
-    <p>The ball needs to move automatically and bounce off walls and paddles.</p>
+    <p>La palla deve muoversi automaticamente e rimbalzare su muri e racchette.</p>
 
-    <h2>Start Ball Moving (Create Event)</h2>
+    <h2>Avviare il Movimento della Palla (Evento Creazione)</h2>
     <div class="step">
         <ol>
-            <li>Open <code>obj_ball</code></li>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Move &gt; Start Moving in Direction</strong></li>
-            <li>Choose a diagonal direction (not straight up/down)</li>
-            <li>Set speed to <code>6</code></li>
+            <li>Apri <code>obj_ball</code></li>
+            <li>Aggiungi Evento: <strong>Creazione</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Inizia a Muoversi in Direzione</strong></li>
+            <li>Scegli una direzione diagonale (non dritta su/giu)</li>
+            <li>Imposta la velocita a <code>6</code></li>
         </ol>
     </div>
 
-    <h2>Bounce Off Walls</h2>
+    <h2>Rimbalzare sui Muri</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_wall</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Aggiungi Evento: <strong>Collisione &gt; obj_wall</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Rimbalza Contro Oggetti</strong></li>
+            <li>Seleziona "Contro oggetti solidi"</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Left Paddle</h2>
+    <h2>Rimbalzare sulla Racchetta Sinistra</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_paddle_left</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Aggiungi Evento: <strong>Collisione &gt; obj_paddle_left</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Rimbalza Contro Oggetti</strong></li>
+            <li>Seleziona "Contro oggetti solidi"</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Right Paddle</h2>
+    <h2>Rimbalzare sulla Racchetta Destra</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_paddle_right</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Aggiungi Evento: <strong>Collisione &gt; obj_paddle_right</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Rimbalza Contro Oggetti</strong></li>
+            <li>Seleziona "Contro oggetti solidi"</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Test Tip:</strong> You can test your game now! The ball should bounce around, but scoring won't work yet.
+        <strong>Suggerimento per il Test:</strong> Puoi testare il tuo gioco ora! La palla dovrebbe rimbalzare, ma il punteggio non funzionera ancora.
     </div>
 
     <div class="info">
-        Click "Next" to add scoring goals.
+        Clicca "Avanti" per aggiungere le porte del punteggio.
     </div>
 </body>
 </html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #7f8c8d; font-size: 13px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 7: Настройка комнаты</h1>
+
+    <p>Пришло время создать игровую комнату и разместить все объекты!</p>
+
+    <h2>Создание комнаты</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкните правой кнопкой мыши по <strong>Комнаты</strong> и выберите <strong>Создать комнату</strong></li>
+            <li>Назовите её <code>room_breakout</code></li>
+            <li>Установите размер 640x480 пикселей</li>
+        </ol>
+    </div>
+
+    <h2>Схема комнаты</h2>
+    <pre>
++--[СТЕНА]--------------------[СТЕНА]--+
+|  [СТЕНА]  [К][К][К][К][К]   [СТЕНА]  |
+|  [СТЕНА]  [О][О][О][О][О]   [СТЕНА]  |
+|  [СТЕНА]  [Ж][Ж][Ж][Ж][Ж]   [СТЕНА]  |
+|  [СТЕНА]  [З][З][З][З][З]   [СТЕНА]  |
+|  [СТЕНА]                    [СТЕНА]  |
+|  [СТЕНА]        (o)         [СТЕНА]  |
+|  [СТЕНА]                    [СТЕНА]  |
+|  [СТЕНА]     [РАКЕТКА]      [СТЕНА]  |
++--[ЗОНА СМЕРТИ ЗОНА СМЕРТИ ЗОНА]------+
+    </pre>
+
+    <h2>Размещение объектов</h2>
+
+    <h3>1. Стены</h3>
+    <div class="step">
+        <p>Разместите <code>obj_wall</code> вдоль верхнего, левого и правого краёв.</p>
+    </div>
+
+    <h3>2. Зона смерти</h3>
+    <div class="step">
+        <p>Разместите <code>obj_death_zone</code> вдоль нижнего края (она невидима).</p>
+    </div>
+
+    <h3>3. Кирпичи</h3>
+    <div class="step">
+        <p>Расположите кирпичи рядами в верхней части:</p>
+        <ul>
+            <li>Верхний ряд: красные кирпичи (<code>obj_brick_red</code>)</li>
+            <li>Второй ряд: оранжевые кирпичи</li>
+            <li>Третий ряд: жёлтые кирпичи</li>
+            <li>Четвёртый ряд: зелёные кирпичи</li>
+        </ul>
+    </div>
+
+    <h3>4. Ракетка</h3>
+    <div class="step">
+        <p>Разместите <code>obj_paddle</code> внизу, по центру по горизонтали.</p>
+    </div>
+
+    <h3>5. Мяч</h3>
+    <div class="step">
+        <p>Разместите <code>obj_ball</code> чуть выше ракетки.</p>
+    </div>
+
+    <h3>6. Игровой контроллер</h3>
+    <div class="step">
+        <p>Разместите <code>obj_game_controller</code> в любом месте (у него нет спрайта).</p>
+    </div>
+
+    <div class="success">
+        <strong>Поздравляем!</strong> Ваша игра Breakout готова!
+    </div>
+
+    <h2>Тестирование игры</h2>
+    <ul>
+        <li>Нажмите <strong>F5</strong> или кнопку <strong>Запуск</strong></li>
+        <li>Используйте клавиши <strong>Влево</strong> и <strong>Вправо</strong> для перемещения</li>
+        <li>Разбейте все кирпичи, чтобы победить!</li>
+    </ul>
+
+    <div class="info">
+        <strong>Отличная работа!</strong> Вы создали классическую игру Breakout!
+    </div>
+</body>
+</html>

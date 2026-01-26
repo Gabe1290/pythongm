@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 1: Создание Спрайтов</h1>
+
+    <p>Для игры Понг нам нужны четыре Спрайта: Мяч, две Ракетки и Стены.</p>
+
+    <h2>Создание Спрайта Мяча</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкните правой кнопкой мыши на <strong>Спрайты</strong> в дереве ресурсов</li>
+            <li>Выберите <strong>Создать Спрайт</strong></li>
+            <li>Назовите его <code>spr_ball</code></li>
+            <li>Нажмите <strong>Редактировать Спрайт</strong></li>
+            <li>Нарисуйте небольшой белый круг (примерно 16x16 пикселей)</li>
+            <li>Нажмите <strong>OK</strong> для сохранения</li>
+        </ol>
+    </div>
+
+    <h2>Создание Спрайтов Ракеток</h2>
+    <div class="step">
+        <p><strong>Левая Ракетка (Игрок 1):</strong></p>
+        <ol>
+            <li>Создайте новый Спрайт с именем <code>spr_paddle_left</code></li>
+            <li>Нарисуйте высокий узкий прямоугольник (примерно 16x64 пикселей)</li>
+            <li>Используйте синий цвет для обозначения Игрока 1</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Правая Ракетка (Игрок 2):</strong></p>
+        <ol>
+            <li>Создайте новый Спрайт с именем <code>spr_paddle_right</code></li>
+            <li>Нарисуйте высокий узкий прямоугольник (примерно 16x64 пикселей)</li>
+            <li>Используйте красный цвет для обозначения Игрока 2</li>
+        </ol>
+    </div>
+
+    <h2>Создание Спрайта Стены</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте новый Спрайт с именем <code>spr_wall</code></li>
+            <li>Нарисуйте сплошной серый прямоугольник (32x32 пикселя)</li>
+            <li>Он будет растянут для формирования верхней и нижней границ</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Совет:</strong> Делайте все Спрайты простыми! Классический Понг использовал базовые фигуры.
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы создать игровые Объекты.
+    </div>
+</body>
+</html>

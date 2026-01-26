@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 1: Создание Спрайтов</h1>
+
+    <p>Все спрайты должны быть одинакового размера (32x32 пикселя) для правильной сетки.</p>
+
+    <h2>Создание Спрайта Игрока</h2>
+    <div class="step">
+        <ol>
+            <li>Щелкните правой кнопкой мыши на <strong>Спрайты</strong> в дереве ресурсов</li>
+            <li>Выберите <strong>Создать Спрайт</strong></li>
+            <li>Назовите его <code>spr_player</code></li>
+            <li>Нажмите <strong>Редактировать Спрайт</strong></li>
+            <li>Нарисуйте простого персонажа (32x32 пикселя)</li>
+            <li>Используйте заметный цвет, например синий</li>
+            <li>Нажмите <strong>OK</strong> для сохранения</li>
+        </ol>
+    </div>
+
+    <h2>Создание Спрайтов Ящика</h2>
+    <div class="step">
+        <p><strong>Обычный Ящик:</strong></p>
+        <ol>
+            <li>Создайте спрайт <code>spr_crate</code></li>
+            <li>Нарисуйте форму деревянного ящика (32x32 пикселя)</li>
+            <li>Используйте коричневый или оранжевый цвет</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Ящик на Цели:</strong></p>
+        <ol>
+            <li>Создайте спрайт <code>spr_crate_ok</code></li>
+            <li>Нарисуйте такой же ящик, но зелёного цвета</li>
+            <li>Это показывает, что ящик правильно размещён</li>
+        </ol>
+    </div>
+
+    <h2>Создание Спрайта Стены</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте спрайт <code>spr_wall</code></li>
+            <li>Нарисуйте кирпичный или каменный узор (32x32 пикселя)</li>
+            <li>Используйте серый или тёмный цвет</li>
+        </ol>
+    </div>
+
+    <h2>Создание Спрайта Цели</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте спрайт <code>spr_target</code></li>
+            <li>Нарисуйте метку X или индикатор цели (32x32 пикселя)</li>
+            <li>Используйте яркий цвет, например красный</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Важно:</strong> Все спрайты должны быть ровно 32x32 пикселя для правильного выравнивания по сетке!
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы создать игровые объекты.
+    </div>
+</body>
+</html>

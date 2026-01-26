@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 6px; text-align: left; }
+        th { background-color: #34495e; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Paso 3: Física del Módulo Lunar (Evento Crear)</h1>
+
+    <p>Configura las variables para la Gravedad, Propulsión, Combustible y velocidad.</p>
+
+    <h2>Inicializar Variables de Física</h2>
+    <div class="step">
+        <p>En <code>obj_lander</code>:</p>
+        <ol>
+            <li>Añadir Evento: <strong>Crear</strong></li>
+            <li>Añadir Acción: <strong>Control &gt; Ejecutar Código</strong></li>
+        </ol>
+        <pre>
+// Configuración de física
+gravity_force = 0.05;  // Gravedad suave
+thrust_force = 0.1;    // Potencia de Propulsión
+max_speed = 5;         // Velocidad máxima
+
+// Velocidad actual
+hsp = 0;  // Velocidad horizontal
+vsp = 0;  // Velocidad vertical
+
+// Sistema de Combustible
+fuel = 100;
+fuel_use = 0.5;  // Combustible por fotograma
+
+// Estado del juego
+landed = false;
+crashed = false;
+
+// Velocidad segura de aterrizaje
+safe_speed = 2;</pre>
+    </div>
+
+    <h2>Entendiendo las Variables</h2>
+    <table>
+        <tr>
+            <th>Variable</th>
+            <th>Propósito</th>
+        </tr>
+        <tr>
+            <td><code>gravity_force</code></td>
+            <td>Fuerza constante hacia abajo (0.05 es suave)</td>
+        </tr>
+        <tr>
+            <td><code>thrust_force</code></td>
+            <td>Fuerza hacia arriba al presionar ARRIBA</td>
+        </tr>
+        <tr>
+            <td><code>fuel</code></td>
+            <td>100% de Combustible, disminuye al usar Propulsión</td>
+        </tr>
+        <tr>
+            <td><code>safe_speed</code></td>
+            <td>Velocidad máxima para aterrizaje seguro (2)</td>
+        </tr>
+    </table>
+
+    <div class="highlight">
+        <strong>Equilibrio:</strong> ¡La Propulsión (0.1) es más fuerte que la Gravedad (0.05) para que puedas frenar!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para añadir el Movimiento y controles.
+    </div>
+</body>
+</html>

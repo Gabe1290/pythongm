@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Paso 3: Agregar Movimiento a las Paletas</h1>
+
+    <p>Configuraremos controles para dos jugadores usando diferentes teclas para cada paleta.</p>
+
+    <h2>Esquema de Controles</h2>
+    <table>
+        <tr>
+            <th>Jugador</th>
+            <th>Mover Arriba</th>
+            <th>Mover Abajo</th>
+        </tr>
+        <tr>
+            <td>Jugador 1 (Izquierda)</td>
+            <td>Tecla W</td>
+            <td>Tecla S</td>
+        </tr>
+        <tr>
+            <td>Jugador 2 (Derecha)</td>
+            <td>Flecha Arriba</td>
+            <td>Flecha Abajo</td>
+        </tr>
+    </table>
+
+    <h2>Controles de la Paleta Izquierda (obj_paddle_left)</h2>
+    <div class="step">
+        <p><strong>Mover Arriba (tecla W):</strong></p>
+        <ol>
+            <li>Abre <code>obj_paddle_left</code></li>
+            <li>Agrega Evento: <strong>Teclado &gt; Presionar W</strong></li>
+            <li>Agrega Accion: <strong>Movimiento &gt; Establecer Velocidad Vertical</strong></li>
+            <li>Establece la velocidad a <code>-8</code> (negativo = arriba)</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Dejar de Mover (Soltar W):</strong></p>
+        <ol>
+            <li>Agrega Evento: <strong>Teclado &gt; Soltar W</strong></li>
+            <li>Agrega Accion: <strong>Movimiento &gt; Establecer Velocidad Vertical</strong></li>
+            <li>Establece la velocidad a <code>0</code></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Mover Abajo (tecla S):</strong></p>
+        <ol>
+            <li>Agrega Evento: <strong>Teclado &gt; Presionar S</strong></li>
+            <li>Agrega Accion: <strong>Movimiento &gt; Establecer Velocidad Vertical</strong></li>
+            <li>Establece la velocidad a <code>8</code> (positivo = abajo)</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Dejar de Mover (Soltar S):</strong></p>
+        <ol>
+            <li>Agrega Evento: <strong>Teclado &gt; Soltar S</strong></li>
+            <li>Agrega Accion: <strong>Movimiento &gt; Establecer Velocidad Vertical</strong></li>
+            <li>Establece la velocidad a <code>0</code></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Colision con Pared:</strong></p>
+        <ol>
+            <li>Agrega Evento: <strong>Colision &gt; obj_wall</strong></li>
+            <li>Agrega Accion: <strong>Movimiento &gt; Rebotar Contra Objetos</strong></li>
+            <li>Selecciona "Contra objetos solidos"</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Ahora haz lo mismo para obj_paddle_right</strong>, pero usa Flecha Arriba y Flecha Abajo en lugar de W y S!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para agregar movimiento y rebote a la pelota.
+    </div>
+</body>
+</html>

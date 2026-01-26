@@ -17,84 +17,84 @@
     </style>
 </head>
 <body>
-    <h1>Step 7: Set Up the Room</h1>
+    <h1>Étape 7 : Configurer la Room</h1>
 
-    <p>Time to create the game room and place all the objects!</p>
+    <p>Il est temps de créer la room du jeu et de placer tous les objets !</p>
 
-    <h2>Create the Room</h2>
+    <h2>Créer la Room</h2>
     <div class="step">
         <ol>
-            <li>Right-click on <strong>Rooms</strong> and select <strong>Create Room</strong></li>
-            <li>Name it <code>room_breakout</code></li>
-            <li>Set size to 640x480 pixels</li>
+            <li>Faites un clic droit sur <strong>Rooms</strong> et sélectionnez <strong>Créer une Room</strong></li>
+            <li>Nommez-la <code>room_breakout</code></li>
+            <li>Définissez la taille sur 640x480 pixels</li>
         </ol>
     </div>
 
-    <h2>Room Layout</h2>
+    <h2>Disposition de la Room</h2>
     <pre>
-+--[WALL]--------------------[WALL]--+
-|  [WALL]  [R][R][R][R][R]  [WALL]  |
-|  [WALL]  [O][O][O][O][O]  [WALL]  |
-|  [WALL]  [Y][Y][Y][Y][Y]  [WALL]  |
-|  [WALL]  [G][G][G][G][G]  [WALL]  |
-|  [WALL]                   [WALL]  |
-|  [WALL]        (o)        [WALL]  |
-|  [WALL]                   [WALL]  |
-|  [WALL]      [PADDLE]     [WALL]  |
-+--[DEATH ZONE DEATH ZONE DEATH]----+
++--[MUR]----------------------[MUR]--+
+|  [MUR]  [R][R][R][R][R]    [MUR]  |
+|  [MUR]  [O][O][O][O][O]    [MUR]  |
+|  [MUR]  [J][J][J][J][J]    [MUR]  |
+|  [MUR]  [V][V][V][V][V]    [MUR]  |
+|  [MUR]                     [MUR]  |
+|  [MUR]        (o)          [MUR]  |
+|  [MUR]                     [MUR]  |
+|  [MUR]     [RAQUETTE]      [MUR]  |
++--[ZONE DE MORT ZONE DE MORT]------+
     </pre>
 
-    <h2>Place the Objects</h2>
+    <h2>Placer les Objets</h2>
 
-    <h3>1. Walls</h3>
+    <h3>1. Murs</h3>
     <div class="step">
-        <p>Place <code>obj_wall</code> along the top, left, and right edges.</p>
+        <p>Placez <code>obj_wall</code> le long des bords supérieur, gauche et droit.</p>
     </div>
 
-    <h3>2. Death Zone</h3>
+    <h3>2. Zone de Mort</h3>
     <div class="step">
-        <p>Place <code>obj_death_zone</code> along the bottom edge (it's invisible).</p>
+        <p>Placez <code>obj_death_zone</code> le long du bord inférieur (elle est invisible).</p>
     </div>
 
-    <h3>3. Bricks</h3>
+    <h3>3. Briques</h3>
     <div class="step">
-        <p>Arrange bricks in rows near the top:</p>
+        <p>Disposez les briques en rangées près du haut :</p>
         <ul>
-            <li>Top row: Red bricks (<code>obj_brick_red</code>)</li>
-            <li>Second row: Orange bricks</li>
-            <li>Third row: Yellow bricks</li>
-            <li>Fourth row: Green bricks</li>
+            <li>Première rangée : Briques rouges (<code>obj_brick_red</code>)</li>
+            <li>Deuxième rangée : Briques orange</li>
+            <li>Troisième rangée : Briques jaunes</li>
+            <li>Quatrième rangée : Briques vertes</li>
         </ul>
     </div>
 
-    <h3>4. Paddle</h3>
+    <h3>4. Raquette</h3>
     <div class="step">
-        <p>Place <code>obj_paddle</code> near the bottom, centered horizontally.</p>
+        <p>Placez <code>obj_paddle</code> près du bas, centrée horizontalement.</p>
     </div>
 
-    <h3>5. Ball</h3>
+    <h3>5. Balle</h3>
     <div class="step">
-        <p>Place <code>obj_ball</code> just above the paddle.</p>
+        <p>Placez <code>obj_ball</code> juste au-dessus de la raquette.</p>
     </div>
 
-    <h3>6. Game Controller</h3>
+    <h3>6. Contrôleur de Jeu</h3>
     <div class="step">
-        <p>Place <code>obj_game_controller</code> anywhere (it has no sprite).</p>
+        <p>Placez <code>obj_game_controller</code> n'importe où (il n'a pas de sprite).</p>
     </div>
 
     <div class="success">
-        <strong>Congratulations!</strong> Your Breakout game is ready!
+        <strong>Félicitations !</strong> Votre jeu Breakout est prêt !
     </div>
 
-    <h2>Test Your Game</h2>
+    <h2>Testez Votre Jeu</h2>
     <ul>
-        <li>Press <strong>F5</strong> or click <strong>Run</strong></li>
-        <li>Use <strong>Left</strong> and <strong>Right</strong> arrow keys to move</li>
-        <li>Break all the bricks to win!</li>
+        <li>Appuyez sur <strong>F5</strong> ou cliquez sur <strong>Exécuter</strong></li>
+        <li>Utilisez les touches <strong>Gauche</strong> et <strong>Droite</strong> pour vous déplacer</li>
+        <li>Cassez toutes les briques pour gagner !</li>
     </ul>
 
     <div class="info">
-        <strong>Great job!</strong> You've created a classic Breakout game!
+        <strong>Bravo !</strong> Vous avez créé un jeu Breakout classique !
     </div>
 </body>
 </html>

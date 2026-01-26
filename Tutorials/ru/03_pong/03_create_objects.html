@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 2: Создание Объектов</h1>
+
+    <p>Теперь мы создадим игровые Объекты. Каждый Объект использует Спрайт и может иметь поведение.</p>
+
+    <h2>Создание Объекта Стены</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкните правой кнопкой мыши на <strong>Объекты</strong> и выберите <strong>Создать Объект</strong></li>
+            <li>Назовите его <code>obj_wall</code></li>
+            <li>Установите Спрайт <code>spr_wall</code></li>
+            <li><strong>Установите флажок "Твёрдый"</strong> - это важно!</li>
+            <li>События не нужны - Стены просто блокируют Движение</li>
+        </ol>
+    </div>
+
+    <h2>Создание Объекта Мяча</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте новый Объект с именем <code>obj_ball</code></li>
+            <li>Установите Спрайт <code>spr_ball</code></li>
+            <li>Оставьте "Твёрдый" неотмеченным</li>
+        </ol>
+    </div>
+
+    <h2>Создание Объектов Ракеток</h2>
+    <div class="step">
+        <p><strong>Левая Ракетка:</strong></p>
+        <ol>
+            <li>Создайте Объект <code>obj_paddle_left</code></li>
+            <li>Установите Спрайт <code>spr_paddle_left</code></li>
+            <li><strong>Установите флажок "Твёрдый"</strong></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Правая Ракетка:</strong></p>
+        <ol>
+            <li>Создайте Объект <code>obj_paddle_right</code></li>
+            <li>Установите Спрайт <code>spr_paddle_right</code></li>
+            <li><strong>Установите флажок "Твёрдый"</strong></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Важно:</strong> Флажок "Твёрдый" крайне важен для правильной работы отскоков!
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы добавить управление Движением Ракеток.
+    </div>
+</body>
+</html>

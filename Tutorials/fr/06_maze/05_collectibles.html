@@ -14,40 +14,40 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Coins and Exit</h1>
+    <h1>Étape 4 : Pièces et Sortie</h1>
 
-    <p>Now let's make coins collectible and the exit work.</p>
+    <p>Maintenant, rendons les pièces collectables et faisons fonctionner la sortie.</p>
 
-    <h2>Coin Collection</h2>
+    <h2>Collecte des Pièces</h2>
     <div class="step">
-        <p>In <code>obj_coin</code>:</p>
+        <p>Dans <code>obj_coin</code> :</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Score</strong></li>
-            <li>New Score: <code>10</code></li>
-            <li>Check "Relative" to add 10 points</li>
-            <li>Add Action: <strong>Main1 &gt; Destroy Instance</strong></li>
-            <li>Applies to: <code>Self</code></li>
+            <li>Ajoutez un événement : <strong>Collision &gt; obj_player</strong></li>
+            <li>Ajoutez une action : <strong>Score &gt; Définir le Score</strong></li>
+            <li>Nouveau Score : <code>10</code></li>
+            <li>Cochez « Relatif » pour ajouter 10 points</li>
+            <li>Ajoutez une action : <strong>Main1 &gt; Détruire l'Instance</strong></li>
+            <li>S'applique à : <code>Soi-même</code></li>
         </ol>
     </div>
 
-    <h2>Exit Behavior</h2>
+    <h2>Comportement de la Sortie</h2>
     <div class="step">
-        <p>In <code>obj_exit</code>:</p>
+        <p>Dans <code>obj_exit</code> :</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong></li>
-            <li>Message: <code>You Win!</code></li>
-            <li>Add Action: <strong>Main1 &gt; Restart Room</strong></li>
+            <li>Ajoutez un événement : <strong>Collision &gt; obj_player</strong></li>
+            <li>Ajoutez une action : <strong>Main2 &gt; Afficher un Message</strong></li>
+            <li>Message : <code>Vous avez gagné !</code></li>
+            <li>Ajoutez une action : <strong>Main1 &gt; Redémarrer la Room</strong></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Tip:</strong> You can use <strong>Next Room</strong> instead of <strong>Restart Room</strong> if you create multiple levels!
+        <strong>Astuce :</strong> Vous pouvez utiliser <strong>Room Suivante</strong> au lieu de <strong>Redémarrer la Room</strong> si vous créez plusieurs niveaux !
     </div>
 
     <div class="info">
-        Click "Next" to add the timer display.
+        Cliquez sur « Suivant » pour ajouter l'affichage du chronomètre.
     </div>
 </body>
 </html>

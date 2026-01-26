@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 5: Игровой контроллер</h1>
+
+    <p>Создайте контроллер для отслеживания времени и отображения счёта.</p>
+
+    <h2>Создание объекта контроллера</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте объект <code>obj_game_controller</code></li>
+            <li>Спрайт не нужен (оставьте пустым)</li>
+        </ol>
+    </div>
+
+    <h2>Инициализация таймера (Событие создания)</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте событие: <strong>Создать</strong></li>
+            <li>Добавьте действие: <strong>Управление &gt; Установить переменную</strong></li>
+            <li>Переменная: <code>global.timer</code></li>
+            <li>Значение: <code>0</code></li>
+        </ol>
+    </div>
+
+    <h2>Обновление таймера (Событие шага)</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте событие: <strong>Шаг</strong></li>
+            <li>Добавьте действие: <strong>Управление &gt; Установить переменную</strong></li>
+            <li>Переменная: <code>global.timer</code></li>
+            <li>Значение: <code>1/room_speed</code></li>
+            <li>Отметьте "Относительно"</li>
+        </ol>
+    </div>
+
+    <h2>Отображение информации (Событие рисования)</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте событие: <strong>Рисование</strong></li>
+            <li>Добавьте действие: <strong>Управление &gt; Выполнить код</strong></li>
+        </ol>
+        <pre>
+draw_set_color(c_white);
+draw_text(10, 10, "Счёт: " + string(score));
+draw_text(10, 30, "Время: " + string(floor(global.timer)) + "с");
+
+var coins = instance_number(obj_coin);
+draw_text(10, 50, "Монеты: " + string(coins));</pre>
+    </div>
+
+    <div class="highlight">
+        <strong>Примечание:</strong> Контроллер невидим, но необходим для отслеживания состояния игры!
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы настроить комнату.
+    </div>
+</body>
+</html>

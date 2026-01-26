@@ -15,66 +15,66 @@
     </style>
 </head>
 <body>
-    <h1>Step 3: Player Physics (Create Event)</h1>
+    <h1>Passo 3: Fisica del Giocatore (Evento Creazione)</h1>
 
-    <p>We need to set up variables for gravity, jumping, and movement.</p>
+    <p>Dobbiamo impostare le variabili per gravita, salto e movimento.</p>
 
-    <h2>Initialize Physics Variables</h2>
+    <h2>Inizializzare le Variabili Fisiche</h2>
     <div class="step">
         <p>In <code>obj_player</code>:</p>
         <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Aggiungi Evento: <strong>Creazione</strong></li>
+            <li>Aggiungi Azione: <strong>Controllo &gt; Esegui Codice</strong></li>
         </ol>
         <pre>
-// Movement settings
-hspeed_max = 4;      // Maximum horizontal speed
-vspeed_max = 10;     // Maximum fall speed
-jump_force = -10;    // Jump strength (negative = up)
-gravity_force = 0.5; // How fast we fall
+// Impostazioni movimento
+hspeed_max = 4;      // Velocita orizzontale massima
+vspeed_max = 10;     // Velocita di caduta massima
+jump_force = -10;    // Forza del salto (negativo = su)
+gravity_force = 0.5; // Quanto velocemente cadiamo
 
-// Current speeds
+// Velocita correnti
 hsp = 0;
 vsp = 0;
 
-// State
+// Stato
 on_ground = false;</pre>
     </div>
 
-    <h2>Understanding the Variables</h2>
+    <h2>Comprendere le Variabili</h2>
     <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
         <tr style="background-color: #34495e; color: white;">
-            <th style="padding: 8px; border: 1px solid #ddd;">Variable</th>
-            <th style="padding: 8px; border: 1px solid #ddd;">Purpose</th>
+            <th style="padding: 8px; border: 1px solid #ddd;">Variabile</th>
+            <th style="padding: 8px; border: 1px solid #ddd;">Scopo</th>
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;"><code>hsp</code></td>
-            <td style="padding: 8px; border: 1px solid #ddd;">Horizontal speed (left/right)</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Velocita orizzontale (sinistra/destra)</td>
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;"><code>vsp</code></td>
-            <td style="padding: 8px; border: 1px solid #ddd;">Vertical speed (up/down)</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Velocita verticale (su/giu)</td>
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;"><code>gravity_force</code></td>
-            <td style="padding: 8px; border: 1px solid #ddd;">Constant force pulling down</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Forza costante che tira verso il basso</td>
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;"><code>jump_force</code></td>
-            <td style="padding: 8px; border: 1px solid #ddd;">Negative value to go upward</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Valore negativo per andare verso l'alto</td>
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;"><code>on_ground</code></td>
-            <td style="padding: 8px; border: 1px solid #ddd;">True when standing on ground</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Vero quando si sta in piedi sul terreno</td>
         </tr>
     </table>
 
     <div class="highlight">
-        <strong>Key Concept:</strong> Jump force is negative because Y increases downward in games. A negative Y velocity moves the player up!
+        <strong>Concetto Chiave:</strong> La forza del salto e negativa perche Y aumenta verso il basso nei giochi. Una velocita Y negativa muove il giocatore verso l'alto!
     </div>
 
     <div class="info">
-        Click "Next" to add movement and collision handling.
+        Clicca "Avanti" per aggiungere il movimento e la gestione delle collisioni.
     </div>
 </body>
 </html>

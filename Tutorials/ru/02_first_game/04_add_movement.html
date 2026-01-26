@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .blockly-hint { background-color: #e8f4f8; padding: 10px; border-left: 4px solid #3498db; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 3: Добавление Движения Игрока</h1>
+
+    <p>Теперь мы сделаем так, чтобы Игрок двигался влево и вправо с помощью клавиш-стрелок.</p>
+
+    <h2>Откройте Объект Игрока</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Редактирование obj_player</span>
+        <p>Дважды щёлкните по <code>obj_player</code> в дереве ресурсов, чтобы открыть редактор Объектов.</p>
+    </div>
+
+    <h2>Добавление Событий клавиатуры (режим Blockly)</h2>
+
+    <div class="blockly-hint">
+        <strong>Использование Blockly:</strong> Убедитесь, что вы в режиме Blockly (проверьте переключатель вверху редактора).
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Добавьте Событие стрелки влево</span>
+        <p>Нажмите <strong>Добавить Событие</strong> и выберите <code>Клавиатура &gt; Влево</code>.</p>
+        <p>Это Событие срабатывает при нажатии клавиши стрелки влево.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Добавьте Действие Движения</span>
+        <p>Из панели инструментов Blockly перетащите блок <strong>«двигаться в направлении»</strong>.</p>
+        <p>Установите направление <code>180</code> (влево) и скорость <code>5</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Добавьте Событие стрелки вправо</span>
+        <p>Нажмите <strong>Добавить Событие</strong> и выберите <code>Клавиатура &gt; Вправо</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Добавьте Действие Движения</span>
+        <p>Перетащите ещё один блок <strong>«двигаться в направлении»</strong>.</p>
+        <p>Установите направление <code>0</code> (вправо) и скорость <code>5</code>.</p>
+    </div>
+
+    <h2>Протестируйте игру!</h2>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Запустите игру</span>
+        <p>Нажмите <code>F5</code>, чтобы протестировать игру.</p>
+        <p>Используйте клавиши-стрелки влево и вправо для управления Игроком!</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Проблема?</strong> Если Игрок выходит за пределы экрана, мы исправим это позже, добавив проверку границ.
+    </div>
+
+    <div class="info">
+        <strong>Игрок двигается!</strong> Нажмите «Далее», чтобы сделать падающие звёзды.
+    </div>
+</body>
+</html>

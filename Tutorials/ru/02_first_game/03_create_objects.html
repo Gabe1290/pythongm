@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 2: Создание Объектов</h1>
+
+    <p>Объекты — это «актёры» в вашей игре. Они используют Спрайты для внешнего вида и имеют поведение, определяемое Событиями.</p>
+
+    <h2>Создание Объекта Игрока</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Создайте новый Объект</span>
+        <p>Щёлкните правой кнопкой мыши по <strong>Объекты</strong> в дереве ресурсов и выберите <code>Создать Объект</code>.</p>
+        <p>Назовите его <code>obj_player</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Назначьте Спрайт</span>
+        <p>В редакторе Объектов найдите выпадающий список <strong>Спрайт</strong>.</p>
+        <p>Выберите <code>spr_player</code> из списка.</p>
+    </div>
+
+    <h2>Создание Объекта звезды</h2>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Создайте ещё один Объект</span>
+        <p>Щёлкните правой кнопкой мыши по <strong>Объекты</strong> и выберите <code>Создать Объект</code>.</p>
+        <p>Назовите его <code>obj_star</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Назначьте Спрайт звезды</span>
+        <p>Выберите <code>spr_star</code> в качестве Спрайта для этого Объекта.</p>
+    </div>
+
+    <h2>Создание игровой Комнаты</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Создайте Комнату</span>
+        <p>Щёлкните правой кнопкой мыши по <strong>Комнаты</strong> и выберите <code>Создать Комнату</code>.</p>
+        <p>Назовите её <code>room_game</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Разместите Игрока</span>
+        <p>Дважды щёлкните по Комнате, чтобы открыть редактор Комнат.</p>
+        <p>Выберите <code>obj_player</code> из списка Объектов слева.</p>
+        <p>Щёлкните в нижней центральной части Комнаты, чтобы разместить там Игрока.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Пока не размещайте звёзды!</strong> Мы сделаем так, чтобы они появлялись автоматически сверху экрана.
+    </div>
+
+    <div class="info">
+        <strong>Объекты созданы!</strong> Нажмите «Далее», чтобы добавить Движение Игрока.
+    </div>
+</body>
+</html>

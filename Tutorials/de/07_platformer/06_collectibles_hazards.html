@@ -15,63 +15,63 @@
     </style>
 </head>
 <body>
-    <h1>Step 5: Collectibles and Hazards</h1>
+    <h1>Schritt 5: Sammelobjekte und Gefahren</h1>
 
-    <p>Now we add coins to collect, spikes to avoid, and a flag to reach.</p>
+    <p>Jetzt fuegen wir Muenzen zum Sammeln, Stacheln zum Ausweichen und eine Flagge zum Erreichen hinzu.</p>
 
-    <h2>Coin - Collect for Points</h2>
+    <h2>Muenze - Fuer Punkte sammeln</h2>
     <div class="step">
         <p>In <code>obj_coin</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Score</strong>
+            <li>Event hinzufuegen: <strong>Kollision &gt; obj_player</strong></li>
+            <li>Aktion hinzufuegen: <strong>Punkte &gt; Punkte setzen</strong>
                 <ul>
-                    <li>New Score: <code>10</code></li>
-                    <li>Check "Relative"</li>
+                    <li>Neue Punkte: <code>10</code></li>
+                    <li>"Relativ" aktivieren</li>
                 </ul>
             </li>
-            <li>Add Action: <strong>Main1 &gt; Destroy Instance</strong>
+            <li>Aktion hinzufuegen: <strong>Main1 &gt; Instanz zerstoeren</strong>
                 <ul>
-                    <li>Applies to: Self</li>
+                    <li>Gilt fuer: Selbst</li>
                 </ul>
             </li>
         </ol>
     </div>
 
-    <h2>Spike - Hurts the Player</h2>
+    <h2>Stachel - Verletzt den Spieler</h2>
     <div class="danger">
         <p>In <code>obj_spike</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong>
+            <li>Event hinzufuegen: <strong>Kollision &gt; obj_player</strong></li>
+            <li>Aktion hinzufuegen: <strong>Main2 &gt; Nachricht anzeigen</strong>
                 <ul>
-                    <li>Message: <code>Ouch! You hit a spike!</code></li>
+                    <li>Nachricht: <code>Autsch! Du hast einen Stachel getroffen!</code></li>
                 </ul>
             </li>
-            <li>Add Action: <strong>Main1 &gt; Restart Room</strong></li>
+            <li>Aktion hinzufuegen: <strong>Main1 &gt; Raum neu starten</strong></li>
         </ol>
     </div>
 
-    <h2>Flag - Level Complete</h2>
+    <h2>Flagge - Level abgeschlossen</h2>
     <div class="step">
         <p>In <code>obj_flag</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong>
+            <li>Event hinzufuegen: <strong>Kollision &gt; obj_player</strong></li>
+            <li>Aktion hinzufuegen: <strong>Main2 &gt; Nachricht anzeigen</strong>
                 <ul>
-                    <li>Message: <code>Level Complete!</code></li>
+                    <li>Nachricht: <code>Level abgeschlossen!</code></li>
                 </ul>
             </li>
-            <li>Add Action: <strong>Main1 &gt; Restart Room</strong> (or Next Room for multiple levels)</li>
+            <li>Aktion hinzufuegen: <strong>Main1 &gt; Raum neu starten</strong> (oder Naechster Raum fuer mehrere Levels)</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Tip:</strong> Place spikes near pits or on platforms to create challenge!
+        <strong>Tipp:</strong> Platziere Stacheln in der Naehe von Gruben oder auf Plattformen, um Herausforderungen zu schaffen!
     </div>
 
     <div class="info">
-        Click "Next" to add the game controller for score display.
+        Klicke auf "Weiter", um den Spiel-Controller fuer die Punkteanzeige hinzuzufuegen.
     </div>
 </body>
 </html>

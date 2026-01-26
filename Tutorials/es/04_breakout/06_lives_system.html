@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 5: Agregar el Sistema de Vidas</h1>
+
+    <p>El jugador pierde una vida cuando la pelota cae por la parte inferior de la pantalla.</p>
+
+    <h2>Crear una Zona de Muerte</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un sprite <code>spr_death_zone</code> (32x32, cualquier color)</li>
+            <li>Crea el objeto <code>obj_death_zone</code></li>
+            <li><strong>Desmarca "Visible"</strong> - debe ser invisible</li>
+            <li>Marca "Sólido"</li>
+        </ol>
+    </div>
+
+    <h2>La Pelota Cae en la Zona de Muerte</h2>
+    <div class="step">
+        <p>En <code>obj_ball</code>:</p>
+        <ol>
+            <li>Agregar Evento: <strong>Colisión &gt; obj_death_zone</strong></li>
+            <li>Agregar Acción: <strong>Puntuación &gt; Restar de las Vidas</strong></li>
+            <li>Valor: <code>1</code></li>
+            <li>Agregar Acción: <strong>Movimiento &gt; Saltar a la Posición Inicial</strong></li>
+        </ol>
+    </div>
+
+    <h2>Crear un Controlador de Juego</h2>
+    <div class="step">
+        <ol>
+            <li>Crea el objeto <code>obj_game_controller</code></li>
+            <li>No se necesita sprite</li>
+        </ol>
+    </div>
+
+    <h2>Inicializar Vidas (Evento Crear)</h2>
+    <div class="step">
+        <p>En <code>obj_game_controller</code>:</p>
+        <ol>
+            <li>Agregar Evento: <strong>Crear</strong></li>
+            <li>Agregar Acción: <strong>Puntuación &gt; Establecer Vidas</strong></li>
+            <li>Valor: <code>3</code></li>
+            <li>Agregar Acción: <strong>Puntuación &gt; Establecer Puntuación</strong></li>
+            <li>Valor: <code>0</code></li>
+        </ol>
+    </div>
+
+    <h2>Verificar Fin del Juego (Evento Step)</h2>
+    <div class="step">
+        <ol>
+            <li>Agregar Evento: <strong>Step</strong></li>
+            <li>Agregar Acción: <strong>Control &gt; Probar Vidas</strong></li>
+            <li>Verifica si las vidas son menores o iguales a 0</li>
+            <li>Agregar Acción: <strong>Main2 &gt; Mostrar Mensaje</strong></li>
+            <li>Mensaje: <code>¡Fin del Juego!</code></li>
+            <li>Agregar Acción: <strong>Main2 &gt; Reiniciar Habitación</strong></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Recuerda:</strong> ¡Coloca <code>obj_game_controller</code> en tu habitación!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para agregar la visualización de la puntuación.
+    </div>
+</body>
+</html>

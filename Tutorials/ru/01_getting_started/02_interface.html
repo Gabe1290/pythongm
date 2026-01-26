@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 18px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 14px;
+        }
+        .panel {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .panel-title {
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        code {
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+  </head>
+  <body>
+    <h2>Интерфейс PyGameMaker</h2>
+    <p>Окно PyGameMaker разделено на три основные области:</p>
+    <div class="panel">
+      <div class="panel-title">1. Дерево ресурсов (левая панель)</div>
+      <p>На этой панели отображаются все ресурсы вашего проекта,
+        упорядоченные по типам:</p>
+      <ul>
+        <li><strong>Спрайты</strong> — изображения и анимации для вашей
+          игры</li>
+        <li><strong>Звуки</strong> — звуковые эффекты и музыка</li>
+        <li><strong>Объекты</strong> — игровые сущности с поведением</li>
+        <li><strong>Комнаты</strong> — игровые уровни и экраны</li>
+      </ul>
+      <p>Щёлкните правой кнопкой мыши по любой категории, чтобы создать новые ресурсы.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-title">2. Область редактора (центр)</div>
+      <p>Здесь вы редактируете свои ресурсы. Разные редакторы открываются
+        во вкладках:</p>
+      <ul>
+        <li><strong>Редактор Спрайтов</strong> — просмотр и настройка Спрайтов</li>
+        <li><strong>Редактор Объектов</strong> — определение поведения Объектов
+          с помощью Событий</li>
+        <li><strong>Редактор Комнат</strong> — проектирование игровых уровней</li>
+      </ul>
+      <p>Дважды щёлкните по ресурсу в дереве, чтобы открыть его редактор.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-title">3. Панель свойств (правая панель)</div>
+      <p>Показывает свойства текущего выбранного ресурса или Объекта. Вы
+        можете изменять настройки здесь при редактировании Комнат или Объектов.</p>
+    </div>
+    <h2>Основные меню</h2>
+    <ul>
+      <li><code>Файл</code> — создание, открытие и сохранение проектов</li>
+      <li><code>Ресурсы</code> — создание и импорт игровых ресурсов</li>
+      <li><code>Сборка</code> — тестирование и экспорт игры</li>
+      <li><code>Справка</code> — доступ к урокам и документации</li>
+    </ul>
+    <div class="highlight"> <strong>Горячая клавиша:</strong> Нажмите <code>F5</code>,
+      чтобы быстро протестировать игру! </div>
+  </body>
+</html>

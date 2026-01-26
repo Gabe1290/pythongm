@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 4: Controles del Módulo Lunar (Evento Step)</h1>
+
+    <p>Añade Gravedad, Propulsión, Movimiento horizontal y verificación de límites.</p>
+
+    <h2>Añadir Evento Step</h2>
+    <div class="step">
+        <p>En <code>obj_lander</code>:</p>
+        <ol>
+            <li>Añadir Evento: <strong>Step &gt; Step</strong></li>
+            <li>Añadir Acción: <strong>Control &gt; Ejecutar Código</strong></li>
+        </ol>
+        <pre>
+// No actualizar si el juego terminó
+if (landed || crashed) exit;
+
+// === GRAVEDAD ===
+vsp += gravity_force;
+
+// === PROPULSION (Flecha Arriba) ===
+if (keyboard_check(vk_up) && fuel > 0) {
+    vsp -= thrust_force;
+    fuel -= fuel_use;
+    if (fuel < 0) fuel = 0;
+}
+
+// === CONTROL HORIZONTAL ===
+if (keyboard_check(vk_left)) hsp -= 0.05;
+if (keyboard_check(vk_right)) hsp += 0.05;
+
+// === LIMITAR VELOCIDAD ===
+hsp = clamp(hsp, -max_speed, max_speed);
+vsp = clamp(vsp, -max_speed, max_speed);
+
+// === APLICAR MOVIMIENTO ===
+x += hsp;
+y += vsp;
+
+// === LIMITES DE PANTALLA ===
+if (x < 16) { x = 16; hsp = 0; }
+if (x > room_width - 16) { x = room_width - 16; hsp = 0; }
+if (y < 16) { y = 16; vsp = 0; }</pre>
+    </div>
+
+    <h2>Cómo Funciona</h2>
+    <ol>
+        <li><strong>Gravedad:</strong> Se añade a vsp cada fotograma (caída)</li>
+        <li><strong>Propulsión:</strong> Resta de vsp (ascenso), usa Combustible</li>
+        <li><strong>Clamp:</strong> Limita la velocidad a un rango seguro</li>
+        <li><strong>Límites:</strong> Mantiene el módulo lunar en pantalla</li>
+    </ol>
+
+    <div class="highlight">
+        <strong>Clave:</strong> ¡La función <code>clamp()</code> limita un valor entre un mínimo y un máximo!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para añadir la detección de Colisión.
+    </div>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 5: Предметы и опасности</h1>
+
+    <p>Теперь добавим монеты для сбора, шипы для избегания и флаг для достижения.</p>
+
+    <h2>Монета - Собирай для очков</h2>
+    <div class="step">
+        <p>В <code>obj_coin</code>:</p>
+        <ol>
+            <li>Добавить событие: <strong>Столкновение > obj_player</strong></li>
+            <li>Добавить действие: <strong>Счёт > Установить счёт</strong>
+                <ul>
+                    <li>Новый счёт: <code>10</code></li>
+                    <li>Отметьте "Относительно"</li>
+                </ul>
+            </li>
+            <li>Добавить действие: <strong>Main1 > Уничтожить объект</strong>
+                <ul>
+                    <li>Применить к: Себе</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <h2>Шип - Ранит игрока</h2>
+    <div class="danger">
+        <p>В <code>obj_spike</code>:</p>
+        <ol>
+            <li>Добавить событие: <strong>Столкновение > obj_player</strong></li>
+            <li>Добавить действие: <strong>Main2 > Показать сообщение</strong>
+                <ul>
+                    <li>Сообщение: <code>Ой! Вы наткнулись на шип!</code></li>
+                </ul>
+            </li>
+            <li>Добавить действие: <strong>Main1 > Перезапустить комнату</strong></li>
+        </ol>
+    </div>
+
+    <h2>Флаг - Уровень пройден</h2>
+    <div class="step">
+        <p>В <code>obj_flag</code>:</p>
+        <ol>
+            <li>Добавить событие: <strong>Столкновение > obj_player</strong></li>
+            <li>Добавить действие: <strong>Main2 > Показать сообщение</strong>
+                <ul>
+                    <li>Сообщение: <code>Уровень пройден!</code></li>
+                </ul>
+            </li>
+            <li>Добавить действие: <strong>Main1 > Перезапустить комнату</strong> (или Следующая комната для нескольких уровней)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Совет:</strong> Размещайте шипы рядом с пропастями или на платформах для создания сложности!
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы добавить игровой контроллер для отображения счёта.
+    </div>
+</body>
+</html>

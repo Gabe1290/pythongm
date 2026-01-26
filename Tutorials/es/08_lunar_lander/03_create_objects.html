@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Paso 2: Crear Objetos</h1>
+
+    <p>Ahora creamos Objetos para todos los elementos del juego.</p>
+
+    <h2>Objeto del Suelo (Peligroso)</h2>
+    <div class="step">
+        <ol>
+            <li>Clic derecho en <strong>Objetos</strong> > <strong>Crear Objeto</strong></li>
+            <li>Nómbralo <code>obj_ground</code></li>
+            <li>Establece el Sprite como <code>spr_ground</code></li>
+            <li><strong>Marca la casilla "Sólido"</strong></li>
+        </ol>
+    </div>
+
+    <h2>Objeto de la Plataforma de Aterrizaje (Seguro)</h2>
+    <div class="step">
+        <ol>
+            <li>Crea <code>obj_pad</code></li>
+            <li>Establece el Sprite como <code>spr_pad</code></li>
+            <li><strong>Marca la casilla "Sólido"</strong></li>
+        </ol>
+    </div>
+
+    <h2>Objeto del Módulo Lunar (Jugador)</h2>
+    <div class="step">
+        <ol>
+            <li>Crea <code>obj_lander</code></li>
+            <li>Establece el Sprite como <code>spr_lander</code></li>
+        </ol>
+    </div>
+
+    <h2>Objeto Controlador del Juego</h2>
+    <div class="step">
+        <ol>
+            <li>Crea <code>obj_game_controller</code></li>
+            <li>No necesita Sprite (invisible)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Diferencia Clave:</strong> Aterrizar en <code>obj_pad</code> = aterrizaje seguro. ¡Aterrizar en <code>obj_ground</code> = Choque!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para añadir la física del Módulo lunar.
+    </div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #1a1a2e; color: #ecf0f1; padding: 10px; border-radius: 5px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 7: Настройка комнаты</h1>
+
+    <p>Создайте свой лунный ландшафт!</p>
+
+    <h2>Создание комнаты</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкните правой кнопкой мыши <strong>Комнаты</strong> > <strong>Создать комнату</strong></li>
+            <li>Назовите её <code>room_game</code></li>
+            <li>Установите размер: <strong>640 x 480</strong></li>
+            <li>Установите цвет фона <strong>чёрный</strong> (космос)</li>
+            <li>Включите "Привязка к сетке" (32x32)</li>
+        </ol>
+    </div>
+
+    <h2>Пример расположения уровня</h2>
+    <pre>
+        М                          <- Модуль стартует здесь
+
+
+
+ЗЗЗ     ЗЗЗ     ПППП     ЗЗЗ     ЗЗЗ
+ЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗ
+
+З = Земля (крушение)    М = Модуль    П = Посадочная площадка (безопасно)</pre>
+
+    <h2>Построение уровня</h2>
+    <div class="step">
+        <ol>
+            <li><strong>Земля:</strong> Разместите <code>obj_ground</code> вдоль нижней части</li>
+            <li><strong>Промежуток:</strong> Оставьте место для посадочной площадки</li>
+            <li><strong>Посадочная площадка:</strong> Разместите <code>obj_pad</code> в промежутке</li>
+            <li><strong>Посадочный модуль:</strong> Разместите <code>obj_lander</code> вверху</li>
+            <li><strong>Контроллер:</strong> Разместите <code>obj_game_controller</code> в любом месте</li>
+        </ol>
+    </div>
+
+    <h2>Протестируйте игру!</h2>
+    <div class="success">
+        <p><strong>Нажмите F5 или кнопку Запуск!</strong></p>
+        <ul>
+            <li><strong>Стрелка ВВЕРХ:</strong> Тяга (расходует топливо!)</li>
+            <li><strong>ВЛЕВО/ВПРАВО:</strong> Горизонтальное управление</li>
+            <li>Следите за скоростью - держите ниже 2!</li>
+            <li>Не израсходуйте всё топливо!</li>
+            <li>Приземлитесь на площадку, чтобы победить!</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>Поздравляем!</strong> Вы создали игру о лунном посадочном модуле с гравитацией, тягой и управлением топливом!
+    </div>
+
+    <div class="info">
+        <strong>Задание:</strong> Добавьте несколько посадочных площадок с разными очками или эффекты ветра!
+    </div>
+</body>
+</html>

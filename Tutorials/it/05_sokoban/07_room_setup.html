@@ -17,21 +17,21 @@
     </style>
 </head>
 <body>
-    <h1>Step 6: Set Up the Room</h1>
+    <h1>Passo 6: Configura la Stanza</h1>
 
-    <p>Create a puzzle level with walls, crates, and targets.</p>
+    <p>Crea un livello puzzle con muri, casse e bersagli.</p>
 
-    <h2>Create the Room</h2>
+    <h2>Crea la Stanza</h2>
     <div class="step">
         <ol>
-            <li>Right-click on <strong>Rooms</strong> and select <strong>Create Room</strong></li>
-            <li>Name it <code>room_sokoban</code></li>
-            <li>Set size to 320x320 pixels (10x10 grid)</li>
-            <li>Enable grid snap: 32x32</li>
+            <li>Fai clic destro su <strong>Rooms</strong> e seleziona <strong>Crea Stanza</strong></li>
+            <li>Chiamala <code>room_sokoban</code></li>
+            <li>Imposta la dimensione a 320x320 pixel (griglia 10x10)</li>
+            <li>Attiva lo snap alla griglia: 32x32</li>
         </ol>
     </div>
 
-    <h2>Example Level Layout</h2>
+    <h2>Esempio di Layout del Livello</h2>
     <pre>
 W W W W W W W W W W
 W . . . . . . . . W
@@ -43,55 +43,55 @@ W . T . . . . . . W
 W . . . . . . . . W
 W W W W W W W W W W
 
-W = Wall     T = Target
-P = Player   C = Crate
-. = Empty
+W = Muro        T = Bersaglio
+P = Giocatore   C = Cassa
+. = Vuoto
     </pre>
 
-    <h2>Place Objects</h2>
+    <h2>Posiziona gli Oggetti</h2>
 
-    <h3>1. Walls</h3>
+    <h3>1. Muri</h3>
     <div class="step">
-        <p>Build walls around the edges and create obstacles inside.</p>
+        <p>Costruisci i muri lungo i bordi e crea ostacoli all'interno.</p>
     </div>
 
-    <h3>2. Targets</h3>
+    <h3>2. Bersagli</h3>
     <div class="step">
-        <p>Place <code>obj_target</code> where crates should end up.</p>
+        <p>Posiziona <code>obj_target</code> dove le casse devono finire.</p>
     </div>
 
-    <h3>3. Crates</h3>
+    <h3>3. Casse</h3>
     <div class="step">
-        <p>Place <code>obj_crate</code> - same number as targets!</p>
+        <p>Posiziona <code>obj_crate</code> - stesso numero dei bersagli!</p>
     </div>
 
-    <h3>4. Player</h3>
+    <h3>4. Giocatore</h3>
     <div class="step">
-        <p>Place <code>obj_player</code> at the starting position.</p>
+        <p>Posiziona <code>obj_player</code> nella posizione di partenza.</p>
     </div>
 
-    <h3>5. Game Controller</h3>
+    <h3>5. Controller di Gioco</h3>
     <div class="step">
-        <p>Place <code>obj_game_controller</code> anywhere.</p>
+        <p>Posiziona <code>obj_game_controller</code> in un punto qualsiasi.</p>
     </div>
 
     <div class="highlight">
-        <strong>Important:</strong> Number of crates MUST equal number of targets!
+        <strong>Importante:</strong> Il numero di casse DEVE essere uguale al numero di bersagli!
     </div>
 
     <div class="success">
-        <strong>Congratulations!</strong> Your Sokoban game is ready!
+        <strong>Congratulazioni!</strong> Il tuo gioco Sokoban e pronto!
     </div>
 
-    <h2>Test Your Game</h2>
+    <h2>Testa il Tuo Gioco</h2>
     <ul>
-        <li>Press <strong>F5</strong> or click <strong>Run</strong></li>
-        <li>Use <strong>Arrow Keys</strong> to move</li>
-        <li>Push all crates onto the red targets to win!</li>
+        <li>Premi <strong>F5</strong> o clicca <strong>Esegui</strong></li>
+        <li>Usa i <strong>Tasti Freccia</strong> per muoverti</li>
+        <li>Spingi tutte le casse sui bersagli rossi per vincere!</li>
     </ul>
 
     <div class="info">
-        <strong>Challenge:</strong> Create your own puzzle levels!
+        <strong>Sfida:</strong> Crea i tuoi livelli puzzle personalizzati!
     </div>
 </body>
 </html>

@@ -17,69 +17,69 @@
     </style>
 </head>
 <body>
-    <h1>Step 3: Lander Physics (Create Event)</h1>
+    <h1>Passo 3: Fisica del Lander (Evento Create)</h1>
 
-    <p>Set up variables for gravity, thrust, fuel, and velocity.</p>
+    <p>Imposta le variabili per gravita, spinta, carburante e velocita.</p>
 
-    <h2>Initialize Physics Variables</h2>
+    <h2>Inizializza le Variabili Fisiche</h2>
     <div class="step">
         <p>In <code>obj_lander</code>:</p>
         <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Aggiungi Evento: <strong>Create</strong></li>
+            <li>Aggiungi Azione: <strong>Controllo &gt; Esegui Codice</strong></li>
         </ol>
         <pre>
-// Physics settings
-gravity_force = 0.05;  // Gentle gravity
-thrust_force = 0.1;    // Thrust power
-max_speed = 5;         // Maximum velocity
+// Impostazioni fisiche
+gravity_force = 0.05;  // Gravita leggera
+thrust_force = 0.1;    // Potenza di spinta
+max_speed = 5;         // Velocita massima
 
-// Current velocity
-hsp = 0;  // Horizontal speed
-vsp = 0;  // Vertical speed
+// Velocita attuale
+hsp = 0;  // Velocita orizzontale
+vsp = 0;  // Velocita verticale
 
-// Fuel system
+// Sistema carburante
 fuel = 100;
-fuel_use = 0.5;  // Fuel per frame
+fuel_use = 0.5;  // Carburante per frame
 
-// Game state
+// Stato del gioco
 landed = false;
 crashed = false;
 
-// Safe landing speed
+// Velocita sicura per atterraggio
 safe_speed = 2;</pre>
     </div>
 
-    <h2>Understanding the Variables</h2>
+    <h2>Comprensione delle Variabili</h2>
     <table>
         <tr>
-            <th>Variable</th>
-            <th>Purpose</th>
+            <th>Variabile</th>
+            <th>Scopo</th>
         </tr>
         <tr>
             <td><code>gravity_force</code></td>
-            <td>Constant downward pull (0.05 is gentle)</td>
+            <td>Attrazione costante verso il basso (0.05 e leggera)</td>
         </tr>
         <tr>
             <td><code>thrust_force</code></td>
-            <td>Upward force when pressing UP</td>
+            <td>Forza verso l'alto quando si preme SU</td>
         </tr>
         <tr>
             <td><code>fuel</code></td>
-            <td>100% fuel, decreases when thrusting</td>
+            <td>100% di carburante, diminuisce con la spinta</td>
         </tr>
         <tr>
             <td><code>safe_speed</code></td>
-            <td>Max speed for safe landing (2)</td>
+            <td>Velocita massima per atterraggio sicuro (2)</td>
         </tr>
     </table>
 
     <div class="highlight">
-        <strong>Balance:</strong> Thrust (0.1) is stronger than gravity (0.05) so you can slow down!
+        <strong>Bilanciamento:</strong> La spinta (0.1) e piu forte della gravita (0.05) cosi puoi rallentare!
     </div>
 
     <div class="info">
-        Click "Next" to add movement and controls.
+        Clicca "Avanti" per aggiungere movimento e controlli.
     </div>
 </body>
 </html>

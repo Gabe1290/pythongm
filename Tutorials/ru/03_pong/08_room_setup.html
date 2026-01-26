@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #7f8c8d; font-size: 13px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 7: Настройка Комнаты</h1>
+
+    <p>Теперь давайте создадим игровую Комнату и разместим все наши Объекты!</p>
+
+    <h2>Создание Комнаты</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкните правой кнопкой мыши на <strong>Комнаты</strong> и выберите <strong>Создать Комнату</strong></li>
+            <li>Назовите её <code>room_pong</code></li>
+            <li>Установите размер 640x480 пикселей</li>
+        </ol>
+    </div>
+
+    <h2>Схема Комнаты</h2>
+    <pre>
++--[СТЕНА СТЕНА СТЕНА СТЕНА СТЕНА]--+
+|                                   |
+[В]  [И1]                    [И2]  [В]
+[О]  [  ]       (o)          [  ]  [О]
+[Р]  [  ]                    [  ]  [Р]
+[.]                                [.]
+|                                   |
++--[СТЕНА СТЕНА СТЕНА СТЕНА СТЕНА]--+
+    </pre>
+
+    <h2>Размещение Объектов</h2>
+
+    <h3>1. Стены (Сверху и снизу)</h3>
+    <div class="step">
+        <p>Разместите экземпляры <code>obj_wall</code> вдоль верхнего и нижнего краёв.</p>
+    </div>
+
+    <h3>2. Ракетки</h3>
+    <div class="step">
+        <ul>
+            <li><code>obj_paddle_left</code> - Около левого края, по центру по вертикали</li>
+            <li><code>obj_paddle_right</code> - Около правого края, по центру по вертикали</li>
+        </ul>
+    </div>
+
+    <h3>3. Мяч</h3>
+    <div class="step">
+        <p>Разместите <code>obj_ball</code> в центре Комнаты.</p>
+    </div>
+
+    <h3>4. Ворота</h3>
+    <div class="step">
+        <ul>
+            <li><code>obj_goal_left</code> - Расположите вдоль левого края (за Ракеткой)</li>
+            <li><code>obj_goal_right</code> - Расположите вдоль правого края (за Ракеткой)</li>
+        </ul>
+    </div>
+
+    <h3>5. Отображение Счёта</h3>
+    <div class="step">
+        <p>Разместите <code>obj_score</code> в любом месте (у него нет Спрайта, он только рисует текст).</p>
+    </div>
+
+    <div class="success">
+        <strong>Поздравляем!</strong> Ваша игра Понг готова к запуску!
+    </div>
+
+    <h2>Тестирование игры</h2>
+    <ul>
+        <li>Нажмите <strong>F5</strong> или кликните <strong>Запустить</strong></li>
+        <li>Игрок 1: <strong>W</strong> (вверх) и <strong>S</strong> (вниз)</li>
+        <li>Игрок 2: <strong>Стрелка вверх</strong> и <strong>Стрелка вниз</strong></li>
+    </ul>
+
+    <div class="info">
+        <strong>Отлично!</strong> Вы создали классическую игру Понг для двух игроков!
+    </div>
+</body>
+</html>

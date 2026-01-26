@@ -15,35 +15,35 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Player Movement (Step Event)</h1>
+    <h1>Korak 4: Premikanje Igralca (Dogodek Step)</h1>
 
-    <p>This is the core of our platformer: movement, gravity, jumping, and collision.</p>
+    <p>To je jedro naše ploščadne igre: Premikanje, Gravitacija, Skakanje in Trki.</p>
 
-    <h2>Add Step Event</h2>
+    <h2>Dodaj Dogodek Step</h2>
     <div class="step">
-        <p>In <code>obj_player</code>:</p>
+        <p>V <code>obj_player</code>:</p>
         <ol>
-            <li>Add Event: <strong>Step &gt; Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Dodaj Dogodek: <strong>Step &gt; Step</strong></li>
+            <li>Dodaj Akcijo: <strong>Control &gt; Execute Code</strong></li>
         </ol>
         <pre>
-// === HORIZONTAL MOVEMENT ===
+// === VODORAVNO PREMIKANJE ===
 var move_input = keyboard_check(vk_right) - keyboard_check(vk_left);
 hsp = move_input * hspeed_max;
 
-// === GRAVITY ===
+// === GRAVITACIJA ===
 vsp += gravity_force;
 if (vsp > vspeed_max) vsp = vspeed_max;
 
-// === GROUND CHECK ===
+// === PREVERJANJE TAL ===
 on_ground = place_meeting(x, y + 1, obj_ground);
 
-// === JUMPING ===
+// === SKAKANJE ===
 if (on_ground && (keyboard_check_pressed(vk_up) || keyboard_check_pressed(vk_space))) {
     vsp = jump_force;
 }
 
-// === HORIZONTAL COLLISION ===
+// === VODORAVNI TRK ===
 if (place_meeting(x + hsp, y, obj_ground)) {
     while (!place_meeting(x + sign(hsp), y, obj_ground)) {
         x += sign(hsp);
@@ -52,7 +52,7 @@ if (place_meeting(x + hsp, y, obj_ground)) {
 }
 x += hsp;
 
-// === VERTICAL COLLISION ===
+// === NAVPIČNI TRK ===
 if (place_meeting(x, y + vsp, obj_ground)) {
     while (!place_meeting(x, y + sign(vsp), obj_ground)) {
         y += sign(vsp);
@@ -62,21 +62,21 @@ if (place_meeting(x, y + vsp, obj_ground)) {
 y += vsp;</pre>
     </div>
 
-    <h2>How It Works</h2>
+    <h2>Kako deluje</h2>
     <ol>
-        <li><strong>Input:</strong> Right arrow = 1, Left = -1, None = 0</li>
-        <li><strong>Gravity:</strong> Adds to vsp each frame (falling faster)</li>
-        <li><strong>Ground Check:</strong> Looks 1 pixel below for ground</li>
-        <li><strong>Jump:</strong> Only works when on_ground is true</li>
-        <li><strong>Collision:</strong> Move pixel-by-pixel until hitting wall</li>
+        <li><strong>Vnos:</strong> Desna puščica = 1, Leva = -1, Nič = 0</li>
+        <li><strong>Gravitacija:</strong> Vsak okvir doda vrednost k vsp (hitrejše padanje)</li>
+        <li><strong>Preverjanje tal:</strong> Išče tla 1 piksel spodaj</li>
+        <li><strong>Skok:</strong> Deluje samo, ko je on_ground true</li>
+        <li><strong>Trk:</strong> Premik piksel za pikslom do Stene</li>
     </ol>
 
     <div class="highlight">
-        <strong>The Magic:</strong> The while loop moves us pixel-by-pixel to the edge of the wall, preventing us from getting stuck!
+        <strong>Čarovnija:</strong> Zanka while nas premika piksel za pikslom do roba Stene in preprečuje, da bi se zagozdili!
     </div>
 
     <div class="info">
-        Click "Next" to add coins, spikes, and the flag.
+        Klikni "Naprej", da dodaš Kovance, bodice in zastavo.
     </div>
 </body>
 </html>

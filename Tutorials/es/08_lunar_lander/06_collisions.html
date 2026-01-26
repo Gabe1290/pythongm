@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 5: Detección de Colisión</h1>
+
+    <p>Maneja el aterrizaje en la plataforma y el Choque contra el terreno.</p>
+
+    <h2>Colisión con la Plataforma de Aterrizaje</h2>
+    <div class="step">
+        <p>En <code>obj_lander</code>:</p>
+        <ol>
+            <li>Añadir Evento: <strong>Colisión &gt; obj_pad</strong></li>
+            <li>Añadir Acción: <strong>Control &gt; Ejecutar Código</strong></li>
+        </ol>
+        <pre>
+// Calcular velocidad total
+var total_speed = sqrt(hsp*hsp + vsp*vsp);
+
+if (total_speed <= safe_speed) {
+    // ¡Aterrizaje seguro!
+    landed = true;
+    hsp = 0;
+    vsp = 0;
+    show_message("¡Aterrizaje Perfecto! ¡Ganaste!");
+} else {
+    // Demasiado rápido - ¡Choque!
+    crashed = true;
+    show_message("¡Choque! ¡Demasiado rápido!");
+    room_restart();
+}</pre>
+    </div>
+
+    <h2>Colisión con el Suelo (Choque)</h2>
+    <div class="danger">
+        <p>En <code>obj_lander</code>:</p>
+        <ol>
+            <li>Añadir Evento: <strong>Colisión &gt; obj_ground</strong></li>
+            <li>Añadir Acción: <strong>Control &gt; Ejecutar Código</strong></li>
+        </ol>
+        <pre>
+crashed = true;
+show_message("¡Choque contra el terreno!");
+room_restart();</pre>
+    </div>
+
+    <h2>Cálculo de Velocidad</h2>
+    <p>Usamos el teorema de Pitágoras para obtener la velocidad total:</p>
+    <pre>total_speed = sqrt(hsp*hsp + vsp*vsp)</pre>
+    <p>Esto combina la velocidad horizontal y vertical en un solo valor.</p>
+
+    <div class="highlight">
+        <strong>¡La velocidad segura es 2!</strong> Si total_speed > 2, te estrellas incluso en la plataforma.
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para añadir la visualización del HUD.
+    </div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 2: Создание Объектов</h1>
+
+    <p>Нам нужны объекты для игрока, стен, ящиков и целей.</p>
+
+    <h2>Создание Объекта Стены</h2>
+    <div class="step">
+        <ol>
+            <li>Щелкните правой кнопкой мыши на <strong>Объекты</strong> и выберите <strong>Создать Объект</strong></li>
+            <li>Назовите его <code>obj_wall</code></li>
+            <li>Установите спрайт <code>spr_wall</code></li>
+            <li><strong>Отметьте "Твёрдый"</strong></li>
+            <li>События не нужны</li>
+        </ol>
+    </div>
+
+    <h2>Создание Объекта Цели</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте объект <code>obj_target</code></li>
+            <li>Установите спрайт <code>spr_target</code></li>
+            <li>Оставьте "Твёрдый" неотмеченным (игрок и ящики могут находиться сверху)</li>
+            <li>События не нужны - это просто маркер</li>
+        </ol>
+    </div>
+
+    <h2>Создание Объекта Ящика</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте объект <code>obj_crate</code></li>
+            <li>Установите спрайт <code>spr_crate</code></li>
+            <li><strong>Отметьте "Твёрдый"</strong></li>
+        </ol>
+    </div>
+
+    <h2>Создание Объекта Игрока</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте объект <code>obj_player</code></li>
+            <li>Установите спрайт <code>spr_player</code></li>
+            <li>Оставьте "Твёрдый" неотмеченным</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Примечание:</strong> Мы добавим события в <code>obj_crate</code> и <code>obj_player</code> на следующих шагах.
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы добавить поведение ящика.
+    </div>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 6: Игровой контроллер</h1>
+
+    <p>Игровой контроллер отображает счёт на экране.</p>
+
+    <h2>Создание объекта контроллера</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте объект <code>obj_game_controller</code></li>
+            <li>Спрайт не нужен (невидимый контроллер)</li>
+        </ol>
+    </div>
+
+    <h2>Отрисовка счёта</h2>
+    <div class="step">
+        <p>В <code>obj_game_controller</code>:</p>
+        <ol>
+            <li>Добавить событие: <strong>Рисование > Рисование</strong></li>
+            <li>Добавить действие: <strong>Управление > Выполнить код</strong></li>
+        </ol>
+        <pre>
+// Установить цвет текста
+draw_set_color(c_white);
+
+// Рисуем счёт в левом верхнем углу
+draw_text(10, 10, "Счёт: " + string(score));
+
+// Опционально: Рисуем инструкции
+draw_text(10, 30, "Стрелки: Движение  |  Пробел: Прыжок");</pre>
+    </div>
+
+    <h2>Альтернатива: Использование действий</h2>
+    <div class="step">
+        <p>Вместо кода можно использовать:</p>
+        <ol>
+            <li>Добавить действие: <strong>Рисование > Установить цвет</strong> (Белый)</li>
+            <li>Добавить действие: <strong>Счёт > Рисовать счёт</strong>
+                <ul>
+                    <li>X: 10</li>
+                    <li>Y: 10</li>
+                    <li>Подпись: "Счёт: "</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Помните:</strong> Разместите игровой контроллер в вашей комнате! Он не появится сам по себе.
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы спроектировать ваш уровень.
+    </div>
+</body>
+</html>

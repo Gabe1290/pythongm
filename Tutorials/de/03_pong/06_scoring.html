@@ -14,70 +14,70 @@
     </style>
 </head>
 <body>
-    <h1>Step 5: Add Scoring Goals</h1>
+    <h1>Schritt 5: Tore hinzufügen</h1>
 
-    <p>We need invisible goals behind each paddle to detect when someone scores.</p>
+    <p>Wir benötigen unsichtbare Tore hinter jedem Schläger, um zu erkennen, wenn jemand punktet.</p>
 
-    <h2>Create Goal Sprite</h2>
+    <h2>Tor-Sprite erstellen</h2>
     <div class="step">
         <ol>
-            <li>Create a new sprite named <code>spr_goal</code></li>
-            <li>Make it 32x32 pixels with any color</li>
-            <li>(It will be invisible in the game)</li>
+            <li>Erstelle ein neues Sprite namens <code>spr_goal</code></li>
+            <li>Mache es 32x32 Pixel mit beliebiger Farbe</li>
+            <li>(Es wird im Spiel unsichtbar sein)</li>
         </ol>
     </div>
 
-    <h2>Create Left Goal Object</h2>
+    <h2>Linkes Tor-Objekt erstellen</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_goal_left</code></li>
-            <li>Set sprite to <code>spr_goal</code></li>
-            <li><strong>Uncheck "Visible"</strong> - goal should be invisible</li>
-            <li>Check "Solid"</li>
+            <li>Erstelle Objekt <code>obj_goal_left</code></li>
+            <li>Setze Sprite auf <code>spr_goal</code></li>
+            <li><strong>Deaktiviere „Sichtbar"</strong> - das Tor soll unsichtbar sein</li>
+            <li>Aktiviere „Solid"</li>
         </ol>
     </div>
 
-    <h2>Create Right Goal Object</h2>
+    <h2>Rechtes Tor-Objekt erstellen</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_goal_right</code></li>
-            <li>Set sprite to <code>spr_goal</code></li>
-            <li><strong>Uncheck "Visible"</strong></li>
-            <li>Check "Solid"</li>
+            <li>Erstelle Objekt <code>obj_goal_right</code></li>
+            <li>Setze Sprite auf <code>spr_goal</code></li>
+            <li><strong>Deaktiviere „Sichtbar"</strong></li>
+            <li>Aktiviere „Solid"</li>
         </ol>
     </div>
 
-    <h2>Ball Collides with Left Goal (Player 2 Scores)</h2>
+    <h2>Ball trifft linkes Tor (Spieler 2 punktet)</h2>
     <div class="step">
-        <p>Go back to <code>obj_ball</code>:</p>
+        <p>Gehe zurück zu <code>obj_ball</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_goal_left</strong></li>
-            <li>Add Action: <strong>Move &gt; Jump to Start Position</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Variable</strong></li>
+            <li>Ereignis hinzufügen: <strong>Kollision &gt; obj_goal_left</strong></li>
+            <li>Aktion hinzufügen: <strong>Bewegung &gt; Zur Startposition springen</strong></li>
+            <li>Aktion hinzufügen: <strong>Punktzahl &gt; Variable setzen</strong></li>
             <li>Variable: <code>global.p2score</code></li>
-            <li>Value: <code>1</code></li>
-            <li><strong>Check "Relative"</strong> (adds 1 to current score)</li>
+            <li>Wert: <code>1</code></li>
+            <li><strong>Aktiviere „Relativ"</strong> (addiert 1 zum aktuellen Punktestand)</li>
         </ol>
     </div>
 
-    <h2>Ball Collides with Right Goal (Player 1 Scores)</h2>
+    <h2>Ball trifft rechtes Tor (Spieler 1 punktet)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_goal_right</strong></li>
-            <li>Add Action: <strong>Move &gt; Jump to Start Position</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Variable</strong></li>
+            <li>Ereignis hinzufügen: <strong>Kollision &gt; obj_goal_right</strong></li>
+            <li>Aktion hinzufügen: <strong>Bewegung &gt; Zur Startposition springen</strong></li>
+            <li>Aktion hinzufügen: <strong>Punktzahl &gt; Variable setzen</strong></li>
             <li>Variable: <code>global.p1score</code></li>
-            <li>Value: <code>1</code></li>
-            <li><strong>Check "Relative"</strong></li>
+            <li>Wert: <code>1</code></li>
+            <li><strong>Aktiviere „Relativ"</strong></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Note:</strong> The <code>global.</code> prefix means these variables are accessible from any object!
+        <strong>Hinweis:</strong> Das Präfix <code>global.</code> bedeutet, dass diese Variablen von jedem Objekt aus zugänglich sind!
     </div>
 
     <div class="info">
-        Click "Next" to display the scores on screen.
+        Klicke auf „Weiter", um die Punkteanzeige einzurichten.
     </div>
 </body>
 </html>

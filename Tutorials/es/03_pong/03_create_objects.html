@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 2: Crear los Objetos</h1>
+
+    <p>Ahora crearemos los objetos del juego. Cada objeto usa un sprite y puede tener comportamientos.</p>
+
+    <h2>Crear el Objeto Pared</h2>
+    <div class="step">
+        <ol>
+            <li>Haz clic derecho en <strong>Objetos</strong> y selecciona <strong>Crear Objeto</strong></li>
+            <li>Nombralo <code>obj_wall</code></li>
+            <li>Establece el sprite a <code>spr_wall</code></li>
+            <li><strong>Marca la casilla "Solido"</strong> - esto es importante!</li>
+            <li>No se necesitan eventos - las paredes solo bloquean el movimiento</li>
+        </ol>
+    </div>
+
+    <h2>Crear el Objeto Pelota</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un nuevo objeto llamado <code>obj_ball</code></li>
+            <li>Establece el sprite a <code>spr_ball</code></li>
+            <li>Deja "Solido" sin marcar</li>
+        </ol>
+    </div>
+
+    <h2>Crear los Objetos Paleta</h2>
+    <div class="step">
+        <p><strong>Paleta Izquierda:</strong></p>
+        <ol>
+            <li>Crea el objeto <code>obj_paddle_left</code></li>
+            <li>Establece el sprite a <code>spr_paddle_left</code></li>
+            <li><strong>Marca "Solido"</strong></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Paleta Derecha:</strong></p>
+        <ol>
+            <li>Crea el objeto <code>obj_paddle_right</code></li>
+            <li>Establece el sprite a <code>spr_paddle_right</code></li>
+            <li><strong>Marca "Solido"</strong></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Importante:</strong> La casilla "Solido" es crucial para que el rebote funcione correctamente!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para agregar controles de movimiento a las paletas.
+    </div>
+</body>
+</html>

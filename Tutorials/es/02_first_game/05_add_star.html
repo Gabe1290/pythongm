@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Paso 4: Hacer que las estrellas caigan</h1>
+
+    <p>Ahora crearemos un generador que crea estrellas que caen en posiciones aleatorias.</p>
+
+    <h2>Crear un Objeto Generador</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Crear obj_generador</span>
+        <p>Haz clic derecho en <strong>Objetos</strong> y crea un nuevo objeto llamado <code>obj_generador</code>.</p>
+        <p>No le asignes un sprite - este objeto sera invisible.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Agregar un evento de Alarma</span>
+        <p>Abre <code>obj_generador</code> y haz clic en <strong>Agregar Evento</strong>.</p>
+        <p>Selecciona <code>Alarma &gt; Alarma 0</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Crear una estrella</span>
+        <p>En el evento Alarma 0, agrega estas acciones:</p>
+        <ul>
+            <li><strong>Crear Instancia</strong>: Crear <code>obj_estrella</code> en la posicion x=random(room_width), y=0</li>
+            <li><strong>Establecer Alarma</strong>: Establecer Alarma 0 a 60 (crea una nueva estrella cada 2 segundos)</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Iniciar la alarma</span>
+        <p>Agrega un evento <strong>Crear</strong> a <code>obj_generador</code>.</p>
+        <p>En este evento, agrega: <strong>Establecer Alarma 0</strong> a 60.</p>
+    </div>
+
+    <h2>Hacer que las estrellas caigan</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Editar obj_estrella</span>
+        <p>Abre <code>obj_estrella</code> y agrega un evento <strong>Crear</strong>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Establecer velocidad de caida</span>
+        <p>Agrega una accion <strong>"establecer vspeed"</strong> y configurala a <code>3</code>.</p>
+        <p>Esto hace que la estrella se mueva hacia abajo a velocidad 3.</p>
+    </div>
+
+    <h2>Colocar el Generador</h2>
+
+    <div class="step">
+        <span class="step-number">7</span>
+        <span class="step-title">Agregar el generador a la habitacion</span>
+        <p>Abre <code>room_juego</code> en el Editor de Habitaciones.</p>
+        <p>Coloca un <code>obj_generador</code> en cualquier lugar de la habitacion (es invisible, asi que la ubicacion no importa).</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Pruebalo!</strong> Presiona F5. Las estrellas ahora deberian caer desde la parte superior de la pantalla!
+    </div>
+
+    <div class="info">
+        <strong>Las estrellas caen!</strong> Haz clic en "Siguiente" para agregar colision y puntuacion.
+    </div>
+</body>
+</html>

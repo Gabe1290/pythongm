@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 2: Crear los Objetos</h1>
+
+    <p>Necesitamos objetos para el jugador, paredes, cajas y objetivos.</p>
+
+    <h2>Crear el Objeto de la Pared</h2>
+    <div class="step">
+        <ol>
+            <li>Haz clic derecho en <strong>Objetos</strong> y selecciona <strong>Crear Objeto</strong></li>
+            <li>Nómbralo <code>obj_wall</code></li>
+            <li>Asigna el sprite a <code>spr_wall</code></li>
+            <li><strong>Marca "Sólido"</strong></li>
+            <li>No se necesitan eventos</li>
+        </ol>
+    </div>
+
+    <h2>Crear el Objeto del Objetivo</h2>
+    <div class="step">
+        <ol>
+            <li>Crea el objeto <code>obj_target</code></li>
+            <li>Asigna el sprite a <code>spr_target</code></li>
+            <li>Deja "Sólido" desmarcado (el jugador y las cajas pueden estar encima)</li>
+            <li>No se necesitan eventos - es solo un marcador</li>
+        </ol>
+    </div>
+
+    <h2>Crear el Objeto de la Caja</h2>
+    <div class="step">
+        <ol>
+            <li>Crea el objeto <code>obj_crate</code></li>
+            <li>Asigna el sprite a <code>spr_crate</code></li>
+            <li><strong>Marca "Sólido"</strong></li>
+        </ol>
+    </div>
+
+    <h2>Crear el Objeto del Jugador</h2>
+    <div class="step">
+        <ol>
+            <li>Crea el objeto <code>obj_player</code></li>
+            <li>Asigna el sprite a <code>spr_player</code></li>
+            <li>Deja "Sólido" desmarcado</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Nota:</strong> Agregaremos eventos a <code>obj_crate</code> y <code>obj_player</code> en los siguientes pasos.
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para agregar el comportamiento de la caja.
+    </div>
+</body>
+</html>

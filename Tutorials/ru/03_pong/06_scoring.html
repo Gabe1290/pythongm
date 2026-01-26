@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 5: Добавление Ворот для подсчёта очков</h1>
+
+    <p>Нам нужны невидимые Ворота позади каждой Ракетки для определения момента, когда кто-то забивает гол.</p>
+
+    <h2>Создание Спрайта Ворот</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте новый Спрайт с именем <code>spr_goal</code></li>
+            <li>Сделайте его 32x32 пикселя любого цвета</li>
+            <li>(Он будет невидимым в игре)</li>
+        </ol>
+    </div>
+
+    <h2>Создание Объекта левых Ворот</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте Объект <code>obj_goal_left</code></li>
+            <li>Установите Спрайт <code>spr_goal</code></li>
+            <li><strong>Снимите флажок "Видимый"</strong> - Ворота должны быть невидимыми</li>
+            <li>Установите флажок "Твёрдый"</li>
+        </ol>
+    </div>
+
+    <h2>Создание Объекта правых Ворот</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте Объект <code>obj_goal_right</code></li>
+            <li>Установите Спрайт <code>spr_goal</code></li>
+            <li><strong>Снимите флажок "Видимый"</strong></li>
+            <li>Установите флажок "Твёрдый"</li>
+        </ol>
+    </div>
+
+    <h2>Мяч сталкивается с левыми Воротами (Игрок 2 забивает)</h2>
+    <div class="step">
+        <p>Вернитесь к <code>obj_ball</code>:</p>
+        <ol>
+            <li>Добавьте Событие: <strong>Столкновение &gt; obj_goal_left</strong></li>
+            <li>Добавьте Действие: <strong>Движение &gt; Вернуться на начальную позицию</strong></li>
+            <li>Добавьте Действие: <strong>Счёт &gt; Установить переменную</strong></li>
+            <li>Переменная: <code>global.p2score</code></li>
+            <li>Значение: <code>1</code></li>
+            <li><strong>Установите флажок "Относительно"</strong> (добавляет 1 к текущему Счёту)</li>
+        </ol>
+    </div>
+
+    <h2>Мяч сталкивается с правыми Воротами (Игрок 1 забивает)</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте Событие: <strong>Столкновение &gt; obj_goal_right</strong></li>
+            <li>Добавьте Действие: <strong>Движение &gt; Вернуться на начальную позицию</strong></li>
+            <li>Добавьте Действие: <strong>Счёт &gt; Установить переменную</strong></li>
+            <li>Переменная: <code>global.p1score</code></li>
+            <li>Значение: <code>1</code></li>
+            <li><strong>Установите флажок "Относительно"</strong></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Примечание:</strong> Префикс <code>global.</code> означает, что эти переменные доступны из любого Объекта!
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы отобразить Счёт на экране.
+    </div>
+</body>
+</html>

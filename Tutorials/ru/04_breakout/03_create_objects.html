@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 2: Создание объектов</h1>
+
+    <p>Теперь мы создадим все игровые объекты.</p>
+
+    <h2>Создание объекта стены</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкните правой кнопкой мыши по <strong>Объекты</strong> и выберите <strong>Создать объект</strong></li>
+            <li>Назовите его <code>obj_wall</code></li>
+            <li>Установите спрайт <code>spr_wall</code></li>
+            <li><strong>Отметьте «Твёрдый»</strong></li>
+            <li>События не требуются</li>
+        </ol>
+    </div>
+
+    <h2>Создание родительского объекта кирпича</h2>
+    <p>Мы используем родительский объект, чтобы все кирпичи имели одинаковое поведение при столкновении.</p>
+    <div class="step">
+        <ol>
+            <li>Создайте объект <code>obj_brick_parent</code></li>
+            <li>Спрайт не нужен (это просто шаблон)</li>
+            <li><strong>Отметьте «Твёрдый»</strong></li>
+        </ol>
+    </div>
+
+    <h2>Создание цветных объектов кирпичей</h2>
+    <div class="step">
+        <p>Для каждого цвета кирпича:</p>
+        <ol>
+            <li>Создайте <code>obj_brick_red</code> со спрайтом <code>spr_brick_red</code></li>
+            <li>Установите <strong>Родитель</strong> как <code>obj_brick_parent</code></li>
+            <li>Отметьте «Твёрдый»</li>
+        </ol>
+        <p>Повторите для <code>obj_brick_orange</code>, <code>obj_brick_yellow</code> и <code>obj_brick_green</code>.</p>
+    </div>
+
+    <h2>Создание объекта ракетки</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте объект <code>obj_paddle</code></li>
+            <li>Установите спрайт <code>spr_paddle</code></li>
+            <li><strong>Отметьте «Твёрдый»</strong></li>
+        </ol>
+    </div>
+
+    <h2>Создание объекта мяча</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте объект <code>obj_ball</code></li>
+            <li>Установите спрайт <code>spr_ball</code></li>
+            <li>Оставьте «Твёрдый» неотмеченным</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Родительские объекты:</strong> Когда мяч сталкивается с <code>obj_brick_parent</code>, он будет обнаруживать столкновения со ВСЕМИ типами кирпичей!
+    </div>
+
+    <div class="info">
+        Нажмите «Далее», чтобы добавить движение ракетки.
+    </div>
+</body>
+</html>

@@ -14,58 +14,58 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Ball Movement and Bouncing</h1>
+    <h1>Passo 4: Movimento e Rimbalzo della Palla</h1>
 
-    <p>The ball needs to move and bounce off walls, paddle, and bricks.</p>
+    <p>La palla deve muoversi e rimbalzare contro muri, racchetta e mattoni.</p>
 
-    <h2>Start Ball Moving (Create Event)</h2>
+    <h2>Avvia il Movimento della Palla (Evento Creazione)</h2>
     <div class="step">
         <ol>
-            <li>Open <code>obj_ball</code></li>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Move &gt; Start Moving in Direction</strong></li>
-            <li>Choose an upward diagonal direction</li>
-            <li>Set speed to <code>5</code></li>
+            <li>Apri <code>obj_ball</code></li>
+            <li>Aggiungi Evento: <strong>Creazione</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Inizia a Muoversi in Direzione</strong></li>
+            <li>Scegli una direzione diagonale verso l'alto</li>
+            <li>Imposta la velocita a <code>5</code></li>
         </ol>
     </div>
 
-    <h2>Bounce Off Walls</h2>
+    <h2>Rimbalza Contro i Muri</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_wall</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Aggiungi Evento: <strong>Collisione &gt; obj_wall</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Rimbalza Contro Oggetti</strong></li>
+            <li>Seleziona "Contro oggetti solidi"</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Paddle</h2>
+    <h2>Rimbalza Contro la Racchetta</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_paddle</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Aggiungi Evento: <strong>Collisione &gt; obj_paddle</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Rimbalza Contro Oggetti</strong></li>
+            <li>Seleziona "Contro oggetti solidi"</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Bricks (and Destroy Them!)</h2>
+    <h2>Rimbalza Contro i Mattoni (e Distruggili!)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_brick_parent</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
-            <li>Add Action: <strong>Main1 &gt; Destroy Instance</strong></li>
-            <li>Select "Other" (destroys the brick, not the ball)</li>
-            <li>Add Action: <strong>Score &gt; Add to Score</strong></li>
-            <li>Value: <code>10</code></li>
+            <li>Aggiungi Evento: <strong>Collisione &gt; obj_brick_parent</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Rimbalza Contro Oggetti</strong></li>
+            <li>Seleziona "Contro oggetti solidi"</li>
+            <li>Aggiungi Azione: <strong>Main1 &gt; Distruggi Istanza</strong></li>
+            <li>Seleziona "Altro" (distrugge il mattone, non la palla)</li>
+            <li>Aggiungi Azione: <strong>Punteggio &gt; Aggiungi al Punteggio</strong></li>
+            <li>Valore: <code>10</code></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Key Point:</strong> Using <code>obj_brick_parent</code> means this collision works for ALL brick colors!
+        <strong>Punto Chiave:</strong> Usare <code>obj_brick_parent</code> significa che questa collisione funziona per TUTTI i colori di mattoni!
     </div>
 
     <div class="info">
-        Click "Next" to add the lives system.
+        Clicca "Avanti" per aggiungere il sistema di vite.
     </div>
 </body>
 </html>

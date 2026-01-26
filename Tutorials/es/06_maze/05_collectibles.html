@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 4: Monedas y Salida</h1>
+
+    <p>Ahora hagamos que las monedas sean coleccionables y que la salida funcione.</p>
+
+    <h2>Recoleccion de Monedas</h2>
+    <div class="step">
+        <p>En <code>obj_coin</code>:</p>
+        <ol>
+            <li>Agregar Evento: <strong>Colision &gt; obj_player</strong></li>
+            <li>Agregar Accion: <strong>Puntuacion &gt; Establecer Puntuacion</strong></li>
+            <li>Nueva Puntuacion: <code>10</code></li>
+            <li>Marca "Relativo" para sumar 10 puntos</li>
+            <li>Agregar Accion: <strong>Main1 &gt; Destruir Instancia</strong></li>
+            <li>Aplica a: <code>Self</code></li>
+        </ol>
+    </div>
+
+    <h2>Comportamiento de la Salida</h2>
+    <div class="step">
+        <p>En <code>obj_exit</code>:</p>
+        <ol>
+            <li>Agregar Evento: <strong>Colision &gt; obj_player</strong></li>
+            <li>Agregar Accion: <strong>Main2 &gt; Mostrar Mensaje</strong></li>
+            <li>Mensaje: <code>Ganaste!</code></li>
+            <li>Agregar Accion: <strong>Main1 &gt; Reiniciar Habitacion</strong></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Consejo:</strong> Puedes usar <strong>Siguiente Habitacion</strong> en lugar de <strong>Reiniciar Habitacion</strong> si creas multiples niveles!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para agregar la visualizacion del temporizador.
+    </div>
+</body>
+</html>

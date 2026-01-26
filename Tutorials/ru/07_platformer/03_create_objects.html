@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 2: Создание объектов</h1>
+
+    <p>Теперь создадим объекты для всех элементов игры.</p>
+
+    <h2>Объект земли</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкните правой кнопкой мыши на <strong>Объекты</strong> > <strong>Создать объект</strong></li>
+            <li>Назовите его <code>obj_ground</code></li>
+            <li>Установите спрайт <code>spr_ground</code></li>
+            <li><strong>Отметьте галочку "Твёрдый"</strong></li>
+        </ol>
+    </div>
+
+    <h2>Объект платформы</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте <code>obj_platform</code></li>
+            <li>Установите спрайт <code>spr_platform</code></li>
+            <li><strong>Отметьте галочку "Твёрдый"</strong></li>
+            <li>Установите родителя <code>obj_ground</code> (опционально)</li>
+        </ol>
+    </div>
+
+    <h2>Объект игрока</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте <code>obj_player</code></li>
+            <li>Установите спрайт <code>spr_player</code></li>
+        </ol>
+    </div>
+
+    <h2>Предметы и опасности</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте <code>obj_coin</code> со спрайтом <code>spr_coin</code></li>
+            <li>Создайте <code>obj_spike</code> со спрайтом <code>spr_spike</code></li>
+            <li>Создайте <code>obj_flag</code> со спрайтом <code>spr_flag</code></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Важно:</strong> Земля и платформы должны быть "Твёрдыми", чтобы столкновения работали правильно!
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы добавить физику игрока (гравитацию и прыжок).
+    </div>
+</body>
+</html>

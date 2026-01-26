@@ -15,60 +15,60 @@
     </style>
 </head>
 <body>
-    <h1>Step 5: Game Controller</h1>
+    <h1>Passo 5: Controller di Gioco</h1>
 
-    <p>Create a controller to track time and display score.</p>
+    <p>Crea un controller per tenere traccia del tempo e visualizzare il punteggio.</p>
 
-    <h2>Create Controller Object</h2>
+    <h2>Crea l'Oggetto Controller</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_game_controller</code></li>
-            <li>No sprite needed (leave it empty)</li>
+            <li>Crea l'oggetto <code>obj_game_controller</code></li>
+            <li>Non serve sprite (lascialo vuoto)</li>
         </ol>
     </div>
 
-    <h2>Initialize Timer (Create Event)</h2>
+    <h2>Inizializza il Timer (Evento Create)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Control &gt; Set Variable</strong></li>
-            <li>Variable: <code>global.timer</code></li>
-            <li>Value: <code>0</code></li>
+            <li>Aggiungi Evento: <strong>Create</strong></li>
+            <li>Aggiungi Azione: <strong>Controllo &gt; Imposta Variabile</strong></li>
+            <li>Variabile: <code>global.timer</code></li>
+            <li>Valore: <code>0</code></li>
         </ol>
     </div>
 
-    <h2>Update Timer (Step Event)</h2>
+    <h2>Aggiorna il Timer (Evento Step)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Set Variable</strong></li>
-            <li>Variable: <code>global.timer</code></li>
-            <li>Value: <code>1/room_speed</code></li>
-            <li>Check "Relative"</li>
+            <li>Aggiungi Evento: <strong>Step</strong></li>
+            <li>Aggiungi Azione: <strong>Controllo &gt; Imposta Variabile</strong></li>
+            <li>Variabile: <code>global.timer</code></li>
+            <li>Valore: <code>1/room_speed</code></li>
+            <li>Spunta "Relativo"</li>
         </ol>
     </div>
 
-    <h2>Display Info (Draw Event)</h2>
+    <h2>Visualizza Informazioni (Evento Draw)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Draw</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Aggiungi Evento: <strong>Draw</strong></li>
+            <li>Aggiungi Azione: <strong>Controllo &gt; Esegui Codice</strong></li>
         </ol>
         <pre>
 draw_set_color(c_white);
-draw_text(10, 10, "Score: " + string(score));
-draw_text(10, 30, "Time: " + string(floor(global.timer)) + "s");
+draw_text(10, 10, "Punteggio: " + string(score));
+draw_text(10, 30, "Tempo: " + string(floor(global.timer)) + "s");
 
 var coins = instance_number(obj_coin);
-draw_text(10, 50, "Coins: " + string(coins));</pre>
+draw_text(10, 50, "Monete: " + string(coins));</pre>
     </div>
 
     <div class="highlight">
-        <strong>Note:</strong> The controller is invisible but essential for tracking game state!
+        <strong>Nota:</strong> Il controller e invisibile ma essenziale per tenere traccia dello stato del gioco!
     </div>
 
     <div class="info">
-        Click "Next" to set up your room.
+        Clicca "Avanti" per configurare la tua stanza.
     </div>
 </body>
 </html>

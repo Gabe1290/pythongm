@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 4: Movimiento y Rebote de la Pelota</h1>
+
+    <p>La pelota necesita moverse automaticamente y rebotar en las paredes y paletas.</p>
+
+    <h2>Iniciar Movimiento de la Pelota (Evento Crear)</h2>
+    <div class="step">
+        <ol>
+            <li>Abre <code>obj_ball</code></li>
+            <li>Agrega Evento: <strong>Crear</strong></li>
+            <li>Agrega Accion: <strong>Movimiento &gt; Comenzar a Mover en Direccion</strong></li>
+            <li>Elige una direccion diagonal (no directamente arriba/abajo)</li>
+            <li>Establece la velocidad a <code>6</code></li>
+        </ol>
+    </div>
+
+    <h2>Rebotar en las Paredes</h2>
+    <div class="step">
+        <ol>
+            <li>Agrega Evento: <strong>Colision &gt; obj_wall</strong></li>
+            <li>Agrega Accion: <strong>Movimiento &gt; Rebotar Contra Objetos</strong></li>
+            <li>Selecciona "Contra objetos solidos"</li>
+        </ol>
+    </div>
+
+    <h2>Rebotar en la Paleta Izquierda</h2>
+    <div class="step">
+        <ol>
+            <li>Agrega Evento: <strong>Colision &gt; obj_paddle_left</strong></li>
+            <li>Agrega Accion: <strong>Movimiento &gt; Rebotar Contra Objetos</strong></li>
+            <li>Selecciona "Contra objetos solidos"</li>
+        </ol>
+    </div>
+
+    <h2>Rebotar en la Paleta Derecha</h2>
+    <div class="step">
+        <ol>
+            <li>Agrega Evento: <strong>Colision &gt; obj_paddle_right</strong></li>
+            <li>Agrega Accion: <strong>Movimiento &gt; Rebotar Contra Objetos</strong></li>
+            <li>Selecciona "Contra objetos solidos"</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Consejo de Prueba:</strong> Puedes probar tu juego ahora! La pelota deberia rebotar por todas partes, pero la puntuacion aun no funcionara.
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para agregar las porterias de puntuacion.
+    </div>
+</body>
+</html>

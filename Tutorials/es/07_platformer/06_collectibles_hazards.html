@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 5: Coleccionables y Peligros</h1>
+
+    <p>Ahora agregamos monedas para recolectar, pinchos para evitar y una bandera para alcanzar.</p>
+
+    <h2>Moneda - Recolectar por Puntos</h2>
+    <div class="step">
+        <p>En <code>obj_coin</code>:</p>
+        <ol>
+            <li>Agregar Evento: <strong>Colision > obj_player</strong></li>
+            <li>Agregar Accion: <strong>Puntuacion > Establecer Puntuacion</strong>
+                <ul>
+                    <li>Nueva Puntuacion: <code>10</code></li>
+                    <li>Marca "Relativo"</li>
+                </ul>
+            </li>
+            <li>Agregar Accion: <strong>Main1 > Destruir Instancia</strong>
+                <ul>
+                    <li>Aplica a: Self</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <h2>Pincho - Lastima al Jugador</h2>
+    <div class="danger">
+        <p>En <code>obj_spike</code>:</p>
+        <ol>
+            <li>Agregar Evento: <strong>Colision > obj_player</strong></li>
+            <li>Agregar Accion: <strong>Main2 > Mostrar Mensaje</strong>
+                <ul>
+                    <li>Mensaje: <code>Auch! Tocaste un pincho!</code></li>
+                </ul>
+            </li>
+            <li>Agregar Accion: <strong>Main1 > Reiniciar Habitacion</strong></li>
+        </ol>
+    </div>
+
+    <h2>Bandera - Nivel Completado</h2>
+    <div class="step">
+        <p>En <code>obj_flag</code>:</p>
+        <ol>
+            <li>Agregar Evento: <strong>Colision > obj_player</strong></li>
+            <li>Agregar Accion: <strong>Main2 > Mostrar Mensaje</strong>
+                <ul>
+                    <li>Mensaje: <code>Nivel Completado!</code></li>
+                </ul>
+            </li>
+            <li>Agregar Accion: <strong>Main1 > Reiniciar Habitacion</strong> (o Siguiente Habitacion para multiples niveles)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Consejo:</strong> Coloca pinchos cerca de pozos o sobre plataformas para crear desafios!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para agregar el controlador del juego para mostrar la puntuacion.
+    </div>
+</body>
+</html>

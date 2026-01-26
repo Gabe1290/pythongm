@@ -17,84 +17,84 @@
     </style>
 </head>
 <body>
-    <h1>Step 7: Set Up the Room</h1>
+    <h1>Крок 7: Налаштування кімнати</h1>
 
-    <p>Time to create the game room and place all the objects!</p>
+    <p>Час створити ігрову кімнату та розмістити всі об'єкти!</p>
 
-    <h2>Create the Room</h2>
+    <h2>Створення кімнати</h2>
     <div class="step">
         <ol>
-            <li>Right-click on <strong>Rooms</strong> and select <strong>Create Room</strong></li>
-            <li>Name it <code>room_breakout</code></li>
-            <li>Set size to 640x480 pixels</li>
+            <li>Клацніть правою кнопкою миші на <strong>Rooms</strong> і виберіть <strong>Створити кімнату</strong></li>
+            <li>Назвіть її <code>room_breakout</code></li>
+            <li>Встановіть розмір 640x480 пікселів</li>
         </ol>
     </div>
 
-    <h2>Room Layout</h2>
+    <h2>Схема кімнати</h2>
     <pre>
-+--[WALL]--------------------[WALL]--+
-|  [WALL]  [R][R][R][R][R]  [WALL]  |
-|  [WALL]  [O][O][O][O][O]  [WALL]  |
-|  [WALL]  [Y][Y][Y][Y][Y]  [WALL]  |
-|  [WALL]  [G][G][G][G][G]  [WALL]  |
-|  [WALL]                   [WALL]  |
-|  [WALL]        (o)        [WALL]  |
-|  [WALL]                   [WALL]  |
-|  [WALL]      [PADDLE]     [WALL]  |
-+--[DEATH ZONE DEATH ZONE DEATH]----+
++--[СТІНА]--------------------[СТІНА]--+
+|  [СТІНА]  [Ч][Ч][Ч][Ч][Ч]  [СТІНА]  |
+|  [СТІНА]  [П][П][П][П][П]  [СТІНА]  |
+|  [СТІНА]  [Ж][Ж][Ж][Ж][Ж]  [СТІНА]  |
+|  [СТІНА]  [З][З][З][З][З]  [СТІНА]  |
+|  [СТІНА]                   [СТІНА]  |
+|  [СТІНА]        (o)        [СТІНА]  |
+|  [СТІНА]                   [СТІНА]  |
+|  [СТІНА]     [РАКЕТКА]     [СТІНА]  |
++--[ЗОНА СМЕРТІ ЗОНА СМЕРТІ ЗОНА]-----+
     </pre>
 
-    <h2>Place the Objects</h2>
+    <h2>Розміщення об'єктів</h2>
 
-    <h3>1. Walls</h3>
+    <h3>1. Стіни</h3>
     <div class="step">
-        <p>Place <code>obj_wall</code> along the top, left, and right edges.</p>
+        <p>Розмістіть <code>obj_wall</code> вздовж верхнього, лівого та правого країв.</p>
     </div>
 
-    <h3>2. Death Zone</h3>
+    <h3>2. Зона смерті</h3>
     <div class="step">
-        <p>Place <code>obj_death_zone</code> along the bottom edge (it's invisible).</p>
+        <p>Розмістіть <code>obj_death_zone</code> вздовж нижнього краю (вона невидима).</p>
     </div>
 
-    <h3>3. Bricks</h3>
+    <h3>3. Цегла</h3>
     <div class="step">
-        <p>Arrange bricks in rows near the top:</p>
+        <p>Розташуйте цеглу рядами біля верхньої частини:</p>
         <ul>
-            <li>Top row: Red bricks (<code>obj_brick_red</code>)</li>
-            <li>Second row: Orange bricks</li>
-            <li>Third row: Yellow bricks</li>
-            <li>Fourth row: Green bricks</li>
+            <li>Верхній ряд: Червона цегла (<code>obj_brick_red</code>)</li>
+            <li>Другий ряд: Помаранчева цегла</li>
+            <li>Третій ряд: Жовта цегла</li>
+            <li>Четвертий ряд: Зелена цегла</li>
         </ul>
     </div>
 
-    <h3>4. Paddle</h3>
+    <h3>4. Ракетка</h3>
     <div class="step">
-        <p>Place <code>obj_paddle</code> near the bottom, centered horizontally.</p>
+        <p>Розмістіть <code>obj_paddle</code> біля нижньої частини, по центру горизонтально.</p>
     </div>
 
-    <h3>5. Ball</h3>
+    <h3>5. М'яч</h3>
     <div class="step">
-        <p>Place <code>obj_ball</code> just above the paddle.</p>
+        <p>Розмістіть <code>obj_ball</code> трохи вище ракетки.</p>
     </div>
 
-    <h3>6. Game Controller</h3>
+    <h3>6. Ігровий контролер</h3>
     <div class="step">
-        <p>Place <code>obj_game_controller</code> anywhere (it has no sprite).</p>
+        <p>Розмістіть <code>obj_game_controller</code> будь-де (він не має спрайту).</p>
     </div>
 
     <div class="success">
-        <strong>Congratulations!</strong> Your Breakout game is ready!
+        <strong>Вітаємо!</strong> Ваша гра Breakout готова!
     </div>
 
-    <h2>Test Your Game</h2>
+    <h2>Тестування гри</h2>
     <ul>
-        <li>Press <strong>F5</strong> or click <strong>Run</strong></li>
-        <li>Use <strong>Left</strong> and <strong>Right</strong> arrow keys to move</li>
-        <li>Break all the bricks to win!</li>
+        <li>Натисніть <strong>F5</strong> або клацніть <strong>Run</strong></li>
+        <li>Використовуйте клавіші <strong>вліво</strong> та <strong>вправо</strong> для руху</li>
+        <li>Розбийте всю цеглу, щоб перемогти!</li>
     </ul>
 
     <div class="info">
-        <strong>Great job!</strong> You've created a classic Breakout game!
+        <strong>Чудова робота!</strong> Ви створили класичну гру Breakout!
     </div>
 </body>
 </html>

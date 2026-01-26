@@ -14,40 +14,40 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Coins and Exit</h1>
+    <h1>Korak 4: Kovanci in izhod</h1>
 
-    <p>Now let's make coins collectible and the exit work.</p>
+    <p>Zdaj naredimo kovance zbiralne in izhod delujoč.</p>
 
-    <h2>Coin Collection</h2>
+    <h2>Zbiranje kovancev</h2>
     <div class="step">
-        <p>In <code>obj_coin</code>:</p>
+        <p>V <code>obj_coin</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Score</strong></li>
-            <li>New Score: <code>10</code></li>
-            <li>Check "Relative" to add 10 points</li>
-            <li>Add Action: <strong>Main1 &gt; Destroy Instance</strong></li>
-            <li>Applies to: <code>Self</code></li>
+            <li>Dodajte dogodek: <strong>Collision &gt; obj_player</strong></li>
+            <li>Dodajte akcijo: <strong>Score &gt; Set Score</strong></li>
+            <li>Nov rezultat: <code>10</code></li>
+            <li>Označite "Relative" za dodajanje 10 točk</li>
+            <li>Dodajte akcijo: <strong>Main1 &gt; Destroy Instance</strong></li>
+            <li>Velja za: <code>Self</code></li>
         </ol>
     </div>
 
-    <h2>Exit Behavior</h2>
+    <h2>Obnašanje izhoda</h2>
     <div class="step">
-        <p>In <code>obj_exit</code>:</p>
+        <p>V <code>obj_exit</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong></li>
-            <li>Message: <code>You Win!</code></li>
-            <li>Add Action: <strong>Main1 &gt; Restart Room</strong></li>
+            <li>Dodajte dogodek: <strong>Collision &gt; obj_player</strong></li>
+            <li>Dodajte akcijo: <strong>Main2 &gt; Show Message</strong></li>
+            <li>Sporočilo: <code>Zmagali ste!</code></li>
+            <li>Dodajte akcijo: <strong>Main1 &gt; Restart Room</strong></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Tip:</strong> You can use <strong>Next Room</strong> instead of <strong>Restart Room</strong> if you create multiple levels!
+        <strong>Namig:</strong> Uporabite lahko <strong>Next Room</strong> namesto <strong>Restart Room</strong>, če ustvarite več stopenj!
     </div>
 
     <div class="info">
-        Click "Next" to add the timer display.
+        Kliknite "Naprej" za dodajanje prikaza časovnika.
     </div>
 </body>
 </html>

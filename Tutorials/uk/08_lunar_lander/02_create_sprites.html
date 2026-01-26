@@ -16,70 +16,70 @@
     </style>
 </head>
 <body>
-    <h1>Step 1: Create Sprites</h1>
+    <h1>Крок 1: Створення спрайтів</h1>
 
-    <p>We need sprites for the lander, landing pad, and terrain.</p>
+    <p>Нам потрібні спрайти для посадкового модуля, посадкового майданчика та місцевості.</p>
 
     <table>
         <tr>
-            <th>Sprite Name</th>
-            <th>Size</th>
-            <th>Description</th>
+            <th>Назва спрайту</th>
+            <th>Розмір</th>
+            <th>Опис</th>
         </tr>
         <tr>
             <td><code>spr_lander</code></td>
             <td>32x32</td>
-            <td>Spacecraft (triangle or classic lander shape)</td>
+            <td>Космічний корабель (трикутник або класична форма модуля)</td>
         </tr>
         <tr>
             <td><code>spr_pad</code></td>
             <td>64x16</td>
-            <td>Landing platform with "H" marking</td>
+            <td>Посадкова платформа з позначкою "H"</td>
         </tr>
         <tr>
             <td><code>spr_ground</code></td>
             <td>32x32</td>
-            <td>Rocky terrain (gray/brown)</td>
+            <td>Скелястий рельєф (сірий/коричневий)</td>
         </tr>
     </table>
 
-    <h2>Create Lander Sprite</h2>
+    <h2>Створення спрайту посадкового модуля</h2>
     <div class="step">
         <ol>
-            <li>Right-click <strong>Sprites</strong> > <strong>Create Sprite</strong></li>
-            <li>Name it <code>spr_lander</code></li>
-            <li>Click <strong>Edit Sprite</strong></li>
-            <li>Draw a spacecraft (32x32 pixels)</li>
-            <li><strong>Set origin to center-bottom</strong> for proper landing</li>
+            <li>Клацніть правою кнопкою <strong>Спрайти</strong> > <strong>Створити спрайт</strong></li>
+            <li>Назвіть його <code>spr_lander</code></li>
+            <li>Натисніть <strong>Редагувати спрайт</strong></li>
+            <li>Намалюйте космічний корабель (32x32 пікселі)</li>
+            <li><strong>Встановіть початок координат по центру знизу</strong> для правильної посадки</li>
         </ol>
     </div>
 
-    <h2>Create Landing Pad Sprite</h2>
+    <h2>Створення спрайту посадкового майданчика</h2>
     <div class="step">
         <ol>
-            <li>Create sprite named <code>spr_pad</code></li>
-            <li>Size: 64x16 pixels</li>
-            <li>Draw a flat platform with markings</li>
-            <li>Use bright colors (yellow/green)</li>
+            <li>Створіть спрайт з назвою <code>spr_pad</code></li>
+            <li>Розмір: 64x16 пікселів</li>
+            <li>Намалюйте плоску платформу з позначками</li>
+            <li>Використовуйте яскраві кольори (жовтий/зелений)</li>
         </ol>
     </div>
 
-    <h2>Create Ground Sprite</h2>
+    <h2>Створення спрайту землі</h2>
     <div class="step">
         <ol>
-            <li>Create sprite named <code>spr_ground</code></li>
-            <li>Size: 32x32 pixels</li>
-            <li>Draw rocky, rough terrain</li>
-            <li>Use gray/brown colors</li>
+            <li>Створіть спрайт з назвою <code>spr_ground</code></li>
+            <li>Розмір: 32x32 пікселі</li>
+            <li>Намалюйте скелястий, нерівний рельєф</li>
+            <li>Використовуйте сірий/коричневий кольори</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Important:</strong> Set the lander's origin to center-bottom so it lands correctly on the pad!
+        <strong>Важливо:</strong> Встановіть початок координат модуля по центру знизу, щоб він правильно сідав на майданчик!
     </div>
 
     <div class="info">
-        Click "Next" to create the game objects.
+        Натисніть "Далі", щоб створити ігрові об'єкти.
     </div>
 </body>
 </html>

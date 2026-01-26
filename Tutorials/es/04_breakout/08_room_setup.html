@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #7f8c8d; font-size: 13px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 7: Configurar la Habitación</h1>
+
+    <p>¡Es hora de crear la habitación del juego y colocar todos los objetos!</p>
+
+    <h2>Crear la Habitación</h2>
+    <div class="step">
+        <ol>
+            <li>Haz clic derecho en <strong>Habitaciones</strong> y selecciona <strong>Crear Habitación</strong></li>
+            <li>Nómbrala <code>room_breakout</code></li>
+            <li>Establece el tamaño a 640x480 píxeles</li>
+        </ol>
+    </div>
+
+    <h2>Diseño de la Habitación</h2>
+    <pre>
++--[PARED]--------------------[PARED]--+
+|  [PARED]  [R][R][R][R][R]  [PARED]  |
+|  [PARED]  [N][N][N][N][N]  [PARED]  |
+|  [PARED]  [A][A][A][A][A]  [PARED]  |
+|  [PARED]  [V][V][V][V][V]  [PARED]  |
+|  [PARED]                   [PARED]  |
+|  [PARED]        (o)        [PARED]  |
+|  [PARED]                   [PARED]  |
+|  [PARED]      [PALETA]     [PARED]  |
++--[ZONA DE MUERTE ZONA DE MUERTE]----+
+    </pre>
+
+    <h2>Colocar los Objetos</h2>
+
+    <h3>1. Paredes</h3>
+    <div class="step">
+        <p>Coloca <code>obj_wall</code> a lo largo de los bordes superior, izquierdo y derecho.</p>
+    </div>
+
+    <h3>2. Zona de Muerte</h3>
+    <div class="step">
+        <p>Coloca <code>obj_death_zone</code> a lo largo del borde inferior (es invisible).</p>
+    </div>
+
+    <h3>3. Ladrillos</h3>
+    <div class="step">
+        <p>Organiza los ladrillos en filas cerca de la parte superior:</p>
+        <ul>
+            <li>Fila superior: Ladrillos rojos (<code>obj_brick_red</code>)</li>
+            <li>Segunda fila: Ladrillos naranjas</li>
+            <li>Tercera fila: Ladrillos amarillos</li>
+            <li>Cuarta fila: Ladrillos verdes</li>
+        </ul>
+    </div>
+
+    <h3>4. Paleta</h3>
+    <div class="step">
+        <p>Coloca <code>obj_paddle</code> cerca de la parte inferior, centrada horizontalmente.</p>
+    </div>
+
+    <h3>5. Pelota</h3>
+    <div class="step">
+        <p>Coloca <code>obj_ball</code> justo encima de la paleta.</p>
+    </div>
+
+    <h3>6. Controlador de Juego</h3>
+    <div class="step">
+        <p>Coloca <code>obj_game_controller</code> en cualquier lugar (no tiene sprite).</p>
+    </div>
+
+    <div class="success">
+        <strong>¡Felicitaciones!</strong> ¡Tu juego de Breakout está listo!
+    </div>
+
+    <h2>Probar Tu Juego</h2>
+    <ul>
+        <li>Presiona <strong>F5</strong> o haz clic en <strong>Ejecutar</strong></li>
+        <li>Usa las teclas de flecha <strong>Izquierda</strong> y <strong>Derecha</strong> para moverte</li>
+        <li>¡Rompe todos los ladrillos para ganar!</li>
+    </ul>
+
+    <div class="info">
+        <strong>¡Excelente trabajo!</strong> ¡Has creado un juego clásico de Breakout!
+    </div>
+</body>
+</html>

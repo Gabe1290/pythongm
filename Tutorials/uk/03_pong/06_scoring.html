@@ -14,70 +14,70 @@
     </style>
 </head>
 <body>
-    <h1>Step 5: Add Scoring Goals</h1>
+    <h1>Крок 5: Додавання воріт для рахунку</h1>
 
-    <p>We need invisible goals behind each paddle to detect when someone scores.</p>
+    <p>Нам потрібні невидимі ворота позаду кожної ракетки, щоб визначати, коли хтось забиває.</p>
 
-    <h2>Create Goal Sprite</h2>
+    <h2>Створення спрайта воріт</h2>
     <div class="step">
         <ol>
-            <li>Create a new sprite named <code>spr_goal</code></li>
-            <li>Make it 32x32 pixels with any color</li>
-            <li>(It will be invisible in the game)</li>
+            <li>Створіть новий спрайт з назвою <code>spr_goal</code></li>
+            <li>Зробіть його 32x32 пікселів будь-якого кольору</li>
+            <li>(У грі він буде невидимим)</li>
         </ol>
     </div>
 
-    <h2>Create Left Goal Object</h2>
+    <h2>Створення об'єкта лівих воріт</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_goal_left</code></li>
-            <li>Set sprite to <code>spr_goal</code></li>
-            <li><strong>Uncheck "Visible"</strong> - goal should be invisible</li>
-            <li>Check "Solid"</li>
+            <li>Створіть об'єкт <code>obj_goal_left</code></li>
+            <li>Встановіть спрайт <code>spr_goal</code></li>
+            <li><strong>Зніміть прапорець "Видимий"</strong> - ворота повинні бути невидимими</li>
+            <li>Поставте прапорець "Твердий"</li>
         </ol>
     </div>
 
-    <h2>Create Right Goal Object</h2>
+    <h2>Створення об'єкта правих воріт</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_goal_right</code></li>
-            <li>Set sprite to <code>spr_goal</code></li>
-            <li><strong>Uncheck "Visible"</strong></li>
-            <li>Check "Solid"</li>
+            <li>Створіть об'єкт <code>obj_goal_right</code></li>
+            <li>Встановіть спрайт <code>spr_goal</code></li>
+            <li><strong>Зніміть прапорець "Видимий"</strong></li>
+            <li>Поставте прапорець "Твердий"</li>
         </ol>
     </div>
 
-    <h2>Ball Collides with Left Goal (Player 2 Scores)</h2>
+    <h2>М'яч зіткнувся з лівими воротами (Гравець 2 забиває)</h2>
     <div class="step">
-        <p>Go back to <code>obj_ball</code>:</p>
+        <p>Поверніться до <code>obj_ball</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_goal_left</strong></li>
-            <li>Add Action: <strong>Move &gt; Jump to Start Position</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Variable</strong></li>
-            <li>Variable: <code>global.p2score</code></li>
-            <li>Value: <code>1</code></li>
-            <li><strong>Check "Relative"</strong> (adds 1 to current score)</li>
+            <li>Додайте подію: <strong>Зіткнення &gt; obj_goal_left</strong></li>
+            <li>Додайте дію: <strong>Рух &gt; Перейти на початкову позицію</strong></li>
+            <li>Додайте дію: <strong>Рахунок &gt; Встановити змінну</strong></li>
+            <li>Змінна: <code>global.p2score</code></li>
+            <li>Значення: <code>1</code></li>
+            <li><strong>Поставте прапорець "Відносно"</strong> (додає 1 до поточного рахунку)</li>
         </ol>
     </div>
 
-    <h2>Ball Collides with Right Goal (Player 1 Scores)</h2>
+    <h2>М'яч зіткнувся з правими воротами (Гравець 1 забиває)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_goal_right</strong></li>
-            <li>Add Action: <strong>Move &gt; Jump to Start Position</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Variable</strong></li>
-            <li>Variable: <code>global.p1score</code></li>
-            <li>Value: <code>1</code></li>
-            <li><strong>Check "Relative"</strong></li>
+            <li>Додайте подію: <strong>Зіткнення &gt; obj_goal_right</strong></li>
+            <li>Додайте дію: <strong>Рух &gt; Перейти на початкову позицію</strong></li>
+            <li>Додайте дію: <strong>Рахунок &gt; Встановити змінну</strong></li>
+            <li>Змінна: <code>global.p1score</code></li>
+            <li>Значення: <code>1</code></li>
+            <li><strong>Поставте прапорець "Відносно"</strong></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Note:</strong> The <code>global.</code> prefix means these variables are accessible from any object!
+        <strong>Примітка:</strong> Префікс <code>global.</code> означає, що ці змінні доступні з будь-якого об'єкта!
     </div>
 
     <div class="info">
-        Click "Next" to display the scores on screen.
+        Натисніть "Далі", щоб відобразити рахунок на екрані.
     </div>
 </body>
 </html>

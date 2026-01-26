@@ -15,24 +15,24 @@
     </style>
 </head>
 <body>
-    <h1>Step 7: Room Setup</h1>
+    <h1>Крок 7: Налаштування кімнати</h1>
 
-    <p>Design your lunar landscape!</p>
+    <p>Створіть свій місячний ландшафт!</p>
 
-    <h2>Create the Room</h2>
+    <h2>Створення кімнати</h2>
     <div class="step">
         <ol>
-            <li>Right-click <strong>Rooms</strong> > <strong>Create Room</strong></li>
-            <li>Name it <code>room_game</code></li>
-            <li>Set size: <strong>640 x 480</strong></li>
-            <li>Set background color to <strong>black</strong> (space)</li>
-            <li>Enable "Snap to Grid" (32x32)</li>
+            <li>Клацніть правою кнопкою <strong>Кімнати</strong> > <strong>Створити кімнату</strong></li>
+            <li>Назвіть її <code>room_game</code></li>
+            <li>Встановіть розмір: <strong>640 x 480</strong></li>
+            <li>Встановіть колір фону на <strong>чорний</strong> (космос)</li>
+            <li>Увімкніть "Прив'язку до сітки" (32x32)</li>
         </ol>
     </div>
 
-    <h2>Example Level Layout</h2>
+    <h2>Приклад розташування рівня</h2>
     <pre>
-        L                          <- Lander starts here
+        M                          <- Модуль стартує тут
 
 
 
@@ -41,37 +41,37 @@
 GGG     GGG     PPPP     GGG     GGG
 GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
 
-G = Ground (crash)    L = Lander    P = Landing Pad (safe)</pre>
+G = Земля (аварія)    M = Модуль    P = Посадковий майданчик (безпечно)</pre>
 
-    <h2>Building Your Level</h2>
+    <h2>Побудова рівня</h2>
     <div class="step">
         <ol>
-            <li><strong>Ground:</strong> Place <code>obj_ground</code> along the bottom</li>
-            <li><strong>Gap:</strong> Leave space for the landing pad</li>
-            <li><strong>Landing Pad:</strong> Place <code>obj_pad</code> in the gap</li>
-            <li><strong>Lander:</strong> Place <code>obj_lander</code> at the top</li>
-            <li><strong>Controller:</strong> Place <code>obj_game_controller</code> anywhere</li>
+            <li><strong>Земля:</strong> Розмістіть <code>obj_ground</code> вздовж низу</li>
+            <li><strong>Проміжок:</strong> Залиште місце для посадкового майданчика</li>
+            <li><strong>Посадковий майданчик:</strong> Розмістіть <code>obj_pad</code> у проміжку</li>
+            <li><strong>Модуль:</strong> Розмістіть <code>obj_lander</code> зверху</li>
+            <li><strong>Контролер:</strong> Розмістіть <code>obj_game_controller</code> будь-де</li>
         </ol>
     </div>
 
-    <h2>Test Your Game!</h2>
+    <h2>Протестуйте гру!</h2>
     <div class="success">
-        <p><strong>Press F5 or click Run!</strong></p>
+        <p><strong>Натисніть F5 або клацніть Запуск!</strong></p>
         <ul>
-            <li><strong>UP Arrow:</strong> Thrust (uses fuel!)</li>
-            <li><strong>LEFT/RIGHT:</strong> Steer horizontally</li>
-            <li>Watch your speed - stay under 2!</li>
-            <li>Don't run out of fuel!</li>
-            <li>Land on the pad to win!</li>
+            <li><strong>Стрілка ВГОРУ:</strong> Тяга (використовує паливо!)</li>
+            <li><strong>ВЛІВО/ВПРАВО:</strong> Керування по горизонталі</li>
+            <li>Слідкуйте за швидкістю - тримайте нижче 2!</li>
+            <li>Не витрачайте все паливо!</li>
+            <li>Приземліться на майданчик, щоб перемогти!</li>
         </ul>
     </div>
 
     <div class="highlight">
-        <strong>Congratulations!</strong> You've created a lunar lander with gravity, thrust, and fuel management!
+        <strong>Вітаємо!</strong> Ви створили гру про посадковий модуль з гравітацією, тягою та управлінням паливом!
     </div>
 
     <div class="info">
-        <strong>Challenge:</strong> Add multiple landing pads with different point values, or add wind effects!
+        <strong>Виклик:</strong> Додайте кілька посадкових майданчиків з різною кількістю очок або додайте ефекти вітру!
     </div>
 </body>
 </html>

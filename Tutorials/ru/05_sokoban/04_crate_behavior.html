@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 3: Поведение Ящика</h1>
+
+    <p>Ящик должен менять внешний вид, когда находится на целевой точке.</p>
+
+    <h2>Проверка Позиции Цели (Событие Step)</h2>
+    <div class="step">
+        <p>В <code>obj_crate</code>:</p>
+        <ol>
+            <li>Добавить Событие: <strong>Step</strong></li>
+            <li>Добавить Действие: <strong>Control &gt; Test Instance Position</strong></li>
+            <li>Объект: <code>obj_target</code></li>
+            <li>X: <code>0</code>, Y: <code>0</code> (относительно)</li>
+            <li>Проверить, есть ли столкновение</li>
+        </ol>
+    </div>
+
+    <h2>Смена Спрайта на Цели</h2>
+    <div class="step">
+        <p>Если столкновение есть (ящик на цели):</p>
+        <ol>
+            <li>Добавить Действие: <strong>Main1 &gt; Change Sprite</strong></li>
+            <li>Спрайт: <code>spr_crate_ok</code></li>
+        </ol>
+    </div>
+
+    <h2>Смена Спрайта вне Цели</h2>
+    <div class="step">
+        <ol>
+            <li>Добавить Действие: <strong>Control &gt; Else</strong></li>
+            <li>Добавить Действие: <strong>Main1 &gt; Change Sprite</strong></li>
+            <li>Спрайт: <code>spr_crate</code></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Визуальная обратная связь:</strong> Когда ящик становится зелёным, игроки понимают, что он правильно размещён!
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы добавить движение игрока.
+    </div>
+</body>
+</html>

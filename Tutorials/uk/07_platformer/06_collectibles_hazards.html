@@ -15,63 +15,63 @@
     </style>
 </head>
 <body>
-    <h1>Step 5: Collectibles and Hazards</h1>
+    <h1>Крок 5: Предмети для збору та небезпеки</h1>
 
-    <p>Now we add coins to collect, spikes to avoid, and a flag to reach.</p>
+    <p>Тепер додамо монети для збору, шипи для уникнення та прапор, якого потрібно досягти.</p>
 
-    <h2>Coin - Collect for Points</h2>
+    <h2>Монета - Збирайте для очок</h2>
     <div class="step">
-        <p>In <code>obj_coin</code>:</p>
+        <p>В <code>obj_coin</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Score</strong>
+            <li>Додайте подію: <strong>Collision &gt; obj_player</strong></li>
+            <li>Додайте дію: <strong>Score &gt; Set Score</strong>
                 <ul>
-                    <li>New Score: <code>10</code></li>
-                    <li>Check "Relative"</li>
+                    <li>Нові очки: <code>10</code></li>
+                    <li>Поставте галочку "Relative"</li>
                 </ul>
             </li>
-            <li>Add Action: <strong>Main1 &gt; Destroy Instance</strong>
+            <li>Додайте дію: <strong>Main1 &gt; Destroy Instance</strong>
                 <ul>
-                    <li>Applies to: Self</li>
+                    <li>Застосувати до: Self</li>
                 </ul>
             </li>
         </ol>
     </div>
 
-    <h2>Spike - Hurts the Player</h2>
+    <h2>Шипи - Шкодять гравцеві</h2>
     <div class="danger">
-        <p>In <code>obj_spike</code>:</p>
+        <p>В <code>obj_spike</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong>
+            <li>Додайте подію: <strong>Collision &gt; obj_player</strong></li>
+            <li>Додайте дію: <strong>Main2 &gt; Show Message</strong>
                 <ul>
-                    <li>Message: <code>Ouch! You hit a spike!</code></li>
+                    <li>Повідомлення: <code>Ой! Ви наступили на шипи!</code></li>
                 </ul>
             </li>
-            <li>Add Action: <strong>Main1 &gt; Restart Room</strong></li>
+            <li>Додайте дію: <strong>Main1 &gt; Restart Room</strong></li>
         </ol>
     </div>
 
-    <h2>Flag - Level Complete</h2>
+    <h2>Прапор - Рівень пройдено</h2>
     <div class="step">
-        <p>In <code>obj_flag</code>:</p>
+        <p>В <code>obj_flag</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong>
+            <li>Додайте подію: <strong>Collision &gt; obj_player</strong></li>
+            <li>Додайте дію: <strong>Main2 &gt; Show Message</strong>
                 <ul>
-                    <li>Message: <code>Level Complete!</code></li>
+                    <li>Повідомлення: <code>Рівень пройдено!</code></li>
                 </ul>
             </li>
-            <li>Add Action: <strong>Main1 &gt; Restart Room</strong> (or Next Room for multiple levels)</li>
+            <li>Додайте дію: <strong>Main1 &gt; Restart Room</strong> (або Next Room для кількох рівнів)</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Tip:</strong> Place spikes near pits or on platforms to create challenge!
+        <strong>Порада:</strong> Розміщуйте шипи біля прірв або на платформах, щоб створити виклик!
     </div>
 
     <div class="info">
-        Click "Next" to add the game controller for score display.
+        Натисніть "Далі", щоб додати ігровий контролер для відображення очок.
     </div>
 </body>
 </html>

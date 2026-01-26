@@ -14,65 +14,65 @@
     </style>
 </head>
 <body>
-    <h1>Step 6: Game Controller (HUD)</h1>
+    <h1>Passo 6: Controller di Gioco (HUD)</h1>
 
-    <p>Display fuel, speed, and status to help the player.</p>
+    <p>Visualizza carburante, velocita e stato per aiutare il giocatore.</p>
 
-    <h2>Draw Event</h2>
+    <h2>Evento Draw</h2>
     <div class="step">
         <p>In <code>obj_game_controller</code>:</p>
         <ol>
-            <li>Add Event: <strong>Draw &gt; Draw</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Aggiungi Evento: <strong>Draw &gt; Draw</strong></li>
+            <li>Aggiungi Azione: <strong>Controllo &gt; Esegui Codice</strong></li>
         </ol>
         <pre>
 draw_set_color(c_white);
 
-// Get lander info
+// Ottieni info del lander
 var lander = instance_find(obj_lander, 0);
 if (lander != noone) {
     var spd = sqrt(lander.hsp*lander.hsp + lander.vsp*lander.vsp);
 
-    // Draw HUD
+    // Disegna HUD
     draw_text(10, 10, "LUNAR LANDER");
-    draw_text(10, 30, "Fuel: " + string(floor(lander.fuel)) + "%");
-    draw_text(10, 50, "Speed: " + string_format(spd, 1, 2));
-    draw_text(10, 70, "Safe: < " + string(lander.safe_speed));
+    draw_text(10, 30, "Carburante: " + string(floor(lander.fuel)) + "%");
+    draw_text(10, 50, "Velocita: " + string_format(spd, 1, 2));
+    draw_text(10, 70, "Sicura: < " + string(lander.safe_speed));
 
-    // Speed warning
+    // Avviso velocita
     if (spd > lander.safe_speed) {
         draw_set_color(c_red);
-        draw_text(10, 90, "TOO FAST!");
+        draw_text(10, 90, "TROPPO VELOCE!");
     } else {
         draw_set_color(c_lime);
-        draw_text(10, 90, "Speed OK");
+        draw_text(10, 90, "Velocita OK");
     }
 
-    // Fuel warning
+    // Avviso carburante
     if (lander.fuel <= 0) {
         draw_set_color(c_red);
-        draw_text(10, 110, "NO FUEL!");
+        draw_text(10, 110, "CARBURANTE ESAURITO!");
     }
 }
 
 draw_set_color(c_gray);
-draw_text(10, room_height - 20, "UP: Thrust | LEFT/RIGHT: Move");</pre>
+draw_text(10, room_height - 20, "SU: Spinta | SINISTRA/DESTRA: Muovi");</pre>
     </div>
 
-    <h2>What the HUD Shows</h2>
+    <h2>Cosa Mostra l'HUD</h2>
     <ul>
-        <li><strong>Fuel:</strong> Percentage remaining (green = OK)</li>
-        <li><strong>Speed:</strong> Current velocity (red = dangerous)</li>
-        <li><strong>Warnings:</strong> "TOO FAST!" or "NO FUEL!"</li>
-        <li><strong>Controls:</strong> Reminder at bottom</li>
+        <li><strong>Carburante:</strong> Percentuale rimanente (verde = OK)</li>
+        <li><strong>Velocita:</strong> Velocita attuale (rosso = pericoloso)</li>
+        <li><strong>Avvisi:</strong> "TROPPO VELOCE!" o "CARBURANTE ESAURITO!"</li>
+        <li><strong>Controlli:</strong> Promemoria in basso</li>
     </ul>
 
     <div class="highlight">
-        <strong>Visual Feedback:</strong> Color coding helps players react quickly!
+        <strong>Feedback Visivo:</strong> La codifica a colori aiuta i giocatori a reagire rapidamente!
     </div>
 
     <div class="info">
-        Click "Next" to set up your room.
+        Clicca "Avanti" per configurare la tua stanza.
     </div>
 </body>
 </html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #34495e; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 1: Создание спрайтов</h1>
+
+    <p>Нам нужны спрайты для всех элементов игры.</p>
+
+    <table>
+        <tr>
+            <th>Название спрайта</th>
+            <th>Размер</th>
+            <th>Описание</th>
+        </tr>
+        <tr>
+            <td><code>spr_player</code></td>
+            <td>32x48</td>
+            <td>Простой персонаж (прямоугольник с лицом)</td>
+        </tr>
+        <tr>
+            <td><code>spr_ground</code></td>
+            <td>32x32</td>
+            <td>Тайл платформы с травой/землёй</td>
+        </tr>
+        <tr>
+            <td><code>spr_platform</code></td>
+            <td>64x16</td>
+            <td>Парящая платформа (дерево/камень)</td>
+        </tr>
+        <tr>
+            <td><code>spr_coin</code></td>
+            <td>16x16</td>
+            <td>Жёлтый/золотой круг</td>
+        </tr>
+        <tr>
+            <td><code>spr_spike</code></td>
+            <td>32x32</td>
+            <td>Треугольные шипы, направленные вверх</td>
+        </tr>
+        <tr>
+            <td><code>spr_flag</code></td>
+            <td>32x64</td>
+            <td>Флаг на шесте (цель)</td>
+        </tr>
+    </table>
+
+    <h2>Создание спрайта игрока</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкните правой кнопкой мыши на <strong>Спрайты</strong> > <strong>Создать спрайт</strong></li>
+            <li>Назовите его <code>spr_player</code></li>
+            <li>Нажмите <strong>Редактировать спрайт</strong></li>
+            <li>Нарисуйте персонажа (32x48 пикселей)</li>
+            <li>Используйте яркий цвет, например синий или красный</li>
+        </ol>
+    </div>
+
+    <h2>Создание спрайта земли</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте спрайт с названием <code>spr_ground</code></li>
+            <li>Размер: 32x32 пикселя</li>
+            <li>Нарисуйте тайл травы/земли (зелёный верх, коричневый низ)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Совет:</strong> Игрок выше, чем шире (32x48), чтобы выглядеть как персонаж!
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы создать игровые объекты.
+    </div>
+</body>
+</html>

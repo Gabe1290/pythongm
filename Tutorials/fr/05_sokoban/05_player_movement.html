@@ -14,69 +14,69 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Player Movement</h1>
+    <h1>Étape 4 : Mouvement du Joueur</h1>
 
-    <p>The player moves in fixed 32-pixel steps (grid-based movement).</p>
+    <p>Le joueur se déplace par pas fixes de 32 pixels (mouvement basé sur une grille).</p>
 
     <div class="highlight">
-        <strong>Important:</strong> In Sokoban, movement must check:<br>
-        1. Is there a wall? (Can't move)<br>
-        2. Is there a crate? (Can we push it?)<br>
-        3. Is there a wall/crate behind the crate? (Can't push)
+        <strong>Important :</strong> Dans Sokoban, le mouvement doit vérifier :<br>
+        1. Y a-t-il un mur ? (Impossible de se déplacer)<br>
+        2. Y a-t-il une caisse ? (Peut-on la pousser ?)<br>
+        3. Y a-t-il un mur/une caisse derrière la caisse ? (Impossible de pousser)
     </div>
 
-    <h2>Move Right (Right Arrow)</h2>
+    <h2>Se Déplacer à Droite (Flèche Droite)</h2>
     <div class="step">
-        <p>In <code>obj_player</code>:</p>
+        <p>Dans <code>obj_player</code> :</p>
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Press Right</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
-            <li>Enter this code:</li>
+            <li>Ajoutez un événement : <strong>Clavier &gt; Appuyer Droite</strong></li>
+            <li>Ajoutez une action : <strong>Contrôle &gt; Exécuter du Code</strong></li>
+            <li>Entrez ce code :</li>
         </ol>
         <pre style="background-color: #2c3e50; color: #ecf0f1; padding: 10px; font-size: 11px; border-radius: 5px;">
-// Check if we can move right
+// Vérifier si on peut se déplacer à droite
 if (!place_meeting(x + 32, y, obj_wall)) {
     var crate = instance_place(x + 32, y, obj_crate);
     if (crate != noone) {
-        // There's a crate - can we push it?
+        // Il y a une caisse - peut-on la pousser ?
         if (!place_meeting(x + 64, y, obj_wall) &&
             !place_meeting(x + 64, y, obj_crate)) {
             crate.x += 32;
             x += 32;
         }
     } else {
-        // No crate, just move
+        // Pas de caisse, on se déplace simplement
         x += 32;
     }
 }</pre>
     </div>
 
-    <h2>Move Left (Left Arrow)</h2>
+    <h2>Se Déplacer à Gauche (Flèche Gauche)</h2>
     <div class="step">
-        <p>Same code but change:</p>
+        <p>Même code mais changez :</p>
         <ul>
-            <li><code>+ 32</code> becomes <code>- 32</code></li>
-            <li><code>+ 64</code> becomes <code>- 64</code></li>
+            <li><code>+ 32</code> devient <code>- 32</code></li>
+            <li><code>+ 64</code> devient <code>- 64</code></li>
         </ul>
     </div>
 
-    <h2>Move Up (Up Arrow)</h2>
+    <h2>Se Déplacer vers le Haut (Flèche Haut)</h2>
     <div class="step">
-        <p>Same code but use <code>y</code> instead of <code>x</code>:</p>
+        <p>Même code mais utilisez <code>y</code> au lieu de <code>x</code> :</p>
         <ul>
-            <li><code>x + 32</code> becomes <code>y - 32</code></li>
-            <li><code>x + 64</code> becomes <code>y - 64</code></li>
-            <li><code>crate.x</code> becomes <code>crate.y</code></li>
+            <li><code>x + 32</code> devient <code>y - 32</code></li>
+            <li><code>x + 64</code> devient <code>y - 64</code></li>
+            <li><code>crate.x</code> devient <code>crate.y</code></li>
         </ul>
     </div>
 
-    <h2>Move Down (Down Arrow)</h2>
+    <h2>Se Déplacer vers le Bas (Flèche Bas)</h2>
     <div class="step">
-        <p>Same as Up but with <code>+ 32</code> and <code>+ 64</code>.</p>
+        <p>Comme pour le Haut mais avec <code>+ 32</code> et <code>+ 64</code>.</p>
     </div>
 
     <div class="info">
-        Click "Next" to add win condition detection.
+        Cliquez sur « Suivant » pour ajouter la détection de condition de victoire.
     </div>
 </body>
 </html>

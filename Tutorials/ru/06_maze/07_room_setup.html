@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 10px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 6: Настройка комнаты</h1>
+
+    <p>Теперь создайте свой уровень-лабиринт!</p>
+
+    <h2>Создание комнаты</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкните правой кнопкой мыши на <strong>Комнаты</strong> &gt; <strong>Создать комнату</strong></li>
+            <li>Назовите её <code>room_maze</code></li>
+            <li>Установите размер 640x480</li>
+            <li>Включите <strong>Привязку к сетке</strong>: 32x32</li>
+        </ol>
+    </div>
+
+    <h2>Постройте свой лабиринт</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте границу из стен по краям</li>
+            <li>Добавьте внутренние стены для создания коридоров</li>
+            <li>Разместите монеты вдоль путей</li>
+            <li>Поместите выход в конце лабиринта</li>
+            <li>Разместите игрока рядом с входом</li>
+            <li>Добавьте игровой контроллер (в любом месте)</li>
+        </ol>
+    </div>
+
+    <h2>Пример планировки</h2>
+    <pre>
+С С С С С С С С С С С С С С С С С С С С
+С И . . . . С . . . . . . . С . . . . С
+С . С С С . С . С С С С С . С . С С . С
+С . С . . . . . . . . М . . . . . С . С
+С . С . С С С С С . С С С С С С . С . С
+С . . . С . . . . . . . . М . С . . . С
+С С С . С . С С С С С С С . . С С С . С
+С М . . . . С . . . . . С . . . . . . С
+С . С С С С С . С С С . С С С С С С . С
+С . . . . . . . . М . . . . . . . . . С
+С . С С С С С С С С С . С С С С С С . С
+С . . . . . . . . . . . С . . . . . . С
+С С С С С С С С С С С . С . С С С С . С
+С . . . . . . . . . . . . . С . М . В С
+С С С С С С С С С С С С С С С С С С С С
+
+С = Стена   И = Игрок   В = Выход   М = Монета   . = Пусто</pre>
+
+    <div class="success">
+        <strong>Поздравляем!</strong> Вы создали игру-лабиринт!
+        <br><br>
+        Нажмите <strong>F5</strong> для запуска:
+        <ul>
+            <li>Используйте клавиши-стрелки для движения</li>
+            <li>Собирайте монеты для получения очков</li>
+            <li>Найдите выход, чтобы победить!</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>Идеи для улучшений:</strong>
+        <ul>
+            <li>Добавьте патрулирующих врагов</li>
+            <li>Создайте обратный отсчёт времени</li>
+            <li>Требуйте сбор всех монет перед открытием выхода</li>
+            <li>Добавьте несколько уровней</li>
+        </ul>
+    </div>
+</body>
+</html>

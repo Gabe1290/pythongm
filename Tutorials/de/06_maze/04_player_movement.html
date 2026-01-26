@@ -15,55 +15,55 @@
     </style>
 </head>
 <body>
-    <h1>Step 3: Player Movement</h1>
+    <h1>Schritt 3: Spielerbewegung</h1>
 
-    <p>The player needs smooth movement with collision detection.</p>
+    <p>Der Spieler braucht fluessige Bewegung mit Kollisionserkennung.</p>
 
-    <h2>Initialize Speed (Create Event)</h2>
+    <h2>Geschwindigkeit initialisieren (Create-Event)</h2>
     <div class="step">
         <p>In <code>obj_player</code>:</p>
         <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Control &gt; Set Variable</strong></li>
+            <li>Event hinzufuegen: <strong>Create</strong></li>
+            <li>Aktion hinzufuegen: <strong>Control &gt; Set Variable</strong></li>
             <li>Variable: <code>move_speed</code></li>
-            <li>Value: <code>4</code></li>
+            <li>Wert: <code>4</code></li>
         </ol>
     </div>
 
-    <h2>Movement with Collision (Step Event)</h2>
+    <h2>Bewegung mit Kollision (Step-Event)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Event hinzufuegen: <strong>Step</strong></li>
+            <li>Aktion hinzufuegen: <strong>Control &gt; Execute Code</strong></li>
         </ol>
         <pre>
-// Horizontal movement
+// Horizontale Bewegung
 var hspd = 0;
 if (keyboard_check(vk_right)) hspd = move_speed;
 if (keyboard_check(vk_left)) hspd = -move_speed;
 
-// Vertical movement
+// Vertikale Bewegung
 var vspd = 0;
 if (keyboard_check(vk_down)) vspd = move_speed;
 if (keyboard_check(vk_up)) vspd = -move_speed;
 
-// Check horizontal collision
+// Horizontale Kollision pruefen
 if (!place_meeting(x + hspd, y, obj_wall)) {
     x += hspd;
 }
 
-// Check vertical collision
+// Vertikale Kollision pruefen
 if (!place_meeting(x, y + vspd, obj_wall)) {
     y += vspd;
 }</pre>
     </div>
 
     <div class="highlight">
-        <strong>How it works:</strong> We check if the target position would collide with a wall. If not, we move there!
+        <strong>So funktioniert es:</strong> Wir pruefen, ob die Zielposition mit einer Wand kollidieren wuerde. Falls nicht, bewegen wir uns dorthin!
     </div>
 
     <div class="info">
-        Click "Next" to add coin collection.
+        Klicke auf "Weiter", um das Muenzensammeln hinzuzufuegen.
     </div>
 </body>
 </html>

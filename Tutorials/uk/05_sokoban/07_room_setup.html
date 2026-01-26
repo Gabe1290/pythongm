@@ -17,21 +17,21 @@
     </style>
 </head>
 <body>
-    <h1>Step 6: Set Up the Room</h1>
+    <h1>Крок 6: Налаштування кімнати</h1>
 
-    <p>Create a puzzle level with walls, crates, and targets.</p>
+    <p>Створіть рівень-головоломку зі стінами, ящиками та цілями.</p>
 
-    <h2>Create the Room</h2>
+    <h2>Створення кімнати</h2>
     <div class="step">
         <ol>
-            <li>Right-click on <strong>Rooms</strong> and select <strong>Create Room</strong></li>
-            <li>Name it <code>room_sokoban</code></li>
-            <li>Set size to 320x320 pixels (10x10 grid)</li>
-            <li>Enable grid snap: 32x32</li>
+            <li>Клацніть правою кнопкою миші на <strong>Кімнати</strong> та виберіть <strong>Створити кімнату</strong></li>
+            <li>Назвіть її <code>room_sokoban</code></li>
+            <li>Встановіть розмір 320x320 пікселів (сітка 10x10)</li>
+            <li>Увімкніть прив'язку до сітки: 32x32</li>
         </ol>
     </div>
 
-    <h2>Example Level Layout</h2>
+    <h2>Приклад макета рівня</h2>
     <pre>
 W W W W W W W W W W
 W . . . . . . . . W
@@ -43,55 +43,55 @@ W . T . . . . . . W
 W . . . . . . . . W
 W W W W W W W W W W
 
-W = Wall     T = Target
-P = Player   C = Crate
-. = Empty
+W = Стіна    T = Ціль
+P = Гравець  C = Ящик
+. = Порожньо
     </pre>
 
-    <h2>Place Objects</h2>
+    <h2>Розміщення об'єктів</h2>
 
-    <h3>1. Walls</h3>
+    <h3>1. Стіни</h3>
     <div class="step">
-        <p>Build walls around the edges and create obstacles inside.</p>
+        <p>Побудуйте стіни по краях та створіть перешкоди всередині.</p>
     </div>
 
-    <h3>2. Targets</h3>
+    <h3>2. Цілі</h3>
     <div class="step">
-        <p>Place <code>obj_target</code> where crates should end up.</p>
+        <p>Розмістіть <code>obj_target</code> там, де повинні опинитися ящики.</p>
     </div>
 
-    <h3>3. Crates</h3>
+    <h3>3. Ящики</h3>
     <div class="step">
-        <p>Place <code>obj_crate</code> - same number as targets!</p>
+        <p>Розмістіть <code>obj_crate</code> - така ж кількість, як і цілей!</p>
     </div>
 
-    <h3>4. Player</h3>
+    <h3>4. Гравець</h3>
     <div class="step">
-        <p>Place <code>obj_player</code> at the starting position.</p>
+        <p>Розмістіть <code>obj_player</code> на початковій позиції.</p>
     </div>
 
-    <h3>5. Game Controller</h3>
+    <h3>5. Контролер гри</h3>
     <div class="step">
-        <p>Place <code>obj_game_controller</code> anywhere.</p>
+        <p>Розмістіть <code>obj_game_controller</code> будь-де.</p>
     </div>
 
     <div class="highlight">
-        <strong>Important:</strong> Number of crates MUST equal number of targets!
+        <strong>Важливо:</strong> Кількість ящиків ПОВИННА дорівнювати кількості цілей!
     </div>
 
     <div class="success">
-        <strong>Congratulations!</strong> Your Sokoban game is ready!
+        <strong>Вітаємо!</strong> Ваша гра Сокобан готова!
     </div>
 
-    <h2>Test Your Game</h2>
+    <h2>Тестування гри</h2>
     <ul>
-        <li>Press <strong>F5</strong> or click <strong>Run</strong></li>
-        <li>Use <strong>Arrow Keys</strong> to move</li>
-        <li>Push all crates onto the red targets to win!</li>
+        <li>Натисніть <strong>F5</strong> або клацніть <strong>Запустити</strong></li>
+        <li>Використовуйте <strong>клавіші зі стрілками</strong> для руху</li>
+        <li>Штовхайте всі ящики на червоні цілі, щоб перемогти!</li>
     </ul>
 
     <div class="info">
-        <strong>Challenge:</strong> Create your own puzzle levels!
+        <strong>Завдання:</strong> Створіть власні рівні-головоломки!
     </div>
 </body>
 </html>

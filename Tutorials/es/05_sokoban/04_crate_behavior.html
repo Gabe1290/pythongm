@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 3: Comportamiento de la Caja</h1>
+
+    <p>La caja necesita cambiar de apariencia cuando está en un objetivo.</p>
+
+    <h2>Verificar Posición del Objetivo (Evento Step)</h2>
+    <div class="step">
+        <p>En <code>obj_crate</code>:</p>
+        <ol>
+            <li>Agregar Evento: <strong>Step</strong></li>
+            <li>Agregar Acción: <strong>Control &gt; Probar Posición de Instancia</strong></li>
+            <li>Objeto: <code>obj_target</code></li>
+            <li>X: <code>0</code>, Y: <code>0</code> (relativo)</li>
+            <li>Verificar si existe colisión</li>
+        </ol>
+    </div>
+
+    <h2>Cambiar Sprite Cuando Está en el Objetivo</h2>
+    <div class="step">
+        <p>Si existe colisión (la caja está en el objetivo):</p>
+        <ol>
+            <li>Agregar Acción: <strong>Main1 &gt; Cambiar Sprite</strong></li>
+            <li>Sprite: <code>spr_crate_ok</code></li>
+        </ol>
+    </div>
+
+    <h2>Cambiar Sprite Cuando No Está en el Objetivo</h2>
+    <div class="step">
+        <ol>
+            <li>Agregar Acción: <strong>Control &gt; Else</strong></li>
+            <li>Agregar Acción: <strong>Main1 &gt; Cambiar Sprite</strong></li>
+            <li>Sprite: <code>spr_crate</code></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Retroalimentación Visual:</strong> ¡Cuando la caja se vuelve verde, los jugadores saben que está correctamente colocada!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para agregar el movimiento del jugador.
+    </div>
+</body>
+</html>

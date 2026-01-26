@@ -15,60 +15,60 @@
     </style>
 </head>
 <body>
-    <h1>Step 5: Game Controller</h1>
+    <h1>Korak 5: Krmilnik igre</h1>
 
-    <p>Create a controller to track time and display score.</p>
+    <p>Ustvarite krmilnik za sledenje časa in prikaz rezultata.</p>
 
-    <h2>Create Controller Object</h2>
+    <h2>Ustvarite Objekt krmilnika</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_game_controller</code></li>
-            <li>No sprite needed (leave it empty)</li>
+            <li>Ustvarite Objekt <code>obj_game_controller</code></li>
+            <li>Sprite ni potreben (pustite prazno)</li>
         </ol>
     </div>
 
-    <h2>Initialize Timer (Create Event)</h2>
+    <h2>Inicializacija časovnika (Dogodek Create)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Control &gt; Set Variable</strong></li>
-            <li>Variable: <code>global.timer</code></li>
-            <li>Value: <code>0</code></li>
+            <li>Dodajte Dogodek: <strong>Create</strong></li>
+            <li>Dodajte Akcijo: <strong>Control &gt; Set Variable</strong></li>
+            <li>Spremenljivka: <code>global.timer</code></li>
+            <li>Vrednost: <code>0</code></li>
         </ol>
     </div>
 
-    <h2>Update Timer (Step Event)</h2>
+    <h2>Posodabljanje časovnika (Dogodek Step)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Set Variable</strong></li>
-            <li>Variable: <code>global.timer</code></li>
-            <li>Value: <code>1/room_speed</code></li>
-            <li>Check "Relative"</li>
+            <li>Dodajte Dogodek: <strong>Step</strong></li>
+            <li>Dodajte Akcijo: <strong>Control &gt; Set Variable</strong></li>
+            <li>Spremenljivka: <code>global.timer</code></li>
+            <li>Vrednost: <code>1/room_speed</code></li>
+            <li>Označite "Relative"</li>
         </ol>
     </div>
 
-    <h2>Display Info (Draw Event)</h2>
+    <h2>Prikaz informacij (Dogodek Draw)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Draw</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Dodajte Dogodek: <strong>Draw</strong></li>
+            <li>Dodajte Akcijo: <strong>Control &gt; Execute Code</strong></li>
         </ol>
         <pre>
 draw_set_color(c_white);
-draw_text(10, 10, "Score: " + string(score));
-draw_text(10, 30, "Time: " + string(floor(global.timer)) + "s");
+draw_text(10, 10, "Rezultat: " + string(score));
+draw_text(10, 30, "Čas: " + string(floor(global.timer)) + "s");
 
 var coins = instance_number(obj_coin);
-draw_text(10, 50, "Coins: " + string(coins));</pre>
+draw_text(10, 50, "Kovanci: " + string(coins));</pre>
     </div>
 
     <div class="highlight">
-        <strong>Note:</strong> The controller is invisible but essential for tracking game state!
+        <strong>Opomba:</strong> Krmilnik je neviden, a bistven za sledenje stanja igre!
     </div>
 
     <div class="info">
-        Click "Next" to set up your room.
+        Kliknite "Naprej" za nastavitev vaše Sobe.
     </div>
 </body>
 </html>

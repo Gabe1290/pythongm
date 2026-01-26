@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 6: Mostrar las Puntuaciones</h1>
+
+    <p>Necesitamos un objeto controlador para inicializar las puntuaciones y mostrarlas.</p>
+
+    <h2>Crear Objeto Controlador de Puntuacion</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un nuevo objeto llamado <code>obj_score</code></li>
+            <li>No se necesita sprite (dejalo vacio)</li>
+        </ol>
+    </div>
+
+    <h2>Inicializar Puntuaciones (Evento Crear)</h2>
+    <div class="step">
+        <ol>
+            <li>Agrega Evento: <strong>Crear</strong></li>
+            <li>Agrega Accion: <strong>Puntuacion &gt; Establecer Variable</strong></li>
+            <li>Variable: <code>global.p1score</code>, Valor: <code>0</code></li>
+            <li>Agrega otra accion <strong>Establecer Variable</strong></li>
+            <li>Variable: <code>global.p2score</code>, Valor: <code>0</code></li>
+        </ol>
+    </div>
+
+    <h2>Dibujar Puntuaciones (Evento Dibujar)</h2>
+    <div class="step">
+        <ol>
+            <li>Agrega Evento: <strong>Dibujar</strong></li>
+            <li>Agrega Accion: <strong>Dibujar &gt; Dibujar Texto</strong></li>
+            <li>Texto: <code>Jugador 1:</code></li>
+            <li>X: <code>10</code>, Y: <code>10</code></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Agrega Accion: <strong>Dibujar &gt; Dibujar Variable</strong></li>
+            <li>Variable: <code>global.p1score</code></li>
+            <li>X: <code>100</code>, Y: <code>10</code></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Agrega Accion: <strong>Dibujar &gt; Dibujar Texto</strong></li>
+            <li>Texto: <code>Jugador 2:</code></li>
+            <li>X: <code>10</code>, Y: <code>30</code></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Agrega Accion: <strong>Dibujar &gt; Dibujar Variable</strong></li>
+            <li>Variable: <code>global.p2score</code></li>
+            <li>X: <code>100</code>, Y: <code>30</code></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Recuerda:</strong> No olvides colocar <code>obj_score</code> en tu habitacion!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para configurar la habitacion del juego.
+    </div>
+</body>
+</html>

@@ -14,40 +14,40 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Coins and Exit</h1>
+    <h1>Passo 4: Monete e Uscita</h1>
 
-    <p>Now let's make coins collectible and the exit work.</p>
+    <p>Ora rendiamo le monete raccoglibili e facciamo funzionare l'uscita.</p>
 
-    <h2>Coin Collection</h2>
+    <h2>Raccolta delle Monete</h2>
     <div class="step">
         <p>In <code>obj_coin</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Score</strong></li>
-            <li>New Score: <code>10</code></li>
-            <li>Check "Relative" to add 10 points</li>
-            <li>Add Action: <strong>Main1 &gt; Destroy Instance</strong></li>
-            <li>Applies to: <code>Self</code></li>
+            <li>Aggiungi Evento: <strong>Collisione &gt; obj_player</strong></li>
+            <li>Aggiungi Azione: <strong>Punteggio &gt; Imposta Punteggio</strong></li>
+            <li>Nuovo Punteggio: <code>10</code></li>
+            <li>Spunta "Relativo" per aggiungere 10 punti</li>
+            <li>Aggiungi Azione: <strong>Main1 &gt; Distruggi Istanza</strong></li>
+            <li>Si applica a: <code>Self</code></li>
         </ol>
     </div>
 
-    <h2>Exit Behavior</h2>
+    <h2>Comportamento dell'Uscita</h2>
     <div class="step">
         <p>In <code>obj_exit</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong></li>
-            <li>Message: <code>You Win!</code></li>
-            <li>Add Action: <strong>Main1 &gt; Restart Room</strong></li>
+            <li>Aggiungi Evento: <strong>Collisione &gt; obj_player</strong></li>
+            <li>Aggiungi Azione: <strong>Main2 &gt; Mostra Messaggio</strong></li>
+            <li>Messaggio: <code>Hai Vinto!</code></li>
+            <li>Aggiungi Azione: <strong>Main1 &gt; Riavvia Stanza</strong></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Tip:</strong> You can use <strong>Next Room</strong> instead of <strong>Restart Room</strong> if you create multiple levels!
+        <strong>Suggerimento:</strong> Puoi usare <strong>Stanza Successiva</strong> invece di <strong>Riavvia Stanza</strong> se crei piu livelli!
     </div>
 
     <div class="info">
-        Click "Next" to add the timer display.
+        Clicca "Avanti" per aggiungere la visualizzazione del timer.
     </div>
 </body>
 </html>

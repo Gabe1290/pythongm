@@ -14,66 +14,66 @@
     </style>
 </head>
 <body>
-    <h1>Step 2: Create the Objects</h1>
+    <h1>Étape 2 : Créer les Objets</h1>
 
-    <p>Now we'll create all the game objects.</p>
+    <p>Maintenant, nous allons créer tous les objets du jeu.</p>
 
-    <h2>Create the Wall Object</h2>
+    <h2>Créer l'Objet Mur</h2>
     <div class="step">
         <ol>
-            <li>Right-click on <strong>Objects</strong> and select <strong>Create Object</strong></li>
-            <li>Name it <code>obj_wall</code></li>
-            <li>Set the sprite to <code>spr_wall</code></li>
-            <li><strong>Check "Solid"</strong></li>
-            <li>No events needed</li>
+            <li>Faites un clic droit sur <strong>Objets</strong> et sélectionnez <strong>Créer un Objet</strong></li>
+            <li>Nommez-le <code>obj_wall</code></li>
+            <li>Définissez le sprite sur <code>spr_wall</code></li>
+            <li><strong>Cochez « Solide »</strong></li>
+            <li>Aucun événement nécessaire</li>
         </ol>
     </div>
 
-    <h2>Create the Parent Brick Object</h2>
-    <p>We'll use a parent object so all bricks share the same collision behavior.</p>
+    <h2>Créer l'Objet Parent des Briques</h2>
+    <p>Nous utiliserons un objet parent pour que toutes les briques partagent le même comportement de collision.</p>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_brick_parent</code></li>
-            <li>No sprite needed (it's just a template)</li>
-            <li><strong>Check "Solid"</strong></li>
+            <li>Créez l'objet <code>obj_brick_parent</code></li>
+            <li>Pas de sprite nécessaire (c'est juste un modèle)</li>
+            <li><strong>Cochez « Solide »</strong></li>
         </ol>
     </div>
 
-    <h2>Create the Colored Brick Objects</h2>
+    <h2>Créer les Objets Briques Colorées</h2>
     <div class="step">
-        <p>For each brick color:</p>
+        <p>Pour chaque couleur de brique :</p>
         <ol>
-            <li>Create <code>obj_brick_red</code> with <code>spr_brick_red</code></li>
-            <li>Set <strong>Parent</strong> to <code>obj_brick_parent</code></li>
-            <li>Check "Solid"</li>
+            <li>Créez <code>obj_brick_red</code> avec <code>spr_brick_red</code></li>
+            <li>Définissez <strong>Parent</strong> sur <code>obj_brick_parent</code></li>
+            <li>Cochez « Solide »</li>
         </ol>
-        <p>Repeat for <code>obj_brick_orange</code>, <code>obj_brick_yellow</code>, and <code>obj_brick_green</code>.</p>
+        <p>Répétez pour <code>obj_brick_orange</code>, <code>obj_brick_yellow</code> et <code>obj_brick_green</code>.</p>
     </div>
 
-    <h2>Create the Paddle Object</h2>
+    <h2>Créer l'Objet Raquette</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_paddle</code></li>
-            <li>Set sprite to <code>spr_paddle</code></li>
-            <li><strong>Check "Solid"</strong></li>
+            <li>Créez l'objet <code>obj_paddle</code></li>
+            <li>Définissez le sprite sur <code>spr_paddle</code></li>
+            <li><strong>Cochez « Solide »</strong></li>
         </ol>
     </div>
 
-    <h2>Create the Ball Object</h2>
+    <h2>Créer l'Objet Balle</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_ball</code></li>
-            <li>Set sprite to <code>spr_ball</code></li>
-            <li>Leave "Solid" unchecked</li>
+            <li>Créez l'objet <code>obj_ball</code></li>
+            <li>Définissez le sprite sur <code>spr_ball</code></li>
+            <li>Laissez « Solide » décoché</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Parent Objects:</strong> When the ball collides with <code>obj_brick_parent</code>, it will detect collisions with ALL brick types!
+        <strong>Objets Parents :</strong> Quand la balle entre en collision avec <code>obj_brick_parent</code>, elle détectera les collisions avec TOUS les types de briques !
     </div>
 
     <div class="info">
-        Click "Next" to add paddle movement.
+        Cliquez sur « Suivant » pour ajouter le mouvement de la raquette.
     </div>
 </body>
 </html>

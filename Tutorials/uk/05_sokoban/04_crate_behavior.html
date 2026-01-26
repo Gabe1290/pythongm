@@ -14,46 +14,46 @@
     </style>
 </head>
 <body>
-    <h1>Step 3: Crate Behavior</h1>
+    <h1>Крок 3: Поведінка ящика</h1>
 
-    <p>The crate needs to change appearance when it's on a target spot.</p>
+    <p>Ящик повинен змінювати зовнішній вигляд, коли він знаходиться на цільовому місці.</p>
 
-    <h2>Check Target Position (Step Event)</h2>
+    <h2>Перевірка позиції цілі (Подія Step)</h2>
     <div class="step">
-        <p>In <code>obj_crate</code>:</p>
+        <p>У <code>obj_crate</code>:</p>
         <ol>
-            <li>Add Event: <strong>Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Test Instance Position</strong></li>
-            <li>Object: <code>obj_target</code></li>
-            <li>X: <code>0</code>, Y: <code>0</code> (relative)</li>
-            <li>Check if collision exists</li>
+            <li>Додайте подію: <strong>Step</strong></li>
+            <li>Додайте дію: <strong>Control &gt; Test Instance Position</strong></li>
+            <li>Об'єкт: <code>obj_target</code></li>
+            <li>X: <code>0</code>, Y: <code>0</code> (відносно)</li>
+            <li>Перевірте, чи існує зіткнення</li>
         </ol>
     </div>
 
-    <h2>Change Sprite When on Target</h2>
+    <h2>Зміна спрайта на цілі</h2>
     <div class="step">
-        <p>If collision exists (crate is on target):</p>
+        <p>Якщо зіткнення існує (ящик на цілі):</p>
         <ol>
-            <li>Add Action: <strong>Main1 &gt; Change Sprite</strong></li>
-            <li>Sprite: <code>spr_crate_ok</code></li>
+            <li>Додайте дію: <strong>Main1 &gt; Change Sprite</strong></li>
+            <li>Спрайт: <code>spr_crate_ok</code></li>
         </ol>
     </div>
 
-    <h2>Change Sprite When Not on Target</h2>
+    <h2>Зміна спрайта поза ціллю</h2>
     <div class="step">
         <ol>
-            <li>Add Action: <strong>Control &gt; Else</strong></li>
-            <li>Add Action: <strong>Main1 &gt; Change Sprite</strong></li>
-            <li>Sprite: <code>spr_crate</code></li>
+            <li>Додайте дію: <strong>Control &gt; Else</strong></li>
+            <li>Додайте дію: <strong>Main1 &gt; Change Sprite</strong></li>
+            <li>Спрайт: <code>spr_crate</code></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Visual Feedback:</strong> When the crate turns green, players know it's correctly placed!
+        <strong>Візуальний зворотній зв'язок:</strong> Коли ящик стає зеленим, гравці знають, що він правильно розміщений!
     </div>
 
     <div class="info">
-        Click "Next" to add player movement.
+        Натисніть "Далі", щоб додати рух гравця.
     </div>
 </body>
 </html>

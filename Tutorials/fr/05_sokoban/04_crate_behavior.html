@@ -14,46 +14,46 @@
     </style>
 </head>
 <body>
-    <h1>Step 3: Crate Behavior</h1>
+    <h1>Étape 3 : Comportement des Caisses</h1>
 
-    <p>The crate needs to change appearance when it's on a target spot.</p>
+    <p>La caisse doit changer d'apparence quand elle est sur un emplacement cible.</p>
 
-    <h2>Check Target Position (Step Event)</h2>
+    <h2>Vérifier la Position sur la Cible (Événement Step)</h2>
     <div class="step">
-        <p>In <code>obj_crate</code>:</p>
+        <p>Dans <code>obj_crate</code> :</p>
         <ol>
-            <li>Add Event: <strong>Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Test Instance Position</strong></li>
-            <li>Object: <code>obj_target</code></li>
-            <li>X: <code>0</code>, Y: <code>0</code> (relative)</li>
-            <li>Check if collision exists</li>
+            <li>Ajoutez un événement : <strong>Step</strong></li>
+            <li>Ajoutez une action : <strong>Contrôle &gt; Tester la Position d'Instance</strong></li>
+            <li>Objet : <code>obj_target</code></li>
+            <li>X : <code>0</code>, Y : <code>0</code> (relatif)</li>
+            <li>Vérifiez si une collision existe</li>
         </ol>
     </div>
 
-    <h2>Change Sprite When on Target</h2>
+    <h2>Changer le Sprite quand sur la Cible</h2>
     <div class="step">
-        <p>If collision exists (crate is on target):</p>
+        <p>Si une collision existe (la caisse est sur la cible) :</p>
         <ol>
-            <li>Add Action: <strong>Main1 &gt; Change Sprite</strong></li>
-            <li>Sprite: <code>spr_crate_ok</code></li>
+            <li>Ajoutez une action : <strong>Main1 &gt; Changer le Sprite</strong></li>
+            <li>Sprite : <code>spr_crate_ok</code></li>
         </ol>
     </div>
 
-    <h2>Change Sprite When Not on Target</h2>
+    <h2>Changer le Sprite quand pas sur la Cible</h2>
     <div class="step">
         <ol>
-            <li>Add Action: <strong>Control &gt; Else</strong></li>
-            <li>Add Action: <strong>Main1 &gt; Change Sprite</strong></li>
-            <li>Sprite: <code>spr_crate</code></li>
+            <li>Ajoutez une action : <strong>Contrôle &gt; Sinon</strong></li>
+            <li>Ajoutez une action : <strong>Main1 &gt; Changer le Sprite</strong></li>
+            <li>Sprite : <code>spr_crate</code></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Visual Feedback:</strong> When the crate turns green, players know it's correctly placed!
+        <strong>Retour Visuel :</strong> Quand la caisse devient verte, les joueurs savent qu'elle est correctement placée !
     </div>
 
     <div class="info">
-        Click "Next" to add player movement.
+        Cliquez sur « Suivant » pour ajouter le mouvement du joueur.
     </div>
 </body>
 </html>

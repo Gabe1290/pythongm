@@ -16,68 +16,68 @@
     </style>
 </head>
 <body>
-    <h1>Step 7: Room Setup</h1>
+    <h1>Korak 7: Nastavitev sobe</h1>
 
-    <p>Time to design your platformer level!</p>
+    <p>Čas je, da oblikuješ svoj nivo ploščadne igre!</p>
 
-    <h2>Create the Room</h2>
+    <h2>Ustvari sobo</h2>
     <div class="step">
         <ol>
-            <li>Right-click <strong>Rooms</strong> > <strong>Create Room</strong></li>
-            <li>Name it <code>room_level1</code></li>
-            <li>Set size: <strong>800 x 480</strong></li>
-            <li>Set background color to light blue (sky)</li>
-            <li>Enable "Snap to Grid" and set to 32x32</li>
+            <li>Desni klik na <strong>Rooms</strong> > <strong>Create Room</strong></li>
+            <li>Poimenuj jo <code>room_level1</code></li>
+            <li>Nastavi velikost: <strong>800 x 480</strong></li>
+            <li>Nastavi barvo ozadja na svetlo modro (nebo)</li>
+            <li>Omogoči "Snap to Grid" in nastavi na 32x32</li>
         </ol>
     </div>
 
-    <h2>Example Level Layout</h2>
+    <h2>Primer postavitve nivoja</h2>
     <pre>
-                                        F
+                                        Z
                                       ===
-                          C       C
+                          K       K
                         =====   =====
-            C                           C
+            K                           K
           ===== X     X         X     =====
-    P                   C
+    I                   K
   ====== === ===   ===   === === ===== ======
-  GGGGGG     GGG   GGG   GGG         GGGGGGGG
+  TTTTTT     TTT   TTT   TTT         TTTTTTTT
 
-G = Ground    P = Player    F = Flag    C = Coin
-X = Spike     === = Platform</pre>
+T = Tla    I = Igralec    Z = Zastava    K = Kovanec
+X = Bodica     === = Platforma</pre>
 
-    <h2>Building Your Level</h2>
+    <h2>Gradnja nivoja</h2>
     <div class="step">
         <ol>
-            <li><strong>Ground:</strong> Place <code>obj_ground</code> along the bottom</li>
-            <li><strong>Gaps:</strong> Leave spaces for pits (death traps)</li>
-            <li><strong>Platforms:</strong> Place <code>obj_platform</code> in the air</li>
-            <li><strong>Coins:</strong> Scatter on platforms and hard-to-reach spots</li>
-            <li><strong>Spikes:</strong> Place near pits or on platforms</li>
-            <li><strong>Flag:</strong> Place at the end of the level</li>
-            <li><strong>Player:</strong> Place at the start (left side)</li>
-            <li><strong>Controller:</strong> Place <code>obj_game_controller</code> anywhere</li>
+            <li><strong>Tla:</strong> Postavi <code>obj_ground</code> vzdolž dna</li>
+            <li><strong>Vrzeli:</strong> Pusti prazne prostore za prepade (pasti smrti)</li>
+            <li><strong>Platforme:</strong> Postavi <code>obj_platform</code> v zrak</li>
+            <li><strong>Kovanci:</strong> Razporedi po platformah in težko dostopnih mestih</li>
+            <li><strong>Bodice:</strong> Postavi blizu prepadov ali na platforme</li>
+            <li><strong>Zastava:</strong> Postavi na konec nivoja</li>
+            <li><strong>Igralec:</strong> Postavi na začetek (leva stran)</li>
+            <li><strong>Krmilnik:</strong> Postavi <code>obj_game_controller</code> kamorkoli</li>
         </ol>
     </div>
 
-    <h2>Test Your Game!</h2>
+    <h2>Preizkusi svojo igro!</h2>
     <div class="success">
-        <p><strong>Press F5 or click Run!</strong></p>
+        <p><strong>Pritisni F5 ali klikni Zaženi!</strong></p>
         <ul>
-            <li><strong>Left/Right Arrows:</strong> Move</li>
-            <li><strong>Up Arrow or Space:</strong> Jump</li>
-            <li>Collect coins for points</li>
-            <li>Avoid spikes!</li>
-            <li>Reach the flag to win!</li>
+            <li><strong>Leva/Desna puščica:</strong> Premik</li>
+            <li><strong>Puščica gor ali Presledek:</strong> Skok</li>
+            <li>Zbiraj kovance za točke</li>
+            <li>Izogibaj se bodicam!</li>
+            <li>Doseži zastavo za zmago!</li>
         </ul>
     </div>
 
     <div class="highlight">
-        <strong>Congratulations!</strong> You've created a platformer game with gravity, jumping, and collision!
+        <strong>Čestitke!</strong> Ustvaril si ploščadno igro z gravitacijo, skakanjem in trki!
     </div>
 
     <div class="info">
-        <strong>Challenge:</strong> Add more levels, moving platforms, or enemies!
+        <strong>Izziv:</strong> Dodaj več nivojev, premikajoče platforme ali sovražnike!
     </div>
 </body>
 </html>

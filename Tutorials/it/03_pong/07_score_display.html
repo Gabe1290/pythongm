@@ -14,69 +14,69 @@
     </style>
 </head>
 <body>
-    <h1>Step 6: Display the Scores</h1>
+    <h1>Passo 6: Visualizzare i Punteggi</h1>
 
-    <p>We need a controller object to initialize scores and display them.</p>
+    <p>Abbiamo bisogno di un oggetto controller per inizializzare i punteggi e visualizzarli.</p>
 
-    <h2>Create Score Controller Object</h2>
+    <h2>Creare l'Oggetto Controller del Punteggio</h2>
     <div class="step">
         <ol>
-            <li>Create a new object named <code>obj_score</code></li>
-            <li>No sprite needed (leave it empty)</li>
+            <li>Crea un nuovo oggetto chiamato <code>obj_score</code></li>
+            <li>Non serve uno sprite (lascialo vuoto)</li>
         </ol>
     </div>
 
-    <h2>Initialize Scores (Create Event)</h2>
+    <h2>Inizializzare i Punteggi (Evento Creazione)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Variable</strong></li>
-            <li>Variable: <code>global.p1score</code>, Value: <code>0</code></li>
-            <li>Add another <strong>Set Variable</strong> action</li>
-            <li>Variable: <code>global.p2score</code>, Value: <code>0</code></li>
+            <li>Aggiungi Evento: <strong>Creazione</strong></li>
+            <li>Aggiungi Azione: <strong>Punteggio &gt; Imposta Variabile</strong></li>
+            <li>Variabile: <code>global.p1score</code>, Valore: <code>0</code></li>
+            <li>Aggiungi un'altra azione <strong>Imposta Variabile</strong></li>
+            <li>Variabile: <code>global.p2score</code>, Valore: <code>0</code></li>
         </ol>
     </div>
 
-    <h2>Draw Scores (Draw Event)</h2>
+    <h2>Disegnare i Punteggi (Evento Disegna)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Draw</strong></li>
-            <li>Add Action: <strong>Draw &gt; Draw Text</strong></li>
-            <li>Text: <code>Player 1:</code></li>
+            <li>Aggiungi Evento: <strong>Disegna</strong></li>
+            <li>Aggiungi Azione: <strong>Disegna &gt; Disegna Testo</strong></li>
+            <li>Testo: <code>Giocatore 1:</code></li>
             <li>X: <code>10</code>, Y: <code>10</code></li>
         </ol>
     </div>
 
     <div class="step">
         <ol>
-            <li>Add Action: <strong>Draw &gt; Draw Variable</strong></li>
-            <li>Variable: <code>global.p1score</code></li>
+            <li>Aggiungi Azione: <strong>Disegna &gt; Disegna Variabile</strong></li>
+            <li>Variabile: <code>global.p1score</code></li>
             <li>X: <code>100</code>, Y: <code>10</code></li>
         </ol>
     </div>
 
     <div class="step">
         <ol>
-            <li>Add Action: <strong>Draw &gt; Draw Text</strong></li>
-            <li>Text: <code>Player 2:</code></li>
+            <li>Aggiungi Azione: <strong>Disegna &gt; Disegna Testo</strong></li>
+            <li>Testo: <code>Giocatore 2:</code></li>
             <li>X: <code>10</code>, Y: <code>30</code></li>
         </ol>
     </div>
 
     <div class="step">
         <ol>
-            <li>Add Action: <strong>Draw &gt; Draw Variable</strong></li>
-            <li>Variable: <code>global.p2score</code></li>
+            <li>Aggiungi Azione: <strong>Disegna &gt; Disegna Variabile</strong></li>
+            <li>Variabile: <code>global.p2score</code></li>
             <li>X: <code>100</code>, Y: <code>30</code></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Remember:</strong> Don't forget to place <code>obj_score</code> in your room!
+        <strong>Ricorda:</strong> Non dimenticare di posizionare <code>obj_score</code> nella tua stanza!
     </div>
 
     <div class="info">
-        Click "Next" to set up the game room.
+        Clicca "Avanti" per configurare la stanza di gioco.
     </div>
 </body>
 </html>

@@ -14,69 +14,69 @@
     </style>
 </head>
 <body>
-    <h1>Step 5: Add the Lives System</h1>
+    <h1>Schritt 5: Fuege das Leben-System hinzu</h1>
 
-    <p>The player loses a life when the ball falls off the bottom of the screen.</p>
+    <p>Der Spieler verliert ein Leben, wenn der Ball vom unteren Bildschirmrand faellt.</p>
 
-    <h2>Create a Death Zone</h2>
+    <h2>Erstelle eine Todeszone</h2>
     <div class="step">
         <ol>
-            <li>Create a sprite <code>spr_death_zone</code> (32x32, any color)</li>
-            <li>Create object <code>obj_death_zone</code></li>
-            <li><strong>Uncheck "Visible"</strong> - it should be invisible</li>
-            <li>Check "Solid"</li>
+            <li>Erstelle ein Sprite <code>spr_death_zone</code> (32x32, beliebige Farbe)</li>
+            <li>Erstelle Objekt <code>obj_death_zone</code></li>
+            <li><strong>Deaktiviere "Sichtbar"</strong> - es soll unsichtbar sein</li>
+            <li>Aktiviere "Solide"</li>
         </ol>
     </div>
 
-    <h2>Ball Falls into Death Zone</h2>
+    <h2>Ball faellt in die Todeszone</h2>
     <div class="step">
         <p>In <code>obj_ball</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_death_zone</strong></li>
-            <li>Add Action: <strong>Score &gt; Subtract from Lives</strong></li>
-            <li>Value: <code>1</code></li>
-            <li>Add Action: <strong>Move &gt; Jump to Start Position</strong></li>
+            <li>Fuege Ereignis hinzu: <strong>Kollision &gt; obj_death_zone</strong></li>
+            <li>Fuege Aktion hinzu: <strong>Punkte &gt; Von Leben abziehen</strong></li>
+            <li>Wert: <code>1</code></li>
+            <li>Fuege Aktion hinzu: <strong>Bewegung &gt; Zur Startposition springen</strong></li>
         </ol>
     </div>
 
-    <h2>Create a Game Controller</h2>
+    <h2>Erstelle einen Spiel-Controller</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_game_controller</code></li>
-            <li>No sprite needed</li>
+            <li>Erstelle Objekt <code>obj_game_controller</code></li>
+            <li>Kein Sprite benoetigt</li>
         </ol>
     </div>
 
-    <h2>Initialize Lives (Create Event)</h2>
+    <h2>Leben initialisieren (Erstellen-Ereignis)</h2>
     <div class="step">
         <p>In <code>obj_game_controller</code>:</p>
         <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Lives</strong></li>
-            <li>Value: <code>3</code></li>
-            <li>Add Action: <strong>Score &gt; Set Score</strong></li>
-            <li>Value: <code>0</code></li>
+            <li>Fuege Ereignis hinzu: <strong>Erstellen</strong></li>
+            <li>Fuege Aktion hinzu: <strong>Punkte &gt; Leben setzen</strong></li>
+            <li>Wert: <code>3</code></li>
+            <li>Fuege Aktion hinzu: <strong>Punkte &gt; Punktzahl setzen</strong></li>
+            <li>Wert: <code>0</code></li>
         </ol>
     </div>
 
-    <h2>Check for Game Over (Step Event)</h2>
+    <h2>Auf Spielende pruefen (Schritt-Ereignis)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Test Lives</strong></li>
-            <li>Check if lives are less than or equal to 0</li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong></li>
-            <li>Message: <code>Game Over!</code></li>
-            <li>Add Action: <strong>Main2 &gt; Restart Room</strong></li>
+            <li>Fuege Ereignis hinzu: <strong>Schritt</strong></li>
+            <li>Fuege Aktion hinzu: <strong>Steuerung &gt; Leben testen</strong></li>
+            <li>Pruefe, ob Leben kleiner oder gleich 0 sind</li>
+            <li>Fuege Aktion hinzu: <strong>Main2 &gt; Nachricht anzeigen</strong></li>
+            <li>Nachricht: <code>Spiel vorbei!</code></li>
+            <li>Fuege Aktion hinzu: <strong>Main2 &gt; Raum neu starten</strong></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Remember:</strong> Place <code>obj_game_controller</code> in your room!
+        <strong>Denke daran:</strong> Platziere <code>obj_game_controller</code> in deinem Raum!
     </div>
 
     <div class="info">
-        Click "Next" to add score display.
+        Klicke auf "Weiter", um die Punkteanzeige hinzuzufuegen.
     </div>
 </body>
 </html>

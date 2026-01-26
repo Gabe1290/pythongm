@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 5: Condición de Victoria</h1>
+
+    <p>El jugador gana cuando todas las cajas están en los objetivos.</p>
+
+    <h2>Crear Controlador del Juego</h2>
+    <div class="step">
+        <ol>
+            <li>Crea el objeto <code>obj_game_controller</code></li>
+            <li>No se necesita sprite</li>
+        </ol>
+    </div>
+
+    <h2>Contar Objetivos (Evento Crear)</h2>
+    <div class="step">
+        <p>En <code>obj_game_controller</code>:</p>
+        <ol>
+            <li>Agregar Evento: <strong>Crear</strong></li>
+            <li>Agregar Acción: <strong>Control &gt; Ejecutar Código</strong></li>
+            <li>Ingresa: <code>global.total_targets = instance_number(obj_target);</code></li>
+        </ol>
+    </div>
+
+    <h2>Verificar Condición de Victoria (Evento Step)</h2>
+    <div class="step">
+        <ol>
+            <li>Agregar Evento: <strong>Step</strong></li>
+            <li>Agregar Acción: <strong>Control &gt; Ejecutar Código</strong></li>
+            <li>Ingresa este código:</li>
+        </ol>
+        <pre style="background-color: #2c3e50; color: #ecf0f1; padding: 10px; font-size: 11px; border-radius: 5px;">
+// Contar cajas en los objetivos
+var crates_on_targets = 0;
+with (obj_crate) {
+    if (place_meeting(x, y, obj_target)) {
+        crates_on_targets += 1;
+    }
+}
+
+// Verificar si todos los objetivos tienen cajas
+if (crates_on_targets >= global.total_targets
+    && global.total_targets > 0) {
+    show_message("¡Nivel Completado!");
+    room_restart();
+}</pre>
+    </div>
+
+    <h2>Dibujar Instrucciones (Evento Dibujar)</h2>
+    <div class="step">
+        <ol>
+            <li>Agregar Evento: <strong>Dibujar</strong></li>
+            <li>Agregar Acción: <strong>Dibujar &gt; Dibujar Texto</strong></li>
+            <li>Texto: <code>¡Empuja las cajas hacia los objetivos!</code></li>
+            <li>X: <code>10</code>, Y: <code>10</code></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Consejo:</strong> ¡Asegúrate de que el número de cajas sea igual al número de objetivos en tu nivel!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para configurar la habitación del juego.
+    </div>
+</body>
+</html>

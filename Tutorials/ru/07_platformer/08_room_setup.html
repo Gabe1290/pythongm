@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-size: 10px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 7: Настройка комнаты</h1>
+
+    <p>Время спроектировать уровень вашего платформера!</p>
+
+    <h2>Создание комнаты</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкните правой кнопкой мыши на <strong>Комнаты</strong> > <strong>Создать комнату</strong></li>
+            <li>Назовите её <code>room_level1</code></li>
+            <li>Установите размер: <strong>800 x 480</strong></li>
+            <li>Установите цвет фона на светло-голубой (небо)</li>
+            <li>Включите "Привязку к сетке" и установите 32x32</li>
+        </ol>
+    </div>
+
+    <h2>Пример макета уровня</h2>
+    <pre>
+                                        Ф
+                                      ===
+                          М       М
+                        =====   =====
+            М                           М
+          ===== Ш     Ш         Ш     =====
+    И                   М
+  ====== === ===   ===   === === ===== ======
+  ЗЗЗЗЗЗ     ЗЗЗ   ЗЗЗ   ЗЗЗ         ЗЗЗЗЗЗЗЗ
+
+З = Земля    И = Игрок    Ф = Флаг    М = Монета
+Ш = Шип     === = Платформа</pre>
+
+    <h2>Построение вашего уровня</h2>
+    <div class="step">
+        <ol>
+            <li><strong>Земля:</strong> Разместите <code>obj_ground</code> вдоль нижней части</li>
+            <li><strong>Пропасти:</strong> Оставьте промежутки для ям (смертельные ловушки)</li>
+            <li><strong>Платформы:</strong> Разместите <code>obj_platform</code> в воздухе</li>
+            <li><strong>Монеты:</strong> Разбросайте на платформах и в труднодоступных местах</li>
+            <li><strong>Шипы:</strong> Разместите рядом с пропастями или на платформах</li>
+            <li><strong>Флаг:</strong> Разместите в конце уровня</li>
+            <li><strong>Игрок:</strong> Разместите в начале (слева)</li>
+            <li><strong>Контроллер:</strong> Разместите <code>obj_game_controller</code> в любом месте</li>
+        </ol>
+    </div>
+
+    <h2>Протестируйте вашу игру!</h2>
+    <div class="success">
+        <p><strong>Нажмите F5 или кнопку Запуск!</strong></p>
+        <ul>
+            <li><strong>Стрелки влево/вправо:</strong> Движение</li>
+            <li><strong>Стрелка вверх или Пробел:</strong> Прыжок</li>
+            <li>Собирайте монеты для очков</li>
+            <li>Избегайте шипов!</li>
+            <li>Доберитесь до флага, чтобы победить!</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>Поздравляем!</strong> Вы создали игру-платформер с гравитацией, прыжками и столкновениями!
+    </div>
+
+    <div class="info">
+        <strong>Задание:</strong> Добавьте больше уровней, движущиеся платформы или врагов!
+    </div>
+</body>
+</html>

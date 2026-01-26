@@ -1,0 +1,117 @@
+{
+    "tutorials": [
+        {
+            "title": "Primeros pasos con PyGameMaker",
+            "folder": "01_getting_started",
+            "description": "Aprende los conceptos básicos de la IDE PyGameMaker",
+            "pages": [
+                "01_welcome.html",
+                "02_interface.html",
+                "03_first_project.html",
+                "04_next_steps.html"
+            ]
+        },
+        {
+            "title": "Tu primer juego: Atrapa la estrella",
+            "folder": "02_first_game",
+            "description": "Crea un juego sencillo donde atrapas estrellas que caen",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_add_movement.html",
+                "05_add_star.html",
+                "06_scoring.html",
+                "07_finishing.html"
+            ]
+        },
+        {
+            "title": "Pong Clásico: Juego para Dos Jugadores",
+            "folder": "03_pong",
+            "description": "Crea el clásico juego de arcade Pong para dos jugadores",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_paddle_movement.html",
+                "05_ball_movement.html",
+                "06_scoring.html",
+                "07_score_display.html",
+                "08_room_setup.html"
+            ]
+        },
+        {
+            "title": "Breakout: Juego de Romper Ladrillos",
+            "folder": "04_breakout",
+            "description": "Construye un clásico juego de arcade de romper ladrillos",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_paddle_movement.html",
+                "05_ball_movement.html",
+                "06_lives_system.html",
+                "07_score_display.html",
+                "08_room_setup.html"
+            ]
+        },
+        {
+            "title": "Sokoban: Rompecabezas de Empujar Cajas",
+            "folder": "05_sokoban",
+            "description": "Crea un clásico juego de rompecabezas de empujar cajas",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_crate_behavior.html",
+                "05_player_movement.html",
+                "06_win_condition.html",
+                "07_room_setup.html"
+            ]
+        },
+        {
+            "title": "Laberinto: Navega hacia la Salida",
+            "folder": "06_maze",
+            "description": "Navega por corredores, recoge monedas, alcanza la salida",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_player_movement.html",
+                "05_collectibles.html",
+                "06_game_controller.html",
+                "07_room_setup.html"
+            ]
+        },
+        {
+            "title": "Plataforma: Corre, Salta y Recolecta",
+            "folder": "07_platformer",
+            "description": "Salta entre plataformas, evita peligros, recoge monedas",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_player_physics.html",
+                "05_player_movement.html",
+                "06_collectibles_hazards.html",
+                "07_game_controller.html",
+                "08_room_setup.html"
+            ]
+        },
+        {
+            "title": "Módulo Lunar: Aterriza en la Luna",
+            "folder": "08_lunar_lander",
+            "description": "Controla el empuje para aterrizar de forma segura, gestiona el combustible",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_lander_physics.html",
+                "05_lander_controls.html",
+                "06_collisions.html",
+                "07_game_controller.html",
+                "08_room_setup.html"
+            ]
+        }
+    ]
+}

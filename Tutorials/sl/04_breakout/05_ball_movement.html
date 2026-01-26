@@ -14,58 +14,58 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Ball Movement and Bouncing</h1>
+    <h1>Korak 4: Premikanje in odbijanje žoge</h1>
 
-    <p>The ball needs to move and bounce off walls, paddle, and bricks.</p>
+    <p>Žoga se mora premikati in odbijati od sten, loparja in opek.</p>
 
-    <h2>Start Ball Moving (Create Event)</h2>
+    <h2>Zaženi premikanje žoge (dogodek Create)</h2>
     <div class="step">
         <ol>
-            <li>Open <code>obj_ball</code></li>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Move &gt; Start Moving in Direction</strong></li>
-            <li>Choose an upward diagonal direction</li>
-            <li>Set speed to <code>5</code></li>
+            <li>Odpri <code>obj_ball</code></li>
+            <li>Dodaj dogodek: <strong>Create</strong></li>
+            <li>Dodaj akcijo: <strong>Move &gt; Start Moving in Direction</strong></li>
+            <li>Izberi diagonalno smer navzgor</li>
+            <li>Nastavi hitrost na <code>5</code></li>
         </ol>
     </div>
 
-    <h2>Bounce Off Walls</h2>
+    <h2>Odbijanje od sten</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_wall</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Dodaj dogodek: <strong>Collision &gt; obj_wall</strong></li>
+            <li>Dodaj akcijo: <strong>Move &gt; Bounce Against Objects</strong></li>
+            <li>Izberi "Against solid objects"</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Paddle</h2>
+    <h2>Odbijanje od loparja</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_paddle</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Dodaj dogodek: <strong>Collision &gt; obj_paddle</strong></li>
+            <li>Dodaj akcijo: <strong>Move &gt; Bounce Against Objects</strong></li>
+            <li>Izberi "Against solid objects"</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Bricks (and Destroy Them!)</h2>
+    <h2>Odbijanje od opek (in njihovo uničenje!)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_brick_parent</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
-            <li>Add Action: <strong>Main1 &gt; Destroy Instance</strong></li>
-            <li>Select "Other" (destroys the brick, not the ball)</li>
-            <li>Add Action: <strong>Score &gt; Add to Score</strong></li>
-            <li>Value: <code>10</code></li>
+            <li>Dodaj dogodek: <strong>Collision &gt; obj_brick_parent</strong></li>
+            <li>Dodaj akcijo: <strong>Move &gt; Bounce Against Objects</strong></li>
+            <li>Izberi "Against solid objects"</li>
+            <li>Dodaj akcijo: <strong>Main1 &gt; Destroy Instance</strong></li>
+            <li>Izberi "Other" (uniči opeko, ne žoge)</li>
+            <li>Dodaj akcijo: <strong>Score &gt; Add to Score</strong></li>
+            <li>Vrednost: <code>10</code></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Key Point:</strong> Using <code>obj_brick_parent</code> means this collision works for ALL brick colors!
+        <strong>Ključna točka:</strong> Uporaba <code>obj_brick_parent</code> pomeni, da ta trk deluje za VSE barve opek!
     </div>
 
     <div class="info">
-        Click "Next" to add the lives system.
+        Klikni "Naprej" za dodajanje sistema življenj.
     </div>
 </body>
 </html>

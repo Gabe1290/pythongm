@@ -14,69 +14,69 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Player Movement</h1>
+    <h1>Крок 4: Рух гравця</h1>
 
-    <p>The player moves in fixed 32-pixel steps (grid-based movement).</p>
+    <p>Гравець рухається фіксованими кроками по 32 пікселі (рух по сітці).</p>
 
     <div class="highlight">
-        <strong>Important:</strong> In Sokoban, movement must check:<br>
-        1. Is there a wall? (Can't move)<br>
-        2. Is there a crate? (Can we push it?)<br>
-        3. Is there a wall/crate behind the crate? (Can't push)
+        <strong>Важливо:</strong> У Сокобані рух повинен перевіряти:<br>
+        1. Чи є там стіна? (Не можна рухатись)<br>
+        2. Чи є там ящик? (Чи можемо ми його штовхнути?)<br>
+        3. Чи є стіна/ящик за ящиком? (Не можна штовхнути)
     </div>
 
-    <h2>Move Right (Right Arrow)</h2>
+    <h2>Рух вправо (Стрілка вправо)</h2>
     <div class="step">
-        <p>In <code>obj_player</code>:</p>
+        <p>У <code>obj_player</code>:</p>
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Press Right</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
-            <li>Enter this code:</li>
+            <li>Додайте подію: <strong>Keyboard &gt; Press Right</strong></li>
+            <li>Додайте дію: <strong>Control &gt; Execute Code</strong></li>
+            <li>Введіть цей код:</li>
         </ol>
         <pre style="background-color: #2c3e50; color: #ecf0f1; padding: 10px; font-size: 11px; border-radius: 5px;">
-// Check if we can move right
+// Перевіряємо, чи можемо рухатись вправо
 if (!place_meeting(x + 32, y, obj_wall)) {
     var crate = instance_place(x + 32, y, obj_crate);
     if (crate != noone) {
-        // There's a crate - can we push it?
+        // Там є ящик - чи можемо ми його штовхнути?
         if (!place_meeting(x + 64, y, obj_wall) &&
             !place_meeting(x + 64, y, obj_crate)) {
             crate.x += 32;
             x += 32;
         }
     } else {
-        // No crate, just move
+        // Немає ящика, просто рухаємось
         x += 32;
     }
 }</pre>
     </div>
 
-    <h2>Move Left (Left Arrow)</h2>
+    <h2>Рух вліво (Стрілка вліво)</h2>
     <div class="step">
-        <p>Same code but change:</p>
+        <p>Той самий код, але змініть:</p>
         <ul>
-            <li><code>+ 32</code> becomes <code>- 32</code></li>
-            <li><code>+ 64</code> becomes <code>- 64</code></li>
+            <li><code>+ 32</code> стає <code>- 32</code></li>
+            <li><code>+ 64</code> стає <code>- 64</code></li>
         </ul>
     </div>
 
-    <h2>Move Up (Up Arrow)</h2>
+    <h2>Рух вгору (Стрілка вгору)</h2>
     <div class="step">
-        <p>Same code but use <code>y</code> instead of <code>x</code>:</p>
+        <p>Той самий код, але використовуйте <code>y</code> замість <code>x</code>:</p>
         <ul>
-            <li><code>x + 32</code> becomes <code>y - 32</code></li>
-            <li><code>x + 64</code> becomes <code>y - 64</code></li>
-            <li><code>crate.x</code> becomes <code>crate.y</code></li>
+            <li><code>x + 32</code> стає <code>y - 32</code></li>
+            <li><code>x + 64</code> стає <code>y - 64</code></li>
+            <li><code>crate.x</code> стає <code>crate.y</code></li>
         </ul>
     </div>
 
-    <h2>Move Down (Down Arrow)</h2>
+    <h2>Рух вниз (Стрілка вниз)</h2>
     <div class="step">
-        <p>Same as Up but with <code>+ 32</code> and <code>+ 64</code>.</p>
+        <p>Те саме, що і вгору, але з <code>+ 32</code> та <code>+ 64</code>.</p>
     </div>
 
     <div class="info">
-        Click "Next" to add win condition detection.
+        Натисніть "Далі", щоб додати визначення умови перемоги.
     </div>
 </body>
 </html>

@@ -14,54 +14,54 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Ball Movement and Bouncing</h1>
+    <h1>Schritt 4: Ballbewegung und Abprallen</h1>
 
-    <p>The ball needs to move automatically and bounce off walls and paddles.</p>
+    <p>Der Ball muss sich automatisch bewegen und von Wänden und Schlägern abprallen.</p>
 
-    <h2>Start Ball Moving (Create Event)</h2>
+    <h2>Ball starten (Create-Ereignis)</h2>
     <div class="step">
         <ol>
-            <li>Open <code>obj_ball</code></li>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Move &gt; Start Moving in Direction</strong></li>
-            <li>Choose a diagonal direction (not straight up/down)</li>
-            <li>Set speed to <code>6</code></li>
+            <li>Öffne <code>obj_ball</code></li>
+            <li>Ereignis hinzufügen: <strong>Create</strong></li>
+            <li>Aktion hinzufügen: <strong>Bewegung &gt; In Richtung starten</strong></li>
+            <li>Wähle eine diagonale Richtung (nicht gerade nach oben/unten)</li>
+            <li>Setze Geschwindigkeit auf <code>6</code></li>
         </ol>
     </div>
 
-    <h2>Bounce Off Walls</h2>
+    <h2>Von Wänden abprallen</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_wall</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Ereignis hinzufügen: <strong>Kollision &gt; obj_wall</strong></li>
+            <li>Aktion hinzufügen: <strong>Bewegung &gt; Von Objekten abprallen</strong></li>
+            <li>Wähle „Gegen solide Objekte"</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Left Paddle</h2>
+    <h2>Vom linken Schläger abprallen</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_paddle_left</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Ereignis hinzufügen: <strong>Kollision &gt; obj_paddle_left</strong></li>
+            <li>Aktion hinzufügen: <strong>Bewegung &gt; Von Objekten abprallen</strong></li>
+            <li>Wähle „Gegen solide Objekte"</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Right Paddle</h2>
+    <h2>Vom rechten Schläger abprallen</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_paddle_right</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Ereignis hinzufügen: <strong>Kollision &gt; obj_paddle_right</strong></li>
+            <li>Aktion hinzufügen: <strong>Bewegung &gt; Von Objekten abprallen</strong></li>
+            <li>Wähle „Gegen solide Objekte"</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Test Tip:</strong> You can test your game now! The ball should bounce around, but scoring won't work yet.
+        <strong>Test-Tipp:</strong> Du kannst dein Spiel jetzt testen! Der Ball sollte herumprallen, aber die Punktezählung funktioniert noch nicht.
     </div>
 
     <div class="info">
-        Click "Next" to add scoring goals.
+        Klicke auf „Weiter", um die Tore hinzuzufügen.
     </div>
 </body>
 </html>

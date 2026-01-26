@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 4: Монеты и выход</h1>
+
+    <p>Теперь сделаем монеты собираемыми и настроим работу выхода.</p>
+
+    <h2>Сбор монет</h2>
+    <div class="step">
+        <p>В <code>obj_coin</code>:</p>
+        <ol>
+            <li>Добавьте событие: <strong>Столкновение &gt; obj_player</strong></li>
+            <li>Добавьте действие: <strong>Счёт &gt; Установить счёт</strong></li>
+            <li>Новый счёт: <code>10</code></li>
+            <li>Отметьте "Относительно", чтобы добавить 10 очков</li>
+            <li>Добавьте действие: <strong>Main1 &gt; Уничтожить экземпляр</strong></li>
+            <li>Применить к: <code>Себе</code></li>
+        </ol>
+    </div>
+
+    <h2>Поведение выхода</h2>
+    <div class="step">
+        <p>В <code>obj_exit</code>:</p>
+        <ol>
+            <li>Добавьте событие: <strong>Столкновение &gt; obj_player</strong></li>
+            <li>Добавьте действие: <strong>Main2 &gt; Показать сообщение</strong></li>
+            <li>Сообщение: <code>Вы выиграли!</code></li>
+            <li>Добавьте действие: <strong>Main1 &gt; Перезапустить комнату</strong></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Совет:</strong> Вы можете использовать <strong>Следующая комната</strong> вместо <strong>Перезапустить комнату</strong>, если создадите несколько уровней!
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы добавить отображение таймера.
+    </div>
+</body>
+</html>

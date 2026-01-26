@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 6: Controlador del Juego (HUD)</h1>
+
+    <p>Muestra el Combustible, velocidad y estado para ayudar al jugador.</p>
+
+    <h2>Evento Draw</h2>
+    <div class="step">
+        <p>En <code>obj_game_controller</code>:</p>
+        <ol>
+            <li>Añadir Evento: <strong>Draw &gt; Draw</strong></li>
+            <li>Añadir Acción: <strong>Control &gt; Ejecutar Código</strong></li>
+        </ol>
+        <pre>
+draw_set_color(c_white);
+
+// Obtener información del módulo lunar
+var lander = instance_find(obj_lander, 0);
+if (lander != noone) {
+    var spd = sqrt(lander.hsp*lander.hsp + lander.vsp*lander.vsp);
+
+    // Dibujar HUD
+    draw_text(10, 10, "MODULO LUNAR");
+    draw_text(10, 30, "Combustible: " + string(floor(lander.fuel)) + "%");
+    draw_text(10, 50, "Velocidad: " + string_format(spd, 1, 2));
+    draw_text(10, 70, "Seguro: < " + string(lander.safe_speed));
+
+    // Advertencia de velocidad
+    if (spd > lander.safe_speed) {
+        draw_set_color(c_red);
+        draw_text(10, 90, "¡DEMASIADO RAPIDO!");
+    } else {
+        draw_set_color(c_lime);
+        draw_text(10, 90, "Velocidad OK");
+    }
+
+    // Advertencia de Combustible
+    if (lander.fuel <= 0) {
+        draw_set_color(c_red);
+        draw_text(10, 110, "¡SIN COMBUSTIBLE!");
+    }
+}
+
+draw_set_color(c_gray);
+draw_text(10, room_height - 20, "ARRIBA: Propulsion | IZQ/DER: Mover");</pre>
+    </div>
+
+    <h2>Lo Que Muestra el HUD</h2>
+    <ul>
+        <li><strong>Combustible:</strong> Porcentaje restante (verde = OK)</li>
+        <li><strong>Velocidad:</strong> Velocidad actual (rojo = peligroso)</li>
+        <li><strong>Advertencias:</strong> "¡DEMASIADO RAPIDO!" o "¡SIN COMBUSTIBLE!"</li>
+        <li><strong>Controles:</strong> Recordatorio en la parte inferior</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Retroalimentación Visual:</strong> ¡Los códigos de color ayudan a los jugadores a reaccionar rápidamente!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para configurar tu Habitación.
+    </div>
+</body>
+</html>

@@ -17,82 +17,82 @@
     </style>
 </head>
 <body>
-    <h1>Step 3: Add Paddle Movement</h1>
+    <h1>Korak 3: Dodaj premikanje loparjev</h1>
 
-    <p>We'll set up two-player controls using different keys for each paddle.</p>
+    <p>Nastavili bomo upravljanje za dva igralca z uporabo razlicnih tipk za vsak lopar.</p>
 
-    <h2>Control Scheme</h2>
+    <h2>Shema upravljanja</h2>
     <table>
         <tr>
-            <th>Player</th>
-            <th>Move Up</th>
-            <th>Move Down</th>
+            <th>Igralec</th>
+            <th>Premik gor</th>
+            <th>Premik dol</th>
         </tr>
         <tr>
-            <td>Player 1 (Left)</td>
-            <td>W key</td>
-            <td>S key</td>
+            <td>Igralec 1 (levi)</td>
+            <td>Tipka W</td>
+            <td>Tipka S</td>
         </tr>
         <tr>
-            <td>Player 2 (Right)</td>
-            <td>Up Arrow</td>
-            <td>Down Arrow</td>
+            <td>Igralec 2 (desni)</td>
+            <td>Puscica gor</td>
+            <td>Puscica dol</td>
         </tr>
     </table>
 
-    <h2>Left Paddle Controls (obj_paddle_left)</h2>
+    <h2>Upravljanje levega loparja (obj_paddle_left)</h2>
     <div class="step">
-        <p><strong>Move Up (W key):</strong></p>
+        <p><strong>Premik gor (tipka W):</strong></p>
         <ol>
-            <li>Open <code>obj_paddle_left</code></li>
-            <li>Add Event: <strong>Keyboard &gt; Press W</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Vertical Speed</strong></li>
-            <li>Set speed to <code>-8</code> (negative = up)</li>
+            <li>Odpri <code>obj_paddle_left</code></li>
+            <li>Dodaj dogodek: <strong>Tipkovnica &gt; Pritisni W</strong></li>
+            <li>Dodaj akcijo: <strong>Premikanje &gt; Nastavi navpicno hitrost</strong></li>
+            <li>Nastavi hitrost na <code>-8</code> (negativno = gor)</li>
         </ol>
     </div>
 
     <div class="step">
-        <p><strong>Stop Moving (Release W):</strong></p>
+        <p><strong>Ustavi premikanje (sprosti W):</strong></p>
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Release W</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Vertical Speed</strong></li>
-            <li>Set speed to <code>0</code></li>
+            <li>Dodaj dogodek: <strong>Tipkovnica &gt; Sprosti W</strong></li>
+            <li>Dodaj akcijo: <strong>Premikanje &gt; Nastavi navpicno hitrost</strong></li>
+            <li>Nastavi hitrost na <code>0</code></li>
         </ol>
     </div>
 
     <div class="step">
-        <p><strong>Move Down (S key):</strong></p>
+        <p><strong>Premik dol (tipka S):</strong></p>
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Press S</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Vertical Speed</strong></li>
-            <li>Set speed to <code>8</code> (positive = down)</li>
+            <li>Dodaj dogodek: <strong>Tipkovnica &gt; Pritisni S</strong></li>
+            <li>Dodaj akcijo: <strong>Premikanje &gt; Nastavi navpicno hitrost</strong></li>
+            <li>Nastavi hitrost na <code>8</code> (pozitivno = dol)</li>
         </ol>
     </div>
 
     <div class="step">
-        <p><strong>Stop Moving (Release S):</strong></p>
+        <p><strong>Ustavi premikanje (sprosti S):</strong></p>
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Release S</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Vertical Speed</strong></li>
-            <li>Set speed to <code>0</code></li>
+            <li>Dodaj dogodek: <strong>Tipkovnica &gt; Sprosti S</strong></li>
+            <li>Dodaj akcijo: <strong>Premikanje &gt; Nastavi navpicno hitrost</strong></li>
+            <li>Nastavi hitrost na <code>0</code></li>
         </ol>
     </div>
 
     <div class="step">
-        <p><strong>Wall Collision:</strong></p>
+        <p><strong>Trk s steno:</strong></p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_wall</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Dodaj dogodek: <strong>Trk &gt; obj_wall</strong></li>
+            <li>Dodaj akcijo: <strong>Premikanje &gt; Odbij se od objektov</strong></li>
+            <li>Izberi "Od trdnih objektov"</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Now do the same for obj_paddle_right</strong>, but use Up Arrow and Down Arrow instead of W and S!
+        <strong>Zdaj naredi enako za obj_paddle_right</strong>, vendar uporabi puscico gor in puscico dol namesto W in S!
     </div>
 
     <div class="info">
-        Click "Next" to add ball movement and bouncing.
+        Klikni "Naprej" za dodajanje premikanja zoge in odbijanja.
     </div>
 </body>
 </html>

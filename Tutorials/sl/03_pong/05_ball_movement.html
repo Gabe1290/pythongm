@@ -14,54 +14,54 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Ball Movement and Bouncing</h1>
+    <h1>Korak 4: Premikanje in odbijanje zoge</h1>
 
-    <p>The ball needs to move automatically and bounce off walls and paddles.</p>
+    <p>Zoga se mora premikati samodejno in se odbijati od sten in loparjev.</p>
 
-    <h2>Start Ball Moving (Create Event)</h2>
+    <h2>Zacni premikanje zoge (dogodek Ustvari)</h2>
     <div class="step">
         <ol>
-            <li>Open <code>obj_ball</code></li>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Move &gt; Start Moving in Direction</strong></li>
-            <li>Choose a diagonal direction (not straight up/down)</li>
-            <li>Set speed to <code>6</code></li>
+            <li>Odpri <code>obj_ball</code></li>
+            <li>Dodaj dogodek: <strong>Ustvari</strong></li>
+            <li>Dodaj akcijo: <strong>Premikanje &gt; Zacni premikanje v smeri</strong></li>
+            <li>Izberi diagonalno smer (ne naravnost gor/dol)</li>
+            <li>Nastavi hitrost na <code>6</code></li>
         </ol>
     </div>
 
-    <h2>Bounce Off Walls</h2>
+    <h2>Odbij se od sten</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_wall</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Dodaj dogodek: <strong>Trk &gt; obj_wall</strong></li>
+            <li>Dodaj akcijo: <strong>Premikanje &gt; Odbij se od objektov</strong></li>
+            <li>Izberi "Od trdnih objektov"</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Left Paddle</h2>
+    <h2>Odbij se od levega loparja</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_paddle_left</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Dodaj dogodek: <strong>Trk &gt; obj_paddle_left</strong></li>
+            <li>Dodaj akcijo: <strong>Premikanje &gt; Odbij se od objektov</strong></li>
+            <li>Izberi "Od trdnih objektov"</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Right Paddle</h2>
+    <h2>Odbij se od desnega loparja</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_paddle_right</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Dodaj dogodek: <strong>Trk &gt; obj_paddle_right</strong></li>
+            <li>Dodaj akcijo: <strong>Premikanje &gt; Odbij se od objektov</strong></li>
+            <li>Izberi "Od trdnih objektov"</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Test Tip:</strong> You can test your game now! The ball should bounce around, but scoring won't work yet.
+        <strong>Namig za testiranje:</strong> Zdaj lahko preizkusis svojo igro! Zoga bi se morala odbijati naokoli, vendar tockovanie se ne bo delovalo.
     </div>
 
     <div class="info">
-        Click "Next" to add scoring goals.
+        Klikni "Naprej" za dodajanje golov za tockovanie.
     </div>
 </body>
 </html>

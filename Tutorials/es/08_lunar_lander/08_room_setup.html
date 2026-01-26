@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #1a1a2e; color: #ecf0f1; padding: 10px; border-radius: 5px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Paso 7: Configuración de la Habitación</h1>
+
+    <p>¡Diseña tu paisaje lunar!</p>
+
+    <h2>Crear la Habitación</h2>
+    <div class="step">
+        <ol>
+            <li>Clic derecho en <strong>Habitaciones</strong> > <strong>Crear Habitación</strong></li>
+            <li>Nómbrala <code>room_game</code></li>
+            <li>Establece el tamaño: <strong>640 x 480</strong></li>
+            <li>Establece el color de fondo a <strong>negro</strong> (espacio)</li>
+            <li>Activa "Ajustar a Cuadrícula" (32x32)</li>
+        </ol>
+    </div>
+
+    <h2>Ejemplo de Diseño de Nivel</h2>
+    <pre>
+        L                          <- El Módulo lunar comienza aquí
+
+
+
+
+
+GGG     GGG     PPPP     GGG     GGG
+GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+
+G = Suelo (Choque)    L = Módulo lunar    P = Plataforma de aterrizaje (seguro)</pre>
+
+    <h2>Construyendo Tu Nivel</h2>
+    <div class="step">
+        <ol>
+            <li><strong>Suelo:</strong> Coloca <code>obj_ground</code> a lo largo de la parte inferior</li>
+            <li><strong>Espacio:</strong> Deja espacio para la Plataforma de aterrizaje</li>
+            <li><strong>Plataforma de Aterrizaje:</strong> Coloca <code>obj_pad</code> en el espacio</li>
+            <li><strong>Módulo Lunar:</strong> Coloca <code>obj_lander</code> en la parte superior</li>
+            <li><strong>Controlador:</strong> Coloca <code>obj_game_controller</code> en cualquier lugar</li>
+        </ol>
+    </div>
+
+    <h2>¡Prueba Tu Juego!</h2>
+    <div class="success">
+        <p><strong>¡Presiona F5 o haz clic en Ejecutar!</strong></p>
+        <ul>
+            <li><strong>Flecha ARRIBA:</strong> Propulsión (¡usa Combustible!)</li>
+            <li><strong>IZQ/DER:</strong> Dirigir horizontalmente</li>
+            <li>Vigila tu velocidad - ¡mantente bajo 2!</li>
+            <li>¡No te quedes sin Combustible!</li>
+            <li>¡Aterriza en la plataforma para ganar!</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>¡Felicitaciones!</strong> ¡Has creado un módulo lunar con Gravedad, Propulsión y gestión de Combustible!
+    </div>
+
+    <div class="info">
+        <strong>Desafío:</strong> ¡Añade múltiples plataformas de aterrizaje con diferentes valores de puntos, o añade efectos de viento!
+    </div>
+</body>
+</html>

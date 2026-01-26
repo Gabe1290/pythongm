@@ -15,57 +15,57 @@
     </style>
 </head>
 <body>
-    <h1>Step 6: Game Controller</h1>
+    <h1>Schritt 6: Spiel-Controller</h1>
 
-    <p>The game controller displays the score on screen.</p>
+    <p>Der Spiel-Controller zeigt die Punkte auf dem Bildschirm an.</p>
 
-    <h2>Create the Controller Object</h2>
+    <h2>Das Controller-Objekt erstellen</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_game_controller</code></li>
-            <li>No sprite needed (invisible controller)</li>
+            <li>Erstelle das Objekt <code>obj_game_controller</code></li>
+            <li>Kein Sprite noetig (unsichtbarer Controller)</li>
         </ol>
     </div>
 
-    <h2>Draw the Score</h2>
+    <h2>Die Punkte zeichnen</h2>
     <div class="step">
         <p>In <code>obj_game_controller</code>:</p>
         <ol>
-            <li>Add Event: <strong>Draw &gt; Draw</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Event hinzufuegen: <strong>Draw &gt; Draw</strong></li>
+            <li>Aktion hinzufuegen: <strong>Steuerung &gt; Code ausfuehren</strong></li>
         </ol>
         <pre>
-// Set text color
+// Textfarbe setzen
 draw_set_color(c_white);
 
-// Draw score at top-left
-draw_text(10, 10, "Score: " + string(score));
+// Punkte oben links zeichnen
+draw_text(10, 10, "Punkte: " + string(score));
 
-// Optional: Draw instructions
-draw_text(10, 30, "Arrows: Move  |  Space: Jump");</pre>
+// Optional: Anleitung zeichnen
+draw_text(10, 30, "Pfeiltasten: Bewegen  |  Leertaste: Springen");</pre>
     </div>
 
-    <h2>Alternative: Using Actions</h2>
+    <h2>Alternative: Mit Aktionen</h2>
     <div class="step">
-        <p>Instead of code, you can use:</p>
+        <p>Anstatt Code kannst du auch verwenden:</p>
         <ol>
-            <li>Add Action: <strong>Draw &gt; Set Color</strong> (White)</li>
-            <li>Add Action: <strong>Score &gt; Draw Score</strong>
+            <li>Aktion hinzufuegen: <strong>Draw &gt; Farbe setzen</strong> (Weiss)</li>
+            <li>Aktion hinzufuegen: <strong>Punkte &gt; Punkte zeichnen</strong>
                 <ul>
                     <li>X: 10</li>
                     <li>Y: 10</li>
-                    <li>Caption: "Score: "</li>
+                    <li>Beschriftung: "Punkte: "</li>
                 </ul>
             </li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Remember:</strong> Place the game controller in your room! It won't appear by itself.
+        <strong>Denke daran:</strong> Platziere den Spiel-Controller in deinem Raum! Er erscheint nicht von selbst.
     </div>
 
     <div class="info">
-        Click "Next" to design your level.
+        Klicke auf "Weiter", um dein Level zu gestalten.
     </div>
 </body>
 </html>

@@ -15,55 +15,55 @@
     </style>
 </head>
 <body>
-    <h1>Step 3: Player Movement</h1>
+    <h1>Крок 3: Рух гравця</h1>
 
-    <p>The player needs smooth movement with collision detection.</p>
+    <p>Гравцю потрібен плавний рух з виявленням зіткнень.</p>
 
-    <h2>Initialize Speed (Create Event)</h2>
+    <h2>Ініціалізація швидкості (Подія Create)</h2>
     <div class="step">
-        <p>In <code>obj_player</code>:</p>
+        <p>В <code>obj_player</code>:</p>
         <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Control &gt; Set Variable</strong></li>
-            <li>Variable: <code>move_speed</code></li>
-            <li>Value: <code>4</code></li>
+            <li>Додати подію: <strong>Create</strong></li>
+            <li>Додати дію: <strong>Control &gt; Set Variable</strong></li>
+            <li>Змінна: <code>move_speed</code></li>
+            <li>Значення: <code>4</code></li>
         </ol>
     </div>
 
-    <h2>Movement with Collision (Step Event)</h2>
+    <h2>Рух із зіткненнями (Подія Step)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Додати подію: <strong>Step</strong></li>
+            <li>Додати дію: <strong>Control &gt; Execute Code</strong></li>
         </ol>
         <pre>
-// Horizontal movement
+// Горизонтальний рух
 var hspd = 0;
 if (keyboard_check(vk_right)) hspd = move_speed;
 if (keyboard_check(vk_left)) hspd = -move_speed;
 
-// Vertical movement
+// Вертикальний рух
 var vspd = 0;
 if (keyboard_check(vk_down)) vspd = move_speed;
 if (keyboard_check(vk_up)) vspd = -move_speed;
 
-// Check horizontal collision
+// Перевірка горизонтального зіткнення
 if (!place_meeting(x + hspd, y, obj_wall)) {
     x += hspd;
 }
 
-// Check vertical collision
+// Перевірка вертикального зіткнення
 if (!place_meeting(x, y + vspd, obj_wall)) {
     y += vspd;
 }</pre>
     </div>
 
     <div class="highlight">
-        <strong>How it works:</strong> We check if the target position would collide with a wall. If not, we move there!
+        <strong>Як це працює:</strong> Ми перевіряємо, чи цільова позиція зіткнеться зі стіною. Якщо ні - рухаємося туди!
     </div>
 
     <div class="info">
-        Click "Next" to add coin collection.
+        Натисніть "Далі", щоб додати збір монет.
     </div>
 </body>
 </html>

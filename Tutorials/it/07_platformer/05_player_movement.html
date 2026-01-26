@@ -15,35 +15,35 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Player Movement (Step Event)</h1>
+    <h1>Passo 4: Movimento del Giocatore (Evento Step)</h1>
 
-    <p>This is the core of our platformer: movement, gravity, jumping, and collision.</p>
+    <p>Questo e il cuore del nostro platformer: movimento, gravita, salto e collisioni.</p>
 
-    <h2>Add Step Event</h2>
+    <h2>Aggiungere l'Evento Step</h2>
     <div class="step">
         <p>In <code>obj_player</code>:</p>
         <ol>
-            <li>Add Event: <strong>Step &gt; Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Aggiungi Evento: <strong>Step &gt; Step</strong></li>
+            <li>Aggiungi Azione: <strong>Controllo &gt; Esegui Codice</strong></li>
         </ol>
         <pre>
-// === HORIZONTAL MOVEMENT ===
+// === MOVIMENTO ORIZZONTALE ===
 var move_input = keyboard_check(vk_right) - keyboard_check(vk_left);
 hsp = move_input * hspeed_max;
 
-// === GRAVITY ===
+// === GRAVITA ===
 vsp += gravity_force;
 if (vsp > vspeed_max) vsp = vspeed_max;
 
-// === GROUND CHECK ===
+// === CONTROLLO TERRENO ===
 on_ground = place_meeting(x, y + 1, obj_ground);
 
-// === JUMPING ===
+// === SALTO ===
 if (on_ground && (keyboard_check_pressed(vk_up) || keyboard_check_pressed(vk_space))) {
     vsp = jump_force;
 }
 
-// === HORIZONTAL COLLISION ===
+// === COLLISIONE ORIZZONTALE ===
 if (place_meeting(x + hsp, y, obj_ground)) {
     while (!place_meeting(x + sign(hsp), y, obj_ground)) {
         x += sign(hsp);
@@ -52,7 +52,7 @@ if (place_meeting(x + hsp, y, obj_ground)) {
 }
 x += hsp;
 
-// === VERTICAL COLLISION ===
+// === COLLISIONE VERTICALE ===
 if (place_meeting(x, y + vsp, obj_ground)) {
     while (!place_meeting(x, y + sign(vsp), obj_ground)) {
         y += sign(vsp);
@@ -62,21 +62,21 @@ if (place_meeting(x, y + vsp, obj_ground)) {
 y += vsp;</pre>
     </div>
 
-    <h2>How It Works</h2>
+    <h2>Come Funziona</h2>
     <ol>
-        <li><strong>Input:</strong> Right arrow = 1, Left = -1, None = 0</li>
-        <li><strong>Gravity:</strong> Adds to vsp each frame (falling faster)</li>
-        <li><strong>Ground Check:</strong> Looks 1 pixel below for ground</li>
-        <li><strong>Jump:</strong> Only works when on_ground is true</li>
-        <li><strong>Collision:</strong> Move pixel-by-pixel until hitting wall</li>
+        <li><strong>Input:</strong> Freccia destra = 1, Sinistra = -1, Nessuna = 0</li>
+        <li><strong>Gravita:</strong> Aggiunge a vsp ogni frame (caduta accelerata)</li>
+        <li><strong>Controllo Terreno:</strong> Cerca il terreno 1 pixel sotto</li>
+        <li><strong>Salto:</strong> Funziona solo quando on_ground e vero</li>
+        <li><strong>Collisione:</strong> Muove pixel per pixel fino a colpire il muro</li>
     </ol>
 
     <div class="highlight">
-        <strong>The Magic:</strong> The while loop moves us pixel-by-pixel to the edge of the wall, preventing us from getting stuck!
+        <strong>La Magia:</strong> Il ciclo while ci muove pixel per pixel fino al bordo del muro, impedendoci di rimanere bloccati!
     </div>
 
     <div class="info">
-        Click "Next" to add coins, spikes, and the flag.
+        Clicca "Avanti" per aggiungere monete, punte e la bandiera.
     </div>
 </body>
 </html>

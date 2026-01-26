@@ -14,62 +14,62 @@
     </style>
 </head>
 <body>
-    <h1>Step 3: Add Paddle Movement</h1>
+    <h1>Passo 3: Aggiungi il Movimento della Racchetta</h1>
 
-    <p>The paddle moves left and right using the arrow keys.</p>
+    <p>La racchetta si muove a sinistra e a destra usando i tasti freccia.</p>
 
-    <h2>Move Left (Left Arrow)</h2>
+    <h2>Muovi a Sinistra (Freccia Sinistra)</h2>
     <div class="step">
         <ol>
-            <li>Open <code>obj_paddle</code></li>
-            <li>Add Event: <strong>Keyboard &gt; Press Left</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Horizontal Speed</strong></li>
-            <li>Set speed to <code>-8</code> (negative = left)</li>
+            <li>Apri <code>obj_paddle</code></li>
+            <li>Aggiungi Evento: <strong>Tastiera &gt; Premi Sinistra</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Imposta Velocita Orizzontale</strong></li>
+            <li>Imposta la velocita a <code>-8</code> (negativo = sinistra)</li>
         </ol>
     </div>
 
-    <h2>Stop Moving (Release Left)</h2>
+    <h2>Ferma il Movimento (Rilascia Sinistra)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Release Left</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Horizontal Speed</strong></li>
-            <li>Set speed to <code>0</code></li>
+            <li>Aggiungi Evento: <strong>Tastiera &gt; Rilascia Sinistra</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Imposta Velocita Orizzontale</strong></li>
+            <li>Imposta la velocita a <code>0</code></li>
         </ol>
     </div>
 
-    <h2>Move Right (Right Arrow)</h2>
+    <h2>Muovi a Destra (Freccia Destra)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Press Right</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Horizontal Speed</strong></li>
-            <li>Set speed to <code>8</code> (positive = right)</li>
+            <li>Aggiungi Evento: <strong>Tastiera &gt; Premi Destra</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Imposta Velocita Orizzontale</strong></li>
+            <li>Imposta la velocita a <code>8</code> (positivo = destra)</li>
         </ol>
     </div>
 
-    <h2>Stop Moving (Release Right)</h2>
+    <h2>Ferma il Movimento (Rilascia Destra)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Release Right</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Horizontal Speed</strong></li>
-            <li>Set speed to <code>0</code></li>
+            <li>Aggiungi Evento: <strong>Tastiera &gt; Rilascia Destra</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Imposta Velocita Orizzontale</strong></li>
+            <li>Imposta la velocita a <code>0</code></li>
         </ol>
     </div>
 
-    <h2>Wall Collision</h2>
+    <h2>Collisione con il Muro</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_wall</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Aggiungi Evento: <strong>Collisione &gt; obj_wall</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Rimbalza Contro Oggetti</strong></li>
+            <li>Seleziona "Contro oggetti solidi"</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Note:</strong> The wall collision prevents the paddle from going off-screen!
+        <strong>Nota:</strong> La collisione con il muro impedisce alla racchetta di uscire dallo schermo!
     </div>
 
     <div class="info">
-        Click "Next" to add ball movement.
+        Clicca "Avanti" per aggiungere il movimento della palla.
     </div>
 </body>
 </html>

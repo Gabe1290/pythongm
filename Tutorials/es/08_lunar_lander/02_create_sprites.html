@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #34495e; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Paso 1: Crear Sprites</h1>
+
+    <p>Necesitamos Sprites para el Módulo lunar, la Plataforma de aterrizaje y el terreno.</p>
+
+    <table>
+        <tr>
+            <th>Nombre del Sprite</th>
+            <th>Tamaño</th>
+            <th>Descripción</th>
+        </tr>
+        <tr>
+            <td><code>spr_lander</code></td>
+            <td>32x32</td>
+            <td>Nave espacial (triángulo o forma clásica de módulo lunar)</td>
+        </tr>
+        <tr>
+            <td><code>spr_pad</code></td>
+            <td>64x16</td>
+            <td>Plataforma de aterrizaje con marca "H"</td>
+        </tr>
+        <tr>
+            <td><code>spr_ground</code></td>
+            <td>32x32</td>
+            <td>Terreno rocoso (gris/marrón)</td>
+        </tr>
+    </table>
+
+    <h2>Crear el Sprite del Módulo Lunar</h2>
+    <div class="step">
+        <ol>
+            <li>Clic derecho en <strong>Sprites</strong> > <strong>Crear Sprite</strong></li>
+            <li>Nómbralo <code>spr_lander</code></li>
+            <li>Haz clic en <strong>Editar Sprite</strong></li>
+            <li>Dibuja una nave espacial (32x32 píxeles)</li>
+            <li><strong>Establece el origen en centro-inferior</strong> para un aterrizaje correcto</li>
+        </ol>
+    </div>
+
+    <h2>Crear el Sprite de la Plataforma de Aterrizaje</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un Sprite llamado <code>spr_pad</code></li>
+            <li>Tamaño: 64x16 píxeles</li>
+            <li>Dibuja una plataforma plana con marcas</li>
+            <li>Usa colores brillantes (amarillo/verde)</li>
+        </ol>
+    </div>
+
+    <h2>Crear el Sprite del Suelo</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un Sprite llamado <code>spr_ground</code></li>
+            <li>Tamaño: 32x32 píxeles</li>
+            <li>Dibuja terreno rocoso y áspero</li>
+            <li>Usa colores gris/marrón</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Importante:</strong> ¡Establece el origen del módulo lunar en centro-inferior para que aterrice correctamente en la plataforma!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para crear los Objetos del juego.
+    </div>
+</body>
+</html>

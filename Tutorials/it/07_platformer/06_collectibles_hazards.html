@@ -15,63 +15,63 @@
     </style>
 </head>
 <body>
-    <h1>Step 5: Collectibles and Hazards</h1>
+    <h1>Passo 5: Collezionabili e Pericoli</h1>
 
-    <p>Now we add coins to collect, spikes to avoid, and a flag to reach.</p>
+    <p>Ora aggiungiamo monete da raccogliere, punte da evitare e una bandiera da raggiungere.</p>
 
-    <h2>Coin - Collect for Points</h2>
+    <h2>Moneta - Raccogli per Punti</h2>
     <div class="step">
         <p>In <code>obj_coin</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Score</strong>
+            <li>Aggiungi Evento: <strong>Collisione &gt; obj_player</strong></li>
+            <li>Aggiungi Azione: <strong>Punteggio &gt; Imposta Punteggio</strong>
                 <ul>
-                    <li>New Score: <code>10</code></li>
-                    <li>Check "Relative"</li>
+                    <li>Nuovo Punteggio: <code>10</code></li>
+                    <li>Spunta "Relativo"</li>
                 </ul>
             </li>
-            <li>Add Action: <strong>Main1 &gt; Destroy Instance</strong>
+            <li>Aggiungi Azione: <strong>Main1 &gt; Distruggi Istanza</strong>
                 <ul>
-                    <li>Applies to: Self</li>
+                    <li>Si applica a: Se stesso</li>
                 </ul>
             </li>
         </ol>
     </div>
 
-    <h2>Spike - Hurts the Player</h2>
+    <h2>Punta - Ferisce il Giocatore</h2>
     <div class="danger">
         <p>In <code>obj_spike</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong>
+            <li>Aggiungi Evento: <strong>Collisione &gt; obj_player</strong></li>
+            <li>Aggiungi Azione: <strong>Main2 &gt; Mostra Messaggio</strong>
                 <ul>
-                    <li>Message: <code>Ouch! You hit a spike!</code></li>
+                    <li>Messaggio: <code>Ahi! Hai colpito una punta!</code></li>
                 </ul>
             </li>
-            <li>Add Action: <strong>Main1 &gt; Restart Room</strong></li>
+            <li>Aggiungi Azione: <strong>Main1 &gt; Riavvia Stanza</strong></li>
         </ol>
     </div>
 
-    <h2>Flag - Level Complete</h2>
+    <h2>Bandiera - Livello Completato</h2>
     <div class="step">
         <p>In <code>obj_flag</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong>
+            <li>Aggiungi Evento: <strong>Collisione &gt; obj_player</strong></li>
+            <li>Aggiungi Azione: <strong>Main2 &gt; Mostra Messaggio</strong>
                 <ul>
-                    <li>Message: <code>Level Complete!</code></li>
+                    <li>Messaggio: <code>Livello Completato!</code></li>
                 </ul>
             </li>
-            <li>Add Action: <strong>Main1 &gt; Restart Room</strong> (or Next Room for multiple levels)</li>
+            <li>Aggiungi Azione: <strong>Main1 &gt; Riavvia Stanza</strong> (o Stanza Successiva per livelli multipli)</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Tip:</strong> Place spikes near pits or on platforms to create challenge!
+        <strong>Suggerimento:</strong> Posiziona le punte vicino ai precipizi o sulle piattaforme per creare sfida!
     </div>
 
     <div class="info">
-        Click "Next" to add the game controller for score display.
+        Clicca "Avanti" per aggiungere il controller di gioco per la visualizzazione del punteggio.
     </div>
 </body>
 </html>

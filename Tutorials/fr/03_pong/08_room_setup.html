@@ -17,77 +17,77 @@
     </style>
 </head>
 <body>
-    <h1>Step 7: Set Up the Room</h1>
+    <h1>Étape 7 : Configurer la Room</h1>
 
-    <p>Now let's create the game room and place all our objects!</p>
+    <p>Maintenant, créons la room du jeu et plaçons tous nos objets !</p>
 
-    <h2>Create the Room</h2>
+    <h2>Créer la Room</h2>
     <div class="step">
         <ol>
-            <li>Right-click on <strong>Rooms</strong> and select <strong>Create Room</strong></li>
-            <li>Name it <code>room_pong</code></li>
-            <li>Set size to 640x480 pixels</li>
+            <li>Faites un clic droit sur <strong>Rooms</strong> et sélectionnez <strong>Créer une Room</strong></li>
+            <li>Nommez-la <code>room_pong</code></li>
+            <li>Définissez la taille sur 640x480 pixels</li>
         </ol>
     </div>
 
-    <h2>Room Layout</h2>
+    <h2>Disposition de la Room</h2>
     <pre>
-+--[WALL WALL WALL WALL WALL WALL]--+
++--[MUR  MUR  MUR  MUR  MUR  MUR ]--+
 |                                   |
-[G]  [P1]                    [P2]  [G]
-[O]  [  ]       (o)          [  ]  [O]
-[A]  [  ]                    [  ]  [A]
-[L]                                [L]
+[B]  [J1]                    [J2]  [B]
+[U]  [  ]       (o)          [  ]  [U]
+[T]  [  ]                    [  ]  [T]
+[  ]                               [  ]
 |                                   |
-+--[WALL WALL WALL WALL WALL WALL]--+
++--[MUR  MUR  MUR  MUR  MUR  MUR ]--+
     </pre>
 
-    <h2>Place the Objects</h2>
+    <h2>Placer les Objets</h2>
 
-    <h3>1. Walls (Top and Bottom)</h3>
+    <h3>1. Murs (Haut et Bas)</h3>
     <div class="step">
-        <p>Place <code>obj_wall</code> instances along the top and bottom edges.</p>
+        <p>Placez des instances de <code>obj_wall</code> le long des bords supérieur et inférieur.</p>
     </div>
 
-    <h3>2. Paddles</h3>
+    <h3>2. Raquettes</h3>
     <div class="step">
         <ul>
-            <li><code>obj_paddle_left</code> - Near left edge, centered vertically</li>
-            <li><code>obj_paddle_right</code> - Near right edge, centered vertically</li>
+            <li><code>obj_paddle_left</code> - Près du bord gauche, centré verticalement</li>
+            <li><code>obj_paddle_right</code> - Près du bord droit, centré verticalement</li>
         </ul>
     </div>
 
-    <h3>3. Ball</h3>
+    <h3>3. Balle</h3>
     <div class="step">
-        <p>Place <code>obj_ball</code> in the center of the room.</p>
+        <p>Placez <code>obj_ball</code> au centre de la room.</p>
     </div>
 
-    <h3>4. Goals</h3>
+    <h3>4. Buts</h3>
     <div class="step">
         <ul>
-            <li><code>obj_goal_left</code> - Stack along the left edge (behind paddle)</li>
-            <li><code>obj_goal_right</code> - Stack along the right edge (behind paddle)</li>
+            <li><code>obj_goal_left</code> - Empilez le long du bord gauche (derrière la raquette)</li>
+            <li><code>obj_goal_right</code> - Empilez le long du bord droit (derrière la raquette)</li>
         </ul>
     </div>
 
-    <h3>5. Score Display</h3>
+    <h3>5. Affichage du Score</h3>
     <div class="step">
-        <p>Place <code>obj_score</code> anywhere (it has no sprite, just draws text).</p>
+        <p>Placez <code>obj_score</code> n'importe où (il n'a pas de sprite, il dessine juste du texte).</p>
     </div>
 
     <div class="success">
-        <strong>Congratulations!</strong> Your Pong game is ready to play!
+        <strong>Félicitations !</strong> Votre jeu Pong est prêt à jouer !
     </div>
 
-    <h2>Test Your Game</h2>
+    <h2>Testez Votre Jeu</h2>
     <ul>
-        <li>Press <strong>F5</strong> or click <strong>Run</strong></li>
-        <li>Player 1: <strong>W</strong> (up) and <strong>S</strong> (down)</li>
-        <li>Player 2: <strong>Up Arrow</strong> and <strong>Down Arrow</strong></li>
+        <li>Appuyez sur <strong>F5</strong> ou cliquez sur <strong>Exécuter</strong></li>
+        <li>Joueur 1 : <strong>W</strong> (haut) et <strong>S</strong> (bas)</li>
+        <li>Joueur 2 : <strong>Flèche Haut</strong> et <strong>Flèche Bas</strong></li>
     </ul>
 
     <div class="info">
-        <strong>Well done!</strong> You've created a classic two-player Pong game!
+        <strong>Bravo !</strong> Vous avez créé un jeu Pong classique à deux joueurs !
     </div>
 </body>
 </html>

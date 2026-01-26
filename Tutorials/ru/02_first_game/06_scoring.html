@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Step 5: Add Scoring</h1>
+
+    <p>Let's add collision detection so the player can catch stars and earn points!</p>
+
+    <h2>Catch the Stars</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Add collision event to player</span>
+        <p>Open <code>obj_player</code> and add a new event.</p>
+        <p>Select <code>Collision &gt; obj_star</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Add scoring actions</span>
+        <p>In the collision event, add these actions:</p>
+        <ul>
+            <li><strong>Add to Score</strong>: Add 10 points</li>
+            <li><strong>Destroy Instance</strong>: Destroy the <code>other</code> object (the star)</li>
+        </ul>
+    </div>
+
+    <h2>Display the Score</h2>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Add Draw event to player</span>
+        <p>In <code>obj_player</code>, add a <strong>Draw &gt; Draw GUI</strong> event.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Draw the score</span>
+        <p>Add a <strong>Draw Text</strong> action:</p>
+        <ul>
+            <li>Text: "Score: " + string(score)</li>
+            <li>Position: x=10, y=10</li>
+        </ul>
+    </div>
+
+    <h2>Remove Missed Stars</h2>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Add Step event to star</span>
+        <p>Open <code>obj_star</code> and add a <strong>Step</strong> event.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Destroy if off-screen</span>
+        <p>Add an <strong>If</strong> condition: if y > room_height</p>
+        <p>Then: <strong>Destroy Instance</strong></p>
+        <p>This removes stars that fall off the bottom of the screen.</p>
+    </div>
+
+    <div class="success">
+        <strong>Test it!</strong> Press F5. Catch stars to earn points! The score should display in the top-left corner.
+    </div>
+
+    <div class="info">
+        <strong>Scoring works!</strong> Click "Next" to add finishing touches.
+    </div>
+</body>
+</html>

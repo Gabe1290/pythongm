@@ -15,63 +15,61 @@
     </style>
 </head>
 <body>
-    <h1>Step 7: Room Setup</h1>
+    <h1>Schritt 7: Raum einrichten</h1>
 
-    <p>Design your lunar landscape!</p>
+    <p>Gestalte deine Mondlandschaft!</p>
 
-    <h2>Create the Room</h2>
+    <h2>Den Raum erstellen</h2>
     <div class="step">
         <ol>
-            <li>Right-click <strong>Rooms</strong> > <strong>Create Room</strong></li>
-            <li>Name it <code>room_game</code></li>
-            <li>Set size: <strong>640 x 480</strong></li>
-            <li>Set background color to <strong>black</strong> (space)</li>
-            <li>Enable "Snap to Grid" (32x32)</li>
+            <li>Rechtsklick auf <strong>Rooms</strong> > <strong>Raum erstellen</strong></li>
+            <li>Benenne ihn <code>room_game</code></li>
+            <li>Setze die Groesse: <strong>640 x 480</strong></li>
+            <li>Setze die Hintergrundfarbe auf <strong>schwarz</strong> (Weltraum)</li>
+            <li>Aktiviere "Am Raster ausrichten" (32x32)</li>
         </ol>
     </div>
 
-    <h2>Example Level Layout</h2>
+    <h2>Beispiel-Level-Layout</h2>
     <pre>
-        L                          <- Lander starts here
-
-
+        L                          <- Lander startet hier
 
 
 
 GGG     GGG     PPPP     GGG     GGG
 GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
 
-G = Ground (crash)    L = Lander    P = Landing Pad (safe)</pre>
+G = Boden (Absturz)    L = Lander    P = Landeplattform (sicher)</pre>
 
-    <h2>Building Your Level</h2>
+    <h2>Dein Level bauen</h2>
     <div class="step">
         <ol>
-            <li><strong>Ground:</strong> Place <code>obj_ground</code> along the bottom</li>
-            <li><strong>Gap:</strong> Leave space for the landing pad</li>
-            <li><strong>Landing Pad:</strong> Place <code>obj_pad</code> in the gap</li>
-            <li><strong>Lander:</strong> Place <code>obj_lander</code> at the top</li>
-            <li><strong>Controller:</strong> Place <code>obj_game_controller</code> anywhere</li>
+            <li><strong>Boden:</strong> Platziere <code>obj_ground</code> am unteren Rand</li>
+            <li><strong>Luecke:</strong> Lasse Platz fuer die Landeplattform</li>
+            <li><strong>Landeplattform:</strong> Platziere <code>obj_pad</code> in der Luecke</li>
+            <li><strong>Lander:</strong> Platziere <code>obj_lander</code> oben</li>
+            <li><strong>Controller:</strong> Platziere <code>obj_game_controller</code> irgendwo</li>
         </ol>
     </div>
 
-    <h2>Test Your Game!</h2>
+    <h2>Teste dein Spiel!</h2>
     <div class="success">
-        <p><strong>Press F5 or click Run!</strong></p>
+        <p><strong>Druecke F5 oder klicke auf Ausfuehren!</strong></p>
         <ul>
-            <li><strong>UP Arrow:</strong> Thrust (uses fuel!)</li>
-            <li><strong>LEFT/RIGHT:</strong> Steer horizontally</li>
-            <li>Watch your speed - stay under 2!</li>
-            <li>Don't run out of fuel!</li>
-            <li>Land on the pad to win!</li>
+            <li><strong>HOCH-Taste:</strong> Schub (verbraucht Treibstoff!)</li>
+            <li><strong>LINKS/RECHTS:</strong> Horizontal steuern</li>
+            <li>Achte auf deine Geschwindigkeit - bleibe unter 2!</li>
+            <li>Lass den Treibstoff nicht ausgehen!</li>
+            <li>Lande auf der Plattform, um zu gewinnen!</li>
         </ul>
     </div>
 
     <div class="highlight">
-        <strong>Congratulations!</strong> You've created a lunar lander with gravity, thrust, and fuel management!
+        <strong>Herzlichen Glueckwunsch!</strong> Du hast einen Lunar Lander mit Schwerkraft, Schub und Treibstoff-Management erstellt!
     </div>
 
     <div class="info">
-        <strong>Challenge:</strong> Add multiple landing pads with different point values, or add wind effects!
+        <strong>Herausforderung:</strong> Fuege mehrere Landeplattformen mit unterschiedlichen Punktwerten hinzu oder fuege Windeffekte hinzu!
     </div>
 </body>
 </html>

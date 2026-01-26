@@ -17,81 +17,81 @@
     </style>
 </head>
 <body>
-    <h1>Step 6: Set Up the Room</h1>
+    <h1>Étape 6 : Configurer la Room</h1>
 
-    <p>Create a puzzle level with walls, crates, and targets.</p>
+    <p>Créez un niveau de puzzle avec des murs, des caisses et des cibles.</p>
 
-    <h2>Create the Room</h2>
+    <h2>Créer la Room</h2>
     <div class="step">
         <ol>
-            <li>Right-click on <strong>Rooms</strong> and select <strong>Create Room</strong></li>
-            <li>Name it <code>room_sokoban</code></li>
-            <li>Set size to 320x320 pixels (10x10 grid)</li>
-            <li>Enable grid snap: 32x32</li>
+            <li>Faites un clic droit sur <strong>Rooms</strong> et sélectionnez <strong>Créer une Room</strong></li>
+            <li>Nommez-la <code>room_sokoban</code></li>
+            <li>Définissez la taille sur 320x320 pixels (grille 10x10)</li>
+            <li>Activez l'accrochage à la grille : 32x32</li>
         </ol>
     </div>
 
-    <h2>Example Level Layout</h2>
+    <h2>Exemple de Disposition de Niveau</h2>
     <pre>
-W W W W W W W W W W
-W . . . . . . . . W
-W . P . . . C . . W
-W . . W W . . . . W
-W . . W T . . C . W
-W . . . . . W W . W
-W . T . . . . . . W
-W . . . . . . . . W
-W W W W W W W W W W
+M M M M M M M M M M
+M . . . . . . . . M
+M . J . . . C . . M
+M . . M M . . . . M
+M . . M T . . C . M
+M . . . . . M M . M
+M . T . . . . . . M
+M . . . . . . . . M
+M M M M M M M M M M
 
-W = Wall     T = Target
-P = Player   C = Crate
-. = Empty
+M = Mur       T = Cible
+J = Joueur    C = Caisse
+. = Vide
     </pre>
 
-    <h2>Place Objects</h2>
+    <h2>Placer les Objets</h2>
 
-    <h3>1. Walls</h3>
+    <h3>1. Murs</h3>
     <div class="step">
-        <p>Build walls around the edges and create obstacles inside.</p>
+        <p>Construisez des murs autour des bords et créez des obstacles à l'intérieur.</p>
     </div>
 
-    <h3>2. Targets</h3>
+    <h3>2. Cibles</h3>
     <div class="step">
-        <p>Place <code>obj_target</code> where crates should end up.</p>
+        <p>Placez <code>obj_target</code> là où les caisses doivent aboutir.</p>
     </div>
 
-    <h3>3. Crates</h3>
+    <h3>3. Caisses</h3>
     <div class="step">
-        <p>Place <code>obj_crate</code> - same number as targets!</p>
+        <p>Placez <code>obj_crate</code> - le même nombre que les cibles !</p>
     </div>
 
-    <h3>4. Player</h3>
+    <h3>4. Joueur</h3>
     <div class="step">
-        <p>Place <code>obj_player</code> at the starting position.</p>
+        <p>Placez <code>obj_player</code> à la position de départ.</p>
     </div>
 
-    <h3>5. Game Controller</h3>
+    <h3>5. Contrôleur de Jeu</h3>
     <div class="step">
-        <p>Place <code>obj_game_controller</code> anywhere.</p>
+        <p>Placez <code>obj_game_controller</code> n'importe où.</p>
     </div>
 
     <div class="highlight">
-        <strong>Important:</strong> Number of crates MUST equal number of targets!
+        <strong>Important :</strong> Le nombre de caisses DOIT être égal au nombre de cibles !
     </div>
 
     <div class="success">
-        <strong>Congratulations!</strong> Your Sokoban game is ready!
+        <strong>Félicitations !</strong> Votre jeu Sokoban est prêt !
     </div>
 
-    <h2>Test Your Game</h2>
+    <h2>Testez Votre Jeu</h2>
     <ul>
-        <li>Press <strong>F5</strong> or click <strong>Run</strong></li>
-        <li>Use <strong>Arrow Keys</strong> to move</li>
-        <li>Push all crates onto the red targets to win!</li>
+        <li>Appuyez sur <strong>F5</strong> ou cliquez sur <strong>Exécuter</strong></li>
+        <li>Utilisez les <strong>Touches Fléchées</strong> pour vous déplacer</li>
+        <li>Poussez toutes les caisses sur les cibles rouges pour gagner !</li>
     </ul>
 
     <div class="info">
-        <strong>Challenge:</strong> Create your own puzzle levels!
+        <strong>Défi :</strong> Créez vos propres niveaux de puzzle !
     </div>
 </body>
 </html>

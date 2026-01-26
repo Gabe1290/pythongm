@@ -16,70 +16,70 @@
     </style>
 </head>
 <body>
-    <h1>Step 1: Create Sprites</h1>
+    <h1>Korak 1: Ustvari sprite-e</h1>
 
-    <p>We need sprites for the lander, landing pad, and terrain.</p>
+    <p>Potrebujemo sprite-e za pristajalnik, pristajalno ploščad in teren.</p>
 
     <table>
         <tr>
-            <th>Sprite Name</th>
-            <th>Size</th>
-            <th>Description</th>
+            <th>Ime sprite-a</th>
+            <th>Velikost</th>
+            <th>Opis</th>
         </tr>
         <tr>
             <td><code>spr_lander</code></td>
             <td>32x32</td>
-            <td>Spacecraft (triangle or classic lander shape)</td>
+            <td>Vesoljsko plovilo (trikotnik ali klasična oblika pristajalnika)</td>
         </tr>
         <tr>
             <td><code>spr_pad</code></td>
             <td>64x16</td>
-            <td>Landing platform with "H" marking</td>
+            <td>Pristajalna platforma z oznako "H"</td>
         </tr>
         <tr>
             <td><code>spr_ground</code></td>
             <td>32x32</td>
-            <td>Rocky terrain (gray/brown)</td>
+            <td>Skalnati teren (siv/rjav)</td>
         </tr>
     </table>
 
-    <h2>Create Lander Sprite</h2>
+    <h2>Ustvari sprite pristajalnika</h2>
     <div class="step">
         <ol>
-            <li>Right-click <strong>Sprites</strong> > <strong>Create Sprite</strong></li>
-            <li>Name it <code>spr_lander</code></li>
-            <li>Click <strong>Edit Sprite</strong></li>
-            <li>Draw a spacecraft (32x32 pixels)</li>
-            <li><strong>Set origin to center-bottom</strong> for proper landing</li>
+            <li>Desni klik na <strong>Sprites</strong> > <strong>Create Sprite</strong></li>
+            <li>Poimenuj ga <code>spr_lander</code></li>
+            <li>Klikni <strong>Edit Sprite</strong></li>
+            <li>Nariši vesoljsko plovilo (32x32 pikslov)</li>
+            <li><strong>Nastavi izhodišče na sredino-spodaj</strong> za pravilno pristajanje</li>
         </ol>
     </div>
 
-    <h2>Create Landing Pad Sprite</h2>
+    <h2>Ustvari sprite pristajalne ploščadi</h2>
     <div class="step">
         <ol>
-            <li>Create sprite named <code>spr_pad</code></li>
-            <li>Size: 64x16 pixels</li>
-            <li>Draw a flat platform with markings</li>
-            <li>Use bright colors (yellow/green)</li>
+            <li>Ustvari sprite z imenom <code>spr_pad</code></li>
+            <li>Velikost: 64x16 pikslov</li>
+            <li>Nariši ravno platformo z oznakami</li>
+            <li>Uporabi svetle barve (rumena/zelena)</li>
         </ol>
     </div>
 
-    <h2>Create Ground Sprite</h2>
+    <h2>Ustvari sprite tal</h2>
     <div class="step">
         <ol>
-            <li>Create sprite named <code>spr_ground</code></li>
-            <li>Size: 32x32 pixels</li>
-            <li>Draw rocky, rough terrain</li>
-            <li>Use gray/brown colors</li>
+            <li>Ustvari sprite z imenom <code>spr_ground</code></li>
+            <li>Velikost: 32x32 pikslov</li>
+            <li>Nariši skalnati, grob teren</li>
+            <li>Uporabi sive/rjave barve</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Important:</strong> Set the lander's origin to center-bottom so it lands correctly on the pad!
+        <strong>Pomembno:</strong> Nastavi izhodišče pristajalnika na sredino-spodaj, da bo pravilno pristal na ploščadi!
     </div>
 
     <div class="info">
-        Click "Next" to create the game objects.
+        Klikni "Naprej" za ustvarjanje objektov igre.
     </div>
 </body>
 </html>

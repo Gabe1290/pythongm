@@ -15,63 +15,63 @@
     </style>
 </head>
 <body>
-    <h1>Step 5: Collectibles and Hazards</h1>
+    <h1>Étape 5 : Objets à Collecter et Dangers</h1>
 
-    <p>Now we add coins to collect, spikes to avoid, and a flag to reach.</p>
+    <p>Maintenant, nous ajoutons des pièces à collecter, des piques à éviter et un drapeau à atteindre.</p>
 
-    <h2>Coin - Collect for Points</h2>
+    <h2>Pièce - Collecter pour des Points</h2>
     <div class="step">
-        <p>In <code>obj_coin</code>:</p>
+        <p>Dans <code>obj_coin</code> :</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Score</strong>
+            <li>Ajoutez un événement : <strong>Collision &gt; obj_player</strong></li>
+            <li>Ajoutez une action : <strong>Score &gt; Définir le Score</strong>
                 <ul>
-                    <li>New Score: <code>10</code></li>
-                    <li>Check "Relative"</li>
+                    <li>Nouveau Score : <code>10</code></li>
+                    <li>Cochez « Relatif »</li>
                 </ul>
             </li>
-            <li>Add Action: <strong>Main1 &gt; Destroy Instance</strong>
+            <li>Ajoutez une action : <strong>Main1 &gt; Détruire l'Instance</strong>
                 <ul>
-                    <li>Applies to: Self</li>
+                    <li>S'applique à : Soi-même</li>
                 </ul>
             </li>
         </ol>
     </div>
 
-    <h2>Spike - Hurts the Player</h2>
+    <h2>Pique - Blesse le Joueur</h2>
     <div class="danger">
-        <p>In <code>obj_spike</code>:</p>
+        <p>Dans <code>obj_spike</code> :</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong>
+            <li>Ajoutez un événement : <strong>Collision &gt; obj_player</strong></li>
+            <li>Ajoutez une action : <strong>Main2 &gt; Afficher un Message</strong>
                 <ul>
-                    <li>Message: <code>Ouch! You hit a spike!</code></li>
+                    <li>Message : <code>Aïe ! Vous avez touché un pique !</code></li>
                 </ul>
             </li>
-            <li>Add Action: <strong>Main1 &gt; Restart Room</strong></li>
+            <li>Ajoutez une action : <strong>Main1 &gt; Redémarrer la Room</strong></li>
         </ol>
     </div>
 
-    <h2>Flag - Level Complete</h2>
+    <h2>Drapeau - Niveau Terminé</h2>
     <div class="step">
-        <p>In <code>obj_flag</code>:</p>
+        <p>Dans <code>obj_flag</code> :</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong>
+            <li>Ajoutez un événement : <strong>Collision &gt; obj_player</strong></li>
+            <li>Ajoutez une action : <strong>Main2 &gt; Afficher un Message</strong>
                 <ul>
-                    <li>Message: <code>Level Complete!</code></li>
+                    <li>Message : <code>Niveau Terminé !</code></li>
                 </ul>
             </li>
-            <li>Add Action: <strong>Main1 &gt; Restart Room</strong> (or Next Room for multiple levels)</li>
+            <li>Ajoutez une action : <strong>Main1 &gt; Redémarrer la Room</strong> (ou Room Suivante pour plusieurs niveaux)</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Tip:</strong> Place spikes near pits or on platforms to create challenge!
+        <strong>Astuce :</strong> Placez des piques près des fosses ou sur les plateformes pour créer du défi !
     </div>
 
     <div class="info">
-        Click "Next" to add the game controller for score display.
+        Cliquez sur « Suivant » pour ajouter le contrôleur de jeu pour l'affichage du score.
     </div>
 </body>
 </html>

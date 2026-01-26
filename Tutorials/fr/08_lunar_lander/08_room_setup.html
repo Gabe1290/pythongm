@@ -15,63 +15,62 @@
     </style>
 </head>
 <body>
-    <h1>Step 7: Room Setup</h1>
+    <h1>Étape 7 : Configuration de la Room</h1>
 
-    <p>Design your lunar landscape!</p>
+    <p>Concevez votre paysage lunaire !</p>
 
-    <h2>Create the Room</h2>
+    <h2>Créer la Room</h2>
     <div class="step">
         <ol>
-            <li>Right-click <strong>Rooms</strong> > <strong>Create Room</strong></li>
-            <li>Name it <code>room_game</code></li>
-            <li>Set size: <strong>640 x 480</strong></li>
-            <li>Set background color to <strong>black</strong> (space)</li>
-            <li>Enable "Snap to Grid" (32x32)</li>
+            <li>Faites un clic droit sur <strong>Rooms</strong> &gt; <strong>Créer une Room</strong></li>
+            <li>Nommez-la <code>room_game</code></li>
+            <li>Définissez la taille : <strong>640 x 480</strong></li>
+            <li>Définissez la couleur de fond sur <strong>noir</strong> (espace)</li>
+            <li>Activez « Accrochage à la Grille » (32x32)</li>
         </ol>
     </div>
 
-    <h2>Example Level Layout</h2>
+    <h2>Exemple de Disposition de Niveau</h2>
     <pre>
-        L                          <- Lander starts here
+        A                          <- L'alunisseur commence ici
 
 
 
 
+SSS     SSS     PPPP     SSS     SSS
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
 
-GGG     GGG     PPPP     GGG     GGG
-GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+S = Sol (crash)    A = Alunisseur    P = Plateforme (sûr)</pre>
 
-G = Ground (crash)    L = Lander    P = Landing Pad (safe)</pre>
-
-    <h2>Building Your Level</h2>
+    <h2>Construire Votre Niveau</h2>
     <div class="step">
         <ol>
-            <li><strong>Ground:</strong> Place <code>obj_ground</code> along the bottom</li>
-            <li><strong>Gap:</strong> Leave space for the landing pad</li>
-            <li><strong>Landing Pad:</strong> Place <code>obj_pad</code> in the gap</li>
-            <li><strong>Lander:</strong> Place <code>obj_lander</code> at the top</li>
-            <li><strong>Controller:</strong> Place <code>obj_game_controller</code> anywhere</li>
+            <li><strong>Sol :</strong> Placez <code>obj_ground</code> le long du bas</li>
+            <li><strong>Espace :</strong> Laissez de la place pour la plateforme d'atterrissage</li>
+            <li><strong>Plateforme :</strong> Placez <code>obj_pad</code> dans l'espace</li>
+            <li><strong>Alunisseur :</strong> Placez <code>obj_lander</code> en haut</li>
+            <li><strong>Contrôleur :</strong> Placez <code>obj_game_controller</code> n'importe où</li>
         </ol>
     </div>
 
-    <h2>Test Your Game!</h2>
+    <h2>Testez Votre Jeu !</h2>
     <div class="success">
-        <p><strong>Press F5 or click Run!</strong></p>
+        <p><strong>Appuyez sur F5 ou cliquez sur Exécuter !</strong></p>
         <ul>
-            <li><strong>UP Arrow:</strong> Thrust (uses fuel!)</li>
-            <li><strong>LEFT/RIGHT:</strong> Steer horizontally</li>
-            <li>Watch your speed - stay under 2!</li>
-            <li>Don't run out of fuel!</li>
-            <li>Land on the pad to win!</li>
+            <li><strong>Flèche HAUT :</strong> Poussée (utilise du carburant !)</li>
+            <li><strong>GAUCHE/DROITE :</strong> Diriger horizontalement</li>
+            <li>Surveillez votre vitesse - restez sous 2 !</li>
+            <li>Ne tombez pas en panne de carburant !</li>
+            <li>Atterrissez sur la plateforme pour gagner !</li>
         </ul>
     </div>
 
     <div class="highlight">
-        <strong>Congratulations!</strong> You've created a lunar lander with gravity, thrust, and fuel management!
+        <strong>Félicitations !</strong> Vous avez créé un alunisseur avec gravité, poussée et gestion du carburant !
     </div>
 
     <div class="info">
-        <strong>Challenge:</strong> Add multiple landing pads with different point values, or add wind effects!
+        <strong>Défi :</strong> Ajoutez plusieurs plateformes avec différentes valeurs de points, ou ajoutez des effets de vent !
     </div>
 </body>
 </html>

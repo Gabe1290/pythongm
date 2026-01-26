@@ -14,58 +14,58 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Ball Movement and Bouncing</h1>
+    <h1>Schritt 4: Ballbewegung und Abprallen</h1>
 
-    <p>The ball needs to move and bounce off walls, paddle, and bricks.</p>
+    <p>Der Ball muss sich bewegen und von Waenden, Schlaeger und Steinen abprallen.</p>
 
-    <h2>Start Ball Moving (Create Event)</h2>
+    <h2>Ball starten (Erstellen-Ereignis)</h2>
     <div class="step">
         <ol>
-            <li>Open <code>obj_ball</code></li>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Move &gt; Start Moving in Direction</strong></li>
-            <li>Choose an upward diagonal direction</li>
-            <li>Set speed to <code>5</code></li>
+            <li>Oeffne <code>obj_ball</code></li>
+            <li>Fuege Ereignis hinzu: <strong>Erstellen</strong></li>
+            <li>Fuege Aktion hinzu: <strong>Bewegung &gt; In Richtung bewegen starten</strong></li>
+            <li>Waehle eine schraege Aufwaertsrichtung</li>
+            <li>Setze Geschwindigkeit auf <code>5</code></li>
         </ol>
     </div>
 
-    <h2>Bounce Off Walls</h2>
+    <h2>Von Waenden abprallen</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_wall</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Fuege Ereignis hinzu: <strong>Kollision &gt; obj_wall</strong></li>
+            <li>Fuege Aktion hinzu: <strong>Bewegung &gt; Von Objekten abprallen</strong></li>
+            <li>Waehle "Gegen solide Objekte"</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Paddle</h2>
+    <h2>Vom Schlaeger abprallen</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_paddle</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Fuege Ereignis hinzu: <strong>Kollision &gt; obj_paddle</strong></li>
+            <li>Fuege Aktion hinzu: <strong>Bewegung &gt; Von Objekten abprallen</strong></li>
+            <li>Waehle "Gegen solide Objekte"</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Bricks (and Destroy Them!)</h2>
+    <h2>Von Steinen abprallen (und sie zerstoeren!)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_brick_parent</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
-            <li>Add Action: <strong>Main1 &gt; Destroy Instance</strong></li>
-            <li>Select "Other" (destroys the brick, not the ball)</li>
-            <li>Add Action: <strong>Score &gt; Add to Score</strong></li>
-            <li>Value: <code>10</code></li>
+            <li>Fuege Ereignis hinzu: <strong>Kollision &gt; obj_brick_parent</strong></li>
+            <li>Fuege Aktion hinzu: <strong>Bewegung &gt; Von Objekten abprallen</strong></li>
+            <li>Waehle "Gegen solide Objekte"</li>
+            <li>Fuege Aktion hinzu: <strong>Main1 &gt; Instanz zerstoeren</strong></li>
+            <li>Waehle "Anderes" (zerstoert den Stein, nicht den Ball)</li>
+            <li>Fuege Aktion hinzu: <strong>Punkte &gt; Zu Punktzahl addieren</strong></li>
+            <li>Wert: <code>10</code></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Key Point:</strong> Using <code>obj_brick_parent</code> means this collision works for ALL brick colors!
+        <strong>Wichtiger Punkt:</strong> Die Verwendung von <code>obj_brick_parent</code> bedeutet, dass diese Kollision fuer ALLE Steinfarben funktioniert!
     </div>
 
     <div class="info">
-        Click "Next" to add the lives system.
+        Klicke auf "Weiter", um das Leben-System hinzuzufuegen.
     </div>
 </body>
 </html>

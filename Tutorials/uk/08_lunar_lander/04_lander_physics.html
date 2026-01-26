@@ -17,69 +17,69 @@
     </style>
 </head>
 <body>
-    <h1>Step 3: Lander Physics (Create Event)</h1>
+    <h1>Крок 3: Фізика посадкового модуля (Подія Create)</h1>
 
-    <p>Set up variables for gravity, thrust, fuel, and velocity.</p>
+    <p>Налаштуйте змінні для гравітації, тяги, палива та швидкості.</p>
 
-    <h2>Initialize Physics Variables</h2>
+    <h2>Ініціалізація змінних фізики</h2>
     <div class="step">
-        <p>In <code>obj_lander</code>:</p>
+        <p>У <code>obj_lander</code>:</p>
         <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Додайте подію: <strong>Create</strong></li>
+            <li>Додайте дію: <strong>Control &gt; Execute Code</strong></li>
         </ol>
         <pre>
-// Physics settings
-gravity_force = 0.05;  // Gentle gravity
-thrust_force = 0.1;    // Thrust power
-max_speed = 5;         // Maximum velocity
+// Налаштування фізики
+gravity_force = 0.05;  // Помірна гравітація
+thrust_force = 0.1;    // Сила тяги
+max_speed = 5;         // Максимальна швидкість
 
-// Current velocity
-hsp = 0;  // Horizontal speed
-vsp = 0;  // Vertical speed
+// Поточна швидкість
+hsp = 0;  // Горизонтальна швидкість
+vsp = 0;  // Вертикальна швидкість
 
-// Fuel system
+// Система палива
 fuel = 100;
-fuel_use = 0.5;  // Fuel per frame
+fuel_use = 0.5;  // Паливо за кадр
 
-// Game state
+// Стан гри
 landed = false;
 crashed = false;
 
-// Safe landing speed
+// Безпечна швидкість посадки
 safe_speed = 2;</pre>
     </div>
 
-    <h2>Understanding the Variables</h2>
+    <h2>Розуміння змінних</h2>
     <table>
         <tr>
-            <th>Variable</th>
-            <th>Purpose</th>
+            <th>Змінна</th>
+            <th>Призначення</th>
         </tr>
         <tr>
             <td><code>gravity_force</code></td>
-            <td>Constant downward pull (0.05 is gentle)</td>
+            <td>Постійне тяжіння вниз (0.05 - помірне)</td>
         </tr>
         <tr>
             <td><code>thrust_force</code></td>
-            <td>Upward force when pressing UP</td>
+            <td>Сила вгору при натисканні ВГОРУ</td>
         </tr>
         <tr>
             <td><code>fuel</code></td>
-            <td>100% fuel, decreases when thrusting</td>
+            <td>100% палива, зменшується при тязі</td>
         </tr>
         <tr>
             <td><code>safe_speed</code></td>
-            <td>Max speed for safe landing (2)</td>
+            <td>Максимальна швидкість для безпечної посадки (2)</td>
         </tr>
     </table>
 
     <div class="highlight">
-        <strong>Balance:</strong> Thrust (0.1) is stronger than gravity (0.05) so you can slow down!
+        <strong>Баланс:</strong> Тяга (0.1) сильніша за гравітацію (0.05), тому ви можете сповільнюватись!
     </div>
 
     <div class="info">
-        Click "Next" to add movement and controls.
+        Натисніть "Далі", щоб додати рух та керування.
     </div>
 </body>
 </html>

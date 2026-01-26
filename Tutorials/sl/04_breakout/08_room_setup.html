@@ -17,84 +17,84 @@
     </style>
 </head>
 <body>
-    <h1>Step 7: Set Up the Room</h1>
+    <h1>Korak 7: Nastavi sobo</h1>
 
-    <p>Time to create the game room and place all the objects!</p>
+    <p>Čas je za ustvarjanje sobe igre in postavitev vseh objektov!</p>
 
-    <h2>Create the Room</h2>
+    <h2>Ustvari sobo</h2>
     <div class="step">
         <ol>
-            <li>Right-click on <strong>Rooms</strong> and select <strong>Create Room</strong></li>
-            <li>Name it <code>room_breakout</code></li>
-            <li>Set size to 640x480 pixels</li>
+            <li>Desno klikni na <strong>Rooms</strong> in izberi <strong>Ustvari sobo</strong></li>
+            <li>Poimenuj jo <code>room_breakout</code></li>
+            <li>Nastavi velikost na 640x480 pikslov</li>
         </ol>
     </div>
 
-    <h2>Room Layout</h2>
+    <h2>Razporeditev sobe</h2>
     <pre>
-+--[WALL]--------------------[WALL]--+
-|  [WALL]  [R][R][R][R][R]  [WALL]  |
-|  [WALL]  [O][O][O][O][O]  [WALL]  |
-|  [WALL]  [Y][Y][Y][Y][Y]  [WALL]  |
-|  [WALL]  [G][G][G][G][G]  [WALL]  |
-|  [WALL]                   [WALL]  |
-|  [WALL]        (o)        [WALL]  |
-|  [WALL]                   [WALL]  |
-|  [WALL]      [PADDLE]     [WALL]  |
-+--[DEATH ZONE DEATH ZONE DEATH]----+
++--[STENA]--------------------[STENA]--+
+|  [STENA]  [R][R][R][R][R]   [STENA]  |
+|  [STENA]  [O][O][O][O][O]   [STENA]  |
+|  [STENA]  [R][R][R][R][R]   [STENA]  |
+|  [STENA]  [Z][Z][Z][Z][Z]   [STENA]  |
+|  [STENA]                    [STENA]  |
+|  [STENA]        (o)         [STENA]  |
+|  [STENA]                    [STENA]  |
+|  [STENA]      [LOPAR]       [STENA]  |
++--[SMRTNA CONA SMRTNA CONA SMRTNA]----+
     </pre>
 
-    <h2>Place the Objects</h2>
+    <h2>Postavi objekte</h2>
 
-    <h3>1. Walls</h3>
+    <h3>1. Stene</h3>
     <div class="step">
-        <p>Place <code>obj_wall</code> along the top, left, and right edges.</p>
+        <p>Postavi <code>obj_wall</code> vzdolž zgornjega, levega in desnega roba.</p>
     </div>
 
-    <h3>2. Death Zone</h3>
+    <h3>2. Smrtna cona</h3>
     <div class="step">
-        <p>Place <code>obj_death_zone</code> along the bottom edge (it's invisible).</p>
+        <p>Postavi <code>obj_death_zone</code> vzdolž spodnjega roba (je nevidna).</p>
     </div>
 
-    <h3>3. Bricks</h3>
+    <h3>3. Opeke</h3>
     <div class="step">
-        <p>Arrange bricks in rows near the top:</p>
+        <p>Razporedi opeke v vrstah blizu vrha:</p>
         <ul>
-            <li>Top row: Red bricks (<code>obj_brick_red</code>)</li>
-            <li>Second row: Orange bricks</li>
-            <li>Third row: Yellow bricks</li>
-            <li>Fourth row: Green bricks</li>
+            <li>Zgornja vrsta: Rdeče opeke (<code>obj_brick_red</code>)</li>
+            <li>Druga vrsta: Oranžne opeke</li>
+            <li>Tretja vrsta: Rumene opeke</li>
+            <li>Četrta vrsta: Zelene opeke</li>
         </ul>
     </div>
 
-    <h3>4. Paddle</h3>
+    <h3>4. Lopar</h3>
     <div class="step">
-        <p>Place <code>obj_paddle</code> near the bottom, centered horizontally.</p>
+        <p>Postavi <code>obj_paddle</code> blizu dna, sredinsko vodoravno.</p>
     </div>
 
-    <h3>5. Ball</h3>
+    <h3>5. Žoga</h3>
     <div class="step">
-        <p>Place <code>obj_ball</code> just above the paddle.</p>
+        <p>Postavi <code>obj_ball</code> tik nad loparjem.</p>
     </div>
 
-    <h3>6. Game Controller</h3>
+    <h3>6. Krmilnik igre</h3>
     <div class="step">
-        <p>Place <code>obj_game_controller</code> anywhere (it has no sprite).</p>
+        <p>Postavi <code>obj_game_controller</code> kamorkoli (nima sprita).</p>
     </div>
 
     <div class="success">
-        <strong>Congratulations!</strong> Your Breakout game is ready!
+        <strong>Čestitke!</strong> Tvoja igra Breakout je pripravljena!
     </div>
 
-    <h2>Test Your Game</h2>
+    <h2>Preizkusi svojo igro</h2>
     <ul>
-        <li>Press <strong>F5</strong> or click <strong>Run</strong></li>
-        <li>Use <strong>Left</strong> and <strong>Right</strong> arrow keys to move</li>
-        <li>Break all the bricks to win!</li>
+        <li>Pritisni <strong>F5</strong> ali klikni <strong>Zaženi</strong></li>
+        <li>Uporabi puščični tipki <strong>Levo</strong> in <strong>Desno</strong> za premikanje</li>
+        <li>Razbij vse opeke za zmago!</li>
     </ul>
 
     <div class="info">
-        <strong>Great job!</strong> You've created a classic Breakout game!
+        <strong>Odlično opravljeno!</strong> Ustvaril si klasično igro Breakout!
     </div>
 </body>
 </html>

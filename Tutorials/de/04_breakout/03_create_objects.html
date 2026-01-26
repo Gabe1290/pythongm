@@ -14,66 +14,66 @@
     </style>
 </head>
 <body>
-    <h1>Step 2: Create the Objects</h1>
+    <h1>Schritt 2: Erstelle die Objekte</h1>
 
-    <p>Now we'll create all the game objects.</p>
+    <p>Jetzt erstellen wir alle Spielobjekte.</p>
 
-    <h2>Create the Wall Object</h2>
+    <h2>Erstelle das Wand-Objekt</h2>
     <div class="step">
         <ol>
-            <li>Right-click on <strong>Objects</strong> and select <strong>Create Object</strong></li>
-            <li>Name it <code>obj_wall</code></li>
-            <li>Set the sprite to <code>spr_wall</code></li>
-            <li><strong>Check "Solid"</strong></li>
-            <li>No events needed</li>
+            <li>Rechtsklicke auf <strong>Objekte</strong> und waehle <strong>Objekt erstellen</strong></li>
+            <li>Benenne es <code>obj_wall</code></li>
+            <li>Setze das Sprite auf <code>spr_wall</code></li>
+            <li><strong>Aktiviere "Solide"</strong></li>
+            <li>Keine Ereignisse benoetigt</li>
         </ol>
     </div>
 
-    <h2>Create the Parent Brick Object</h2>
-    <p>We'll use a parent object so all bricks share the same collision behavior.</p>
+    <h2>Erstelle das Eltern-Stein-Objekt</h2>
+    <p>Wir verwenden ein Elternobjekt, damit alle Steine das gleiche Kollisionsverhalten teilen.</p>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_brick_parent</code></li>
-            <li>No sprite needed (it's just a template)</li>
-            <li><strong>Check "Solid"</strong></li>
+            <li>Erstelle Objekt <code>obj_brick_parent</code></li>
+            <li>Kein Sprite benoetigt (es ist nur eine Vorlage)</li>
+            <li><strong>Aktiviere "Solide"</strong></li>
         </ol>
     </div>
 
-    <h2>Create the Colored Brick Objects</h2>
+    <h2>Erstelle die farbigen Stein-Objekte</h2>
     <div class="step">
-        <p>For each brick color:</p>
+        <p>Fuer jede Steinfarbe:</p>
         <ol>
-            <li>Create <code>obj_brick_red</code> with <code>spr_brick_red</code></li>
-            <li>Set <strong>Parent</strong> to <code>obj_brick_parent</code></li>
-            <li>Check "Solid"</li>
+            <li>Erstelle <code>obj_brick_red</code> mit <code>spr_brick_red</code></li>
+            <li>Setze <strong>Elternobjekt</strong> auf <code>obj_brick_parent</code></li>
+            <li>Aktiviere "Solide"</li>
         </ol>
-        <p>Repeat for <code>obj_brick_orange</code>, <code>obj_brick_yellow</code>, and <code>obj_brick_green</code>.</p>
+        <p>Wiederhole fuer <code>obj_brick_orange</code>, <code>obj_brick_yellow</code> und <code>obj_brick_green</code>.</p>
     </div>
 
-    <h2>Create the Paddle Object</h2>
+    <h2>Erstelle das Schlaeger-Objekt</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_paddle</code></li>
-            <li>Set sprite to <code>spr_paddle</code></li>
-            <li><strong>Check "Solid"</strong></li>
+            <li>Erstelle Objekt <code>obj_paddle</code></li>
+            <li>Setze Sprite auf <code>spr_paddle</code></li>
+            <li><strong>Aktiviere "Solide"</strong></li>
         </ol>
     </div>
 
-    <h2>Create the Ball Object</h2>
+    <h2>Erstelle das Ball-Objekt</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_ball</code></li>
-            <li>Set sprite to <code>spr_ball</code></li>
-            <li>Leave "Solid" unchecked</li>
+            <li>Erstelle Objekt <code>obj_ball</code></li>
+            <li>Setze Sprite auf <code>spr_ball</code></li>
+            <li>Lasse "Solide" deaktiviert</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Parent Objects:</strong> When the ball collides with <code>obj_brick_parent</code>, it will detect collisions with ALL brick types!
+        <strong>Elternobjekte:</strong> Wenn der Ball mit <code>obj_brick_parent</code> kollidiert, erkennt er Kollisionen mit ALLEN Steintypen!
     </div>
 
     <div class="info">
-        Click "Next" to add paddle movement.
+        Klicke auf "Weiter", um Schlaegerbewegung hinzuzufuegen.
     </div>
 </body>
 </html>

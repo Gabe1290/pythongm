@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 3: Добавление движения ракетки</h1>
+
+    <p>Ракетка движется влево и вправо с помощью клавиш-стрелок.</p>
+
+    <h2>Движение влево (стрелка влево)</h2>
+    <div class="step">
+        <ol>
+            <li>Откройте <code>obj_paddle</code></li>
+            <li>Добавьте событие: <strong>Клавиатура &gt; Нажатие влево</strong></li>
+            <li>Добавьте действие: <strong>Движение &gt; Установить горизонтальную скорость</strong></li>
+            <li>Установите скорость <code>-8</code> (отрицательная = влево)</li>
+        </ol>
+    </div>
+
+    <h2>Остановка движения (отпускание влево)</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте событие: <strong>Клавиатура &gt; Отпускание влево</strong></li>
+            <li>Добавьте действие: <strong>Движение &gt; Установить горизонтальную скорость</strong></li>
+            <li>Установите скорость <code>0</code></li>
+        </ol>
+    </div>
+
+    <h2>Движение вправо (стрелка вправо)</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте событие: <strong>Клавиатура &gt; Нажатие вправо</strong></li>
+            <li>Добавьте действие: <strong>Движение &gt; Установить горизонтальную скорость</strong></li>
+            <li>Установите скорость <code>8</code> (положительная = вправо)</li>
+        </ol>
+    </div>
+
+    <h2>Остановка движения (отпускание вправо)</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте событие: <strong>Клавиатура &gt; Отпускание вправо</strong></li>
+            <li>Добавьте действие: <strong>Движение &gt; Установить горизонтальную скорость</strong></li>
+            <li>Установите скорость <code>0</code></li>
+        </ol>
+    </div>
+
+    <h2>Столкновение со стеной</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте событие: <strong>Столкновение &gt; obj_wall</strong></li>
+            <li>Добавьте действие: <strong>Движение &gt; Отскок от объектов</strong></li>
+            <li>Выберите «От твёрдых объектов»</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Примечание:</strong> Столкновение со стеной не позволяет ракетке выйти за пределы экрана!
+    </div>
+
+    <div class="info">
+        Нажмите «Далее», чтобы добавить движение мяча.
+    </div>
+</body>
+</html>

@@ -14,54 +14,54 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Ball Movement and Bouncing</h1>
+    <h1>Крок 4: Рух м'яча та відскоки</h1>
 
-    <p>The ball needs to move automatically and bounce off walls and paddles.</p>
+    <p>М'яч повинен рухатися автоматично та відскакувати від стін і ракеток.</p>
 
-    <h2>Start Ball Moving (Create Event)</h2>
+    <h2>Початок руху м'яча (Подія створення)</h2>
     <div class="step">
         <ol>
-            <li>Open <code>obj_ball</code></li>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Move &gt; Start Moving in Direction</strong></li>
-            <li>Choose a diagonal direction (not straight up/down)</li>
-            <li>Set speed to <code>6</code></li>
+            <li>Відкрийте <code>obj_ball</code></li>
+            <li>Додайте подію: <strong>Створити</strong></li>
+            <li>Додайте дію: <strong>Рух &gt; Почати рух у напрямку</strong></li>
+            <li>Виберіть діагональний напрямок (не прямо вгору/вниз)</li>
+            <li>Встановіть швидкість <code>6</code></li>
         </ol>
     </div>
 
-    <h2>Bounce Off Walls</h2>
+    <h2>Відскок від стін</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_wall</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Додайте подію: <strong>Зіткнення &gt; obj_wall</strong></li>
+            <li>Додайте дію: <strong>Рух &gt; Відскочити від об'єктів</strong></li>
+            <li>Виберіть "Від твердих об'єктів"</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Left Paddle</h2>
+    <h2>Відскок від лівої ракетки</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_paddle_left</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Додайте подію: <strong>Зіткнення &gt; obj_paddle_left</strong></li>
+            <li>Додайте дію: <strong>Рух &gt; Відскочити від об'єктів</strong></li>
+            <li>Виберіть "Від твердих об'єктів"</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Right Paddle</h2>
+    <h2>Відскок від правої ракетки</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_paddle_right</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Додайте подію: <strong>Зіткнення &gt; obj_paddle_right</strong></li>
+            <li>Додайте дію: <strong>Рух &gt; Відскочити від об'єктів</strong></li>
+            <li>Виберіть "Від твердих об'єктів"</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Test Tip:</strong> You can test your game now! The ball should bounce around, but scoring won't work yet.
+        <strong>Порада для тестування:</strong> Ви можете протестувати гру зараз! М'яч повинен відскакувати, але підрахунок рахунку ще не працюватиме.
     </div>
 
     <div class="info">
-        Click "Next" to add scoring goals.
+        Натисніть "Далі", щоб додати ворота для підрахунку рахунку.
     </div>
 </body>
 </html>

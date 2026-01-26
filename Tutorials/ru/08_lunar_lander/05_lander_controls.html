@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 4: Управление посадочным модулем (Событие шага)</h1>
+
+    <p>Добавьте гравитацию, тягу, горизонтальное движение и проверку границ.</p>
+
+    <h2>Добавить событие шага</h2>
+    <div class="step">
+        <p>В <code>obj_lander</code>:</p>
+        <ol>
+            <li>Добавить событие: <strong>Шаг &gt; Шаг</strong></li>
+            <li>Добавить действие: <strong>Управление &gt; Выполнить код</strong></li>
+        </ol>
+        <pre>
+// Не обновлять, если игра окончена
+if (landed || crashed) exit;
+
+// === ГРАВИТАЦИЯ ===
+vsp += gravity_force;
+
+// === ТЯГА (Стрелка вверх) ===
+if (keyboard_check(vk_up) && fuel > 0) {
+    vsp -= thrust_force;
+    fuel -= fuel_use;
+    if (fuel < 0) fuel = 0;
+}
+
+// === ГОРИЗОНТАЛЬНОЕ УПРАВЛЕНИЕ ===
+if (keyboard_check(vk_left)) hsp -= 0.05;
+if (keyboard_check(vk_right)) hsp += 0.05;
+
+// === ОГРАНИЧЕНИЕ СКОРОСТИ ===
+hsp = clamp(hsp, -max_speed, max_speed);
+vsp = clamp(vsp, -max_speed, max_speed);
+
+// === ПРИМЕНИТЬ ДВИЖЕНИЕ ===
+x += hsp;
+y += vsp;
+
+// === ГРАНИЦЫ ЭКРАНА ===
+if (x < 16) { x = 16; hsp = 0; }
+if (x > room_width - 16) { x = room_width - 16; hsp = 0; }
+if (y < 16) { y = 16; vsp = 0; }</pre>
+    </div>
+
+    <h2>Как это работает</h2>
+    <ol>
+        <li><strong>Гравитация:</strong> Добавляется к vsp каждый кадр (падение)</li>
+        <li><strong>Тяга:</strong> Вычитается из vsp (подъём), расходует топливо</li>
+        <li><strong>Clamp:</strong> Ограничивает скорость безопасным диапазоном</li>
+        <li><strong>Границы:</strong> Удерживает модуль на экране</li>
+    </ol>
+
+    <div class="highlight">
+        <strong>Важно:</strong> Функция <code>clamp()</code> ограничивает значение между минимумом и максимумом!
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы добавить обнаружение столкновений.
+    </div>
+</body>
+</html>

@@ -15,63 +15,63 @@
     </style>
 </head>
 <body>
-    <h1>Step 7: Room Setup</h1>
+    <h1>Korak 7: Nastavitev sobe</h1>
 
-    <p>Design your lunar landscape!</p>
+    <p>Oblikuj svojo lunarno pokrajino!</p>
 
-    <h2>Create the Room</h2>
+    <h2>Ustvari sobo</h2>
     <div class="step">
         <ol>
-            <li>Right-click <strong>Rooms</strong> > <strong>Create Room</strong></li>
-            <li>Name it <code>room_game</code></li>
-            <li>Set size: <strong>640 x 480</strong></li>
-            <li>Set background color to <strong>black</strong> (space)</li>
-            <li>Enable "Snap to Grid" (32x32)</li>
+            <li>Desni klik na <strong>Rooms</strong> > <strong>Create Room</strong></li>
+            <li>Poimenuj jo <code>room_game</code></li>
+            <li>Nastavi velikost: <strong>640 x 480</strong></li>
+            <li>Nastavi barvo ozadja na <strong>črno</strong> (vesolje)</li>
+            <li>Omogoči "Snap to Grid" (32x32)</li>
         </ol>
     </div>
 
-    <h2>Example Level Layout</h2>
+    <h2>Primer postavitve nivoja</h2>
     <pre>
-        L                          <- Lander starts here
+        P                          <- Pristajalnik začne tukaj
 
 
 
 
 
-GGG     GGG     PPPP     GGG     GGG
-GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+TTT     TTT     LLLL     TTT     TTT
+TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
 
-G = Ground (crash)    L = Lander    P = Landing Pad (safe)</pre>
+T = Tla (strmoglavljenje)    P = Pristajalnik    L = Pristajalna ploščad (varno)</pre>
 
-    <h2>Building Your Level</h2>
+    <h2>Gradnja nivoja</h2>
     <div class="step">
         <ol>
-            <li><strong>Ground:</strong> Place <code>obj_ground</code> along the bottom</li>
-            <li><strong>Gap:</strong> Leave space for the landing pad</li>
-            <li><strong>Landing Pad:</strong> Place <code>obj_pad</code> in the gap</li>
-            <li><strong>Lander:</strong> Place <code>obj_lander</code> at the top</li>
-            <li><strong>Controller:</strong> Place <code>obj_game_controller</code> anywhere</li>
+            <li><strong>Tla:</strong> Postavi <code>obj_ground</code> vzdolž dna</li>
+            <li><strong>Praznina:</strong> Pusti prostor za pristajalno ploščad</li>
+            <li><strong>Pristajalna ploščad:</strong> Postavi <code>obj_pad</code> v praznino</li>
+            <li><strong>Pristajalnik:</strong> Postavi <code>obj_lander</code> na vrh</li>
+            <li><strong>Krmilnik:</strong> Postavi <code>obj_game_controller</code> kamorkoli</li>
         </ol>
     </div>
 
-    <h2>Test Your Game!</h2>
+    <h2>Preizkusi svojo igro!</h2>
     <div class="success">
-        <p><strong>Press F5 or click Run!</strong></p>
+        <p><strong>Pritisni F5 ali klikni Zaženi!</strong></p>
         <ul>
-            <li><strong>UP Arrow:</strong> Thrust (uses fuel!)</li>
-            <li><strong>LEFT/RIGHT:</strong> Steer horizontally</li>
-            <li>Watch your speed - stay under 2!</li>
-            <li>Don't run out of fuel!</li>
-            <li>Land on the pad to win!</li>
+            <li><strong>Puščica GOR:</strong> Potisk (porabi gorivo!)</li>
+            <li><strong>LEVO/DESNO:</strong> Usmerjanje vodoravno</li>
+            <li>Pazi na hitrost - ostani pod 2!</li>
+            <li>Ne ostani brez goriva!</li>
+            <li>Pristani na ploščadi za zmago!</li>
         </ul>
     </div>
 
     <div class="highlight">
-        <strong>Congratulations!</strong> You've created a lunar lander with gravity, thrust, and fuel management!
+        <strong>Čestitke!</strong> Ustvarili ste lunin pristajalnik z gravitacijo, potiskom in upravljanjem goriva!
     </div>
 
     <div class="info">
-        <strong>Challenge:</strong> Add multiple landing pads with different point values, or add wind effects!
+        <strong>Izziv:</strong> Dodaj več pristajalnih ploščadi z različnimi vrednostmi točk ali dodaj učinke vetra!
     </div>
 </body>
 </html>

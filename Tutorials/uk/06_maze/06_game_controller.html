@@ -15,60 +15,60 @@
     </style>
 </head>
 <body>
-    <h1>Step 5: Game Controller</h1>
+    <h1>Крок 5: Контролер гри</h1>
 
-    <p>Create a controller to track time and display score.</p>
+    <p>Створіть контролер для відстеження часу та відображення рахунку.</p>
 
-    <h2>Create Controller Object</h2>
+    <h2>Створення об'єкта контролера</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_game_controller</code></li>
-            <li>No sprite needed (leave it empty)</li>
+            <li>Створіть об'єкт <code>obj_game_controller</code></li>
+            <li>Спрайт не потрібен (залиште порожнім)</li>
         </ol>
     </div>
 
-    <h2>Initialize Timer (Create Event)</h2>
+    <h2>Ініціалізація таймера (Подія Create)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Control &gt; Set Variable</strong></li>
-            <li>Variable: <code>global.timer</code></li>
-            <li>Value: <code>0</code></li>
+            <li>Додати подію: <strong>Create</strong></li>
+            <li>Додати дію: <strong>Control &gt; Set Variable</strong></li>
+            <li>Змінна: <code>global.timer</code></li>
+            <li>Значення: <code>0</code></li>
         </ol>
     </div>
 
-    <h2>Update Timer (Step Event)</h2>
+    <h2>Оновлення таймера (Подія Step)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Set Variable</strong></li>
-            <li>Variable: <code>global.timer</code></li>
-            <li>Value: <code>1/room_speed</code></li>
-            <li>Check "Relative"</li>
+            <li>Додати подію: <strong>Step</strong></li>
+            <li>Додати дію: <strong>Control &gt; Set Variable</strong></li>
+            <li>Змінна: <code>global.timer</code></li>
+            <li>Значення: <code>1/room_speed</code></li>
+            <li>Поставте галочку "Relative"</li>
         </ol>
     </div>
 
-    <h2>Display Info (Draw Event)</h2>
+    <h2>Відображення інформації (Подія Draw)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Draw</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Додати подію: <strong>Draw</strong></li>
+            <li>Додати дію: <strong>Control &gt; Execute Code</strong></li>
         </ol>
         <pre>
 draw_set_color(c_white);
-draw_text(10, 10, "Score: " + string(score));
-draw_text(10, 30, "Time: " + string(floor(global.timer)) + "s");
+draw_text(10, 10, "Рахунок: " + string(score));
+draw_text(10, 30, "Час: " + string(floor(global.timer)) + "с");
 
 var coins = instance_number(obj_coin);
-draw_text(10, 50, "Coins: " + string(coins));</pre>
+draw_text(10, 50, "Монети: " + string(coins));</pre>
     </div>
 
     <div class="highlight">
-        <strong>Note:</strong> The controller is invisible but essential for tracking game state!
+        <strong>Примітка:</strong> Контролер невидимий, але необхідний для відстеження стану гри!
     </div>
 
     <div class="info">
-        Click "Next" to set up your room.
+        Натисніть "Далі", щоб налаштувати кімнату.
     </div>
 </body>
 </html>

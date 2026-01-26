@@ -15,59 +15,59 @@
     </style>
 </head>
 <body>
-    <h1>Step 5: Collision Detection</h1>
+    <h1>Korak 5: Zaznavanje trkov</h1>
 
-    <p>Handle landing on the pad and crashing into terrain.</p>
+    <p>Obravnavaj pristajanje na ploščadi in strmoglavljenje v teren.</p>
 
-    <h2>Collision with Landing Pad</h2>
+    <h2>Trk s pristajalno ploščadjo</h2>
     <div class="step">
-        <p>In <code>obj_lander</code>:</p>
+        <p>V <code>obj_lander</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_pad</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Dodaj dogodek: <strong>Collision &gt; obj_pad</strong></li>
+            <li>Dodaj akcijo: <strong>Control &gt; Execute Code</strong></li>
         </ol>
         <pre>
-// Calculate total speed
+// Izračunaj skupno hitrost
 var total_speed = sqrt(hsp*hsp + vsp*vsp);
 
 if (total_speed <= safe_speed) {
-    // Safe landing!
+    // Varen pristanek!
     landed = true;
     hsp = 0;
     vsp = 0;
-    show_message("Perfect Landing! You Win!");
+    show_message("Odličen pristanek! Zmagali ste!");
 } else {
-    // Too fast - crash!
+    // Prehitro - strmoglavljenje!
     crashed = true;
-    show_message("Crashed! Too fast!");
+    show_message("Strmoglavljenje! Prehitro!");
     room_restart();
 }</pre>
     </div>
 
-    <h2>Collision with Ground (Crash)</h2>
+    <h2>Trk s tlemi (strmoglavljenje)</h2>
     <div class="danger">
-        <p>In <code>obj_lander</code>:</p>
+        <p>V <code>obj_lander</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_ground</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Dodaj dogodek: <strong>Collision &gt; obj_ground</strong></li>
+            <li>Dodaj akcijo: <strong>Control &gt; Execute Code</strong></li>
         </ol>
         <pre>
 crashed = true;
-show_message("Crashed into terrain!");
+show_message("Strmoglavljenje v teren!");
 room_restart();</pre>
     </div>
 
-    <h2>Speed Calculation</h2>
-    <p>We use the Pythagorean theorem to get total speed:</p>
+    <h2>Izračun hitrosti</h2>
+    <p>Uporabimo Pitagorov izrek za izračun skupne hitrosti:</p>
     <pre>total_speed = sqrt(hsp*hsp + vsp*vsp)</pre>
-    <p>This combines horizontal and vertical speed into one value.</p>
+    <p>To združi vodoravno in navpično hitrost v eno vrednost.</p>
 
     <div class="highlight">
-        <strong>Safe speed is 2!</strong> If total_speed > 2, you crash even on the pad.
+        <strong>Varna hitrost je 2!</strong> Če je total_speed > 2, se strmoglaviš tudi na ploščadi.
     </div>
 
     <div class="info">
-        Click "Next" to add the HUD display.
+        Klikni "Naprej" za dodajanje prikazovalnika.
     </div>
 </body>
 </html>

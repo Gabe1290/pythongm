@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 1: Создание спрайтов</h1>
+
+    <p>Нам нужны спрайты для ракетки, мяча, кирпичей и стен.</p>
+
+    <h2>Создание спрайта мяча</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкните правой кнопкой мыши по <strong>Спрайты</strong> в дереве ресурсов</li>
+            <li>Выберите <strong>Создать спрайт</strong></li>
+            <li>Назовите его <code>spr_ball</code></li>
+            <li>Нажмите <strong>Редактировать спрайт</strong></li>
+            <li>Нарисуйте небольшой белый или жёлтый круг (16x16 пикселей)</li>
+            <li>Нажмите <strong>OK</strong> для сохранения</li>
+        </ol>
+    </div>
+
+    <h2>Создание спрайта ракетки</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте новый спрайт с именем <code>spr_paddle</code></li>
+            <li>Нарисуйте широкий плоский прямоугольник (64x16 пикселей)</li>
+            <li>Используйте яркий цвет, например синий</li>
+        </ol>
+    </div>
+
+    <h2>Создание спрайтов кирпичей</h2>
+    <p>Создайте разноцветные кирпичи с разной стоимостью в очках:</p>
+
+    <div class="step">
+        <ol>
+            <li>Создайте <code>spr_brick_red</code> — красный кирпич (32x16 пикселей)</li>
+            <li>Создайте <code>spr_brick_orange</code> — оранжевый кирпич</li>
+            <li>Создайте <code>spr_brick_yellow</code> — жёлтый кирпич</li>
+            <li>Создайте <code>spr_brick_green</code> — зелёный кирпич</li>
+        </ol>
+    </div>
+
+    <h2>Создание спрайта стены</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте новый спрайт с именем <code>spr_wall</code></li>
+            <li>Нарисуйте сплошной серый прямоугольник (32x32 пикселя)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Совет:</strong> Сохраняйте одинаковый размер кирпичей, чтобы они красиво выстраивались в комнате!
+    </div>
+
+    <div class="info">
+        Нажмите «Далее», чтобы создать игровые объекты.
+    </div>
+</body>
+</html>

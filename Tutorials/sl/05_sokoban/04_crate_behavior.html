@@ -14,46 +14,46 @@
     </style>
 </head>
 <body>
-    <h1>Step 3: Crate Behavior</h1>
+    <h1>Korak 3: Obnašanje Zaboja</h1>
 
-    <p>The crate needs to change appearance when it's on a target spot.</p>
+    <p>Zaboj mora spremeniti videz, ko je na Ciljnem mestu.</p>
 
-    <h2>Check Target Position (Step Event)</h2>
+    <h2>Preveri položaj Cilja (Dogodek Step)</h2>
     <div class="step">
-        <p>In <code>obj_crate</code>:</p>
+        <p>V <code>obj_crate</code>:</p>
         <ol>
-            <li>Add Event: <strong>Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Test Instance Position</strong></li>
-            <li>Object: <code>obj_target</code></li>
-            <li>X: <code>0</code>, Y: <code>0</code> (relative)</li>
-            <li>Check if collision exists</li>
+            <li>Dodajte Dogodek: <strong>Step</strong></li>
+            <li>Dodajte Akcijo: <strong>Control &gt; Test Instance Position</strong></li>
+            <li>Objekt: <code>obj_target</code></li>
+            <li>X: <code>0</code>, Y: <code>0</code> (relativno)</li>
+            <li>Preverite, ali Trk obstaja</li>
         </ol>
     </div>
 
-    <h2>Change Sprite When on Target</h2>
+    <h2>Spremeni Sprite, ko je na Cilju</h2>
     <div class="step">
-        <p>If collision exists (crate is on target):</p>
+        <p>Če Trk obstaja (Zaboj je na Cilju):</p>
         <ol>
-            <li>Add Action: <strong>Main1 &gt; Change Sprite</strong></li>
+            <li>Dodajte Akcijo: <strong>Main1 &gt; Change Sprite</strong></li>
             <li>Sprite: <code>spr_crate_ok</code></li>
         </ol>
     </div>
 
-    <h2>Change Sprite When Not on Target</h2>
+    <h2>Spremeni Sprite, ko ni na Cilju</h2>
     <div class="step">
         <ol>
-            <li>Add Action: <strong>Control &gt; Else</strong></li>
-            <li>Add Action: <strong>Main1 &gt; Change Sprite</strong></li>
+            <li>Dodajte Akcijo: <strong>Control &gt; Else</strong></li>
+            <li>Dodajte Akcijo: <strong>Main1 &gt; Change Sprite</strong></li>
             <li>Sprite: <code>spr_crate</code></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Visual Feedback:</strong> When the crate turns green, players know it's correctly placed!
+        <strong>Vizualna povratna informacija:</strong> Ko Zaboj postane zelen, Igralci vedo, da je pravilno postavljen!
     </div>
 
     <div class="info">
-        Click "Next" to add player movement.
+        Kliknite "Naprej" za dodajanje Premikanja Igralca.
     </div>
 </body>
 </html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 3: Fisica del Jugador (Evento Crear)</h1>
+
+    <p>Necesitamos configurar variables para la gravedad, el salto y el movimiento.</p>
+
+    <h2>Inicializar Variables de Fisica</h2>
+    <div class="step">
+        <p>En <code>obj_player</code>:</p>
+        <ol>
+            <li>Agregar Evento: <strong>Crear</strong></li>
+            <li>Agregar Accion: <strong>Control > Ejecutar Codigo</strong></li>
+        </ol>
+        <pre>
+// Configuracion de movimiento
+hspeed_max = 4;      // Velocidad horizontal maxima
+vspeed_max = 10;     // Velocidad maxima de caida
+jump_force = -10;    // Fuerza de salto (negativo = arriba)
+gravity_force = 0.5; // Que tan rapido caemos
+
+// Velocidades actuales
+hsp = 0;
+vsp = 0;
+
+// Estado
+on_ground = false;</pre>
+    </div>
+
+    <h2>Entendiendo las Variables</h2>
+    <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
+        <tr style="background-color: #34495e; color: white;">
+            <th style="padding: 8px; border: 1px solid #ddd;">Variable</th>
+            <th style="padding: 8px; border: 1px solid #ddd;">Proposito</th>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><code>hsp</code></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Velocidad horizontal (izquierda/derecha)</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><code>vsp</code></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Velocidad vertical (arriba/abajo)</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><code>gravity_force</code></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Fuerza constante que jala hacia abajo</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><code>jump_force</code></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Valor negativo para ir hacia arriba</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;"><code>on_ground</code></td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Verdadero cuando esta parado en el suelo</td>
+        </tr>
+    </table>
+
+    <div class="highlight">
+        <strong>Concepto Clave:</strong> La fuerza de salto es negativa porque Y aumenta hacia abajo en los juegos. Una velocidad Y negativa mueve al jugador hacia arriba!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para agregar movimiento y manejo de colisiones.
+    </div>
+</body>
+</html>

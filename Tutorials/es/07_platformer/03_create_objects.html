@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Paso 2: Crear Objetos</h1>
+
+    <p>Ahora creamos objetos para todos los elementos de nuestro juego.</p>
+
+    <h2>Objeto Suelo</h2>
+    <div class="step">
+        <ol>
+            <li>Clic derecho en <strong>Objetos</strong> > <strong>Crear Objeto</strong></li>
+            <li>Nombralo <code>obj_ground</code></li>
+            <li>Asigna el sprite <code>spr_ground</code></li>
+            <li><strong>Marca la casilla "Solido"</strong></li>
+        </ol>
+    </div>
+
+    <h2>Objeto Plataforma</h2>
+    <div class="step">
+        <ol>
+            <li>Crea <code>obj_platform</code></li>
+            <li>Asigna el sprite <code>spr_platform</code></li>
+            <li><strong>Marca la casilla "Solido"</strong></li>
+            <li>Establece Padre como <code>obj_ground</code> (opcional)</li>
+        </ol>
+    </div>
+
+    <h2>Objeto Jugador</h2>
+    <div class="step">
+        <ol>
+            <li>Crea <code>obj_player</code></li>
+            <li>Asigna el sprite <code>spr_player</code></li>
+        </ol>
+    </div>
+
+    <h2>Coleccionables y Peligros</h2>
+    <div class="step">
+        <ol>
+            <li>Crea <code>obj_coin</code> con <code>spr_coin</code></li>
+            <li>Crea <code>obj_spike</code> con <code>spr_spike</code></li>
+            <li>Crea <code>obj_flag</code> con <code>spr_flag</code></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Importante:</strong> El suelo y las plataformas deben ser "Solido" para que la colision funcione correctamente!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para agregar fisica al jugador (gravedad y salto).
+    </div>
+</body>
+</html>

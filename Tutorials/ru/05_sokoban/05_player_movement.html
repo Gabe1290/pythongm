@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 4: Движение Игрока</h1>
+
+    <p>Игрок перемещается фиксированными шагами по 32 пикселя (движение по сетке).</p>
+
+    <div class="highlight">
+        <strong>Важно:</strong> В Сокобане движение должно проверять:<br>
+        1. Есть ли стена? (Нельзя двигаться)<br>
+        2. Есть ли ящик? (Можем ли мы его толкнуть?)<br>
+        3. Есть ли стена/ящик за ящиком? (Нельзя толкать)
+    </div>
+
+    <h2>Движение Вправо (Стрелка Вправо)</h2>
+    <div class="step">
+        <p>В <code>obj_player</code>:</p>
+        <ol>
+            <li>Добавить Событие: <strong>Keyboard &gt; Press Right</strong></li>
+            <li>Добавить Действие: <strong>Control &gt; Execute Code</strong></li>
+            <li>Введите этот код:</li>
+        </ol>
+        <pre style="background-color: #2c3e50; color: #ecf0f1; padding: 10px; font-size: 11px; border-radius: 5px;">
+// Проверяем, можно ли двигаться вправо
+if (!place_meeting(x + 32, y, obj_wall)) {
+    var crate = instance_place(x + 32, y, obj_crate);
+    if (crate != noone) {
+        // Там ящик - можем ли мы его толкнуть?
+        if (!place_meeting(x + 64, y, obj_wall) &&
+            !place_meeting(x + 64, y, obj_crate)) {
+            crate.x += 32;
+            x += 32;
+        }
+    } else {
+        // Ящика нет, просто двигаемся
+        x += 32;
+    }
+}</pre>
+    </div>
+
+    <h2>Движение Влево (Стрелка Влево)</h2>
+    <div class="step">
+        <p>Тот же код, но измените:</p>
+        <ul>
+            <li><code>+ 32</code> на <code>- 32</code></li>
+            <li><code>+ 64</code> на <code>- 64</code></li>
+        </ul>
+    </div>
+
+    <h2>Движение Вверх (Стрелка Вверх)</h2>
+    <div class="step">
+        <p>Тот же код, но используйте <code>y</code> вместо <code>x</code>:</p>
+        <ul>
+            <li><code>x + 32</code> на <code>y - 32</code></li>
+            <li><code>x + 64</code> на <code>y - 64</code></li>
+            <li><code>crate.x</code> на <code>crate.y</code></li>
+        </ul>
+    </div>
+
+    <h2>Движение Вниз (Стрелка Вниз)</h2>
+    <div class="step">
+        <p>То же, что и Вверх, но с <code>+ 32</code> и <code>+ 64</code>.</p>
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы добавить определение условия победы.
+    </div>
+</body>
+</html>

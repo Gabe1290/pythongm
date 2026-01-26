@@ -1,0 +1,117 @@
+{
+    "tutorials": [
+        {
+            "title": "Начало работы с PyGameMaker",
+            "folder": "01_getting_started",
+            "description": "Изучите основы IDE PyGameMaker",
+            "pages": [
+                "01_welcome.html",
+                "02_interface.html",
+                "03_first_project.html",
+                "04_next_steps.html"
+            ]
+        },
+        {
+            "title": "Ваша первая игра: Поймай звезду",
+            "folder": "02_first_game",
+            "description": "Создайте простую игру, где вы ловите падающие звёзды",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_add_movement.html",
+                "05_add_star.html",
+                "06_scoring.html",
+                "07_finishing.html"
+            ]
+        },
+        {
+            "title": "Классический Понг: Игра на двоих",
+            "folder": "03_pong",
+            "description": "Создайте классическую аркадную игру Понг для двух игроков",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_paddle_movement.html",
+                "05_ball_movement.html",
+                "06_scoring.html",
+                "07_score_display.html",
+                "08_room_setup.html"
+            ]
+        },
+        {
+            "title": "Breakout: Игра «Разбей кирпичи»",
+            "folder": "04_breakout",
+            "description": "Создайте классическую аркадную игру по разбиванию кирпичей",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_paddle_movement.html",
+                "05_ball_movement.html",
+                "06_lives_system.html",
+                "07_score_display.html",
+                "08_room_setup.html"
+            ]
+        },
+        {
+            "title": "Сокобан: Головоломка с Ящиками",
+            "folder": "05_sokoban",
+            "description": "Создайте классическую головоломку с передвижением ящиков",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_crate_behavior.html",
+                "05_player_movement.html",
+                "06_win_condition.html",
+                "07_room_setup.html"
+            ]
+        },
+        {
+            "title": "Лабиринт: Найди выход",
+            "folder": "06_maze",
+            "description": "Проходите коридоры, собирайте монеты, достигните выхода",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_player_movement.html",
+                "05_collectibles.html",
+                "06_game_controller.html",
+                "07_room_setup.html"
+            ]
+        },
+        {
+            "title": "Платформер: Бегай, Прыгай и Собирай",
+            "folder": "07_platformer",
+            "description": "Прыгайте по платформам, избегайте опасностей, собирайте монеты",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_player_physics.html",
+                "05_player_movement.html",
+                "06_collectibles_hazards.html",
+                "07_game_controller.html",
+                "08_room_setup.html"
+            ]
+        },
+        {
+            "title": "Посадочный модуль: Посадка на Луну",
+            "folder": "08_lunar_lander",
+            "description": "Управляйте тягой для безопасной посадки, следите за топливом",
+            "pages": [
+                "01_introduction.html",
+                "02_create_sprites.html",
+                "03_create_objects.html",
+                "04_lander_physics.html",
+                "05_lander_controls.html",
+                "06_collisions.html",
+                "07_game_controller.html",
+                "08_room_setup.html"
+            ]
+        }
+    ]
+}

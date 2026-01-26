@@ -17,21 +17,21 @@
     </style>
 </head>
 <body>
-    <h1>Step 6: Set Up the Room</h1>
+    <h1>Korak 6: Nastavi sobo</h1>
 
-    <p>Create a puzzle level with walls, crates, and targets.</p>
+    <p>Ustvarite nivo uganke s stenami, zaboji in cilji.</p>
 
-    <h2>Create the Room</h2>
+    <h2>Ustvari sobo</h2>
     <div class="step">
         <ol>
-            <li>Right-click on <strong>Rooms</strong> and select <strong>Create Room</strong></li>
-            <li>Name it <code>room_sokoban</code></li>
-            <li>Set size to 320x320 pixels (10x10 grid)</li>
-            <li>Enable grid snap: 32x32</li>
+            <li>Z desnim klikom kliknite na <strong>Rooms</strong> in izberite <strong>Create Room</strong></li>
+            <li>Poimenujte jo <code>room_sokoban</code></li>
+            <li>Nastavite velikost na 320x320 slikovnih pik (mreža 10x10)</li>
+            <li>Omogočite pripenjanje na mrežo: 32x32</li>
         </ol>
     </div>
 
-    <h2>Example Level Layout</h2>
+    <h2>Primer postavitve nivoja</h2>
     <pre>
 W W W W W W W W W W
 W . . . . . . . . W
@@ -43,55 +43,55 @@ W . T . . . . . . W
 W . . . . . . . . W
 W W W W W W W W W W
 
-W = Wall     T = Target
-P = Player   C = Crate
-. = Empty
+W = Stena     T = Cilj
+P = Igralec   C = Zaboj
+. = Prazno
     </pre>
 
-    <h2>Place Objects</h2>
+    <h2>Postavi objekte</h2>
 
-    <h3>1. Walls</h3>
+    <h3>1. Stene</h3>
     <div class="step">
-        <p>Build walls around the edges and create obstacles inside.</p>
+        <p>Zgradite stene okoli robov in ustvarite ovire znotraj.</p>
     </div>
 
-    <h3>2. Targets</h3>
+    <h3>2. Cilji</h3>
     <div class="step">
-        <p>Place <code>obj_target</code> where crates should end up.</p>
+        <p>Postavite <code>obj_target</code> tja, kamor morajo priti zaboji.</p>
     </div>
 
-    <h3>3. Crates</h3>
+    <h3>3. Zaboji</h3>
     <div class="step">
-        <p>Place <code>obj_crate</code> - same number as targets!</p>
+        <p>Postavite <code>obj_crate</code> - enako število kot ciljev!</p>
     </div>
 
-    <h3>4. Player</h3>
+    <h3>4. Igralec</h3>
     <div class="step">
-        <p>Place <code>obj_player</code> at the starting position.</p>
+        <p>Postavite <code>obj_player</code> na začetni položaj.</p>
     </div>
 
-    <h3>5. Game Controller</h3>
+    <h3>5. Krmilnik igre</h3>
     <div class="step">
-        <p>Place <code>obj_game_controller</code> anywhere.</p>
+        <p>Postavite <code>obj_game_controller</code> kamorkoli.</p>
     </div>
 
     <div class="highlight">
-        <strong>Important:</strong> Number of crates MUST equal number of targets!
+        <strong>Pomembno:</strong> Število zabojev MORA biti enako številu ciljev!
     </div>
 
     <div class="success">
-        <strong>Congratulations!</strong> Your Sokoban game is ready!
+        <strong>Čestitke!</strong> Vaša igra Sokoban je pripravljena!
     </div>
 
-    <h2>Test Your Game</h2>
+    <h2>Preizkusite svojo igro</h2>
     <ul>
-        <li>Press <strong>F5</strong> or click <strong>Run</strong></li>
-        <li>Use <strong>Arrow Keys</strong> to move</li>
-        <li>Push all crates onto the red targets to win!</li>
+        <li>Pritisnite <strong>F5</strong> ali kliknite <strong>Run</strong></li>
+        <li>Uporabite <strong>puščične tipke</strong> za premikanje</li>
+        <li>Potisnite vse zaboje na rdeče cilje za zmago!</li>
     </ul>
 
     <div class="info">
-        <strong>Challenge:</strong> Create your own puzzle levels!
+        <strong>Izziv:</strong> Ustvarite svoje lastne nivoje ugank!
     </div>
 </body>
 </html>

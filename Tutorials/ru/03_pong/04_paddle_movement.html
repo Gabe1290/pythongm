@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 3: Добавление Движения Ракеток</h1>
+
+    <p>Мы настроим управление для двух игроков, используя разные клавиши для каждой Ракетки.</p>
+
+    <h2>Схема управления</h2>
+    <table>
+        <tr>
+            <th>Игрок</th>
+            <th>Движение вверх</th>
+            <th>Движение вниз</th>
+        </tr>
+        <tr>
+            <td>Игрок 1 (Левый)</td>
+            <td>Клавиша W</td>
+            <td>Клавиша S</td>
+        </tr>
+        <tr>
+            <td>Игрок 2 (Правый)</td>
+            <td>Стрелка вверх</td>
+            <td>Стрелка вниз</td>
+        </tr>
+    </table>
+
+    <h2>Управление левой Ракеткой (obj_paddle_left)</h2>
+    <div class="step">
+        <p><strong>Движение вверх (клавиша W):</strong></p>
+        <ol>
+            <li>Откройте <code>obj_paddle_left</code></li>
+            <li>Добавьте Событие: <strong>Клавиатура &gt; Нажатие W</strong></li>
+            <li>Добавьте Действие: <strong>Движение &gt; Установить вертикальную скорость</strong></li>
+            <li>Установите скорость <code>-8</code> (отрицательное значение = вверх)</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Остановка Движения (Отпускание W):</strong></p>
+        <ol>
+            <li>Добавьте Событие: <strong>Клавиатура &gt; Отпускание W</strong></li>
+            <li>Добавьте Действие: <strong>Движение &gt; Установить вертикальную скорость</strong></li>
+            <li>Установите скорость <code>0</code></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Движение вниз (клавиша S):</strong></p>
+        <ol>
+            <li>Добавьте Событие: <strong>Клавиатура &gt; Нажатие S</strong></li>
+            <li>Добавьте Действие: <strong>Движение &gt; Установить вертикальную скорость</strong></li>
+            <li>Установите скорость <code>8</code> (положительное значение = вниз)</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Остановка Движения (Отпускание S):</strong></p>
+        <ol>
+            <li>Добавьте Событие: <strong>Клавиатура &gt; Отпускание S</strong></li>
+            <li>Добавьте Действие: <strong>Движение &gt; Установить вертикальную скорость</strong></li>
+            <li>Установите скорость <code>0</code></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>Столкновение со Стеной:</strong></p>
+        <ol>
+            <li>Добавьте Событие: <strong>Столкновение &gt; obj_wall</strong></li>
+            <li>Добавьте Действие: <strong>Движение &gt; Отскок от объектов</strong></li>
+            <li>Выберите "От твёрдых объектов"</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Теперь сделайте то же самое для obj_paddle_right</strong>, но используйте стрелку вверх и стрелку вниз вместо W и S!
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы добавить Движение и отскоки Мяча.
+    </div>
+</body>
+</html>

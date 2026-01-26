@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 18px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        h2 {
+            color: #34495e;
+            font-size: 14px;
+        }
+        .step {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .step-number {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .step-title {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+        .success {
+            background-color: #d4edda;
+            padding: 10px;
+            border-left: 4px solid #28a745;
+            margin: 10px 0;
+        }
+        code {
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Creando tu primer proyecto</h1>
+
+    <p>Vamos a crear un proyecto sencillo paso a paso.</p>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Crear un nuevo proyecto</span>
+        <p>Ve a <code>Archivo &gt; Nuevo proyecto</code> (o presiona <code>Ctrl+N</code>).</p>
+        <p>Ingresa un nombre para tu proyecto y elige donde guardarlo.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Crear un Sprite</span>
+        <p>Haz clic derecho en <strong>Sprites</strong> en el arbol de recursos y selecciona
+        <code>Crear Sprite</code>.</p>
+        <p>Nombralo "spr_jugador" e importa un archivo de imagen para tu personaje jugador.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Crear un Objeto</span>
+        <p>Haz clic derecho en <strong>Objetos</strong> y selecciona <code>Crear Objeto</code>.</p>
+        <p>Nombralo "obj_jugador" y asignale el sprite que acabas de crear.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Crear una Habitacion</span>
+        <p>Haz clic derecho en <strong>Habitaciones</strong> y selecciona <code>Crear Habitacion</code>.</p>
+        <p>Nombrala "room_juego". Este sera tu primer nivel de juego.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Colocar tu Objeto</span>
+        <p>Haz doble clic en tu habitacion para abrir el Editor de Habitaciones.</p>
+        <p>Selecciona tu objeto de la lista y haz clic en la habitacion para colocarlo.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Probar tu juego</span>
+        <p>Presiona <code>F5</code> o ve a <code>Compilar &gt; Probar juego</code>.</p>
+        <p>Se abrira una ventana mostrando tu juego con el objeto que colocaste.</p>
+    </div>
+
+    <div class="success">
+        <strong>Felicidades!</strong> Has creado tu primer proyecto en PyGameMaker.
+        Todavia no hace mucho, pero aprenderas como agregar comportamientos en los siguientes tutoriales.
+    </div>
+</body>
+</html>

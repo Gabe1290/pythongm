@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 6: Отображение счёта и жизней</h1>
+
+    <p>Давайте добавим отображение счёта игрока и оставшихся жизней.</p>
+
+    <h2>Событие рисования в игровом контроллере</h2>
+    <div class="step">
+        <p>В <code>obj_game_controller</code>:</p>
+        <ol>
+            <li>Добавьте событие: <strong>Рисование</strong></li>
+        </ol>
+    </div>
+
+    <h2>Рисование счёта</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте действие: <strong>Рисование &gt; Рисовать текст</strong></li>
+            <li>Текст: <code>Счёт:</code></li>
+            <li>X: <code>10</code>, Y: <code>10</code></li>
+            <li>Добавьте действие: <strong>Рисование &gt; Рисовать счёт</strong></li>
+            <li>X: <code>70</code>, Y: <code>10</code></li>
+        </ol>
+    </div>
+
+    <h2>Рисование жизней</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте действие: <strong>Рисование &gt; Рисовать текст</strong></li>
+            <li>Текст: <code>Жизни:</code></li>
+            <li>X: <code>10</code>, Y: <code>30</code></li>
+            <li>Добавьте действие: <strong>Рисование &gt; Рисовать жизни</strong></li>
+            <li>X: <code>70</code>, Y: <code>30</code></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Совет:</strong> Вы можете использовать <code>Рисовать жизни как изображение</code>, чтобы показывать иконки сердечек вместо числа!
+    </div>
+
+    <div class="info">
+        Нажмите «Далее», чтобы настроить игровую комнату.
+    </div>
+</body>
+</html>

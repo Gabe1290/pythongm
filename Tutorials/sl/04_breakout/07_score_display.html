@@ -14,46 +14,46 @@
     </style>
 </head>
 <body>
-    <h1>Step 6: Display Score and Lives</h1>
+    <h1>Korak 6: Prikaži rezultat in življenja</h1>
 
-    <p>Let's add a display for the player's score and remaining lives.</p>
+    <p>Dodajmo prikaz igralčevega rezultata in preostalih življenj.</p>
 
-    <h2>Draw Event in Game Controller</h2>
+    <h2>Dogodek Draw v krmilniku igre</h2>
     <div class="step">
-        <p>In <code>obj_game_controller</code>:</p>
+        <p>V <code>obj_game_controller</code>:</p>
         <ol>
-            <li>Add Event: <strong>Draw</strong></li>
+            <li>Dodaj dogodek: <strong>Draw</strong></li>
         </ol>
     </div>
 
-    <h2>Draw Score</h2>
+    <h2>Nariši rezultat</h2>
     <div class="step">
         <ol>
-            <li>Add Action: <strong>Draw &gt; Draw Text</strong></li>
-            <li>Text: <code>Score:</code></li>
+            <li>Dodaj akcijo: <strong>Draw &gt; Draw Text</strong></li>
+            <li>Besedilo: <code>Rezultat:</code></li>
             <li>X: <code>10</code>, Y: <code>10</code></li>
-            <li>Add Action: <strong>Draw &gt; Draw Score</strong></li>
+            <li>Dodaj akcijo: <strong>Draw &gt; Draw Score</strong></li>
             <li>X: <code>70</code>, Y: <code>10</code></li>
         </ol>
     </div>
 
-    <h2>Draw Lives</h2>
+    <h2>Nariši življenja</h2>
     <div class="step">
         <ol>
-            <li>Add Action: <strong>Draw &gt; Draw Text</strong></li>
-            <li>Text: <code>Lives:</code></li>
+            <li>Dodaj akcijo: <strong>Draw &gt; Draw Text</strong></li>
+            <li>Besedilo: <code>Življenja:</code></li>
             <li>X: <code>10</code>, Y: <code>30</code></li>
-            <li>Add Action: <strong>Draw &gt; Draw Lives</strong></li>
+            <li>Dodaj akcijo: <strong>Draw &gt; Draw Lives</strong></li>
             <li>X: <code>70</code>, Y: <code>30</code></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Tip:</strong> You can use <code>Draw Lives as Image</code> to show heart icons instead of a number!
+        <strong>Namig:</strong> Lahko uporabiš <code>Draw Lives as Image</code>, da prikažeš ikone src namesto številke!
     </div>
 
     <div class="info">
-        Click "Next" to set up the game room.
+        Klikni "Naprej" za nastavitev sobe igre.
     </div>
 </body>
 </html>

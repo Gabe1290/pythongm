@@ -14,58 +14,58 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Ball Movement and Bouncing</h1>
+    <h1>Крок 4: Рух та відскоки м'яча</h1>
 
-    <p>The ball needs to move and bounce off walls, paddle, and bricks.</p>
+    <p>М'яч повинен рухатися та відскакувати від стін, ракетки та цегли.</p>
 
-    <h2>Start Ball Moving (Create Event)</h2>
+    <h2>Запуск руху м'яча (подія Create)</h2>
     <div class="step">
         <ol>
-            <li>Open <code>obj_ball</code></li>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Move &gt; Start Moving in Direction</strong></li>
-            <li>Choose an upward diagonal direction</li>
-            <li>Set speed to <code>5</code></li>
+            <li>Відкрийте <code>obj_ball</code></li>
+            <li>Додайте подію: <strong>Create</strong></li>
+            <li>Додайте дію: <strong>Move &gt; Start Moving in Direction</strong></li>
+            <li>Виберіть діагональний напрямок вгору</li>
+            <li>Встановіть швидкість <code>5</code></li>
         </ol>
     </div>
 
-    <h2>Bounce Off Walls</h2>
+    <h2>Відскок від стін</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_wall</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Додайте подію: <strong>Collision &gt; obj_wall</strong></li>
+            <li>Додайте дію: <strong>Move &gt; Bounce Against Objects</strong></li>
+            <li>Виберіть "Against solid objects"</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Paddle</h2>
+    <h2>Відскок від ракетки</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_paddle</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Додайте подію: <strong>Collision &gt; obj_paddle</strong></li>
+            <li>Додайте дію: <strong>Move &gt; Bounce Against Objects</strong></li>
+            <li>Виберіть "Against solid objects"</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Bricks (and Destroy Them!)</h2>
+    <h2>Відскок від цегли (та її знищення!)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_brick_parent</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
-            <li>Add Action: <strong>Main1 &gt; Destroy Instance</strong></li>
-            <li>Select "Other" (destroys the brick, not the ball)</li>
-            <li>Add Action: <strong>Score &gt; Add to Score</strong></li>
-            <li>Value: <code>10</code></li>
+            <li>Додайте подію: <strong>Collision &gt; obj_brick_parent</strong></li>
+            <li>Додайте дію: <strong>Move &gt; Bounce Against Objects</strong></li>
+            <li>Виберіть "Against solid objects"</li>
+            <li>Додайте дію: <strong>Main1 &gt; Destroy Instance</strong></li>
+            <li>Виберіть "Other" (знищує цеглу, а не м'яч)</li>
+            <li>Додайте дію: <strong>Score &gt; Add to Score</strong></li>
+            <li>Значення: <code>10</code></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Key Point:</strong> Using <code>obj_brick_parent</code> means this collision works for ALL brick colors!
+        <strong>Ключовий момент:</strong> Використання <code>obj_brick_parent</code> означає, що це зіткнення працює для ВСІХ кольорів цегли!
     </div>
 
     <div class="info">
-        Click "Next" to add the lives system.
+        Натисніть "Далі", щоб додати систему життів.
     </div>
 </body>
 </html>

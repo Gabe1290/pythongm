@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 4: Movimiento del Jugador (Evento Step)</h1>
+
+    <p>Este es el nucleo de nuestro juego de plataforma: movimiento, gravedad, salto y colision.</p>
+
+    <h2>Agregar Evento Step</h2>
+    <div class="step">
+        <p>En <code>obj_player</code>:</p>
+        <ol>
+            <li>Agregar Evento: <strong>Step > Step</strong></li>
+            <li>Agregar Accion: <strong>Control > Ejecutar Codigo</strong></li>
+        </ol>
+        <pre>
+// === MOVIMIENTO HORIZONTAL ===
+var move_input = keyboard_check(vk_right) - keyboard_check(vk_left);
+hsp = move_input * hspeed_max;
+
+// === GRAVEDAD ===
+vsp += gravity_force;
+if (vsp > vspeed_max) vsp = vspeed_max;
+
+// === VERIFICACION DE SUELO ===
+on_ground = place_meeting(x, y + 1, obj_ground);
+
+// === SALTO ===
+if (on_ground && (keyboard_check_pressed(vk_up) || keyboard_check_pressed(vk_space))) {
+    vsp = jump_force;
+}
+
+// === COLISION HORIZONTAL ===
+if (place_meeting(x + hsp, y, obj_ground)) {
+    while (!place_meeting(x + sign(hsp), y, obj_ground)) {
+        x += sign(hsp);
+    }
+    hsp = 0;
+}
+x += hsp;
+
+// === COLISION VERTICAL ===
+if (place_meeting(x, y + vsp, obj_ground)) {
+    while (!place_meeting(x, y + sign(vsp), obj_ground)) {
+        y += sign(vsp);
+    }
+    vsp = 0;
+}
+y += vsp;</pre>
+    </div>
+
+    <h2>Como Funciona</h2>
+    <ol>
+        <li><strong>Entrada:</strong> Flecha derecha = 1, Izquierda = -1, Ninguna = 0</li>
+        <li><strong>Gravedad:</strong> Se suma a vsp cada frame (cayendo mas rapido)</li>
+        <li><strong>Verificacion de Suelo:</strong> Busca 1 pixel abajo por suelo</li>
+        <li><strong>Salto:</strong> Solo funciona cuando on_ground es verdadero</li>
+        <li><strong>Colision:</strong> Moverse pixel por pixel hasta chocar con pared</li>
+    </ol>
+
+    <div class="highlight">
+        <strong>La Magia:</strong> El bucle while nos mueve pixel por pixel hasta el borde de la pared, evitando que nos quedemos atascados!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para agregar monedas, pinchos y la bandera.
+    </div>
+</body>
+</html>

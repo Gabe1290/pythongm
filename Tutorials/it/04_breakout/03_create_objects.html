@@ -14,66 +14,66 @@
     </style>
 </head>
 <body>
-    <h1>Step 2: Create the Objects</h1>
+    <h1>Passo 2: Crea gli Oggetti</h1>
 
-    <p>Now we'll create all the game objects.</p>
+    <p>Ora creeremo tutti gli oggetti del gioco.</p>
 
-    <h2>Create the Wall Object</h2>
+    <h2>Crea l'Oggetto Muro</h2>
     <div class="step">
         <ol>
-            <li>Right-click on <strong>Objects</strong> and select <strong>Create Object</strong></li>
-            <li>Name it <code>obj_wall</code></li>
-            <li>Set the sprite to <code>spr_wall</code></li>
-            <li><strong>Check "Solid"</strong></li>
-            <li>No events needed</li>
+            <li>Clicca col tasto destro su <strong>Objects</strong> e seleziona <strong>Crea Oggetto</strong></li>
+            <li>Chiamalo <code>obj_wall</code></li>
+            <li>Imposta lo sprite su <code>spr_wall</code></li>
+            <li><strong>Spunta "Solido"</strong></li>
+            <li>Non servono eventi</li>
         </ol>
     </div>
 
-    <h2>Create the Parent Brick Object</h2>
-    <p>We'll use a parent object so all bricks share the same collision behavior.</p>
+    <h2>Crea l'Oggetto Parent dei Mattoni</h2>
+    <p>Useremo un oggetto parent in modo che tutti i mattoni condividano lo stesso comportamento di collisione.</p>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_brick_parent</code></li>
-            <li>No sprite needed (it's just a template)</li>
-            <li><strong>Check "Solid"</strong></li>
+            <li>Crea l'oggetto <code>obj_brick_parent</code></li>
+            <li>Non serve uno sprite (e solo un modello)</li>
+            <li><strong>Spunta "Solido"</strong></li>
         </ol>
     </div>
 
-    <h2>Create the Colored Brick Objects</h2>
+    <h2>Crea gli Oggetti Mattoni Colorati</h2>
     <div class="step">
-        <p>For each brick color:</p>
+        <p>Per ogni colore di mattone:</p>
         <ol>
-            <li>Create <code>obj_brick_red</code> with <code>spr_brick_red</code></li>
-            <li>Set <strong>Parent</strong> to <code>obj_brick_parent</code></li>
-            <li>Check "Solid"</li>
+            <li>Crea <code>obj_brick_red</code> con <code>spr_brick_red</code></li>
+            <li>Imposta <strong>Parent</strong> su <code>obj_brick_parent</code></li>
+            <li>Spunta "Solido"</li>
         </ol>
-        <p>Repeat for <code>obj_brick_orange</code>, <code>obj_brick_yellow</code>, and <code>obj_brick_green</code>.</p>
+        <p>Ripeti per <code>obj_brick_orange</code>, <code>obj_brick_yellow</code> e <code>obj_brick_green</code>.</p>
     </div>
 
-    <h2>Create the Paddle Object</h2>
+    <h2>Crea l'Oggetto Racchetta</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_paddle</code></li>
-            <li>Set sprite to <code>spr_paddle</code></li>
-            <li><strong>Check "Solid"</strong></li>
+            <li>Crea l'oggetto <code>obj_paddle</code></li>
+            <li>Imposta lo sprite su <code>spr_paddle</code></li>
+            <li><strong>Spunta "Solido"</strong></li>
         </ol>
     </div>
 
-    <h2>Create the Ball Object</h2>
+    <h2>Crea l'Oggetto Palla</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_ball</code></li>
-            <li>Set sprite to <code>spr_ball</code></li>
-            <li>Leave "Solid" unchecked</li>
+            <li>Crea l'oggetto <code>obj_ball</code></li>
+            <li>Imposta lo sprite su <code>spr_ball</code></li>
+            <li>Lascia "Solido" deselezionato</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Parent Objects:</strong> When the ball collides with <code>obj_brick_parent</code>, it will detect collisions with ALL brick types!
+        <strong>Oggetti Parent:</strong> Quando la palla collide con <code>obj_brick_parent</code>, rileverà le collisioni con TUTTI i tipi di mattoni!
     </div>
 
     <div class="info">
-        Click "Next" to add paddle movement.
+        Clicca "Avanti" per aggiungere il movimento della racchetta.
     </div>
 </body>
 </html>

@@ -14,69 +14,69 @@
     </style>
 </head>
 <body>
-    <h1>Step 6: Display the Scores</h1>
+    <h1>Korak 6: Prikazi rezultate</h1>
 
-    <p>We need a controller object to initialize scores and display them.</p>
+    <p>Potrebujemo nadzorni objekt za inicializacijo rezultatov in njihov prikaz.</p>
 
-    <h2>Create Score Controller Object</h2>
+    <h2>Ustvari objekt nadzornika rezultata</h2>
     <div class="step">
         <ol>
-            <li>Create a new object named <code>obj_score</code></li>
-            <li>No sprite needed (leave it empty)</li>
+            <li>Ustvari nov objekt z imenom <code>obj_score</code></li>
+            <li>Sprite ni potreben (pusti prazno)</li>
         </ol>
     </div>
 
-    <h2>Initialize Scores (Create Event)</h2>
+    <h2>Inicializiraj rezultate (dogodek Ustvari)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Variable</strong></li>
-            <li>Variable: <code>global.p1score</code>, Value: <code>0</code></li>
-            <li>Add another <strong>Set Variable</strong> action</li>
-            <li>Variable: <code>global.p2score</code>, Value: <code>0</code></li>
+            <li>Dodaj dogodek: <strong>Ustvari</strong></li>
+            <li>Dodaj akcijo: <strong>Rezultat &gt; Nastavi spremenljivko</strong></li>
+            <li>Spremenljivka: <code>global.p1score</code>, Vrednost: <code>0</code></li>
+            <li>Dodaj se eno akcijo <strong>Nastavi spremenljivko</strong></li>
+            <li>Spremenljivka: <code>global.p2score</code>, Vrednost: <code>0</code></li>
         </ol>
     </div>
 
-    <h2>Draw Scores (Draw Event)</h2>
+    <h2>Narisi rezultate (dogodek Risanje)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Draw</strong></li>
-            <li>Add Action: <strong>Draw &gt; Draw Text</strong></li>
-            <li>Text: <code>Player 1:</code></li>
+            <li>Dodaj dogodek: <strong>Risanje</strong></li>
+            <li>Dodaj akcijo: <strong>Risanje &gt; Narisi besedilo</strong></li>
+            <li>Besedilo: <code>Igralec 1:</code></li>
             <li>X: <code>10</code>, Y: <code>10</code></li>
         </ol>
     </div>
 
     <div class="step">
         <ol>
-            <li>Add Action: <strong>Draw &gt; Draw Variable</strong></li>
-            <li>Variable: <code>global.p1score</code></li>
+            <li>Dodaj akcijo: <strong>Risanje &gt; Narisi spremenljivko</strong></li>
+            <li>Spremenljivka: <code>global.p1score</code></li>
             <li>X: <code>100</code>, Y: <code>10</code></li>
         </ol>
     </div>
 
     <div class="step">
         <ol>
-            <li>Add Action: <strong>Draw &gt; Draw Text</strong></li>
-            <li>Text: <code>Player 2:</code></li>
+            <li>Dodaj akcijo: <strong>Risanje &gt; Narisi besedilo</strong></li>
+            <li>Besedilo: <code>Igralec 2:</code></li>
             <li>X: <code>10</code>, Y: <code>30</code></li>
         </ol>
     </div>
 
     <div class="step">
         <ol>
-            <li>Add Action: <strong>Draw &gt; Draw Variable</strong></li>
-            <li>Variable: <code>global.p2score</code></li>
+            <li>Dodaj akcijo: <strong>Risanje &gt; Narisi spremenljivko</strong></li>
+            <li>Spremenljivka: <code>global.p2score</code></li>
             <li>X: <code>100</code>, Y: <code>30</code></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Remember:</strong> Don't forget to place <code>obj_score</code> in your room!
+        <strong>Ne pozabi:</strong> Ne pozabi postaviti <code>obj_score</code> v svojo sobo!
     </div>
 
     <div class="info">
-        Click "Next" to set up the game room.
+        Klikni "Naprej" za nastavitev igralne sobe.
     </div>
 </body>
 </html>

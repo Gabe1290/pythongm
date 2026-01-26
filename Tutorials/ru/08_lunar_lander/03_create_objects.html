@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 2: Создание объектов</h1>
+
+    <p>Теперь мы создаём объекты для всех игровых элементов.</p>
+
+    <h2>Объект земли (опасный)</h2>
+    <div class="step">
+        <ol>
+            <li>Щёлкните правой кнопкой мыши <strong>Объекты</strong> > <strong>Создать объект</strong></li>
+            <li>Назовите его <code>obj_ground</code></li>
+            <li>Установите спрайт <code>spr_ground</code></li>
+            <li><strong>Установите флажок "Твёрдый"</strong></li>
+        </ol>
+    </div>
+
+    <h2>Объект посадочной площадки (безопасный)</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте <code>obj_pad</code></li>
+            <li>Установите спрайт <code>spr_pad</code></li>
+            <li><strong>Установите флажок "Твёрдый"</strong></li>
+        </ol>
+    </div>
+
+    <h2>Объект посадочного модуля (игрок)</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте <code>obj_lander</code></li>
+            <li>Установите спрайт <code>spr_lander</code></li>
+        </ol>
+    </div>
+
+    <h2>Объект игрового контроллера</h2>
+    <div class="step">
+        <ol>
+            <li>Создайте <code>obj_game_controller</code></li>
+            <li>Спрайт не нужен (невидимый)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Ключевое отличие:</strong> Посадка на <code>obj_pad</code> = безопасная посадка. Посадка на <code>obj_ground</code> = крушение!
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы добавить физику посадочного модуля.
+    </div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 5: Обнаружение столкновений</h1>
+
+    <p>Обработка посадки на площадку и крушения о местность.</p>
+
+    <h2>Столкновение с посадочной площадкой</h2>
+    <div class="step">
+        <p>В <code>obj_lander</code>:</p>
+        <ol>
+            <li>Добавить событие: <strong>Столкновение &gt; obj_pad</strong></li>
+            <li>Добавить действие: <strong>Управление &gt; Выполнить код</strong></li>
+        </ol>
+        <pre>
+// Вычислить общую скорость
+var total_speed = sqrt(hsp*hsp + vsp*vsp);
+
+if (total_speed <= safe_speed) {
+    // Безопасная посадка!
+    landed = true;
+    hsp = 0;
+    vsp = 0;
+    show_message("Идеальная посадка! Вы победили!");
+} else {
+    // Слишком быстро - крушение!
+    crashed = true;
+    show_message("Крушение! Слишком быстро!");
+    room_restart();
+}</pre>
+    </div>
+
+    <h2>Столкновение с землёй (крушение)</h2>
+    <div class="danger">
+        <p>В <code>obj_lander</code>:</p>
+        <ol>
+            <li>Добавить событие: <strong>Столкновение &gt; obj_ground</strong></li>
+            <li>Добавить действие: <strong>Управление &gt; Выполнить код</strong></li>
+        </ol>
+        <pre>
+crashed = true;
+show_message("Крушение о местность!");
+room_restart();</pre>
+    </div>
+
+    <h2>Расчёт скорости</h2>
+    <p>Мы используем теорему Пифагора для получения общей скорости:</p>
+    <pre>total_speed = sqrt(hsp*hsp + vsp*vsp)</pre>
+    <p>Это объединяет горизонтальную и вертикальную скорость в одно значение.</p>
+
+    <div class="highlight">
+        <strong>Безопасная скорость - 2!</strong> Если total_speed > 2, вы разобьётесь даже на площадке.
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы добавить отображение интерфейса.
+    </div>
+</body>
+</html>

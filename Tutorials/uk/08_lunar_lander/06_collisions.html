@@ -15,59 +15,59 @@
     </style>
 </head>
 <body>
-    <h1>Step 5: Collision Detection</h1>
+    <h1>Крок 5: Виявлення зіткнень</h1>
 
-    <p>Handle landing on the pad and crashing into terrain.</p>
+    <p>Обробка посадки на майданчик та зіткнення з місцевістю.</p>
 
-    <h2>Collision with Landing Pad</h2>
+    <h2>Зіткнення з посадковим майданчиком</h2>
     <div class="step">
-        <p>In <code>obj_lander</code>:</p>
+        <p>У <code>obj_lander</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_pad</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Додайте подію: <strong>Collision &gt; obj_pad</strong></li>
+            <li>Додайте дію: <strong>Control &gt; Execute Code</strong></li>
         </ol>
         <pre>
-// Calculate total speed
+// Обчислення загальної швидкості
 var total_speed = sqrt(hsp*hsp + vsp*vsp);
 
 if (total_speed <= safe_speed) {
-    // Safe landing!
+    // Безпечна посадка!
     landed = true;
     hsp = 0;
     vsp = 0;
-    show_message("Perfect Landing! You Win!");
+    show_message("Ідеальна посадка! Ви перемогли!");
 } else {
-    // Too fast - crash!
+    // Занадто швидко - аварія!
     crashed = true;
-    show_message("Crashed! Too fast!");
+    show_message("Аварія! Занадто швидко!");
     room_restart();
 }</pre>
     </div>
 
-    <h2>Collision with Ground (Crash)</h2>
+    <h2>Зіткнення з землею (аварія)</h2>
     <div class="danger">
-        <p>In <code>obj_lander</code>:</p>
+        <p>У <code>obj_lander</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_ground</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Додайте подію: <strong>Collision &gt; obj_ground</strong></li>
+            <li>Додайте дію: <strong>Control &gt; Execute Code</strong></li>
         </ol>
         <pre>
 crashed = true;
-show_message("Crashed into terrain!");
+show_message("Зіткнення з місцевістю!");
 room_restart();</pre>
     </div>
 
-    <h2>Speed Calculation</h2>
-    <p>We use the Pythagorean theorem to get total speed:</p>
+    <h2>Обчислення швидкості</h2>
+    <p>Ми використовуємо теорему Піфагора для отримання загальної швидкості:</p>
     <pre>total_speed = sqrt(hsp*hsp + vsp*vsp)</pre>
-    <p>This combines horizontal and vertical speed into one value.</p>
+    <p>Це об'єднує горизонтальну та вертикальну швидкість в одне значення.</p>
 
     <div class="highlight">
-        <strong>Safe speed is 2!</strong> If total_speed > 2, you crash even on the pad.
+        <strong>Безпечна швидкість - 2!</strong> Якщо total_speed > 2, ви розіб'єтесь навіть на майданчику.
     </div>
 
     <div class="info">
-        Click "Next" to add the HUD display.
+        Натисніть "Далі", щоб додати HUD дисплей.
     </div>
 </body>
 </html>

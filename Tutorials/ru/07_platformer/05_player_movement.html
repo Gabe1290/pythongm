@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 4: Движение игрока (Событие шага)</h1>
+
+    <p>Это основа нашего платформера: движение, гравитация, прыжок и столкновения.</p>
+
+    <h2>Добавление события шага</h2>
+    <div class="step">
+        <p>В <code>obj_player</code>:</p>
+        <ol>
+            <li>Добавить событие: <strong>Шаг > Шаг</strong></li>
+            <li>Добавить действие: <strong>Управление > Выполнить код</strong></li>
+        </ol>
+        <pre>
+// === ГОРИЗОНТАЛЬНОЕ ДВИЖЕНИЕ ===
+var move_input = keyboard_check(vk_right) - keyboard_check(vk_left);
+hsp = move_input * hspeed_max;
+
+// === ГРАВИТАЦИЯ ===
+vsp += gravity_force;
+if (vsp > vspeed_max) vsp = vspeed_max;
+
+// === ПРОВЕРКА ЗЕМЛИ ===
+on_ground = place_meeting(x, y + 1, obj_ground);
+
+// === ПРЫЖОК ===
+if (on_ground && (keyboard_check_pressed(vk_up) || keyboard_check_pressed(vk_space))) {
+    vsp = jump_force;
+}
+
+// === ГОРИЗОНТАЛЬНОЕ СТОЛКНОВЕНИЕ ===
+if (place_meeting(x + hsp, y, obj_ground)) {
+    while (!place_meeting(x + sign(hsp), y, obj_ground)) {
+        x += sign(hsp);
+    }
+    hsp = 0;
+}
+x += hsp;
+
+// === ВЕРТИКАЛЬНОЕ СТОЛКНОВЕНИЕ ===
+if (place_meeting(x, y + vsp, obj_ground)) {
+    while (!place_meeting(x, y + sign(vsp), obj_ground)) {
+        y += sign(vsp);
+    }
+    vsp = 0;
+}
+y += vsp;</pre>
+    </div>
+
+    <h2>Как это работает</h2>
+    <ol>
+        <li><strong>Ввод:</strong> Стрелка вправо = 1, Влево = -1, Ничего = 0</li>
+        <li><strong>Гравитация:</strong> Добавляется к vsp каждый кадр (падение ускоряется)</li>
+        <li><strong>Проверка земли:</strong> Проверяет 1 пиксель ниже на наличие земли</li>
+        <li><strong>Прыжок:</strong> Работает только когда on_ground равно true</li>
+        <li><strong>Столкновение:</strong> Движение попиксельно до столкновения со стеной</li>
+    </ol>
+
+    <div class="highlight">
+        <strong>Магия:</strong> Цикл while перемещает нас попиксельно к краю стены, предотвращая застревание!
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы добавить монеты, шипы и флаг.
+    </div>
+</body>
+</html>

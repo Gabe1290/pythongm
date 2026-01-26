@@ -14,66 +14,66 @@
     </style>
 </head>
 <body>
-    <h1>Step 2: Create the Objects</h1>
+    <h1>Крок 2: Створення об'єктів</h1>
 
-    <p>Now we'll create all the game objects.</p>
+    <p>Тепер ми створимо всі ігрові об'єкти.</p>
 
-    <h2>Create the Wall Object</h2>
+    <h2>Створення об'єкта стіни</h2>
     <div class="step">
         <ol>
-            <li>Right-click on <strong>Objects</strong> and select <strong>Create Object</strong></li>
-            <li>Name it <code>obj_wall</code></li>
-            <li>Set the sprite to <code>spr_wall</code></li>
-            <li><strong>Check "Solid"</strong></li>
-            <li>No events needed</li>
+            <li>Клацніть правою кнопкою миші на <strong>Objects</strong> і виберіть <strong>Створити об'єкт</strong></li>
+            <li>Назвіть його <code>obj_wall</code></li>
+            <li>Встановіть спрайт <code>spr_wall</code></li>
+            <li><strong>Поставте галочку "Solid"</strong></li>
+            <li>Події не потрібні</li>
         </ol>
     </div>
 
-    <h2>Create the Parent Brick Object</h2>
-    <p>We'll use a parent object so all bricks share the same collision behavior.</p>
+    <h2>Створення батьківського об'єкта цегли</h2>
+    <p>Ми використаємо батьківський об'єкт, щоб уся цегла мала однакову поведінку при зіткненні.</p>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_brick_parent</code></li>
-            <li>No sprite needed (it's just a template)</li>
-            <li><strong>Check "Solid"</strong></li>
+            <li>Створіть об'єкт <code>obj_brick_parent</code></li>
+            <li>Спрайт не потрібен (це лише шаблон)</li>
+            <li><strong>Поставте галочку "Solid"</strong></li>
         </ol>
     </div>
 
-    <h2>Create the Colored Brick Objects</h2>
+    <h2>Створення кольорових об'єктів цегли</h2>
     <div class="step">
-        <p>For each brick color:</p>
+        <p>Для кожного кольору цегли:</p>
         <ol>
-            <li>Create <code>obj_brick_red</code> with <code>spr_brick_red</code></li>
-            <li>Set <strong>Parent</strong> to <code>obj_brick_parent</code></li>
-            <li>Check "Solid"</li>
+            <li>Створіть <code>obj_brick_red</code> зі спрайтом <code>spr_brick_red</code></li>
+            <li>Встановіть <strong>Parent</strong> на <code>obj_brick_parent</code></li>
+            <li>Поставте галочку "Solid"</li>
         </ol>
-        <p>Repeat for <code>obj_brick_orange</code>, <code>obj_brick_yellow</code>, and <code>obj_brick_green</code>.</p>
+        <p>Повторіть для <code>obj_brick_orange</code>, <code>obj_brick_yellow</code> та <code>obj_brick_green</code>.</p>
     </div>
 
-    <h2>Create the Paddle Object</h2>
+    <h2>Створення об'єкта ракетки</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_paddle</code></li>
-            <li>Set sprite to <code>spr_paddle</code></li>
-            <li><strong>Check "Solid"</strong></li>
+            <li>Створіть об'єкт <code>obj_paddle</code></li>
+            <li>Встановіть спрайт <code>spr_paddle</code></li>
+            <li><strong>Поставте галочку "Solid"</strong></li>
         </ol>
     </div>
 
-    <h2>Create the Ball Object</h2>
+    <h2>Створення об'єкта м'яча</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_ball</code></li>
-            <li>Set sprite to <code>spr_ball</code></li>
-            <li>Leave "Solid" unchecked</li>
+            <li>Створіть об'єкт <code>obj_ball</code></li>
+            <li>Встановіть спрайт <code>spr_ball</code></li>
+            <li>Залиште "Solid" без галочки</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Parent Objects:</strong> When the ball collides with <code>obj_brick_parent</code>, it will detect collisions with ALL brick types!
+        <strong>Батьківські об'єкти:</strong> Коли м'яч зіткнеться з <code>obj_brick_parent</code>, він виявить зіткнення з УСІМА типами цегли!
     </div>
 
     <div class="info">
-        Click "Next" to add paddle movement.
+        Натисніть "Далі", щоб додати рух ракетки.
     </div>
 </body>
 </html>

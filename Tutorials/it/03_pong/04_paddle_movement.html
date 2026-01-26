@@ -17,82 +17,82 @@
     </style>
 </head>
 <body>
-    <h1>Step 3: Add Paddle Movement</h1>
+    <h1>Passo 3: Aggiungere il Movimento delle Racchette</h1>
 
-    <p>We'll set up two-player controls using different keys for each paddle.</p>
+    <p>Configureremo i controlli per due giocatori usando tasti diversi per ogni racchetta.</p>
 
-    <h2>Control Scheme</h2>
+    <h2>Schema dei Controlli</h2>
     <table>
         <tr>
-            <th>Player</th>
-            <th>Move Up</th>
-            <th>Move Down</th>
+            <th>Giocatore</th>
+            <th>Muovi Su</th>
+            <th>Muovi Giu</th>
         </tr>
         <tr>
-            <td>Player 1 (Left)</td>
-            <td>W key</td>
-            <td>S key</td>
+            <td>Giocatore 1 (Sinistra)</td>
+            <td>Tasto W</td>
+            <td>Tasto S</td>
         </tr>
         <tr>
-            <td>Player 2 (Right)</td>
-            <td>Up Arrow</td>
-            <td>Down Arrow</td>
+            <td>Giocatore 2 (Destra)</td>
+            <td>Freccia Su</td>
+            <td>Freccia Giu</td>
         </tr>
     </table>
 
-    <h2>Left Paddle Controls (obj_paddle_left)</h2>
+    <h2>Controlli Racchetta Sinistra (obj_paddle_left)</h2>
     <div class="step">
-        <p><strong>Move Up (W key):</strong></p>
+        <p><strong>Muovi Su (tasto W):</strong></p>
         <ol>
-            <li>Open <code>obj_paddle_left</code></li>
-            <li>Add Event: <strong>Keyboard &gt; Press W</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Vertical Speed</strong></li>
-            <li>Set speed to <code>-8</code> (negative = up)</li>
+            <li>Apri <code>obj_paddle_left</code></li>
+            <li>Aggiungi Evento: <strong>Tastiera &gt; Premi W</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Imposta Velocita Verticale</strong></li>
+            <li>Imposta la velocita a <code>-8</code> (negativo = su)</li>
         </ol>
     </div>
 
     <div class="step">
-        <p><strong>Stop Moving (Release W):</strong></p>
+        <p><strong>Ferma il Movimento (Rilascia W):</strong></p>
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Release W</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Vertical Speed</strong></li>
-            <li>Set speed to <code>0</code></li>
+            <li>Aggiungi Evento: <strong>Tastiera &gt; Rilascia W</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Imposta Velocita Verticale</strong></li>
+            <li>Imposta la velocita a <code>0</code></li>
         </ol>
     </div>
 
     <div class="step">
-        <p><strong>Move Down (S key):</strong></p>
+        <p><strong>Muovi Giu (tasto S):</strong></p>
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Press S</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Vertical Speed</strong></li>
-            <li>Set speed to <code>8</code> (positive = down)</li>
+            <li>Aggiungi Evento: <strong>Tastiera &gt; Premi S</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Imposta Velocita Verticale</strong></li>
+            <li>Imposta la velocita a <code>8</code> (positivo = giu)</li>
         </ol>
     </div>
 
     <div class="step">
-        <p><strong>Stop Moving (Release S):</strong></p>
+        <p><strong>Ferma il Movimento (Rilascia S):</strong></p>
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Release S</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Vertical Speed</strong></li>
-            <li>Set speed to <code>0</code></li>
+            <li>Aggiungi Evento: <strong>Tastiera &gt; Rilascia S</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Imposta Velocita Verticale</strong></li>
+            <li>Imposta la velocita a <code>0</code></li>
         </ol>
     </div>
 
     <div class="step">
-        <p><strong>Wall Collision:</strong></p>
+        <p><strong>Collisione con il Muro:</strong></p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_wall</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Aggiungi Evento: <strong>Collisione &gt; obj_wall</strong></li>
+            <li>Aggiungi Azione: <strong>Movimento &gt; Rimbalza Contro Oggetti</strong></li>
+            <li>Seleziona "Contro oggetti solidi"</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Now do the same for obj_paddle_right</strong>, but use Up Arrow and Down Arrow instead of W and S!
+        <strong>Ora fai lo stesso per obj_paddle_right</strong>, ma usa Freccia Su e Freccia Giu invece di W e S!
     </div>
 
     <div class="info">
-        Click "Next" to add ball movement and bouncing.
+        Clicca "Avanti" per aggiungere il movimento e il rimbalzo della palla.
     </div>
 </body>
 </html>

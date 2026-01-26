@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 1: Crear los Sprites</h1>
+
+    <p>Necesitamos sprites para el jugador, paredes, salida y monedas. Las paredes deben ser de 32x32 pixeles para crear una cuadricula.</p>
+
+    <h2>Crear el Sprite del Jugador</h2>
+    <div class="step">
+        <ol>
+            <li>Haz clic derecho en <strong>Sprites</strong> y selecciona <strong>Crear Sprite</strong></li>
+            <li>Nombralo <code>spr_player</code></li>
+            <li>Haz clic en <strong>Editar Sprite</strong></li>
+            <li>Dibuja un personaje pequeno (circulo o persona simple)</li>
+            <li>Usa un color brillante como azul o verde</li>
+            <li>Tamano: <strong>24x24 pixeles</strong> (mas pequeno que las paredes)</li>
+        </ol>
+    </div>
+
+    <h2>Crear el Sprite de la Pared</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un nuevo sprite llamado <code>spr_wall</code></li>
+            <li>Dibuja un patron de ladrillos o piedra</li>
+            <li>Usa colores grises u oscuros</li>
+            <li>Tamano: <strong>32x32 pixeles</strong></li>
+        </ol>
+    </div>
+
+    <h2>Crear el Sprite de la Salida</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un nuevo sprite llamado <code>spr_exit</code></li>
+            <li>Dibuja una puerta, bandera o marcador brillante</li>
+            <li>Usa colores verdes o dorados</li>
+            <li>Tamano: <strong>32x32 pixeles</strong></li>
+        </ol>
+    </div>
+
+    <h2>Crear el Sprite de la Moneda</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un nuevo sprite llamado <code>spr_coin</code></li>
+            <li>Dibuja un pequeno circulo amarillo/dorado</li>
+            <li>Tamano: <strong>16x16 pixeles</strong></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Consejo:</strong> Hacer el sprite del jugador mas pequeno que las paredes permite un movimiento mas facil a traves de los corredores!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para crear los objetos del juego.
+    </div>
+</body>
+</html>

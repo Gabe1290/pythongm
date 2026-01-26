@@ -16,68 +16,68 @@
     </style>
 </head>
 <body>
-    <h1>Step 7: Room Setup</h1>
+    <h1>Schritt 7: Raum einrichten</h1>
 
-    <p>Time to design your platformer level!</p>
+    <p>Zeit, dein Plattformer-Level zu gestalten!</p>
 
-    <h2>Create the Room</h2>
+    <h2>Den Raum erstellen</h2>
     <div class="step">
         <ol>
-            <li>Right-click <strong>Rooms</strong> > <strong>Create Room</strong></li>
-            <li>Name it <code>room_level1</code></li>
-            <li>Set size: <strong>800 x 480</strong></li>
-            <li>Set background color to light blue (sky)</li>
-            <li>Enable "Snap to Grid" and set to 32x32</li>
+            <li>Rechtsklick auf <strong>Raeume</strong> > <strong>Raum erstellen</strong></li>
+            <li>Benenne ihn <code>room_level1</code></li>
+            <li>Setze die Groesse: <strong>800 x 480</strong></li>
+            <li>Setze die Hintergrundfarbe auf Hellblau (Himmel)</li>
+            <li>Aktiviere "Am Raster ausrichten" und setze es auf 32x32</li>
         </ol>
     </div>
 
-    <h2>Example Level Layout</h2>
+    <h2>Beispiel-Level-Layout</h2>
     <pre>
                                         F
                                       ===
-                          C       C
+                          M       M
                         =====   =====
-            C                           C
+            M                           M
           ===== X     X         X     =====
-    P                   C
+    S                   M
   ====== === ===   ===   === === ===== ======
-  GGGGGG     GGG   GGG   GGG         GGGGGGGG
+  BBBBBB     BBB   BBB   BBB         BBBBBBBB
 
-G = Ground    P = Player    F = Flag    C = Coin
-X = Spike     === = Platform</pre>
+B = Boden    S = Spieler    F = Flagge    M = Muenze
+X = Stachel     === = Plattform</pre>
 
-    <h2>Building Your Level</h2>
+    <h2>Dein Level bauen</h2>
     <div class="step">
         <ol>
-            <li><strong>Ground:</strong> Place <code>obj_ground</code> along the bottom</li>
-            <li><strong>Gaps:</strong> Leave spaces for pits (death traps)</li>
-            <li><strong>Platforms:</strong> Place <code>obj_platform</code> in the air</li>
-            <li><strong>Coins:</strong> Scatter on platforms and hard-to-reach spots</li>
-            <li><strong>Spikes:</strong> Place near pits or on platforms</li>
-            <li><strong>Flag:</strong> Place at the end of the level</li>
-            <li><strong>Player:</strong> Place at the start (left side)</li>
-            <li><strong>Controller:</strong> Place <code>obj_game_controller</code> anywhere</li>
+            <li><strong>Boden:</strong> Platziere <code>obj_ground</code> am unteren Rand</li>
+            <li><strong>Luecken:</strong> Lasse Zwischenraeume fuer Gruben (Todesfallen)</li>
+            <li><strong>Plattformen:</strong> Platziere <code>obj_platform</code> in der Luft</li>
+            <li><strong>Muenzen:</strong> Verteile sie auf Plattformen und schwer erreichbaren Stellen</li>
+            <li><strong>Stacheln:</strong> Platziere sie in der Naehe von Gruben oder auf Plattformen</li>
+            <li><strong>Flagge:</strong> Platziere sie am Ende des Levels</li>
+            <li><strong>Spieler:</strong> Platziere ihn am Start (linke Seite)</li>
+            <li><strong>Controller:</strong> Platziere <code>obj_game_controller</code> irgendwo</li>
         </ol>
     </div>
 
-    <h2>Test Your Game!</h2>
+    <h2>Teste dein Spiel!</h2>
     <div class="success">
-        <p><strong>Press F5 or click Run!</strong></p>
+        <p><strong>Druecke F5 oder klicke auf Ausfuehren!</strong></p>
         <ul>
-            <li><strong>Left/Right Arrows:</strong> Move</li>
-            <li><strong>Up Arrow or Space:</strong> Jump</li>
-            <li>Collect coins for points</li>
-            <li>Avoid spikes!</li>
-            <li>Reach the flag to win!</li>
+            <li><strong>Links/Rechts-Pfeiltasten:</strong> Bewegen</li>
+            <li><strong>Pfeil nach oben oder Leertaste:</strong> Springen</li>
+            <li>Sammle Muenzen fuer Punkte</li>
+            <li>Weiche Stacheln aus!</li>
+            <li>Erreiche die Flagge zum Gewinnen!</li>
         </ul>
     </div>
 
     <div class="highlight">
-        <strong>Congratulations!</strong> You've created a platformer game with gravity, jumping, and collision!
+        <strong>Herzlichen Glueckwunsch!</strong> Du hast ein Plattformer-Spiel mit Schwerkraft, Springen und Kollision erstellt!
     </div>
 
     <div class="info">
-        <strong>Challenge:</strong> Add more levels, moving platforms, or enemies!
+        <strong>Herausforderung:</strong> Fuege mehr Levels, bewegliche Plattformen oder Gegner hinzu!
     </div>
 </body>
 </html>

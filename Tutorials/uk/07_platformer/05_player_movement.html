@@ -15,35 +15,35 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Player Movement (Step Event)</h1>
+    <h1>Крок 4: Рух гравця (Подія Step)</h1>
 
-    <p>This is the core of our platformer: movement, gravity, jumping, and collision.</p>
+    <p>Це основа нашого платформера: рух, гравітація, стрибки та зіткнення.</p>
 
-    <h2>Add Step Event</h2>
+    <h2>Додайте подію Step</h2>
     <div class="step">
-        <p>In <code>obj_player</code>:</p>
+        <p>В <code>obj_player</code>:</p>
         <ol>
-            <li>Add Event: <strong>Step &gt; Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Додайте подію: <strong>Step &gt; Step</strong></li>
+            <li>Додайте дію: <strong>Control &gt; Execute Code</strong></li>
         </ol>
         <pre>
-// === HORIZONTAL MOVEMENT ===
+// === ГОРИЗОНТАЛЬНИЙ РУХ ===
 var move_input = keyboard_check(vk_right) - keyboard_check(vk_left);
 hsp = move_input * hspeed_max;
 
-// === GRAVITY ===
+// === ГРАВІТАЦІЯ ===
 vsp += gravity_force;
 if (vsp > vspeed_max) vsp = vspeed_max;
 
-// === GROUND CHECK ===
+// === ПЕРЕВІРКА ЗЕМЛІ ===
 on_ground = place_meeting(x, y + 1, obj_ground);
 
-// === JUMPING ===
+// === СТРИБОК ===
 if (on_ground && (keyboard_check_pressed(vk_up) || keyboard_check_pressed(vk_space))) {
     vsp = jump_force;
 }
 
-// === HORIZONTAL COLLISION ===
+// === ГОРИЗОНТАЛЬНЕ ЗІТКНЕННЯ ===
 if (place_meeting(x + hsp, y, obj_ground)) {
     while (!place_meeting(x + sign(hsp), y, obj_ground)) {
         x += sign(hsp);
@@ -52,7 +52,7 @@ if (place_meeting(x + hsp, y, obj_ground)) {
 }
 x += hsp;
 
-// === VERTICAL COLLISION ===
+// === ВЕРТИКАЛЬНЕ ЗІТКНЕННЯ ===
 if (place_meeting(x, y + vsp, obj_ground)) {
     while (!place_meeting(x, y + sign(vsp), obj_ground)) {
         y += sign(vsp);
@@ -62,21 +62,21 @@ if (place_meeting(x, y + vsp, obj_ground)) {
 y += vsp;</pre>
     </div>
 
-    <h2>How It Works</h2>
+    <h2>Як це працює</h2>
     <ol>
-        <li><strong>Input:</strong> Right arrow = 1, Left = -1, None = 0</li>
-        <li><strong>Gravity:</strong> Adds to vsp each frame (falling faster)</li>
-        <li><strong>Ground Check:</strong> Looks 1 pixel below for ground</li>
-        <li><strong>Jump:</strong> Only works when on_ground is true</li>
-        <li><strong>Collision:</strong> Move pixel-by-pixel until hitting wall</li>
+        <li><strong>Введення:</strong> Стрілка вправо = 1, Вліво = -1, Нічого = 0</li>
+        <li><strong>Гравітація:</strong> Додається до vsp кожен кадр (падіння швидше)</li>
+        <li><strong>Перевірка землі:</strong> Перевіряє на 1 піксель нижче наявність землі</li>
+        <li><strong>Стрибок:</strong> Працює тільки коли on_ground дорівнює true</li>
+        <li><strong>Зіткнення:</strong> Рухаємось піксель за пікселем до стіни</li>
     </ol>
 
     <div class="highlight">
-        <strong>The Magic:</strong> The while loop moves us pixel-by-pixel to the edge of the wall, preventing us from getting stuck!
+        <strong>Магія:</strong> Цикл while переміщує нас піксель за пікселем до краю стіни, запобігаючи застряганню!
     </div>
 
     <div class="info">
-        Click "Next" to add coins, spikes, and the flag.
+        Натисніть "Далі", щоб додати монети, шипи та прапор.
     </div>
 </body>
 </html>

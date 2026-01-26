@@ -15,66 +15,66 @@
     </style>
 </head>
 <body>
-    <h1>Step 3: Player Physics (Create Event)</h1>
+    <h1>Étape 3 : Physique du Joueur (Événement Create)</h1>
 
-    <p>We need to set up variables for gravity, jumping, and movement.</p>
+    <p>Nous devons configurer des variables pour la gravité, le saut et le mouvement.</p>
 
-    <h2>Initialize Physics Variables</h2>
+    <h2>Initialiser les Variables Physiques</h2>
     <div class="step">
-        <p>In <code>obj_player</code>:</p>
+        <p>Dans <code>obj_player</code> :</p>
         <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Ajoutez un événement : <strong>Create</strong></li>
+            <li>Ajoutez une action : <strong>Contrôle &gt; Exécuter du Code</strong></li>
         </ol>
         <pre>
-// Movement settings
-hspeed_max = 4;      // Maximum horizontal speed
-vspeed_max = 10;     // Maximum fall speed
-jump_force = -10;    // Jump strength (negative = up)
-gravity_force = 0.5; // How fast we fall
+// Paramètres de mouvement
+hspeed_max = 4;      // Vitesse horizontale maximale
+vspeed_max = 10;     // Vitesse de chute maximale
+jump_force = -10;    // Force de saut (négatif = vers le haut)
+gravity_force = 0.5; // Vitesse de chute
 
-// Current speeds
+// Vitesses actuelles
 hsp = 0;
 vsp = 0;
 
-// State
+// État
 on_ground = false;</pre>
     </div>
 
-    <h2>Understanding the Variables</h2>
+    <h2>Comprendre les Variables</h2>
     <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
         <tr style="background-color: #34495e; color: white;">
             <th style="padding: 8px; border: 1px solid #ddd;">Variable</th>
-            <th style="padding: 8px; border: 1px solid #ddd;">Purpose</th>
+            <th style="padding: 8px; border: 1px solid #ddd;">Fonction</th>
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;"><code>hsp</code></td>
-            <td style="padding: 8px; border: 1px solid #ddd;">Horizontal speed (left/right)</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Vitesse horizontale (gauche/droite)</td>
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;"><code>vsp</code></td>
-            <td style="padding: 8px; border: 1px solid #ddd;">Vertical speed (up/down)</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Vitesse verticale (haut/bas)</td>
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;"><code>gravity_force</code></td>
-            <td style="padding: 8px; border: 1px solid #ddd;">Constant force pulling down</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Force constante tirant vers le bas</td>
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;"><code>jump_force</code></td>
-            <td style="padding: 8px; border: 1px solid #ddd;">Negative value to go upward</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Valeur négative pour aller vers le haut</td>
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;"><code>on_ground</code></td>
-            <td style="padding: 8px; border: 1px solid #ddd;">True when standing on ground</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Vrai quand on est debout sur le sol</td>
         </tr>
     </table>
 
     <div class="highlight">
-        <strong>Key Concept:</strong> Jump force is negative because Y increases downward in games. A negative Y velocity moves the player up!
+        <strong>Concept Clé :</strong> La force de saut est négative car Y augmente vers le bas dans les jeux. Une vélocité Y négative déplace le joueur vers le haut !
     </div>
 
     <div class="info">
-        Click "Next" to add movement and collision handling.
+        Cliquez sur « Suivant » pour ajouter le mouvement et la gestion des collisions.
     </div>
 </body>
 </html>

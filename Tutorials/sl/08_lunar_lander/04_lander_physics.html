@@ -17,69 +17,69 @@
     </style>
 </head>
 <body>
-    <h1>Step 3: Lander Physics (Create Event)</h1>
+    <h1>Korak 3: Fizika pristajalnika (dogodek Create)</h1>
 
-    <p>Set up variables for gravity, thrust, fuel, and velocity.</p>
+    <p>Nastavi spremenljivke za gravitacijo, potisk, gorivo in hitrost.</p>
 
-    <h2>Initialize Physics Variables</h2>
+    <h2>Inicializacija fizikalnih spremenljivk</h2>
     <div class="step">
-        <p>In <code>obj_lander</code>:</p>
+        <p>V <code>obj_lander</code>:</p>
         <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Dodaj dogodek: <strong>Create</strong></li>
+            <li>Dodaj akcijo: <strong>Control &gt; Execute Code</strong></li>
         </ol>
         <pre>
-// Physics settings
-gravity_force = 0.05;  // Gentle gravity
-thrust_force = 0.1;    // Thrust power
-max_speed = 5;         // Maximum velocity
+// Fizikalne nastavitve
+gravity_force = 0.05;  // Nežna gravitacija
+thrust_force = 0.1;    // Moč potiska
+max_speed = 5;         // Največja hitrost
 
-// Current velocity
-hsp = 0;  // Horizontal speed
-vsp = 0;  // Vertical speed
+// Trenutna hitrost
+hsp = 0;  // Vodoravna hitrost
+vsp = 0;  // Navpična hitrost
 
-// Fuel system
+// Sistem goriva
 fuel = 100;
-fuel_use = 0.5;  // Fuel per frame
+fuel_use = 0.5;  // Gorivo na sličico
 
-// Game state
+// Stanje igre
 landed = false;
 crashed = false;
 
-// Safe landing speed
+// Varna hitrost pristanka
 safe_speed = 2;</pre>
     </div>
 
-    <h2>Understanding the Variables</h2>
+    <h2>Razumevanje spremenljivk</h2>
     <table>
         <tr>
-            <th>Variable</th>
-            <th>Purpose</th>
+            <th>Spremenljivka</th>
+            <th>Namen</th>
         </tr>
         <tr>
             <td><code>gravity_force</code></td>
-            <td>Constant downward pull (0.05 is gentle)</td>
+            <td>Stalna sila navzdol (0.05 je nežno)</td>
         </tr>
         <tr>
             <td><code>thrust_force</code></td>
-            <td>Upward force when pressing UP</td>
+            <td>Sila navzgor ob pritisku tipke GOR</td>
         </tr>
         <tr>
             <td><code>fuel</code></td>
-            <td>100% fuel, decreases when thrusting</td>
+            <td>100% goriva, zmanjšuje se ob potisku</td>
         </tr>
         <tr>
             <td><code>safe_speed</code></td>
-            <td>Max speed for safe landing (2)</td>
+            <td>Največja hitrost za varen pristanek (2)</td>
         </tr>
     </table>
 
     <div class="highlight">
-        <strong>Balance:</strong> Thrust (0.1) is stronger than gravity (0.05) so you can slow down!
+        <strong>Ravnovesje:</strong> Potisk (0.1) je močnejši od gravitacije (0.05), zato se lahko upočasniš!
     </div>
 
     <div class="info">
-        Click "Next" to add movement and controls.
+        Klikni "Naprej" za dodajanje premikanja in nadzora.
     </div>
 </body>
 </html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 4: Движение и отскоки Мяча</h1>
+
+    <p>Мяч должен двигаться автоматически и отскакивать от Стен и Ракеток.</p>
+
+    <h2>Запуск Движения Мяча (Событие Создать)</h2>
+    <div class="step">
+        <ol>
+            <li>Откройте <code>obj_ball</code></li>
+            <li>Добавьте Событие: <strong>Создать</strong></li>
+            <li>Добавьте Действие: <strong>Движение &gt; Начать движение в направлении</strong></li>
+            <li>Выберите диагональное направление (не прямо вверх/вниз)</li>
+            <li>Установите скорость <code>6</code></li>
+        </ol>
+    </div>
+
+    <h2>Отскок от Стен</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте Событие: <strong>Столкновение &gt; obj_wall</strong></li>
+            <li>Добавьте Действие: <strong>Движение &gt; Отскок от объектов</strong></li>
+            <li>Выберите "От твёрдых объектов"</li>
+        </ol>
+    </div>
+
+    <h2>Отскок от левой Ракетки</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте Событие: <strong>Столкновение &gt; obj_paddle_left</strong></li>
+            <li>Добавьте Действие: <strong>Движение &gt; Отскок от объектов</strong></li>
+            <li>Выберите "От твёрдых объектов"</li>
+        </ol>
+    </div>
+
+    <h2>Отскок от правой Ракетки</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте Событие: <strong>Столкновение &gt; obj_paddle_right</strong></li>
+            <li>Добавьте Действие: <strong>Движение &gt; Отскок от объектов</strong></li>
+            <li>Выберите "От твёрдых объектов"</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Совет для тестирования:</strong> Вы можете протестировать игру прямо сейчас! Мяч должен отскакивать, но подсчёт Счёта пока не будет работать.
+    </div>
+
+    <div class="info">
+        Нажмите "Далее", чтобы добавить Ворота для подсчёта очков.
+    </div>
+</body>
+</html>

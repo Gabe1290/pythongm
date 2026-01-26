@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 10px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 6: Configuracion de la Habitacion</h1>
+
+    <p>Ahora crea tu nivel de laberinto!</p>
+
+    <h2>Crear la Habitacion</h2>
+    <div class="step">
+        <ol>
+            <li>Haz clic derecho en <strong>Habitaciones</strong> &gt; <strong>Crear Habitacion</strong></li>
+            <li>Nombrala <code>room_maze</code></li>
+            <li>Establece el tamano a 640x480</li>
+            <li>Activa <strong>Ajustar a Cuadricula</strong>: 32x32</li>
+        </ol>
+    </div>
+
+    <h2>Construye tu Laberinto</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un borde de paredes alrededor de los bordes</li>
+            <li>Agrega paredes internas para crear corredores</li>
+            <li>Coloca monedas a lo largo de los caminos</li>
+            <li>Coloca la salida al final del laberinto</li>
+            <li>Coloca al jugador cerca de la entrada</li>
+            <li>Agrega el controlador del juego (en cualquier lugar)</li>
+        </ol>
+    </div>
+
+    <h2>Ejemplo de Diseno</h2>
+    <pre>
+W W W W W W W W W W W W W W W W W W W W
+W P . . . . W . . . . . . . W . . . . W
+W . W W W . W . W W W W W . W . W W . W
+W . W . . . . . . . . C . . . . . W . W
+W . W . W W W W W . W W W W W W . W . W
+W . . . W . . . . . . . . C . W . . . W
+W W W . W . W W W W W W W . . W W W . W
+W C . . . . W . . . . . W . . . . . . W
+W . W W W W W . W W W . W W W W W W . W
+W . . . . . . . . C . . . . . . . . . W
+W . W W W W W W W W W . W W W W W W . W
+W . . . . . . . . . . . W . . . . . . W
+W W W W W W W W W W W . W . W W W W . W
+W . . . . . . . . . . . . . W . C . E W
+W W W W W W W W W W W W W W W W W W W W
+
+W = Pared   P = Jugador   E = Salida   C = Moneda   . = Vacio</pre>
+
+    <div class="success">
+        <strong>Felicitaciones!</strong> Has construido un juego de laberinto!
+        <br><br>
+        Presiona <strong>F5</strong> para jugar:
+        <ul>
+            <li>Usa las teclas de direccion para moverte</li>
+            <li>Recoge monedas para obtener puntos</li>
+            <li>Encuentra la salida para ganar!</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>Ideas para Desafios:</strong>
+        <ul>
+            <li>Agrega enemigos que patrullan</li>
+            <li>Crea un temporizador de cuenta regresiva</li>
+            <li>Requiere todas las monedas antes de que se abra la salida</li>
+            <li>Agrega multiples niveles</li>
+        </ul>
+    </div>
+</body>
+</html>

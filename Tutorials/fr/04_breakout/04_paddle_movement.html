@@ -14,62 +14,62 @@
     </style>
 </head>
 <body>
-    <h1>Step 3: Add Paddle Movement</h1>
+    <h1>Étape 3 : Ajouter le Mouvement de la Raquette</h1>
 
-    <p>The paddle moves left and right using the arrow keys.</p>
+    <p>La raquette se déplace à gauche et à droite avec les touches fléchées.</p>
 
-    <h2>Move Left (Left Arrow)</h2>
+    <h2>Déplacer à Gauche (Flèche Gauche)</h2>
     <div class="step">
         <ol>
-            <li>Open <code>obj_paddle</code></li>
-            <li>Add Event: <strong>Keyboard &gt; Press Left</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Horizontal Speed</strong></li>
-            <li>Set speed to <code>-8</code> (negative = left)</li>
+            <li>Ouvrez <code>obj_paddle</code></li>
+            <li>Ajoutez un événement : <strong>Clavier &gt; Appuyer Gauche</strong></li>
+            <li>Ajoutez une action : <strong>Mouvement &gt; Définir la Vitesse Horizontale</strong></li>
+            <li>Définissez la vitesse sur <code>-8</code> (négatif = gauche)</li>
         </ol>
     </div>
 
-    <h2>Stop Moving (Release Left)</h2>
+    <h2>Arrêter le Mouvement (Relâcher Gauche)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Release Left</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Horizontal Speed</strong></li>
-            <li>Set speed to <code>0</code></li>
+            <li>Ajoutez un événement : <strong>Clavier &gt; Relâcher Gauche</strong></li>
+            <li>Ajoutez une action : <strong>Mouvement &gt; Définir la Vitesse Horizontale</strong></li>
+            <li>Définissez la vitesse sur <code>0</code></li>
         </ol>
     </div>
 
-    <h2>Move Right (Right Arrow)</h2>
+    <h2>Déplacer à Droite (Flèche Droite)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Press Right</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Horizontal Speed</strong></li>
-            <li>Set speed to <code>8</code> (positive = right)</li>
+            <li>Ajoutez un événement : <strong>Clavier &gt; Appuyer Droite</strong></li>
+            <li>Ajoutez une action : <strong>Mouvement &gt; Définir la Vitesse Horizontale</strong></li>
+            <li>Définissez la vitesse sur <code>8</code> (positif = droite)</li>
         </ol>
     </div>
 
-    <h2>Stop Moving (Release Right)</h2>
+    <h2>Arrêter le Mouvement (Relâcher Droite)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Release Right</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Horizontal Speed</strong></li>
-            <li>Set speed to <code>0</code></li>
+            <li>Ajoutez un événement : <strong>Clavier &gt; Relâcher Droite</strong></li>
+            <li>Ajoutez une action : <strong>Mouvement &gt; Définir la Vitesse Horizontale</strong></li>
+            <li>Définissez la vitesse sur <code>0</code></li>
         </ol>
     </div>
 
-    <h2>Wall Collision</h2>
+    <h2>Collision avec le Mur</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_wall</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Ajoutez un événement : <strong>Collision &gt; obj_wall</strong></li>
+            <li>Ajoutez une action : <strong>Mouvement &gt; Rebondir Contre les Objets</strong></li>
+            <li>Sélectionnez « Contre les objets solides »</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Note:</strong> The wall collision prevents the paddle from going off-screen!
+        <strong>Note :</strong> La collision avec le mur empêche la raquette de sortir de l'écran !
     </div>
 
     <div class="info">
-        Click "Next" to add ball movement.
+        Cliquez sur « Suivant » pour ajouter le mouvement de la balle.
     </div>
 </body>
 </html>

@@ -15,59 +15,59 @@
     </style>
 </head>
 <body>
-    <h1>Step 5: Collision Detection</h1>
+    <h1>Schritt 5: Kollisionserkennung</h1>
 
-    <p>Handle landing on the pad and crashing into terrain.</p>
+    <p>Behandle das Landen auf der Plattform und das Abstuerzen ins Gelaende.</p>
 
-    <h2>Collision with Landing Pad</h2>
+    <h2>Kollision mit Landeplattform</h2>
     <div class="step">
         <p>In <code>obj_lander</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_pad</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Event hinzufuegen: <strong>Collision &gt; obj_pad</strong></li>
+            <li>Aktion hinzufuegen: <strong>Control &gt; Execute Code</strong></li>
         </ol>
         <pre>
-// Calculate total speed
+// Gesamtgeschwindigkeit berechnen
 var total_speed = sqrt(hsp*hsp + vsp*vsp);
 
 if (total_speed <= safe_speed) {
-    // Safe landing!
+    // Sichere Landung!
     landed = true;
     hsp = 0;
     vsp = 0;
-    show_message("Perfect Landing! You Win!");
+    show_message("Perfekte Landung! Du hast gewonnen!");
 } else {
-    // Too fast - crash!
+    // Zu schnell - Absturz!
     crashed = true;
-    show_message("Crashed! Too fast!");
+    show_message("Abgestuerzt! Zu schnell!");
     room_restart();
 }</pre>
     </div>
 
-    <h2>Collision with Ground (Crash)</h2>
+    <h2>Kollision mit Boden (Absturz)</h2>
     <div class="danger">
         <p>In <code>obj_lander</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_ground</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Event hinzufuegen: <strong>Collision &gt; obj_ground</strong></li>
+            <li>Aktion hinzufuegen: <strong>Control &gt; Execute Code</strong></li>
         </ol>
         <pre>
 crashed = true;
-show_message("Crashed into terrain!");
+show_message("Im Gelaende abgestuerzt!");
 room_restart();</pre>
     </div>
 
-    <h2>Speed Calculation</h2>
-    <p>We use the Pythagorean theorem to get total speed:</p>
+    <h2>Geschwindigkeitsberechnung</h2>
+    <p>Wir verwenden den Satz des Pythagoras, um die Gesamtgeschwindigkeit zu berechnen:</p>
     <pre>total_speed = sqrt(hsp*hsp + vsp*vsp)</pre>
-    <p>This combines horizontal and vertical speed into one value.</p>
+    <p>Dies kombiniert horizontale und vertikale Geschwindigkeit zu einem Wert.</p>
 
     <div class="highlight">
-        <strong>Safe speed is 2!</strong> If total_speed > 2, you crash even on the pad.
+        <strong>Sichere Geschwindigkeit ist 2!</strong> Wenn total_speed > 2, stuerzt du sogar auf der Plattform ab.
     </div>
 
     <div class="info">
-        Click "Next" to add the HUD display.
+        Klicke auf "Weiter", um die HUD-Anzeige hinzuzufuegen.
     </div>
 </body>
 </html>

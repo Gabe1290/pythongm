@@ -15,66 +15,66 @@
     </style>
 </head>
 <body>
-    <h1>Step 3: Player Physics (Create Event)</h1>
+    <h1>Крок 3: Фізика гравця (Подія Create)</h1>
 
-    <p>We need to set up variables for gravity, jumping, and movement.</p>
+    <p>Нам потрібно налаштувати змінні для гравітації, стрибків та руху.</p>
 
-    <h2>Initialize Physics Variables</h2>
+    <h2>Ініціалізація змінних фізики</h2>
     <div class="step">
-        <p>In <code>obj_player</code>:</p>
+        <p>В <code>obj_player</code>:</p>
         <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Додайте подію: <strong>Create</strong></li>
+            <li>Додайте дію: <strong>Control &gt; Execute Code</strong></li>
         </ol>
         <pre>
-// Movement settings
-hspeed_max = 4;      // Maximum horizontal speed
-vspeed_max = 10;     // Maximum fall speed
-jump_force = -10;    // Jump strength (negative = up)
-gravity_force = 0.5; // How fast we fall
+// Налаштування руху
+hspeed_max = 4;      // Максимальна горизонтальна швидкість
+vspeed_max = 10;     // Максимальна швидкість падіння
+jump_force = -10;    // Сила стрибка (від'ємна = вгору)
+gravity_force = 0.5; // Швидкість падіння
 
-// Current speeds
+// Поточні швидкості
 hsp = 0;
 vsp = 0;
 
-// State
+// Стан
 on_ground = false;</pre>
     </div>
 
-    <h2>Understanding the Variables</h2>
+    <h2>Розуміння змінних</h2>
     <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
         <tr style="background-color: #34495e; color: white;">
-            <th style="padding: 8px; border: 1px solid #ddd;">Variable</th>
-            <th style="padding: 8px; border: 1px solid #ddd;">Purpose</th>
+            <th style="padding: 8px; border: 1px solid #ddd;">Змінна</th>
+            <th style="padding: 8px; border: 1px solid #ddd;">Призначення</th>
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;"><code>hsp</code></td>
-            <td style="padding: 8px; border: 1px solid #ddd;">Horizontal speed (left/right)</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Горизонтальна швидкість (вліво/вправо)</td>
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;"><code>vsp</code></td>
-            <td style="padding: 8px; border: 1px solid #ddd;">Vertical speed (up/down)</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Вертикальна швидкість (вгору/вниз)</td>
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;"><code>gravity_force</code></td>
-            <td style="padding: 8px; border: 1px solid #ddd;">Constant force pulling down</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Постійна сила, що тягне вниз</td>
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;"><code>jump_force</code></td>
-            <td style="padding: 8px; border: 1px solid #ddd;">Negative value to go upward</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">Від'ємне значення для руху вгору</td>
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;"><code>on_ground</code></td>
-            <td style="padding: 8px; border: 1px solid #ddd;">True when standing on ground</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">True, коли стоїмо на землі</td>
         </tr>
     </table>
 
     <div class="highlight">
-        <strong>Key Concept:</strong> Jump force is negative because Y increases downward in games. A negative Y velocity moves the player up!
+        <strong>Ключова концепція:</strong> Сила стрибка від'ємна, тому що Y збільшується донизу в іграх. Від'ємна швидкість Y переміщує гравця вгору!
     </div>
 
     <div class="info">
-        Click "Next" to add movement and collision handling.
+        Натисніть "Далі", щоб додати рух та обробку зіткнень.
     </div>
 </body>
 </html>

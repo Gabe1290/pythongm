@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Шаг 4: Движение и отскок мяча</h1>
+
+    <p>Мяч должен двигаться и отскакивать от стен, ракетки и кирпичей.</p>
+
+    <h2>Запуск движения мяча (событие создания)</h2>
+    <div class="step">
+        <ol>
+            <li>Откройте <code>obj_ball</code></li>
+            <li>Добавьте событие: <strong>Создать</strong></li>
+            <li>Добавьте действие: <strong>Движение &gt; Начать движение в направлении</strong></li>
+            <li>Выберите диагональное направление вверх</li>
+            <li>Установите скорость <code>5</code></li>
+        </ol>
+    </div>
+
+    <h2>Отскок от стен</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте событие: <strong>Столкновение &gt; obj_wall</strong></li>
+            <li>Добавьте действие: <strong>Движение &gt; Отскок от объектов</strong></li>
+            <li>Выберите «От твёрдых объектов»</li>
+        </ol>
+    </div>
+
+    <h2>Отскок от ракетки</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте событие: <strong>Столкновение &gt; obj_paddle</strong></li>
+            <li>Добавьте действие: <strong>Движение &gt; Отскок от объектов</strong></li>
+            <li>Выберите «От твёрдых объектов»</li>
+        </ol>
+    </div>
+
+    <h2>Отскок от кирпичей (и их уничтожение!)</h2>
+    <div class="step">
+        <ol>
+            <li>Добавьте событие: <strong>Столкновение &gt; obj_brick_parent</strong></li>
+            <li>Добавьте действие: <strong>Движение &gt; Отскок от объектов</strong></li>
+            <li>Выберите «От твёрдых объектов»</li>
+            <li>Добавьте действие: <strong>Main1 &gt; Уничтожить экземпляр</strong></li>
+            <li>Выберите «Другой» (уничтожает кирпич, а не мяч)</li>
+            <li>Добавьте действие: <strong>Счёт &gt; Добавить к счёту</strong></li>
+            <li>Значение: <code>10</code></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Ключевой момент:</strong> Использование <code>obj_brick_parent</code> означает, что это столкновение работает для ВСЕХ цветов кирпичей!
+    </div>
+
+    <div class="info">
+        Нажмите «Далее», чтобы добавить систему жизней.
+    </div>
+</body>
+</html>

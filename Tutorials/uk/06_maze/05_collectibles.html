@@ -14,40 +14,40 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Coins and Exit</h1>
+    <h1>Крок 4: Монети та вихід</h1>
 
-    <p>Now let's make coins collectible and the exit work.</p>
+    <p>Тепер зробимо монети для збору та налаштуємо вихід.</p>
 
-    <h2>Coin Collection</h2>
+    <h2>Збір монет</h2>
     <div class="step">
-        <p>In <code>obj_coin</code>:</p>
+        <p>В <code>obj_coin</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Score</strong></li>
-            <li>New Score: <code>10</code></li>
-            <li>Check "Relative" to add 10 points</li>
-            <li>Add Action: <strong>Main1 &gt; Destroy Instance</strong></li>
-            <li>Applies to: <code>Self</code></li>
+            <li>Додати подію: <strong>Collision &gt; obj_player</strong></li>
+            <li>Додати дію: <strong>Score &gt; Set Score</strong></li>
+            <li>Новий рахунок: <code>10</code></li>
+            <li>Поставте галочку "Relative", щоб додати 10 очок</li>
+            <li>Додати дію: <strong>Main1 &gt; Destroy Instance</strong></li>
+            <li>Застосувати до: <code>Self</code></li>
         </ol>
     </div>
 
-    <h2>Exit Behavior</h2>
+    <h2>Поведінка виходу</h2>
     <div class="step">
-        <p>In <code>obj_exit</code>:</p>
+        <p>В <code>obj_exit</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong></li>
-            <li>Message: <code>You Win!</code></li>
-            <li>Add Action: <strong>Main1 &gt; Restart Room</strong></li>
+            <li>Додати подію: <strong>Collision &gt; obj_player</strong></li>
+            <li>Додати дію: <strong>Main2 &gt; Show Message</strong></li>
+            <li>Повідомлення: <code>Ви перемогли!</code></li>
+            <li>Додати дію: <strong>Main1 &gt; Restart Room</strong></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Tip:</strong> You can use <strong>Next Room</strong> instead of <strong>Restart Room</strong> if you create multiple levels!
+        <strong>Порада:</strong> Ви можете використати <strong>Next Room</strong> замість <strong>Restart Room</strong>, якщо створите кілька рівнів!
     </div>
 
     <div class="info">
-        Click "Next" to add the timer display.
+        Натисніть "Далі", щоб додати відображення таймера.
     </div>
 </body>
 </html>

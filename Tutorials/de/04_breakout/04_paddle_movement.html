@@ -14,62 +14,62 @@
     </style>
 </head>
 <body>
-    <h1>Step 3: Add Paddle Movement</h1>
+    <h1>Schritt 3: Fuege Schlaegerbewegung hinzu</h1>
 
-    <p>The paddle moves left and right using the arrow keys.</p>
+    <p>Der Schlaeger bewegt sich mit den Pfeiltasten nach links und rechts.</p>
 
-    <h2>Move Left (Left Arrow)</h2>
+    <h2>Nach links bewegen (Pfeil links)</h2>
     <div class="step">
         <ol>
-            <li>Open <code>obj_paddle</code></li>
-            <li>Add Event: <strong>Keyboard &gt; Press Left</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Horizontal Speed</strong></li>
-            <li>Set speed to <code>-8</code> (negative = left)</li>
+            <li>Oeffne <code>obj_paddle</code></li>
+            <li>Fuege Ereignis hinzu: <strong>Tastatur &gt; Links druecken</strong></li>
+            <li>Fuege Aktion hinzu: <strong>Bewegung &gt; Horizontale Geschwindigkeit setzen</strong></li>
+            <li>Setze Geschwindigkeit auf <code>-8</code> (negativ = links)</li>
         </ol>
     </div>
 
-    <h2>Stop Moving (Release Left)</h2>
+    <h2>Bewegung stoppen (Links loslassen)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Release Left</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Horizontal Speed</strong></li>
-            <li>Set speed to <code>0</code></li>
+            <li>Fuege Ereignis hinzu: <strong>Tastatur &gt; Links loslassen</strong></li>
+            <li>Fuege Aktion hinzu: <strong>Bewegung &gt; Horizontale Geschwindigkeit setzen</strong></li>
+            <li>Setze Geschwindigkeit auf <code>0</code></li>
         </ol>
     </div>
 
-    <h2>Move Right (Right Arrow)</h2>
+    <h2>Nach rechts bewegen (Pfeil rechts)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Press Right</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Horizontal Speed</strong></li>
-            <li>Set speed to <code>8</code> (positive = right)</li>
+            <li>Fuege Ereignis hinzu: <strong>Tastatur &gt; Rechts druecken</strong></li>
+            <li>Fuege Aktion hinzu: <strong>Bewegung &gt; Horizontale Geschwindigkeit setzen</strong></li>
+            <li>Setze Geschwindigkeit auf <code>8</code> (positiv = rechts)</li>
         </ol>
     </div>
 
-    <h2>Stop Moving (Release Right)</h2>
+    <h2>Bewegung stoppen (Rechts loslassen)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Keyboard &gt; Release Right</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Horizontal Speed</strong></li>
-            <li>Set speed to <code>0</code></li>
+            <li>Fuege Ereignis hinzu: <strong>Tastatur &gt; Rechts loslassen</strong></li>
+            <li>Fuege Aktion hinzu: <strong>Bewegung &gt; Horizontale Geschwindigkeit setzen</strong></li>
+            <li>Setze Geschwindigkeit auf <code>0</code></li>
         </ol>
     </div>
 
-    <h2>Wall Collision</h2>
+    <h2>Wand-Kollision</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_wall</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>Fuege Ereignis hinzu: <strong>Kollision &gt; obj_wall</strong></li>
+            <li>Fuege Aktion hinzu: <strong>Bewegung &gt; Von Objekten abprallen</strong></li>
+            <li>Waehle "Gegen solide Objekte"</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Note:</strong> The wall collision prevents the paddle from going off-screen!
+        <strong>Hinweis:</strong> Die Wand-Kollision verhindert, dass der Schlaeger den Bildschirm verlaesst!
     </div>
 
     <div class="info">
-        Click "Next" to add ball movement.
+        Klicke auf "Weiter", um Ballbewegung hinzuzufuegen.
     </div>
 </body>
 </html>

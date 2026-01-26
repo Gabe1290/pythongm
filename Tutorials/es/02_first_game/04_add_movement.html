@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .step { background-color: #ffffff; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 10px 0; }
+        .step-number { display: inline-block; background-color: #e74c3c; color: white; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; margin-right: 10px; }
+        .step-title { font-weight: bold; color: #2c3e50; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .blockly-hint { background-color: #e8f4f8; padding: 10px; border-left: 4px solid #3498db; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Paso 3: Agregar movimiento al jugador</h1>
+
+    <p>Ahora haremos que el jugador se mueva a izquierda y derecha usando las teclas de flecha.</p>
+
+    <h2>Abrir el Objeto del Jugador</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <span class="step-title">Editar obj_jugador</span>
+        <p>Haz doble clic en <code>obj_jugador</code> en el arbol de recursos para abrir el Editor de Objetos.</p>
+    </div>
+
+    <h2>Agregar eventos de teclado (Modo Blockly)</h2>
+
+    <div class="blockly-hint">
+        <strong>Usando Blockly:</strong> Asegurate de estar en modo Blockly (verifica el interruptor en la parte superior del editor).
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <span class="step-title">Agregar evento de flecha izquierda</span>
+        <p>Haz clic en <strong>Agregar Evento</strong> y selecciona <code>Teclado &gt; Izquierda</code>.</p>
+        <p>Este evento se activa cuando se presiona la tecla de flecha izquierda.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <span class="step-title">Agregar accion de movimiento</span>
+        <p>Desde la caja de herramientas de Blockly, arrastra un bloque <strong>"mover en direccion"</strong>.</p>
+        <p>Establece la direccion a <code>180</code> (izquierda) y la velocidad a <code>5</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        <span class="step-title">Agregar evento de flecha derecha</span>
+        <p>Haz clic en <strong>Agregar Evento</strong> y selecciona <code>Teclado &gt; Derecha</code>.</p>
+    </div>
+
+    <div class="step">
+        <span class="step-number">5</span>
+        <span class="step-title">Agregar accion de movimiento</span>
+        <p>Arrastra otro bloque <strong>"mover en direccion"</strong>.</p>
+        <p>Establece la direccion a <code>0</code> (derecha) y la velocidad a <code>5</code>.</p>
+    </div>
+
+    <h2>Prueba tu juego!</h2>
+
+    <div class="step">
+        <span class="step-number">6</span>
+        <span class="step-title">Ejecutar el juego</span>
+        <p>Presiona <code>F5</code> para probar tu juego.</p>
+        <p>Usa las teclas de flecha izquierda y derecha para mover al jugador!</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Problema?</strong> Si el jugador se sale de la pantalla, lo arreglaremos mas tarde agregando verificaciones de limites.
+    </div>
+
+    <div class="info">
+        <strong>El jugador se mueve!</strong> Haz clic en "Siguiente" para hacer que las estrellas caigan del cielo.
+    </div>
+</body>
+</html>

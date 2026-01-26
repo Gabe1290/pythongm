@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 5: Controlador del Juego</h1>
+
+    <p>Crea un controlador para registrar el tiempo y mostrar la puntuacion.</p>
+
+    <h2>Crear el Objeto Controlador</h2>
+    <div class="step">
+        <ol>
+            <li>Crea el objeto <code>obj_game_controller</code></li>
+            <li>No se necesita sprite (dejalo vacio)</li>
+        </ol>
+    </div>
+
+    <h2>Inicializar Temporizador (Evento Crear)</h2>
+    <div class="step">
+        <ol>
+            <li>Agregar Evento: <strong>Crear</strong></li>
+            <li>Agregar Accion: <strong>Control &gt; Establecer Variable</strong></li>
+            <li>Variable: <code>global.timer</code></li>
+            <li>Valor: <code>0</code></li>
+        </ol>
+    </div>
+
+    <h2>Actualizar Temporizador (Evento Step)</h2>
+    <div class="step">
+        <ol>
+            <li>Agregar Evento: <strong>Step</strong></li>
+            <li>Agregar Accion: <strong>Control &gt; Establecer Variable</strong></li>
+            <li>Variable: <code>global.timer</code></li>
+            <li>Valor: <code>1/room_speed</code></li>
+            <li>Marca "Relativo"</li>
+        </ol>
+    </div>
+
+    <h2>Mostrar Informacion (Evento Draw)</h2>
+    <div class="step">
+        <ol>
+            <li>Agregar Evento: <strong>Draw</strong></li>
+            <li>Agregar Accion: <strong>Control &gt; Ejecutar Codigo</strong></li>
+        </ol>
+        <pre>
+draw_set_color(c_white);
+draw_text(10, 10, "Puntuacion: " + string(score));
+draw_text(10, 30, "Tiempo: " + string(floor(global.timer)) + "s");
+
+var coins = instance_number(obj_coin);
+draw_text(10, 50, "Monedas: " + string(coins));</pre>
+    </div>
+
+    <div class="highlight">
+        <strong>Nota:</strong> El controlador es invisible pero esencial para registrar el estado del juego!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para configurar tu habitacion.
+    </div>
+</body>
+</html>

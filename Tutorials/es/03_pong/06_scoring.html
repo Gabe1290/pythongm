@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 5: Agregar Porterias de Puntuacion</h1>
+
+    <p>Necesitamos porterias invisibles detras de cada paleta para detectar cuando alguien anota.</p>
+
+    <h2>Crear Sprite de Porteria</h2>
+    <div class="step">
+        <ol>
+            <li>Crea un nuevo sprite llamado <code>spr_goal</code></li>
+            <li>Hazlo de 32x32 pixeles con cualquier color</li>
+            <li>(Sera invisible en el juego)</li>
+        </ol>
+    </div>
+
+    <h2>Crear Objeto Porteria Izquierda</h2>
+    <div class="step">
+        <ol>
+            <li>Crea el objeto <code>obj_goal_left</code></li>
+            <li>Establece el sprite a <code>spr_goal</code></li>
+            <li><strong>Desmarca "Visible"</strong> - la porteria debe ser invisible</li>
+            <li>Marca "Solido"</li>
+        </ol>
+    </div>
+
+    <h2>Crear Objeto Porteria Derecha</h2>
+    <div class="step">
+        <ol>
+            <li>Crea el objeto <code>obj_goal_right</code></li>
+            <li>Establece el sprite a <code>spr_goal</code></li>
+            <li><strong>Desmarca "Visible"</strong></li>
+            <li>Marca "Solido"</li>
+        </ol>
+    </div>
+
+    <h2>Pelota Colisiona con Porteria Izquierda (Jugador 2 Anota)</h2>
+    <div class="step">
+        <p>Vuelve a <code>obj_ball</code>:</p>
+        <ol>
+            <li>Agrega Evento: <strong>Colision &gt; obj_goal_left</strong></li>
+            <li>Agrega Accion: <strong>Movimiento &gt; Saltar a Posicion Inicial</strong></li>
+            <li>Agrega Accion: <strong>Puntuacion &gt; Establecer Variable</strong></li>
+            <li>Variable: <code>global.p2score</code></li>
+            <li>Valor: <code>1</code></li>
+            <li><strong>Marca "Relativo"</strong> (suma 1 a la puntuacion actual)</li>
+        </ol>
+    </div>
+
+    <h2>Pelota Colisiona con Porteria Derecha (Jugador 1 Anota)</h2>
+    <div class="step">
+        <ol>
+            <li>Agrega Evento: <strong>Colision &gt; obj_goal_right</strong></li>
+            <li>Agrega Accion: <strong>Movimiento &gt; Saltar a Posicion Inicial</strong></li>
+            <li>Agrega Accion: <strong>Puntuacion &gt; Establecer Variable</strong></li>
+            <li>Variable: <code>global.p1score</code></li>
+            <li>Valor: <code>1</code></li>
+            <li><strong>Marca "Relativo"</strong></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Nota:</strong> El prefijo <code>global.</code> significa que estas variables son accesibles desde cualquier objeto!
+    </div>
+
+    <div class="info">
+        Haz clic en "Siguiente" para mostrar las puntuaciones en pantalla.
+    </div>
+</body>
+</html>

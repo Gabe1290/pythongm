@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #7f8c8d; font-size: 13px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Paso 7: Configurar la Habitacion</h1>
+
+    <p>Ahora vamos a crear la habitacion del juego y colocar todos nuestros objetos!</p>
+
+    <h2>Crear la Habitacion</h2>
+    <div class="step">
+        <ol>
+            <li>Haz clic derecho en <strong>Habitaciones</strong> y selecciona <strong>Crear Habitacion</strong></li>
+            <li>Nombrala <code>room_pong</code></li>
+            <li>Establece el tamano a 640x480 pixeles</li>
+        </ol>
+    </div>
+
+    <h2>Disposicion de la Habitacion</h2>
+    <pre>
++--[PARED PARED PARED PARED PARED]--+
+|                                   |
+[P]  [J1]                    [J2]  [P]
+[O]  [  ]       (o)          [  ]  [O]
+[R]  [  ]                    [  ]  [R]
+[T]                                [T]
+|                                   |
++--[PARED PARED PARED PARED PARED]--+
+    </pre>
+
+    <h2>Colocar los Objetos</h2>
+
+    <h3>1. Paredes (Superior e Inferior)</h3>
+    <div class="step">
+        <p>Coloca instancias de <code>obj_wall</code> a lo largo de los bordes superior e inferior.</p>
+    </div>
+
+    <h3>2. Paletas</h3>
+    <div class="step">
+        <ul>
+            <li><code>obj_paddle_left</code> - Cerca del borde izquierdo, centrada verticalmente</li>
+            <li><code>obj_paddle_right</code> - Cerca del borde derecho, centrada verticalmente</li>
+        </ul>
+    </div>
+
+    <h3>3. Pelota</h3>
+    <div class="step">
+        <p>Coloca <code>obj_ball</code> en el centro de la habitacion.</p>
+    </div>
+
+    <h3>4. Porterias</h3>
+    <div class="step">
+        <ul>
+            <li><code>obj_goal_left</code> - Apila a lo largo del borde izquierdo (detras de la paleta)</li>
+            <li><code>obj_goal_right</code> - Apila a lo largo del borde derecho (detras de la paleta)</li>
+        </ul>
+    </div>
+
+    <h3>5. Mostrar Puntuacion</h3>
+    <div class="step">
+        <p>Coloca <code>obj_score</code> en cualquier lugar (no tiene sprite, solo dibuja texto).</p>
+    </div>
+
+    <div class="success">
+        <strong>Felicitaciones!</strong> Tu juego de Pong esta listo para jugar!
+    </div>
+
+    <h2>Prueba Tu Juego</h2>
+    <ul>
+        <li>Presiona <strong>F5</strong> o haz clic en <strong>Ejecutar</strong></li>
+        <li>Jugador 1: <strong>W</strong> (arriba) y <strong>S</strong> (abajo)</li>
+        <li>Jugador 2: <strong>Flecha Arriba</strong> y <strong>Flecha Abajo</strong></li>
+    </ul>
+
+    <div class="info">
+        <strong>Bien hecho!</strong> Has creado un juego clasico de Pong para dos jugadores!
+    </div>
+</body>
+</html>

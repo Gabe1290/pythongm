@@ -14,63 +14,63 @@
     </style>
 </head>
 <body>
-    <h1>Step 4: Lander Controls (Step Event)</h1>
+    <h1>Passo 4: Controlli del Lander (Evento Step)</h1>
 
-    <p>Add gravity, thrust, horizontal movement, and boundary checks.</p>
+    <p>Aggiungi gravita, spinta, movimento orizzontale e controlli dei bordi.</p>
 
-    <h2>Add Step Event</h2>
+    <h2>Aggiungi Evento Step</h2>
     <div class="step">
         <p>In <code>obj_lander</code>:</p>
         <ol>
-            <li>Add Event: <strong>Step &gt; Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Aggiungi Evento: <strong>Step &gt; Step</strong></li>
+            <li>Aggiungi Azione: <strong>Controllo &gt; Esegui Codice</strong></li>
         </ol>
         <pre>
-// Don't update if game is over
+// Non aggiornare se il gioco e finito
 if (landed || crashed) exit;
 
-// === GRAVITY ===
+// === GRAVITA ===
 vsp += gravity_force;
 
-// === THRUST (Up Arrow) ===
+// === SPINTA (Freccia Su) ===
 if (keyboard_check(vk_up) && fuel > 0) {
     vsp -= thrust_force;
     fuel -= fuel_use;
     if (fuel < 0) fuel = 0;
 }
 
-// === HORIZONTAL CONTROL ===
+// === CONTROLLO ORIZZONTALE ===
 if (keyboard_check(vk_left)) hsp -= 0.05;
 if (keyboard_check(vk_right)) hsp += 0.05;
 
-// === LIMIT SPEED ===
+// === LIMITA VELOCITA ===
 hsp = clamp(hsp, -max_speed, max_speed);
 vsp = clamp(vsp, -max_speed, max_speed);
 
-// === APPLY MOVEMENT ===
+// === APPLICA MOVIMENTO ===
 x += hsp;
 y += vsp;
 
-// === SCREEN BOUNDARIES ===
+// === BORDI DELLO SCHERMO ===
 if (x < 16) { x = 16; hsp = 0; }
 if (x > room_width - 16) { x = room_width - 16; hsp = 0; }
 if (y < 16) { y = 16; vsp = 0; }</pre>
     </div>
 
-    <h2>How It Works</h2>
+    <h2>Come Funziona</h2>
     <ol>
-        <li><strong>Gravity:</strong> Adds to vsp every frame (falling)</li>
-        <li><strong>Thrust:</strong> Subtracts from vsp (rising), uses fuel</li>
-        <li><strong>Clamp:</strong> Limits speed to safe range</li>
-        <li><strong>Boundaries:</strong> Keeps lander on screen</li>
+        <li><strong>Gravita:</strong> Aggiunge a vsp ogni frame (caduta)</li>
+        <li><strong>Spinta:</strong> Sottrae da vsp (salita), consuma carburante</li>
+        <li><strong>Clamp:</strong> Limita la velocita a un intervallo sicuro</li>
+        <li><strong>Bordi:</strong> Mantiene il lander sullo schermo</li>
     </ol>
 
     <div class="highlight">
-        <strong>Key:</strong> The <code>clamp()</code> function limits a value between min and max!
+        <strong>Importante:</strong> La funzione <code>clamp()</code> limita un valore tra minimo e massimo!
     </div>
 
     <div class="info">
-        Click "Next" to add collision detection.
+        Clicca "Avanti" per aggiungere il rilevamento delle collisioni.
     </div>
 </body>
 </html>
