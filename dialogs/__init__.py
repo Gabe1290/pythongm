@@ -22,6 +22,7 @@ from .import_dialogs import ImportAssetsDialog
 # Thymio dialogs
 from .thymio_event_selector import ThymioEventSelector
 from .thymio_action_selector import ThymioActionSelector
+from .thymio_config_dialog import ThymioConfigDialog
 
 # Export everything
 __all__ = [
@@ -35,4 +36,5 @@ __all__ = [
     'ImportAssetsDialog',
     'ThymioEventSelector',
     'ThymioActionSelector',
+    'ThymioConfigDialog',
 ]

@@ -19,6 +19,15 @@ CATEGORY_TRANSLATIONS = {
         "Sound": "Klang",
         "Output": "Ausgabe",
         "Particles": "Partikel",
+        # Thymio categories
+        "Thymio Events": "Thymio Ereignisse",
+        "Thymio Motors": "Thymio Motoren",
+        "Thymio LEDs": "Thymio LEDs",
+        "Thymio Sound": "Thymio Klang",
+        "Thymio Sensors": "Thymio Sensoren",
+        "Thymio Conditions": "Thymio Bedingungen",
+        "Thymio Timers": "Thymio Timer",
+        "Thymio Variables": "Thymio Variablen",
     },
     "es": {
         "Events": "Eventos",
@@ -32,6 +41,15 @@ CATEGORY_TRANSLATIONS = {
         "Sound": "Sonido",
         "Output": "Salida",
         "Particles": "Partículas",
+        # Thymio categories
+        "Thymio Events": "Eventos Thymio",
+        "Thymio Motors": "Motores Thymio",
+        "Thymio LEDs": "LEDs Thymio",
+        "Thymio Sound": "Sonido Thymio",
+        "Thymio Sensors": "Sensores Thymio",
+        "Thymio Conditions": "Condiciones Thymio",
+        "Thymio Timers": "Temporizadores Thymio",
+        "Thymio Variables": "Variables Thymio",
     },
     "fr": {
         "Events": "Événements",
@@ -45,6 +63,15 @@ CATEGORY_TRANSLATIONS = {
         "Sound": "Son",
         "Output": "Sortie",
         "Particles": "Particules",
+        # Thymio categories
+        "Thymio Events": "Événements Thymio",
+        "Thymio Motors": "Moteurs Thymio",
+        "Thymio LEDs": "LEDs Thymio",
+        "Thymio Sound": "Son Thymio",
+        "Thymio Sensors": "Capteurs Thymio",
+        "Thymio Conditions": "Conditions Thymio",
+        "Thymio Timers": "Minuteries Thymio",
+        "Thymio Variables": "Variables Thymio",
     },
     "it": {
         "Events": "Eventi",
@@ -58,6 +85,15 @@ CATEGORY_TRANSLATIONS = {
         "Sound": "Suono",
         "Output": "Output",
         "Particles": "Particelle",
+        # Thymio categories
+        "Thymio Events": "Eventi Thymio",
+        "Thymio Motors": "Motori Thymio",
+        "Thymio LEDs": "LED Thymio",
+        "Thymio Sound": "Suono Thymio",
+        "Thymio Sensors": "Sensori Thymio",
+        "Thymio Conditions": "Condizioni Thymio",
+        "Thymio Timers": "Timer Thymio",
+        "Thymio Variables": "Variabili Thymio",
     },
     "ru": {
         "Events": "События",
@@ -71,6 +107,15 @@ CATEGORY_TRANSLATIONS = {
         "Sound": "Звук",
         "Output": "Вывод",
         "Particles": "Частицы",
+        # Thymio categories
+        "Thymio Events": "События Thymio",
+        "Thymio Motors": "Моторы Thymio",
+        "Thymio LEDs": "Светодиоды Thymio",
+        "Thymio Sound": "Звук Thymio",
+        "Thymio Sensors": "Датчики Thymio",
+        "Thymio Conditions": "Условия Thymio",
+        "Thymio Timers": "Таймеры Thymio",
+        "Thymio Variables": "Переменные Thymio",
     },
     "sl": {
         "Events": "Dogodki",
@@ -84,6 +129,15 @@ CATEGORY_TRANSLATIONS = {
         "Sound": "Zvok",
         "Output": "Izhod",
         "Particles": "Delci",
+        # Thymio categories
+        "Thymio Events": "Dogodki Thymio",
+        "Thymio Motors": "Motorji Thymio",
+        "Thymio LEDs": "LED diode Thymio",
+        "Thymio Sound": "Zvok Thymio",
+        "Thymio Sensors": "Senzorji Thymio",
+        "Thymio Conditions": "Pogoji Thymio",
+        "Thymio Timers": "Časovniki Thymio",
+        "Thymio Variables": "Spremenljivke Thymio",
     },
     "uk": {
         "Events": "Події",
@@ -97,6 +151,15 @@ CATEGORY_TRANSLATIONS = {
         "Sound": "Звук",
         "Output": "Вивід",
         "Particles": "Частинки",
+        # Thymio categories
+        "Thymio Events": "Події Thymio",
+        "Thymio Motors": "Мотори Thymio",
+        "Thymio LEDs": "Світлодіоди Thymio",
+        "Thymio Sound": "Звук Thymio",
+        "Thymio Sensors": "Датчики Thymio",
+        "Thymio Conditions": "Умови Thymio",
+        "Thymio Timers": "Таймери Thymio",
+        "Thymio Variables": "Змінні Thymio",
     },
 }
 

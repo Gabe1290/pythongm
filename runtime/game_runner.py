@@ -848,8 +848,12 @@ class GameRoom:
         # View system - 8 views like GameMaker
         self.views_enabled = room_data.get('views_enabled', False)
         self.views = []
+        views_raw = room_data.get('views', {})
+        # Handle both list and dict formats for views
+        if isinstance(views_raw, list):
+            views_raw = {}  # Empty list means no views configured
         for i in range(8):
-            view_data = room_data.get('views', {}).get(f'view_{i}', {})
+            view_data = views_raw.get(f'view_{i}', {})
             self.views.append({
                 'visible': view_data.get('visible', i == 0),  # View 0 visible by default
                 'view_x': view_data.get('view_x', 0),

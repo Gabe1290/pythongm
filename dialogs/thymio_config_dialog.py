@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Blockly Configuration Dialog
-Allows users to customize which blocks are available
+Thymio Configuration Dialog
+Allows users to customize which Thymio blocks are available.
+This is a separate window from the standard BlocklyConfigDialog.
 """
 
 from PySide6.QtWidgets import (
@@ -22,7 +23,7 @@ from config.blockly_translations import (
 )
 
 
-# Thymio categories to exclude from this dialog (they have their own ThymioConfigDialog)
+# Thymio-specific categories
 THYMIO_CATEGORIES = {
     "Thymio Events",
     "Thymio Motors",
@@ -34,16 +35,28 @@ THYMIO_CATEGORIES = {
     "Thymio Variables",
 }
 
+# Category colors for Thymio
+THYMIO_CATEGORY_COLORS = {
+    "Thymio Events": "#FFD500",
+    "Thymio Motors": "#5C81A6",
+    "Thymio LEDs": "#9B59B6",
+    "Thymio Sound": "#9966FF",
+    "Thymio Sensors": "#5CA65C",
+    "Thymio Conditions": "#E67E22",  # Orange for conditionals
+    "Thymio Timers": "#FF6B6B",
+    "Thymio Variables": "#A6745C",
+}
 
-class BlocklyConfigDialog(QDialog):
-    """Dialog for configuring available Blockly blocks"""
+
+class ThymioConfigDialog(QDialog):
+    """Dialog for configuring available Thymio blocks"""
 
     config_changed = Signal(BlocklyConfig)
 
     def __init__(self, parent=None, current_config: BlocklyConfig = None):
         super().__init__(parent)
-        self.setWindowTitle(self.tr("Configure Events & Actions"))
-        self.resize(700, 600)
+        self.setWindowTitle(self.tr("Configure Thymio Events & Actions"))
+        self.resize(600, 500)
 
         # Current configuration
         self.config = current_config or load_config()
@@ -57,13 +70,11 @@ class BlocklyConfigDialog(QDialog):
 
     def _detect_language(self) -> str:
         """Detect current IDE language setting"""
-        # Get language from the global language manager
         from core.language_manager import get_language_manager
 
         language_manager = get_language_manager()
         current_lang = language_manager.get_current_language()
 
-        # Return the current language (defaults to 'en' if not set)
         return current_lang if current_lang else 'en'
 
     def setup_ui(self):
@@ -75,20 +86,11 @@ class BlocklyConfigDialog(QDialog):
         preset_layout.addWidget(QLabel(self.tr("Preset:")))
 
         self.preset_combo = QComboBox()
-        # Block signals while adding items to prevent triggering on_preset_changed
         self.preset_combo.blockSignals(True)
-        # Note: "Thymio Robot" preset moved to separate ThymioConfigDialog
         self.preset_combo.addItems([
-            self.tr("Full (All Blocks)"),
-            self.tr("Beginner (Basic Blocks)"),
-            self.tr("Intermediate (More Features)"),
-            self.tr("Platformer Game"),
-            self.tr("Grid-based RPG"),
-            self.tr("Sokoban (Box Puzzle)"),
-            self.tr("Testing (Validated Only)"),
-            self.tr("Implemented Only"),
-            self.tr("Code Editor"),
-            self.tr("Blockly Editor"),
+            self.tr("Thymio Full (All Thymio Blocks)"),
+            self.tr("Thymio Basic (Buttons + Motors)"),
+            self.tr("Thymio Sensors"),
             self.tr("Custom")
         ])
         self.preset_combo.blockSignals(False)
@@ -105,13 +107,13 @@ class BlocklyConfigDialog(QDialog):
         layout.addLayout(preset_layout)
 
         # ====== Block Tree ======
-        tree_label = QLabel(self.tr("Select blocks to enable:"))
+        tree_label = QLabel(self.tr("Select Thymio blocks to enable:"))
         tree_label.setStyleSheet("font-weight: bold; margin-top: 10px;")
         layout.addWidget(tree_label)
 
         self.tree = QTreeWidget()
         self.tree.setHeaderLabels([self.tr("Block"), self.tr("Description")])
-        self.tree.setColumnWidth(0, 300)
+        self.tree.setColumnWidth(0, 250)
         self.tree.itemChanged.connect(self.on_item_changed)
         layout.addWidget(self.tree)
 
@@ -150,8 +152,7 @@ class BlocklyConfigDialog(QDialog):
         layout.addLayout(button_layout)
 
     def populate_tree(self):
-        """Populate the tree widget with categories and blocks (excluding Thymio)"""
-        # Block signals while populating to prevent on_item_changed from being triggered
+        """Populate the tree widget with Thymio categories and blocks only"""
         self.tree.blockSignals(True)
 
         self.tree.clear()
@@ -159,8 +160,8 @@ class BlocklyConfigDialog(QDialog):
         self.block_items = {}
 
         for category, blocks in BLOCK_REGISTRY.items():
-            # Skip Thymio categories - they have their own ThymioConfigDialog
-            if category in THYMIO_CATEGORIES:
+            # Only show Thymio categories
+            if category not in THYMIO_CATEGORIES:
                 continue
 
             # Translate category name
@@ -175,21 +176,9 @@ class BlocklyConfigDialog(QDialog):
             category_item.setData(0, Qt.UserRole, category)
             category_item.setExpanded(True)
 
-            # Set category colors based on Blockly colors
-            category_colors = {
-                "Events": "#FFD500",
-                "Movement": "#5C81A6",
-                "Timing": "#FF6B6B",
-                "Drawing": "#9B59B6",
-                "Score/Lives/Health": "#5CA65C",
-                "Instance": "#A65C81",
-                "Room": "#A6745C",
-                "Values": "#5C68A6",
-                "Sound": "#9966FF",
-                "Output": "#745CA6",
-            }
-            if category in category_colors:
-                color_hex = category_colors[category]
+            # Set category colors
+            if category in THYMIO_CATEGORY_COLORS:
+                color_hex = THYMIO_CATEGORY_COLORS[category]
                 color = QColor(color_hex)
                 category_item.setBackground(0, QBrush(color))
                 category_item.setForeground(0, QBrush(Qt.white if self._is_dark_color(color_hex) else Qt.black))
@@ -202,14 +191,12 @@ class BlocklyConfigDialog(QDialog):
                 translated_name = get_translated_block_name(block["type"], self.language)
                 translated_desc = get_translated_block_description(block["type"], self.language)
 
-                # Fall back to English if translation not available
                 display_name = translated_name if translated_name else block["name"]
                 display_desc = translated_desc if translated_desc else block["description"]
 
                 # Check if block is implemented
                 implemented = is_block_implemented(block["type"])
 
-                # Add marker for unimplemented blocks
                 if not implemented:
                     display_name = f"⚠ {display_name}"
                     display_desc = self.tr("[Not implemented] {0}").format(display_desc)
@@ -219,12 +206,10 @@ class BlocklyConfigDialog(QDialog):
                 block_item.setCheckState(0, Qt.Unchecked)
                 block_item.setData(0, Qt.UserRole, block["type"])
 
-                # Style unimplemented blocks with gray/italic
                 if not implemented:
                     block_item.setForeground(0, QBrush(QColor("#888888")))
                     block_item.setForeground(1, QBrush(QColor("#888888")))
 
-                # Show dependencies as tooltip
                 if block["type"] in BLOCK_DEPENDENCIES:
                     deps = BLOCK_DEPENDENCIES[block["type"]]
                     dep_names = [self._get_block_name(d) for d in deps]
@@ -233,7 +218,6 @@ class BlocklyConfigDialog(QDialog):
 
                 self.block_items[block["type"]] = block_item
 
-        # Unblock signals after populating
         self.tree.blockSignals(False)
 
     def _is_dark_color(self, hex_color: str) -> bool:
@@ -253,7 +237,6 @@ class BlocklyConfigDialog(QDialog):
 
     def load_config_to_ui(self):
         """Load current configuration into UI"""
-        # Block signals during loading
         self.tree.blockSignals(True)
         self.preset_combo.blockSignals(True)
 
@@ -262,53 +245,90 @@ class BlocklyConfigDialog(QDialog):
             checked = self.config.is_block_enabled(block_type)
             item.setCheckState(0, Qt.Checked if checked else Qt.Unchecked)
 
-        # Update preset combo (Thymio preset moved to ThymioConfigDialog)
-        preset_index = {
-            "full": 0,
-            "beginner": 1,
-            "intermediate": 2,
-            "platformer": 3,
-            "grid_rpg": 4,
-            "sokoban": 5,
-            "testing": 6,
-            "implemented_only": 7,
-            "code_editor": 8,
-            "blockly_editor": 9,
-        }.get(self.config.preset_name, 10)  # 10 = Custom
-        self.preset_combo.setCurrentIndex(preset_index)
+        # Update preset combo based on config
+        # Check if it matches a known Thymio preset
+        if self._is_thymio_full():
+            self.preset_combo.setCurrentIndex(0)
+        elif self._is_thymio_basic():
+            self.preset_combo.setCurrentIndex(1)
+        elif self._is_thymio_sensors():
+            self.preset_combo.setCurrentIndex(2)
+        else:
+            self.preset_combo.setCurrentIndex(3)  # Custom
 
         self.tree.blockSignals(False)
         self.preset_combo.blockSignals(False)
 
-        # Update info
         self.update_info_label()
         self.check_dependencies()
 
+    def _is_thymio_full(self) -> bool:
+        """Check if all Thymio blocks are enabled"""
+        for category in THYMIO_CATEGORIES:
+            if category in BLOCK_REGISTRY:
+                for block in BLOCK_REGISTRY[category]:
+                    if not self.config.is_block_enabled(block["type"]):
+                        return False
+        return True
+
+    def _is_thymio_basic(self) -> bool:
+        """Check if only basic Thymio blocks are enabled"""
+        # Basic = Thymio Events (buttons only) + Thymio Motors
+        basic_categories = {"Thymio Events", "Thymio Motors"}
+        for category in THYMIO_CATEGORIES:
+            if category in BLOCK_REGISTRY:
+                for block in BLOCK_REGISTRY[category]:
+                    is_enabled = self.config.is_block_enabled(block["type"])
+                    should_be_enabled = category in basic_categories
+                    if is_enabled != should_be_enabled:
+                        return False
+        return True
+
+    def _is_thymio_sensors(self) -> bool:
+        """Check if Thymio sensor-focused blocks are enabled"""
+        sensor_categories = {"Thymio Events", "Thymio Sensors", "Thymio Conditions", "Thymio Motors"}
+        for category in THYMIO_CATEGORIES:
+            if category in BLOCK_REGISTRY:
+                for block in BLOCK_REGISTRY[category]:
+                    is_enabled = self.config.is_block_enabled(block["type"])
+                    should_be_enabled = category in sensor_categories
+                    if is_enabled != should_be_enabled:
+                        return False
+        return True
+
     def on_preset_changed(self, text: str):
-        """Handle preset selection (Thymio preset moved to ThymioConfigDialog)"""
-        preset_map = {
-            self.tr("Full (All Blocks)"): "full",
-            self.tr("Beginner (Basic Blocks)"): "beginner",
-            self.tr("Intermediate (More Features)"): "intermediate",
-            self.tr("Platformer Game"): "platformer",
-            self.tr("Grid-based RPG"): "grid_rpg",
-            self.tr("Sokoban (Box Puzzle)"): "sokoban",
-            self.tr("Testing (Validated Only)"): "testing",
-            self.tr("Implemented Only"): "implemented_only",
-            self.tr("Code Editor"): "code_editor",
-            self.tr("Blockly Editor"): "blockly_editor",
-        }
+        """Handle preset selection"""
+        if text == self.tr("Thymio Full (All Thymio Blocks)"):
+            self._apply_thymio_full()
+        elif text == self.tr("Thymio Basic (Buttons + Motors)"):
+            self._apply_thymio_basic()
+        elif text == self.tr("Thymio Sensors"):
+            self._apply_thymio_sensors()
+        elif text == self.tr("Custom"):
+            pass  # Don't change anything
 
-        if text == self.tr("Custom"):
-            # Don't change config, just mark as custom
-            self.config.preset_name = "custom"
-            return
+        self.load_config_to_ui()
 
-        preset_key = preset_map.get(text)
-        if preset_key and preset_key in PRESETS:
-            # Make a copy of the preset to avoid modifying the original
-            self.config = BlocklyConfig.from_dict(PRESETS[preset_key].to_dict())
-            self.load_config_to_ui()
+    def _apply_thymio_full(self):
+        """Enable all Thymio blocks"""
+        for category in THYMIO_CATEGORIES:
+            self.config.enable_category(category)
+
+    def _apply_thymio_basic(self):
+        """Enable only basic Thymio blocks (buttons + motors)"""
+        for category in THYMIO_CATEGORIES:
+            if category in {"Thymio Events", "Thymio Motors"}:
+                self.config.enable_category(category)
+            else:
+                self.config.disable_category(category)
+
+    def _apply_thymio_sensors(self):
+        """Enable Thymio sensor-focused blocks"""
+        for category in THYMIO_CATEGORIES:
+            if category in {"Thymio Events", "Thymio Sensors", "Thymio Conditions", "Thymio Motors"}:
+                self.config.enable_category(category)
+            else:
+                self.config.disable_category(category)
 
     def on_item_changed(self, item: QTreeWidgetItem, column: int):
         """Handle checkbox state changes"""
@@ -319,29 +339,24 @@ class BlocklyConfigDialog(QDialog):
         if not block_type:
             return
 
-        # Update config
         is_checked = item.checkState(0) == Qt.Checked
 
         # Check if it's a category
         if block_type in BLOCK_REGISTRY:
-            # Category toggled
             if is_checked:
                 self.config.enable_category(block_type)
             else:
                 self.config.disable_category(block_type)
         else:
-            # Individual block toggled
             if is_checked:
                 self.config.enable_block(block_type)
             else:
                 self.config.disable_block(block_type)
 
-        # Mark as custom ONLY if user manually changed something (not during load)
-        # Check if tree signals are blocked - if so, we're loading, not user action
-        if not self.tree.signalsBlocked() and self.preset_combo.currentIndex() != 10:
+        # Mark as custom if user manually changed something
+        if not self.tree.signalsBlocked() and self.preset_combo.currentIndex() != 3:
             self.tree.blockSignals(True)
-            self.preset_combo.setCurrentIndex(10)  # Custom
-            self.config.preset_name = "custom"
+            self.preset_combo.setCurrentIndex(3)  # Custom
             self.tree.blockSignals(False)
 
         self.update_info_label()
@@ -349,7 +364,20 @@ class BlocklyConfigDialog(QDialog):
 
     def check_dependencies(self):
         """Check for missing dependencies and show warning"""
-        missing = self.config.get_missing_dependencies()
+        # Filter to only Thymio-related dependencies
+        missing = {}
+        for block_type in self.config.enabled_blocks:
+            if block_type in BLOCK_DEPENDENCIES:
+                # Only check if this is a Thymio block
+                is_thymio_block = any(
+                    any(b["type"] == block_type for b in BLOCK_REGISTRY.get(cat, []))
+                    for cat in THYMIO_CATEGORIES
+                )
+                if is_thymio_block:
+                    deps = BLOCK_DEPENDENCIES[block_type]
+                    missing_deps = [dep for dep in deps if dep not in self.config.enabled_blocks]
+                    if missing_deps:
+                        missing[block_type] = missing_deps
 
         if missing:
             warnings = []
@@ -366,30 +394,50 @@ class BlocklyConfigDialog(QDialog):
             self.warning_label.setVisible(False)
 
     def update_info_label(self):
-        """Update the info label with block count"""
-        total_blocks = len(self.config.enabled_blocks)
-        total_categories = len(self.config.enabled_categories)
-        self.info_label.setText(self.tr("{0} blocks, {1} categories").format(total_blocks, total_categories))
+        """Update the info label with Thymio block count"""
+        # Count only Thymio blocks
+        thymio_blocks = 0
+        for category in THYMIO_CATEGORIES:
+            if category in BLOCK_REGISTRY:
+                for block in BLOCK_REGISTRY[category]:
+                    if block["type"] in self.config.enabled_blocks:
+                        thymio_blocks += 1
+
+        thymio_categories = sum(1 for cat in THYMIO_CATEGORIES if cat in self.config.enabled_categories)
+        self.info_label.setText(self.tr("{0} Thymio blocks, {1} categories").format(thymio_blocks, thymio_categories))
 
     def select_all(self):
-        """Select all blocks"""
-        self.config = BlocklyConfig.get_full()
+        """Select all Thymio blocks"""
+        self._apply_thymio_full()
         self.load_config_to_ui()
 
     def select_none(self):
-        """Deselect all blocks"""
-        self.config = BlocklyConfig(preset_name="custom")
+        """Deselect all Thymio blocks"""
+        for category in THYMIO_CATEGORIES:
+            self.config.disable_category(category)
         self.load_config_to_ui()
 
     def save_and_close(self):
         """Save configuration and close dialog"""
-        # Check for dependency issues
-        missing = self.config.get_missing_dependencies()
+        # Check for dependency issues (Thymio-only)
+        missing = {}
+        for block_type in self.config.enabled_blocks:
+            if block_type in BLOCK_DEPENDENCIES:
+                is_thymio_block = any(
+                    any(b["type"] == block_type for b in BLOCK_REGISTRY.get(cat, []))
+                    for cat in THYMIO_CATEGORIES
+                )
+                if is_thymio_block:
+                    deps = BLOCK_DEPENDENCIES[block_type]
+                    missing_deps = [dep for dep in deps if dep not in self.config.enabled_blocks]
+                    if missing_deps:
+                        missing[block_type] = missing_deps
+
         if missing:
             response = QMessageBox.warning(
                 self,
                 self.tr("Missing Dependencies"),
-                self.tr("Some enabled blocks are missing their dependencies. "
+                self.tr("Some enabled Thymio blocks are missing their dependencies. "
                 "The blocks may not work correctly.\n\n"
                 "Do you want to save anyway?"),
                 QMessageBox.Yes | QMessageBox.No,

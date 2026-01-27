@@ -152,11 +152,14 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "thymio_read_proximity", "name": "Read Proximity", "description": "Read proximity sensor value", "implemented": True},
         {"type": "thymio_read_ground", "name": "Read Ground", "description": "Read ground sensor value", "implemented": True},
         {"type": "thymio_read_button", "name": "Read Button", "description": "Read button state", "implemented": True},
+    ],
+    "Thymio Conditions": [
         {"type": "thymio_if_proximity", "name": "If Proximity", "description": "Check proximity sensor", "implemented": True},
         {"type": "thymio_if_ground_dark", "name": "If Ground Dark", "description": "Check if ground is dark", "implemented": True},
         {"type": "thymio_if_ground_light", "name": "If Ground Light", "description": "Check if ground is light", "implemented": True},
         {"type": "thymio_if_button_pressed", "name": "If Button Pressed", "description": "Check if button pressed", "implemented": True},
         {"type": "thymio_if_button_released", "name": "If Button Released", "description": "Check if button released", "implemented": True},
+        {"type": "thymio_if_variable", "name": "If Variable", "description": "Check variable condition", "implemented": True},
     ],
     "Thymio Timers": [
         {"type": "thymio_set_timer_period", "name": "Set Timer Period", "description": "Set timer period (ms)", "implemented": True},
@@ -165,7 +168,6 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "thymio_set_variable", "name": "Set Variable", "description": "Set variable value", "implemented": True},
         {"type": "thymio_increase_variable", "name": "Increase Variable", "description": "Increment variable", "implemented": True},
         {"type": "thymio_decrease_variable", "name": "Decrease Variable", "description": "Decrement variable", "implemented": True},
-        {"type": "thymio_if_variable", "name": "If Variable", "description": "Check variable condition", "implemented": True},
     ],
 }
 
@@ -512,6 +514,7 @@ class BlocklyConfig:
         config.enable_category("Thymio LEDs")
         config.enable_category("Thymio Sound")
         config.enable_category("Thymio Sensors")
+        config.enable_category("Thymio Conditions")
         config.enable_category("Thymio Timers")
         config.enable_category("Thymio Variables")
 

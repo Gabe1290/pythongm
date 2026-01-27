@@ -19,6 +19,7 @@ from PySide6.QtGui import QFont
 from core.logger import get_logger
 logger = get_logger(__name__)
 
+from utils.config import Config
 from ..base_editor import BaseEditor, EditorUndoCommand
 from .object_properties_panel import ObjectPropertiesPanel
 from .object_events_panel import ObjectEventsPanel
@@ -257,15 +258,18 @@ class ObjectEditor(BaseEditor):
         self.events_tab_widget.addTab(standard_tab, self.tr("Standard"))
 
         # Tab 2: Thymio Events Panel
-        thymio_tab = QWidget()
-        thymio_layout = QVBoxLayout(thymio_tab)
+        self.thymio_tab = QWidget()
+        thymio_layout = QVBoxLayout(self.thymio_tab)
         thymio_layout.setContentsMargins(0, 5, 0, 0)
 
         self.thymio_events_panel = ThymioEventsPanel()
         self.thymio_events_panel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         thymio_layout.addWidget(self.thymio_events_panel)
 
-        self.events_tab_widget.addTab(thymio_tab, self.tr("🤖 Thymio"))
+        # Only add Thymio tab if the preference is enabled
+        self.thymio_tab_index = -1
+        if Config.get('show_thymio_tab', False):
+            self.thymio_tab_index = self.events_tab_widget.addTab(self.thymio_tab, self.tr("🤖 Thymio"))
 
         # Connect Thymio panel signals
         self.thymio_events_panel.events_modified.connect(self._on_thymio_events_modified)
@@ -283,6 +287,24 @@ class ObjectEditor(BaseEditor):
         logger.debug("Left panel created with events_panel and thymio_events_panel")
 
         return panel
+
+    def set_thymio_tab_visible(self, visible: bool):
+        """Show or hide the Thymio tab"""
+        if visible:
+            # Add tab if not already visible
+            if self.thymio_tab_index == -1:
+                self.thymio_tab_index = self.events_tab_widget.addTab(self.thymio_tab, self.tr("🤖 Thymio"))
+                logger.debug("Thymio tab shown")
+        else:
+            # Remove tab if currently visible
+            if self.thymio_tab_index != -1:
+                # Find the actual index (might have changed)
+                for i in range(self.events_tab_widget.count()):
+                    if self.events_tab_widget.widget(i) == self.thymio_tab:
+                        self.events_tab_widget.removeTab(i)
+                        break
+                self.thymio_tab_index = -1
+                logger.debug("Thymio tab hidden")
 
     def _on_thymio_events_modified(self):
         """Handle changes in Thymio events panel"""
@@ -312,7 +334,15 @@ class ObjectEditor(BaseEditor):
     def switch_to_thymio_mode(self):
         """Switch to Thymio events panel"""
         if hasattr(self, 'events_tab_widget'):
-            self.events_tab_widget.setCurrentIndex(1)
+            # First ensure the Thymio tab is visible
+            self.set_thymio_tab_visible(True)
+
+            # Find and switch to the Thymio tab
+            for i in range(self.events_tab_widget.count()):
+                if self.events_tab_widget.widget(i) == self.thymio_tab:
+                    self.events_tab_widget.setCurrentIndex(i)
+                    break
+
             # Sync events to Thymio panel
             if hasattr(self, 'thymio_events_panel') and hasattr(self, 'events_panel'):
                 self.thymio_events_panel.load_events_data(self.events_panel.current_events_data)

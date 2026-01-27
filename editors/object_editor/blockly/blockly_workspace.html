@@ -111,6 +111,8 @@
     <script src="lib/blocks_compressed.js" onerror="onBlocklyLoadError('blocks_compressed.js')"></script>
     <script src="lib/msg_en.js" onerror="onBlocklyLoadError('msg_en.js')"></script>
     <script src="blockly_i18n.js"></script>
+    <script src="blockly_blocks.js" onerror="onBlocklyLoadError('blockly_blocks.js')"></script>
+    <script src="blockly_generators.js" onerror="onBlocklyLoadError('blockly_generators.js')"></script>
 
     <xml id="toolbox" style="display: none">
         <!-- Events Category -->
@@ -1146,7 +1148,7 @@
                 this.appendDummyInput()
                     .appendField(getBlockMessage('execute_code_prefix', window.BLOCKLY_LANG) || "Execute Python code:");
                 this.appendDummyInput()
-                    .appendField(new Blockly.FieldMultilineInput("# Write your Python code here\n"), "CODE");
+                    .appendField(new Blockly.FieldTextInput("# code here"), "CODE");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#4A90D9");  // Blue color for code blocks
@@ -1678,7 +1680,42 @@
             'reverse_horizontal': 'reverse_horizontal',
             'reverse_vertical': 'reverse_vertical',
             'wrap_around_room': 'wrap_around_room',
-            'execute_code': 'execute_code'
+            'execute_code': 'execute_code',
+            // Thymio motor actions
+            'thymio_set_motor_speed': 'thymio_set_motor_speed',
+            'thymio_move_forward': 'thymio_move_forward',
+            'thymio_move_backward': 'thymio_move_backward',
+            'thymio_turn_left': 'thymio_turn_left',
+            'thymio_turn_right': 'thymio_turn_right',
+            'thymio_stop_motors': 'thymio_stop_motors',
+            // Thymio LED actions
+            'thymio_set_led_top': 'thymio_set_led_top',
+            'thymio_set_led_bottom_left': 'thymio_set_led_bottom_left',
+            'thymio_set_led_bottom_right': 'thymio_set_led_bottom_right',
+            'thymio_set_led_circle': 'thymio_set_led_circle',
+            'thymio_set_led_circle_all': 'thymio_set_led_circle_all',
+            'thymio_leds_off': 'thymio_leds_off',
+            // Thymio sound actions
+            'thymio_play_tone': 'thymio_play_tone',
+            'thymio_play_system_sound': 'thymio_play_system_sound',
+            'thymio_stop_sound': 'thymio_stop_sound',
+            // Thymio sensor actions
+            'thymio_read_proximity': 'thymio_read_proximity',
+            'thymio_read_ground': 'thymio_read_ground',
+            'thymio_read_button': 'thymio_read_button',
+            // Thymio condition actions
+            'thymio_if_proximity': 'thymio_if_proximity',
+            'thymio_if_ground_dark': 'thymio_if_ground_dark',
+            'thymio_if_ground_light': 'thymio_if_ground_light',
+            'thymio_if_button_pressed': 'thymio_if_button_pressed',
+            'thymio_if_button_released': 'thymio_if_button_released',
+            'thymio_if_variable': 'thymio_if_variable',
+            // Thymio timing actions
+            'thymio_set_timer_period': 'thymio_set_timer_period',
+            // Thymio variable actions
+            'thymio_set_variable': 'thymio_set_variable',
+            'thymio_increase_variable': 'thymio_increase_variable',
+            'thymio_decrease_variable': 'thymio_decrease_variable'
         };
 
         // Map event names to block types
@@ -1701,7 +1738,22 @@
             'alarm_8': 'event_alarm',
             'alarm_9': 'event_alarm',
             'alarm_10': 'event_alarm',
-            'alarm_11': 'event_alarm'
+            'alarm_11': 'event_alarm',
+            // Thymio events
+            'thymio_button_forward': 'event_thymio_button_forward',
+            'thymio_button_backward': 'event_thymio_button_backward',
+            'thymio_button_left': 'event_thymio_button_left',
+            'thymio_button_right': 'event_thymio_button_right',
+            'thymio_button_center': 'event_thymio_button_center',
+            'thymio_any_button': 'event_thymio_any_button',
+            'thymio_proximity_update': 'event_thymio_proximity_update',
+            'thymio_ground_update': 'event_thymio_ground_update',
+            'thymio_timer_0': 'event_thymio_timer_0',
+            'thymio_timer_1': 'event_thymio_timer_1',
+            'thymio_tap': 'event_thymio_tap',
+            'thymio_sound_detected': 'event_thymio_sound_detected',
+            'thymio_sound_finished': 'event_thymio_sound_finished',
+            'thymio_message_received': 'event_thymio_message_received'
         };
 
         function loadEventsData(eventsJson) {
@@ -1869,6 +1921,9 @@
             } else if (eventName.startsWith('collision_with_')) {
                 blockType = 'event_collision';
                 fields['OBJECT'] = eventName.replace('collision_with_', '');
+            } else if (eventName.startsWith('thymio_')) {
+                // Thymio events - simple mapping from event name to block type
+                blockType = eventToBlockType[eventName];
             }
 
             if (!blockType) {
@@ -1896,13 +1951,18 @@
         function createActionBlock(actionData) {
             console.log('[Blockly] createActionBlock called with:', JSON.stringify(actionData));
 
-            if (!actionData || !actionData.action) {
-                console.log('[Blockly] Invalid actionData - missing action field');
+            if (!actionData || (!actionData.action && !actionData.type)) {
+                console.log('[Blockly] Invalid actionData - missing action/type field');
                 return null;
             }
 
-            var actionName = actionData.action;
+            // Support both 'action' and 'type' field names
+            var actionName = actionData.action || actionData.type;
             var params = actionData.parameters || {};
+            // Also handle sub_actions for conditional blocks
+            if (actionData.sub_actions) {
+                params.sub_actions = actionData.sub_actions;
+            }
             console.log('[Blockly] Action name:', actionName, 'Params:', JSON.stringify(params));
 
             // Handle if_collision_at which doesn't have a direct block equivalent
@@ -2197,6 +2257,173 @@
                     break;
 
                 // reverse_horizontal and reverse_vertical have no parameters
+
+                // ============================================================================
+                // THYMIO MOTOR ACTIONS
+                // ============================================================================
+                case 'thymio_set_motor_speed':
+                    connectNumberBlock('LEFT_SPEED', params.left_speed || 0);
+                    connectNumberBlock('RIGHT_SPEED', params.right_speed || 0);
+                    break;
+
+                case 'thymio_move_forward':
+                    connectNumberBlock('SPEED', params.speed || 200);
+                    break;
+
+                case 'thymio_move_backward':
+                    connectNumberBlock('SPEED', params.speed || 200);
+                    break;
+
+                case 'thymio_turn_left':
+                    connectNumberBlock('SPEED', params.speed || 300);
+                    break;
+
+                case 'thymio_turn_right':
+                    connectNumberBlock('SPEED', params.speed || 300);
+                    break;
+
+                // thymio_stop_motors has no parameters
+
+                // ============================================================================
+                // THYMIO LED ACTIONS
+                // ============================================================================
+                case 'thymio_set_led_top':
+                case 'thymio_set_led_bottom_left':
+                case 'thymio_set_led_bottom_right':
+                    connectNumberBlock('RED', params.red || 0);
+                    connectNumberBlock('GREEN', params.green || 0);
+                    connectNumberBlock('BLUE', params.blue || 0);
+                    break;
+
+                case 'thymio_set_led_circle':
+                    block.setFieldValue(String(params.led_index || 0), 'LED_INDEX');
+                    connectNumberBlock('INTENSITY', params.intensity || 32);
+                    break;
+
+                case 'thymio_set_led_circle_all':
+                    connectNumberBlock('LED0', params.led0 || 0);
+                    connectNumberBlock('LED1', params.led1 || 0);
+                    connectNumberBlock('LED2', params.led2 || 0);
+                    connectNumberBlock('LED3', params.led3 || 0);
+                    connectNumberBlock('LED4', params.led4 || 0);
+                    connectNumberBlock('LED5', params.led5 || 0);
+                    connectNumberBlock('LED6', params.led6 || 0);
+                    connectNumberBlock('LED7', params.led7 || 0);
+                    break;
+
+                // thymio_leds_off has no parameters
+
+                // ============================================================================
+                // THYMIO SOUND ACTIONS
+                // ============================================================================
+                case 'thymio_play_tone':
+                    connectNumberBlock('FREQUENCY', params.frequency || 440);
+                    connectNumberBlock('DURATION', params.duration || 60);
+                    break;
+
+                case 'thymio_play_system_sound':
+                    block.setFieldValue(String(params.sound_id || 0), 'SOUND_ID');
+                    break;
+
+                // thymio_stop_sound has no parameters
+
+                // ============================================================================
+                // THYMIO SENSOR READING ACTIONS
+                // ============================================================================
+                case 'thymio_read_proximity':
+                    block.setFieldValue(String(params.sensor_index || 2), 'SENSOR_INDEX');
+                    block.setFieldValue(params.variable || 'prox_value', 'VARIABLE');
+                    break;
+
+                case 'thymio_read_ground':
+                    block.setFieldValue(String(params.sensor_index || 0), 'SENSOR_INDEX');
+                    block.setFieldValue(params.variable || 'ground_value', 'VARIABLE');
+                    break;
+
+                case 'thymio_read_button':
+                    block.setFieldValue(params.button || 'center', 'BUTTON');
+                    block.setFieldValue(params.variable || 'button_state', 'VARIABLE');
+                    break;
+
+                // ============================================================================
+                // THYMIO CONDITION ACTIONS (with sub_actions)
+                // ============================================================================
+                case 'thymio_if_proximity':
+                    block.setFieldValue(String(params.sensor_index || 2), 'SENSOR_INDEX');
+                    block.setFieldValue(params.comparison || '>', 'COMPARISON');
+                    connectNumberBlock('THRESHOLD', params.threshold || 2000);
+                    // Handle sub_actions
+                    if (params.sub_actions && params.sub_actions.length > 0) {
+                        attachSubActionsToBlock(block, params.sub_actions);
+                    }
+                    break;
+
+                case 'thymio_if_ground_dark':
+                case 'thymio_if_ground_light':
+                    block.setFieldValue(String(params.sensor_index || 0), 'SENSOR_INDEX');
+                    connectNumberBlock('THRESHOLD', params.threshold || 300);
+                    if (params.sub_actions && params.sub_actions.length > 0) {
+                        attachSubActionsToBlock(block, params.sub_actions);
+                    }
+                    break;
+
+                case 'thymio_if_button_pressed':
+                case 'thymio_if_button_released':
+                    block.setFieldValue(params.button || 'center', 'BUTTON');
+                    if (params.sub_actions && params.sub_actions.length > 0) {
+                        attachSubActionsToBlock(block, params.sub_actions);
+                    }
+                    break;
+
+                case 'thymio_if_variable':
+                    block.setFieldValue(params.variable || 'state', 'VARIABLE');
+                    block.setFieldValue(params.comparison || '==', 'COMPARISON');
+                    connectNumberBlock('VALUE', params.value || 0);
+                    if (params.sub_actions && params.sub_actions.length > 0) {
+                        attachSubActionsToBlock(block, params.sub_actions);
+                    }
+                    break;
+
+                // ============================================================================
+                // THYMIO TIMING ACTIONS
+                // ============================================================================
+                case 'thymio_set_timer_period':
+                    block.setFieldValue(String(params.timer_id || 0), 'TIMER_ID');
+                    connectNumberBlock('PERIOD', params.period || 1000);
+                    break;
+
+                // ============================================================================
+                // THYMIO VARIABLE ACTIONS
+                // ============================================================================
+                case 'thymio_set_variable':
+                    block.setFieldValue(params.variable || 'state', 'VARIABLE');
+                    connectNumberBlock('VALUE', params.value || 0);
+                    break;
+
+                case 'thymio_increase_variable':
+                case 'thymio_decrease_variable':
+                    block.setFieldValue(params.variable || 'counter', 'VARIABLE');
+                    connectNumberBlock('AMOUNT', params.amount || 1);
+                    break;
+            }
+
+            // Helper function to attach sub_actions to a block's DO input
+            function attachSubActionsToBlock(targetBlock, subActions) {
+                var doInput = targetBlock.getInput('DO');
+                if (doInput && doInput.connection && subActions.length > 0) {
+                    var prevInnerBlock = null;
+                    for (var i = 0; i < subActions.length; i++) {
+                        var innerBlock = createActionBlock(subActions[i]);
+                        if (innerBlock) {
+                            if (prevInnerBlock === null) {
+                                doInput.connection.connect(innerBlock.previousConnection);
+                            } else if (prevInnerBlock.nextConnection) {
+                                prevInnerBlock.nextConnection.connect(innerBlock.previousConnection);
+                            }
+                            prevInnerBlock = innerBlock;
+                        }
+                    }
+                }
             }
         }
 

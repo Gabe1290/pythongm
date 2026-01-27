@@ -57,6 +57,21 @@ function getEventType(block) {
         case 'event_keyboard_release': return {event: 'keyboard_release', subtype: block.getFieldValue('KEY')};
         case 'event_mouse': return {event: 'mouse_' + block.getFieldValue('BUTTON')};
         case 'event_collision': return {event: 'collision_with_' + block.getFieldValue('OBJECT')};
+        // Thymio events
+        case 'event_thymio_button_forward': return {event: 'thymio_button_forward'};
+        case 'event_thymio_button_backward': return {event: 'thymio_button_backward'};
+        case 'event_thymio_button_left': return {event: 'thymio_button_left'};
+        case 'event_thymio_button_right': return {event: 'thymio_button_right'};
+        case 'event_thymio_button_center': return {event: 'thymio_button_center'};
+        case 'event_thymio_any_button': return {event: 'thymio_any_button'};
+        case 'event_thymio_proximity_update': return {event: 'thymio_proximity_update'};
+        case 'event_thymio_ground_update': return {event: 'thymio_ground_update'};
+        case 'event_thymio_timer_0': return {event: 'thymio_timer_0'};
+        case 'event_thymio_timer_1': return {event: 'thymio_timer_1'};
+        case 'event_thymio_tap': return {event: 'thymio_tap'};
+        case 'event_thymio_sound_detected': return {event: 'thymio_sound_detected'};
+        case 'event_thymio_sound_finished': return {event: 'thymio_sound_finished'};
+        case 'event_thymio_message_received': return {event: 'thymio_message_received'};
         default: return null;
     }
 }
@@ -210,6 +225,221 @@ function generateActionCode(block) {
             }};
         case 'execute_code':
             return {action: 'execute_code', parameters: {code: block.getFieldValue('CODE') || ''}};
+
+        // ============================================================================
+        // THYMIO MOTOR ACTIONS
+        // ============================================================================
+        case 'thymio_set_motor_speed':
+            return {type: 'thymio_set_motor_speed', parameters: {
+                left_speed: getInputValue(block, 'LEFT_SPEED', 0),
+                right_speed: getInputValue(block, 'RIGHT_SPEED', 0)
+            }};
+        case 'thymio_move_forward':
+            return {type: 'thymio_move_forward', parameters: {speed: getInputValue(block, 'SPEED', 200)}};
+        case 'thymio_move_backward':
+            return {type: 'thymio_move_backward', parameters: {speed: getInputValue(block, 'SPEED', 200)}};
+        case 'thymio_turn_left':
+            return {type: 'thymio_turn_left', parameters: {speed: getInputValue(block, 'SPEED', 300)}};
+        case 'thymio_turn_right':
+            return {type: 'thymio_turn_right', parameters: {speed: getInputValue(block, 'SPEED', 300)}};
+        case 'thymio_stop_motors':
+            return {type: 'thymio_stop_motors', parameters: {}};
+
+        // ============================================================================
+        // THYMIO LED ACTIONS
+        // ============================================================================
+        case 'thymio_set_led_top':
+            return {type: 'thymio_set_led_top', parameters: {
+                red: getInputValue(block, 'RED', 0),
+                green: getInputValue(block, 'GREEN', 0),
+                blue: getInputValue(block, 'BLUE', 0)
+            }};
+        case 'thymio_set_led_bottom_left':
+            return {type: 'thymio_set_led_bottom_left', parameters: {
+                red: getInputValue(block, 'RED', 0),
+                green: getInputValue(block, 'GREEN', 0),
+                blue: getInputValue(block, 'BLUE', 0)
+            }};
+        case 'thymio_set_led_bottom_right':
+            return {type: 'thymio_set_led_bottom_right', parameters: {
+                red: getInputValue(block, 'RED', 0),
+                green: getInputValue(block, 'GREEN', 0),
+                blue: getInputValue(block, 'BLUE', 0)
+            }};
+        case 'thymio_set_led_circle':
+            return {type: 'thymio_set_led_circle', parameters: {
+                led_index: parseInt(block.getFieldValue('LED_INDEX')),
+                intensity: getInputValue(block, 'INTENSITY', 32)
+            }};
+        case 'thymio_set_led_circle_all':
+            return {type: 'thymio_set_led_circle_all', parameters: {
+                led0: getInputValue(block, 'LED0', 0),
+                led1: getInputValue(block, 'LED1', 0),
+                led2: getInputValue(block, 'LED2', 0),
+                led3: getInputValue(block, 'LED3', 0),
+                led4: getInputValue(block, 'LED4', 0),
+                led5: getInputValue(block, 'LED5', 0),
+                led6: getInputValue(block, 'LED6', 0),
+                led7: getInputValue(block, 'LED7', 0)
+            }};
+        case 'thymio_leds_off':
+            return {type: 'thymio_leds_off', parameters: {}};
+
+        // ============================================================================
+        // THYMIO SOUND ACTIONS
+        // ============================================================================
+        case 'thymio_play_tone':
+            return {type: 'thymio_play_tone', parameters: {
+                frequency: getInputValue(block, 'FREQUENCY', 440),
+                duration: getInputValue(block, 'DURATION', 60)
+            }};
+        case 'thymio_play_system_sound':
+            return {type: 'thymio_play_system_sound', parameters: {
+                sound_id: parseInt(block.getFieldValue('SOUND_ID'))
+            }};
+        case 'thymio_stop_sound':
+            return {type: 'thymio_stop_sound', parameters: {}};
+
+        // ============================================================================
+        // THYMIO SENSOR READING ACTIONS
+        // ============================================================================
+        case 'thymio_read_proximity':
+            return {type: 'thymio_read_proximity', parameters: {
+                sensor_index: parseInt(block.getFieldValue('SENSOR_INDEX')),
+                variable: block.getFieldValue('VARIABLE')
+            }};
+        case 'thymio_read_ground':
+            return {type: 'thymio_read_ground', parameters: {
+                sensor_index: parseInt(block.getFieldValue('SENSOR_INDEX')),
+                variable: block.getFieldValue('VARIABLE')
+            }};
+        case 'thymio_read_button':
+            return {type: 'thymio_read_button', parameters: {
+                button: block.getFieldValue('BUTTON'),
+                variable: block.getFieldValue('VARIABLE')
+            }};
+
+        // ============================================================================
+        // THYMIO CONDITION ACTIONS (with sub_actions)
+        // ============================================================================
+        case 'thymio_if_proximity':
+            var proxSubActions = [];
+            var proxSubBlock = block.getInputTargetBlock('DO');
+            while (proxSubBlock) {
+                var proxAction = generateActionCode(proxSubBlock);
+                if (proxAction) {
+                    proxSubActions.push(proxAction);
+                }
+                proxSubBlock = proxSubBlock.getNextBlock();
+            }
+            return {type: 'thymio_if_proximity', parameters: {
+                sensor_index: parseInt(block.getFieldValue('SENSOR_INDEX')),
+                comparison: block.getFieldValue('COMPARISON'),
+                threshold: getInputValue(block, 'THRESHOLD', 2000)
+            }, sub_actions: proxSubActions};
+
+        case 'thymio_if_ground_dark':
+            var groundDarkSubActions = [];
+            var groundDarkSubBlock = block.getInputTargetBlock('DO');
+            while (groundDarkSubBlock) {
+                var groundDarkAction = generateActionCode(groundDarkSubBlock);
+                if (groundDarkAction) {
+                    groundDarkSubActions.push(groundDarkAction);
+                }
+                groundDarkSubBlock = groundDarkSubBlock.getNextBlock();
+            }
+            return {type: 'thymio_if_ground_dark', parameters: {
+                sensor_index: parseInt(block.getFieldValue('SENSOR_INDEX')),
+                threshold: getInputValue(block, 'THRESHOLD', 300)
+            }, sub_actions: groundDarkSubActions};
+
+        case 'thymio_if_ground_light':
+            var groundLightSubActions = [];
+            var groundLightSubBlock = block.getInputTargetBlock('DO');
+            while (groundLightSubBlock) {
+                var groundLightAction = generateActionCode(groundLightSubBlock);
+                if (groundLightAction) {
+                    groundLightSubActions.push(groundLightAction);
+                }
+                groundLightSubBlock = groundLightSubBlock.getNextBlock();
+            }
+            return {type: 'thymio_if_ground_light', parameters: {
+                sensor_index: parseInt(block.getFieldValue('SENSOR_INDEX')),
+                threshold: getInputValue(block, 'THRESHOLD', 300)
+            }, sub_actions: groundLightSubActions};
+
+        case 'thymio_if_button_pressed':
+            var btnPressSubActions = [];
+            var btnPressSubBlock = block.getInputTargetBlock('DO');
+            while (btnPressSubBlock) {
+                var btnPressAction = generateActionCode(btnPressSubBlock);
+                if (btnPressAction) {
+                    btnPressSubActions.push(btnPressAction);
+                }
+                btnPressSubBlock = btnPressSubBlock.getNextBlock();
+            }
+            return {type: 'thymio_if_button_pressed', parameters: {
+                button: block.getFieldValue('BUTTON')
+            }, sub_actions: btnPressSubActions};
+
+        case 'thymio_if_button_released':
+            var btnRelSubActions = [];
+            var btnRelSubBlock = block.getInputTargetBlock('DO');
+            while (btnRelSubBlock) {
+                var btnRelAction = generateActionCode(btnRelSubBlock);
+                if (btnRelAction) {
+                    btnRelSubActions.push(btnRelAction);
+                }
+                btnRelSubBlock = btnRelSubBlock.getNextBlock();
+            }
+            return {type: 'thymio_if_button_released', parameters: {
+                button: block.getFieldValue('BUTTON')
+            }, sub_actions: btnRelSubActions};
+
+        case 'thymio_if_variable':
+            var varSubActions = [];
+            var varSubBlock = block.getInputTargetBlock('DO');
+            while (varSubBlock) {
+                var varAction = generateActionCode(varSubBlock);
+                if (varAction) {
+                    varSubActions.push(varAction);
+                }
+                varSubBlock = varSubBlock.getNextBlock();
+            }
+            return {type: 'thymio_if_variable', parameters: {
+                variable: block.getFieldValue('VARIABLE'),
+                comparison: block.getFieldValue('COMPARISON'),
+                value: getInputValue(block, 'VALUE', 0)
+            }, sub_actions: varSubActions};
+
+        // ============================================================================
+        // THYMIO TIMING ACTIONS
+        // ============================================================================
+        case 'thymio_set_timer_period':
+            return {type: 'thymio_set_timer_period', parameters: {
+                timer_id: parseInt(block.getFieldValue('TIMER_ID')),
+                period: getInputValue(block, 'PERIOD', 1000)
+            }};
+
+        // ============================================================================
+        // THYMIO VARIABLE ACTIONS
+        // ============================================================================
+        case 'thymio_set_variable':
+            return {type: 'thymio_set_variable', parameters: {
+                variable: block.getFieldValue('VARIABLE'),
+                value: getInputValue(block, 'VALUE', 0)
+            }};
+        case 'thymio_increase_variable':
+            return {type: 'thymio_increase_variable', parameters: {
+                variable: block.getFieldValue('VARIABLE'),
+                amount: getInputValue(block, 'AMOUNT', 1)
+            }};
+        case 'thymio_decrease_variable':
+            return {type: 'thymio_decrease_variable', parameters: {
+                variable: block.getFieldValue('VARIABLE'),
+                amount: getInputValue(block, 'AMOUNT', 1)
+            }};
+
         default:
             return null;
     }

@@ -45,6 +45,9 @@ def get_action_type(action_name: str):
 # Import formatter
 from .object_actions_formatter import ActionParametersFormatter
 
+# Import Python code parser for execute_code action parsing
+from .python_code_parser import PythonToActionsParser
+
 from core.logger import get_logger
 logger = get_logger(__name__)
 
@@ -1344,6 +1347,9 @@ class ObjectEventsPanel(QWidget):
         import copy
         self.current_events_data = copy.deepcopy(events_data)
 
+        # Parse execute_code actions to extract proper Thymio actions
+        self._parse_execute_code_actions()
+
         # Debug output
         for event_name, event_info in self.current_events_data.items():
             if isinstance(event_info, dict):
@@ -1357,6 +1363,50 @@ class ObjectEventsPanel(QWidget):
         self.events_tree.collapseAll()
 
         logger.debug(f"Events display refreshed, tree should now show {len(events_data)} events")
+
+    def _parse_execute_code_actions(self):
+        """Parse execute_code actions to extract proper action types (especially Thymio)"""
+        parser = PythonToActionsParser()
+
+        for event_name, event_info in self.current_events_data.items():
+            if not isinstance(event_info, dict):
+                continue
+
+            actions = event_info.get('actions', [])
+            if not actions:
+                continue
+
+            # Build new actions list, parsing execute_code actions
+            new_actions = []
+            for action in actions:
+                action_name = action.get('action') or action.get('type', '')
+                if action_name == 'execute_code':
+                    code = action.get('parameters', {}).get('code', '')
+                    if code and 'thymio.' in code:
+                        # This execute_code contains Thymio code - parse it
+                        try:
+                            result = parser.parse_event_code(code, event_name)
+                            parsed_actions = result.get('actions', [])
+                            if parsed_actions:
+                                # Check if we got meaningful actions (not just execute_code)
+                                has_thymio_actions = any(
+                                    (a.get('action', '') or a.get('type', '')).startswith('thymio_')
+                                    for a in parsed_actions
+                                )
+                                if has_thymio_actions:
+                                    logger.debug(f"Parsed execute_code in {event_name}: {len(parsed_actions)} actions")
+                                    new_actions.extend(parsed_actions)
+                                    continue
+                        except Exception as e:
+                            logger.warning(f"Failed to parse execute_code in {event_name}: {e}")
+                    # Keep original execute_code if not Thymio code or parsing failed
+                    new_actions.append(action)
+                else:
+                    # Keep non-execute_code actions as-is
+                    new_actions.append(action)
+
+            # Update the event's actions
+            event_info['actions'] = new_actions
 
     def get_events_data(self) -> Dict[str, Any]:
         """Get current events data"""

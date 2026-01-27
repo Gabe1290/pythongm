@@ -8,6 +8,7 @@ from .enhanced_properties_panel import EnhancedPropertiesPanel
 from .event_actions import EventActionWidget
 from .welcome_tab import WelcomeTab
 from .thymio_diagram_widget import ThymioDiagramWidget
+from .thymio_playground import ThymioPlaygroundWindow
 
 # Aliases for compatibility
 PropertiesPanel = EnhancedPropertiesPanel
@@ -19,6 +20,7 @@ __all__ = [
     'EventActionWidget',
     'WelcomeTab',
     'ThymioDiagramWidget',
+    'ThymioPlaygroundWindow',
     'PropertiesPanel',  # Alias
     'EventActionsPanel',  # Alias
 ]

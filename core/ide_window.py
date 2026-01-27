@@ -19,6 +19,7 @@ from core.ide_exporters import IDEExporters
 from dialogs.project_dialogs import NewProjectDialog, ProjectSettingsDialog
 from dialogs.import_dialogs import ImportAssetDialog
 from dialogs.blockly_config_dialog import BlocklyConfigDialog
+from dialogs.thymio_config_dialog import ThymioConfigDialog
 from utils.config import Config
 from editors.room_editor import RoomEditor
 from editors.object_editor import ObjectEditor
@@ -235,6 +236,7 @@ class PyGameMakerIDE(QMainWindow):
         tools_menu.addAction(self.create_action(self.tr("&Preferences..."), None, self.preferences))
         tools_menu.addAction(self.create_action(self.tr("&Asset Manager..."), None, self.show_asset_manager))
         tools_menu.addAction(self.create_action(self.tr("Configure &Action Blocks..."), None, self.configure_blockly))
+        tools_menu.addAction(self.create_action(self.tr("Configure &Thymio Blocks..."), None, self.configure_thymio))
         tools_menu.addSeparator()
         tools_menu.addAction(self.create_action(self.tr("&Validate Project"), None, self.validate_project))
         tools_menu.addAction(self.create_action(self.tr("&Clean Project"), None, self.clean_project))
@@ -248,6 +250,17 @@ class PyGameMakerIDE(QMainWindow):
         # Thymio submenu
         tools_menu.addSeparator()
         thymio_menu = tools_menu.addMenu(self.tr("🤖 &Thymio Programming"))
+
+        # Show Thymio Tab checkbox
+        self.show_thymio_tab_action = QAction(self.tr("Show Thymio Tab in Object Editor"), self)
+        self.show_thymio_tab_action.setCheckable(True)
+        self.show_thymio_tab_action.setChecked(Config.get('show_thymio_tab', False))
+        self.show_thymio_tab_action.triggered.connect(self.toggle_thymio_tab)
+        thymio_menu.addAction(self.show_thymio_tab_action)
+        thymio_menu.addSeparator()
+
+        thymio_menu.addAction(self.create_action(self.tr("Open &Playground..."), None, self.show_thymio_playground))
+        thymio_menu.addSeparator()
         thymio_menu.addAction(self.create_action(self.tr("Add &Event..."), None, self.show_thymio_event_selector))
         thymio_menu.addAction(self.create_action(self.tr("Add &Action..."), None, self.show_thymio_action_selector))
 
@@ -2118,6 +2131,49 @@ class PyGameMakerIDE(QMainWindow):
             logger.debug(f"   Enabled blocks: {len(new_config.enabled_blocks)}")
             logger.debug(f"   Enabled categories: {', '.join(new_config.enabled_categories)}")
 
+    def configure_thymio(self):
+        """Open Thymio configuration dialog to customize available Thymio blocks"""
+        from config.blockly_config import load_config, save_config, PRESETS, BlocklyConfig
+
+        # Try to load preset from current project settings first
+        current_config = None
+        if self.current_project_data:
+            project_preset = self.current_project_data.get('settings', {}).get('blockly_preset')
+            if project_preset and project_preset in PRESETS:
+                current_config = BlocklyConfig.from_dict(PRESETS[project_preset].to_dict())
+
+        # Fall back to global config if no project preset
+        if not current_config:
+            current_config = load_config()
+
+        # Show Thymio-specific dialog
+        dialog = ThymioConfigDialog(self, current_config)
+        if dialog.exec() == QDialog.Accepted:
+            # Save the new configuration
+            new_config = dialog.config
+            save_config(new_config)
+
+            # Also save to project settings if a project is open
+            if self.current_project_path and self.current_project_data:
+                if 'settings' not in self.current_project_data:
+                    self.current_project_data['settings'] = {}
+                self.current_project_data['settings']['blockly_preset'] = new_config.preset_name
+                self.save_project()
+                logger.info(f"✅ Saved Thymio preset to project")
+
+            # Refresh any open events panels
+            self.refresh_event_panels_config()
+
+            # Show confirmation
+            QMessageBox.information(
+                self,
+                self.tr("Thymio Configuration Saved"),
+                self.tr("Thymio block configuration has been saved.\n\n"
+                        "The new Thymio event/action selection is now active.")
+            )
+
+            logger.info(f"✅ Thymio configuration updated")
+
     def refresh_event_panels_config(self):
         """Refresh configuration in all open object events panels"""
         # Find all open object editors with events panels
@@ -2129,6 +2185,30 @@ class PyGameMakerIDE(QMainWindow):
                 if hasattr(widget.events_panel, 'reload_config'):
                     widget.events_panel.reload_config()
                     logger.debug(f"   ♻️ Reloaded event panel config for: {self.editor_tabs.tabText(i)}")
+
+    def toggle_thymio_tab(self):
+        """Toggle visibility of Thymio tab in object editors"""
+        show_thymio = self.show_thymio_tab_action.isChecked()
+
+        # Save preference
+        Config.set('show_thymio_tab', show_thymio)
+
+        # Update all open object editors
+        for i in range(self.editor_tabs.count()):
+            widget = self.editor_tabs.widget(i)
+            if hasattr(widget, 'set_thymio_tab_visible'):
+                widget.set_thymio_tab_visible(show_thymio)
+
+        logger.info(f"Thymio tab visibility: {'shown' if show_thymio else 'hidden'}")
+
+    def show_thymio_playground(self):
+        """Open the Thymio Playground simulator window"""
+        from widgets.thymio_playground import ThymioPlaygroundWindow
+
+        # Create and show the playground window
+        self.thymio_playground = ThymioPlaygroundWindow(self)
+        self.thymio_playground.show()
+        logger.info("Opened Thymio Playground window")
 
     def show_thymio_event_selector(self):
         """Show the Thymio event selector dialog"""

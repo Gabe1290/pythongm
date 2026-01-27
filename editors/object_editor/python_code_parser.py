@@ -64,6 +64,38 @@ METHOD_TO_ACTION = {
     ('self', 'set_alarm'): ('set_alarm', {'alarm': 0, 'steps': 0}),
 }
 
+# Mapping from Thymio Python method calls to action types
+# Key: method_name -> (action_name, parameter_mapping)
+# parameter_mapping maps positional arg index to parameter name
+THYMIO_METHOD_TO_ACTION = {
+    # Motor control
+    'set_motor_speed': ('thymio_set_motor_speed', ['left_speed', 'right_speed']),
+    'move_forward': ('thymio_move_forward', ['speed']),
+    'move_backward': ('thymio_move_backward', ['speed']),
+    'turn_left': ('thymio_turn_left', ['speed']),
+    'turn_right': ('thymio_turn_right', ['speed']),
+    'stop_motors': ('thymio_stop_motors', []),
+
+    # LED control
+    'set_led_top': ('thymio_set_led_top', ['red', 'green', 'blue']),
+    'set_led_bottom_left': ('thymio_set_led_bottom_left', ['red', 'green', 'blue']),
+    'set_led_bottom_right': ('thymio_set_led_bottom_right', ['red', 'green', 'blue']),
+    'set_led_circle': ('thymio_set_led_circle', ['led_index', 'intensity']),
+    'set_led_circle_all': ('thymio_set_led_circle_all', ['led0', 'led1', 'led2', 'led3', 'led4', 'led5', 'led6', 'led7']),
+    'leds_off': ('thymio_leds_off', []),
+
+    # Sound
+    'play_tone': ('thymio_play_tone', ['frequency', 'duration']),
+    'play_system_sound': ('thymio_play_system_sound', ['sound_id']),
+    'stop_sound': ('thymio_stop_sound', []),
+
+    # Timer
+    'set_timer_period': ('thymio_set_timer_period', ['timer_id', 'period']),
+
+    # Note: Sensor reads (read_proximity, read_ground, read_button) are handled specially
+    # because they return values and are typically used in assignments or conditions
+}
+
 # Mapping from action names to Python code templates
 ACTION_TO_PYTHON = {
     # Movement
@@ -124,6 +156,52 @@ ACTION_TO_PYTHON = {
 
     # Code execution (passthrough)
     'execute_code': '{code}',
+
+    # ========================================================================
+    # THYMIO ROBOT ACTIONS
+    # ========================================================================
+
+    # Motor control
+    'thymio_set_motor_speed': 'thymio.set_motor_speed({left_speed}, {right_speed})',
+    'thymio_move_forward': 'thymio.move_forward({speed})',
+    'thymio_move_backward': 'thymio.move_backward({speed})',
+    'thymio_turn_left': 'thymio.turn_left({speed})',
+    'thymio_turn_right': 'thymio.turn_right({speed})',
+    'thymio_stop_motors': 'thymio.stop_motors()',
+
+    # LED control
+    'thymio_set_led_top': 'thymio.set_led_top({red}, {green}, {blue})',
+    'thymio_set_led_bottom_left': 'thymio.set_led_bottom_left({red}, {green}, {blue})',
+    'thymio_set_led_bottom_right': 'thymio.set_led_bottom_right({red}, {green}, {blue})',
+    'thymio_set_led_circle': 'thymio.set_led_circle({led_index}, {intensity})',
+    'thymio_set_led_circle_all': 'thymio.set_led_circle_all({led0}, {led1}, {led2}, {led3}, {led4}, {led5}, {led6}, {led7})',
+    'thymio_leds_off': 'thymio.leds_off()',
+
+    # Sound
+    'thymio_play_tone': 'thymio.play_tone({frequency}, {duration})',
+    'thymio_play_system_sound': 'thymio.play_system_sound({sound_id})',
+    'thymio_stop_sound': 'thymio.stop_sound()',
+
+    # Sensor reading (store in variable)
+    'thymio_read_proximity': '{variable} = thymio.read_proximity({sensor_index})',
+    'thymio_read_ground': '{variable} = thymio.read_ground({sensor_index})',
+    'thymio_read_button': '{variable} = thymio.read_button("{button}")',
+
+    # Timer
+    'thymio_set_timer_period': 'thymio.set_timer_period({timer_id}, {period})',
+
+    # Variables
+    'thymio_set_variable': '{variable} = {value}',
+    'thymio_increase_variable': '{variable} += {amount}',
+    'thymio_decrease_variable': '{variable} -= {amount}',
+
+    # Conditionals (handled specially in _generate_action_code for sub_actions)
+    'thymio_if_proximity': 'if thymio.read_proximity({sensor_index}) {comparison} {threshold}:',
+    'thymio_if_ground_dark': 'if thymio.read_ground({sensor_index}) < {threshold}:',
+    'thymio_if_ground_light': 'if thymio.read_ground({sensor_index}) >= {threshold}:',
+    'thymio_if_button_pressed': 'if thymio.read_button("{button}"):',
+    'thymio_if_button_released': 'if not thymio.read_button("{button}"):',
+    'thymio_if_variable': 'if {variable} {comparison} {value}:',
 }
 
 # Event name mappings
@@ -146,6 +224,22 @@ EVENT_METHOD_NAMES = {
     'alarm_9': 'on_alarm_9',
     'alarm_10': 'on_alarm_10',
     'alarm_11': 'on_alarm_11',
+
+    # Thymio events
+    'thymio_button_forward': 'on_thymio_button_forward',
+    'thymio_button_backward': 'on_thymio_button_backward',
+    'thymio_button_left': 'on_thymio_button_left',
+    'thymio_button_right': 'on_thymio_button_right',
+    'thymio_button_center': 'on_thymio_button_center',
+    'thymio_any_button': 'on_thymio_any_button',
+    'thymio_proximity_update': 'on_thymio_proximity_update',
+    'thymio_ground_update': 'on_thymio_ground_update',
+    'thymio_timer_0': 'on_thymio_timer_0',
+    'thymio_timer_1': 'on_thymio_timer_1',
+    'thymio_tap': 'on_thymio_tap',
+    'thymio_sound_detected': 'on_thymio_sound_detected',
+    'thymio_sound_finished': 'on_thymio_sound_finished',
+    'thymio_message_received': 'on_thymio_message_received',
 }
 
 # Reverse mapping for parsing
@@ -358,11 +452,22 @@ class PythonToActionsParser:
     def _try_parse_statement(self, stmt: ast.stmt) -> Optional[Dict[str, Any]]:
         """Try to parse a statement as an action"""
         if isinstance(stmt, ast.Assign):
+            # Check for Thymio sensor read assignment first
+            thymio_action = self._try_parse_thymio_assignment(stmt)
+            if thymio_action:
+                return thymio_action
             return self._try_parse_assignment(stmt)
         elif isinstance(stmt, ast.AugAssign):
+            # Check for Thymio variable augmented assignment
+            thymio_action = self._try_parse_thymio_aug_assignment(stmt)
+            if thymio_action:
+                return thymio_action
             return self._try_parse_aug_assignment(stmt)
         elif isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call):
             return self._try_parse_call(stmt.value)
+        elif isinstance(stmt, ast.If):
+            # Check for Thymio conditional
+            return self._try_parse_thymio_conditional(stmt)
         return None
 
     def _try_parse_assignment(self, stmt: ast.Assign) -> Optional[Dict[str, Any]]:
@@ -491,7 +596,246 @@ class PythonToActionsParser:
                     "parameters": {"sound": self._eval_value(call.args[0])}
                 }
 
+        # Handle thymio.method() calls
+        if (isinstance(call.func, ast.Attribute) and
+            isinstance(call.func.value, ast.Name) and
+            call.func.value.id == 'thymio'):
+            return self._try_parse_thymio_call(call)
+
         return None
+
+    def _try_parse_thymio_call(self, call: ast.Call) -> Optional[Dict[str, Any]]:
+        """Try to parse a Thymio method call as an action"""
+        method_name = call.func.attr
+
+        # Check if this is a known Thymio method
+        if method_name in THYMIO_METHOD_TO_ACTION:
+            action_name, param_names = THYMIO_METHOD_TO_ACTION[method_name]
+
+            # Build parameters dict from positional arguments
+            params = {}
+            for i, param_name in enumerate(param_names):
+                if i < len(call.args):
+                    params[param_name] = self._eval_value(call.args[i])
+                else:
+                    # Use default value if available
+                    params[param_name] = 0
+
+            # Also handle keyword arguments
+            for kw in call.keywords:
+                if kw.arg in param_names:
+                    params[kw.arg] = self._eval_value(kw.value)
+
+            return {"action": action_name, "parameters": params}
+
+        return None
+
+    def _try_parse_thymio_assignment(self, stmt: ast.Assign) -> Optional[Dict[str, Any]]:
+        """Try to parse a Thymio-related assignment as an action"""
+        if len(stmt.targets) != 1:
+            return None
+
+        target = stmt.targets[0]
+        value = stmt.value
+
+        # Handle variable = thymio.read_*() patterns
+        if isinstance(target, ast.Name) and isinstance(value, ast.Call):
+            if (isinstance(value.func, ast.Attribute) and
+                isinstance(value.func.value, ast.Name) and
+                value.func.value.id == 'thymio'):
+
+                method_name = value.func.attr
+                var_name = target.id
+
+                if method_name == 'read_proximity' and value.args:
+                    return {
+                        "action": "thymio_read_proximity",
+                        "parameters": {
+                            "variable": var_name,
+                            "sensor_index": self._eval_value(value.args[0])
+                        }
+                    }
+                elif method_name == 'read_ground' and value.args:
+                    return {
+                        "action": "thymio_read_ground",
+                        "parameters": {
+                            "variable": var_name,
+                            "sensor_index": self._eval_value(value.args[0])
+                        }
+                    }
+                elif method_name == 'read_button' and value.args:
+                    return {
+                        "action": "thymio_read_button",
+                        "parameters": {
+                            "variable": var_name,
+                            "button": self._eval_value(value.args[0])
+                        }
+                    }
+
+        # Handle simple variable = value assignments (thymio_set_variable)
+        if isinstance(target, ast.Name) and isinstance(value, (ast.Constant, ast.Num)):
+            var_name = target.id
+            # Only treat as Thymio variable if it looks like a user variable (not Python builtins)
+            if not var_name.startswith('_') and var_name not in ('self', 'game', 'thymio'):
+                return {
+                    "action": "thymio_set_variable",
+                    "parameters": {
+                        "variable": var_name,
+                        "value": self._eval_value(value)
+                    }
+                }
+
+        return None
+
+    def _try_parse_thymio_aug_assignment(self, stmt: ast.AugAssign) -> Optional[Dict[str, Any]]:
+        """Try to parse Thymio variable increment/decrement"""
+        target = stmt.target
+        value = stmt.value
+
+        # Handle variable += amount or variable -= amount
+        if isinstance(target, ast.Name) and isinstance(value, (ast.Constant, ast.Num)):
+            var_name = target.id
+            amount = self._eval_value(value)
+
+            # Only treat as Thymio variable if it looks like a user variable
+            if not var_name.startswith('_') and var_name not in ('self', 'game', 'thymio'):
+                if isinstance(stmt.op, ast.Add):
+                    return {
+                        "action": "thymio_increase_variable",
+                        "parameters": {"variable": var_name, "amount": amount}
+                    }
+                elif isinstance(stmt.op, ast.Sub):
+                    return {
+                        "action": "thymio_decrease_variable",
+                        "parameters": {"variable": var_name, "amount": amount}
+                    }
+
+        return None
+
+    def _try_parse_thymio_conditional(self, stmt: ast.If) -> Optional[Dict[str, Any]]:
+        """Try to parse an if statement as a Thymio conditional action"""
+        test = stmt.test
+
+        # Handle: if thymio.read_proximity(n) <comparison> threshold:
+        if isinstance(test, ast.Compare):
+            result = self._try_parse_thymio_compare(test, stmt.body)
+            if result:
+                return result
+
+        # Handle: if thymio.read_button("name"):
+        if isinstance(test, ast.Call):
+            result = self._try_parse_thymio_button_check(test, stmt.body, pressed=True)
+            if result:
+                return result
+
+        # Handle: if not thymio.read_button("name"):
+        if isinstance(test, ast.UnaryOp) and isinstance(test.op, ast.Not):
+            if isinstance(test.operand, ast.Call):
+                result = self._try_parse_thymio_button_check(test.operand, stmt.body, pressed=False)
+                if result:
+                    return result
+
+        return None
+
+    def _try_parse_thymio_compare(self, test: ast.Compare, body: List[ast.stmt]) -> Optional[Dict[str, Any]]:
+        """Parse a comparison with Thymio sensor read"""
+        if len(test.ops) != 1 or len(test.comparators) != 1:
+            return None
+
+        left = test.left
+        op = test.ops[0]
+        right = test.comparators[0]
+
+        # Check if left side is thymio.read_*()
+        if not (isinstance(left, ast.Call) and
+                isinstance(left.func, ast.Attribute) and
+                isinstance(left.func.value, ast.Name) and
+                left.func.value.id == 'thymio'):
+            return None
+
+        method_name = left.func.attr
+
+        # Get comparison operator
+        comparison = self._get_compare_op_str(op)
+        threshold = self._eval_value(right)
+
+        # Parse body as sub_actions
+        sub_actions = self._extract_actions_from_body(body)
+
+        if method_name == 'read_proximity' and left.args:
+            sensor_index = self._eval_value(left.args[0])
+            return {
+                "action": "thymio_if_proximity",
+                "parameters": {
+                    "sensor_index": sensor_index,
+                    "comparison": comparison,
+                    "threshold": threshold
+                },
+                "sub_actions": sub_actions
+            }
+
+        elif method_name == 'read_ground' and left.args:
+            sensor_index = self._eval_value(left.args[0])
+            # Determine if it's "dark" (< threshold) or "light" (>= threshold)
+            if isinstance(op, ast.Lt) or isinstance(op, ast.LtE):
+                return {
+                    "action": "thymio_if_ground_dark",
+                    "parameters": {
+                        "sensor_index": sensor_index,
+                        "threshold": threshold
+                    },
+                    "sub_actions": sub_actions
+                }
+            else:
+                return {
+                    "action": "thymio_if_ground_light",
+                    "parameters": {
+                        "sensor_index": sensor_index,
+                        "threshold": threshold
+                    },
+                    "sub_actions": sub_actions
+                }
+
+        return None
+
+    def _try_parse_thymio_button_check(self, call: ast.Call, body: List[ast.stmt], pressed: bool) -> Optional[Dict[str, Any]]:
+        """Parse if thymio.read_button("name"): or if not thymio.read_button("name"):"""
+        if not (isinstance(call.func, ast.Attribute) and
+                isinstance(call.func.value, ast.Name) and
+                call.func.value.id == 'thymio' and
+                call.func.attr == 'read_button'):
+            return None
+
+        if not call.args:
+            return None
+
+        button = self._eval_value(call.args[0])
+        sub_actions = self._extract_actions_from_body(body)
+
+        if pressed:
+            return {
+                "action": "thymio_if_button_pressed",
+                "parameters": {"button": button},
+                "sub_actions": sub_actions
+            }
+        else:
+            return {
+                "action": "thymio_if_button_released",
+                "parameters": {"button": button},
+                "sub_actions": sub_actions
+            }
+
+    def _get_compare_op_str(self, op: ast.cmpop) -> str:
+        """Get string representation of comparison operator"""
+        ops = {
+            ast.Eq: '==',
+            ast.NotEq: '!=',
+            ast.Lt: '<',
+            ast.LtE: '<=',
+            ast.Gt: '>',
+            ast.GtE: '>='
+        }
+        return ops.get(type(op), '==')
 
     def _eval_value(self, node: ast.expr) -> Any:
         """Evaluate a simple value expression"""
@@ -626,8 +970,10 @@ class ActionsToPythonGenerator:
 
     def _generate_action_code(self, action: Dict[str, Any]) -> str:
         """Generate Python code for a single action"""
-        action_name = action.get("action", "")
+        # Support both 'action' and 'type' keys (Blockly uses 'type')
+        action_name = action.get("action") or action.get("type", "")
         params = action.get("parameters", {})
+        sub_actions = action.get("sub_actions", [])
 
         # Handle execute_code specially
         if action_name == "execute_code":
@@ -637,6 +983,10 @@ class ActionsToPythonGenerator:
         if not template:
             # Unknown action - generate comment
             return f"# Unknown action: {action_name}"
+
+        # Handle Thymio conditional actions with sub_actions
+        if action_name.startswith('thymio_if_') and sub_actions:
+            return self._generate_thymio_conditional(action_name, params, sub_actions, template)
 
         # Normalize parameters - handle different parameter naming conventions
         # The action system uses different names than the templates expect
@@ -660,6 +1010,31 @@ class ActionsToPythonGenerator:
             return template.format(**params)
         except KeyError as e:
             return f"# Missing parameter {e} for {action_name}"
+
+    def _generate_thymio_conditional(self, action_name: str, params: Dict[str, Any],
+                                     sub_actions: List[Dict[str, Any]], template: str) -> str:
+        """Generate Python code for Thymio conditional actions with nested sub_actions"""
+        lines = []
+
+        # Generate the condition line
+        try:
+            condition_line = template.format(**params)
+            lines.append(condition_line)
+        except KeyError as e:
+            return f"# Missing parameter {e} for {action_name}"
+
+        # Generate sub_actions with indentation
+        if sub_actions:
+            for sub_action in sub_actions:
+                sub_code = self._generate_action_code(sub_action)
+                if sub_code:
+                    # Each line of sub_code needs indentation
+                    for line in sub_code.split('\n'):
+                        lines.append(f"    {line}")
+        else:
+            lines.append("    pass")
+
+        return '\n'.join(lines)
 
     def _sanitize_name(self, name: str) -> str:
         """Sanitize name to be a valid Python identifier"""
