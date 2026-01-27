@@ -22,6 +22,7 @@ logger = get_logger(__name__)
 from ..base_editor import BaseEditor, EditorUndoCommand
 from .object_properties_panel import ObjectPropertiesPanel
 from .object_events_panel import ObjectEventsPanel
+from .thymio_events_panel import ThymioEventsPanel
 from .python_syntax_highlighter import PythonSyntaxHighlighter
 from .blockly_widget import BlocklyVisualProgrammingTab
 from ..object_editor_components import ActionListWidget, VisualScriptingArea
@@ -233,34 +234,93 @@ class ObjectEditor(BaseEditor):
         self.toolbar.addAction(self.tr("📋 View Code"), self.view_generated_code)
 
     def create_left_panel(self) -> QWidget:
-        """Create left panel with events"""
+        """Create left panel with events (tabbed: Standard and Thymio modes)"""
         panel = QWidget()
         layout = QVBoxLayout(panel)
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setSpacing(0)
 
-        # ✅ TRANSLATABLE: Group box title
-        events_group = QGroupBox(self.tr("Object Events"))
-        events_layout = QVBoxLayout(events_group)
-        events_layout.setContentsMargins(5, 5, 5, 5)
+        # Create tab widget for switching between Standard and Thymio modes
+        self.events_tab_widget = QTabWidget()
+        self.events_tab_widget.setTabPosition(QTabWidget.North)
 
-        # Create the events panel
+        # Tab 1: Standard Events Panel
+        standard_tab = QWidget()
+        standard_layout = QVBoxLayout(standard_tab)
+        standard_layout.setContentsMargins(0, 5, 0, 0)
+
         self.events_panel = ObjectEventsPanel()
         self.events_panel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        events_layout.addWidget(self.events_panel)
+        standard_layout.addWidget(self.events_panel)
+
+        # ✅ TRANSLATABLE: Tab titles
+        self.events_tab_widget.addTab(standard_tab, self.tr("Standard"))
+
+        # Tab 2: Thymio Events Panel
+        thymio_tab = QWidget()
+        thymio_layout = QVBoxLayout(thymio_tab)
+        thymio_layout.setContentsMargins(0, 5, 0, 0)
+
+        self.thymio_events_panel = ThymioEventsPanel()
+        self.thymio_events_panel.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        thymio_layout.addWidget(self.thymio_events_panel)
+
+        self.events_tab_widget.addTab(thymio_tab, self.tr("🤖 Thymio"))
+
+        # Connect Thymio panel signals
+        self.thymio_events_panel.events_modified.connect(self._on_thymio_events_modified)
+        self.thymio_events_panel.event_selected.connect(self._on_thymio_event_selected)
 
         # Apply project-specific blockly config to events panel (if set)
         self._apply_project_config_to_events_panel()
 
-        layout.addWidget(events_group, 1)
+        layout.addWidget(self.events_tab_widget, 1)
 
         panel.setMinimumWidth(200)
         panel.setMaximumWidth(10000)
         panel.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
 
-        logger.debug("Left panel created with events_panel")
+        logger.debug("Left panel created with events_panel and thymio_events_panel")
 
         return panel
+
+    def _on_thymio_events_modified(self):
+        """Handle changes in Thymio events panel"""
+        # Merge Thymio events back to main events data
+        if hasattr(self, 'thymio_events_panel'):
+            thymio_data = self.thymio_events_panel.get_events_data()
+            # Update main events data with Thymio events
+            for event_name, event_data in thymio_data.items():
+                self.events_panel.current_events_data[event_name] = event_data
+            # Remove Thymio events that were deleted
+            from events.thymio_events import THYMIO_EVENT_TYPES
+            for event_name in list(self.events_panel.current_events_data.keys()):
+                if event_name in THYMIO_EVENT_TYPES and event_name not in thymio_data:
+                    del self.events_panel.current_events_data[event_name]
+            # Trigger save
+            self.events_panel.events_modified.emit()
+
+    def _on_thymio_event_selected(self, event_name: str):
+        """Handle event selection in Thymio panel"""
+        # Update info label
+        if hasattr(self, 'event_info_label'):
+            from events.thymio_events import THYMIO_EVENT_TYPES
+            event_type = THYMIO_EVENT_TYPES.get(event_name)
+            if event_type:
+                self.event_info_label.setText(f"{event_type.icon} {event_type.display_name}")
+
+    def switch_to_thymio_mode(self):
+        """Switch to Thymio events panel"""
+        if hasattr(self, 'events_tab_widget'):
+            self.events_tab_widget.setCurrentIndex(1)
+            # Sync events to Thymio panel
+            if hasattr(self, 'thymio_events_panel') and hasattr(self, 'events_panel'):
+                self.thymio_events_panel.load_events_data(self.events_panel.current_events_data)
+
+    def switch_to_standard_mode(self):
+        """Switch to standard events panel"""
+        if hasattr(self, 'events_tab_widget'):
+            self.events_tab_widget.setCurrentIndex(0)
 
     def create_center_panel(self) -> QWidget:
         """Create center panel with properties and tabs"""
@@ -713,6 +773,11 @@ class ObjectEditor(BaseEditor):
                         self.events_panel.apply_config(config)
                         logger.info(f"Applied project Blockly preset '{blockly_preset}' to events panel")
 
+                    # Auto-switch to Thymio panel if using Thymio preset
+                    if blockly_preset == 'thymio':
+                        self.switch_to_thymio_mode()
+                        logger.info("Switched to Thymio mode (project uses thymio preset)")
+
         except Exception as e:
             logger.error(f"Error loading project assets: {e}")
             # ✅ TRANSLATABLE: Error message
@@ -747,6 +812,11 @@ class ObjectEditor(BaseEditor):
                                         self.custom_code_by_event[event_name] = code
 
                 self.events_panel.load_events_data(events_data)
+
+                # Also sync to Thymio panel if it exists
+                if hasattr(self, 'thymio_events_panel') and self.thymio_events_panel:
+                    self.thymio_events_panel.load_events_data(events_data)
+                    logger.debug("Synced events data to Thymio panel")
             else:
                 logger.debug("Events panel not initialized yet, storing for later")
 
