@@ -259,6 +259,11 @@ class ObjectEventsPanel(QWidget):
                 action = menu.addAction(f"{event_type.icon} {event_type.display_name}")
                 action.triggered.connect(lambda checked, name=event_type.name: self.add_event(name))
 
+        # Add Thymio Events option
+        menu.addSeparator()
+        thymio_action = menu.addAction(self.tr("🤖 Thymio Event..."))
+        thymio_action.triggered.connect(self.add_thymio_event_with_selector)
+
         menu.exec(self.add_event_btn.mapToGlobal(self.add_event_btn.rect().bottomLeft()))
 
     def add_sub_event(self, event_name: str, key: str):
@@ -354,6 +359,79 @@ class ObjectEventsPanel(QWidget):
                 self.refresh_events_display()
                 self.events_modified.emit()
 
+    def add_thymio_event_with_selector(self):
+        """Add a Thymio event using the visual Thymio event selector dialog"""
+        from dialogs.thymio_event_selector import ThymioEventSelector
+
+        dialog = ThymioEventSelector(self)
+        if dialog.exec() == QDialog.Accepted:
+            selected_event = dialog.get_selected_event()
+
+            if selected_event:
+                # Check if event already exists
+                if selected_event in self.current_events_data:
+                    QMessageBox.information(
+                        self,
+                        self.tr("Thymio Event Exists"),
+                        self.tr("This Thymio event already exists.")
+                    )
+                    return
+
+                # Add the Thymio event
+                self.current_events_data[selected_event] = {
+                    "actions": []
+                }
+
+                self.refresh_events_display()
+                self.events_modified.emit()
+
+    def add_thymio_action_with_selector(self, event_name: str):
+        """Add a Thymio action using the visual Thymio action selector dialog"""
+        from dialogs.thymio_action_selector import ThymioActionSelector
+
+        dialog = ThymioActionSelector(self)
+        if dialog.exec() == QDialog.Accepted:
+            action_name, parameters = dialog.get_result()
+
+            if action_name:
+                # Create action data structure
+                action_data = {
+                    "action": action_name,
+                    "parameters": parameters
+                }
+
+                # Add to event
+                if event_name not in self.current_events_data:
+                    self.current_events_data[event_name] = {"actions": []}
+
+                self.current_events_data[event_name]["actions"].append(action_data)
+                self.refresh_events_display()
+                self.events_modified.emit()
+
+    def add_thymio_action_to_sub_event(self, event_name: str, sub_event_key: str):
+        """Add a Thymio action to a keyboard sub-event using the visual selector dialog"""
+        from dialogs.thymio_action_selector import ThymioActionSelector
+
+        dialog = ThymioActionSelector(self)
+        if dialog.exec() == QDialog.Accepted:
+            action_name, parameters = dialog.get_result()
+
+            if action_name:
+                # Create action data structure
+                action_data = {
+                    "action": action_name,
+                    "parameters": parameters
+                }
+
+                # Add to sub-event
+                if event_name in self.current_events_data:
+                    if sub_event_key in self.current_events_data[event_name]:
+                        if "actions" not in self.current_events_data[event_name][sub_event_key]:
+                            self.current_events_data[event_name][sub_event_key]["actions"] = []
+                        self.current_events_data[event_name][sub_event_key]["actions"].append(action_data)
+                        self.refresh_events_display()
+                        self.events_modified.emit()
+
     def remove_selected_event(self):
         """Remove the currently selected event"""
         current_item = self.events_tree.currentItem()
@@ -404,6 +482,11 @@ class ObjectEventsPanel(QWidget):
                             lambda checked, e=event_name, a=action_type.name: self.add_action_to_collision_event(e, a)
                         )
 
+                # Add Thymio action option
+                add_action_menu.addSeparator()
+                thymio_action = add_action_menu.addAction(self.tr("🤖 Thymio Action..."))
+                thymio_action.triggered.connect(lambda checked, e=event_name: self.add_thymio_action_with_selector(e))
+
                 menu.addSeparator()
                 remove_action = menu.addAction(self.tr("Remove Collision Event"))
                 remove_action.triggered.connect(lambda: self.remove_collision_event(event_name))
@@ -422,6 +505,11 @@ class ObjectEventsPanel(QWidget):
                             lambda checked, e=event_name, a=action_type.name: self.add_action_to_mouse_event(e, a)
                         )
 
+                # Add Thymio action option
+                add_action_menu.addSeparator()
+                thymio_action = add_action_menu.addAction(self.tr("🤖 Thymio Action..."))
+                thymio_action.triggered.connect(lambda checked, e=event_name: self.add_thymio_action_with_selector(e))
+
                 menu.addSeparator()
                 remove_action = menu.addAction(self.tr("Remove Mouse Event"))
                 remove_action.triggered.connect(lambda: self.remove_mouse_event(event_name))
@@ -439,6 +527,11 @@ class ObjectEventsPanel(QWidget):
                         action_item.triggered.connect(
                             lambda checked, e=event_name, a=action_type.name: self.add_action_to_event(e, a)
                         )
+
+                # Add Thymio action option
+                add_action_menu.addSeparator()
+                thymio_action = add_action_menu.addAction(self.tr("🤖 Thymio Action..."))
+                thymio_action.triggered.connect(lambda checked, e=event_name: self.add_thymio_action_with_selector(e))
 
                 menu.addSeparator()
                 remove_action = menu.addAction(self.tr("Remove Event"))
@@ -471,6 +564,13 @@ class ObjectEventsPanel(QWidget):
                                 lambda checked, e=event_name, k=sub_event_key, a=action_type.name:
                                 self.add_action_to_sub_event(e, k, a)
                             )
+
+                    # Add Thymio action option
+                    add_action_menu.addSeparator()
+                    thymio_action = add_action_menu.addAction(self.tr("🤖 Thymio Action..."))
+                    thymio_action.triggered.connect(
+                        lambda checked, e=event_name, k=sub_event_key: self.add_thymio_action_to_sub_event(e, k)
+                    )
 
                     menu.addSeparator()
                     remove_action = menu.addAction(self.tr(f"Remove {sub_event_key.title()} Arrow Event"))

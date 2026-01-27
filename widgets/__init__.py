@@ -7,6 +7,7 @@ Widgets package for PyGameMaker IDE
 from .enhanced_properties_panel import EnhancedPropertiesPanel
 from .event_actions import EventActionWidget
 from .welcome_tab import WelcomeTab
+from .thymio_diagram_widget import ThymioDiagramWidget
 
 # Aliases for compatibility
 PropertiesPanel = EnhancedPropertiesPanel
@@ -17,6 +18,7 @@ __all__ = [
     'EnhancedPropertiesPanel',
     'EventActionWidget',
     'WelcomeTab',
+    'ThymioDiagramWidget',
     'PropertiesPanel',  # Alias
     'EventActionsPanel',  # Alias
 ]

@@ -19,6 +19,10 @@ from .project_dialogs import (
 # Import dialogs
 from .import_dialogs import ImportAssetsDialog
 
+# Thymio dialogs
+from .thymio_event_selector import ThymioEventSelector
+from .thymio_action_selector import ThymioActionSelector
+
 # Export everything
 __all__ = [
     'NewProjectDialog',
@@ -29,4 +33,6 @@ __all__ = [
     'OpenProjectDialog',
     'ExportProjectDialog',
     'ImportAssetsDialog',
+    'ThymioEventSelector',
+    'ThymioActionSelector',
 ]

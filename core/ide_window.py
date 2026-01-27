@@ -245,6 +245,12 @@ class PyGameMakerIDE(QMainWindow):
         language_menu = tools_menu.addMenu(self.tr("🌐 &Language"))
         self.create_language_menu(language_menu)
 
+        # Thymio submenu
+        tools_menu.addSeparator()
+        thymio_menu = tools_menu.addMenu(self.tr("🤖 &Thymio Programming"))
+        thymio_menu.addAction(self.create_action(self.tr("Add &Event..."), None, self.show_thymio_event_selector))
+        thymio_menu.addAction(self.create_action(self.tr("Add &Action..."), None, self.show_thymio_action_selector))
+
         help_menu = menubar.addMenu(self.tr("&Help"))
         help_menu.addAction(self.create_action(self.tr("&Documentation"), "F1", self.show_documentation))
         help_menu.addAction(self.create_action(self.tr("&Tutorials"), None, self.show_tutorials))
@@ -629,6 +635,12 @@ class PyGameMakerIDE(QMainWindow):
 
         toolbar.addAction(self.create_action(self.tr("Import Sprite"), None, self.import_sprite, "SP_FileIcon"))
         toolbar.addAction(self.create_action(self.tr("Import Sound"), None, self.import_sound, "SP_MediaVolume"))
+
+        toolbar.addSeparator()
+        # Thymio button - opens event selector by default
+        thymio_action = self.create_action(self.tr("Thymio"), None, self.show_thymio_event_selector, "SP_DriveNetIcon")
+        thymio_action.setToolTip(self.tr("Add Thymio Event"))
+        toolbar.addAction(thymio_action)
 
         # Force update
         toolbar.update()
@@ -2118,6 +2130,87 @@ class PyGameMakerIDE(QMainWindow):
                     widget.events_panel.reload_config()
                     logger.debug(f"   ♻️ Reloaded event panel config for: {self.editor_tabs.tabText(i)}")
 
+    def show_thymio_event_selector(self):
+        """Show the Thymio event selector dialog"""
+        from dialogs.thymio_event_selector import ThymioEventSelector
+
+        dialog = ThymioEventSelector(self)
+        if dialog.exec() == QDialog.Accepted:
+            selected_event = dialog.get_selected_event()
+            if selected_event:
+                # Try to add event to current object editor
+                current_widget = self.editor_tabs.currentWidget()
+                if hasattr(current_widget, 'events_panel'):
+                    # Call the panel's Thymio event method
+                    if hasattr(current_widget.events_panel, 'add_thymio_event_with_selector'):
+                        # Directly add the event since we already selected it
+                        events_panel = current_widget.events_panel
+                        if selected_event in events_panel.current_events_data:
+                            QMessageBox.information(
+                                self,
+                                self.tr("Event Exists"),
+                                self.tr("This Thymio event already exists in the object.")
+                            )
+                        else:
+                            events_panel.current_events_data[selected_event] = {"actions": []}
+                            events_panel.refresh_events_display()
+                            events_panel.events_modified.emit()
+                else:
+                    QMessageBox.information(
+                        self,
+                        self.tr("No Object Editor"),
+                        self.tr("Please open an object editor first to add Thymio events.")
+                    )
+
+    def show_thymio_action_selector(self):
+        """Show the Thymio action selector dialog"""
+        from dialogs.thymio_action_selector import ThymioActionSelector
+
+        # Check if we have an object editor open
+        current_widget = self.editor_tabs.currentWidget()
+        if not hasattr(current_widget, 'events_panel'):
+            QMessageBox.information(
+                self,
+                self.tr("No Object Editor"),
+                self.tr("Please open an object editor first to add Thymio actions.")
+            )
+            return
+
+        events_panel = current_widget.events_panel
+        # Get the currently selected event
+        current_item = events_panel.events_tree.currentItem()
+        if not current_item:
+            QMessageBox.information(
+                self,
+                self.tr("No Event Selected"),
+                self.tr("Please select an event first to add actions to it.")
+            )
+            return
+
+        # Get event name (handle both top-level events and sub-events)
+        event_name = current_item.data(0, Qt.UserRole)
+        if not event_name or not isinstance(event_name, str):
+            QMessageBox.information(
+                self,
+                self.tr("Invalid Selection"),
+                self.tr("Please select an event (not an action) to add Thymio actions.")
+            )
+            return
+
+        dialog = ThymioActionSelector(self)
+        if dialog.exec() == QDialog.Accepted:
+            action_name, parameters = dialog.get_result()
+            if action_name:
+                # Add action to the selected event
+                action_data = {
+                    "action": action_name,
+                    "parameters": parameters
+                }
+
+                if event_name in events_panel.current_events_data:
+                    events_panel.current_events_data[event_name]["actions"].append(action_data)
+                    events_panel.refresh_events_display()
+                    events_panel.events_modified.emit()
 
     def validate_project(self):
         """Validate project structure and assets"""
