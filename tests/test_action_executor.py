@@ -13,7 +13,7 @@ __init__.py which imports GameRunner (requiring pygame).
 import pytest
 
 # Import helper from conftest for direct module loading
-from conftest import import_module_directly
+from conftest import import_module_directly, skip_without_pygame
 
 # Import ActionExecutor directly from the module file, bypassing the package __init__.py
 # This avoids the pygame dependency from game_runner.py
@@ -1956,6 +1956,7 @@ class TestSetViewAction:
 class TestMain1TabActions:
     """Tests for Main1 tab actions: create_random_instance, create_moving_instance, destroy_at_position"""
 
+    @skip_without_pygame
     def test_create_random_instance_picks_from_choices(self):
         """create_random_instance randomly picks from provided objects"""
         mock_runner = MockGameRunner()
@@ -2009,6 +2010,7 @@ class TestMain1TabActions:
             'y': 200
         })
 
+    @skip_without_pygame
     def test_create_moving_instance_sets_motion(self):
         """create_moving_instance creates instance with speed and direction"""
         import math
@@ -2041,6 +2043,7 @@ class TestMain1TabActions:
         assert abs(new_inst.hspeed - 5.0) < 0.001  # Moving right
         assert abs(new_inst.vspeed - 0.0) < 0.001
 
+    @skip_without_pygame
     def test_create_moving_instance_direction_90(self):
         """create_moving_instance handles direction 90 (up)"""
         mock_runner = MockGameRunner()

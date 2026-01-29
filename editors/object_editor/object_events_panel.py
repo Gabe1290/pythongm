@@ -63,6 +63,7 @@ class ObjectEventsPanel(QWidget):
         self.current_events_data = {}
         self.dragging_action = None  # Track action being dragged
         self.drag_source_parent = None  # Track where drag started
+        self.blockly_config = None  # Blockly configuration for filtering actions
         self.setup_ui()
 
         # Setup shortcuts after UI is complete
@@ -475,7 +476,7 @@ class ObjectEventsPanel(QWidget):
             if isinstance(event_name, str) and (event_name.startswith("collision_with_") or event_name.startswith("not_collision_with_")):
                 add_action_menu = menu.addMenu(self.tr("Add Action"))
 
-                actions_by_category = get_actions_by_category()
+                actions_by_category = get_actions_by_category(self.blockly_config)
                 for category, actions in actions_by_category.items():
                     category_menu = add_action_menu.addMenu(category)
 
@@ -498,7 +499,7 @@ class ObjectEventsPanel(QWidget):
             elif isinstance(event_name, str) and event_name.startswith("mouse_"):
                 add_action_menu = menu.addMenu(self.tr("Add Action"))
 
-                actions_by_category = get_actions_by_category()
+                actions_by_category = get_actions_by_category(self.blockly_config)
                 for category, actions in actions_by_category.items():
                     category_menu = add_action_menu.addMenu(category)
 
@@ -521,7 +522,7 @@ class ObjectEventsPanel(QWidget):
                 # Regular events (create, step, etc.) or keyboard parent events
                 add_action_menu = menu.addMenu(self.tr("Add Action"))
 
-                actions_by_category = get_actions_by_category()
+                actions_by_category = get_actions_by_category(self.blockly_config)
                 for category, actions in actions_by_category.items():
                     category_menu = add_action_menu.addMenu(category)
 
@@ -557,7 +558,7 @@ class ObjectEventsPanel(QWidget):
                     # Add action submenu for this specific key
                     add_action_menu = menu.addMenu(self.tr("Add Action"))
 
-                    actions_by_category = get_actions_by_category()
+                    actions_by_category = get_actions_by_category(self.blockly_config)
                     for category, actions in actions_by_category.items():
                         category_menu = add_action_menu.addMenu(category)
 

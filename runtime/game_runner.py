@@ -13,6 +13,8 @@ elif sys.platform == 'darwin':
     os.environ['SDL_VIDEODRIVER'] = 'cocoa'
 else:  # Linux and other Unix-like systems
     os.environ['SDL_VIDEODRIVER'] = 'x11'
+    # Center the window on screen when launched from subprocess
+    os.environ['SDL_VIDEO_CENTERED'] = '1'
 os.environ['SDL_RENDER_DRIVER'] = 'software'
 
 import math
@@ -451,10 +453,10 @@ class GameInstance:
                 keys_pressed = getattr(self, 'keys_pressed', set())
                 if len(keys_pressed) == 0:
                     # No keys pressed - execute nokey event actions
+                    # Use execute_action_list for proper conditional flow (if_on_grid, etc.)
                     nokey_event = events["keyboard"]["nokey"]
                     if isinstance(nokey_event, dict) and "actions" in nokey_event:
-                        for action_data in nokey_event["actions"]:
-                            self.action_executor.execute_action(self, action_data)
+                        self.action_executor.execute_action_list(self, nokey_event["actions"])
 
     def set_sprite(self, sprite: GameSprite):
         """Set the sprite for this instance"""
@@ -1636,8 +1638,7 @@ class GameRunner:
                                         alarm_event = alarm_events.get(alarm_key) or events.get(alarm_key)
                                         if alarm_event and "actions" in alarm_event:
                                             logger.debug(f"⏰ Alarm {alarm_num} triggered for {instance.object_name}")
-                                            for action_data in alarm_event["actions"]:
-                                                instance.action_executor.execute_action(instance, action_data)
+                                            instance.action_executor.execute_action_list(instance, alarm_event["actions"])
 
                     # 3. STEP EVENT (always call - handles nokey internally)
                     instance.step()
@@ -1812,8 +1813,7 @@ class GameRunner:
                         events_found = True
                         sub_event_data = keyboard_press_event[found_key]
                         if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
-                            for action_data in sub_event_data["actions"]:
-                                instance.action_executor.execute_action(instance, action_data)
+                            instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
             # Check for keyboard (held) event
             if "keyboard" in events:
@@ -1825,8 +1825,7 @@ class GameRunner:
                         events_found = True
                         sub_event_data = keyboard_event[found_key]
                         if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
-                            for action_data in sub_event_data["actions"]:
-                                instance.action_executor.execute_action(instance, action_data)
+                            instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
                 # Removed error messages - it's normal for an object to not handle every key
 
             # Handle Thymio button events (keyboard mapping)
@@ -1882,8 +1881,7 @@ class GameRunner:
                     if found_key:
                         sub_event_data = keyboard_release_event[found_key]
                         if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
-                            for action_data in sub_event_data["actions"]:
-                                instance.action_executor.execute_action(instance, action_data)
+                            instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
             # Handle Thymio button release
             if instance.is_thymio and instance.thymio_simulator:
@@ -1932,11 +1930,10 @@ class GameRunner:
                     logger.debug(f"  ✅ Executing mouse.{button_name} for {instance.object_name}")
                     sub_event_data = mouse_event[button_name]
                     if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
-                        for action_data in sub_event_data["actions"]:
-                            # Add mouse position to instance for actions to use
-                            instance.mouse_x = mouse_x
-                            instance.mouse_y = mouse_y
-                            instance.action_executor.execute_action(instance, action_data)
+                        # Add mouse position to instance for actions to use
+                        instance.mouse_x = mouse_x
+                        instance.mouse_y = mouse_y
+                        instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
     def handle_mouse_release(self, button, pos):
         """Handle mouse button release event"""
@@ -1967,10 +1964,9 @@ class GameRunner:
                 if isinstance(mouse_event, dict) and button_name in mouse_event:
                     sub_event_data = mouse_event[button_name]
                     if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
-                        for action_data in sub_event_data["actions"]:
-                            instance.mouse_x = mouse_x
-                            instance.mouse_y = mouse_y
-                            instance.action_executor.execute_action(instance, action_data)
+                        instance.mouse_x = mouse_x
+                        instance.mouse_y = mouse_y
+                        instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
     def handle_mouse_motion(self, pos):
         """Handle mouse movement event"""
@@ -1991,10 +1987,9 @@ class GameRunner:
                 if isinstance(mouse_event, dict) and "mouse_move" in mouse_event:
                     sub_event_data = mouse_event["mouse_move"]
                     if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
-                        for action_data in sub_event_data["actions"]:
-                            instance.mouse_x = mouse_x
-                            instance.mouse_y = mouse_y
-                            instance.action_executor.execute_action(instance, action_data)
+                        instance.mouse_x = mouse_x
+                        instance.mouse_y = mouse_y
+                        instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
     def update(self):
         """Update game logic"""

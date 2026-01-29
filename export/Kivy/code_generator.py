@@ -476,6 +476,35 @@ if dist > 0:
             show_health = params.get('show_health', False)
             return f"from main import set_window_caption; set_window_caption(caption='{caption}', show_score={show_score}, show_lives={show_lives}, show_health={show_health})"
 
+        elif action_type == 'jump_to_position':
+            # Teleport to a specific position
+            x = params.get('x', 0)
+            y = params.get('y', 0)
+            relative = params.get('relative', False)
+            if relative:
+                return f"self.x += {x}; self.y += {y}"
+            else:
+                return f"self.x = {x}; self.y = {y}"
+
+        elif action_type == 'change_instance':
+            # Change the object type (sprite) of this instance
+            new_object = params.get('object', params.get('new_object', ''))
+            perform_events = params.get('perform_events', True)
+            if new_object:
+                return f"self.change_to('{new_object}', perform_events={perform_events})"
+            else:
+                return "pass  # change_instance: no target object specified"
+
+        elif action_type == 'if_object_exists':
+            # Check if an object of a certain type exists - returns True/False
+            # This is a conditional action, handled specially
+            object_name = params.get('object', '')
+            negate = params.get('negate', params.get('not', False))
+            if negate:
+                return f"not self.scene.object_exists('{object_name}')"
+            else:
+                return f"self.scene.object_exists('{object_name}')"
+
         # DEFAULT
         else:
             logger.warning(f"Unknown action type '{action_type}'")

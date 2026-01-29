@@ -86,10 +86,20 @@ class WelcomeTab(QWidget):
                     lambda checked, p=project_path: self.open_recent_project(p)
                 )
 
+            # Add separator and clear option
+            menu.addSeparator()
+            clear_action = menu.addAction(self.tr("Clear Recent Projects"))
+            clear_action.triggered.connect(self.clear_recent_projects)
+
         # Show menu below the button
         menu.exec_(self.recent_projects_btn.mapToGlobal(
             self.recent_projects_btn.rect().bottomLeft()
         ))
+
+    def clear_recent_projects(self):
+        """Clear the recent projects list"""
+        if self.main_window and hasattr(self.main_window, 'clear_recent_projects'):
+            self.main_window.clear_recent_projects()
 
     def open_recent_project(self, project_path):
         """Open a recent project"""

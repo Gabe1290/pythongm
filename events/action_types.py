@@ -968,6 +968,80 @@ ACTION_TYPES = {
     ),
 }
 
+# Mapping from Blockly block types to action_types names
+# This allows filtering actions based on Blockly configuration presets
+BLOCKLY_TO_ACTION_MAP = {
+    # Movement
+    "move_set_hspeed": "set_hspeed",
+    "move_set_vspeed": "set_vspeed",
+    "move_stop": "stop_movement",
+    "move_snap_to_grid": "snap_to_grid",
+    "move_jump_to": "jump_to_position",
+    "move_direction": "move_fixed",
+    "move_towards": "move_towards",
+    "set_gravity": "set_gravity",
+    "set_friction": "set_friction",
+    "reverse_horizontal": "reverse_horizontal",
+    "reverse_vertical": "reverse_vertical",
+    "bounce": "bounce",
+    "wrap_around_room": "wrap_around_room",
+    "move_to_contact": "move_to_contact",
+    # Grid movement
+    "grid_stop_if_no_keys": "stop_if_no_keys",
+    "grid_check_keys_and_move": "check_keys_and_move",
+    "grid_if_on_grid": "if_on_grid",
+    "move_grid": "move_grid",
+    # Timing
+    "set_alarm": "set_alarm",
+    # Drawing
+    "draw_text": "draw_text",
+    "draw_rectangle": "draw_rectangle",
+    "draw_circle": "draw_circle",
+    "set_sprite": "set_sprite",
+    "set_alpha": "set_alpha",
+    # Score/Lives/Health
+    "score_set": "set_score",
+    "score_add": "add_score",
+    "lives_set": "set_lives",
+    "lives_add": "add_lives",
+    "health_set": "set_health",
+    "health_add": "add_health",
+    "draw_score": "draw_score",
+    "draw_lives": "draw_lives",
+    "draw_health_bar": "draw_health_bar",
+    # Instance
+    "instance_destroy": "destroy_instance",
+    "instance_destroy_other": "destroy_other",
+    "instance_create": "create_instance",
+    # Room
+    "room_goto_next": "room_goto_next",
+    "room_goto_previous": "room_goto_previous",
+    "room_restart": "room_restart",
+    "room_goto": "room_goto",
+    "game_restart": "game_restart",
+    "game_end": "game_end",
+    # Values/Control flow
+    "if_collision_at": "if_collision_at",
+    "check_empty": "check_empty",
+    "check_collision": "check_collision",
+    "test_expression": "test_expression",
+    "start_block": "start_block",
+    "end_block": "end_block",
+    "else_action": "else_action",
+    "repeat": "repeat",
+    "exit_event": "exit_event",
+    # Sound
+    "play_sound": "play_sound",
+    "stop_sound": "stop_sound",
+    # Output
+    "show_message": "show_message",
+    "display_message": "display_message",
+}
+
+# Reverse mapping: action_types name -> Blockly block type
+ACTION_TO_BLOCKLY_MAP = {v: k for k, v in BLOCKLY_TO_ACTION_MAP.items()}
+
+
 def get_action_type(action_name: str) -> Optional[ActionType]:
     """Get action type by name"""
     return ACTION_TYPES.get(action_name)
@@ -976,10 +1050,25 @@ def get_available_actions() -> List[ActionType]:
     """Get list of all available actions"""
     return list(ACTION_TYPES.values())
 
-def get_actions_by_category() -> Dict[str, List[ActionType]]:
-    """Get actions organized by category"""
+def get_actions_by_category(blockly_config=None) -> Dict[str, List[ActionType]]:
+    """Get actions organized by category
+
+    Args:
+        blockly_config: Optional BlocklyConfig to filter actions.
+                       If provided, only actions enabled in the config are returned.
+    """
     categories = {}
     for action in ACTION_TYPES.values():
+        # If a config is provided, check if action is enabled
+        if blockly_config is not None:
+            # Get the Blockly block type for this action
+            blockly_type = ACTION_TO_BLOCKLY_MAP.get(action.name)
+            if blockly_type:
+                # Check if this block is enabled in the config
+                if not blockly_config.is_block_enabled(blockly_type):
+                    continue
+            # If no mapping exists, include the action (backward compatibility)
+
         if action.category not in categories:
             categories[action.category] = []
         categories[action.category].append(action)

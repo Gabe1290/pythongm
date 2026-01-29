@@ -3116,9 +3116,6 @@ class ActionExecutor:
             remove_background: Remove background color to make transparent (default: False)
             smooth_edges: Apply anti-aliasing to edges (default: False)
         """
-        import pygame
-        from pathlib import Path
-
         sprite_name = self._parse_value(parameters.get("sprite", ""), instance)
         filename = self._parse_value(parameters.get("filename", ""), instance)
         frames = self._parse_value(parameters.get("frames", 1), instance)
@@ -3136,6 +3133,10 @@ class ActionExecutor:
         if not self.game_runner:
             logger.debug("⚠️ replace_sprite: No game_runner reference")
             return
+
+        # Import after validation to allow tests without pygame
+        import pygame
+        from pathlib import Path
 
         # Convert to boolean if string
         if isinstance(remove_background, str):
@@ -3220,9 +3221,6 @@ class ActionExecutor:
             filename: Path to the audio file
             kind: Type of sound (normal, background, 3d, mmplayer)
         """
-        import pygame
-        from pathlib import Path
-
         sound_name = self._parse_value(parameters.get("sound", ""), instance)
         filename = self._parse_value(parameters.get("filename", ""), instance)
         kind = self._parse_value(parameters.get("kind", "normal"), instance)
@@ -3238,6 +3236,10 @@ class ActionExecutor:
         if not self.game_runner:
             logger.debug("⚠️ replace_sound: No game_runner reference")
             return
+
+        # Import after validation to allow tests without pygame
+        import pygame
+        from pathlib import Path
 
         # Resolve the file path (relative to project or absolute)
         file_path = Path(filename)
@@ -3271,9 +3273,6 @@ class ActionExecutor:
             remove_background: Remove background color to make transparent (default: False)
             smooth_edges: Apply anti-aliasing to edges (default: False)
         """
-        import pygame
-        from pathlib import Path
-
         bg_name = self._parse_value(parameters.get("background", ""), instance)
         filename = self._parse_value(parameters.get("filename", ""), instance)
         remove_background = self._parse_value(parameters.get("remove_background", False), instance)
@@ -3290,6 +3289,10 @@ class ActionExecutor:
         if not self.game_runner:
             logger.debug("⚠️ replace_background: No game_runner reference")
             return
+
+        # Import after validation to allow tests without pygame
+        import pygame
+        from pathlib import Path
 
         # Convert to boolean if string
         if isinstance(remove_background, str):
@@ -4371,8 +4374,6 @@ class ActionExecutor:
         Returns:
             True if sound is playing (or not playing if not_flag is True)
         """
-        import pygame
-
         sound_name = parameters.get("sound", "")
         not_flag = parameters.get("not_flag", False)
 
@@ -4395,9 +4396,11 @@ class ActionExecutor:
             if hasattr(sound, 'get_num_channels'):
                 # pygame.mixer.Sound object
                 is_playing = sound.get_num_channels() > 0
-            elif pygame.mixer.get_init():
-                # Check if any channel is busy (fallback)
-                is_playing = pygame.mixer.get_busy()
+            else:
+                # Fallback: check pygame mixer directly (only import if needed)
+                import pygame
+                if pygame.mixer.get_init():
+                    is_playing = pygame.mixer.get_busy()
 
         result = is_playing if not not_flag else not is_playing
         logger.debug(f"🎵 Check sound '{sound_name}': playing={is_playing}, not_flag={not_flag}, result={result}")

@@ -18,8 +18,14 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, QTimer, Signal, QSize, QPoint
 from PySide6.QtGui import QImage, QPixmap, QKeyEvent, QAction, QMouseEvent, QActionGroup
 
-# Import pygame (initialize without display for embedding)
-os.environ['SDL_VIDEODRIVER'] = 'dummy'  # Prevent pygame from creating its own window
+# Import pygame for the playground
+# Note: We need 'dummy' driver for embedded rendering in Qt, but we must NOT
+# override SDL_VIDEODRIVER if running in a game subprocess (which needs 'x11')
+# The game runner sets SDL_VIDEODRIVER before importing, so we check for that
+_original_sdl_driver = os.environ.get('SDL_VIDEODRIVER')
+if _original_sdl_driver not in ('x11', 'windows', 'cocoa'):
+    # Only set dummy if not already set to a real display driver
+    os.environ['SDL_VIDEODRIVER'] = 'dummy'
 import pygame
 
 from runtime.thymio_simulator import ThymioSimulator, THYMIO_WIDTH, THYMIO_HEIGHT

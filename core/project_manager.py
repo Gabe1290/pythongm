@@ -335,7 +335,14 @@ class ProjectManager(QObject):
                         if key in file_sprite_data:
                             sprite_data[key] = file_sprite_data[key]
 
-                    frame_count = len(file_sprite_data.get('frames', []))
+                    # Handle frames as either a list or an integer count
+                    frames_data = file_sprite_data.get('frames', [])
+                    if isinstance(frames_data, int):
+                        frame_count = frames_data
+                    elif isinstance(frames_data, list):
+                        frame_count = len(frames_data)
+                    else:
+                        frame_count = 1
                     logger.debug(f"📂 Loaded sprite: {sprite_name} ({frame_count} frames from file)")
 
                     # Clean up external file marker

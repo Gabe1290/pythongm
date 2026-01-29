@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import sys
 import subprocess
 from pathlib import Path
@@ -125,8 +126,8 @@ class PyGameMakerIDE(QMainWindow):
         file_menu.addAction(self.create_action(self.tr("Save Project &As..."), "Ctrl+Shift+S", self.save_project_as))
         file_menu.addSeparator()
 
-        recent_menu = file_menu.addMenu(self.tr("Recent Projects"))
-        self.update_recent_projects_menu(recent_menu)
+        self.recent_projects_menu = file_menu.addMenu(self.tr("Recent Projects"))
+        self.update_recent_projects_menu(self.recent_projects_menu)
 
         file_menu.addSeparator()
         # Export menu items
@@ -957,6 +958,28 @@ class PyGameMakerIDE(QMainWindow):
                 action = menu.addAction(project_name)
                 action.triggered.connect(lambda checked, path=project_path: self.open_recent_project(path))
 
+        # Add separator and clear option
+        menu.addSeparator()
+        clear_action = menu.addAction(self.tr("Clear Recent Projects"))
+        clear_action.triggered.connect(self.clear_recent_projects)
+
+    def clear_recent_projects(self):
+        """Clear the recent projects list"""
+        reply = QMessageBox.question(
+            self,
+            self.tr("Clear Recent Projects"),
+            self.tr("Are you sure you want to clear the recent projects list?"),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+
+        if reply == QMessageBox.Yes:
+            Config.set("recent_projects", [])
+            Config.save()
+            # Update the menu
+            self.update_recent_projects_menu(self.recent_projects_menu)
+            self.update_status(self.tr("Recent projects list cleared"))
+
     def new_project(self):
         dialog = NewProjectDialog(self)
         if dialog.exec():
@@ -1350,6 +1373,16 @@ class PyGameMakerIDE(QMainWindow):
 
     def test_game(self):
         """Test the current game"""
+        # Check if a game subprocess is already running
+        if hasattr(self, '_game_process') and self._game_process is not None:
+            if self._game_process.poll() is None:  # Still running
+                QMessageBox.information(
+                    self,
+                    self.tr("Game Running"),
+                    self.tr("A game is already running. Please close it first.")
+                )
+                return
+
         # Check if project is open
         if not self.current_project_path:
             QMessageBox.warning(
@@ -1381,7 +1414,6 @@ class PyGameMakerIDE(QMainWindow):
 
             # Run game in subprocess to avoid OpenGL conflicts between Qt WebEngine and pygame
             # This isolates pygame's SDL/OpenGL context from Qt's Chromium OpenGL context
-            import subprocess
             game_script = Path(__file__).parent.parent / "runtime" / "run_game.py"
 
             # Check if we're running from a packaged executable (Nuitka/PyInstaller)
@@ -1391,7 +1423,6 @@ class PyGameMakerIDE(QMainWindow):
             # 2. Nuitka onefile: sys.executable doesn't exist (points to fictional python)
             # 3. __file__ is in /tmp/ directory (Nuitka extraction)
             # 4. Check if executable name doesn't contain 'python'
-            import os
             exe_exists = os.path.exists(sys.executable)
             file_dir = os.path.dirname(os.path.abspath(__file__))
             temp_dir = os.environ.get('TEMP', '')
@@ -1412,18 +1443,36 @@ class PyGameMakerIDE(QMainWindow):
                     self.update_status(self.tr("Game test failed"))
                 return
 
-            # Run the game subprocess and wait for it to complete
+            # Run the game subprocess
             # Pass language code as second argument for runtime translations
             language = Config.get('language', 'en')
-            result = subprocess.run(
+
+            # Use Popen instead of run to avoid blocking the Qt event loop
+            # This allows the IDE to remain responsive while the game runs
+            env = os.environ.copy()
+            # Ensure clean display environment for pygame on Linux
+            if sys.platform != 'win32' and sys.platform != 'darwin':
+                # Force X11 driver on Linux for better compatibility when launched from Qt
+                env['SDL_VIDEODRIVER'] = 'x11'
+
+            process = subprocess.Popen(
                 [sys.executable, str(game_script), str(project_json), language],
-                cwd=str(self.current_project_path)
+                cwd=str(self.current_project_path),
+                env=env,
+                # Don't capture output to avoid potential deadlocks
+                stdout=None,
+                stderr=None
             )
 
-            if result.returncode != 0:
-                logger.debug(f"Game exited with code: {result.returncode}")
+            # Store reference to allow stopping the game
+            self._game_process = process
 
-            self.update_status(self.tr("Game closed"))
+            # Use QTimer to check when game exits without blocking
+            self._check_game_timer = QTimer(self)
+            self._check_game_timer.timeout.connect(self._check_game_process)
+            self._check_game_timer.start(100)  # Check every 100ms
+
+            self.update_status(self.tr("Game running... (close game window to return)"))
 
         except Exception as e:
             QMessageBox.critical(
@@ -1435,6 +1484,42 @@ class PyGameMakerIDE(QMainWindow):
             import traceback
             traceback.print_exc()
             self.update_status(self.tr("Game test failed"))
+
+    def _check_game_process(self):
+        """Check if the game subprocess has finished (called by QTimer)"""
+        if not hasattr(self, '_game_process') or self._game_process is None:
+            if hasattr(self, '_check_game_timer') and self._check_game_timer:
+                self._check_game_timer.stop()
+            return
+
+        # Check if process has terminated
+        return_code = self._game_process.poll()
+        if return_code is not None:
+            # Process has finished
+            self._check_game_timer.stop()
+            self._game_process = None
+
+            if return_code != 0:
+                logger.debug(f"Game exited with code: {return_code}")
+
+            self.update_status(self.tr("Game closed"))
+
+    def stop_game(self):
+        """Stop the running game subprocess"""
+        if hasattr(self, '_game_process') and self._game_process is not None:
+            try:
+                self._game_process.terminate()
+                # Give it a moment to terminate gracefully
+                try:
+                    self._game_process.wait(timeout=2)
+                except subprocess.TimeoutExpired:
+                    self._game_process.kill()
+                self._game_process = None
+                self.update_status(self.tr("Game stopped"))
+            except Exception as e:
+                logger.error(f"Error stopping game: {e}")
+        if hasattr(self, '_check_game_timer') and self._check_game_timer:
+            self._check_game_timer.stop()
 
     def debug_game(self):
         """Run game in debug mode with additional logging"""
