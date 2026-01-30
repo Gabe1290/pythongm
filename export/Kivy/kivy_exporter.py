@@ -598,6 +598,20 @@ if __name__ == '__main__':
         height = room_data.get('height', 768)
         instances = room_data.get('instances', [])
 
+        # Get background properties
+        bg_color = room_data.get('background_color', '#808080')  # Default gray
+        bg_image = room_data.get('background', '') or room_data.get('background_image', '')
+
+        # Convert hex color to RGB floats (0-1 range)
+        if bg_color.startswith('#'):
+            bg_color = bg_color[1:]
+        try:
+            r = int(bg_color[0:2], 16) / 255.0
+            g = int(bg_color[2:4], 16) / 255.0
+            b = int(bg_color[4:6], 16) / 255.0
+        except (ValueError, IndexError):
+            r, g, b = 0.5, 0.5, 0.5  # Default gray
+
         # Import statements for object types used in this room
         object_imports = set()
 
@@ -660,6 +674,16 @@ if __name__ == '__main__':
 
         instances_init = '\n'.join(instance_code) if instance_code else "        pass"
 
+        # Generate background image loading code (if background image is set)
+        if bg_image:
+            bg_image_code = f'''
+            # Load and draw background image
+            bg_img = load_image('assets/images/{bg_image}.png')
+            if bg_img:
+                Rectangle(texture=bg_img.texture, pos=(0, 0), size=(self.room_width, self.room_height))'''
+        else:
+            bg_image_code = "            pass  # No background image"
+
         code = '''#!/usr/bin/env python3
 """
 Scene: {room_name}
@@ -689,12 +713,23 @@ class {class_name}(Widget):
         # Keyboard state tracking
         self.keys_pressed = {{}}
 
+        # Draw background
+        self._draw_background()
+
         # Bind keyboard events
         Window.bind(on_keyboard=self.on_keyboard)
         Window.bind(on_key_up=self.on_keyboard_up)
 
         # Initialize room
         self.create_instances()
+
+    def _draw_background(self):
+        """Draw the room background color and image"""
+        with self.canvas.before:
+            # Background color: RGB = ({bg_r:.3f}, {bg_g:.3f}, {bg_b:.3f})
+            Color({bg_r:.3f}, {bg_g:.3f}, {bg_b:.3f}, 1)
+            self.bg_rect = Rectangle(pos=(0, 0), size=(self.room_width, self.room_height))
+{bg_image_code}
 
     def _class_name_to_snake_case(self, name):
         """Convert PascalCase class name to snake_case for collision events"""
@@ -844,7 +879,11 @@ class {class_name}(Widget):
             width=width,
             height=height,
             import_lines=import_lines,
-            instances_init=instances_init
+            instances_init=instances_init,
+            bg_r=r,
+            bg_g=g,
+            bg_b=b,
+            bg_image_code=bg_image_code
         )
 
         output_file = self.output_path / "game" / "scenes" / f"{room_name}.py"
@@ -1985,9 +2024,11 @@ def load_image(path):
             _image_cache[path] = img
             return img
         else:
-            pass  # Image not found - silently handle
+            print(f"[WARN] Image not found: {abs_path}")
+            print(f"       Base path: {get_base_path()}")
+            print(f"       Relative path: {path}")
     except Exception as e:
-        pass  # Failed to load image - silently handle
+        print(f"[ERROR] Failed to load image {abs_path}: {e}")
 
     return None
 
