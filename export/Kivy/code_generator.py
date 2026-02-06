@@ -182,6 +182,67 @@ class ActionCodeGenerator:
             self.block_stack.append('if')
             return
 
+        elif action_type == 'if_condition':
+            # Generic condition check
+            condition = params.get('condition', params.get('expression', 'True'))
+            self.add_line(f"if {condition}:")
+            self.push_indent()
+            self.block_stack.append('if')
+            return
+
+        elif action_type == 'if_can_push':
+            # Sokoban-specific: check if a box can be pushed in the current direction
+            # Check if there's a collision with a box AND the space behind the box is free
+            self.add_line("# Check if box can be pushed")
+            self.add_line("_can_push = False")
+            self.add_line("if self.hspeed != 0 or self.vspeed != 0:")
+            self.push_indent()
+            self.add_line("_push_dx = 32 if self.hspeed > 0 else (-32 if self.hspeed < 0 else 0)")
+            self.add_line("_push_dy = 32 if self.vspeed > 0 else (-32 if self.vspeed < 0 else 0)")
+            self.add_line("# Check if space behind box is free (no wall, no other box)")
+            self.add_line("if hasattr(other, 'x') and hasattr(other, 'y'):")
+            self.push_indent()
+            self.add_line("_behind_x = other.x + _push_dx")
+            self.add_line("_behind_y = other.y + _push_dy")
+            self.add_line("_can_push = not any(")
+            self.push_indent()
+            self.add_line("inst.check_collision(type('_TempBox', (), {'x': _behind_x, 'y': _behind_y, 'size': (32, 32), 'has_sprite': True})())")
+            self.add_line("for inst in self.scene.instances")
+            self.add_line("if inst != self and inst != other and inst.solid")
+            self.pop_indent()
+            self.add_line(")")
+            self.pop_indent()
+            self.pop_indent()
+            self.add_line("if _can_push:")
+            self.push_indent()
+
+            # Handle embedded then_action parameter
+            then_action = params.get('then_action', '')
+            if then_action == 'push_and_move':
+                # Push the box and move the player
+                self.add_line("# Push box in the direction of movement")
+                self.add_line("other.x += _push_dx")
+                self.add_line("other.y += _push_dy")
+            elif then_action:
+                # Process as a nested action
+                self.process_action({'action': then_action, 'parameters': {}}, event_type)
+            else:
+                self.add_line("pass  # then_action placeholder")
+
+            self.pop_indent()
+
+            # Handle embedded else_action parameter
+            else_action = params.get('else_action', '')
+            if else_action:
+                self.add_line("else:")
+                self.push_indent()
+                if else_action == 'stop_movement':
+                    self.add_line("self.hspeed = 0; self.vspeed = 0; self.speed = 0")
+                else:
+                    self.process_action({'action': else_action, 'parameters': {}}, event_type)
+                self.pop_indent()
+            return
+
         elif action_type == 'if_next_room_exists':
             self.add_line("from main import next_room_exists, _room_transition_pending")
             self.add_line("if _room_transition_pending:")
@@ -371,6 +432,8 @@ class ActionCodeGenerator:
 
         elif action_type == 'move_grid':
             # Grid-based movement - move one grid cell in specified direction
+            # Includes collision checking to prevent moving through walls
+            # Also sets hspeed/vspeed to indicate direction for collision handlers
             direction = params.get('direction', 'right')
             grid_size = params.get('grid_size', 32)
             dir_map = {
@@ -380,7 +443,11 @@ class ActionCodeGenerator:
                 'down-right': (1, -1), 'down-left': (-1, -1)
             }
             dx, dy = dir_map.get(direction, (0, 0))
-            return f"self.x += {dx * grid_size}; self.y += {dy * grid_size}"
+            move_x = dx * grid_size
+            move_y = dy * grid_size
+            # Set hspeed/vspeed to indicate direction (used by collision handlers)
+            # Then check for collision before moving; only move if target cell is free
+            return f"self.hspeed = {dx * 4}; self.vspeed = {dy * 4}; self._move_grid({move_x}, {move_y})"
 
         elif action_type == 'move_towards':
             # Move towards a specific point at given speed
@@ -504,6 +571,24 @@ if dist > 0:
                 return f"not self.scene.object_exists('{object_name}')"
             else:
                 return f"self.scene.object_exists('{object_name}')"
+
+        elif action_type == 'set_variable':
+            # Set a variable to a value
+            var_name = params.get('variable', params.get('name', 'temp'))
+            value = params.get('value', 0)
+            relative = params.get('relative', False)
+            # Handle special variable names that might need self prefix
+            if var_name in ['x', 'y', 'hspeed', 'vspeed', 'speed', 'direction', 'visible', 'solid']:
+                if relative:
+                    return f"self.{var_name} += {value}"
+                else:
+                    return f"self.{var_name} = {value}"
+            else:
+                # Custom variable - store as instance attribute
+                if relative:
+                    return f"self.{var_name} = getattr(self, '{var_name}', 0) + {value}"
+                else:
+                    return f"self.{var_name} = {value}"
 
         # DEFAULT
         else:

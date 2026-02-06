@@ -674,10 +674,40 @@ if __name__ == '__main__':
 
         instances_init = '\n'.join(instance_code) if instance_code else "        pass"
 
+        # Get tiling properties
+        tile_horizontal = room_data.get('tile_horizontal', False)
+        tile_vertical = room_data.get('tile_vertical', False)
+
         # Generate background image loading code (if background image is set)
         if bg_image:
-            bg_image_code = f'''
-            # Load and draw background image
+            if tile_horizontal or tile_vertical:
+                # Generate tiled background code
+                bg_image_code = f'''
+            # Load and draw tiled background image
+            bg_img = load_image('assets/images/{bg_image}.png')
+            if bg_img:
+                # Tile the background
+                tex = bg_img.texture
+                tex_width = tex.width
+                tex_height = tex.height
+                tile_h = {tile_horizontal}
+                tile_v = {tile_vertical}
+
+                # Calculate how many tiles we need
+                cols = int(self.room_width / tex_width) + 1 if tile_h else 1
+                rows = int(self.room_height / tex_height) + 1 if tile_v else 1
+
+                # Draw tiles
+                for row in range(rows):
+                    for col in range(cols):
+                        x = col * tex_width
+                        y = row * tex_height
+                        # Only draw if at least partially visible
+                        if x < self.room_width and y < self.room_height:
+                            Rectangle(texture=tex, pos=(x, y), size=(tex_width, tex_height))'''
+            else:
+                bg_image_code = f'''
+            # Load and draw background image (stretched to fit)
             bg_img = load_image('assets/images/{bg_image}.png')
             if bg_img:
                 Rectangle(texture=bg_img.texture, pos=(0, 0), size=(self.room_width, self.room_height))'''
@@ -1270,6 +1300,112 @@ class GameObject(Widget):
         self.vspeed = 0
         self.speed = 0
 
+    def _move_grid(self, dx, dy):
+        """Move by grid amount, checking for walls and pushable objects
+
+        This method handles:
+        1. Wall collision checking (prevents moving into walls)
+        2. Box pushing (if the target has a pushable box)
+        3. Box-on-store transformation (box becomes box_stored)
+        4. Position update
+
+        hspeed/vspeed should be set before calling this to indicate direction
+        """
+        # Check for wall collision
+        if self._check_wall_ahead(dx, dy):
+            self.hspeed = 0
+            self.vspeed = 0
+            return
+
+        # Helper to check if an object is pushable (only regular boxes, not stored boxes)
+        def is_pushable(obj):
+            # Only 'obj_box' (ObjBox) is pushable
+            # 'obj_box_store' (ObjBoxStore) is a box already on a store - NOT pushable
+            # 'obj_store' (ObjStore) is a goal marker - NOT pushable
+            class_name = obj.__class__.__name__.lower()
+            # Pushable if: has 'box' AND doesn't have 'store' AND not solid
+            return 'box' in class_name and 'store' not in class_name and not obj.solid
+
+        # Helper to check if an object is a store/goal location (not a box_store!)
+        def is_store(obj):
+            class_name = obj.__class__.__name__.lower()
+            # Store if: has 'store' but NOT 'box' (obj_store, not obj_box_store)
+            return class_name == 'objstore' or (class_name.endswith('store') and 'box' not in class_name)
+
+        # Check for pushable objects (boxes) at target position
+        target_x = self.x + dx
+        target_y = self.y + dy
+
+        for other in self.scene.instances[:]:  # Use slice copy since we may modify list
+            if other == self:
+                continue
+            # Check if other object is at target position
+            if (abs(other.x - target_x) < 16 and abs(other.y - target_y) < 16):
+                # Found object at target - check if it's pushable (a box)
+                if is_pushable(other):
+                    # Try to push the object
+                    behind_x = other.x + dx
+                    behind_y = other.y + dy
+
+                    # Check if space behind is free
+                    # Only block on solid objects (walls) or other pushable objects (boxes)
+                    can_push = True
+                    for blocker in self.scene.instances:
+                        if blocker != self and blocker != other:
+                            if (abs(blocker.x - behind_x) < 16 and
+                                abs(blocker.y - behind_y) < 16 and
+                                (blocker.solid or is_pushable(blocker))):
+                                can_push = False
+                                break
+
+                    if can_push:
+                        # Push the object
+                        other.x += dx
+                        other.y += dy
+                        other._update_position()
+
+                        # Check if box landed on a store - transform to box_stored
+                        for store in self.scene.instances:
+                            if store != other and is_store(store):
+                                if (abs(store.x - other.x) < 16 and abs(store.y - other.y) < 16):
+                                    # Box is on store! Transform it
+                                    self._transform_box_to_stored(other, store)
+                                    break
+                    else:
+                        # Can't push - don't move
+                        self.hspeed = 0
+                        self.vspeed = 0
+                        return
+
+        # Move the player
+        self.x += dx
+        self.y += dy
+        self._update_position()
+
+        # Clear speed after grid movement
+        self.hspeed = 0
+        self.vspeed = 0
+
+    def _transform_box_to_stored(self, box, store):
+        """Transform a box into a box_store when it reaches a store location"""
+        # Try to find and instantiate the box_store class
+        try:
+            # Import the box_store class dynamically
+            from objects.obj_box_store import ObjBoxStore
+
+            # Create the new box_store at the same position
+            new_box = ObjBoxStore(self.scene, box.x, box.y)
+            self.scene.add_instance(new_box)
+
+            # Destroy the original box
+            box.destroy()
+        except ImportError:
+            # obj_box_store doesn't exist - just leave the box as-is
+            pass
+        except Exception as err:
+            # Something went wrong - leave the box as-is
+            print("Warning: Could not transform box to stored:", err)
+
     # Event handlers (to be overridden by subclasses)
     def on_create(self):
         """Called when instance is created"""
@@ -1347,6 +1483,22 @@ class GameObject(Widget):
                                 }
                                 events_list.append(key_event)
                                 logger.debug(f"        Added keyboard sub-event for '{key_name}' with {len(key_event['actions'])} actions")
+                    elif event_key == 'keyboard_press':
+                        # Keyboard_press events fire once per key press (not continuously)
+                        # Keys are named press_down, press_left, press_right, press_up
+                        for key_name, key_data in event_data.items():
+                            if isinstance(key_data, dict) and 'actions' in key_data:
+                                actions = key_data.get('actions', [])
+                                if actions:  # Only add if there are actual actions
+                                    # Map press_down -> down, press_left -> left, etc.
+                                    normalized_key = key_name.replace('press_', '') if key_name.startswith('press_') else key_name
+                                    key_event = {
+                                        'event_type': 'keyboard_press',
+                                        'key_name': normalized_key,
+                                        'actions': actions,
+                                    }
+                                    events_list.append(key_event)
+                                    logger.debug(f"        Added keyboard_press sub-event for '{key_name}' -> '{normalized_key}' with {len(actions)} actions")
                     else:
                         # Regular event - add the event type if not present
                         if 'event_type' not in event_data:
@@ -1448,14 +1600,21 @@ class {class_name}(GameObject):
 
         # Group keyboard events together (but NOT nokey - that's handled separately)
         keyboard_events = [e for e in events if e.get('event_type') == 'keyboard' and e.get('key_name') and e.get('key_name') != 'nokey']
+        keyboard_press_events = [e for e in events if e.get('event_type') == 'keyboard_press' and e.get('key_name')]
         nokey_events = [e for e in events if e.get('event_type') == 'keyboard' and e.get('key_name') == 'nokey']
-        other_events = [e for e in events if not (e.get('event_type') == 'keyboard' and e.get('key_name'))]
+        other_events = [e for e in events if not (e.get('event_type') in ['keyboard', 'keyboard_press'] and e.get('key_name'))]
 
-        # Generate consolidated keyboard handler if there are keyboard events
+        # Generate consolidated keyboard handler if there are keyboard events (continuous checking)
         if keyboard_events:
             logger.debug(f"      Generating consolidated keyboard handler for {len(keyboard_events)} key(s)")
             keyboard_method = self._generate_keyboard_handler(keyboard_events)
             methods.append(keyboard_method)
+
+        # Generate keyboard_press handler if there are keyboard_press events (one-shot per press)
+        if keyboard_press_events:
+            logger.debug(f"      Generating keyboard_press handler for {len(keyboard_press_events)} key(s)")
+            keyboard_press_method = self._generate_keyboard_press_handler(keyboard_press_events)
+            methods.append(keyboard_press_method)
 
         # Generate on_nokey method for nokey events
         if nokey_events:
@@ -1710,6 +1869,50 @@ class {class_name}(GameObject):
         code_lines.append(f"                self.vspeed = -{abs(speed_values.get('down', 4))}")
         code_lines.append("                self._grid_moving = True")
         code_lines.append("")
+
+        return '\n'.join(code_lines)
+
+    def _generate_keyboard_press_handler(self, keyboard_press_events: List[Dict]) -> str:
+        """Generate an on_keyboard handler for keyboard_press events (one-shot per key press)
+
+        Unlike keyboard events which check continuously, keyboard_press fires once per key press.
+        This is ideal for Sokoban-style grid movement where each press moves one cell.
+        """
+        key_map = {
+            'right': '275',
+            'left': '276',
+            'up': '273',
+            'down': '274',
+        }
+
+        code_lines = []
+        code_lines.append("    def on_keyboard(self, key, scancode, codepoint, modifier):")
+        code_lines.append('        """Handle keyboard press events (one-shot per press)"""')
+
+        for i, event in enumerate(keyboard_press_events):
+            key_name = event.get('key_name', '')
+            actions = event.get('actions', [])
+            key_code = key_map.get(key_name, '0')
+
+            if_keyword = "if" if i == 0 else "elif"
+            code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")
+
+            if actions:
+                # Generate action code for this key press
+                generator = ActionCodeGenerator(base_indent=3)
+                for action in actions:
+                    if isinstance(action, dict):
+                        generator.process_action(action, 'keyboard_press')
+                    elif isinstance(action, str) and action.strip():
+                        generator.add_line(action)
+
+                action_code = generator.get_code()
+                if action_code.strip():
+                    code_lines.append(action_code)
+                else:
+                    code_lines.append("            pass")
+            else:
+                code_lines.append("            pass")
 
         return '\n'.join(code_lines)
 

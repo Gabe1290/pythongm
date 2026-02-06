@@ -268,7 +268,8 @@ def handle_test_instance_count(ctx: HandlerContext, instance: Instance, params: 
     actual_count = 0
     if ctx.game_runner:
         for inst in getattr(ctx.game_runner, 'instances', []):
-            if getattr(inst, 'object_name', '') == object_name:
+            # Exclude instances marked for destruction
+            if getattr(inst, 'object_name', '') == object_name and not getattr(inst, 'to_destroy', False):
                 actual_count += 1
 
     if operation == "equals":

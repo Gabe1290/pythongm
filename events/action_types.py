@@ -182,6 +182,15 @@ ACTION_TYPES = {
         ]
     ),
 
+    "if_condition": ActionType(
+        name="if_condition",
+        display_name="If Condition",
+        description="Conditional check with then/else actions",
+        category="Control",
+        icon="❓",
+        parameters=[]
+    ),
+
     "if_collision_at": ActionType(
         name="if_collision_at",
         display_name="If Collision At",
@@ -224,6 +233,126 @@ ACTION_TYPES = {
                 param_type="action_list",
                 default_value=[],
                 description="Actions if no collision"
+            )
+        ]
+    ),
+
+    "if_can_push": ActionType(
+        name="if_can_push",
+        display_name="If Can Push",
+        description="Check if a box/object can be pushed in the current direction (Sokoban-style)",
+        category="Control",
+        icon="📦",
+        parameters=[
+            ActionParameter(
+                name="direction",
+                display_name="Direction",
+                param_type="choice",
+                default_value="facing",
+                description="Direction to check for push",
+                choices=["facing"]
+            ),
+            ActionParameter(
+                name="object_type",
+                display_name="Object Type",
+                param_type="string",
+                default_value="box",
+                description="Type of object being pushed"
+            ),
+            ActionParameter(
+                name="then_action",
+                display_name="Then Action",
+                param_type="choice",
+                default_value="push_and_move",
+                description="Action if push is possible",
+                choices=["push_and_move", "none"]
+            ),
+            ActionParameter(
+                name="else_action",
+                display_name="Else Action",
+                param_type="choice",
+                default_value="stop_movement",
+                description="Action if push is blocked",
+                choices=["stop_movement", "none"]
+            )
+        ]
+    ),
+
+    "set_variable": ActionType(
+        name="set_variable",
+        display_name="Set Variable",
+        description="Set an instance or global variable",
+        category="Control",
+        icon="📝",
+        parameters=[
+            ActionParameter(
+                name="variable_name",
+                display_name="Variable",
+                param_type="string",
+                default_value="",
+                description="Variable name"
+            ),
+            ActionParameter(
+                name="value",
+                display_name="Value",
+                param_type="string",
+                default_value="0",
+                description="Value (number, string, or expression)"
+            ),
+            ActionParameter(
+                name="scope",
+                display_name="Scope",
+                param_type="choice",
+                default_value="self",
+                description="Variable scope",
+                choices=["self", "other", "global"]
+            ),
+            ActionParameter(
+                name="relative",
+                display_name="Relative",
+                param_type="boolean",
+                default_value=False,
+                description="Add to current value instead of replacing"
+            )
+        ]
+    ),
+
+    "test_variable": ActionType(
+        name="test_variable",
+        display_name="Test Variable",
+        description="Test an instance or global variable value",
+        category="Control",
+        icon="❓",
+        parameters=[
+            ActionParameter(
+                name="variable_name",
+                display_name="Variable",
+                param_type="string",
+                default_value="",
+                description="Variable name"
+            ),
+            ActionParameter(
+                name="value",
+                display_name="Value",
+                param_type="string",
+                default_value="0",
+                description="Value to compare"
+            ),
+            ActionParameter(
+                name="scope",
+                display_name="Scope",
+                param_type="choice",
+                default_value="self",
+                description="Variable scope",
+                choices=["self", "other", "global"]
+            ),
+            ActionParameter(
+                name="operation",
+                display_name="Operation",
+                param_type="choice",
+                default_value="equal",
+                description="Comparison operator",
+                choices=["equal", "less", "greater", "less_equal", "greater_equal", "not_equal"]
             )
         ]
     ),
@@ -875,6 +1004,13 @@ ACTION_TYPES = {
                 param_type="number",
                 default_value=0,
                 description="Y position"
+            ),
+            ActionParameter(
+                name="relative",
+                display_name="Relative",
+                param_type="boolean",
+                default_value=False,
+                description="Position relative to current instance"
             )
         ]
     ),

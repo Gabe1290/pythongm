@@ -33,6 +33,20 @@ CONTROL_ACTIONS = {
             ActionParameter("not_flag", "boolean", "NOT", "Invert condition", default=False)
         ]
     ),
+    "if_can_push": ActionDefinition(
+        name="if_can_push",
+        display_name="If Can Push",
+        category="control",
+        tab="control",
+        description="Check if a box/object can be pushed in the current direction (Sokoban-style)",
+        icon="📦",
+        parameters=[
+            ActionParameter("direction", "string", "Direction", "Push direction ('facing' = current movement)", default="facing"),
+            ActionParameter("object_type", "string", "Object Type", "Type of object being pushed", default="box"),
+            ActionParameter("then_action", "string", "Then Action", "Action if push possible ('push_and_move' or 'none')", default="push_and_move"),
+            ActionParameter("else_action", "string", "Else Action", "Action if push blocked ('stop_movement' or 'none')", default="stop_movement"),
+        ]
+    ),
     "test_instance_count": ActionDefinition(
         name="test_instance_count",
         display_name="Test Instance Count",

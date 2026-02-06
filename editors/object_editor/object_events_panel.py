@@ -876,14 +876,21 @@ class ObjectEventsPanel(QWidget):
                     if key == "actions" or not isinstance(sub_data, dict):
                         continue
 
+                    # Normalize key name: strip redundant prefix (press_down -> down)
+                    display_key = key
+                    if event_name == "keyboard_press" and key.startswith("press_"):
+                        display_key = key[6:]  # Remove "press_"
+                    elif event_name == "keyboard_release" and key.startswith("release_"):
+                        display_key = key[8:]  # Remove "release_"
+
                     sub_item = QTreeWidgetItem(event_item)
-                    icon = key_icons.get(key, "⌨️")
+                    icon = key_icons.get(display_key, "⌨️")
 
                     # Format key display name
-                    if key in ["left", "right", "up", "down"]:
-                        display_name = f"{key.title()} Arrow"
+                    if display_key in ["left", "right", "up", "down"]:
+                        display_name = f"{display_key.title()} Arrow"
                     else:
-                        display_name = f"Key {key}"
+                        display_name = f"Key {display_key}"
 
                     sub_item.setText(0, f"{icon} {display_name}")
                     sub_item.setText(1, self.tr("{0} actions").format(len(sub_data.get('actions', []))))
@@ -953,9 +960,9 @@ class ObjectEventsPanel(QWidget):
                 event_item.setText(1, f"{len(event_data.get('actions', []))} actions")
                 event_item.setData(0, Qt.UserRole, event_name)
 
-                actions = event_data.get(self.tr("actions"), [])
+                actions = event_data.get("actions", [])
                 for action_data in actions:
-                    action_name = action_data.get(self.tr("action"), "unknown")
+                    action_name = action_data.get("action", "unknown")
                     action_type = get_action_type(action_name)
 
                     action_item = QTreeWidgetItem(event_item)
@@ -965,7 +972,7 @@ class ObjectEventsPanel(QWidget):
                         action_item.setText(0, f"❓ {action_name}")
 
                     # Use smart parameter formatting
-                    params = action_data.get(self.tr("parameters"), {})
+                    params = action_data.get("parameters", {})
                     if params:
                         param_summary = ActionParametersFormatter.format_action_parameters(
                             action_name, params
@@ -1477,9 +1484,9 @@ class ObjectEventsPanel(QWidget):
 
         # Create new collision event
         self.current_events_data[collision_key] = {
-            self.tr("actions"): [],
-            self.tr("target_object"): target_object,
-            self.tr("negate"): negate
+            "actions": [],
+            "target_object": target_object,
+            "negate": negate
         }
 
         self.refresh_events_display()

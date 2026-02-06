@@ -1791,8 +1791,16 @@
                         var keyData = eventData[keyName];
                         console.log('[Blockly] Keyboard key:', keyName, 'data:', JSON.stringify(keyData));
                         if (typeof keyData === 'object' && keyData.actions) {
+                            // Strip redundant prefix from key name
+                            // e.g., "press_down" -> "down" when parent is "keyboard_press"
+                            var cleanKey = keyName;
+                            if (eventName === 'keyboard_press' && keyName.startsWith('press_')) {
+                                cleanKey = keyName.substring(6);  // Remove "press_"
+                            } else if (eventName === 'keyboard_release' && keyName.startsWith('release_')) {
+                                cleanKey = keyName.substring(8);  // Remove "release_"
+                            }
                             // Create a flat event name like "keyboard_right"
-                            var flatEventName = eventName + '_' + keyName;
+                            var flatEventName = eventName + '_' + cleanKey;
                             console.log('[Blockly] Creating event block:', flatEventName);
                             var eventBlock = createEventBlock(flatEventName, keyData);
                             if (eventBlock) {
