@@ -17,8 +17,16 @@ logger = get_logger(__name__)
 
 
 def handle_show_message(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Execute show message action."""
+    """Execute show message action with optional translation support."""
     message = params.get("message", "")
+
+    # Resolve translation if available
+    translations = params.get("message_translations")
+    if translations and ctx.game_runner:
+        lang = getattr(ctx.game_runner, 'language', 'en')
+        if lang != 'en' and lang in translations:
+            message = translations[lang]
+
     logger.info(f"💬 MESSAGE: {message}")
 
     if not hasattr(instance, 'pending_messages'):

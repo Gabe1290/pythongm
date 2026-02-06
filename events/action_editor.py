@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QTreeWidgetItem, QTreeWidget, QMenu,
     QLabel, QPushButton, QLineEdit, QSpinBox, QDoubleSpinBox,
     QCheckBox, QComboBox, QDialogButtonBox, QTextEdit, QColorDialog,
-    QWidget
+    QWidget, QScrollArea, QFormLayout
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QColor
@@ -35,6 +35,14 @@ class ActionConfigDialog(QDialog):
             'then_action_params': self.current_params.get('then_action_params', {}),
             'else_action_params': self.current_params.get('else_action_params', {})
         }
+
+        # Store message translations (param_name -> {lang_code: translated_text})
+        self.message_translations = {}
+        if initial_params:
+            for key, val in initial_params.items():
+                if key.endswith("_translations") and isinstance(val, dict):
+                    base_param = key[:-len("_translations")]
+                    self.message_translations[base_param] = dict(val)
 
         self.setWindowTitle(self.tr("Configure {0}").format(action_type.display_name))
         self.setModal(True)
@@ -157,13 +165,16 @@ class ActionConfigDialog(QDialog):
 
                 param_layout.addWidget(widget)
 
-                # Add "Configure..." button
-                config_btn = QPushButton(self.tr("⚙️ Configure..."))
-                config_btn.setMaximumWidth(120)
-                config_btn.clicked.connect(
-                    lambda checked, p=param.name, w=widget: self.configure_nested_action(p, w.currentText())
-                )
-                param_layout.addWidget(config_btn)
+                # Only add "Configure..." button if choices are actual registered action types
+                from events.action_types import get_action_type
+                has_configurable = any(get_action_type(c) for c in (param.choices or []) if c and c != "none")
+                if has_configurable:
+                    config_btn = QPushButton(self.tr("⚙️ Configure..."))
+                    config_btn.setMaximumWidth(120)
+                    config_btn.clicked.connect(
+                        lambda checked, p=param.name, w=widget: self.configure_nested_action(p, w.currentText())
+                    )
+                    param_layout.addWidget(config_btn)
 
                 self.param_widgets[param.name] = widget
                 layout.addLayout(param_layout)
@@ -337,6 +348,16 @@ class ActionConfigDialog(QDialog):
             param_layout.addWidget(widget)
             self.param_widgets[param.name] = widget
 
+            # Add "Translations..." button for message string parameters
+            if param.param_type == "string" and param.name == "message":
+                trans_btn = QPushButton(self.tr("Translations..."))
+                trans_btn.setMaximumWidth(120)
+                trans_btn.setToolTip(self.tr("Add translations for different languages"))
+                trans_btn.clicked.connect(
+                    lambda checked, p=param.name: self.edit_translations(p)
+                )
+                param_layout.addWidget(trans_btn)
+
             layout.addLayout(param_layout)
 
         layout.addStretch()
@@ -391,6 +412,22 @@ class ActionConfigDialog(QDialog):
             button_widget.setProperty("color_value", color_hex)
             button_widget.setStyleSheet(f"background-color: {color_hex}; color: white;")
             button_widget.setText(self.tr("🎨 {0}").format(color_hex))
+
+    def edit_translations(self, param_name: str):
+        """Open the translations dialog for a message parameter"""
+        current_translations = self.message_translations.get(param_name, {})
+        default_text = ""
+        widget = self.param_widgets.get(param_name)
+        if isinstance(widget, QLineEdit):
+            default_text = widget.text()
+
+        dialog = MessageTranslationsDialog(
+            default_text=default_text,
+            translations=current_translations,
+            parent=self
+        )
+        if dialog.exec() == QDialog.Accepted:
+            self.message_translations[param_name] = dialog.get_translations()
 
     def get_available_objects(self):
         """Get list of available objects from the project"""
@@ -504,6 +541,11 @@ class ActionConfigDialog(QDialog):
                 x_spin = widget.property("x_spin")
                 y_spin = widget.property("y_spin")
                 values[param_name] = [x_spin.value(), y_spin.value()]
+
+        # Add message translations if any exist
+        for param_name, translations in self.message_translations.items():
+            if translations:  # Only add non-empty translation dicts
+                values[f"{param_name}_translations"] = translations
 
         # ADD NESTED ACTION PARAMETERS
         for key, params in self.nested_action_params.items():
@@ -704,3 +746,81 @@ class MultiActionEditor(QDialog):
     def get_action_list(self) -> List[Dict[str, Any]]:
         """Get the configured action list"""
         return self.action_list
+
+
+class MessageTranslationsDialog(QDialog):
+    """Dialog for editing translations of a message string"""
+
+    def __init__(self, default_text: str = "", translations: dict = None, parent=None):
+        super().__init__(parent)
+        self.default_text = default_text
+        self.translations = dict(translations) if translations else {}
+        self.lang_edits = {}  # {lang_code: QLineEdit}
+
+        self.setWindowTitle(self.tr("Message Translations"))
+        self.setModal(True)
+        self.resize(500, 400)
+        self.setup_ui()
+
+    def _get_language_list(self):
+        """Get available languages from LanguageManager, excluding English"""
+        try:
+            from core.language_manager import LanguageManager
+            lang_info = LanguageManager.LANGUAGE_INFO
+            # Return all languages except English, sorted by display name
+            return sorted(
+                [(code, name) for code, (name, _flag) in lang_info.items() if code != 'en'],
+                key=lambda x: x[1]
+            )
+        except ImportError:
+            # Fallback if LanguageManager is not available
+            return [
+                ('fr', 'Francais'), ('de', 'Deutsch'), ('es', 'Espanol'),
+                ('it', 'Italiano'), ('pt', 'Portugues'), ('ru', 'Russian'),
+                ('uk', 'Ukrainian'), ('sl', 'Slovenscina'),
+            ]
+
+    def setup_ui(self):
+        layout = QVBoxLayout(self)
+
+        # Show the default (English) message as read-only reference
+        ref_label = QLabel(self.tr("Default message (English):"))
+        layout.addWidget(ref_label)
+        ref_text = QLineEdit(self.default_text)
+        ref_text.setReadOnly(True)
+        ref_text.setStyleSheet("background-color: #f0f0f0;")
+        layout.addWidget(ref_text)
+
+        layout.addSpacing(10)
+
+        # Scrollable area for language fields
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll_widget = QWidget()
+        form_layout = QFormLayout(scroll_widget)
+
+        for lang_code, lang_name in self._get_language_list():
+            edit = QLineEdit()
+            edit.setPlaceholderText(self.tr("Translation for {0}").format(lang_name))
+            if lang_code in self.translations:
+                edit.setText(self.translations[lang_code])
+            self.lang_edits[lang_code] = edit
+            form_layout.addRow(f"{lang_name} ({lang_code}):", edit)
+
+        scroll.setWidget(scroll_widget)
+        layout.addWidget(scroll)
+
+        # Dialog buttons
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        button_box.accepted.connect(self.accept)
+        button_box.rejected.connect(self.reject)
+        layout.addWidget(button_box)
+
+    def get_translations(self) -> dict:
+        """Return only non-empty translations"""
+        result = {}
+        for lang_code, edit in self.lang_edits.items():
+            text = edit.text().strip()
+            if text:
+                result[lang_code] = text
+        return result

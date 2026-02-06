@@ -39,6 +39,13 @@ class ActionParametersFormatter:
 
             return " | ".join(parts)
 
+        # Special formatting for if_can_push (Sokoban-style)
+        elif action_name == "if_can_push":
+            obj_type = params.get("object_type", "box")
+            then_act = params.get("then_action", "push_and_move")
+            else_act = params.get("else_action", "stop_movement")
+            return f"push {obj_type}? then: {then_act}, else: {else_act}"
+
         # Special formatting for push_object
         elif action_name == "push_object":
             parts = []
@@ -102,12 +109,21 @@ class ActionParametersFormatter:
                 # Skip verbose parameters
                 if k in ["then_actions", "else_actions", "then_action_params", "else_action_params"]:
                     continue
+                # Skip translation dicts (shown as indicator instead)
+                if k.endswith("_translations") and isinstance(v, dict):
+                    continue
 
                 # Shorten long values
                 if isinstance(v, str) and len(v) > 20:
                     v = v[:17] + "..."
 
                 param_list.append(f"{k}={v}")
+
+            # Show a compact indicator if translations exist
+            translations = params.get("message_translations")
+            if translations and isinstance(translations, dict):
+                n = len(translations)
+                param_list.append(f"[{n} translation{'s' if n != 1 else ''}]")
 
             summary = ", ".join(param_list)
 

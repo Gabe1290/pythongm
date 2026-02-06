@@ -1640,6 +1640,38 @@ class GameRunner:
                                             logger.debug(f"⏰ Alarm {alarm_num} triggered for {instance.object_name}")
                                             instance.action_executor.execute_action_list(instance, alarm_event["actions"])
 
+                    # 2b. DELAYED ACTIONS (countdown and execute)
+                    if hasattr(instance, '_delayed_actions') and instance._delayed_actions:
+                        completed = []
+                        for i, delayed in enumerate(instance._delayed_actions):
+                            delayed['frames_remaining'] -= 1
+                            if delayed['frames_remaining'] <= 0:
+                                completed.append(i)
+                                # Execute the delayed action
+                                action_name = delayed['action']
+                                params = delayed['parameters']
+                                logger.info(f"⏱️ Executing delayed action: {action_name} for {instance.object_name}")
+
+                                # Handle specific delayed actions
+                                if action_name == "change_room":
+                                    room_name = params.get("room_name", "")
+                                    if room_name:
+                                        instance.goto_room_target = room_name
+                                elif action_name == "next_room":
+                                    instance.next_room_flag = True
+                                elif action_name == "restart_room":
+                                    instance.restart_room_flag = True
+                                elif action_name == "game_end":
+                                    self.running = False
+                                else:
+                                    # Try to execute as a generic action
+                                    action_data = {"action": action_name, "parameters": params}
+                                    instance.action_executor.execute_action(instance, action_data)
+
+                        # Remove completed delayed actions (in reverse order to preserve indices)
+                        for i in reversed(completed):
+                            instance._delayed_actions.pop(i)
+
                     # 3. STEP EVENT (always call - handles nokey internally)
                     instance.step()
 
@@ -1807,7 +1839,11 @@ class GameRunner:
             if "keyboard_press" in events:
                 keyboard_press_event = events["keyboard_press"]
                 if isinstance(keyboard_press_event, dict):
-                    found_key = _find_key_in_event(keyboard_press_event, sub_key)
+                    # First try "press_<key>" variant (legacy format), then plain "<key>"
+                    press_key = f"press_{sub_key}"
+                    found_key = _find_key_in_event(keyboard_press_event, press_key)
+                    if not found_key:
+                        found_key = _find_key_in_event(keyboard_press_event, sub_key)
                     if found_key:
                         logger.debug(f"  ✅ Executing keyboard_press.{found_key} for {instance.object_name}")
                         events_found = True
@@ -1819,7 +1855,11 @@ class GameRunner:
             if "keyboard" in events:
                 keyboard_event = events["keyboard"]
                 if isinstance(keyboard_event, dict):
-                    found_key = _find_key_in_event(keyboard_event, sub_key)
+                    # First try "press_<key>" variant (legacy format), then plain "<key>"
+                    press_key = f"press_{sub_key}"
+                    found_key = _find_key_in_event(keyboard_event, press_key)
+                    if not found_key:
+                        found_key = _find_key_in_event(keyboard_event, sub_key)
                     if found_key:
                         logger.debug(f"  ✅ Executing keyboard.{found_key} for {instance.object_name}")
                         events_found = True
@@ -1877,7 +1917,11 @@ class GameRunner:
             if "keyboard_release" in events:
                 keyboard_release_event = events["keyboard_release"]
                 if isinstance(keyboard_release_event, dict):
-                    found_key = _find_key_in_event(keyboard_release_event, sub_key)
+                    # First try "release_<key>" variant (legacy format), then plain "<key>"
+                    release_key = f"release_{sub_key}"
+                    found_key = _find_key_in_event(keyboard_release_event, release_key)
+                    if not found_key:
+                        found_key = _find_key_in_event(keyboard_release_event, sub_key)
                     if found_key:
                         sub_event_data = keyboard_release_event[found_key]
                         if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
@@ -2024,6 +2068,14 @@ class GameRunner:
                 self.restart_game()
                 return
 
+            # Check for goto_room_target (set by delay_action or goto_room)
+            if hasattr(instance, 'goto_room_target') and instance.goto_room_target:
+                room_name = instance.goto_room_target
+                instance.goto_room_target = None  # Clear the flag first
+                logger.info(f"🚪 Going to room: {room_name}")
+                self.change_room(room_name)
+                return
+
 
         # Apply physics (gravity and friction) to all instances
         for instance in self.current_room.instances:
@@ -2130,11 +2182,15 @@ class GameRunner:
                         'v_blocked': v_blocked,
                     }
                 )
-        # Handle intended movement with collision checking
+        # Handle intended movement (grid-based) with collision checking
         for instance in self.current_room.instances:
             if hasattr(instance, 'intended_x') and hasattr(instance, 'intended_y'):
+                # Store movement direction so collision handlers (e.g. if_can_push) can use it
+                instance._last_grid_move_dx = instance.intended_x - instance.x
+                instance._last_grid_move_dy = instance.intended_y - instance.y
+
                 # Check if movement would collide with solid objects
-                can_move = self.check_movement_collision(instance, objects_data)
+                can_move, blocker = self.check_movement_collision_with_blocker(instance, objects_data)
 
                 if can_move:
                     logger.debug(f"✅ Movement allowed: {instance.object_name} → ({instance.intended_x}, {instance.intended_y})")
@@ -2142,6 +2198,23 @@ class GameRunner:
                     instance.y = instance.intended_y
                 else:
                     logger.debug(f"❌ Movement blocked: {instance.object_name} (hit solid object)")
+                    # For Sokoban-style pushing: fire collision event with the blocker
+                    # This allows if_can_push to move the blocker and enable movement
+                    if blocker:
+                        event_name = f"collision_with_{blocker.object_name}"
+                        events = instance._cached_object_data.get('events', {}) if instance._cached_object_data else {}
+                        if event_name in events:
+                            logger.debug(f"🔄 Grid blocked collision: {instance.object_name} with {blocker.object_name}")
+                            blocker_old_x = blocker.x
+                            blocker_old_y = blocker.y
+                            instance.action_executor.execute_collision_event(
+                                instance, event_name, events, blocker
+                            )
+                            # If the blocker was pushed (position changed), allow original movement
+                            if blocker.x != blocker_old_x or blocker.y != blocker_old_y:
+                                instance.x = instance.intended_x
+                                instance.y = instance.intended_y
+                                logger.debug(f"✅ Movement allowed after push: {instance.object_name} → ({instance.x}, {instance.y})")
 
                 # Clear intended movement
                 delattr(instance, 'intended_x')
@@ -2164,7 +2237,10 @@ class GameRunner:
             for collision_data in all_collisions:
                 self.process_collision_event(collision_data)
 
-            # Third pass: Separate overlapping instances that have collision events
+            # Third pass: Check for "not_collision" events (fire when NOT colliding)
+            self.check_not_collision_events(objects_data)
+
+            # Fourth pass: Separate overlapping instances that have collision events
             # This handles the case where soko pushes box into wall - soko should be pushed back
             self.separate_overlapping_instances(objects_data)
 
@@ -2188,7 +2264,11 @@ class GameRunner:
         return can_move
 
     def check_movement_collision_with_blocker(self, moving_instance, objects_data: dict):
-        """Check if intended movement would be blocked by solid objects.
+        """Check if intended movement would be blocked by solid objects or pushable objects.
+
+        Blocks movement for:
+        - Solid objects (always block)
+        - Non-solid objects that have a collision event with if_can_push (Sokoban-style)
 
         Returns:
             (can_move: bool, blocking_instance: GameInstance or None)
@@ -2199,6 +2279,9 @@ class GameRunner:
         # Use cached dimensions
         w1 = moving_instance._cached_width
         h1 = moving_instance._cached_height
+
+        # Pre-parsed collision targets for the moving instance
+        collision_targets = moving_instance._collision_targets
 
         # Use spatial grid for faster collision detection
         nearby_instances = self.current_room.get_nearby_instances(intended_x, intended_y, w1, h1)
@@ -2214,8 +2297,21 @@ class GameRunner:
 
             is_solid = other_obj_data.get('solid', False)
 
-            # Only solid objects block movement
-            if not is_solid:
+            # Solid objects always block
+            should_block = is_solid
+
+            # Non-solid objects block if the mover has a push-type collision event with them
+            if not should_block and collision_targets:
+                target_name = other_instance.object_name
+                if target_name in collision_targets:
+                    event_data = collision_targets[target_name]
+                    actions = event_data.get('actions', [])
+                    for action in actions:
+                        if action.get('action') == 'if_can_push':
+                            should_block = True
+                            break
+
+            if not should_block:
                 continue
 
             # Use cached dimensions
@@ -2444,7 +2540,11 @@ class GameRunner:
         events = collision_data['events']
         other_instance = collision_data['other_instance']
 
-        logger.debug(f"🎯 COLLISION DETECTED: {instance.object_name} with {other_instance.object_name}")
+        # Use INFO level for important collisions (box with store)
+        if 'obj_box' in instance.object_name and 'obj_store' in other_instance.object_name:
+            logger.info(f"🎯 BOX-STORE COLLISION: {instance.object_name} with {other_instance.object_name} at ({instance.x}, {instance.y})")
+        else:
+            logger.debug(f"🎯 COLLISION DETECTED: {instance.object_name} with {other_instance.object_name}")
         logger.debug(f"   Stored speeds - self: ({collision_data['self_hspeed']}, {collision_data['self_vspeed']}), other: ({collision_data['other_hspeed']}, {collision_data['other_vspeed']})")
 
         # Pass other_instance and collision speeds as context for collision actions
@@ -2460,6 +2560,52 @@ class GameRunner:
                 'other_vspeed': collision_data['other_vspeed'],
             }
         )
+
+    def check_not_collision_events(self, objects_data: dict):
+        """Check for 'not_collision' events - these fire when instance is NOT colliding with target.
+
+        Used for Sokoban-style mechanics where obj_box_store transforms back to obj_box
+        when pushed off an obj_store.
+        """
+        # Iterate over a copy since we may destroy instances
+        for instance in list(self.current_room.instances):
+            if not hasattr(instance, '_cached_object_data') or not instance._cached_object_data:
+                continue
+
+            events = instance._cached_object_data.get('events', {})
+
+            # Look for not_collision_with_* events
+            for event_name, event_data in events.items():
+                if not event_name.startswith('not_collision_with_'):
+                    continue
+
+                target_object = event_name[19:]  # Remove 'not_collision_with_' prefix
+
+                # Check if instance is colliding with ANY instance of target object
+                is_colliding = False
+                w1 = instance._cached_width
+                h1 = instance._cached_height
+
+                for other_instance in self.current_room.instances:
+                    if other_instance == instance:
+                        continue
+                    if other_instance.object_name != target_object:
+                        continue
+
+                    w2 = other_instance._cached_width
+                    h2 = other_instance._cached_height
+
+                    if self.rectangles_overlap(instance.x, instance.y, w1, h1,
+                                              other_instance.x, other_instance.y, w2, h2):
+                        is_colliding = True
+                        break
+
+                # If NOT colliding, fire the event
+                if not is_colliding:
+                    actions = event_data.get('actions', [])
+                    if actions:
+                        logger.debug(f"🚫 NOT_COLLISION: {instance.object_name} not colliding with {target_object}")
+                        instance.action_executor.execute_action_list(instance, actions)
 
     def instances_overlap(self, inst1, inst2) -> bool:
         """Check if two instances overlap"""
@@ -2669,6 +2815,8 @@ class GameRunner:
                 if room_width != current_width or room_height != current_height:
                     logger.debug(f"  📐 Resizing window to {room_width}x{room_height}")
                     self.screen = pygame.display.set_mode((room_width, room_height))
+                    self.window_width = room_width
+                    self.window_height = room_height
 
             # Replace the room in our dictionary
             self.rooms[first_room_name] = new_room
@@ -2828,6 +2976,8 @@ class GameRunner:
                 if room_width != current_width or room_height != current_height:
                     logger.debug(f"📐 Resizing window from {current_width}x{current_height} to {room_width}x{room_height}")
                     self.screen = pygame.display.set_mode((room_width, room_height))
+                    self.window_width = room_width
+                    self.window_height = room_height
                     logger.debug(f"✅ Window resized to {room_width}x{room_height}")
 
             # Execute create events for NEW instances only (not persistent ones that carried over)
@@ -3030,16 +3180,19 @@ class GameRunner:
             self.current_room.render(self.screen)
             pygame.display.flip()
 
+        # Use actual screen size for centering (in case window was resized)
+        screen_w, screen_h = self.screen.get_size()
+
         # Create a semi-transparent overlay
-        overlay = pygame.Surface((self.window_width, self.window_height))
+        overlay = pygame.Surface((screen_w, screen_h))
         overlay.fill((0, 0, 0))
         overlay.set_alpha(128)
 
         # Dialog box dimensions
-        dialog_width = min(400, self.window_width - 40)
+        dialog_width = min(400, screen_w - 40)
         dialog_height = 150
-        dialog_x = (self.window_width - dialog_width) // 2
-        dialog_y = (self.window_height - dialog_height) // 2
+        dialog_x = (screen_w - dialog_width) // 2
+        dialog_y = (screen_h - dialog_height) // 2
 
         # Button dimensions
         button_width = 80

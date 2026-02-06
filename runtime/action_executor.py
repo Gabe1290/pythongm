@@ -18,6 +18,12 @@ class ActionExecutor:
         # Reference to game runner for accessing global state (score, lives, health)
         self.game_runner = game_runner
 
+        # Deferred create events queue - processed after current event completes
+        # This fixes timing issues where create events check conditions before
+        # the triggering action list finishes (e.g., instance count checks)
+        self._deferred_create_events = []
+        self._event_depth = 0  # Track nested event execution depth
+
         # Auto-discover all action handler methods
         self._register_action_handlers()
 
@@ -75,8 +81,36 @@ class ActionExecutor:
             if actions:
                 logger.debug(f"   First action: {actions[0].get('action', 'unknown')}")
 
-        # Execute actions with conditional flow support
-        self.execute_action_list(instance, actions)
+        # Track event execution depth for deferred create event processing
+        self._event_depth += 1
+        try:
+            # Execute actions with conditional flow support
+            self.execute_action_list(instance, actions)
+        finally:
+            self._event_depth -= 1
+
+            # Process deferred create events when we return to top level
+            # This ensures instance counts are accurate (e.g., after destroy_instance)
+            if self._event_depth == 0 and self._deferred_create_events:
+                self._process_deferred_create_events()
+
+    def _process_deferred_create_events(self):
+        """Process any deferred create events
+
+        Create events are deferred when instances are created mid-event so that
+        conditions like instance_count are evaluated after the triggering event
+        completes (e.g., after destroy_instance runs).
+        """
+        # Take the current queue and clear it (in case create events add more)
+        events_to_process = self._deferred_create_events[:]
+        self._deferred_create_events = []
+
+        if events_to_process:
+            logger.info(f"🎬 Processing {len(events_to_process)} deferred CREATE event(s)")
+
+        for new_instance, events in events_to_process:
+            logger.info(f"  🎬 Running deferred CREATE event for {new_instance.object_name}")
+            self.execute_event(new_instance, 'create', events)
 
     def execute_action_list(self, instance, actions: list):
         """Execute a list of actions with conditional flow support
@@ -1237,30 +1271,185 @@ class ActionExecutor:
 
         # Count instances of the specified object type
         exists = False
+        count = 0
         if self.game_runner and self.game_runner.current_room:
             for room_instance in self.game_runner.current_room.instances:
                 if room_instance.object_name == object_type:
+                    count += 1
                     exists = True
-                    break
 
         # Apply NOT flag
         result = not exists if not_flag else exists
 
-        logger.debug(f"  ❓ if_object_exists: '{object_type}' exists={exists}, not_flag={not_flag}, result={result}")
+        logger.info(f"  ❓ if_object_exists: '{object_type}' count={count}, exists={exists}, not_flag={not_flag}, result={result}")
 
         return result
+
+    def execute_if_can_push_action(self, instance, parameters: Dict[str, Any]):
+        """Check if a box/object can be pushed in the current movement direction (Sokoban-style)
+
+        Checks if the space behind the target object is free of solid objects.
+        Works with both speed-based movement (hspeed/vspeed) and grid movement (intended_x/y).
+
+        Parameters:
+            direction: 'facing' (uses instance movement direction)
+            object_type: type of object being pushed (informational)
+            then_action: action to run if push is possible ('push_and_move')
+            else_action: action to run if push is blocked ('stop_movement')
+
+        Returns True if the box can be pushed, False otherwise.
+        """
+        other = getattr(self, '_collision_other', None)
+        if not other:
+            logger.debug("  ⚠️ if_can_push: No collision other instance")
+            return False
+
+        grid_size = 32
+
+        # Determine push direction from either speed or grid movement
+        hspeed = getattr(instance, 'hspeed', 0)
+        vspeed = getattr(instance, 'vspeed', 0)
+
+        if hspeed != 0 or vspeed != 0:
+            # Speed-based movement
+            dx = hspeed
+            dy = vspeed
+        else:
+            # Grid-based movement: use stored direction from game_runner
+            dx = getattr(instance, '_last_grid_move_dx', 0)
+            dy = getattr(instance, '_last_grid_move_dy', 0)
+            if dx == 0 and dy == 0:
+                # Fallback: try intended position
+                intended_x = getattr(instance, 'intended_x', instance.x)
+                intended_y = getattr(instance, 'intended_y', instance.y)
+                dx = intended_x - instance.x
+                dy = intended_y - instance.y
+            if dx == 0 and dy == 0:
+                logger.debug("  ⚠️ if_can_push: Instance has no movement")
+                return False
+
+        # Calculate push direction (one grid cell in movement direction)
+        push_dx = grid_size if dx > 0 else (-grid_size if dx < 0 else 0)
+        push_dy = grid_size if dy > 0 else (-grid_size if dy < 0 else 0)
+
+        # Check if space behind the box is free
+        behind_x = other.x + push_dx
+        behind_y = other.y + push_dy
+
+        can_push = True
+        if self.game_runner and self.game_runner.current_room:
+            # Check for solid objects at the push destination
+            if self.game_runner.check_collision_at_position(
+                other, behind_x, behind_y, "solid", exclude_instance=instance
+            ):
+                can_push = False
+            else:
+                # Check for any object type the pusher has collision events with
+                # (e.g. soko has collision_with_obj_box and collision_with_obj_box_store)
+                # These are "interactive" objects that should block pushes
+                collision_targets = getattr(instance, '_collision_targets', {})
+                for target_name in collision_targets:
+                    if self.game_runner.check_collision_at_position(
+                        other, behind_x, behind_y, target_name, exclude_instance=instance
+                    ):
+                        can_push = False
+                        break
+
+        logger.debug(f"  ❓ if_can_push: other=({other.x},{other.y}), behind=({behind_x},{behind_y}), can_push={can_push}")
+
+        then_action = parameters.get('then_action', '')
+        else_action = parameters.get('else_action', '')
+
+        if can_push:
+            if then_action == 'push_and_move':
+                # Push the box in the direction of movement
+                other.x += push_dx
+                other.y += push_dy
+                logger.debug(f"  📦 Pushed box to ({other.x}, {other.y})")
+                # Update spatial grid if available
+                if self.game_runner and self.game_runner.current_room:
+                    if hasattr(self.game_runner.current_room, 'update_spatial_grid'):
+                        self.game_runner.current_room.update_spatial_grid(other)
+        else:
+            if else_action == 'stop_movement':
+                instance.hspeed = 0
+                instance.vspeed = 0
+                instance.speed = 0
+                # Revert position if soko overlapped with the box (non-solid case)
+                # Push soko back by the movement direction
+                last_dx = getattr(instance, '_last_grid_move_dx', 0)
+                last_dy = getattr(instance, '_last_grid_move_dy', 0)
+                if last_dx != 0 or last_dy != 0:
+                    # Check if instance is overlapping with the other
+                    w1 = getattr(instance, '_cached_width', 32)
+                    h1 = getattr(instance, '_cached_height', 32)
+                    w2 = getattr(other, '_cached_width', 32)
+                    h2 = getattr(other, '_cached_height', 32)
+                    if self.game_runner and self.game_runner.rectangles_overlap(
+                        instance.x, instance.y, w1, h1,
+                        other.x, other.y, w2, h2
+                    ):
+                        instance.x -= last_dx
+                        instance.y -= last_dy
+                        logger.debug(f"  ↩️ Reverted position to ({instance.x}, {instance.y})")
+                logger.debug(f"  🛑 Stopped movement (can't push)")
+
+        return can_push
 
     # ==================== GAME ACTIONS ====================
 
     def execute_show_message_action(self, instance, parameters: Dict[str, Any]):
-        """Execute show message action"""
+        """Execute show message action with optional translation support"""
         message = parameters.get("message", "")
+
+        # Resolve translation if available
+        translations = parameters.get("message_translations")
+        if translations and self.game_runner:
+            lang = getattr(self.game_runner, 'language', 'en')
+            if lang != 'en' and lang in translations:
+                message = translations[lang]
+
         logger.info(f"💬 MESSAGE: {message}")
 
         # Store message for game runner to display
         if not hasattr(instance, 'pending_messages'):
             instance.pending_messages = []
         instance.pending_messages.append(message)
+
+    def execute_delay_action_action(self, instance, parameters: Dict[str, Any]):
+        """Execute an action after a delay (in frames)
+
+        Parameters:
+            frames: Number of frames to wait before executing the action
+            then_action: The action to execute after the delay (e.g., "change_room", "next_room")
+            room_name: Room name for change_room action (optional)
+            (other parameters are passed to the delayed action)
+        """
+        frames = parameters.get("frames", 60)
+        then_action = parameters.get("then_action", "")
+
+        try:
+            frames = int(frames)
+        except (ValueError, TypeError):
+            frames = 60
+
+        if not then_action:
+            logger.warning("⚠️ delay_action: No then_action specified")
+            return
+
+        # Initialize delayed actions list if needed
+        if not hasattr(instance, '_delayed_actions'):
+            instance._delayed_actions = []
+
+        # Store the delayed action with remaining frames and parameters
+        delayed = {
+            'frames_remaining': frames,
+            'action': then_action,
+            'parameters': parameters.copy()
+        }
+        instance._delayed_actions.append(delayed)
+
+        logger.info(f"⏱️ Scheduled {then_action} action in {frames} frames for {instance.object_name}")
 
     def execute_restart_room_action(self, instance, parameters: Dict[str, Any]):
         """Execute restart room action - resets current level"""
@@ -1274,7 +1463,7 @@ class ActionExecutor:
 
     def execute_next_room_action(self, instance, parameters: Dict[str, Any]):
         """Execute next room action - advances to next level"""
-        logger.debug(f"➡️  Next room requested by {instance.object_name}")
+        logger.info(f"➡️  NEXT ROOM requested by {instance.object_name}")
         instance.next_room_flag = True
 
     # Alias for room_goto_next (GameMaker naming convention)
@@ -2652,12 +2841,21 @@ class ActionExecutor:
             self.game_runner.current_room._add_to_grid(new_instance)
             self.game_runner.current_room._depth_dirty = True  # Mark for re-sort
 
-            # Execute create event for the new instance
+            # Defer create event to run after current event completes
+            # This ensures conditions like instance_count are accurate
+            # (e.g., the box is destroyed before checking if count is 0)
             events = object_data.get('events', {})
             if 'create' in events:
-                self.execute_event(new_instance, 'create', events)
-
-            logger.debug(f"➕ Created instance of '{object_name}' at ({x}, {y})")
+                if self._event_depth > 0:
+                    # We're inside an event - defer the create event
+                    self._deferred_create_events.append((new_instance, events))
+                    logger.debug(f"➕ Created instance of '{object_name}' at ({x}, {y}) [create event deferred]")
+                else:
+                    # Not inside an event - execute immediately
+                    self.execute_event(new_instance, 'create', events)
+                    logger.debug(f"➕ Created instance of '{object_name}' at ({x}, {y})")
+            else:
+                logger.debug(f"➕ Created instance of '{object_name}' at ({x}, {y})")
         else:
             logger.debug("⚠️ create_instance: No current room to add instance to")
 
@@ -2734,10 +2932,19 @@ class ActionExecutor:
         if perform_events:
             events = new_object_data.get('events', {})
             if 'create' in events:
-                logger.debug(f"  🎬 Executing create event for {new_object_name}")
-                self.execute_event(target_instance, 'create', events)
+                if self._event_depth > 0:
+                    # Defer create event until current event completes
+                    self._deferred_create_events.append((target_instance, events))
+                    logger.info(f"  🎬 Create event for {new_object_name} DEFERRED (depth={self._event_depth})")
+                else:
+                    logger.info(f"  🎬 Executing create event for {new_object_name} IMMEDIATELY")
+                    self.execute_event(target_instance, 'create', events)
+            else:
+                logger.info(f"  ⚠️ No create event defined for {new_object_name}")
+        else:
+            logger.info(f"  ℹ️ perform_events=False, skipping create event for {new_object_name}")
 
-        logger.debug(f"  ✅ Changed to {new_object_name} at ({old_x}, {old_y})")
+        logger.info(f"  ✅ Changed instance to {new_object_name} at ({old_x}, {old_y})")
 
     # ==================== DRAWING ACTIONS ====================
 
@@ -3803,9 +4010,10 @@ class ActionExecutor:
             logger.debug("⚠️  test_instance_count: No game runner or instances available")
             return False
 
-        # Count instances matching the object type
+        # Count instances matching the object type, excluding those marked for destruction
         actual_count = sum(1 for inst in self.game_runner.instances
-                          if getattr(inst, 'object_name', '') == object_type)
+                          if getattr(inst, 'object_name', '') == object_type
+                          and not getattr(inst, 'to_destroy', False))
 
         # Perform comparison
         result = False
@@ -3827,6 +4035,163 @@ class ActionExecutor:
 
         logger.debug(f"🔢 Test instance count: {object_type} count={actual_count} {operation} {target_count} → {result}")
         return result
+
+    def execute_if_condition_action(self, instance, parameters: Dict[str, Any]):
+        """Execute a conditional action with then/else action lists
+
+        Evaluates a condition and executes the appropriate action list.
+
+        Parameters:
+            condition_type: Type of condition (instance_count, variable_compare, etc.)
+            then_actions: Actions to execute if condition is true
+            else_actions: Actions to execute if condition is false
+            (plus condition-specific parameters)
+        """
+        condition_type = parameters.get("condition_type", "instance_count")
+        then_actions = parameters.get("then_actions", [])
+        else_actions = parameters.get("else_actions", [])
+
+        # Evaluate the condition
+        result = self._evaluate_if_condition(instance, condition_type, parameters)
+
+        logger.info(f"❓ if_condition ({condition_type}): result={result}")
+
+        # Execute appropriate action list
+        if result:
+            if then_actions:
+                self.execute_action_list(instance, then_actions)
+        else:
+            if else_actions:
+                self.execute_action_list(instance, else_actions)
+
+        return result
+
+    def _evaluate_if_condition(self, instance, condition_type: str, parameters: Dict[str, Any]) -> bool:
+        """Evaluate a condition for if_condition action"""
+
+        if condition_type == "instance_count":
+            object_name = parameters.get("object_name", "")
+            operator = parameters.get("operator", "==")
+            value = parameters.get("value", 0)
+
+            if not object_name or not self.game_runner:
+                return False
+
+            # Count instances in current room, excluding those marked for destruction
+            instances = self.game_runner.current_room.instances if self.game_runner.current_room else []
+            count = sum(1 for inst in instances
+                        if getattr(inst, 'object_name', '') == object_name
+                        and not getattr(inst, 'to_destroy', False))
+
+            try:
+                value = int(value)
+            except (ValueError, TypeError):
+                value = 0
+
+            logger.info(f"  🔢 instance_count: {object_name} = {count} (comparing {operator} {value})")
+            return self._compare(count, operator, value)
+
+        elif condition_type == "variable_compare":
+            variable = parameters.get("variable", "")
+            operator = parameters.get("operator", "==")
+            value_str = parameters.get("value", "0")
+
+            if not variable:
+                return False
+
+            current = getattr(instance, variable, 0)
+            compare_value = self._parse_value(str(value_str), instance)
+
+            return self._compare(current, operator, compare_value)
+
+        elif condition_type == "expression":
+            expression = parameters.get("expression", "")
+            if not expression:
+                return False
+
+            try:
+                result = self._parse_value(expression, instance)
+                return bool(result)
+            except Exception:
+                return False
+
+        elif condition_type == "random_chance":
+            import random
+            chance = parameters.get("chance", 50)
+            try:
+                chance = int(chance)
+            except (ValueError, TypeError):
+                chance = 50
+            return random.randint(1, 100) <= chance
+
+        elif condition_type == "key_pressed":
+            key = parameters.get("key", "")
+            if not key or not self.game_runner:
+                return False
+            pressed_keys = getattr(self.game_runner, 'pressed_keys', set())
+            return key.lower() in pressed_keys
+
+        elif condition_type == "collision_check":
+            obj = parameters.get("object", "")
+            offset_x = parameters.get("offset_x", 0)
+            offset_y = parameters.get("offset_y", 0)
+
+            if not obj or not self.game_runner:
+                return False
+
+            check_x = instance.x + offset_x
+            check_y = instance.y + offset_y
+            return self.game_runner.check_collision_at_position(
+                instance, check_x, check_y, obj
+            )
+
+        elif condition_type == "position_check":
+            check_type = parameters.get("check_type", "x position")
+            operator = parameters.get("operator", "==")
+            value = parameters.get("value", 0)
+
+            try:
+                value = int(value)
+            except (ValueError, TypeError):
+                value = 0
+
+            if "x" in check_type.lower():
+                current = instance.x
+            else:
+                current = instance.y
+
+            return self._compare(current, operator, value)
+
+        elif condition_type == "mouse_check":
+            # Simplified mouse check
+            return False
+
+        return False
+
+    def _compare(self, left, operator: str, right) -> bool:
+        """Perform a comparison with the given operator"""
+        try:
+            left = float(left)
+            right = float(right)
+        except (ValueError, TypeError):
+            pass
+
+        try:
+            if operator == "==" or operator == "equal":
+                return left == right
+            elif operator == "!=" or operator == "not_equal":
+                return left != right
+            elif operator == "<" or operator == "less":
+                return left < right
+            elif operator == ">" or operator == "greater":
+                return left > right
+            elif operator == "<=" or operator == "less_equal":
+                return left <= right
+            elif operator == ">=" or operator == "greater_equal":
+                return left >= right
+        except TypeError:
+            return False
+        return False
 
     # ==================== ANIMATION ACTIONS ====================
 
@@ -3946,8 +4311,19 @@ class ActionExecutor:
         # These are the speeds at the moment of collision, before any events modified them
         self._collision_speeds = collision_speeds or {}
 
-        # Use execute_action_list for proper conditional flow support
-        self.execute_collision_action_list(instance, actions, other_instance)
+        # Track event execution depth for deferred create event processing
+        # This ensures change_instance defers create events until collision event completes
+        self._event_depth += 1
+        try:
+            # Use execute_action_list for proper conditional flow support
+            self.execute_collision_action_list(instance, actions, other_instance)
+        finally:
+            self._event_depth -= 1
+
+            # Process deferred create events when we return to top level
+            # This ensures instance counts are accurate after all collision actions complete
+            if self._event_depth == 0 and self._deferred_create_events:
+                self._process_deferred_create_events()
 
         # Clean up
         self._collision_other = None
@@ -4122,12 +4498,17 @@ class ActionExecutor:
             self.game_runner.current_room.instances.append(new_instance)
             self.game_runner.current_room._add_to_grid(new_instance)
 
-            # Execute create event for the new instance
+            # Defer create event to run after current event completes
             events = object_data.get('events', {})
             if 'create' in events:
-                self.execute_event(new_instance, 'create', events)
-
-            logger.debug(f"🎲 Created random instance of '{object_name}' at ({x}, {y})")
+                if self._event_depth > 0:
+                    self._deferred_create_events.append((new_instance, events))
+                    logger.debug(f"🎲 Created random instance of '{object_name}' at ({x}, {y}) [create event deferred]")
+                else:
+                    self.execute_event(new_instance, 'create', events)
+                    logger.debug(f"🎲 Created random instance of '{object_name}' at ({x}, {y})")
+            else:
+                logger.debug(f"🎲 Created random instance of '{object_name}' at ({x}, {y})")
         else:
             logger.debug("⚠️ create_random_instance: No current room to add instance to")
 
@@ -4219,12 +4600,17 @@ class ActionExecutor:
             self.game_runner.current_room.instances.append(new_instance)
             self.game_runner.current_room._add_to_grid(new_instance)
 
-            # Execute create event for the new instance
+            # Defer create event to run after current event completes
             events = object_data.get('events', {})
             if 'create' in events:
-                self.execute_event(new_instance, 'create', events)
-
-            logger.debug(f"🚀 Created moving instance of '{object_name}' at ({x}, {y}) with speed={speed}, dir={direction}")
+                if self._event_depth > 0:
+                    self._deferred_create_events.append((new_instance, events))
+                    logger.debug(f"🚀 Created moving instance of '{object_name}' at ({x}, {y}) with speed={speed}, dir={direction} [create event deferred]")
+                else:
+                    self.execute_event(new_instance, 'create', events)
+                    logger.debug(f"🚀 Created moving instance of '{object_name}' at ({x}, {y}) with speed={speed}, dir={direction}")
+            else:
+                logger.debug(f"🚀 Created moving instance of '{object_name}' at ({x}, {y}) with speed={speed}, dir={direction}")
         else:
             logger.debug("⚠️ create_moving_instance: No current room to add instance to")
 
