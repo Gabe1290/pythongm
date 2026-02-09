@@ -714,6 +714,13 @@ if __name__ == '__main__':
         else:
             bg_image_code = "            pass  # No background image"
 
+        # Generate object class registry for dynamic instance creation
+        registry_entries = ', '.join([
+            f'"{obj}": {self._get_object_class_name(obj)}'
+            for obj in sorted(object_imports)
+        ])
+        object_registry = f"_object_classes = {{{registry_entries}}}"
+
         code = '''#!/usr/bin/env python3
 """
 Scene: {room_name}
@@ -727,6 +734,9 @@ from utils import load_image
 
 # Import object types
 {import_lines}
+
+# Object class registry for dynamic instance creation
+{object_registry}
 
 
 class {class_name}(Widget):
@@ -789,6 +799,25 @@ class {class_name}(Widget):
             self.instances.remove(instance)
             if instance in self.children:
                 self.remove_widget(instance)
+
+    def count_instances(self, class_name):
+        """Count active instances of a given object type"""
+        count = 0
+        for inst in self.instances:
+            if inst.__class__.__name__ == class_name or getattr(inst, 'object_name', '') == class_name:
+                if not getattr(inst, '_destroyed', False):
+                    count += 1
+        return count
+
+    def create_instance(self, class_name, x, y):
+        """Create a new instance of the given object type at (x, y)"""
+        # Look up the class by name from the global object registry
+        obj_class = _object_classes.get(class_name)
+        if obj_class:
+            instance = obj_class(pos=(x, self.room_height - y - 32))
+            self.add_instance(instance)
+            return instance
+        return None
 
     def update(self, dt):
         """Main game loop update - GAMEMAKER 7.0 EVENT ORDER"""
@@ -909,6 +938,7 @@ class {class_name}(Widget):
             width=width,
             height=height,
             import_lines=import_lines,
+            object_registry=object_registry,
             instances_init=instances_init,
             bg_r=r,
             bg_g=g,

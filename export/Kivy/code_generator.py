@@ -183,11 +183,41 @@ class ActionCodeGenerator:
             return
 
         elif action_type == 'if_condition':
-            # Generic condition check
-            condition = params.get('condition', params.get('expression', 'True'))
+            # Build condition from condition_type or direct expression
+            condition_type = params.get('condition_type', '')
+            if condition_type == 'instance_count':
+                obj_name = params.get('object_name', '')
+                operator = params.get('operator', '==')
+                value = params.get('value', 0)
+                condition = f"self.scene.count_instances('{obj_name}') {operator} {value}"
+            else:
+                condition = params.get('condition', params.get('expression', 'True'))
+
             self.add_line(f"if {condition}:")
             self.push_indent()
             self.block_stack.append('if')
+
+            # Process nested then_actions if present
+            then_actions = params.get('then_actions', [])
+            if then_actions:
+                for nested_action in then_actions:
+                    if isinstance(nested_action, dict):
+                        self.process_action(nested_action, event_type)
+                self.pop_indent()
+
+                # Process else_actions if present
+                else_actions = params.get('else_actions', [])
+                if else_actions:
+                    self.add_line("else:")
+                    self.push_indent()
+                    for nested_action in else_actions:
+                        if isinstance(nested_action, dict):
+                            self.process_action(nested_action, event_type)
+                    self.pop_indent()
+
+                if self.block_stack and self.block_stack[-1] == 'if':
+                    self.block_stack.pop()
+            # If no then_actions, leave block open for sequential action handling
             return
 
         elif action_type == 'if_can_push':
@@ -486,6 +516,16 @@ if dist > 0:
             return "return"
 
         # INSTANCE ACTIONS
+        elif action_type == 'create_instance':
+            obj_name = params.get('object', '')
+            x = params.get('x', 0)
+            y = params.get('y', 0)
+            relative = params.get('relative', False)
+            if relative:
+                return f"self.scene.create_instance('{obj_name}', self.x + {x}, self.y + {y})"
+            else:
+                return f"self.scene.create_instance('{obj_name}', {x}, {y})"
+
         elif action_type == 'destroy_instance':
             target = params.get('target', 'self')
             if target == 'other' and 'collision' in event_type:
