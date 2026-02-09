@@ -792,136 +792,110 @@ class TestActionCodeGeneration:
 
         return KivyExporter(project_data, temp_project_dir, output_path)
 
-    def test_convert_set_hspeed(self, kivy_exporter):
-        """_convert_action_to_code should handle set_hspeed"""
-        code = kivy_exporter._convert_action_to_code(
-            'set_hspeed', {'value': 5}, 'step'
-        )
+    @pytest.fixture
+    def action_gen(self):
+        """Create an ActionCodeGenerator for simple action tests"""
+        from export.Kivy.code_generator import ActionCodeGenerator
+        return ActionCodeGenerator(base_indent=0)
+
+    def test_convert_set_hspeed(self, action_gen):
+        """_convert_simple_action should handle set_hspeed"""
+        code = action_gen._convert_simple_action('set_hspeed', {'value': 5}, 'step')
         assert 'self.hspeed = 5' in code
 
-    def test_convert_set_vspeed(self, kivy_exporter):
-        """_convert_action_to_code should handle set_vspeed"""
-        code = kivy_exporter._convert_action_to_code(
-            'set_vspeed', {'value': -3}, 'step'
-        )
-        assert 'self.vspeed = -3' in code
+    def test_convert_set_vspeed(self, action_gen):
+        """_convert_simple_action should handle set_vspeed (with Kivy Y-flip)"""
+        code = action_gen._convert_simple_action('set_vspeed', {'value': -3}, 'step')
+        # Kivy flips vspeed sign: gamemaker -3 becomes kivy 3
+        assert 'self.vspeed = 3' in code
 
-    def test_convert_destroy_instance(self, kivy_exporter):
-        """_convert_action_to_code should handle destroy_instance"""
-        code = kivy_exporter._convert_action_to_code(
-            'destroy_instance', {'target': 'self'}, 'step'
-        )
+    def test_convert_destroy_instance(self, action_gen):
+        """_convert_simple_action should handle destroy_instance"""
+        code = action_gen._convert_simple_action('destroy_instance', {'target': 'self'}, 'step')
         assert 'self.destroy()' in code
 
-    def test_convert_destroy_other_in_collision(self, kivy_exporter):
-        """_convert_action_to_code should destroy other in collision events"""
-        code = kivy_exporter._convert_action_to_code(
-            'destroy_instance', {'target': 'other'}, 'collision'
-        )
+    def test_convert_destroy_other_in_collision(self, action_gen):
+        """_convert_simple_action should destroy other in collision events"""
+        code = action_gen._convert_simple_action('destroy_instance', {'target': 'other'}, 'collision')
         assert 'other.destroy()' in code
 
-    def test_convert_show_message(self, kivy_exporter):
-        """_convert_action_to_code should handle show_message"""
-        code = kivy_exporter._convert_action_to_code(
-            'show_message', {'message': 'Hello World'}, 'step'
-        )
+    def test_convert_show_message(self, action_gen):
+        """_convert_simple_action should handle show_message"""
+        code = action_gen._convert_simple_action('show_message', {'message': 'Hello World'}, 'step')
         assert "show_message" in code
         assert "Hello World" in code
 
-    def test_convert_set_alarm(self, kivy_exporter):
-        """_convert_action_to_code should handle set_alarm"""
-        code = kivy_exporter._convert_action_to_code(
-            'set_alarm', {'alarm_number': 0, 'steps': 60}, 'step'
-        )
+    def test_convert_set_alarm(self, action_gen):
+        """_convert_simple_action should handle set_alarm"""
+        code = action_gen._convert_simple_action('set_alarm', {'alarm_number': 0, 'steps': 60}, 'step')
         assert 'self.alarms[0] = 60' in code
 
-    def test_convert_set_score(self, kivy_exporter):
-        """_convert_action_to_code should handle set_score"""
-        code = kivy_exporter._convert_action_to_code(
-            'set_score', {'value': 100, 'relative': False}, 'step'
-        )
+    def test_convert_set_score(self, action_gen):
+        """_convert_simple_action should handle set_score"""
+        code = action_gen._convert_simple_action('set_score', {'value': 100, 'relative': False}, 'step')
         assert 'set_score' in code
         assert '100' in code
 
-    def test_convert_stop_movement(self, kivy_exporter):
-        """_convert_action_to_code should handle stop_movement"""
-        code = kivy_exporter._convert_action_to_code(
-            'stop_movement', {}, 'step'
-        )
+    def test_convert_stop_movement(self, action_gen):
+        """_convert_simple_action should handle stop_movement"""
+        code = action_gen._convert_simple_action('stop_movement', {}, 'step')
         assert 'self.hspeed = 0' in code
         assert 'self.vspeed = 0' in code
+        assert 'self.speed = 0' in code
 
-    def test_convert_unknown_action(self, kivy_exporter):
-        """_convert_action_to_code should return TODO for unknown actions"""
-        code = kivy_exporter._convert_action_to_code(
-            'unknown_action_type', {}, 'step'
-        )
+    def test_convert_unknown_action(self, action_gen):
+        """_convert_simple_action should return TODO for unknown actions"""
+        code = action_gen._convert_simple_action('unknown_action_type', {}, 'step')
         assert '# TODO' in code
         assert 'unknown_action_type' in code
 
     # New action tests for the 10 previously unimplemented actions
 
-    def test_convert_move_grid(self, kivy_exporter):
-        """_convert_action_to_code should handle move_grid"""
-        code = kivy_exporter._convert_action_to_code(
-            'move_grid', {'direction': 'right', 'grid_size': 32}, 'step'
-        )
-        assert 'self.x +=' in code
+    def test_convert_move_grid(self, action_gen):
+        """_convert_simple_action should handle move_grid with collision checking"""
+        code = action_gen._convert_simple_action('move_grid', {'direction': 'right', 'grid_size': 32}, 'step')
+        assert '_move_grid' in code
         assert '32' in code
 
-    def test_convert_move_grid_up(self, kivy_exporter):
-        """_convert_action_to_code should handle move_grid up direction"""
-        code = kivy_exporter._convert_action_to_code(
-            'move_grid', {'direction': 'up', 'grid_size': 16}, 'step'
-        )
-        assert 'self.y +=' in code
+    def test_convert_move_grid_up(self, action_gen):
+        """_convert_simple_action should handle move_grid up direction"""
+        code = action_gen._convert_simple_action('move_grid', {'direction': 'up', 'grid_size': 16}, 'step')
+        assert '_move_grid' in code
         assert '16' in code
 
-    def test_convert_move_towards(self, kivy_exporter):
-        """_convert_action_to_code should handle move_towards"""
-        code = kivy_exporter._convert_action_to_code(
-            'move_towards', {'x': 100, 'y': 200, 'speed': 5}, 'step'
-        )
+    def test_convert_move_towards(self, action_gen):
+        """_convert_simple_action should handle move_towards"""
+        code = action_gen._convert_simple_action('move_towards', {'x': 100, 'y': 200, 'speed': 5}, 'step')
         assert 'math' in code
         assert '100' in code
         assert '200' in code
-        assert 'self.direction' in code
-        assert 'self.speed' in code
+        assert 'self.hspeed' in code
+        assert 'self.vspeed' in code
 
-    def test_convert_set_gravity(self, kivy_exporter):
-        """_convert_action_to_code should handle set_gravity"""
-        code = kivy_exporter._convert_action_to_code(
-            'set_gravity', {'direction': 270, 'gravity': 0.5}, 'step'
-        )
+    def test_convert_set_gravity(self, action_gen):
+        """_convert_simple_action should handle set_gravity"""
+        code = action_gen._convert_simple_action('set_gravity', {'direction': 270, 'gravity': 0.5}, 'step')
         assert 'self.gravity = 0.5' in code
         assert 'self.gravity_direction = 270' in code
 
-    def test_convert_set_friction(self, kivy_exporter):
-        """_convert_action_to_code should handle set_friction"""
-        code = kivy_exporter._convert_action_to_code(
-            'set_friction', {'friction': 0.2}, 'step'
-        )
+    def test_convert_set_friction(self, action_gen):
+        """_convert_simple_action should handle set_friction"""
+        code = action_gen._convert_simple_action('set_friction', {'friction': 0.2}, 'step')
         assert 'self.friction = 0.2' in code
 
-    def test_convert_reverse_horizontal(self, kivy_exporter):
-        """_convert_action_to_code should handle reverse_horizontal"""
-        code = kivy_exporter._convert_action_to_code(
-            'reverse_horizontal', {}, 'step'
-        )
+    def test_convert_reverse_horizontal(self, action_gen):
+        """_convert_simple_action should handle reverse_horizontal"""
+        code = action_gen._convert_simple_action('reverse_horizontal', {}, 'step')
         assert 'self.hspeed = -self.hspeed' in code
 
-    def test_convert_reverse_vertical(self, kivy_exporter):
-        """_convert_action_to_code should handle reverse_vertical"""
-        code = kivy_exporter._convert_action_to_code(
-            'reverse_vertical', {}, 'step'
-        )
+    def test_convert_reverse_vertical(self, action_gen):
+        """_convert_simple_action should handle reverse_vertical"""
+        code = action_gen._convert_simple_action('reverse_vertical', {}, 'step')
         assert 'self.vspeed = -self.vspeed' in code
 
-    def test_convert_exit_event(self, kivy_exporter):
-        """_convert_action_to_code should handle exit_event"""
-        code = kivy_exporter._convert_action_to_code(
-            'exit_event', {}, 'step'
-        )
+    def test_convert_exit_event(self, action_gen):
+        """_convert_simple_action should handle exit_event"""
+        code = action_gen._convert_simple_action('exit_event', {}, 'step')
         assert 'return' in code
 
 

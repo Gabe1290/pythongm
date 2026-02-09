@@ -390,15 +390,23 @@ def set_window_caption(caption="", show_score=True, show_lives=True, show_health
 
 
 _popup_open = False
+_current_popup = None
+_pending_room_switch = None
 
 def show_message(message):
-    """Show a popup message dialog"""
-    global _popup_open
+    """Show a popup message dialog - pauses the game until OK is clicked"""
+    global _popup_open, _current_popup
 
     # Prevent duplicate popups
     if _popup_open:
         return
     _popup_open = True
+
+    # Pause the game loop while message is shown
+    app = get_game_app()
+    if app and app.update_event:
+        Clock.unschedule(app.update_event)
+        app.update_event = None
 
     content = BoxLayout(orientation='vertical', padding=10, spacing=10)
     content.add_widget(Label(text=str(message)))
@@ -412,12 +420,33 @@ def show_message(message):
                   auto_dismiss=False)
 
     def on_dismiss(instance):
-        global _popup_open
+        global _popup_open, _current_popup, _pending_room_switch
         _popup_open = False
+        _current_popup = None
+
+        # Execute any deferred room transition
+        if _pending_room_switch is not None:
+            room_index = _pending_room_switch
+            _pending_room_switch = None
+            app = get_game_app()
+            if app:
+                app._switch_to_room(room_index)
+        else:
+            # Resume the game loop if no room switch pending
+            app = get_game_app()
+            if app and app.scene and not app.update_event:
+                app.update_event = Clock.schedule_interval(app.scene.update, 1.0/60.0)
 
     popup.bind(on_dismiss=on_dismiss)
     btn.bind(on_release=popup.dismiss)
+    _current_popup = popup
     popup.open()
+
+def dismiss_message():
+    """Dismiss any open message popup"""
+    global _current_popup
+    if _current_popup:
+        _current_popup.dismiss()
 
 
 class GameApp(App):
@@ -508,7 +537,13 @@ class GameApp(App):
 
     def _switch_to_room(self, room_index):
         """Internal method to switch rooms"""
+        global _pending_room_switch
         if room_index < 0 or room_index >= len(ROOM_ORDER):
+            return
+
+        # If a message popup is open, defer the room switch until it's dismissed
+        if _popup_open:
+            _pending_room_switch = room_index
             return
 
         # Stop current update loop
@@ -685,6 +720,7 @@ if __name__ == '__main__':
                 # Generate tiled background code
                 bg_image_code = f'''
             # Load and draw tiled background image
+            Color(1, 1, 1, 1)  # Reset color to white for untinted textures
             bg_img = load_image('assets/images/{bg_image}.png')
             if bg_img:
                 # Tile the background
@@ -709,6 +745,7 @@ if __name__ == '__main__':
             else:
                 bg_image_code = f'''
             # Load and draw background image (stretched to fit)
+            Color(1, 1, 1, 1)  # Reset color to white for untinted textures
             bg_img = load_image('assets/images/{bg_image}.png')
             if bg_img:
                 Rectangle(texture=bg_img.texture, pos=(0, 0), size=(self.room_width, self.room_height))'''
@@ -750,6 +787,7 @@ class {class_name}(Widget):
         self.room_height = {height}
         self.instances = []
         self.instances_to_destroy = []
+        self._pending_creates = []
 
         # Keyboard state tracking
         self.keys_pressed = {{}}
@@ -784,15 +822,15 @@ class {class_name}(Widget):
     def create_instances(self):
         """Create all instances in the room"""
 {instances_init}
+        # Call on_create for all room-placed instances after they are all added
+        for inst in self.instances:
+            if hasattr(inst, 'on_create'):
+                inst.on_create()
 
     def add_instance(self, instance):
         """Add an instance to the room"""
         self.instances.append(instance)
         self.add_widget(instance)
-
-        # Call create event
-        if hasattr(instance, 'on_create'):
-            instance.on_create()
 
     def remove_instance(self, instance):
         """Remove an instance from the room"""
@@ -825,6 +863,10 @@ class {class_name}(Widget):
         if obj_class:
             instance = obj_class(self, x, y)
             self.add_instance(instance)
+            # Defer on_create until after collision cleanup so that
+            # destroy_instance actions complete before the new instance
+            # checks instance counts in its create event
+            self._pending_creates.append(instance)
             return instance
         return None
 
@@ -871,6 +913,8 @@ class {class_name}(Widget):
         # 6. COLLISION EVENTS
         # PERFORMANCE FIX: OPTIMIZED O(n²/2) collision detection
         # Check each pair of objects only ONCE instead of twice
+        # Track which types each instance is colliding with (for negated collision events)
+        colliding_with = {{}}  # instance id -> set of snake_case class names
         num_instances = len(self.instances)
         for i in range(num_instances):
             instance = self.instances[i]
@@ -885,18 +929,36 @@ class {class_name}(Widget):
                     instance._collision_other = other
                     other._collision_other = instance
 
-                    # Call collision event on BOTH objects (reciprocal events)
-                    # Convert class name to snake_case: ObjWall -> obj_wall
+                    # Track collision types for negated collision detection
                     other_class_snake = self._class_name_to_snake_case(other.__class__.__name__)
+                    instance_class_snake = self._class_name_to_snake_case(instance.__class__.__name__)
+                    colliding_with.setdefault(id(instance), set()).add(other_class_snake)
+                    colliding_with.setdefault(id(other), set()).add(instance_class_snake)
+
+                    # Call collision event on BOTH objects (reciprocal events)
                     instance_event = f"on_collision_{{other_class_snake}}"
                     if hasattr(instance, instance_event):
                         getattr(instance, instance_event)(other)
 
                     # Also notify the other object
-                    instance_class_snake = self._class_name_to_snake_case(instance.__class__.__name__)
                     other_event = f"on_collision_{{instance_class_snake}}"
                     if hasattr(other, other_event):
                         getattr(other, other_event)(instance)
+
+        # 6b. NEGATED COLLISION EVENTS
+        # Fire on_not_collision_* events when an instance is NOT colliding with a target type
+        # Skip instances created during this frame since they weren't part of
+        # positive collision detection and would falsely trigger
+        pending_ids = set(id(inst) for inst in self._pending_creates)
+        for instance in self.instances:
+            if id(instance) in pending_ids:
+                continue
+            for attr_name in dir(instance):
+                if attr_name.startswith('on_not_collision_'):
+                    target_type = attr_name.replace('on_not_collision_', '')
+                    instance_collisions = colliding_with.get(id(instance), set())
+                    if target_type not in instance_collisions:
+                        getattr(instance, attr_name)()
 
         # 7. END STEP EVENTS
         for instance in self.instances:
@@ -910,6 +972,16 @@ class {class_name}(Widget):
             for instance in self.instances_to_destroy:
                 self.remove_instance(instance)
             self.instances_to_destroy.clear()
+
+        # 10. DEFERRED CREATE EVENTS - Fire on_create for dynamically created instances
+        # This runs after cleanup so that destroyed instances are gone when
+        # the new instance checks instance counts (e.g., win conditions)
+        if self._pending_creates:
+            pending = list(self._pending_creates)
+            self._pending_creates.clear()
+            for instance in pending:
+                if hasattr(instance, 'on_create') and not getattr(instance, '_destroyed', False):
+                    instance.on_create()
 
     def destroy_instance(self, instance):
         """Mark instance for destruction"""
@@ -1669,6 +1741,8 @@ class {class_name}(GameObject):
                 params = "self, key, scancode, codepoint, modifier"
             elif event_type == 'keyboard_up':
                 params = "self, key, scancode"
+            elif event_type.startswith('not_collision_with_'):
+                params = "self"
             elif event_type == 'collision' or event_type.startswith('collision_with_'):
                 params = "self, other"
             elif event_type in ['step', 'draw']:
@@ -1941,6 +2015,11 @@ class {class_name}(GameObject):
     def _get_event_method_name(self, event: Dict) -> str:
         """Get the method name for an event - GAMEMAKER 7.0 COMPLETE"""
         event_type = event.get('event_type', '')
+
+        # Handle negated collision events: not_collision_with_obj_name
+        if event_type.startswith('not_collision_with_'):
+            collision_obj = event_type.replace('not_collision_with_', '')
+            return f"on_not_collision_{collision_obj.lower()}"
 
         # Handle collision events with specific format: collision_with_obj_name
         if event_type.startswith('collision_with_'):
