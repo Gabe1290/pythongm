@@ -604,21 +604,22 @@ class TestExeExporterDependencyChecks:
         with open(project_file, 'w') as f:
             json.dump({'name': 'Test'}, f)
 
-        with patch.object(exe_exporter, '_check_pyinstaller', return_value=True):
-            with patch.object(exe_exporter, '_check_kivy', return_value=False):
-                signal_spy = MagicMock()
-                exe_exporter.export_complete.connect(signal_spy)
+        with patch('platform.system', return_value='Windows'):
+            with patch.object(exe_exporter, '_check_pyinstaller', return_value=True):
+                with patch.object(exe_exporter, '_check_kivy', return_value=False):
+                    signal_spy = MagicMock()
+                    exe_exporter.export_complete.connect(signal_spy)
 
-                result = exe_exporter.export_project(
-                    str(temp_project_dir),
-                    str(temp_dir / "output"),
-                    {}
-                )
+                    result = exe_exporter.export_project(
+                        str(temp_project_dir),
+                        str(temp_dir / "output"),
+                        {}
+                    )
 
-                assert result is False
-                signal_spy.assert_called_once()
-                args = signal_spy.call_args[0]
-                assert "Kivy" in args[1]
+                    assert result is False
+                    signal_spy.assert_called_once()
+                    args = signal_spy.call_args[0]
+                    assert "Kivy" in args[1]
 
 
 @pytest.mark.skipif(not HAS_PYSIDE6, reason="PySide6 not available")
