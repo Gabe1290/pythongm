@@ -612,8 +612,10 @@ if __name__ == '__main__':
         except (ValueError, IndexError):
             r, g, b = 0.5, 0.5, 0.5  # Default gray
 
-        # Import statements for object types used in this room
-        object_imports = set()
+        # Import ALL project objects (not just room-placed ones) so
+        # create_instance can dynamically create any object type (e.g., obj_box_store)
+        all_objects = self.project_data.get('assets', {}).get('objects', {})
+        object_imports = set(all_objects.keys())
 
         logger.debug(f"    Room has {len(instances)} instances")
         if instances and len(instances) > 0:
@@ -659,9 +661,8 @@ if __name__ == '__main__':
             # GameMaker: Y=0 at top, increases downward, position is sprite origin (usually top-left)
             # Kivy: Y=0 at bottom, increases upward, position is bottom-left corner
             # Formula: y_kivy = room_height - y_gamemaker - sprite_height
-            # We use 32 as default sprite height (standard grid size)
-            sprite_height = 32
-            y = height - y_gamemaker - sprite_height
+            # Use grid_size as the object height for coordinate conversion
+            y = height - y_gamemaker - self.grid_size
 
             if obj_type:
                 class_name_obj = self._get_object_class_name(obj_type)
@@ -802,9 +803,17 @@ class {class_name}(Widget):
 
     def count_instances(self, class_name):
         """Count active instances of a given object type"""
+        # Convert snake_case name to PascalCase for class name matching
+        # e.g., 'obj_box' -> 'ObjBox', 'obj_box_store' -> 'ObjBoxStore'
+        pascal_name = ''.join(part.capitalize() for part in class_name.split('_')) if '_' in class_name else class_name
         count = 0
         for inst in self.instances:
-            if inst.__class__.__name__ == class_name or getattr(inst, 'object_name', '') == class_name:
+            # Skip instances pending destruction
+            if inst in self.instances_to_destroy:
+                continue
+            inst_class = inst.__class__.__name__
+            inst_obj = getattr(inst, 'object_name', '')
+            if inst_class == class_name or inst_class == pascal_name or inst_obj == class_name:
                 if not getattr(inst, '_destroyed', False):
                     count += 1
         return count
@@ -814,7 +823,7 @@ class {class_name}(Widget):
         # Look up the class by name from the global object registry
         obj_class = _object_classes.get(class_name)
         if obj_class:
-            instance = obj_class(pos=(x, self.room_height - y - 32))
+            instance = obj_class(self, x, y)
             self.add_instance(instance)
             return instance
         return None
@@ -969,11 +978,27 @@ class {class_name}(Widget):
             logger.warning("  No objects found in project data")
             return
 
+        # Scan all collision events to detect which objects are pushable
+        # An object is pushable if another object has an if_can_push collision event targeting it
+        pushable_objects = set()
+        for obj_name, obj_data in objects.items():
+            events = obj_data.get('events', {})
+            if isinstance(events, dict):
+                for event_key, event_data in events.items():
+                    if event_key.startswith('collision_with_') and isinstance(event_data, dict):
+                        target = event_data.get('target_object', event_key.replace('collision_with_', ''))
+                        actions = event_data.get('actions', [])
+                        for action in actions:
+                            if isinstance(action, dict) and action.get('action') == 'if_can_push':
+                                pushable_objects.add(target)
+        if pushable_objects:
+            logger.debug(f"  Detected pushable objects: {pushable_objects}")
+
         failed_objects = []
         for obj_name, obj_data in objects.items():
             try:
                 logger.debug(f"  Generating object: {obj_name}")
-                self._generate_object(obj_name, obj_data)
+                self._generate_object(obj_name, obj_data, pushable=obj_name in pushable_objects)
                 logger.debug(f"  Object {obj_name} generated")
             except Exception as e:
                 logger.error(f"  CRITICAL ERROR: Failed to generate object {obj_name}: {e}")
@@ -1024,6 +1049,7 @@ class GameObject(Widget):
 
         # Physics properties
         self.solid = False
+        self.pushable = False
 
         # Sprite properties
         self.sprite_name = None
@@ -1037,7 +1063,7 @@ class GameObject(Widget):
         # Grid properties
         self.grid_size = {grid_size}
 
-        self.size = (32, 32)  # Default size
+        self.size = (self.grid_size, self.grid_size)  # Default size based on grid
         self.pos = (x, y)
 
         # Visibility property - invisible objects can still collide, just don't render
@@ -1336,8 +1362,10 @@ class GameObject(Widget):
         This method handles:
         1. Wall collision checking (prevents moving into walls)
         2. Box pushing (if the target has a pushable box)
-        3. Box-on-store transformation (box becomes box_stored)
-        4. Position update
+        3. Position update
+
+        Object transformations (e.g., box -> box_store) are handled by the
+        IDE's collision event system, not by _move_grid.
 
         hspeed/vspeed should be set before calling this to indicate direction
         """
@@ -1347,44 +1375,29 @@ class GameObject(Widget):
             self.vspeed = 0
             return
 
-        # Helper to check if an object is pushable (only regular boxes, not stored boxes)
-        def is_pushable(obj):
-            # Only 'obj_box' (ObjBox) is pushable
-            # 'obj_box_store' (ObjBoxStore) is a box already on a store - NOT pushable
-            # 'obj_store' (ObjStore) is a goal marker - NOT pushable
-            class_name = obj.__class__.__name__.lower()
-            # Pushable if: has 'box' AND doesn't have 'store' AND not solid
-            return 'box' in class_name and 'store' not in class_name and not obj.solid
-
-        # Helper to check if an object is a store/goal location (not a box_store!)
-        def is_store(obj):
-            class_name = obj.__class__.__name__.lower()
-            # Store if: has 'store' but NOT 'box' (obj_store, not obj_box_store)
-            return class_name == 'objstore' or (class_name.endswith('store') and 'box' not in class_name)
-
-        # Check for pushable objects (boxes) at target position
+        # Check for pushable/blocking objects at target position
         target_x = self.x + dx
         target_y = self.y + dy
+        threshold = self.grid_size // 2
 
         for other in self.scene.instances[:]:  # Use slice copy since we may modify list
             if other == self:
                 continue
             # Check if other object is at target position
-            if (abs(other.x - target_x) < 16 and abs(other.y - target_y) < 16):
-                # Found object at target - check if it's pushable (a box)
-                if is_pushable(other):
+            if (abs(other.x - target_x) < threshold and abs(other.y - target_y) < threshold):
+                # Found object at target - check if it's pushable
+                if other.pushable:
                     # Try to push the object
                     behind_x = other.x + dx
                     behind_y = other.y + dy
 
                     # Check if space behind is free
-                    # Only block on solid objects (walls) or other pushable objects (boxes)
                     can_push = True
                     for blocker in self.scene.instances:
                         if blocker != self and blocker != other:
-                            if (abs(blocker.x - behind_x) < 16 and
-                                abs(blocker.y - behind_y) < 16 and
-                                (blocker.solid or is_pushable(blocker))):
+                            if (abs(blocker.x - behind_x) < threshold and
+                                abs(blocker.y - behind_y) < threshold and
+                                (blocker.solid or blocker.pushable)):
                                 can_push = False
                                 break
 
@@ -1393,19 +1406,16 @@ class GameObject(Widget):
                         other.x += dx
                         other.y += dy
                         other._update_position()
-
-                        # Check if box landed on a store - transform to box_stored
-                        for store in self.scene.instances:
-                            if store != other and is_store(store):
-                                if (abs(store.x - other.x) < 16 and abs(store.y - other.y) < 16):
-                                    # Box is on store! Transform it
-                                    self._transform_box_to_stored(other, store)
-                                    break
                     else:
                         # Can't push - don't move
                         self.hspeed = 0
                         self.vspeed = 0
                         return
+                elif other.solid:
+                    # Solid blocking object - stop
+                    self.hspeed = 0
+                    self.vspeed = 0
+                    return
 
         # Move the player
         self.x += dx
@@ -1415,26 +1425,6 @@ class GameObject(Widget):
         # Clear speed after grid movement
         self.hspeed = 0
         self.vspeed = 0
-
-    def _transform_box_to_stored(self, box, store):
-        """Transform a box into a box_store when it reaches a store location"""
-        # Try to find and instantiate the box_store class
-        try:
-            # Import the box_store class dynamically
-            from objects.obj_box_store import ObjBoxStore
-
-            # Create the new box_store at the same position
-            new_box = ObjBoxStore(self.scene, box.x, box.y)
-            self.scene.add_instance(new_box)
-
-            # Destroy the original box
-            box.destroy()
-        except ImportError:
-            # obj_box_store doesn't exist - just leave the box as-is
-            pass
-        except Exception as err:
-            # Something went wrong - leave the box as-is
-            print("Warning: Could not transform box to stored:", err)
 
     # Event handlers (to be overridden by subclasses)
     def on_create(self):
@@ -1464,7 +1454,7 @@ class GameObject(Widget):
         output_file = self.output_path / "game" / "objects" / "base_object.py"
         output_file.write_text(code_formatted)
 
-    def _generate_object(self, obj_name: str, obj_data: Dict):
+    def _generate_object(self, obj_name: str, obj_data: Dict, pushable: bool = False):
         """Generate a specific object class"""
         class_name = self._get_object_class_name(obj_name)
 
@@ -1586,6 +1576,7 @@ class {class_name}(GameObject):
         self.solid = {solid}
         self.visible = {visible}
         self.persistent = {persistent}
+        self.pushable = {pushable}
 
         # Set sprite
         {sprite_line}
@@ -1600,6 +1591,7 @@ class {class_name}(GameObject):
             solid=solid,
             visible=visible,
             persistent=persistent,
+            pushable=pushable,
             sprite_line=sprite_line,
             event_methods=event_methods
         )
@@ -2023,185 +2015,6 @@ class {class_name}(GameObject):
             return "        pass"
 
         return code
-
-    def _convert_action_to_code(self, action_type: str, params: Dict, event_type: str) -> str:
-        """Convert a single action to Python code - GAMEMAKER 7.0 COMPLETE"""
-
-        # GAMEMAKER 7.0 MOVEMENT ACTIONS
-        if action_type == 'set_hspeed':
-            return f"self.hspeed = {params.get('speed', params.get('value', 0))}"
-
-        elif action_type == 'set_vspeed':
-            return f"self.vspeed = {params.get('speed', params.get('value', 0))}"
-
-        elif action_type == 'set_speed':
-            return f"self.speed = {params.get('speed', params.get('value', 0))}"
-
-        elif action_type == 'set_direction':
-            return f"self.direction = {params.get('direction', params.get('value', 0))}"
-
-        elif action_type == 'move_fixed':
-            # GameMaker's 8-way movement
-            directions = params.get('directions', ['right'])
-            speed = params.get('speed', 4)
-            dir_map = {
-                'right': 0, 'up-right': 45, 'up': 90, 'up-left': 135,
-                'left': 180, 'down-left': 225, 'down': 270, 'down-right': 315,
-                'stop': -1
-            }
-            if 'stop' in directions:
-                return "self.speed = 0"
-            elif len(directions) == 1:
-                deg = dir_map.get(directions[0], 0)
-                return f"self.direction = {deg}; self.speed = {speed}"
-            else:
-                # Multiple directions - random choice
-                dirs = [str(dir_map.get(d, 0)) for d in directions if d != 'stop']
-                return f"import random; self.direction = random.choice([{', '.join(dirs)}]); self.speed = {speed}"
-
-        elif action_type == 'move_free':
-            direction = params.get('direction', 0)
-            speed = params.get('speed', 4)
-            return f"self.direction = {direction}; self.speed = {speed}"
-
-        elif action_type == 'move_towards':
-            x = params.get('x', 0)
-            y = params.get('y', 0)
-            speed = params.get('speed', 4)
-            return f"import math; self.direction = math.degrees(math.atan2(-({y} - self.y), {x} - self.x)); self.speed = {speed}"
-
-        elif action_type == 'set_gravity':
-            direction = params.get('direction', 270)
-            gravity = params.get('gravity', 0.5)
-            return f"self.gravity_direction = {direction}; self.gravity = {gravity}"
-
-        elif action_type == 'set_friction':
-            friction = params.get('friction', 0.1)
-            return f"self.friction = {friction}"
-
-        elif action_type == 'reverse_horizontal':
-            return "self.hspeed = -self.hspeed"
-
-        elif action_type == 'reverse_vertical':
-            return "self.vspeed = -self.vspeed"
-
-        elif action_type == 'stop_movement':
-            return "self.hspeed = 0; self.vspeed = 0; self.speed = 0"
-
-        elif action_type == 'snap_to_grid':
-            return "self.snap_to_grid()"
-
-        # GAMEMAKER 7.0 CONTROL ACTIONS
-        elif action_type == 'if_on_grid':
-            # Check if on grid AND snap to exact position
-            return """if self.is_on_grid():
-            self.snap_to_grid()"""
-
-        elif action_type == 'test_expression':
-            expr = params.get('expression', 'False')
-            return f"if {expr}:"
-
-        elif action_type == 'check_empty':
-            x = params.get('x', 'self.x')
-            y = params.get('y', 'self.y')
-            relative = params.get('relative', False)
-            if relative:
-                return f"if not self.check_collision_at(self.x + {x}, self.y + {y}):"
-            else:
-                return f"if not self.check_collision_at({x}, {y}):"
-
-        elif action_type == 'check_collision':
-            x = params.get('x', 'self.x')
-            y = params.get('y', 'self.y')
-            obj = params.get('object', params.get('target', ''))
-            if obj:
-                return f"if self.check_collision_at({x}, {y}, '{obj}'):"
-            else:
-                return f"if self.check_collision_at({x}, {y}):"
-
-        elif action_type == 'if_collision_at':
-            x = params.get('x', 'self.x')
-            y = params.get('y', 'self.y')
-            obj = params.get('object', params.get('target', ''))
-            if obj:
-                return f"if self.check_collision_at({x}, {y}, '{obj}'):"
-            else:
-                return f"if self.check_collision_at({x}, {y}):"
-
-        elif action_type == 'move_grid':
-            # Grid-based movement - move one grid cell in specified direction
-            direction = params.get('direction', 'right')
-            grid_size = params.get('grid_size', 32)
-            dir_map = {
-                'right': (1, 0), 'left': (-1, 0),
-                'up': (0, 1), 'down': (0, -1),  # Kivy Y is inverted
-                'up-right': (1, 1), 'up-left': (-1, 1),
-                'down-right': (1, -1), 'down-left': (-1, -1)
-            }
-            dx, dy = dir_map.get(direction, (0, 0))
-            return f"self.x += {dx * grid_size}; self.y += {dy * grid_size}"
-
-        elif action_type == 'stop_if_no_keys':
-            # Check if no arrow keys are pressed
-            return """if not (self.scene.keys_pressed.get(275, False) or self.scene.keys_pressed.get(276, False) or self.scene.keys_pressed.get(273, False) or self.scene.keys_pressed.get(274, False)):
-        self.snap_to_grid()
-        self.hspeed = 0
-        self.vspeed = 0"""
-
-        elif action_type == 'exit_event':
-            return "return  # Exit event"
-
-        # GAMEMAKER 7.0 ALARM ACTIONS
-        elif action_type == 'set_alarm':
-            alarm_num = params.get('alarm_number', 0)
-            steps = params.get('steps', 30)
-            return f"self.alarms[{alarm_num}] = {steps}"
-
-        # INSTANCE ACTIONS
-        elif action_type == 'destroy_instance':
-            target = params.get('target', 'sel')
-            if target == 'other' and 'collision' in event_type:
-                return "other.destroy()"
-            else:
-                return "self.destroy()"
-
-        # KEYBOARD CHECKS
-        elif action_type == 'check_key':
-            key_code = params.get('key', 0)
-            return f"if {key_code} in self.scene.keys_pressed:"
-
-        # MESSAGE ACTIONS
-        elif action_type == 'show_message' or action_type == 'display_message':
-            message = params.get('message', '')
-            # Escape quotes in message
-            escaped_message = message.replace("'", "\\'")
-            return f"from main import show_message; show_message('{escaped_message}')"
-
-        # SCORE/LIVES/HEALTH ACTIONS (use lazy import to avoid circular imports)
-        elif action_type == 'set_score':
-            value = params.get('value', 0)
-            relative = params.get('relative', False)
-            return f"from main import set_score; set_score({value}, relative={relative})"
-
-        elif action_type == 'set_lives':
-            value = params.get('value', 3)
-            relative = params.get('relative', False)
-            return f"from main import set_lives; set_lives({value}, relative={relative})"
-
-        elif action_type == 'set_health':
-            value = params.get('value', 100)
-            relative = params.get('relative', False)
-            return f"from main import set_health; set_health({value}, relative={relative})"
-
-        elif action_type == 'set_window_caption':
-            caption = params.get('caption', '')
-            show_score = params.get('show_score', True)
-            show_lives = params.get('show_lives', True)
-            show_health = params.get('show_health', False)
-            return f"from main import set_window_caption; set_window_caption(caption='{caption}', show_score={show_score}, show_lives={show_lives}, show_health={show_health})"
-
-        # Default: return comment for unsupported action
-        return f"# TODO: Implement {action_type}"
 
     def _generate_utils(self):
         """Generate utility functions file"""

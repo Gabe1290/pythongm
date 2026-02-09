@@ -41,13 +41,7 @@ class ActionCodeGenerator:
         if '\n' in code:
             for line in code.split('\n'):
                 if line.strip():
-                    # Check if line already has relative indentation (starts with spaces)
-                    if line.startswith('    '):
-                        # Line has relative indent - add base indent
-                        self.lines.append(f"{indent_str}{line}")
-                    else:
-                        # No relative indent - add base indent only
-                        self.lines.append(f"{indent_str}{line}")
+                    self.lines.append(f"{indent_str}{line}")
         else:
             self.lines.append(f"{indent_str}{code}")
 
@@ -227,8 +221,9 @@ class ActionCodeGenerator:
             self.add_line("_can_push = False")
             self.add_line("if self.hspeed != 0 or self.vspeed != 0:")
             self.push_indent()
-            self.add_line("_push_dx = 32 if self.hspeed > 0 else (-32 if self.hspeed < 0 else 0)")
-            self.add_line("_push_dy = 32 if self.vspeed > 0 else (-32 if self.vspeed < 0 else 0)")
+            self.add_line("_gs = self.grid_size")
+            self.add_line("_push_dx = _gs if self.hspeed > 0 else (-_gs if self.hspeed < 0 else 0)")
+            self.add_line("_push_dy = _gs if self.vspeed > 0 else (-_gs if self.vspeed < 0 else 0)")
             self.add_line("# Check if space behind box is free (no wall, no other box)")
             self.add_line("if hasattr(other, 'x') and hasattr(other, 'y'):")
             self.push_indent()
@@ -236,7 +231,7 @@ class ActionCodeGenerator:
             self.add_line("_behind_y = other.y + _push_dy")
             self.add_line("_can_push = not any(")
             self.push_indent()
-            self.add_line("inst.check_collision(type('_TempBox', (), {'x': _behind_x, 'y': _behind_y, 'size': (32, 32), 'has_sprite': True})())")
+            self.add_line("inst.check_collision(type('_TempBox', (), {'x': _behind_x, 'y': _behind_y, 'size': (_gs, _gs), 'has_sprite': True})())")
             self.add_line("for inst in self.scene.instances")
             self.add_line("if inst != self and inst != other and inst.solid")
             self.pop_indent()
@@ -369,32 +364,34 @@ class ActionCodeGenerator:
             self.add_line("")
             self.add_line("# Check if arrow keys are pressed to start moving to next grid")
             self.add_line("# Use wall collision check to prevent phasing")
+            self.add_line("_gs = self.grid_size")
+            self.add_line("_spd = max(1, _gs // 8)")
             self.add_line("if self.scene.keys_pressed.get(275, False):  # right")
             self.push_indent()
-            self.add_line("if not self._check_wall_ahead(32, 0):")
+            self.add_line("if not self._check_wall_ahead(_gs, 0):")
             self.push_indent()
-            self.add_line("self.hspeed = 4")
+            self.add_line("self.hspeed = _spd")
             self.pop_indent()
             self.pop_indent()
             self.add_line("elif self.scene.keys_pressed.get(276, False):  # left")
             self.push_indent()
-            self.add_line("if not self._check_wall_ahead(-32, 0):")
+            self.add_line("if not self._check_wall_ahead(-_gs, 0):")
             self.push_indent()
-            self.add_line("self.hspeed = -4")
+            self.add_line("self.hspeed = -_spd")
             self.pop_indent()
             self.pop_indent()
             self.add_line("elif self.scene.keys_pressed.get(273, False):  # up")
             self.push_indent()
-            self.add_line("if not self._check_wall_ahead(0, 32):")
+            self.add_line("if not self._check_wall_ahead(0, _gs):")
             self.push_indent()
-            self.add_line("self.vspeed = 4")
+            self.add_line("self.vspeed = _spd")
             self.pop_indent()
             self.pop_indent()
             self.add_line("elif self.scene.keys_pressed.get(274, False):  # down")
             self.push_indent()
-            self.add_line("if not self._check_wall_ahead(0, -32):")
+            self.add_line("if not self._check_wall_ahead(0, -_gs):")
             self.push_indent()
-            self.add_line("self.vspeed = -4")
+            self.add_line("self.vspeed = -_spd")
             self.pop_indent()
             self.pop_indent()
             return
@@ -475,9 +472,10 @@ class ActionCodeGenerator:
             dx, dy = dir_map.get(direction, (0, 0))
             move_x = dx * grid_size
             move_y = dy * grid_size
+            speed = max(1, grid_size // 8)
             # Set hspeed/vspeed to indicate direction (used by collision handlers)
             # Then check for collision before moving; only move if target cell is free
-            return f"self.hspeed = {dx * 4}; self.vspeed = {dy * 4}; self._move_grid({move_x}, {move_y})"
+            return f"self.hspeed = {dx * speed}; self.vspeed = {dy * speed}; self._move_grid({move_x}, {move_y})"
 
         elif action_type == 'move_towards':
             # Move towards a specific point at given speed
@@ -540,18 +538,65 @@ if dist > 0:
             return f"self.alarms[{alarm_num}] = {steps}"
 
         # ROOM ACTIONS
-        elif action_type == 'next_room':
+        elif action_type == 'next_room' or action_type == 'room_goto_next':
             return "from main import goto_next_room; goto_next_room()"
 
-        elif action_type == 'previous_room':
+        elif action_type == 'previous_room' or action_type == 'room_goto_previous':
             return "from main import goto_previous_room; goto_previous_room()"
 
-        elif action_type == 'goto_room':
+        elif action_type == 'goto_room' or action_type == 'room_goto':
             room_name = params.get('room', params.get('room_name', ''))
             return f"from main import goto_room; goto_room('{room_name}')"
 
-        elif action_type == 'restart_room':
+        elif action_type == 'restart_room' or action_type == 'room_restart':
             return "from main import get_game_app; app = get_game_app(); app._switch_to_room(app.current_room_index) if app else None"
+
+        # GAME CONTROL ACTIONS
+        elif action_type == 'game_end' or action_type == 'end_game':
+            return "from kivy.app import App; App.get_running_app().stop()"
+
+        # DELAY ACTION
+        elif action_type == 'delay_action':
+            frames = params.get('frames', 60)
+            then_action = params.get('then_action', '')
+            try:
+                frames = int(frames)
+            except (ValueError, TypeError):
+                frames = 60
+            delay_seconds = frames / 60.0
+            # Room-changing actions need a guard to prevent firing after
+            # the room has already changed (e.g., by a subsequent goto_next_room)
+            is_room_action = then_action in ('next_room', 'room_goto_next', 'previous_room',
+                                              'change_room', 'goto_room', 'restart_room',
+                                              'game_end', 'end_game')
+            # Generate the delayed action code (import + lambda-friendly call)
+            if then_action == 'next_room' or then_action == 'room_goto_next':
+                import_code = "from main import goto_next_room"
+                call_code = "goto_next_room()"
+            elif then_action == 'previous_room':
+                import_code = "from main import goto_previous_room"
+                call_code = "goto_previous_room()"
+            elif then_action == 'game_end' or then_action == 'end_game':
+                import_code = "from kivy.app import App"
+                call_code = "App.get_running_app().stop()"
+            elif then_action == 'restart_room':
+                import_code = "from main import get_game_app"
+                call_code = "get_game_app()._switch_to_room(get_game_app().current_room_index)"
+            elif then_action == 'change_room' or then_action == 'goto_room':
+                room_name = params.get('room_name', params.get('room', ''))
+                import_code = "from main import goto_room"
+                call_code = f"goto_room('{room_name}')"
+            else:
+                import_code = ""
+                call_code = f"None  # delay_action: unknown then_action '{then_action}'"
+                is_room_action = False
+            if is_room_action:
+                # Guard: only fire if still in the same room (prevents double transitions)
+                return f"from main import get_game_app; {import_code}; from kivy.clock import Clock; _dr = get_game_app().current_room_index if get_game_app() else -1; Clock.schedule_once(lambda dt: {call_code} if get_game_app() and get_game_app().current_room_index == _dr else None, {delay_seconds})"
+            elif import_code:
+                return f"{import_code}; from kivy.clock import Clock; Clock.schedule_once(lambda dt: {call_code}, {delay_seconds})"
+            else:
+                return f"from kivy.clock import Clock; Clock.schedule_once(lambda dt: {call_code}, {delay_seconds})"
 
         # MESSAGE ACTIONS
         elif action_type == 'show_message' or action_type == 'display_message':
