@@ -419,10 +419,16 @@ def show_message(message):
                   size=(300, 200),
                   auto_dismiss=False)
 
+    def on_key_down(window, key, scancode, codepoint, modifiers):
+        if key == 13 or key == 271:  # Enter or NumPad Enter
+            popup.dismiss()
+            return True
+
     def on_dismiss(instance):
         global _popup_open, _current_popup, _pending_room_switch
         _popup_open = False
         _current_popup = None
+        Window.unbind(on_key_down=on_key_down)
 
         # Execute any deferred room transition
         if _pending_room_switch is not None:
@@ -439,8 +445,10 @@ def show_message(message):
 
     popup.bind(on_dismiss=on_dismiss)
     btn.bind(on_release=popup.dismiss)
+    Window.bind(on_key_down=on_key_down)
     _current_popup = popup
     popup.open()
+    btn.focus = True
 
 def dismiss_message():
     """Dismiss any open message popup"""

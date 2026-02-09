@@ -1717,12 +1717,19 @@ class PyGameMakerIDE(QMainWindow):
         button_group.addButton(html5_radio, 1)
         layout.addWidget(html5_radio)
 
-        windows_radio = QRadioButton(self.tr("Windows Executable (.exe) - ✅ Available"))
-        windows_radio.setEnabled(True)  # CHANGED: Enable Windows export
+        import platform as _platform
+        if _platform.system() == 'Windows':
+            windows_radio = QRadioButton(self.tr("Windows Executable (.exe) - ✅ Available"))
+        else:
+            windows_radio = QRadioButton(self.tr("Windows Executable (.exe) - ⚠️ Requires Windows"))
+        windows_radio.setEnabled(True)
         button_group.addButton(windows_radio, 2)
         layout.addWidget(windows_radio)
 
-        linux_radio = QRadioButton(self.tr("Linux Binary - ✅ Available"))
+        if _platform.system() == 'Linux':
+            linux_radio = QRadioButton(self.tr("Linux Binary - ✅ Available"))
+        else:
+            linux_radio = QRadioButton(self.tr("Linux Binary - ⚠️ Requires Linux"))
         linux_radio.setEnabled(True)
         button_group.addButton(linux_radio, 3)
         layout.addWidget(linux_radio)

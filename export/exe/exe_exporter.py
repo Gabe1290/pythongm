@@ -7,6 +7,7 @@ Uses Kivy runtime (80% GameMaker 7.0 compatible) bundled with PyInstaller
 import subprocess
 import shutil
 import json
+import platform
 from pathlib import Path
 from typing import Dict
 from PySide6.QtCore import QObject, Signal
@@ -134,6 +135,21 @@ class ExeExporter(QObject):
         self.export_settings = settings
 
         try:
+            # PyInstaller cannot cross-compile: it builds for the host platform only.
+            # A Linux-built binary is an ELF executable, not a Windows PE (.exe).
+            if platform.system() != 'Windows':
+                self.export_complete.emit(
+                    False,
+                    "Windows EXE export must be run on a Windows system.\n\n"
+                    "PyInstaller creates binaries for the platform it runs on.\n"
+                    "A binary built on Linux is a Linux ELF executable, not a "
+                    "Windows .exe — it will not run on Windows.\n\n"
+                    "To create a Windows .exe:\n"
+                    "• Run this export on a Windows machine, or\n"
+                    "• Use the HTML5 export for a cross-platform web version."
+                )
+                return False
+
             # Load project data - handle both directory and file paths
             if self.project_path.is_dir():
                 project_file = self.project_path / "project.json"
