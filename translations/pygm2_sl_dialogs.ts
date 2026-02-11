@@ -1,1162 +1,1528 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1"><context>
-    <name>AssetPropertiesDialog</name>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="115" />
-      <source>{0} Properties - {1}</source>
-      <translation>Lastnosti {0} - {1}</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="127" />
-      <source>Type: {0}</source>
-      <translation>Tip: {0}</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="132" />
-      <source>File: {0}</source>
-      <translation>Datoteka: {0}</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="137" />
-      <source>Imported</source>
-      <translation>Uvoženo</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="137" />
-      <source>Not imported</source>
-      <translation>Ni uvoženo</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="138" />
-      <source>Status: {0}</source>
-      <translation>Status: {0}</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="146" />
-      <source>📥 Import Image...</source>
-      <translation>📥 Uvozi sliko...</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="153" />
-      <source>Created: {0}</source>
-      <translation>Ustvarjeno: {0}</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="158" />
-      <source>Close</source>
-      <translation>Zapri</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="174" />
-      <source>Select Sprite Image</source>
-      <translation>Izberi sliko sprita</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="176" />
-      <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
-      <translation>Slikovne datoteke (*.png *.jpg *.jpeg *.bmp *.gif);;Vse datoteke (*.*)</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="202" />
-      <source>Success</source>
-      <translation>Uspeh</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="203" />
-      <source>Image imported successfully for sprite '{0}'</source>
-      <translation>Slika uspešno uvožena za sprite '{0}'</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="211" />
-      <source>Import Failed</source>
-      <translation>Uvoz ni uspel</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="212" />
-      <source>Failed to import the image. Please try again.</source>
-      <translation>Uvoz slike ni uspel. Prosimo, poskusite znova.</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="223" />
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="217" />
-      <source>Error</source>
-      <translation>Napaka</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="218" />
-      <source>Error importing image: {0}</source>
-      <translation>Napaka pri uvozu slike: {0}</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="224" />
-      <source>Could not access asset manager. Please try again.</source>
-      <translation>Ni mogoče dostopati do upravitelja sredstev. Prosimo, poskusite znova.</translation>
-    </message>
-  </context>
-  <context>
-    <name>AssetRenameDialog</name>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="26" />
-      <source>Rename {0}</source>
-      <translation>Preimenuj {0}</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="35" />
-      <source>Current name: &lt;b&gt;{0}&lt;/b&gt;</source>
-      <translation>Trenutno ime: &lt;b&gt;{0}&lt;/b&gt;</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="39" />
-      <source>New name:</source>
-      <translation>Novo ime:</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="51" />
-      <source>Cancel</source>
-      <translation>Prekliči</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="55" />
-      <source>Rename</source>
-      <translation>Preimenuj</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="91" />
-      <source>Invalid Name</source>
-      <translation>Neveljavno ime</translation>
-    </message>
-  </context>
-  <context>
-    <name>AssetTreeWidget</name>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="57" />
-      <source>Assets</source>
-      <translation>Sredstva</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="74" />
-      <source>Sprites</source>
-      <translation>Spriti</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="75" />
-      <source>Sounds</source>
-      <translation>Zvoki</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="76" />
-      <source>Backgrounds</source>
-      <translation>Ozadja</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="78" />
-      <source>Objects</source>
-      <translation>Objekti</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="79" />
-      <source>Rooms</source>
-      <translation>Sobe</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="81" />
-      <source>Scripts</source>
-      <translation>Skripte</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="82" />
-      <source>Fonts</source>
-      <translation>Pisave</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="175" />
-      <source>➕ Create New {0}...</source>
-      <translation>➕ Ustvari nov {0}...</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="180" />
-      <source>📥 Import {0}...</source>
-      <translation>📥 Uvozi {0}...</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="189" />
-      <source>✏️ Rename</source>
-      <translation>✏️ Preimenuj</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="195" />
-      <source>📥 Import Image...</source>
-      <translation>📥 Uvozi sliko...</translation>
-    </message>
-    <message>
-      <source>🎬 Configure Animation...</source>
-      <translation>🎬 Konfiguriraj animacijo...</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="200" />
-      <source>🗑️ Delete</source>
-      <translation>🗑️ Izbriši</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="224" />
-      <source>⬆️ Move Up</source>
-      <translation>⬆️ Premakni gor</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="230" />
-      <source>⬇️ Move Down</source>
-      <translation>⬇️ Premakni dol</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="238" />
-      <source>⏫ Move to Top</source>
-      <translation>⏫ Premakni na vrh</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="244" />
-      <source>⏬ Move to Bottom</source>
-      <translation>⏬ Premakni na dno</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="252" />
-      <source>⚙️ Properties...</source>
-      <translation>⚙️ Lastnosti...</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="280" />
-      <source>Create Asset</source>
-      <translation>Ustvari sredstvo</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="281" />
-      <source>Asset creation for {0} is not yet implemented.</source>
-      <translation>Ustvarjanje sredstev za {0} še ni implementirano.</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="299" />
-      <source>Import Assets</source>
-      <translation>Uvozi sredstva</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="300" />
-      <source>Please use the File menu to import {0}</source>
-      <translation>Prosimo, uporabite meni Datoteka za uvoz {0}</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="322" />
-      <source>Select Image for Sprite '{0}'</source>
-      <translation>Izberi sliko za sprite '{0}'</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="324" />
-      <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
-      <translation>Slikovne datoteke (*.png *.jpg *.jpeg *.bmp *.gif);;Vse datoteke (*.*)</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="336" />
-      <source>Success</source>
-      <translation>Uspeh</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="337" />
-      <source>Image imported successfully for sprite '{0}'</source>
-      <translation>Slika uspešno uvožena za sprite '{0}'</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="347" />
-      <source>No Project</source>
-      <translation>Ni projekta</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="347" />
-      <source>No project is currently loaded</source>
-      <translation>Trenutno ni naložen noben projekt</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="368" />
-      <source>Export {0}</source>
-      <translation>Izvozi {0}</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="385" />
-      <source>Export Successful</source>
-      <translation>Izvoz uspešen</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="386" />
-      <source>{0} '{1}' exported to:
+<TS version="2.1">
+    <context>
+        <name>AssetPropertiesDialog</name>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="114" />
+            <source>{0} Properties - {1}</source>
+            <translation>Propriétés de {0} - {1}</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="126" />
+            <source>Type: {0}</source>
+            <translation>Type : {0}</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="131" />
+            <source>File: {0}</source>
+            <translation>Fichier : {0}</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="136" />
+            <source>Imported</source>
+            <translation>Importé</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="136" />
+            <source>Not imported</source>
+            <translation>Non importé</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="137" />
+            <source>Status: {0}</source>
+            <translation>Statut : {0}</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="143" />
+            <source>📥 Import Image...</source>
+            <translation>📥 Importer une image...</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="150" />
+            <source>Created: {0}</source>
+            <translation>Créé : {0}</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="155" />
+            <source>Close</source>
+            <translation>Zapri</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="171" />
+            <source>Select Sprite Image</source>
+            <translation>Sélectionner une image de sprite</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="173" />
+            <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
+            <translation>Fichiers image (*.png *.jpg *.jpeg *.bmp *.gif);;Tous les fichiers (*.*)</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="198" />
+            <source>Success</source>
+            <translation>Succès</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="199" />
+            <source>Image imported successfully for sprite '{0}'</source>
+            <translation>Image importée avec succès pour le sprite '{0}'</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="207" />
+            <source>Import Failed</source>
+            <translation>Échec de l'importation</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="208" />
+            <source>Failed to import the image. Please try again.</source>
+            <translation>Échec de l'importation de l'image. Veuillez réessayer.</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="213" />
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="219" />
+            <source>Error</source>
+            <translation>Erreur</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="214" />
+            <source>Error importing image: {0}</source>
+            <translation>Erreur lors de l'importation de l'image : {0}</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="220" />
+            <source>Could not access asset manager. Please try again.</source>
+            <translation>Impossible d'accéder au gestionnaire de ressources. Veuillez réessayer.</translation>
+        </message>
+    </context>
+    <context>
+        <name>AssetRenameDialog</name>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="25" />
+            <source>Rename {0}</source>
+            <translation>Renommer {0}</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="34" />
+            <source>Current name: &lt;b&gt;{0}&lt;/b&gt;</source>
+            <translation>Nom actuel : &lt;b&gt;{0}&lt;/b&gt;</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="38" />
+            <source>New name:</source>
+            <translation>Nouveau nom :</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="50" />
+            <source>Cancel</source>
+            <translation>Prekliči</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="54" />
+            <source>Rename</source>
+            <translation>Preimenuj</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="90" />
+            <source>Invalid Name</source>
+            <translation>Nom invalide</translation>
+        </message>
+    </context>
+    <context>
+        <name>AssetTreeWidget</name>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="59" />
+            <source>Assets</source>
+            <translation>Ressources</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="79" />
+            <source>Sprites</source>
+            <translation>Sprites</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="80" />
+            <source>Sounds</source>
+            <translation>Sons</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="81" />
+            <source>Backgrounds</source>
+            <translation>Arrière-plans</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="83" />
+            <source>Objects</source>
+            <translation>Objets</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="84" />
+            <source>Rooms</source>
+            <translation>Salles</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="86" />
+            <source>Scripts</source>
+            <translation>Scripts</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="87" />
+            <source>Fonts</source>
+            <translation>Polices</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="180" />
+            <source>➕ Create New {0}...</source>
+            <translation>➕ Créer un nouveau {0}...</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="186" />
+            <source>📥 Import {0}...</source>
+            <translation>📥 Importer {0}...</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="193" />
+            <source>📦 Import {0} Package...</source>
+            <translation>📦 Uvozi paket {0}...</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="202" />
+            <source>✏️ Rename</source>
+            <translation>✏️ Renommer</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="208" />
+            <source>📥 Import Image...</source>
+            <translation>📥 Importer une image...</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="213" />
+            <source>🎬 Configure Animation...</source>
+            <translation>🎬 Nastavi animacijo...</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="218" />
+            <source>🗑️ Delete</source>
+            <translation>🗑️ Izbriši</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="226" />
+            <source>📦 Export Package...</source>
+            <translation>📦 Izvozi paket...</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="250" />
+            <source>⬆️ Move Up</source>
+            <translation>⬆️ Déplacer vers le haut</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="256" />
+            <source>⬇️ Move Down</source>
+            <translation>⬇️ Déplacer vers le bas</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="264" />
+            <source>⏫ Move to Top</source>
+            <translation>⏫ Déplacer tout en haut</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="270" />
+            <source>⏬ Move to Bottom</source>
+            <translation>⏬ Déplacer tout en bas</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="278" />
+            <source>⚙️ Properties...</source>
+            <translation>⚙️ Propriétés...</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="306" />
+            <source>Create Asset</source>
+            <translation>Créer une ressource</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="307" />
+            <source>Asset creation for {0} is not yet implemented.</source>
+            <translation>La création de ressource pour {0} n'est pas encore implémentée.</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="325" />
+            <source>Import Assets</source>
+            <translation>Importer des ressources</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="326" />
+            <source>Please use the File menu to import {0}</source>
+            <translation>Veuillez utiliser le menu Fichier pour importer {0}</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="348" />
+            <source>Select Image for Sprite '{0}'</source>
+            <translation>Sélectionner une image pour le sprite '{0}'</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="350" />
+            <source>Image Files (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*.*)</source>
+            <translation>Fichiers image (*.png *.jpg *.jpeg *.bmp *.gif);;Tous les fichiers (*.*)</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="362" />
+            <source>Success</source>
+            <translation>Succès</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="363" />
+            <source>Image imported successfully for sprite '{0}'</source>
+            <translation>Image importée avec succès pour le sprite '{0}'</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="377" />
+            <source>No Sprite Data</source>
+            <translation>Ni podatkov o spritu</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="378" />
+            <source>Could not load sprite data for '{0}'</source>
+            <translation>Ni mogoče naložiti podatkov o spritu '{0}'</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="387" />
+            <source>No Image</source>
+            <translation>Ni slike</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="388" />
+            <source>Sprite '{0}' has no image file. Please import an image first.</source>
+            <translation>Sprit '{0}' nima slikovne datoteke. Najprej uvozite sliko.</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="402" />
+            <source>Image Not Found</source>
+            <translation>Slika ni najdena</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="403" />
+            <source>Could not find image file: {0}</source>
+            <translation>Ni mogoče najti slikovne datoteke: {0}</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="432" />
+            <source>Animation Configured</source>
+            <translation>Animacija nastavljena</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="433" />
+            <source>Sprite '{0}' configured with {1} frames at {2} FPS</source>
+            <translation>Sprit '{0}' nastavljen z {1} okvirji pri {2} FPS</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="445" />
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="500" />
+            <source>No Project</source>
+            <translation>Aucun projet</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="445" />
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="500" />
+            <source>No project is currently loaded</source>
+            <translation>Aucun projet n'est actuellement chargé</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="466" />
+            <source>Export {0}</source>
+            <translation>Exporter {0}</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="483" />
+            <source>Export Successful</source>
+            <translation>Export réussi</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="484" />
+            <source>{0} '{1}' exported to:
 {2}</source>
-      <translation>{0} '{1}' izvožen v:
+            <translation>{0} '{1}' exporté vers :
 {2}</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="391" />
-      <source>Export Failed</source>
-      <translation>Izvoz ni uspel</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="392" />
-      <source>Failed to export {0} '{1}'</source>
-      <translation>Izvoz {0} '{1}' ni uspel</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="434" />
-      <source>Create {0}</source>
-      <translation>Ustvari {0}</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_tree_widget.py" line="435" />
-      <source>Enter name for new {0}:</source>
-      <translation>Vnesite ime za nov {0}:</translation>
-    </message>
-  </context>
-  <context>
-    <name>AutoSaveSettingsDialog</name>
-    <message>
-      <location filename="../dialogs/auto_save_dialog.py" line="18" />
-      <source>Auto-Save Settings</source>
-      <translation>Nastavitve samodejnega shranjevanja</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/auto_save_dialog.py" line="28" />
-      <source>Auto-Save</source>
-      <translation>Samodejno shranjevanje</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/auto_save_dialog.py" line="31" />
-      <source>Enable automatic saving</source>
-      <translation>Omogoči samodejno shranjevanje</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/auto_save_dialog.py" line="36" />
-      <source>When enabled, your project will be saved automatically at regular intervals.</source>
-      <translation>Ko je omogočeno, bo vaš projekt samodejno shranjen v rednih intervalih.</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/auto_save_dialog.py" line="44" />
-      <source>Save Interval</source>
-      <translation>Interval shranjevanja</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/auto_save_dialog.py" line="51" />
-      <source> seconds</source>
-      <translation> sekund</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/auto_save_dialog.py" line="54" />
-      <source>Save every:</source>
-      <translation>Shrani vsake:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/auto_save_dialog.py" line="59" />
-      <source>15s</source>
-      <translation>15s</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/auto_save_dialog.py" line="63" />
-      <source>30s</source>
-      <translation>30s</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/auto_save_dialog.py" line="67" />
-      <source>1m</source>
-      <translation>1m</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/auto_save_dialog.py" line="71" />
-      <source>2m</source>
-      <translation>2m</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/auto_save_dialog.py" line="75" />
-      <source>5m</source>
-      <translation>5m</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/auto_save_dialog.py" line="79" />
-      <source>Presets:</source>
-      <translation>Prednastavitve:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/auto_save_dialog.py" line="84" />
-      <source>⚠️  Shorter intervals may impact performance on large projects.</source>
-      <translation>⚠️  Krajši intervali lahko vplivajo na zmogljivost pri velikih projektih.</translation>
-    </message>
-  </context>
-  <context>
-    <name>BuildProjectDialog</name>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="730" />
-      <source>Build Project</source>
-      <translation>Zgradi projekt</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="741" />
-      <source>Build Configuration</source>
-      <translation>Konfiguracija gradnje</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="745" />
-      <source>Debug</source>
-      <translation>Razhroščevanje</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="745" />
-      <source>Release</source>
-      <translation>Končna različica</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="746" />
-      <source>Build Type:</source>
-      <translation>Tip gradnje:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="749" />
-      <source>None</source>
-      <translation>Brez</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="749" />
-      <source>Basic</source>
-      <translation>Osnovno</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="749" />
-      <source>Full</source>
-      <translation>Polno</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="750" />
-      <source>Optimization:</source>
-      <translation>Optimizacija:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="755" />
-      <source>Build Options</source>
-      <translation>Možnosti gradnje</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="759" />
-      <source>Clean Build:</source>
-      <translation>Čista gradnja:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="762" />
-      <source>Verbose Output:</source>
-      <translation>Podroben izpis:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="774" />
-      <source>Build</source>
-      <translation>Zgradi</translation>
-    </message>
-  </context>
-  <context>
-    <name>CreateAssetDialog</name>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="238" />
-      <source>Create {0}</source>
-      <translation>Ustvari {0}</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="247" />
-      <source>&lt;h3&gt;Create New {0}&lt;/h3&gt;</source>
-      <translation>&lt;h3&gt;Ustvari nov {0}&lt;/h3&gt;</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="251" />
-      <source>Asset name:</source>
-      <translation>Ime sredstva:</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="255" />
-      <source>Enter {0} name...</source>
-      <translation>Vnesite ime {0}...</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="262" />
-      <source>Cancel</source>
-      <translation>Prekliči</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="266" />
-      <source>Create</source>
-      <translation>Ustvari</translation>
-    </message>
-    <message>
-      <location filename="../widgets/asset_tree/asset_dialogs.py" line="293" />
-      <source>Invalid Name</source>
-      <translation>Neveljavno ime</translation>
-    </message>
-  </context>
-  <context>
-    <name>ExportProjectDialog</name>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="352" />
-      <source>Export Project</source>
-      <translation>Izvozi projekt</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="363" />
-      <source>Export Target</source>
-      <translation>Cilj izvoza</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="368" />
-      <source>Desktop Executable (.exe/.app)</source>
-      <translation>Namizna izvršljiva datoteka (.exe/.app)</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="369" />
-      <source>Web (HTML5)</source>
-      <translation>Splet (HTML5)</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="370" />
-      <source>Mobile (Kivy)</source>
-      <translation>Mobilno (Kivy)</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="371" />
-      <source>Mobile (APK)</source>
-      <translation>Mobilno (APK)</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="372" />
-      <source>Source Code (.zip)</source>
-      <translation>Izvorna koda (.zip)</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="374" />
-      <source>Target Platform:</source>
-      <translation>Ciljna platforma:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="379" />
-      <source>Choose export location...</source>
-      <translation>Izberite lokacijo izvoza...</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="381" />
-      <source>Browse...</source>
-      <translation>Prebrskaj...</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="386" />
-      <source>Output Location:</source>
-      <translation>Izhodna lokacija:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="391" />
-      <source>Export Options</source>
-      <translation>Možnosti izvoza</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="396" />
-      <source>Include Assets:</source>
-      <translation>Vključi sredstva:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="400" />
-      <source>Optimize for Release:</source>
-      <translation>Optimiziraj za končno različico:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="404" />
-      <source>Include Debug Info:</source>
-      <translation>Vključi informacije za razhroščevanje:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="421" />
-      <source>Export</source>
-      <translation>Izvozi</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="443" />
-      <source>Choose Export Location</source>
-      <translation>Izberite lokacijo izvoza</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="457" />
-      <source>Invalid Output</source>
-      <translation>Neveljaven izhod</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="457" />
-      <source>Please choose an export location.</source>
-      <translation>Prosimo, izberite lokacijo izvoza.</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="712" />
-      <location filename="../dialogs/project_dialogs.py" line="631" />
-      <location filename="../dialogs/project_dialogs.py" line="613" />
-      <location filename="../dialogs/project_dialogs.py" line="608" />
-      <location filename="../dialogs/project_dialogs.py" line="568" />
-      <location filename="../dialogs/project_dialogs.py" line="527" />
-      <location filename="../dialogs/project_dialogs.py" line="497" />
-      <source>Export Error</source>
-      <translation>Napaka pri izvozu</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="609" />
-      <location filename="../dialogs/project_dialogs.py" line="498" />
-      <source>Could not access project manager</source>
-      <translation>Ni mogoče dostopati do upravitelja projektov</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="684" />
-      <location filename="../dialogs/project_dialogs.py" line="588" />
-      <location filename="../dialogs/project_dialogs.py" line="546" />
-      <location filename="../dialogs/project_dialogs.py" line="507" />
-      <source>Export Successful</source>
-      <translation>Izvoz uspešen</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="508" />
-      <source>Kivy project exported to:
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="489" />
+            <source>Export Failed</source>
+            <translation>Échec de l'export</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="490" />
+            <source>Failed to export {0} '{1}'</source>
+            <translation>Échec de l'export de {0} '{1}'</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="518" />
+            <source>Import {0} Package</source>
+            <translation>Uvozi paket {0}</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="538" />
+            <source>Import Successful</source>
+            <translation>Uvoz uspešen</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="539" />
+            <source>{0} '{1}' imported successfully!</source>
+            <translation>{0} '{1}' uspešno uvožen!</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="544" />
+            <source>Import Failed</source>
+            <translation>Uvoz neuspešen</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="545" />
+            <source>Failed to import {0} package</source>
+            <translation>Napaka pri uvozu paketa {0}</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="587" />
+            <source>Create {0}</source>
+            <translation>Créer {0}</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_tree_widget.py" line="588" />
+            <source>Enter name for new {0}:</source>
+            <translation>Entrez le nom du nouveau {0} :</translation>
+        </message>
+    </context>
+    <context>
+        <name>AutoSaveSettingsDialog</name>
+        <message>
+            <location filename="../dialogs/auto_save_dialog.py" line="17" />
+            <source>Auto-Save Settings</source>
+            <translation>Paramètres de sauvegarde automatique</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/auto_save_dialog.py" line="27" />
+            <source>Auto-Save</source>
+            <translation>Sauvegarde automatique</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/auto_save_dialog.py" line="30" />
+            <source>Enable automatic saving</source>
+            <translation>Activer la sauvegarde automatique</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/auto_save_dialog.py" line="35" />
+            <source>When enabled, your project will be saved automatically at regular intervals.</source>
+            <translation>Lorsqu'activée, votre projet sera sauvegardé automatiquement à intervalles réguliers.</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/auto_save_dialog.py" line="43" />
+            <source>Save Interval</source>
+            <translation>Intervalle d'enregistrement</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/auto_save_dialog.py" line="50" />
+            <source> seconds</source>
+            <translation> secondes</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/auto_save_dialog.py" line="53" />
+            <source>Save every:</source>
+            <translation>Enregistrer toutes les :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/auto_save_dialog.py" line="58" />
+            <source>15s</source>
+            <translation>15s</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/auto_save_dialog.py" line="62" />
+            <source>30s</source>
+            <translation>30s</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/auto_save_dialog.py" line="66" />
+            <source>1m</source>
+            <translation>1m</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/auto_save_dialog.py" line="70" />
+            <source>2m</source>
+            <translation>2m</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/auto_save_dialog.py" line="74" />
+            <source>5m</source>
+            <translation>5m</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/auto_save_dialog.py" line="78" />
+            <source>Presets:</source>
+            <translation>Préréglages :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/auto_save_dialog.py" line="83" />
+            <source>⚠️  Shorter intervals may impact performance on large projects.</source>
+            <translation>⚠️  Des intervalles plus courts peuvent affecter les performances sur de gros projets.</translation>
+        </message>
+    </context>
+    <context>
+        <name>BuildProjectDialog</name>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="783" />
+            <source>Build Project</source>
+            <translation>Compiler le projet</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="794" />
+            <source>Build Configuration</source>
+            <translation>Configuration de compilation</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="798" />
+            <source>Debug</source>
+            <translation>Débogage</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="798" />
+            <source>Release</source>
+            <translation>Version finale</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="799" />
+            <source>Build Type:</source>
+            <translation>Type de compilation :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="802" />
+            <source>None</source>
+            <translation>Aucun</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="802" />
+            <source>Basic</source>
+            <translation>Basique</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="802" />
+            <source>Full</source>
+            <translation>Complet</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="803" />
+            <source>Optimization:</source>
+            <translation>Optimisation :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="808" />
+            <source>Build Options</source>
+            <translation>Options de compilation</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="812" />
+            <source>Clean Build:</source>
+            <translation>Compilation propre :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="815" />
+            <source>Verbose Output:</source>
+            <translation>Sortie détaillée :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="827" />
+            <source>Build</source>
+            <translation>Compiler</translation>
+        </message>
+    </context>
+    <context>
+        <name>CreateAssetDialog</name>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="234" />
+            <source>Create {0}</source>
+            <translation>Créer {0}</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="243" />
+            <source>&lt;h3&gt;Create New {0}&lt;/h3&gt;</source>
+            <translation>&lt;h3&gt;Créer un nouveau {0}&lt;/h3&gt;</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="247" />
+            <source>Asset name:</source>
+            <translation>Nom de la ressource :</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="251" />
+            <source>Enter {0} name...</source>
+            <translation>Entrez le nom de {0}...</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="258" />
+            <source>Cancel</source>
+            <translation>Prekliči</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="262" />
+            <source>Create</source>
+            <translation>Ustvari</translation>
+        </message>
+        <message>
+            <location filename="../widgets/asset_tree/asset_dialogs.py" line="289" />
+            <source>Invalid Name</source>
+            <translation>Nom invalide</translation>
+        </message>
+    </context>
+    <context>
+        <name>ExportProjectDialog</name>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="405" />
+            <source>Export Project</source>
+            <translation>Exporter le projet</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="416" />
+            <source>Export Target</source>
+            <translation>Cible d'export</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="421" />
+            <source>Desktop Executable (.exe/.app)</source>
+            <translation>Exécutable bureau (.exe/.app)</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="422" />
+            <source>Web (HTML5)</source>
+            <translation>Web (HTML5)</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="423" />
+            <source>Mobile (Kivy)</source>
+            <translation>Mobile (Kivy)</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="424" />
+            <source>Mobile (APK)</source>
+            <translation>Mobile (APK)</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="425" />
+            <source>Source Code (.zip)</source>
+            <translation>Code source (.zip)</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="427" />
+            <source>Target Platform:</source>
+            <translation>Plateforme cible :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="432" />
+            <source>Choose export location...</source>
+            <translation>Choisir l'emplacement d'export...</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="434" />
+            <source>Browse...</source>
+            <translation>Parcourir...</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="439" />
+            <source>Output Location:</source>
+            <translation>Emplacement de sortie :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="444" />
+            <source>Export Options</source>
+            <translation>Options d'export</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="449" />
+            <source>Include Assets:</source>
+            <translation>Inclure les ressources :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="453" />
+            <source>Optimize for Release:</source>
+            <translation>Optimiser pour la version finale :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="457" />
+            <source>Include Debug Info:</source>
+            <translation>Inclure les informations de débogage :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="474" />
+            <source>Export</source>
+            <translation>Izvozi</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="496" />
+            <source>Choose Export Location</source>
+            <translation>Choisir l'emplacement d'export</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="510" />
+            <source>Invalid Output</source>
+            <translation>Sortie invalide</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="510" />
+            <source>Please choose an export location.</source>
+            <translation>Veuillez choisir un emplacement d'export.</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="550" />
+            <location filename="../dialogs/project_dialogs.py" line="580" />
+            <location filename="../dialogs/project_dialogs.py" line="621" />
+            <location filename="../dialogs/project_dialogs.py" line="661" />
+            <location filename="../dialogs/project_dialogs.py" line="666" />
+            <location filename="../dialogs/project_dialogs.py" line="684" />
+            <location filename="../dialogs/project_dialogs.py" line="765" />
+            <source>Export Error</source>
+            <translation>Erreur d'export</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="551" />
+            <location filename="../dialogs/project_dialogs.py" line="662" />
+            <source>Could not access project manager</source>
+            <translation>Impossible d'accéder au gestionnaire de projet</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="560" />
+            <location filename="../dialogs/project_dialogs.py" line="599" />
+            <location filename="../dialogs/project_dialogs.py" line="641" />
+            <location filename="../dialogs/project_dialogs.py" line="737" />
+            <source>Export Successful</source>
+            <translation>Export réussi</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="561" />
+            <source>Kivy project exported to:
 {0}
 
 Would you like to open the export directory?</source>
-      <translation>Kivy projekt izvožen v:
+            <translation>Projet Kivy exporté vers :
 {0}
 
-Ali želite odpreti mapo izvoza?</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="703" />
-      <location filename="../dialogs/project_dialogs.py" line="605" />
-      <location filename="../dialogs/project_dialogs.py" line="563" />
-      <location filename="../dialogs/project_dialogs.py" line="522" />
-      <source>Export Failed</source>
-      <translation>Izvoz ni uspel</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="523" />
-      <source>Failed to export project. Check console for errors.</source>
-      <translation>Izvoz projekta ni uspel. Preverite konzolo za napake.</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="528" />
-      <source>Error during export:
+Voulez-vous ouvrir le répertoire d'export ?</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="575" />
+            <location filename="../dialogs/project_dialogs.py" line="616" />
+            <location filename="../dialogs/project_dialogs.py" line="658" />
+            <location filename="../dialogs/project_dialogs.py" line="756" />
+            <source>Export Failed</source>
+            <translation>Échec de l'export</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="576" />
+            <source>Failed to export project. Check console for errors.</source>
+            <translation>Échec de l'export du projet. Vérifiez la console pour les erreurs.</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="581" />
+            <source>Error during export:
 {0}
 
 {1}</source>
-      <translation>Napaka med izvozom:
+            <translation>Erreur lors de l'export :
 {0}
 
 {1}</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="547" />
-      <source>HTML5 game exported to:
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="600" />
+            <source>HTML5 game exported to:
 {0}
 
 Would you like to open the export directory?</source>
-      <translation>HTML5 igra izvožena v:
+            <translation>Jeu HTML5 exporté vers :
 {0}
 
-Ali želite odpreti mapo izvoza?</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="564" />
-      <source>Failed to export HTML5 game. Check console for errors.</source>
-      <translation>Izvoz HTML5 igre ni uspel. Preverite konzolo za napake.</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="569" />
-      <source>Error during HTML5 export:
+Voulez-vous ouvrir le répertoire d'export ?</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="617" />
+            <source>Failed to export HTML5 game. Check console for errors.</source>
+            <translation>Échec de l'export du jeu HTML5. Vérifiez la console pour les erreurs.</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="622" />
+            <source>Error during HTML5 export:
 {0}
 
 {1}</source>
-      <translation>Napaka med izvozom HTML5:
+            <translation>Erreur lors de l'export HTML5 :
 {0}
 
 {1}</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="589" />
-      <source>Project exported to:
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="642" />
+            <source>Project exported to:
 {0}
 
 Would you like to open the export directory?</source>
-      <translation>Projekt izvožen v:
+            <translation>Projet exporté vers :
 {0}
 
-Ali želite odpreti mapo izvoza?</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="606" />
-      <source>Failed to export ZIP file. Check console for errors.</source>
-      <translation>Izvoz ZIP datoteke ni uspel. Preverite konzolo za napake.</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="614" />
-      <source>Error during ZIP export:
+Voulez-vous ouvrir le répertoire d'export ?</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="659" />
+            <source>Failed to export ZIP file. Check console for errors.</source>
+            <translation>Échec de l'export du fichier ZIP. Vérifiez la console pour les erreurs.</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="667" />
+            <source>Error during ZIP export:
 {0}
 
 {1}</source>
-      <translation>Napaka med izvozom ZIP:
+            <translation>Erreur lors de l'export ZIP :
 {0}
 
 {1}</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="632" />
-      <source>Project file not found: {0}</source>
-      <translation>Datoteka projekta ni najdena: {0}</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="648" />
-      <source>Initializing export...</source>
-      <translation>Inicializacija izvoza...</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="649" />
-      <source>Cancel</source>
-      <translation>Prekliči</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="653" />
-      <source>Exporting Executable</source>
-      <translation>Izvažanje izvršljive datoteke</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="685" />
-      <source>Executable exported to:
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="685" />
+            <source>Project file not found: {0}</source>
+            <translation>Fichier de projet introuvable : {0}</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="701" />
+            <source>Initializing export...</source>
+            <translation>Initialisation de l'export...</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="702" />
+            <source>Cancel</source>
+            <translation>Prekliči</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="706" />
+            <source>Exporting Executable</source>
+            <translation>Export de l'exécutable</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="738" />
+            <source>Executable exported to:
 {0}
 
 Would you like to open the export directory?</source>
-      <translation>Izvršljiva datoteka izvožena v:
+            <translation>Exécutable exporté vers :
 {0}
 
-Ali želite odpreti mapo izvoza?</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="704" />
-      <source>Failed to export executable:
+Voulez-vous ouvrir le répertoire d'export ?</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="757" />
+            <source>Failed to export executable:
 
 {0}</source>
-      <translation>Izvoz izvršljive datoteke ni uspel:
+            <translation>Échec de l'export de l'exécutable :
 
 {0}</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="713" />
-      <source>Error during executable export:
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="766" />
+            <source>Error during executable export:
 {0}
 
 {1}</source>
-      <translation>Napaka med izvozom izvršljive datoteke:
+            <translation>Erreur lors de l'export de l'exécutable :
 {0}
 
 {1}</translation>
-    </message>
-  </context>
-  <context>
-    <name>ImportAssetsDialog</name>
-    <message>
-      <location filename="../dialogs/import_dialogs.py" line="23" />
-      <source>Import Assets</source>
-      <translation>Uvozi sredstva</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/import_dialogs.py" line="91" />
-      <location filename="../dialogs/import_dialogs.py" line="33" />
-      <source>Select Files to Import</source>
-      <translation>Izberite datoteke za uvoz</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/import_dialogs.py" line="41" />
-      <source>Add Files...</source>
-      <translation>Dodaj datoteke...</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/import_dialogs.py" line="45" />
-      <source>Add Folder...</source>
-      <translation>Dodaj mapo...</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/import_dialogs.py" line="49" />
-      <source>Clear All</source>
-      <translation>Počisti vse</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/import_dialogs.py" line="58" />
-      <source>Import Options</source>
-      <translation>Možnosti uvoza</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/import_dialogs.py" line="61" />
-      <source>Auto-detect asset type</source>
-      <translation>Samodejno zazna tip sredstva</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/import_dialogs.py" line="65" />
-      <source>Copy files to project folder</source>
-      <translation>Kopiraj datoteke v mapo projekta</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/import_dialogs.py" line="74" />
-      <source>Cancel</source>
-      <translation>Prekliči</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/import_dialogs.py" line="77" />
-      <source>Import</source>
-      <translation>Uvozi</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/import_dialogs.py" line="93" />
-      <source>Images (*.png *.jpg *.jpeg *.bmp *.gif);;Sounds (*.wav *.mp3 *.ogg);;All Files (*)</source>
-      <translation>Slike (*.png *.jpg *.jpeg *.bmp *.gif);;Zvoki (*.wav *.mp3 *.ogg);;Vse datoteke (*)</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/import_dialogs.py" line="108" />
-      <source>Select Folder</source>
-      <translation>Izberi mapo</translation>
-    </message>
-  </context>
-  <context>
-    <name>KeySelectorDialog</name>
-    <message>
-      <location filename="../dialogs/key_selector_dialog.py" line="29" />
-      <source>Select Key</source>
-      <translation>Izberi tipko</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/key_selector_dialog.py" line="35" />
-      <source>Select which key to respond to:</source>
-      <translation>Izberite, na katero tipko se odzivati:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/key_selector_dialog.py" line="41" />
-      <source>Search:</source>
-      <translation>Iskanje:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/key_selector_dialog.py" line="45" />
-      <source>Type to filter keys...</source>
-      <translation>Vnesite za filtriranje tipk...</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/key_selector_dialog.py" line="134" />
-      <source>No Selection</source>
-      <translation>Ni izbire</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/key_selector_dialog.py" line="135" />
-      <source>Please select a key first.</source>
-      <translation>Prosimo, najprej izberite tipko.</translation>
-    </message>
-  </context>
-  <context>
-    <name>MouseEventSelectorDialog</name>
-    <message>
-      <location filename="../dialogs/mouse_event_selector_dialog.py" line="28" />
-      <source>Select Mouse Event</source>
-      <translation>Izberi dogodek miške</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/mouse_event_selector_dialog.py" line="34" />
-      <source>Select which mouse event to respond to:</source>
-      <translation>Izberite, na kateri dogodek miške se odzivati:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/mouse_event_selector_dialog.py" line="40" />
-      <source>Search:</source>
-      <translation>Iskanje:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/mouse_event_selector_dialog.py" line="44" />
-      <source>Type to filter events...</source>
-      <translation>Vnesite za filtriranje dogodkov...</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/mouse_event_selector_dialog.py" line="141" />
-      <source>No Selection</source>
-      <translation>Ni izbire</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/mouse_event_selector_dialog.py" line="142" />
-      <source>Please select a mouse event first.</source>
-      <translation>Prosimo, najprej izberite dogodek miške.</translation>
-    </message>
-  </context>
-  <context>
-    <name>NewProjectDialog</name>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="27" />
-      <source>New Project</source>
-      <translation>Nov projekt</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="37" />
-      <source>Project Details</source>
-      <translation>Podrobnosti projekta</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="41" />
-      <source>Enter project name...</source>
-      <translation>Vnesite ime projekta...</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="42" />
-      <source>Project Name:</source>
-      <translation>Ime projekta:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="46" />
-      <source>Choose project location...</source>
-      <translation>Izberite lokacijo projekta...</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="48" />
-      <source>Browse...</source>
-      <translation>Prebrskaj...</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="53" />
-      <source>Location:</source>
-      <translation>Lokacija:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="57" />
-      <source>Optional project description...</source>
-      <translation>Neobvezen opis projekta...</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="58" />
-      <source>Description:</source>
-      <translation>Opis:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="97" />
-      <source>Choose Project Location</source>
-      <translation>Izberite lokacijo projekta</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="110" />
-      <location filename="../dialogs/project_dialogs.py" line="106" />
-      <source>Invalid Input</source>
-      <translation>Neveljaven vnos</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="106" />
-      <source>Please enter a project name.</source>
-      <translation>Prosimo, vnesite ime projekta.</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="110" />
-      <source>Please choose a project location.</source>
-      <translation>Prosimo, izberite lokacijo projekta.</translation>
-    </message>
-  </context>
-  <context>
-    <name>OpenProjectDialog</name>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="138" />
-      <source>Open Project</source>
-      <translation>Odpri projekt</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="148" />
-      <source>Recent Projects</source>
-      <translation>Nedavni projekti</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="156" />
-      <source>Browse for Project</source>
-      <translation>Prebrskaj za projekt</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="160" />
-      <source>Select project file...</source>
-      <translation>Izberite datoteko projekta...</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="162" />
-      <source>Browse...</source>
-      <translation>Prebrskaj...</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="192" />
-      <source>Open PyGameMaker Project</source>
-      <translation>Odpri PyGameMaker projekt</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="193" />
-      <source>PyGameMaker Projects (*.json);;All Files (*)</source>
-      <translation>PyGameMaker projekti (*.json);;Vse datoteke (*)</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="214" />
-      <location filename="../dialogs/project_dialogs.py" line="210" />
-      <source>Invalid Input</source>
-      <translation>Neveljaven vnos</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="210" />
-      <source>Please enter a project name.</source>
-      <translation>Prosimo, vnesite ime projekta.</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="214" />
-      <source>Please choose a project location.</source>
-      <translation>Prosimo, izberite lokacijo projekta.</translation>
-    </message>
-  </context>
-  <context>
-    <name>ProjectSettingsDialog</name>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="254" />
-      <source>Project Settings</source>
-      <translation>Nastavitve projekta</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="264" />
-      <source>Project Information</source>
-      <translation>Informacije o projektu</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="268" />
-      <source>Project Name:</source>
-      <translation>Ime projekta:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="272" />
-      <source>Project Path:</source>
-      <translation>Pot projekta:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="276" />
-      <source>Description:</source>
-      <translation>Opis:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="280" />
-      <source>Settings</source>
-      <translation>Nastavitve</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="284" />
-      <source>Auto-save:</source>
-      <translation>Samodejno shranjevanje:</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="287" />
-      <source>Desktop</source>
-      <translation>Namizje</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="287" />
-      <source>Web</source>
-      <translation>Splet</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="287" />
-      <source>Mobile</source>
-      <translation>Mobilno</translation>
-    </message>
-    <message>
-      <location filename="../dialogs/project_dialogs.py" line="288" />
-      <source>Target Platform:</source>
-      <translation>Ciljna platforma:</translation>
-    </message>
-  </context>
-  <context>
-    <name>SpriteStripDialog</name>
-    <message>
-      <source>Configure Sprite Strip</source>
-      <translation>Konfiguriraj trak sprite</translation>
-    </message>
-    <message>
-      <source>Sprite Sheet Preview</source>
-      <translation>Predogled lista sprite</translation>
-    </message>
-    <message>
-      <source>Frame:</source>
-      <translation>Okvir:</translation>
-    </message>
-    <message>
-      <source>Animation Preview</source>
-      <translation>Predogled animacije</translation>
-    </message>
-    <message>
-      <source>Play</source>
-      <translation>Predvajaj</translation>
-    </message>
-    <message>
-      <source>Stop</source>
-      <translation>Ustavi</translation>
-    </message>
-    <message>
-      <source>Image Info</source>
-      <translation>Info o sliki</translation>
-    </message>
-    <message>
-      <source>Width:</source>
-      <translation>Širina:</translation>
-    </message>
-    <message>
-      <source>Height:</source>
-      <translation>Višina:</translation>
-    </message>
-    <message>
-      <source>Frame Configuration</source>
-      <translation>Konfiguracija okvirja</translation>
-    </message>
-    <message>
-      <source>Horizontal Strip</source>
-      <translation>Vodoravni trak</translation>
-    </message>
-    <message>
-      <source>Vertical Strip</source>
-      <translation>Navpični trak</translation>
-    </message>
-    <message>
-      <source>Grid (Rows x Columns)</source>
-      <translation>Mreža (Vrstice x Stolpci)</translation>
-    </message>
-    <message>
-      <source>Strip Type:</source>
-      <translation>Vrsta traku:</translation>
-    </message>
-    <message>
-      <source>Frame Width:</source>
-      <translation>Širina okvirja:</translation>
-    </message>
-    <message>
-      <source>Frame Height:</source>
-      <translation>Višina okvirja:</translation>
-    </message>
-    <message>
-      <source>Columns:</source>
-      <translation>Stolpci:</translation>
-    </message>
-    <message>
-      <source>Rows:</source>
-      <translation>Vrstice:</translation>
-    </message>
-    <message>
-      <source>Total Frames:</source>
-      <translation>Skupno okvirjev:</translation>
-    </message>
-    <message>
-      <source>Animation Settings</source>
-      <translation>Nastavitve animacije</translation>
-    </message>
-    <message>
-      <source>Animation Speed:</source>
-      <translation>Hitrost animacije:</translation>
-    </message>
-    <message>
-      <source>Cancel</source>
-      <translation>Prekliči</translation>
-    </message>
-    <message>
-      <source>OK</source>
-      <translation>V redu</translation>
-    </message>
-  </context>
-  </TS>
+        </message>
+    </context>
+    <context>
+        <name>ImportAssetsDialog</name>
+        <message>
+            <location filename="../dialogs/import_dialogs.py" line="22" />
+            <source>Import Assets</source>
+            <translation>Importer des ressources</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/import_dialogs.py" line="32" />
+            <location filename="../dialogs/import_dialogs.py" line="90" />
+            <source>Select Files to Import</source>
+            <translation>Sélectionner les fichiers à importer</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/import_dialogs.py" line="40" />
+            <source>Add Files...</source>
+            <translation>Ajouter des fichiers...</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/import_dialogs.py" line="44" />
+            <source>Add Folder...</source>
+            <translation>Ajouter un dossier...</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/import_dialogs.py" line="48" />
+            <source>Clear All</source>
+            <translation>Tout effacer</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/import_dialogs.py" line="57" />
+            <source>Import Options</source>
+            <translation>Options d'importation</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/import_dialogs.py" line="60" />
+            <source>Auto-detect asset type</source>
+            <translation>Détecter automatiquement le type de ressource</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/import_dialogs.py" line="64" />
+            <source>Copy files to project folder</source>
+            <translation>Copier les fichiers dans le dossier du projet</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/import_dialogs.py" line="73" />
+            <source>Cancel</source>
+            <translation>Prekliči</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/import_dialogs.py" line="76" />
+            <source>Import</source>
+            <translation>Uvozi</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/import_dialogs.py" line="92" />
+            <source>Images (*.png *.jpg *.jpeg *.bmp *.gif);;Sounds (*.wav *.mp3 *.ogg);;All Files (*)</source>
+            <translation>Images (*.png *.jpg *.jpeg *.bmp *.gif);;Sons (*.wav *.mp3 *.ogg);;Tous les fichiers (*)</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/import_dialogs.py" line="107" />
+            <source>Select Folder</source>
+            <translation>Sélectionner un dossier</translation>
+        </message>
+    </context>
+    <context>
+        <name>KeySelectorDialog</name>
+        <message>
+            <location filename="../dialogs/key_selector_dialog.py" line="29" />
+            <source>Select Key</source>
+            <translation>Sélectionner une touche</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/key_selector_dialog.py" line="35" />
+            <source>Select which key to respond to:</source>
+            <translation>Sélectionner la touche à laquelle répondre :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/key_selector_dialog.py" line="41" />
+            <source>Search:</source>
+            <translation>Rechercher :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/key_selector_dialog.py" line="45" />
+            <source>Type to filter keys...</source>
+            <translation>Tapez pour filtrer les touches...</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/key_selector_dialog.py" line="134" />
+            <source>No Selection</source>
+            <translation>Aucune sélection</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/key_selector_dialog.py" line="135" />
+            <source>Please select a key first.</source>
+            <translation>Veuillez d'abord sélectionner une touche.</translation>
+        </message>
+    </context>
+    <context>
+        <name>MouseEventSelectorDialog</name>
+        <message>
+            <location filename="../dialogs/mouse_event_selector_dialog.py" line="28" />
+            <source>Select Mouse Event</source>
+            <translation>Sélectionner un événement de souris</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/mouse_event_selector_dialog.py" line="34" />
+            <source>Select which mouse event to respond to:</source>
+            <translation>Sélectionner l'événement de souris auquel répondre :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/mouse_event_selector_dialog.py" line="40" />
+            <source>Search:</source>
+            <translation>Rechercher :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/mouse_event_selector_dialog.py" line="44" />
+            <source>Type to filter events...</source>
+            <translation>Tapez pour filtrer les événements...</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/mouse_event_selector_dialog.py" line="141" />
+            <source>No Selection</source>
+            <translation>Aucune sélection</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/mouse_event_selector_dialog.py" line="142" />
+            <source>Please select a mouse event first.</source>
+            <translation>Veuillez d'abord sélectionner un événement de souris.</translation>
+        </message>
+    </context>
+    <context>
+        <name>NewProjectDialog</name>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="24" />
+            <source>New Project</source>
+            <translation>Nouveau projet</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="34" />
+            <source>Project Details</source>
+            <translation>Détails du projet</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="38" />
+            <source>Enter project name...</source>
+            <translation>Entrez le nom du projet...</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="39" />
+            <source>Project Name:</source>
+            <translation>Nom du projet :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="43" />
+            <source>Choose project location...</source>
+            <translation>Choisir l'emplacement du projet...</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="45" />
+            <source>Browse...</source>
+            <translation>Parcourir...</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="50" />
+            <source>Location:</source>
+            <translation>Emplacement :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="54" />
+            <source>Optional project description...</source>
+            <translation>Description optionnelle du projet...</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="55" />
+            <source>Description:</source>
+            <translation>Description :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="94" />
+            <source>Choose Project Location</source>
+            <translation>Choisir l'emplacement du projet</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="103" />
+            <location filename="../dialogs/project_dialogs.py" line="107" />
+            <source>Invalid Input</source>
+            <translation>Entrée invalide</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="103" />
+            <source>Please enter a project name.</source>
+            <translation>Veuillez entrer un nom de projet.</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="107" />
+            <source>Please choose a project location.</source>
+            <translation>Veuillez choisir un emplacement pour le projet.</translation>
+        </message>
+    </context>
+    <context>
+        <name>OpenProjectDialog</name>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="135" />
+            <source>Open Project</source>
+            <translation>Ouvrir un projet</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="145" />
+            <source>Recent Projects</source>
+            <translation>Nedavni projekti</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="153" />
+            <source>Browse for Project</source>
+            <translation>Parcourir pour le projet</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="157" />
+            <source>Select project file...</source>
+            <translation>Sélectionner un fichier de projet...</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="159" />
+            <source>Browse...</source>
+            <translation>Parcourir...</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="189" />
+            <source>Open PyGameMaker Project</source>
+            <translation>Ouvrir un projet PyGameMaker</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="190" />
+            <source>PyGameMaker Projects (*.json);;All Files (*)</source>
+            <translation>Projets PyGameMaker (*.json);;Tous les fichiers (*)</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="207" />
+            <location filename="../dialogs/project_dialogs.py" line="211" />
+            <source>Invalid Input</source>
+            <translation>Entrée invalide</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="207" />
+            <source>Please enter a project name.</source>
+            <translation>Veuillez entrer un nom de projet.</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="211" />
+            <source>Please choose a project location.</source>
+            <translation>Veuillez choisir un emplacement pour le projet.</translation>
+        </message>
+    </context>
+    <context>
+        <name>ProjectSettingsDialog</name>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="251" />
+            <source>Project Settings</source>
+            <translation>Paramètres du projet</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="261" />
+            <source>Project Information</source>
+            <translation>Informations sur le projet</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="265" />
+            <source>Project Name:</source>
+            <translation>Nom du projet :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="269" />
+            <source>Project Path:</source>
+            <translation>Chemin du projet :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="273" />
+            <source>Description:</source>
+            <translation>Description :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="277" />
+            <source>Settings</source>
+            <translation>Nastavitve</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="281" />
+            <source>Auto-save:</source>
+            <translation>Sauvegarde automatique :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="284" />
+            <source>Desktop</source>
+            <translation>Bureau</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="284" />
+            <source>Web</source>
+            <translation>Web</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="284" />
+            <source>Mobile</source>
+            <translation>Mobile</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="285" />
+            <source>Target Platform:</source>
+            <translation>Plateforme cible :</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="290" />
+            <source>Game Settings</source>
+            <translation>Nastavitve igre</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="296" />
+            <source>Starting Lives:</source>
+            <translation>Začetna življenja:</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="299" />
+            <source>Show Lives in Caption:</source>
+            <translation>Prikaži življenja v naslovu:</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="304" />
+            <source>Starting Score:</source>
+            <translation>Začetni rezultat:</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="307" />
+            <source>Show Score in Caption:</source>
+            <translation>Prikaži rezultat v naslovu:</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="312" />
+            <source>Starting Health:</source>
+            <translation>Začetno zdravje:</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/project_dialogs.py" line="315" />
+            <source>Show Health in Caption:</source>
+            <translation>Prikaži zdravje v naslovu:</translation>
+        </message>
+    </context>
+    <context>
+        <name>SpriteStripDialog</name>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="208" />
+            <source>Configure Sprite Strip</source>
+            <translation>Nastavi trak spritov</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="221" />
+            <source>Sprite Sheet Preview</source>
+            <translation>Predogled lista spritov</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="229" />
+            <source>Frame:</source>
+            <translation>Okvir:</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="241" />
+            <source>Animation Preview</source>
+            <translation>Predogled animacije</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="248" />
+            <source>Play</source>
+            <translation>Predvajaj</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="250" />
+            <source>Stop</source>
+            <translation>Ustavi</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="263" />
+            <source>Image Info</source>
+            <translation>Info o sliki</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="267" />
+            <source>Width:</source>
+            <translation>Širina:</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="268" />
+            <source>Height:</source>
+            <translation>Višina:</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="272" />
+            <source>Frame Configuration</source>
+            <translation>Nastavitev okvirjev</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="277" />
+            <source>Horizontal Strip</source>
+            <translation>Vodoravni trak</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="278" />
+            <source>Vertical Strip</source>
+            <translation>Navpični trak</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="279" />
+            <source>Grid (Rows x Columns)</source>
+            <translation>Mreža (vrstice x stolpci)</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="281" />
+            <source>Strip Type:</source>
+            <translation>Vrsta traku:</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="288" />
+            <source>Frame Width:</source>
+            <translation>Širina okvirja:</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="294" />
+            <source>Frame Height:</source>
+            <translation>Višina okvirja:</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="301" />
+            <source>Columns:</source>
+            <translation>Stolpci:</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="307" />
+            <source>Rows:</source>
+            <translation>Vrstice:</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="311" />
+            <source>Total Frames:</source>
+            <translation>Skupaj okvirjev:</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="316" />
+            <source>Animation Settings</source>
+            <translation>Nastavitve animacije</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="324" />
+            <source>Animation Speed:</source>
+            <translation>Hitrost animacije:</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="332" />
+            <source>Cancel</source>
+            <translation>Prekliči</translation>
+        </message>
+        <message>
+            <location filename="../dialogs/sprite_strip_dialog.py" line="334" />
+            <source>OK</source>
+            <translation>V redu</translation>
+        </message>
+    </context>
+    <context>
+        <name>TutorialDialog</name>
+        <message>
+            <location filename="../widgets/tutorial_dialog.py" line="25" />
+            <source>Tutorials</source>
+            <translation>Vadnice</translation>
+        </message>
+        <message>
+            <location filename="../widgets/tutorial_dialog.py" line="62" />
+            <source>&lt;h2&gt;PyGameMaker Tutorials&lt;/h2&gt;</source>
+            <translation>&lt;h2&gt;PyGameMaker vadnice&lt;/h2&gt;</translation>
+        </message>
+        <message>
+            <location filename="../widgets/tutorial_dialog.py" line="66" />
+            <source>Double-click a tutorial to start:</source>
+            <translation>Dvokliknite vadnico za začetek:</translation>
+        </message>
+        <message>
+            <location filename="../widgets/tutorial_dialog.py" line="85" />
+            <source>Tip: Check the documentation (F1) for quick help!</source>
+            <translation>Nasvet: Pritisnite F1 za hitro pomoč!</translation>
+        </message>
+        <message>
+            <location filename="../widgets/tutorial_dialog.py" line="93" />
+            <source>Close</source>
+            <translation>Zapri</translation>
+        </message>
+        <message>
+            <location filename="../widgets/tutorial_dialog.py" line="102" />
+            <source>Select a tutorial to see its description.</source>
+            <translation>Izberite vadnico za ogled njenega opisa.</translation>
+        </message>
+        <message>
+            <location filename="../widgets/tutorial_dialog.py" line="105" />
+            <source>No tutorials folder found</source>
+            <translation>Mapa z vadnicami ni najdena</translation>
+        </message>
+        <message>
+            <location filename="../widgets/tutorial_dialog.py" line="144" />
+            <source>No tutorials available</source>
+            <translation>Ni razpoložljivih vadnic</translation>
+        </message>
+    </context>
+    <context>
+        <name>MessageTranslationsDialog</name>
+        <message>
+            <source>Message Translations</source>
+            <translation>Prevodi sporočil</translation>
+        </message>
+        <message>
+            <source>Default message (English):</source>
+            <translation>Privzeto sporočilo (angleščina):</translation>
+        </message>
+        <message>
+            <source>Translation for {0}</source>
+            <translation>Prevod za {0}</translation>
+        </message>
+    </context>
+    <context>
+        <name>ThymioActionSelector</name>
+        <message>
+            <source>Select Thymio Action</source>
+            <translation>Izberite dejanje Thymio</translation>
+        </message>
+        <message>
+            <source>Select a Thymio action to add:</source>
+            <translation>Izberite dejanje Thymio za dodajanje:</translation>
+        </message>
+        <message>
+            <source>Click on the robot to filter actions, or select from the list below.</source>
+            <translation>Kliknite na robota za filtriranje dejanj ali izberite s spodnjega seznama.</translation>
+        </message>
+        <message>
+            <source>All</source>
+            <translation>Vse</translation>
+        </message>
+        <message>
+            <source>Search:</source>
+            <translation>Iskanje:</translation>
+        </message>
+        <message>
+            <source>Type to filter actions...</source>
+            <translation>Tipkajte za filtriranje dejanj...</translation>
+        </message>
+        <message>
+            <source>Configure &amp;&amp; Add</source>
+            <translation>Nastavi &amp;&amp; dodaj</translation>
+        </message>
+        <message>
+            <source>Add Action</source>
+            <translation>Dodaj dejanje</translation>
+        </message>
+        <message>
+            <source>No Selection</source>
+            <translation>Ni izbire</translation>
+        </message>
+        <message>
+            <source>Please select a Thymio action first.</source>
+            <translation>Najprej izberite dejanje Thymio.</translation>
+        </message>
+    </context>
+    <context>
+        <name>ThymioConfigDialog</name>
+        <message>
+            <source>Configure Thymio Events &amp; Actions</source>
+            <translation>Nastavi dogodke in dejanja Thymio</translation>
+        </message>
+        <message>
+            <source>Preset:</source>
+            <translation>Prednastavitev:</translation>
+        </message>
+        <message>
+            <source>Thymio Full (All Thymio Blocks)</source>
+            <translation>Thymio polno (vsi bloki Thymio)</translation>
+        </message>
+        <message>
+            <source>Thymio Basic (Buttons + Motors)</source>
+            <translation>Thymio osnovno (gumbi + motorji)</translation>
+        </message>
+        <message>
+            <source>Thymio Sensors</source>
+            <translation>Senzorji Thymio</translation>
+        </message>
+        <message>
+            <source>Custom</source>
+            <translation>Po meri</translation>
+        </message>
+        <message>
+            <source>Select Thymio blocks to enable:</source>
+            <translation>Izberite bloke Thymio za omogočanje:</translation>
+        </message>
+        <message>
+            <source>Block</source>
+            <translation>Blok</translation>
+        </message>
+        <message>
+            <source>Description</source>
+            <translation>Opis</translation>
+        </message>
+        <message>
+            <source>Select All</source>
+            <translation>Izberi vse</translation>
+        </message>
+        <message>
+            <source>Select None</source>
+            <translation>Počisti izbor</translation>
+        </message>
+        <message>
+            <source>Save</source>
+            <translation>Shrani</translation>
+        </message>
+        <message>
+            <source>Cancel</source>
+            <translation>Prekliči</translation>
+        </message>
+        <message>
+            <source>{0} blocks</source>
+            <translation>{0} blokov</translation>
+        </message>
+        <message>
+            <source>[Not implemented] {0}</source>
+            <translation>[Ni implementirano] {0}</translation>
+        </message>
+        <message>
+            <source>Requires: {0}</source>
+            <translation>Zahteva: {0}</translation>
+        </message>
+        <message>
+            <source>⚠️ Warning: Some blocks are missing dependencies:
+{0}</source>
+            <translation>⚠️ Opozorilo: nekaterim blokom manjkajo odvisnosti:
+{0}</translation>
+        </message>
+        <message>
+            <source>{0} Thymio blocks, {1} categories</source>
+            <translation>{0} blokov Thymio, {1} kategorij</translation>
+        </message>
+        <message>
+            <source>Missing Dependencies</source>
+            <translation>Manjkajoče odvisnosti</translation>
+        </message>
+        <message>
+            <source>Some enabled Thymio blocks are missing their dependencies. The blocks may not work correctly.
+
+Do you want to save anyway?</source>
+            <translation>Nekaterim omogočenim blokom Thymio manjkajo odvisnosti. Bloki morda ne bodo delovali pravilno.
+
+Želite vseeno shraniti?</translation>
+        </message>
+    </context>
+    <context>
+        <name>ThymioEventSelector</name>
+        <message>
+            <source>Select Thymio Event</source>
+            <translation>Izberite dogodek Thymio</translation>
+        </message>
+        <message>
+            <source>Select a Thymio event to respond to:</source>
+            <translation>Izberite dogodek Thymio za odziv:</translation>
+        </message>
+        <message>
+            <source>Click on the robot to filter events, or select from the list below.</source>
+            <translation>Kliknite na robota za filtriranje dogodkov ali izberite s spodnjega seznama.</translation>
+        </message>
+        <message>
+            <source>All</source>
+            <translation>Vse</translation>
+        </message>
+        <message>
+            <source>Search:</source>
+            <translation>Iskanje:</translation>
+        </message>
+        <message>
+            <source>Type to filter events...</source>
+            <translation>Tipkajte za filtriranje dogodkov...</translation>
+        </message>
+        <message>
+            <source>Select Event</source>
+            <translation>Izberite dogodek</translation>
+        </message>
+        <message>
+            <source>No Selection</source>
+            <translation>Ni izbire</translation>
+        </message>
+        <message>
+            <source>Please select a Thymio event first.</source>
+            <translation>Najprej izberite dogodek Thymio.</translation>
+        </message>
+    </context>
+</TS>

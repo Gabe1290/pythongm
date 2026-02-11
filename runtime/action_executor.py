@@ -1059,6 +1059,38 @@ class ActionExecutor:
         instance.x = round(instance.x / grid_size) * grid_size
         instance.y = round(instance.y / grid_size) * grid_size
 
+    def execute_test_alignment_action(self, instance, parameters: Dict[str, Any]):
+        """Check if instance position is aligned to an hsnap x vsnap grid.
+
+        Returns True/False for conditional flow (like other test_ actions).
+        Supports separate horizontal and vertical snap sizes.
+
+        Parameters:
+            hsnap: Horizontal grid size (default 32)
+            vsnap: Vertical grid size (default 32)
+        """
+        hsnap = int(self._parse_value(str(parameters.get("hsnap", "32")), instance))
+        vsnap = int(self._parse_value(str(parameters.get("vsnap", "32")), instance))
+
+        if hsnap <= 0:
+            hsnap = 1
+        if vsnap <= 0:
+            vsnap = 1
+
+        tolerance = 0.5
+        x_rem = abs(instance.x % hsnap)
+        y_rem = abs(instance.y % vsnap)
+
+        x_close = (x_rem < tolerance) or (x_rem > hsnap - tolerance)
+        y_close = (y_rem < tolerance) or (y_rem > vsnap - tolerance)
+
+        if x_close and y_close:
+            instance.x = round(instance.x / hsnap) * hsnap
+            instance.y = round(instance.y / vsnap) * vsnap
+
+        on_grid = (instance.x % hsnap == 0) and (instance.y % vsnap == 0)
+        return on_grid
+
     def execute_if_on_grid_action(self, instance, parameters: Dict[str, Any]):
         """Check if instance is on grid - returns True/False for conditional flow
 
@@ -2631,6 +2663,15 @@ class ActionExecutor:
 
         if not code or not code.strip():
             return
+
+        # If the code is a bare identifier that matches a project script,
+        # delegate to execute_script (imported GMK files use execute_code
+        # for script calls since GML allows calling scripts without parens)
+        stripped = code.strip()
+        if stripped.isidentifier() and self.game_runner and self.game_runner.project_data:
+            scripts = self.game_runner.project_data.get('assets', {}).get('scripts', {})
+            if stripped in scripts:
+                return self.execute_execute_script_action(instance, {'script': stripped})
 
         # Create execution environment
         exec_globals = {
