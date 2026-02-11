@@ -78,3 +78,9 @@ scripts/complete_french_translations.py
 runtime/action_executor_legacy.py
 runtime/action_executor_new.py
 runtime/action_executor_refactored.py
+
+# Test project artifacts
+*.gmk
+my_project*/
+myaze_*/
+temp_*.java
