@@ -19,8 +19,8 @@ from .sprite_tools import BaseTool
 
 # Checkerboard tile size (in screen pixels)
 _CHECKER_SIZE = 8
-_CHECKER_LIGHT = QColor(204, 204, 204)
-_CHECKER_DARK = QColor(170, 170, 170)
+_CHECKER_LIGHT = QColor(255, 255, 255)
+_CHECKER_DARK = QColor(235, 235, 235)
 
 # Padding around the image (pixels, in content-space)
 _MARGIN = 32
@@ -197,7 +197,7 @@ class SpriteCanvas(QAbstractScrollArea):
         painter.setRenderHint(QPainter.Antialiasing, False)
 
         # Background
-        painter.fillRect(self.viewport().rect(), QColor(50, 50, 50))
+        painter.fillRect(self.viewport().rect(), QColor(200, 200, 200))
 
         img_w = self._image.width()
         img_h = self._image.height()

@@ -42,9 +42,8 @@ class WelcomeTab(QWidget):
         new_project_btn = QPushButton(self.tr("🆕 New Project (Ctrl+N)"))
         open_project_btn = QPushButton(self.tr("📂 Open Project (Ctrl+O)"))
         recent_projects_btn = QPushButton(self.tr("📋 Recent Projects"))
-        new_room_btn = QPushButton(self.tr("🏠 Create Room (Ctrl+R)"))
 
-        for btn in [new_project_btn, open_project_btn, recent_projects_btn, new_room_btn]:
+        for btn in [new_project_btn, open_project_btn, recent_projects_btn]:
             btn.setStyleSheet("QPushButton { padding: 8px; margin: 2px; text-align: left; }")
 
         # Connect buttons to main window actions
@@ -52,13 +51,11 @@ class WelcomeTab(QWidget):
             new_project_btn.clicked.connect(self.main_window.new_project)
             open_project_btn.clicked.connect(self.main_window.open_project)
             recent_projects_btn.clicked.connect(self.show_recent_projects_menu)
-            new_room_btn.clicked.connect(self.main_window.create_room)
 
         actions_layout.addWidget(actions_title)
         actions_layout.addWidget(new_project_btn)
         actions_layout.addWidget(open_project_btn)
         actions_layout.addWidget(recent_projects_btn)
-        actions_layout.addWidget(new_room_btn)
 
         # Store reference to recent projects button for menu positioning
         self.recent_projects_btn = recent_projects_btn
