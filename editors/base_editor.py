@@ -129,13 +129,12 @@ class BaseEditor(QWidget):
 
         self.toolbar.addSeparator()
 
-        # Undo/Redo actions
+        # Undo/Redo actions (no keyboard shortcuts — the IDE Edit menu
+        # owns Ctrl+Z / Ctrl+Y and delegates to the active editor)
         self.undo_action = self.toolbar.addAction(self.tr("↶ Undo"), self.undo_stack.undo)
-        self.undo_action.setShortcut(QKeySequence.Undo)
         self.undo_action.setEnabled(False)
 
         self.redo_action = self.toolbar.addAction(self.tr("↷ Redo"), self.undo_stack.redo)
-        self.redo_action.setShortcut(QKeySequence.Redo)
         self.redo_action.setEnabled(False)
 
         self.toolbar.addSeparator()
@@ -372,6 +371,16 @@ class BaseEditor(QWidget):
         """Update status message"""
         self.status_label.setText(message)
         self.status_changed.emit(message)
+
+    def undo(self):
+        """Undo the last operation (called by IDE Edit menu)."""
+        if self.undo_stack.canUndo():
+            self.undo_stack.undo()
+
+    def redo(self):
+        """Redo the last undone operation (called by IDE Edit menu)."""
+        if self.undo_stack.canRedo():
+            self.undo_stack.redo()
 
     def add_undo_command(self, command: EditorUndoCommand):
         """Add an undo command to the stack"""

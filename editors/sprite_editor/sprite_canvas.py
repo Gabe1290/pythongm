@@ -8,7 +8,7 @@ No external QScrollArea wrapper is needed.
 """
 
 from PySide6.QtWidgets import QAbstractScrollArea, QSizePolicy
-from PySide6.QtCore import Qt, Signal, QPoint, QRect, QSize
+from PySide6.QtCore import Qt, Signal, QPoint, QRect, QSize, QEvent
 from PySide6.QtGui import (
     QImage, QPainter, QColor, QPen, QWheelEvent,
     QMouseEvent, QPaintEvent, QKeyEvent
@@ -40,6 +40,13 @@ class SpriteCanvas(QAbstractScrollArea):
     color_picked = Signal(QColor)
     # Emitted when zoom changes (new zoom value)
     zoom_changed = Signal(int)
+    # Clipboard / key signals (forwarded to SpriteEditor)
+    copy_requested = Signal()
+    cut_requested = Signal()
+    paste_requested = Signal()
+    delete_requested = Signal()
+    key_pressed = Signal(int)  # forwards unhandled key for tool shortcuts
+    context_menu_requested = Signal(QPoint)  # right-click global pos
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -327,6 +334,10 @@ class SpriteCanvas(QAbstractScrollArea):
             self.canvas_modified.emit()
             self.viewport().update()
 
+    def contextMenuEvent(self, event):
+        self.context_menu_requested.emit(event.globalPos())
+        event.accept()
+
     def wheelEvent(self, event: QWheelEvent):
         if event.modifiers() & Qt.ControlModifier:
             old_zoom = self._zoom
@@ -353,3 +364,41 @@ class SpriteCanvas(QAbstractScrollArea):
         else:
             # Default: let QAbstractScrollArea scroll the viewport
             super().wheelEvent(event)
+
+    def event(self, event):
+        # Accept ShortcutOverride so Ctrl+C/X/V reach keyPressEvent
+        # instead of being consumed by the main window's Edit menu actions.
+        if event.type() == QEvent.ShortcutOverride:
+            key = event.key()
+            mods = event.modifiers()
+            if mods & Qt.ControlModifier and key in (Qt.Key_C, Qt.Key_X, Qt.Key_V):
+                event.accept()
+                return True
+            if key == Qt.Key_Delete:
+                event.accept()
+                return True
+        return super().event(event)
+
+    def keyPressEvent(self, event: QKeyEvent):
+        mods = event.modifiers()
+        key = event.key()
+        if mods & Qt.ControlModifier:
+            if key == Qt.Key_C:
+                self.copy_requested.emit()
+                event.accept()
+                return
+            elif key == Qt.Key_X:
+                self.cut_requested.emit()
+                event.accept()
+                return
+            elif key == Qt.Key_V:
+                self.paste_requested.emit()
+                event.accept()
+                return
+        if key == Qt.Key_Delete:
+            self.delete_requested.emit()
+            event.accept()
+            return
+        # Forward unhandled keys (tool shortcuts, Escape, etc.)
+        self.key_pressed.emit(key)
+        event.accept()

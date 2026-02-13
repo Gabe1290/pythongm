@@ -516,6 +516,9 @@ class EllipseTool(BaseTool):
 class SelectTool(BaseTool):
     name = "select"
 
+    # Class-level clipboard shared across instances
+    _clipboard = None  # QImage
+
     def __init__(self):
         super().__init__()
         self._start = None
@@ -529,6 +532,13 @@ class SelectTool(BaseTool):
     def on_press(self, image, x, y, color):
         # If clicking inside an existing floating selection, start dragging it
         if self._floating and self.selection_rect and self.selection_rect.contains(x, y):
+            self._dragging = True
+            self._drag_offset = QPoint(x - self.selection_rect.x(), y - self.selection_rect.y())
+            return
+
+        # If clicking inside a non-floating selection, auto-lift it to make it draggable
+        if not self._floating and self.selection_rect and self.selection_rect.contains(x, y):
+            self.lift_selection(image)
             self._dragging = True
             self._drag_offset = QPoint(x - self.selection_rect.x(), y - self.selection_rect.y())
             return
@@ -599,6 +609,59 @@ class SelectTool(BaseTool):
         self._float_origin = None
         self.selection_rect = None
         self._dragging = False
+
+    def delete_selection(self, image: QImage):
+        """Delete the selected area (fill with transparent)."""
+        if self._floating:
+            # Discard the floating pixels — they are already cut from the image
+            self._floating = None
+            self._float_origin = None
+            self.selection_rect = None
+            self._dragging = False
+            return True
+        if self.selection_rect:
+            r = self.selection_rect
+            transparent = QColor(0, 0, 0, 0)
+            for py in range(r.y(), r.y() + r.height()):
+                for px in range(r.x(), r.x() + r.width()):
+                    _set_pixel(image, px, py, transparent)
+            self.selection_rect = None
+            return True
+        return False
+
+    def copy_selection(self, image: QImage):
+        """Copy the selected area to the clipboard."""
+        if self._floating:
+            SelectTool._clipboard = self._floating.copy()
+            return True
+        if self.selection_rect:
+            r = self.selection_rect
+            SelectTool._clipboard = image.copy(r.x(), r.y(), r.width(), r.height())
+            return True
+        return False
+
+    def cut_selection(self, image: QImage):
+        """Copy the selected area to the clipboard then delete it."""
+        if self.copy_selection(image):
+            self.delete_selection(image)
+            return True
+        return False
+
+    def paste(self, image: QImage):
+        """Paste from clipboard as a new floating selection at top-left."""
+        if SelectTool._clipboard is None:
+            return False
+        # Commit any existing floating selection first
+        if self._floating:
+            self.commit(image)
+        self._floating = SelectTool._clipboard.copy()
+        self.selection_rect = QRect(0, 0, self._floating.width(), self._floating.height())
+        self._float_origin = QPoint(0, 0)
+        self._dragging = False
+        return True
+
+    def has_clipboard(self):
+        return SelectTool._clipboard is not None
 
     def has_floating(self):
         return self._floating is not None

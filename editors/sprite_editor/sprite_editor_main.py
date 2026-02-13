@@ -8,12 +8,14 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 
 from PySide6.QtWidgets import (
-    QVBoxLayout, QHBoxLayout, QSplitter, QWidget, QToolBar,
-    QLabel, QSpinBox, QSizePolicy, QMessageBox, QToolButton, QMenu,
+    QVBoxLayout, QHBoxLayout, QGridLayout, QSplitter, QWidget, QToolBar,
+    QLabel, QSpinBox, QSizePolicy, QMessageBox, QToolButton, QMenu, QFrame,
+    QComboBox,
 )
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QRect, QPoint
 from PySide6.QtGui import (
-    QImage, QColor, QUndoCommand, QAction, QActionGroup, QIcon
+    QImage, QColor, QUndoCommand, QAction, QActionGroup, QIcon,
+    QPainter, QPixmap, QPen, QBrush,
 )
 
 from editors.base_editor import BaseEditor, EditorUndoCommand
@@ -100,6 +102,14 @@ class SpriteEditor(BaseEditor):
         # Set default tool
         self._select_tool("pencil")
 
+        # Connect canvas key signals (avoids QShortcut conflicts with IDE Edit menu)
+        self.canvas.copy_requested.connect(self._shortcut_copy)
+        self.canvas.cut_requested.connect(self._shortcut_cut)
+        self.canvas.paste_requested.connect(self._shortcut_paste)
+        self.canvas.delete_requested.connect(self._shortcut_delete)
+        self.canvas.key_pressed.connect(self._on_canvas_key)
+        self.canvas.context_menu_requested.connect(self._show_canvas_context_menu)
+
     # ------------------------------------------------------------------
     # UI Setup
     # ------------------------------------------------------------------
@@ -109,23 +119,40 @@ class SpriteEditor(BaseEditor):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
-        # Add sprite-specific toolbar actions
-        self._add_tool_actions()
-
         # Vertical splitter: canvas area on top, frame timeline on bottom
         vsplitter = QSplitter(Qt.Vertical)
 
-        # Top part: color palette + centered square canvas
+        # Top part: left panel (tools + colors) + centered square canvas
         top_widget = QWidget()
         top_layout = QHBoxLayout(top_widget)
         top_layout.setContentsMargins(0, 0, 0, 0)
         top_layout.setSpacing(4)
 
-        # Left panel — color palette
+        # Left panel — tool box + color palette
+        left_panel = QWidget()
+        left_panel.setMaximumWidth(120)
+        left_layout = QVBoxLayout(left_panel)
+        left_layout.setContentsMargins(0, 0, 0, 0)
+        left_layout.setSpacing(4)
+
+        # Tool box frame
+        self._tool_frame = QFrame()
+        self._tool_frame.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
+        self._tool_grid = QGridLayout(self._tool_frame)
+        self._tool_grid.setContentsMargins(2, 2, 2, 2)
+        self._tool_grid.setSpacing(2)
+        left_layout.addWidget(self._tool_frame)
+
+        # Add tool buttons to grid and remaining actions to toolbar
+        self._add_tool_actions()
+
+        # Color palette
         self.color_palette = ColorPaletteWidget()
-        self.color_palette.setMaximumWidth(120)
         self.color_palette.color_selected.connect(self._on_color_selected)
-        top_layout.addWidget(self.color_palette)
+        left_layout.addWidget(self.color_palette)
+        left_layout.addStretch()
+
+        top_layout.addWidget(left_panel)
 
         # Center — square canvas (enforces width=height internally)
         self.canvas = SpriteCanvas()
@@ -150,7 +177,7 @@ class SpriteEditor(BaseEditor):
         layout.addWidget(vsplitter, 1)
 
     def _add_tool_actions(self):
-        """Add sprite-specific tool buttons to the base toolbar."""
+        """Add sprite-specific tool buttons with icons to the base toolbar."""
         # Tool action group (mutually exclusive)
         self.tool_group = QActionGroup(self)
         self.tool_group.setExclusive(True)
@@ -166,21 +193,52 @@ class SpriteEditor(BaseEditor):
             ("select", self.tr("Select"), self.tr("Rectangle selection (S)")),
         ]
 
-        for tool_id, label, tooltip in tool_defs:
-            action = QAction(label, self)
+        self._tool_buttons = {}
+
+        for i, (tool_id, label, tooltip) in enumerate(tool_defs):
+            icon = self._make_tool_icon(tool_id)
+            action = QAction(icon, label, self)
             action.setToolTip(tooltip)
             action.setCheckable(True)
             action.setData(tool_id)
             action.triggered.connect(lambda checked, tid=tool_id: self._select_tool(tid))
             self.tool_group.addAction(action)
-            self.toolbar.addAction(action)
+
+            btn = QToolButton()
+            btn.setDefaultAction(action)
+            btn.setFixedSize(28, 28)
+            btn.setIconSize(btn.size() * 0.7)
+            row, col = divmod(i, 4)
+            self._tool_grid.addWidget(btn, row, col)
+            self._tool_buttons[tool_id] = btn
+
             if tool_id == "pencil":
                 action.setChecked(True)
 
-        self.toolbar.addSeparator()
+        # Dropdown list alternative
+        self._tool_combo = QComboBox()
+        self._tool_combo.setToolTip(self.tr("Select tool from list"))
+        for tool_id, label, tooltip in tool_defs:
+            self._tool_combo.addItem(self._make_tool_icon(tool_id), label, tool_id)
+        self._tool_combo.currentIndexChanged.connect(self._on_tool_combo_changed)
+        self._tool_grid.addWidget(self._tool_combo, 2, 0, 1, 4)
 
-        # Filled mode toggle (for rect/ellipse)
-        self._filled_action = self.toolbar.addAction(self.tr("Filled"), self._toggle_filled)
+        # Brush size — below dropdown in tool panel
+        size_layout = QHBoxLayout()
+        size_layout.setContentsMargins(0, 0, 0, 0)
+        size_label = QLabel(self.tr("Size:"))
+        size_layout.addWidget(size_label)
+        self._size_spin = QSpinBox()
+        self._size_spin.setRange(1, 16)
+        self._size_spin.setValue(1)
+        self._size_spin.setToolTip(self.tr("Brush / line width in pixels"))
+        self._size_spin.valueChanged.connect(self._on_brush_size_changed)
+        size_layout.addWidget(self._size_spin)
+        self._tool_grid.addLayout(size_layout, 3, 0, 1, 4)
+
+        # Filled mode toggle (for rect/ellipse) — icon
+        self._filled_action = self.toolbar.addAction(
+            self._make_toolbar_icon("filled"), self.tr("Filled"), self._toggle_filled)
         self._filled_action.setCheckable(True)
         self._filled_action.setToolTip(self.tr("Toggle filled shapes"))
 
@@ -198,23 +256,137 @@ class SpriteEditor(BaseEditor):
         self._grid_action.setChecked(True)
         self._grid_action.setToolTip(self.tr("Toggle pixel grid"))
 
-        # Zoom controls
+        # Zoom controls — magnifying glass icons
         self.toolbar.addSeparator()
-        self.toolbar.addAction(self.tr("Zoom -"), self._zoom_out)
+        self.toolbar.addAction(
+            self._make_toolbar_icon("zoom_out"), self.tr("Zoom Out"), self._zoom_out)
         self._zoom_label = QLabel(" 10x ")
         self.toolbar.addWidget(self._zoom_label)
-        self.toolbar.addAction(self.tr("Zoom +"), self._zoom_in)
+        self.toolbar.addAction(
+            self._make_toolbar_icon("zoom_in"), self.tr("Zoom In"), self._zoom_in)
 
-        # Brush size
-        self.toolbar.addSeparator()
-        size_label = QLabel(self.tr(" Size: "))
-        self.toolbar.addWidget(size_label)
-        self._size_spin = QSpinBox()
-        self._size_spin.setRange(1, 16)
-        self._size_spin.setValue(1)
-        self._size_spin.setFixedWidth(50)
-        self._size_spin.valueChanged.connect(self._on_brush_size_changed)
-        self.toolbar.addWidget(self._size_spin)
+    def _on_tool_combo_changed(self, index: int):
+        """Handle tool selection from the dropdown combo box."""
+        tool_id = self._tool_combo.itemData(index)
+        if tool_id:
+            self._select_tool(tool_id)
+
+    @staticmethod
+    def _make_tool_icon(tool_id: str, size: int = 20) -> QIcon:
+        """Generate a small pixel-art style icon for a drawing tool."""
+        pixmap = QPixmap(size, size)
+        pixmap.fill(QColor(0, 0, 0, 0))
+        p = QPainter(pixmap)
+        p.setRenderHint(QPainter.Antialiasing, True)
+
+        fg = QColor(60, 60, 60)
+        accent = QColor(80, 140, 220)
+        pen = QPen(fg, 1.5)
+        p.setPen(pen)
+
+        if tool_id == "pencil":
+            # Dot
+            p.setPen(Qt.NoPen)
+            p.setBrush(QBrush(fg))
+            p.drawEllipse(6, 6, 8, 8)
+
+        elif tool_id == "eraser":
+            # Eraser block
+            p.setBrush(QBrush(QColor(240, 180, 180)))
+            p.drawRoundedRect(4, 6, 12, 10, 2, 2)
+            p.setPen(QPen(fg, 1))
+            p.drawLine(9, 6, 9, 16)
+
+        elif tool_id == "color_picker":
+            # Eyedropper
+            p.setPen(QPen(fg, 2))
+            p.drawLine(5, 15, 12, 8)
+            p.setBrush(QBrush(fg))
+            p.drawEllipse(11, 3, 6, 6)
+
+        elif tool_id == "fill":
+            # Paint bucket — tilted bucket shape
+            p.setBrush(QBrush(accent))
+            p.drawRect(5, 5, 10, 8)
+            p.setPen(QPen(fg, 1.5))
+            p.drawLine(5, 5, 5, 13)
+            p.drawLine(5, 13, 15, 13)
+            p.drawLine(15, 5, 15, 13)
+            p.drawLine(5, 5, 15, 5)
+            # Drop
+            p.setBrush(QBrush(accent))
+            p.setPen(Qt.NoPen)
+            p.drawEllipse(8, 14, 4, 5)
+
+        elif tool_id == "line":
+            # Diagonal line
+            p.setPen(QPen(fg, 2))
+            p.drawLine(4, 16, 16, 4)
+
+        elif tool_id == "rectangle":
+            # Rectangle outline
+            p.setBrush(Qt.NoBrush)
+            p.setPen(QPen(fg, 1.5))
+            p.drawRect(3, 5, 14, 10)
+
+        elif tool_id == "ellipse":
+            # Ellipse outline
+            p.setBrush(Qt.NoBrush)
+            p.setPen(QPen(fg, 1.5))
+            p.drawEllipse(2, 4, 16, 12)
+
+        elif tool_id == "select":
+            # Dashed selection rectangle
+            dash_pen = QPen(fg, 1.2, Qt.DashLine)
+            p.setPen(dash_pen)
+            p.setBrush(Qt.NoBrush)
+            p.drawRect(3, 4, 14, 12)
+
+        p.end()
+        return QIcon(pixmap)
+
+    @staticmethod
+    def _make_toolbar_icon(icon_id: str, size: int = 18) -> QIcon:
+        """Generate icons for toolbar buttons (zoom, filled toggle, etc.)."""
+        pixmap = QPixmap(size, size)
+        pixmap.fill(QColor(0, 0, 0, 0))
+        p = QPainter(pixmap)
+        p.setRenderHint(QPainter.Antialiasing, True)
+        fg = QColor(60, 60, 60)
+
+        if icon_id == "zoom_in":
+            # Magnifying glass with +
+            p.setPen(QPen(fg, 1.5))
+            p.setBrush(Qt.NoBrush)
+            p.drawEllipse(2, 2, 10, 10)
+            p.setPen(QPen(fg, 2))
+            p.drawLine(10, 10, 16, 16)
+            # Plus
+            p.setPen(QPen(fg, 1.5))
+            p.drawLine(5, 7, 9, 7)
+            p.drawLine(7, 5, 7, 9)
+
+        elif icon_id == "zoom_out":
+            # Magnifying glass with -
+            p.setPen(QPen(fg, 1.5))
+            p.setBrush(Qt.NoBrush)
+            p.drawEllipse(2, 2, 10, 10)
+            p.setPen(QPen(fg, 2))
+            p.drawLine(10, 10, 16, 16)
+            # Minus
+            p.setPen(QPen(fg, 1.5))
+            p.drawLine(5, 7, 9, 7)
+
+        elif icon_id == "filled":
+            # Outlined rect on left, filled rect on right
+            p.setPen(QPen(fg, 1.2))
+            p.setBrush(Qt.NoBrush)
+            p.drawRect(1, 4, 7, 10)
+            p.setBrush(QBrush(fg))
+            p.drawRect(10, 4, 7, 10)
+
+        p.end()
+        return QIcon(pixmap)
 
     # ------------------------------------------------------------------
     # Tool management
@@ -253,6 +425,14 @@ class SpriteEditor(BaseEditor):
             if action.data() == tool_id:
                 action.setChecked(True)
                 break
+
+        # Sync dropdown without re-triggering
+        if hasattr(self, '_tool_combo'):
+            idx = self._tool_combo.findData(tool_id)
+            if idx >= 0 and self._tool_combo.currentIndex() != idx:
+                self._tool_combo.blockSignals(True)
+                self._tool_combo.setCurrentIndex(idx)
+                self._tool_combo.blockSignals(False)
 
     # ------------------------------------------------------------------
     # Slots
@@ -330,11 +510,113 @@ class SpriteEditor(BaseEditor):
         self._on_canvas_modified()
 
     # ------------------------------------------------------------------
-    # Keyboard shortcuts for tools
+    # Clipboard / selection shortcuts (via canvas signals)
     # ------------------------------------------------------------------
 
-    def keyPressEvent(self, event):
-        key = event.key()
+    def _shortcut_copy(self):
+        select_tool = self._tools.get("select")
+        if select_tool and select_tool.copy_selection(self.canvas.get_image()):
+            self.update_status(self.tr("Copied selection"))
+
+    def _shortcut_cut(self):
+        select_tool = self._tools.get("select")
+        if select_tool and (select_tool.selection_rect or select_tool.has_floating()):
+            self.canvas.take_stroke_snapshot()
+            if select_tool.cut_selection(self.canvas.get_image()):
+                self._on_canvas_modified()
+                self.canvas.viewport().update()
+                self.update_status(self.tr("Cut selection"))
+
+    def _shortcut_paste(self):
+        select_tool = self._tools.get("select")
+        if not select_tool or not select_tool.has_clipboard():
+            return
+        if self._active_tool_name != "select":
+            self._select_tool("select")
+        self.canvas.take_stroke_snapshot()
+        if select_tool.paste(self.canvas.get_image()):
+            self.canvas.viewport().update()
+            self.update_status(self.tr("Pasted from clipboard"))
+
+    def _shortcut_delete(self):
+        select_tool = self._tools.get("select")
+        if select_tool and (select_tool.selection_rect or select_tool.has_floating()):
+            self.canvas.take_stroke_snapshot()
+            if select_tool.delete_selection(self.canvas.get_image()):
+                self._on_canvas_modified()
+                self.canvas.viewport().update()
+
+    # ------------------------------------------------------------------
+    # Canvas right-click context menu
+    # ------------------------------------------------------------------
+
+    def _show_canvas_context_menu(self, global_pos: 'QPoint'):
+        select_tool = self._tools.get("select")
+        has_sel = select_tool and (select_tool.selection_rect or select_tool.has_floating())
+        has_clip = select_tool and select_tool.has_clipboard()
+
+        menu = QMenu(self)
+
+        copy_act = menu.addAction(self.tr("Copy\tCtrl+C"))
+        copy_act.setEnabled(bool(has_sel))
+        copy_act.triggered.connect(self._shortcut_copy)
+
+        cut_act = menu.addAction(self.tr("Cut\tCtrl+X"))
+        cut_act.setEnabled(bool(has_sel))
+        cut_act.triggered.connect(self._shortcut_cut)
+
+        paste_act = menu.addAction(self.tr("Paste\tCtrl+V"))
+        paste_act.setEnabled(bool(has_clip))
+        paste_act.triggered.connect(self._shortcut_paste)
+
+        menu.addSeparator()
+
+        delete_act = menu.addAction(self.tr("Delete\tDel"))
+        delete_act.setEnabled(bool(has_sel))
+        delete_act.triggered.connect(self._shortcut_delete)
+
+        if has_sel:
+            deselect_act = menu.addAction(self.tr("Deselect\tEsc"))
+            deselect_act.triggered.connect(
+                lambda: self._on_canvas_key(Qt.Key_Escape))
+
+        menu.addSeparator()
+
+        select_all_act = menu.addAction(self.tr("Select All"))
+        select_all_act.triggered.connect(self._select_all)
+
+        menu.exec(global_pos)
+
+    def _select_all(self):
+        """Select the entire canvas."""
+        if self._active_tool_name != "select":
+            self._select_tool("select")
+        select_tool = self._tools.get("select")
+        if select_tool:
+            img = self.canvas.get_image()
+            select_tool.selection_rect = QRect(0, 0, img.width(), img.height())
+            select_tool._start = (0, 0)
+            select_tool._end = (img.width() - 1, img.height() - 1)
+            self.canvas.viewport().update()
+
+    # ------------------------------------------------------------------
+    # Keyboard shortcuts for tools (forwarded from canvas key_pressed signal)
+    # ------------------------------------------------------------------
+
+    def _on_canvas_key(self, key: int):
+        # Escape for selection
+        select_tool = self._tools.get("select")
+        if self._active_tool_name == "select" and select_tool and key == Qt.Key_Escape:
+            if select_tool.has_floating():
+                self.canvas.take_stroke_snapshot()
+                select_tool.commit(self.canvas.get_image())
+                self._on_canvas_modified()
+            else:
+                select_tool.selection_rect = None
+            self.canvas.viewport().update()
+            return
+
+        # Tool shortcuts
         shortcuts = {
             Qt.Key_P: "pencil",
             Qt.Key_E: "eraser",
@@ -346,10 +628,8 @@ class SpriteEditor(BaseEditor):
             Qt.Key_S: "select",
         }
         tool_id = shortcuts.get(key)
-        if tool_id and not event.modifiers():
+        if tool_id:
             self._select_tool(tool_id)
-            return
-        super().keyPressEvent(event)
 
     # ------------------------------------------------------------------
     # BaseEditor abstract method implementations
