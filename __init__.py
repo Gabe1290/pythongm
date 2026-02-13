@@ -14,7 +14,7 @@ This package contains:
 - Thymio educational robot support
 """
 
-__version__ = "1.0.0-rc.1"
+__version__ = "1.0.0-rc.2"
 __author__ = "Gabriel Thullen"
 __description__ = "GameMaker-style IDE for Python game development with Thymio robot support"
 

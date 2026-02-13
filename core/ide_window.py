@@ -24,6 +24,7 @@ from dialogs.thymio_config_dialog import ThymioConfigDialog
 from utils.config import Config
 from editors.room_editor import RoomEditor
 from editors.object_editor import ObjectEditor
+from editors.sprite_editor import SpriteEditor
 from runtime.game_runner import GameRunner
 
 from core.logger import get_logger
@@ -2624,6 +2625,8 @@ class PyGameMakerIDE(QMainWindow):
             self.open_room_editor(asset_name, asset_info)
         elif asset_type == 'objects':
             self.open_object_editor(asset_name, asset_info)
+        elif asset_type == 'sprites':
+            self.open_sprite_editor(asset_name, asset_info)
         else:
             # For now, just show a message for other asset types
             from PySide6.QtWidgets import QMessageBox
@@ -2717,6 +2720,37 @@ class PyGameMakerIDE(QMainWindow):
             traceback.print_exc()
             QMessageBox.critical(self, self.tr("Error"),
                             self.tr("Failed to open object editor: {0}").format(e))
+
+    def open_sprite_editor(self, sprite_name: str, sprite_data: dict):
+        """Open a sprite in the sprite editor"""
+
+        # Check if sprite is already open
+        if sprite_name in self.open_editors:
+            for i in range(self.editor_tabs.count()):
+                if self.editor_tabs.tabText(i) == sprite_name:
+                    self.editor_tabs.setCurrentIndex(i)
+                    return
+
+        try:
+            sprite_editor = SpriteEditor(str(self.current_project_path), self)
+            sprite_editor.load_asset(sprite_name, sprite_data)
+
+            sprite_editor.save_requested.connect(self.on_editor_save_requested, Qt.ConnectionType.UniqueConnection)
+            sprite_editor.close_requested.connect(self.on_editor_close_requested, Qt.ConnectionType.UniqueConnection)
+            sprite_editor.data_modified.connect(self.on_editor_data_modified, Qt.ConnectionType.UniqueConnection)
+
+            tab_index = self.editor_tabs.addTab(sprite_editor, sprite_name)
+            self.editor_tabs.setCurrentIndex(tab_index)
+
+            self.open_editors[sprite_name] = sprite_editor
+
+            self.update_status(self.tr("Opened sprite: {0}").format(sprite_name))
+
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            QMessageBox.critical(self, self.tr("Error"),
+                            self.tr("Failed to open sprite editor: {0}").format(e))
 
     def on_object_editor_activated(self, object_name: str, object_properties: dict):
         """Handle object editor activation"""
