@@ -38,8 +38,13 @@
             <li>Place coins along the paths</li>
             <li>Place the exit at the end of the maze</li>
             <li>Place the player near the entrance</li>
-            <li>Add the game controller (anywhere)</li>
+            <li>Place <code>obj_game_controller</code> anywhere in the room (it's invisible, so location doesn't matter)</li>
         </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Don't forget!</strong> The game controller must be placed in the room
+        for the score to display. Since it has no sprite, you won't see it during gameplay.
     </div>
 
     <h2>Example Layout</h2>
@@ -63,13 +68,14 @@ W W W W W W W W W W W W W W W W W W W W
 W = Wall   P = Player   E = Exit   C = Coin   . = Empty</pre>
 
     <div class="success">
-        <strong>Congratulations!</strong> You've built a maze game!
+        <strong>Congratulations!</strong> You've built a maze game using Blockly!
         <br><br>
         Press <strong>F5</strong> to play:
         <ul>
             <li>Use arrow keys to move</li>
             <li>Collect coins for points</li>
             <li>Find the exit to win!</li>
+            <li>Watch your score in the top-left corner</li>
         </ul>
     </div>
 

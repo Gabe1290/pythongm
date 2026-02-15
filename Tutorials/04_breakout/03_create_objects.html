@@ -16,17 +16,34 @@
 <body>
     <h1>Step 2: Create the Objects</h1>
 
-    <p>Now we'll create all the game objects.</p>
+    <p>Now we'll create all the game objects. We need two different wall types so the ball knows
+    which direction to bounce!</p>
 
-    <h2>Create the Wall Object</h2>
+    <h2>Create the Side Wall Object</h2>
     <div class="step">
         <ol>
             <li>Right-click on <strong>Objects</strong> and select <strong>Create Object</strong></li>
-            <li>Name it <code>obj_wall</code></li>
+            <li>Name it <code>obj_wall_side</code></li>
             <li>Set the sprite to <code>spr_wall</code></li>
             <li><strong>Check "Solid"</strong></li>
             <li>No events needed</li>
         </ol>
+    </div>
+
+    <h2>Create the Top Wall Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create object <code>obj_wall_top</code></li>
+            <li>Set the sprite to <code>spr_wall</code></li>
+            <li><strong>Check "Solid"</strong></li>
+            <li>No events needed</li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Why two wall types?</strong> When the ball hits a side wall, it reverses its
+        horizontal direction. When it hits the top wall, it reverses its vertical direction.
+        Using two objects lets us program different bounce behaviors!
     </div>
 
     <h2>Create the Parent Brick Object</h2>
@@ -68,12 +85,32 @@
         </ol>
     </div>
 
+    <h2>Create the Death Zone Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create object <code>obj_death_zone</code></li>
+            <li>Set sprite to <code>spr_death_zone</code></li>
+            <li><strong>Uncheck "Visible"</strong> &mdash; it should be invisible</li>
+        </ol>
+    </div>
+
+    <h2>Create the Game Controller</h2>
+    <div class="step">
+        <ol>
+            <li>Create object <code>obj_game_controller</code></li>
+            <li><strong>No sprite needed</strong> (leave it empty)</li>
+            <li>Leave "Solid" unchecked</li>
+        </ol>
+    </div>
+
     <div class="highlight">
-        <strong>Parent Objects:</strong> When the ball collides with <code>obj_brick_parent</code>, it will detect collisions with ALL brick types!
+        <strong>Parent Objects:</strong> When the ball collides with <code>obj_brick_parent</code>,
+        it will detect collisions with ALL brick types! This saves us from writing the same
+        collision code four times.
     </div>
 
     <div class="info">
-        Click "Next" to add paddle movement.
+        Click "Next" to add paddle movement with Blockly.
     </div>
 </body>
 </html>

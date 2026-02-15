@@ -11,65 +11,91 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Step 3: Add Paddle Movement</h1>
+    <h1>Step 3: Paddle Movement (Blockly)</h1>
 
-    <p>The paddle moves left and right using the arrow keys.</p>
+    <p>We'll use <strong>Blockly visual blocks</strong> to program the paddle's left and right movement.</p>
 
-    <h2>Move Left (Left Arrow)</h2>
+    <h2>Open the Blockly Editor</h2>
     <div class="step">
         <ol>
-            <li>Open <code>obj_paddle</code></li>
-            <li>Add Event: <strong>Keyboard &gt; Press Left</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Horizontal Speed</strong></li>
-            <li>Set speed to <code>-8</code> (negative = left)</li>
+            <li>Double-click <code>obj_paddle</code> in the Asset Tree to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab at the top of the editor</li>
         </ol>
     </div>
 
-    <h2>Stop Moving (Release Left)</h2>
-    <div class="step">
-        <ol>
-            <li>Add Event: <strong>Keyboard &gt; Release Left</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Horizontal Speed</strong></li>
-            <li>Set speed to <code>0</code></li>
-        </ol>
+    <div class="info">
+        <strong>How Blockly works:</strong> Drag blocks from the toolbox on the left into the workspace.
+        Snap action blocks inside event blocks to define what happens. When you're done,
+        click <strong>Apply to Events</strong> to save your blocks.
     </div>
 
-    <h2>Move Right (Right Arrow)</h2>
+    <h2>Move Left</h2>
     <div class="step">
-        <ol>
-            <li>Add Event: <strong>Keyboard &gt; Press Right</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Horizontal Speed</strong></li>
-            <li>Set speed to <code>8</code> (positive = right)</li>
-        </ol>
+        <p>Drag these blocks from the toolbox and snap them together:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">-8</span></span>
+        </div>
+        <p>Find <strong>Keyboard (held)</strong> in the <em>Events</em> category, and select <strong>Left</strong> from the dropdown.
+        Then find <strong>Set Horizontal Speed</strong> in the <em>Movement</em> category and snap it inside.
+        Type <strong>-8</strong> (negative = left direction).</p>
     </div>
 
-    <h2>Stop Moving (Release Right)</h2>
+    <h2>Move Right</h2>
     <div class="step">
-        <ol>
-            <li>Add Event: <strong>Keyboard &gt; Release Right</strong></li>
-            <li>Add Action: <strong>Move &gt; Set Horizontal Speed</strong></li>
-            <li>Set speed to <code>0</code></li>
-        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">8</span></span>
+        </div>
+        <p>Same as above, but choose <strong>Right</strong> and type <strong>8</strong> (positive = right direction).</p>
     </div>
 
-    <h2>Wall Collision</h2>
+    <h2>Stop When No Key Pressed</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: No key</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>Find <strong>No Key</strong> in <em>Events</em> and <strong>Stop Movement</strong> in <em>Movement</em>.
+        This prevents the paddle from sliding forever when you let go of the key!</p>
+    </div>
+
+    <h2>Stop at Side Walls</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_wall_side</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>Find <strong>Collision</strong> in <em>Events</em>. Type <code>obj_wall_side</code> in the text field.
+        Snap a <strong>Stop Movement</strong> block inside. This keeps the paddle on screen!</p>
+    </div>
+
+    <h2>Apply Your Blocks</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_wall</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
+            <li>You should have <strong>4 event blocks</strong> in your workspace</li>
+            <li>Click the <strong>Apply to Events</strong> button to save</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Note:</strong> The wall collision prevents the paddle from going off-screen!
+        <strong>How it works:</strong> Holding Left or Right sets the paddle's speed.
+        When you release all keys, the paddle stops. If the paddle hits a side wall, it also stops.
     </div>
 
     <div class="info">
-        Click "Next" to add ball movement.
+        Click "Next" to add ball movement and bouncing.
     </div>
 </body>
 </html>

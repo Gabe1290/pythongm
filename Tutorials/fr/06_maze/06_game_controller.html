@@ -10,65 +10,55 @@
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
-        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
         ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-score { background-color: #5CA65C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Étape 5 : Contrôleur de Jeu</h1>
+    <h1>Étape 5 : Contrôleur de Jeu (Blockly)</h1>
 
-    <p>Créez un contrôleur pour suivre le temps et afficher le score.</p>
+    <p>Le contrôleur de jeu est un objet invisible qui affiche le score à l'écran.</p>
 
-    <h2>Créer l'Objet Contrôleur</h2>
-    <div class="step">
-        <ol>
-            <li>Créez l'objet <code>obj_game_controller</code></li>
-            <li>Pas de sprite nécessaire (laissez-le vide)</li>
-        </ol>
+    <div class="info">
+        <strong>Qu'est-ce qu'un contrôleur de jeu ?</strong> C'est un objet sans sprite qui gère
+        des éléments comme l'affichage du score. Comme il est invisible, il n'interfère pas
+        avec le jeu &mdash; il fonctionne simplement en arrière-plan.
     </div>
 
-    <h2>Initialiser le Chronomètre (Événement Create)</h2>
+    <h2>Ajouter l'Affichage du Score</h2>
     <div class="step">
         <ol>
-            <li>Ajoutez un événement : <strong>Create</strong></li>
-            <li>Ajoutez une action : <strong>Contrôle &gt; Définir une Variable</strong></li>
-            <li>Variable : <code>global.timer</code></li>
-            <li>Valeur : <code>0</code></li>
+            <li>Double-cliquez sur <code>obj_game_controller</code> pour ouvrir l'Éditeur d'Objet</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+            <li>Construisez ces blocs :</li>
         </ol>
-    </div>
-
-    <h2>Mettre à Jour le Chronomètre (Événement Step)</h2>
-    <div class="step">
-        <ol>
-            <li>Ajoutez un événement : <strong>Step</strong></li>
-            <li>Ajoutez une action : <strong>Contrôle &gt; Définir une Variable</strong></li>
-            <li>Variable : <code>global.timer</code></li>
-            <li>Valeur : <code>1/room_speed</code></li>
-            <li>Cochez « Relatif »</li>
+        <div class="blockly-group">
+            <span class="block block-event">Quand dessiner</span><br>
+            <span class="block block-score block-indent">Afficher score à x: <span class="block-num">10</span> y: <span class="block-num">10</span></span>
+        </div>
+        <p>Depuis <em>Événements</em>, glissez un bloc <strong>Quand dessiner</strong>.
+        Depuis <em>Score/Vies/Santé</em>, emboîtez <strong>Afficher score</strong> à l'intérieur.
+        Définissez x à <strong>10</strong> et y à <strong>10</strong> (coin supérieur gauche).</p>
+        <ol start="4">
+            <li>Cliquez sur <strong>Appliquer aux événements</strong></li>
         </ol>
-    </div>
-
-    <h2>Afficher les Informations (Événement Draw)</h2>
-    <div class="step">
-        <ol>
-            <li>Ajoutez un événement : <strong>Draw</strong></li>
-            <li>Ajoutez une action : <strong>Contrôle &gt; Exécuter du Code</strong></li>
-        </ol>
-        <pre>
-draw_set_color(c_white);
-draw_text(10, 10, "Score : " + string(score));
-draw_text(10, 30, "Temps : " + string(floor(global.timer)) + "s");
-
-var coins = instance_number(obj_coin);
-draw_text(10, 50, "Pièces : " + string(coins));</pre>
     </div>
 
     <div class="highlight">
-        <strong>Note :</strong> Le contrôleur est invisible mais essentiel pour suivre l'état du jeu !
+        <strong>Comment ça fonctionne :</strong> L'événement Draw s'exécute à chaque image et affiche
+        « Score : X » dans le coin supérieur gauche de l'écran. Au fur et à mesure que le joueur
+        collecte des pièces, le score se met à jour automatiquement !
     </div>
 
     <div class="info">
-        Cliquez sur « Suivant » pour configurer votre room.
+        Cliquez sur « Suivant » pour configurer la room du labyrinthe.
     </div>
 </body>
 </html>

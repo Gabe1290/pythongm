@@ -38,8 +38,13 @@
             <li>Placez des pièces le long des chemins</li>
             <li>Placez la sortie à la fin du labyrinthe</li>
             <li>Placez le joueur près de l'entrée</li>
-            <li>Ajoutez le contrôleur de jeu (n'importe où)</li>
+            <li>Placez <code>obj_game_controller</code> n'importe où dans la room (il est invisible, donc l'emplacement n'a pas d'importance)</li>
         </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>N'oubliez pas !</strong> Le contrôleur de jeu doit être placé dans la room
+        pour que le score s'affiche. Comme il n'a pas de sprite, vous ne le verrez pas pendant le jeu.
     </div>
 
     <h2>Exemple de Disposition</h2>
@@ -63,13 +68,14 @@ M M M M M M M M M M M M M M M M M M M M
 M = Mur   J = Joueur   S = Sortie   P = Pièce   . = Vide</pre>
 
     <div class="success">
-        <strong>Félicitations !</strong> Vous avez construit un jeu de labyrinthe !
+        <strong>Félicitations !</strong> Vous avez construit un jeu de labyrinthe avec Blockly !
         <br><br>
         Appuyez sur <strong>F5</strong> pour jouer :
         <ul>
             <li>Utilisez les touches fléchées pour vous déplacer</li>
             <li>Collectez les pièces pour des points</li>
             <li>Trouvez la sortie pour gagner !</li>
+            <li>Regardez votre score dans le coin supérieur gauche</li>
         </ul>
     </div>
 

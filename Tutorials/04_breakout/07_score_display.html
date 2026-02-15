@@ -11,45 +11,54 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-score { background-color: #5CA65C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Step 6: Display Score and Lives</h1>
+    <h1>Step 6: Display Score and Lives (Blockly)</h1>
 
-    <p>Let's add a display for the player's score and remaining lives.</p>
+    <p>Let's add an on-screen display so the player can see their score and remaining lives.</p>
 
-    <h2>Draw Event in Game Controller</h2>
+    <h2>Add the Draw Event</h2>
     <div class="step">
-        <p>In <code>obj_game_controller</code>:</p>
         <ol>
-            <li>Add Event: <strong>Draw</strong></li>
+            <li>Open <code>obj_game_controller</code> in the Blockly editor (if not already open)</li>
+            <li>You should see the Create Event from the previous step</li>
+            <li>Now add a second event block:</li>
         </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Draw Event</span><br>
+            <span class="block block-score block-indent">Draw score at x: <span class="block-num">10</span> y: <span class="block-num">10</span></span><br>
+            <span class="block block-score block-indent">Draw lives at x: <span class="block-num">200</span> y: <span class="block-num">10</span></span>
+        </div>
+        <p>From <em>Events</em>, drag a <strong>Draw Event</strong> block.
+        From <em>Score/Lives/Health</em>, snap two display blocks inside:</p>
+        <ul>
+            <li><strong>Draw score at x: 10 y: 10</strong> &mdash; shows the score in the top-left corner</li>
+            <li><strong>Draw lives at x: 200 y: 10</strong> &mdash; shows the remaining lives</li>
+        </ul>
     </div>
 
-    <h2>Draw Score</h2>
+    <h2>Apply Your Blocks</h2>
     <div class="step">
         <ol>
-            <li>Add Action: <strong>Draw &gt; Draw Text</strong></li>
-            <li>Text: <code>Score:</code></li>
-            <li>X: <code>10</code>, Y: <code>10</code></li>
-            <li>Add Action: <strong>Draw &gt; Draw Score</strong></li>
-            <li>X: <code>70</code>, Y: <code>10</code></li>
-        </ol>
-    </div>
-
-    <h2>Draw Lives</h2>
-    <div class="step">
-        <ol>
-            <li>Add Action: <strong>Draw &gt; Draw Text</strong></li>
-            <li>Text: <code>Lives:</code></li>
-            <li>X: <code>10</code>, Y: <code>30</code></li>
-            <li>Add Action: <strong>Draw &gt; Draw Lives</strong></li>
-            <li>X: <code>70</code>, Y: <code>30</code></li>
+            <li>You should now have <strong>2 event blocks</strong> for <code>obj_game_controller</code>:
+                the Create Event and the Draw Event</li>
+            <li>Click <strong>Apply to Events</strong> to save</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Tip:</strong> You can use <code>Draw Lives as Image</code> to show heart icons instead of a number!
+        <strong>How it works:</strong> The Draw Event runs every frame and paints the score
+        and lives text on screen. As the player breaks bricks, the score goes up.
+        When the ball falls, the lives count goes down.
     </div>
 
     <div class="info">

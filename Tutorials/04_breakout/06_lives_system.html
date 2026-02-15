@@ -11,72 +11,65 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-score { background-color: #5CA65C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Step 5: Add the Lives System</h1>
+    <h1>Step 5: Game Controller &mdash; Lives and Score (Blockly)</h1>
 
-    <p>The player loses a life when the ball falls off the bottom of the screen.</p>
+    <p>The game controller is an invisible object that sets up the lives and score
+    at the start of the game.</p>
 
-    <h2>Create a Death Zone</h2>
-    <div class="step">
-        <ol>
-            <li>Create a sprite <code>spr_death_zone</code> (32x32, any color)</li>
-            <li>Create object <code>obj_death_zone</code></li>
-            <li><strong>Uncheck "Visible"</strong> - it should be invisible</li>
-            <li>Check "Solid"</li>
-        </ol>
+    <div class="info">
+        <strong>What is a game controller?</strong> It's an object with no sprite that manages
+        things like score and lives. Since it's invisible, it doesn't interfere
+        with the game &mdash; it just works in the background.
     </div>
 
-    <h2>Ball Falls into Death Zone</h2>
+    <h2>Initialize Lives and Score</h2>
     <div class="step">
-        <p>In <code>obj_ball</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_death_zone</strong></li>
-            <li>Add Action: <strong>Score &gt; Subtract from Lives</strong></li>
-            <li>Value: <code>1</code></li>
-            <li>Add Action: <strong>Move &gt; Jump to Start Position</strong></li>
+            <li>Double-click <code>obj_game_controller</code> to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab</li>
+            <li>Build these blocks:</li>
         </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Create Event</span><br>
+            <span class="block block-score block-indent">Set lives to <span class="block-num">3</span></span><br>
+            <span class="block block-score block-indent">Set score to <span class="block-num">0</span></span>
+        </div>
+        <p>From <em>Events</em>, drag a <strong>Create Event</strong> block.
+        From <em>Score/Lives/Health</em>, snap <strong>Set lives to 3</strong> and
+        <strong>Set score to 0</strong> inside.</p>
     </div>
 
-    <h2>Create a Game Controller</h2>
-    <div class="step">
-        <ol>
-            <li>Create object <code>obj_game_controller</code></li>
-            <li>No sprite needed</li>
-        </ol>
+    <div class="highlight">
+        <strong>How it works:</strong> The Create Event runs once when the game starts.
+        It gives the player 3 lives and sets the score to zero.
+        When the ball hits the death zone (set up in the previous step), it subtracts one life.
     </div>
 
-    <h2>Initialize Lives (Create Event)</h2>
-    <div class="step">
-        <p>In <code>obj_game_controller</code>:</p>
-        <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Lives</strong></li>
-            <li>Value: <code>3</code></li>
-            <li>Add Action: <strong>Score &gt; Set Score</strong></li>
-            <li>Value: <code>0</code></li>
-        </ol>
-    </div>
-
-    <h2>Check for Game Over (Step Event)</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Test Lives</strong></li>
-            <li>Check if lives are less than or equal to 0</li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong></li>
-            <li>Message: <code>Game Over!</code></li>
-            <li>Add Action: <strong>Main2 &gt; Restart Room</strong></li>
+            <li>Click <strong>Apply to Events</strong> to save</li>
         </ol>
     </div>
 
     <div class="highlight">
         <strong>Remember:</strong> Place <code>obj_game_controller</code> in your room!
+        It has no sprite, so you won't see it during the game, but it must be in the room
+        for lives and score to work.
     </div>
 
     <div class="info">
-        Click "Next" to add score display.
+        Click "Next" to add the score and lives display.
     </div>
 </body>
 </html>

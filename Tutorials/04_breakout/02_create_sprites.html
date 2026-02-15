@@ -6,61 +6,181 @@
         body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
         h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
         h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #555; font-size: 12px; margin-bottom: 4px; }
         .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; margin: 8px 0; }
+        td, th { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+        th { background-color: #eee; }
     </style>
 </head>
 <body>
     <h1>Step 1: Create the Sprites</h1>
 
-    <p>We need sprites for the paddle, ball, bricks, and walls.</p>
+    <p>We need sprites for the paddle, ball, bricks, walls, and a death zone.
+    For each sprite you can <strong>draw it yourself</strong> using the built-in Sprite Editor,
+    or <strong>load a ready-made sample</strong> image. Both options are explained below.</p>
 
-    <h2>Create the Ball Sprite</h2>
+    <table>
+        <tr><th>Sprite</th><th>Size</th><th>Description</th></tr>
+        <tr><td><code>spr_ball</code></td><td>16&times;16</td><td>Small yellow circle</td></tr>
+        <tr><td><code>spr_paddle</code></td><td>64&times;16</td><td>Wide blue rectangle</td></tr>
+        <tr><td><code>spr_brick_red</code></td><td>32&times;16</td><td>Red brick</td></tr>
+        <tr><td><code>spr_brick_orange</code></td><td>32&times;16</td><td>Orange brick</td></tr>
+        <tr><td><code>spr_brick_yellow</code></td><td>32&times;16</td><td>Yellow brick</td></tr>
+        <tr><td><code>spr_brick_green</code></td><td>32&times;16</td><td>Green brick</td></tr>
+        <tr><td><code>spr_wall</code></td><td>32&times;32</td><td>Gray brick pattern</td></tr>
+        <tr><td><code>spr_death_zone</code></td><td>32&times;32</td><td>Dark rectangle (invisible in game)</td></tr>
+    </table>
+
+    <!-- ================================================== -->
+    <h2>spr_ball (16&times;16)</h2>
     <div class="step">
         <ol>
-            <li>Right-click on <strong>Sprites</strong> in the Resource Tree</li>
-            <li>Select <strong>Create Sprite</strong></li>
+            <li>In the Asset Tree, right-click on <strong>Sprites</strong> and select <strong>Create New Sprite</strong></li>
             <li>Name it <code>spr_ball</code></li>
-            <li>Click <strong>Edit Sprite</strong></li>
-            <li>Draw a small white or yellow circle (16x16 pixels)</li>
-            <li>Click <strong>OK</strong> to save</li>
         </ol>
+
+        <h3>Option A &mdash; Draw it yourself</h3>
+        <div class="option-box">
+            <ol>
+                <li>Double-click <code>spr_ball</code> to open the Sprite Editor</li>
+                <li>Draw a small circle</li>
+                <li>Use a bright color like <strong>yellow</strong> or white</li>
+                <li>Keep the size at <strong>16&times;16 pixels</strong></li>
+                <li>Save your work with <strong>Ctrl+S</strong></li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Load the sample sprite</h3>
+        <div class="option-box">
+            <ol>
+                <li>Right-click on <code>spr_ball</code> in the Asset Tree</li>
+                <li>Select <strong>Import Image...</strong></li>
+                <li>Browse to <code>Tutorials/04_breakout/assets/</code> inside the PyGameMaker folder</li>
+                <li>Select <code>spr_ball.png</code> and click Open</li>
+            </ol>
+        </div>
     </div>
 
-    <h2>Create the Paddle Sprite</h2>
+    <!-- ================================================== -->
+    <h2>spr_paddle (64&times;16)</h2>
     <div class="step">
         <ol>
             <li>Create a new sprite named <code>spr_paddle</code></li>
-            <li>Draw a wide, flat rectangle (64x16 pixels)</li>
-            <li>Use a bright color like blue</li>
         </ol>
+
+        <h3>Option A &mdash; Draw it yourself</h3>
+        <div class="option-box">
+            <ol>
+                <li>Open the Sprite Editor and draw a wide, flat rectangle</li>
+                <li>Use a bright color like <strong>blue</strong></li>
+                <li>Size: <strong>64&times;16 pixels</strong></li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Load the sample sprite</h3>
+        <div class="option-box">
+            <ol>
+                <li>Right-click <code>spr_paddle</code> &rarr; <strong>Import Image...</strong></li>
+                <li>Select <code>Tutorials/04_breakout/assets/spr_paddle.png</code></li>
+            </ol>
+        </div>
     </div>
 
-    <h2>Create Brick Sprites</h2>
-    <p>Create colorful bricks for different point values:</p>
+    <!-- ================================================== -->
+    <h2>Brick Sprites (32&times;16 each)</h2>
+    <p>Create four colorful bricks. Each one follows the same steps:</p>
 
     <div class="step">
         <ol>
-            <li>Create <code>spr_brick_red</code> - Red brick (32x16 pixels)</li>
-            <li>Create <code>spr_brick_orange</code> - Orange brick</li>
-            <li>Create <code>spr_brick_yellow</code> - Yellow brick</li>
-            <li>Create <code>spr_brick_green</code> - Green brick</li>
+            <li>Create a new sprite with the name from the table below</li>
         </ol>
+
+        <h3>Option A &mdash; Draw them yourself</h3>
+        <div class="option-box">
+            <ol>
+                <li>Open the Sprite Editor and draw a solid rectangle</li>
+                <li>Use the matching color for each brick</li>
+                <li>Size: <strong>32&times;16 pixels</strong> for all bricks</li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Load the sample sprites</h3>
+        <div class="option-box">
+            <p>For each brick, right-click &rarr; <strong>Import Image...</strong> and select the matching file:</p>
+            <ul>
+                <li><code>spr_brick_red</code> &rarr; <code>Tutorials/04_breakout/assets/spr_brick_red.png</code></li>
+                <li><code>spr_brick_orange</code> &rarr; <code>Tutorials/04_breakout/assets/spr_brick_orange.png</code></li>
+                <li><code>spr_brick_yellow</code> &rarr; <code>Tutorials/04_breakout/assets/spr_brick_yellow.png</code></li>
+                <li><code>spr_brick_green</code> &rarr; <code>Tutorials/04_breakout/assets/spr_brick_green.png</code></li>
+            </ul>
+        </div>
     </div>
 
-    <h2>Create the Wall Sprite</h2>
+    <!-- ================================================== -->
+    <h2>spr_wall (32&times;32)</h2>
     <div class="step">
         <ol>
             <li>Create a new sprite named <code>spr_wall</code></li>
-            <li>Draw a solid gray rectangle (32x32 pixels)</li>
         </ol>
+
+        <h3>Option A &mdash; Draw it yourself</h3>
+        <div class="option-box">
+            <ol>
+                <li>Open the Sprite Editor and draw a brick or stone pattern</li>
+                <li>Use <strong>gray</strong> colors</li>
+                <li>Size: <strong>32&times;32 pixels</strong></li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Load the sample sprite</h3>
+        <div class="option-box">
+            <ol>
+                <li>Right-click <code>spr_wall</code> &rarr; <strong>Import Image...</strong></li>
+                <li>Select <code>Tutorials/04_breakout/assets/spr_wall.png</code></li>
+            </ol>
+        </div>
     </div>
 
+    <!-- ================================================== -->
+    <h2>spr_death_zone (32&times;32)</h2>
+    <div class="step">
+        <ol>
+            <li>Create a new sprite named <code>spr_death_zone</code></li>
+        </ol>
+
+        <h3>Option A &mdash; Draw it yourself</h3>
+        <div class="option-box">
+            <ol>
+                <li>Draw a solid rectangle in any color (e.g. dark red)</li>
+                <li>Size: <strong>32&times;32 pixels</strong></li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Load the sample sprite</h3>
+        <div class="option-box">
+            <ol>
+                <li>Right-click <code>spr_death_zone</code> &rarr; <strong>Import Image...</strong></li>
+                <li>Select <code>Tutorials/04_breakout/assets/spr_death_zone.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ================================================== -->
     <div class="highlight">
-        <strong>Tip:</strong> Keep brick sizes consistent so they align nicely in the room!
+        <strong>Tip:</strong> Keep brick sizes consistent (32&times;16) so they align nicely in rows!
+        The death zone will be invisible during gameplay &mdash; it just needs a sprite for placement.
+    </div>
+
+    <div class="info">
+        <strong>Learning point:</strong> The <strong>Import Image</strong> feature lets you load any PNG, GIF
+        or BMP file as a sprite. This is useful when you have artwork created in an external program
+        or sample assets provided with a tutorial.
     </div>
 
     <div class="info">

@@ -32,69 +32,95 @@
 
     <h2>Room Layout</h2>
     <pre>
-+--[WALL]--------------------[WALL]--+
-|  [WALL]  [R][R][R][R][R]  [WALL]  |
-|  [WALL]  [O][O][O][O][O]  [WALL]  |
-|  [WALL]  [Y][Y][Y][Y][Y]  [WALL]  |
-|  [WALL]  [G][G][G][G][G]  [WALL]  |
-|  [WALL]                   [WALL]  |
-|  [WALL]        (o)        [WALL]  |
-|  [WALL]                   [WALL]  |
-|  [WALL]      [PADDLE]     [WALL]  |
-+--[DEATH ZONE DEATH ZONE DEATH]----+
-    </pre>
+S T T T T T T T T T T T T T T T T T S
+S                                     S
+S   [R][R][R][R][R][R][R][R][R][R]    S
+S   [O][O][O][O][O][O][O][O][O][O]    S
+S   [Y][Y][Y][Y][Y][Y][Y][Y][Y][Y]    S
+S   [G][G][G][G][G][G][G][G][G][G]    S
+S                                     S
+S                                     S
+S                (o)                  S
+S                                     S
+S            [==PADDLE==]             S
+D D D D D D D D D D D D D D D D D D D
+
+S = Side Wall (obj_wall_side)
+T = Top Wall (obj_wall_top)
+D = Death Zone (obj_death_zone, invisible)
+R/O/Y/G = Bricks   (o) = Ball</pre>
 
     <h2>Place the Objects</h2>
 
-    <h3>1. Walls</h3>
+    <h3>1. Side Walls</h3>
     <div class="step">
-        <p>Place <code>obj_wall</code> along the top, left, and right edges.</p>
+        <p>Place <code>obj_wall_side</code> along the <strong>left and right</strong> edges, from top to bottom.</p>
     </div>
 
-    <h3>2. Death Zone</h3>
+    <h3>2. Top Wall</h3>
     <div class="step">
-        <p>Place <code>obj_death_zone</code> along the bottom edge (it's invisible).</p>
+        <p>Place <code>obj_wall_top</code> along the <strong>top</strong> edge, between the side walls.</p>
     </div>
 
-    <h3>3. Bricks</h3>
+    <h3>3. Death Zone</h3>
+    <div class="step">
+        <p>Place <code>obj_death_zone</code> along the <strong>bottom</strong> edge.
+        It will be invisible during gameplay.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Important:</strong> There is NO wall at the bottom! The death zone catches
+        the ball when it falls past the paddle.
+    </div>
+
+    <h3>4. Bricks</h3>
     <div class="step">
         <p>Arrange bricks in rows near the top:</p>
         <ul>
             <li>Top row: Red bricks (<code>obj_brick_red</code>)</li>
-            <li>Second row: Orange bricks</li>
-            <li>Third row: Yellow bricks</li>
-            <li>Fourth row: Green bricks</li>
+            <li>Second row: Orange bricks (<code>obj_brick_orange</code>)</li>
+            <li>Third row: Yellow bricks (<code>obj_brick_yellow</code>)</li>
+            <li>Fourth row: Green bricks (<code>obj_brick_green</code>)</li>
         </ul>
+        <p>Enable <strong>Snap to Grid</strong> (32x16) for easy alignment.</p>
     </div>
 
-    <h3>4. Paddle</h3>
+    <h3>5. Paddle</h3>
     <div class="step">
         <p>Place <code>obj_paddle</code> near the bottom, centered horizontally.</p>
     </div>
 
-    <h3>5. Ball</h3>
+    <h3>6. Ball</h3>
     <div class="step">
-        <p>Place <code>obj_ball</code> just above the paddle.</p>
+        <p>Place <code>obj_ball</code> just above the paddle, near the center of the room.</p>
     </div>
 
-    <h3>6. Game Controller</h3>
+    <h3>7. Game Controller</h3>
     <div class="step">
-        <p>Place <code>obj_game_controller</code> anywhere (it has no sprite).</p>
+        <p>Place <code>obj_game_controller</code> anywhere in the room (it has no sprite,
+        so location doesn't matter).</p>
     </div>
 
     <div class="success">
         <strong>Congratulations!</strong> Your Breakout game is ready!
+        <br><br>
+        Press <strong>F5</strong> to play:
+        <ul>
+            <li>Use <strong>Left</strong> and <strong>Right</strong> arrow keys to move the paddle</li>
+            <li>Break all the bricks to win!</li>
+            <li>Don't let the ball fall past the paddle!</li>
+            <li>Watch your score and lives in the top-left corner</li>
+        </ul>
     </div>
 
-    <h2>Test Your Game</h2>
-    <ul>
-        <li>Press <strong>F5</strong> or click <strong>Run</strong></li>
-        <li>Use <strong>Left</strong> and <strong>Right</strong> arrow keys to move</li>
-        <li>Break all the bricks to win!</li>
-    </ul>
-
-    <div class="info">
-        <strong>Great job!</strong> You've created a classic Breakout game!
+    <div class="highlight">
+        <strong>Challenge Ideas:</strong>
+        <ul>
+            <li>Give different colored bricks different point values</li>
+            <li>Make the ball speed up as bricks are destroyed</li>
+            <li>Add a second level with a different brick layout</li>
+            <li>Add power-ups that fall from destroyed bricks</li>
+        </ul>
     </div>
 </body>
 </html>

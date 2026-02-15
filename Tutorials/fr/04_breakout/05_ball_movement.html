@@ -11,61 +11,130 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+
+        /* Styles des blocs Blockly */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Étape 4 : Mouvement et Rebonds de la Balle</h1>
+    <h1>&Eacute;tape 4 : Mouvement et Rebonds de la Balle (Blockly)</h1>
 
-    <p>La balle doit se déplacer et rebondir sur les murs, la raquette et les briques.</p>
+    <p>La balle doit se d&eacute;placer en diagonale et rebondir sur les murs, la raquette et les briques.
+    Nous allons programmer tout cela avec des blocs Blockly.</p>
 
-    <h2>Démarrer le Mouvement de la Balle (Événement Create)</h2>
+    <h2>Ouvrir l'&eacute;diteur Blockly</h2>
     <div class="step">
         <ol>
-            <li>Ouvrez <code>obj_ball</code></li>
-            <li>Ajoutez un événement : <strong>Create</strong></li>
-            <li>Ajoutez une action : <strong>Mouvement &gt; Commencer à se Déplacer dans une Direction</strong></li>
-            <li>Choisissez une direction diagonale vers le haut</li>
-            <li>Définissez la vitesse sur <code>5</code></li>
+            <li>Double-cliquez sur <code>obj_ball</code> dans l'arbre des ressources pour ouvrir l'&eacute;diteur d'objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
         </ol>
     </div>
 
-    <h2>Rebondir sur les Murs</h2>
+    <h2>D&eacute;marrer le mouvement de la balle (Quand cr&eacute;&eacute;)</h2>
     <div class="step">
-        <ol>
-            <li>Ajoutez un événement : <strong>Collision &gt; obj_wall</strong></li>
-            <li>Ajoutez une action : <strong>Mouvement &gt; Rebondir Contre les Objets</strong></li>
-            <li>Sélectionnez « Contre les objets solides »</li>
-        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Quand cr&eacute;&eacute;</span><br>
+            <span class="block block-move block-indent">d&eacute;finir vitesse horizontale &agrave; <span class="block-num">3</span></span><br>
+            <span class="block block-move block-indent">d&eacute;finir vitesse verticale &agrave; <span class="block-num">-3</span></span>
+        </div>
+        <p>Dans <em>&Eacute;v&eacute;nements</em>, glissez un bloc <strong>Quand cr&eacute;&eacute;</strong>.
+        Dans <em>Mouvement</em>, accrochez deux blocs de vitesse :
+        <strong>d&eacute;finir vitesse horizontale &agrave; 3</strong> et <strong>d&eacute;finir vitesse verticale &agrave; -3</strong>.
+        La balle se d&eacute;placera en diagonale vers le haut au d&eacute;but du jeu.</p>
     </div>
 
-    <h2>Rebondir sur la Raquette</h2>
-    <div class="step">
-        <ol>
-            <li>Ajoutez un événement : <strong>Collision &gt; obj_paddle</strong></li>
-            <li>Ajoutez une action : <strong>Mouvement &gt; Rebondir Contre les Objets</strong></li>
-            <li>Sélectionnez « Contre les objets solides »</li>
-        </ol>
+    <div class="info">
+        <strong>Pourquoi deux vitesses ?</strong> La vitesse horizontale (3) d&eacute;place la balle lat&eacute;ralement.
+        La vitesse verticale (-3) la d&eacute;place vers le haut (n&eacute;gatif = haut). Ensemble, la balle se d&eacute;place en diagonale !
     </div>
 
-    <h2>Rebondir sur les Briques (et les Détruire !)</h2>
+    <h2>Rebondir sur les murs lat&eacute;raux</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Quand collision avec obj_wall_side</span><br>
+            <span class="block block-move block-indent">Inverser mouvement horizontal</span>
+        </div>
+        <p>Quand la balle touche un mur gauche ou droit, elle inverse sa direction horizontale.
+        Trouvez <strong>Inverser mouvement horizontal</strong> dans la cat&eacute;gorie <em>Mouvement</em>.</p>
+    </div>
+
+    <h2>Rebondir sur le mur du haut</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Quand collision avec obj_wall_top</span><br>
+            <span class="block block-move block-indent">Inverser mouvement vertical</span>
+        </div>
+        <p>Quand la balle touche le mur du haut, elle inverse sa direction verticale et rebondit vers le bas.</p>
+    </div>
+
+    <h2>Rebondir sur la raquette</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Quand collision avec obj_paddle</span><br>
+            <span class="block block-move block-indent">Inverser mouvement vertical</span>
+        </div>
+        <p>Comme pour le mur du haut &mdash; la balle rebondit vers le haut quand elle touche la raquette.</p>
+    </div>
+
+    <h2>Toucher les briques (Rebond + Destruction + Score !)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Quand collision avec obj_brick_parent</span><br>
+            <span class="block block-move block-indent">Inverser mouvement vertical</span><br>
+            <span class="block block-instance block-indent">D&eacute;truire autre instance</span><br>
+            <span class="block block-score block-indent">Ajouter au score <span class="block-num">10</span></span>
+        </div>
+        <p>Dans <em>&Eacute;v&eacute;nements</em>, ajoutez une <strong>Collision</strong> avec <code>obj_brick_parent</code>.
+        Accrochez trois blocs &agrave; l'int&eacute;rieur :</p>
+        <ul>
+            <li><strong>Inverser mouvement vertical</strong> (dans <em>Mouvement</em>) &mdash; la balle rebondit</li>
+            <li><strong>D&eacute;truire autre instance</strong> (dans <em>Instance</em>) &mdash; d&eacute;truit la brique, pas la balle</li>
+            <li><strong>Ajouter au score 10</strong> (dans <em>Score/Vies/Sant&eacute;</em>) &mdash; gagnez des points !</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>Point cl&eacute; :</strong> Utiliser <code>obj_brick_parent</code> signifie que cette collision fonctionne pour TOUTES les couleurs de briques !
+        <strong>D&eacute;truire autre</strong> d&eacute;truit l'objet avec lequel on est entr&eacute; en collision (la brique), pas la balle.
+    </div>
+
+    <h2>La balle tombe (Perdre une vie)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Quand collision avec obj_death_zone</span><br>
+            <span class="block block-score block-indent">Ajouter aux vies <span class="block-num">-1</span></span><br>
+            <span class="block block-move block-indent">Sauter &agrave; x: <span class="block-num">320</span> y: <span class="block-num">400</span></span>
+        </div>
+        <p>Quand la balle tombe en bas et touche la zone de mort :</p>
+        <ul>
+            <li><strong>Ajouter aux vies -1</strong> (dans <em>Score/Vies/Sant&eacute;</em>) &mdash; perdre une vie</li>
+            <li><strong>Sauter &agrave; x: 320 y: 400</strong> (dans <em>Mouvement</em>) &mdash; replacer la balle au-dessus de la raquette</li>
+        </ul>
+    </div>
+
+    <h2>Appliquer vos blocs</h2>
     <div class="step">
         <ol>
-            <li>Ajoutez un événement : <strong>Collision &gt; obj_brick_parent</strong></li>
-            <li>Ajoutez une action : <strong>Mouvement &gt; Rebondir Contre les Objets</strong></li>
-            <li>Sélectionnez « Contre les objets solides »</li>
-            <li>Ajoutez une action : <strong>Main1 &gt; Détruire l'Instance</strong></li>
-            <li>Sélectionnez « Autre » (détruit la brique, pas la balle)</li>
-            <li>Ajoutez une action : <strong>Score &gt; Ajouter au Score</strong></li>
-            <li>Valeur : <code>10</code></li>
+            <li>Vous devez avoir <strong>6 blocs d'&eacute;v&eacute;nements</strong> dans votre espace de travail</li>
+            <li>Cliquez sur le bouton <strong>Appliquer aux &eacute;v&eacute;nements</strong> pour enregistrer</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Point clé :</strong> Utiliser <code>obj_brick_parent</code> signifie que cette collision fonctionne pour TOUTES les couleurs de briques !
+        <strong>Comment le rebond fonctionne :</strong> La balle se d&eacute;place toujours en diagonale. Quand elle touche une
+        surface verticale (mur lat&eacute;ral), on inverse le mouvement horizontal. Quand elle touche une surface horizontale
+        (mur du haut, raquette, briques), on inverse le mouvement vertical. Cela cr&eacute;e un rebond r&eacute;aliste !
     </div>
 
     <div class="info">
-        Cliquez sur « Suivant » pour ajouter le système de vies.
+        Cliquez sur &laquo; Suivant &raquo; pour configurer le syst&egrave;me de vies.
     </div>
 </body>
 </html>

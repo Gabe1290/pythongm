@@ -11,43 +11,79 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Step 4: Coins and Exit</h1>
+    <h1>Step 4: Coins and Exit (Blockly)</h1>
 
-    <p>Now let's make coins collectible and the exit work.</p>
+    <p>Now let's make coins collectible and the exit work using Blockly blocks.</p>
 
-    <h2>Coin Collection</h2>
+    <h2>Coin Collection (obj_coin)</h2>
     <div class="step">
-        <p>In <code>obj_coin</code>:</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Score</strong></li>
-            <li>New Score: <code>10</code></li>
-            <li>Check "Relative" to add 10 points</li>
-            <li>Add Action: <strong>Main1 &gt; Destroy Instance</strong></li>
-            <li>Applies to: <code>Self</code></li>
+            <li>Double-click <code>obj_coin</code> to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab</li>
+            <li>Build these blocks:</li>
         </ol>
-    </div>
-
-    <h2>Exit Behavior</h2>
-    <div class="step">
-        <p>In <code>obj_exit</code>:</p>
-        <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong></li>
-            <li>Message: <code>You Win!</code></li>
-            <li>Add Action: <strong>Main1 &gt; Restart Room</strong></li>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_player</span><br>
+            <span class="block block-score block-indent">Add to score <span class="block-num">10</span></span><br>
+            <span class="block block-instance block-indent">Destroy this instance</span>
+        </div>
+        <p>From <em>Events</em>, drag a <strong>Collision</strong> block and type <code>obj_player</code>.
+        From <em>Score/Lives/Health</em>, snap <strong>Add to Score</strong> inside and type <strong>10</strong>.
+        From <em>Instance</em>, snap <strong>Destroy Instance</strong> below it.</p>
+        <ol start="4">
+            <li>Click <strong>Apply to Events</strong></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Tip:</strong> You can use <strong>Next Room</strong> instead of <strong>Restart Room</strong> if you create multiple levels!
+        <strong>How it works:</strong> When the player touches a coin, 10 points are added
+        to the score and the coin disappears.
+    </div>
+
+    <h2>Exit Behavior (obj_exit)</h2>
+    <div class="step">
+        <ol>
+            <li>Double-click <code>obj_exit</code> to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab</li>
+            <li>Build these blocks:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_player</span><br>
+            <span class="block block-output block-indent">Show message <span class="block-str">"You Win!"</span></span><br>
+            <span class="block block-room block-indent">Restart room</span>
+        </div>
+        <p>From <em>Events</em>, drag a <strong>Collision</strong> block and type <code>obj_player</code>.
+        From <em>Output</em>, snap <strong>Show Message</strong> inside and type <strong>You Win!</strong>.
+        From <em>Room</em>, snap <strong>Restart Room</strong> below it.</p>
+        <ol start="4">
+            <li>Click <strong>Apply to Events</strong></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Tip:</strong> If you create multiple levels, use <strong>Go to next room</strong>
+        (from the <em>Room</em> category) instead of <strong>Restart room</strong>
+        to advance to the next maze!
     </div>
 
     <div class="info">
-        Click "Next" to add the timer display.
+        Click "Next" to add the score display.
     </div>
 </body>
 </html>

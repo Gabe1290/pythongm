@@ -11,72 +11,65 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+
+        /* Styles des blocs Blockly */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-score { background-color: #5CA65C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Étape 5 : Ajouter le Système de Vies</h1>
+    <h1>&Eacute;tape 5 : Contr&ocirc;leur de Jeu &mdash; Vies et Score (Blockly)</h1>
 
-    <p>Le joueur perd une vie quand la balle tombe en bas de l'écran.</p>
+    <p>Le contr&ocirc;leur de jeu est un objet invisible qui initialise les vies et le score
+    au d&eacute;but de la partie.</p>
 
-    <h2>Créer une Zone de Mort</h2>
-    <div class="step">
-        <ol>
-            <li>Créez un sprite <code>spr_death_zone</code> (32x32, n'importe quelle couleur)</li>
-            <li>Créez l'objet <code>obj_death_zone</code></li>
-            <li><strong>Décochez « Visible »</strong> - il doit être invisible</li>
-            <li>Cochez « Solide »</li>
-        </ol>
+    <div class="info">
+        <strong>Qu'est-ce qu'un contr&ocirc;leur de jeu ?</strong> C'est un objet sans sprite qui g&egrave;re
+        des &eacute;l&eacute;ments comme le score et les vies. Comme il est invisible, il n'interf&egrave;re pas
+        avec le jeu &mdash; il travaille en arri&egrave;re-plan.
     </div>
 
-    <h2>La Balle Tombe dans la Zone de Mort</h2>
+    <h2>Initialiser les vies et le score</h2>
     <div class="step">
-        <p>Dans <code>obj_ball</code> :</p>
         <ol>
-            <li>Ajoutez un événement : <strong>Collision &gt; obj_death_zone</strong></li>
-            <li>Ajoutez une action : <strong>Score &gt; Soustraire des Vies</strong></li>
-            <li>Valeur : <code>1</code></li>
-            <li>Ajoutez une action : <strong>Mouvement &gt; Retourner à la Position de Départ</strong></li>
+            <li>Double-cliquez sur <code>obj_game_controller</code> pour ouvrir l'&eacute;diteur d'objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+            <li>Construisez ces blocs :</li>
         </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Quand cr&eacute;&eacute;</span><br>
+            <span class="block block-score block-indent">D&eacute;finir vies &agrave; <span class="block-num">3</span></span><br>
+            <span class="block block-score block-indent">D&eacute;finir score &agrave; <span class="block-num">0</span></span>
+        </div>
+        <p>Dans <em>&Eacute;v&eacute;nements</em>, glissez un bloc <strong>Quand cr&eacute;&eacute;</strong>.
+        Dans <em>Score/Vies/Sant&eacute;</em>, accrochez <strong>D&eacute;finir vies &agrave; 3</strong> et
+        <strong>D&eacute;finir score &agrave; 0</strong> &agrave; l'int&eacute;rieur.</p>
     </div>
 
-    <h2>Créer un Contrôleur de Jeu</h2>
-    <div class="step">
-        <ol>
-            <li>Créez l'objet <code>obj_game_controller</code></li>
-            <li>Pas de sprite nécessaire</li>
-        </ol>
+    <div class="highlight">
+        <strong>Comment &ccedil;a marche :</strong> L'&eacute;v&eacute;nement Quand cr&eacute;&eacute; s'ex&eacute;cute une seule fois au d&eacute;marrage du jeu.
+        Il donne au joueur 3 vies et met le score &agrave; z&eacute;ro.
+        Quand la balle touche la zone de mort (configur&eacute;e &agrave; l'&eacute;tape pr&eacute;c&eacute;dente), elle soustrait une vie.
     </div>
 
-    <h2>Initialiser les Vies (Événement Create)</h2>
-    <div class="step">
-        <p>Dans <code>obj_game_controller</code> :</p>
-        <ol>
-            <li>Ajoutez un événement : <strong>Create</strong></li>
-            <li>Ajoutez une action : <strong>Score &gt; Définir les Vies</strong></li>
-            <li>Valeur : <code>3</code></li>
-            <li>Ajoutez une action : <strong>Score &gt; Définir le Score</strong></li>
-            <li>Valeur : <code>0</code></li>
-        </ol>
-    </div>
-
-    <h2>Vérifier le Game Over (Événement Step)</h2>
     <div class="step">
         <ol>
-            <li>Ajoutez un événement : <strong>Step</strong></li>
-            <li>Ajoutez une action : <strong>Contrôle &gt; Tester les Vies</strong></li>
-            <li>Vérifiez si les vies sont inférieures ou égales à 0</li>
-            <li>Ajoutez une action : <strong>Main2 &gt; Afficher un Message</strong></li>
-            <li>Message : <code>Game Over !</code></li>
-            <li>Ajoutez une action : <strong>Main2 &gt; Redémarrer la Room</strong></li>
+            <li>Cliquez sur <strong>Appliquer aux &eacute;v&eacute;nements</strong> pour enregistrer</li>
         </ol>
     </div>
 
     <div class="highlight">
         <strong>N'oubliez pas :</strong> Placez <code>obj_game_controller</code> dans votre room !
+        Il n'a pas de sprite, donc vous ne le verrez pas pendant le jeu, mais il doit &ecirc;tre dans la room
+        pour que les vies et le score fonctionnent.
     </div>
 
     <div class="info">
-        Cliquez sur « Suivant » pour ajouter l'affichage du score.
+        Cliquez sur &laquo; Suivant &raquo; pour ajouter l'affichage du score et des vies.
     </div>
 </body>
 </html>

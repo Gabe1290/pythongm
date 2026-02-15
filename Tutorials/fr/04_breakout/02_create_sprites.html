@@ -6,65 +6,185 @@
         body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
         h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
         h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #555; font-size: 12px; margin-bottom: 4px; }
         .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; margin: 8px 0; }
+        td, th { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+        th { background-color: #eee; }
     </style>
 </head>
 <body>
-    <h1>Étape 1 : Créer les Sprites</h1>
+    <h1>&Eacute;tape 1 : Cr&eacute;er les Sprites</h1>
 
-    <p>Nous avons besoin de sprites pour la raquette, la balle, les briques et les murs.</p>
+    <p>Nous avons besoin de sprites pour la raquette, la balle, les briques, les murs et une zone de mort.
+    Pour chaque sprite, vous pouvez le <strong>dessiner vous-m&ecirc;me</strong> avec l'&eacute;diteur de sprites int&eacute;gr&eacute;,
+    ou <strong>charger une image d'exemple</strong>. Les deux options sont expliqu&eacute;es ci-dessous.</p>
 
-    <h2>Créer le Sprite de la Balle</h2>
+    <table>
+        <tr><th>Sprite</th><th>Taille</th><th>Description</th></tr>
+        <tr><td><code>spr_ball</code></td><td>16&times;16</td><td>Petit cercle jaune</td></tr>
+        <tr><td><code>spr_paddle</code></td><td>64&times;16</td><td>Rectangle bleu large</td></tr>
+        <tr><td><code>spr_brick_red</code></td><td>32&times;16</td><td>Brique rouge</td></tr>
+        <tr><td><code>spr_brick_orange</code></td><td>32&times;16</td><td>Brique orange</td></tr>
+        <tr><td><code>spr_brick_yellow</code></td><td>32&times;16</td><td>Brique jaune</td></tr>
+        <tr><td><code>spr_brick_green</code></td><td>32&times;16</td><td>Brique verte</td></tr>
+        <tr><td><code>spr_wall</code></td><td>32&times;32</td><td>Motif de briques grises</td></tr>
+        <tr><td><code>spr_death_zone</code></td><td>32&times;32</td><td>Rectangle sombre (invisible dans le jeu)</td></tr>
+    </table>
+
+    <!-- ================================================== -->
+    <h2>spr_ball (16&times;16)</h2>
     <div class="step">
         <ol>
-            <li>Faites un clic droit sur <strong>Sprites</strong> dans l'arbre des ressources</li>
-            <li>Sélectionnez <strong>Créer un Sprite</strong></li>
+            <li>Dans l'arbre des ressources, faites un clic droit sur <strong>Sprites</strong> et s&eacute;lectionnez <strong>Cr&eacute;er un Sprite</strong></li>
             <li>Nommez-le <code>spr_ball</code></li>
-            <li>Cliquez sur <strong>Modifier le Sprite</strong></li>
-            <li>Dessinez un petit cercle blanc ou jaune (16x16 pixels)</li>
-            <li>Cliquez sur <strong>OK</strong> pour enregistrer</li>
         </ol>
+
+        <h3>Option A &mdash; Dessiner vous-m&ecirc;me</h3>
+        <div class="option-box">
+            <ol>
+                <li>Double-cliquez sur <code>spr_ball</code> pour ouvrir l'&eacute;diteur de sprites</li>
+                <li>Dessinez un petit cercle</li>
+                <li>Utilisez une couleur vive comme le <strong>jaune</strong> ou le blanc</li>
+                <li>Gardez la taille &agrave; <strong>16&times;16 pixels</strong></li>
+                <li>Enregistrez avec <strong>Ctrl+S</strong></li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Charger le sprite d'exemple</h3>
+        <div class="option-box">
+            <ol>
+                <li>Faites un clic droit sur <code>spr_ball</code> dans l'arbre des ressources</li>
+                <li>S&eacute;lectionnez <strong>Importer une image...</strong></li>
+                <li>Naviguez vers <code>Tutorials/04_breakout/assets/</code> dans le dossier PyGameMaker</li>
+                <li>S&eacute;lectionnez <code>spr_ball.png</code> et cliquez sur Ouvrir</li>
+            </ol>
+        </div>
     </div>
 
-    <h2>Créer le Sprite de la Raquette</h2>
+    <!-- ================================================== -->
+    <h2>spr_paddle (64&times;16)</h2>
     <div class="step">
         <ol>
-            <li>Créez un nouveau sprite nommé <code>spr_paddle</code></li>
-            <li>Dessinez un rectangle large et plat (64x16 pixels)</li>
-            <li>Utilisez une couleur vive comme le bleu</li>
+            <li>Cr&eacute;ez un nouveau sprite nomm&eacute; <code>spr_paddle</code></li>
         </ol>
+
+        <h3>Option A &mdash; Dessiner vous-m&ecirc;me</h3>
+        <div class="option-box">
+            <ol>
+                <li>Ouvrez l'&eacute;diteur de sprites et dessinez un rectangle large et plat</li>
+                <li>Utilisez une couleur vive comme le <strong>bleu</strong></li>
+                <li>Taille : <strong>64&times;16 pixels</strong></li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Charger le sprite d'exemple</h3>
+        <div class="option-box">
+            <ol>
+                <li>Clic droit sur <code>spr_paddle</code> &rarr; <strong>Importer une image...</strong></li>
+                <li>S&eacute;lectionnez <code>Tutorials/04_breakout/assets/spr_paddle.png</code></li>
+            </ol>
+        </div>
     </div>
 
-    <h2>Créer les Sprites des Briques</h2>
-    <p>Créez des briques colorées pour différentes valeurs de points :</p>
+    <!-- ================================================== -->
+    <h2>Sprites des Briques (32&times;16 chacun)</h2>
+    <p>Cr&eacute;ez quatre briques color&eacute;es. Chacune suit les m&ecirc;mes &eacute;tapes :</p>
 
     <div class="step">
         <ol>
-            <li>Créez <code>spr_brick_red</code> - Brique rouge (32x16 pixels)</li>
-            <li>Créez <code>spr_brick_orange</code> - Brique orange</li>
-            <li>Créez <code>spr_brick_yellow</code> - Brique jaune</li>
-            <li>Créez <code>spr_brick_green</code> - Brique verte</li>
+            <li>Cr&eacute;ez un nouveau sprite avec le nom du tableau ci-dessous</li>
         </ol>
+
+        <h3>Option A &mdash; Dessiner vous-m&ecirc;me</h3>
+        <div class="option-box">
+            <ol>
+                <li>Ouvrez l'&eacute;diteur de sprites et dessinez un rectangle plein</li>
+                <li>Utilisez la couleur correspondante pour chaque brique</li>
+                <li>Taille : <strong>32&times;16 pixels</strong> pour toutes les briques</li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Charger les sprites d'exemple</h3>
+        <div class="option-box">
+            <p>Pour chaque brique, clic droit &rarr; <strong>Importer une image...</strong> et s&eacute;lectionnez le fichier correspondant :</p>
+            <ul>
+                <li><code>spr_brick_red</code> &rarr; <code>Tutorials/04_breakout/assets/spr_brick_red.png</code></li>
+                <li><code>spr_brick_orange</code> &rarr; <code>Tutorials/04_breakout/assets/spr_brick_orange.png</code></li>
+                <li><code>spr_brick_yellow</code> &rarr; <code>Tutorials/04_breakout/assets/spr_brick_yellow.png</code></li>
+                <li><code>spr_brick_green</code> &rarr; <code>Tutorials/04_breakout/assets/spr_brick_green.png</code></li>
+            </ul>
+        </div>
     </div>
 
-    <h2>Créer le Sprite du Mur</h2>
+    <!-- ================================================== -->
+    <h2>spr_wall (32&times;32)</h2>
     <div class="step">
         <ol>
-            <li>Créez un nouveau sprite nommé <code>spr_wall</code></li>
-            <li>Dessinez un rectangle gris uni (32x32 pixels)</li>
+            <li>Cr&eacute;ez un nouveau sprite nomm&eacute; <code>spr_wall</code></li>
         </ol>
+
+        <h3>Option A &mdash; Dessiner vous-m&ecirc;me</h3>
+        <div class="option-box">
+            <ol>
+                <li>Ouvrez l'&eacute;diteur de sprites et dessinez un motif de briques ou de pierres</li>
+                <li>Utilisez des couleurs <strong>grises</strong></li>
+                <li>Taille : <strong>32&times;32 pixels</strong></li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Charger le sprite d'exemple</h3>
+        <div class="option-box">
+            <ol>
+                <li>Clic droit sur <code>spr_wall</code> &rarr; <strong>Importer une image...</strong></li>
+                <li>S&eacute;lectionnez <code>Tutorials/04_breakout/assets/spr_wall.png</code></li>
+            </ol>
+        </div>
     </div>
 
+    <!-- ================================================== -->
+    <h2>spr_death_zone (32&times;32)</h2>
+    <div class="step">
+        <ol>
+            <li>Cr&eacute;ez un nouveau sprite nomm&eacute; <code>spr_death_zone</code></li>
+        </ol>
+
+        <h3>Option A &mdash; Dessiner vous-m&ecirc;me</h3>
+        <div class="option-box">
+            <ol>
+                <li>Dessinez un rectangle plein de n'importe quelle couleur (ex. rouge fonc&eacute;)</li>
+                <li>Taille : <strong>32&times;32 pixels</strong></li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Charger le sprite d'exemple</h3>
+        <div class="option-box">
+            <ol>
+                <li>Clic droit sur <code>spr_death_zone</code> &rarr; <strong>Importer une image...</strong></li>
+                <li>S&eacute;lectionnez <code>Tutorials/04_breakout/assets/spr_death_zone.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ================================================== -->
     <div class="highlight">
-        <strong>Astuce :</strong> Gardez des tailles de briques cohérentes pour qu'elles s'alignent bien dans la room !
+        <strong>Astuce :</strong> Gardez des tailles de briques coh&eacute;rentes (32&times;16) pour qu'elles s'alignent bien en rang&eacute;es !
+        La zone de mort sera invisible pendant le jeu &mdash; elle a juste besoin d'un sprite pour le placement.
     </div>
 
     <div class="info">
-        Cliquez sur « Suivant » pour créer les objets du jeu.
+        <strong>Point p&eacute;dagogique :</strong> La fonction <strong>Importer une image</strong> permet de charger n'importe quel fichier
+        PNG, GIF ou BMP comme sprite. C'est utile quand vous avez des illustrations cr&eacute;&eacute;es dans un programme externe
+        ou des ressources d'exemple fournies avec un tutoriel.
+    </div>
+
+    <div class="info">
+        Cliquez sur &laquo; Suivant &raquo; pour cr&eacute;er les objets du jeu.
     </div>
 </body>
 </html>

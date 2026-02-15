@@ -10,60 +10,114 @@
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
-        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
         ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Step 3: Player Movement</h1>
+    <h1>Step 3: Player Movement (Blockly)</h1>
 
-    <p>The player needs smooth movement with collision detection.</p>
+    <p>We'll use <strong>Blockly visual blocks</strong> to program the player's movement and wall collisions.</p>
 
-    <h2>Initialize Speed (Create Event)</h2>
-    <div class="step">
-        <p>In <code>obj_player</code>:</p>
-        <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Control &gt; Set Variable</strong></li>
-            <li>Variable: <code>move_speed</code></li>
-            <li>Value: <code>4</code></li>
-        </ol>
-    </div>
-
-    <h2>Movement with Collision (Step Event)</h2>
+    <h2>Open the Blockly Editor</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Double-click <code>obj_player</code> in the Asset Tree to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab at the top of the editor</li>
         </ol>
-        <pre>
-// Horizontal movement
-var hspd = 0;
-if (keyboard_check(vk_right)) hspd = move_speed;
-if (keyboard_check(vk_left)) hspd = -move_speed;
-
-// Vertical movement
-var vspd = 0;
-if (keyboard_check(vk_down)) vspd = move_speed;
-if (keyboard_check(vk_up)) vspd = -move_speed;
-
-// Check horizontal collision
-if (!place_meeting(x + hspd, y, obj_wall)) {
-    x += hspd;
-}
-
-// Check vertical collision
-if (!place_meeting(x, y + vspd, obj_wall)) {
-    y += vspd;
-}</pre>
-    </div>
-
-    <div class="highlight">
-        <strong>How it works:</strong> We check if the target position would collide with a wall. If not, we move there!
     </div>
 
     <div class="info">
-        Click "Next" to add coin collection.
+        <strong>How Blockly works:</strong> Drag blocks from the toolbox on the left into the workspace.
+        Snap action blocks inside event blocks to define what happens. When you're done,
+        click <strong>Apply to Events</strong> to save your blocks.
+    </div>
+
+    <h2>Move Right</h2>
+    <div class="step">
+        <p>Drag these blocks from the toolbox and snap them together:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">4</span></span>
+        </div>
+        <p>Find <strong>Keyboard (held)</strong> in the <em>Events</em> category, and select <strong>Right</strong> from the dropdown.
+        Then find <strong>Set Horizontal Speed</strong> in the <em>Movement</em> category and snap it inside.
+        Type <strong>4</strong> in the number field.</p>
+    </div>
+
+    <h2>Move Left</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">-4</span></span>
+        </div>
+        <p>Same as above, but choose <strong>Left</strong> and type <strong>-4</strong> (negative = left direction).</p>
+    </div>
+
+    <h2>Move Down</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Down (held)</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">4</span></span>
+        </div>
+        <p>Use <strong>Set Vertical Speed</strong> from <em>Movement</em>. Positive = downward.</p>
+    </div>
+
+    <h2>Move Up</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Up (held)</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">-4</span></span>
+        </div>
+        <p>Type <strong>-4</strong> for upward movement.</p>
+    </div>
+
+    <h2>Stop When No Key Pressed</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: No key</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>Find <strong>No Key</strong> in <em>Events</em> and <strong>Stop Movement</strong> in <em>Movement</em>.
+        This prevents the player from sliding forever!</p>
+    </div>
+
+    <h2>Stop at Walls</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_wall</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>Find <strong>Collision</strong> in <em>Events</em>. Type <code>obj_wall</code> in the text field.
+        Snap a <strong>Stop Movement</strong> block inside.</p>
+    </div>
+
+    <h2>Apply Your Blocks</h2>
+    <div class="step">
+        <ol>
+            <li>You should have <strong>6 event blocks</strong> in your workspace</li>
+            <li>Click the <strong>Apply to Events</strong> button to save</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>How it works:</strong> Each arrow key sets the speed in that direction.
+        When you release all keys, the player stops. If the player hits a wall, it also stops.
+    </div>
+
+    <div class="info">
+        Click "Next" to add coin collection and the exit.
     </div>
 </body>
 </html>

@@ -313,13 +313,13 @@ class AssetTreeWidget(QTreeWidget):
 
         # Get the parent IDE window to access the import functionality
         parent = self.parent()
-        while parent and not hasattr(parent, 'import_assets'):
+        while parent and not hasattr(parent, 'import_asset'):
             parent = parent.parent()
 
-        if parent and hasattr(parent, 'import_assets'):
-            parent.import_assets(asset_type)
+        if parent and hasattr(parent, 'import_asset'):
+            parent.import_asset(asset_type)
         else:
-            logger.warning("Could not find parent with import_assets method")
+            logger.warning("Could not find parent with import_asset method")
             QMessageBox.information(
                 self,
                 self.tr("Import Assets"),

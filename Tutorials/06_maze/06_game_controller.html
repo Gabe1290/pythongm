@@ -10,65 +10,55 @@
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
-        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
         ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-score { background-color: #5CA65C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Step 5: Game Controller</h1>
+    <h1>Step 5: Game Controller (Blockly)</h1>
 
-    <p>Create a controller to track time and display score.</p>
+    <p>The game controller is an invisible object that displays the score on screen.</p>
 
-    <h2>Create Controller Object</h2>
-    <div class="step">
-        <ol>
-            <li>Create object <code>obj_game_controller</code></li>
-            <li>No sprite needed (leave it empty)</li>
-        </ol>
+    <div class="info">
+        <strong>What is a game controller?</strong> It's an object with no sprite that manages
+        things like the score display. Since it's invisible, it won't interfere
+        with the game &mdash; it just runs in the background.
     </div>
 
-    <h2>Initialize Timer (Create Event)</h2>
+    <h2>Add Score Display</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Control &gt; Set Variable</strong></li>
-            <li>Variable: <code>global.timer</code></li>
-            <li>Value: <code>0</code></li>
+            <li>Double-click <code>obj_game_controller</code> to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab</li>
+            <li>Build these blocks:</li>
         </ol>
-    </div>
-
-    <h2>Update Timer (Step Event)</h2>
-    <div class="step">
-        <ol>
-            <li>Add Event: <strong>Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Set Variable</strong></li>
-            <li>Variable: <code>global.timer</code></li>
-            <li>Value: <code>1/room_speed</code></li>
-            <li>Check "Relative"</li>
+        <div class="blockly-group">
+            <span class="block block-event">Draw Event</span><br>
+            <span class="block block-score block-indent">Draw score at x: <span class="block-num">10</span> y: <span class="block-num">10</span></span>
+        </div>
+        <p>From <em>Events</em>, drag a <strong>Draw Event</strong> block.
+        From <em>Score/Lives/Health</em>, snap <strong>Draw Score</strong> inside.
+        Set x to <strong>10</strong> and y to <strong>10</strong> (top-left corner).</p>
+        <ol start="4">
+            <li>Click <strong>Apply to Events</strong></li>
         </ol>
-    </div>
-
-    <h2>Display Info (Draw Event)</h2>
-    <div class="step">
-        <ol>
-            <li>Add Event: <strong>Draw</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
-        </ol>
-        <pre>
-draw_set_color(c_white);
-draw_text(10, 10, "Score: " + string(score));
-draw_text(10, 30, "Time: " + string(floor(global.timer)) + "s");
-
-var coins = instance_number(obj_coin);
-draw_text(10, 50, "Coins: " + string(coins));</pre>
     </div>
 
     <div class="highlight">
-        <strong>Note:</strong> The controller is invisible but essential for tracking game state!
+        <strong>How it works:</strong> The Draw Event runs every frame and displays
+        "Score: X" in the top-left corner of the screen. As the player collects coins,
+        the score updates automatically!
     </div>
 
     <div class="info">
-        Click "Next" to set up your room.
+        Click "Next" to set up your maze room.
     </div>
 </body>
 </html>

@@ -17,84 +17,110 @@
     </style>
 </head>
 <body>
-    <h1>Étape 7 : Configurer la Room</h1>
+    <h1>&Eacute;tape 7 : Configurer la Room</h1>
 
-    <p>Il est temps de créer la room du jeu et de placer tous les objets !</p>
+    <p>Il est temps de cr&eacute;er la room du jeu et de placer tous les objets !</p>
 
-    <h2>Créer la Room</h2>
+    <h2>Cr&eacute;er la Room</h2>
     <div class="step">
         <ol>
-            <li>Faites un clic droit sur <strong>Rooms</strong> et sélectionnez <strong>Créer une Room</strong></li>
+            <li>Faites un clic droit sur <strong>Rooms</strong> et s&eacute;lectionnez <strong>Cr&eacute;er une Room</strong></li>
             <li>Nommez-la <code>room_breakout</code></li>
-            <li>Définissez la taille sur 640x480 pixels</li>
+            <li>D&eacute;finissez la taille sur 640x480 pixels</li>
         </ol>
     </div>
 
     <h2>Disposition de la Room</h2>
     <pre>
-+--[MUR]----------------------[MUR]--+
-|  [MUR]  [R][R][R][R][R]    [MUR]  |
-|  [MUR]  [O][O][O][O][O]    [MUR]  |
-|  [MUR]  [J][J][J][J][J]    [MUR]  |
-|  [MUR]  [V][V][V][V][V]    [MUR]  |
-|  [MUR]                     [MUR]  |
-|  [MUR]        (o)          [MUR]  |
-|  [MUR]                     [MUR]  |
-|  [MUR]     [RAQUETTE]      [MUR]  |
-+--[ZONE DE MORT ZONE DE MORT]------+
-    </pre>
+S T T T T T T T T T T T T T T T T T S
+S                                     S
+S   [R][R][R][R][R][R][R][R][R][R]    S
+S   [O][O][O][O][O][O][O][O][O][O]    S
+S   [J][J][J][J][J][J][J][J][J][J]    S
+S   [V][V][V][V][V][V][V][V][V][V]    S
+S                                     S
+S                                     S
+S                (o)                  S
+S                                     S
+S            [==RAQUETTE==]           S
+D D D D D D D D D D D D D D D D D D D
 
-    <h2>Placer les Objets</h2>
+S = Mur lat&eacute;ral (obj_wall_side)
+T = Mur du haut (obj_wall_top)
+D = Zone de mort (obj_death_zone, invisible)
+R/O/J/V = Briques   (o) = Balle</pre>
 
-    <h3>1. Murs</h3>
+    <h2>Placer les objets</h2>
+
+    <h3>1. Murs lat&eacute;raux</h3>
     <div class="step">
-        <p>Placez <code>obj_wall</code> le long des bords supérieur, gauche et droit.</p>
+        <p>Placez <code>obj_wall_side</code> le long des bords <strong>gauche et droit</strong>, de haut en bas.</p>
     </div>
 
-    <h3>2. Zone de Mort</h3>
+    <h3>2. Mur du haut</h3>
     <div class="step">
-        <p>Placez <code>obj_death_zone</code> le long du bord inférieur (elle est invisible).</p>
+        <p>Placez <code>obj_wall_top</code> le long du bord <strong>sup&eacute;rieur</strong>, entre les murs lat&eacute;raux.</p>
     </div>
 
-    <h3>3. Briques</h3>
+    <h3>3. Zone de mort</h3>
     <div class="step">
-        <p>Disposez les briques en rangées près du haut :</p>
+        <p>Placez <code>obj_death_zone</code> le long du bord <strong>inf&eacute;rieur</strong>.
+        Elle sera invisible pendant le jeu.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Important :</strong> Il n'y a PAS de mur en bas ! La zone de mort attrape
+        la balle quand elle passe sous la raquette.
+    </div>
+
+    <h3>4. Briques</h3>
+    <div class="step">
+        <p>Disposez les briques en rang&eacute;es pr&egrave;s du haut :</p>
         <ul>
-            <li>Première rangée : Briques rouges (<code>obj_brick_red</code>)</li>
-            <li>Deuxième rangée : Briques orange</li>
-            <li>Troisième rangée : Briques jaunes</li>
-            <li>Quatrième rangée : Briques vertes</li>
+            <li>Premi&egrave;re rang&eacute;e : Briques rouges (<code>obj_brick_red</code>)</li>
+            <li>Deuxi&egrave;me rang&eacute;e : Briques orange (<code>obj_brick_orange</code>)</li>
+            <li>Troisi&egrave;me rang&eacute;e : Briques jaunes (<code>obj_brick_yellow</code>)</li>
+            <li>Quatri&egrave;me rang&eacute;e : Briques vertes (<code>obj_brick_green</code>)</li>
         </ul>
+        <p>Activez <strong>Accrocher &agrave; la grille</strong> (32x16) pour un alignement facile.</p>
     </div>
 
-    <h3>4. Raquette</h3>
+    <h3>5. Raquette</h3>
     <div class="step">
-        <p>Placez <code>obj_paddle</code> près du bas, centrée horizontalement.</p>
+        <p>Placez <code>obj_paddle</code> pr&egrave;s du bas, centr&eacute;e horizontalement.</p>
     </div>
 
-    <h3>5. Balle</h3>
+    <h3>6. Balle</h3>
     <div class="step">
-        <p>Placez <code>obj_ball</code> juste au-dessus de la raquette.</p>
+        <p>Placez <code>obj_ball</code> juste au-dessus de la raquette, pr&egrave;s du centre de la room.</p>
     </div>
 
-    <h3>6. Contrôleur de Jeu</h3>
+    <h3>7. Contr&ocirc;leur de jeu</h3>
     <div class="step">
-        <p>Placez <code>obj_game_controller</code> n'importe où (il n'a pas de sprite).</p>
+        <p>Placez <code>obj_game_controller</code> n'importe o&ugrave; dans la room (il n'a pas de sprite,
+        donc l'emplacement n'a pas d'importance).</p>
     </div>
 
     <div class="success">
-        <strong>Félicitations !</strong> Votre jeu Breakout est prêt !
+        <strong>F&eacute;licitations !</strong> Votre jeu Breakout est pr&ecirc;t !
+        <br><br>
+        Appuyez sur <strong>F5</strong> pour jouer :
+        <ul>
+            <li>Utilisez les touches <strong>Gauche</strong> et <strong>Droite</strong> pour d&eacute;placer la raquette</li>
+            <li>Cassez toutes les briques pour gagner !</li>
+            <li>Ne laissez pas la balle tomber sous la raquette !</li>
+            <li>Surveillez votre score et vos vies en haut &agrave; gauche</li>
+        </ul>
     </div>
 
-    <h2>Testez Votre Jeu</h2>
-    <ul>
-        <li>Appuyez sur <strong>F5</strong> ou cliquez sur <strong>Exécuter</strong></li>
-        <li>Utilisez les touches <strong>Gauche</strong> et <strong>Droite</strong> pour vous déplacer</li>
-        <li>Cassez toutes les briques pour gagner !</li>
-    </ul>
-
-    <div class="info">
-        <strong>Bravo !</strong> Vous avez créé un jeu Breakout classique !
+    <div class="highlight">
+        <strong>Id&eacute;es de d&eacute;fis :</strong>
+        <ul>
+            <li>Donnez des valeurs de points diff&eacute;rentes aux briques de diff&eacute;rentes couleurs</li>
+            <li>Acc&eacute;l&eacute;rez la balle au fur et &agrave; mesure que les briques sont d&eacute;truites</li>
+            <li>Ajoutez un deuxi&egrave;me niveau avec une disposition de briques diff&eacute;rente</li>
+            <li>Ajoutez des bonus qui tombent des briques d&eacute;truites</li>
+        </ul>
     </div>
 </body>
 </html>

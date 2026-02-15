@@ -11,69 +11,102 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; margin: 8px 0; }
+        td, th { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+        th { background-color: #eee; }
     </style>
 </head>
 <body>
-    <h1>Étape 2 : Créer les Objets</h1>
+    <h1>&Eacute;tape 2 : Cr&eacute;er les Objets</h1>
 
-    <p>Maintenant, nous allons créer tous les objets du jeu.</p>
+    <p>Maintenant, nous allons cr&eacute;er tous les objets du jeu. Chaque objet utilise un sprite et
+    a des propri&eacute;t&eacute;s sp&eacute;cifiques.</p>
 
-    <h2>Créer l'Objet Mur</h2>
+    <table>
+        <tr><th>Objet</th><th>Sprite</th><th>Solide</th><th>R&ocirc;le</th></tr>
+        <tr><td><code>obj_wall_side</code></td><td><code>spr_wall</code></td><td>&#10003;</td><td>Murs gauche et droit</td></tr>
+        <tr><td><code>obj_wall_top</code></td><td><code>spr_wall</code></td><td>&#10003;</td><td>Mur du haut</td></tr>
+        <tr><td><code>obj_brick_parent</code></td><td>(aucun)</td><td>&#10003;</td><td>Mod&egrave;le parent pour toutes les briques</td></tr>
+        <tr><td><code>obj_brick_red</code></td><td><code>spr_brick_red</code></td><td>&#10003;</td><td>Brique rouge</td></tr>
+        <tr><td><code>obj_brick_orange</code></td><td><code>spr_brick_orange</code></td><td>&#10003;</td><td>Brique orange</td></tr>
+        <tr><td><code>obj_brick_yellow</code></td><td><code>spr_brick_yellow</code></td><td>&#10003;</td><td>Brique jaune</td></tr>
+        <tr><td><code>obj_brick_green</code></td><td><code>spr_brick_green</code></td><td>&#10003;</td><td>Brique verte</td></tr>
+        <tr><td><code>obj_paddle</code></td><td><code>spr_paddle</code></td><td>&#10003;</td><td>Raquette du joueur</td></tr>
+        <tr><td><code>obj_ball</code></td><td><code>spr_ball</code></td><td></td><td>La balle</td></tr>
+        <tr><td><code>obj_death_zone</code></td><td><code>spr_death_zone</code></td><td></td><td>Zone de mort en bas (invisible)</td></tr>
+        <tr><td><code>obj_game_controller</code></td><td>(aucun)</td><td></td><td>G&egrave;re le score et les vies</td></tr>
+    </table>
+
+    <h2>Murs lat&eacute;raux et mur du haut</h2>
     <div class="step">
         <ol>
-            <li>Faites un clic droit sur <strong>Objets</strong> et sélectionnez <strong>Créer un Objet</strong></li>
-            <li>Nommez-le <code>obj_wall</code></li>
-            <li>Définissez le sprite sur <code>spr_wall</code></li>
-            <li><strong>Cochez « Solide »</strong></li>
-            <li>Aucun événement nécessaire</li>
+            <li>Faites un clic droit sur <strong>Objets</strong> et s&eacute;lectionnez <strong>Cr&eacute;er un Objet</strong></li>
+            <li>Cr&eacute;ez <code>obj_wall_side</code> avec le sprite <code>spr_wall</code></li>
+            <li><strong>Cochez &laquo; Solide &raquo;</strong></li>
+            <li>Cr&eacute;ez <code>obj_wall_top</code> avec le sprite <code>spr_wall</code></li>
+            <li><strong>Cochez &laquo; Solide &raquo;</strong></li>
         </ol>
-    </div>
-
-    <h2>Créer l'Objet Parent des Briques</h2>
-    <p>Nous utiliserons un objet parent pour que toutes les briques partagent le même comportement de collision.</p>
-    <div class="step">
-        <ol>
-            <li>Créez l'objet <code>obj_brick_parent</code></li>
-            <li>Pas de sprite nécessaire (c'est juste un modèle)</li>
-            <li><strong>Cochez « Solide »</strong></li>
-        </ol>
-    </div>
-
-    <h2>Créer les Objets Briques Colorées</h2>
-    <div class="step">
-        <p>Pour chaque couleur de brique :</p>
-        <ol>
-            <li>Créez <code>obj_brick_red</code> avec <code>spr_brick_red</code></li>
-            <li>Définissez <strong>Parent</strong> sur <code>obj_brick_parent</code></li>
-            <li>Cochez « Solide »</li>
-        </ol>
-        <p>Répétez pour <code>obj_brick_orange</code>, <code>obj_brick_yellow</code> et <code>obj_brick_green</code>.</p>
-    </div>
-
-    <h2>Créer l'Objet Raquette</h2>
-    <div class="step">
-        <ol>
-            <li>Créez l'objet <code>obj_paddle</code></li>
-            <li>Définissez le sprite sur <code>spr_paddle</code></li>
-            <li><strong>Cochez « Solide »</strong></li>
-        </ol>
-    </div>
-
-    <h2>Créer l'Objet Balle</h2>
-    <div class="step">
-        <ol>
-            <li>Créez l'objet <code>obj_ball</code></li>
-            <li>Définissez le sprite sur <code>spr_ball</code></li>
-            <li>Laissez « Solide » décoché</li>
-        </ol>
-    </div>
-
-    <div class="highlight">
-        <strong>Objets Parents :</strong> Quand la balle entre en collision avec <code>obj_brick_parent</code>, elle détectera les collisions avec TOUS les types de briques !
     </div>
 
     <div class="info">
-        Cliquez sur « Suivant » pour ajouter le mouvement de la raquette.
+        <strong>Pourquoi deux types de murs ?</strong> La balle doit savoir dans quelle direction rebondir.
+        Quand elle touche un mur lat&eacute;ral, elle inverse son mouvement horizontal.
+        Quand elle touche le mur du haut, elle inverse son mouvement vertical.
+        Les deux utilisent le m&ecirc;me sprite <code>spr_wall</code>.
+    </div>
+
+    <h2>Objet parent des briques</h2>
+    <div class="step">
+        <ol>
+            <li>Cr&eacute;ez l'objet <code>obj_brick_parent</code></li>
+            <li>Pas de sprite n&eacute;cessaire (c'est juste un mod&egrave;le)</li>
+            <li><strong>Cochez &laquo; Solide &raquo;</strong></li>
+        </ol>
+    </div>
+
+    <h2>Briques color&eacute;es</h2>
+    <div class="step">
+        <p>Pour chaque couleur de brique :</p>
+        <ol>
+            <li>Cr&eacute;ez l'objet (ex. <code>obj_brick_red</code>) avec son sprite correspondant</li>
+            <li>D&eacute;finissez <strong>Parent</strong> sur <code>obj_brick_parent</code></li>
+            <li>Cochez &laquo; Solide &raquo;</li>
+        </ol>
+        <p>R&eacute;p&eacute;tez pour <code>obj_brick_orange</code>, <code>obj_brick_yellow</code> et <code>obj_brick_green</code>.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Objets Parents :</strong> Quand la balle entre en collision avec <code>obj_brick_parent</code>,
+        elle d&eacute;tectera les collisions avec TOUS les types de briques ! Cela &eacute;vite de cr&eacute;er
+        des &eacute;v&eacute;nements de collision s&eacute;par&eacute;s pour chaque couleur.
+    </div>
+
+    <h2>Raquette et balle</h2>
+    <div class="step">
+        <ol>
+            <li>Cr&eacute;ez <code>obj_paddle</code> avec le sprite <code>spr_paddle</code> &mdash; <strong>Cochez &laquo; Solide &raquo;</strong></li>
+            <li>Cr&eacute;ez <code>obj_ball</code> avec le sprite <code>spr_ball</code> &mdash; Laissez &laquo; Solide &raquo; d&eacute;coch&eacute;</li>
+        </ol>
+    </div>
+
+    <h2>Zone de mort</h2>
+    <div class="step">
+        <ol>
+            <li>Cr&eacute;ez <code>obj_death_zone</code> avec le sprite <code>spr_death_zone</code></li>
+            <li><strong>D&eacute;cochez &laquo; Visible &raquo;</strong> &mdash; il sera invisible pendant le jeu</li>
+        </ol>
+    </div>
+
+    <h2>Contr&ocirc;leur de jeu</h2>
+    <div class="step">
+        <ol>
+            <li>Cr&eacute;ez <code>obj_game_controller</code></li>
+            <li>Pas de sprite n&eacute;cessaire &mdash; c'est un objet invisible qui g&egrave;re le score et les vies</li>
+        </ol>
+    </div>
+
+    <div class="info">
+        Cliquez sur &laquo; Suivant &raquo; pour ajouter le mouvement de la raquette.
     </div>
 </body>
 </html>

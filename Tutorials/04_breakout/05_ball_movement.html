@@ -11,61 +11,130 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Step 4: Ball Movement and Bouncing</h1>
+    <h1>Step 4: Ball Movement and Bouncing (Blockly)</h1>
 
-    <p>The ball needs to move and bounce off walls, paddle, and bricks.</p>
+    <p>The ball needs to move diagonally and bounce off walls, the paddle, and bricks.
+    We'll program all of this with Blockly blocks.</p>
 
-    <h2>Start Ball Moving (Create Event)</h2>
+    <h2>Open the Blockly Editor</h2>
     <div class="step">
         <ol>
-            <li>Open <code>obj_ball</code></li>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Move &gt; Start Moving in Direction</strong></li>
-            <li>Choose an upward diagonal direction</li>
-            <li>Set speed to <code>5</code></li>
+            <li>Double-click <code>obj_ball</code> in the Asset Tree to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab</li>
         </ol>
     </div>
 
-    <h2>Bounce Off Walls</h2>
+    <h2>Start the Ball Moving (Create Event)</h2>
     <div class="step">
-        <ol>
-            <li>Add Event: <strong>Collision &gt; obj_wall</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
-        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Create Event</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">3</span></span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">-3</span></span>
+        </div>
+        <p>From <em>Events</em>, drag a <strong>Create Event</strong> block.
+        From <em>Movement</em>, snap two speed blocks inside:
+        <strong>Set horizontal speed to 3</strong> and <strong>Set vertical speed to -3</strong>.
+        This makes the ball move diagonally upward when the game starts.</p>
+    </div>
+
+    <div class="info">
+        <strong>Why two speeds?</strong> The horizontal speed (3) moves the ball sideways.
+        The vertical speed (-3) moves it upward (negative = up). Together, the ball moves diagonally!
+    </div>
+
+    <h2>Bounce Off Side Walls</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_wall_side</span><br>
+            <span class="block block-move block-indent">Reverse horizontal movement</span>
+        </div>
+        <p>When the ball hits a left or right wall, it reverses its horizontal direction.
+        Find <strong>Reverse horizontal movement</strong> in the <em>Movement</em> category.</p>
+    </div>
+
+    <h2>Bounce Off Top Wall</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_wall_top</span><br>
+            <span class="block block-move block-indent">Reverse vertical movement</span>
+        </div>
+        <p>When the ball hits the top wall, it reverses its vertical direction and bounces downward.</p>
     </div>
 
     <h2>Bounce Off Paddle</h2>
     <div class="step">
-        <ol>
-            <li>Add Event: <strong>Collision &gt; obj_paddle</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
-        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_paddle</span><br>
+            <span class="block block-move block-indent">Reverse vertical movement</span>
+        </div>
+        <p>Same as the top wall &mdash; the ball bounces back upward when it hits the paddle.</p>
     </div>
 
-    <h2>Bounce Off Bricks (and Destroy Them!)</h2>
+    <h2>Hit Bricks (Bounce + Destroy + Score!)</h2>
     <div class="step">
-        <ol>
-            <li>Add Event: <strong>Collision &gt; obj_brick_parent</strong></li>
-            <li>Add Action: <strong>Move &gt; Bounce Against Objects</strong></li>
-            <li>Select "Against solid objects"</li>
-            <li>Add Action: <strong>Main1 &gt; Destroy Instance</strong></li>
-            <li>Select "Other" (destroys the brick, not the ball)</li>
-            <li>Add Action: <strong>Score &gt; Add to Score</strong></li>
-            <li>Value: <code>10</code></li>
-        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_brick_parent</span><br>
+            <span class="block block-move block-indent">Reverse vertical movement</span><br>
+            <span class="block block-instance block-indent">Destroy other instance</span><br>
+            <span class="block block-score block-indent">Add to score <span class="block-num">10</span></span>
+        </div>
+        <p>From <em>Events</em>, add a <strong>Collision</strong> with <code>obj_brick_parent</code>.
+        Snap three blocks inside:</p>
+        <ul>
+            <li><strong>Reverse vertical movement</strong> (from <em>Movement</em>) &mdash; ball bounces back</li>
+            <li><strong>Destroy other instance</strong> (from <em>Instance</em>) &mdash; destroys the brick, not the ball</li>
+            <li><strong>Add to score 10</strong> (from <em>Score/Lives/Health</em>) &mdash; earn points!</li>
+        </ul>
     </div>
 
     <div class="highlight">
         <strong>Key Point:</strong> Using <code>obj_brick_parent</code> means this collision works for ALL brick colors!
+        <strong>Destroy other</strong> destroys the object we collided with (the brick), not the ball.
+    </div>
+
+    <h2>Ball Falls Off Screen (Lose a Life)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_death_zone</span><br>
+            <span class="block block-score block-indent">Add to lives <span class="block-num">-1</span></span><br>
+            <span class="block block-move block-indent">Jump to x: <span class="block-num">320</span> y: <span class="block-num">400</span></span>
+        </div>
+        <p>When the ball falls off the bottom and hits the death zone:</p>
+        <ul>
+            <li><strong>Add to lives -1</strong> (from <em>Score/Lives/Health</em>) &mdash; lose one life</li>
+            <li><strong>Jump to x: 320 y: 400</strong> (from <em>Movement</em>) &mdash; respawn the ball above the paddle</li>
+        </ul>
+    </div>
+
+    <h2>Apply Your Blocks</h2>
+    <div class="step">
+        <ol>
+            <li>You should have <strong>6 event blocks</strong> in your workspace</li>
+            <li>Click the <strong>Apply to Events</strong> button to save</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>How bouncing works:</strong> The ball always moves diagonally. When it hits a
+        vertical surface (side wall), we reverse horizontal movement. When it hits a horizontal
+        surface (top wall, paddle, bricks), we reverse vertical movement. This creates realistic bouncing!
     </div>
 
     <div class="info">
-        Click "Next" to add the lives system.
+        Click "Next" to set up the lives system.
     </div>
 </body>
 </html>

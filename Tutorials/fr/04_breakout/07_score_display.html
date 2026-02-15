@@ -11,49 +11,58 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+
+        /* Styles des blocs Blockly */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-score { background-color: #5CA65C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Étape 6 : Afficher le Score et les Vies</h1>
+    <h1>&Eacute;tape 6 : Afficher le Score et les Vies (Blockly)</h1>
 
-    <p>Ajoutons un affichage pour le score du joueur et les vies restantes.</p>
+    <p>Ajoutons un affichage &agrave; l'&eacute;cran pour que le joueur puisse voir son score et ses vies restantes.</p>
 
-    <h2>Événement Draw dans le Contrôleur de Jeu</h2>
+    <h2>Ajouter l'&eacute;v&eacute;nement Dessiner</h2>
     <div class="step">
-        <p>Dans <code>obj_game_controller</code> :</p>
         <ol>
-            <li>Ajoutez un événement : <strong>Draw</strong></li>
+            <li>Ouvrez <code>obj_game_controller</code> dans l'&eacute;diteur Blockly (s'il n'est pas d&eacute;j&agrave; ouvert)</li>
+            <li>Vous devriez voir l'&eacute;v&eacute;nement Quand cr&eacute;&eacute; de l'&eacute;tape pr&eacute;c&eacute;dente</li>
+            <li>Ajoutez maintenant un deuxi&egrave;me bloc d'&eacute;v&eacute;nement :</li>
         </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Quand dessiner</span><br>
+            <span class="block block-score block-indent">Afficher score &agrave; x: <span class="block-num">10</span> y: <span class="block-num">10</span></span><br>
+            <span class="block block-score block-indent">Afficher vies &agrave; x: <span class="block-num">200</span> y: <span class="block-num">10</span></span>
+        </div>
+        <p>Dans <em>&Eacute;v&eacute;nements</em>, glissez un bloc <strong>Quand dessiner</strong>.
+        Dans <em>Score/Vies/Sant&eacute;</em>, accrochez deux blocs d'affichage &agrave; l'int&eacute;rieur :</p>
+        <ul>
+            <li><strong>Afficher score &agrave; x: 10 y: 10</strong> &mdash; affiche le score en haut &agrave; gauche</li>
+            <li><strong>Afficher vies &agrave; x: 200 y: 10</strong> &mdash; affiche les vies restantes</li>
+        </ul>
     </div>
 
-    <h2>Dessiner le Score</h2>
+    <h2>Appliquer vos blocs</h2>
     <div class="step">
         <ol>
-            <li>Ajoutez une action : <strong>Dessiner &gt; Dessiner du Texte</strong></li>
-            <li>Texte : <code>Score :</code></li>
-            <li>X : <code>10</code>, Y : <code>10</code></li>
-            <li>Ajoutez une action : <strong>Dessiner &gt; Dessiner le Score</strong></li>
-            <li>X : <code>70</code>, Y : <code>10</code></li>
-        </ol>
-    </div>
-
-    <h2>Dessiner les Vies</h2>
-    <div class="step">
-        <ol>
-            <li>Ajoutez une action : <strong>Dessiner &gt; Dessiner du Texte</strong></li>
-            <li>Texte : <code>Vies :</code></li>
-            <li>X : <code>10</code>, Y : <code>30</code></li>
-            <li>Ajoutez une action : <strong>Dessiner &gt; Dessiner les Vies</strong></li>
-            <li>X : <code>70</code>, Y : <code>30</code></li>
+            <li>Vous devez maintenant avoir <strong>2 blocs d'&eacute;v&eacute;nements</strong> pour <code>obj_game_controller</code> :
+                l'&eacute;v&eacute;nement Quand cr&eacute;&eacute; et l'&eacute;v&eacute;nement Quand dessiner</li>
+            <li>Cliquez sur <strong>Appliquer aux &eacute;v&eacute;nements</strong> pour enregistrer</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Astuce :</strong> Vous pouvez utiliser <code>Dessiner les Vies en Image</code> pour afficher des icônes de cœur au lieu d'un nombre !
+        <strong>Comment &ccedil;a marche :</strong> L'&eacute;v&eacute;nement Quand dessiner s'ex&eacute;cute &agrave; chaque image et affiche le texte
+        du score et des vies &agrave; l'&eacute;cran. Quand le joueur casse des briques, le score augmente.
+        Quand la balle tombe, le nombre de vies diminue.
     </div>
 
     <div class="info">
-        Cliquez sur « Suivant » pour configurer la room du jeu.
+        Cliquez sur &laquo; Suivant &raquo; pour configurer la room du jeu.
     </div>
 </body>
 </html>

@@ -11,65 +11,89 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+
+        /* Styles des blocs Blockly */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Étape 3 : Ajouter le Mouvement de la Raquette</h1>
+    <h1>&Eacute;tape 3 : Mouvement de la Raquette (Blockly)</h1>
 
-    <p>La raquette se déplace à gauche et à droite avec les touches fléchées.</p>
+    <p>La raquette se d&eacute;place &agrave; gauche et &agrave; droite avec les touches fl&eacute;ch&eacute;es.
+    Nous allons programmer tout cela avec des blocs Blockly.</p>
 
-    <h2>Déplacer à Gauche (Flèche Gauche)</h2>
+    <h2>Ouvrir l'&eacute;diteur Blockly</h2>
     <div class="step">
         <ol>
-            <li>Ouvrez <code>obj_paddle</code></li>
-            <li>Ajoutez un événement : <strong>Clavier &gt; Appuyer Gauche</strong></li>
-            <li>Ajoutez une action : <strong>Mouvement &gt; Définir la Vitesse Horizontale</strong></li>
-            <li>Définissez la vitesse sur <code>-8</code> (négatif = gauche)</li>
+            <li>Double-cliquez sur <code>obj_paddle</code> dans l'arbre des ressources pour ouvrir l'&eacute;diteur d'objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
         </ol>
     </div>
 
-    <h2>Arrêter le Mouvement (Relâcher Gauche)</h2>
+    <h2>D&eacute;placer &agrave; gauche</h2>
     <div class="step">
-        <ol>
-            <li>Ajoutez un événement : <strong>Clavier &gt; Relâcher Gauche</strong></li>
-            <li>Ajoutez une action : <strong>Mouvement &gt; Définir la Vitesse Horizontale</strong></li>
-            <li>Définissez la vitesse sur <code>0</code></li>
-        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Clavier: Fl&egrave;che gauche (maintenue)</span><br>
+            <span class="block block-move block-indent">d&eacute;finir vitesse horizontale &agrave; <span class="block-num">-8</span></span>
+        </div>
+        <p>Dans la cat&eacute;gorie <em>&Eacute;v&eacute;nements</em>, glissez un bloc <strong>Clavier (maintenue)</strong>
+        et choisissez <strong>Fl&egrave;che gauche</strong>.
+        Dans <em>Mouvement</em>, accrochez <strong>d&eacute;finir vitesse horizontale &agrave; -8</strong>.</p>
     </div>
 
-    <h2>Déplacer à Droite (Flèche Droite)</h2>
+    <h2>D&eacute;placer &agrave; droite</h2>
     <div class="step">
-        <ol>
-            <li>Ajoutez un événement : <strong>Clavier &gt; Appuyer Droite</strong></li>
-            <li>Ajoutez une action : <strong>Mouvement &gt; Définir la Vitesse Horizontale</strong></li>
-            <li>Définissez la vitesse sur <code>8</code> (positif = droite)</li>
-        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Clavier: Fl&egrave;che droite (maintenue)</span><br>
+            <span class="block block-move block-indent">d&eacute;finir vitesse horizontale &agrave; <span class="block-num">8</span></span>
+        </div>
+        <p>Ajoutez un autre bloc clavier pour la <strong>Fl&egrave;che droite</strong> avec une vitesse de <strong>8</strong>
+        (positif = droite).</p>
     </div>
 
-    <h2>Arrêter le Mouvement (Relâcher Droite)</h2>
+    <h2>Arr&ecirc;ter quand aucune touche n'est press&eacute;e</h2>
     <div class="step">
-        <ol>
-            <li>Ajoutez un événement : <strong>Clavier &gt; Relâcher Droite</strong></li>
-            <li>Ajoutez une action : <strong>Mouvement &gt; Définir la Vitesse Horizontale</strong></li>
-            <li>Définissez la vitesse sur <code>0</code></li>
-        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Clavier: Aucune touche</span><br>
+            <span class="block block-move block-indent">arr&ecirc;ter le mouvement</span>
+        </div>
+        <p>Dans <em>&Eacute;v&eacute;nements</em>, glissez un bloc <strong>Clavier: Aucune touche</strong>.
+        Dans <em>Mouvement</em>, accrochez <strong>arr&ecirc;ter le mouvement</strong>.
+        Cela arr&ecirc;te la raquette quand le joueur rel&acirc;che les touches.</p>
     </div>
 
-    <h2>Collision avec le Mur</h2>
+    <h2>Collision avec le mur</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Quand collision avec obj_wall_side</span><br>
+            <span class="block block-move block-indent">arr&ecirc;ter le mouvement</span>
+        </div>
+        <p>Dans <em>&Eacute;v&eacute;nements</em>, glissez un bloc <strong>Quand collision avec</strong> et choisissez
+        <code>obj_wall_side</code>. Accrochez <strong>arr&ecirc;ter le mouvement</strong> &agrave; l'int&eacute;rieur.
+        Cela emp&ecirc;che la raquette de sortir de l'&eacute;cran.</p>
+    </div>
+
+    <h2>Appliquer vos blocs</h2>
     <div class="step">
         <ol>
-            <li>Ajoutez un événement : <strong>Collision &gt; obj_wall</strong></li>
-            <li>Ajoutez une action : <strong>Mouvement &gt; Rebondir Contre les Objets</strong></li>
-            <li>Sélectionnez « Contre les objets solides »</li>
+            <li>Vous devez avoir <strong>4 blocs d'&eacute;v&eacute;nements</strong> dans votre espace de travail</li>
+            <li>Cliquez sur le bouton <strong>Appliquer aux &eacute;v&eacute;nements</strong> pour enregistrer</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Note :</strong> La collision avec le mur empêche la raquette de sortir de l'écran !
+        <strong>Comment &ccedil;a marche :</strong> Les blocs &laquo; maintenue &raquo; v&eacute;rifient en continu si une touche
+        est press&eacute;e. D&egrave;s que le joueur rel&acirc;che toutes les touches, le bloc &laquo; Aucune touche &raquo;
+        arr&ecirc;te la raquette. La collision avec le mur l'emp&ecirc;che de d&eacute;passer les bords.
     </div>
 
     <div class="info">
-        Cliquez sur « Suivant » pour ajouter le mouvement de la balle.
+        Cliquez sur &laquo; Suivant &raquo; pour ajouter le mouvement de la balle.
     </div>
 </body>
 </html>

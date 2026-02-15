@@ -11,43 +11,79 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Étape 4 : Pièces et Sortie</h1>
+    <h1>Étape 4 : Pièces et Sortie (Blockly)</h1>
 
-    <p>Maintenant, rendons les pièces collectables et faisons fonctionner la sortie.</p>
+    <p>Maintenant, rendons les pièces collectables et faisons fonctionner la sortie avec les blocs Blockly.</p>
 
-    <h2>Collecte des Pièces</h2>
+    <h2>Collecte des Pièces (obj_coin)</h2>
     <div class="step">
-        <p>Dans <code>obj_coin</code> :</p>
         <ol>
-            <li>Ajoutez un événement : <strong>Collision &gt; obj_player</strong></li>
-            <li>Ajoutez une action : <strong>Score &gt; Définir le Score</strong></li>
-            <li>Nouveau Score : <code>10</code></li>
-            <li>Cochez « Relatif » pour ajouter 10 points</li>
-            <li>Ajoutez une action : <strong>Main1 &gt; Détruire l'Instance</strong></li>
-            <li>S'applique à : <code>Soi-même</code></li>
+            <li>Double-cliquez sur <code>obj_coin</code> pour ouvrir l'Éditeur d'Objet</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+            <li>Construisez ces blocs :</li>
         </ol>
-    </div>
-
-    <h2>Comportement de la Sortie</h2>
-    <div class="step">
-        <p>Dans <code>obj_exit</code> :</p>
-        <ol>
-            <li>Ajoutez un événement : <strong>Collision &gt; obj_player</strong></li>
-            <li>Ajoutez une action : <strong>Main2 &gt; Afficher un Message</strong></li>
-            <li>Message : <code>Vous avez gagné !</code></li>
-            <li>Ajoutez une action : <strong>Main1 &gt; Redémarrer la Room</strong></li>
+        <div class="blockly-group">
+            <span class="block block-event">Quand collision avec obj_player</span><br>
+            <span class="block block-score block-indent">Ajouter au score <span class="block-num">10</span></span><br>
+            <span class="block block-instance block-indent">Détruire cette instance</span>
+        </div>
+        <p>Depuis <em>Événements</em>, glissez un bloc <strong>Collision</strong> et tapez <code>obj_player</code>.
+        Depuis <em>Score/Vies/Santé</em>, emboîtez <strong>Ajouter au score</strong> à l'intérieur et tapez <strong>10</strong>.
+        Depuis <em>Instance</em>, emboîtez <strong>Détruire cette instance</strong> en dessous.</p>
+        <ol start="4">
+            <li>Cliquez sur <strong>Appliquer aux événements</strong></li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Astuce :</strong> Vous pouvez utiliser <strong>Room Suivante</strong> au lieu de <strong>Redémarrer la Room</strong> si vous créez plusieurs niveaux !
+        <strong>Comment ça fonctionne :</strong> Quand le joueur touche une pièce, 10 points sont ajoutés
+        au score et la pièce disparaît.
+    </div>
+
+    <h2>Comportement de la Sortie (obj_exit)</h2>
+    <div class="step">
+        <ol>
+            <li>Double-cliquez sur <code>obj_exit</code> pour ouvrir l'Éditeur d'Objet</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+            <li>Construisez ces blocs :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Quand collision avec obj_player</span><br>
+            <span class="block block-output block-indent">Afficher message <span class="block-str">"Vous avez gagné !"</span></span><br>
+            <span class="block block-room block-indent">Redémarrer le niveau</span>
+        </div>
+        <p>Depuis <em>Événements</em>, glissez un bloc <strong>Collision</strong> et tapez <code>obj_player</code>.
+        Depuis <em>Sortie</em>, emboîtez <strong>Afficher message</strong> à l'intérieur et tapez <strong>Vous avez gagné !</strong>.
+        Depuis <em>Niveau</em>, emboîtez <strong>Redémarrer le niveau</strong> en dessous.</p>
+        <ol start="4">
+            <li>Cliquez sur <strong>Appliquer aux événements</strong></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Astuce :</strong> Si vous créez plusieurs niveaux, utilisez <strong>Aller au niveau suivant</strong>
+        (depuis la catégorie <em>Niveau</em>) au lieu de <strong>Redémarrer le niveau</strong>
+        pour passer au labyrinthe suivant !
     </div>
 
     <div class="info">
-        Cliquez sur « Suivant » pour ajouter l'affichage du chronomètre.
+        Cliquez sur « Suivant » pour ajouter l'affichage du score.
     </div>
 </body>
 </html>

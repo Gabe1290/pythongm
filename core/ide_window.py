@@ -692,7 +692,6 @@ class PyGameMakerIDE(QMainWindow):
 
         self.right_panel_stack = QStackedWidget()
         self.right_panel_stack.setMinimumWidth(250)
-        self.right_panel_stack.setMaximumWidth(350)
 
         # Properties panel (index 0)
         self.properties_panel = EnhancedPropertiesPanel()
@@ -854,6 +853,10 @@ class PyGameMakerIDE(QMainWindow):
     def _collapse_right_panel(self):
         """Collapse the right panel to give more space to the center editor"""
         if hasattr(self, 'main_splitter') and hasattr(self, 'right_panel_stack'):
+            # Don't collapse if the tutorial panel is currently visible
+            if hasattr(self, 'tutorial_panel') and self.right_panel_stack.currentWidget() == self.tutorial_panel:
+                return
+
             # Store current sizes before collapsing (only if right panel is visible)
             current_sizes = self.main_splitter.sizes()
             if current_sizes[2] > 0:
