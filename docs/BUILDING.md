@@ -42,7 +42,13 @@ The full build includes Kivy, enabling complete EXE export functionality. This b
 
 ### macOS Additional Requirements
 
-- Xcode Command Line Tools: `xcode-select --install`
+- Xcode Command Line Tools (provides `lipo`, `codesign`, and other build utilities):
+  ```bash
+  xcode-select --install
+  ```
+  **Note:** This is required both for building PyGameMaker itself and for
+  exporting games as macOS .app bundles. On managed Macs where you cannot
+  run this command, ask your IT administrator to install the Command Line Tools.
 
 ### Linux Additional Requirements
 

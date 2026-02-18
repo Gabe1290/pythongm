@@ -45,6 +45,14 @@ if sys.platform == 'win32':
         if sys.stderr and hasattr(sys.stderr, 'buffer'):
             sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
+def _find_file_in_tree(base, filename):
+    """Search for *filename* under *base* directory, return first match or None."""
+    for root, _dirs, files in os.walk(base):
+        if filename in files:
+            return os.path.join(root, filename)
+    return None
+
+
 def setup_qtwebengine_paths():
     """Configure QtWebEngine resource paths for both development and packaged builds."""
     # Check if running from Nuitka compiled executable
@@ -63,27 +71,87 @@ def setup_qtwebengine_paths():
         else:  # Nuitka or other
             base_path = current_dir
 
-        # Set environment variables for QtWebEngine
-        os.environ['QTWEBENGINE_RESOURCES_PATH'] = base_path
-        os.environ['QTWEBENGINEPROCESS_PATH'] = os.path.join(base_path, 'QtWebEngineProcess')
+        # --- QtWebEngineProcess ---
+        # The binary lives at different locations per platform:
+        #   Windows:  <base>/QtWebEngineProcess.exe
+        #   Linux:    <base>/QtWebEngineProcess
+        #   macOS:    <base>/PySide6/Qt/lib/QtWebEngineCore.framework/
+        #             Helpers/QtWebEngineProcess.app/Contents/MacOS/QtWebEngineProcess
+        # Try well-known locations first, then fall back to a recursive search.
+        process_name = 'QtWebEngineProcess.exe' if sys.platform == 'win32' else 'QtWebEngineProcess'
+        candidates = [
+            os.path.join(base_path, process_name),
+            # macOS framework path (common with collect_data_files)
+            os.path.join(base_path, 'PySide6', 'Qt', 'lib',
+                         'QtWebEngineCore.framework', 'Helpers',
+                         'QtWebEngineProcess.app', 'Contents', 'MacOS',
+                         'QtWebEngineProcess'),
+            # Linux / Nuitka
+            os.path.join(base_path, 'PySide6', 'Qt', 'libexec', 'QtWebEngineProcess'),
+            # Windows
+            os.path.join(base_path, 'PySide6', 'Qt', 'bin', 'QtWebEngineProcess.exe'),
+        ]
 
-        # Also set for locales
-        locales_path = os.path.join(base_path, 'qtwebengine_locales')
-        if os.path.exists(locales_path):
-            os.environ['QTWEBENGINE_LOCALES_PATH'] = locales_path
+        process_path = None
+        for candidate in candidates:
+            if os.path.exists(candidate):
+                process_path = candidate
+                break
+
+        # Fallback: recursive search (only inside PySide6 subtree to stay fast)
+        if not process_path:
+            pyside6_subtree = os.path.join(base_path, 'PySide6')
+            if os.path.isdir(pyside6_subtree):
+                process_path = _find_file_in_tree(pyside6_subtree, process_name)
+            if not process_path:
+                process_path = _find_file_in_tree(base_path, process_name)
+
+        if process_path:
+            os.environ['QTWEBENGINEPROCESS_PATH'] = process_path
+        else:
+            print(f"⚠️ {process_name} not found under {base_path}")
+
+        # --- Resources ---
+        resources_path = base_path
+        for res_candidate in [
+            os.path.join(base_path, 'PySide6', 'Qt', 'resources'),
+            base_path,
+        ]:
+            if os.path.isdir(res_candidate) and os.path.exists(
+                    os.path.join(res_candidate, 'qtwebengine_resources.pak')):
+                resources_path = res_candidate
+                break
+        os.environ['QTWEBENGINE_RESOURCES_PATH'] = resources_path
+
+        # --- Locales ---
+        for loc_candidate in [
+            os.path.join(base_path, 'PySide6', 'Qt', 'translations'),
+            os.path.join(base_path, 'qtwebengine_locales'),
+        ]:
+            if os.path.isdir(loc_candidate):
+                os.environ['QTWEBENGINE_LOCALES_PATH'] = loc_candidate
+                break
 
         print("🔧 QtWebEngine paths configured for packaged app:")
-        print(f"   Resources: {base_path}")
+        print(f"   Resources: {resources_path}")
+        if process_path:
+            print(f"   Process:   {process_path}")
     else:
         # Running from source - find PySide6's QtWebEngineProcess
         try:
             import PySide6
             pyside6_dir = os.path.dirname(PySide6.__file__)
 
-            # QtWebEngineProcess is in Qt/libexec on Linux, Qt/bin on Windows
             if sys.platform == 'win32':
                 libexec_path = os.path.join(pyside6_dir, 'Qt', 'bin')
                 process_name = 'QtWebEngineProcess.exe'
+            elif sys.platform == 'darwin':
+                # macOS: process is inside a .framework bundle
+                libexec_path = os.path.join(
+                    pyside6_dir, 'Qt', 'lib',
+                    'QtWebEngineCore.framework', 'Helpers',
+                    'QtWebEngineProcess.app', 'Contents', 'MacOS')
+                process_name = 'QtWebEngineProcess'
             else:
                 libexec_path = os.path.join(pyside6_dir, 'Qt', 'libexec')
                 process_name = 'QtWebEngineProcess'
@@ -106,7 +174,13 @@ def setup_qtwebengine_paths():
                 print("🔧 QtWebEngine paths configured for development:")
                 print(f"   Process: {process_path}")
             else:
-                print(f"⚠️ QtWebEngineProcess not found at: {process_path}")
+                # Fallback: search within PySide6 directory
+                found = _find_file_in_tree(pyside6_dir, process_name)
+                if found:
+                    os.environ['QTWEBENGINEPROCESS_PATH'] = found
+                    print(f"🔧 QtWebEngine process found via search: {found}")
+                else:
+                    print(f"⚠️ QtWebEngineProcess not found at: {process_path}")
         except ImportError:
             print("⚠️ PySide6 not found, skipping QtWebEngine path setup")
 
