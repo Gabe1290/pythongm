@@ -67,6 +67,9 @@ class SpriteCanvas(QAbstractScrollArea):
         self._current_color = QColor(0, 0, 0, 255)
         self._painting = False
 
+        # Hover pixel for brush cursor overlay
+        self._hover_pixel = None  # (px, py) or None when mouse outside
+
         # Viewport setup
         self.viewport().setMouseTracking(True)
         self.viewport().setFocusPolicy(Qt.StrongFocus)
@@ -249,6 +252,10 @@ class SpriteCanvas(QAbstractScrollArea):
         if self._show_grid and zoom >= 4:
             self._draw_grid(painter, ox, oy, img_w, img_h, zoom)
 
+        # Brush cursor overlay
+        if self._hover_pixel and self._current_tool:
+            self._draw_brush_cursor(painter, ox, oy, zoom, img_w, img_h)
+
         painter.end()
 
     def _draw_checkerboard(self, painter: QPainter, ox, oy, w, h):
@@ -274,6 +281,43 @@ class SpriteCanvas(QAbstractScrollArea):
         for y in range(img_h + 1):
             sy = oy + y * zoom
             painter.drawLine(ox, sy, ox + img_w * zoom, sy)
+
+    def _draw_brush_cursor(self, painter: QPainter, ox, oy, zoom, img_w, img_h):
+        """Draw a cursor overlay showing the brush/eraser footprint."""
+        from .sprite_tools import PencilTool, EraserTool
+        tool = self._current_tool
+        if not isinstance(tool, (PencilTool, EraserTool)):
+            return
+
+        px, py = self._hover_pixel
+        half = tool.size // 2
+        # Top-left pixel of the brush square
+        bx = px - half
+        by = py - half
+
+        # Convert to screen coordinates
+        sx = ox + bx * zoom
+        sy = oy + by * zoom
+        sw = tool.size * zoom
+        sh = tool.size * zoom
+
+        # Clip to image bounds
+        img_rect = QRect(ox, oy, img_w * zoom, img_h * zoom)
+        cursor_rect = QRect(sx, sy, sw, sh)
+        if not img_rect.intersects(cursor_rect):
+            return
+
+        if isinstance(tool, EraserTool):
+            # Semi-transparent red fill to show what will be erased
+            painter.fillRect(cursor_rect, QColor(255, 80, 80, 50))
+            pen = QPen(QColor(255, 80, 80, 160), 1)
+        else:
+            # Outline only for pencil
+            pen = QPen(QColor(255, 255, 255, 160), 1)
+
+        painter.setPen(pen)
+        painter.setBrush(Qt.NoBrush)
+        painter.drawRect(cursor_rect)
 
     # ------------------------------------------------------------------
     # QAbstractScrollArea overrides
@@ -315,8 +359,10 @@ class SpriteCanvas(QAbstractScrollArea):
             self.viewport().update()
 
     def mouseMoveEvent(self, event: QMouseEvent):
+        # Always track hover position for brush cursor overlay
+        self._hover_pixel = self._screen_to_pixel(event.pos())
         if self._painting and self._current_tool:
-            px, py = self._screen_to_pixel(event.pos())
+            px, py = self._hover_pixel
 
             from .sprite_tools import ColorPickerTool
             self._current_tool.on_move(self._image, px, py, self._current_color)
@@ -324,7 +370,7 @@ class SpriteCanvas(QAbstractScrollArea):
             if isinstance(self._current_tool, ColorPickerTool) and self._current_tool.picked_color:
                 self.color_picked.emit(self._current_tool.picked_color)
 
-            self.viewport().update()
+        self.viewport().update()
 
     def mouseReleaseEvent(self, event: QMouseEvent):
         if event.button() == Qt.LeftButton and self._painting and self._current_tool:
@@ -333,6 +379,10 @@ class SpriteCanvas(QAbstractScrollArea):
             self._painting = False
             self.canvas_modified.emit()
             self.viewport().update()
+
+    def leaveEvent(self, event):
+        self._hover_pixel = None
+        self.viewport().update()
 
     def contextMenuEvent(self, event):
         self.context_menu_requested.emit(event.globalPos())
