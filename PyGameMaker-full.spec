@@ -51,6 +51,10 @@ datas = [
     (str(project_dir / 'utils' / 'themes.json'), 'utils'),
     # Language flags
     (str(project_dir / 'resources' / 'flags'), 'resources/flags'),
+    # Tutorials (HTML files, sample assets, index)
+    (str(project_dir / 'Tutorials'), 'Tutorials'),
+    # Sample sprites used by tutorials
+    (str(project_dir / 'resources' / 'Sprites'), 'resources/Sprites'),
 ]
 
 # Add PySide6 data files

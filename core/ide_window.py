@@ -2768,6 +2768,12 @@ class PyGameMakerIDE(QMainWindow):
         if candidate.exists():
             tutorials_path = candidate
 
+        # Try PyInstaller bundle (single-file exe extracts data here)
+        if not tutorials_path and hasattr(sys, '_MEIPASS'):
+            candidate = Path(sys._MEIPASS) / "Tutorials"
+            if candidate.exists():
+                tutorials_path = candidate
+
         # Try relative to executable (packaged mode)
         if not tutorials_path:
             candidate = Path(sys.executable).parent / "Tutorials"
