@@ -152,84 +152,132 @@ class AndroidExporter(QObject):
             # Step 1: Verify platform (Buildozer only runs on Linux and macOS)
             self.progress_update.emit(5, "Checking platform...")
 
+            self._use_wsl = False
+
             if platform.system() == 'Windows':
-                self.export_complete.emit(
-                    False,
-                    "Android export requires Linux or macOS.\n\n"
-                    "Buildozer (the Android build tool) does not run on Windows.\n"
-                    "To create an Android APK:\n"
-                    "• Run this export on Linux or macOS, or\n"
-                    "• Use WSL (Windows Subsystem for Linux), or\n"
-                    "• Use the HTML5 export for a cross-platform web version."
-                )
-                return False
+                # Check if WSL is available as a fallback
+                from export.android.wsl_bridge import WSLBridge
+                bridge = WSLBridge()
+                if not bridge.is_wsl_available():
+                    wsl_info = bridge.get_wsl_info()
+                    self.export_complete.emit(
+                        False,
+                        "Android export requires Linux or macOS.\n\n"
+                        "Buildozer (the Android build tool) does not run "
+                        "natively on Windows.\n\n"
+                        "WSL (Windows Subsystem for Linux) was not detected.\n"
+                        "Status: {}\n\n"
+                        "To enable Android export on Windows:\n"
+                        "1. Open PowerShell as Administrator\n"
+                        "2. Run: wsl --install\n"
+                        "3. Restart your computer\n"
+                        "4. Set up your Linux username and password\n"
+                        "5. Try this export again\n\n"
+                        "Or use the HTML5 export for a cross-platform "
+                        "web version.".format(wsl_info['message'])
+                    )
+                    return False
+
+                self._use_wsl = True
+                self._wsl_bridge = bridge
+                logger.info("Windows detected — will use WSL for buildozer")
 
             # Step 2: Verify dependencies
             self.progress_update.emit(10, "Checking dependencies...")
 
-            if not self._check_buildozer():
-                self.export_complete.emit(
-                    False,
-                    "Buildozer not found.\n\n"
-                    "Please install it in your virtual environment:\n"
-                    "pip install buildozer\n\n"
-                    "Or install all dependencies:\n"
-                    "pip install -r requirements.txt"
-                )
-                return False
+            if self._use_wsl:
+                # Check and auto-install dependencies inside WSL
+                deps_ok, missing = self._wsl_bridge.check_dependencies()
+                if not deps_ok:
+                    logger.info("Missing WSL deps: %s", missing)
+                    self.progress_update.emit(
+                        12, "Installing WSL dependencies (first-time setup)...")
 
-            if not self._check_kivy():
-                self.export_complete.emit(
-                    False,
-                    "Kivy not found.\n\n"
-                    "The Android exporter requires Kivy to be installed.\n"
-                    "Please install it in your virtual environment:\n\n"
-                    "pip install kivy\n\n"
-                    "Or install all dependencies:\n"
-                    "pip install -r requirements.txt"
-                )
-                return False
+                    success, message = self._wsl_bridge.install_dependencies(
+                        progress_callback=lambda msg:
+                            self.progress_update.emit(12, msg))
 
-            if not self._check_cython():
-                self.export_complete.emit(
-                    False,
-                    "Cython not found or incompatible version.\n\n"
-                    "Buildozer requires Cython < 3.0 to compile for Android.\n"
-                    "(Cython 3.x removed the 'long' type which breaks pyjnius.)\n\n"
-                    "Install a compatible version with:\n"
-                    "pip install 'cython>=0.29.33,<3.0'\n\n"
-                    "Or install all dependencies:\n"
-                    "pip install -r requirements.txt"
-                )
-                return False
+                    if not success:
+                        self.export_complete.emit(
+                            False,
+                            "Failed to set up WSL dependencies.\n\n"
+                            "{}\n\n"
+                            "You can try installing manually in WSL:\n"
+                            "  wsl sudo apt install python3 python3-pip "
+                            "openjdk-17-jdk build-essential cmake zip "
+                            "unzip git\n"
+                            "  wsl pip3 install --user buildozer "
+                            "'cython<3.0'".format(message)
+                        )
+                        return False
+            else:
+                # Native Linux/macOS dependency checks
+                if not self._check_buildozer():
+                    self.export_complete.emit(
+                        False,
+                        "Buildozer not found.\n\n"
+                        "Please install it in your virtual environment:\n"
+                        "pip install buildozer\n\n"
+                        "Or install all dependencies:\n"
+                        "pip install -r requirements.txt"
+                    )
+                    return False
 
-            if not self._check_java():
-                self.export_complete.emit(
-                    False,
-                    "Java JDK not found.\n\n"
-                    "Buildozer requires Java JDK to compile Android apps.\n\n"
-                    "Install it with:\n"
-                    "• Linux: sudo apt install openjdk-17-jdk\n"
-                    "• macOS: brew install openjdk@17\n\n"
-                    "Then try the export again."
-                )
-                return False
+                if not self._check_kivy():
+                    self.export_complete.emit(
+                        False,
+                        "Kivy not found.\n\n"
+                        "The Android exporter requires Kivy to be installed.\n"
+                        "Please install it in your virtual environment:\n\n"
+                        "pip install kivy\n\n"
+                        "Or install all dependencies:\n"
+                        "pip install -r requirements.txt"
+                    )
+                    return False
 
-            missing_tools = self._check_build_tools()
-            if missing_tools:
-                tools_str = ', '.join(missing_tools)
-                self.export_complete.emit(
-                    False,
-                    "Missing system build tools: {}\n\n"
-                    "Buildozer needs these tools to compile native code "
-                    "for Android.\n\n"
-                    "Install them with:\n"
-                    "sudo apt install build-essential autoconf automake "
-                    "libtool pkg-config cmake zip unzip python3-dev "
-                    "libffi-dev libssl-dev\n\n"
-                    "Then try the export again.".format(tools_str)
-                )
-                return False
+                if not self._check_cython():
+                    self.export_complete.emit(
+                        False,
+                        "Cython not found or incompatible version.\n\n"
+                        "Buildozer requires Cython < 3.0 to compile for "
+                        "Android.\n"
+                        "(Cython 3.x removed the 'long' type which breaks "
+                        "pyjnius.)\n\n"
+                        "Install a compatible version with:\n"
+                        "pip install 'cython>=0.29.33,<3.0'\n\n"
+                        "Or install all dependencies:\n"
+                        "pip install -r requirements.txt"
+                    )
+                    return False
+
+                if not self._check_java():
+                    self.export_complete.emit(
+                        False,
+                        "Java JDK not found.\n\n"
+                        "Buildozer requires Java JDK to compile Android "
+                        "apps.\n\n"
+                        "Install it with:\n"
+                        "• Linux: sudo apt install openjdk-17-jdk\n"
+                        "• macOS: brew install openjdk@17\n\n"
+                        "Then try the export again."
+                    )
+                    return False
+
+                missing_tools = self._check_build_tools()
+                if missing_tools:
+                    tools_str = ', '.join(missing_tools)
+                    self.export_complete.emit(
+                        False,
+                        "Missing system build tools: {}\n\n"
+                        "Buildozer needs these tools to compile native "
+                        "code for Android.\n\n"
+                        "Install them with:\n"
+                        "sudo apt install build-essential autoconf automake "
+                        "libtool pkg-config cmake zip unzip python3-dev "
+                        "libffi-dev libssl-dev\n\n"
+                        "Then try the export again.".format(tools_str)
+                    )
+                    return False
 
             # Step 3: Create temporary build directory
             self.progress_update.emit(15, "Creating build directory...")
@@ -435,6 +483,9 @@ class AndroidExporter(QObject):
     def _run_buildozer(self, build_dir: Path):
         """Run Buildozer to build the Android APK.
 
+        When running on Windows with WSL, delegates to the WSLBridge which
+        converts paths and executes buildozer inside the Linux environment.
+
         Returns:
             True on success, or an error message string on failure.
         """
@@ -445,31 +496,38 @@ class AndroidExporter(QObject):
             logger.info("Subsequent builds will be much faster.")
             logger.info("=" * 60)
 
-            import sys, os
-            python_exe = sys.executable
+            if self._use_wsl:
+                # Run buildozer inside WSL
+                logger.info("Using WSL to run buildozer")
+                process = self._wsl_bridge.run_buildozer(str(build_dir))
+                timeout = 2400  # 40 min — WSL filesystem I/O is slower
+            else:
+                # Native Linux/macOS execution
+                import sys, os
+                python_exe = sys.executable
 
-            # Ensure the venv's bin dir is on PATH so buildozer can find
-            # tools like cython that are installed in the virtual environment.
-            env = os.environ.copy()
-            venv_bin = str(Path(python_exe).parent)
-            venv_root = str(Path(python_exe).parent.parent)
-            env['PATH'] = venv_bin + os.pathsep + env.get('PATH', '')
-            # Buildozer tries `pip install --user` which fails inside a
-            # virtualenv.  Disable --user installs and point VIRTUAL_ENV
-            # so pip installs into the venv normally.
-            env['PIP_USER'] = '0'
-            env['VIRTUAL_ENV'] = venv_root
+                # Ensure the venv's bin dir is on PATH so buildozer can find
+                # tools like cython that are installed in the virtual environment.
+                env = os.environ.copy()
+                venv_bin = str(Path(python_exe).parent)
+                venv_root = str(Path(python_exe).parent.parent)
+                env['PATH'] = venv_bin + os.pathsep + env.get('PATH', '')
+                # Buildozer tries `pip install --user` which fails inside a
+                # virtualenv.  Disable --user installs and point VIRTUAL_ENV
+                # so pip installs into the venv normally.
+                env['PIP_USER'] = '0'
+                env['VIRTUAL_ENV'] = venv_root
 
-            # Run buildozer as a module
-            process = subprocess.Popen(
-                [python_exe, '-m', 'buildozer', 'android', 'debug'],
-                cwd=build_dir,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                bufsize=1,
-                env=env
-            )
+                process = subprocess.Popen(
+                    [python_exe, '-m', 'buildozer', 'android', 'debug'],
+                    cwd=build_dir,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    bufsize=1,
+                    env=env
+                )
+                timeout = 1200  # 20 min
 
             # Capture output for error reporting
             output_lines = []
@@ -478,8 +536,8 @@ class AndroidExporter(QObject):
                 logger.debug(stripped)
                 output_lines.append(stripped)
 
-            # Wait for completion with longer timeout (20 minutes)
-            process.wait(timeout=1200)
+            # Wait for completion
+            process.wait(timeout=timeout)
 
             if process.returncode != 0:
                 logger.error("Buildozer failed with return code: {}".format(process.returncode))
@@ -518,14 +576,16 @@ class AndroidExporter(QObject):
             return True
 
         except subprocess.TimeoutExpired:
-            logger.error("Buildozer timed out after 20 minutes")
+            timeout_min = 40 if self._use_wsl else 20
+            logger.error("Buildozer timed out after %d minutes", timeout_min)
             if process:
                 process.kill()
             return (
-                "Buildozer timed out after 20 minutes.\n\n"
+                "Buildozer timed out after {} minutes.\n\n"
                 "The first Android build downloads the SDK/NDK and can take\n"
                 "a very long time on slow connections. Try running again —\n"
-                "subsequent builds are much faster once the SDK is cached."
+                "subsequent builds are much faster once the SDK is cached.".format(
+                    timeout_min)
             )
         except Exception as e:
             logger.error("Error running Buildozer: {}".format(e))

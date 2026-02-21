@@ -1748,6 +1748,20 @@ class PyGameMakerIDE(QMainWindow):
 
         if _platform.system() in ('Linux', 'Darwin'):
             android_radio = QRadioButton(self.tr("Android Package (.apk) - ✅ Available"))
+        elif _platform.system() == 'Windows':
+            # Check if WSL is available for Android export on Windows
+            try:
+                from export.android.wsl_bridge import WSLBridge
+                _wsl = WSLBridge()
+                if _wsl.is_wsl_available():
+                    android_radio = QRadioButton(
+                        self.tr("Android Package (.apk) - ✅ Available (via WSL)"))
+                else:
+                    android_radio = QRadioButton(
+                        self.tr("Android Package (.apk) - ⚠️ Requires WSL (not detected)"))
+            except Exception:
+                android_radio = QRadioButton(
+                    self.tr("Android Package (.apk) - ⚠️ Requires WSL (not detected)"))
         else:
             android_radio = QRadioButton(self.tr("Android Package (.apk) - ⚠️ Requires Linux or macOS"))
         android_radio.setEnabled(True)
