@@ -190,6 +190,19 @@ class AndroidExporter(QObject):
                 )
                 return False
 
+            if not self._check_cython():
+                self.export_complete.emit(
+                    False,
+                    "Cython not found or incompatible version.\n\n"
+                    "Buildozer requires Cython < 3.0 to compile for Android.\n"
+                    "(Cython 3.x removed the 'long' type which breaks pyjnius.)\n\n"
+                    "Install a compatible version with:\n"
+                    "pip install 'cython>=0.29.33,<3.0'\n\n"
+                    "Or install all dependencies:\n"
+                    "pip install -r requirements.txt"
+                )
+                return False
+
             if not self._check_java():
                 self.export_complete.emit(
                     False,
@@ -199,6 +212,22 @@ class AndroidExporter(QObject):
                     "• Linux: sudo apt install openjdk-17-jdk\n"
                     "• macOS: brew install openjdk@17\n\n"
                     "Then try the export again."
+                )
+                return False
+
+            missing_tools = self._check_build_tools()
+            if missing_tools:
+                tools_str = ', '.join(missing_tools)
+                self.export_complete.emit(
+                    False,
+                    "Missing system build tools: {}\n\n"
+                    "Buildozer needs these tools to compile native code "
+                    "for Android.\n\n"
+                    "Install them with:\n"
+                    "sudo apt install build-essential autoconf automake "
+                    "libtool pkg-config cmake zip unzip python3-dev "
+                    "libffi-dev libssl-dev\n\n"
+                    "Then try the export again.".format(tools_str)
                 )
                 return False
 
@@ -270,6 +299,44 @@ class AndroidExporter(QObject):
         except ImportError:
             return False
 
+    def _check_cython(self) -> bool:
+        """Check if Cython is installed and compatible with pyjnius.
+
+        Cython 3.x removed the ``long`` builtin type which breaks the
+        pyjnius recipe used by python-for-android.  We therefore require
+        Cython < 3.0.
+        """
+        try:
+            import Cython  # noqa: F401
+            major = int(Cython.__version__.split('.')[0])
+            if major >= 3:
+                return False
+            return True
+        except ImportError:
+            return False
+
+    def _check_build_tools(self) -> list:
+        """Check for system build tools required by Buildozer on Linux.
+
+        Returns a list of missing tool names (empty if all present).
+        """
+        if platform.system() != 'Linux':
+            return []
+
+        missing = []
+        for tool in ['autoconf', 'automake', 'libtoolize', 'pkg-config',
+                      'cmake', 'zip', 'unzip']:
+            try:
+                result = subprocess.run(
+                    ['which', tool],
+                    capture_output=True, timeout=5
+                )
+                if result.returncode != 0:
+                    missing.append(tool)
+            except (FileNotFoundError, subprocess.TimeoutExpired):
+                missing.append(tool)
+        return missing
+
     def _check_java(self) -> bool:
         """Check if Java JDK is installed"""
         try:
@@ -315,16 +382,11 @@ class AndroidExporter(QObject):
                 logger.error("KivyExporter.export() returned False")
                 return False
 
-            # Verify main.py exists (Buildozer needs it at the root)
-            main_py = build_dir / "main.py"
-            if not main_py.exists():
-                # Check if it's in a game/ subdirectory and move it up
-                game_main = build_dir / "game" / "main.py"
-                if game_main.exists():
-                    logger.debug("main.py found in game/ subdirectory")
-                else:
-                    logger.error("main.py not found in build directory")
-                    return False
+            # Verify main.py exists (buildozer.spec sets source.dir = game)
+            game_main = build_dir / "game" / "main.py"
+            if not game_main.exists():
+                logger.error("main.py not found in build directory")
+                return False
 
             return True
 
@@ -383,8 +445,20 @@ class AndroidExporter(QObject):
             logger.info("Subsequent builds will be much faster.")
             logger.info("=" * 60)
 
-            import sys
+            import sys, os
             python_exe = sys.executable
+
+            # Ensure the venv's bin dir is on PATH so buildozer can find
+            # tools like cython that are installed in the virtual environment.
+            env = os.environ.copy()
+            venv_bin = str(Path(python_exe).parent)
+            venv_root = str(Path(python_exe).parent.parent)
+            env['PATH'] = venv_bin + os.pathsep + env.get('PATH', '')
+            # Buildozer tries `pip install --user` which fails inside a
+            # virtualenv.  Disable --user installs and point VIRTUAL_ENV
+            # so pip installs into the venv normally.
+            env['PIP_USER'] = '0'
+            env['VIRTUAL_ENV'] = venv_root
 
             # Run buildozer as a module
             process = subprocess.Popen(
@@ -393,7 +467,8 @@ class AndroidExporter(QObject):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
-                bufsize=1
+                bufsize=1,
+                env=env
             )
 
             # Capture output for error reporting
@@ -408,9 +483,36 @@ class AndroidExporter(QObject):
 
             if process.returncode != 0:
                 logger.error("Buildozer failed with return code: {}".format(process.returncode))
-                tail = '\n'.join(output_lines[-30:])
-                return "Buildozer exited with code {}.\n\nOutput:\n{}".format(
-                    process.returncode, tail)
+                # Extract the most useful error information.
+                # Buildozer's last ~30 lines are often just an environment
+                # dump; the real errors are earlier.  Search for error
+                # indicators and show those lines plus the tail.
+                error_lines = []
+                for i, line in enumerate(output_lines):
+                    low = line.lower()
+                    if ('error' in low or 'exception' in low
+                            or 'traceback' in low or 'fatal' in low
+                            or 'not found' in low or 'failed' in low
+                            or 'no such file' in low
+                            or 'command not found' in low
+                            or 'permission denied' in low):
+                        # Grab some context around the error
+                        start = max(0, i - 2)
+                        end = min(len(output_lines), i + 3)
+                        for j in range(start, end):
+                            if output_lines[j] not in error_lines:
+                                error_lines.append(output_lines[j])
+
+                tail = '\n'.join(output_lines[-15:])
+                if error_lines:
+                    errors = '\n'.join(error_lines[-30:])
+                    return ("Buildozer exited with code {}.\n\n"
+                            "Errors found:\n{}\n\n"
+                            "End of log:\n{}").format(
+                                process.returncode, errors, tail)
+                else:
+                    return "Buildozer exited with code {}.\n\nOutput:\n{}".format(
+                        process.returncode, tail)
 
             logger.info("Buildozer build completed successfully!")
             return True

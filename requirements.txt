@@ -18,6 +18,7 @@ QScintilla>=2.13.0
 # Kivy exports
 kivy>=2.3.0
 buildozer>=1.5.0
+cython>=0.29.33,<3.0
 jinja2>=3.1.0
 
 # Creating Windows EXE files

@@ -226,47 +226,64 @@ GAME_HEIGHT = {room_height}
 import os
 os.environ['KIVY_WINDOW'] = 'sdl2'
 
-# Get Windows DPI scale and adjust window size to compensate
-def get_dpi_scale():
-    try:
-        import ctypes
-        # Make process DPI aware
+# --- Platform detection ---
+IS_ANDROID = False
+try:
+    import android  # noqa: F401 - available on python-for-android
+    IS_ANDROID = True
+except ImportError:
+    pass
+
+if not IS_ANDROID:
+    # Desktop: Get Windows DPI scale and adjust window size to compensate
+    def get_dpi_scale():
         try:
-            ctypes.windll.shcore.SetProcessDpiAwareness(2)
+            import ctypes
+            try:
+                ctypes.windll.shcore.SetProcessDpiAwareness(2)
+            except:
+                pass
+            hdc = ctypes.windll.user32.GetDC(0)
+            dpi = ctypes.windll.gdi32.GetDeviceCaps(hdc, 88)
+            ctypes.windll.user32.ReleaseDC(0, hdc)
+            return dpi / 96.0
         except:
-            pass
-        # Get DPI
-        hdc = ctypes.windll.user32.GetDC(0)
-        dpi = ctypes.windll.gdi32.GetDeviceCaps(hdc, 88)
-        ctypes.windll.user32.ReleaseDC(0, hdc)
-        return dpi / 96.0
-    except:
-        return 1.0
+            return 1.0
 
-DPI_SCALE = get_dpi_scale()
-ADJUSTED_WIDTH = int(GAME_WIDTH / DPI_SCALE)
-ADJUSTED_HEIGHT = int(GAME_HEIGHT / DPI_SCALE)
+    DPI_SCALE = get_dpi_scale()
+    ADJUSTED_WIDTH = int(GAME_WIDTH / DPI_SCALE)
+    ADJUSTED_HEIGHT = int(GAME_HEIGHT / DPI_SCALE)
 
-# Configure Kivy with adjusted size
-from kivy.config import Config
-Config.set('graphics', 'width', str(ADJUSTED_WIDTH))
-Config.set('graphics', 'height', str(ADJUSTED_HEIGHT))
-Config.set('graphics', 'resizable', '0')
-Config.set('graphics', 'fullscreen', '0')
+    from kivy.config import Config
+    Config.set('graphics', 'width', str(ADJUSTED_WIDTH))
+    Config.set('graphics', 'height', str(ADJUSTED_HEIGHT))
+    Config.set('graphics', 'resizable', '0')
+    Config.set('graphics', 'fullscreen', '0')
+else:
+    # Android: fullscreen, no fixed window size
+    DPI_SCALE = 1.0
+    ADJUSTED_WIDTH = GAME_WIDTH
+    ADJUSTED_HEIGHT = GAME_HEIGHT
+    from kivy.config import Config
+    Config.set('graphics', 'fullscreen', 'auto')
 
 from kivy.app import App
 from kivy.uix.widget import Widget
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.core.window import Window
 from kivy.clock import Clock
-from kivy.graphics import Rectangle, Color
+from kivy.graphics import Rectangle, Color, PushMatrix, PopMatrix
+from kivy.graphics import Scale as ScaleInstr, Translate as TranslateInstr
+from kivy.graphics import Ellipse, Triangle
 from kivy.core.image import Image as CoreImage
 
-# Force adjusted window size
-Window.size = (ADJUSTED_WIDTH, ADJUSTED_HEIGHT)
+# Force adjusted window size (desktop only)
+if not IS_ANDROID:
+    Window.size = (ADJUSTED_WIDTH, ADJUSTED_HEIGHT)
 
 # Import all game scenes
 {room_imports_str}
@@ -457,6 +474,113 @@ def dismiss_message():
         _current_popup.dismiss()
 
 
+# --- Virtual D-pad for Android touch controls ---
+if IS_ANDROID:
+    class VirtualDPad(Widget):
+        """On-screen D-pad for touch-based arrow key input"""
+
+        KEY_UP = 273
+        KEY_DOWN = 274
+        KEY_RIGHT = 275
+        KEY_LEFT = 276
+
+        def __init__(self, scene_ref=None, **kwargs):
+            super().__init__(**kwargs)
+            self.scene_ref = scene_ref
+            self._active_keys = set()
+            self._btn_size = 70
+            self._padding = 50
+            self._alpha = 0.35
+            self._buttons = {{}}
+            Clock.schedule_once(lambda dt: self._draw_buttons(), 0)
+
+        def _draw_buttons(self, *args):
+            """Calculate button positions and draw D-pad"""
+            s = self._btn_size
+            pad = self._padding
+            # D-pad center: bottom-right of screen
+            cx = Window.width - pad - s * 1.5
+            cy = pad + s * 1.5
+
+            self._buttons = {{
+                self.KEY_UP:    (cx, cy + s, s, s),
+                self.KEY_DOWN:  (cx, cy - s, s, s),
+                self.KEY_LEFT:  (cx - s, cy, s, s),
+                self.KEY_RIGHT: (cx + s, cy, s, s),
+            }}
+
+            self.canvas.clear()
+            with self.canvas:
+                for key_code, (bx, by, bw, bh) in self._buttons.items():
+                    Color(1, 1, 1, self._alpha)
+                    Ellipse(pos=(bx, by), size=(bw, bh))
+                # Arrow triangles
+                Color(0.2, 0.2, 0.2, self._alpha + 0.3)
+                bx, by, bw, bh = self._buttons[self.KEY_UP]
+                Triangle(points=[bx+bw/2, by+bh*0.8, bx+bw*0.2, by+bh*0.3, bx+bw*0.8, by+bh*0.3])
+                bx, by, bw, bh = self._buttons[self.KEY_DOWN]
+                Triangle(points=[bx+bw/2, by+bh*0.2, bx+bw*0.2, by+bh*0.7, bx+bw*0.8, by+bh*0.7])
+                bx, by, bw, bh = self._buttons[self.KEY_LEFT]
+                Triangle(points=[bx+bw*0.2, by+bh/2, bx+bw*0.7, by+bh*0.8, bx+bw*0.7, by+bh*0.2])
+                bx, by, bw, bh = self._buttons[self.KEY_RIGHT]
+                Triangle(points=[bx+bw*0.8, by+bh/2, bx+bw*0.3, by+bh*0.8, bx+bw*0.3, by+bh*0.2])
+
+        def _hit_test(self, x, y):
+            """Return key code if touch is inside a button, else None"""
+            for key_code, (bx, by, bw, bh) in self._buttons.items():
+                if bx <= x <= bx + bw and by <= y <= by + bh:
+                    return key_code
+            return None
+
+        def on_touch_down(self, touch):
+            key = self._hit_test(touch.x, touch.y)
+            if key is not None:
+                touch.grab(self)
+                self._press_key(key)
+                return True
+            return False
+
+        def on_touch_move(self, touch):
+            if touch.grab_current is self:
+                new_key = self._hit_test(touch.x, touch.y)
+                for old_key in list(self._active_keys):
+                    if old_key != new_key:
+                        self._release_key(old_key)
+                if new_key is not None and new_key not in self._active_keys:
+                    self._press_key(new_key)
+                return True
+            return False
+
+        def on_touch_up(self, touch):
+            if touch.grab_current is self:
+                touch.ungrab(self)
+                for key in list(self._active_keys):
+                    self._release_key(key)
+                return True
+            return False
+
+        def _press_key(self, key_code):
+            if key_code not in self._active_keys:
+                self._active_keys.add(key_code)
+                if self.scene_ref:
+                    self.scene_ref.on_keyboard(None, key_code, 0, '', [])
+
+        def _release_key(self, key_code):
+            if key_code in self._active_keys:
+                self._active_keys.discard(key_code)
+                if self.scene_ref:
+                    self.scene_ref.on_keyboard_up(None, key_code, 0)
+
+        def update_scene(self, new_scene):
+            """Update scene reference on room switch"""
+            # Clear active keys without calling the old scene's handlers
+            # (the old scene is being destroyed)
+            self._active_keys.clear()
+            self.scene_ref = new_scene
+else:
+    VirtualDPad = None
+
+
 class GameApp(App):
     """Main game application"""
 
@@ -464,6 +588,8 @@ class GameApp(App):
         super().__init__(**kwargs)
         self.current_room_index = 0
         self.scene = None
+        self.scene_container = None
+        self.dpad = None
         self.update_event = None
 
         # Game state (score, lives, health)
@@ -502,23 +628,58 @@ class GameApp(App):
         global _game_app
         _game_app = self
 
-        # Force DPI-adjusted window size
-        Window.size = (ADJUSTED_WIDTH, ADJUSTED_HEIGHT)
         Window.clearcolor = (0, 0, 0, 1)
 
-        # Create and return the starting scene
+        # Create root layout container
+        self.root_layout = FloatLayout()
+
+        # Create the starting scene
         self.scene = {first_room_class}()
         self.current_room_index = 0
 
-        # PERFORMANCE FIX: Schedule game loop at 60 FPS for optimal performance
+        if IS_ANDROID:
+            # Scale game to fill screen with correct aspect ratio
+            self.scene_container = self._create_scaled_container(self.scene)
+            self.root_layout.add_widget(self.scene_container)
+            # Add virtual D-pad overlay
+            if VirtualDPad is not None:
+                self.dpad = VirtualDPad(scene_ref=self.scene)
+                self.dpad.size_hint = (1, 1)
+                self.root_layout.add_widget(self.dpad)
+        else:
+            # Desktop: fixed window size
+            Window.size = (ADJUSTED_WIDTH, ADJUSTED_HEIGHT)
+            self.root_layout.add_widget(self.scene)
+            def force_size(dt):
+                Window.size = (ADJUSTED_WIDTH, ADJUSTED_HEIGHT)
+            Clock.schedule_once(force_size, 0.1)
+
+        # Schedule game loop at 60 FPS
         self.update_event = Clock.schedule_interval(self.scene.update, 1.0/60.0)
 
-        # Force window size again after scene is created
-        def force_size(dt):
-            Window.size = (ADJUSTED_WIDTH, ADJUSTED_HEIGHT)
-        Clock.schedule_once(force_size, 0.1)
+        return self.root_layout
 
-        return self.scene
+    def _create_scaled_container(self, scene):
+        """Wrap scene in a widget that scales game to fill the screen"""
+        screen_w = Window.width
+        screen_h = Window.height
+        game_w = scene.room_width
+        game_h = scene.room_height
+
+        scale = min(screen_w / game_w, screen_h / game_h)
+        offset_x = (screen_w - game_w * scale) / 2
+        offset_y = (screen_h - game_h * scale) / 2
+
+        container = Widget()
+        with container.canvas.before:
+            PushMatrix()
+            TranslateInstr(offset_x, offset_y, 0)
+            ScaleInstr(scale, scale, 1)
+        with container.canvas.after:
+            PopMatrix()
+
+        container.add_widget(scene)
+        return container
 
     def goto_next_room(self):
         """Switch to the next room"""
@@ -554,13 +715,36 @@ class GameApp(App):
             _pending_room_switch = room_index
             return
 
-        # Stop current update loop
+        # Stop current update loop immediately
         if self.update_event:
             Clock.unschedule(self.update_event)
+            self.update_event = None
 
-        # Clear current scene
+        # Defer the actual scene swap to next frame so the current
+        # game loop / touch event finishes before the widget tree changes
+        Clock.schedule_once(lambda dt: self._do_switch_room(room_index), 0)
+
+    def _do_switch_room(self, room_index):
+        """Perform the actual room switch (called on next frame)"""
+        # Guard against re-entrant calls
+        if getattr(self, '_switching', False):
+            return
+        self._switching = True
+
+        try:
+            self.__do_switch_room(room_index)
+        finally:
+            self._switching = False
+
+    def __do_switch_room(self, room_index):
+        """Actual room switch implementation"""
+        # Clean up old scene — unbind BEFORE creating the new scene
+        # so there are no duplicate keyboard bindings
         if self.scene:
+            Window.unbind(on_keyboard=self.scene.on_keyboard)
+            Window.unbind(on_key_up=self.scene.on_keyboard_up)
             self.scene.clear_widgets()
+            self.scene = None
 
         # Create new scene
         room_name = ROOM_ORDER[room_index]
@@ -568,25 +752,34 @@ class GameApp(App):
         self.scene = room_class()
         self.current_room_index = room_index
 
-        # Resize window to match new room's dimensions (adjusted for DPI)
-        new_width = int(self.scene.room_width / DPI_SCALE)
-        new_height = int(self.scene.room_height / DPI_SCALE)
-        Window.size = (new_width, new_height)
-
-        # Update root widget
-        self.root.clear_widgets()
-        self.root.add_widget(self.scene)
+        if IS_ANDROID:
+            # Remove only the old scene container (leave D-pad in place)
+            if self.scene_container:
+                self.root_layout.remove_widget(self.scene_container)
+            self.scene_container = self._create_scaled_container(self.scene)
+            # Insert behind the D-pad
+            self.root_layout.add_widget(self.scene_container,
+                                        index=len(self.root_layout.children))
+            if self.dpad:
+                self.dpad.update_scene(self.scene)
+        else:
+            # Desktop: resize window to match new room
+            new_width = int(self.scene.room_width / DPI_SCALE)
+            new_height = int(self.scene.room_height / DPI_SCALE)
+            Window.size = (new_width, new_height)
+            self.root_layout.clear_widgets()
+            self.root_layout.add_widget(self.scene)
 
         # Restart update loop
         self.update_event = Clock.schedule_interval(self.scene.update, 1.0/60.0)
 
-        # Reset room transition flag after a short delay (allows current frame to complete)
+        # Reset room transition flag
         def reset_transition_flag(dt):
             global _room_transition_pending
             _room_transition_pending = False
         Clock.schedule_once(reset_transition_flag, 0.1)
 
-        print(f"Switched to room: {{room_name}} ({{new_width}}x{{new_height}})")
+        print(f"Switched to room: {{room_name}}")
 
     def on_stop(self):
         """Cleanup when app stops"""
@@ -891,30 +1084,35 @@ class {class_name}(Widget):
         # 8. End Step events
         # 9. Draw events (handled by Kivy rendering)
 
+        # Snapshot the instance list so that room switches or instance
+        # creation/destruction during callbacks don't mutate the list
+        # while we iterate it.
+        _live = list(self.instances)
+
         # 1. BEGIN STEP EVENTS
-        for instance in self.instances:
+        for instance in _live:
             if hasattr(instance, 'on_begin_step'):
                 instance.on_begin_step(dt)
 
         # 2. ALARM EVENTS (process countdown timers)
-        for instance in self.instances:
+        for instance in _live:
             if hasattr(instance, '_process_alarms'):
                 instance._process_alarms()
 
         # 3. KEYBOARD EVENTS
         # Check for "nokey" event - triggers when no keys are pressed
         if not self.keys_pressed:
-            for instance in self.instances:
+            for instance in _live:
                 if hasattr(instance, 'on_nokey'):
                     instance.on_nokey()
 
         # 4. NORMAL STEP EVENTS
-        for instance in self.instances:
+        for instance in _live:
             if hasattr(instance, 'on_update'):
                 instance.on_update(dt)
 
         # 5. MOVEMENT - instances move to new positions
-        for instance in self.instances:
+        for instance in _live:
             if hasattr(instance, '_process_movement'):
                 instance._process_movement(dt)
 
@@ -923,14 +1121,15 @@ class {class_name}(Widget):
         # Check each pair of objects only ONCE instead of twice
         # Track which types each instance is colliding with (for negated collision events)
         colliding_with = {{}}  # instance id -> set of snake_case class names
-        num_instances = len(self.instances)
+        _live = list(self.instances)
+        num_instances = len(_live)
         for i in range(num_instances):
-            instance = self.instances[i]
+            instance = _live[i]
 
             # Only check against instances we haven't checked yet (j > i)
             # This prevents checking A->B and then B->A (duplicate work)
             for j in range(i + 1, num_instances):
-                other = self.instances[j]
+                other = _live[j]
 
                 # Check collision between instance and other
                 if instance.check_collision(other):
@@ -958,7 +1157,7 @@ class {class_name}(Widget):
         # Skip instances created during this frame since they weren't part of
         # positive collision detection and would falsely trigger
         pending_ids = set(id(inst) for inst in self._pending_creates)
-        for instance in self.instances:
+        for instance in _live:
             if id(instance) in pending_ids:
                 continue
             for attr_name in dir(instance):
@@ -969,7 +1168,7 @@ class {class_name}(Widget):
                         getattr(instance, attr_name)()
 
         # 7. END STEP EVENTS
-        for instance in self.instances:
+        for instance in _live:
             if hasattr(instance, 'on_end_step'):
                 instance.on_end_step(dt)
 
