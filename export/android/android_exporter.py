@@ -203,7 +203,7 @@ class AndroidExporter(QObject):
                             "Failed to set up WSL dependencies.\n\n"
                             "{}\n\n"
                             "You can try installing manually in WSL:\n"
-                            "  wsl sudo apt install python3 python3-pip "
+                            "  wsl -u root apt install python3 python3-pip "
                             "openjdk-17-jdk build-essential cmake zip "
                             "unzip git\n"
                             "  wsl pip3 install --user buildozer "

@@ -227,11 +227,13 @@ class WSLBridge:
                 progress_callback(msg)
 
         try:
+            # Use 'wsl -u root' instead of 'wsl sudo' to avoid
+            # password prompts that would block the subprocess.
             # apt update
             _report("Updating package lists in WSL...")
             result = subprocess.run(
-                ['wsl', 'sudo', 'apt-get', 'update', '-y'],
-                capture_output=True, text=True, timeout=120,
+                ['wsl', '-u', 'root', 'apt-get', 'update', '-y'],
+                capture_output=True, text=True, timeout=300,
                 encoding='utf-8', errors='replace'
             )
             if result.returncode != 0:
@@ -239,12 +241,13 @@ class WSLBridge:
                         "Failed to update apt packages:\n{}".format(
                             (result.stderr or 'unknown error')[-500:]))
 
-            # apt install
-            _report("Installing system packages in WSL...")
-            cmd = ['wsl', 'sudo', 'apt-get', 'install', '-y'] + self.APT_PACKAGES
+            # apt install — openjdk-17-jdk is large, allow plenty of time
+            _report("Installing system packages in WSL "
+                    "(Java JDK + build tools, this may take a while)...")
+            cmd = ['wsl', '-u', 'root', 'apt-get', 'install', '-y'] + self.APT_PACKAGES
             result = subprocess.run(
                 cmd,
-                capture_output=True, text=True, timeout=600,
+                capture_output=True, text=True, timeout=1800,
                 encoding='utf-8', errors='replace'
             )
             if result.returncode != 0:
@@ -257,7 +260,7 @@ class WSLBridge:
             for pkg in self.PIP_PACKAGES:
                 result = subprocess.run(
                     ['wsl', 'pip3', 'install', '--user', pkg],
-                    capture_output=True, text=True, timeout=120,
+                    capture_output=True, text=True, timeout=300,
                     encoding='utf-8', errors='replace'
                 )
                 if result.returncode != 0:
@@ -268,9 +271,14 @@ class WSLBridge:
             _report("All WSL dependencies installed successfully.")
             return (True, "Dependencies installed successfully")
 
-        except subprocess.TimeoutExpired:
+        except subprocess.TimeoutExpired as exc:
             return (False,
-                    "Installation timed out. Check your internet connection.")
+                    "Installation timed out.\n"
+                    "Step: {}\n\n"
+                    "This usually means a large package (like Java JDK) is "
+                    "being downloaded.\n"
+                    "You can try installing manually in WSL to see "
+                    "progress.".format(exc.cmd))
         except Exception as exc:
             return (False, "Installation error: {}".format(exc))
 
