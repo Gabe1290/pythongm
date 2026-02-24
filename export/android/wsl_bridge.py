@@ -294,10 +294,13 @@ class WSLBridge:
         """Launch buildozer inside WSL as a streaming subprocess.
 
         Copies the game files from the Windows temp directory into
-        WSL's native filesystem (``/tmp/pygm_build_*``), runs buildozer
+        WSL's native filesystem (``/tmp/pygm_build``), runs buildozer
         there, and copies the APK back.  Building on the native Linux
         filesystem avoids ``/mnt/c/`` I/O slowness and path-resolution
         issues that can prevent SDK tools like ``aidl`` from working.
+
+        The build script is piped via stdin because ``wsl bash -c``
+        strips ``$`` variable references from the argument string.
 
         Returns a :class:`subprocess.Popen` with ``stdout`` piped.
         """
@@ -305,18 +308,21 @@ class WSLBridge:
 
         # Build entirely inside WSL's native filesystem for speed and
         # to avoid /mnt/c/ issues with the Android SDK tools.
-        shell_cmd = (
-            'set -e && '
-            'BUILD_DIR=$(mktemp -d /tmp/pygm_build_XXXXXX) && '
-            'cp -r "{src}"/* "$BUILD_DIR"/ && '
-            'cd "$BUILD_DIR" && '
-            'export PATH="$HOME/.local/bin:$PATH" && '
-            'export PIP_BREAK_SYSTEM_PACKAGES=1 && '
-            'python3 -m buildozer android debug && '
-            'cp -r "$BUILD_DIR"/bin/* "{src}"/bin/ 2>/dev/null; '
-            'mkdir -p "{src}/bin" && '
-            'cp "$BUILD_DIR"/bin/*.apk "{src}/bin/" 2>/dev/null; '
-            'echo "BUILD_DIR=$BUILD_DIR"'
+        # Use stdin pipe because 'wsl bash -c' eats $ expansions.
+        build_script = (
+            '#!/bin/bash\n'
+            'set -e\n'
+            'BUILD_DIR=$(mktemp -d /tmp/pygm_build_XXXXXX)\n'
+            'echo "Build directory: $BUILD_DIR"\n'
+            'cp -r "{src}"/* "$BUILD_DIR"/\n'
+            'cd "$BUILD_DIR"\n'
+            'export PATH="$HOME/.local/bin:$PATH"\n'
+            'export PIP_BREAK_SYSTEM_PACKAGES=1\n'
+            'python3 -m buildozer android debug\n'
+            'EXIT_CODE=$?\n'
+            'mkdir -p "{src}/bin"\n'
+            'cp "$BUILD_DIR"/bin/*.apk "{src}/bin/" 2>/dev/null || true\n'
+            'exit $EXIT_CODE\n'
         ).format(src=wsl_src)
 
         logger.info("Running buildozer in WSL (native filesystem):")
@@ -325,7 +331,8 @@ class WSLBridge:
         logger.info("  Build will run in /tmp/pygm_build_*")
 
         process = subprocess.Popen(
-            ['wsl', 'bash', '-c', shell_cmd],
+            ['wsl', 'bash'],
+            stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
@@ -333,4 +340,9 @@ class WSLBridge:
             encoding='utf-8',
             errors='replace',
         )
+
+        # Write the script to stdin and close it so bash can proceed
+        process.stdin.write(build_script)
+        process.stdin.close()
+
         return process
