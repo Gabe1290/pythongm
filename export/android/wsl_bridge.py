@@ -255,11 +255,13 @@ class WSLBridge:
                         "Failed to install system packages:\n{}".format(
                             (result.stderr or 'unknown error')[-500:]))
 
-            # pip install
+            # pip install — use --break-system-packages for Ubuntu 24.04+
+            # which enforces PEP 668 (externally-managed-environment)
             _report("Installing Python packages in WSL...")
             for pkg in self.PIP_PACKAGES:
                 result = subprocess.run(
-                    ['wsl', 'pip3', 'install', '--user', pkg],
+                    ['wsl', 'pip3', 'install', '--user',
+                     '--break-system-packages', pkg],
                     capture_output=True, text=True, timeout=300,
                     encoding='utf-8', errors='replace'
                 )
