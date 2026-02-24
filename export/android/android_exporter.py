@@ -397,15 +397,16 @@ class AndroidExporter(QObject):
             return False
 
     def _create_build_directory(self) -> Path:
-        """Create a temporary build directory"""
-        project_dir = self.project_path.parent
-        build_dir = project_dir / "build_temp_android"
+        """Create a temporary build directory.
 
-        # Clean if exists
-        if build_dir.exists():
-            shutil.rmtree(build_dir)
+        Uses the system temp folder instead of the project directory
+        to avoid conflicts with Dropbox/OneDrive file-locking and to
+        keep large build artifacts out of cloud-synced folders.
+        """
+        import tempfile
+        build_dir = Path(tempfile.mkdtemp(prefix='pygm_android_'))
 
-        build_dir.mkdir(parents=True, exist_ok=True)
+        logger.info("Build directory: %s", build_dir)
         return build_dir
 
     def _generate_kivy_game(self, build_dir: Path) -> bool:
@@ -618,10 +619,24 @@ class AndroidExporter(QObject):
 
         return found_apk
 
+    @staticmethod
+    def _force_remove_readonly(func, path, exc_info):
+        """Error handler for shutil.rmtree to remove read-only files.
+
+        Git pack files and other WSL-created files may be read-only on
+        Windows, causing shutil.rmtree to fail with Access Denied.
+        """
+        import os, stat
+        try:
+            os.chmod(path, stat.S_IWRITE)
+            func(path)
+        except Exception:
+            pass
+
     def _cleanup(self, build_dir: Path):
         """Clean up temporary build files"""
         try:
             if build_dir.exists():
-                shutil.rmtree(build_dir)
+                shutil.rmtree(build_dir, onerror=self._force_remove_readonly)
         except Exception as e:
             logger.warning("Could not clean up build directory: {}".format(e))
