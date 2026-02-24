@@ -256,12 +256,14 @@ class WSLBridge:
                             (result.stderr or 'unknown error')[-500:]))
 
             # pip install — use --break-system-packages for Ubuntu 24.04+
-            # which enforces PEP 668 (externally-managed-environment)
+            # which enforces PEP 668 (externally-managed-environment).
+            # Run via 'bash -c' so that version specs like 'cython<3.0'
+            # are not misinterpreted as shell redirections.
             _report("Installing Python packages in WSL...")
             for pkg in self.PIP_PACKAGES:
+                pip_cmd = "pip3 install --user --break-system-packages '{}'".format(pkg)
                 result = subprocess.run(
-                    ['wsl', 'pip3', 'install', '--user',
-                     '--break-system-packages', pkg],
+                    ['wsl', 'bash', '-c', pip_cmd],
                     capture_output=True, text=True, timeout=300,
                     encoding='utf-8', errors='replace'
                 )
