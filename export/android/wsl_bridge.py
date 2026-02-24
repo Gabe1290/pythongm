@@ -303,6 +303,7 @@ class WSLBridge:
         shell_cmd = (
             'cd "{}" && '
             'export PATH="$HOME/.local/bin:$PATH" && '
+            'export PIP_BREAK_SYSTEM_PACKAGES=1 && '
             'python3 -m buildozer android debug'
         ).format(wsl_build_dir)
 
