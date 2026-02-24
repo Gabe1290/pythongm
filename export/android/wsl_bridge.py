@@ -299,16 +299,16 @@ class WSLBridge:
         filesystem avoids ``/mnt/c/`` I/O slowness and path-resolution
         issues that can prevent SDK tools like ``aidl`` from working.
 
-        The build script is piped via stdin because ``wsl bash -c``
-        strips ``$`` variable references from the argument string.
+        The build script is written to a file inside WSL because:
+        - ``wsl bash -c`` strips ``$`` variable references
+        - Piping via stdin produces Windows ``\\r\\n`` line endings
 
         Returns a :class:`subprocess.Popen` with ``stdout`` piped.
         """
         wsl_src = self.windows_to_wsl_path(build_dir_windows)
 
-        # Build entirely inside WSL's native filesystem for speed and
-        # to avoid /mnt/c/ issues with the Android SDK tools.
-        # Use stdin pipe because 'wsl bash -c' eats $ expansions.
+        # Write the build script to a file inside WSL to avoid
+        # Windows line-ending issues and $ stripping in 'wsl bash -c'.
         build_script = (
             '#!/bin/bash\n'
             'set -e\n'
@@ -325,14 +325,28 @@ class WSLBridge:
             'exit $EXIT_CODE\n'
         ).format(src=wsl_src)
 
+        # Write the script to a file inside WSL with Unix line endings.
+        # Use binary mode (no text=True) so Python won't convert \n to \r\n.
+        script_path = '/tmp/pygm_buildozer_run.sh'
+        subprocess.run(
+            ['wsl', 'tee', script_path],
+            input=build_script.encode('utf-8'),
+            capture_output=True,
+            timeout=10,
+        )
+        subprocess.run(
+            ['wsl', 'chmod', '+x', script_path],
+            capture_output=True,
+            timeout=5,
+        )
+
         logger.info("Running buildozer in WSL (native filesystem):")
         logger.info("  Windows dir: %s", build_dir_windows)
         logger.info("  WSL source:  %s", wsl_src)
         logger.info("  Build will run in /tmp/pygm_build_*")
 
         process = subprocess.Popen(
-            ['wsl', 'bash'],
-            stdin=subprocess.PIPE,
+            ['wsl', 'bash', script_path],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
@@ -340,9 +354,4 @@ class WSLBridge:
             encoding='utf-8',
             errors='replace',
         )
-
-        # Write the script to stdin and close it so bash can proceed
-        process.stdin.write(build_script)
-        process.stdin.close()
-
         return process
