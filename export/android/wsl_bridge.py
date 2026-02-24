@@ -293,24 +293,36 @@ class WSLBridge:
     def run_buildozer(self, build_dir_windows: str) -> subprocess.Popen:
         """Launch buildozer inside WSL as a streaming subprocess.
 
-        Converts the Windows *build_dir* to a WSL path, then runs
-        ``cd <path> && python3 -m buildozer android debug``.
+        Copies the game files from the Windows temp directory into
+        WSL's native filesystem (``/tmp/pygm_build_*``), runs buildozer
+        there, and copies the APK back.  Building on the native Linux
+        filesystem avoids ``/mnt/c/`` I/O slowness and path-resolution
+        issues that can prevent SDK tools like ``aidl`` from working.
 
         Returns a :class:`subprocess.Popen` with ``stdout`` piped.
         """
-        wsl_build_dir = self.windows_to_wsl_path(build_dir_windows)
+        wsl_src = self.windows_to_wsl_path(build_dir_windows)
 
+        # Build entirely inside WSL's native filesystem for speed and
+        # to avoid /mnt/c/ issues with the Android SDK tools.
         shell_cmd = (
-            'cd "{}" && '
+            'set -e && '
+            'BUILD_DIR=$(mktemp -d /tmp/pygm_build_XXXXXX) && '
+            'cp -r "{src}"/* "$BUILD_DIR"/ && '
+            'cd "$BUILD_DIR" && '
             'export PATH="$HOME/.local/bin:$PATH" && '
             'export PIP_BREAK_SYSTEM_PACKAGES=1 && '
-            'python3 -m buildozer android debug'
-        ).format(wsl_build_dir)
+            'python3 -m buildozer android debug && '
+            'cp -r "$BUILD_DIR"/bin/* "{src}"/bin/ 2>/dev/null; '
+            'mkdir -p "{src}/bin" && '
+            'cp "$BUILD_DIR"/bin/*.apk "{src}/bin/" 2>/dev/null; '
+            'echo "BUILD_DIR=$BUILD_DIR"'
+        ).format(src=wsl_src)
 
-        logger.info("Running buildozer in WSL:")
+        logger.info("Running buildozer in WSL (native filesystem):")
         logger.info("  Windows dir: %s", build_dir_windows)
-        logger.info("  WSL dir:     %s", wsl_build_dir)
-        logger.info("  Command:     %s", shell_cmd)
+        logger.info("  WSL source:  %s", wsl_src)
+        logger.info("  Build will run in /tmp/pygm_build_*")
 
         process = subprocess.Popen(
             ['wsl', 'bash', '-c', shell_cmd],
