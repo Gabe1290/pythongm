@@ -738,24 +738,63 @@ class GameApp(App):
 
     def __do_switch_room(self, room_index):
         """Actual room switch implementation"""
-        # Clean up old scene — unbind BEFORE creating the new scene
-        # so there are no duplicate keyboard bindings
-        if self.scene:
-            Window.unbind(on_keyboard=self.scene.on_keyboard)
-            Window.unbind(on_key_up=self.scene.on_keyboard_up)
-            self.scene.clear_widgets()
-            self.scene = None
+        try:
+            self._perform_room_switch(room_index)
+        except Exception as exc:
+            import traceback
+            print(f"[ERROR] Room switch failed: {{exc}}")
+            traceback.print_exc()
+            # Try to recover — restart the update loop if we have a scene
+            if self.scene and not self.update_event:
+                self.update_event = Clock.schedule_interval(
+                    self.scene.update, 1.0/60.0)
 
-        # Create new scene
+    def _perform_room_switch(self, room_index):
+        """Room switch logic (separated for error handling)"""
+        # ---- 1. FULLY TEAR DOWN OLD SCENE ----
+        old_scene = self.scene
+        old_container = self.scene_container
+
+        if old_scene:
+            # Unbind keyboard handlers FIRST
+            try:
+                Window.unbind(on_keyboard=old_scene.on_keyboard)
+            except Exception:
+                pass
+            try:
+                Window.unbind(on_key_up=old_scene.on_keyboard_up)
+            except Exception:
+                pass
+
+            # Clear instance references to prevent stale callbacks
+            for inst in list(old_scene.instances):
+                inst.scene = None
+            old_scene.instances.clear()
+            old_scene.instances_to_destroy.clear()
+            old_scene._pending_creates.clear()
+
+            # Remove old scene canvas + widgets
+            old_scene.canvas.clear()
+            old_scene.clear_widgets()
+
+        # Remove old container from layout BEFORE creating new scene
+        if IS_ANDROID and old_container:
+            old_container.canvas.before.clear()
+            old_container.canvas.after.clear()
+            old_container.clear_widgets()
+            self.root_layout.remove_widget(old_container)
+            self.scene_container = None
+
+        self.scene = None
+
+        # ---- 2. CREATE NEW SCENE ----
         room_name = ROOM_ORDER[room_index]
         room_class = ROOM_CLASSES[room_name]
         self.scene = room_class()
         self.current_room_index = room_index
 
+        # ---- 3. ADD TO WIDGET TREE ----
         if IS_ANDROID:
-            # Remove only the old scene container (leave D-pad in place)
-            if self.scene_container:
-                self.root_layout.remove_widget(self.scene_container)
             self.scene_container = self._create_scaled_container(self.scene)
             # Insert behind the D-pad
             self.root_layout.add_widget(self.scene_container,
@@ -770,7 +809,7 @@ class GameApp(App):
             self.root_layout.clear_widgets()
             self.root_layout.add_widget(self.scene)
 
-        # Restart update loop
+        # ---- 4. START UPDATE LOOP ----
         self.update_event = Clock.schedule_interval(self.scene.update, 1.0/60.0)
 
         # Reset room transition flag
@@ -1073,6 +1112,15 @@ class {class_name}(Widget):
 
     def update(self, dt):
         """Main game loop update - GAMEMAKER 7.0 EVENT ORDER"""
+        try:
+            self._update_impl(dt)
+        except Exception as exc:
+            import traceback
+            print(f"[ERROR] update: {{exc}}")
+            traceback.print_exc()
+
+    def _update_impl(self, dt):
+        """Internal update (separated for error handling)"""
         # GAMEMAKER 7.0 EVENT EXECUTION ORDER:
         # 1. Begin Step events
         # 2. Alarm events
@@ -1197,25 +1245,25 @@ class {class_name}(Widget):
 
     def on_keyboard(self, window, key, scancode, codepoint, modifier):
         """Handle keyboard press events"""
-        self.keys_pressed[key] = True
-
-        # Notify all instances
-        for instance in self.instances:
-            if hasattr(instance, 'on_keyboard'):
-                instance.on_keyboard(key, scancode, codepoint, modifier)
-
+        try:
+            self.keys_pressed[key] = True
+            for instance in list(self.instances):
+                if hasattr(instance, 'on_keyboard'):
+                    instance.on_keyboard(key, scancode, codepoint, modifier)
+        except Exception as exc:
+            print(f"[ERROR] on_keyboard: {{exc}}")
         return False
 
     def on_keyboard_up(self, window, key, scancode):
         """Handle keyboard release events"""
-        if key in self.keys_pressed:
-            del self.keys_pressed[key]
-
-        # Notify all instances
-        for instance in self.instances:
-            if hasattr(instance, 'on_keyboard_up'):
-                instance.on_keyboard_up(key, scancode)
-
+        try:
+            if key in self.keys_pressed:
+                del self.keys_pressed[key]
+            for instance in list(self.instances):
+                if hasattr(instance, 'on_keyboard_up'):
+                    instance.on_keyboard_up(key, scancode)
+        except Exception as exc:
+            print(f"[ERROR] on_keyboard_up: {{exc}}")
         return False
 '''
 
@@ -1531,7 +1579,7 @@ class GameObject(Widget):
         # Only check solid-to-solid collisions to prevent overlap
         # Other collision events are handled by _check_collisions method
         can_move = True
-        if self.solid:
+        if self.solid and self.scene:
             old_x, old_y = self.x, self.y
             self.x, self.y = new_x, new_y
 
@@ -1584,7 +1632,8 @@ class GameObject(Widget):
         """Destroy this instance"""
         if hasattr(self, 'on_destroy'):
             self.on_destroy()
-        self.scene.destroy_instance(self)
+        if self.scene:
+            self.scene.destroy_instance(self)
 
     def is_on_grid(self):
         """Check if object is close to grid alignment"""
@@ -1612,6 +1661,8 @@ class GameObject(Widget):
 
     def _check_wall_ahead(self, dx, dy):
         """Check if there's a wall in the direction we want to move"""
+        if not self.scene:
+            return False
         # Temporarily move to check position
         old_x, old_y = self.x, self.y
         self.x += dx
@@ -1655,6 +1706,8 @@ class GameObject(Widget):
             return
 
         # Check for pushable/blocking objects at target position
+        if not self.scene:
+            return
         target_x = self.x + dx
         target_y = self.y + dy
         threshold = self.grid_size // 2
