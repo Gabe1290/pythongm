@@ -530,12 +530,27 @@ class AndroidExporter(QObject):
                 )
                 timeout = 1200  # 20 min
 
-            # Capture output for error reporting
+            # Capture output for error reporting and show progress
             output_lines = []
             for line in process.stdout:
                 stripped = line.rstrip()
+                if not stripped:
+                    continue
                 logger.debug(stripped)
                 output_lines.append(stripped)
+
+                # Show meaningful lines in the progress dialog
+                low = stripped.lower()
+                if any(kw in low for kw in [
+                    'download', 'install', 'unpack', 'unzip', 'build',
+                    'compil', 'link', 'creating', 'copy', 'run ',
+                    'check ', 'patch', 'prepar', 'generat', 'strip',
+                    'package', 'sign', 'zipalign', 'apk', 'ndk',
+                    'sdk', 'gradle', 'python', 'p4a', '# ',
+                ]):
+                    # Truncate long lines for the progress dialog
+                    display = stripped[:120]
+                    self.progress_update.emit(45, display)
 
             # Wait for completion
             process.wait(timeout=timeout)
