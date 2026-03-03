@@ -210,6 +210,9 @@ class ThymioPlaygroundWindow(QMainWindow):
         self.undo_stack: List[Tuple[str, any]] = []
         self.max_undo = 50
 
+        # Reusable world surface (avoids allocating a new Surface every frame)
+        self._world_surface = pygame.Surface((self.playground_width, self.playground_height))
+
         # Zoom and pan state
         self.zoom_level = 1.0
         self.zoom_min = 0.25
@@ -571,10 +574,8 @@ class ThymioPlaygroundWindow(QMainWindow):
         # Get pygame surface (display surface)
         display_surface = self.pygame_widget.get_surface()
 
-        # Create a world surface at the base resolution (we'll zoom into this)
-        world_surface = pygame.Surface((self.playground_width, self.playground_height))
-
-        # Clear background
+        # Reuse world surface (cleared each frame instead of reallocated)
+        world_surface = self._world_surface
         world_surface.fill(COLOR_BACKGROUND)
 
         # Draw grid
@@ -1043,8 +1044,9 @@ class ThymioPlaygroundWindow(QMainWindow):
         self.playground_width = width
         self.playground_height = height
 
-        # Resize pygame widget
+        # Resize pygame widget and reusable world surface
         self.pygame_widget.resize_surface(width, height)
+        self._world_surface = pygame.Surface((width, height))
 
         # Reposition Thymio if outside new bounds
         margin = 50

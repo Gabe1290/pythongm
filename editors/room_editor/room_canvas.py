@@ -53,6 +53,7 @@ class RoomCanvas(QWidget):
 
         # Undo/Redo system
         self.undo_stack = QUndoStack(self)
+        self.undo_stack.setUndoLimit(200)
         self.painted_instances = []
         self.erased_instances = []
         self.move_start_positions = {}  # Dict of instance -> (old_x, old_y)

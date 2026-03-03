@@ -28,6 +28,7 @@ class AndroidExporter(QObject):
         self.output_path = None
         self.export_settings = {}
         self.project_data = None
+        self.cancel_requested = False
 
     def _load_rooms_from_files(self, project_dir: Path) -> None:
         """Load room instance data from separate files in rooms/ directory
@@ -530,17 +531,68 @@ class AndroidExporter(QObject):
                 )
                 timeout = 1200  # 20 min
 
-            # Capture output for error reporting and show progress
-            output_lines = []
+            # Capture output for error reporting and show progress.
+            # Keep only the last 2000 lines to limit memory usage during
+            # long builds.  Throttle signal emission to avoid flooding the
+            # main thread's event loop (which would freeze the UI).
+            import time as _time
+            import collections as _collections
+            output_lines = _collections.deque(maxlen=2000)
+            _last_signal_time = 0.0
+            _SIGNAL_INTERVAL = 0.25  # seconds between progress updates
+
+            # Estimate progress (40-88%) by detecting buildozer phases.
+            # Each phase keyword maps to a progress percentage.
+            _build_pct = 40
+            _PHASE_MARKERS = [
+                ('downloading android sdk',       42),
+                ('downloading android ndk',       48),
+                ('unpacking android',             52),
+                ('installing android',            54),
+                ('# prebuilt distribution',       56),
+                ('compiling recipes',             58),
+                ('recipe python3',                60),
+                ('recipe kivy',                   64),
+                ('recipe pillow',                 66),
+                ('recipe pyjnius',                68),
+                ('build_ext',                     70),
+                ('p4a.toolchain',                 72),
+                ('creating android project',      74),
+                ('copying libs',                  76),
+                ('run gradle',                    78),
+                ('gradle',                        78),
+                ('build successful',              82),
+                ('packaging',                     84),
+                ('signing',                       86),
+                ('zipalign',                      87),
+                ('.apk',                          88),
+            ]
+
             for line in process.stdout:
+                # Check for cancellation
+                if self.cancel_requested:
+                    process.kill()
+                    self.export_complete.emit(False, "Export cancelled by user.")
+                    return False
+
                 stripped = line.rstrip()
                 if not stripped:
                     continue
                 logger.debug(stripped)
                 output_lines.append(stripped)
 
-                # Show meaningful lines in the progress dialog
+                # Show meaningful lines in the progress dialog (throttled)
+                now = _time.monotonic()
+                if now - _last_signal_time < _SIGNAL_INTERVAL:
+                    continue
                 low = stripped.lower()
+
+                # Advance progress estimate based on build phase
+                for marker, pct in _PHASE_MARKERS:
+                    if marker in low and pct > _build_pct:
+                        _build_pct = pct
+                        break
+
                 if any(kw in low for kw in [
                     'download', 'install', 'unpack', 'unzip', 'build',
                     'compil', 'link', 'creating', 'copy', 'run ',
@@ -550,7 +602,8 @@ class AndroidExporter(QObject):
                 ]):
                     # Truncate long lines for the progress dialog
                     display = stripped[:120]
-                    self.progress_update.emit(45, display)
+                    self.progress_update.emit(_build_pct, display)
+                    _last_signal_time = now
 
             # Wait for completion
             process.wait(timeout=timeout)
@@ -561,8 +614,9 @@ class AndroidExporter(QObject):
                 # Buildozer's last ~30 lines are often just an environment
                 # dump; the real errors are earlier.  Search for error
                 # indicators and show those lines plus the tail.
+                all_lines = list(output_lines)
                 error_lines = []
-                for i, line in enumerate(output_lines):
+                for i, line in enumerate(all_lines):
                     low = line.lower()
                     if ('error' in low or 'exception' in low
                             or 'traceback' in low or 'fatal' in low
@@ -572,12 +626,12 @@ class AndroidExporter(QObject):
                             or 'permission denied' in low):
                         # Grab some context around the error
                         start = max(0, i - 2)
-                        end = min(len(output_lines), i + 3)
+                        end = min(len(all_lines), i + 3)
                         for j in range(start, end):
-                            if output_lines[j] not in error_lines:
-                                error_lines.append(output_lines[j])
+                            if all_lines[j] not in error_lines:
+                                error_lines.append(all_lines[j])
 
-                tail = '\n'.join(output_lines[-15:])
+                tail = '\n'.join(all_lines[-15:])
                 if error_lines:
                     errors = '\n'.join(error_lines[-30:])
                     return ("Buildozer exited with code {}.\n\n"

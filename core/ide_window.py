@@ -788,8 +788,10 @@ class PyGameMakerIDE(QMainWindow):
                 if tab_text in self.open_editors:
                     del self.open_editors[tab_text]
 
-                # Remove tab
+                # Remove tab and schedule widget for deletion to free memory
                 self.editor_tabs.removeTab(index)
+                if editor_widget:
+                    editor_widget.deleteLater()
 
                 # Show welcome tab if no editors left
                 if self.editor_tabs.count() == 0:
@@ -2172,8 +2174,8 @@ class PyGameMakerIDE(QMainWindow):
             'include_debug': False
         }
 
-        # Create progress dialog
-        from PySide6.QtWidgets import QDialog, QVBoxLayout, QProgressBar
+        # Create progress dialog with cancel button
+        from PySide6.QtWidgets import QDialog, QVBoxLayout, QProgressBar, QHBoxLayout, QPushButton
 
         progress_dialog = QDialog(self)
         progress_dialog.setWindowTitle(self.tr("Exporting Game"))
@@ -2189,9 +2191,16 @@ class PyGameMakerIDE(QMainWindow):
         progress_bar.setRange(0, 100)
         layout.addWidget(progress_bar)
 
+        btn_layout = QHBoxLayout()
+        btn_layout.addStretch()
+        cancel_btn = QPushButton(self.tr("Cancel"))
+        btn_layout.addWidget(cancel_btn)
+        layout.addLayout(btn_layout)
+
         # Import and create exporter
         from export.android.android_exporter import AndroidExporter
         exporter = AndroidExporter()
+        _export_cancelled = False
 
         # Connect signals
         def update_progress(percent, message):
@@ -2200,6 +2209,9 @@ class PyGameMakerIDE(QMainWindow):
 
         def export_finished(success, message):
             progress_dialog.accept()
+            if _export_cancelled:
+                self.update_status(self.tr("Export cancelled"))
+                return
             if success:
                 result = QMessageBox.information(
                     self,
@@ -2223,8 +2235,16 @@ class PyGameMakerIDE(QMainWindow):
                     message
                 )
 
+        def cancel_export():
+            nonlocal _export_cancelled
+            _export_cancelled = True
+            cancel_btn.setEnabled(False)
+            status_label.setText(self.tr("Cancelling..."))
+            exporter.cancel_requested = True
+
         exporter.progress_update.connect(update_progress)
         exporter.export_complete.connect(export_finished)
+        cancel_btn.clicked.connect(cancel_export)
 
         # Start export in background thread
         from PySide6.QtCore import QThread
@@ -3160,6 +3180,16 @@ class PyGameMakerIDE(QMainWindow):
 
     def on_project_loaded(self, project_path, project_data):
         logger.debug(f"DEBUG on_project_loaded: START - path={project_path}, data_keys={list(project_data.keys()) if project_data else None}")
+
+        # Close all open editor tabs from previous project to free memory
+        while self.editor_tabs.count() > 0:
+            widget = self.editor_tabs.widget(0)
+            self.editor_tabs.removeTab(0)
+            if widget and widget is not self.welcome_tab:
+                widget.deleteLater()
+        self.open_editors.clear()
+        self.editor_tabs.addTab(self.welcome_tab, self.tr("Welcome"))
+
         self.current_project_path = project_path
         self.current_project_data = project_data
 

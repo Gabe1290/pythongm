@@ -213,11 +213,37 @@ class KivyExporter:
         # Generate room class mapping
         room_mapping_str = ', '.join([f'"{name}": {cls}' for name, cls in room_class_map.items()])
 
+        # Generate room metadata (dimensions + bg color per room)
+        room_meta_entries = []
+        for rname in room_names:
+            rd = rooms.get(rname, {})
+            rw = rd.get('width', 640)
+            rh = rd.get('height', 480)
+            bgc = rd.get('background_color', '#808080')
+            if bgc.startswith('#'):
+                bgc = bgc[1:]
+            try:
+                br = int(bgc[0:2], 16) / 255.0
+                bg_ = int(bgc[2:4], 16) / 255.0
+                bb = int(bgc[4:6], 16) / 255.0
+            except (ValueError, IndexError):
+                br, bg_, bb = 0.5, 0.5, 0.5
+            room_meta_entries.append(
+                f'"{rname}": ({rw}, {rh}, {br:.3f}, {bg_:.3f}, {bb:.3f})')
+        room_meta_str = ', '.join(room_meta_entries)
+
         code = '''#!/usr/bin/env python3
 """
 Generated Kivy Game Application
 Exported from PyGameMaker IDE
 """
+
+# Register this module as 'main' in sys.modules so that
+# "from main import ..." in game objects resolves to THIS module
+# instead of re-importing main.py (which would re-execute Kivy
+# config and crash the GL context on Android).
+import sys as _sys
+_sys.modules.setdefault('main', _sys.modules[__name__])
 
 # Room dimensions - used for window sizing
 GAME_WIDTH = {room_width}
@@ -225,6 +251,15 @@ GAME_HEIGHT = {room_height}
 
 import os
 os.environ['KIVY_WINDOW'] = 'sdl2'
+
+# --- Native crash handler (catches SIGSEGV / SIGABRT) ---
+import faulthandler as _fh
+try:
+    _fh_file = open(os.path.join(
+        os.environ.get('ANDROID_APP_PATH', '.'), 'native_crash.log'), 'w')
+    _fh.enable(file=_fh_file, all_threads=True)
+except Exception:
+    _fh.enable()  # Fallback: write to stderr (goes to logcat on Android)
 
 # --- Platform detection ---
 IS_ANDROID = False
@@ -294,6 +329,37 @@ _game_app = None
 # Room configuration
 ROOM_ORDER = [{room_list_str}]
 ROOM_CLASSES = {{{room_mapping_str}}}
+ROOM_META = {{{room_meta_str}}}
+
+# Crash logger - writes to file so we can diagnose Android crashes
+import os as _os, traceback as _tb, datetime as _dt
+_log_path = None
+def _get_log_path():
+    global _log_path
+    if _log_path:
+        return _log_path
+    if IS_ANDROID:
+        # Try several Android-writable locations
+        for d in [_os.environ.get('ANDROID_APP_PATH', ''),
+                  '/sdcard', '/storage/emulated/0',
+                  _os.path.expanduser('~'), '.']:
+            if d and _os.path.isdir(d):
+                _log_path = _os.path.join(d, 'pygm_crash.log')
+                return _log_path
+    _log_path = 'pygm_crash.log'
+    return _log_path
+
+def _log(msg):
+    # Always print to stdout (goes to logcat on Android)
+    print(f"[PYGM] {{msg}}")
+    try:
+        with open(_get_log_path(), 'a') as f:
+            f.write(f"[{{_dt.datetime.now():%H:%M:%S}}] {{msg}}\\n")
+            f.flush()
+    except:
+        pass
+
+_log("=== App starting ===")
 
 
 def get_game_app():
@@ -410,12 +476,79 @@ _popup_open = False
 _current_popup = None
 _pending_room_switch = None
 
-def show_message(message):
-    """Show a popup message dialog - pauses the game until OK is clicked"""
-    global _popup_open, _current_popup
+# --- Android Activity restart for room switching ---
+import json as _json
+_STATE_FILE = _os.path.join(
+    _os.environ.get('ANDROID_APP_PATH', '.'), '_pygm_state.json')
 
-    # Prevent duplicate popups
+def _save_state_and_restart(room_index):
+    """Save game state and restart the Android Activity for a clean GL context."""
+    app = get_game_app()
+    state = {{
+        'room': room_index,
+        'score': app.score if app else 0,
+        'lives': app.lives if app else 3,
+        'health': app.health if app else 100,
+    }}
+    _log(f"_save_state_and_restart: saving {{state}}")
+    try:
+        with open(_STATE_FILE, 'w') as f:
+            _json.dump(state, f)
+            f.flush()
+            _os.fsync(f.fileno())
+    except Exception as exc:
+        _log(f"_save_state_and_restart: write failed: {{exc}}")
+        return False
+
+    try:
+        from jnius import autoclass
+        PythonActivity = autoclass('org.kivy.android.PythonActivity')
+        activity = PythonActivity.mActivity
+        if activity is None:
+            _log("_save_state_and_restart: mActivity is None")
+            return False
+        Intent = autoclass('android.content.Intent')
+        intent = Intent(activity, PythonActivity)
+        intent.addFlags(
+            Intent.FLAG_ACTIVITY_NEW_TASK
+            | Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        _log("_save_state_and_restart: restarting Activity")
+        activity.startActivity(intent)
+        _log("_save_state_and_restart: startActivity done, exiting process")
+        _os._exit(0)  # Hard exit - no GL cleanup that could corrupt
+        return True
+    except Exception as exc:
+        _log(f"_save_state_and_restart: failed: {{exc}}")
+        import traceback; traceback.print_exc()
+        return False
+
+def _load_saved_state():
+    """Load saved game state from a previous Activity restart."""
+    if not _os.path.exists(_STATE_FILE):
+        return None
+    try:
+        with open(_STATE_FILE) as f:
+            state = _json.load(f)
+        _os.remove(_STATE_FILE)
+        _log(f"_load_saved_state: restored {{state}}")
+        return state
+    except Exception as exc:
+        _log(f"_load_saved_state: failed: {{exc}}")
+        try:
+            _os.remove(_STATE_FILE)
+        except:
+            pass
+        return None
+
+
+def show_message(message):
+    """Show a message dialog - pauses the game until dismissed"""
+    global _popup_open, _current_popup
+    _log(f"show_message: '{{message}}'")
+
+    # Prevent duplicate messages
     if _popup_open:
+        _log("show_message: already open, skipping")
         return
     _popup_open = True
 
@@ -425,6 +558,34 @@ def show_message(message):
         Clock.unschedule(app.update_event)
         app.update_event = None
 
+    if IS_ANDROID:
+        # Use pre-created overlay (no widget tree changes)
+        def _on_overlay_dismiss():
+            global _popup_open, _pending_room_switch
+            _log("_on_overlay_dismiss called")
+            _popup_open = False
+            if _pending_room_switch is not None:
+                room_index = _pending_room_switch
+                _pending_room_switch = None
+                _log(f"_on_overlay_dismiss: deferred room switch to {{room_index}}")
+                a2 = get_game_app()
+                if a2:
+                    Clock.schedule_once(
+                        lambda dt: a2._switch_to_room(room_index), 0)
+            else:
+                _log("_on_overlay_dismiss: resuming game loop")
+                a2 = get_game_app()
+                if a2 and a2.scene and not a2.update_event:
+                    a2.update_event = Clock.schedule_interval(
+                        a2.scene.update, 1.0/60.0)
+        if hasattr(app, '_msg_overlay'):
+            app._msg_overlay.show(str(message), on_dismiss=_on_overlay_dismiss)
+        else:
+            _log("show_message: no _msg_overlay, skipping")
+            _popup_open = False
+        return
+
+    # --- Desktop: use Kivy Popup ---
     content = BoxLayout(orientation='vertical', padding=10, spacing=10)
     content.add_widget(Label(text=str(message)))
     btn = Button(text='OK', size_hint_y=None, height=40)
@@ -443,22 +604,25 @@ def show_message(message):
 
     def on_dismiss(instance):
         global _popup_open, _current_popup, _pending_room_switch
+        _log("on_dismiss: popup closing")
         _popup_open = False
         _current_popup = None
         Window.unbind(on_key_down=on_key_down)
 
-        # Execute any deferred room transition
         if _pending_room_switch is not None:
             room_index = _pending_room_switch
             _pending_room_switch = None
-            app = get_game_app()
-            if app:
-                app._switch_to_room(room_index)
+            _log(f"on_dismiss: deferred room switch to index {{room_index}}")
+            a2 = get_game_app()
+            if a2:
+                Clock.schedule_once(
+                    lambda dt: a2._switch_to_room(room_index), 0)
         else:
-            # Resume the game loop if no room switch pending
-            app = get_game_app()
-            if app and app.scene and not app.update_event:
-                app.update_event = Clock.schedule_interval(app.scene.update, 1.0/60.0)
+            _log("on_dismiss: resuming game loop (no room switch)")
+            a2 = get_game_app()
+            if a2 and a2.scene and not a2.update_event:
+                a2.update_event = Clock.schedule_interval(
+                    a2.scene.update, 1.0/60.0)
 
     popup.bind(on_dismiss=on_dismiss)
     btn.bind(on_release=popup.dismiss)
@@ -581,6 +745,59 @@ else:
     VirtualDPad = None
 
 
+# --- Android message overlay (replaces Kivy Popup) ---
+# Pre-created and always in the widget tree. No add_widget / remove_widget
+# during gameplay.  Showing/hiding only changes canvas Color.a and Label.text.
+class _MsgOverlay(Widget):
+    _active = False
+    _on_dismiss = None
+
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.size_hint = (1, 1)
+        with self.canvas:
+            self._bg_color = Color(0, 0, 0, 0)
+            Rectangle(pos=(-500, -500), size=(19999, 19999))
+        self._label = Label(
+            text='', font_size='20sp', color=(1, 1, 1, 1),
+            halign='center', valign='middle',
+            size_hint=(0.8, 0.6),
+            pos_hint={{'center_x': 0.5, 'center_y': 0.55}})
+        self._label.bind(
+            size=lambda inst, val: setattr(inst, 'text_size', val))
+        self.add_widget(self._label)
+        self._hint = Label(
+            text='', font_size='16sp', color=(0.7, 0.7, 0.7, 1),
+            size_hint=(1, 0.15),
+            pos_hint={{'center_x': 0.5, 'y': 0.08}})
+        self.add_widget(self._hint)
+
+    def show(self, text, on_dismiss=None):
+        self._active = True
+        self._on_dismiss = on_dismiss
+        self._label.text = str(text)
+        self._hint.text = 'Tap to continue'
+        self._bg_color.a = 0.85
+
+    def dismiss(self):
+        if not self._active:
+            return
+        self._active = False
+        self._bg_color.a = 0
+        self._label.text = ' '
+        self._hint.text = ' '
+        cb = self._on_dismiss
+        self._on_dismiss = None
+        if cb:
+            cb()
+
+    def on_touch_down(self, touch):
+        if self._active:
+            self.dismiss()
+            return True
+        return False
+
+
 class GameApp(App):
     """Main game application"""
 
@@ -592,7 +809,7 @@ class GameApp(App):
         self.dpad = None
         self.update_event = None
 
-        # Game state (score, lives, health)
+        # Game state (initialized in build() from saved state or defaults)
         self.score = 0
         self.lives = 3
         self.health = 100
@@ -630,12 +847,25 @@ class GameApp(App):
 
         Window.clearcolor = (0, 0, 0, 1)
 
+        # Check for saved state from an Activity restart (Android room switch)
+        _saved = _load_saved_state()
+        if _saved:
+            _start_idx = _saved.get('room', 0)
+            self.score = _saved.get('score', 0)
+            self.lives = _saved.get('lives', 3)
+            self.health = _saved.get('health', 100)
+        else:
+            _start_idx = 0
+        _start_name = ROOM_ORDER[_start_idx]
+        _start_class = ROOM_CLASSES[_start_name]
+        _log(f"build: starting room={{_start_name}} (index {{_start_idx}})")
+
         # Create root layout container
         self.root_layout = FloatLayout()
 
         # Create the starting scene
-        self.scene = {first_room_class}()
-        self.current_room_index = 0
+        self.scene = _start_class()
+        self.current_room_index = _start_idx
 
         if IS_ANDROID:
             # Scale game to fill screen with correct aspect ratio
@@ -646,6 +876,9 @@ class GameApp(App):
                 self.dpad = VirtualDPad(scene_ref=self.scene)
                 self.dpad.size_hint = (1, 1)
                 self.root_layout.add_widget(self.dpad)
+            # Pre-created message overlay (replaces Popup on Android)
+            self._msg_overlay = _MsgOverlay()
+            self.root_layout.add_widget(self._msg_overlay)
         else:
             # Desktop: fixed window size
             Window.size = (ADJUSTED_WIDTH, ADJUSTED_HEIGHT)
@@ -660,7 +893,12 @@ class GameApp(App):
         return self.root_layout
 
     def _create_scaled_container(self, scene):
-        """Wrap scene in a widget that scales game to fill the screen"""
+        """Create a persistent container that scales game to fill screen.
+
+        The container and its GL transform instructions (PushMatrix,
+        Translate, Scale, PopMatrix) are created once and reused across
+        room switches.  Only the scene widget inside is swapped.
+        """
         screen_w = Window.width
         screen_h = Window.height
         game_w = scene.room_width
@@ -673,8 +911,8 @@ class GameApp(App):
         container = Widget()
         with container.canvas.before:
             PushMatrix()
-            TranslateInstr(offset_x, offset_y, 0)
-            ScaleInstr(scale, scale, 1)
+            self._ctr_translate = TranslateInstr(offset_x, offset_y, 0)
+            self._ctr_scale = ScaleInstr(scale, scale, 1)
         with container.canvas.after:
             PopMatrix()
 
@@ -707,118 +945,92 @@ class GameApp(App):
     def _switch_to_room(self, room_index):
         """Internal method to switch rooms"""
         global _pending_room_switch
+        _log(f"_switch_to_room({{room_index}}) called")
         if room_index < 0 or room_index >= len(ROOM_ORDER):
+            _log(f"_switch_to_room: invalid index {{room_index}}")
             return
 
         # If a message popup is open, defer the room switch until it's dismissed
         if _popup_open:
+            _log("_switch_to_room: popup open, deferring")
             _pending_room_switch = room_index
             return
 
-        # Stop current update loop immediately
+        # Stop update loop before switching
         if self.update_event:
             Clock.unschedule(self.update_event)
             self.update_event = None
 
-        # Defer the actual scene swap to next frame so the current
-        # game loop / touch event finishes before the widget tree changes
-        Clock.schedule_once(lambda dt: self._do_switch_room(room_index), 0)
+        _log(f"_switch_to_room: scheduling _do_room_switch({{room_index}})")
+        Clock.schedule_once(lambda dt: self._do_room_switch(room_index), 0)
 
-    def _do_switch_room(self, room_index):
-        """Perform the actual room switch (called on next frame)"""
-        # Guard against re-entrant calls
-        if getattr(self, '_switching', False):
-            return
-        self._switching = True
+    def _do_room_switch(self, room_index):
+        """Switch to a new room with clean remove/add."""
+        global _room_transition_pending
 
         try:
-            self.__do_switch_room(room_index)
-        finally:
-            self._switching = False
+            room_name = ROOM_ORDER[room_index]
+            room_class = ROOM_CLASSES[room_name]
+            meta = ROOM_META[room_name]
+            _log(f"_do_room_switch: target={{room_name}}")
 
-    def __do_switch_room(self, room_index):
-        """Actual room switch implementation"""
-        try:
-            self._perform_room_switch(room_index)
-        except Exception as exc:
-            import traceback
-            print(f"[ERROR] Room switch failed: {{exc}}")
-            traceback.print_exc()
-            # Try to recover — restart the update loop if we have a scene
-            if self.scene and not self.update_event:
-                self.update_event = Clock.schedule_interval(
-                    self.scene.update, 1.0/60.0)
+            # 1. Unbind old scene's keyboard handlers from Window
+            old_scene = self.scene
+            if old_scene:
+                try:
+                    Window.unbind(on_keyboard=old_scene.on_keyboard)
+                    Window.unbind(on_key_up=old_scene.on_keyboard_up)
+                except Exception:
+                    pass
 
-    def _perform_room_switch(self, room_index):
-        """Room switch logic (separated for error handling)"""
-        # ---- 1. FULLY TEAR DOWN OLD SCENE ----
-        old_scene = self.scene
-        old_container = self.scene_container
+            # 2. Remove old scene from widget tree (no canvas clearing)
+            if IS_ANDROID:
+                if old_scene and self.scene_container:
+                    self.scene_container.remove_widget(old_scene)
+            else:
+                if old_scene:
+                    self.root_layout.remove_widget(old_scene)
 
-        if old_scene:
-            # Unbind keyboard handlers FIRST
-            try:
-                Window.unbind(on_keyboard=old_scene.on_keyboard)
-            except Exception:
-                pass
-            try:
-                Window.unbind(on_key_up=old_scene.on_keyboard_up)
-            except Exception:
-                pass
+            # 3. Create new scene
+            _log(f"_do_room_switch: creating {{room_class.__name__}}")
+            new_scene = room_class()
 
-            # Clear instance references to prevent stale callbacks
-            for inst in list(old_scene.instances):
-                inst.scene = None
-            old_scene.instances.clear()
-            old_scene.instances_to_destroy.clear()
-            old_scene._pending_creates.clear()
+            # 4. Add new scene to widget tree
+            if IS_ANDROID:
+                self.scene_container.add_widget(new_scene)
+                screen_w = Window.width
+                screen_h = Window.height
+                scale = min(screen_w / meta[0], screen_h / meta[1])
+                self._ctr_translate.x = (screen_w - meta[0] * scale) / 2
+                self._ctr_translate.y = (screen_h - meta[1] * scale) / 2
+                self._ctr_scale.x = scale
+                self._ctr_scale.y = scale
+            else:
+                self.root_layout.add_widget(new_scene)
+                new_w = int(meta[0] / DPI_SCALE)
+                new_h = int(meta[1] / DPI_SCALE)
+                Window.size = (new_w, new_h)
 
-            # Remove old scene canvas + widgets
-            old_scene.canvas.clear()
-            old_scene.clear_widgets()
+            # 5. Update references
+            self.scene = new_scene
+            self.current_room_index = room_index
 
-        # Remove old container from layout BEFORE creating new scene
-        if IS_ANDROID and old_container:
-            old_container.canvas.before.clear()
-            old_container.canvas.after.clear()
-            old_container.clear_widgets()
-            self.root_layout.remove_widget(old_container)
-            self.scene_container = None
-
-        self.scene = None
-
-        # ---- 2. CREATE NEW SCENE ----
-        room_name = ROOM_ORDER[room_index]
-        room_class = ROOM_CLASSES[room_name]
-        self.scene = room_class()
-        self.current_room_index = room_index
-
-        # ---- 3. ADD TO WIDGET TREE ----
-        if IS_ANDROID:
-            self.scene_container = self._create_scaled_container(self.scene)
-            # Insert behind the D-pad
-            self.root_layout.add_widget(self.scene_container,
-                                        index=len(self.root_layout.children))
+            # 6. Update D-pad scene reference
             if self.dpad:
-                self.dpad.update_scene(self.scene)
-        else:
-            # Desktop: resize window to match new room
-            new_width = int(self.scene.room_width / DPI_SCALE)
-            new_height = int(self.scene.room_height / DPI_SCALE)
-            Window.size = (new_width, new_height)
-            self.root_layout.clear_widgets()
-            self.root_layout.add_widget(self.scene)
+                self.dpad.update_scene(new_scene)
 
-        # ---- 4. START UPDATE LOOP ----
-        self.update_event = Clock.schedule_interval(self.scene.update, 1.0/60.0)
+            # 7. Start update loop for new scene
+            self.update_event = Clock.schedule_interval(
+                new_scene.update, 1.0/60.0)
 
-        # Reset room transition flag
-        def reset_transition_flag(dt):
-            global _room_transition_pending
-            _room_transition_pending = False
-        Clock.schedule_once(reset_transition_flag, 0.1)
+            _log(f"_do_room_switch: SUCCESS - switched to {{room_name}}")
 
-        print(f"Switched to room: {{room_name}}")
+        except Exception as exc:
+            _log(f"_do_room_switch: EXCEPTION: {{exc}}")
+            import traceback
+            traceback.print_exc()
+
+        _room_transition_pending = False
 
     def on_stop(self):
         """Cleanup when app stops"""
@@ -828,7 +1040,13 @@ class GameApp(App):
 
 
 if __name__ == '__main__':
-    GameApp().run()
+    try:
+        GameApp().run()
+    except Exception as _e:
+        _log(f"FATAL: {{_e}}")
+        import traceback
+        _log(traceback.format_exc())
+        raise
 '''
 
         # Format the template with actual values
@@ -839,6 +1057,7 @@ if __name__ == '__main__':
             room_imports_str=room_imports_str,
             room_list_str=room_list_str,
             room_mapping_str=room_mapping_str,
+            room_meta_str=room_meta_str,
             project_name=project_name,
             first_room_class=first_room_class
         )
@@ -1046,7 +1265,7 @@ class {class_name}(Widget):
         """Draw the room background color and image"""
         with self.canvas.before:
             # Background color: RGB = ({bg_r:.3f}, {bg_g:.3f}, {bg_b:.3f})
-            Color({bg_r:.3f}, {bg_g:.3f}, {bg_b:.3f}, 1)
+            self._bg_color_instr = Color({bg_r:.3f}, {bg_g:.3f}, {bg_b:.3f}, 1)
             self.bg_rect = Rectangle(pos=(0, 0), size=(self.room_width, self.room_height))
 {bg_image_code}
 
@@ -1165,7 +1384,7 @@ class {class_name}(Widget):
                 instance._process_movement(dt)
 
         # 6. COLLISION EVENTS
-        # PERFORMANCE FIX: OPTIMIZED O(n²/2) collision detection
+        # PERFORMANCE FIX: OPTIMIZED O(n^2/2) collision detection
         # Check each pair of objects only ONCE instead of twice
         # Track which types each instance is colliding with (for negated collision events)
         colliding_with = {{}}  # instance id -> set of snake_case class names
@@ -1245,6 +1464,11 @@ class {class_name}(Widget):
 
     def on_keyboard(self, window, key, scancode, codepoint, modifier):
         """Handle keyboard press events"""
+        # Ignore if this scene is no longer the active one (after room switch)
+        from main import get_game_app
+        _app = get_game_app()
+        if _app and _app.scene is not self:
+            return False
         try:
             self.keys_pressed[key] = True
             for instance in list(self.instances):
@@ -1256,6 +1480,10 @@ class {class_name}(Widget):
 
     def on_keyboard_up(self, window, key, scancode):
         """Handle keyboard release events"""
+        from main import get_game_app
+        _app = get_game_app()
+        if _app and _app.scene is not self:
+            return False
         try:
             if key in self.keys_pressed:
                 del self.keys_pressed[key]

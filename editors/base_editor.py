@@ -63,6 +63,7 @@ class BaseEditor(QWidget):
 
         # Undo/Redo system
         self.undo_stack = QUndoStack(self)
+        self.undo_stack.setUndoLimit(200)
         self.undo_stack.canUndoChanged.connect(self.update_undo_actions)
         self.undo_stack.canRedoChanged.connect(self.update_undo_actions)
 
