@@ -186,6 +186,12 @@
                     <shadow type="math_number"><field name="NUM">0</field></shadow>
                 </value>
             </block>
+            <block type="grid_move">
+                <field name="DIRECTION">right</field>
+                <value name="GRID_SIZE">
+                    <shadow type="math_number"><field name="NUM">32</field></shadow>
+                </value>
+            </block>
             <block type="grid_stop_if_no_keys">
                 <value name="GRID_SIZE">
                     <shadow type="math_number"><field name="NUM">32</field></shadow>
@@ -356,6 +362,12 @@
                 </value>
             </block>
             <block type="controls_whileUntil"></block>
+            <block type="if_can_push">
+                <field name="OBJECT_TYPE">box</field>
+                <field name="DIRECTION">facing</field>
+                <field name="THEN_ACTION">push_and_move</field>
+                <field name="ELSE_ACTION">stop_movement</field>
+            </block>
         </category>
 
         <!-- Instance Category -->
@@ -744,6 +756,27 @@
         };
 
         // ============ GRID MOVEMENT BLOCKS ============
+        Blockly.Blocks['grid_move'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField(getBlockMessage('grid_move_prefix', window.BLOCKLY_LANG) || "Move grid")
+                    .appendField(new Blockly.FieldDropdown([
+                        ["right", "right"],
+                        ["left", "left"],
+                        ["up", "up"],
+                        ["down", "down"]
+                    ]), "DIRECTION");
+                this.appendValueInput("GRID_SIZE")
+                    .setCheck("Number")
+                    .appendField(getBlockMessage('grid_move_size', window.BLOCKLY_LANG) || "size");
+                this.setInputsInline(true);
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#5C81A6");
+                this.setTooltip(getBlockMessage('grid_move_tooltip', window.BLOCKLY_LANG) || "Move one grid unit in the specified direction");
+            }
+        };
+
         Blockly.Blocks['grid_stop_if_no_keys'] = {
             init: function() {
                 this.appendValueInput("GRID_SIZE")
@@ -932,6 +965,35 @@
                 this.setNextStatement(true, null);
                 this.setColour("#5CA65C");
                 this.setTooltip(getBlockMessage('draw_health_bar_tooltip', window.BLOCKLY_LANG) || "Draw a health bar");
+            }
+        };
+
+        // ============ CONTROL/CONDITIONAL BLOCKS ============
+        Blockly.Blocks['if_can_push'] = {
+            init: function() {
+                this.appendDummyInput()
+                    .appendField(getBlockMessage('if_can_push_prefix', window.BLOCKLY_LANG) || "If can push")
+                    .appendField(new Blockly.FieldTextInput("box"), "OBJECT_TYPE")
+                    .appendField(getBlockMessage('if_can_push_direction', window.BLOCKLY_LANG) || "in direction")
+                    .appendField(new Blockly.FieldDropdown([
+                        ["facing", "facing"]
+                    ]), "DIRECTION");
+                this.appendDummyInput()
+                    .appendField(getBlockMessage('if_can_push_then', window.BLOCKLY_LANG) || "then")
+                    .appendField(new Blockly.FieldDropdown([
+                        ["push and move", "push_and_move"],
+                        ["none", "none"]
+                    ]), "THEN_ACTION");
+                this.appendDummyInput()
+                    .appendField(getBlockMessage('if_can_push_else', window.BLOCKLY_LANG) || "else")
+                    .appendField(new Blockly.FieldDropdown([
+                        ["stop movement", "stop_movement"],
+                        ["none", "none"]
+                    ]), "ELSE_ACTION");
+                this.setPreviousStatement(true, null);
+                this.setNextStatement(true, null);
+                this.setColour("#FFAB19");
+                this.setTooltip(getBlockMessage('if_can_push_tooltip', window.BLOCKLY_LANG) || "Check if a box can be pushed (Sokoban-style)");
             }
         };
 
@@ -1514,6 +1576,8 @@
                     return {action: 'start_moving_direction', parameters: {directions: directionDegrees, speed: speed}};
                 case 'move_snap_to_grid':
                     return {action: 'snap_to_grid', parameters: {grid_size: getInputValue(block, 'GRID_SIZE', 32)}};
+                case 'grid_move':
+                    return {action: 'move_grid', parameters: {direction: block.getFieldValue('DIRECTION') || 'right', grid_size: getInputValue(block, 'GRID_SIZE', 32)}};
                 case 'move_jump_to':
                     return {action: 'jump_to_position', parameters: {x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0)}};
                 case 'grid_stop_if_no_keys':
@@ -1591,6 +1655,13 @@
                         horizontal: block.getFieldValue('HORIZONTAL') === 'TRUE',
                         vertical: block.getFieldValue('VERTICAL') === 'TRUE'
                     }};
+                case 'if_can_push':
+                    return {action: 'if_can_push', parameters: {
+                        direction: block.getFieldValue('DIRECTION') || 'facing',
+                        object_type: block.getFieldValue('OBJECT_TYPE') || 'box',
+                        then_action: block.getFieldValue('THEN_ACTION') || 'push_and_move',
+                        else_action: block.getFieldValue('ELSE_ACTION') || 'stop_movement'
+                    }};
                 default:
                     return null;
             }
@@ -1642,6 +1713,7 @@
             'stop_movement': 'move_stop',
             'start_moving_direction': 'move_direction',
             'snap_to_grid': 'move_snap_to_grid',
+            'move_grid': 'grid_move',
             'jump_to_position': 'move_jump_to',
             'stop_if_no_keys': 'grid_stop_if_no_keys',
             'check_keys_and_move': 'grid_check_keys_and_move',
@@ -1680,6 +1752,7 @@
             'reverse_horizontal': 'reverse_horizontal',
             'reverse_vertical': 'reverse_vertical',
             'wrap_around_room': 'wrap_around_room',
+            'if_can_push': 'if_can_push',
             'execute_code': 'execute_code',
             // Thymio motor actions
             'thymio_set_motor_speed': 'thymio_set_motor_speed',
@@ -1786,30 +1859,40 @@
                     && typeof eventData === 'object' && !eventData.actions) {
                     console.log('[Blockly] Handling nested keyboard event');
                     // This is a nested keyboard event - iterate over keys
+                    // First pass: collect unique keys, preferring prefixed entries (press_down) over bare ones (down)
+                    var keyEntries = {};
                     for (var keyName in eventData) {
-                        if (keyName === 'actions') continue;  // Skip if it's directly actions
+                        if (keyName === 'actions') continue;
                         var keyData = eventData[keyName];
-                        console.log('[Blockly] Keyboard key:', keyName, 'data:', JSON.stringify(keyData));
-                        if (typeof keyData === 'object' && keyData.actions) {
-                            // Strip redundant prefix from key name
-                            // e.g., "press_down" -> "down" when parent is "keyboard_press"
-                            var cleanKey = keyName;
-                            if (eventName === 'keyboard_press' && keyName.startsWith('press_')) {
-                                cleanKey = keyName.substring(6);  // Remove "press_"
-                            } else if (eventName === 'keyboard_release' && keyName.startsWith('release_')) {
-                                cleanKey = keyName.substring(8);  // Remove "release_"
-                            }
-                            // Create a flat event name like "keyboard_right"
-                            var flatEventName = eventName + '_' + cleanKey;
-                            console.log('[Blockly] Creating event block:', flatEventName);
-                            var eventBlock = createEventBlock(flatEventName, keyData);
-                            if (eventBlock) {
-                                eventBlock.moveBy(50, yOffset);
-                                yOffset += 150;
+                        if (typeof keyData !== 'object' || !keyData.actions) continue;
+
+                        var cleanKey = keyName;
+                        if (eventName === 'keyboard_press' && keyName.startsWith('press_')) {
+                            cleanKey = keyName.substring(6);
+                        } else if (eventName === 'keyboard_release' && keyName.startsWith('release_')) {
+                            cleanKey = keyName.substring(8);
+                        }
+
+                        // Keep the entry with more actions (prefer non-empty over empty)
+                        if (!keyEntries[cleanKey] || keyData.actions.length > keyEntries[cleanKey].actions.length) {
+                            keyEntries[cleanKey] = keyData;
+                        }
+                    }
+
+                    // Second pass: create blocks from deduplicated entries
+                    for (var cleanKey in keyEntries) {
+                        var keyData = keyEntries[cleanKey];
+                        var flatEventName = eventName + '_' + cleanKey;
+                        console.log('[Blockly] Creating event block:', flatEventName);
+                        var eventBlock = createEventBlock(flatEventName, keyData);
+                        if (eventBlock) {
+                            eventBlock.moveBy(50, yOffset);
+                            yOffset += 150;
+                            if (keyData.actions.length > 0) {
                                 console.log('[Blockly] Attaching', keyData.actions.length, 'actions to', flatEventName);
                                 attachActionsToEvent(eventBlock, keyData.actions);
-                                eventCount++;
                             }
+                            eventCount++;
                         }
                     }
                 } else {
@@ -1994,7 +2077,7 @@
             }
 
             // Skip truly unsupported custom actions gracefully
-            var unsupportedActions = ['move_grid'];
+            var unsupportedActions = [];
             if (unsupportedActions.indexOf(actionName) !== -1) {
                 console.log('[Blockly] Skipping unsupported custom action:', actionName);
                 return null;
@@ -2120,6 +2203,11 @@
                     connectNumberBlock('GRID_SIZE', params.grid_size || 32);
                     break;
 
+                case 'grid_move':
+                    block.setFieldValue(params.direction || 'right', 'DIRECTION');
+                    connectNumberBlock('GRID_SIZE', params.grid_size || 32);
+                    break;
+
                 case 'move_jump_to':
                     connectNumberBlock('X', params.x || 0);
                     connectNumberBlock('Y', params.y || 0);
@@ -2240,6 +2328,13 @@
 
                 case 'set_friction':
                     connectNumberBlock('FRICTION', params.friction || 0);
+                    break;
+
+                case 'if_can_push':
+                    block.setFieldValue(params.object_type || 'box', 'OBJECT_TYPE');
+                    block.setFieldValue(params.direction || 'facing', 'DIRECTION');
+                    block.setFieldValue(params.then_action || 'push_and_move', 'THEN_ACTION');
+                    block.setFieldValue(params.else_action || 'stop_movement', 'ELSE_ACTION');
                     break;
 
                 case 'execute_code':
@@ -2494,6 +2589,7 @@
                         '<block type="move_towards"><value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="SPEED"><shadow type="math_number"><field name="NUM">4</field></shadow></value></block>',
                         '<block type="move_snap_to_grid"><value name="GRID_SIZE"><shadow type="math_number"><field name="NUM">32</field></shadow></value></block>',
                         '<block type="move_jump_to"><value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
+                        '<block type="grid_move"><field name="DIRECTION">right</field><value name="GRID_SIZE"><shadow type="math_number"><field name="NUM">32</field></shadow></value></block>',
                         '<block type="grid_stop_if_no_keys"><value name="GRID_SIZE"><shadow type="math_number"><field name="NUM">32</field></shadow></value></block>',
                         '<block type="grid_check_keys_and_move"><value name="GRID_SIZE"><shadow type="math_number"><field name="NUM">32</field></shadow></value><value name="SPEED"><shadow type="math_number"><field name="NUM">4</field></shadow></value></block>',
                         '<block type="grid_if_on_grid"><value name="GRID_SIZE"><shadow type="math_number"><field name="NUM">32</field></shadow></value></block>',
@@ -2539,7 +2635,8 @@
                     blocks: [
                         '<block type="instance_destroy"></block>',
                         '<block type="instance_destroy_other"></block>',
-                        '<block type="instance_create"><field name="OBJECT">obj_bullet</field><value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>'
+                        '<block type="instance_create"><field name="OBJECT">obj_bullet</field><value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
+                        '<block type="if_can_push"><field name="OBJECT_TYPE">box</field><field name="DIRECTION">facing</field><field name="THEN_ACTION">push_and_move</field><field name="ELSE_ACTION">stop_movement</field></block>'
                     ]
                 },
                 'Room': {
@@ -2635,6 +2732,222 @@
             return match ? match[1] : '';
         }
 
+        // ============ DYNAMIC BLOCK REGISTRATION ============
+        // Tracks dynamically registered blocks for generic code generation
+        var dynamicBlocks = {};
+
+        function registerCustomBlocks(actionDefs) {
+            /**
+             * Auto-generate Blockly blocks from Python ActionType definitions.
+             * Only creates blocks for actions that don't already have a hardcoded block.
+             *
+             * actionDefs: Array of {name, display_name, description, category, icon, parameters: [{name, display_name, param_type, default_value, choices}]}
+             */
+            console.log('[Blockly] registerCustomBlocks called with', actionDefs.length, 'action definitions');
+            var registered = 0;
+
+            // Category color mapping
+            var categoryColors = {
+                'Movement': '#5C81A6',
+                'Control': '#FFAB19',
+                'Drawing': '#9B59B6',
+                'Scoring': '#5CA65C',
+                'Score': '#5CA65C',
+                'Instance': '#A65C81',
+                'Room': '#A6745C',
+                'Sound': '#9966FF',
+                'Timing': '#FF6B6B',
+                'Output': '#745CA6'
+            };
+
+            for (var i = 0; i < actionDefs.length; i++) {
+                var def = actionDefs[i];
+                var actionName = def.name;
+                var blockType = 'custom_' + actionName;
+
+                // Skip if a mapping already exists for this action
+                if (actionToBlockType[actionName]) {
+                    continue;
+                }
+
+                // Skip if block type already defined
+                if (Blockly.Blocks[blockType]) {
+                    continue;
+                }
+
+                // Register mapping
+                actionToBlockType[actionName] = blockType;
+
+                // Store definition for generic code generation
+                dynamicBlocks[blockType] = def;
+
+                // Create block definition
+                (function(bt, d) {
+                    var color = categoryColors[d.category] || '#888888';
+                    var params = d.parameters || [];
+
+                    Blockly.Blocks[bt] = {
+                        init: function() {
+                            var label = d.icon ? (d.icon + ' ' + d.display_name) : d.display_name;
+                            var hasInlineInputs = false;
+
+                            if (params.length === 0) {
+                                // No parameters - simple label block
+                                this.appendDummyInput().appendField(label);
+                            } else {
+                                // First param gets the label
+                                var firstDone = false;
+                                for (var p = 0; p < params.length; p++) {
+                                    var param = params[p];
+                                    var fieldName = param.name.toUpperCase();
+
+                                    if (param.param_type === 'choice' && param.choices) {
+                                        var options = param.choices.map(function(c) { return [String(c), String(c)]; });
+                                        var input = this.appendDummyInput();
+                                        if (!firstDone) {
+                                            input.appendField(label);
+                                            firstDone = true;
+                                        }
+                                        input.appendField(param.display_name + ':')
+                                             .appendField(new Blockly.FieldDropdown(options), fieldName);
+                                    } else if (param.param_type === 'number' || param.param_type === 'float') {
+                                        var input = this.appendValueInput(fieldName).setCheck('Number');
+                                        if (!firstDone) {
+                                            input.appendField(label);
+                                            firstDone = true;
+                                        }
+                                        input.appendField(param.display_name + ':');
+                                        hasInlineInputs = true;
+                                    } else if (param.param_type === 'boolean') {
+                                        var input = this.appendDummyInput();
+                                        if (!firstDone) {
+                                            input.appendField(label);
+                                            firstDone = true;
+                                        }
+                                        input.appendField(param.display_name + ':')
+                                             .appendField(new Blockly.FieldCheckbox(param.default_value ? 'TRUE' : 'FALSE'), fieldName);
+                                    } else {
+                                        // string, code, object, sprite, sound, room, etc. → text input
+                                        var input = this.appendDummyInput();
+                                        if (!firstDone) {
+                                            input.appendField(label);
+                                            firstDone = true;
+                                        }
+                                        input.appendField(param.display_name + ':')
+                                             .appendField(new Blockly.FieldTextInput(String(param.default_value || '')), fieldName);
+                                    }
+                                }
+                            }
+
+                            if (hasInlineInputs) {
+                                this.setInputsInline(true);
+                            }
+                            this.setPreviousStatement(true, null);
+                            this.setNextStatement(true, null);
+                            this.setColour(color);
+                            this.setTooltip(d.description || d.display_name);
+                        }
+                    };
+                })(blockType, def);
+
+                // Add to dynamic toolbox category
+                var cat = def.category || 'Custom';
+                if (!categories[cat]) {
+                    categories[cat] = {
+                        color: categoryColors[cat] || '#888888',
+                        blocks: []
+                    };
+                }
+
+                // Build block XML with default values
+                var blockXml = '<block type="' + blockType + '">';
+                for (var p = 0; p < (def.parameters || []).length; p++) {
+                    var param = def.parameters[p];
+                    var fieldName = param.name.toUpperCase();
+                    if (param.param_type === 'number' || param.param_type === 'float') {
+                        blockXml += '<value name="' + fieldName + '"><shadow type="math_number"><field name="NUM">' + (param.default_value || 0) + '</field></shadow></value>';
+                    } else if (param.default_value !== undefined && param.default_value !== null) {
+                        blockXml += '<field name="' + fieldName + '">' + param.default_value + '</field>';
+                    }
+                }
+                blockXml += '</block>';
+                categories[cat].blocks.push(blockXml);
+
+                registered++;
+            }
+
+            console.log('[Blockly] Registered', registered, 'custom blocks');
+            return registered;
+        }
+
+        // Generic code generation for dynamic blocks
+        var originalGenerateActionCode = generateActionCode;
+        generateActionCode = function(block) {
+            // Try the hardcoded handler first
+            var result = originalGenerateActionCode(block);
+            if (result !== null) return result;
+
+            // Try dynamic block handling
+            var def = dynamicBlocks[block.type];
+            if (!def) return null;
+
+            var params = {};
+            for (var p = 0; p < (def.parameters || []).length; p++) {
+                var param = def.parameters[p];
+                var fieldName = param.name.toUpperCase();
+
+                if (param.param_type === 'number' || param.param_type === 'float') {
+                    params[param.name] = getInputValue(block, fieldName, param.default_value || 0);
+                } else if (param.param_type === 'boolean') {
+                    params[param.name] = block.getFieldValue(fieldName) === 'TRUE';
+                } else {
+                    var val = block.getFieldValue(fieldName);
+                    params[param.name] = val !== null ? val : (param.default_value || '');
+                }
+            }
+
+            return {action: def.name, parameters: params};
+        };
+
+        // Generic parameter setting for dynamic blocks
+        var originalSetBlockParameters = setBlockParameters;
+        setBlockParameters = function(block, blockType, params) {
+            // Try hardcoded handler first
+            var def = dynamicBlocks[blockType];
+            if (!def) {
+                originalSetBlockParameters(block, blockType, params);
+                return;
+            }
+
+            // Generic parameter setting
+            for (var p = 0; p < (def.parameters || []).length; p++) {
+                var param = def.parameters[p];
+                var fieldName = param.name.toUpperCase();
+                var value = params[param.name];
+
+                if (value === undefined || value === null) continue;
+
+                if (param.param_type === 'number' || param.param_type === 'float') {
+                    // Connect number block to value input
+                    var input = block.getInput(fieldName);
+                    if (input && input.connection) {
+                        var numBlock = workspace.newBlock('math_number');
+                        numBlock.setFieldValue(String(value), 'NUM');
+                        numBlock.initSvg();
+                        numBlock.render();
+                        input.connection.connect(numBlock.outputConnection);
+                    }
+                } else if (param.param_type === 'boolean') {
+                    block.setFieldValue(value ? 'TRUE' : 'FALSE', fieldName);
+                } else {
+                    var field = block.getField(fieldName);
+                    if (field) {
+                        field.setValue(String(value));
+                    }
+                }
+            }
+        };
+
         // Expose functions to Qt
         window.blocklyApi = {
             getXml: getWorkspaceXml,
@@ -2646,7 +2959,9 @@
             // NEW: Check if workspace has blocks
             hasBlocks: function() { return workspace.getAllBlocks().length > 0; },
             // NEW: Reconfigure toolbox with custom block set
-            reconfigureToolbox: reconfigureToolbox
+            reconfigureToolbox: reconfigureToolbox,
+            // NEW: Register custom blocks from ActionType definitions
+            registerCustomBlocks: registerCustomBlocks
         };
     </script>
 </body>

@@ -85,6 +85,8 @@ class BlocklyWidget(QWidget):
 
         self.events_data = {}
         self._loading = False
+        self._page_ready = False
+        self._pending_events_data = None
 
         self.setup_ui()
         self.setup_web_channel()
@@ -190,14 +192,76 @@ class BlocklyWidget(QWidget):
         self.web_view.setVisible(True)
 
         if ok:
+            self._page_ready = True
+
             # Set the language for Blockly blocks
             self._set_blockly_language()
 
+            # Register custom blocks from ActionType definitions
+            self._register_custom_blocks()
+
             # Apply saved configuration to toolbox
             self._apply_saved_configuration()
+
+            # Load any pending events data that arrived before the page was ready
+            if self._pending_events_data:
+                logger.debug("Loading pending events data after page load")
+                pending = self._pending_events_data
+                self._pending_events_data = None
+                self.load_events_data(pending)
+
             self.update_status(self.tr("Drag blocks from the toolbox on the left to create game logic!"))
         else:
             self.update_status(self.tr("Error loading Blockly - click Reload to try again"))
+
+    def _register_custom_blocks(self):
+        """Send ActionType definitions to JavaScript to auto-generate Blockly blocks"""
+        try:
+            from events.action_types import ACTION_TYPES
+
+            action_defs = []
+            for name, action_type in ACTION_TYPES.items():
+                params = []
+                for p in (action_type.parameters or []):
+                    param_dict = {
+                        'name': p.name,
+                        'display_name': p.display_name,
+                        'param_type': p.param_type,
+                        'default_value': p.default_value,
+                    }
+                    if hasattr(p, 'choices') and p.choices:
+                        param_dict['choices'] = p.choices
+                    params.append(param_dict)
+
+                action_defs.append({
+                    'name': name,
+                    'display_name': action_type.display_name,
+                    'description': action_type.description,
+                    'category': action_type.category,
+                    'icon': action_type.icon or '',
+                    'parameters': params,
+                })
+
+            defs_json = json.dumps(action_defs)
+            escaped = defs_json.replace("\\", "\\\\").replace("'", "\\'").replace("\n", "\\n")
+
+            script = f"""
+                (function() {{
+                    if (typeof window.blocklyApi !== 'undefined' && typeof window.blocklyApi.registerCustomBlocks === 'function') {{
+                        var defs = JSON.parse('{escaped}');
+                        return window.blocklyApi.registerCustomBlocks(defs);
+                    }}
+                    return 0;
+                }})()
+            """
+
+            def on_result(count):
+                if count:
+                    logger.debug(f"Registered {count} custom Blockly blocks")
+
+            self.web_view.page().runJavaScript(script, on_result)
+        except Exception as e:
+            logger.warning(f"Failed to register custom blocks: {e}")
 
     def _set_blockly_language(self):
         """Set the Blockly language based on IDE language setting"""
@@ -304,6 +368,12 @@ class BlocklyWidget(QWidget):
 
         if not events_data:
             self.update_status(self.tr("No events to load"))
+            return
+
+        # Queue data if the page hasn't finished loading yet
+        if not self._page_ready:
+            logger.debug("Page not ready yet, queuing events data for later")
+            self._pending_events_data = events_data
             return
 
         # Debug: Log the events data being sent
