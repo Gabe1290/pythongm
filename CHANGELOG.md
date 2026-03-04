@@ -5,6 +5,83 @@ All notable changes to PyGameMaker will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-rc.3] - 2026-03-04
+
+### Added
+
+#### 100% Action Implementation
+- All 120 game actions now fully implemented across all tabs:
+  - Draw Tab: `draw_circle`, `set_alpha`, `draw_scaled_text`, `draw_background`
+  - Main1/Main2 Tabs: 6 actions including score, lives, and health management
+  - Rooms Tab: 3 room transition and lifecycle actions
+  - Info Tab: 5 information display actions
+  - Resources Tab: Dynamic asset loading at runtime
+  - Extra Tab: 3 utility actions including `execute_script`
+  - Particles Tab: 8 particle effect actions
+  - Timing Tab: 6 timing and alarm actions
+
+#### Sprite Editor
+- Full pixel-art editor with pencil, eraser, fill, and selection tools
+- Tool icons and brush cursor overlay
+- Selection clipboard with copy/paste
+- Context menu and undo/redo support
+- Lightened canvas background for better visibility
+
+#### Export Improvements
+- macOS application export (.app bundles)
+- Android APK export via WSL on Windows (with buildozer)
+- Auto-install Android build-tools 33.0.2 for aidl compatibility
+- Live buildozer output in the export progress dialog
+- Fixed Linux binary export (black window issue)
+- Fixed Android crash on room change in Kivy export
+- Android fullscreen and touch controls
+- Various WSL build fixes (filesystem, encoding, permissions)
+
+#### Tutorials
+- 7 in-IDE tutorials: Introduction to Game Creation, Pong, Breakout, Sokoban, Maze, Platformer, Lunar Lander
+- All tutorials translated to 9 languages (EN, FR, DE, ES, IT, PT, SL, UK, RU)
+- Resizable tutorial panel
+- Breakout and Maze tutorials rewritten with Blockly
+- Sample sprites for tutorials included in builds
+
+#### GMK Importer
+- Import GameMaker project files into PyGameMaker
+
+#### Blockly Enhancements
+- `grid_move` and `if_can_push` blocks for Sokoban-style mechanics
+- `wrap_around_room` block
+- Dynamic block registration system
+- Fixed keyboard event deduplication
+
+#### Code Editor
+- Python code templates for all action types
+- Bidirectional sync improvements
+
+#### Thymio Enhancements
+- Dedicated Thymio panel in object editor
+- Thymio Programming Window with visual robot diagram
+
+### Changed
+- Runtime engine rewritten with modular architecture and performance optimizations
+- Sound system integrated into game runner
+- Room lifecycle events (create, destroy) properly implemented
+- Animated GIF support for sprites (static and animated)
+- Centralized logging replacing debug print statements
+- Project migration tool for upgrading older projects
+- IDE memory improvements
+- All translations synchronized and completed to 100%
+
+### Fixed
+- Sprite transparency for static and animated GIFs
+- `destroy_instance` in collision events
+- `if_condition` with `instance_count` and `create_instance` in Kivy export
+- Blockly widget attach/detach and event sync
+- Persistent object handling and `keyboard_release` events across room changes
+- Multiple runtime action and draw event system fixes
+- Various test failures and CI workflow issues
+
+---
+
 ## [0.12.0-alpha] - 2026-01-11
 
 ### Added - Thymio Educational Robot Support
@@ -135,7 +212,8 @@ Earlier development versions - see git history for details.
 
 ## Version Numbering
 
-PyGameMaker follows semantic versioning during alpha development:
-- **0.X.0** - Major feature additions
-- **0.X.Y** - Minor features and bug fixes
-- **-alpha** suffix indicates pre-release status
+PyGameMaker follows semantic versioning:
+- **1.0.0** - First stable release
+- **-rc.N** suffix indicates release candidate
+- **-beta.N** suffix indicates beta pre-release
+- **-alpha** suffix indicates alpha pre-release

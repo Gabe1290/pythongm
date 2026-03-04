@@ -2,10 +2,10 @@
 
 A GameMaker-style visual game development IDE for creating 2D games with Python.
 
-![Version](https://img.shields.io/badge/version-0.10.0--alpha-blue)
+![Version](https://img.shields.io/badge/version-1.0.0--rc.3-blue)
 ![License](https://img.shields.io/badge/license-GPLv3-green)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
-![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-lightgrey)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
 
 ## Educational Goals
 

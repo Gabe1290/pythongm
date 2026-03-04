@@ -23,7 +23,7 @@ VSVersionInfo(
             StringStruct(u'FileDescription', u'PyGameMaker IDE - A GameMaker-inspired game development environment'),
             StringStruct(u'FileVersion', u'1.0.0.0'),
             StringStruct(u'InternalName', u'PyGameMaker'),
-            StringStruct(u'LegalCopyright', u'Copyright (C) 2024-2025 Gabriel Thullen. Licensed under GPLv3.'),
+            StringStruct(u'LegalCopyright', u'Copyright (C) 2024-2026 Gabriel Thullen. Licensed under GPLv3.'),
             StringStruct(u'OriginalFilename', u'PyGameMaker.exe'),
             StringStruct(u'ProductName', u'PyGameMaker IDE'),
             StringStruct(u'ProductVersion', u'1.0.0.0'),
