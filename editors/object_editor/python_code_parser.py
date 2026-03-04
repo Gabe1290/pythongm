@@ -112,6 +112,13 @@ ACTION_TO_PYTHON = {
     'start_moving_direction': 'self.direction = {direction}\nself.speed = {speed}',
     'set_direction_speed': 'self.direction = {direction}\nself.speed = {speed}',
     'wrap_around_room': 'self.wrap_around_room(horizontal={horizontal}, vertical={vertical})',
+    'move_grid': 'self.move_grid("{direction}", {grid_size})',
+    'move_fixed': 'self.direction = "{directions}"\nself.speed = {speed}',
+    'move_free': 'self.direction = {direction}\nself.speed = {speed}',
+    'move_towards': 'self.move_towards({x}, {y}, {speed})',
+    'set_speed': 'self.speed = {speed}',
+    'set_direction': 'self.direction = {direction}',
+    'stop_if_no_keys': 'self.stop_if_no_keys({grid_size})',
 
     # Instance
     'destroy_instance': 'self.destroy()',
@@ -122,15 +129,24 @@ ACTION_TO_PYTHON = {
     'previous_room': 'game.previous_room()',
     'restart_room': 'game.restart_room()',
     'goto_room': 'game.goto_room("{room}")',
+    'room_restart': 'game.restart_room()',
+    'room_goto_next': 'game.next_room()',
+    'room_goto_previous': 'game.previous_room()',
+    'room_goto': 'game.goto_room("{room}")',
 
     # Game control
     'end_game': 'game.end_game()',
     'restart_game': 'game.restart_game()',
+    'game_restart': 'game.restart_game()',
+    'game_end': 'game.end_game()',
 
     # Score/Lives/Health
     'set_score': 'game.score {op} {value}',  # op is = or +=
     'set_lives': 'game.lives {op} {value}',
     'set_health': 'game.health {op} {value}',
+    'add_score': 'game.score += {value}',
+    'add_lives': 'game.lives += {value}',
+    'add_health': 'game.health += {value}',
 
     # Drawing (in draw event)
     'draw_score': 'game.draw_score({x}, {y}, "{caption}")',
@@ -153,9 +169,32 @@ ACTION_TO_PYTHON = {
 
     # Message
     'display_message': 'game.show_message("{message}")',
+    'show_message': 'game.show_message("{message}")',
+
+    # Variables
+    'set_variable': '{variable_name} = {value}',
+
+    # Control
+    'exit_event': 'return',
 
     # Code execution (passthrough)
     'execute_code': '{code}',
+
+    # Conditionals (handled specially in _generate_action_code for sub_actions)
+    'if_can_push': 'if self.can_push("{object_type}", "{direction}"):',
+    'if_collision_at': 'if game.collision_at({x}, {y}, "{object_type}"):',
+    'if_on_grid': 'if self.x % {grid_size} == 0 and self.y % {grid_size} == 0:',
+    'if_next_room_exists': 'if game.next_room_exists():',
+    'if_previous_room_exists': 'if game.previous_room_exists():',
+    'test_expression': 'if {expression}:',
+    'test_variable': 'if {variable_name} {operation} {value}:',
+    'check_empty': 'if game.place_free({x}, {y}, only_solid={only_solid}):',
+    'check_collision': 'if game.place_meeting({x}, {y}, only_solid={only_solid}):',
+    'if_condition': 'if {condition_type}:',
+    'repeat': 'for _i in range({times}):',
+    'start_block': '',  # GM block grouping - no Python equivalent
+    'end_block': '',    # GM block grouping - no Python equivalent
+    'else_action': '',  # GM else marker - handled by conditional generation
 
     # ========================================================================
     # THYMIO ROBOT ACTIONS
@@ -980,13 +1019,30 @@ class ActionsToPythonGenerator:
             return params.get("code", "pass")
 
         template = ACTION_TO_PYTHON.get(action_name)
-        if not template:
+        if not template and template != '':
             # Unknown action - generate comment
             return f"# Unknown action: {action_name}"
 
-        # Handle Thymio conditional actions with sub_actions
-        if action_name.startswith('thymio_if_') and sub_actions:
-            return self._generate_thymio_conditional(action_name, params, sub_actions, template)
+        # Skip GM block markers - they have no Python equivalent
+        if action_name in ('start_block', 'end_block', 'else_action'):
+            return ''
+
+        # Handle conditional actions with sub_actions or then_actions/else_actions
+        is_conditional = (
+            action_name.startswith('thymio_if_') or
+            action_name in ('if_collision_at', 'if_on_grid', 'if_next_room_exists',
+                            'if_previous_room_exists', 'test_expression', 'test_variable',
+                            'check_empty', 'check_collision', 'if_can_push', 'if_condition',
+                            'repeat')
+        )
+        # Check for nested actions in sub_actions or parameters
+        then_actions = params.get('then_actions', [])
+        else_actions = params.get('else_actions', [])
+        actions_list = params.get('actions', [])  # for repeat
+
+        if is_conditional and (sub_actions or then_actions or else_actions or actions_list):
+            return self._generate_conditional(action_name, params, sub_actions,
+                                              then_actions, else_actions, actions_list, template)
 
         # Normalize parameters - handle different parameter naming conventions
         # The action system uses different names than the templates expect
@@ -1005,34 +1061,147 @@ class ActionsToPythonGenerator:
             relative = params.get('relative', False)
             params['op'] = '+=' if relative else '='
 
+        # Handle test_variable comparison operators
+        if action_name == 'test_variable':
+            op_map = {'equal': '==', 'less': '<', 'greater': '>',
+                      'less_equal': '<=', 'greater_equal': '>=', 'not_equal': '!='}
+            params['operation'] = op_map.get(params.get('operation', 'equal'), '==')
+
+        # Handle set_variable scope
+        if action_name == 'set_variable':
+            scope = params.get('scope', 'self')
+            var_name = params.get('variable_name', 'var')
+            if scope == 'self':
+                params['variable_name'] = f'self.{var_name}'
+            elif scope == 'global':
+                params['variable_name'] = f'game.{var_name}'
+            relative = params.get('relative', False)
+            if relative:
+                return f"{params['variable_name']} += {params.get('value', 0)}"
+
+        # Handle if_condition - generate readable condition based on condition_type
+        if action_name == 'if_condition':
+            condition_type = params.get('condition_type', 'expression')
+            if condition_type == 'instance_count':
+                obj = params.get('object_name', '')
+                op = params.get('operator', '==')
+                val = params.get('value', 0)
+                return f'if game.instance_count("{obj}") {op} {val}:'
+            elif condition_type == 'variable_compare':
+                var = params.get('variable', '')
+                op = params.get('operator', '==')
+                val = params.get('value', 0)
+                return f'if self.{var} {op} {val}:'
+            elif condition_type == 'expression':
+                expr = params.get('expression', 'True')
+                return f'if {expr}:'
+            elif condition_type == 'random_chance':
+                chance = params.get('chance', 50)
+                return f'if random.randint(1, 100) <= {chance}:'
+            elif condition_type == 'key_pressed':
+                key = params.get('key', '')
+                return f'if keyboard.check("{key}"):'
+            else:
+                return f'if {condition_type}:'
+
+        # Handle if_can_push as a simple conditional when no nested actions
+        if action_name == 'if_can_push':
+            then_action = params.get('then_action', 'push_and_move')
+            else_action = params.get('else_action', 'stop_movement')
+            lines = []
+            try:
+                lines.append(template.format(**params))
+            except KeyError as e:
+                return f"# Missing parameter {e} for {action_name}"
+            if then_action == 'push_and_move':
+                lines.append("    self.push_and_move()")
+            elif then_action != 'none':
+                lines.append(f"    self.{then_action}()")
+            else:
+                lines.append("    pass")
+            if else_action != 'none':
+                lines.append("else:")
+                if else_action == 'stop_movement':
+                    lines.append("    self.hspeed = 0")
+                    lines.append("    self.vspeed = 0")
+                else:
+                    lines.append(f"    self.{else_action}()")
+            return '\n'.join(lines)
+
         # Format template with parameters
         try:
             return template.format(**params)
         except KeyError as e:
             return f"# Missing parameter {e} for {action_name}"
 
-    def _generate_thymio_conditional(self, action_name: str, params: Dict[str, Any],
-                                     sub_actions: List[Dict[str, Any]], template: str) -> str:
-        """Generate Python code for Thymio conditional actions with nested sub_actions"""
+    def _generate_conditional(self, action_name: str, params: Dict[str, Any],
+                              sub_actions: List[Dict[str, Any]],
+                              then_actions: List[Dict[str, Any]],
+                              else_actions: List[Dict[str, Any]],
+                              actions_list: List[Dict[str, Any]],
+                              template: str) -> str:
+        """Generate Python code for conditional/loop actions with nested actions"""
         lines = []
+        params = dict(params)  # Copy to avoid modifying original
 
-        # Generate the condition line
-        try:
-            condition_line = template.format(**params)
+        # Handle test_variable comparison operators
+        if action_name == 'test_variable':
+            op_map = {'equal': '==', 'less': '<', 'greater': '>',
+                      'less_equal': '<=', 'greater_equal': '>=', 'not_equal': '!='}
+            params['operation'] = op_map.get(params.get('operation', 'equal'), '==')
+
+        # Handle if_condition - generate readable condition based on condition_type
+        if action_name == 'if_condition':
+            condition_type = params.get('condition_type', 'expression')
+            if condition_type == 'instance_count':
+                obj = params.get('object_name', '')
+                op = params.get('operator', '==')
+                val = params.get('value', 0)
+                condition_line = f'if game.instance_count("{obj}") {op} {val}:'
+            elif condition_type == 'variable_compare':
+                var = params.get('variable', '')
+                op = params.get('operator', '==')
+                val = params.get('value', 0)
+                condition_line = f'if self.{var} {op} {val}:'
+            elif condition_type == 'expression':
+                expr = params.get('expression', 'True')
+                condition_line = f'if {expr}:'
+            elif condition_type == 'random_chance':
+                chance = params.get('chance', 50)
+                condition_line = f'if random.randint(1, 100) <= {chance}:'
+            elif condition_type == 'key_pressed':
+                key = params.get('key', '')
+                condition_line = f'if keyboard.check("{key}"):'
+            else:
+                condition_line = f'if {condition_type}:'
             lines.append(condition_line)
-        except KeyError as e:
-            return f"# Missing parameter {e} for {action_name}"
+        else:
+            # Generate the condition/loop line from template
+            try:
+                condition_line = template.format(**params)
+                lines.append(condition_line)
+            except KeyError as e:
+                return f"# Missing parameter {e} for {action_name}"
 
-        # Generate sub_actions with indentation
-        if sub_actions:
-            for sub_action in sub_actions:
+        # Determine the "then" body actions
+        body_actions = sub_actions or then_actions or actions_list
+        if body_actions:
+            for sub_action in body_actions:
                 sub_code = self._generate_action_code(sub_action)
                 if sub_code:
-                    # Each line of sub_code needs indentation
                     for line in sub_code.split('\n'):
                         lines.append(f"    {line}")
         else:
             lines.append("    pass")
+
+        # Generate else branch if present
+        if else_actions:
+            lines.append("else:")
+            for sub_action in else_actions:
+                sub_code = self._generate_action_code(sub_action)
+                if sub_code:
+                    for line in sub_code.split('\n'):
+                        lines.append(f"    {line}")
 
         return '\n'.join(lines)
 
