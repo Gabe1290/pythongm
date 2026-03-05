@@ -40,6 +40,7 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "move_towards", "name": "Move Towards", "description": "Move to point", "implemented": True},
         {"type": "move_snap_to_grid", "name": "Snap to Grid", "description": "Align to grid", "implemented": True},
         {"type": "move_jump_to", "name": "Jump to Position", "description": "Instant teleport", "implemented": True},
+        {"type": "grid_move", "name": "Move Grid", "description": "Move one grid unit in a direction", "implemented": True},
         {"type": "grid_stop_if_no_keys", "name": "Stop if No Keys", "description": "Grid movement helper", "implemented": True},
         {"type": "grid_check_keys_and_move", "name": "Check Keys and Move", "description": "Grid movement helper", "implemented": True},
         {"type": "grid_if_on_grid", "name": "If On Grid", "description": "Grid-aligned check", "implemented": True},
@@ -76,6 +77,7 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "instance_destroy", "name": "Destroy Instance", "description": "Destroy this object", "implemented": True},
         {"type": "instance_destroy_other", "name": "Destroy Other", "description": "Destroy colliding object", "implemented": True},
         {"type": "instance_create", "name": "Create Instance", "description": "Spawn new object", "implemented": True},
+        {"type": "if_can_push", "name": "If Can Push", "description": "Sokoban-style push check", "implemented": True},
     ],
     "Room": [
         {"type": "room_goto_next", "name": "Next Room", "description": "Go to next room", "implemented": True},
@@ -428,6 +430,7 @@ class BlocklyConfig:
         # Grid movement
         config.enable_block("move_snap_to_grid")
         config.enable_block("move_jump_to")
+        config.enable_block("grid_move")
         config.enable_block("grid_stop_if_no_keys")
         config.enable_block("grid_check_keys_and_move")
         config.enable_block("grid_if_on_grid")
@@ -474,11 +477,13 @@ class BlocklyConfig:
         config.enable_block("move_stop")
         config.enable_block("move_snap_to_grid")
         config.enable_block("move_jump_to")  # For pushing boxes
+        config.enable_block("grid_move")  # Grid-based movement
         config.enable_block("grid_if_on_grid")  # Only move when aligned
 
         # Instance - for changing box types
         config.enable_block("instance_destroy")
         config.enable_block("instance_create")
+        config.enable_block("if_can_push")  # Sokoban push mechanic
 
         # Room - level progression
         config.enable_block("room_goto_next")
@@ -854,6 +859,7 @@ class BlocklyConfig:
         config.enable_block("move_direction")
         config.enable_block("move_snap_to_grid")
         config.enable_block("move_jump_to")
+        config.enable_block("grid_move")
         config.enable_block("grid_stop_if_no_keys")
         config.enable_block("grid_check_keys_and_move")
         config.enable_block("grid_if_on_grid")
@@ -893,6 +899,7 @@ class BlocklyConfig:
         config.enable_block("instance_destroy")
         config.enable_block("instance_destroy_other")
         config.enable_block("instance_create")
+        config.enable_block("if_can_push")
 
         # =====================================================================
         # ROOM
