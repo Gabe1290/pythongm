@@ -5,6 +5,22 @@ All notable changes to PyGameMaker will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-rc.4] - 2026-03-05
+
+### Added
+- Sprite editor: origin crosshair marker with preset dropdown (Top-Left, Center, Center-Bottom, etc.) and X/Y spinboxes
+- Object editor: parent object selector with runtime collision inheritance (walks parent chain up to 10 levels)
+- Draw GUI event type for HUD rendering in screen coordinates (not affected by camera)
+- Tutorial window is now a detached floating dialog that can be moved freely, no longer blocking the right-hand properties panel
+
+### Changed
+- Rewrote Sokoban, Platformer, and Lunar Lander tutorials from GML code to Blockly visual blocks
+- Tutorials now reference only actually implemented Blockly blocks (move_grid, if_can_push, set_gravity, draw_text, etc.)
+
+### Fixed
+- PyInstaller spec: guard Tree() calls against missing gitignored directories (fixes CI build)
+- Sokoban win condition tutorial: use Draw event instead of non-existent Draw GUI Blockly block
+
 ## [1.0.0-rc.3] - 2026-03-04
 
 ### Added

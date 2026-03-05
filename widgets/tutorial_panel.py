@@ -1,28 +1,28 @@
 #!/usr/bin/env python3
 """
 Tutorial Panel Widget for PyGameMaker IDE
-Displays HTML tutorials in the right panel, similar to GameMaker 8
+Displays HTML tutorials in a detached floating window
 """
 import json
 from pathlib import Path
-from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
+from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                QPushButton, QListWidget, QListWidgetItem,
                                QStackedWidget, QTextBrowser)
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt
 from PySide6.QtGui import QDesktopServices
 
 from core.logger import get_logger
 logger = get_logger(__name__)
 
 
-class TutorialPanel(QWidget):
-    """Panel for displaying HTML tutorials like GameMaker 8"""
-
-    # Signal emitted when user wants to close tutorials
-    close_requested = Signal()
+class TutorialPanel(QDialog):
+    """Floating window for displaying HTML tutorials"""
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.setWindowTitle(self.tr("Tutorials"))
+        self.setMinimumSize(450, 500)
+        self.resize(520, 650)
         self.tutorials_path = None
         self.current_tutorial = None
         self.current_page_index = 0
@@ -47,7 +47,7 @@ class TutorialPanel(QWidget):
 
         self.close_btn = QPushButton(self.tr("Close"))
         self.close_btn.setMaximumWidth(60)
-        self.close_btn.clicked.connect(self.close_requested.emit)
+        self.close_btn.clicked.connect(self.close)
         header_layout.addWidget(self.close_btn)
 
         layout.addWidget(header)

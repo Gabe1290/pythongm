@@ -686,9 +686,8 @@ class PyGameMakerIDE(QMainWindow):
         # Center panel - NEW: Tabbed editors
         center_panel = self.create_center_panel_with_editors()
 
-        # Right panel - Stacked widget for Properties and Tutorial viewer
+        # Right panel - Properties panel
         from PySide6.QtWidgets import QStackedWidget
-        from widgets.tutorial_panel import TutorialPanel
 
         self.right_panel_stack = QStackedWidget()
         self.right_panel_stack.setMinimumWidth(250)
@@ -696,11 +695,6 @@ class PyGameMakerIDE(QMainWindow):
         # Properties panel (index 0)
         self.properties_panel = EnhancedPropertiesPanel()
         self.right_panel_stack.addWidget(self.properties_panel)
-
-        # Tutorial viewer panel (index 1)
-        self.tutorial_panel = TutorialPanel()
-        self.tutorial_panel.close_requested.connect(self.hide_tutorial_panel)
-        self.right_panel_stack.addWidget(self.tutorial_panel)
 
         # Start with properties panel visible
         self.right_panel_stack.setCurrentIndex(0)
@@ -855,10 +849,6 @@ class PyGameMakerIDE(QMainWindow):
     def _collapse_right_panel(self):
         """Collapse the right panel to give more space to the center editor"""
         if hasattr(self, 'main_splitter') and hasattr(self, 'right_panel_stack'):
-            # Don't collapse if the tutorial panel is currently visible
-            if hasattr(self, 'tutorial_panel') and self.right_panel_stack.currentWidget() == self.tutorial_panel:
-                return
-
             # Store current sizes before collapsing (only if right panel is visible)
             current_sizes = self.main_splitter.sizes()
             if current_sizes[2] > 0:
@@ -2791,8 +2781,9 @@ class PyGameMakerIDE(QMainWindow):
         )
 
     def show_tutorials(self):
-        """Open tutorials dialog window"""
+        """Open tutorials in a floating window"""
         from widgets.tutorial_dialog import TutorialDialog
+        from widgets.tutorial_panel import TutorialPanel
 
         # Find the Tutorials folder - try multiple locations
         tutorials_path = None
@@ -2820,18 +2811,23 @@ class PyGameMakerIDE(QMainWindow):
             if candidate.exists():
                 tutorials_path = candidate
 
+        # If a tutorial window is already open, bring it to front
+        if hasattr(self, '_tutorial_window') and self._tutorial_window is not None:
+            try:
+                self._tutorial_window.raise_()
+                self._tutorial_window.activateWindow()
+                return
+            except RuntimeError:
+                self._tutorial_window = None
+
         dialog = TutorialDialog(self, tutorials_path)
         if dialog.exec() == QDialog.Accepted:
-            # User selected a tutorial - show it in the preview panel
             selected_tutorial = dialog.get_selected_tutorial()
             if selected_tutorial and tutorials_path:
-                self.tutorial_panel.set_tutorials_path(tutorials_path)
-                self.tutorial_panel.open_tutorial_by_data(selected_tutorial)
-                self.right_panel_stack.setCurrentIndex(1)
-
-    def hide_tutorial_panel(self):
-        """Hide tutorial panel and show properties panel"""
-        self.right_panel_stack.setCurrentIndex(0)
+                self._tutorial_window = TutorialPanel(self)
+                self._tutorial_window.set_tutorials_path(tutorials_path)
+                self._tutorial_window.open_tutorial_by_data(selected_tutorial)
+                self._tutorial_window.show()
 
     def about(self):
         """Show comprehensive About PyGameMaker dialog"""
