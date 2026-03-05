@@ -813,10 +813,14 @@ class ObjectEditor(BaseEditor):
             # ✅ TRANSLATABLE: Error message
             self.update_status(self.tr("Error loading assets: {0}").format(e))
 
-        # Pass sprites to properties panel
+        # Pass sprites and objects to properties panel
         if hasattr(self, 'properties_panel'):
             logger.debug(f"Setting {sprite_count} sprites in properties panel")
             self.properties_panel.set_available_sprites(self.available_sprites)
+            if project_data:
+                objects = project_data.get('assets', {}).get('objects', {})
+                self.properties_panel.set_available_objects(
+                    objects, self.asset_name or '')
 
     def load_data(self, data: Dict[str, Any]):
         """Load object data into the editor"""
@@ -931,9 +935,11 @@ class ObjectEditor(BaseEditor):
         # Get object properties from current stored properties
         # Use sprite from properties panel (which reflects UI state) over stored properties
         sprite_name = properties.get('sprite', self.current_object_properties.get('sprite', ''))
+        parent_name = properties.get('parent', self.current_object_properties.get('parent', ''))
         object_data = {
             'name': self.asset_name or 'obj_object1',
             'sprite': sprite_name,
+            'parent': parent_name,
             'visible': properties.get('visible', self.current_object_properties.get('visible', True)),
             'solid': properties.get('solid', self.current_object_properties.get('solid', False)),
             'persistent': properties.get('persistent', self.current_object_properties.get('persistent', False)),
@@ -1616,10 +1622,13 @@ class {self.asset_name or 'obj_object'}(GameObject):
         # ✅ TRANSLATABLE: Status message
         self.update_status(self.tr("Assets loaded: {0} sprites").format(sprite_count))
 
-        # Pass sprites to properties panel
+        # Pass sprites and objects to properties panel
         if hasattr(self, 'properties_panel'):
             logger.debug(f"Setting {sprite_count} sprites in properties panel")
             self.properties_panel.set_available_sprites(self.available_sprites)
+            objects = assets.get('objects', {})
+            self.properties_panel.set_available_objects(
+                objects, self.asset_name or '')
 
     def debug_events_state(self):
         """Debug method to check events state"""

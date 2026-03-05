@@ -140,6 +140,14 @@ EVENT_TYPES = {
         icon="🎨",
         parameters=[]
     ),
+    "draw_gui": EventType(
+        name="draw_gui",
+        display_name="Draw GUI",
+        description="Drawn on top of everything (not affected by camera/view). Use for HUD, score, lives.",
+        category="Drawing",
+        icon="🖼️",
+        parameters=[]
+    ),
     "alarm": EventType(
         name="alarm",
         display_name="Alarm",

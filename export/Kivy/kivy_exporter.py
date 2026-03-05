@@ -2531,6 +2531,7 @@ class {class_name}(GameObject):
             'keyboard_release': 'on_keyboard_release',
             'keyboard_up': 'on_keyboard_up',  # Legacy name
             'draw': 'on_draw',
+            'draw_gui': 'on_draw_gui',
             'room_start': 'on_room_start',
             'room_end': 'on_room_end',
             'game_start': 'on_game_start',

@@ -10,76 +10,65 @@
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
-        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-        th, td { border: 1px solid #ddd; padding: 6px; text-align: left; }
-        th { background-color: #34495e; color: white; }
+        ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Step 3: Lander Physics (Create Event)</h1>
+    <h1>Step 3: Lander Physics (Blockly)</h1>
 
-    <p>Set up variables for gravity, thrust, fuel, and velocity.</p>
+    <p>We need gravity to pull the lander down toward the surface.
+    We'll use <strong>Blockly visual blocks</strong> to set this up.</p>
 
-    <h2>Initialize Physics Variables</h2>
+    <h2>Open the Blockly Editor</h2>
     <div class="step">
-        <p>In <code>obj_lander</code>:</p>
         <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
+            <li>Double-click <code>obj_lander</code> in the Asset Tree to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab at the top of the editor</li>
         </ol>
-        <pre>
-// Physics settings
-gravity_force = 0.05;  // Gentle gravity
-thrust_force = 0.1;    // Thrust power
-max_speed = 5;         // Maximum velocity
-
-// Current velocity
-hsp = 0;  // Horizontal speed
-vsp = 0;  // Vertical speed
-
-// Fuel system
-fuel = 100;
-fuel_use = 0.5;  // Fuel per frame
-
-// Game state
-landed = false;
-crashed = false;
-
-// Safe landing speed
-safe_speed = 2;</pre>
     </div>
 
-    <h2>Understanding the Variables</h2>
-    <table>
-        <tr>
-            <th>Variable</th>
-            <th>Purpose</th>
-        </tr>
-        <tr>
-            <td><code>gravity_force</code></td>
-            <td>Constant downward pull (0.05 is gentle)</td>
-        </tr>
-        <tr>
-            <td><code>thrust_force</code></td>
-            <td>Upward force when pressing UP</td>
-        </tr>
-        <tr>
-            <td><code>fuel</code></td>
-            <td>100% fuel, decreases when thrusting</td>
-        </tr>
-        <tr>
-            <td><code>safe_speed</code></td>
-            <td>Max speed for safe landing (2)</td>
-        </tr>
-    </table>
-
-    <div class="highlight">
-        <strong>Balance:</strong> Thrust (0.1) is stronger than gravity (0.05) so you can slow down!
+    <h2>Enable Gravity (Create Event)</h2>
+    <div class="step">
+        <p>Drag these blocks from the toolbox and snap them together:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Create</span><br>
+            <span class="block block-move block-indent">Set Gravity: direction <span class="block-val">270</span>, strength <span class="block-val">0.05</span></span>
+        </div>
+        <p>Find <strong>Create</strong> in the <em>Events</em> category.
+        Then find <strong>Set Gravity</strong> in the <em>Movement</em> category.
+        Set direction to <strong>270</strong> (down) and strength to <strong>0.05</strong>.</p>
     </div>
 
     <div class="info">
-        Click "Next" to add movement and controls.
+        <strong>Why 0.05?</strong> Lunar gravity is very gentle! On the Moon, gravity is about 1/6th of Earth.
+        A small value like 0.05 gives the lander a slow, floaty feel &mdash; just like real space landing.
+    </div>
+
+    <h2>Make the Ground Solid</h2>
+    <div class="step">
+        <ol>
+            <li>Double-click <code>obj_ground</code> in the Asset Tree</li>
+            <li>In the Object Properties panel, check the <strong>Solid</strong> checkbox</li>
+        </ol>
+        <p>Also make <code>obj_pad</code> solid so the lander can land on it.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Key Concept:</strong> The gravity strength (0.05) is very low compared to the
+        platformer tutorial (0.5). This creates the feeling of low-gravity space flight.
+        The thrust (next step) must be stronger than gravity so the lander can slow down!
+    </div>
+
+    <div class="info">
+        Click "Next" to add thrust and steering controls.
     </div>
 </body>
 </html>

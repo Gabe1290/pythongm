@@ -11,67 +11,76 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-draw { background-color: #5BA58B; }
+        .block-game { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Step 5: Win Condition</h1>
+    <h1>Step 5: Game Controller (Blockly)</h1>
 
-    <p>The player wins when all crates are on target spots.</p>
+    <p>We'll add a controller object to display instructions and let the player restart the level.</p>
 
-    <h2>Create Game Controller</h2>
+    <h2>Create the Controller Object</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_game_controller</code></li>
-            <li>No sprite needed</li>
+            <li>Right-click in the Asset Tree and create a new object: <code>obj_controller</code></li>
+            <li>No sprite is needed for this object</li>
+            <li>Place one instance of <code>obj_controller</code> anywhere in your room</li>
         </ol>
     </div>
 
-    <h2>Count Targets (Create Event)</h2>
+    <h2>Draw Instructions (Draw GUI Event)</h2>
     <div class="step">
-        <p>In <code>obj_game_controller</code>:</p>
-        <ol>
-            <li>Add Event: <strong>Create</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
-            <li>Enter: <code>global.total_targets = instance_number(obj_target);</code></li>
-        </ol>
+        <p>Open the Blockly editor for <code>obj_controller</code> and build:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Draw GUI</span><br>
+            <span class="block block-draw block-indent">Draw Text <span class="block-val">"Push crates onto targets!"</span> at <span class="block-val">10</span>, <span class="block-val">10</span></span>
+        </div>
+        <p>Find <strong>Draw GUI</strong> in the <em>Events</em> category.
+        Then find <strong>Draw Text</strong> in the <em>Drawing</em> category.
+        Type <code>Push crates onto targets!</code> as the text, and set X to <strong>10</strong>, Y to <strong>10</strong>.</p>
     </div>
 
-    <h2>Check Win Condition (Step Event)</h2>
-    <div class="step">
-        <ol>
-            <li>Add Event: <strong>Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
-            <li>Enter this code:</li>
-        </ol>
-        <pre style="background-color: #2c3e50; color: #ecf0f1; padding: 10px; font-size: 11px; border-radius: 5px;">
-// Count crates on targets
-var crates_on_targets = 0;
-with (obj_crate) {
-    if (place_meeting(x, y, obj_target)) {
-        crates_on_targets += 1;
-    }
-}
-
-// Check if all targets have crates
-if (crates_on_targets >= global.total_targets
-    && global.total_targets > 0) {
-    show_message("Level Complete!");
-    room_restart();
-}</pre>
+    <div class="info">
+        <strong>Draw GUI vs Draw:</strong> The <em>Draw GUI</em> event draws on top of everything
+        and uses screen coordinates. It's perfect for HUD text that shouldn't scroll with the level.
     </div>
 
-    <h2>Draw Instructions (Draw Event)</h2>
+    <h2>Restart Level (Press R)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard Press: R</span><br>
+            <span class="block block-game block-indent">Restart Room</span>
+        </div>
+        <p>Find <strong>Keyboard Press</strong> in <em>Events</em> and select <strong>R</strong>.
+        Then find <strong>Restart Room</strong> in the <em>Room</em> category.
+        This lets the player reset the puzzle if they get stuck!</p>
+    </div>
+
+    <h2>Apply Your Blocks</h2>
     <div class="step">
         <ol>
-            <li>Add Event: <strong>Draw</strong></li>
-            <li>Add Action: <strong>Draw &gt; Draw Text</strong></li>
-            <li>Text: <code>Push crates onto targets!</code></li>
-            <li>X: <code>10</code>, Y: <code>10</code></li>
+            <li>You should have <strong>2 event blocks</strong> (Draw GUI + Keyboard Press R)</li>
+            <li>Click the <strong>Apply to Events</strong> button to save</li>
         </ol>
     </div>
 
     <div class="highlight">
+        <strong>How to win:</strong> When all crates turn green (showing <code>spr_crate_ok</code>),
+        the puzzle is solved! Remember, the crate behavior from Step 3 already changes the crate's
+        appearance when it's on a target spot.
+    </div>
+
+    <div class="highlight">
         <strong>Tip:</strong> Make sure the number of crates equals the number of targets in your level!
+        Press <strong>R</strong> to restart if you get stuck.
     </div>
 
     <div class="info">

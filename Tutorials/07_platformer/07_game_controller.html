@@ -10,58 +10,53 @@
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
-        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 11px; }
         ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-draw { background-color: #5BA58B; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Step 6: Game Controller</h1>
+    <h1>Step 6: Game Controller (Blockly)</h1>
 
     <p>The game controller displays the score on screen.</p>
 
     <h2>Create the Controller Object</h2>
     <div class="step">
         <ol>
-            <li>Create object <code>obj_game_controller</code></li>
+            <li>Right-click in the Asset Tree and create a new object: <code>obj_game_controller</code></li>
             <li>No sprite needed (invisible controller)</li>
         </ol>
     </div>
 
     <h2>Draw the Score</h2>
     <div class="step">
-        <p>In <code>obj_game_controller</code>:</p>
-        <ol>
-            <li>Add Event: <strong>Draw &gt; Draw</strong></li>
-            <li>Add Action: <strong>Control &gt; Execute Code</strong></li>
-        </ol>
-        <pre>
-// Set text color
-draw_set_color(c_white);
-
-// Draw score at top-left
-draw_text(10, 10, "Score: " + string(score));
-
-// Optional: Draw instructions
-draw_text(10, 30, "Arrows: Move  |  Space: Jump");</pre>
+        <p>Open the Blockly editor for <code>obj_game_controller</code>:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Draw</span><br>
+            <span class="block block-draw block-indent">Draw Score at <span class="block-val">10</span>, <span class="block-val">10</span> caption <span class="block-val">"Score: "</span></span>
+        </div>
+        <p>Find <strong>Draw</strong> in the <em>Events</em> category.
+        Then find <strong>Draw Score</strong> in the <em>Score</em> category.
+        Set X to <strong>10</strong>, Y to <strong>10</strong>, and caption to <code>Score: </code>.</p>
     </div>
 
-    <h2>Alternative: Using Actions</h2>
+    <h2>Apply Your Blocks</h2>
     <div class="step">
-        <p>Instead of code, you can use:</p>
         <ol>
-            <li>Add Action: <strong>Draw &gt; Set Color</strong> (White)</li>
-            <li>Add Action: <strong>Score &gt; Draw Score</strong>
-                <ul>
-                    <li>X: 10</li>
-                    <li>Y: 10</li>
-                    <li>Caption: "Score: "</li>
-                </ul>
-            </li>
+            <li>You should have <strong>1 event block</strong> (Draw) in your workspace</li>
+            <li>Click <strong>Apply to Events</strong> to save</li>
         </ol>
     </div>
 
     <div class="highlight">
-        <strong>Remember:</strong> Place the game controller in your room! It won't appear by itself.
+        <strong>Remember:</strong> Place one instance of <code>obj_game_controller</code> in your room!
+        It won't appear by itself. Since it has no sprite, it's invisible &mdash; it just draws the score.
     </div>
 
     <div class="info">

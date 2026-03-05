@@ -11,40 +11,53 @@
         .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-instance { background-color: #A65C81; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Step 3: Crate Behavior</h1>
+    <h1>Step 3: Crate Behavior (Blockly)</h1>
 
-    <p>The crate needs to change appearance when it's on a target spot.</p>
+    <p>The crate needs to change appearance when it's on a target spot.
+    We'll use <strong>Blockly visual blocks</strong> to program this.</p>
 
-    <h2>Check Target Position (Step Event)</h2>
+    <h2>Open the Blockly Editor</h2>
     <div class="step">
-        <p>In <code>obj_crate</code>:</p>
         <ol>
-            <li>Add Event: <strong>Step</strong></li>
-            <li>Add Action: <strong>Control &gt; Test Instance Position</strong></li>
-            <li>Object: <code>obj_target</code></li>
-            <li>X: <code>0</code>, Y: <code>0</code> (relative)</li>
-            <li>Check if collision exists</li>
+            <li>Double-click <code>obj_crate</code> in the Asset Tree to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab at the top of the editor</li>
         </ol>
     </div>
 
-    <h2>Change Sprite When on Target</h2>
+    <h2>Check if Crate is on a Target (Step Event)</h2>
     <div class="step">
-        <p>If collision exists (crate is on target):</p>
-        <ol>
-            <li>Add Action: <strong>Main1 &gt; Change Sprite</strong></li>
-            <li>Sprite: <code>spr_crate_ok</code></li>
-        </ol>
+        <p>Drag these blocks from the toolbox and snap them together:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Step</span><br>
+            <span class="block block-control block-indent">If colliding with <span class="block-val">obj_target</span></span><br>
+            <span class="block block-instance block-indent2">Set sprite to <span class="block-val">spr_crate_ok</span></span><br>
+            <span class="block block-control block-indent">Else</span><br>
+            <span class="block block-instance block-indent2">Set sprite to <span class="block-val">spr_crate</span></span>
+        </div>
+        <p>Find <strong>Step</strong> in the <em>Events</em> category.
+        Then find <strong>Check Collision</strong> in the <em>Control</em> category and type <code>obj_target</code>.
+        Snap a <strong>Set Sprite</strong> block (from <em>Instance</em>) inside for the "then" case with <code>spr_crate_ok</code>.
+        Add an <strong>Else</strong> section with another <strong>Set Sprite</strong> block for <code>spr_crate</code>.</p>
     </div>
 
-    <h2>Change Sprite When Not on Target</h2>
+    <h2>Apply Your Blocks</h2>
     <div class="step">
         <ol>
-            <li>Add Action: <strong>Control &gt; Else</strong></li>
-            <li>Add Action: <strong>Main1 &gt; Change Sprite</strong></li>
-            <li>Sprite: <code>spr_crate</code></li>
+            <li>You should have <strong>1 event block</strong> (Step) in your workspace</li>
+            <li>Click the <strong>Apply to Events</strong> button to save</li>
         </ol>
     </div>
 

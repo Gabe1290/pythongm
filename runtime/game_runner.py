@@ -2492,7 +2492,7 @@ class GameRunner:
                 if other_instance == instance:
                     continue
 
-                if other_instance.object_name == target_object:
+                if self._object_matches_target(other_instance.object_name, target_object):
                     if self.instances_overlap(instance, other_instance):
                         # Create unique collision key
                         collision_key = (id(other_instance), event_name)
@@ -2606,6 +2606,22 @@ class GameRunner:
                     if actions:
                         logger.debug(f"🚫 NOT_COLLISION: {instance.object_name} not colliding with {target_object}")
                         instance.action_executor.execute_action_list(instance, actions)
+
+    def _object_matches_target(self, object_name: str, target: str) -> bool:
+        """Check if object_name matches target, considering parent inheritance."""
+        if object_name == target:
+            return True
+        # Walk up the parent chain (max 10 levels to prevent cycles)
+        current = object_name
+        for _ in range(10):
+            obj_data = self.objects.get(current, {})
+            parent = obj_data.get('parent', '')
+            if not parent:
+                return False
+            if parent == target:
+                return True
+            current = parent
+        return False
 
     def instances_overlap(self, inst1, inst2) -> bool:
         """Check if two instances overlap"""
@@ -3055,6 +3071,16 @@ class GameRunner:
             if instance.is_thymio and instance.thymio_simulator:
                 render_data = instance.thymio_simulator.get_render_data()
                 self.thymio_renderer.render(self.screen, render_data)
+
+        # Draw GUI layer (drawn on top of everything, in screen coordinates)
+        for instance in self.current_room.instances:
+            if not instance.object_data:
+                continue
+            events = instance.object_data.get('events', {})
+            if 'draw_gui' in events:
+                instance._draw_queue = []
+                instance.action_executor.execute_event(instance, 'draw_gui', events)
+                instance._process_draw_queue(self.screen)
 
         # Update display
         pygame.display.flip()

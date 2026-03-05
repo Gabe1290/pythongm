@@ -236,6 +236,49 @@ class SpriteEditor(BaseEditor):
         size_layout.addWidget(self._size_spin)
         self._tool_grid.addLayout(size_layout, 3, 0, 1, 4)
 
+        # --- Origin controls ---
+        origin_sep = QFrame()
+        origin_sep.setFrameShape(QFrame.HLine)
+        origin_sep.setFrameShadow(QFrame.Sunken)
+        self._tool_grid.addWidget(origin_sep, 4, 0, 1, 4)
+
+        origin_header = QLabel(self.tr("Origin"))
+        origin_header.setStyleSheet("font-weight: bold; font-size: 10px;")
+        self._tool_grid.addWidget(origin_header, 5, 0, 1, 4)
+
+        self._origin_preset = QComboBox()
+        self._origin_preset.setToolTip(self.tr("Origin preset"))
+        self._origin_preset.addItem(self.tr("Top-Left"), "top_left")
+        self._origin_preset.addItem(self.tr("Top-Center"), "top_center")
+        self._origin_preset.addItem(self.tr("Center"), "center")
+        self._origin_preset.addItem(self.tr("Center-Bottom"), "center_bottom")
+        self._origin_preset.addItem(self.tr("Bottom-Left"), "bottom_left")
+        self._origin_preset.addItem(self.tr("Bottom-Right"), "bottom_right")
+        self._origin_preset.addItem(self.tr("Custom"), "custom")
+        self._origin_preset.setCurrentIndex(2)  # Default: Center
+        self._origin_preset.currentIndexChanged.connect(self._on_origin_preset_changed)
+        self._tool_grid.addWidget(self._origin_preset, 6, 0, 1, 4)
+
+        ox_layout = QHBoxLayout()
+        ox_layout.setContentsMargins(0, 0, 0, 0)
+        ox_layout.addWidget(QLabel("X:"))
+        self._origin_x_spin = QSpinBox()
+        self._origin_x_spin.setRange(0, 9999)
+        self._origin_x_spin.setToolTip(self.tr("Origin X coordinate"))
+        self._origin_x_spin.valueChanged.connect(self._on_origin_spin_changed)
+        ox_layout.addWidget(self._origin_x_spin)
+        oy_layout = QHBoxLayout()
+        oy_layout.setContentsMargins(0, 0, 0, 0)
+        oy_layout.addWidget(QLabel("Y:"))
+        self._origin_y_spin = QSpinBox()
+        self._origin_y_spin.setRange(0, 9999)
+        self._origin_y_spin.setToolTip(self.tr("Origin Y coordinate"))
+        self._origin_y_spin.valueChanged.connect(self._on_origin_spin_changed)
+        oy_layout.addWidget(self._origin_y_spin)
+
+        self._tool_grid.addLayout(ox_layout, 7, 0, 1, 2)
+        self._tool_grid.addLayout(oy_layout, 7, 2, 1, 2)
+
         # Filled mode toggle (for rect/ellipse) — icon
         self._filled_action = self.toolbar.addAction(
             self._make_toolbar_icon("filled"), self.tr("Filled"), self._toggle_filled)
@@ -495,6 +538,67 @@ class SpriteEditor(BaseEditor):
         for tool in self._tools.values():
             tool.size = size
 
+    # ------------------------------------------------------------------
+    # Origin controls
+    # ------------------------------------------------------------------
+
+    def _on_origin_preset_changed(self, index: int):
+        """Apply an origin preset based on current frame size."""
+        preset = self._origin_preset.itemData(index)
+        if preset == "custom":
+            return
+        fw, fh = self.frame_timeline.get_frame_size()
+        presets = {
+            "top_left": (0, 0),
+            "top_center": (fw // 2, 0),
+            "center": (fw // 2, fh // 2),
+            "center_bottom": (fw // 2, fh),
+            "bottom_left": (0, fh),
+            "bottom_right": (fw, fh),
+        }
+        ox, oy = presets.get(preset, (fw // 2, fh // 2))
+        self._origin_x_spin.blockSignals(True)
+        self._origin_y_spin.blockSignals(True)
+        self._origin_x_spin.setValue(ox)
+        self._origin_y_spin.setValue(oy)
+        self._origin_x_spin.blockSignals(False)
+        self._origin_y_spin.blockSignals(False)
+        self.canvas.set_origin_marker(ox, oy)
+        self.data_modified.emit(self.asset_name)
+
+    def _on_origin_spin_changed(self):
+        """Manual X/Y spinbox edit — switch preset to Custom."""
+        self._origin_preset.blockSignals(True)
+        custom_idx = self._origin_preset.findData("custom")
+        self._origin_preset.setCurrentIndex(custom_idx)
+        self._origin_preset.blockSignals(False)
+        self.canvas.set_origin_marker(
+            self._origin_x_spin.value(), self._origin_y_spin.value())
+        self.data_modified.emit(self.asset_name)
+
+    def _sync_origin_preset(self):
+        """After loading data, set the preset combo to match the origin values."""
+        fw, fh = self.frame_timeline.get_frame_size()
+        ox = self._origin_x_spin.value()
+        oy = self._origin_y_spin.value()
+        presets = {
+            "top_left": (0, 0),
+            "top_center": (fw // 2, 0),
+            "center": (fw // 2, fh // 2),
+            "center_bottom": (fw // 2, fh),
+            "bottom_left": (0, fh),
+            "bottom_right": (fw, fh),
+        }
+        matched = "custom"
+        for key, (px, py) in presets.items():
+            if ox == px and oy == py:
+                matched = key
+                break
+        self._origin_preset.blockSignals(True)
+        idx = self._origin_preset.findData(matched)
+        self._origin_preset.setCurrentIndex(idx)
+        self._origin_preset.blockSignals(False)
+
     def _mirror_h(self):
         self.canvas.take_stroke_snapshot()
         img = self.canvas.get_image()
@@ -688,6 +792,19 @@ class SpriteEditor(BaseEditor):
         self.frame_timeline.set_frames(frames)
         self.canvas.set_image(self.frame_timeline.get_current_frame())
 
+        # Populate origin spinboxes
+        fw, fh = self.frame_timeline.get_frame_size()
+        ox = data.get("origin_x", fw // 2)
+        oy = data.get("origin_y", fh // 2)
+        self._origin_x_spin.blockSignals(True)
+        self._origin_y_spin.blockSignals(True)
+        self._origin_x_spin.setValue(ox)
+        self._origin_y_spin.setValue(oy)
+        self._origin_x_spin.blockSignals(False)
+        self._origin_y_spin.blockSignals(False)
+        self._sync_origin_preset()
+        self.canvas.set_origin_marker(ox, oy)
+
     def get_data(self) -> Dict[str, Any]:
         """Return sprite metadata dict (image saving happens in save())."""
         frames = self.frame_timeline.get_frames()
@@ -703,8 +820,8 @@ class SpriteEditor(BaseEditor):
             "frames": num_frames,
             "animation_type": "strip_h" if num_frames > 1 else "single",
             "speed": self.frame_timeline._fps,
-            "origin_x": data.get("origin_x", fw // 2),
-            "origin_y": data.get("origin_y", fh // 2),
+            "origin_x": self._origin_x_spin.value(),
+            "origin_y": self._origin_y_spin.value(),
             "asset_type": "sprite",
         })
         return data

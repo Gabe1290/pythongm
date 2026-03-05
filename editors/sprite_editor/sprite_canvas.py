@@ -70,6 +70,9 @@ class SpriteCanvas(QAbstractScrollArea):
         # Hover pixel for brush cursor overlay
         self._hover_pixel = None  # (px, py) or None when mouse outside
 
+        # Origin marker (pixel coords)
+        self._origin_marker = None  # (px, py) or None
+
         # Viewport setup
         self.viewport().setMouseTracking(True)
         self.viewport().setFocusPolicy(Qt.StrongFocus)
@@ -112,6 +115,11 @@ class SpriteCanvas(QAbstractScrollArea):
 
     def get_zoom(self) -> int:
         return self._zoom
+
+    def set_origin_marker(self, x: int, y: int):
+        """Set the origin crosshair position (in pixel coordinates)."""
+        self._origin_marker = (x, y)
+        self.viewport().update()
 
     def set_show_grid(self, show: bool):
         self._show_grid = show
@@ -256,6 +264,10 @@ class SpriteCanvas(QAbstractScrollArea):
         if self._hover_pixel and self._current_tool:
             self._draw_brush_cursor(painter, ox, oy, zoom, img_w, img_h)
 
+        # Origin crosshair
+        if self._origin_marker is not None:
+            self._draw_origin_marker(painter, ox, oy, zoom, img_w, img_h)
+
         painter.end()
 
     def _draw_checkerboard(self, painter: QPainter, ox, oy, w, h):
@@ -318,6 +330,22 @@ class SpriteCanvas(QAbstractScrollArea):
         painter.setPen(pen)
         painter.setBrush(Qt.NoBrush)
         painter.drawRect(cursor_rect)
+
+    def _draw_origin_marker(self, painter: QPainter, ox, oy, zoom, img_w, img_h):
+        """Draw a crosshair at the origin point."""
+        mx, my = self._origin_marker
+        # Screen position of the origin
+        sx = ox + mx * zoom
+        sy = oy + my * zoom
+        arm = max(6, zoom)  # crosshair arm length in screen pixels
+
+        painter.setRenderHint(QPainter.Antialiasing, True)
+        # Black outline for visibility on any background
+        for pen_color, width in [(QColor(0, 0, 0, 180), 3), (QColor(255, 50, 50, 220), 1)]:
+            painter.setPen(QPen(pen_color, width))
+            painter.drawLine(sx - arm, sy, sx + arm, sy)
+            painter.drawLine(sx, sy - arm, sx, sy + arm)
+        painter.setRenderHint(QPainter.Antialiasing, False)
 
     # ------------------------------------------------------------------
     # QAbstractScrollArea overrides

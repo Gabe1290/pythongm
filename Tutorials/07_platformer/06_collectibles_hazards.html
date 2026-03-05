@@ -12,62 +12,75 @@
         .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
         ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-score { background-color: #A6745C; }
+        .block-instance { background-color: #A65C81; }
+        .block-game { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Step 5: Collectibles and Hazards</h1>
+    <h1>Step 5: Collectibles and Hazards (Blockly)</h1>
 
-    <p>Now we add coins to collect, spikes to avoid, and a flag to reach.</p>
+    <p>Now we add coins to collect, spikes to avoid, and a flag to reach.
+    Each object gets its own Blockly behavior.</p>
 
-    <h2>Coin - Collect for Points</h2>
+    <h2>Coin &mdash; Collect for Points</h2>
     <div class="step">
-        <p>In <code>obj_coin</code>:</p>
-        <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Score &gt; Set Score</strong>
-                <ul>
-                    <li>New Score: <code>10</code></li>
-                    <li>Check "Relative"</li>
-                </ul>
-            </li>
-            <li>Add Action: <strong>Main1 &gt; Destroy Instance</strong>
-                <ul>
-                    <li>Applies to: Self</li>
-                </ul>
-            </li>
-        </ol>
+        <p>Open the Blockly editor for <code>obj_coin</code>:</p>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_player</span><br>
+            <span class="block block-score block-indent">Add to Score <span class="block-val">10</span></span><br>
+            <span class="block block-instance block-indent">Destroy Instance <span class="block-val">self</span></span>
+        </div>
+        <p>Find <strong>Collision</strong> in <em>Events</em> and type <code>obj_player</code>.
+        Then snap <strong>Add to Score</strong> (from <em>Score</em>) with value <strong>10</strong>,
+        and <strong>Destroy Instance</strong> (from <em>Instance</em>) set to <strong>Self</strong>.
+        The coin disappears and gives 10 points!</p>
     </div>
 
-    <h2>Spike - Hurts the Player</h2>
+    <h2>Spike &mdash; Hurts the Player</h2>
     <div class="danger">
-        <p>In <code>obj_spike</code>:</p>
-        <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong>
-                <ul>
-                    <li>Message: <code>Ouch! You hit a spike!</code></li>
-                </ul>
-            </li>
-            <li>Add Action: <strong>Main1 &gt; Restart Room</strong></li>
-        </ol>
+        <p>Open the Blockly editor for <code>obj_spike</code>:</p>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_player</span><br>
+            <span class="block block-game block-indent">Show Message <span class="block-val">"Ouch! You hit a spike!"</span></span><br>
+            <span class="block block-game block-indent">Restart Room</span>
+        </div>
+        <p>Find <strong>Collision</strong> in <em>Events</em>, type <code>obj_player</code>.
+        Add <strong>Show Message</strong> (from <em>Game</em>) with text <code>Ouch! You hit a spike!</code>,
+        then <strong>Restart Room</strong> (from <em>Room</em>) to reset the level.</p>
     </div>
 
-    <h2>Flag - Level Complete</h2>
+    <h2>Flag &mdash; Level Complete</h2>
     <div class="step">
-        <p>In <code>obj_flag</code>:</p>
+        <p>Open the Blockly editor for <code>obj_flag</code>:</p>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_player</span><br>
+            <span class="block block-game block-indent">Show Message <span class="block-val">"Level Complete!"</span></span><br>
+            <span class="block block-game block-indent">Restart Room</span>
+        </div>
+        <p>Same pattern as the spike, but with a victory message.
+        You can use <strong>Next Room</strong> instead of Restart Room if you create multiple levels!</p>
+    </div>
+
+    <h2>Apply Your Blocks</h2>
+    <div class="step">
+        <p>For each object (<code>obj_coin</code>, <code>obj_spike</code>, <code>obj_flag</code>):</p>
         <ol>
-            <li>Add Event: <strong>Collision &gt; obj_player</strong></li>
-            <li>Add Action: <strong>Main2 &gt; Show Message</strong>
-                <ul>
-                    <li>Message: <code>Level Complete!</code></li>
-                </ul>
-            </li>
-            <li>Add Action: <strong>Main1 &gt; Restart Room</strong> (or Next Room for multiple levels)</li>
+            <li>Build the blocks shown above</li>
+            <li>Click <strong>Apply to Events</strong> to save</li>
         </ol>
     </div>
 
     <div class="highlight">
         <strong>Tip:</strong> Place spikes near pits or on platforms to create challenge!
+        Scatter coins around the level to reward exploration.
     </div>
 
     <div class="info">
