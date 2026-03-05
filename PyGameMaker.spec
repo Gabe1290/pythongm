@@ -38,12 +38,6 @@ datas = [
     (str(project_dir / 'translations' / '*.qm'), 'translations'),
     # Theme configuration
     (str(project_dir / 'utils' / 'themes.json'), 'utils'),
-    # Language flags
-    (str(project_dir / 'resources' / 'flags'), 'resources/flags'),
-    # Tutorials (HTML files, sample assets, index)
-    (str(project_dir / 'Tutorials'), 'Tutorials'),
-    # Sample sprites used by tutorials
-    (str(project_dir / 'resources' / 'Sprites'), 'resources/Sprites'),
 ]
 
 # Add PySide6 data files
@@ -146,6 +140,12 @@ a = Analysis(
     cipher=None,
     noarchive=False,
 )
+
+# Add directory trees to datas (Tree works in all PyInstaller versions,
+# unlike raw directory paths in datas which require PyInstaller 6.0+).
+a.datas += Tree(str(project_dir / 'Tutorials'), prefix='Tutorials')
+a.datas += Tree(str(project_dir / 'resources' / 'flags'), prefix='resources/flags')
+a.datas += Tree(str(project_dir / 'resources' / 'Sprites'), prefix='resources/Sprites')
 
 # Create the PYZ archive
 pyz = PYZ(a.pure, a.zipped_data, cipher=None)
