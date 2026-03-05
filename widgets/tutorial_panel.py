@@ -5,7 +5,7 @@ Displays HTML tutorials in a detached floating window
 """
 import json
 from pathlib import Path
-from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
+from PySide6.QtWidgets import (QDialog, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                                QPushButton, QListWidget, QListWidgetItem,
                                QStackedWidget, QTextBrowser)
 from PySide6.QtCore import Qt
