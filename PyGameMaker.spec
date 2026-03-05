@@ -143,9 +143,15 @@ a = Analysis(
 
 # Add directory trees to datas (Tree works in all PyInstaller versions,
 # unlike raw directory paths in datas which require PyInstaller 6.0+).
-a.datas += Tree(str(project_dir / 'Tutorials'), prefix='Tutorials')
-a.datas += Tree(str(project_dir / 'resources' / 'flags'), prefix='resources/flags')
-a.datas += Tree(str(project_dir / 'resources' / 'Sprites'), prefix='resources/Sprites')
+# Guard each with exists() so CI builds don't fail when directories are gitignored.
+for _dir, _prefix in [
+    ('Tutorials', 'Tutorials'),
+    ('resources/flags', 'resources/flags'),
+    ('resources/Sprites', 'resources/Sprites'),
+]:
+    _path = project_dir / _dir
+    if _path.is_dir():
+        a.datas += Tree(str(_path), prefix=_prefix)
 
 # Create the PYZ archive
 pyz = PYZ(a.pure, a.zipped_data, cipher=None)
