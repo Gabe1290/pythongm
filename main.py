@@ -253,34 +253,31 @@ def setup_application():
     # Load translations based on config or system locale
     from PySide6.QtCore import QTranslator
 
-    translator = QTranslator()
-    app.translator = translator  # Store translator on app for later access
-
     # Get language from config or use system default
     language_config = Config.get('language', 'en')
 
     print(f"🌐 Language config: {language_config}")
 
     if language_config and language_config != 'en':
-        # Try to load translation file
-        # Try pygm2 first (newer, more complete translations), then fall back to pygamemaker
-        translations_path = Path(__file__).parent / "translations"
-        translation_file = translations_path / f"pygm2_{language_config}.qm"
-        if not translation_file.exists():
-            translation_file = translations_path / f"pygamemaker_{language_config}.qm"
+        from core.language_manager import get_language_manager
+        lang_mgr = get_language_manager()
+        translation_files = lang_mgr._get_translation_files(language_config)
 
-        print(f"📁 Translation file path: {translation_file}")
-        print(f"📁 File exists: {translation_file.exists()}")
-
-        if translation_file.exists():
-            if translator.load(str(translation_file)):
-                app.installTranslator(translator)
-                print(f"✅ Loaded and installed translation: {language_config}")
-                print(f"✅ Testing: AboutDialog/Close = {app.translate('AboutDialog', 'Close')}")
-            else:
-                print(f"⚠️ Failed to load translation: {translation_file}")
+        if translation_files:
+            print(f"📁 Found {len(translation_files)} translation file(s) for {language_config}")
+            app._translators = []  # Store translators on app to prevent GC
+            for tf in translation_files:
+                translator = QTranslator()
+                if translator.load(str(tf)):
+                    app.installTranslator(translator)
+                    app._translators.append(translator)
+                    print(f"   ✅ Loaded {tf.name}")
+                else:
+                    print(f"   ⚠️ Failed to load {tf.name}")
+            print(f"✅ Loaded and installed translation: {language_config}")
+            print(f"✅ Testing: AboutDialog/Close = {app.translate('AboutDialog', 'Close')}")
         else:
-            print(f"ℹ️ No translation file for {language_config}, using English")
+            print(f"ℹ️ No translation files for {language_config}, using English")
     else:
         print("ℹ️ Using English (default)")
 

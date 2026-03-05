@@ -1542,4 +1542,159 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
             <translation>Удалить это событие и все его действия?</translation>
         </message>
     </context>
+    <context>
+        <name>SpriteEditor</name>
+        <message>
+            <source>Pencil</source>
+            <translation>Карандаш</translation>
+        </message>
+        <message>
+            <source>Draw pixels (P)</source>
+            <translation>Рисовать пиксели (P)</translation>
+        </message>
+        <message>
+            <source>Eraser</source>
+            <translation>Ластик</translation>
+        </message>
+        <message>
+            <source>Erase pixels (E)</source>
+            <translation>Стереть пиксели (E)</translation>
+        </message>
+        <message>
+            <source>Picker</source>
+            <translation>Пипетка</translation>
+        </message>
+        <message>
+            <source>Pick color from canvas (I)</source>
+            <translation>Выбрать цвет с холста (I)</translation>
+        </message>
+        <message>
+            <source>Fill</source>
+            <translation>Заливка</translation>
+        </message>
+        <message>
+            <source>Flood fill area (G)</source>
+            <translation>Заливка области (G)</translation>
+        </message>
+        <message>
+            <source>Line</source>
+            <translation>Линия</translation>
+        </message>
+        <message>
+            <source>Draw line (L)</source>
+            <translation>Нарисовать линию (L)</translation>
+        </message>
+        <message>
+            <source>Rect</source>
+            <translation>Прям</translation>
+        </message>
+        <message>
+            <source>Draw rectangle (R)</source>
+            <translation>Нарисовать прямоугольник (R)</translation>
+        </message>
+        <message>
+            <source>Ellipse</source>
+            <translation>Эллипс</translation>
+        </message>
+        <message>
+            <source>Draw ellipse (O)</source>
+            <translation>Нарисовать эллипс (O)</translation>
+        </message>
+        <message>
+            <source>Select</source>
+            <translation>Выделение</translation>
+        </message>
+        <message>
+            <source>Rectangle selection (S)</source>
+            <translation>Прямоугольное выделение (S)</translation>
+        </message>
+        <message>
+            <source>Select tool from list</source>
+            <translation>Выбрать инструмент из списка</translation>
+        </message>
+        <message>
+            <source>Size:</source>
+            <translation>Размер:</translation>
+        </message>
+        <message>
+            <source>Brush / line width in pixels</source>
+            <translation>Ширина кисти / линии в пикселях</translation>
+        </message>
+        <message>
+            <source>Origin</source>
+            <translation>Начало</translation>
+        </message>
+        <message>
+            <source>Origin preset</source>
+            <translation>Предустановка начала</translation>
+        </message>
+        <message>
+            <source>Top-Left</source>
+            <translation>Верх-Лево</translation>
+        </message>
+        <message>
+            <source>Top-Center</source>
+            <translation>Верх-Центр</translation>
+        </message>
+        <message>
+            <source>Center</source>
+            <translation>Центр</translation>
+        </message>
+        <message>
+            <source>Center-Bottom</source>
+            <translation>Центр-Низ</translation>
+        </message>
+        <message>
+            <source>Bottom-Left</source>
+            <translation>Низ-Лево</translation>
+        </message>
+        <message>
+            <source>Bottom-Right</source>
+            <translation>Низ-Право</translation>
+        </message>
+        <message>
+            <source>Custom</source>
+            <translation>Пользовательский</translation>
+        </message>
+        <message>
+            <source>Origin X coordinate</source>
+            <translation>Координата X начала</translation>
+        </message>
+        <message>
+            <source>Origin Y coordinate</source>
+            <translation>Координата Y начала</translation>
+        </message>
+        <message>
+            <source>Filled</source>
+            <translation>Заполненный</translation>
+        </message>
+        <message>
+            <source>Toggle filled shapes</source>
+            <translation>Включить/выключить заполненные фигуры</translation>
+        </message>
+        <message>
+            <source>Mirror H</source>
+            <translation>Зеркало Г</translation>
+        </message>
+        <message>
+            <source>Mirror V</source>
+            <translation>Зеркало В</translation>
+        </message>
+        <message>
+            <source>Grid</source>
+            <translation>Сетка</translation>
+        </message>
+        <message>
+            <source>Toggle pixel grid</source>
+            <translation>Показать/скрыть пиксельную сетку</translation>
+        </message>
+        <message>
+            <source>Zoom Out</source>
+            <translation>Уменьшить</translation>
+        </message>
+        <message>
+            <source>Zoom In</source>
+            <translation>Увеличить</translation>
+        </message>
+    </context>
 </TS>

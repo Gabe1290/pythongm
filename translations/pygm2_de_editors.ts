@@ -1542,4 +1542,159 @@ Klicken Sie mit der rechten Maustaste auf Pfeil links, Pfeil rechts, Pfeil oben 
             <translation>Dieses Ereignis und alle seine Aktionen entfernen?</translation>
         </message>
     </context>
+    <context>
+        <name>SpriteEditor</name>
+        <message>
+            <source>Pencil</source>
+            <translation>Stift</translation>
+        </message>
+        <message>
+            <source>Draw pixels (P)</source>
+            <translation>Pixel zeichnen (P)</translation>
+        </message>
+        <message>
+            <source>Eraser</source>
+            <translation>Radierer</translation>
+        </message>
+        <message>
+            <source>Erase pixels (E)</source>
+            <translation>Pixel löschen (E)</translation>
+        </message>
+        <message>
+            <source>Picker</source>
+            <translation>Pipette</translation>
+        </message>
+        <message>
+            <source>Pick color from canvas (I)</source>
+            <translation>Farbe von der Leinwand aufnehmen (I)</translation>
+        </message>
+        <message>
+            <source>Fill</source>
+            <translation>Füllen</translation>
+        </message>
+        <message>
+            <source>Flood fill area (G)</source>
+            <translation>Bereich füllen (G)</translation>
+        </message>
+        <message>
+            <source>Line</source>
+            <translation>Linie</translation>
+        </message>
+        <message>
+            <source>Draw line (L)</source>
+            <translation>Linie zeichnen (L)</translation>
+        </message>
+        <message>
+            <source>Rect</source>
+            <translation>Rect</translation>
+        </message>
+        <message>
+            <source>Draw rectangle (R)</source>
+            <translation>Rechteck zeichnen (R)</translation>
+        </message>
+        <message>
+            <source>Ellipse</source>
+            <translation>Ellipse</translation>
+        </message>
+        <message>
+            <source>Draw ellipse (O)</source>
+            <translation>Ellipse zeichnen (O)</translation>
+        </message>
+        <message>
+            <source>Select</source>
+            <translation>Auswahl</translation>
+        </message>
+        <message>
+            <source>Rectangle selection (S)</source>
+            <translation>Rechteckauswahl (S)</translation>
+        </message>
+        <message>
+            <source>Select tool from list</source>
+            <translation>Werkzeug aus der Liste wählen</translation>
+        </message>
+        <message>
+            <source>Size:</source>
+            <translation>Größe:</translation>
+        </message>
+        <message>
+            <source>Brush / line width in pixels</source>
+            <translation>Pinsel-/Linienbreite in Pixeln</translation>
+        </message>
+        <message>
+            <source>Origin</source>
+            <translation>Ursprung</translation>
+        </message>
+        <message>
+            <source>Origin preset</source>
+            <translation>Ursprung-Voreinstellung</translation>
+        </message>
+        <message>
+            <source>Top-Left</source>
+            <translation>Oben-Links</translation>
+        </message>
+        <message>
+            <source>Top-Center</source>
+            <translation>Oben-Mitte</translation>
+        </message>
+        <message>
+            <source>Center</source>
+            <translation>Mitte</translation>
+        </message>
+        <message>
+            <source>Center-Bottom</source>
+            <translation>Mitte-Unten</translation>
+        </message>
+        <message>
+            <source>Bottom-Left</source>
+            <translation>Unten-Links</translation>
+        </message>
+        <message>
+            <source>Bottom-Right</source>
+            <translation>Unten-Rechts</translation>
+        </message>
+        <message>
+            <source>Custom</source>
+            <translation>Benutzerdefiniert</translation>
+        </message>
+        <message>
+            <source>Origin X coordinate</source>
+            <translation>Ursprung X-Koordinate</translation>
+        </message>
+        <message>
+            <source>Origin Y coordinate</source>
+            <translation>Ursprung Y-Koordinate</translation>
+        </message>
+        <message>
+            <source>Filled</source>
+            <translation>Gefüllt</translation>
+        </message>
+        <message>
+            <source>Toggle filled shapes</source>
+            <translation>Gefüllte Formen umschalten</translation>
+        </message>
+        <message>
+            <source>Mirror H</source>
+            <translation>Spiegel H</translation>
+        </message>
+        <message>
+            <source>Mirror V</source>
+            <translation>Spiegel V</translation>
+        </message>
+        <message>
+            <source>Grid</source>
+            <translation>Raster</translation>
+        </message>
+        <message>
+            <source>Toggle pixel grid</source>
+            <translation>Pixelraster ein-/ausblenden</translation>
+        </message>
+        <message>
+            <source>Zoom Out</source>
+            <translation>Verkleinern</translation>
+        </message>
+        <message>
+            <source>Zoom In</source>
+            <translation>Vergrößern</translation>
+        </message>
+    </context>
 </TS>

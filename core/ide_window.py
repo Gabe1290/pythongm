@@ -2811,12 +2811,15 @@ class PyGameMakerIDE(QMainWindow):
             if candidate.exists():
                 tutorials_path = candidate
 
-        # If a tutorial window is already open, bring it to front
+        # If a tutorial window is already open and visible, bring it to front
         if hasattr(self, '_tutorial_window') and self._tutorial_window is not None:
             try:
-                self._tutorial_window.raise_()
-                self._tutorial_window.activateWindow()
-                return
+                if self._tutorial_window.isVisible():
+                    self._tutorial_window.raise_()
+                    self._tutorial_window.activateWindow()
+                    return
+                else:
+                    self._tutorial_window = None
             except RuntimeError:
                 self._tutorial_window = None
 

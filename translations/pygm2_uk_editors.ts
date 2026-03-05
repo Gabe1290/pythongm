@@ -1542,4 +1542,159 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
             <translation>Видалити цю подію та всі її дії?</translation>
         </message>
     </context>
+    <context>
+        <name>SpriteEditor</name>
+        <message>
+            <source>Pencil</source>
+            <translation>Олівець</translation>
+        </message>
+        <message>
+            <source>Draw pixels (P)</source>
+            <translation>Малювати пікселі (P)</translation>
+        </message>
+        <message>
+            <source>Eraser</source>
+            <translation>Гумка</translation>
+        </message>
+        <message>
+            <source>Erase pixels (E)</source>
+            <translation>Стерти пікселі (E)</translation>
+        </message>
+        <message>
+            <source>Picker</source>
+            <translation>Піпетка</translation>
+        </message>
+        <message>
+            <source>Pick color from canvas (I)</source>
+            <translation>Вибрати колір з полотна (I)</translation>
+        </message>
+        <message>
+            <source>Fill</source>
+            <translation>Заливка</translation>
+        </message>
+        <message>
+            <source>Flood fill area (G)</source>
+            <translation>Заливка області (G)</translation>
+        </message>
+        <message>
+            <source>Line</source>
+            <translation>Лінія</translation>
+        </message>
+        <message>
+            <source>Draw line (L)</source>
+            <translation>Намалювати лінію (L)</translation>
+        </message>
+        <message>
+            <source>Rect</source>
+            <translation>Прям</translation>
+        </message>
+        <message>
+            <source>Draw rectangle (R)</source>
+            <translation>Намалювати прямокутник (R)</translation>
+        </message>
+        <message>
+            <source>Ellipse</source>
+            <translation>Еліпс</translation>
+        </message>
+        <message>
+            <source>Draw ellipse (O)</source>
+            <translation>Намалювати еліпс (O)</translation>
+        </message>
+        <message>
+            <source>Select</source>
+            <translation>Виділення</translation>
+        </message>
+        <message>
+            <source>Rectangle selection (S)</source>
+            <translation>Прямокутне виділення (S)</translation>
+        </message>
+        <message>
+            <source>Select tool from list</source>
+            <translation>Вибрати інструмент зі списку</translation>
+        </message>
+        <message>
+            <source>Size:</source>
+            <translation>Розмір:</translation>
+        </message>
+        <message>
+            <source>Brush / line width in pixels</source>
+            <translation>Ширина пензля / лінії в пікселях</translation>
+        </message>
+        <message>
+            <source>Origin</source>
+            <translation>Початок</translation>
+        </message>
+        <message>
+            <source>Origin preset</source>
+            <translation>Попереднє налаштування початку</translation>
+        </message>
+        <message>
+            <source>Top-Left</source>
+            <translation>Верх-Ліво</translation>
+        </message>
+        <message>
+            <source>Top-Center</source>
+            <translation>Верх-Центр</translation>
+        </message>
+        <message>
+            <source>Center</source>
+            <translation>Центр</translation>
+        </message>
+        <message>
+            <source>Center-Bottom</source>
+            <translation>Центр-Низ</translation>
+        </message>
+        <message>
+            <source>Bottom-Left</source>
+            <translation>Низ-Ліво</translation>
+        </message>
+        <message>
+            <source>Bottom-Right</source>
+            <translation>Низ-Право</translation>
+        </message>
+        <message>
+            <source>Custom</source>
+            <translation>Користувацький</translation>
+        </message>
+        <message>
+            <source>Origin X coordinate</source>
+            <translation>Координата X початку</translation>
+        </message>
+        <message>
+            <source>Origin Y coordinate</source>
+            <translation>Координата Y початку</translation>
+        </message>
+        <message>
+            <source>Filled</source>
+            <translation>Заповнений</translation>
+        </message>
+        <message>
+            <source>Toggle filled shapes</source>
+            <translation>Увімкнути/вимкнути заповнені фігури</translation>
+        </message>
+        <message>
+            <source>Mirror H</source>
+            <translation>Дзеркало Г</translation>
+        </message>
+        <message>
+            <source>Mirror V</source>
+            <translation>Дзеркало В</translation>
+        </message>
+        <message>
+            <source>Grid</source>
+            <translation>Сітка</translation>
+        </message>
+        <message>
+            <source>Toggle pixel grid</source>
+            <translation>Показати/сховати піксельну сітку</translation>
+        </message>
+        <message>
+            <source>Zoom Out</source>
+            <translation>Зменшити</translation>
+        </message>
+        <message>
+            <source>Zoom In</source>
+            <translation>Збільшити</translation>
+        </message>
+    </context>
 </TS>

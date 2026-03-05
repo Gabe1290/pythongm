@@ -81,9 +81,14 @@ class GameSprite:
         self.frame_height = 32
         self.width = 32  # Actual display width (frame width)
         self.height = 32  # Actual display height (frame height)
+        self.origin_x = 0
+        self.origin_y = 0
         self.speed = 10.0  # Animation FPS
         self.animation_type = "single"  # single, strip_h, strip_v, grid
         self.load_image()
+        # Apply origin from sprite data (after load_image sets dimensions)
+        self.origin_x = self.sprite_data.get('origin_x', 0)
+        self.origin_y = self.sprite_data.get('origin_y', 0)
 
     def load_image(self):
         """Load the sprite image and extract frames if animated"""
@@ -505,9 +510,9 @@ class GameInstance:
 
         # Render sprite if present
         if self.sprite:
-            # Calculate render position
-            render_x = int(self.x)
-            render_y = int(self.y)
+            # Calculate render position (offset by sprite origin)
+            render_x = int(self.x - self.sprite.origin_x)
+            render_y = int(self.y - self.sprite.origin_y)
 
             # Get current animation frame
             frame_idx = int(self.image_index)
@@ -2318,9 +2323,15 @@ class GameRunner:
             w2 = other_instance._cached_width
             h2 = other_instance._cached_height
 
+            # Offset by sprite origins
+            ox1 = moving_instance.sprite.origin_x if moving_instance.sprite else 0
+            oy1 = moving_instance.sprite.origin_y if moving_instance.sprite else 0
+            ox2 = other_instance.sprite.origin_x if other_instance.sprite else 0
+            oy2 = other_instance.sprite.origin_y if other_instance.sprite else 0
+
             # Check rectangle overlap at intended position
-            if self.rectangles_overlap(intended_x, intended_y, w1, h1,
-                                      other_instance.x, other_instance.y, w2, h2):
+            if self.rectangles_overlap(intended_x - ox1, intended_y - oy1, w1, h1,
+                                      other_instance.x - ox2, other_instance.y - oy2, w2, h2):
                 return (False, other_instance)
 
         return (True, None)
@@ -2363,9 +2374,14 @@ class GameRunner:
                 w2 = other_instance._cached_width
                 h2 = other_instance._cached_height
 
-                # Check if they're overlapping
-                if self.rectangles_overlap(instance.x, instance.y, w1, h1,
-                                          other_instance.x, other_instance.y, w2, h2):
+                # Check if they're overlapping (accounting for sprite origin)
+                ox1 = instance.sprite.origin_x if instance.sprite else 0
+                oy1 = instance.sprite.origin_y if instance.sprite else 0
+                ox2 = other_instance.sprite.origin_x if other_instance.sprite else 0
+                oy2 = other_instance.sprite.origin_y if other_instance.sprite else 0
+
+                if self.rectangles_overlap(instance.x - ox1, instance.y - oy1, w1, h1,
+                                          other_instance.x - ox2, other_instance.y - oy2, w2, h2):
                     # They're overlapping - push the moving instance back
                     # Determine which one was moving based on hspeed/vspeed
                     inst_moving = instance.hspeed != 0 or instance.vspeed != 0
@@ -2624,14 +2640,22 @@ class GameRunner:
         return False
 
     def instances_overlap(self, inst1, inst2) -> bool:
-        """Check if two instances overlap"""
+        """Check if two instances overlap (accounting for sprite origin)"""
         # Use cached dimensions for performance
         w1 = inst1._cached_width
         h1 = inst1._cached_height
         w2 = inst2._cached_width
         h2 = inst2._cached_height
 
-        return self.rectangles_overlap(inst1.x, inst1.y, w1, h1, inst2.x, inst2.y, w2, h2)
+        # Offset positions by sprite origin
+        ox1 = inst1.sprite.origin_x if inst1.sprite else 0
+        oy1 = inst1.sprite.origin_y if inst1.sprite else 0
+        ox2 = inst2.sprite.origin_x if inst2.sprite else 0
+        oy2 = inst2.sprite.origin_y if inst2.sprite else 0
+
+        return self.rectangles_overlap(
+            inst1.x - ox1, inst1.y - oy1, w1, h1,
+            inst2.x - ox2, inst2.y - oy2, w2, h2)
 
     def rectangles_overlap(self, x1, y1, w1, h1, x2, y2, w2, h2) -> bool:
         """Check if two rectangles overlap"""
@@ -2679,9 +2703,15 @@ class GameRunner:
             w2 = other_instance._cached_width
             h2 = other_instance._cached_height
 
+            # Offset by sprite origins
+            ox1 = instance.sprite.origin_x if instance.sprite else 0
+            oy1 = instance.sprite.origin_y if instance.sprite else 0
+            ox2 = other_instance.sprite.origin_x if other_instance.sprite else 0
+            oy2 = other_instance.sprite.origin_y if other_instance.sprite else 0
+
             # Check if positions overlap
-            if self.rectangles_overlap(check_x, check_y, w1, h1,
-                                       other_instance.x, other_instance.y, w2, h2):
+            if self.rectangles_overlap(check_x - ox1, check_y - oy1, w1, h1,
+                                       other_instance.x - ox2, other_instance.y - oy2, w2, h2):
                 # Use cached object data for properties
                 other_obj_data = other_instance._cached_object_data
                 if not other_obj_data:

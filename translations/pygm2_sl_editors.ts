@@ -1542,4 +1542,159 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
             <translation>Odstrani ta dogodek in vsa njegova dejanja?</translation>
         </message>
     </context>
+    <context>
+        <name>SpriteEditor</name>
+        <message>
+            <source>Pencil</source>
+            <translation>Svinčnik</translation>
+        </message>
+        <message>
+            <source>Draw pixels (P)</source>
+            <translation>Riši pike (P)</translation>
+        </message>
+        <message>
+            <source>Eraser</source>
+            <translation>Radirka</translation>
+        </message>
+        <message>
+            <source>Erase pixels (E)</source>
+            <translation>Zbriši pike (E)</translation>
+        </message>
+        <message>
+            <source>Picker</source>
+            <translation>Kapalka</translation>
+        </message>
+        <message>
+            <source>Pick color from canvas (I)</source>
+            <translation>Izberi barvo s platna (I)</translation>
+        </message>
+        <message>
+            <source>Fill</source>
+            <translation>Polni</translation>
+        </message>
+        <message>
+            <source>Flood fill area (G)</source>
+            <translation>Polnjenje območja (G)</translation>
+        </message>
+        <message>
+            <source>Line</source>
+            <translation>Črta</translation>
+        </message>
+        <message>
+            <source>Draw line (L)</source>
+            <translation>Nariši črto (L)</translation>
+        </message>
+        <message>
+            <source>Rect</source>
+            <translation>Prav</translation>
+        </message>
+        <message>
+            <source>Draw rectangle (R)</source>
+            <translation>Nariši pravokotnik (R)</translation>
+        </message>
+        <message>
+            <source>Ellipse</source>
+            <translation>Elipsa</translation>
+        </message>
+        <message>
+            <source>Draw ellipse (O)</source>
+            <translation>Nariši elipso (O)</translation>
+        </message>
+        <message>
+            <source>Select</source>
+            <translation>Izbira</translation>
+        </message>
+        <message>
+            <source>Rectangle selection (S)</source>
+            <translation>Pravokotna izbira (S)</translation>
+        </message>
+        <message>
+            <source>Select tool from list</source>
+            <translation>Izberi orodje s seznama</translation>
+        </message>
+        <message>
+            <source>Size:</source>
+            <translation>Velikost:</translation>
+        </message>
+        <message>
+            <source>Brush / line width in pixels</source>
+            <translation>Širina čopiča / črte v pikslih</translation>
+        </message>
+        <message>
+            <source>Origin</source>
+            <translation>Izhodišče</translation>
+        </message>
+        <message>
+            <source>Origin preset</source>
+            <translation>Prednastavitev izhodišča</translation>
+        </message>
+        <message>
+            <source>Top-Left</source>
+            <translation>Zgoraj-Levo</translation>
+        </message>
+        <message>
+            <source>Top-Center</source>
+            <translation>Zgoraj-Sredina</translation>
+        </message>
+        <message>
+            <source>Center</source>
+            <translation>Sredina</translation>
+        </message>
+        <message>
+            <source>Center-Bottom</source>
+            <translation>Sredina-Spodaj</translation>
+        </message>
+        <message>
+            <source>Bottom-Left</source>
+            <translation>Spodaj-Levo</translation>
+        </message>
+        <message>
+            <source>Bottom-Right</source>
+            <translation>Spodaj-Desno</translation>
+        </message>
+        <message>
+            <source>Custom</source>
+            <translation>Po meri</translation>
+        </message>
+        <message>
+            <source>Origin X coordinate</source>
+            <translation>Koordinata X izhodišča</translation>
+        </message>
+        <message>
+            <source>Origin Y coordinate</source>
+            <translation>Koordinata Y izhodišča</translation>
+        </message>
+        <message>
+            <source>Filled</source>
+            <translation>Zapolnjeno</translation>
+        </message>
+        <message>
+            <source>Toggle filled shapes</source>
+            <translation>Vklopi/izklopi zapolnjene oblike</translation>
+        </message>
+        <message>
+            <source>Mirror H</source>
+            <translation>Zrcali V</translation>
+        </message>
+        <message>
+            <source>Mirror V</source>
+            <translation>Zrcali N</translation>
+        </message>
+        <message>
+            <source>Grid</source>
+            <translation>Mreža</translation>
+        </message>
+        <message>
+            <source>Toggle pixel grid</source>
+            <translation>Prikaži/skrij pikselsko mrežo</translation>
+        </message>
+        <message>
+            <source>Zoom Out</source>
+            <translation>Pomanjšaj</translation>
+        </message>
+        <message>
+            <source>Zoom In</source>
+            <translation>Povečaj</translation>
+        </message>
+    </context>
 </TS>
