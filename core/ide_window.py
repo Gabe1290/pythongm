@@ -1760,6 +1760,14 @@ class PyGameMakerIDE(QMainWindow):
         button_group.addButton(android_radio, 5)
         layout.addWidget(android_radio)
 
+        if _platform.system() == 'Darwin':
+            ios_radio = QRadioButton(self.tr("iOS App (.ipa) - ✅ Available (macOS only)"))
+        else:
+            ios_radio = QRadioButton(self.tr("iOS App (.ipa) - ⚠️ Requires macOS with Xcode"))
+        ios_radio.setEnabled(True)
+        button_group.addButton(ios_radio, 6)
+        layout.addWidget(ios_radio)
+
         # Buttons
         button_layout = QHBoxLayout()
         export_btn = QPushButton(self.tr("Export"))
@@ -1783,6 +1791,8 @@ class PyGameMakerIDE(QMainWindow):
                 self.export_macos_app()
             elif selected_id == 5:  # Android APK
                 self.export_android_apk()
+            elif selected_id == 6:  # iOS IPA
+                self.export_ios_app()
             else:
                 QMessageBox.information(
                     self,
@@ -2237,6 +2247,126 @@ class PyGameMakerIDE(QMainWindow):
         cancel_btn.clicked.connect(cancel_export)
 
         # Start export in background thread
+        from PySide6.QtCore import QThread
+
+        class ExportThread(QThread):
+            def __init__(self, exporter, project_path, output_path, settings):
+                super().__init__()
+                self.exporter = exporter
+                self.project_path = project_path
+                self.output_path = output_path
+                self.settings = settings
+
+            def run(self):
+                self.exporter.export_project(
+                    self.project_path,
+                    self.output_path,
+                    self.settings
+                )
+
+        export_thread = ExportThread(
+            exporter,
+            str(self.current_project_path),
+            output_dir,
+            export_settings
+        )
+
+        export_thread.start()
+        progress_dialog.exec()
+        export_thread.wait()
+
+    def export_ios_app(self):
+        """Handle iOS IPA export with progress dialog (macOS + free Apple ID)."""
+        if not self.current_project_path:
+            QMessageBox.warning(
+                self,
+                self.tr("No Project"),
+                self.tr("Please open or create a project first.")
+            )
+            return
+
+        from PySide6.QtWidgets import QFileDialog
+
+        default_name = self.current_project_data.get('name', 'Game').replace(' ', '_')
+        output_dir = QFileDialog.getExistingDirectory(
+            self,
+            self.tr("Choose Export Location"),
+            str(Path.home() / "Desktop" / "{}_ios".format(default_name)),
+            QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks
+        )
+
+        if not output_dir:
+            return
+
+        export_settings = {
+            'output_path': output_dir,
+            'include_assets': True,
+            'include_debug': False,
+        }
+
+        from PySide6.QtWidgets import QDialog, QVBoxLayout, QProgressBar, QHBoxLayout
+
+        progress_dialog = QDialog(self)
+        progress_dialog.setWindowTitle(self.tr("Building iOS App"))
+        progress_dialog.setModal(True)
+        progress_dialog.resize(520, 160)
+
+        layout = QVBoxLayout(progress_dialog)
+
+        status_label = QLabel(
+            self.tr("Preparing iOS export..."))
+        layout.addWidget(status_label)
+
+        progress_bar = QProgressBar()
+        progress_bar.setRange(0, 100)
+        layout.addWidget(progress_bar)
+
+        btn_layout = QHBoxLayout()
+        btn_layout.addStretch()
+        cancel_btn = QPushButton(self.tr("Cancel"))
+        btn_layout.addWidget(cancel_btn)
+        layout.addLayout(btn_layout)
+
+        from export.ios.ios_exporter import iOSExporter
+        exporter = iOSExporter()
+        _export_cancelled = False
+
+        def update_progress(percent, message):
+            progress_bar.setValue(percent)
+            status_label.setText(message)
+
+        def export_finished(success, message):
+            progress_dialog.accept()
+            if _export_cancelled:
+                self.update_status(self.tr("iOS export cancelled"))
+                return
+            if success:
+                result = QMessageBox.information(
+                    self,
+                    self.tr("iOS Export Complete"),
+                    message + "\n\n" + self.tr("Open the output folder?"),
+                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+                )
+                if result == QMessageBox.StandardButton.Yes:
+                    subprocess.run(['open', output_dir])
+            else:
+                QMessageBox.critical(
+                    self,
+                    self.tr("iOS Export Failed"),
+                    message
+                )
+
+        def cancel_export():
+            nonlocal _export_cancelled
+            _export_cancelled = True
+            cancel_btn.setEnabled(False)
+            status_label.setText(self.tr("Cancelling..."))
+            exporter.cancel_requested = True
+
+        exporter.progress_update.connect(update_progress)
+        exporter.export_complete.connect(export_finished)
+        cancel_btn.clicked.connect(cancel_export)
+
         from PySide6.QtCore import QThread
 
         class ExportThread(QThread):
