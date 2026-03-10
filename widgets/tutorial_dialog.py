@@ -8,6 +8,7 @@ from pathlib import Path
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                QPushButton, QListWidget, QListWidgetItem)
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap
 
 from core.logger import get_logger
 logger = get_logger(__name__)
@@ -72,14 +73,27 @@ class TutorialDialog(QDialog):
         self.tutorial_list.itemDoubleClicked.connect(self.on_tutorial_double_clicked)
         layout.addWidget(self.tutorial_list)
 
-        # Description area
+        # Description area with thumbnail
+        desc_widget = QHBoxLayout()
+
+        self.thumbnail_label = QLabel()
+        self.thumbnail_label.setFixedSize(160, 120)
+        self.thumbnail_label.setStyleSheet(
+            "QLabel { background-color: #2c3e50; border-radius: 5px; }"
+        )
+        self.thumbnail_label.setAlignment(Qt.AlignCenter)
+        desc_widget.addWidget(self.thumbnail_label)
+
         self.description_label = QLabel()
         self.description_label.setWordWrap(True)
         self.description_label.setStyleSheet(
             "QLabel { background-color: #f0f0f0; padding: 10px; border-radius: 5px; }"
         )
-        self.description_label.setMinimumHeight(60)
-        layout.addWidget(self.description_label)
+        self.description_label.setMinimumHeight(120)
+        self.description_label.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+        desc_widget.addWidget(self.description_label, 1)
+
+        layout.addLayout(desc_widget)
 
         # Tip
         tip_label = QLabel(self.tr("Tip: Check the documentation (F1) for quick help!"))
@@ -146,7 +160,7 @@ class TutorialDialog(QDialog):
             self.tutorial_list.addItem(item)
 
     def on_tutorial_clicked(self, item):
-        """Show description when tutorial is clicked"""
+        """Show description and thumbnail when tutorial is clicked"""
         tutorial_data = item.data(Qt.UserRole)
         if tutorial_data and isinstance(tutorial_data, dict):
             description = tutorial_data.get('description', '')
@@ -159,6 +173,20 @@ class TutorialDialog(QDialog):
             text += f"<i>{self.tr('Pages:')} {page_count}</i>"
 
             self.description_label.setText(text)
+
+            # Load thumbnail
+            thumbnail = tutorial_data.get('thumbnail', '')
+            if thumbnail and self.base_tutorials_path:
+                thumb_path = self.base_tutorials_path / thumbnail
+                if thumb_path.exists():
+                    pixmap = QPixmap(str(thumb_path))
+                    self.thumbnail_label.setPixmap(
+                        pixmap.scaled(160, 120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                    )
+                else:
+                    self.thumbnail_label.clear()
+            else:
+                self.thumbnail_label.clear()
 
     def on_tutorial_double_clicked(self, item):
         """Open tutorial when double-clicked"""

@@ -280,7 +280,10 @@ class TutorialPanel(QDialog):
                 html_content = f.read()
 
             # Set search paths for relative image paths
-            self.content_browser.setSearchPaths([str(page_file.parent)])
+            search_paths = [str(page_file.parent)]
+            if hasattr(self, 'base_tutorials_path') and self.base_tutorials_path:
+                search_paths.append(str(self.base_tutorials_path))
+            self.content_browser.setSearchPaths(search_paths)
             self.content_browser.setHtml(html_content)
 
         except Exception as e:

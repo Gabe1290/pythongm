@@ -9,7 +9,8 @@
                 "02_interface.html",
                 "03_first_project.html",
                 "04_next_steps.html"
-            ]
+            ],
+            "thumbnail": "thumbnails/01_getting_started.png"
         },
         {
             "title": "Твоя перша гра",
@@ -23,7 +24,8 @@
                 "05_add_star.html",
                 "06_scoring.html",
                 "07_finishing.html"
-            ]
+            ],
+            "thumbnail": "thumbnails/02_first_game.png"
         },
         {
             "title": "Класичний Pong: Гра на Двох",
@@ -38,7 +40,8 @@
                 "06_scoring.html",
                 "07_score_display.html",
                 "08_room_setup.html"
-            ]
+            ],
+            "thumbnail": "thumbnails/03_pong.png"
         },
         {
             "title": "Breakout: Розбивач Цегли",
@@ -53,7 +56,8 @@
                 "06_lives_system.html",
                 "07_score_display.html",
                 "08_room_setup.html"
-            ]
+            ],
+            "thumbnail": "thumbnails/04_breakout.png"
         },
         {
             "title": "Sokoban: Головоломка з Ящиками",
@@ -67,7 +71,8 @@
                 "05_player_movement.html",
                 "06_win_condition.html",
                 "07_room_setup.html"
-            ]
+            ],
+            "thumbnail": "thumbnails/05_sokoban.png"
         },
         {
             "title": "Лабіринт: Знайди Вихід",
@@ -81,7 +86,8 @@
                 "05_collectibles.html",
                 "06_game_controller.html",
                 "07_room_setup.html"
-            ]
+            ],
+            "thumbnail": "thumbnails/06_maze.png"
         },
         {
             "title": "Платформер: Біжи, Стрибай, Збирай",
@@ -96,7 +102,8 @@
                 "06_collectibles_hazards.html",
                 "07_game_controller.html",
                 "08_room_setup.html"
-            ]
+            ],
+            "thumbnail": "thumbnails/07_platformer.png"
         },
         {
             "title": "Lunar Lander: Посадка на Місяць",
@@ -111,7 +118,8 @@
                 "06_collisions.html",
                 "07_game_controller.html",
                 "08_room_setup.html"
-            ]
+            ],
+            "thumbnail": "thumbnails/08_lunar_lander.png"
         }
     ]
 }

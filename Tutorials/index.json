@@ -4,6 +4,7 @@
             "title": "Getting Started with PyGameMaker",
             "folder": "01_getting_started",
             "description": "Learn the basics of PyGameMaker IDE",
+            "thumbnail": "thumbnails/01_getting_started.png",
             "pages": [
                 "01_welcome.html",
                 "02_interface.html",
@@ -15,6 +16,7 @@
             "title": "Your First Game: Catch the Star",
             "folder": "02_first_game",
             "description": "Create a simple game where you catch falling stars",
+            "thumbnail": "thumbnails/02_first_game.png",
             "pages": [
                 "01_introduction.html",
                 "02_create_sprites.html",
@@ -29,6 +31,7 @@
             "title": "Classic Pong: Two-Player Game",
             "folder": "03_pong",
             "description": "Create the classic two-player Pong arcade game",
+            "thumbnail": "thumbnails/03_pong.png",
             "pages": [
                 "01_introduction.html",
                 "02_create_sprites.html",
@@ -44,6 +47,7 @@
             "title": "Breakout: Brick Breaker",
             "folder": "04_breakout",
             "description": "Build a classic brick-breaking arcade game",
+            "thumbnail": "thumbnails/04_breakout.png",
             "pages": [
                 "01_introduction.html",
                 "02_create_sprites.html",
@@ -59,6 +63,7 @@
             "title": "Sokoban: Box-Pushing Puzzle",
             "folder": "05_sokoban",
             "description": "Create a classic box-pushing puzzle game",
+            "thumbnail": "thumbnails/05_sokoban.png",
             "pages": [
                 "01_introduction.html",
                 "02_create_sprites.html",
@@ -73,6 +78,7 @@
             "title": "Maze: Navigate to the Exit",
             "folder": "06_maze",
             "description": "Navigate through corridors, collect coins, reach the exit",
+            "thumbnail": "thumbnails/06_maze.png",
             "pages": [
                 "01_introduction.html",
                 "02_create_sprites.html",
@@ -87,6 +93,7 @@
             "title": "Platformer: Run, Jump, Collect",
             "folder": "07_platformer",
             "description": "Jump across platforms, avoid hazards, collect coins",
+            "thumbnail": "thumbnails/07_platformer.png",
             "pages": [
                 "01_introduction.html",
                 "02_create_sprites.html",
@@ -102,6 +109,7 @@
             "title": "Lunar Lander: Land on the Moon",
             "folder": "08_lunar_lander",
             "description": "Control thrust to land safely, manage fuel",
+            "thumbnail": "thumbnails/08_lunar_lander.png",
             "pages": [
                 "01_introduction.html",
                 "02_create_sprites.html",
