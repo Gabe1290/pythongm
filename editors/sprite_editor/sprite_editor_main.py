@@ -10,7 +10,7 @@ from typing import Dict, Any, Optional
 from PySide6.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QGridLayout, QSplitter, QWidget, QToolBar,
     QLabel, QSpinBox, QSizePolicy, QMessageBox, QToolButton, QMenu, QFrame,
-    QComboBox,
+    QComboBox, QDialog, QDialogButtonBox, QGroupBox, QRadioButton,
 )
 from PySide6.QtCore import Qt, Signal, QRect, QPoint
 from PySide6.QtGui import (
@@ -75,6 +75,99 @@ class FrameEditCommand(QUndoCommand):
         self._editor.frame_timeline.set_frames(self._new_frames)
         self._editor.frame_timeline.set_current_index(self._new_index)
         self._editor.canvas.set_image(self._editor.frame_timeline.get_current_frame())
+
+
+# ---------------------------------------------------------------------------
+# Resize Canvas Dialog
+# ---------------------------------------------------------------------------
+
+class ResizeCanvasDialog(QDialog):
+    """Dialog for resizing or scaling the sprite canvas."""
+
+    def __init__(self, current_width: int, current_height: int, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(self.tr("Resize / Scale"))
+        self.setMinimumWidth(300)
+        self._current_w = current_width
+        self._current_h = current_height
+
+        layout = QVBoxLayout(self)
+
+        # Current size info
+        info = QLabel(self.tr("Current size: {0} x {1}").format(current_width, current_height))
+        info.setStyleSheet("color: gray;")
+        layout.addWidget(info)
+
+        # Mode selection
+        mode_group = QGroupBox(self.tr("Mode"))
+        mode_layout = QVBoxLayout(mode_group)
+        self._scale_radio = QRadioButton(self.tr("Scale Image (stretch content to new size)"))
+        self._canvas_radio = QRadioButton(self.tr("Resize Canvas (keep content, add/crop space)"))
+        self._scale_radio.setChecked(True)
+        self._scale_radio.toggled.connect(self._on_mode_changed)
+        mode_layout.addWidget(self._scale_radio)
+        mode_layout.addWidget(self._canvas_radio)
+        layout.addWidget(mode_group)
+
+        # New size
+        size_layout = QHBoxLayout()
+        size_layout.addWidget(QLabel(self.tr("Width:")))
+        self.width_spin = QSpinBox()
+        self.width_spin.setRange(1, 1024)
+        self.width_spin.setValue(current_width)
+        size_layout.addWidget(self.width_spin)
+
+        size_layout.addWidget(QLabel(self.tr("Height:")))
+        self.height_spin = QSpinBox()
+        self.height_spin.setRange(1, 1024)
+        self.height_spin.setValue(current_height)
+        size_layout.addWidget(self.height_spin)
+        layout.addLayout(size_layout)
+
+        # Anchor position (only for canvas resize)
+        self._anchor_group = QGroupBox(self.tr("Anchor"))
+        anchor_layout = QGridLayout(self._anchor_group)
+        self._anchors = {}
+        positions = [
+            ("top_left", 0, 0), ("top_center", 0, 1), ("top_right", 0, 2),
+            ("middle_left", 1, 0), ("center", 1, 1), ("middle_right", 1, 2),
+            ("bottom_left", 2, 0), ("bottom_center", 2, 1), ("bottom_right", 2, 2),
+        ]
+        for name, row, col in positions:
+            rb = QRadioButton()
+            rb.setFixedSize(20, 20)
+            self._anchors[name] = rb
+            anchor_layout.addWidget(rb, row, col, Qt.AlignCenter)
+        self._anchors["top_left"].setChecked(True)
+        layout.addWidget(self._anchor_group)
+        self._anchor_group.setVisible(False)  # Hidden in scale mode
+
+        # Buttons
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+
+    def _on_mode_changed(self):
+        self._anchor_group.setVisible(self._canvas_radio.isChecked())
+
+    def is_scale_mode(self) -> bool:
+        return self._scale_radio.isChecked()
+
+    def get_new_size(self) -> tuple:
+        return self.width_spin.value(), self.height_spin.value()
+
+    def get_anchor(self) -> tuple:
+        """Return (dx, dy) offset multipliers: 0.0=left/top, 0.5=center, 1.0=right/bottom."""
+        for name, rb in self._anchors.items():
+            if rb.isChecked():
+                col_map = {"left": 0.0, "center": 0.5, "right": 1.0}
+                row_map = {"top": 0.0, "middle": 0.5, "bottom": 1.0, "center": 0.5}
+                parts = name.split("_")
+                if len(parts) == 1:  # "center"
+                    return 0.5, 0.5
+                return col_map.get(parts[1], 0.0), row_map.get(parts[0], 0.0)
+        return 0.0, 0.0
 
 
 # ---------------------------------------------------------------------------
@@ -290,6 +383,9 @@ class SpriteEditor(BaseEditor):
         # Mirror / Flip
         self.toolbar.addAction(self.tr("Mirror H"), self._mirror_h)
         self.toolbar.addAction(self.tr("Mirror V"), self._mirror_v)
+
+        # Resize canvas
+        self.toolbar.addAction(self.tr("Resize"), self._resize_canvas)
 
         self.toolbar.addSeparator()
 
@@ -612,6 +708,49 @@ class SpriteEditor(BaseEditor):
         mirrored = mirror_vertical(img)
         self.canvas.set_image(mirrored)
         self._on_canvas_modified()
+
+    def _resize_canvas(self):
+        """Open resize dialog and scale or resize all frames."""
+        fw, fh = self.frame_timeline.get_frame_size()
+        dlg = ResizeCanvasDialog(fw, fh, self)
+        if dlg.exec() != QDialog.Accepted:
+            return
+
+        new_w, new_h = dlg.get_new_size()
+        if new_w == fw and new_h == fh:
+            return
+
+        old_frames = self.frame_timeline.get_frames()
+        old_index = self.frame_timeline.get_current_index()
+        new_frames = []
+
+        if dlg.is_scale_mode():
+            # Scale: stretch content to fit new dimensions
+            for frame in old_frames:
+                scaled = frame.scaled(new_w, new_h, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+                scaled = scaled.convertToFormat(QImage.Format_ARGB32)
+                new_frames.append(scaled)
+            desc = self.tr("Scale to {0}x{1}").format(new_w, new_h)
+        else:
+            # Canvas resize: keep content, add/crop space using anchor
+            anchor_x, anchor_y = dlg.get_anchor()
+            dx = int((new_w - fw) * anchor_x)
+            dy = int((new_h - fh) * anchor_y)
+            for frame in old_frames:
+                resized = QImage(new_w, new_h, QImage.Format_ARGB32)
+                resized.fill(QColor(0, 0, 0, 0))
+                painter = QPainter(resized)
+                painter.drawImage(dx, dy, frame)
+                painter.end()
+                new_frames.append(resized)
+            desc = self.tr("Resize Canvas to {0}x{1}").format(new_w, new_h)
+
+        cmd = FrameEditCommand(
+            self, old_frames, new_frames,
+            old_index, old_index, desc
+        )
+        self.undo_stack.push(cmd)
+        self.data_modified.emit(self.asset_name)
 
     # ------------------------------------------------------------------
     # Clipboard / selection shortcuts (via canvas signals)

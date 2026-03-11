@@ -3300,6 +3300,18 @@ class PyGameMakerIDE(QMainWindow):
                     self.editor_tabs.setTabText(i, asset_name + '*')
                 break
 
+        # Refresh the properties panel if it's showing this asset
+        if (hasattr(self, 'properties_panel')
+                and self.properties_panel.current_asset
+                and self.properties_panel.current_asset[1] == asset_name):
+            asset_type = self.properties_panel.current_asset[0]
+            # Find the editor widget and get fresh data
+            for i in range(self.editor_tabs.count()):
+                widget = self.editor_tabs.widget(i)
+                if hasattr(widget, 'asset_name') and widget.asset_name == asset_name and hasattr(widget, 'get_data'):
+                    self.properties_panel.show_asset_properties(asset_type, asset_name, widget.get_data())
+                    break
+
     def close_editor_by_name(self, asset_name: str):
         """Close editor tab by asset name"""
         for i in range(self.editor_tabs.count()):

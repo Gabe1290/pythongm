@@ -4,7 +4,7 @@ Enhanced Properties Panel Widget for PyGameMaker IDE
 """
 from pathlib import Path
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QGroupBox, QFormLayout,
-                               QLineEdit, QSpinBox, QPushButton, QCheckBox,
+                               QSpinBox, QPushButton, QCheckBox,
                                QComboBox)
 
 from PySide6.QtCore import Qt, Signal, QTimer
@@ -404,6 +404,17 @@ class EnhancedPropertiesPanel(QWidget):
         # For sprites/backgrounds/other assets, always show preview
         self.show_asset_properties(asset_type, asset_name, asset_info)
 
+    @staticmethod
+    def _readonly_value(text: str) -> QLabel:
+        """Create a read-only value label styled to look like a non-editable field."""
+        lbl = QLabel(text)
+        lbl.setStyleSheet(
+            "QLabel { background-color: palette(midlight); color: palette(text);"
+            " padding: 2px 4px; border-radius: 2px; }"
+        )
+        lbl.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        return lbl
+
     def show_asset_properties(self, asset_type: str, asset_name: str, asset_data: Dict[str, Any]):
         """Show properties for an asset with image preview"""
         self.current_asset = (asset_type, asset_name, asset_data)
@@ -419,24 +430,15 @@ class EnhancedPropertiesPanel(QWidget):
             if child.widget():
                 child.widget().deleteLater()
 
+        rv = self._readonly_value  # shorthand
+
         # Add properties based on asset type
         if asset_type == 'rooms':
-            width_edit = QLineEdit(str(asset_data.get('width', 800)))
-            width_edit.setReadOnly(True)
-            height_edit = QLineEdit(str(asset_data.get('height', 600)))
-            height_edit.setReadOnly(True)
-            bg_color_edit = QLineEdit(asset_data.get('background_color', '#87CEEB'))
-            bg_color_edit.setReadOnly(True)
-
-            # Instance count
+            self.properties_layout.addRow(self.tr("Width:"), rv(str(asset_data.get('width', 800))))
+            self.properties_layout.addRow(self.tr("Height:"), rv(str(asset_data.get('height', 600))))
+            self.properties_layout.addRow(self.tr("Background:"), rv(asset_data.get('background_color', '#87CEEB')))
             instances = asset_data.get('instances', [])
-            instance_count_edit = QLineEdit(str(len(instances)))
-            instance_count_edit.setReadOnly(True)
-
-            self.properties_layout.addRow(self.tr("Width:"), width_edit)
-            self.properties_layout.addRow(self.tr("Height:"), height_edit)
-            self.properties_layout.addRow(self.tr("Background:"), bg_color_edit)
-            self.properties_layout.addRow(self.tr("Instances:"), instance_count_edit)
+            self.properties_layout.addRow(self.tr("Instances:"), rv(str(len(instances))))
 
             # Generate room preview
             self._generate_room_asset_preview(asset_name, asset_data)
@@ -447,31 +449,17 @@ class EnhancedPropertiesPanel(QWidget):
             frame_width = asset_data.get('frame_width', asset_data.get('width', 0))
             frame_height = asset_data.get('frame_height', asset_data.get('height', 0))
 
-            # Show frame dimensions for animated sprites
             if frames > 1:
-                width_edit = QLineEdit(f"{frame_width} (frame)")
-                height_edit = QLineEdit(f"{frame_height} (frame)")
+                self.properties_layout.addRow(self.tr("Width:"), rv(f"{frame_width} (frame)"))
+                self.properties_layout.addRow(self.tr("Height:"), rv(f"{frame_height} (frame)"))
             else:
-                width_edit = QLineEdit(str(asset_data.get('width', 0)))
-                height_edit = QLineEdit(str(asset_data.get('height', 0)))
-            width_edit.setReadOnly(True)
-            height_edit.setReadOnly(True)
+                self.properties_layout.addRow(self.tr("Width:"), rv(str(asset_data.get('width', 0))))
+                self.properties_layout.addRow(self.tr("Height:"), rv(str(asset_data.get('height', 0))))
 
-            frames_edit = QLineEdit(str(frames))
-            frames_edit.setReadOnly(True)
-            origin_x_edit = QLineEdit(str(asset_data.get('origin_x', 0)))
-            origin_x_edit.setReadOnly(True)
-            origin_y_edit = QLineEdit(str(asset_data.get('origin_y', 0)))
-            origin_y_edit.setReadOnly(True)
-            speed_edit = QLineEdit(f"{asset_data.get('speed', 10.0)} FPS")
-            speed_edit.setReadOnly(True)
-
-            self.properties_layout.addRow(self.tr("Width:"), width_edit)
-            self.properties_layout.addRow(self.tr("Height:"), height_edit)
-            self.properties_layout.addRow(self.tr("Frames:"), frames_edit)
-            self.properties_layout.addRow(self.tr("Origin X:"), origin_x_edit)
-            self.properties_layout.addRow(self.tr("Origin Y:"), origin_y_edit)
-            self.properties_layout.addRow(self.tr("Speed:"), speed_edit)
+            self.properties_layout.addRow(self.tr("Frames:"), rv(str(frames)))
+            self.properties_layout.addRow(self.tr("Origin X:"), rv(str(asset_data.get('origin_x', 0))))
+            self.properties_layout.addRow(self.tr("Origin Y:"), rv(str(asset_data.get('origin_y', 0))))
+            self.properties_layout.addRow(self.tr("Speed:"), rv(f"{asset_data.get('speed', 10.0)} FPS"))
 
             # Show animation type for animated sprites
             if frames > 1:
@@ -482,34 +470,21 @@ class EnhancedPropertiesPanel(QWidget):
                     'grid': self.tr('Grid'),
                     'single': self.tr('Single Frame')
                 }.get(anim_type, anim_type)
-                anim_edit = QLineEdit(anim_type_display)
-                anim_edit.setReadOnly(True)
-                self.properties_layout.addRow(self.tr("Animation:"), anim_edit)
+                self.properties_layout.addRow(self.tr("Animation:"), rv(anim_type_display))
 
             # Show file path
             file_path = asset_data.get('file_path', 'N/A')
-            file_path_edit = QLineEdit(file_path)
-            file_path_edit.setReadOnly(True)
-            self.properties_layout.addRow(self.tr("File:"), file_path_edit)
+            self.properties_layout.addRow(self.tr("File:"), rv(file_path))
 
             # Load and display the sprite image (with animation if applicable)
             self.load_sprite_preview(asset_name, asset_data)
 
         elif asset_type == 'backgrounds':
-            # Background properties
-            width_edit = QLineEdit(str(asset_data.get('width', 0)))
-            width_edit.setReadOnly(True)
-            height_edit = QLineEdit(str(asset_data.get('height', 0)))
-            height_edit.setReadOnly(True)
+            self.properties_layout.addRow(self.tr("Width:"), rv(str(asset_data.get('width', 0))))
+            self.properties_layout.addRow(self.tr("Height:"), rv(str(asset_data.get('height', 0))))
 
-            self.properties_layout.addRow(self.tr("Width:"), width_edit)
-            self.properties_layout.addRow(self.tr("Height:"), height_edit)
-
-            # Show file path
             file_path = asset_data.get('file_path', 'N/A')
-            file_path_edit = QLineEdit(file_path)
-            file_path_edit.setReadOnly(True)
-            self.properties_layout.addRow(self.tr("File:"), file_path_edit)
+            self.properties_layout.addRow(self.tr("File:"), rv(file_path))
 
             # Try to load and display the actual background image
             self.load_sprite_preview(asset_name, asset_data)
@@ -522,8 +497,7 @@ class EnhancedPropertiesPanel(QWidget):
             # Generic properties
             for key, value in asset_data.items():
                 if key not in ['name', 'type']:
-                    prop_edit = QLineEdit(str(value))
-                    self.properties_layout.addRow(f"{key.title()}:", prop_edit)
+                    self.properties_layout.addRow(f"{key.title()}:", rv(str(value)))
 
             self.preview_label.setPixmap(QPixmap())  # Clear pixmap
             self.preview_label.setText(self.tr("{0}: {1}").format(asset_type.title(), asset_name))
