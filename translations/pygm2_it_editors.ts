@@ -151,6 +151,18 @@
             <translation>Sfondo:</translation>
         </message>
         <message>
+            <source>Stretch Background:</source>
+            <translation>Adatta sfondo:</translation>
+        </message>
+        <message>
+            <source>BG H Speed:</source>
+            <translation>Velocità H sfondo:</translation>
+        </message>
+        <message>
+            <source>BG V Speed:</source>
+            <translation>Velocità V sfondo:</translation>
+        </message>
+        <message>
             <location filename="../widgets/enhanced_properties_panel.py" line="218" />
             <source>Enable Views:</source>
             <translation>Attiva viste:</translation>
@@ -405,6 +417,10 @@ Eventi: {4}</translation>
             <location filename="../widgets/enhanced_properties_panel.py" line="826" />
             <source>Solid</source>
             <translation>Solido</translation>
+        </message>
+        <message>
+            <source>Configure...</source>
+            <translation>Configura...</translation>
         </message>
     </context>
     <context>
@@ -1695,6 +1711,77 @@ Fai clic destro su Freccia sinistra, Freccia destra, Freccia su o Freccia giù.<
         <message>
             <source>Zoom In</source>
             <translation>Ingrandisci</translation>
+        </message>
+    </context>
+    <context>
+        <name>ViewConfigDialog</name>
+        <message>
+            <source>View Configuration</source>
+            <translation>Configurazione viste</translation>
+        </message>
+        <message>
+            <source>View {0}</source>
+            <translation>Vista {0}</translation>
+        </message>
+        <message>
+            <source>View in Room</source>
+            <translation>Vista nella stanza</translation>
+        </message>
+        <message>
+            <source>Visible:</source>
+            <translation>Visibile:</translation>
+        </message>
+        <message>
+            <source>X:</source>
+            <translation>X:</translation>
+        </message>
+        <message>
+            <source>Y:</source>
+            <translation>Y:</translation>
+        </message>
+        <message>
+            <source>Width:</source>
+            <translation>Larghezza:</translation>
+        </message>
+        <message>
+            <source>Height:</source>
+            <translation>Altezza:</translation>
+        </message>
+        <message>
+            <source>Port on Screen</source>
+            <translation>Porta sullo schermo</translation>
+        </message>
+        <message>
+            <source>Object Following</source>
+            <translation>Inseguimento oggetto</translation>
+        </message>
+        <message>
+            <source>Follow:</source>
+            <translation>Segui:</translation>
+        </message>
+        <message>
+            <source>H Border:</source>
+            <translation>Bordo H:</translation>
+        </message>
+        <message>
+            <source>V Border:</source>
+            <translation>Bordo V:</translation>
+        </message>
+        <message>
+            <source>H Speed:</source>
+            <translation>Velocità H:</translation>
+        </message>
+        <message>
+            <source>V Speed:</source>
+            <translation>Velocità V:</translation>
+        </message>
+        <message>
+            <source>View:</source>
+            <translation>Vista:</translation>
+        </message>
+        <message>
+            <source>None</source>
+            <translation>Nessuno</translation>
         </message>
     </context>
 </TS>

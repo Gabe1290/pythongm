@@ -151,6 +151,18 @@
             <translation>Ozadje:</translation>
         </message>
         <message>
+            <source>Stretch Background:</source>
+            <translation>Raztegni ozadje:</translation>
+        </message>
+        <message>
+            <source>BG H Speed:</source>
+            <translation>Hitrost H ozadja:</translation>
+        </message>
+        <message>
+            <source>BG V Speed:</source>
+            <translation>Hitrost V ozadja:</translation>
+        </message>
+        <message>
             <location filename="../widgets/enhanced_properties_panel.py" line="218" />
             <source>Enable Views:</source>
             <translation>Omogoči poglede:</translation>
@@ -405,6 +417,10 @@ Taille : {2}x{3}
             <location filename="../widgets/enhanced_properties_panel.py" line="826" />
             <source>Solid</source>
             <translation>Trdno</translation>
+        </message>
+        <message>
+            <source>Configure...</source>
+            <translation>Nastavi...</translation>
         </message>
     </context>
     <context>
@@ -1695,6 +1711,77 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
         <message>
             <source>Zoom In</source>
             <translation>Povečaj</translation>
+        </message>
+    </context>
+    <context>
+        <name>ViewConfigDialog</name>
+        <message>
+            <source>View Configuration</source>
+            <translation>Nastavitev pogledov</translation>
+        </message>
+        <message>
+            <source>View {0}</source>
+            <translation>Pogled {0}</translation>
+        </message>
+        <message>
+            <source>View in Room</source>
+            <translation>Pogled v sobi</translation>
+        </message>
+        <message>
+            <source>Visible:</source>
+            <translation>Vidno:</translation>
+        </message>
+        <message>
+            <source>X:</source>
+            <translation>X:</translation>
+        </message>
+        <message>
+            <source>Y:</source>
+            <translation>Y:</translation>
+        </message>
+        <message>
+            <source>Width:</source>
+            <translation>Širina:</translation>
+        </message>
+        <message>
+            <source>Height:</source>
+            <translation>Višina:</translation>
+        </message>
+        <message>
+            <source>Port on Screen</source>
+            <translation>Prikaz na zaslonu</translation>
+        </message>
+        <message>
+            <source>Object Following</source>
+            <translation>Sledenje objektu</translation>
+        </message>
+        <message>
+            <source>Follow:</source>
+            <translation>Sledi:</translation>
+        </message>
+        <message>
+            <source>H Border:</source>
+            <translation>H rob:</translation>
+        </message>
+        <message>
+            <source>V Border:</source>
+            <translation>V rob:</translation>
+        </message>
+        <message>
+            <source>H Speed:</source>
+            <translation>H hitrost:</translation>
+        </message>
+        <message>
+            <source>V Speed:</source>
+            <translation>V hitrost:</translation>
+        </message>
+        <message>
+            <source>View:</source>
+            <translation>Pogled:</translation>
+        </message>
+        <message>
+            <source>None</source>
+            <translation>Brez</translation>
         </message>
     </context>
 </TS>

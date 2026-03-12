@@ -113,7 +113,10 @@ class RoomPreviewGenerator:
                     if x_pos < room_width and y_pos < room_height:
                         painter.drawPixmap(x_pos, y_pos, bg_pixmap)
         else:
-            painter.drawPixmap(0, 0, room_width, room_height, bg_pixmap)
+            if room_data.get('bg_stretch', True):
+                painter.drawPixmap(0, 0, room_width, room_height, bg_pixmap)
+            else:
+                painter.drawPixmap(0, 0, bg_pixmap)
 
     def _draw_instance(self, painter: QPainter, instance_data: Dict[str, Any]):
         """Draw an object instance"""

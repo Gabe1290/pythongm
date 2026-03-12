@@ -151,9 +151,21 @@
             <translation>Фон:</translation>
         </message>
         <message>
+            <source>Stretch Background:</source>
+            <translation>Растянуть фон:</translation>
+        </message>
+        <message>
+            <source>BG H Speed:</source>
+            <translation>Скорость Г фона:</translation>
+        </message>
+        <message>
+            <source>BG V Speed:</source>
+            <translation>Скорость В фона:</translation>
+        </message>
+        <message>
             <location filename="../widgets/enhanced_properties_panel.py" line="218" />
             <source>Enable Views:</source>
-            <translation>Enable Views:</translation>
+            <translation>Включить виды:</translation>
         </message>
         <message>
             <location filename="../widgets/enhanced_properties_panel.py" line="214" />
@@ -405,6 +417,10 @@ Events: {4}</translation>
             <location filename="../widgets/enhanced_properties_panel.py" line="826" />
             <source>Solid</source>
             <translation>Solid</translation>
+        </message>
+        <message>
+            <source>Configure...</source>
+            <translation>Настроить...</translation>
         </message>
     </context>
     <context>
@@ -1695,6 +1711,77 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <message>
             <source>Zoom In</source>
             <translation>Увеличить</translation>
+        </message>
+    </context>
+    <context>
+        <name>ViewConfigDialog</name>
+        <message>
+            <source>View Configuration</source>
+            <translation>Настройка видов</translation>
+        </message>
+        <message>
+            <source>View {0}</source>
+            <translation>Вид {0}</translation>
+        </message>
+        <message>
+            <source>View in Room</source>
+            <translation>Вид в комнате</translation>
+        </message>
+        <message>
+            <source>Visible:</source>
+            <translation>Видимый:</translation>
+        </message>
+        <message>
+            <source>X:</source>
+            <translation>X:</translation>
+        </message>
+        <message>
+            <source>Y:</source>
+            <translation>Y:</translation>
+        </message>
+        <message>
+            <source>Width:</source>
+            <translation>Ширина:</translation>
+        </message>
+        <message>
+            <source>Height:</source>
+            <translation>Высота:</translation>
+        </message>
+        <message>
+            <source>Port on Screen</source>
+            <translation>Порт на экране</translation>
+        </message>
+        <message>
+            <source>Object Following</source>
+            <translation>Слежение за объектом</translation>
+        </message>
+        <message>
+            <source>Follow:</source>
+            <translation>Следовать:</translation>
+        </message>
+        <message>
+            <source>H Border:</source>
+            <translation>Г граница:</translation>
+        </message>
+        <message>
+            <source>V Border:</source>
+            <translation>В граница:</translation>
+        </message>
+        <message>
+            <source>H Speed:</source>
+            <translation>Г скорость:</translation>
+        </message>
+        <message>
+            <source>V Speed:</source>
+            <translation>В скорость:</translation>
+        </message>
+        <message>
+            <source>View:</source>
+            <translation>Вид:</translation>
+        </message>
+        <message>
+            <source>None</source>
+            <translation>Нет</translation>
         </message>
     </context>
 </TS>

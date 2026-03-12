@@ -81,7 +81,7 @@ class RoomEditor(QWidget):
 
         # Center - Room canvas in scroll area
         scroll_area = QScrollArea()
-        scroll_area.setWidgetResizable(True)
+        scroll_area.setWidgetResizable(False)
 
         self.room_canvas = RoomCanvas()
         scroll_area.setWidget(self.room_canvas)
@@ -275,7 +275,10 @@ class RoomEditor(QWidget):
             asset_data.get('background_color', '#87CEEB'),
             asset_data.get('background_image', ''),
             asset_data.get('tile_horizontal', False),
-            asset_data.get('tile_vertical', False)
+            asset_data.get('tile_vertical', False),
+            asset_data.get('bg_hspeed', 0.0),
+            asset_data.get('bg_vspeed', 0.0),
+            asset_data.get('bg_stretch', True)
         )
 
         # Pass project information to canvas for sprite loading
@@ -427,16 +430,18 @@ class RoomEditor(QWidget):
 
         self.current_room_properties[property_name] = value
 
-        if property_name in ['width', 'height', 'background_color', 'background_image', 'tile_horizontal', 'tile_vertical']:
-            self.room_canvas.set_room_properties(
-                self.current_room_properties.get('width', 1024),
-                self.current_room_properties.get('height', 768),
-                self.current_room_properties.get('background_color', '#87CEEB'),
-                self.current_room_properties.get('background_image', ''),
-                self.current_room_properties.get('tile_horizontal', False),
-                self.current_room_properties.get('tile_vertical', False)
-            )
-            logger.debug(f"Canvas updated with new {property_name}: {value}")
+        self.room_canvas.set_room_properties(
+            self.current_room_properties.get('width', 1024),
+            self.current_room_properties.get('height', 768),
+            self.current_room_properties.get('background_color', '#87CEEB'),
+            self.current_room_properties.get('background_image', ''),
+            self.current_room_properties.get('tile_horizontal', False),
+            self.current_room_properties.get('tile_vertical', False),
+            self.current_room_properties.get('bg_hspeed', 0.0),
+            self.current_room_properties.get('bg_vspeed', 0.0),
+            self.current_room_properties.get('bg_stretch', True)
+        )
+        logger.debug(f"Canvas updated with new {property_name}: {value}")
 
         self.mark_modified()
 

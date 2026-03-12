@@ -151,6 +151,18 @@
             <translation>Arrière-plan :</translation>
         </message>
         <message>
+            <source>Stretch Background:</source>
+            <translation>Étirer l'arrière-plan :</translation>
+        </message>
+        <message>
+            <source>BG H Speed:</source>
+            <translation>Vitesse H arrière-plan :</translation>
+        </message>
+        <message>
+            <source>BG V Speed:</source>
+            <translation>Vitesse V arrière-plan :</translation>
+        </message>
+        <message>
             <location filename="../widgets/enhanced_properties_panel.py" line="218" />
             <source>Enable Views:</source>
             <translation>Activer les vues :</translation>
@@ -405,6 +417,10 @@ Taille : {2}x{3}
             <location filename="../widgets/enhanced_properties_panel.py" line="826" />
             <source>Solid</source>
             <translation>Solide</translation>
+        </message>
+        <message>
+            <source>Configure...</source>
+            <translation>Configurer...</translation>
         </message>
     </context>
     <context>
@@ -1695,6 +1711,77 @@ Faites un clic droit sur Flèche gauche, Flèche droite, Flèche haut ou Flèche
         <message>
             <source>Zoom In</source>
             <translation>Zoom avant</translation>
+        </message>
+    </context>
+    <context>
+        <name>ViewConfigDialog</name>
+        <message>
+            <source>View Configuration</source>
+            <translation>Configuration des vues</translation>
+        </message>
+        <message>
+            <source>View {0}</source>
+            <translation>Vue {0}</translation>
+        </message>
+        <message>
+            <source>View in Room</source>
+            <translation>Vue dans la salle</translation>
+        </message>
+        <message>
+            <source>Visible:</source>
+            <translation>Visible :</translation>
+        </message>
+        <message>
+            <source>X:</source>
+            <translation>X :</translation>
+        </message>
+        <message>
+            <source>Y:</source>
+            <translation>Y :</translation>
+        </message>
+        <message>
+            <source>Width:</source>
+            <translation>Largeur :</translation>
+        </message>
+        <message>
+            <source>Height:</source>
+            <translation>Hauteur :</translation>
+        </message>
+        <message>
+            <source>Port on Screen</source>
+            <translation>Port à l'écran</translation>
+        </message>
+        <message>
+            <source>Object Following</source>
+            <translation>Suivi d'objet</translation>
+        </message>
+        <message>
+            <source>Follow:</source>
+            <translation>Suivre :</translation>
+        </message>
+        <message>
+            <source>H Border:</source>
+            <translation>Bordure H :</translation>
+        </message>
+        <message>
+            <source>V Border:</source>
+            <translation>Bordure V :</translation>
+        </message>
+        <message>
+            <source>H Speed:</source>
+            <translation>Vitesse H :</translation>
+        </message>
+        <message>
+            <source>V Speed:</source>
+            <translation>Vitesse V :</translation>
+        </message>
+        <message>
+            <source>View:</source>
+            <translation>Vue :</translation>
+        </message>
+        <message>
+            <source>None</source>
+            <translation>Aucun</translation>
         </message>
     </context>
 </TS>

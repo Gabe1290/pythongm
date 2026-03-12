@@ -5,7 +5,7 @@ Enhanced Properties Panel Widget for PyGameMaker IDE
 from pathlib import Path
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QGroupBox, QFormLayout,
                                QSpinBox, QPushButton, QCheckBox,
-                               QComboBox)
+                               QComboBox, QDialog, QDialogButtonBox)
 
 from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QPixmap
@@ -32,6 +32,7 @@ class EnhancedPropertiesPanel(QWidget):
         self.current_asset = None
         self.current_room_editor = None  # Reference to active room editor
         self.current_object_editor = None
+        self._data_modified_slot = None
 
     def set_project_base_path(self, base_path: str):
         """Set the project base path for resolving relative paths"""
@@ -88,6 +89,8 @@ class EnhancedPropertiesPanel(QWidget):
         # Properties group
         self.properties_group = QGroupBox(self.tr("Properties"))
         self.properties_layout = QFormLayout(self.properties_group)
+        self.properties_layout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow)
+        self.properties_layout.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
         layout.addWidget(self.properties_group)
 
         # Preview group
@@ -115,22 +118,29 @@ class EnhancedPropertiesPanel(QWidget):
         """Set context to show room properties from room editor"""
         # CRITICAL: Disconnect from previous room editor BEFORE setting new reference
         # This prevents changes from being sent to the wrong room editor
-        try:
-            self.room_property_changed.disconnect()
-        except (RuntimeError, TypeError):
-            pass  # No previous connections
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", RuntimeWarning)
+            try:
+                self.room_property_changed.disconnect()
+            except RuntimeError:
+                pass
+
+        # Disconnect previous data_modified connection if any
+        prev_editor = self.current_room_editor
+        if prev_editor and hasattr(prev_editor, 'data_modified') and self._data_modified_slot:
+            try:
+                prev_editor.data_modified.disconnect(self._data_modified_slot)
+            except (RuntimeError, TypeError):
+                pass
 
         self.current_room_editor = room_editor
         self.current_asset = ('room_editor', room_name, room_properties)
 
-        # Connect to preview update signal
-        if hasattr(room_editor, 'room_preview_update_requested'):
-            # Simple approach: just try to connect, Qt handles duplicates
-            try:
-                room_editor.room_preview_update_requested.connect(self.update_room_preview)
-            except RuntimeError:
-                # Connection already exists, that's fine
-                pass
+        # Connect data_modified to refresh derived panel fields (instance count etc.)
+        if hasattr(room_editor, 'data_modified'):
+            self._data_modified_slot = lambda _: self.refresh_panel_state()
+            room_editor.data_modified.connect(self._data_modified_slot)
 
         # Connect to the NEW room editor's update method
         self.room_property_changed.connect(room_editor.update_room_property_from_ide)
@@ -160,23 +170,26 @@ class EnhancedPropertiesPanel(QWidget):
         # Room dimensions
         self.width_spin = QSpinBox()
         self.width_spin.setRange(64, 8192)
+        self.width_spin.setFixedHeight(20)
         self.width_spin.setValue(room_data.get('width', 1024))
         self.width_spin.valueChanged.connect(lambda v: self.on_room_property_changed('width', v))
 
         self.height_spin = QSpinBox()
         self.height_spin.setRange(64, 8192)
+        self.height_spin.setFixedHeight(20)
         self.height_spin.setValue(room_data.get('height', 768))
         self.height_spin.valueChanged.connect(lambda v: self.on_room_property_changed('height', v))
 
         # Background color
         self.bg_color_btn = QPushButton()
         bg_color = room_data.get('background_color', '#87CEEB')
-        self.bg_color_btn.setStyleSheet(f"background-color: {bg_color}; border: 1px solid gray; min-height: 25px;")
+        self.bg_color_btn.setStyleSheet(f"background-color: {bg_color}; border: 1px solid gray;")
         self.bg_color_btn.setText(bg_color)
         self.bg_color_btn.clicked.connect(self.choose_background_color)
 
         # Background image selection
         self.bg_image_combo = QComboBox()
+        self.bg_image_combo.setFixedHeight(20)
         self.bg_image_combo.addItem(self.tr("None"))
 
         # Get available backgrounds/sprites
@@ -194,6 +207,11 @@ class EnhancedPropertiesPanel(QWidget):
             lambda v: self.on_room_property_changed('background_image', v if v != self.tr("None") else '')
         )
 
+        # Stretch background
+        self.bg_stretch_check = QCheckBox()
+        self.bg_stretch_check.setChecked(room_data.get('bg_stretch', True))
+        self.bg_stretch_check.toggled.connect(lambda v: self.on_room_property_changed('bg_stretch', v))
+
         # Tiling options
         self.tile_h_check = QCheckBox()
         self.tile_h_check.setChecked(room_data.get('tile_horizontal', False))
@@ -203,23 +221,104 @@ class EnhancedPropertiesPanel(QWidget):
         self.tile_v_check.setChecked(room_data.get('tile_vertical', False))
         self.tile_v_check.toggled.connect(lambda v: self.on_room_property_changed('tile_vertical', v))
 
+        # Background scroll speed (pixels per step, like classic SHMUPs)
+        from PySide6.QtWidgets import QDoubleSpinBox
+        self.bg_hspeed_spin = QDoubleSpinBox()
+        self.bg_hspeed_spin.setRange(-100.0, 100.0)
+        self.bg_hspeed_spin.setSingleStep(0.5)
+        self.bg_hspeed_spin.setDecimals(2)
+        self.bg_hspeed_spin.setFixedHeight(20)
+        self.bg_hspeed_spin.setValue(room_data.get('bg_hspeed', 0.0))
+        self.bg_hspeed_spin.valueChanged.connect(lambda v: self.on_room_property_changed('bg_hspeed', v))
+
+        self.bg_vspeed_spin = QDoubleSpinBox()
+        self.bg_vspeed_spin.setRange(-100.0, 100.0)
+        self.bg_vspeed_spin.setSingleStep(0.5)
+        self.bg_vspeed_spin.setDecimals(2)
+        self.bg_vspeed_spin.setFixedHeight(20)
+        self.bg_vspeed_spin.setValue(room_data.get('bg_vspeed', 0.0))
+        self.bg_vspeed_spin.valueChanged.connect(lambda v: self.on_room_property_changed('bg_vspeed', v))
+
         # Views
         self.views_check = QCheckBox()
-        self.views_check.setChecked(room_data.get('enable_views', False))
-        self.views_check.toggled.connect(lambda v: self.on_room_property_changed('enable_views', v))
+        self.views_check.setChecked(room_data.get('views_enabled', room_data.get('enable_views', False)))
+        self.views_check.toggled.connect(lambda v: self.on_room_property_changed('views_enabled', v))
+
+        # --- Views Configuration Button ---
+        self._views_data = dict(room_data.get('views', {}))
+        room_w = room_data.get('width', 1024)
+        room_h = room_data.get('height', 768)
+        for i in range(8):
+            key = f'view_{i}'
+            if key not in self._views_data:
+                self._views_data[key] = {
+                    'visible': i == 0,
+                    'view_x': 0, 'view_y': 0,
+                    'view_w': room_w, 'view_h': room_h,
+                    'port_x': 0, 'port_y': 0,
+                    'port_w': room_w, 'port_h': room_h,
+                    'follow': '', 'hborder': 32, 'vborder': 32,
+                    'hspeed': -1, 'vspeed': -1,
+                }
+
+        self._configure_views_btn = QPushButton(self.tr("Configure..."))
+        self._configure_views_btn.clicked.connect(self._open_views_dialog)
+        self._configure_views_btn.setVisible(self.views_check.isChecked())
+        self.views_check.toggled.connect(self._configure_views_btn.setVisible)
 
         # Add to layout in logical order
         self.properties_layout.addRow(self.tr("Width:"), self.width_spin)
         self.properties_layout.addRow(self.tr("Height:"), self.height_spin)
         self.properties_layout.addRow(self.tr("Background Color:"), self.bg_color_btn)
         self.properties_layout.addRow(self.tr("Background Image:"), self.bg_image_combo)
+        self.properties_layout.addRow(self.tr("Stretch Background:"), self.bg_stretch_check)
         self.properties_layout.addRow(self.tr("Tile Horizontal:"), self.tile_h_check)
         self.properties_layout.addRow(self.tr("Tile Vertical:"), self.tile_v_check)
+        self.properties_layout.addRow(self.tr("BG H Speed:"), self.bg_hspeed_spin)
+        self.properties_layout.addRow(self.tr("BG V Speed:"), self.bg_vspeed_spin)
         self.properties_layout.addRow(self.tr("Enable Views:"), self.views_check)
+        self.properties_layout.addRow("", self._configure_views_btn)
 
-        # Instance count (read-only)
+        # Instance count (read-only, kept as attribute so it can be updated live)
         instance_count = len(room_data.get('instances', []))
-        self.properties_layout.addRow(self.tr("Instances:"), QLabel(str(instance_count)))
+        self._instance_count_label = QLabel(str(instance_count))
+        self.properties_layout.addRow(self.tr("Instances:"), self._instance_count_label)
+
+    def refresh_panel_state(self):
+        """Refresh derived panel fields (instance count etc.) without rebuilding the whole panel"""
+        if not self.current_room_editor:
+            return
+        try:
+            data = self.current_room_editor.get_data()
+            if hasattr(self, '_instance_count_label') and self._instance_count_label:
+                self._instance_count_label.setText(str(len(data.get('instances', []))))
+        except Exception:
+            pass
+        QTimer.singleShot(100, self.update_room_preview)
+
+    def _open_views_dialog(self):
+        """Open floating dialog for view configuration"""
+        dlg = ViewConfigDialog(self._views_data, self._get_available_objects(), self)
+        if dlg.exec() == QDialog.Accepted:
+            self._views_data = dlg.get_views_data()
+            self.on_room_property_changed('views', dict(self._views_data))
+
+    def _get_available_objects(self):
+        """Get available object names from project data"""
+        try:
+            parent = self.parent()
+            level = 0
+            while parent:
+                level += 1
+                if hasattr(parent, 'current_project_data') and parent.current_project_data:
+                    assets = parent.current_project_data.get('assets', {})
+                    return sorted(assets.get('objects', {}).keys())
+                parent = parent.parent()
+                if level > 10:
+                    break
+        except Exception as e:
+            logger.error(f"Error getting available objects: {e}")
+        return []
 
     def choose_background_color(self):
         """Open color dialog for background color"""
@@ -231,7 +330,7 @@ class EnhancedPropertiesPanel(QWidget):
 
         if color.isValid():
             color_hex = color.name()
-            self.bg_color_btn.setStyleSheet(f"background-color: {color_hex}; border: 1px solid gray; min-height: 25px;")
+            self.bg_color_btn.setStyleSheet(f"background-color: {color_hex}; border: 1px solid gray;")
             self.bg_color_btn.setText(color_hex)
             self.on_room_property_changed('background_color', color_hex)
 
@@ -855,3 +954,175 @@ class EnhancedPropertiesPanel(QWidget):
 
     def set_project(self, project_path, project_data):
         """Set project data - compatibility method"""
+        pass
+
+
+class ViewConfigDialog(QDialog):
+    """Floating dialog for configuring room views (0-7)"""
+
+    def __init__(self, views_data: Dict[str, Any], available_objects: list, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(self.tr("View Configuration"))
+        self.setMinimumWidth(350)
+        self._views_data = {k: dict(v) for k, v in views_data.items()}
+
+        layout = QVBoxLayout(self)
+
+        # View selector
+        selector_layout = QFormLayout()
+        self._view_selector = QComboBox()
+        for i in range(8):
+            self._view_selector.addItem(self.tr("View {0}").format(i))
+        selector_layout.addRow(self.tr("View:"), self._view_selector)
+        layout.addLayout(selector_layout)
+
+        # View area group
+        view_group = QGroupBox(self.tr("View in Room"))
+        view_form = QFormLayout(view_group)
+
+        self._visible_check = QCheckBox()
+        view_form.addRow(self.tr("Visible:"), self._visible_check)
+
+        self._view_x = QSpinBox()
+        self._view_x.setRange(0, 32768)
+        view_form.addRow(self.tr("X:"), self._view_x)
+
+        self._view_y = QSpinBox()
+        self._view_y.setRange(0, 32768)
+        view_form.addRow(self.tr("Y:"), self._view_y)
+
+        self._view_w = QSpinBox()
+        self._view_w.setRange(1, 32768)
+        view_form.addRow(self.tr("Width:"), self._view_w)
+
+        self._view_h = QSpinBox()
+        self._view_h.setRange(1, 32768)
+        view_form.addRow(self.tr("Height:"), self._view_h)
+
+        layout.addWidget(view_group)
+
+        # Port (screen) group
+        port_group = QGroupBox(self.tr("Port on Screen"))
+        port_form = QFormLayout(port_group)
+
+        self._port_x = QSpinBox()
+        self._port_x.setRange(0, 32768)
+        port_form.addRow(self.tr("X:"), self._port_x)
+
+        self._port_y = QSpinBox()
+        self._port_y.setRange(0, 32768)
+        port_form.addRow(self.tr("Y:"), self._port_y)
+
+        self._port_w = QSpinBox()
+        self._port_w.setRange(1, 32768)
+        port_form.addRow(self.tr("Width:"), self._port_w)
+
+        self._port_h = QSpinBox()
+        self._port_h.setRange(1, 32768)
+        port_form.addRow(self.tr("Height:"), self._port_h)
+
+        layout.addWidget(port_group)
+
+        # Following group
+        follow_group = QGroupBox(self.tr("Object Following"))
+        follow_form = QFormLayout(follow_group)
+
+        self._follow_combo = QComboBox()
+        self._follow_combo.addItem(self.tr("None"), "")
+        for obj_name in available_objects:
+            self._follow_combo.addItem(obj_name, obj_name)
+        follow_form.addRow(self.tr("Follow:"), self._follow_combo)
+
+        self._hborder = QSpinBox()
+        self._hborder.setRange(0, 1024)
+        follow_form.addRow(self.tr("H Border:"), self._hborder)
+
+        self._vborder = QSpinBox()
+        self._vborder.setRange(0, 1024)
+        follow_form.addRow(self.tr("V Border:"), self._vborder)
+
+        self._hspeed = QSpinBox()
+        self._hspeed.setRange(-1, 1000)
+        follow_form.addRow(self.tr("H Speed:"), self._hspeed)
+
+        self._vspeed = QSpinBox()
+        self._vspeed.setRange(-1, 1000)
+        follow_form.addRow(self.tr("V Speed:"), self._vspeed)
+
+        layout.addWidget(follow_group)
+
+        # OK / Cancel buttons
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+
+        # Connect view selector
+        self._view_selector.currentIndexChanged.connect(self._on_view_selected)
+
+        # Connect live-save: store field changes into _views_data immediately
+        self._visible_check.toggled.connect(lambda v: self._set_field('visible', v))
+        self._view_x.valueChanged.connect(lambda v: self._set_field('view_x', v))
+        self._view_y.valueChanged.connect(lambda v: self._set_field('view_y', v))
+        self._view_w.valueChanged.connect(lambda v: self._set_field('view_w', v))
+        self._view_h.valueChanged.connect(lambda v: self._set_field('view_h', v))
+        self._port_x.valueChanged.connect(lambda v: self._set_field('port_x', v))
+        self._port_y.valueChanged.connect(lambda v: self._set_field('port_y', v))
+        self._port_w.valueChanged.connect(lambda v: self._set_field('port_w', v))
+        self._port_h.valueChanged.connect(lambda v: self._set_field('port_h', v))
+        self._follow_combo.currentIndexChanged.connect(
+            lambda idx: self._set_field('follow', self._follow_combo.itemData(idx) or ''))
+        self._hborder.valueChanged.connect(lambda v: self._set_field('hborder', v))
+        self._vborder.valueChanged.connect(lambda v: self._set_field('vborder', v))
+        self._hspeed.valueChanged.connect(lambda v: self._set_field('hspeed', v))
+        self._vspeed.valueChanged.connect(lambda v: self._set_field('vspeed', v))
+
+        # Populate view 0
+        self._populate(0)
+
+    def _current_key(self):
+        return f'view_{self._view_selector.currentIndex()}'
+
+    def _set_field(self, field, value):
+        """Store a field change into the views data dict"""
+        key = self._current_key()
+        if key not in self._views_data:
+            self._views_data[key] = {}
+        self._views_data[key][field] = value
+
+    def _populate(self, index):
+        """Load view data into the widgets, blocking signals during population"""
+        key = f'view_{index}'
+        vd = self._views_data.get(key, {})
+        widgets = [
+            self._visible_check, self._view_x, self._view_y,
+            self._view_w, self._view_h, self._port_x, self._port_y,
+            self._port_w, self._port_h, self._follow_combo,
+            self._hborder, self._vborder, self._hspeed, self._vspeed,
+        ]
+        for w in widgets:
+            w.blockSignals(True)
+        self._visible_check.setChecked(vd.get('visible', index == 0))
+        self._view_x.setValue(vd.get('view_x', 0))
+        self._view_y.setValue(vd.get('view_y', 0))
+        self._view_w.setValue(vd.get('view_w', 1024))
+        self._view_h.setValue(vd.get('view_h', 768))
+        self._port_x.setValue(vd.get('port_x', 0))
+        self._port_y.setValue(vd.get('port_y', 0))
+        self._port_w.setValue(vd.get('port_w', 1024))
+        self._port_h.setValue(vd.get('port_h', 768))
+        follow = vd.get('follow', '') or ''
+        idx = self._follow_combo.findData(follow)
+        self._follow_combo.setCurrentIndex(idx if idx >= 0 else 0)
+        self._hborder.setValue(vd.get('hborder', 32))
+        self._vborder.setValue(vd.get('vborder', 32))
+        self._hspeed.setValue(vd.get('hspeed', -1))
+        self._vspeed.setValue(vd.get('vspeed', -1))
+        for w in widgets:
+            w.blockSignals(False)
+
+    def _on_view_selected(self, index):
+        self._populate(index)
+
+    def get_views_data(self):
+        return self._views_data

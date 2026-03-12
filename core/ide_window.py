@@ -1291,7 +1291,7 @@ class PyGameMakerIDE(QMainWindow):
                     'width': 1024,
                     'height': 768,
                     'background_color': '#87CEEB',
-                    'enable_views': False,
+                    'views_enabled': False,
                     'instances': [],
                     'asset_type': 'room',
                     'imported': True
@@ -3309,7 +3309,11 @@ class PyGameMakerIDE(QMainWindow):
             for i in range(self.editor_tabs.count()):
                 widget = self.editor_tabs.widget(i)
                 if hasattr(widget, 'asset_name') and widget.asset_name == asset_name and hasattr(widget, 'get_data'):
-                    self.properties_panel.show_asset_properties(asset_type, asset_name, widget.get_data())
+                    if asset_type == 'room_editor':
+                        # Keep the interactive room editor panel — just refresh derived fields
+                        self.properties_panel.refresh_panel_state()
+                    else:
+                        self.properties_panel.show_asset_properties(asset_type, asset_name, widget.get_data())
                     break
 
     def close_editor_by_name(self, asset_name: str):

@@ -673,7 +673,20 @@ class GmkConverter:
             "tile_vertical": False,
             "instances": instances,
             "creation_code": gmk_room.creation_code or "",
-            "enable_views": gmk_room.enable_views,
+            "views_enabled": gmk_room.enable_views,
+            "views": {
+                f'view_{i}': {
+                    'visible': v.visible,
+                    'view_x': v.xview, 'view_y': v.yview,
+                    'view_w': v.wview, 'view_h': v.hview,
+                    'port_x': v.xport, 'port_y': v.yport,
+                    'port_w': v.wport, 'port_h': v.hport,
+                    'hborder': v.border_h, 'vborder': v.border_v,
+                    'hspeed': v.hspeed, 'vspeed': v.vspeed,
+                    'follow': '',
+                }
+                for i, v in enumerate(gmk_room.views)
+            },
             "created": now,
             "modified": now,
             "imported": True,

@@ -829,6 +829,11 @@ class GameRoom:
         self.background_image_name = room_data.get('background_image', '')
         self.tile_horizontal = room_data.get('tile_horizontal', False)
         self.tile_vertical = room_data.get('tile_vertical', False)
+        self.bg_hspeed = room_data.get('bg_hspeed', 0.0)
+        self.bg_vspeed = room_data.get('bg_vspeed', 0.0)
+        self.bg_stretch = room_data.get('bg_stretch', True)
+        self.bg_scroll_x = 0.0
+        self.bg_scroll_y = 0.0
         self.background_surface = None
         self.project_path = project_path
         self.sprites_data = sprites_data or {}
@@ -853,7 +858,7 @@ class GameRoom:
         self._font_cache: Dict[int, pygame.font.Font] = {}
 
         # View system - 8 views like GameMaker
-        self.views_enabled = room_data.get('views_enabled', False)
+        self.views_enabled = room_data.get('views_enabled', room_data.get('enable_views', False))
         self.views = []
         views_raw = room_data.get('views', {})
         # Handle both list and dict formats for views
@@ -1097,22 +1102,38 @@ class GameRoom:
             img_width = self.background_surface.get_width()
             img_height = self.background_surface.get_height()
 
-            if self.tile_horizontal or self.tile_vertical:
-                # Tile the background
-                x_count = (self.width // img_width) + 2 if self.tile_horizontal else 1
-                y_count = (self.height // img_height) + 2 if self.tile_vertical else 1
+            # Advance scroll offset each frame
+            if self.bg_hspeed != 0.0 or self.bg_vspeed != 0.0:
+                self.bg_scroll_x = (self.bg_scroll_x + self.bg_hspeed) % img_width
+                self.bg_scroll_y = (self.bg_scroll_y + self.bg_vspeed) % img_height
 
-                for x_tile in range(x_count):
-                    for y_tile in range(y_count):
-                        x_pos = x_tile * img_width if self.tile_horizontal else 0
-                        y_pos = y_tile * img_height if self.tile_vertical else 0
+            do_tile_h = self.tile_horizontal or self.bg_hspeed != 0.0
+            do_tile_v = self.tile_vertical or self.bg_vspeed != 0.0
 
-                        if x_pos < self.width and y_pos < self.height:
-                            screen.blit(self.background_surface, (x_pos, y_pos))
+            if do_tile_h or do_tile_v:
+                # Seamless tiling with scroll offset
+                offset_x = int(self.bg_scroll_x) if do_tile_h else 0
+                offset_y = int(self.bg_scroll_y) if do_tile_v else 0
+                start_x = offset_x - img_width if do_tile_h else 0
+                start_y = offset_y - img_height if do_tile_v else 0
+                step_x = img_width if do_tile_h else self.width
+                step_y = img_height if do_tile_v else self.height
+
+                x = start_x
+                while x < self.width:
+                    y = start_y
+                    while y < self.height:
+                        screen.blit(self.background_surface, (x, y))
+                        y += step_y
+                    x += step_x
             else:
-                # Stretch to fill room
-                scaled_bg = pygame.transform.scale(self.background_surface, (self.width, self.height))
-                screen.blit(scaled_bg, (0, 0))
+                if self.bg_stretch:
+                    # Stretch to fill room
+                    scaled_bg = pygame.transform.scale(self.background_surface, (self.width, self.height))
+                    screen.blit(scaled_bg, (0, 0))
+                else:
+                    # Draw at original size
+                    screen.blit(self.background_surface, (0, 0))
 
         # Render all instances sorted by depth (higher depth = drawn first/behind)
         # In GameMaker, lower depth values are drawn on top (in front)
@@ -2628,9 +2649,10 @@ class GameRunner:
         if object_name == target:
             return True
         # Walk up the parent chain (max 10 levels to prevent cycles)
+        objects_data = self.project_data.get('assets', {}).get('objects', {})
         current = object_name
         for _ in range(10):
-            obj_data = self.objects.get(current, {})
+            obj_data = objects_data.get(current, {})
             parent = obj_data.get('parent', '')
             if not parent:
                 return False

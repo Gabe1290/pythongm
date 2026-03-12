@@ -28,13 +28,15 @@ class RoomCanvas(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setMinimumSize(800, 600)
+        self.setMinimumSize(64, 64)
         self.room_width = 1024
         self.room_height = 768
         self.background_color = QColor("#87CEEB")
         self.background_image_name = ''
         self.tile_horizontal = False
         self.tile_vertical = False
+        self.bg_hspeed = 0.0
+        self.bg_vspeed = 0.0
 
         self.instances = []
         # CHANGED: Support multiple selected instances
@@ -83,7 +85,8 @@ class RoomCanvas(QWidget):
         self.project_data = project_data
         self.sprite_cache.clear()
 
-    def set_room_properties(self, width, height, bg_color, bg_image='', tile_h=False, tile_v=False):
+    def set_room_properties(self, width, height, bg_color, bg_image='', tile_h=False, tile_v=False,
+                            bg_hspeed=0.0, bg_vspeed=0.0, bg_stretch=True):
         """Set room properties including background"""
         self.room_width = width
         self.room_height = height
@@ -96,7 +99,11 @@ class RoomCanvas(QWidget):
         self.background_image_name = bg_image
         self.tile_horizontal = tile_h
         self.tile_vertical = tile_v
+        self.bg_hspeed = bg_hspeed
+        self.bg_vspeed = bg_vspeed
+        self.bg_stretch = bg_stretch
 
+        self.setFixedSize(width, height)
         self.update()
 
     def set_current_object_type(self, object_name):
@@ -458,25 +465,28 @@ class RoomCanvas(QWidget):
         if not bg_pixmap or bg_pixmap.isNull():
             return
 
-        tile_h = getattr(self, 'tile_horizontal', False)
-        tile_v = getattr(self, 'tile_vertical', False)
+        do_tile_h = getattr(self, 'tile_horizontal', False) or getattr(self, 'bg_hspeed', 0.0) != 0.0
+        do_tile_v = getattr(self, 'tile_vertical', False) or getattr(self, 'bg_vspeed', 0.0) != 0.0
 
-        if tile_h or tile_v:
+        if do_tile_h or do_tile_v:
             img_width = bg_pixmap.width()
             img_height = bg_pixmap.height()
 
-            x_count = (self.room_width // img_width) + 2 if tile_h else 1
-            y_count = (self.room_height // img_height) + 2 if tile_v else 1
+            x_count = (self.room_width // img_width) + 2 if do_tile_h else 1
+            y_count = (self.room_height // img_height) + 2 if do_tile_v else 1
 
             for x_tile in range(x_count):
                 for y_tile in range(y_count):
-                    x_pos = x_tile * img_width if tile_h else 0
-                    y_pos = y_tile * img_height if tile_v else 0
+                    x_pos = x_tile * img_width if do_tile_h else 0
+                    y_pos = y_tile * img_height if do_tile_v else 0
 
                     if x_pos < self.room_width and y_pos < self.room_height:
                         painter.drawPixmap(x_pos, y_pos, bg_pixmap)
         else:
-            painter.drawPixmap(0, 0, self.room_width, self.room_height, bg_pixmap)
+            if getattr(self, 'bg_stretch', True):
+                painter.drawPixmap(0, 0, self.room_width, self.room_height, bg_pixmap)
+            else:
+                painter.drawPixmap(0, 0, bg_pixmap)
 
     def load_background_image(self, image_name):
         """Load background image from project"""

@@ -875,8 +875,9 @@ class ProjectManager(QObject):
                         "background_image": "",
                         "tile_horizontal": False,
                         "tile_vertical": False,
+                        "bg_stretch": True,
                         "instances": [],
-                        "enable_views": False
+                        "views_enabled": False
                     })
                 elif asset_type_singular == "sprite":
                     new_asset_data.update({
