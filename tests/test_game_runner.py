@@ -613,6 +613,8 @@ class TestInstancesOverlap:
         instance.y = y
         instance._cached_width = width
         instance._cached_height = height
+        instance.sprite.origin_x = 0
+        instance.sprite.origin_y = 0
         return instance
 
     def test_instances_overlap_true(self, game_runner):
