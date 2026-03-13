@@ -347,6 +347,13 @@ class GmkConverter:
                     "height": gmk_bg.height,
                     "tile_horizontal": False,
                     "tile_vertical": False,
+                    "use_as_tileset": gmk_bg.use_as_tileset,
+                    "tile_width": gmk_bg.tile_width,
+                    "tile_height": gmk_bg.tile_height,
+                    "h_offset": gmk_bg.h_offset,
+                    "v_offset": gmk_bg.v_offset,
+                    "h_sep": gmk_bg.h_sep,
+                    "v_sep": gmk_bg.v_sep,
                     "imported": True,
                     "created": now,
                     "modified": now,
@@ -661,6 +668,50 @@ class GmkConverter:
                 inst_data["creation_code"] = inst.creation_code
             instances.append(inst_data)
 
+        # Convert all 8 background layers
+        bg_layers = []
+        for bg in gmk_room.backgrounds:
+            bg_img_name = ""
+            if bg.background_id >= 0:
+                bg_img_name = self._resolve_name("backgrounds", bg.background_id) or ""
+            bg_layers.append({
+                "visible": bg.visible,
+                "foreground": bg.foreground,
+                "background_image": bg_img_name,
+                "x": bg.x, "y": bg.y,
+                "tile_h": bg.tile_h, "tile_v": bg.tile_v,
+                "hspeed": bg.hspeed, "vspeed": bg.vspeed,
+                "stretch": bg.stretch,
+            })
+        # Pad to 8 layers
+        while len(bg_layers) < 8:
+            bg_layers.append({
+                "visible": False, "foreground": False,
+                "background_image": "",
+                "x": 0, "y": 0,
+                "tile_h": False, "tile_v": False,
+                "hspeed": 0.0, "vspeed": 0.0,
+                "stretch": False,
+            })
+        bg_layers = bg_layers[:8]
+
+        # Convert tiles
+        tiles = []
+        for tile in gmk_room.tiles:
+            bg_name = self._resolve_name("backgrounds", tile.background_id)
+            if not bg_name:
+                continue
+            tiles.append({
+                "background_name": bg_name,
+                "x": tile.x,
+                "y": tile.y,
+                "tile_x": tile.tile_x,
+                "tile_y": tile.tile_y,
+                "width": tile.width,
+                "height": tile.height,
+                "depth": tile.depth,
+            })
+
         # Write external room file
         room_file_data = {
             "name": name,
@@ -669,9 +720,11 @@ class GmkConverter:
             "height": gmk_room.height,
             "background_color": bg_color,
             "background_image": bg_image,
+            "backgrounds": bg_layers,
             "tile_horizontal": False,
             "tile_vertical": False,
             "instances": instances,
+            "tiles": tiles,
             "creation_code": gmk_room.creation_code or "",
             "views_enabled": gmk_room.enable_views,
             "views": {

@@ -284,3 +284,95 @@ class BatchMoveInstancesCommand(QUndoCommand):
             QTimer.singleShot(0, self.canvas.update)
         except (RuntimeError, AttributeError) as e:
             logger.error(f"Error in BatchMoveInstancesCommand.redo: {e}")
+
+
+# ================================================================
+# Tile undo commands
+# ================================================================
+
+class AddTileCommand(QUndoCommand):
+    """Command for adding a tile to the room"""
+
+    def __init__(self, canvas, tile_data, description="Add Tile", already_added=False):
+        super().__init__(description)
+        self.canvas = canvas
+        self.tile_data = tile_data
+        self.already_added = already_added
+
+    def undo(self):
+        try:
+            if self.tile_data in self.canvas.tiles:
+                self.canvas.tiles.remove(self.tile_data)
+            self.canvas._tile_layer_dirty = True
+            QTimer.singleShot(0, self.canvas.update)
+        except (RuntimeError, AttributeError) as e:
+            logger.error(f"Error in AddTileCommand.undo: {e}")
+
+    def redo(self):
+        try:
+            if not self.already_added:
+                self.canvas.tiles.append(self.tile_data)
+            self.canvas._tile_layer_dirty = True
+            QTimer.singleShot(0, self.canvas.update)
+        except (RuntimeError, AttributeError) as e:
+            logger.error(f"Error in AddTileCommand.redo: {e}")
+
+
+class BatchAddTilesCommand(QUndoCommand):
+    """Command for adding multiple tiles at once (paint mode)"""
+
+    def __init__(self, canvas, tiles, description="Paint Tiles", already_added=False):
+        super().__init__(description)
+        self.canvas = canvas
+        self.tiles = list(tiles)
+        self.already_added = already_added
+
+    def undo(self):
+        try:
+            for tile in self.tiles:
+                if tile in self.canvas.tiles:
+                    self.canvas.tiles.remove(tile)
+            self.canvas._tile_layer_dirty = True
+            QTimer.singleShot(0, self.canvas.update)
+        except (RuntimeError, AttributeError) as e:
+            logger.error(f"Error in BatchAddTilesCommand.undo: {e}")
+
+    def redo(self):
+        try:
+            if not self.already_added:
+                for tile in self.tiles:
+                    if tile not in self.canvas.tiles:
+                        self.canvas.tiles.append(tile)
+            self.canvas._tile_layer_dirty = True
+            QTimer.singleShot(0, self.canvas.update)
+        except (RuntimeError, AttributeError) as e:
+            logger.error(f"Error in BatchAddTilesCommand.redo: {e}")
+
+
+class BatchRemoveTilesCommand(QUndoCommand):
+    """Command for removing multiple tiles at once (erase mode)"""
+
+    def __init__(self, canvas, tiles, description="Erase Tiles"):
+        super().__init__(description)
+        self.canvas = canvas
+        self.tiles = list(tiles)
+
+    def undo(self):
+        try:
+            for tile in self.tiles:
+                if tile not in self.canvas.tiles:
+                    self.canvas.tiles.append(tile)
+            self.canvas._tile_layer_dirty = True
+            QTimer.singleShot(0, self.canvas.update)
+        except (RuntimeError, AttributeError) as e:
+            logger.error(f"Error in BatchRemoveTilesCommand.undo: {e}")
+
+    def redo(self):
+        try:
+            for tile in self.tiles:
+                if tile in self.canvas.tiles:
+                    self.canvas.tiles.remove(tile)
+            self.canvas._tile_layer_dirty = True
+            QTimer.singleShot(0, self.canvas.update)
+        except (RuntimeError, AttributeError) as e:
+            logger.error(f"Error in BatchRemoveTilesCommand.redo: {e}")

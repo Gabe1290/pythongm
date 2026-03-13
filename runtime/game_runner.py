@@ -826,6 +826,7 @@ class GameRoom:
         self.width = room_data.get('width', 1024)
         self.height = room_data.get('height', 768)
         self.background_color = self.parse_color(room_data.get('background_color', '#87CEEB'))
+        # Legacy single-background (kept for backward compat)
         self.background_image_name = room_data.get('background_image', '')
         self.tile_horizontal = room_data.get('tile_horizontal', False)
         self.tile_vertical = room_data.get('tile_vertical', False)
@@ -837,6 +838,17 @@ class GameRoom:
         self.background_surface = None
         self.project_path = project_path
         self.sprites_data = sprites_data or {}
+
+        # Multi-layer backgrounds (list of up to 8 dicts)
+        self.bg_layers = room_data.get('backgrounds', [])
+        self.bg_layer_surfaces = {}  # layer_index -> Surface
+        self.bg_layer_scroll = {}  # layer_index -> [scroll_x, scroll_y]
+        for i in range(len(self.bg_layers)):
+            self.bg_layer_scroll[i] = [0.0, 0.0]
+
+        # Tile layer
+        self.tiles_data = room_data.get('tiles', [])
+        self.tile_surfaces = {}  # cache: (bg_name, tx, ty, w, h) -> Surface
         self.instances: List[GameInstance] = []
         self.action_executor = action_executor
 
@@ -1097,43 +1109,14 @@ class GameRoom:
         # Clear screen with background color
         screen.fill(self.background_color)
 
-        # Draw background image if present
-        if self.background_surface:
-            img_width = self.background_surface.get_width()
-            img_height = self.background_surface.get_height()
+        # Draw background layers (non-foreground) or legacy single background
+        if self.bg_layers:
+            self._render_bg_layers(screen, foreground=False)
+        elif self.background_surface:
+            self._render_legacy_background(screen)
 
-            # Advance scroll offset each frame
-            if self.bg_hspeed != 0.0 or self.bg_vspeed != 0.0:
-                self.bg_scroll_x = (self.bg_scroll_x + self.bg_hspeed) % img_width
-                self.bg_scroll_y = (self.bg_scroll_y + self.bg_vspeed) % img_height
-
-            do_tile_h = self.tile_horizontal or self.bg_hspeed != 0.0
-            do_tile_v = self.tile_vertical or self.bg_vspeed != 0.0
-
-            if do_tile_h or do_tile_v:
-                # Seamless tiling with scroll offset
-                offset_x = int(self.bg_scroll_x) if do_tile_h else 0
-                offset_y = int(self.bg_scroll_y) if do_tile_v else 0
-                start_x = offset_x - img_width if do_tile_h else 0
-                start_y = offset_y - img_height if do_tile_v else 0
-                step_x = img_width if do_tile_h else self.width
-                step_y = img_height if do_tile_v else self.height
-
-                x = start_x
-                while x < self.width:
-                    y = start_y
-                    while y < self.height:
-                        screen.blit(self.background_surface, (x, y))
-                        y += step_y
-                    x += step_x
-            else:
-                if self.bg_stretch:
-                    # Stretch to fill room
-                    scaled_bg = pygame.transform.scale(self.background_surface, (self.width, self.height))
-                    screen.blit(scaled_bg, (0, 0))
-                else:
-                    # Draw at original size
-                    screen.blit(self.background_surface, (0, 0))
+        # Render tile layer (behind instances, at depth 1000000 by default)
+        self.render_tiles(screen)
 
         # Render all instances sorted by depth (higher depth = drawn first/behind)
         # In GameMaker, lower depth values are drawn on top (in front)
@@ -1146,12 +1129,165 @@ class GameRoom:
             if not instance.is_thymio:
                 instance.render(screen)
 
+        # Draw foreground background layers
+        if self.bg_layers:
+            self._render_bg_layers(screen, foreground=True)
+
         # Render Thymio robots separately (on top)
         for instance in self.instances:
             if instance.is_thymio and instance.thymio_simulator:
                 # Get render data from simulator and pass to renderer
                 # Note: thymio_renderer is accessed from game_runner
                 pass  # Will be handled by game_runner's render method
+
+    def render_tiles(self, screen: pygame.Surface):
+        """Render tile layer"""
+        if not self.tiles_data:
+            return
+
+        backgrounds = getattr(self, '_game_runner_backgrounds', {})
+
+        # Sort by depth descending (higher depth = behind)
+        sorted_tiles = sorted(self.tiles_data, key=lambda t: t.get('depth', 1000000), reverse=True)
+
+        for tile in sorted_tiles:
+            bg_name = tile.get('background_name', '')
+            if not bg_name or bg_name not in backgrounds:
+                continue
+
+            key = (bg_name, tile['tile_x'], tile['tile_y'], tile['width'], tile['height'])
+            if key not in self.tile_surfaces:
+                bg_surface = backgrounds[bg_name]
+                try:
+                    sub = bg_surface.subsurface(
+                        (tile['tile_x'], tile['tile_y'], tile['width'], tile['height'])
+                    )
+                    self.tile_surfaces[key] = sub
+                except (ValueError, pygame.error):
+                    continue
+
+            # Apply layer scroll offset if tile belongs to a layer
+            tx, ty = tile['x'], tile['y']
+            tile_layer = tile.get('layer', -1)
+            layer_scrolls = (tile_layer >= 0 and tile_layer in self.bg_layer_scroll)
+
+            if layer_scrolls:
+                scroll = self.bg_layer_scroll[tile_layer]
+                sx, sy = int(scroll[0]), int(scroll[1])
+                layer = self.bg_layers[tile_layer] if tile_layer < len(self.bg_layers) else {}
+                hspeed = layer.get('hspeed', 0.0)
+                vspeed = layer.get('vspeed', 0.0)
+
+                # Wrap tile positions so scrolling layers repeat seamlessly
+                base_x = tx + sx
+                base_y = ty + sy
+                if hspeed != 0.0 and self.width > 0:
+                    base_x = base_x % self.width
+                    if base_x > self.width - tile['width']:
+                        # Draw wrapped copy on the other side
+                        screen.blit(self.tile_surfaces[key], (base_x - self.width, base_y))
+                if vspeed != 0.0 and self.height > 0:
+                    base_y = base_y % self.height
+                    if base_y > self.height - tile['height']:
+                        screen.blit(self.tile_surfaces[key], (base_x, base_y - self.height))
+                    # Corner case: wrapping in both axes
+                    if hspeed != 0.0 and base_x > self.width - tile['width'] and base_y > self.height - tile['height']:
+                        screen.blit(self.tile_surfaces[key], (base_x - self.width, base_y - self.height))
+                screen.blit(self.tile_surfaces[key], (base_x, base_y))
+            else:
+                screen.blit(self.tile_surfaces[key], (tx, ty))
+
+    def set_backgrounds_ref(self, backgrounds_dict):
+        """Store reference to loaded backgrounds for tile rendering and multi-layer bg"""
+        self._game_runner_backgrounds = backgrounds_dict
+        # Pre-load surfaces for each layer
+        for i, layer in enumerate(self.bg_layers):
+            img_name = layer.get('background_image', '')
+            if img_name and img_name in backgrounds_dict:
+                self.bg_layer_surfaces[i] = backgrounds_dict[img_name]
+
+    def _render_legacy_background(self, screen):
+        """Render old single-background format"""
+        img_width = self.background_surface.get_width()
+        img_height = self.background_surface.get_height()
+
+        if self.bg_hspeed != 0.0 or self.bg_vspeed != 0.0:
+            self.bg_scroll_x = (self.bg_scroll_x + self.bg_hspeed) % img_width
+            self.bg_scroll_y = (self.bg_scroll_y + self.bg_vspeed) % img_height
+
+        do_tile_h = self.tile_horizontal or self.bg_hspeed != 0.0
+        do_tile_v = self.tile_vertical or self.bg_vspeed != 0.0
+
+        if do_tile_h or do_tile_v:
+            offset_x = int(self.bg_scroll_x) if do_tile_h else 0
+            offset_y = int(self.bg_scroll_y) if do_tile_v else 0
+            start_x = offset_x - img_width if do_tile_h else 0
+            start_y = offset_y - img_height if do_tile_v else 0
+            step_x = img_width if do_tile_h else self.width
+            step_y = img_height if do_tile_v else self.height
+            x = start_x
+            while x < self.width:
+                y = start_y
+                while y < self.height:
+                    screen.blit(self.background_surface, (x, y))
+                    y += step_y
+                x += step_x
+        else:
+            if self.bg_stretch:
+                scaled_bg = pygame.transform.scale(self.background_surface, (self.width, self.height))
+                screen.blit(scaled_bg, (0, 0))
+            else:
+                screen.blit(self.background_surface, (0, 0))
+
+    def _render_bg_layers(self, screen, foreground=False):
+        """Render background layers (foreground=True for layers on top of instances)"""
+        for i, layer in enumerate(self.bg_layers):
+            if not layer.get('visible'):
+                continue
+            is_fg = layer.get('foreground', False)
+            if is_fg != foreground:
+                continue
+
+            surface = self.bg_layer_surfaces.get(i)
+            if not surface:
+                continue
+
+            img_w = surface.get_width()
+            img_h = surface.get_height()
+            lx = layer.get('x', 0)
+            ly = layer.get('y', 0)
+            hspeed = layer.get('hspeed', 0.0)
+            vspeed = layer.get('vspeed', 0.0)
+            do_tile_h = layer.get('tile_h', False) or hspeed != 0.0
+            do_tile_v = layer.get('tile_v', False) or vspeed != 0.0
+
+            # Advance scroll
+            scroll = self.bg_layer_scroll.get(i, [0.0, 0.0])
+            if hspeed != 0.0 or vspeed != 0.0:
+                scroll[0] = (scroll[0] + hspeed) % img_w
+                scroll[1] = (scroll[1] + vspeed) % img_h
+
+            if do_tile_h or do_tile_v:
+                ox = int(scroll[0]) + lx if do_tile_h else lx
+                oy = int(scroll[1]) + ly if do_tile_v else ly
+                sx = ox - img_w if do_tile_h else lx
+                sy = oy - img_h if do_tile_v else ly
+                step_x = img_w if do_tile_h else self.width
+                step_y = img_h if do_tile_v else self.height
+                x = sx
+                while x < self.width:
+                    y = sy
+                    while y < self.height:
+                        screen.blit(surface, (x, y))
+                        y += step_y
+                    x += step_x
+            else:
+                if layer.get('stretch', False):
+                    scaled = pygame.transform.scale(surface, (self.width, self.height))
+                    screen.blit(scaled, (lx, ly))
+                else:
+                    screen.blit(surface, (lx, ly))
+
 
 class GameRunner:
     """Enhanced game runner that properly renders rooms with objects"""
@@ -1524,6 +1660,9 @@ class GameRunner:
         """Load background images for all rooms (called after pygame.display is initialized)"""
         logger.info("Loading room background images...")
         for room_name, room in self.rooms.items():
+            # Pass backgrounds reference for tile rendering
+            room.set_backgrounds_ref(self.backgrounds)
+
             if room.background_image_name:
                 room.load_background_image()
                 if room.background_surface:

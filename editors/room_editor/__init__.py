@@ -8,7 +8,8 @@ import json
 import copy
 from pathlib import Path
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
-                               QScrollArea, QToolBar, QMessageBox, QLabel)
+                               QScrollArea, QToolBar, QMessageBox, QLabel,
+                               QPushButton)
 from PySide6.QtCore import Qt, Signal, QTimer
 
 from core.logger import get_logger
@@ -16,6 +17,7 @@ logger = get_logger(__name__)
 
 from .room_canvas import RoomCanvas
 from .object_palette import ObjectPalette
+from .tile_palette import TilePaletteDialog
 from .instance_properties import InstanceProperties
 
 
@@ -38,7 +40,8 @@ class RoomEditor(QWidget):
             'background_image': '',
             'tile_horizontal': False,
             'tile_vertical': False,
-            'instances': []
+            'instances': [],
+            'tiles': []
         }
         self.is_modified = False
 
@@ -71,6 +74,14 @@ class RoomEditor(QWidget):
         # Object palette
         self.object_palette = ObjectPalette()
         left_layout.addWidget(self.object_palette)
+
+        # Tile palette button (opens floating dialog)
+        self._tile_palette_btn = QPushButton(self.tr("Tile Palette..."))
+        self._tile_palette_btn.clicked.connect(self.open_tile_palette)
+        left_layout.addWidget(self._tile_palette_btn)
+
+        # Tile palette dialog (created lazily, kept alive)
+        self.tile_palette = TilePaletteDialog(self)
 
         # Instance properties
         self.instance_properties = InstanceProperties()
@@ -213,6 +224,10 @@ class RoomEditor(QWidget):
         self.room_canvas.instance_added.connect(self.on_instance_added)
         self.instance_properties.property_changed.connect(self.on_instance_property_changed)
 
+        # Tile palette
+        self.tile_palette.tile_selected.connect(self.on_tile_selected)
+        self.tile_palette.selection_cleared.connect(self.on_tile_cleared)
+
         # Room canvas
         self.room_canvas.instance_selected.connect(self.on_instance_selected)
         self.room_canvas.instance_added.connect(self.mark_modified)
@@ -278,7 +293,8 @@ class RoomEditor(QWidget):
             asset_data.get('tile_vertical', False),
             asset_data.get('bg_hspeed', 0.0),
             asset_data.get('bg_vspeed', 0.0),
-            asset_data.get('bg_stretch', True)
+            asset_data.get('bg_stretch', True),
+            asset_data.get('backgrounds', [])
         )
 
         # Pass project information to canvas for sprite loading
@@ -287,6 +303,10 @@ class RoomEditor(QWidget):
         # Load instances
         instances_data = asset_data.get('instances', [])
         self.room_canvas.load_instances(instances_data)
+
+        # Load tiles
+        tiles_data = asset_data.get('tiles', [])
+        self.room_canvas.load_tiles(tiles_data)
 
         # Load available objects from project
         self.load_available_objects()
@@ -311,6 +331,7 @@ class RoomEditor(QWidget):
                 self.room_canvas.sprite_cache.clear()
                 self.room_canvas.set_project_info(project_path, project_data)
                 self.object_palette.set_project_info(project_path, project_data)
+                self.tile_palette.set_project_info(project_path, project_data)
 
     def load_available_objects(self):
         """Load available objects from the project"""
@@ -335,9 +356,29 @@ class RoomEditor(QWidget):
         """Handle object selection from palette"""
         self.room_canvas.set_current_object_type(object_name)
         if object_name:
+            # Clear tile selection when selecting an object
+            self.tile_palette.clear_selection()
             self.update_status(self.tr("Selected '{0}' - Click in room to place").format(object_name))
         else:
             self.update_status(self.tr("No object selected"))
+
+    def open_tile_palette(self):
+        """Open the floating tile palette dialog"""
+        self.tile_palette.show()
+        self.tile_palette.raise_()
+        self.tile_palette.activateWindow()
+
+    def on_tile_selected(self, tile_info):
+        """Handle tile selection from tile palette"""
+        self.room_canvas.set_current_tile(tile_info)
+        # Clear object selection when selecting a tile
+        self.object_palette.clear_selection()
+        self.update_status(self.tr("Tile selected - Click in room to paint"))
+
+    def on_tile_cleared(self):
+        """Handle tile selection cleared"""
+        self.room_canvas.clear_tile_mode()
+        self.update_status(self.tr("Tile mode cleared"))
 
     def on_instance_selected(self, instance):
         """Handle instance selection in canvas"""
@@ -394,6 +435,7 @@ class RoomEditor(QWidget):
         # Use deep copy to ensure returned data is independent
         data = copy.deepcopy(self.current_room_properties)
         data['instances'] = self.room_canvas.get_instances()
+        data['tiles'] = self.room_canvas.get_tiles()
 
         if 'name' not in data:
             data['name'] = self.asset_name
@@ -439,7 +481,8 @@ class RoomEditor(QWidget):
             self.current_room_properties.get('tile_vertical', False),
             self.current_room_properties.get('bg_hspeed', 0.0),
             self.current_room_properties.get('bg_vspeed', 0.0),
-            self.current_room_properties.get('bg_stretch', True)
+            self.current_room_properties.get('bg_stretch', True),
+            self.current_room_properties.get('backgrounds', [])
         )
         logger.debug(f"Canvas updated with new {property_name}: {value}")
 

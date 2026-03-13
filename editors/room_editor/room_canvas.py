@@ -11,7 +11,8 @@ from PySide6.QtGui import QPainter, QColor, QPen, QBrush, QPixmap, QFont, QUndoS
 
 from editors.room_undo_commands import (
     AddInstanceCommand, RemoveInstanceCommand, MoveInstanceCommand,
-    BatchAddInstancesCommand, BatchRemoveInstancesCommand
+    BatchAddInstancesCommand, BatchRemoveInstancesCommand,
+    AddTileCommand, BatchAddTilesCommand, BatchRemoveTilesCommand
 )
 from .object_instance import ObjectInstance
 
@@ -32,11 +33,16 @@ class RoomCanvas(QWidget):
         self.room_width = 1024
         self.room_height = 768
         self.background_color = QColor("#87CEEB")
+
+        # Legacy single-background fields (kept for compat)
         self.background_image_name = ''
         self.tile_horizontal = False
         self.tile_vertical = False
         self.bg_hspeed = 0.0
         self.bg_vspeed = 0.0
+
+        # Multi-layer backgrounds (list of 8 dicts)
+        self.bg_layers = []
 
         self.instances = []
         # CHANGED: Support multiple selected instances
@@ -72,6 +78,18 @@ class RoomCanvas(QWidget):
         self.grid_size = 32
         self.snap_to_grid = True
 
+        # Tile layer
+        self.tiles = []  # List of tile dicts
+        self.tile_painting_mode = False
+        self.tile_erasing_mode = False
+        self.current_tile_info = None  # Dict with background_name, tile_x, tile_y, width, height
+        self.painted_tiles = []
+        self.erased_tiles = []
+        self.last_painted_tile_grid = None
+        self.tile_pixmap_cache = {}  # (bg_name, tx, ty, w, h) -> QPixmap
+        self._tile_layer_dirty = True
+        self._tile_layer_cache = None  # Pre-composited tile layer QPixmap
+
         # Sprite cache and project info
         self.sprite_cache = {}
         self.project_path = None
@@ -86,7 +104,7 @@ class RoomCanvas(QWidget):
         self.sprite_cache.clear()
 
     def set_room_properties(self, width, height, bg_color, bg_image='', tile_h=False, tile_v=False,
-                            bg_hspeed=0.0, bg_vspeed=0.0, bg_stretch=True):
+                            bg_hspeed=0.0, bg_vspeed=0.0, bg_stretch=True, bg_layers=None):
         """Set room properties including background"""
         self.room_width = width
         self.room_height = height
@@ -102,6 +120,7 @@ class RoomCanvas(QWidget):
         self.bg_hspeed = bg_hspeed
         self.bg_vspeed = bg_vspeed
         self.bg_stretch = bg_stretch
+        self.bg_layers = bg_layers or []
 
         self.setFixedSize(width, height)
         self.update()
@@ -109,6 +128,9 @@ class RoomCanvas(QWidget):
     def set_current_object_type(self, object_name):
         """Set the current object type for placement"""
         self.current_object_type = object_name
+        # Clear tile mode when selecting an object
+        if object_name:
+            self.current_tile_info = None
 
         if object_name:
             self.show_preview = True
@@ -117,6 +139,126 @@ class RoomCanvas(QWidget):
             self.preview_position = None
 
         self.update()
+
+    # ================================================================
+    # Tile methods
+    # ================================================================
+
+    def set_current_tile(self, tile_info):
+        """Set the current tile for placement (clears object mode)"""
+        self.current_tile_info = tile_info
+        self.current_object_type = None
+        self.show_preview = bool(tile_info)
+        self.update()
+
+    def clear_tile_mode(self):
+        """Exit tile placement mode"""
+        self.current_tile_info = None
+        self.show_preview = False
+        self.preview_position = None
+        self.update()
+
+    def load_tiles(self, tiles_data):
+        """Load tiles from data"""
+        self.tiles = [dict(t) for t in tiles_data]
+        self._tile_layer_dirty = True
+        self.update()
+
+    def get_tiles(self):
+        """Get all tiles as list of dicts"""
+        return [dict(t) for t in self.tiles]
+
+    def find_tile_at(self, pos):
+        """Find a tile at the given position"""
+        px, py = pos.x(), pos.y()
+        for tile in reversed(self.tiles):
+            tx, ty = tile['x'], tile['y']
+            tw, th = tile['width'], tile['height']
+            if tx <= px < tx + tw and ty <= py < ty + th:
+                return tile
+        return None
+
+    def get_tile_pixmap(self, tile):
+        """Get a cropped QPixmap for a tile from cache"""
+        key = (tile['background_name'], tile['tile_x'], tile['tile_y'],
+               tile['width'], tile['height'])
+
+        if key in self.tile_pixmap_cache:
+            return self.tile_pixmap_cache[key]
+
+        # Load the background image
+        bg_pixmap = self.load_background_image(tile['background_name'])
+        if not bg_pixmap or bg_pixmap.isNull():
+            return None
+
+        # Crop the tile region
+        cropped = bg_pixmap.copy(tile['tile_x'], tile['tile_y'],
+                                 tile['width'], tile['height'])
+        if not cropped.isNull():
+            self.tile_pixmap_cache[key] = cropped
+            return cropped
+        return None
+
+    def draw_tiles(self, painter):
+        """Draw all tiles (uses pre-composited cache for performance)"""
+        if not self.tiles:
+            return
+
+        if self._tile_layer_dirty or self._tile_layer_cache is None:
+            self._recomposite_tile_layer()
+            self._tile_layer_dirty = False
+
+        if self._tile_layer_cache and not self._tile_layer_cache.isNull():
+            painter.drawPixmap(0, 0, self._tile_layer_cache)
+
+    def _recomposite_tile_layer(self):
+        """Pre-composite all tiles into a single pixmap"""
+        self._tile_layer_cache = QPixmap(self.room_width, self.room_height)
+        self._tile_layer_cache.fill(Qt.transparent)
+
+        p = QPainter(self._tile_layer_cache)
+        # Sort by depth descending (higher depth = behind)
+        sorted_tiles = sorted(self.tiles, key=lambda t: t.get('depth', 1000000), reverse=True)
+        for tile in sorted_tiles:
+            tile_pix = self.get_tile_pixmap(tile)
+            if tile_pix:
+                p.drawPixmap(tile['x'], tile['y'], tile_pix)
+        p.end()
+
+    def draw_tile_preview(self, painter):
+        """Draw a semi-transparent preview of the tile being placed"""
+        if not self.preview_position or not self.current_tile_info:
+            return
+
+        tile_w = self.current_tile_info['width']
+        tile_h = self.current_tile_info['height']
+
+        # Snap to tile grid
+        snapped_pos = self._snap_to_tile_grid(self.preview_position)
+
+        tile_pix = self.get_tile_pixmap(self.current_tile_info)
+        painter.setOpacity(0.5)
+        if tile_pix:
+            painter.drawPixmap(snapped_pos.x(), snapped_pos.y(), tile_pix)
+        else:
+            painter.fillRect(snapped_pos.x(), snapped_pos.y(), tile_w, tile_h,
+                           QColor(128, 128, 255, 128))
+        painter.setOpacity(1.0)
+
+        # Outline
+        painter.setPen(QPen(QColor("#00FF00"), 2, Qt.DashLine))
+        painter.drawRect(snapped_pos.x(), snapped_pos.y(), tile_w, tile_h)
+
+    def _snap_to_tile_grid(self, pos):
+        """Snap position to tile-sized grid"""
+        if not self.current_tile_info:
+            return self.snap_to_grid_pos(pos)
+
+        tw = self.current_tile_info['width']
+        th = self.current_tile_info['height']
+        x = int(pos.x() // tw) * tw
+        y = int(pos.y() // th) * th
+        return QPoint(x, y)
 
     def add_instance(self, instance, use_undo=True):
         """Add an object instance to the room"""
@@ -432,6 +574,9 @@ class RoomCanvas(QWidget):
 
         self.draw_background(painter)
 
+        # Draw tile layer (behind instances)
+        self.draw_tiles(painter)
+
         if self.grid_enabled:
             self.draw_grid(painter)
 
@@ -440,6 +585,9 @@ class RoomCanvas(QWidget):
 
         for instance in self.instances:
             self.draw_instance(painter, instance)
+
+        # Foreground background layers (on top of instances)
+        self.draw_foregrounds(painter)
 
         # Highlight all selected instances
         for instance in self.selected_instances:
@@ -454,39 +602,71 @@ class RoomCanvas(QWidget):
         if self.show_preview and self.preview_position and self.current_object_type:
             self.draw_instance_preview(painter)
 
+        if self.show_preview and self.preview_position and self.current_tile_info:
+            self.draw_tile_preview(painter)
+
     def draw_background(self, painter):
-        """Draw room background (color and/or image)"""
+        """Draw room background (color and/or multi-layer images)"""
         painter.fillRect(0, 0, self.room_width, self.room_height, self.background_color)
 
-        if not hasattr(self, 'background_image_name') or not self.background_image_name:
+        # Use multi-layer backgrounds if available, else fall back to legacy single bg
+        if self.bg_layers:
+            for layer in self.bg_layers:
+                if not layer.get('visible') or layer.get('foreground'):
+                    continue
+                self._draw_bg_layer(painter, layer)
+        elif self.background_image_name:
+            # Legacy single-background rendering
+            self._draw_bg_layer(painter, {
+                'background_image': self.background_image_name,
+                'tile_h': self.tile_horizontal,
+                'tile_v': self.tile_vertical,
+                'hspeed': self.bg_hspeed,
+                'vspeed': self.bg_vspeed,
+                'stretch': getattr(self, 'bg_stretch', True),
+                'x': 0, 'y': 0,
+            })
+
+    def draw_foregrounds(self, painter):
+        """Draw foreground background layers (on top of instances)"""
+        if not self.bg_layers:
+            return
+        for layer in self.bg_layers:
+            if layer.get('visible') and layer.get('foreground'):
+                self._draw_bg_layer(painter, layer)
+
+    def _draw_bg_layer(self, painter, layer):
+        """Draw a single background layer"""
+        img_name = layer.get('background_image', '')
+        if not img_name:
             return
 
-        bg_pixmap = self.load_background_image(self.background_image_name)
+        bg_pixmap = self.load_background_image(img_name)
         if not bg_pixmap or bg_pixmap.isNull():
             return
 
-        do_tile_h = getattr(self, 'tile_horizontal', False) or getattr(self, 'bg_hspeed', 0.0) != 0.0
-        do_tile_v = getattr(self, 'tile_vertical', False) or getattr(self, 'bg_vspeed', 0.0) != 0.0
+        lx = layer.get('x', 0)
+        ly = layer.get('y', 0)
+        do_tile_h = layer.get('tile_h', False) or layer.get('hspeed', 0.0) != 0.0
+        do_tile_v = layer.get('tile_v', False) or layer.get('vspeed', 0.0) != 0.0
 
         if do_tile_h or do_tile_v:
             img_width = bg_pixmap.width()
             img_height = bg_pixmap.height()
-
             x_count = (self.room_width // img_width) + 2 if do_tile_h else 1
             y_count = (self.room_height // img_height) + 2 if do_tile_v else 1
 
-            for x_tile in range(x_count):
-                for y_tile in range(y_count):
-                    x_pos = x_tile * img_width if do_tile_h else 0
-                    y_pos = y_tile * img_height if do_tile_v else 0
-
+            for xt in range(x_count):
+                for yt in range(y_count):
+                    x_pos = lx + (xt * img_width if do_tile_h else 0)
+                    y_pos = ly + (yt * img_height if do_tile_v else 0)
                     if x_pos < self.room_width and y_pos < self.room_height:
                         painter.drawPixmap(x_pos, y_pos, bg_pixmap)
         else:
-            if getattr(self, 'bg_stretch', True):
-                painter.drawPixmap(0, 0, self.room_width, self.room_height, bg_pixmap)
+            if layer.get('stretch', False):
+                painter.drawPixmap(lx, ly, self.room_width, self.room_height, bg_pixmap)
             else:
-                painter.drawPixmap(0, 0, bg_pixmap)
+                painter.drawPixmap(lx, ly, bg_pixmap)
 
     def load_background_image(self, image_name):
         """Load background image from project"""
@@ -797,6 +977,19 @@ class RoomCanvas(QWidget):
         """Handle mouse press"""
         if event.button() == Qt.RightButton:
             pos = event.position().toPoint()
+
+            # Tile erasing mode
+            if self.current_tile_info:
+                self.erased_tiles = []
+                tile = self.find_tile_at(pos)
+                if tile:
+                    self.erased_tiles.append(tile)
+                    self.tiles.remove(tile)
+                    self._tile_layer_dirty = True
+                    self.update()
+                self.tile_erasing_mode = True
+                return
+
             clicked_instance = self.find_instance_at(pos)
 
             self.erased_instances = []
@@ -816,6 +1009,35 @@ class RoomCanvas(QWidget):
 
         elif event.button() == Qt.LeftButton:
             pos = event.position().toPoint()
+
+            # Tile painting mode
+            if self.current_tile_info:
+                snapped_pos = self._snap_to_tile_grid(pos)
+                self.show_preview = False
+
+                tw = self.current_tile_info['width']
+                th = self.current_tile_info['height']
+                grid_key = (snapped_pos.x() // tw, snapped_pos.y() // th)
+                self.last_painted_tile_grid = grid_key
+
+                new_tile = {
+                    'background_name': self.current_tile_info['background_name'],
+                    'x': snapped_pos.x(),
+                    'y': snapped_pos.y(),
+                    'tile_x': self.current_tile_info['tile_x'],
+                    'tile_y': self.current_tile_info['tile_y'],
+                    'width': tw,
+                    'height': th,
+                    'depth': self.current_tile_info.get('depth', 1000000),
+                    'layer': self.current_tile_info.get('layer', 0),
+                }
+                self.painted_tiles = [new_tile]
+                self.tiles.append(new_tile)
+                self._tile_layer_dirty = True
+                self.tile_painting_mode = True
+                self.update()
+                return
+
             clicked_instance = self.find_instance_at(pos)
 
             # Check for Shift key modifier
@@ -890,6 +1112,12 @@ class RoomCanvas(QWidget):
         pos = event.position().toPoint()
         self.last_mouse_pos = pos
 
+        # Tile preview
+        if self.current_tile_info and not self.tile_painting_mode and not self.tile_erasing_mode:
+            self.preview_position = pos
+            self.show_preview = True
+            self.update()
+
         if self.current_object_type and not self.dragging and not self.painting_mode and not self.erasing_mode and not self.rubber_band_selecting:
             self.preview_position = pos
             self.show_preview = True
@@ -936,6 +1164,38 @@ class RoomCanvas(QWidget):
                     self.instance_added.emit(new_instance)
                     self.update()
 
+        elif self.tile_painting_mode and self.current_tile_info:
+            snapped_pos = self._snap_to_tile_grid(pos)
+            tw = self.current_tile_info['width']
+            th = self.current_tile_info['height']
+            grid_key = (snapped_pos.x() // tw, snapped_pos.y() // th)
+
+            if grid_key != self.last_painted_tile_grid:
+                self.last_painted_tile_grid = grid_key
+                new_tile = {
+                    'background_name': self.current_tile_info['background_name'],
+                    'x': snapped_pos.x(),
+                    'y': snapped_pos.y(),
+                    'tile_x': self.current_tile_info['tile_x'],
+                    'tile_y': self.current_tile_info['tile_y'],
+                    'width': tw,
+                    'height': th,
+                    'depth': self.current_tile_info.get('depth', 1000000),
+                    'layer': self.current_tile_info.get('layer', 0),
+                }
+                self.painted_tiles.append(new_tile)
+                self.tiles.append(new_tile)
+                self._tile_layer_dirty = True
+                self.update()
+
+        elif self.tile_erasing_mode:
+            tile = self.find_tile_at(pos)
+            if tile and tile not in self.erased_tiles:
+                self.erased_tiles.append(tile)
+                self.tiles.remove(tile)
+                self._tile_layer_dirty = True
+                self.update()
+
         elif self.erasing_mode:
             instance_to_delete = self.find_instance_at(pos)
             if instance_to_delete and instance_to_delete not in self.erased_instances:
@@ -951,6 +1211,22 @@ class RoomCanvas(QWidget):
     def mouseReleaseEvent(self, event):
         """Handle mouse release"""
         if event.button() == Qt.LeftButton:
+            # Handle tile paint batch undo
+            if self.tile_painting_mode and self.painted_tiles:
+                if len(self.painted_tiles) > 1:
+                    command = BatchAddTilesCommand(self, self.painted_tiles, "Paint Tiles", already_added=True)
+                    self.undo_stack.push(command)
+                elif len(self.painted_tiles) == 1:
+                    command = AddTileCommand(self, self.painted_tiles[0], "Add Tile", already_added=True)
+                    self.undo_stack.push(command)
+                self.painted_tiles = []
+                self.tile_painting_mode = False
+                self.last_painted_tile_grid = None
+                if self.current_tile_info:
+                    self.show_preview = True
+                self.update()
+                return
+
             # Handle multi-instance move undo
             if self.dragging and self.selected_instances and self.move_start_positions:
                 moved_instances = []
@@ -1018,6 +1294,17 @@ class RoomCanvas(QWidget):
                 self.show_preview = True
 
         elif event.button() == Qt.RightButton:
+            # Handle tile erase batch undo
+            if self.tile_erasing_mode and self.erased_tiles:
+                command = BatchRemoveTilesCommand(self, self.erased_tiles, "Erase Tiles")
+                self.undo_stack.push(command)
+                self.erased_tiles = []
+                self.tile_erasing_mode = False
+                if self.current_tile_info:
+                    self.show_preview = True
+                self.update()
+                return
+
             # CRITICAL FIX: Only create undo command if instances were actually erased
             if self.erasing_mode and self.erased_instances:
                 # Verify instances still exist in the instances list
@@ -1044,6 +1331,6 @@ class RoomCanvas(QWidget):
 
     def enterEvent(self, event):
         """Handle mouse entering the canvas"""
-        if self.current_object_type:
+        if self.current_object_type or self.current_tile_info:
             self.show_preview = True
 

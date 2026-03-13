@@ -4,7 +4,7 @@ Enhanced Properties Panel Widget for PyGameMaker IDE
 """
 from pathlib import Path
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QGroupBox, QFormLayout,
-                               QSpinBox, QPushButton, QCheckBox,
+                               QSpinBox, QDoubleSpinBox, QPushButton, QCheckBox,
                                QComboBox, QDialog, QDialogButtonBox)
 
 from PySide6.QtCore import Qt, Signal, QTimer
@@ -187,57 +187,11 @@ class EnhancedPropertiesPanel(QWidget):
         self.bg_color_btn.setText(bg_color)
         self.bg_color_btn.clicked.connect(self.choose_background_color)
 
-        # Background image selection
-        self.bg_image_combo = QComboBox()
-        self.bg_image_combo.setFixedHeight(20)
-        self.bg_image_combo.addItem(self.tr("None"))
+        # --- Background Layers Configuration ---
+        self._bg_layers_data = _migrate_backgrounds(room_data)
 
-        # Get available backgrounds/sprites
-        available_backgrounds = self.get_available_backgrounds()
-        for bg_name in available_backgrounds.keys():
-            self.bg_image_combo.addItem(bg_name)
-
-        current_bg = room_data.get('background_image', '')
-        if current_bg:
-            index = self.bg_image_combo.findText(current_bg)
-            if index >= 0:
-                self.bg_image_combo.setCurrentIndex(index)
-
-        self.bg_image_combo.currentTextChanged.connect(
-            lambda v: self.on_room_property_changed('background_image', v if v != self.tr("None") else '')
-        )
-
-        # Stretch background
-        self.bg_stretch_check = QCheckBox()
-        self.bg_stretch_check.setChecked(room_data.get('bg_stretch', True))
-        self.bg_stretch_check.toggled.connect(lambda v: self.on_room_property_changed('bg_stretch', v))
-
-        # Tiling options
-        self.tile_h_check = QCheckBox()
-        self.tile_h_check.setChecked(room_data.get('tile_horizontal', False))
-        self.tile_h_check.toggled.connect(lambda v: self.on_room_property_changed('tile_horizontal', v))
-
-        self.tile_v_check = QCheckBox()
-        self.tile_v_check.setChecked(room_data.get('tile_vertical', False))
-        self.tile_v_check.toggled.connect(lambda v: self.on_room_property_changed('tile_vertical', v))
-
-        # Background scroll speed (pixels per step, like classic SHMUPs)
-        from PySide6.QtWidgets import QDoubleSpinBox
-        self.bg_hspeed_spin = QDoubleSpinBox()
-        self.bg_hspeed_spin.setRange(-100.0, 100.0)
-        self.bg_hspeed_spin.setSingleStep(0.5)
-        self.bg_hspeed_spin.setDecimals(2)
-        self.bg_hspeed_spin.setFixedHeight(20)
-        self.bg_hspeed_spin.setValue(room_data.get('bg_hspeed', 0.0))
-        self.bg_hspeed_spin.valueChanged.connect(lambda v: self.on_room_property_changed('bg_hspeed', v))
-
-        self.bg_vspeed_spin = QDoubleSpinBox()
-        self.bg_vspeed_spin.setRange(-100.0, 100.0)
-        self.bg_vspeed_spin.setSingleStep(0.5)
-        self.bg_vspeed_spin.setDecimals(2)
-        self.bg_vspeed_spin.setFixedHeight(20)
-        self.bg_vspeed_spin.setValue(room_data.get('bg_vspeed', 0.0))
-        self.bg_vspeed_spin.valueChanged.connect(lambda v: self.on_room_property_changed('bg_vspeed', v))
+        self._configure_bgs_btn = QPushButton(self.tr("Configure..."))
+        self._configure_bgs_btn.clicked.connect(self._open_backgrounds_dialog)
 
         # Views
         self.views_check = QCheckBox()
@@ -270,12 +224,7 @@ class EnhancedPropertiesPanel(QWidget):
         self.properties_layout.addRow(self.tr("Width:"), self.width_spin)
         self.properties_layout.addRow(self.tr("Height:"), self.height_spin)
         self.properties_layout.addRow(self.tr("Background Color:"), self.bg_color_btn)
-        self.properties_layout.addRow(self.tr("Background Image:"), self.bg_image_combo)
-        self.properties_layout.addRow(self.tr("Stretch Background:"), self.bg_stretch_check)
-        self.properties_layout.addRow(self.tr("Tile Horizontal:"), self.tile_h_check)
-        self.properties_layout.addRow(self.tr("Tile Vertical:"), self.tile_v_check)
-        self.properties_layout.addRow(self.tr("BG H Speed:"), self.bg_hspeed_spin)
-        self.properties_layout.addRow(self.tr("BG V Speed:"), self.bg_vspeed_spin)
+        self.properties_layout.addRow(self.tr("Backgrounds:"), self._configure_bgs_btn)
         self.properties_layout.addRow(self.tr("Enable Views:"), self.views_check)
         self.properties_layout.addRow("", self._configure_views_btn)
 
@@ -295,6 +244,14 @@ class EnhancedPropertiesPanel(QWidget):
         except Exception:
             pass
         QTimer.singleShot(100, self.update_room_preview)
+
+    def _open_backgrounds_dialog(self):
+        """Open floating dialog for background layers configuration"""
+        available_bgs = self.get_available_backgrounds()
+        dlg = BackgroundLayersDialog(self._bg_layers_data, available_bgs, self)
+        if dlg.exec() == QDialog.Accepted:
+            self._bg_layers_data = dlg.get_layers_data()
+            self.on_room_property_changed('backgrounds', list(self._bg_layers_data))
 
     def _open_views_dialog(self):
         """Open floating dialog for view configuration"""
@@ -1126,3 +1083,178 @@ class ViewConfigDialog(QDialog):
 
     def get_views_data(self):
         return self._views_data
+
+
+# ================================================================
+# Background layers helpers
+# ================================================================
+
+def _default_bg_layer():
+    """Return a default background layer dict"""
+    return {
+        'visible': False,
+        'foreground': False,
+        'background_image': '',
+        'x': 0, 'y': 0,
+        'tile_h': False, 'tile_v': False,
+        'hspeed': 0.0, 'vspeed': 0.0,
+        'stretch': False,
+    }
+
+
+def _migrate_backgrounds(room_data: dict) -> list:
+    """Convert old single-background room data to 8-layer list.
+
+    If ``room_data`` already contains a ``backgrounds`` list of dicts we use
+    that directly (padding to 8).  Otherwise we build layer 0 from the legacy
+    single-background fields.
+    """
+    existing = room_data.get('backgrounds')
+    if isinstance(existing, list) and existing and isinstance(existing[0], dict):
+        layers = [dict(l) for l in existing]
+    else:
+        layer0 = _default_bg_layer()
+        bg_img = room_data.get('background_image', '')
+        if bg_img:
+            layer0['visible'] = True
+            layer0['background_image'] = bg_img
+            layer0['tile_h'] = room_data.get('tile_horizontal', False)
+            layer0['tile_v'] = room_data.get('tile_vertical', False)
+            layer0['hspeed'] = room_data.get('bg_hspeed', 0.0)
+            layer0['vspeed'] = room_data.get('bg_vspeed', 0.0)
+            layer0['stretch'] = room_data.get('bg_stretch', True)
+        layers = [layer0]
+
+    # Ensure exactly 8 layers
+    while len(layers) < 8:
+        layers.append(_default_bg_layer())
+    return layers[:8]
+
+
+class BackgroundLayersDialog(QDialog):
+    """Floating dialog for configuring 8 background layers"""
+
+    def __init__(self, layers_data: list, available_backgrounds: dict, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(self.tr("Background Layers"))
+        self.setMinimumWidth(350)
+        self._layers = [dict(l) for l in layers_data]
+        self._available_bgs = available_backgrounds
+
+        layout = QVBoxLayout(self)
+
+        # Layer selector
+        selector_layout = QFormLayout()
+        self._layer_selector = QComboBox()
+        for i in range(8):
+            self._layer_selector.addItem(self.tr("Background {0}").format(i))
+        selector_layout.addRow(self.tr("Layer:"), self._layer_selector)
+        layout.addLayout(selector_layout)
+
+        # Layer properties
+        props_group = QGroupBox(self.tr("Layer Properties"))
+        form = QFormLayout(props_group)
+
+        self._visible_check = QCheckBox()
+        form.addRow(self.tr("Visible:"), self._visible_check)
+
+        self._foreground_check = QCheckBox()
+        form.addRow(self.tr("Foreground:"), self._foreground_check)
+
+        self._image_combo = QComboBox()
+        self._image_combo.addItem(self.tr("None"), "")
+        for bg_name in sorted(available_backgrounds.keys()):
+            self._image_combo.addItem(bg_name, bg_name)
+        form.addRow(self.tr("Image:"), self._image_combo)
+
+        self._stretch_check = QCheckBox()
+        form.addRow(self.tr("Stretch:"), self._stretch_check)
+
+        self._tile_h_check = QCheckBox()
+        form.addRow(self.tr("Tile H:"), self._tile_h_check)
+
+        self._tile_v_check = QCheckBox()
+        form.addRow(self.tr("Tile V:"), self._tile_v_check)
+
+        self._x_spin = QSpinBox()
+        self._x_spin.setRange(-32768, 32768)
+        form.addRow(self.tr("X:"), self._x_spin)
+
+        self._y_spin = QSpinBox()
+        self._y_spin.setRange(-32768, 32768)
+        form.addRow(self.tr("Y:"), self._y_spin)
+
+        self._hspeed_spin = QDoubleSpinBox()
+        self._hspeed_spin.setRange(-100.0, 100.0)
+        self._hspeed_spin.setSingleStep(0.5)
+        self._hspeed_spin.setDecimals(2)
+        form.addRow(self.tr("H Speed:"), self._hspeed_spin)
+
+        self._vspeed_spin = QDoubleSpinBox()
+        self._vspeed_spin.setRange(-100.0, 100.0)
+        self._vspeed_spin.setSingleStep(0.5)
+        self._vspeed_spin.setDecimals(2)
+        form.addRow(self.tr("V Speed:"), self._vspeed_spin)
+
+        layout.addWidget(props_group)
+
+        # OK / Cancel
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+
+        # Connect layer selector
+        self._layer_selector.currentIndexChanged.connect(self._on_layer_selected)
+
+        # Connect live-save
+        self._visible_check.toggled.connect(lambda v: self._set('visible', v))
+        self._foreground_check.toggled.connect(lambda v: self._set('foreground', v))
+        self._image_combo.currentIndexChanged.connect(
+            lambda idx: self._set('background_image', self._image_combo.itemData(idx) or ''))
+        self._stretch_check.toggled.connect(lambda v: self._set('stretch', v))
+        self._tile_h_check.toggled.connect(lambda v: self._set('tile_h', v))
+        self._tile_v_check.toggled.connect(lambda v: self._set('tile_v', v))
+        self._x_spin.valueChanged.connect(lambda v: self._set('x', v))
+        self._y_spin.valueChanged.connect(lambda v: self._set('y', v))
+        self._hspeed_spin.valueChanged.connect(lambda v: self._set('hspeed', v))
+        self._vspeed_spin.valueChanged.connect(lambda v: self._set('vspeed', v))
+
+        # Populate layer 0
+        self._populate(0)
+
+    def _set(self, field, value):
+        idx = self._layer_selector.currentIndex()
+        self._layers[idx][field] = value
+
+    def _populate(self, index):
+        ld = self._layers[index]
+        widgets = [
+            self._visible_check, self._foreground_check, self._image_combo,
+            self._stretch_check, self._tile_h_check, self._tile_v_check,
+            self._x_spin, self._y_spin, self._hspeed_spin, self._vspeed_spin,
+        ]
+        for w in widgets:
+            w.blockSignals(True)
+
+        self._visible_check.setChecked(ld.get('visible', False))
+        self._foreground_check.setChecked(ld.get('foreground', False))
+        img = ld.get('background_image', '') or ''
+        img_idx = self._image_combo.findData(img)
+        self._image_combo.setCurrentIndex(img_idx if img_idx >= 0 else 0)
+        self._stretch_check.setChecked(ld.get('stretch', False))
+        self._tile_h_check.setChecked(ld.get('tile_h', False))
+        self._tile_v_check.setChecked(ld.get('tile_v', False))
+        self._x_spin.setValue(ld.get('x', 0))
+        self._y_spin.setValue(ld.get('y', 0))
+        self._hspeed_spin.setValue(ld.get('hspeed', 0.0))
+        self._vspeed_spin.setValue(ld.get('vspeed', 0.0))
+
+        for w in widgets:
+            w.blockSignals(False)
+
+    def _on_layer_selected(self, index):
+        self._populate(index)
+
+    def get_layers_data(self):
+        return list(self._layers)
