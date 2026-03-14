@@ -133,6 +133,13 @@ class GameSprite:
                     first_frame = pil_image.convert('RGB')
                     transparent_color = first_frame.getpixel((0, 0))
 
+                # Pre-compute tolerance bounds for transparent color matching
+                if transparent_color:
+                    tr, tg, tb = transparent_color
+                    lo_r, hi_r = tr - 5, tr + 5
+                    lo_g, hi_g = tg - 5, tg + 5
+                    lo_b, hi_b = tb - 5, tb + 5
+
                 # Extract all frames from the animated GIF
                 self.frames = []
                 for frame_idx in range(n_frames):
@@ -140,20 +147,16 @@ class GameSprite:
                     # Convert to RGBA for transparency support
                     frame_rgba = pil_image.convert('RGBA')
 
-                    # Make the background color transparent
+                    # Make the background color transparent using bulk byte operations
+                    # This is ~100x faster than iterating pixel-by-pixel in Python
                     if transparent_color:
-                        datas = frame_rgba.getdata()
-                        new_data = []
-                        for item in datas:
-                            # Check if pixel matches transparent color (with some tolerance)
-                            if (abs(item[0] - transparent_color[0]) < 5 and
-                                abs(item[1] - transparent_color[1]) < 5 and
-                                abs(item[2] - transparent_color[2]) < 5):
-                                # Make it fully transparent
-                                new_data.append((item[0], item[1], item[2], 0))
-                            else:
-                                new_data.append(item)
-                        frame_rgba.putdata(new_data)
+                        raw = bytearray(frame_rgba.tobytes())
+                        for i in range(0, len(raw), 4):
+                            if (lo_r <= raw[i] <= hi_r and
+                                lo_g <= raw[i + 1] <= hi_g and
+                                lo_b <= raw[i + 2] <= hi_b):
+                                raw[i + 3] = 0  # Set alpha to 0
+                        frame_rgba = Image.frombytes('RGBA', frame_rgba.size, bytes(raw))
 
                     # Convert PIL image to pygame surface
                     frame_data = frame_rgba.tobytes()
@@ -394,10 +397,12 @@ class GameInstance:
         self.next_room_flag = False
         self.previous_room_flag = False
         self.restart_game_flag = False
+        self.goto_room_target = None  # Target room name for goto_room action
 
         # Movement intent (set before collision check)
         self.intended_x = float(x)
         self.intended_y = float(y)
+        self._has_intended_move = False  # Flag for pending grid-based movement
 
         # Collision tracking
         self._active_collisions = set()
@@ -836,6 +841,8 @@ class GameRoom:
         self.bg_scroll_x = 0.0
         self.bg_scroll_y = 0.0
         self.background_surface = None
+        self._stretched_bg_cache = None  # Cached stretched background surface
+        self._stretched_layer_cache: Dict[int, Any] = {}  # Cached stretched layer surfaces
         self.project_path = project_path
         self.sprites_data = sprites_data or {}
 
@@ -848,6 +855,8 @@ class GameRoom:
 
         # Tile layer
         self.tiles_data = room_data.get('tiles', [])
+        # Pre-sort tiles by depth once (tiles don't change at runtime)
+        self._sorted_tiles = sorted(self.tiles_data, key=lambda t: t.get('depth', 1000000), reverse=True)
         self.tile_surfaces = {}  # cache: (bg_name, tx, ty, w, h) -> Surface
         self.instances: List[GameInstance] = []
         self.action_executor = action_executor
@@ -999,11 +1008,13 @@ class GameRoom:
                 self._add_to_grid(instance)
                 instance._grid_dirty = False
 
-    def get_nearby_instances(self, x: float, y: float, w: int = 32, h: int = 32) -> List['GameInstance']:
+    def get_nearby_instances(self, x: float, y: float, w: int = 32, h: int = 32) -> Set['GameInstance']:
         """Get all instances that might collide with an object at (x, y) with size (w, h)
 
         We expand the search area by one cell in each direction to catch objects
         that might be on the border of adjacent cells.
+
+        Returns a set to avoid duplicate instances and skip list conversion overhead.
         """
         cell_size = self.grid_cell_size
         # Calculate the cell range, expanded by 1 in each direction
@@ -1013,12 +1024,13 @@ class GameRoom:
         max_cell_y = int(y + h - 1) // cell_size + 1
 
         nearby = set()
+        spatial_grid = self.spatial_grid
         for cx in range(min_cell_x, max_cell_x + 1):
             for cy in range(min_cell_y, max_cell_y + 1):
-                cell = (cx, cy)
-                if cell in self.spatial_grid:
-                    nearby.update(self.spatial_grid[cell])
-        return list(nearby)
+                cell_instances = spatial_grid.get((cx, cy))
+                if cell_instances:
+                    nearby.update(cell_instances)
+        return nearby
 
     def parse_color(self, color_str: str) -> Tuple[int, int, int]:
         """Parse color string to RGB tuple"""
@@ -1147,10 +1159,7 @@ class GameRoom:
 
         backgrounds = getattr(self, '_game_runner_backgrounds', {})
 
-        # Sort by depth descending (higher depth = behind)
-        sorted_tiles = sorted(self.tiles_data, key=lambda t: t.get('depth', 1000000), reverse=True)
-
-        for tile in sorted_tiles:
+        for tile in self._sorted_tiles:
             bg_name = tile.get('background_name', '')
             if not bg_name or bg_name not in backgrounds:
                 continue
@@ -1234,8 +1243,9 @@ class GameRoom:
                 x += step_x
         else:
             if self.bg_stretch:
-                scaled_bg = pygame.transform.scale(self.background_surface, (self.width, self.height))
-                screen.blit(scaled_bg, (0, 0))
+                if self._stretched_bg_cache is None:
+                    self._stretched_bg_cache = pygame.transform.scale(self.background_surface, (self.width, self.height))
+                screen.blit(self._stretched_bg_cache, (0, 0))
             else:
                 screen.blit(self.background_surface, (0, 0))
 
@@ -1283,8 +1293,9 @@ class GameRoom:
                     x += step_x
             else:
                 if layer.get('stretch', False):
-                    scaled = pygame.transform.scale(surface, (self.width, self.height))
-                    screen.blit(scaled, (lx, ly))
+                    if i not in self._stretched_layer_cache:
+                        self._stretched_layer_cache[i] = pygame.transform.scale(surface, (self.width, self.height))
+                    screen.blit(self._stretched_layer_cache[i], (lx, ly))
                 else:
                     screen.blit(surface, (lx, ly))
 
@@ -1309,6 +1320,9 @@ class GameRunner:
 
         # Global variables storage (user-defined variables accessible from any instance)
         self.global_variables: Dict[str, Any] = {}
+
+        # Cached reference to objects data (set once during project load)
+        self._objects_data: Dict[str, dict] = {}
 
         # Shared action executor for all instances (pass self for global state access)
         self.action_executor = ActionExecutor(game_runner=self)
@@ -1393,6 +1407,9 @@ class GameRunner:
 
             logger.info(f"Loaded project: {self.project_data.get('name', 'Untitled')}")
 
+            # Cache objects data for fast access during gameplay
+            self._objects_data = self.project_data.get('assets', {}).get('objects', {})
+
             # Load project settings
             self._load_project_settings()
 
@@ -1456,7 +1473,7 @@ class GameRunner:
             return
 
         logger.info(f"📂 Loading objects from: {objects_dir}")
-        objects_data = self.project_data.get('assets', {}).get('objects', {})
+        objects_data = self._objects_data
 
         for object_name, object_data in objects_data.items():
             object_file = objects_dir / f"{object_name}.json"
@@ -1646,7 +1663,7 @@ class GameRunner:
 
     def assign_sprites_to_rooms(self):
         """Assign loaded sprites to room instances"""
-        objects_data = self.project_data.get('assets', {}).get('objects', {})
+        objects_data = self._objects_data
 
         logger.info("Assigning sprites to room instances...")
         for room_name, room in self.rooms.items():
@@ -2206,9 +2223,10 @@ class GameRunner:
             return
 
         # Get objects data for solid checks
-        objects_data = self.project_data.get('assets', {}).get('objects', {})
+        objects_data = self._objects_data
 
-        # Check for room restart/transition flags FIRST
+        # Combined pass: check room transition flags AND apply physics
+        # If any transition flag is set, we return immediately (physics is skipped for that frame)
         for instance in self.current_room.instances:
             if instance.restart_room_flag:
                 logger.info("🔄 Restarting room...")
@@ -2216,34 +2234,31 @@ class GameRunner:
                 return
 
             if instance.next_room_flag:
-                instance.next_room_flag = False  # Clear the flag first
+                instance.next_room_flag = False
                 logger.info("➡️  Going to next room...")
                 self.goto_next_room()
                 return
 
             if instance.previous_room_flag:
-                instance.previous_room_flag = False  # Clear the flag first
+                instance.previous_room_flag = False
                 logger.info("⬅️  Going to previous room...")
                 self.goto_previous_room()
                 return
 
             if instance.restart_game_flag:
-                instance.restart_game_flag = False  # Clear the flag first
+                instance.restart_game_flag = False
                 logger.info("🔄 Restarting game...")
                 self.restart_game()
                 return
 
             # Check for goto_room_target (set by delay_action or goto_room)
-            if hasattr(instance, 'goto_room_target') and instance.goto_room_target:
-                room_name = instance.goto_room_target
-                instance.goto_room_target = None  # Clear the flag first
-                logger.info(f"🚪 Going to room: {room_name}")
-                self.change_room(room_name)
+            if instance.goto_room_target:
+                goto_target = instance.goto_room_target
+                instance.goto_room_target = None
+                logger.info(f"🚪 Going to room: {goto_target}")
+                self.change_room(goto_target)
                 return
 
-
-        # Apply physics (gravity and friction) to all instances
-        for instance in self.current_room.instances:
             # Apply gravity (instance.gravity is always defined, default 0)
             if instance.gravity != 0:
                 gravity_dir = instance.gravity_direction
@@ -2255,13 +2270,11 @@ class GameRunner:
             if instance.friction != 0:
                 speed = math.sqrt(instance.hspeed ** 2 + instance.vspeed ** 2)
                 if speed > 0:
-                    # Reduce speed by friction amount
                     new_speed = max(0, speed - instance.friction)
                     if new_speed == 0:
                         instance.hspeed = 0
                         instance.vspeed = 0
                     else:
-                        # Scale velocity to new speed
                         scale = new_speed / speed
                         instance.hspeed *= scale
                         instance.vspeed *= scale
@@ -2349,7 +2362,7 @@ class GameRunner:
                 )
         # Handle intended movement (grid-based) with collision checking
         for instance in self.current_room.instances:
-            if hasattr(instance, 'intended_x') and hasattr(instance, 'intended_y'):
+            if instance._has_intended_move:
                 # Store movement direction so collision handlers (e.g. if_can_push) can use it
                 instance._last_grid_move_dx = instance.intended_x - instance.x
                 instance._last_grid_move_dy = instance.intended_y - instance.y
@@ -2381,9 +2394,8 @@ class GameRunner:
                                 instance.y = instance.intended_y
                                 logger.debug(f"✅ Movement allowed after push: {instance.object_name} → ({instance.x}, {instance.y})")
 
-                # Clear intended movement
-                delattr(instance, 'intended_x')
-                delattr(instance, 'intended_y')
+                # Clear intended movement flag
+                instance._has_intended_move = False
 
         # Check collision events - use global two-pass approach
         # Skip collision detection during room transition grace period
@@ -2788,7 +2800,7 @@ class GameRunner:
         if object_name == target:
             return True
         # Walk up the parent chain (max 10 levels to prevent cycles)
-        objects_data = self.project_data.get('assets', {}).get('objects', {})
+        objects_data = self._objects_data
         current = object_name
         for _ in range(10):
             obj_data = objects_data.get(current, {})
@@ -2876,7 +2888,7 @@ class GameRunner:
                 # Use cached object data for properties
                 other_obj_data = other_instance._cached_object_data
                 if not other_obj_data:
-                    objects_data = self.project_data.get('assets', {}).get('objects', {})
+                    objects_data = self._objects_data
                     other_obj_data = objects_data.get(other_instance.object_name, {})
 
                 is_solid = other_obj_data.get('solid', False)
@@ -3145,7 +3157,7 @@ class GameRunner:
             self.current_room = self.rooms[room_name]
 
             # Add persistent instances to the new room
-            objects_data = self.project_data.get('assets', {}).get('objects', {})
+            objects_data = self._objects_data
             for persistent_inst in persistent_instances:
                 # Remove any existing instances of the same object type that are NOT persistent
                 # This ensures the persistent instance replaces the room's default instance

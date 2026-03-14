@@ -430,6 +430,7 @@ def handle_move_grid(ctx: HandlerContext, instance: Instance, params: Parameters
 
     instance.intended_x = instance.x + dx
     instance.intended_y = instance.y + dy
+    instance._has_intended_move = True
 
 
 def handle_snap_to_grid(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:

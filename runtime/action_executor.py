@@ -4,6 +4,7 @@ Action Execution Engine - WITH GRID SNAPPING
 Converts visual actions into runtime behavior
 """
 
+import math
 from typing import Dict, Any
 from core.logger import get_logger
 logger = get_logger(__name__)
@@ -374,6 +375,7 @@ class ActionExecutor:
         # Store intended movement for collision checking by game_runner
         instance.intended_x = instance.x + dx
         instance.intended_y = instance.y + dy
+        instance._has_intended_move = True
 
     # ==================== SPEED-BASED MOVEMENT ====================
 
@@ -519,7 +521,6 @@ class ActionExecutor:
             direction: Direction in degrees (0-360)
             speed: Movement speed
         """
-        import math
 
         direction = parameters.get("direction", 0)
         speed = parameters.get("speed", 4.0)
@@ -557,7 +558,6 @@ class ActionExecutor:
         This calculates the direction from current position to target and sets
         hspeed/vspeed to move in that direction at the specified speed.
         """
-        import math
 
         target_x = parameters.get("x", 0)
         target_y = parameters.get("y", 0)
@@ -618,7 +618,6 @@ class ActionExecutor:
 
         Returns True if contact was made, False if max distance reached
         """
-        import math
 
         direction = parameters.get("direction", 0)
         max_distance = parameters.get("max_distance", 1000)
@@ -957,7 +956,6 @@ class ActionExecutor:
         - A string direction name
         - An expression like 'other.direction' or 'self.direction'
         """
-        import math
         import random
 
         # Direction name to angle mapping
@@ -1652,7 +1650,6 @@ class ActionExecutor:
                         return getattr(instance, var_name)
                     # Special handling for 'direction' - compute from hspeed/vspeed
                     elif var_name == 'direction':
-                        import math
                         hspeed = collision_speeds.get('self_hspeed', getattr(instance, 'hspeed', 0))
                         vspeed = collision_speeds.get('self_vspeed', getattr(instance, 'vspeed', 0))
                         if hspeed == 0 and vspeed == 0:
@@ -1673,7 +1670,6 @@ class ActionExecutor:
                                 return getattr(other, var_name)
                             # Special handling for 'direction' - compute from hspeed/vspeed
                             elif var_name == 'direction':
-                                import math
                                 hspeed = collision_speeds.get('other_hspeed', getattr(other, 'hspeed', 0))
                                 vspeed = collision_speeds.get('other_vspeed', getattr(other, 'vspeed', 0))
                                 if hspeed == 0 and vspeed == 0:
@@ -4563,7 +4559,6 @@ class ActionExecutor:
             speed: Initial speed
             direction: Initial direction in degrees
         """
-        import math
 
         object_name = parameters.get("object", "")
         x_param = parameters.get("x", 0)
@@ -4845,7 +4840,6 @@ class ActionExecutor:
             y2: End Y coordinate (arrow head)
             tip_size: Size of the arrow tip (default: 10)
         """
-        import math
 
         # Parse parameters with expression support
         x1 = self._parse_value(parameters.get("x1", 0), instance)
@@ -5380,7 +5374,6 @@ class ActionExecutor:
                 angle = random.uniform(0, 360)
                 radius_x = random.uniform(0, emitter['width']/2)
                 radius_y = random.uniform(0, emitter['height']/2)
-                import math
                 px = emitter['x'] + radius_x * math.cos(math.radians(angle))
                 py = emitter['y'] + radius_y * math.sin(math.radians(angle))
             elif emitter['shape'] == 'diamond':
