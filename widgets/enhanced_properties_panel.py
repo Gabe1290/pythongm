@@ -863,6 +863,9 @@ class EnhancedPropertiesPanel(QWidget):
 
     def on_object_property_changed(self, property_name: str, value):
         """Handle object property changes and notify ONLY the current object editor"""
+        # Ignore signals fired during property widget setup
+        if getattr(self, '_updating_properties', False):
+            return
         logger.debug(f"Properties panel: object {property_name} changed to {value}")
 
         # Special handling for sprite changes

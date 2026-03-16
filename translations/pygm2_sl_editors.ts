@@ -1204,6 +1204,316 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
             <source>🤖 Thymio Action...</source>
             <translation>🤖 Dejanje Thymio...</translation>
         </message>
+        <!-- Event type display names -->
+        <message>
+            <source>Create</source>
+            <translation>Ustvari</translation>
+        </message>
+        <message>
+            <source>Step</source>
+            <translation>Korak</translation>
+        </message>
+        <message>
+            <source>Destroy</source>
+            <translation>Uniči</translation>
+        </message>
+        <message>
+            <source>Collision With...</source>
+            <translation>Trk z...</translation>
+        </message>
+        <message>
+            <source>Keyboard</source>
+            <translation>Tipkovnica</translation>
+        </message>
+        <message>
+            <source>Keyboard Press</source>
+            <translation>Pritisk tipke</translation>
+        </message>
+        <message>
+            <source>Keyboard Release</source>
+            <translation>Spust tipke</translation>
+        </message>
+        <message>
+            <source>Mouse</source>
+            <translation>Miška</translation>
+        </message>
+        <message>
+            <source>Begin Step</source>
+            <translation>Začetek koraka</translation>
+        </message>
+        <message>
+            <source>End Step</source>
+            <translation>Konec koraka</translation>
+        </message>
+        <message>
+            <source>Draw</source>
+            <translation>Riši</translation>
+        </message>
+        <message>
+            <source>Draw GUI</source>
+            <translation>Riši GUI</translation>
+        </message>
+        <message>
+            <source>Alarm</source>
+            <translation>Alarm</translation>
+        </message>
+        <message>
+            <source>Room Start</source>
+            <translation>Začetek sobe</translation>
+        </message>
+        <message>
+            <source>Room End</source>
+            <translation>Konec sobe</translation>
+        </message>
+        <message>
+            <source>Game Start</source>
+            <translation>Začetek igre</translation>
+        </message>
+        <message>
+            <source>Game End</source>
+            <translation>Konec igre</translation>
+        </message>
+        <message>
+            <source>Outside Room</source>
+            <translation>Zunaj sobe</translation>
+        </message>
+        <message>
+            <source>Intersect Boundary</source>
+            <translation>Presečišče z robom</translation>
+        </message>
+        <message>
+            <source>No More Lives</source>
+            <translation>Ni več življenj</translation>
+        </message>
+        <message>
+            <source>No More Health</source>
+            <translation>Ni več zdravja</translation>
+        </message>
+        <!-- Action type display names -->
+        <message>
+            <source>Move Grid</source>
+            <translation>Premakni po mreži</translation>
+        </message>
+        <message>
+            <source>Move Free</source>
+            <translation>Premakni prosto</translation>
+        </message>
+        <message>
+            <source>Set Horizontal Speed</source>
+            <translation>Nastavi vodoravno hitrost</translation>
+        </message>
+        <message>
+            <source>Set Vertical Speed</source>
+            <translation>Nastavi navpično hitrost</translation>
+        </message>
+        <message>
+            <source>Set Speed</source>
+            <translation>Nastavi hitrost</translation>
+        </message>
+        <message>
+            <source>Set Direction</source>
+            <translation>Nastavi smer</translation>
+        </message>
+        <message>
+            <source>Set Gravity</source>
+            <translation>Nastavi gravitacijo</translation>
+        </message>
+        <message>
+            <source>Set Friction</source>
+            <translation>Nastavi trenje</translation>
+        </message>
+        <message>
+            <source>Stop Movement</source>
+            <translation>Ustavi gibanje</translation>
+        </message>
+        <message>
+            <source>Reverse Horizontal</source>
+            <translation>Obrni vodoravno</translation>
+        </message>
+        <message>
+            <source>Reverse Vertical</source>
+            <translation>Obrni navpično</translation>
+        </message>
+        <message>
+            <source>Jump To Position</source>
+            <translation>Skoči na položaj</translation>
+        </message>
+        <message>
+            <source>Jump To Start</source>
+            <translation>Skoči na začetek</translation>
+        </message>
+        <message>
+            <source>Jump To Random</source>
+            <translation>Skoči naključno</translation>
+        </message>
+        <message>
+            <source>Bounce</source>
+            <translation>Odbij se</translation>
+        </message>
+        <message>
+            <source>Move Towards Point</source>
+            <translation>Premakni proti točki</translation>
+        </message>
+        <message>
+            <source>Wrap Screen</source>
+            <translation>Pojavi se na drugi strani</translation>
+        </message>
+        <message>
+            <source>Create Instance</source>
+            <translation>Ustvari primerek</translation>
+        </message>
+        <message>
+            <source>Destroy Instance</source>
+            <translation>Uniči primerek</translation>
+        </message>
+        <message>
+            <source>Destroy At Position</source>
+            <translation>Uniči na položaju</translation>
+        </message>
+        <message>
+            <source>Change Sprite</source>
+            <translation>Spremeni sprite</translation>
+        </message>
+        <message>
+            <source>Set Visible</source>
+            <translation>Nastavi vidnost</translation>
+        </message>
+        <message>
+            <source>Set Solid</source>
+            <translation>Nastavi trdnost</translation>
+        </message>
+        <message>
+            <source>Play Sound</source>
+            <translation>Predvajaj zvok</translation>
+        </message>
+        <message>
+            <source>Stop Sound</source>
+            <translation>Ustavi zvok</translation>
+        </message>
+        <message>
+            <source>Play Music</source>
+            <translation>Predvajaj glasbo</translation>
+        </message>
+        <message>
+            <source>Stop Music</source>
+            <translation>Ustavi glasbo</translation>
+        </message>
+        <message>
+            <source>Set Score</source>
+            <translation>Nastavi rezultat</translation>
+        </message>
+        <message>
+            <source>Set Lives</source>
+            <translation>Nastavi življenja</translation>
+        </message>
+        <message>
+            <source>Set Health</source>
+            <translation>Nastavi zdravje</translation>
+        </message>
+        <message>
+            <source>Show Message</source>
+            <translation>Prikaži sporočilo</translation>
+        </message>
+        <message>
+            <source>Show Highscore Table</source>
+            <translation>Prikaži lestvico najboljših</translation>
+        </message>
+        <message>
+            <source>Next Room</source>
+            <translation>Naslednja soba</translation>
+        </message>
+        <message>
+            <source>Previous Room</source>
+            <translation>Prejšnja soba</translation>
+        </message>
+        <message>
+            <source>Restart Room</source>
+            <translation>Znova zaženi sobo</translation>
+        </message>
+        <message>
+            <source>Go To Room</source>
+            <translation>Pojdi v sobo</translation>
+        </message>
+        <message>
+            <source>Restart Game</source>
+            <translation>Znova zaženi igro</translation>
+        </message>
+        <message>
+            <source>End Game</source>
+            <translation>Končaj igro</translation>
+        </message>
+        <message>
+            <source>Set Alarm</source>
+            <translation>Nastavi alarm</translation>
+        </message>
+        <message>
+            <source>If Collision</source>
+            <translation>Če trk</translation>
+        </message>
+        <message>
+            <source>If On Grid</source>
+            <translation>Če na mreži</translation>
+        </message>
+        <message>
+            <source>If Variable</source>
+            <translation>Če spremenljivka</translation>
+        </message>
+        <message>
+            <source>If Lives</source>
+            <translation>Če življenja</translation>
+        </message>
+        <message>
+            <source>If Score</source>
+            <translation>Če rezultat</translation>
+        </message>
+        <message>
+            <source>If Health</source>
+            <translation>Če zdravje</translation>
+        </message>
+        <message>
+            <source>Else</source>
+            <translation>Sicer</translation>
+        </message>
+        <message>
+            <source>Set Variable</source>
+            <translation>Nastavi spremenljivko</translation>
+        </message>
+        <message>
+            <source>Draw Text</source>
+            <translation>Nariši besedilo</translation>
+        </message>
+        <message>
+            <source>Draw Sprite</source>
+            <translation>Nariši sprite</translation>
+        </message>
+        <message>
+            <source>Draw Rectangle</source>
+            <translation>Nariši pravokotnik</translation>
+        </message>
+        <message>
+            <source>Draw Circle</source>
+            <translation>Nariši krog</translation>
+        </message>
+        <message>
+            <source>Draw Line</source>
+            <translation>Nariši črto</translation>
+        </message>
+        <message>
+            <source>Set Color</source>
+            <translation>Nastavi barvo</translation>
+        </message>
+        <message>
+            <source>Set Font Size</source>
+            <translation>Nastavi velikost pisave</translation>
+        </message>
+        <message>
+            <source>Draw Self</source>
+            <translation>Nariši sebe</translation>
+        </message>
+        <message>
+            <source>Execute Code</source>
+            <translation>Izvedi kodo</translation>
+        </message>
     </context>
     <context>
         <name>ObjectPalette</name>

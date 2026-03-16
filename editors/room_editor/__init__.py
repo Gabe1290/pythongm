@@ -453,18 +453,27 @@ class RoomEditor(QWidget):
 
     def save(self):
         """Save the room"""
+        self._saving = True
         try:
             self.update_status(self.tr("Saving room..."))
             data = self.get_data()
             self.save_requested.emit(self.asset_name, data)
             self.is_modified = False
+            self.auto_save_timer.stop()
             self.update_status(self.tr("Room '{0}' saved successfully").format(self.asset_name))
+
+            # Stop the status widget blink timer
+            if hasattr(self, 'status_widget'):
+                self.status_widget.set_saved()
+
             return True
         except Exception as e:
             logger.error(f"Error saving room: {e}")
             self.update_status(self.tr("Error saving room: {0}").format(e), 5000)
             QMessageBox.critical(self, self.tr("Save Error"), self.tr("Failed to save room:\n{0}").format(e))
             return False
+        finally:
+            self._saving = False
 
     def update_room_property_from_ide(self, property_name, value):
         """Update room property from IDE properties panel"""

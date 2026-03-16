@@ -75,6 +75,7 @@ class BaseEditor(QWidget):
         # Auto-save settings
         self.auto_save_enabled = True  # Can be toggled
         self.auto_save_delay_ms = 3000  # 3 seconds default
+        self._saving = False  # Guard to prevent re-modification during save
 
         # Setup UI
         self.setup_base_ui()
@@ -229,6 +230,7 @@ class BaseEditor(QWidget):
             QMessageBox.warning(self, "Validation Error", f"Cannot save: {error_msg}")
             return False
 
+        self._saving = True
         try:
             # Get current data
             current_data = self.get_data()
@@ -254,6 +256,8 @@ class BaseEditor(QWidget):
         except Exception as e:
             QMessageBox.critical(self, "Save Error", f"Error saving asset: {e}")
             return False
+        finally:
+            self._saving = False
 
     def auto_save(self):
         """Auto-save the asset if enabled and modified"""
@@ -264,7 +268,11 @@ class BaseEditor(QWidget):
             logger.info(f"Auto-saving: {self.asset_name}")
             success = self.save()
             if success:
-                self.update_status(f"Auto-saved: {self.asset_name}")
+                self.update_status(self.tr("Auto-saved: {0}").format(self.asset_name))
+                # Ensure blink timer is stopped after auto-save
+                if hasattr(self, 'status_widget'):
+                    self.status_widget.blink_timer.stop()
+                    self.status_widget.modified_label.setVisible(False)
             return success
         return False
 
@@ -335,6 +343,10 @@ class BaseEditor(QWidget):
 
     def on_data_modified(self, asset_name: str):
         """Handle data modification signal"""
+        # Ignore modifications triggered during save (e.g. properties panel refresh)
+        if self._saving:
+            return
+
         if asset_name == self.asset_name:
             self.is_modified = True
             self.save_action.setEnabled(True)

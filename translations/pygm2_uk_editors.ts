@@ -1165,6 +1165,316 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
             <source>🤖 Thymio Action...</source>
             <translation>🤖 Дія Thymio...</translation>
         </message>
+        <!-- Event type display names -->
+        <message>
+            <source>Create</source>
+            <translation>Створення</translation>
+        </message>
+        <message>
+            <source>Step</source>
+            <translation>Крок</translation>
+        </message>
+        <message>
+            <source>Destroy</source>
+            <translation>Знищення</translation>
+        </message>
+        <message>
+            <source>Collision With...</source>
+            <translation>Зіткнення з...</translation>
+        </message>
+        <message>
+            <source>Keyboard</source>
+            <translation>Клавіатура</translation>
+        </message>
+        <message>
+            <source>Keyboard Press</source>
+            <translation>Натискання клавіші</translation>
+        </message>
+        <message>
+            <source>Keyboard Release</source>
+            <translation>Відпускання клавіші</translation>
+        </message>
+        <message>
+            <source>Mouse</source>
+            <translation>Миша</translation>
+        </message>
+        <message>
+            <source>Begin Step</source>
+            <translation>Початок кроку</translation>
+        </message>
+        <message>
+            <source>End Step</source>
+            <translation>Кінець кроку</translation>
+        </message>
+        <message>
+            <source>Draw</source>
+            <translation>Малювання</translation>
+        </message>
+        <message>
+            <source>Draw GUI</source>
+            <translation>Малювання GUI</translation>
+        </message>
+        <message>
+            <source>Alarm</source>
+            <translation>Будильник</translation>
+        </message>
+        <message>
+            <source>Room Start</source>
+            <translation>Початок кімнати</translation>
+        </message>
+        <message>
+            <source>Room End</source>
+            <translation>Кінець кімнати</translation>
+        </message>
+        <message>
+            <source>Game Start</source>
+            <translation>Початок гри</translation>
+        </message>
+        <message>
+            <source>Game End</source>
+            <translation>Кінець гри</translation>
+        </message>
+        <message>
+            <source>Outside Room</source>
+            <translation>За межами кімнати</translation>
+        </message>
+        <message>
+            <source>Intersect Boundary</source>
+            <translation>Перетин межі</translation>
+        </message>
+        <message>
+            <source>No More Lives</source>
+            <translation>Життів більше немає</translation>
+        </message>
+        <message>
+            <source>No More Health</source>
+            <translation>Здоров'я більше немає</translation>
+        </message>
+        <!-- Action type display names -->
+        <message>
+            <source>Move Grid</source>
+            <translation>Рухати по сітці</translation>
+        </message>
+        <message>
+            <source>Move Free</source>
+            <translation>Рухати вільно</translation>
+        </message>
+        <message>
+            <source>Set Horizontal Speed</source>
+            <translation>Задати горизонтальну швидкість</translation>
+        </message>
+        <message>
+            <source>Set Vertical Speed</source>
+            <translation>Задати вертикальну швидкість</translation>
+        </message>
+        <message>
+            <source>Set Speed</source>
+            <translation>Задати швидкість</translation>
+        </message>
+        <message>
+            <source>Set Direction</source>
+            <translation>Задати напрямок</translation>
+        </message>
+        <message>
+            <source>Set Gravity</source>
+            <translation>Задати гравітацію</translation>
+        </message>
+        <message>
+            <source>Set Friction</source>
+            <translation>Задати тертя</translation>
+        </message>
+        <message>
+            <source>Stop Movement</source>
+            <translation>Зупинити рух</translation>
+        </message>
+        <message>
+            <source>Reverse Horizontal</source>
+            <translation>Обернути горизонтально</translation>
+        </message>
+        <message>
+            <source>Reverse Vertical</source>
+            <translation>Обернути вертикально</translation>
+        </message>
+        <message>
+            <source>Jump To Position</source>
+            <translation>Перейти на позицію</translation>
+        </message>
+        <message>
+            <source>Jump To Start</source>
+            <translation>Перейти на початок</translation>
+        </message>
+        <message>
+            <source>Jump To Random</source>
+            <translation>Перейти у випадкове місце</translation>
+        </message>
+        <message>
+            <source>Bounce</source>
+            <translation>Відскочити</translation>
+        </message>
+        <message>
+            <source>Move Towards Point</source>
+            <translation>Рухатися до точки</translation>
+        </message>
+        <message>
+            <source>Wrap Screen</source>
+            <translation>Перенос через край екрана</translation>
+        </message>
+        <message>
+            <source>Create Instance</source>
+            <translation>Створити екземпляр</translation>
+        </message>
+        <message>
+            <source>Destroy Instance</source>
+            <translation>Знищити екземпляр</translation>
+        </message>
+        <message>
+            <source>Destroy At Position</source>
+            <translation>Знищити на позиції</translation>
+        </message>
+        <message>
+            <source>Change Sprite</source>
+            <translation>Змінити спрайт</translation>
+        </message>
+        <message>
+            <source>Set Visible</source>
+            <translation>Задати видимість</translation>
+        </message>
+        <message>
+            <source>Set Solid</source>
+            <translation>Задати твердість</translation>
+        </message>
+        <message>
+            <source>Play Sound</source>
+            <translation>Відтворити звук</translation>
+        </message>
+        <message>
+            <source>Stop Sound</source>
+            <translation>Зупинити звук</translation>
+        </message>
+        <message>
+            <source>Play Music</source>
+            <translation>Відтворити музику</translation>
+        </message>
+        <message>
+            <source>Stop Music</source>
+            <translation>Зупинити музику</translation>
+        </message>
+        <message>
+            <source>Set Score</source>
+            <translation>Задати рахунок</translation>
+        </message>
+        <message>
+            <source>Set Lives</source>
+            <translation>Задати життя</translation>
+        </message>
+        <message>
+            <source>Set Health</source>
+            <translation>Задати здоров'я</translation>
+        </message>
+        <message>
+            <source>Show Message</source>
+            <translation>Показати повідомлення</translation>
+        </message>
+        <message>
+            <source>Show Highscore Table</source>
+            <translation>Показати таблицю рекордів</translation>
+        </message>
+        <message>
+            <source>Next Room</source>
+            <translation>Наступна кімната</translation>
+        </message>
+        <message>
+            <source>Previous Room</source>
+            <translation>Попередня кімната</translation>
+        </message>
+        <message>
+            <source>Restart Room</source>
+            <translation>Перезапустити кімнату</translation>
+        </message>
+        <message>
+            <source>Go To Room</source>
+            <translation>Перейти до кімнати</translation>
+        </message>
+        <message>
+            <source>Restart Game</source>
+            <translation>Перезапустити гру</translation>
+        </message>
+        <message>
+            <source>End Game</source>
+            <translation>Завершити гру</translation>
+        </message>
+        <message>
+            <source>Set Alarm</source>
+            <translation>Задати будильник</translation>
+        </message>
+        <message>
+            <source>If Collision</source>
+            <translation>Якщо зіткнення</translation>
+        </message>
+        <message>
+            <source>If On Grid</source>
+            <translation>Якщо на сітці</translation>
+        </message>
+        <message>
+            <source>If Variable</source>
+            <translation>Якщо змінна</translation>
+        </message>
+        <message>
+            <source>If Lives</source>
+            <translation>Якщо життя</translation>
+        </message>
+        <message>
+            <source>If Score</source>
+            <translation>Якщо рахунок</translation>
+        </message>
+        <message>
+            <source>If Health</source>
+            <translation>Якщо здоров'я</translation>
+        </message>
+        <message>
+            <source>Else</source>
+            <translation>Інакше</translation>
+        </message>
+        <message>
+            <source>Set Variable</source>
+            <translation>Задати змінну</translation>
+        </message>
+        <message>
+            <source>Draw Text</source>
+            <translation>Намалювати текст</translation>
+        </message>
+        <message>
+            <source>Draw Sprite</source>
+            <translation>Намалювати спрайт</translation>
+        </message>
+        <message>
+            <source>Draw Rectangle</source>
+            <translation>Намалювати прямокутник</translation>
+        </message>
+        <message>
+            <source>Draw Circle</source>
+            <translation>Намалювати коло</translation>
+        </message>
+        <message>
+            <source>Draw Line</source>
+            <translation>Намалювати лінію</translation>
+        </message>
+        <message>
+            <source>Set Color</source>
+            <translation>Задати колір</translation>
+        </message>
+        <message>
+            <source>Set Font Size</source>
+            <translation>Задати розмір шрифту</translation>
+        </message>
+        <message>
+            <source>Draw Self</source>
+            <translation>Намалювати себе</translation>
+        </message>
+        <message>
+            <source>Execute Code</source>
+            <translation>Виконати код</translation>
+        </message>
     </context>
     <context>
         <name>ObjectPalette</name>

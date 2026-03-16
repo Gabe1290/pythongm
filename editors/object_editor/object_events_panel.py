@@ -218,12 +218,12 @@ class ObjectEventsPanel(QWidget):
 
             elif event_type.name in ["keyboard", "keyboard_press", "keyboard_release"]:
                 # New keyboard events with key selector
-                action = menu.addAction(f"{event_type.icon} {event_type.display_name}...")
+                action = menu.addAction(f"{event_type.icon} {self.tr(event_type.display_name)}...")
                 action.triggered.connect(lambda checked, name=event_type.name: self.add_keyboard_event_with_selector(name))
 
             elif event_type.name == "mouse":
                 # Mouse event with event selector
-                action = menu.addAction(f"{event_type.icon} {event_type.display_name}...")
+                action = menu.addAction(f"{event_type.icon} {self.tr(event_type.display_name)}...")
                 action.triggered.connect(lambda checked: self.add_mouse_event_with_selector())
 
             elif event_type.parameters and isinstance(event_type.parameters, list):
@@ -234,7 +234,7 @@ class ObjectEventsPanel(QWidget):
                 )
 
                 if has_sub_events:
-                    sub_menu = menu.addMenu(f"{event_type.icon} {event_type.display_name}")
+                    sub_menu = menu.addMenu(f"{event_type.icon} {self.tr(event_type.display_name)}")
                     sub_event_param = next(
                         (p for p in event_type.parameters
                         if isinstance(p, dict) and p.get("type") == "sub_events"),
@@ -256,11 +256,11 @@ class ObjectEventsPanel(QWidget):
                                 lambda checked, name=event_type.name, k=key: self.add_sub_event(name, k)
                             )
                 else:
-                    action = menu.addAction(f"{event_type.icon} {event_type.display_name}")
+                    action = menu.addAction(f"{event_type.icon} {self.tr(event_type.display_name)}")
                     action.triggered.connect(lambda checked, name=event_type.name: self.add_event(name))
             else:
                 # Regular events
-                action = menu.addAction(f"{event_type.icon} {event_type.display_name}")
+                action = menu.addAction(f"{event_type.icon} {self.tr(event_type.display_name)}")
                 action.triggered.connect(lambda checked, name=event_type.name: self.add_event(name))
 
         # Add Thymio Events option
@@ -481,7 +481,7 @@ class ObjectEventsPanel(QWidget):
                     category_menu = add_action_menu.addMenu(category)
 
                     for action_type in actions:
-                        action_item = category_menu.addAction(f"{action_type.icon} {action_type.display_name}")
+                        action_item = category_menu.addAction(f"{action_type.icon} {self.tr(action_type.display_name)}")
                         action_item.triggered.connect(
                             lambda checked, e=event_name, a=action_type.name: self.add_action_to_collision_event(e, a)
                         )
@@ -504,7 +504,7 @@ class ObjectEventsPanel(QWidget):
                     category_menu = add_action_menu.addMenu(category)
 
                     for action_type in actions:
-                        action_item = category_menu.addAction(f"{action_type.icon} {action_type.display_name}")
+                        action_item = category_menu.addAction(f"{action_type.icon} {self.tr(action_type.display_name)}")
                         action_item.triggered.connect(
                             lambda checked, e=event_name, a=action_type.name: self.add_action_to_mouse_event(e, a)
                         )
@@ -527,7 +527,7 @@ class ObjectEventsPanel(QWidget):
                     category_menu = add_action_menu.addMenu(category)
 
                     for action_type in actions:
-                        action_item = category_menu.addAction(f"{action_type.icon} {action_type.display_name}")
+                        action_item = category_menu.addAction(f"{action_type.icon} {self.tr(action_type.display_name)}")
                         action_item.triggered.connect(
                             lambda checked, e=event_name, a=action_type.name: self.add_action_to_event(e, a)
                         )
@@ -563,7 +563,7 @@ class ObjectEventsPanel(QWidget):
                         category_menu = add_action_menu.addMenu(category)
 
                         for action_type in actions:
-                            action_item = category_menu.addAction(f"{action_type.icon} {action_type.display_name}")
+                            action_item = category_menu.addAction(f"{action_type.icon} {self.tr(action_type.display_name)}")
                             action_item.triggered.connect(
                                 lambda checked, e=event_name, k=sub_event_key, a=action_type.name:
                                 self.add_action_to_sub_event(e, k, a)
@@ -836,7 +836,7 @@ class ObjectEventsPanel(QWidget):
 
                     action_item = QTreeWidgetItem(event_item)
                     if action_type:
-                        action_item.setText(0, f"{action_type.icon} {action_type.display_name}")
+                        action_item.setText(0, f"{action_type.icon} {self.tr(action_type.display_name)}")
                     else:
                         # Fallback display for unknown action types
                         action_item.setText(0, f"❓ {action_name}")
@@ -858,7 +858,7 @@ class ObjectEventsPanel(QWidget):
                     continue
 
                 event_item = QTreeWidgetItem(self.events_tree)
-                event_item.setText(0, f"{event_type.icon} {event_type.display_name}")
+                event_item.setText(0, f"{event_type.icon} {self.tr(event_type.display_name)}")
                 event_item.setData(0, Qt.UserRole, event_name)
 
                 total_actions = sum(len(sub_data.get("actions", [])) for key, sub_data in event_data.items() if key != "actions" and isinstance(sub_data, dict))
@@ -902,7 +902,7 @@ class ObjectEventsPanel(QWidget):
 
                         action_item = QTreeWidgetItem(sub_item)
                         if action_type:
-                            action_item.setText(0, f"  {action_type.icon} {action_type.display_name}")
+                            action_item.setText(0, f"  {action_type.icon} {self.tr(action_type.display_name)}")
                         else:
                             action_item.setText(0, f"  ❓ {action_name}")
 
@@ -935,7 +935,7 @@ class ObjectEventsPanel(QWidget):
 
                     action_item = QTreeWidgetItem(event_item)
                     if action_type:
-                        action_item.setText(0, f"{action_type.icon} {action_type.display_name}")
+                        action_item.setText(0, f"{action_type.icon} {self.tr(action_type.display_name)}")
                     else:
                         action_item.setText(0, f"❓ {action_name}")
 
@@ -956,7 +956,7 @@ class ObjectEventsPanel(QWidget):
                     continue
 
                 event_item = QTreeWidgetItem(self.events_tree)
-                event_item.setText(0, f"{event_type.icon} {event_type.display_name}")
+                event_item.setText(0, f"{event_type.icon} {self.tr(event_type.display_name)}")
                 event_item.setText(1, f"{len(event_data.get('actions', []))} actions")
                 event_item.setData(0, Qt.UserRole, event_name)
 
@@ -967,7 +967,7 @@ class ObjectEventsPanel(QWidget):
 
                     action_item = QTreeWidgetItem(event_item)
                     if action_type:
-                        action_item.setText(0, f"{action_type.icon} {action_type.display_name}")
+                        action_item.setText(0, f"{action_type.icon} {self.tr(action_type.display_name)}")
                     else:
                         action_item.setText(0, f"❓ {action_name}")
 

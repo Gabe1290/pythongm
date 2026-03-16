@@ -3188,6 +3188,316 @@ Haga clic derecho en Flecha izquierda, Flecha derecha, Flecha arriba o Flecha ab
             <source>🤖 Thymio Action...</source>
             <translation>🤖 Acción Thymio...</translation>
         </message>
+        <!-- Event type display names -->
+        <message>
+            <source>Create</source>
+            <translation>Crear</translation>
+        </message>
+        <message>
+            <source>Step</source>
+            <translation>Paso</translation>
+        </message>
+        <message>
+            <source>Destroy</source>
+            <translation>Destruir</translation>
+        </message>
+        <message>
+            <source>Collision With...</source>
+            <translation>Colisión con...</translation>
+        </message>
+        <message>
+            <source>Keyboard</source>
+            <translation>Teclado</translation>
+        </message>
+        <message>
+            <source>Keyboard Press</source>
+            <translation>Pulsación de tecla</translation>
+        </message>
+        <message>
+            <source>Keyboard Release</source>
+            <translation>Soltar tecla</translation>
+        </message>
+        <message>
+            <source>Mouse</source>
+            <translation>Ratón</translation>
+        </message>
+        <message>
+            <source>Begin Step</source>
+            <translation>Inicio del paso</translation>
+        </message>
+        <message>
+            <source>End Step</source>
+            <translation>Fin del paso</translation>
+        </message>
+        <message>
+            <source>Draw</source>
+            <translation>Dibujar</translation>
+        </message>
+        <message>
+            <source>Draw GUI</source>
+            <translation>Dibujar GUI</translation>
+        </message>
+        <message>
+            <source>Alarm</source>
+            <translation>Alarma</translation>
+        </message>
+        <message>
+            <source>Room Start</source>
+            <translation>Inicio de la sala</translation>
+        </message>
+        <message>
+            <source>Room End</source>
+            <translation>Fin de la sala</translation>
+        </message>
+        <message>
+            <source>Game Start</source>
+            <translation>Inicio del juego</translation>
+        </message>
+        <message>
+            <source>Game End</source>
+            <translation>Fin del juego</translation>
+        </message>
+        <message>
+            <source>Outside Room</source>
+            <translation>Fuera de la sala</translation>
+        </message>
+        <message>
+            <source>Intersect Boundary</source>
+            <translation>Intersección con el borde</translation>
+        </message>
+        <message>
+            <source>No More Lives</source>
+            <translation>Sin más vidas</translation>
+        </message>
+        <message>
+            <source>No More Health</source>
+            <translation>Sin más salud</translation>
+        </message>
+        <!-- Action type display names -->
+        <message>
+            <source>Move Grid</source>
+            <translation>Mover en cuadrícula</translation>
+        </message>
+        <message>
+            <source>Move Free</source>
+            <translation>Mover libremente</translation>
+        </message>
+        <message>
+            <source>Set Horizontal Speed</source>
+            <translation>Establecer velocidad horizontal</translation>
+        </message>
+        <message>
+            <source>Set Vertical Speed</source>
+            <translation>Establecer velocidad vertical</translation>
+        </message>
+        <message>
+            <source>Set Speed</source>
+            <translation>Establecer velocidad</translation>
+        </message>
+        <message>
+            <source>Set Direction</source>
+            <translation>Establecer dirección</translation>
+        </message>
+        <message>
+            <source>Set Gravity</source>
+            <translation>Establecer gravedad</translation>
+        </message>
+        <message>
+            <source>Set Friction</source>
+            <translation>Establecer fricción</translation>
+        </message>
+        <message>
+            <source>Stop Movement</source>
+            <translation>Detener movimiento</translation>
+        </message>
+        <message>
+            <source>Reverse Horizontal</source>
+            <translation>Invertir horizontal</translation>
+        </message>
+        <message>
+            <source>Reverse Vertical</source>
+            <translation>Invertir vertical</translation>
+        </message>
+        <message>
+            <source>Jump To Position</source>
+            <translation>Ir a la posición</translation>
+        </message>
+        <message>
+            <source>Jump To Start</source>
+            <translation>Ir al inicio</translation>
+        </message>
+        <message>
+            <source>Jump To Random</source>
+            <translation>Ir a lugar aleatorio</translation>
+        </message>
+        <message>
+            <source>Bounce</source>
+            <translation>Rebotar</translation>
+        </message>
+        <message>
+            <source>Move Towards Point</source>
+            <translation>Mover hacia un punto</translation>
+        </message>
+        <message>
+            <source>Wrap Screen</source>
+            <translation>Aparecer en el lado opuesto</translation>
+        </message>
+        <message>
+            <source>Create Instance</source>
+            <translation>Crear instancia</translation>
+        </message>
+        <message>
+            <source>Destroy Instance</source>
+            <translation>Destruir instancia</translation>
+        </message>
+        <message>
+            <source>Destroy At Position</source>
+            <translation>Destruir en la posición</translation>
+        </message>
+        <message>
+            <source>Change Sprite</source>
+            <translation>Cambiar sprite</translation>
+        </message>
+        <message>
+            <source>Set Visible</source>
+            <translation>Establecer visibilidad</translation>
+        </message>
+        <message>
+            <source>Set Solid</source>
+            <translation>Establecer sólido</translation>
+        </message>
+        <message>
+            <source>Play Sound</source>
+            <translation>Reproducir sonido</translation>
+        </message>
+        <message>
+            <source>Stop Sound</source>
+            <translation>Detener sonido</translation>
+        </message>
+        <message>
+            <source>Play Music</source>
+            <translation>Reproducir música</translation>
+        </message>
+        <message>
+            <source>Stop Music</source>
+            <translation>Detener música</translation>
+        </message>
+        <message>
+            <source>Set Score</source>
+            <translation>Establecer puntuación</translation>
+        </message>
+        <message>
+            <source>Set Lives</source>
+            <translation>Establecer vidas</translation>
+        </message>
+        <message>
+            <source>Set Health</source>
+            <translation>Establecer salud</translation>
+        </message>
+        <message>
+            <source>Show Message</source>
+            <translation>Mostrar mensaje</translation>
+        </message>
+        <message>
+            <source>Show Highscore Table</source>
+            <translation>Mostrar tabla de récords</translation>
+        </message>
+        <message>
+            <source>Next Room</source>
+            <translation>Siguiente sala</translation>
+        </message>
+        <message>
+            <source>Previous Room</source>
+            <translation>Sala anterior</translation>
+        </message>
+        <message>
+            <source>Restart Room</source>
+            <translation>Reiniciar sala</translation>
+        </message>
+        <message>
+            <source>Go To Room</source>
+            <translation>Ir a la sala</translation>
+        </message>
+        <message>
+            <source>Restart Game</source>
+            <translation>Reiniciar juego</translation>
+        </message>
+        <message>
+            <source>End Game</source>
+            <translation>Terminar juego</translation>
+        </message>
+        <message>
+            <source>Set Alarm</source>
+            <translation>Establecer alarma</translation>
+        </message>
+        <message>
+            <source>If Collision</source>
+            <translation>Si colisión</translation>
+        </message>
+        <message>
+            <source>If On Grid</source>
+            <translation>Si en cuadrícula</translation>
+        </message>
+        <message>
+            <source>If Variable</source>
+            <translation>Si variable</translation>
+        </message>
+        <message>
+            <source>If Lives</source>
+            <translation>Si vidas</translation>
+        </message>
+        <message>
+            <source>If Score</source>
+            <translation>Si puntuación</translation>
+        </message>
+        <message>
+            <source>If Health</source>
+            <translation>Si salud</translation>
+        </message>
+        <message>
+            <source>Else</source>
+            <translation>Si no</translation>
+        </message>
+        <message>
+            <source>Set Variable</source>
+            <translation>Establecer variable</translation>
+        </message>
+        <message>
+            <source>Draw Text</source>
+            <translation>Dibujar texto</translation>
+        </message>
+        <message>
+            <source>Draw Sprite</source>
+            <translation>Dibujar sprite</translation>
+        </message>
+        <message>
+            <source>Draw Rectangle</source>
+            <translation>Dibujar rectángulo</translation>
+        </message>
+        <message>
+            <source>Draw Circle</source>
+            <translation>Dibujar círculo</translation>
+        </message>
+        <message>
+            <source>Draw Line</source>
+            <translation>Dibujar línea</translation>
+        </message>
+        <message>
+            <source>Set Color</source>
+            <translation>Establecer color</translation>
+        </message>
+        <message>
+            <source>Set Font Size</source>
+            <translation>Establecer tamaño de fuente</translation>
+        </message>
+        <message>
+            <source>Draw Self</source>
+            <translation>Dibujarse a sí mismo</translation>
+        </message>
+        <message>
+            <source>Execute Code</source>
+            <translation>Ejecutar código</translation>
+        </message>
     </context>
     <context>
         <name>ObjectPalette</name>

@@ -170,21 +170,21 @@ class BlocklyWidget(QWidget):
         current_lang = language_manager.get_current_language()
 
         blockly_html = Path(__file__).parent / "blockly" / "blockly_workspace.html"
+
+        # When running from PyInstaller bundle, check the _MEIPASS directory
+        if not blockly_html.exists():
+            import sys
+            if getattr(sys, 'frozen', False):
+                blockly_html = Path(sys._MEIPASS) / "editors" / "object_editor" / "blockly" / "blockly_workspace.html"
+
         if blockly_html.exists():
             # Pass language as URL fragment to be read by JavaScript
             url = QUrl.fromLocalFile(str(blockly_html))
             url.setQuery(f"lang={current_lang}")
             self.web_view.setUrl(url)
         else:
-            # Try alternate path
-            blockly_html = Path("/home/gabe/Dropbox/pygm2/editors/object_editor/blockly/blockly_workspace.html")
-            if blockly_html.exists():
-                url = QUrl.fromLocalFile(str(blockly_html))
-                url.setQuery(f"lang={current_lang}")
-                self.web_view.setUrl(url)
-            else:
-                logger.error(f"Blockly HTML not found at {blockly_html}")
-                self.web_view.setHtml("<h1>Blockly not found</h1><p>Could not load blockly_workspace.html</p>")
+            logger.error(f"Blockly HTML not found at {blockly_html}")
+            self.web_view.setHtml("<h1>Blockly not found</h1><p>Could not load blockly_workspace.html</p>")
 
     def on_load_finished(self, ok: bool):
         """Handle page load completion"""

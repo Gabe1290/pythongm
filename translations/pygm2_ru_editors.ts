@@ -1204,6 +1204,316 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
             <source>🤖 Thymio Action...</source>
             <translation>🤖 Действие Thymio...</translation>
         </message>
+        <!-- Event type display names -->
+        <message>
+            <source>Create</source>
+            <translation>Создание</translation>
+        </message>
+        <message>
+            <source>Step</source>
+            <translation>Шаг</translation>
+        </message>
+        <message>
+            <source>Destroy</source>
+            <translation>Уничтожение</translation>
+        </message>
+        <message>
+            <source>Collision With...</source>
+            <translation>Столкновение с...</translation>
+        </message>
+        <message>
+            <source>Keyboard</source>
+            <translation>Клавиатура</translation>
+        </message>
+        <message>
+            <source>Keyboard Press</source>
+            <translation>Нажатие клавиши</translation>
+        </message>
+        <message>
+            <source>Keyboard Release</source>
+            <translation>Отпускание клавиши</translation>
+        </message>
+        <message>
+            <source>Mouse</source>
+            <translation>Мышь</translation>
+        </message>
+        <message>
+            <source>Begin Step</source>
+            <translation>Начало шага</translation>
+        </message>
+        <message>
+            <source>End Step</source>
+            <translation>Конец шага</translation>
+        </message>
+        <message>
+            <source>Draw</source>
+            <translation>Рисование</translation>
+        </message>
+        <message>
+            <source>Draw GUI</source>
+            <translation>Рисование GUI</translation>
+        </message>
+        <message>
+            <source>Alarm</source>
+            <translation>Будильник</translation>
+        </message>
+        <message>
+            <source>Room Start</source>
+            <translation>Начало комнаты</translation>
+        </message>
+        <message>
+            <source>Room End</source>
+            <translation>Конец комнаты</translation>
+        </message>
+        <message>
+            <source>Game Start</source>
+            <translation>Начало игры</translation>
+        </message>
+        <message>
+            <source>Game End</source>
+            <translation>Конец игры</translation>
+        </message>
+        <message>
+            <source>Outside Room</source>
+            <translation>За пределами комнаты</translation>
+        </message>
+        <message>
+            <source>Intersect Boundary</source>
+            <translation>Пересечение границы</translation>
+        </message>
+        <message>
+            <source>No More Lives</source>
+            <translation>Жизни закончились</translation>
+        </message>
+        <message>
+            <source>No More Health</source>
+            <translation>Здоровье закончилось</translation>
+        </message>
+        <!-- Action type display names -->
+        <message>
+            <source>Move Grid</source>
+            <translation>Двигать по сетке</translation>
+        </message>
+        <message>
+            <source>Move Free</source>
+            <translation>Двигать свободно</translation>
+        </message>
+        <message>
+            <source>Set Horizontal Speed</source>
+            <translation>Задать горизонтальную скорость</translation>
+        </message>
+        <message>
+            <source>Set Vertical Speed</source>
+            <translation>Задать вертикальную скорость</translation>
+        </message>
+        <message>
+            <source>Set Speed</source>
+            <translation>Задать скорость</translation>
+        </message>
+        <message>
+            <source>Set Direction</source>
+            <translation>Задать направление</translation>
+        </message>
+        <message>
+            <source>Set Gravity</source>
+            <translation>Задать гравитацию</translation>
+        </message>
+        <message>
+            <source>Set Friction</source>
+            <translation>Задать трение</translation>
+        </message>
+        <message>
+            <source>Stop Movement</source>
+            <translation>Остановить движение</translation>
+        </message>
+        <message>
+            <source>Reverse Horizontal</source>
+            <translation>Обратить горизонтально</translation>
+        </message>
+        <message>
+            <source>Reverse Vertical</source>
+            <translation>Обратить вертикально</translation>
+        </message>
+        <message>
+            <source>Jump To Position</source>
+            <translation>Перейти на позицию</translation>
+        </message>
+        <message>
+            <source>Jump To Start</source>
+            <translation>Перейти к началу</translation>
+        </message>
+        <message>
+            <source>Jump To Random</source>
+            <translation>Перейти в случайное место</translation>
+        </message>
+        <message>
+            <source>Bounce</source>
+            <translation>Отскочить</translation>
+        </message>
+        <message>
+            <source>Move Towards Point</source>
+            <translation>Двигаться к точке</translation>
+        </message>
+        <message>
+            <source>Wrap Screen</source>
+            <translation>Перенос через край экрана</translation>
+        </message>
+        <message>
+            <source>Create Instance</source>
+            <translation>Создать экземпляр</translation>
+        </message>
+        <message>
+            <source>Destroy Instance</source>
+            <translation>Уничтожить экземпляр</translation>
+        </message>
+        <message>
+            <source>Destroy At Position</source>
+            <translation>Уничтожить на позиции</translation>
+        </message>
+        <message>
+            <source>Change Sprite</source>
+            <translation>Изменить спрайт</translation>
+        </message>
+        <message>
+            <source>Set Visible</source>
+            <translation>Задать видимость</translation>
+        </message>
+        <message>
+            <source>Set Solid</source>
+            <translation>Задать твёрдость</translation>
+        </message>
+        <message>
+            <source>Play Sound</source>
+            <translation>Воспроизвести звук</translation>
+        </message>
+        <message>
+            <source>Stop Sound</source>
+            <translation>Остановить звук</translation>
+        </message>
+        <message>
+            <source>Play Music</source>
+            <translation>Воспроизвести музыку</translation>
+        </message>
+        <message>
+            <source>Stop Music</source>
+            <translation>Остановить музыку</translation>
+        </message>
+        <message>
+            <source>Set Score</source>
+            <translation>Задать счёт</translation>
+        </message>
+        <message>
+            <source>Set Lives</source>
+            <translation>Задать жизни</translation>
+        </message>
+        <message>
+            <source>Set Health</source>
+            <translation>Задать здоровье</translation>
+        </message>
+        <message>
+            <source>Show Message</source>
+            <translation>Показать сообщение</translation>
+        </message>
+        <message>
+            <source>Show Highscore Table</source>
+            <translation>Показать таблицу рекордов</translation>
+        </message>
+        <message>
+            <source>Next Room</source>
+            <translation>Следующая комната</translation>
+        </message>
+        <message>
+            <source>Previous Room</source>
+            <translation>Предыдущая комната</translation>
+        </message>
+        <message>
+            <source>Restart Room</source>
+            <translation>Перезапустить комнату</translation>
+        </message>
+        <message>
+            <source>Go To Room</source>
+            <translation>Перейти в комнату</translation>
+        </message>
+        <message>
+            <source>Restart Game</source>
+            <translation>Перезапустить игру</translation>
+        </message>
+        <message>
+            <source>End Game</source>
+            <translation>Завершить игру</translation>
+        </message>
+        <message>
+            <source>Set Alarm</source>
+            <translation>Задать будильник</translation>
+        </message>
+        <message>
+            <source>If Collision</source>
+            <translation>Если столкновение</translation>
+        </message>
+        <message>
+            <source>If On Grid</source>
+            <translation>Если на сетке</translation>
+        </message>
+        <message>
+            <source>If Variable</source>
+            <translation>Если переменная</translation>
+        </message>
+        <message>
+            <source>If Lives</source>
+            <translation>Если жизни</translation>
+        </message>
+        <message>
+            <source>If Score</source>
+            <translation>Если счёт</translation>
+        </message>
+        <message>
+            <source>If Health</source>
+            <translation>Если здоровье</translation>
+        </message>
+        <message>
+            <source>Else</source>
+            <translation>Иначе</translation>
+        </message>
+        <message>
+            <source>Set Variable</source>
+            <translation>Задать переменную</translation>
+        </message>
+        <message>
+            <source>Draw Text</source>
+            <translation>Нарисовать текст</translation>
+        </message>
+        <message>
+            <source>Draw Sprite</source>
+            <translation>Нарисовать спрайт</translation>
+        </message>
+        <message>
+            <source>Draw Rectangle</source>
+            <translation>Нарисовать прямоугольник</translation>
+        </message>
+        <message>
+            <source>Draw Circle</source>
+            <translation>Нарисовать круг</translation>
+        </message>
+        <message>
+            <source>Draw Line</source>
+            <translation>Нарисовать линию</translation>
+        </message>
+        <message>
+            <source>Set Color</source>
+            <translation>Задать цвет</translation>
+        </message>
+        <message>
+            <source>Set Font Size</source>
+            <translation>Задать размер шрифта</translation>
+        </message>
+        <message>
+            <source>Draw Self</source>
+            <translation>Нарисовать себя</translation>
+        </message>
+        <message>
+            <source>Execute Code</source>
+            <translation>Выполнить код</translation>
+        </message>
     </context>
     <context>
         <name>ObjectPalette</name>

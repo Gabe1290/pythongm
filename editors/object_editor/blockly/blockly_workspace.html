@@ -2720,6 +2720,16 @@
                 }
             }
 
+            // Append dynamically registered custom categories
+            for (var customName in customCategories) {
+                var custom = customCategories[customName];
+                if (custom.blocks.length > 0) {
+                    xml += '<category name="' + getCategoryMessage(customName, window.BLOCKLY_LANG) + '" colour="' + custom.color + '">';
+                    xml += custom.blocks.join('');
+                    xml += '</category>';
+                }
+            }
+
             xml += '</xml>';
             return Blockly.utils.xml.textToDom(xml);
         }
@@ -2735,6 +2745,8 @@
         // ============ DYNAMIC BLOCK REGISTRATION ============
         // Tracks dynamically registered blocks for generic code generation
         var dynamicBlocks = {};
+        // Categories added by registerCustomBlocks (merged into toolbox)
+        var customCategories = {};
 
         function registerCustomBlocks(actionDefs) {
             /**
@@ -2852,8 +2864,8 @@
 
                 // Add to dynamic toolbox category
                 var cat = def.category || 'Custom';
-                if (!categories[cat]) {
-                    categories[cat] = {
+                if (!customCategories[cat]) {
+                    customCategories[cat] = {
                         color: categoryColors[cat] || '#888888',
                         blocks: []
                     };
@@ -2871,7 +2883,7 @@
                     }
                 }
                 blockXml += '</block>';
-                categories[cat].blocks.push(blockXml);
+                customCategories[cat].blocks.push(blockXml);
 
                 registered++;
             }

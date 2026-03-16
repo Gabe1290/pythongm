@@ -38,6 +38,8 @@ datas = [
     (str(project_dir / 'translations' / '*.qm'), 'translations'),
     # Theme configuration
     (str(project_dir / 'utils' / 'themes.json'), 'utils'),
+    # Blockly visual programming files
+    (str(project_dir / 'editors' / 'object_editor' / 'blockly'), 'editors/object_editor/blockly'),
 ]
 
 # Add PySide6 data files

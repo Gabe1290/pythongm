@@ -985,6 +985,7 @@ class SpriteEditor(BaseEditor):
             QMessageBox.warning(self, self.tr("Validation Error"), msg)
             return False
 
+        self._saving = True
         try:
             # Composite frames into strip
             strip_image = self.frame_timeline.composite_strip()
@@ -1013,6 +1014,7 @@ class SpriteEditor(BaseEditor):
             self.asset_data = current_data.copy()
             self.is_modified = False
             self.save_action.setEnabled(False)
+            self.auto_save_timer.stop()
             self.update_window_title()
             self.update_status(self.tr("Saved: {0}").format(self.asset_name))
 
@@ -1028,6 +1030,8 @@ class SpriteEditor(BaseEditor):
             QMessageBox.critical(self, self.tr("Save Error"),
                                  self.tr("Failed to save sprite: {0}").format(e))
             return False
+        finally:
+            self._saving = False
 
     def _regenerate_thumbnail(self, image_path: Path):
         """Regenerate thumbnail using AssetManager if available."""

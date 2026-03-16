@@ -1400,6 +1400,9 @@ class GameRunner:
             with open(project_file, 'r') as f:
                 self.project_data = json.load(f)
 
+            # Cache objects data early so _load_objects_from_files can merge external files
+            self._objects_data = self.project_data.get('assets', {}).get('objects', {})
+
             # Load asset data from separate files if they exist
             self._load_rooms_from_files()
             self._load_objects_from_files()
@@ -1408,6 +1411,9 @@ class GameRunner:
             logger.info(f"Loaded project: {self.project_data.get('name', 'Untitled')}")
 
             # Cache objects data for fast access during gameplay
+            # NOTE: This must be set BEFORE _load_objects_from_files is called above,
+            # but we re-set it here to ensure it reflects any file-based merges.
+            # The initial set is done before the file loading calls.
             self._objects_data = self.project_data.get('assets', {}).get('objects', {})
 
             # Load project settings

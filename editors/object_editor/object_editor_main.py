@@ -702,6 +702,7 @@ class ObjectEditor(BaseEditor):
 
         logger.debug(f"Manual save triggered for: {self.asset_name}")
 
+        self._saving = True
         try:
             # Validate data first
             is_valid, error_msg = self.validate_data()
@@ -734,11 +735,16 @@ class ObjectEditor(BaseEditor):
             # Stop auto-save timer
             if hasattr(self, '_save_timer'):
                 self._save_timer.stop()
+            self.auto_save_timer.stop()
 
             # Update UI to show saved state
             # ✅ TRANSLATABLE: Status message
             self.update_status(self.tr("Saved: {0}").format(self.asset_name))
             self.update_window_title()
+
+            # Stop the status widget blink timer
+            if hasattr(self, 'status_widget'):
+                self.status_widget.set_saved()
 
             logger.info(f"Successfully saved object: {self.asset_name}")
             return True
@@ -753,6 +759,8 @@ class ObjectEditor(BaseEditor):
                 self.tr("Error saving object: {0}").format(e)
             )
             return False
+        finally:
+            self._saving = False
 
     def load_asset(self, asset_name: str, asset_data: Dict[str, Any]):
         """Load object asset data"""
@@ -1045,6 +1053,10 @@ class ObjectEditor(BaseEditor):
 
     def update_object_property_from_ide(self, property_name: str, value):
         """Update object property from IDE properties panel"""
+        # Don't accept property changes during save (prevents auto-save feedback loop)
+        if getattr(self, '_saving', False):
+            return
+
         # Check if value actually changed
         if hasattr(self, 'current_object_properties'):
             current_value = self.current_object_properties.get(property_name)
@@ -1092,6 +1104,9 @@ class ObjectEditor(BaseEditor):
 
     def mark_modified(self):
         """Mark the object as modified and enable save button"""
+        # Don't re-mark during save (prevents auto-save feedback loop)
+        if getattr(self, '_saving', False):
+            return
         if hasattr(self, 'is_modified'):
             self.is_modified = True
         if hasattr(self, 'save_action'):
