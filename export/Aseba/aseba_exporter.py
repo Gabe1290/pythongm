@@ -50,7 +50,7 @@ class AsebaExporter:
 
         output_path.mkdir(exist_ok=True)
 
-        logger.info(f"Exporting Thymio project to Aseba...")
+        logger.info("Exporting Thymio project to Aseba...")
         logger.info(f"   Source: {project_path}")
         logger.info(f"   Output: {output_path}")
 

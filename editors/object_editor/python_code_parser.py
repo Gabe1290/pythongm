@@ -904,7 +904,7 @@ class PythonToActionsParser:
         # Fallback: convert to source code
         try:
             return ast.unparse(node)
-        except:
+        except Exception:
             return str(node)
 
     def _get_op_str(self, op: ast.operator) -> str:
@@ -921,7 +921,7 @@ class PythonToActionsParser:
             # Create a module with these statements
             module = ast.Module(body=statements, type_ignores=[])
             return ast.unparse(module)
-        except:
+        except Exception:
             # Fallback
             return "# Unable to convert statements"
 

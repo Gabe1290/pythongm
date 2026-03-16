@@ -320,7 +320,7 @@ class FrameTimeline(QWidget):
 
         # Remove stretch
         while self._thumb_layout.count():
-            item = self._thumb_layout.takeAt(0)
+            self._thumb_layout.takeAt(0)
 
         # Add new thumbnails
         for i, frame in enumerate(self._frames):

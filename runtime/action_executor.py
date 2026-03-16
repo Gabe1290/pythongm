@@ -717,45 +717,6 @@ class ActionExecutor:
         instance.vspeed = -instance.vspeed
         logger.debug(f"  ↕️ {instance.object_name} reversed vspeed: {old_vspeed} → {instance.vspeed}")
 
-    def execute_wrap_around_room_action(self, instance, parameters: Dict[str, Any]):
-        """Wrap instance to opposite side when leaving room
-
-        Parameters:
-            horizontal: Wrap horizontally (default True)
-            vertical: Wrap vertically (default True)
-        """
-        horizontal = parameters.get("horizontal", True)
-        vertical = parameters.get("vertical", True)
-
-        if not self.game_runner or not self.game_runner.current_room:
-            return
-
-        room_width = self.game_runner.current_room.width
-        room_height = self.game_runner.current_room.height
-
-        # Get sprite dimensions for accurate wrapping
-        sprite_width = getattr(instance, '_cached_width', 32)
-        sprite_height = getattr(instance, '_cached_height', 32)
-
-        wrapped = False
-        if horizontal:
-            if instance.x + sprite_width < 0:
-                instance.x = room_width
-                wrapped = True
-            elif instance.x > room_width:
-                instance.x = -sprite_width
-                wrapped = True
-
-        if vertical:
-            if instance.y + sprite_height < 0:
-                instance.y = room_height
-                wrapped = True
-            elif instance.y > room_height:
-                instance.y = -sprite_height
-                wrapped = True
-
-        if wrapped:
-            logger.debug(f"  🔄 {instance.object_name} wrapped to ({instance.x}, {instance.y})")
 
     def execute_jump_to_position_action(self, instance, parameters: Dict[str, Any]):
         """Jump to a specific position instantly
@@ -1422,7 +1383,7 @@ class ActionExecutor:
                         instance.x -= last_dx
                         instance.y -= last_dy
                         logger.debug(f"  ↩️ Reverted position to ({instance.x}, {instance.y})")
-                logger.debug(f"  🛑 Stopped movement (can't push)")
+                logger.debug("  🛑 Stopped movement (can't push)")
 
         return can_push
 
@@ -3411,12 +3372,6 @@ class ActionExecutor:
                 bg_color = surface.get_at((0, 0))[:3]
                 surface.set_colorkey(bg_color)
 
-            # Create sprite data for GameSprite-like behavior
-            sprite_data = {
-                'frame_count': frames,
-                'animation_type': 'strip_h' if frames > 1 else 'single',
-            }
-
             # Create a simple sprite object or update existing
             # For simplicity, we store the surface directly
             # GameSprite expects frames list for animation
@@ -3725,7 +3680,7 @@ class ActionExecutor:
         elif not visible:
             # Clear background
             self.game_runner.current_room.background_surface = None
-            logger.debug(f"🖼️ Background hidden")
+            logger.debug("🖼️ Background hidden")
         else:
             logger.debug(f"⚠️ set_background: Background '{background_name}' not found")
 

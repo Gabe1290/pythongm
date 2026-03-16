@@ -449,23 +449,6 @@ ACTION_TYPES = {
         ]
     ),
 
-    "destroy_instance": ActionType(
-        name="destroy_instance",
-        display_name="Destroy Instance",
-        description="Destroy an instance (self or other)",
-        category="Instance",
-        icon="💀",
-        parameters=[
-            ActionParameter(
-                name="target",
-                display_name="Target",
-                param_type="choice",
-                default_value="self",
-                description="Which instance to destroy",
-                choices=["self", "other"]
-            )
-        ]
-    ),
 
     # GAMEMAKER 7.0 MOVEMENT ACTIONS
     "move_fixed": ActionType(

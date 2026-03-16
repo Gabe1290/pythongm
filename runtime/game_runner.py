@@ -3630,7 +3630,7 @@ class GameRunner:
         bg_highlight = (9, 71, 113)      # #094771 - selected/highlight
         text_primary = (224, 224, 224)   # #e0e0e0 - main text
         text_secondary = (150, 150, 150) # #969696 - secondary text
-        text_gold = (255, 215, 0)        # Gold for rank numbers
+        _text_gold = (255, 215, 0)        # Gold for rank numbers
         text_new = (100, 200, 100)       # Green for new entry
         border_color = (62, 62, 66)      # #3e3e42 - borders
         button_normal = (0, 122, 204)    # #007acc - blue button
@@ -3830,8 +3830,8 @@ class GameRunner:
         input_border = (0, 122, 204)     # Blue border for focused input
         button_ok = (0, 122, 204)        # #007acc
         button_ok_hover = (28, 151, 234) # #1c97ea
-        button_cancel = (90, 90, 90)     # Gray
-        button_cancel_hover = (110, 110, 110)
+        _button_cancel = (90, 90, 90)     # Gray
+        _button_cancel_hover = (110, 110, 110)
 
         # Overlay
         overlay = pygame.Surface((self.window_width, self.window_height))

@@ -2313,7 +2313,7 @@ class PyGameMakerIDE(QMainWindow):
             'include_debug': False,
         }
 
-        from PySide6.QtWidgets import QDialog, QVBoxLayout, QProgressBar, QHBoxLayout
+        from PySide6.QtWidgets import QDialog, QVBoxLayout, QProgressBar, QHBoxLayout, QLabel, QPushButton
 
         progress_dialog = QDialog(self)
         progress_dialog.setWindowTitle(self.tr("Building iOS App"))
@@ -2659,7 +2659,7 @@ class PyGameMakerIDE(QMainWindow):
                     self.current_project_data['settings'] = {}
                 self.current_project_data['settings']['blockly_preset'] = new_config.preset_name
                 self.save_project()
-                logger.info(f"✅ Saved Thymio preset to project")
+                logger.info("✅ Saved Thymio preset to project")
 
             # Refresh any open events panels
             self.refresh_event_panels_config()
@@ -2672,7 +2672,7 @@ class PyGameMakerIDE(QMainWindow):
                         "The new Thymio event/action selection is now active.")
             )
 
-            logger.info(f"✅ Thymio configuration updated")
+            logger.info("✅ Thymio configuration updated")
 
     def refresh_event_panels_config(self):
         """Refresh configuration in all open object events panels"""

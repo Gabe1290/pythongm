@@ -742,7 +742,7 @@ class ProjectManager(QObject):
             # Now save the project (which will use the external files)
             self.save_project()
 
-            logger.info(f"✅ Project migrated to external files structure")
+            logger.info("✅ Project migrated to external files structure")
             self.status_changed.emit("Project migrated to modular structure")
             return True
 

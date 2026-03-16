@@ -132,7 +132,6 @@ class ThymioRenderer:
         # ====== Draw 5 Arrow Buttons on top ======
         btn_color = (230, 230, 225)
         btn_outline = (180, 180, 175)
-        btn_size = 10
         btn_center_x = cx - 5  # Buttons slightly toward back
 
         # Center button (circle)

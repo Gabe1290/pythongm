@@ -283,7 +283,7 @@ class PluginExecutor:
                     else:
                         print(f"⚠️  Sprite not found: {sprite_name}")
                 else:
-                    print(f"⚠️  No game sprite system available")
+                    print("⚠️  No game sprite system available")
             except Exception as e:
                 print(f"❌ Error setting sprite: {e}")
 

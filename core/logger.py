@@ -111,8 +111,6 @@ def get_logger(name: str) -> logging.Logger:
         logger = get_logger(__name__)
         logger.debug("This is a debug message")
     """
-    global _logging_configured
-
     if not _logging_configured:
         configure_logging()
 

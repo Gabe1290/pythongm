@@ -553,7 +553,6 @@ class ThymioPlaygroundWindow(QMainWindow):
     def _create_default_line(self):
         """Create default line-following track"""
         # Simple oval track
-        center_x = self.playground_width // 2
         center_y = self.playground_height // 2
         track_width = 15
 

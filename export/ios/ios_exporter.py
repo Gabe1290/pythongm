@@ -351,13 +351,6 @@ class iOSExporter(QObject):
         # the working dir, so run from build_dir.
         recipes = ['python3', 'kivy', 'pillow']
 
-        _PHASE_MARKERS = [
-            ('building python3',  32),
-            ('building kivy',     48),
-            ('building pillow',   62),
-            ('already built',     None),  # cached — jump straight to 65
-        ]
-
         for i, recipe in enumerate(recipes):
             if self.cancel_requested:
                 return "Cancelled by user."
@@ -543,7 +536,6 @@ class iOSExporter(QObject):
             output_lines = collections.deque(maxlen=2000)
             last_signal = 0.0
             current_pct = start_pct
-            pct_range = max(1, end_pct - start_pct)
 
             for line in process.stdout:
                 if self.cancel_requested:

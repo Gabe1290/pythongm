@@ -188,7 +188,6 @@ def handle_move_to_contact(ctx: HandlerContext, instance: Instance, params: Para
     step_x = math.cos(angle_rad)
     step_y = -math.sin(angle_rad)
 
-    start_x, start_y = instance.x, instance.y
     distance_moved = 0
 
     while distance_moved < max_distance:

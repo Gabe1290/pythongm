@@ -332,7 +332,7 @@ class ThymioSimulator:
                 else:
                     # Out of bounds = assume white surface
                     self.sensors.ground_delta[i] = 1000
-            except:
+            except Exception:
                 # Error sampling = assume white surface
                 self.sensors.ground_delta[i] = 1000
 
