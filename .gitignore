@@ -39,7 +39,6 @@ docs/*.html
 
 # Work folders
 Projects/
-!Projects/code_editor_tests/
 Tutorial1/
 resources/
 HTML/
@@ -70,12 +69,25 @@ dist/
 export_output/
 test_thymio_project.json
 test_thymio_project/
+test_*.py
+!tests/test_*.py
 
-# One-off translation scripts
+# One-off scripts
 scripts/complete_french_translations.py
+run_thymio_playground.py
 
 # Test project artifacts
 *.gmk
 my_project*/
 myaze_*/
 temp_*.java
+
+# Misc bloat
+missing_strings.txt
+Game_Maker.chm
+*.chm
+RELEASE_NOTES_*.md
+build_temp/
+build_out/
+debug_tests/
+.pytest_cache/
