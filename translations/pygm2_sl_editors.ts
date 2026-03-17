@@ -568,8 +568,8 @@ Izberite dogodek in kliknite desno tipko za dodajanje akcij.</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_editor_main.py" line="337" />
-            <source>🧩 Visual Programming</source>
-            <translation>🧩 Vizualno programiranje</translation>
+            <source>🧩 Blockly</source>
+            <translation>🧩 Blockly</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_editor_main.py" line="339" />

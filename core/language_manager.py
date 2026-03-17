@@ -10,6 +10,7 @@ To add a new language:
 3. Done - it appears automatically in the language menu
 """
 
+import sys
 from pathlib import Path
 from PySide6.QtCore import QTranslator
 from PySide6.QtWidgets import QApplication
@@ -73,8 +74,13 @@ class LanguageManager:
         self.current_language = Config.get('language', 'en')
         self.translators = []  # List of QTranslator instances for split files
         self.qt_translator = QTranslator()  # For Qt's built-in strings (Yes/No buttons, etc.)
-        self.translations_dir = Path(__file__).parent.parent / 'translations'
-        self.flags_dir = Path(__file__).parent.parent / 'resources' / 'flags'
+        # Use _MEIPASS base when running from PyInstaller bundle
+        if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+            base = Path(sys._MEIPASS)
+        else:
+            base = Path(__file__).parent.parent
+        self.translations_dir = base / 'translations'
+        self.flags_dir = base / 'resources' / 'flags'
 
         # Note: Don't create translations directory - it should exist in the package
         # Creating it would leave empty dirs in temp extraction folder

@@ -38,8 +38,6 @@ datas = [
     (str(project_dir / 'translations' / '*.qm'), 'translations'),
     # Theme configuration
     (str(project_dir / 'utils' / 'themes.json'), 'utils'),
-    # Blockly visual programming files
-    (str(project_dir / 'editors' / 'object_editor' / 'blockly'), 'editors/object_editor/blockly'),
 ]
 
 # Add PySide6 data files
@@ -150,6 +148,7 @@ for _dir, _prefix in [
     ('Tutorials', 'Tutorials'),
     ('resources/flags', 'resources/flags'),
     ('resources/Sprites', 'resources/Sprites'),
+    ('editors/object_editor/blockly', 'editors/object_editor/blockly'),
 ]:
     _path = project_dir / _dir
     if _path.is_dir():

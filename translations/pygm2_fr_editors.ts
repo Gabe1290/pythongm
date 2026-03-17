@@ -568,8 +568,8 @@ Sélectionnez un événement et faites un clic droit pour ajouter des actions.</
         </message>
         <message>
             <location filename="../editors/object_editor/object_editor_main.py" line="337" />
-            <source>🧩 Visual Programming</source>
-            <translation>🧩 Programmation visuelle</translation>
+            <source>🧩 Blockly</source>
+            <translation>🧩 Blockly</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_editor_main.py" line="339" />

@@ -2552,8 +2552,8 @@ Seleccione un evento y haga clic derecho para agregar acciones.</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_editor_main.py" line="337" />
-            <source>🧩 Visual Programming</source>
-            <translation>🧩 Programmation visuelle</translation>
+            <source>🧩 Blockly</source>
+            <translation>🧩 Blockly</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_editor_main.py" line="339" />

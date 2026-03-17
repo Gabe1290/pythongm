@@ -424,7 +424,7 @@ class ObjectEditor(BaseEditor):
         # Tab 2: Visual Programming with Blockly (ENABLED!)
         try:
             visual_tab = self.create_visual_programming_tab()
-            visual_tab_index = self.center_tabs.addTab(visual_tab, self.tr("🧩 Visual Programming"))
+            visual_tab_index = self.center_tabs.addTab(visual_tab, self.tr("🧩 Blockly"))
             self.center_tabs.setTabEnabled(visual_tab_index, True)  # NOW ENABLED!
             self.center_tabs.setTabToolTip(visual_tab_index, self.tr("Scratch-like block programming"))
             logger.debug("Blockly visual programming tab created and ENABLED")

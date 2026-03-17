@@ -163,19 +163,18 @@ class BlocklyWidget(QWidget):
 
     def _load_blockly_html(self):
         """Load the Blockly HTML file with language parameter"""
+        import sys
         from core.language_manager import get_language_manager
 
         # Get current language to pass to the HTML
         language_manager = get_language_manager()
         current_lang = language_manager.get_current_language()
 
-        blockly_html = Path(__file__).parent / "blockly" / "blockly_workspace.html"
-
-        # When running from PyInstaller bundle, check the _MEIPASS directory
-        if not blockly_html.exists():
-            import sys
-            if getattr(sys, 'frozen', False):
-                blockly_html = Path(sys._MEIPASS) / "editors" / "object_editor" / "blockly" / "blockly_workspace.html"
+        # When running from PyInstaller bundle, use _MEIPASS first
+        if getattr(sys, 'frozen', False):
+            blockly_html = Path(sys._MEIPASS) / "editors" / "object_editor" / "blockly" / "blockly_workspace.html"
+        else:
+            blockly_html = Path(__file__).parent / "blockly" / "blockly_workspace.html"
 
         if blockly_html.exists():
             # Pass language as URL fragment to be read by JavaScript
