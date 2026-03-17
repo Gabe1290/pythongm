@@ -1252,12 +1252,13 @@ function getCategoryMessage(category, lang) {
 
 // Initialize language from URL query parameter, or use English by default
 (function() {
+    // Try URL query param first (setUrl mode), then injected global (setHtml mode)
     var urlParams = new URLSearchParams(window.location.search);
-    var langParam = urlParams.get('lang');
-    var supportedLangs = ['fr', 'de', 'it', 'uk', 'es', 'pt', 'ru', 'zh', 'ja'];
+    var langParam = urlParams.get('lang') || window.__pygm_lang;
+    var supportedLangs = ['fr', 'de', 'it', 'uk', 'es', 'pt', 'ru', 'zh', 'ja', 'sl'];
     if (langParam && supportedLangs.indexOf(langParam) !== -1) {
         window.BLOCKLY_LANG = langParam;
-        console.log('Blockly language set from URL:', window.BLOCKLY_LANG);
+        console.log('Blockly language set to:', window.BLOCKLY_LANG);
     } else if (typeof window.BLOCKLY_LANG === 'undefined') {
         window.BLOCKLY_LANG = 'en';
         console.log('Blockly language defaulting to English');

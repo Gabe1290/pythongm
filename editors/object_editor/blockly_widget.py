@@ -172,18 +172,37 @@ class BlocklyWidget(QWidget):
 
         # When running from PyInstaller bundle, use _MEIPASS first
         if getattr(sys, 'frozen', False):
-            blockly_html = Path(sys._MEIPASS) / "editors" / "object_editor" / "blockly" / "blockly_workspace.html"
+            blockly_dir = Path(sys._MEIPASS) / "editors" / "object_editor" / "blockly"
         else:
-            blockly_html = Path(__file__).parent / "blockly" / "blockly_workspace.html"
+            blockly_dir = Path(__file__).parent / "blockly"
+
+        blockly_html = blockly_dir / "blockly_workspace.html"
 
         if blockly_html.exists():
-            # Pass language as URL fragment to be read by JavaScript
+            logger.info(f"Loading Blockly from: {blockly_html}")
+            if logger.isEnabledFor(10):  # DEBUG
+                logger.debug(f"Blockly dir contents: {list(blockly_dir.iterdir())}")
+                lib_dir = blockly_dir / 'lib'
+                if lib_dir.is_dir():
+                    logger.debug(f"Blockly lib contents: {list(lib_dir.iterdir())}")
+
             url = QUrl.fromLocalFile(str(blockly_html))
             url.setQuery(f"lang={current_lang}")
+            logger.info(f"Blockly URL: {url.toString()}")
             self.web_view.setUrl(url)
         else:
             logger.error(f"Blockly HTML not found at {blockly_html}")
-            self.web_view.setHtml("<h1>Blockly not found</h1><p>Could not load blockly_workspace.html</p>")
+            # List what IS in the expected parent to aid debugging
+            parent = blockly_html.parent
+            if parent.exists():
+                logger.error(f"Contents of {parent}: {list(parent.iterdir())}")
+            else:
+                logger.error(f"Directory does not exist: {parent}")
+            self.web_view.setHtml(
+                f"<h1>Blockly not found</h1>"
+                f"<p>Could not load blockly_workspace.html</p>"
+                f"<p>Looked at: {blockly_html}</p>"
+            )
 
     def on_load_finished(self, ok: bool):
         """Handle page load completion"""

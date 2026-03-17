@@ -65,6 +65,13 @@ def setup_qtwebengine_paths():
     is_onefile_extracted = current_dir.startswith('/tmp/') or (temp_dir and current_dir.startswith(temp_dir))
 
     if is_nuitka or is_onefile_extracted or hasattr(sys, 'frozen'):
+        # Disable Chromium sandbox – it blocks file access from PyInstaller
+        # temp directories.  Also disable GPU to avoid OpenGL probe crashes
+        # on headless CI runners and some Linux desktops.
+        flags = os.environ.get('QTWEBENGINE_CHROMIUM_FLAGS', '')
+        extra = '--no-sandbox --disable-gpu'
+        os.environ['QTWEBENGINE_CHROMIUM_FLAGS'] = f'{flags} {extra}'.strip()
+
         # Get the directory where the executable's resources are extracted
         if hasattr(sys, '_MEIPASS'):  # PyInstaller
             base_path = sys._MEIPASS
