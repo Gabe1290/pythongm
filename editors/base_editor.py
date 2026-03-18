@@ -178,14 +178,14 @@ class BaseEditor(QWidget):
 
         # Update action text with command descriptions
         if self.undo_stack.canUndo():
-            self.undo_action.setText(f"↶ Undo {self.undo_stack.undoText()}")
+            self.undo_action.setText(self.tr("↶ Undo {0}").format(self.undo_stack.undoText()))
         else:
-            self.undo_action.setText("↶ Undo")
+            self.undo_action.setText(self.tr("↶ Undo"))
 
         if self.undo_stack.canRedo():
-            self.redo_action.setText(f"↷ Redo {self.undo_stack.redoText()}")
+            self.redo_action.setText(self.tr("↷ Redo {0}").format(self.undo_stack.redoText()))
         else:
-            self.redo_action.setText("↷ Redo")
+            self.redo_action.setText(self.tr("↷ Redo"))
 
     def load_asset(self, asset_name: str, asset_data: Dict[str, Any]):
         """Load an asset for editing"""

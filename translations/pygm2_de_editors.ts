@@ -30,6 +30,14 @@
             <translation>↷ Wiederherstellen</translation>
         </message>
         <message>
+            <source>↶ Undo {0}</source>
+            <translation>↶ Rückgängig {0}</translation>
+        </message>
+        <message>
+            <source>↷ Redo {0}</source>
+            <translation>↷ Wiederherstellen {0}</translation>
+        </message>
+        <message>
             <location filename="../editors/base_editor.py" line="148" />
             <source>Auto-save is enabled. Click to disable.</source>
             <translation>Auto-Speichern ist aktiviert. Klicken zum Deaktivieren.</translation>
@@ -2021,6 +2029,117 @@ Klicken Sie mit der rechten Maustaste auf Pfeil links, Pfeil rechts, Pfeil oben 
         <message>
             <source>Zoom In</source>
             <translation>Vergrößern</translation>
+        </message>
+        <message>
+            <source>Resize</source>
+            <translation>Größe ändern</translation>
+        </message>
+        <message>
+            <source>Draw</source>
+            <translation>Zeichnen</translation>
+        </message>
+        <message>
+            <source>Scale to {0}x{1}</source>
+            <translation>Skalieren auf {0}x{1}</translation>
+        </message>
+        <message>
+            <source>Resize Canvas to {0}x{1}</source>
+            <translation>Leinwand auf {0}x{1} ändern</translation>
+        </message>
+        <message>
+            <source>Tool: {0}</source>
+            <translation>Werkzeug: {0}</translation>
+        </message>
+        <message>
+            <source>Copied selection</source>
+            <translation>Auswahl kopiert</translation>
+        </message>
+        <message>
+            <source>Cut selection</source>
+            <translation>Auswahl ausgeschnitten</translation>
+        </message>
+        <message>
+            <source>Pasted from clipboard</source>
+            <translation>Aus Zwischenablage eingefügt</translation>
+        </message>
+        <message>
+            <source>Copy&#x9;Ctrl+C</source>
+            <translation>Kopieren&#x9;Strg+C</translation>
+        </message>
+        <message>
+            <source>Cut&#x9;Ctrl+X</source>
+            <translation>Ausschneiden&#x9;Strg+X</translation>
+        </message>
+        <message>
+            <source>Paste&#x9;Ctrl+V</source>
+            <translation>Einfügen&#x9;Strg+V</translation>
+        </message>
+        <message>
+            <source>Delete&#x9;Del</source>
+            <translation>Löschen&#x9;Entf</translation>
+        </message>
+        <message>
+            <source>Deselect&#x9;Esc</source>
+            <translation>Auswahl aufheben&#x9;Esc</translation>
+        </message>
+        <message>
+            <source>Select All</source>
+            <translation>Alles auswählen</translation>
+        </message>
+        <message>
+            <source>No frames in sprite</source>
+            <translation>Keine Bilder im Sprite</translation>
+        </message>
+        <message>
+            <source>Validation Error</source>
+            <translation>Validierungsfehler</translation>
+        </message>
+        <message>
+            <source>Saved: {0}</source>
+            <translation>Gespeichert: {0}</translation>
+        </message>
+        <message>
+            <source>Save Error</source>
+            <translation>Speicherfehler</translation>
+        </message>
+        <message>
+            <source>Failed to save sprite: {0}</source>
+            <translation>Sprite konnte nicht gespeichert werden: {0}</translation>
+        </message>
+    </context>
+    <context>
+        <name>ResizeCanvasDialog</name>
+        <message>
+            <source>Resize / Scale</source>
+            <translation>Größe ändern / Skalieren</translation>
+        </message>
+        <message>
+            <source>Current size: {0} x {1}</source>
+            <translation>Aktuelle Größe: {0} x {1}</translation>
+        </message>
+        <message>
+            <source>Mode</source>
+            <translation>Modus</translation>
+        </message>
+        <message>
+            <source>Scale Image (stretch content to new size)</source>
+            <translation>Bild skalieren (Inhalt auf neue Größe strecken)</translation>
+        </message>
+        <message>
+            <source>Resize Canvas (keep content, add/crop space)</source>
+            <translation>Leinwand ändern (Inhalt behalten, Platz hinzufügen/beschneiden)</translation>
+        </message>
+        <message>
+            <source>Width:</source>
+            <translation>Breite:</translation>
+        </message>
+        <message>
+            <source>Height:</source>
+            <translation>Höhe:</translation>
+        </message>
+        <message>
+            <source>Anchor</source>
+            <translation>Anker</translation>
         </message>
     </context>
     <context>

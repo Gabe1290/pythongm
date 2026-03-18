@@ -30,6 +30,14 @@
             <translation>↷ Повторити</translation>
         </message>
         <message>
+            <source>↶ Undo {0}</source>
+            <translation>↶ Скасувати {0}</translation>
+        </message>
+        <message>
+            <source>↷ Redo {0}</source>
+            <translation>↷ Повторити {0}</translation>
+        </message>
+        <message>
             <location filename="../editors/base_editor.py" line="148" />
             <source>Auto-save is enabled. Click to disable.</source>
             <translation>Автозбереження увімкнено. Натисніть, щоб вимкнути.</translation>
@@ -2021,6 +2029,117 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <message>
             <source>Zoom In</source>
             <translation>Збільшити</translation>
+        </message>
+        <message>
+            <source>Resize</source>
+            <translation>Змінити розмір</translation>
+        </message>
+        <message>
+            <source>Draw</source>
+            <translation>Малювати</translation>
+        </message>
+        <message>
+            <source>Scale to {0}x{1}</source>
+            <translation>Масштабувати до {0}x{1}</translation>
+        </message>
+        <message>
+            <source>Resize Canvas to {0}x{1}</source>
+            <translation>Змінити розмір полотна до {0}x{1}</translation>
+        </message>
+        <message>
+            <source>Tool: {0}</source>
+            <translation>Інструмент: {0}</translation>
+        </message>
+        <message>
+            <source>Copied selection</source>
+            <translation>Виділення скопійовано</translation>
+        </message>
+        <message>
+            <source>Cut selection</source>
+            <translation>Виділення вирізано</translation>
+        </message>
+        <message>
+            <source>Pasted from clipboard</source>
+            <translation>Вставлено з буфера обміну</translation>
+        </message>
+        <message>
+            <source>Copy&#x9;Ctrl+C</source>
+            <translation>Копіювати&#x9;Ctrl+C</translation>
+        </message>
+        <message>
+            <source>Cut&#x9;Ctrl+X</source>
+            <translation>Вирізати&#x9;Ctrl+X</translation>
+        </message>
+        <message>
+            <source>Paste&#x9;Ctrl+V</source>
+            <translation>Вставити&#x9;Ctrl+V</translation>
+        </message>
+        <message>
+            <source>Delete&#x9;Del</source>
+            <translation>Видалити&#x9;Del</translation>
+        </message>
+        <message>
+            <source>Deselect&#x9;Esc</source>
+            <translation>Зняти виділення&#x9;Esc</translation>
+        </message>
+        <message>
+            <source>Select All</source>
+            <translation>Вибрати все</translation>
+        </message>
+        <message>
+            <source>No frames in sprite</source>
+            <translation>Немає кадрів у спрайті</translation>
+        </message>
+        <message>
+            <source>Validation Error</source>
+            <translation>Помилка перевірки</translation>
+        </message>
+        <message>
+            <source>Saved: {0}</source>
+            <translation>Збережено: {0}</translation>
+        </message>
+        <message>
+            <source>Save Error</source>
+            <translation>Помилка збереження</translation>
+        </message>
+        <message>
+            <source>Failed to save sprite: {0}</source>
+            <translation>Не вдалося зберегти спрайт: {0}</translation>
+        </message>
+    </context>
+    <context>
+        <name>ResizeCanvasDialog</name>
+        <message>
+            <source>Resize / Scale</source>
+            <translation>Змінити розмір / Масштабувати</translation>
+        </message>
+        <message>
+            <source>Current size: {0} x {1}</source>
+            <translation>Поточний розмір: {0} x {1}</translation>
+        </message>
+        <message>
+            <source>Mode</source>
+            <translation>Режим</translation>
+        </message>
+        <message>
+            <source>Scale Image (stretch content to new size)</source>
+            <translation>Масштабувати зображення (розтягнути вміст до нового розміру)</translation>
+        </message>
+        <message>
+            <source>Resize Canvas (keep content, add/crop space)</source>
+            <translation>Змінити розмір полотна (зберегти вміст, додати/обрізати простір)</translation>
+        </message>
+        <message>
+            <source>Width:</source>
+            <translation>Ширина:</translation>
+        </message>
+        <message>
+            <source>Height:</source>
+            <translation>Висота:</translation>
+        </message>
+        <message>
+            <source>Anchor</source>
+            <translation>Прив'язка</translation>
         </message>
     </context>
     <context>

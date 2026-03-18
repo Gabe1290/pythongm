@@ -32,7 +32,15 @@
         <message>
             <location filename="../editors/base_editor.py" line="137" />
             <source>↷ Redo</source>
-            <translation>↷ Rétablir</translation>
+            <translation>↷ Uveljavi</translation>
+        </message>
+        <message>
+            <source>↶ Undo {0}</source>
+            <translation>↶ Razveljavi {0}</translation>
+        </message>
+        <message>
+            <source>↷ Redo {0}</source>
+            <translation>↷ Uveljavi {0}</translation>
         </message>
         <message>
             <location filename="../editors/base_editor.py" line="148" />
@@ -2021,6 +2029,117 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
         <message>
             <source>Zoom In</source>
             <translation>Povečaj</translation>
+        </message>
+        <message>
+            <source>Resize</source>
+            <translation>Spremeni velikost</translation>
+        </message>
+        <message>
+            <source>Draw</source>
+            <translation>Riši</translation>
+        </message>
+        <message>
+            <source>Scale to {0}x{1}</source>
+            <translation>Povečaj na {0}x{1}</translation>
+        </message>
+        <message>
+            <source>Resize Canvas to {0}x{1}</source>
+            <translation>Spremeni velikost platna na {0}x{1}</translation>
+        </message>
+        <message>
+            <source>Tool: {0}</source>
+            <translation>Orodje: {0}</translation>
+        </message>
+        <message>
+            <source>Copied selection</source>
+            <translation>Izbor kopiran</translation>
+        </message>
+        <message>
+            <source>Cut selection</source>
+            <translation>Izbor izrezan</translation>
+        </message>
+        <message>
+            <source>Pasted from clipboard</source>
+            <translation>Prilepljeno iz odložišča</translation>
+        </message>
+        <message>
+            <source>Copy&#x9;Ctrl+C</source>
+            <translation>Kopiraj&#x9;Ctrl+C</translation>
+        </message>
+        <message>
+            <source>Cut&#x9;Ctrl+X</source>
+            <translation>Izreži&#x9;Ctrl+X</translation>
+        </message>
+        <message>
+            <source>Paste&#x9;Ctrl+V</source>
+            <translation>Prilepi&#x9;Ctrl+V</translation>
+        </message>
+        <message>
+            <source>Delete&#x9;Del</source>
+            <translation>Izbriši&#x9;Del</translation>
+        </message>
+        <message>
+            <source>Deselect&#x9;Esc</source>
+            <translation>Prekliči izbor&#x9;Esc</translation>
+        </message>
+        <message>
+            <source>Select All</source>
+            <translation>Izberi vse</translation>
+        </message>
+        <message>
+            <source>No frames in sprite</source>
+            <translation>Ni sličic v sprite-u</translation>
+        </message>
+        <message>
+            <source>Validation Error</source>
+            <translation>Napaka pri preverjanju</translation>
+        </message>
+        <message>
+            <source>Saved: {0}</source>
+            <translation>Shranjeno: {0}</translation>
+        </message>
+        <message>
+            <source>Save Error</source>
+            <translation>Napaka pri shranjevanju</translation>
+        </message>
+        <message>
+            <source>Failed to save sprite: {0}</source>
+            <translation>Sprite ni bilo mogoče shraniti: {0}</translation>
+        </message>
+    </context>
+    <context>
+        <name>ResizeCanvasDialog</name>
+        <message>
+            <source>Resize / Scale</source>
+            <translation>Spremeni velikost / Povečaj</translation>
+        </message>
+        <message>
+            <source>Current size: {0} x {1}</source>
+            <translation>Trenutna velikost: {0} x {1}</translation>
+        </message>
+        <message>
+            <source>Mode</source>
+            <translation>Način</translation>
+        </message>
+        <message>
+            <source>Scale Image (stretch content to new size)</source>
+            <translation>Povečaj sliko (raztegni vsebino na novo velikost)</translation>
+        </message>
+        <message>
+            <source>Resize Canvas (keep content, add/crop space)</source>
+            <translation>Spremeni velikost platna (ohrani vsebino, dodaj/obreži prostor)</translation>
+        </message>
+        <message>
+            <source>Width:</source>
+            <translation>Širina:</translation>
+        </message>
+        <message>
+            <source>Height:</source>
+            <translation>Višina:</translation>
+        </message>
+        <message>
+            <source>Anchor</source>
+            <translation>Sidro</translation>
         </message>
     </context>
     <context>

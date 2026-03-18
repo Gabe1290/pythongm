@@ -92,6 +92,7 @@ class RoomCanvas(QWidget):
 
         # Sprite cache and project info
         self.sprite_cache = {}
+        self.origin_cache = {}  # object_name -> (origin_x, origin_y)
         self.project_path = None
         self.project_data = None
 
@@ -102,6 +103,7 @@ class RoomCanvas(QWidget):
         self.project_path = Path(project_path) if project_path else None
         self.project_data = project_data
         self.sprite_cache.clear()
+        self.origin_cache.clear()
 
     def set_room_properties(self, width, height, bg_color, bg_image='', tile_h=False, tile_v=False,
                             bg_hspeed=0.0, bg_vspeed=0.0, bg_stretch=True, bg_layers=None):
@@ -356,7 +358,9 @@ class RoomCanvas(QWidget):
         for instance in reversed(self.instances):
             width = getattr(instance, '_sprite_width', 32)
             height = getattr(instance, '_sprite_height', 32)
-            instance_rect = QRect(instance.x, instance.y, width, height)
+            ox = getattr(instance, '_origin_x', 0)
+            oy = getattr(instance, '_origin_y', 0)
+            instance_rect = QRect(instance.x - ox, instance.y - oy, width, height)
             if instance_rect.contains(pos):
                 return instance
         return None
@@ -367,13 +371,24 @@ class RoomCanvas(QWidget):
         for instance in self.instances:
             width = getattr(instance, '_sprite_width', 32)
             height = getattr(instance, '_sprite_height', 32)
-            instance_rect = QRect(instance.x, instance.y, width, height)
+            ox = getattr(instance, '_origin_x', 0)
+            oy = getattr(instance, '_origin_y', 0)
+            instance_rect = QRect(instance.x - ox, instance.y - oy, width, height)
 
             # Check if rectangles intersect
             if rect.intersects(instance_rect):
                 found_instances.append(instance)
 
         return found_instances
+
+    def shift_all_instances(self, dx, dy):
+        """Shift all instances by the given x/y offset"""
+        if not self.instances:
+            return
+        for instance in self.instances:
+            instance.x += dx
+            instance.y += dy
+        self.update()
 
     def select_instance(self, instance, add_to_selection=False):
         """Select an instance (or add to selection with Shift)"""
@@ -428,8 +443,10 @@ class RoomCanvas(QWidget):
 
         paste_pos = self.snap_to_grid_pos(self.last_mouse_pos)
         first_instance_data = self.clipboard_instances[0]
-        offset_x = paste_pos.x() - first_instance_data['x']
-        offset_y = paste_pos.y() - first_instance_data['y']
+        # Account for origin: stored position = visual + origin
+        first_ox, first_oy = self.get_sprite_origin(first_instance_data['object_name'])
+        offset_x = (paste_pos.x() + first_ox) - first_instance_data['x']
+        offset_y = (paste_pos.y() + first_oy) - first_instance_data['y']
 
         pasted_instances = []
         for instance_data in self.clipboard_instances:
@@ -709,6 +726,11 @@ class RoomCanvas(QWidget):
         """Draw an object instance using its sprite with rotation and scale"""
         sprite = self.load_object_sprite(instance.object_name)
 
+        # Get sprite origin to calculate draw position (matching runtime behavior)
+        ox, oy = self.get_sprite_origin(instance.object_name)
+        draw_x = instance.x - ox
+        draw_y = instance.y - oy
+
         # Get dimensions
         if sprite and not sprite.isNull():
             width = sprite.width()
@@ -720,6 +742,8 @@ class RoomCanvas(QWidget):
         # Store dimensions for selection
         instance._sprite_width = width
         instance._sprite_height = height
+        instance._origin_x = ox
+        instance._origin_y = oy
 
         # Apply transformations
         painter.save()  # Save current state
@@ -732,8 +756,8 @@ class RoomCanvas(QWidget):
         # Only apply transformations if needed (optimization)
         if rotation != 0 or scale_x != 1.0 or scale_y != 1.0:
             # Move origin to instance center
-            center_x = instance.x + (width * scale_x) / 2
-            center_y = instance.y + (height * scale_y) / 2
+            center_x = draw_x + (width * scale_x) / 2
+            center_y = draw_y + (height * scale_y) / 2
             painter.translate(center_x, center_y)
 
             # Apply rotation
@@ -767,13 +791,13 @@ class RoomCanvas(QWidget):
         else:
             # No transformation needed - draw normally
             if sprite and not sprite.isNull():
-                sprite_rect = QRect(instance.x, instance.y, width, height)
+                sprite_rect = QRect(draw_x, draw_y, width, height)
                 painter.drawPixmap(sprite_rect, sprite)
             else:
                 color = self.get_object_color(instance.object_name)
-                painter.fillRect(instance.x, instance.y, width, height, color)
+                painter.fillRect(draw_x, draw_y, width, height, color)
                 painter.setPen(QPen(QColor("#000000"), 1))
-                painter.drawRect(instance.x, instance.y, width, height)
+                painter.drawRect(draw_x, draw_y, width, height)
 
                 painter.setPen(QPen(QColor("#FFFFFF"), 1))
                 font = QFont()
@@ -784,7 +808,7 @@ class RoomCanvas(QWidget):
                 if len(name) > 6:
                     name = name[:4] + ".."
 
-                painter.drawText(instance.x + 2, instance.y + 12, name)
+                painter.drawText(draw_x + 2, draw_y + 12, name)
 
         painter.restore()  # Restore previous state
 
@@ -792,15 +816,19 @@ class RoomCanvas(QWidget):
         """Draw selection highlight around instance"""
         width = getattr(instance, '_sprite_width', 32)
         height = getattr(instance, '_sprite_height', 32)
+        ox = getattr(instance, '_origin_x', 0)
+        oy = getattr(instance, '_origin_y', 0)
+        draw_x = instance.x - ox
+        draw_y = instance.y - oy
 
         painter.setPen(QPen(QColor("#FF0000"), 2))
-        painter.drawRect(instance.x - 2, instance.y - 2, width + 4, height + 4)
+        painter.drawRect(draw_x - 2, draw_y - 2, width + 4, height + 4)
 
         handle_size = 6
-        painter.fillRect(instance.x - 3, instance.y - 3, handle_size, handle_size, QColor("#FF0000"))
-        painter.fillRect(instance.x + width - 3, instance.y - 3, handle_size, handle_size, QColor("#FF0000"))
-        painter.fillRect(instance.x - 3, instance.y + height - 3, handle_size, handle_size, QColor("#FF0000"))
-        painter.fillRect(instance.x + width - 3, instance.y + height - 3, handle_size, handle_size, QColor("#FF0000"))
+        painter.fillRect(draw_x - 3, draw_y - 3, handle_size, handle_size, QColor("#FF0000"))
+        painter.fillRect(draw_x + width - 3, draw_y - 3, handle_size, handle_size, QColor("#FF0000"))
+        painter.fillRect(draw_x - 3, draw_y + height - 3, handle_size, handle_size, QColor("#FF0000"))
+        painter.fillRect(draw_x + width - 3, draw_y + height - 3, handle_size, handle_size, QColor("#FF0000"))
 
     def draw_instance_preview(self, painter):
         """Draw a semi-transparent preview of the object being placed"""
@@ -812,6 +840,7 @@ class RoomCanvas(QWidget):
 
         painter.setOpacity(0.5)
 
+        # Preview draws at the grid cell (visual position), same as runtime
         if sprite and not sprite.isNull():
             sprite_rect = QRect(snapped_pos.x(), snapped_pos.y(), sprite.width(), sprite.height())
             painter.drawPixmap(sprite_rect, sprite)
@@ -910,14 +939,41 @@ class RoomCanvas(QWidget):
             self.sprite_cache[object_name] = pixmap
             return pixmap
 
+    def get_sprite_origin(self, object_name):
+        """Get (origin_x, origin_y) for an object's sprite. Returns (0, 0) if unknown."""
+        if object_name in self.origin_cache:
+            return self.origin_cache[object_name]
+
+        origin = (0, 0)
+        try:
+            if self.project_data:
+                objects = self.project_data.get('assets', {}).get('objects', {})
+                if object_name in objects:
+                    sprite_name = objects[object_name].get('sprite', '')
+                    if sprite_name:
+                        sprites = self.project_data.get('assets', {}).get('sprites', {})
+                        if sprite_name in sprites:
+                            sprite_data = sprites[sprite_name]
+                            origin = (
+                                sprite_data.get('origin_x', 0),
+                                sprite_data.get('origin_y', 0),
+                            )
+        except Exception as e:
+            logger.error(f"Error getting sprite origin for {object_name}: {e}")
+
+        self.origin_cache[object_name] = origin
+        return origin
+
     def clear_sprite_cache(self, object_name=None):
         """Clear sprite cache for specific object or all objects"""
         if object_name:
             if object_name in self.sprite_cache:
                 del self.sprite_cache[object_name]
                 logger.debug(f"Cleared sprite cache for {object_name}")
+            self.origin_cache.pop(object_name, None)
         else:
             self.sprite_cache.clear()
+            self.origin_cache.clear()
             logger.debug("Cleared all sprite cache")
 
     def create_default_sprite(self, object_name):
@@ -1069,7 +1125,10 @@ class RoomCanvas(QWidget):
 
                 # Start dragging all selected instances
                 self.dragging = True
-                self.drag_offset = pos - QPoint(clicked_instance.x, clicked_instance.y)
+                # Use visual position (x - origin) for drag offset calculation
+                ox = getattr(clicked_instance, '_origin_x', 0)
+                oy = getattr(clicked_instance, '_origin_y', 0)
+                self.drag_offset = pos - QPoint(clicked_instance.x - ox, clicked_instance.y - oy)
 
                 # Store starting positions for all selected instances
                 self.move_start_positions = {
@@ -1085,7 +1144,10 @@ class RoomCanvas(QWidget):
                 grid_y = snapped_pos.y() // self.grid_size
                 self.last_painted_grid = (grid_x, grid_y)
 
-                new_instance = ObjectInstance(self.current_object_type, snapped_pos.x(), snapped_pos.y())
+                # Store position as origin point (offset by sprite origin)
+                # so runtime renders sprite aligned to the grid cell
+                ox, oy = self.get_sprite_origin(self.current_object_type)
+                new_instance = ObjectInstance(self.current_object_type, snapped_pos.x() + ox, snapped_pos.y() + oy)
                 self.painted_instances = [new_instance]
                 self.instances.append(new_instance)
 
@@ -1126,12 +1188,15 @@ class RoomCanvas(QWidget):
         if self.dragging and self.selected_instances:
             # Move all selected instances together
             primary_instance = self.selected_instances[0]
-            new_pos = self.snap_to_grid_pos(pos - self.drag_offset)
+            # Snap the visual position to grid
+            new_visual_pos = self.snap_to_grid_pos(pos - self.drag_offset)
 
-            # Calculate delta from primary instance's original position
+            # Calculate delta from primary instance's original visual position
             old_primary_pos = self.move_start_positions[primary_instance]
-            delta_x = new_pos.x() - old_primary_pos[0]
-            delta_y = new_pos.y() - old_primary_pos[1]
+            ox = getattr(primary_instance, '_origin_x', 0)
+            oy = getattr(primary_instance, '_origin_y', 0)
+            delta_x = new_visual_pos.x() - (old_primary_pos[0] - ox)
+            delta_y = new_visual_pos.y() - (old_primary_pos[1] - oy)
 
             # Move all selected instances by the same delta
             for instance in self.selected_instances:
@@ -1158,7 +1223,8 @@ class RoomCanvas(QWidget):
                 self.last_painted_grid = current_grid
                 existing_instance = self.find_instance_at(snapped_pos)
                 if not existing_instance:
-                    new_instance = ObjectInstance(self.current_object_type, snapped_pos.x(), snapped_pos.y())
+                    ox, oy = self.get_sprite_origin(self.current_object_type)
+                    new_instance = ObjectInstance(self.current_object_type, snapped_pos.x() + ox, snapped_pos.y() + oy)
                     self.painted_instances.append(new_instance)
                     self.instances.append(new_instance)
                     self.instance_added.emit(new_instance)

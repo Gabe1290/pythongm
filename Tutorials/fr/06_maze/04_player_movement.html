@@ -26,11 +26,11 @@
     </style>
 </head>
 <body>
-    <h1>Étape 3 : Mouvement du Joueur (Blockly)</h1>
+    <h1>Étape 3 : Mouvement du joueur (Blockly)</h1>
 
     <p>Nous allons utiliser les <strong>blocs visuels Blockly</strong> pour programmer le mouvement du joueur et les collisions avec les murs.</p>
 
-    <h2>Ouvrir l'Éditeur Blockly</h2>
+    <h2>Ouvrir l'éditeur Blockly</h2>
     <div class="step">
         <ol>
             <li>Double-cliquez sur <code>obj_player</code> dans l'arbre des assets pour ouvrir l'Éditeur d'Objet</li>
@@ -44,7 +44,7 @@
         cliquez sur <strong>Apply to Events</strong> pour sauvegarder vos blocs.
     </div>
 
-    <h2>Se Déplacer à Droite</h2>
+    <h2>Se déplacer à droite</h2>
     <div class="step">
         <p>Glissez ces blocs depuis la boîte à outils et emboîtez-les :</p>
         <div class="blockly-group">
@@ -56,7 +56,7 @@
         Tapez <strong>4</strong> dans le champ numérique.</p>
     </div>
 
-    <h2>Se Déplacer à Gauche</h2>
+    <h2>Se déplacer à gauche</h2>
     <div class="step">
         <div class="blockly-group">
             <span class="block block-event">Clavier: Flèche gauche (maintenue)</span><br>
@@ -65,7 +65,7 @@
         <p>Même chose, mais choisissez <strong>Flèche gauche</strong> et tapez <strong>-4</strong> (négatif = direction gauche).</p>
     </div>
 
-    <h2>Se Déplacer vers le Bas</h2>
+    <h2>Se déplacer vers le bas</h2>
     <div class="step">
         <div class="blockly-group">
             <span class="block block-event">Clavier: Flèche bas (maintenue)</span><br>
@@ -74,7 +74,7 @@
         <p>Utilisez <strong>définir vitesse verticale</strong> depuis <em>Mouvement</em>. Positif = vers le bas.</p>
     </div>
 
-    <h2>Se Déplacer vers le Haut</h2>
+    <h2>Se déplacer vers le haut</h2>
     <div class="step">
         <div class="blockly-group">
             <span class="block block-event">Clavier: Flèche haut (maintenue)</span><br>
@@ -83,17 +83,17 @@
         <p>Tapez <strong>-4</strong> pour le mouvement vers le haut.</p>
     </div>
 
-    <h2>S'Arrêter Quand Aucune Touche n'Est Pressée</h2>
+    <h2>S'arrêter quand aucune touche n'est pressée</h2>
     <div class="step">
         <div class="blockly-group">
             <span class="block block-event">Clavier: Aucune touche</span><br>
             <span class="block block-move block-indent">arrêter le mouvement</span>
         </div>
-        <p>Trouvez <strong>Aucune touche</strong> dans <em>Événements</em> et <strong>arrêter le mouvement</strong> dans <em>Mouvement</em>.
+        <p>Trouvez <strong>Clavier: Aucune touche</strong> dans <em>Événements</em> et <strong>arrêter le mouvement</strong> dans <em>Mouvement</em>.
         Cela empêche le joueur de glisser indéfiniment !</p>
     </div>
 
-    <h2>S'Arrêter contre les Murs</h2>
+    <h2>S'arrêter contre les murs</h2>
     <div class="step">
         <div class="blockly-group">
             <span class="block block-event">Quand collision avec obj_wall</span><br>
@@ -103,7 +103,7 @@
         Emboîtez un bloc <strong>arrêter le mouvement</strong> à l'intérieur.</p>
     </div>
 
-    <h2>Appliquer Vos Blocs</h2>
+    <h2>Appliquer vos blocs</h2>
     <div class="step">
         <ol>
             <li>Vous devez avoir <strong>6 blocs d'événement</strong> dans votre espace de travail</li>

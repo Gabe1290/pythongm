@@ -9,7 +9,8 @@ import copy
 from pathlib import Path
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
                                QScrollArea, QToolBar, QMessageBox, QLabel,
-                               QPushButton)
+                               QPushButton, QDialog, QFormLayout, QSpinBox,
+                               QDialogButtonBox)
 from PySide6.QtCore import Qt, Signal, QTimer
 
 from core.logger import get_logger
@@ -44,6 +45,9 @@ class RoomEditor(QWidget):
             'tiles': []
         }
         self.is_modified = False
+
+        self.auto_save_timer = QTimer()
+        self.auto_save_timer.setSingleShot(True)
 
         self.setup_ui()
         self.setup_connections()
@@ -175,6 +179,11 @@ class RoomEditor(QWidget):
         clear_action.setToolTip(self.tr("Remove all object instances"))
         clear_action.triggered.connect(self.clear_all_instances)
 
+        # Shift all instances
+        shift_action = self.toolbar.addAction(self.tr("↔ Shift All"))
+        shift_action.setToolTip(self.tr("Shift all instances by an X/Y offset"))
+        shift_action.triggered.connect(self.shift_all_instances)
+
         self.toolbar.addSeparator()
 
         # Status label
@@ -208,6 +217,41 @@ class RoomEditor(QWidget):
                 self.instance_properties.set_instance(None)
                 self.mark_modified()
                 self.update_status(self.tr("All instances cleared"))
+
+    def shift_all_instances(self):
+        """Shift all instances by a user-specified X/Y offset"""
+        if not hasattr(self, 'room_canvas') or not self.room_canvas.instances:
+            QMessageBox.information(self, self.tr("Shift All"), self.tr("No instances to shift."))
+            return
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle(self.tr("Shift All Instances"))
+        layout = QFormLayout(dialog)
+
+        x_spin = QSpinBox()
+        x_spin.setRange(-10000, 10000)
+        x_spin.setValue(0)
+        x_spin.setSuffix(" px")
+        layout.addRow(self.tr("X offset:"), x_spin)
+
+        y_spin = QSpinBox()
+        y_spin.setRange(-10000, 10000)
+        y_spin.setValue(0)
+        y_spin.setSuffix(" px")
+        layout.addRow(self.tr("Y offset:"), y_spin)
+
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(dialog.accept)
+        buttons.rejected.connect(dialog.reject)
+        layout.addRow(buttons)
+
+        if dialog.exec() == QDialog.Accepted:
+            dx = x_spin.value()
+            dy = y_spin.value()
+            if dx != 0 or dy != 0:
+                self.room_canvas.shift_all_instances(dx, dy)
+                self.mark_modified()
+                self.update_status(self.tr("Shifted all instances by ({0}, {1})").format(dx, dy))
 
     def update_status(self, message, timeout=3000):
         """Update status message"""

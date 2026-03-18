@@ -35,6 +35,14 @@
             <translation>↷ Redo</translation>
         </message>
         <message>
+            <source>↶ Undo {0}</source>
+            <translation>↶ Отменить {0}</translation>
+        </message>
+        <message>
+            <source>↷ Redo {0}</source>
+            <translation>↷ Повторить {0}</translation>
+        </message>
+        <message>
             <location filename="../editors/base_editor.py" line="148" />
             <source>Auto-save is enabled. Click to disable.</source>
             <translation>Auto-save is enabled. Click to disable.</translation>
@@ -2021,6 +2029,117 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <message>
             <source>Zoom In</source>
             <translation>Увеличить</translation>
+        </message>
+        <message>
+            <source>Resize</source>
+            <translation>Изменить размер</translation>
+        </message>
+        <message>
+            <source>Draw</source>
+            <translation>Рисовать</translation>
+        </message>
+        <message>
+            <source>Scale to {0}x{1}</source>
+            <translation>Масштабировать до {0}x{1}</translation>
+        </message>
+        <message>
+            <source>Resize Canvas to {0}x{1}</source>
+            <translation>Изменить размер холста до {0}x{1}</translation>
+        </message>
+        <message>
+            <source>Tool: {0}</source>
+            <translation>Инструмент: {0}</translation>
+        </message>
+        <message>
+            <source>Copied selection</source>
+            <translation>Выделение скопировано</translation>
+        </message>
+        <message>
+            <source>Cut selection</source>
+            <translation>Выделение вырезано</translation>
+        </message>
+        <message>
+            <source>Pasted from clipboard</source>
+            <translation>Вставлено из буфера обмена</translation>
+        </message>
+        <message>
+            <source>Copy&#x9;Ctrl+C</source>
+            <translation>Копировать&#x9;Ctrl+C</translation>
+        </message>
+        <message>
+            <source>Cut&#x9;Ctrl+X</source>
+            <translation>Вырезать&#x9;Ctrl+X</translation>
+        </message>
+        <message>
+            <source>Paste&#x9;Ctrl+V</source>
+            <translation>Вставить&#x9;Ctrl+V</translation>
+        </message>
+        <message>
+            <source>Delete&#x9;Del</source>
+            <translation>Удалить&#x9;Del</translation>
+        </message>
+        <message>
+            <source>Deselect&#x9;Esc</source>
+            <translation>Снять выделение&#x9;Esc</translation>
+        </message>
+        <message>
+            <source>Select All</source>
+            <translation>Выделить всё</translation>
+        </message>
+        <message>
+            <source>No frames in sprite</source>
+            <translation>Нет кадров в спрайте</translation>
+        </message>
+        <message>
+            <source>Validation Error</source>
+            <translation>Ошибка проверки</translation>
+        </message>
+        <message>
+            <source>Saved: {0}</source>
+            <translation>Сохранено: {0}</translation>
+        </message>
+        <message>
+            <source>Save Error</source>
+            <translation>Ошибка сохранения</translation>
+        </message>
+        <message>
+            <source>Failed to save sprite: {0}</source>
+            <translation>Не удалось сохранить спрайт: {0}</translation>
+        </message>
+    </context>
+    <context>
+        <name>ResizeCanvasDialog</name>
+        <message>
+            <source>Resize / Scale</source>
+            <translation>Изменить размер / Масштабировать</translation>
+        </message>
+        <message>
+            <source>Current size: {0} x {1}</source>
+            <translation>Текущий размер: {0} x {1}</translation>
+        </message>
+        <message>
+            <source>Mode</source>
+            <translation>Режим</translation>
+        </message>
+        <message>
+            <source>Scale Image (stretch content to new size)</source>
+            <translation>Масштабировать изображение (растянуть содержимое до нового размера)</translation>
+        </message>
+        <message>
+            <source>Resize Canvas (keep content, add/crop space)</source>
+            <translation>Изменить размер холста (сохранить содержимое, добавить/обрезать пространство)</translation>
+        </message>
+        <message>
+            <source>Width:</source>
+            <translation>Ширина:</translation>
+        </message>
+        <message>
+            <source>Height:</source>
+            <translation>Высота:</translation>
+        </message>
+        <message>
+            <source>Anchor</source>
+            <translation>Привязка</translation>
         </message>
     </context>
     <context>
