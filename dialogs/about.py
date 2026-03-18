@@ -34,7 +34,7 @@ class AboutDialog(QDialog):
         layout.addWidget(title)
 
         # Version
-        version = QLabel(self.tr("Version 1.0.0-rc.4"))
+        version = QLabel(self.tr("Version 1.0.0-rc.5"))
         version.setAlignment(Qt.AlignCenter)
         layout.addWidget(version)
 
