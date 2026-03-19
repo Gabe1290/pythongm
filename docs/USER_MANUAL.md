@@ -100,15 +100,15 @@ The IDE uses a three-panel layout:
 |   (Left Panel)    |      (Center Panel)       |   (Right Panel)  |
 |                   |                           |                  |
 |   - Sprites       |   Tabbed editors for      |   Context-       |
-|   - Sounds        |   sprites, objects,       |   sensitive       |
-|   - Backgrounds   |   and rooms               |   properties      |
+|   - Sounds        |   sprites, objects,       |   sensitive      |
+|   - Backgrounds   |   and rooms               |   properties     |
 |   - Objects       |                           |                  |
 |   - Rooms         |                           |                  |
 |   - Scripts       |                           |                  |
 |   - Fonts         |                           |                  |
-+-------------------+---------------------------+------------------+
-|                       Status Bar                                  |
-+-------------------------------------------------------------------+
++-------------------+--------------------------+------------------+
+|                       Status Bar                                 |
++------------------------------------------------------------------+
 ```
 
 - **Left Panel (Asset Tree):** Displays all project assets organized by type. Double-click an asset to open it in the editor.
