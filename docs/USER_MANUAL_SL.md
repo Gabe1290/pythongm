@@ -1,6 +1,6 @@
 # PyGameMaker IDE Uporabniški priročnik
 
-**Različica 1.0.0-rc.4**
+**Različica 1.0.0-rc.6**
 **Razvojno okolje za vizualno ustvarjanje 2D iger s Pythonom, navdahnjeno z GameMakerjem**
 
 ---
@@ -96,19 +96,19 @@ Razvojno okolje uporablja razporeditev s tremi paneli:
 
 ```
 +-------------------+---------------------------+------------------+
-|   Drevo sredstev  |      Območje urejevalnika |   Lastnosti      |
-|   (Levi panel)    |      (Sredinski panel)    |   (Desni panel)  |
+|   Drevo sredstev  |    Območje urejevalnika   |   Lastnosti      |
+|   (Levi panel)    |    (Sredinski panel)      |   (Desni panel)  |
 |                   |                           |                  |
 |   - Sličice       |   Urejevalniki z zavihki  |   Kontekstno     |
-|   - Zvoki         |   za sličice, objekte     |   odvisne         |
-|   - Ozadja        |   in sobe                 |   lastnosti       |
+|   - Zvoki         |   za sličice, objekte     |   odvisne        |
+|   - Ozadja        |   in sobe                 |   lastnosti      |
 |   - Objekti       |                           |                  |
 |   - Sobe          |                           |                  |
 |   - Skripte       |                           |                  |
 |   - Pisave        |                           |                  |
 +-------------------+---------------------------+------------------+
-|                       Vrstica stanja                              |
-+-------------------------------------------------------------------+
+|                       Vrstica stanja                             |
++------------------------------------------------------------------+
 ```
 
 - **Levi panel (Drevo sredstev):** Prikazuje vsa sredstva projekta, organizirana po vrsti. Dvokliknite sredstvo, da ga odprete v urejevalniku.
@@ -1244,7 +1244,7 @@ Vadnice so na voljo v več jezikih (angleščina, nemščina, španščina, fran
 
 ---
 
-**PyGameMaker IDE** - Različica 1.0.0-rc.4
-Copyright 2024-2025 Gabriel Thullen
+**PyGameMaker IDE** - Različica 1.0.0-rc.6
+Copyright 2025-2026 Gabriel Thullen
 Licencirano pod GNU General Public License v3 (GPLv3)
 GitHub: https://github.com/Gabe1290/pythongm

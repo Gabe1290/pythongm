@@ -3912,6 +3912,10 @@ Certains changements peuvent nécessiter de redémarrer l'IDE pour prendre effet
             <translation>&amp;Documentation</translation>
         </message>
         <message>
+            <source>&amp;Online Documentation</source>
+            <translation>&amp;Documentation en ligne</translation>
+        </message>
+        <message>
             <source>&amp;About</source>
             <translation type="vanished">À &amp;propos</translation>
         </message>
@@ -4800,9 +4804,7 @@ Pour l'instant, vous pouvez supprimer manuellement les fichiers temporaires depu
         </message>
         <message>
             <location filename="../core/ide_window.py" line="2199" />
-            <source>Documentation is not yet available.
-
-Quick Help:
+            <source>Quick Help:
 • F1: Open this help
 • Ctrl+N: New Project
 • Ctrl+O: Open Project
@@ -4810,10 +4812,10 @@ Quick Help:
 • Double-click assets to edit them
 • Right-click for more options
 
-Online documentation coming soon!</source>
-            <translation>La documentation n'est pas encore disponible.
-
-Aide rapide :
+For full documentation, go to:
+Help → Online Documentation
+or visit:</source>
+            <translation>Aide rapide :
 • F1 : Ouvrir cette aide
 • Ctrl+N : Nouveau projet
 • Ctrl+O : Ouvrir un projet
@@ -4821,7 +4823,9 @@ Aide rapide :
 • Double-cliquez sur les ressources pour les modifier
 • Clic droit pour plus d'options
 
-Documentation en ligne bientôt disponible !</translation>
+Pour la documentation complète, allez dans :
+Aide → Documentation en ligne
+ou visitez :</translation>
         </message>
         <message>
             <source>Tutorials</source>

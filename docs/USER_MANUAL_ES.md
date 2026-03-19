@@ -1,6 +1,6 @@
 # Manual de Usuario del IDE PyGameMaker
 
-**Version 1.0.0-rc.4**
+**Version 1.0.0-rc.6**
 **Un IDE de desarrollo de juegos visual inspirado en GameMaker para crear juegos 2D con Python**
 
 ---
@@ -96,19 +96,20 @@ El IDE usa un diseno de tres paneles:
 
 ```
 +-------------------+---------------------------+------------------+
-|   Asset Tree      |      Editor Area          |   Properties     |
-|   (Left Panel)    |      (Center Panel)       |   (Right Panel)  |
-|                   |                           |                  |
-|   - Sprites       |   Tabbed editors for      |   Context-       |
-|   - Sounds        |   sprites, objects,       |   sensitive       |
-|   - Backgrounds   |   and rooms               |   properties      |
-|   - Objects       |                           |                  |
-|   - Rooms         |                           |                  |
+|   Árbol de        |      Área del editor      |   Propiedades    |
+|   recursos        |      (Panel central)      |   (Panel der.)   |
+|   (Panel izq.)    |                           |                  |
+|                   |   Editores con pestañas   |   Propiedades    |
+|   - Sprites       |   para sprites, objetos   |   contextuales   |
+|   - Sonidos       |   y salas                 |                  |
+|   - Fondos        |                           |                  |
+|   - Objetos       |                           |                  |
+|   - Salas         |                           |                  |
 |   - Scripts       |                           |                  |
-|   - Fonts         |                           |                  |
+|   - Fuentes       |                           |                  |
 +-------------------+---------------------------+------------------+
-|                       Status Bar                                  |
-+-------------------------------------------------------------------+
+|                       Barra de estado                            |
++------------------------------------------------------------------+
 ```
 
 - **Panel Izquierdo (Arbol de Recursos):** Muestra todos los recursos del proyecto organizados por tipo. Haz doble clic en un recurso para abrirlo en el editor.
@@ -1244,7 +1245,7 @@ Los tutoriales estan disponibles en multiples idiomas (ingles, aleman, espanol, 
 
 ---
 
-**PyGameMaker IDE** - Version 1.0.0-rc.4
-Copyright 2024-2025 Gabriel Thullen
+**PyGameMaker IDE** - Version 1.0.0-rc.6
+Copyright 2025-2026 Gabriel Thullen
 Licensed under GNU General Public License v3 (GPLv3)
 GitHub: https://github.com/Gabe1290/pythongm

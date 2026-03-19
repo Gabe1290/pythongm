@@ -1,6 +1,6 @@
 # PyGameMaker IDE User Manual
 
-**Version 1.0.0-rc.4**
+**Version 1.0.0-rc.6**
 **A GameMaker-inspired visual game development IDE for creating 2D games with Python**
 
 ---
@@ -106,7 +106,7 @@ The IDE uses a three-panel layout:
 |   - Rooms         |                           |                  |
 |   - Scripts       |                           |                  |
 |   - Fonts         |                           |                  |
-+-------------------+--------------------------+------------------+
++-------------------+---------------------------+------------------+
 |                       Status Bar                                 |
 +------------------------------------------------------------------+
 ```
@@ -1244,7 +1244,7 @@ Tutorials are available in multiple languages (English, German, Spanish, French,
 
 ---
 
-**PyGameMaker IDE** - Version 1.0.0-rc.4
-Copyright 2024-2025 Gabriel Thullen
+**PyGameMaker IDE** - Version 1.0.0-rc.6
+Copyright 2025-2026 Gabriel Thullen
 Licensed under GNU General Public License v3 (GPLv3)
 GitHub: https://github.com/Gabe1290/pythongm

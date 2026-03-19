@@ -1,6 +1,6 @@
 # Manuel d'utilisation de PyGameMaker IDE
 
-**Version 1.0.0-rc.4**
+**Version 1.0.0-rc.6**
 **Un IDE de developpement de jeux visuels inspire de GameMaker pour creer des jeux 2D avec Python**
 
 ---
@@ -96,19 +96,19 @@ L'IDE utilise une disposition a trois panneaux :
 
 ```
 +-------------------+---------------------------+------------------+
-| Arbre des         |    Zone d'edition          |  Proprietes      |
-| ressources        |    (Panneau central)       |  (Panneau droit) |
+| Arbre des         |   Zone d'édition          |  Propriétés      |
+| ressources        |   (Panneau central)       |  (Panneau droit) |
 | (Panneau gauche)  |                           |                  |
-|                   |   Editeurs a onglets      |  Proprietes      |
+|                   |   Éditeurs à onglets      |  Propriétés      |
 |   - Sprites       |   pour sprites, objets    |  contextuelles   |
 |   - Sons          |   et salles               |                  |
-|   - Arriere-plans |                           |                  |
+|   - Arrière-plans |                           |                  |
 |   - Objets        |                           |                  |
 |   - Salles        |                           |                  |
 |   - Scripts       |                           |                  |
 |   - Polices       |                           |                  |
 +-------------------+---------------------------+------------------+
-|                      Barre d'etat                                |
+|                       Barre d'état                               |
 +------------------------------------------------------------------+
 ```
 
@@ -1245,7 +1245,7 @@ Les tutoriels sont disponibles en plusieurs langues (anglais, allemand, espagnol
 
 ---
 
-**PyGameMaker IDE** - Version 1.0.0-rc.4
-Copyright 2024-2025 Gabriel Thullen
+**PyGameMaker IDE** - Version 1.0.0-rc.6
+Copyright 2025-2026 Gabriel Thullen
 Licence GNU General Public License v3 (GPLv3)
 GitHub : https://github.com/Gabe1290/pythongm

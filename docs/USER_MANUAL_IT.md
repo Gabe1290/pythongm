@@ -1,6 +1,6 @@
 # Manuale Utente di PyGameMaker IDE
 
-**Versione 1.0.0-rc.4**
+**Versione 1.0.0-rc.6**
 **Un IDE di sviluppo giochi visuale ispirato a GameMaker per creare giochi 2D con Python**
 
 ---
@@ -96,10 +96,10 @@ L'IDE utilizza una disposizione a tre pannelli:
 
 ```
 +-------------------+---------------------------+------------------+
-|   Albero Risorse  |      Area Editor          |   Proprieta      |
+|   Albero Risorse  |      Area Editor          |   Proprietà      |
 |   (Pannello Sin.) |      (Pannello Centr.)    |   (Pannello Dx)  |
 |                   |                           |                  |
-|   - Sprite        |   Editor a schede per     |   Proprieta      |
+|   - Sprite        |   Editor a schede per     |   Proprietà      |
 |   - Suoni         |   sprite, oggetti         |   contestuali    |
 |   - Sfondi        |   e stanze                |                  |
 |   - Oggetti       |                           |                  |
@@ -107,8 +107,8 @@ L'IDE utilizza una disposizione a tre pannelli:
 |   - Script        |                           |                  |
 |   - Font          |                           |                  |
 +-------------------+---------------------------+------------------+
-|                       Barra di Stato                              |
-+-------------------------------------------------------------------+
+|                       Barra di Stato                             |
++------------------------------------------------------------------+
 ```
 
 - **Pannello Sinistro (Albero Risorse):** Mostra tutte le risorse del progetto organizzate per tipo. Doppio clic su una risorsa per aprirla nell'editor.
@@ -1244,7 +1244,7 @@ I tutorial sono disponibili in piu lingue (Inglese, Tedesco, Spagnolo, Francese,
 
 ---
 
-**PyGameMaker IDE** - Versione 1.0.0-rc.4
-Copyright 2024-2025 Gabriel Thullen
+**PyGameMaker IDE** - Versione 1.0.0-rc.6
+Copyright 2025-2026 Gabriel Thullen
 Rilasciato sotto Licenza Pubblica Generale GNU v3 (GPLv3)
 GitHub: https://github.com/Gabe1290/pythongm

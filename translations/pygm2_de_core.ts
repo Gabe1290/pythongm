@@ -634,6 +634,10 @@ Einige Änderungen erfordern möglicherweise einen Neustart der IDE, um wirksam 
             <translation>&amp;Dokumentation</translation>
         </message>
         <message>
+            <source>&amp;Online Documentation</source>
+            <translation>&amp;Online-Dokumentation</translation>
+        </message>
+        <message>
             <source>&amp;About</source>
             <translation type="vanished">&amp;Über</translation>
         </message>
@@ -1522,9 +1526,7 @@ Vorerst können Sie temporäre Dateien manuell löschen aus:
         </message>
         <message>
             <location filename="../core/ide_window.py" line="2199" />
-            <source>Documentation is not yet available.
-
-Quick Help:
+            <source>Quick Help:
 • F1: Open this help
 • Ctrl+N: New Project
 • Ctrl+O: Open Project
@@ -1532,18 +1534,20 @@ Quick Help:
 • Double-click assets to edit them
 • Right-click for more options
 
-Online documentation coming soon!</source>
-            <translation>Die Dokumentation ist noch nicht verfügbar.
-
-Schnellhilfe:
+For full documentation, go to:
+Help → Online Documentation
+or visit:</source>
+            <translation>Schnellhilfe:
 • F1: Diese Hilfe öffnen
 • Strg+N: Neues Projekt
 • Strg+O: Projekt öffnen
 • Strg+S: Projekt speichern
-• Doppelklick auf Assets zum Bearbeiten
+• Doppelklick auf Ressourcen zum Bearbeiten
 • Rechtsklick für weitere Optionen
 
-Online-Dokumentation kommt bald!</translation>
+Für die vollständige Dokumentation:
+Hilfe → Online-Dokumentation
+oder besuchen Sie:</translation>
         </message>
         <message>
             <source>Tutorials</source>

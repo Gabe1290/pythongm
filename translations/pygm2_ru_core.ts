@@ -634,6 +634,10 @@ Some changes may require restarting the IDE to take effect.</source>
             <translation>&amp;Документация</translation>
         </message>
         <message>
+            <source>&amp;Online Documentation</source>
+            <translation>&amp;Онлайн-документация</translation>
+        </message>
+        <message>
             <source>&amp;About</source>
             <translation type="vanished">À &amp;propos</translation>
         </message>
@@ -1522,9 +1526,7 @@ For now, you can manually delete temporary files from:
         </message>
         <message>
             <location filename="../core/ide_window.py" line="2199" />
-            <source>Documentation is not yet available.
-
-Quick Help:
+            <source>Quick Help:
 • F1: Open this help
 • Ctrl+N: New Project
 • Ctrl+O: Open Project
@@ -1532,10 +1534,10 @@ Quick Help:
 • Double-click assets to edit them
 • Right-click for more options
 
-Online documentation coming soon!</source>
-            <translation>Документация пока недоступна.
-
-Быстрая помощь:
+For full documentation, go to:
+Help → Online Documentation
+or visit:</source>
+            <translation>Быстрая помощь:
 • F1: Открыть эту справку
 • Ctrl+N: Новый проект
 • Ctrl+O: Открыть проект
@@ -1543,7 +1545,9 @@ Online documentation coming soon!</source>
 • Двойной клик по ресурсам для редактирования
 • Правый клик для дополнительных опций
 
-Онлайн документация скоро!</translation>
+Полная документация доступна через:
+Справка → Онлайн-документация
+или посетите:</translation>
         </message>
         <message>
             <source>Tutorials</source>

@@ -3909,7 +3909,11 @@ Certains changements peuvent nécessiter de redémarrer l'IDE pour prendre effet
         <message>
             <location filename="../core/ide_window.py" line="248" />
             <source>&amp;Documentation</source>
-            <translation>&amp;Documentation</translation>
+            <translation>&amp;Dokumentacija</translation>
+        </message>
+        <message>
+            <source>&amp;Online Documentation</source>
+            <translation>&amp;Spletna dokumentacija</translation>
         </message>
         <message>
             <source>&amp;About</source>
@@ -4800,9 +4804,7 @@ Zaenkrat lahko ročno izbrišete začasne datoteke iz:
         </message>
         <message>
             <location filename="../core/ide_window.py" line="2199" />
-            <source>Documentation is not yet available.
-
-Quick Help:
+            <source>Quick Help:
 • F1: Open this help
 • Ctrl+N: New Project
 • Ctrl+O: Open Project
@@ -4810,18 +4812,20 @@ Quick Help:
 • Double-click assets to edit them
 • Right-click for more options
 
-Online documentation coming soon!</source>
-            <translation>Dokumentacija še ni na voljo.
-
-Hitra pomoč:
+For full documentation, go to:
+Help → Online Documentation
+or visit:</source>
+            <translation>Hitra pomoč:
 • F1: Odpri to pomoč
 • Ctrl+N: Nov projekt
 • Ctrl+O: Odpri projekt
 • Ctrl+S: Shrani projekt
-• Dvojni klik na vire za urejanje
+• Dvokliknite na vire za urejanje
 • Desni klik za več možnosti
 
-Spletna dokumentacija kmalu!</translation>
+Za celotno dokumentacijo pojdite na:
+Pomoč → Spletna dokumentacija
+ali obiščite:</translation>
         </message>
         <message>
             <source>Tutorials</source>

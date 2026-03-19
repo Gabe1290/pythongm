@@ -2904,27 +2904,42 @@ class PyGameMakerIDE(QMainWindow):
                             "Check the console for error details.")
                 )
 
+    def _get_docs_url(self):
+        """Return the GitHub USER_MANUAL URL for the current IDE language."""
+        from core.language_manager import get_language_manager
+        lang = get_language_manager().get_current_language()
+        base = "https://github.com/Gabe1290/pythongm/blob/main/docs"
+        # Map language codes to the USER_MANUAL file suffixes
+        suffix_map = {
+            "fr": "_FR", "de": "_DE", "es": "_ES", "it": "_IT",
+            "ru": "_RU", "uk": "_UK", "sl": "_SL",
+        }
+        suffix = suffix_map.get(lang, "")
+        return f"{base}/USER_MANUAL{suffix}.md"
+
     def show_documentation(self):
         """Open documentation window or website"""
+        url = self._get_docs_url()
         QMessageBox.information(
             self,
             self.tr("Documentation"),
-            self.tr("Documentation is not yet available.\n\n"
-                    "Quick Help:\n"
+            self.tr("Quick Help:\n"
                     "• F1: Open this help\n"
                     "• Ctrl+N: New Project\n"
                     "• Ctrl+O: Open Project\n"
                     "• Ctrl+S: Save Project\n"
                     "• Double-click assets to edit them\n"
                     "• Right-click for more options\n\n"
-                    "Online documentation coming soon!")
+                    "For full documentation, go to:\n"
+                    "Help → Online Documentation\n"
+                    "or visit:") + "\n" + url
         )
 
     def show_online_documentation(self):
         """Open the online documentation on GitHub in the default browser."""
         from PySide6.QtCore import QUrl
         from PySide6.QtGui import QDesktopServices
-        QDesktopServices.openUrl(QUrl("https://github.com/Gabe1290/pythongm/tree/main/docs"))
+        QDesktopServices.openUrl(QUrl(self._get_docs_url()))
 
     def show_tutorials(self):
         """Open tutorials in a floating window"""

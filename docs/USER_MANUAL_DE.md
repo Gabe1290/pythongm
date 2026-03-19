@@ -1,6 +1,6 @@
 # PyGameMaker IDE Benutzerhandbuch
 
-**Version 1.0.0-rc.4**
+**Version 1.0.0-rc.6**
 **Eine von GameMaker inspirierte visuelle Spielentwicklungs-IDE zum Erstellen von 2D-Spielen mit Python**
 
 ---
@@ -96,19 +96,19 @@ Die IDE verwendet ein Drei-Panel-Layout:
 
 ```
 +-------------------+---------------------------+------------------+
-|   Asset-Baum      |      Editor-Bereich       |   Eigenschaften  |
-|   (Linkes Panel)  |      (Mittleres Panel)    |   (Rechtes Panel)|
+|   Asset-Baum      |      Editor-Bereich       | Eigenschaften    |
+|   (Linkes Panel)  |      (Mittleres Panel)    | (Rechtes Panel)  |
 |                   |                           |                  |
 |   - Sprites       |   Registerkarteneditor    |   Kontext-       |
-|   - Sounds        |   fuer Sprites, Objekte   |   sensitive      |
-|   - Hintergruende |   und Raeume              |   Eigenschaften  |
+|   - Sounds        |   für Sprites, Objekte    |   sensitive      |
+|   - Hintergründe  |   und Räume               |   Eigenschaften  |
 |   - Objekte       |                           |                  |
-|   - Raeume        |                           |                  |
+|   - Räume         |                           |                  |
 |   - Skripte       |                           |                  |
 |   - Schriftarten  |                           |                  |
 +-------------------+---------------------------+------------------+
 |                       Statusleiste                               |
-+-------------------------------------------------------------------+
++------------------------------------------------------------------+
 ```
 
 - **Linkes Panel (Asset-Baum):** Zeigt alle Projekt-Assets nach Typ geordnet an. Doppelklicken Sie auf ein Asset, um es im Editor zu oeffnen.
@@ -1244,7 +1244,7 @@ Anleitungen sind in mehreren Sprachen verfuegbar (Englisch, Deutsch, Spanisch, F
 
 ---
 
-**PyGameMaker IDE** - Version 1.0.0-rc.4
-Copyright 2024-2025 Gabriel Thullen
+**PyGameMaker IDE** - Version 1.0.0-rc.6
+Copyright 2025-2026 Gabriel Thullen
 Lizenziert unter der GNU General Public License v3 (GPLv3)
 GitHub: https://github.com/Gabe1290/pythongm
