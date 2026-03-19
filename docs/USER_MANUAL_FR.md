@@ -195,6 +195,7 @@ L'IDE utilise une disposition a trois panneaux :
 | Commande | Raccourci | Description |
 |----------|-----------|-------------|
 | Documentation | F1 | Ouvrir la documentation d'aide |
+| Documentation en ligne | | Ouvrir le manuel utilisateur en ligne sur GitHub |
 | Tutoriels | | Ouvrir les ressources de tutoriels |
 | A propos de PyGameMaker | | Informations de version et de licence |
 
@@ -233,9 +234,10 @@ L'arbre des ressources dans le panneau gauche organise les ressources du projet 
 
 **Operations du menu contextuel :**
 - Cliquez droit sur un en-tete de categorie pour creer ou importer des ressources
-- Cliquez droit sur une ressource pour la renommer, supprimer, exporter ou voir ses proprietes
-- Double-cliquez sur une ressource pour l'ouvrir dans l'editeur
-- Les salles peuvent etre reordonnees (Monter/Descendre/Premier/Dernier)
+- Cliquez droit sur une ressource pour la renommer, dupliquer, supprimer, exporter ou voir ses propriétés
+- Cliquez droit sur un sprite pour l'exporter en fichier PNG
+- Double-cliquez sur une ressource pour l'ouvrir dans l'éditeur
+- Les salles peuvent être réordonnées (Monter/Descendre/Premier/Dernier)
 
 ---
 
@@ -371,7 +373,8 @@ L'origine est affichee comme un reticule sur le canevas.
 - **Ctrl+Molette de la souris :** Zoomer/dezoomer (1x a 64x)
 - **Basculer la grille :** Afficher/masquer la grille de pixels (visible a partir du zoom 4x)
 - **Miroir H/V :** Retourner l'image actuelle horizontalement ou verticalement
-- **Redimensionner/Mettre a l'echelle :** Modifier les dimensions du sprite avec des options de mise a l'echelle ou de redimensionnement du canevas
+- **Redimensionner/Mettre à l'échelle :** Modifier les dimensions du sprite avec des options de mise à l'échelle ou de redimensionnement du canevas
+- **Exporter PNG… :** Exporter l'image actuelle en fichier PNG (également disponible via clic droit sur le canevas)
 
 ### Proprietes du sprite (sauvegardees)
 

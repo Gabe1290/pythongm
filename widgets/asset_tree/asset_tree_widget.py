@@ -7,7 +7,7 @@ Core tree widget focusing on UI management and delegating operations
 import json
 from pathlib import Path
 from typing import Dict, List, Optional
-from PySide6.QtWidgets import QTreeWidget, QMenu, QMessageBox
+from PySide6.QtWidgets import QTreeWidget, QMenu, QMessageBox, QFileDialog
 from PySide6.QtCore import Qt, Signal, QSize
 from PySide6.QtGui import QAction
 
@@ -214,6 +214,10 @@ class AssetTreeWidget(QTreeWidget):
                 configure_anim_action.triggered.connect(lambda: self.configure_sprite_animation(item))
                 context_menu.addAction(configure_anim_action)
 
+                export_png_action = QAction(self.tr("💾 Export as PNG…"), self)
+                export_png_action.triggered.connect(lambda: self._export_sprite_png(item))
+                context_menu.addAction(export_png_action)
+
             # Duplicate action
             duplicate_action = QAction(self.tr("📋 Duplicate"), self)
             duplicate_action.triggered.connect(lambda: self.operations.duplicate_asset(item))
@@ -336,6 +340,33 @@ class AssetTreeWidget(QTreeWidget):
         if isinstance(item, AssetTreeItem) and not item.is_category:
             dialog = AssetPropertiesDialog(item.asset_data, self)
             dialog.exec()
+
+    def _export_sprite_png(self, item):
+        """Export a sprite's PNG file to a user-chosen location."""
+        if not isinstance(item, AssetTreeItem) or item.is_category:
+            return
+        sprite_data = item.asset_data or {}
+        file_path = sprite_data.get('file_path', '')
+        if not file_path or not self.project_path:
+            QMessageBox.warning(self, self.tr("No Image"),
+                                self.tr("Sprite '{0}' has no image file.").format(item.asset_name))
+            return
+        src = Path(self.project_path) / file_path
+        if not src.exists():
+            QMessageBox.warning(self, self.tr("File Not Found"),
+                                self.tr("Image file not found: {0}").format(str(src)))
+            return
+        dest, _ = QFileDialog.getSaveFileName(
+            self, self.tr("Export Sprite as PNG"),
+            f"{item.asset_name}.png",
+            self.tr("PNG Images (*.png)"))
+        if dest:
+            from shutil import copy2
+            try:
+                copy2(str(src), dest)
+            except Exception as e:
+                QMessageBox.critical(self, self.tr("Export Error"),
+                                     self.tr("Failed to export: {0}").format(str(e)))
 
     def import_sprite_image(self, item):
         """Import an image for a sprite asset"""

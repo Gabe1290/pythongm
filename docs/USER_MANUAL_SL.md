@@ -194,6 +194,7 @@ Razvojno okolje uporablja razporeditev s tremi paneli:
 | Ukaz | Bližnjica | Opis |
 |------|-----------|------|
 | Dokumentacija | F1 | Odpri dokumentacijo pomoči |
+| Spletna dokumentacija | | Odpri spletni uporabniški priročnik na GitHubu |
 | Vadnice | | Odpri vadnice |
 | O PyGameMaker | | Podatki o različici in licenci |
 
@@ -232,7 +233,8 @@ Drevo sredstev v levem panelu organizira sredstva projekta v kategorije:
 
 **Operacije kontekstnega menija:**
 - Z desnim klikom na glavo kategorije ustvarite ali uvozite sredstva
-- Z desnim klikom na sredstvo ga preimenujete, izbrišete, izvozite ali si ogledate lastnosti
+- Z desnim klikom na sredstvo ga preimenujete, podvojite, izbrišete, izvozite ali si ogledate lastnosti
+- Z desnim klikom na sličico jo izvozite kot datoteko PNG
 - Dvokliknite sredstvo, da ga odprete v urejevalniku
 - Sredstva sob je mogoče prerazporediti (Premakni gor/dol/na vrh/na dno)
 
@@ -371,6 +373,7 @@ Izhodišče je na platnu prikazano kot križec.
 - **Preklop mreže:** Prikaži/skrij mrežo slikovnih pik (vidna pri 4x povečavi in več)
 - **Zrcali H/V:** Obrni trenutni okvir vodoravno ali navpično
 - **Spremeni velikost/Povečaj:** Spremeni dimenzije sličice z možnostmi povečave ali spremembe velikosti platna
+- **Izvozi PNG…:** Izvozi trenutno sliko kot datoteko PNG (na voljo tudi z desnim klikom na platno)
 
 ### Lastnosti sličice (shranjene)
 

@@ -194,6 +194,7 @@ The IDE uses a three-panel layout:
 | Command | Shortcut | Description |
 |---------|----------|-------------|
 | Documentation | F1 | Open help documentation |
+| Online Documentation | | Open the online user manual on GitHub |
 | Tutorials | | Open tutorial resources |
 | About PyGameMaker | | Version and license info |
 
@@ -232,7 +233,8 @@ The asset tree in the left panel organizes project assets into categories:
 
 **Context menu operations:**
 - Right-click a category header to create or import assets
-- Right-click an asset to rename, delete, export, or view properties
+- Right-click an asset to rename, duplicate, delete, export, or view properties
+- Right-click a sprite to export it as a PNG file
 - Double-click an asset to open it in the editor
 - Room assets can be reordered (Move Up/Down/Top/Bottom)
 
@@ -371,6 +373,7 @@ The origin is shown as a crosshair on the canvas.
 - **Grid Toggle:** Show/hide pixel grid (visible at 4x zoom and above)
 - **Mirror H/V:** Flip the current frame horizontally or vertically
 - **Resize/Scale:** Change sprite dimensions with scale or canvas resize options
+- **Export PNG…:** Export the current frame as a PNG file (also available via right-click on the canvas)
 
 ### Sprite Properties (Saved)
 

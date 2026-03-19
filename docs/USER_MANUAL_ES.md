@@ -194,9 +194,10 @@ El IDE usa un diseno de tres paneles:
 
 | Comando | Atajo | Descripcion |
 |---------|-------|-------------|
-| Documentation | F1 | Abrir documentacion de ayuda |
-| Tutorials | | Abrir recursos de tutoriales |
-| About PyGameMaker | | Informacion de version y licencia |
+| Documentación | F1 | Abrir documentación de ayuda |
+| Documentación en línea | | Abrir el manual de usuario en línea en GitHub |
+| Tutoriales | | Abrir recursos de tutoriales |
+| Acerca de PyGameMaker | | Información de versión y licencia |
 
 ### Barra de Herramientas
 
@@ -233,7 +234,8 @@ El arbol de recursos en el panel izquierdo organiza los recursos del proyecto en
 
 **Operaciones del menu contextual:**
 - Clic derecho en un encabezado de categoria para crear o importar recursos
-- Clic derecho en un recurso para renombrar, eliminar, exportar o ver propiedades
+- Clic derecho en un recurso para renombrar, duplicar, eliminar, exportar o ver propiedades
+- Clic derecho en un sprite para exportarlo como archivo PNG
 - Doble clic en un recurso para abrirlo en el editor
 - Los recursos de habitaciones se pueden reordenar (Mover Arriba/Abajo/Inicio/Final)
 
@@ -372,6 +374,7 @@ El origen se muestra como un punto de mira en el lienzo.
 - **Alternar Cuadricula:** Mostrar/ocultar cuadricula de pixeles (visible a 4x de zoom y superior)
 - **Espejo H/V:** Voltear el cuadro actual horizontal o verticalmente
 - **Redimensionar/Escalar:** Cambiar dimensiones del sprite con opciones de escala o redimensionamiento del lienzo
+- **Exportar PNG…:** Exportar la imagen actual como archivo PNG (también disponible mediante clic derecho en el lienzo)
 
 ### Propiedades del Sprite (Guardadas)
 

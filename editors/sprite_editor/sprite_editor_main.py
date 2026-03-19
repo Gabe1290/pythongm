@@ -10,7 +10,7 @@ from typing import Dict, Any, Optional
 from PySide6.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QGridLayout, QSplitter, QWidget, QToolBar,
     QLabel, QSpinBox, QSizePolicy, QMessageBox, QToolButton, QMenu, QFrame,
-    QComboBox, QDialog, QDialogButtonBox, QGroupBox, QRadioButton,
+    QComboBox, QDialog, QDialogButtonBox, QGroupBox, QRadioButton, QFileDialog,
 )
 from PySide6.QtCore import Qt, Signal, QRect, QPoint
 from PySide6.QtGui import (
@@ -403,6 +403,10 @@ class SpriteEditor(BaseEditor):
         self.toolbar.addWidget(self._zoom_label)
         self.toolbar.addAction(
             self._make_toolbar_icon("zoom_in"), self.tr("Zoom In"), self._zoom_in)
+
+        # Export as PNG
+        self.toolbar.addSeparator()
+        self.toolbar.addAction(self.tr("Export PNG…"), self._export_png)
 
     def _on_tool_combo_changed(self, index: int):
         """Handle tool selection from the dropdown combo box."""
@@ -828,6 +832,10 @@ class SpriteEditor(BaseEditor):
         select_all_act = menu.addAction(self.tr("Select All"))
         select_all_act.triggered.connect(self._select_all)
 
+        menu.addSeparator()
+        export_act = menu.addAction(self.tr("Export as PNG…"))
+        export_act.triggered.connect(self._export_png)
+
         menu.exec(global_pos)
 
     def _select_all(self):
@@ -841,6 +849,25 @@ class SpriteEditor(BaseEditor):
             select_tool._start = (0, 0)
             select_tool._end = (img.width() - 1, img.height() - 1)
             self.canvas.viewport().update()
+
+    # ------------------------------------------------------------------
+    # Export current frame as PNG
+    # ------------------------------------------------------------------
+
+    def _export_png(self):
+        """Export the current frame as a PNG file."""
+        default_name = f"{self.asset_name}.png" if self.asset_name else "sprite.png"
+        path, _ = QFileDialog.getSaveFileName(
+            self, self.tr("Export as PNG"), default_name,
+            self.tr("PNG Images (*.png)"))
+        if not path:
+            return
+        img = self.canvas.get_image()
+        if img and img.save(path, "PNG"):
+            self.update_status(self.tr("Exported: {0}").format(path))
+        else:
+            QMessageBox.warning(self, self.tr("Export Error"),
+                                self.tr("Failed to export PNG."))
 
     # ------------------------------------------------------------------
     # Keyboard shortcuts for tools (forwarded from canvas key_pressed signal)

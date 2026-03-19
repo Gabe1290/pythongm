@@ -76,6 +76,7 @@ class SpriteCanvas(QAbstractScrollArea):
         # Viewport setup
         self.viewport().setMouseTracking(True)
         self.viewport().setFocusPolicy(Qt.StrongFocus)
+        self.viewport().installEventFilter(self)
         self.setFocusPolicy(Qt.StrongFocus)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setFrameShape(QAbstractScrollArea.NoFrame)
@@ -411,6 +412,12 @@ class SpriteCanvas(QAbstractScrollArea):
     def leaveEvent(self, event):
         self._hover_pixel = None
         self.viewport().update()
+
+    def eventFilter(self, obj, event):
+        if obj is self.viewport() and event.type() == QEvent.ContextMenu:
+            self.context_menu_requested.emit(event.globalPos())
+            return True
+        return super().eventFilter(obj, event)
 
     def contextMenuEvent(self, event):
         self.context_menu_requested.emit(event.globalPos())

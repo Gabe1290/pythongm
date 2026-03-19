@@ -194,6 +194,7 @@ Die IDE verwendet ein Drei-Panel-Layout:
 | Befehl | Tastaturkuerzel | Beschreibung |
 |--------|-----------------|--------------|
 | Dokumentation | F1 | Hilfedokumentation oeffnen |
+| Online-Dokumentation | | Online-Benutzerhandbuch auf GitHub oeffnen |
 | Anleitungen | | Anleitungsressourcen oeffnen |
 | Ueber PyGameMaker | | Versions- und Lizenzinformationen |
 
@@ -232,7 +233,8 @@ Der Asset-Baum im linken Panel organisiert Projekt-Assets in Kategorien:
 
 **Kontextmenue-Operationen:**
 - Rechtsklick auf eine Kategorieueberueberschrift, um Assets zu erstellen oder zu importieren
-- Rechtsklick auf ein Asset zum Umbenennen, Loeschen, Exportieren oder Anzeigen von Eigenschaften
+- Rechtsklick auf ein Asset zum Umbenennen, Duplizieren, Loeschen, Exportieren oder Anzeigen von Eigenschaften
+- Rechtsklick auf ein Sprite, um es als PNG-Datei zu exportieren
 - Doppelklick auf ein Asset, um es im Editor zu oeffnen
 - Raum-Assets koennen umsortiert werden (Nach oben/unten/ganz oben/ganz unten verschieben)
 
@@ -371,6 +373,7 @@ Der Ursprung wird als Fadenkreuz auf der Leinwand angezeigt.
 - **Raster-Umschalter:** Pixelraster ein-/ausblenden (sichtbar ab 4x Zoom)
 - **Spiegeln H/V:** Das aktuelle Einzelbild horizontal oder vertikal spiegeln
 - **Groesse aendern/Skalieren:** Sprite-Abmessungen mit Skalierungs- oder Leinwandgroessen-Optionen aendern
+- **Als PNG exportieren…:** Das aktuelle Bild als PNG-Datei exportieren (auch ueber Rechtsklick auf die Leinwand verfuegbar)
 
 ### Sprite-Eigenschaften (gespeichert)
 

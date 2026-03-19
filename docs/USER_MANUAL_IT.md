@@ -193,9 +193,10 @@ L'IDE utilizza una disposizione a tre pannelli:
 
 | Comando | Scorciatoia | Descrizione |
 |---------|-------------|-------------|
-| Documentation | F1 | Apri la documentazione |
-| Tutorials | | Apri le risorse dei tutorial |
-| About PyGameMaker | | Informazioni su versione e licenza |
+| Documentazione | F1 | Apri la documentazione |
+| Documentazione online | | Apri il manuale utente online su GitHub |
+| Tutorial | | Apri le risorse dei tutorial |
+| Informazioni su PyGameMaker | | Informazioni su versione e licenza |
 
 ### Barra degli Strumenti
 
@@ -232,9 +233,10 @@ L'albero delle risorse nel pannello sinistro organizza le risorse del progetto i
 
 **Operazioni del menu contestuale:**
 - Clic destro su un'intestazione di categoria per creare o importare risorse
-- Clic destro su una risorsa per rinominare, eliminare, esportare o visualizzare le proprieta
+- Clic destro su una risorsa per rinominare, duplicare, eliminare, esportare o visualizzare le proprietà
+- Clic destro su uno sprite per esportarlo come file PNG
 - Doppio clic su una risorsa per aprirla nell'editor
-- Le risorse stanza possono essere riordinate (Sposta Su/Giu/In Cima/In Fondo)
+- Le risorse stanza possono essere riordinate (Sposta Su/Giù/In Cima/In Fondo)
 
 ---
 
@@ -371,6 +373,7 @@ L'origine e mostrata come un mirino sulla tela.
 - **Attiva/Disattiva Griglia:** Mostra/nascondi la griglia dei pixel (visibile a zoom 4x e superiore)
 - **Specchia O/V:** Capovolgi il fotogramma corrente orizzontalmente o verticalmente
 - **Ridimensiona/Scala:** Modifica le dimensioni dello sprite con opzioni di scala o ridimensionamento della tela
+- **Esporta PNG…:** Esporta l'immagine corrente come file PNG (disponibile anche tramite clic destro sulla tela)
 
 ### Proprieta dello Sprite (Salvate)
 
