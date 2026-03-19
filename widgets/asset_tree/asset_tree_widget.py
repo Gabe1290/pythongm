@@ -214,6 +214,11 @@ class AssetTreeWidget(QTreeWidget):
                 configure_anim_action.triggered.connect(lambda: self.configure_sprite_animation(item))
                 context_menu.addAction(configure_anim_action)
 
+            # Duplicate action
+            duplicate_action = QAction(self.tr("📋 Duplicate"), self)
+            duplicate_action.triggered.connect(lambda: self.operations.duplicate_asset(item))
+            context_menu.addAction(duplicate_action)
+
             # Delete action
             delete_action = QAction(self.tr("🗑️ Delete"), self)
             delete_action.triggered.connect(lambda: self.operations.delete_asset(item))

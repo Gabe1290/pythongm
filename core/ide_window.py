@@ -268,6 +268,7 @@ class PyGameMakerIDE(QMainWindow):
 
         help_menu = menubar.addMenu(self.tr("&Help"))
         help_menu.addAction(self.create_action(self.tr("&Documentation"), "F1", self.show_documentation))
+        help_menu.addAction(self.create_action(self.tr("&Online Documentation"), None, self.show_online_documentation))
         help_menu.addAction(self.create_action(self.tr("&Tutorials"), None, self.show_tutorials))
         help_menu.addSeparator()
         help_menu.addAction(self.create_action(self.tr("&About PyGameMaker"), None, self.about))
@@ -2918,6 +2919,12 @@ class PyGameMakerIDE(QMainWindow):
                     "• Right-click for more options\n\n"
                     "Online documentation coming soon!")
         )
+
+    def show_online_documentation(self):
+        """Open the online documentation on GitHub in the default browser."""
+        from PySide6.QtCore import QUrl
+        from PySide6.QtGui import QDesktopServices
+        QDesktopServices.openUrl(QUrl("https://github.com/Gabe1290/pythongm/tree/main/docs"))
 
     def show_tutorials(self):
         """Open tutorials in a floating window"""

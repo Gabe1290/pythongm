@@ -247,6 +247,108 @@ class AssetOperations:
             QMessageBox.critical(self.tree, "Error", f"Error renaming asset: {e}")
             return False
 
+    def duplicate_asset(self, item) -> bool:
+        """Duplicate an asset: copy data, files, and add to project under a new name."""
+        from .asset_tree_item import AssetTreeItem
+        import copy
+
+        if not isinstance(item, AssetTreeItem) or item.is_category:
+            return False
+
+        asset_name = item.asset_name
+        asset_data = item.asset_data
+        asset_category = item.asset_type  # plural, e.g. "sprites"
+
+        # Generate a unique name
+        new_name = self._generate_unique_name(asset_name, asset_category)
+        if not new_name:
+            return False
+
+        try:
+            # Deep copy the asset data
+            new_data = copy.deepcopy(asset_data)
+            new_data['name'] = new_name
+
+            project_path = Path(self.tree.project_path)
+
+            # Copy physical files (sprites, sounds, backgrounds)
+            old_file_rel = asset_data.get('file_path')
+            if old_file_rel:
+                old_file = project_path / old_file_rel
+                if old_file.exists():
+                    new_file = old_file.parent / f"{new_name}{old_file.suffix}"
+                    shutil.copy2(str(old_file), str(new_file))
+                    new_data['file_path'] = str(new_file.relative_to(project_path))
+                    logger.debug(f"Copied file: {old_file} -> {new_file}")
+
+            # Copy thumbnail if present
+            old_thumb = asset_data.get('thumbnail')
+            if old_thumb:
+                old_thumb_path = project_path / old_thumb
+                if old_thumb_path.exists():
+                    new_thumb = old_thumb_path.parent / f"{new_name}_thumb{old_thumb_path.suffix}"
+                    shutil.copy2(str(old_thumb_path), str(new_thumb))
+                    new_data['thumbnail'] = str(new_thumb.relative_to(project_path))
+
+            # Save to project.json
+            project_file = project_path / "project.json"
+            project_data = load_project_data(project_file)
+            if not project_data:
+                return False
+
+            assets = project_data.setdefault('assets', {})
+            category_assets = assets.setdefault(asset_category, {})
+            category_assets[new_name] = new_data
+
+            if not save_project_data(project_file, project_data):
+                return False
+
+            # Update AssetManager cache
+            asset_manager = self._get_asset_manager()
+            if asset_manager and hasattr(asset_manager, 'assets_cache'):
+                if asset_category in asset_manager.assets_cache:
+                    asset_manager.assets_cache[asset_category][new_name] = new_data
+
+            # Add to tree UI
+            self.tree.add_asset(asset_category, new_name, new_data)
+
+            # Emit signal
+            self.tree.asset_imported.emit(new_name, asset_category, new_data)
+
+            logger.info(f"Duplicated {asset_category}/{asset_name} -> {new_name}")
+            return True
+
+        except Exception as e:
+            logger.error(f"Error duplicating asset: {e}")
+            import traceback
+            traceback.print_exc()
+            QMessageBox.critical(
+                self.tree,
+                "Duplication Error",
+                f"Failed to duplicate asset '{asset_name}': {str(e)}"
+            )
+            return False
+
+    def _generate_unique_name(self, base_name: str, asset_category: str) -> Optional[str]:
+        """Generate a unique name like 'name_copy', 'name_copy_2', etc."""
+        project_file = Path(self.tree.project_path) / "project.json"
+        project_data = load_project_data(project_file)
+        if not project_data:
+            return None
+
+        existing = set(project_data.get('assets', {}).get(asset_category, {}).keys())
+
+        candidate = f"{base_name}_copy"
+        if candidate not in existing:
+            return candidate
+
+        for i in range(2, 1000):
+            candidate = f"{base_name}_copy_{i}"
+            if candidate not in existing:
+                return candidate
+
+        return None
+
     def remove_asset_from_project(self, asset_category: str, asset_name: str) -> bool:
         """Remove asset from project data and save to file"""
         logger.debug(f"Removing {asset_category}/{asset_name} from project data...")

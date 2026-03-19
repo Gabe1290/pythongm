@@ -272,7 +272,7 @@ class BaseEditor(QWidget):
                 # Ensure blink timer is stopped after auto-save
                 if hasattr(self, 'status_widget'):
                     self.status_widget.blink_timer.stop()
-                    self.status_widget.modified_label.setVisible(False)
+                    self.status_widget._hide_dot()
             return success
         return False
 
