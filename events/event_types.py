@@ -238,9 +238,66 @@ def get_event_type(event_name: str) -> Optional[EventType]:
     """Get event type by name"""
     return EVENT_TYPES.get(event_name)
 
-def get_available_events() -> List[EventType]:
-    """Get list of all available events"""
-    return list(EVENT_TYPES.values())
+
+# ============================================================================
+# EVENT TO BLOCKLY BLOCK TYPE MAPPING
+# Maps event type names to their corresponding Blockly block types
+# ============================================================================
+
+EVENT_TO_BLOCKLY_MAP = {
+    # Object events
+    "create": "event_create",
+    "step": "event_step",
+    "destroy": "event_destroy",
+    # Input events
+    "keyboard": "event_keyboard_held",
+    "keyboard_press": "event_keyboard_press",
+    "keyboard_release": "event_keyboard_release",
+    "mouse": "event_mouse",
+    # Collision
+    "collision": "event_collision",
+    # Step events
+    "begin_step": "event_step",
+    "end_step": "event_step",
+    # Drawing
+    "draw": "event_draw",
+    "draw_gui": "event_draw",
+    # Timing
+    "alarm": "event_alarm",
+    # Other events
+    "room_start": "event_other",
+    "room_end": "event_other",
+    "game_start": "event_other",
+    "game_end": "event_other",
+    "outside_room": "event_other",
+    "intersect_boundary": "event_other",
+    "no_more_lives": "event_other",
+    "no_more_health": "event_other",
+}
+# Thymio events map directly (event name == blockly block type)
+for _thymio_name in THYMIO_EVENT_TYPES:
+    EVENT_TO_BLOCKLY_MAP[_thymio_name] = _thymio_name
+
+
+def get_available_events(blockly_config=None) -> List[EventType]:
+    """Get list of available events, optionally filtered by BlocklyConfig.
+
+    Args:
+        blockly_config: Optional BlocklyConfig to filter events.
+                       If provided, only events enabled in the config are returned.
+    """
+    if blockly_config is None:
+        return list(EVENT_TYPES.values())
+
+    result = []
+    for event in EVENT_TYPES.values():
+        blockly_type = EVENT_TO_BLOCKLY_MAP.get(event.name)
+        if blockly_type:
+            if not blockly_config.is_block_enabled(blockly_type):
+                continue
+        # If no mapping exists, include the event (backward compatibility)
+        result.append(event)
+    return result
 
 def get_keyboard_events_for_selector() -> List[Dict]:
     """

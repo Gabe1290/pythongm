@@ -15,6 +15,7 @@ from PySide6.QtGui import QFont
 
 # Import our new event/action system
 from events.event_types import get_available_events, get_event_type
+from events.thymio_events import THYMIO_EVENT_CATEGORIES, is_thymio_event, get_thymio_events_by_category
 from events.action_types import get_action_type as _get_action_type, get_actions_by_category
 from events.action_editor import ActionConfigDialog
 
@@ -194,11 +195,22 @@ class ObjectEventsPanel(QWidget):
         self.events_modified.emit()
 
     def show_add_event_menu(self):
-        """Show menu to add new events"""
+        """Show menu to add new events, filtered by blockly_config"""
         menu = QMenu(self)
 
-        available_events = get_available_events()
+        available_events = get_available_events(self.blockly_config)
+
+        # Separate standard events from Thymio events
+        standard_events = []
+        thymio_events = []
         for event_type in available_events:
+            if is_thymio_event(event_type.name):
+                thymio_events.append(event_type)
+            else:
+                standard_events.append(event_type)
+
+        # --- Standard events ---
+        for event_type in standard_events:
             if event_type.name == "collision":
                 # Special handling for collision events - create submenu
                 collision_menu = menu.addMenu(self.tr(f"{event_type.icon} Collision With..."))
@@ -263,10 +275,43 @@ class ObjectEventsPanel(QWidget):
                 action = menu.addAction(f"{event_type.icon} {self.tr(event_type.display_name)}")
                 action.triggered.connect(lambda checked, name=event_type.name: self.add_event(name))
 
-        # Add Thymio Events option
-        menu.addSeparator()
-        thymio_action = menu.addAction(self.tr("🤖 Thymio Event..."))
-        thymio_action.triggered.connect(self.add_thymio_event_with_selector)
+        # --- Thymio events submenu (only if any Thymio events are enabled) ---
+        if thymio_events:
+            menu.addSeparator()
+            thymio_menu = menu.addMenu(self.tr("🤖 Thymio Events"))
+
+            # Group enabled Thymio events by category
+            thymio_by_category = {}
+            for event_type in thymio_events:
+                cat = event_type.category
+                if cat not in thymio_by_category:
+                    thymio_by_category[cat] = []
+                thymio_by_category[cat].append(event_type)
+
+            # Add category submenus in order
+            sorted_categories = sorted(
+                thymio_by_category.keys(),
+                key=lambda c: THYMIO_EVENT_CATEGORIES.get(c, {}).get("order", 999)
+            )
+            for category in sorted_categories:
+                cat_info = THYMIO_EVENT_CATEGORIES.get(category, {})
+                cat_icon = cat_info.get("icon", "🤖")
+                # Strip "Thymio " prefix for cleaner submenu names
+                cat_label = category.replace("Thymio ", "")
+                cat_submenu = thymio_menu.addMenu(f"{cat_icon} {self.tr(cat_label)}")
+
+                for event_type in thymio_by_category[category]:
+                    action = cat_submenu.addAction(
+                        f"{event_type.icon} {self.tr(event_type.display_name)}"
+                    )
+                    action.triggered.connect(
+                        lambda checked, name=event_type.name: self.add_event(name)
+                    )
+
+            # Visual selector at the bottom
+            thymio_menu.addSeparator()
+            visual_action = thymio_menu.addAction(self.tr("🤖 Visual Selector..."))
+            visual_action.triggered.connect(self.add_thymio_event_with_selector)
 
         menu.exec(self.add_event_btn.mapToGlobal(self.add_event_btn.rect().bottomLeft()))
 
