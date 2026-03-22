@@ -986,8 +986,8 @@ Il codice verrà eseguito quando l'evento si attiva durante il gioco.</translati
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="176" />
-            <source>{event_type.icon} Collision With...</source>
-            <translation>{event_type.icon} Collisione con...</translation>
+            <source>{0} Collision With...</source>
+            <translation>{0} Collisione con...</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="188" />
@@ -1032,6 +1032,11 @@ Il codice verrà eseguito quando l'evento si attiva durante il gioco.</translati
             <translation>Sei sicuro di voler rimuovere l'evento {0} e tutte le sue azioni?</translation>
         </message>
         <message>
+            <location filename="../editors/object_editor/object_events_panel.py" line="388" />
+            <source>The Keyboard &lt;No Key&gt; event already exists.</source>
+            <translation>L'evento Tastiera &lt;Nessun tasto&gt; esiste già.</translation>
+        </message>
+        <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="371" />
             <location filename="../editors/object_editor/object_events_panel.py" line="389" />
             <location filename="../editors/object_editor/object_events_panel.py" line="407" />
@@ -1053,8 +1058,8 @@ Il codice verrà eseguito quando l'evento si attiva durante il gioco.</translati
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="452" />
-            <source>Remove {sub_event_key.title()} Arrow Event</source>
-            <translation>Rimuovi evento freccia {sub_event_key.title()}</translation>
+            <source>Remove {0} Event</source>
+            <translation>Rimuovi evento {0}</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="457" />
@@ -1104,13 +1109,13 @@ Fai clic destro su Freccia sinistra, Freccia destra, Freccia su o Freccia giù.<
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="694" />
-            <source>❌ NOT Colliding with {target_object}</source>
-            <translation>❌ NON in collisione con {target_object}</translation>
+            <source>❌ NOT Colliding with {0}</source>
+            <translation>❌ NON in collisione con {0}</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="698" />
-            <source>💥 Collision with {target_object}</source>
-            <translation>💥 Collisione con {target_object}</translation>
+            <source>💥 Collision with {0}</source>
+            <translation>💥 Collisione con {0}</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="700" />
@@ -1240,6 +1245,10 @@ Fai clic destro su Freccia sinistra, Freccia destra, Freccia su o Freccia giù.<
         <message>
             <source>Keyboard Release</source>
             <translation>Rilascio tasto</translation>
+        </message>
+        <message>
+            <source>Keyboard &lt;No Key&gt;</source>
+            <translation>Tastiera &lt;Nessun tasto&gt;</translation>
         </message>
         <message>
             <source>Mouse</source>

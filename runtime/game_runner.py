@@ -1863,6 +1863,9 @@ class GameRunner:
                     # 3. STEP EVENT (always call - handles nokey internally)
                     instance.step()
 
+                    # 3b. KEYBOARD HELD events (fire every frame while key is down)
+                    self._process_held_keys(instance)
+
                 # 4. KEYBOARD/MOUSE EVENTS
                 self.handle_events()
 
@@ -2039,22 +2042,8 @@ class GameRunner:
                         if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
                             instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
-            # Check for keyboard (held) event
-            if "keyboard" in events:
-                keyboard_event = events["keyboard"]
-                if isinstance(keyboard_event, dict):
-                    # First try "press_<key>" variant (legacy format), then plain "<key>"
-                    press_key = f"press_{sub_key}"
-                    found_key = _find_key_in_event(keyboard_event, press_key)
-                    if not found_key:
-                        found_key = _find_key_in_event(keyboard_event, sub_key)
-                    if found_key:
-                        logger.debug(f"  ✅ Executing keyboard.{found_key} for {instance.object_name}")
-                        events_found = True
-                        sub_event_data = keyboard_event[found_key]
-                        if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
-                            instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
-                # Removed error messages - it's normal for an object to not handle every key
+            # Note: keyboard (held) events are handled per-frame in _process_held_keys,
+            # NOT here on KEYDOWN, to avoid double-firing with keyboard_press events
 
             # Handle Thymio button events (keyboard mapping)
             if instance.is_thymio and instance.thymio_simulator:
@@ -2078,6 +2067,37 @@ class GameRunner:
 
         if not events_found:
             logger.debug(f"  ℹ️  No objects have keyboard events for '{sub_key}'")
+
+    def _process_held_keys(self, instance):
+        """Process keyboard (held) events for keys currently pressed — called every frame.
+
+        For grid-based movement: only fires when instance is stationary (hspeed==0 and vspeed==0),
+        preventing re-triggering while a grid move is in progress.
+        For smooth movement: fires every frame since speed is continuously applied.
+        """
+        if not hasattr(instance, 'keys_pressed') or not instance.keys_pressed:
+            return
+
+        events = instance.object_data.get('events', {})
+        keyboard_event = events.get("keyboard")
+        if not isinstance(keyboard_event, dict):
+            return
+
+        # Skip if instance is already moving — prevents grid movement from
+        # re-triggering before the current move completes. The nokey/stop event
+        # will clear the speed when the instance reaches the next grid position.
+        if getattr(instance, 'hspeed', 0) != 0 or getattr(instance, 'vspeed', 0) != 0:
+            return
+
+        for sub_key in instance.keys_pressed:
+            press_key = f"press_{sub_key}"
+            found_key = _find_key_in_event(keyboard_event, press_key)
+            if not found_key:
+                found_key = _find_key_in_event(keyboard_event, sub_key)
+            if found_key:
+                sub_event_data = keyboard_event[found_key]
+                if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
+                    instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
     def handle_keyboard_release(self, key):
         """Handle keyboard release event - trigger user-defined keyboard_release events"""

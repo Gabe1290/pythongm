@@ -72,7 +72,7 @@ class KeySelectorDialog(QDialog):
 
                 tab_layout.addWidget(list_widget)
 
-                self.tab_widget.addTab(tab, f"{category} ({len(events)})")
+                self.tab_widget.addTab(tab, self.tr("{0} ({1})").format(self.tr(category), len(events)))
                 self.list_widgets[category] = list_widget
 
         layout.addWidget(self.tab_widget)

@@ -37,7 +37,11 @@ class ActionExecutor:
         as a handler for the action name (the part between execute_ and _action)
 
         Example: execute_move_grid_action -> handles "move_grid" action
+
+        Then, modular handlers from runtime/action_handlers/ are registered
+        for any action names not already covered by executor methods.
         """
+        # Phase 1: Auto-discover execute_*_action methods on this class
         for attr_name in dir(self):
             # Look for methods matching the pattern execute_*_action
             if attr_name.startswith('execute_') and attr_name.endswith('_action'):
@@ -55,6 +59,33 @@ class ActionExecutor:
                 if callable(method):
                     self.action_handlers[action_name] = method
                     logger.debug(f"  📌 Registered action handler: {action_name}")
+
+        # Phase 2: Register modular handlers from action_handlers package.
+        # These have signature (ctx, instance, params) where ctx is the executor.
+        # Wrap them to match the dispatch signature (instance, params).
+        try:
+            from runtime.action_handlers import ACTION_HANDLERS
+
+            def make_wrapper(fn):
+                """Factory to correctly capture fn in closure"""
+                def wrapper(instance, parameters):
+                    return fn(self, instance, parameters)
+                wrapper.__name__ = fn.__name__
+                return wrapper
+
+            modular_count = 0
+            for action_name, handler_func in ACTION_HANDLERS.items():
+                if action_name in self.action_handlers:
+                    logger.debug(f"  ⚠️ Skipping modular handler '{action_name}' (executor method takes priority)")
+                    continue
+                self.action_handlers[action_name] = make_wrapper(handler_func)
+                modular_count += 1
+                logger.debug(f"  📦 Registered modular handler: {action_name}")
+
+            if modular_count > 0:
+                logger.info(f"  📦 Registered {modular_count} modular action handlers")
+        except ImportError as e:
+            logger.warning(f"  ⚠️ Could not load modular action handlers: {e}")
 
     def register_custom_action(self, action_name: str, handler_func):
         """Register a custom action handler dynamically (for plugins)
@@ -259,7 +290,6 @@ class ActionExecutor:
         "message": "show_message",
         "goto_next_room": "next_room",
         "goto_previous_room": "previous_room",
-        "goto_room": "next_room",  # Will be handled specially if room_name param exists
         # Score/Lives/Health aliases
         "add_score": "add_score",  # Direct mapping (executor exists)
         "add_lives": "add_lives",  # Direct mapping (executor exists)
@@ -269,6 +299,14 @@ class ActionExecutor:
         "room_goto_next": "next_room",
         "room_goto_previous": "previous_room",
         "room_goto": "goto_room",
+        # Legacy/GMK import action names
+        "if_collision": "if_collision_at",
+        "game_end": "end_game",
+        "game_restart": "restart_game",
+        "else_block": "else_action",
+        "change_sprite": "set_sprite",
+        "test_next_room": "if_next_room_exists",
+        "test_previous_room": "if_previous_room_exists",
     }
 
     def execute_action(self, instance, action_data: Dict[str, Any]):
@@ -1054,6 +1092,7 @@ class ActionExecutor:
         """Check if instance is on grid - returns True/False for conditional flow
 
         Works like other if_ actions - use with start_block/end_block for multiple actions.
+        Also supports nested then_actions/else_actions for Blockly-style conditionals.
 
         Logic:
         1. Check if instance is CLOSE to grid (with tolerance for floating point errors)
@@ -1083,7 +1122,20 @@ class ActionExecutor:
         y_on_grid = (instance.y % grid_size) == 0
         on_grid = x_on_grid and y_on_grid
 
-        # Return True/False for conditional flow (like other if_ actions)
+        # If there are nested actions (Blockly-style), execute them
+        then_actions = parameters.get('then_actions', [])
+        else_actions = parameters.get('else_actions', [])
+
+        if then_actions or else_actions:
+            if on_grid:
+                for action in then_actions:
+                    self.execute_action(instance, action)
+            else:
+                for action in else_actions:
+                    self.execute_action(instance, action)
+            return None  # Don't affect next action flow
+
+        # Return True/False for GM80-style conditional flow
         return on_grid
 
     def execute_stop_if_no_keys_action(self, instance, parameters: Dict[str, Any]):

@@ -1991,6 +1991,9 @@
                 // keyboard_right, keyboard_press_space, keyboard_release_space, keyboard_nokey, keyboard_anykey, etc.
                 var key = eventName.replace('keyboard_release_', '').replace('keyboard_press_', '').replace('keyboard_', '');
 
+                // Normalize key to lowercase to match Blockly dropdown values
+                key = key.toLowerCase();
+
                 if (key === 'nokey') {
                     blockType = 'event_keyboard_nokey';
                 } else if (key === 'anykey') {

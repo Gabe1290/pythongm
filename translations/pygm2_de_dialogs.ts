@@ -928,6 +928,34 @@ Möchten Sie das Export-Verzeichnis öffnen?</translation>
             <source>Please select a key first.</source>
             <translation>Bitte wählen Sie zuerst eine Taste.</translation>
         </message>
+        <message>
+            <source>{0} ({1})</source>
+            <translation>{0} ({1})</translation>
+        </message>
+        <message>
+            <source>Letters</source>
+            <translation>Buchstaben</translation>
+        </message>
+        <message>
+            <source>Numbers</source>
+            <translation>Zahlen</translation>
+        </message>
+        <message>
+            <source>Arrow Keys</source>
+            <translation>Pfeiltasten</translation>
+        </message>
+        <message>
+            <source>Function Keys</source>
+            <translation>Funktionstasten</translation>
+        </message>
+        <message>
+            <source>Special Keys</source>
+            <translation>Sondertasten</translation>
+        </message>
+        <message>
+            <source>Numpad</source>
+            <translation>Ziffernblock</translation>
+        </message>
     </context>
     <context>
         <name>MouseEventSelectorDialog</name>

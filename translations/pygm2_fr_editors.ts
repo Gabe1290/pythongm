@@ -985,9 +985,14 @@ Le code s'exécutera lorsque l'événement se déclenchera pendant le jeu.</tran
             <translation>L'événement {0} existe déjà.</translation>
         </message>
         <message>
+            <location filename="../editors/object_editor/object_events_panel.py" line="388" />
+            <source>The Keyboard &lt;No Key&gt; event already exists.</source>
+            <translation>L'événement Clavier &lt;Aucune touche&gt; existe déjà.</translation>
+        </message>
+        <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="176" />
-            <source>{event_type.icon} Collision With...</source>
-            <translation>{event_type.icon} Collision avec...</translation>
+            <source>{0} Collision With...</source>
+            <translation>{0} Collision avec...</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="188" />
@@ -1053,8 +1058,8 @@ Le code s'exécutera lorsque l'événement se déclenchera pendant le jeu.</tran
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="452" />
-            <source>Remove {sub_event_key.title()} Arrow Event</source>
-            <translation>Supprimer l'événement de flèche {sub_event_key.title()}</translation>
+            <source>Remove {0} Event</source>
+            <translation>Supprimer l'événement {0}</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="457" />
@@ -1104,13 +1109,13 @@ Faites un clic droit sur Flèche gauche, Flèche droite, Flèche haut ou Flèche
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="694" />
-            <source>❌ NOT Colliding with {target_object}</source>
-            <translation>❌ PAS en collision avec {target_object}</translation>
+            <source>❌ NOT Colliding with {0}</source>
+            <translation>❌ PAS en collision avec {0}</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="698" />
-            <source>💥 Collision with {target_object}</source>
-            <translation>💥 Collision avec {target_object}</translation>
+            <source>💥 Collision with {0}</source>
+            <translation>💥 Collision avec {0}</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="700" />
@@ -1240,6 +1245,10 @@ Faites un clic droit sur Flèche gauche, Flèche droite, Flèche haut ou Flèche
         <message>
             <source>Keyboard Release</source>
             <translation>Relâchement clavier</translation>
+        </message>
+        <message>
+            <source>Keyboard &lt;No Key&gt;</source>
+            <translation>Clavier &lt;Aucune touche&gt;</translation>
         </message>
         <message>
             <source>Mouse</source>

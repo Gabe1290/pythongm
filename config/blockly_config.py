@@ -467,7 +467,7 @@ class BlocklyConfig:
 
         # Events - essential for Sokoban
         config.enable_block("event_create")
-        config.enable_block("event_keyboard_held")  # Arrow keys for movement
+        config.enable_block("event_keyboard_press")  # Arrow keys for grid movement (one move per press)
         config.enable_block("event_keyboard_nokey")  # Stop when no key pressed
         config.enable_block("event_collision")  # Push boxes, hit walls
 

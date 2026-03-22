@@ -986,8 +986,8 @@ Koda se bo izvršila, ko se dogodek sproži med igro.</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="176" />
-            <source>{event_type.icon} Collision With...</source>
-            <translation>{event_type.icon} Trk z...</translation>
+            <source>{0} Collision With...</source>
+            <translation>{0} Trk z...</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="188" />
@@ -1032,6 +1032,11 @@ Koda se bo izvršila, ko se dogodek sproži med igro.</translation>
             <translation>Ali ste prepričani, da želite odstraniti dogodek {0} in vse njegove akcije?</translation>
         </message>
         <message>
+            <location filename="../editors/object_editor/object_events_panel.py" line="388" />
+            <source>The Keyboard &lt;No Key&gt; event already exists.</source>
+            <translation>Dogodek Tipkovnica &lt;Brez tipke&gt; že obstaja.</translation>
+        </message>
+        <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="371" />
             <location filename="../editors/object_editor/object_events_panel.py" line="389" />
             <location filename="../editors/object_editor/object_events_panel.py" line="407" />
@@ -1053,8 +1058,8 @@ Koda se bo izvršila, ko se dogodek sproži med igro.</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="452" />
-            <source>Remove {sub_event_key.title()} Arrow Event</source>
-            <translation>Odstrani dogodek puščice {sub_event_key.title()}</translation>
+            <source>Remove {0} Event</source>
+            <translation>Odstrani dogodek {0}</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="457" />
@@ -1104,13 +1109,13 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="694" />
-            <source>❌ NOT Colliding with {target_object}</source>
-            <translation>❌ NI trka z {target_object}</translation>
+            <source>❌ NOT Colliding with {0}</source>
+            <translation>❌ NI trka z {0}</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="698" />
-            <source>💥 Collision with {target_object}</source>
-            <translation>💥 Trk z {target_object}</translation>
+            <source>💥 Collision with {0}</source>
+            <translation>💥 Trk z {0}</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="700" />
@@ -1240,6 +1245,10 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
         <message>
             <source>Keyboard Release</source>
             <translation>Spust tipke</translation>
+        </message>
+        <message>
+            <source>Keyboard &lt;No Key&gt;</source>
+            <translation>Tipkovnica &lt;Brez tipke&gt;</translation>
         </message>
         <message>
             <source>Mouse</source>

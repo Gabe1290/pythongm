@@ -189,24 +189,13 @@ class ActionConfigDialog(QDialog):
                 else:
                     widget.setText(str(param.default_value) if param.default_value else "")
 
-            elif param.param_type == "number":
-                widget = QSpinBox()
-                widget.setMinimum(param.min_value if param.min_value is not None else -9999)
-                widget.setMaximum(param.max_value if param.max_value is not None else 9999)
-                if param.name in self.current_params:
-                    widget.setValue(int(self.current_params[param.name]))
-                else:
-                    widget.setValue(int(param.default_value))
-
-            elif param.param_type == "float":
-                widget = QDoubleSpinBox()
-                widget.setMinimum(param.min_value if param.min_value is not None else -9999.0)
-                widget.setMaximum(param.max_value if param.max_value is not None else 9999.0)
-                widget.setDecimals(2)
-                if param.name in self.current_params:
-                    widget.setValue(float(self.current_params[param.name]))
-                else:
-                    widget.setValue(float(param.default_value))
+            elif param.param_type in ("number", "float"):
+                # Use QLineEdit to support both numeric values and expressions
+                # (e.g. "32", "other.x + 16", "self.hspeed * 8")
+                value = self.current_params.get(param.name, param.default_value)
+                widget = QLineEdit()
+                widget.setText(str(value) if value is not None else "0")
+                widget.setPlaceholderText(self.tr("Number or expression"))
 
             elif param.param_type == "choice":
                 widget = QComboBox()

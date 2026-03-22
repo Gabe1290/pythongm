@@ -928,6 +928,34 @@ Voulez-vous ouvrir le répertoire d'export ?</translation>
             <source>Please select a key first.</source>
             <translation>Veuillez d'abord sélectionner une touche.</translation>
         </message>
+        <message>
+            <source>{0} ({1})</source>
+            <translation>{0} ({1})</translation>
+        </message>
+        <message>
+            <source>Letters</source>
+            <translation>Črke</translation>
+        </message>
+        <message>
+            <source>Numbers</source>
+            <translation>Številke</translation>
+        </message>
+        <message>
+            <source>Arrow Keys</source>
+            <translation>Puščične tipke</translation>
+        </message>
+        <message>
+            <source>Function Keys</source>
+            <translation>Funkcijske tipke</translation>
+        </message>
+        <message>
+            <source>Special Keys</source>
+            <translation>Posebne tipke</translation>
+        </message>
+        <message>
+            <source>Numpad</source>
+            <translation>Številčnica</translation>
+        </message>
     </context>
     <context>
         <name>MouseEventSelectorDialog</name>

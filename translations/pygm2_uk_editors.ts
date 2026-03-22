@@ -947,8 +947,8 @@ The code will execute when the event triggers during gameplay.</source>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="176" />
-            <source>{event_type.icon} Collision With...</source>
-            <translation>{event_type.icon} Зіткнення з...</translation>
+            <source>{0} Collision With...</source>
+            <translation>{0} Зіткнення з...</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="188" />
@@ -993,6 +993,11 @@ The code will execute when the event triggers during gameplay.</source>
             <translation>Ви впевнені, що хочете видалити подію {0} та всі її дії?</translation>
         </message>
         <message>
+            <location filename="../editors/object_editor/object_events_panel.py" line="388" />
+            <source>The Keyboard &lt;No Key&gt; event already exists.</source>
+            <translation>Подія Клавіатура &lt;Жодної клавіші&gt; вже існує.</translation>
+        </message>
+        <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="371" />
             <location filename="../editors/object_editor/object_events_panel.py" line="389" />
             <location filename="../editors/object_editor/object_events_panel.py" line="407" />
@@ -1014,8 +1019,8 @@ The code will execute when the event triggers during gameplay.</source>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="452" />
-            <source>Remove {sub_event_key.title()} Arrow Event</source>
-            <translation>Видалити подію стрілки {sub_event_key.title()}</translation>
+            <source>Remove {0} Event</source>
+            <translation>Видалити подію {0}</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="457" />
@@ -1065,13 +1070,13 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="694" />
-            <source>❌ NOT Colliding with {target_object}</source>
-            <translation>❌ НЕ стикається з {target_object}</translation>
+            <source>❌ NOT Colliding with {0}</source>
+            <translation>❌ НЕ стикається з {0}</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="698" />
-            <source>💥 Collision with {target_object}</source>
-            <translation>💥 Зіткнення з {target_object}</translation>
+            <source>💥 Collision with {0}</source>
+            <translation>💥 Зіткнення з {0}</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="700" />
@@ -1201,6 +1206,10 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <message>
             <source>Keyboard Release</source>
             <translation>Відпускання клавіші</translation>
+        </message>
+        <message>
+            <source>Keyboard &lt;No Key&gt;</source>
+            <translation>Клавіатура &lt;Жодної клавіші&gt;</translation>
         </message>
         <message>
             <source>Mouse</source>

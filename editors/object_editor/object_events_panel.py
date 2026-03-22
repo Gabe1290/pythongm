@@ -20,14 +20,19 @@ from events.action_types import get_action_type as _get_action_type, get_actions
 from events.action_editor import ActionConfigDialog
 
 # Action name aliases (alternative names -> canonical names)
+# Map legacy/alternate action names to their canonical ACTION_TYPES entries.
+# Only needed for names NOT already in ACTION_TYPES.
 ACTION_ALIASES = {
-    'add_score': 'set_score',
-    'add_lives': 'set_lives',
-    'add_health': 'set_health',
-    'room_restart': 'restart_room',
-    'room_goto_next': 'next_room',
-    'room_goto_previous': 'previous_room',
-    'room_goto': 'goto_room',
+    'goto_room': 'room_goto',
+    'if_collision': 'if_collision_at',
+    'end_game': 'game_end',
+    'restart_game': 'game_restart',
+    'else_block': 'else_action',
+    'display_message': 'show_message',
+    'message': 'show_message',
+    'change_sprite': 'set_sprite',
+    'test_next_room': 'if_next_room_exists',
+    'test_previous_room': 'if_previous_room_exists',
 }
 
 def get_action_type(action_name: str):
@@ -213,7 +218,7 @@ class ObjectEventsPanel(QWidget):
         for event_type in standard_events:
             if event_type.name == "collision":
                 # Special handling for collision events - create submenu
-                collision_menu = menu.addMenu(self.tr(f"{event_type.icon} Collision With..."))
+                collision_menu = menu.addMenu(self.tr("{0} Collision With...").format(event_type.icon))
 
                 # Get available objects from project
                 available_objects = self.get_available_objects()
@@ -227,6 +232,11 @@ class ObjectEventsPanel(QWidget):
                 else:
                     no_objects_action = collision_menu.addAction(self.tr("No objects available"))
                     no_objects_action.setEnabled(False)
+
+            elif event_type.name == "keyboard_no_key":
+                # No Key event - no key selector needed, stored under keyboard > nokey
+                action = menu.addAction(f"{event_type.icon} {self.tr(event_type.display_name)}")
+                action.triggered.connect(lambda checked: self.add_keyboard_no_key_event())
 
             elif event_type.name in ["keyboard", "keyboard_press", "keyboard_release"]:
                 # New keyboard events with key selector
@@ -369,6 +379,27 @@ class ObjectEventsPanel(QWidget):
 
                 self.refresh_events_display()
                 self.events_modified.emit()
+
+    def add_keyboard_no_key_event(self):
+        """Add the 'No Key' keyboard event (fires when no key is pressed)"""
+        # Stored under keyboard > nokey for runtime compatibility
+        if "keyboard" not in self.current_events_data:
+            self.current_events_data["keyboard"] = {}
+
+        if "nokey" in self.current_events_data["keyboard"]:
+            QMessageBox.information(
+                self,
+                self.tr("Event Exists"),
+                self.tr("The Keyboard <No Key> event already exists.")
+            )
+            return
+
+        self.current_events_data["keyboard"]["nokey"] = {
+            "actions": []
+        }
+
+        self.refresh_events_display()
+        self.events_modified.emit()
 
     def add_mouse_event_with_selector(self):
         """Add a mouse event using the mouse event selector dialog"""
@@ -622,7 +653,7 @@ class ObjectEventsPanel(QWidget):
                     )
 
                     menu.addSeparator()
-                    remove_action = menu.addAction(self.tr(f"Remove {sub_event_key.title()} Arrow Event"))
+                    remove_action = menu.addAction(self.tr("Remove {0} Event").format(sub_event_key.title()))
                     remove_action.triggered.connect(lambda: self.remove_sub_event(parent_item, item))
 
             elif isinstance(item_data, dict):
@@ -772,17 +803,27 @@ class ObjectEventsPanel(QWidget):
         if not action_data:
             return
 
-        action_type = get_action_type(action_data["action"])
-        if not action_type:
+        if not isinstance(action_data, dict) or "action" not in action_data:
             return
 
-        # Special handling for if_condition action
-        if action_data["action"] == "if_condition":
-            from events.conditional_editor import ConditionalActionEditor
-            dialog = ConditionalActionEditor(action_data.get("parameters", {}), parent=self)
-        else:
-            # Show regular configuration dialog with current parameters
-            dialog = ActionConfigDialog(action_type, action_data.get("parameters", {}), parent=self)
+        action_type = get_action_type(action_data["action"])
+        if not action_type:
+            logger.warning(f"Unknown action type: {action_data['action']}")
+            return
+
+        try:
+            # Special handling for if_condition action
+            if action_data["action"] == "if_condition":
+                from events.conditional_editor import ConditionalActionEditor
+                dialog = ConditionalActionEditor(action_data.get("parameters", {}), parent=self)
+            else:
+                # Show regular configuration dialog with current parameters
+                dialog = ActionConfigDialog(action_type, action_data.get("parameters", {}), parent=self)
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            QMessageBox.warning(self, self.tr("Error"), self.tr("Could not open action editor: {0}").format(str(e)))
+            return
 
         if dialog.exec() == QDialog.Accepted:
             # Update parameters
@@ -864,11 +905,11 @@ class ObjectEventsPanel(QWidget):
                 if is_negated:
                     target_object = event_name.replace("not_collision_with_", "")
                     event_item = QTreeWidgetItem(self.events_tree)
-                    event_item.setText(0, self.tr(f"❌ NOT Colliding with {target_object}"))
+                    event_item.setText(0, self.tr("❌ NOT Colliding with {0}").format(target_object))
                 else:
                     target_object = event_name.replace("collision_with_", "")
                     event_item = QTreeWidgetItem(self.events_tree)
-                    event_item.setText(0, self.tr(f"💥 Collision with {target_object}"))
+                    event_item.setText(0, self.tr("💥 Collision with {0}").format(target_object))
 
                 actions = event_data.get("actions", [])
                 event_item.setText(1, self.tr("{0} actions").format(len(actions)))
@@ -932,7 +973,9 @@ class ObjectEventsPanel(QWidget):
                     icon = key_icons.get(display_key, "⌨️")
 
                     # Format key display name
-                    if display_key in ["left", "right", "up", "down"]:
+                    if display_key == "nokey":
+                        display_name = "<No Key>"
+                    elif display_key in ["left", "right", "up", "down"]:
                         display_name = f"{display_key.title()} Arrow"
                     else:
                         display_name = f"Key {display_key}"

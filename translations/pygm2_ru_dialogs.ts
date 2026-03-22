@@ -928,6 +928,34 @@ Would you like to open the export directory?</translation>
             <source>Please select a key first.</source>
             <translation>Please select a key first.</translation>
         </message>
+        <message>
+            <source>{0} ({1})</source>
+            <translation>{0} ({1})</translation>
+        </message>
+        <message>
+            <source>Letters</source>
+            <translation>Буквы</translation>
+        </message>
+        <message>
+            <source>Numbers</source>
+            <translation>Цифры</translation>
+        </message>
+        <message>
+            <source>Arrow Keys</source>
+            <translation>Клавиши-стрелки</translation>
+        </message>
+        <message>
+            <source>Function Keys</source>
+            <translation>Функциональные клавиши</translation>
+        </message>
+        <message>
+            <source>Special Keys</source>
+            <translation>Специальные клавиши</translation>
+        </message>
+        <message>
+            <source>Numpad</source>
+            <translation>Цифровая клавиатура</translation>
+        </message>
     </context>
     <context>
         <name>MouseEventSelectorDialog</name>

@@ -102,6 +102,14 @@ EVENT_TYPES = {
             }
         ]
     ),
+    "keyboard_no_key": EventType(
+        name="keyboard_no_key",
+        display_name="Keyboard <No Key>",
+        description="Executed when no keyboard key is currently pressed",
+        category="Input",
+        icon="⌨️",
+        parameters=[]
+    ),
     "mouse": EventType(
         name="mouse",
         display_name="Mouse",
@@ -253,6 +261,7 @@ EVENT_TO_BLOCKLY_MAP = {
     "keyboard": "event_keyboard_held",
     "keyboard_press": "event_keyboard_press",
     "keyboard_release": "event_keyboard_release",
+    "keyboard_no_key": "event_keyboard_nokey",
     "mouse": "event_mouse",
     # Collision
     "collision": "event_collision",

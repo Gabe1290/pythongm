@@ -986,8 +986,8 @@ Der Code wird ausgeführt, wenn das Ereignis während des Spiels ausgelöst wird
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="176" />
-            <source>{event_type.icon} Collision With...</source>
-            <translation>{event_type.icon} Kollision mit...</translation>
+            <source>{0} Collision With...</source>
+            <translation>{0} Kollision mit...</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="188" />
@@ -1032,6 +1032,11 @@ Der Code wird ausgeführt, wenn das Ereignis während des Spiels ausgelöst wird
             <translation>Sind Sie sicher, dass Sie das Ereignis {0} und alle seine Aktionen entfernen möchten?</translation>
         </message>
         <message>
+            <location filename="../editors/object_editor/object_events_panel.py" line="388" />
+            <source>The Keyboard &lt;No Key&gt; event already exists.</source>
+            <translation>Das Tastatur &lt;Keine Taste&gt; Ereignis existiert bereits.</translation>
+        </message>
+        <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="371" />
             <location filename="../editors/object_editor/object_events_panel.py" line="389" />
             <location filename="../editors/object_editor/object_events_panel.py" line="407" />
@@ -1053,8 +1058,8 @@ Der Code wird ausgeführt, wenn das Ereignis während des Spiels ausgelöst wird
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="452" />
-            <source>Remove {sub_event_key.title()} Arrow Event</source>
-            <translation>Pfeilereignis {sub_event_key.title()} entfernen</translation>
+            <source>Remove {0} Event</source>
+            <translation>Ereignis {0} entfernen</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="457" />
@@ -1104,13 +1109,13 @@ Klicken Sie mit der rechten Maustaste auf Pfeil links, Pfeil rechts, Pfeil oben 
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="694" />
-            <source>❌ NOT Colliding with {target_object}</source>
-            <translation>❌ KEINE Kollision mit {target_object}</translation>
+            <source>❌ NOT Colliding with {0}</source>
+            <translation>❌ KEINE Kollision mit {0}</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="698" />
-            <source>💥 Collision with {target_object}</source>
-            <translation>💥 Kollision mit {target_object}</translation>
+            <source>💥 Collision with {0}</source>
+            <translation>💥 Kollision mit {0}</translation>
         </message>
         <message>
             <location filename="../editors/object_editor/object_events_panel.py" line="700" />
@@ -1240,6 +1245,10 @@ Klicken Sie mit der rechten Maustaste auf Pfeil links, Pfeil rechts, Pfeil oben 
         <message>
             <source>Keyboard Release</source>
             <translation>Taste loslassen</translation>
+        </message>
+        <message>
+            <source>Keyboard &lt;No Key&gt;</source>
+            <translation>Tastatur &lt;Keine Taste&gt;</translation>
         </message>
         <message>
             <source>Mouse</source>
