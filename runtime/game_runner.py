@@ -2363,14 +2363,23 @@ class GameRunner:
         for collision in blocked_collisions_map.values():
             instance = collision['instance']
             other = collision['other_instance']
+            h_blocked = collision.get('h_blocked', False)
+            v_blocked = collision.get('v_blocked', False)
 
-            # Check if this instance has a collision event for the blocking object
+            # Check if the mover has a collision event for the blocking object
             event_name = f"collision_with_{other.object_name}"
             events = instance._cached_object_data.get('events', {}) if instance._cached_object_data else {}
 
+            # Also check if the blocker has a collision event with the mover
+            blocker_event_name = f"collision_with_{instance.object_name}"
+            blocker_events = other._cached_object_data.get('events', {}) if other._cached_object_data else {}
+
+            blocker_old_x = other.x
+            blocker_old_y = other.y
+            blocker_old_hspeed = other.hspeed
+            blocker_old_vspeed = other.vspeed
+
             if event_name in events:
-                h_blocked = collision.get('h_blocked', False)
-                v_blocked = collision.get('v_blocked', False)
                 logger.debug(f"🎯 BLOCKED COLLISION: {instance.object_name} with {other.object_name} (h:{h_blocked}, v:{v_blocked})")
                 instance.action_executor.execute_collision_event(
                     instance,
@@ -2386,6 +2395,38 @@ class GameRunner:
                         'v_blocked': v_blocked,
                     }
                 )
+
+            if blocker_event_name in blocker_events:
+                logger.debug(f"🎯 BLOCKED COLLISION (reverse): {other.object_name} with {instance.object_name} (h:{h_blocked}, v:{v_blocked})")
+                other.action_executor.execute_collision_event(
+                    other,
+                    blocker_event_name,
+                    blocker_events,
+                    instance,
+                    collision_speeds={
+                        'self_hspeed': other.hspeed,
+                        'self_vspeed': other.vspeed,
+                        'other_hspeed': collision['self_hspeed'],
+                        'other_vspeed': collision['self_vspeed'],
+                        'h_blocked': h_blocked,
+                        'v_blocked': v_blocked,
+                    }
+                )
+
+            # If the blocker gained speed from the collision event, apply one frame
+            # of movement immediately. This prevents step events (e.g. if_on_grid)
+            # from killing the speed before the blocker can move off its starting position.
+            if other.hspeed != blocker_old_hspeed or other.vspeed != blocker_old_vspeed:
+                if other.hspeed != 0:
+                    other.x += other.hspeed
+                if other.vspeed != 0:
+                    other.y += other.vspeed
+                logger.debug(f"  ➡️ Applied first frame of blocker movement: {other.object_name} → ({other.x}, {other.y})")
+
+            # If the blocker was pushed (position changed), allow original movement
+            if other.x != blocker_old_x or other.y != blocker_old_y:
+                instance.x += collision['self_hspeed']
+                instance.y += collision['self_vspeed']
         # Handle intended movement (grid-based) with collision checking
         for instance in self.current_room.instances:
             if instance._has_intended_move:
@@ -2405,20 +2446,52 @@ class GameRunner:
                     # For Sokoban-style pushing: fire collision event with the blocker
                     # This allows if_can_push to move the blocker and enable movement
                     if blocker:
+                        # Compute grid movement direction as pseudo-speeds for collision context
+                        grid_dx = instance._last_grid_move_dx
+                        grid_dy = instance._last_grid_move_dy
+                        # Normalize to -1/0/1 so other.hspeed/other.vspeed give direction
+                        norm_dx = (1 if grid_dx > 0 else -1) if grid_dx != 0 else 0
+                        norm_dy = (1 if grid_dy > 0 else -1) if grid_dy != 0 else 0
+                        collision_speeds_mover = {
+                            'self_hspeed': norm_dx,
+                            'self_vspeed': norm_dy,
+                            'other_hspeed': 0,
+                            'other_vspeed': 0,
+                        }
+                        collision_speeds_blocker = {
+                            'self_hspeed': 0,
+                            'self_vspeed': 0,
+                            'other_hspeed': norm_dx,
+                            'other_vspeed': norm_dy,
+                        }
+
                         event_name = f"collision_with_{blocker.object_name}"
                         events = instance._cached_object_data.get('events', {}) if instance._cached_object_data else {}
+
+                        # Also fire collision event on the blocker (e.g. box collision_with_soko)
+                        blocker_event_name = f"collision_with_{instance.object_name}"
+                        blocker_events = blocker._cached_object_data.get('events', {}) if blocker._cached_object_data else {}
+
+                        blocker_old_x = blocker.x
+                        blocker_old_y = blocker.y
+
                         if event_name in events:
                             logger.debug(f"🔄 Grid blocked collision: {instance.object_name} with {blocker.object_name}")
-                            blocker_old_x = blocker.x
-                            blocker_old_y = blocker.y
                             instance.action_executor.execute_collision_event(
-                                instance, event_name, events, blocker
+                                instance, event_name, events, blocker, collision_speeds_mover
                             )
-                            # If the blocker was pushed (position changed), allow original movement
-                            if blocker.x != blocker_old_x or blocker.y != blocker_old_y:
-                                instance.x = instance.intended_x
-                                instance.y = instance.intended_y
-                                logger.debug(f"✅ Movement allowed after push: {instance.object_name} → ({instance.x}, {instance.y})")
+
+                        if blocker_event_name in blocker_events:
+                            logger.debug(f"🔄 Grid blocked collision (reverse): {blocker.object_name} with {instance.object_name}")
+                            blocker.action_executor.execute_collision_event(
+                                blocker, blocker_event_name, blocker_events, instance, collision_speeds_blocker
+                            )
+
+                        # If the blocker was pushed (position changed), allow original movement
+                        if blocker.x != blocker_old_x or blocker.y != blocker_old_y:
+                            instance.x = instance.intended_x
+                            instance.y = instance.intended_y
+                            logger.debug(f"✅ Movement allowed after push: {instance.object_name} → ({instance.x}, {instance.y})")
 
                 # Clear intended movement flag
                 instance._has_intended_move = False
@@ -2503,7 +2576,9 @@ class GameRunner:
             # Solid objects always block
             should_block = is_solid
 
-            # Non-solid objects block if the mover has a push-type collision event with them
+            # Non-solid objects block if:
+            # 1. The mover has a push-type collision event with them (if_can_push), OR
+            # 2. The other object has a collision event with the mover (e.g. box has collision_with_soko)
             if not should_block and collision_targets:
                 target_name = other_instance.object_name
                 if target_name in collision_targets:
@@ -2513,6 +2588,12 @@ class GameRunner:
                         if action.get('action') == 'if_can_push':
                             should_block = True
                             break
+
+            if not should_block:
+                # Check if the other instance has a collision event with the mover
+                other_collision_targets = other_instance._collision_targets
+                if other_collision_targets and moving_instance.object_name in other_collision_targets:
+                    should_block = True
 
             if not should_block:
                 continue

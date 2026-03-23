@@ -44,7 +44,7 @@ class ActionConfigDialog(QDialog):
                     base_param = key[:-len("_translations")]
                     self.message_translations[base_param] = dict(val)
 
-        self.setWindowTitle(self.tr("Configure {0}").format(action_type.display_name))
+        self.setWindowTitle(self.tr("Configure {0}").format(self.tr(action_type.display_name)))
         self.setModal(True)
         self.resize(500, 400)
 
@@ -68,7 +68,7 @@ class ActionConfigDialog(QDialog):
         layout = QVBoxLayout(self)
 
         # Action info
-        title_label = QLabel(f"{self.action_type.icon} {self.action_type.display_name}")
+        title_label = QLabel(f"{self.action_type.icon} {self.tr(self.action_type.display_name)}")
         title_label.setFont(QFont("Arial", 12, QFont.Weight.Bold))
         layout.addWidget(title_label)
 
@@ -86,7 +86,7 @@ class ActionConfigDialog(QDialog):
         for param in self.action_type.parameters:
             param_layout = QHBoxLayout()
 
-            label = QLabel(f"{param.display_name}:")
+            label = QLabel(f"{self.tr(param.display_name)}:")
             label.setMinimumWidth(120)
             param_layout.addWidget(label)
 
@@ -635,7 +635,7 @@ class MultiActionEditor(QDialog):
 
             if action_type:
                 item = QTreeWidgetItem()
-                item.setText(0, f"{action_type.icon} {action_type.display_name}")
+                item.setText(0, f"{action_type.icon} {self.tr(action_type.display_name)}")
 
                 # Show parameter summary
                 params = action_data.get("parameters", {})
@@ -654,10 +654,10 @@ class MultiActionEditor(QDialog):
 
         actions_by_category = get_actions_by_category()
         for category, actions in actions_by_category.items():
-            category_menu = menu.addMenu(category)
+            category_menu = menu.addMenu(self.tr(category))
 
             for action_type in actions:
-                action_item = category_menu.addAction(f"{action_type.icon} {action_type.display_name}")
+                action_item = category_menu.addAction(f"{action_type.icon} {self.tr(action_type.display_name)}")
                 action_item.triggered.connect(
                     lambda checked, at=action_type: self.configure_and_add_action(at)
                 )

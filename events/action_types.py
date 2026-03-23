@@ -1001,7 +1001,7 @@ ACTION_TYPES = {
     # POSITION ACTIONS
     "jump_to_position": ActionType(
         name="jump_to_position",
-        display_name="Jump to Position",
+        display_name="Jump To Position",
         description="Move instantly to a position",
         category="Movement",
         icon="📍",
@@ -1019,6 +1019,13 @@ ACTION_TYPES = {
                 param_type="number",
                 default_value=0,
                 description="Y position"
+            ),
+            ActionParameter(
+                name="relative",
+                display_name="Relative",
+                param_type="boolean",
+                default_value=False,
+                description="Add to current position instead of setting absolute"
             )
         ]
     ),

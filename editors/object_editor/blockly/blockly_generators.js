@@ -115,7 +115,8 @@ function generateActionCode(block) {
         case 'move_snap_to_grid':
             return {action: 'snap_to_grid', parameters: {grid_size: getInputValue(block, 'GRID_SIZE', 32)}};
         case 'move_jump_to':
-            return {action: 'jump_to_position', parameters: {x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0)}};
+            var relative = block.getFieldValue('RELATIVE') === 'TRUE';
+            return {action: 'jump_to_position', parameters: {x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0), relative: relative}};
         case 'grid_stop_if_no_keys':
             return {action: 'stop_if_no_keys', parameters: {grid_size: getInputValue(block, 'GRID_SIZE', 32)}};
         case 'grid_check_keys_and_move':

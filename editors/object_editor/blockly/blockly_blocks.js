@@ -309,6 +309,9 @@ Blockly.Blocks['move_jump_to'] = {
         this.appendValueInput("Y")
             .setCheck("Number")
             .appendField("y:");
+        this.appendDummyInput()
+            .appendField("relative")
+            .appendField(new Blockly.FieldCheckbox("FALSE"), "RELATIVE");
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);

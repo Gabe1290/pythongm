@@ -55,6 +55,37 @@
             <source>Pick Color</source>
             <translation>Вибрати колір</translation>
         </message>
+        <message><source>If Collision At</source><translation>Якщо зіткнення в</translation></message>
+        <message><source>If Can Push</source><translation>Якщо можна штовхнути</translation></message>
+        <message><source>If Condition</source><translation>Якщо умова</translation></message>
+        <message><source>Jump To Position</source><translation>Стрибнути до позиції</translation></message>
+        <message><source>Stop Movement</source><translation>Зупинити рух</translation></message>
+        <message><source>Set Horizontal Speed</source><translation>Задати горизонтальну швидкість</translation></message>
+        <message><source>Set Vertical Speed</source><translation>Задати вертикальну швидкість</translation></message>
+        <message><source>Test Expression</source><translation>Перевірити вираз</translation></message>
+        <message><source>Relative</source><translation>Відносно</translation></message>
+        <message><source>Then Actions</source><translation>Дії Тоді</translation></message>
+        <message><source>Else Actions</source><translation>Дії Інакше</translation></message>
+    </context>
+    <context>
+        <name>ConditionalEditor</name>
+        <message><source>If Collision At</source><translation>Якщо зіткнення в</translation></message>
+        <message><source>Jump To Position</source><translation>Стрибнути до позиції</translation></message>
+        <message><source>Stop Movement</source><translation>Зупинити рух</translation></message>
+        <message><source>Set Horizontal Speed</source><translation>Задати горизонтальну швидкість</translation></message>
+        <message><source>Set Vertical Speed</source><translation>Задати вертикальну швидкість</translation></message>
+        <message><source>Create Instance</source><translation>Створити екземпляр</translation></message>
+        <message><source>Destroy Instance</source><translation>Знищити екземпляр</translation></message>
+        <message><source>Set Variable</source><translation>Задати змінну</translation></message>
+        <message><source>Show Message</source><translation>Показати повідомлення</translation></message>
+        <message><source>Movement</source><translation>Рух</translation></message>
+        <message><source>Control</source><translation>Керування</translation></message>
+        <message><source>Instance</source><translation>Екземпляр</translation></message>
+        <message><source>Room</source><translation>Кімната</translation></message>
+        <message><source>Score</source><translation>Рахунок</translation></message>
+        <message><source>Grid</source><translation>Сітка</translation></message>
+        <message><source>Timing</source><translation>Таймер</translation></message>
+        <message><source>Game</source><translation>Гра</translation></message>
     </context>
     <context>
         <name>GM80EventsPanel</name>

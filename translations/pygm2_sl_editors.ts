@@ -1531,6 +1531,43 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
             <source>Execute Code</source>
             <translation>Izvedi kodo</translation>
         </message>
+        <!-- Missing action display names -->
+        <message><source>If Collision At</source><translation>Če trk pri</translation></message>
+        <message><source>If Can Push</source><translation>Če lahko potisne</translation></message>
+        <message><source>If Condition</source><translation>Če pogoj</translation></message>
+        <message><source>If Next Room Exists</source><translation>Če naslednja soba obstaja</translation></message>
+        <message><source>If Previous Room Exists</source><translation>Če prejšnja soba obstaja</translation></message>
+        <message><source>Test Expression</source><translation>Testiraj izraz</translation></message>
+        <message><source>Test Variable</source><translation>Testiraj spremenljivko</translation></message>
+        <message><source>Check Empty</source><translation>Preveri če prazno</translation></message>
+        <message><source>Check Collision</source><translation>Preveri trk</translation></message>
+        <message><source>Move Fixed</source><translation>Premik v fiksni smeri</translation></message>
+        <message><source>Move Towards</source><translation>Premik proti</translation></message>
+        <message><source>Snap to Grid</source><translation>Poravnaj na mrežo</translation></message>
+        <message><source>Stop If No Keys Pressed</source><translation>Ustavi če ni tipk</translation></message>
+        <message><source>Add to Score</source><translation>Dodaj k rezultatu</translation></message>
+        <message><source>Add Lives</source><translation>Dodaj življenja</translation></message>
+        <message><source>Add Health</source><translation>Dodaj zdravje</translation></message>
+        <message><source>Start Block</source><translation>Začetek bloka</translation></message>
+        <message><source>End Block</source><translation>Konec bloka</translation></message>
+        <message><source>Exit Event</source><translation>Zapusti dogodek</translation></message>
+        <message><source>Repeat</source><translation>Ponovi</translation></message>
+        <message><source>Go to Room</source><translation>Pojdi v sobo</translation></message>
+        <!-- Parameter display names -->
+        <message><source>Then Actions</source><translation>Potem akcije</translation></message>
+        <message><source>Else Actions</source><translation>Sicer akcije</translation></message>
+        <message><source>Then Action</source><translation>Potem akcija</translation></message>
+        <message><source>Else Action</source><translation>Sicer akcija</translation></message>
+        <message><source>Relative</source><translation>Relativno</translation></message>
+        <!-- Category names -->
+        <message><source>Movement</source><translation>Gibanje</translation></message>
+        <message><source>Control</source><translation>Nadzor</translation></message>
+        <message><source>Instance</source><translation>Instanca</translation></message>
+        <message><source>Room</source><translation>Soba</translation></message>
+        <message><source>Score</source><translation>Rezultat</translation></message>
+        <message><source>Grid</source><translation>Mreža</translation></message>
+        <message><source>Timing</source><translation>Časovnik</translation></message>
+        <message><source>Game</source><translation>Igra</translation></message>
     </context>
     <context>
         <name>ObjectPalette</name>

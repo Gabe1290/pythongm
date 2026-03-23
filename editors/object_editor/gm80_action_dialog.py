@@ -40,12 +40,12 @@ class GM80ActionDialog(QDialog):
         layout = QVBoxLayout(self)
 
         # Action title and description
-        title_label = QLabel(f"{self.action_def.icon} {self.action_def.display_name}")
+        title_label = QLabel(f"{self.action_def.icon} {self.tr(self.action_def.display_name)}")
         title_label.setFont(QFont("Arial", 12, QFont.Weight.Bold))
         layout.addWidget(title_label)
 
         if self.action_def.description:
-            desc_label = QLabel(self.action_def.description)
+            desc_label = QLabel(self.tr(self.action_def.description))
             desc_label.setWordWrap(True)
             desc_label.setStyleSheet("color: gray; padding: 5px;")
             layout.addWidget(desc_label)
@@ -59,7 +59,7 @@ class GM80ActionDialog(QDialog):
                 widget = self.create_parameter_widget(param)
                 if widget:
                     self.param_widgets[param.name] = widget
-                    label = QLabel(param.display_name + ":")
+                    label = QLabel(self.tr(param.display_name) + ":")
                     if param.description:
                         label.setToolTip(param.description)
                     params_layout.addRow(label, widget)

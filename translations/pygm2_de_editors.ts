@@ -1531,6 +1531,43 @@ Klicken Sie mit der rechten Maustaste auf Pfeil links, Pfeil rechts, Pfeil oben 
             <source>Execute Code</source>
             <translation>Code ausführen</translation>
         </message>
+        <!-- Missing action display names -->
+        <message><source>If Collision At</source><translation>Wenn Kollision bei</translation></message>
+        <message><source>If Can Push</source><translation>Wenn schieben möglich</translation></message>
+        <message><source>If Condition</source><translation>Wenn Bedingung</translation></message>
+        <message><source>If Next Room Exists</source><translation>Wenn nächster Raum existiert</translation></message>
+        <message><source>If Previous Room Exists</source><translation>Wenn vorheriger Raum existiert</translation></message>
+        <message><source>Test Expression</source><translation>Ausdruck testen</translation></message>
+        <message><source>Test Variable</source><translation>Variable testen</translation></message>
+        <message><source>Check Empty</source><translation>Prüfen ob leer</translation></message>
+        <message><source>Check Collision</source><translation>Kollision prüfen</translation></message>
+        <message><source>Move Fixed</source><translation>Feste Richtung bewegen</translation></message>
+        <message><source>Move Towards</source><translation>Bewegen zu</translation></message>
+        <message><source>Snap to Grid</source><translation>Am Raster ausrichten</translation></message>
+        <message><source>Stop If No Keys Pressed</source><translation>Stoppen wenn keine Taste</translation></message>
+        <message><source>Add to Score</source><translation>Zum Punktestand addieren</translation></message>
+        <message><source>Add Lives</source><translation>Leben hinzufügen</translation></message>
+        <message><source>Add Health</source><translation>Gesundheit hinzufügen</translation></message>
+        <message><source>Start Block</source><translation>Blockanfang</translation></message>
+        <message><source>End Block</source><translation>Blockende</translation></message>
+        <message><source>Exit Event</source><translation>Ereignis verlassen</translation></message>
+        <message><source>Repeat</source><translation>Wiederholen</translation></message>
+        <message><source>Go to Room</source><translation>Zum Raum gehen</translation></message>
+        <!-- Parameter display names -->
+        <message><source>Then Actions</source><translation>Dann-Aktionen</translation></message>
+        <message><source>Else Actions</source><translation>Sonst-Aktionen</translation></message>
+        <message><source>Then Action</source><translation>Dann-Aktion</translation></message>
+        <message><source>Else Action</source><translation>Sonst-Aktion</translation></message>
+        <message><source>Relative</source><translation>Relativ</translation></message>
+        <!-- Category names -->
+        <message><source>Movement</source><translation>Bewegung</translation></message>
+        <message><source>Control</source><translation>Steuerung</translation></message>
+        <message><source>Instance</source><translation>Instanz</translation></message>
+        <message><source>Room</source><translation>Raum</translation></message>
+        <message><source>Score</source><translation>Punktestand</translation></message>
+        <message><source>Grid</source><translation>Raster</translation></message>
+        <message><source>Timing</source><translation>Zeitmessung</translation></message>
+        <message><source>Game</source><translation>Spiel</translation></message>
     </context>
     <context>
         <name>ObjectPalette</name>

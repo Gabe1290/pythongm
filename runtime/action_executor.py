@@ -300,7 +300,9 @@ class ActionExecutor:
         "room_goto_previous": "previous_room",
         "room_goto": "goto_room",
         # Legacy/GMK import action names
-        "if_collision": "if_collision_at",
+        # NOTE: "if_collision" is NOT aliased - it has its own handler (execute_if_collision_action)
+        # that evaluates immediately and supports nested then_actions/else_actions.
+        # "if_collision_at" is the deferred version that stores checks for later processing.
         "game_end": "end_game",
         "game_restart": "restart_game",
         "else_block": "else_action",
@@ -330,7 +332,6 @@ class ActionExecutor:
 
         if action_name not in self.action_handlers:
             logger.error(f"❌ Unknown action: {action_name}")
-            logger.debug(f"   Available actions: {', '.join(sorted(self.action_handlers.keys()))}")
             return None
 
         # Validate instance has required attributes for this action
@@ -341,6 +342,19 @@ class ActionExecutor:
         # Execute the action with error handling
         try:
             result = self.action_handlers[action_name](instance, parameters)
+
+            # Generic support for nested then_actions/else_actions on any conditional action.
+            # If a handler returns True/False (conditional) and the parameters contain
+            # nested action lists, execute the appropriate branch and return None
+            # so the outer flow control is not affected.
+            if result is not None and isinstance(result, bool):
+                then_actions = parameters.get("then_actions", [])
+                else_actions = parameters.get("else_actions", [])
+                if then_actions or else_actions:
+                    actions_to_run = then_actions if result else else_actions
+                    self.execute_action_list(instance, actions_to_run)
+                    return None
+
             return result  # Return result for conditional flow
         except AttributeError as e:
             logger.debug(f"❌ Attribute error in action {action_name}: {e}")
@@ -434,7 +448,9 @@ class ActionExecutor:
             return
         old_speed = instance.hspeed
         instance.hspeed = speed
-        # Only print when speed changes
+        # Clear perpendicular axis when setting non-zero speed to prevent diagonal movement
+        if speed != 0:
+            instance.vspeed = 0
         if old_speed != speed:
             logger.debug(f"  🏃 {instance.object_name} hspeed: {old_speed} → {speed}")
 
@@ -455,7 +471,9 @@ class ActionExecutor:
             return
         old_speed = instance.vspeed
         instance.vspeed = speed
-        # Only print when speed changes
+        # Clear perpendicular axis when setting non-zero speed to prevent diagonal movement
+        if speed != 0:
+            instance.hspeed = 0
         if old_speed != speed:
             logger.debug(f"  🏃 {instance.object_name} vspeed: {old_speed} → {speed}")
 
@@ -1223,7 +1241,7 @@ class ActionExecutor:
         """
         x_expr = str(parameters.get("x", "0"))
         y_expr = str(parameters.get("y", "0"))
-        object_type = parameters.get("object", "any")
+        object_type = parameters.get("object_type", parameters.get("object", "any"))
         not_flag = parameters.get("not_flag", False)
 
         # Debug: Show stored collision speeds
@@ -1350,91 +1368,125 @@ class ActionExecutor:
         grid_size = 32
 
         # Determine push direction from either speed or grid movement
+        # "mover" is the instance that has movement direction
+        # "push_target" is the instance that gets pushed
         hspeed = getattr(instance, 'hspeed', 0)
         vspeed = getattr(instance, 'vspeed', 0)
 
+        # By default, direction comes from instance, push target is other
+        # (event on soko: soko moves, box gets pushed)
+        mover = instance
+        push_target = other
+        dx, dy = 0, 0
+
         if hspeed != 0 or vspeed != 0:
-            # Speed-based movement
             dx = hspeed
             dy = vspeed
         else:
-            # Grid-based movement: use stored direction from game_runner
             dx = getattr(instance, '_last_grid_move_dx', 0)
             dy = getattr(instance, '_last_grid_move_dy', 0)
             if dx == 0 and dy == 0:
-                # Fallback: try intended position
                 intended_x = getattr(instance, 'intended_x', instance.x)
                 intended_y = getattr(instance, 'intended_y', instance.y)
                 dx = intended_x - instance.x
                 dy = intended_y - instance.y
+
+        if dx == 0 and dy == 0:
+            # Instance has no movement - check if the OTHER instance is the mover
+            # (event on box: soko is the mover, box gets pushed = instance itself)
+            other_hspeed = getattr(other, 'hspeed', 0)
+            other_vspeed = getattr(other, 'vspeed', 0)
+
+            if other_hspeed != 0 or other_vspeed != 0:
+                dx = other_hspeed
+                dy = other_vspeed
+            else:
+                dx = getattr(other, '_last_grid_move_dx', 0)
+                dy = getattr(other, '_last_grid_move_dy', 0)
+                if dx == 0 and dy == 0:
+                    intended_x = getattr(other, 'intended_x', other.x)
+                    intended_y = getattr(other, 'intended_y', other.y)
+                    dx = intended_x - other.x
+                    dy = intended_y - other.y
+
             if dx == 0 and dy == 0:
-                logger.debug("  ⚠️ if_can_push: Instance has no movement")
+                # Also try collision speeds as last resort
+                collision_speeds = getattr(self, '_collision_speeds', {})
+                dx = collision_speeds.get('other_hspeed', 0)
+                dy = collision_speeds.get('other_vspeed', 0)
+
+            if dx == 0 and dy == 0:
+                logger.debug("  ⚠️ if_can_push: Neither instance nor other has movement")
                 return False
+
+            # Swap roles: other is the mover, instance (self) is the push target
+            mover = other
+            push_target = instance
+            logger.debug(f"  🔄 if_can_push: event on pushed object, direction from {other.object_name}")
 
         # Calculate push direction (one grid cell in movement direction)
         push_dx = grid_size if dx > 0 else (-grid_size if dx < 0 else 0)
         push_dy = grid_size if dy > 0 else (-grid_size if dy < 0 else 0)
 
-        # Check if space behind the box is free
-        behind_x = other.x + push_dx
-        behind_y = other.y + push_dy
+        # Check if space behind the push target is free
+        behind_x = push_target.x + push_dx
+        behind_y = push_target.y + push_dy
 
         can_push = True
         if self.game_runner and self.game_runner.current_room:
             # Check for solid objects at the push destination
             if self.game_runner.check_collision_at_position(
-                other, behind_x, behind_y, "solid", exclude_instance=instance
+                push_target, behind_x, behind_y, "solid", exclude_instance=mover
             ):
                 can_push = False
             else:
-                # Check for any object type the pusher has collision events with
+                # Check for any object type the mover has collision events with
                 # (e.g. soko has collision_with_obj_box and collision_with_obj_box_store)
                 # These are "interactive" objects that should block pushes
-                collision_targets = getattr(instance, '_collision_targets', {})
+                collision_targets = getattr(mover, '_collision_targets', {})
                 for target_name in collision_targets:
                     if self.game_runner.check_collision_at_position(
-                        other, behind_x, behind_y, target_name, exclude_instance=instance
+                        push_target, behind_x, behind_y, target_name, exclude_instance=mover
                     ):
                         can_push = False
                         break
 
-        logger.debug(f"  ❓ if_can_push: other=({other.x},{other.y}), behind=({behind_x},{behind_y}), can_push={can_push}")
+        logger.debug(f"  ❓ if_can_push: push_target=({push_target.x},{push_target.y}), behind=({behind_x},{behind_y}), can_push={can_push}")
 
         then_action = parameters.get('then_action', '')
         else_action = parameters.get('else_action', '')
 
         if can_push:
             if then_action == 'push_and_move':
-                # Push the box in the direction of movement
-                other.x += push_dx
-                other.y += push_dy
-                logger.debug(f"  📦 Pushed box to ({other.x}, {other.y})")
+                # Push the target in the direction of movement
+                push_target.x += push_dx
+                push_target.y += push_dy
+                logger.debug(f"  📦 Pushed {push_target.object_name} to ({push_target.x}, {push_target.y})")
                 # Update spatial grid if available
                 if self.game_runner and self.game_runner.current_room:
                     if hasattr(self.game_runner.current_room, 'update_spatial_grid'):
-                        self.game_runner.current_room.update_spatial_grid(other)
+                        self.game_runner.current_room.update_spatial_grid(push_target)
         else:
             if else_action == 'stop_movement':
-                instance.hspeed = 0
-                instance.vspeed = 0
-                instance.speed = 0
-                # Revert position if soko overlapped with the box (non-solid case)
-                # Push soko back by the movement direction
-                last_dx = getattr(instance, '_last_grid_move_dx', 0)
-                last_dy = getattr(instance, '_last_grid_move_dy', 0)
+                # Stop the mover (not necessarily instance - could be other if event is on box)
+                mover.hspeed = 0
+                mover.vspeed = 0
+                mover.speed = 0
+                # Revert mover position if it overlapped with push_target (non-solid case)
+                last_dx = getattr(mover, '_last_grid_move_dx', 0)
+                last_dy = getattr(mover, '_last_grid_move_dy', 0)
                 if last_dx != 0 or last_dy != 0:
-                    # Check if instance is overlapping with the other
-                    w1 = getattr(instance, '_cached_width', 32)
-                    h1 = getattr(instance, '_cached_height', 32)
-                    w2 = getattr(other, '_cached_width', 32)
-                    h2 = getattr(other, '_cached_height', 32)
+                    w1 = getattr(mover, '_cached_width', 32)
+                    h1 = getattr(mover, '_cached_height', 32)
+                    w2 = getattr(push_target, '_cached_width', 32)
+                    h2 = getattr(push_target, '_cached_height', 32)
                     if self.game_runner and self.game_runner.rectangles_overlap(
-                        instance.x, instance.y, w1, h1,
-                        other.x, other.y, w2, h2
+                        mover.x, mover.y, w1, h1,
+                        push_target.x, push_target.y, w2, h2
                     ):
-                        instance.x -= last_dx
-                        instance.y -= last_dy
-                        logger.debug(f"  ↩️ Reverted position to ({instance.x}, {instance.y})")
+                        mover.x -= last_dx
+                        mover.y -= last_dy
+                        logger.debug(f"  ↩️ Reverted mover position to ({mover.x}, {mover.y})")
                 logger.debug("  🛑 Stopped movement (can't push)")
 
         return can_push

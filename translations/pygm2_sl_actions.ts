@@ -341,8 +341,39 @@ Exemple : x &gt; 100 &amp;&amp; y &lt; 200</translation>
         <message>
             <location filename="../editors/object_editor/gm80_action_dialog.py" line="217" />
             <source>Pick Color</source>
-            <translation>Choisir une couleur</translation>
+            <translation>Izberi barvo</translation>
         </message>
+        <message><source>If Collision At</source><translation>Če trk pri</translation></message>
+        <message><source>If Can Push</source><translation>Če lahko potisne</translation></message>
+        <message><source>If Condition</source><translation>Če pogoj</translation></message>
+        <message><source>Jump To Position</source><translation>Skoči na položaj</translation></message>
+        <message><source>Stop Movement</source><translation>Ustavi gibanje</translation></message>
+        <message><source>Set Horizontal Speed</source><translation>Nastavi vodoravno hitrost</translation></message>
+        <message><source>Set Vertical Speed</source><translation>Nastavi navpično hitrost</translation></message>
+        <message><source>Test Expression</source><translation>Testiraj izraz</translation></message>
+        <message><source>Relative</source><translation>Relativno</translation></message>
+        <message><source>Then Actions</source><translation>Potem akcije</translation></message>
+        <message><source>Else Actions</source><translation>Sicer akcije</translation></message>
+    </context>
+    <context>
+        <name>ConditionalEditor</name>
+        <message><source>If Collision At</source><translation>Če trk pri</translation></message>
+        <message><source>Jump To Position</source><translation>Skoči na položaj</translation></message>
+        <message><source>Stop Movement</source><translation>Ustavi gibanje</translation></message>
+        <message><source>Set Horizontal Speed</source><translation>Nastavi vodoravno hitrost</translation></message>
+        <message><source>Set Vertical Speed</source><translation>Nastavi navpično hitrost</translation></message>
+        <message><source>Create Instance</source><translation>Ustvari instanco</translation></message>
+        <message><source>Destroy Instance</source><translation>Uniči instanco</translation></message>
+        <message><source>Set Variable</source><translation>Nastavi spremenljivko</translation></message>
+        <message><source>Show Message</source><translation>Prikaži sporočilo</translation></message>
+        <message><source>Movement</source><translation>Gibanje</translation></message>
+        <message><source>Control</source><translation>Nadzor</translation></message>
+        <message><source>Instance</source><translation>Instanca</translation></message>
+        <message><source>Room</source><translation>Soba</translation></message>
+        <message><source>Score</source><translation>Rezultat</translation></message>
+        <message><source>Grid</source><translation>Mreža</translation></message>
+        <message><source>Timing</source><translation>Časovnik</translation></message>
+        <message><source>Game</source><translation>Igra</translation></message>
     </context>
     <context>
         <name>GM80EventsPanel</name>

@@ -1531,6 +1531,43 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
             <source>Execute Code</source>
             <translation>Выполнить код</translation>
         </message>
+        <!-- Missing action display names -->
+        <message><source>If Collision At</source><translation>Если столкновение в</translation></message>
+        <message><source>If Can Push</source><translation>Если можно толкнуть</translation></message>
+        <message><source>If Condition</source><translation>Если условие</translation></message>
+        <message><source>If Next Room Exists</source><translation>Если следующая комната существует</translation></message>
+        <message><source>If Previous Room Exists</source><translation>Если предыдущая комната существует</translation></message>
+        <message><source>Test Expression</source><translation>Проверить выражение</translation></message>
+        <message><source>Test Variable</source><translation>Проверить переменную</translation></message>
+        <message><source>Check Empty</source><translation>Проверить пусто ли</translation></message>
+        <message><source>Check Collision</source><translation>Проверить столкновение</translation></message>
+        <message><source>Move Fixed</source><translation>Двигаться в фиксированном направлении</translation></message>
+        <message><source>Move Towards</source><translation>Двигаться к</translation></message>
+        <message><source>Snap to Grid</source><translation>Выровнять по сетке</translation></message>
+        <message><source>Stop If No Keys Pressed</source><translation>Остановить если нет клавиш</translation></message>
+        <message><source>Add to Score</source><translation>Добавить к счёту</translation></message>
+        <message><source>Add Lives</source><translation>Добавить жизни</translation></message>
+        <message><source>Add Health</source><translation>Добавить здоровье</translation></message>
+        <message><source>Start Block</source><translation>Начало блока</translation></message>
+        <message><source>End Block</source><translation>Конец блока</translation></message>
+        <message><source>Exit Event</source><translation>Выйти из события</translation></message>
+        <message><source>Repeat</source><translation>Повторить</translation></message>
+        <message><source>Go to Room</source><translation>Перейти в комнату</translation></message>
+        <!-- Parameter display names -->
+        <message><source>Then Actions</source><translation>Действия Тогда</translation></message>
+        <message><source>Else Actions</source><translation>Действия Иначе</translation></message>
+        <message><source>Then Action</source><translation>Действие Тогда</translation></message>
+        <message><source>Else Action</source><translation>Действие Иначе</translation></message>
+        <message><source>Relative</source><translation>Относительно</translation></message>
+        <!-- Category names -->
+        <message><source>Movement</source><translation>Движение</translation></message>
+        <message><source>Control</source><translation>Управление</translation></message>
+        <message><source>Instance</source><translation>Экземпляр</translation></message>
+        <message><source>Room</source><translation>Комната</translation></message>
+        <message><source>Score</source><translation>Счёт</translation></message>
+        <message><source>Grid</source><translation>Сетка</translation></message>
+        <message><source>Timing</source><translation>Таймер</translation></message>
+        <message><source>Game</source><translation>Игра</translation></message>
     </context>
     <context>
         <name>ObjectPalette</name>

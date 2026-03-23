@@ -258,7 +258,13 @@ class RoomEditor(QWidget):
         if hasattr(self, 'status_label'):
             self.status_label.setText(message)
             if timeout > 0:
-                QTimer.singleShot(timeout, lambda: self.status_label.setText(self.tr("Ready")) if hasattr(self, 'status_label') else None)
+                def _reset_status():
+                    try:
+                        if hasattr(self, 'status_label') and self.status_label is not None:
+                            self.status_label.setText(self.tr("Ready"))
+                    except RuntimeError:
+                        pass  # C++ object already deleted
+                QTimer.singleShot(timeout, _reset_status)
 
     def setup_connections(self):
         """Set up signal connections"""

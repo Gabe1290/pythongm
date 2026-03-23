@@ -451,7 +451,7 @@ class ConditionalActionEditor(QDialog):
         for action_data in self.then_actions:
             action_type = get_action_type(action_data["action"])
             if action_type:
-                display_text = f"{action_type.icon} {action_type.display_name}"
+                display_text = f"{action_type.icon} {self.tr(action_type.display_name)}"
                 params = action_data.get("parameters", {})
                 if params:
                     param_summary = ", ".join([f"{k}={v}" for k, v in params.items() if k not in ["then_actions", "else_actions"]])
@@ -464,7 +464,7 @@ class ConditionalActionEditor(QDialog):
         for action_data in self.else_actions:
             action_type = get_action_type(action_data["action"])
             if action_type:
-                display_text = f"{action_type.icon} {action_type.display_name}"
+                display_text = f"{action_type.icon} {self.tr(action_type.display_name)}"
                 params = action_data.get("parameters", {})
                 if params:
                     param_summary = ", ".join([f"{k}={v}" for k, v in params.items() if k not in ["then_actions", "else_actions"]])
@@ -480,10 +480,10 @@ class ConditionalActionEditor(QDialog):
         actions_by_category = get_actions_by_category()
 
         for category, actions in actions_by_category.items():
-            category_menu = menu.addMenu(category)
+            category_menu = menu.addMenu(self.tr(category))
 
             for action_type in actions:
-                action_item = category_menu.addAction(f"{action_type.icon} {action_type.display_name}")
+                action_item = category_menu.addAction(f"{action_type.icon} {self.tr(action_type.display_name)}")
                 action_item.triggered.connect(
                     lambda checked, at=action_type, lt=list_type: self.configure_and_add_action(at, lt)
                 )

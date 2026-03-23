@@ -343,6 +343,51 @@ Exemple : x &gt; 100 &amp;&amp; y &lt; 200</translation>
             <source>Pick Color</source>
             <translation>Choisir une couleur</translation>
         </message>
+        <!-- Action display names for GM80ActionDialog -->
+        <message>
+            <source>If Collision At</source>
+            <translation>Si collision à</translation>
+        </message>
+        <message>
+            <source>If Can Push</source>
+            <translation>Si peut pousser</translation>
+        </message>
+        <message>
+            <source>If Condition</source>
+            <translation>Si condition</translation>
+        </message>
+        <message>
+            <source>Jump To Position</source>
+            <translation>Aller à la position</translation>
+        </message>
+        <message>
+            <source>Stop Movement</source>
+            <translation>Arrêter le mouvement</translation>
+        </message>
+        <message>
+            <source>Set Horizontal Speed</source>
+            <translation>Définir la vitesse horizontale</translation>
+        </message>
+        <message>
+            <source>Set Vertical Speed</source>
+            <translation>Définir la vitesse verticale</translation>
+        </message>
+        <message>
+            <source>Test Expression</source>
+            <translation>Tester une expression</translation>
+        </message>
+        <message>
+            <source>Relative</source>
+            <translation>Relatif</translation>
+        </message>
+        <message>
+            <source>Then Actions</source>
+            <translation>Actions Si vrai</translation>
+        </message>
+        <message>
+            <source>Else Actions</source>
+            <translation>Actions Sinon</translation>
+        </message>
     </context>
     <context>
         <name>GM80EventsPanel</name>
@@ -521,6 +566,119 @@ Sélectionnez les événements que vous souhaitez disponibles à la fois dans
 l'éditeur de programmation visuelle et dans cet éditeur d'événements traditionnel.
 
 Les changements prendront effet immédiatement.</translation>
+        </message>
+    </context>
+    <context>
+        <name>ConditionalEditor</name>
+        <!-- Action display names used in conditional editor menus -->
+        <message>
+            <source>If Collision At</source>
+            <translation>Si collision à</translation>
+        </message>
+        <message>
+            <source>If Can Push</source>
+            <translation>Si peut pousser</translation>
+        </message>
+        <message>
+            <source>If Condition</source>
+            <translation>Si condition</translation>
+        </message>
+        <message>
+            <source>Jump To Position</source>
+            <translation>Aller à la position</translation>
+        </message>
+        <message>
+            <source>Stop Movement</source>
+            <translation>Arrêter le mouvement</translation>
+        </message>
+        <message>
+            <source>Set Horizontal Speed</source>
+            <translation>Définir la vitesse horizontale</translation>
+        </message>
+        <message>
+            <source>Set Vertical Speed</source>
+            <translation>Définir la vitesse verticale</translation>
+        </message>
+        <message>
+            <source>Set Speed</source>
+            <translation>Définir la vitesse</translation>
+        </message>
+        <message>
+            <source>Show Message</source>
+            <translation>Afficher un message</translation>
+        </message>
+        <message>
+            <source>Create Instance</source>
+            <translation>Créer une instance</translation>
+        </message>
+        <message>
+            <source>Destroy Instance</source>
+            <translation>Détruire l'instance</translation>
+        </message>
+        <message>
+            <source>Set Variable</source>
+            <translation>Définir la variable</translation>
+        </message>
+        <message>
+            <source>Next Room</source>
+            <translation>Salle suivante</translation>
+        </message>
+        <message>
+            <source>Restart Room</source>
+            <translation>Recommencer la salle</translation>
+        </message>
+        <message>
+            <source>End Game</source>
+            <translation>Terminer le jeu</translation>
+        </message>
+        <message>
+            <source>Set Score</source>
+            <translation>Définir le score</translation>
+        </message>
+        <message>
+            <source>Add to Score</source>
+            <translation>Ajouter au score</translation>
+        </message>
+        <message>
+            <source>Set Alarm</source>
+            <translation>Définir l'alarme</translation>
+        </message>
+        <message>
+            <source>Play Sound</source>
+            <translation>Jouer un son</translation>
+        </message>
+        <!-- Category names -->
+        <message>
+            <source>Movement</source>
+            <translation>Mouvement</translation>
+        </message>
+        <message>
+            <source>Control</source>
+            <translation>Contrôle</translation>
+        </message>
+        <message>
+            <source>Instance</source>
+            <translation>Instance</translation>
+        </message>
+        <message>
+            <source>Room</source>
+            <translation>Salle</translation>
+        </message>
+        <message>
+            <source>Score</source>
+            <translation>Score</translation>
+        </message>
+        <message>
+            <source>Grid</source>
+            <translation>Grille</translation>
+        </message>
+        <message>
+            <source>Timing</source>
+            <translation>Minuterie</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Jeu</translation>
         </message>
     </context>
 </TS>

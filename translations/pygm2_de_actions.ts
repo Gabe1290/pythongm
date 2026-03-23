@@ -343,6 +343,37 @@ Beispiel: x &gt; 100 &amp;&amp; y &lt; 200</translation>
             <source>Pick Color</source>
             <translation>Farbe wählen</translation>
         </message>
+        <message><source>If Collision At</source><translation>Wenn Kollision bei</translation></message>
+        <message><source>If Can Push</source><translation>Wenn schieben möglich</translation></message>
+        <message><source>If Condition</source><translation>Wenn Bedingung</translation></message>
+        <message><source>Jump To Position</source><translation>Zur Position springen</translation></message>
+        <message><source>Stop Movement</source><translation>Bewegung anhalten</translation></message>
+        <message><source>Set Horizontal Speed</source><translation>Horizontale Geschwindigkeit setzen</translation></message>
+        <message><source>Set Vertical Speed</source><translation>Vertikale Geschwindigkeit setzen</translation></message>
+        <message><source>Test Expression</source><translation>Ausdruck testen</translation></message>
+        <message><source>Relative</source><translation>Relativ</translation></message>
+        <message><source>Then Actions</source><translation>Dann-Aktionen</translation></message>
+        <message><source>Else Actions</source><translation>Sonst-Aktionen</translation></message>
+    </context>
+    <context>
+        <name>ConditionalEditor</name>
+        <message><source>If Collision At</source><translation>Wenn Kollision bei</translation></message>
+        <message><source>Jump To Position</source><translation>Zur Position springen</translation></message>
+        <message><source>Stop Movement</source><translation>Bewegung anhalten</translation></message>
+        <message><source>Set Horizontal Speed</source><translation>Horizontale Geschwindigkeit setzen</translation></message>
+        <message><source>Set Vertical Speed</source><translation>Vertikale Geschwindigkeit setzen</translation></message>
+        <message><source>Create Instance</source><translation>Instanz erstellen</translation></message>
+        <message><source>Destroy Instance</source><translation>Instanz zerstören</translation></message>
+        <message><source>Set Variable</source><translation>Variable setzen</translation></message>
+        <message><source>Show Message</source><translation>Nachricht anzeigen</translation></message>
+        <message><source>Movement</source><translation>Bewegung</translation></message>
+        <message><source>Control</source><translation>Steuerung</translation></message>
+        <message><source>Instance</source><translation>Instanz</translation></message>
+        <message><source>Room</source><translation>Raum</translation></message>
+        <message><source>Score</source><translation>Punktestand</translation></message>
+        <message><source>Grid</source><translation>Raster</translation></message>
+        <message><source>Timing</source><translation>Zeitmessung</translation></message>
+        <message><source>Game</source><translation>Spiel</translation></message>
     </context>
     <context>
         <name>GM80EventsPanel</name>

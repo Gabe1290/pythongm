@@ -341,8 +341,39 @@ Exemple : x &gt; 100 &amp;&amp; y &lt; 200</translation>
         <message>
             <location filename="../editors/object_editor/gm80_action_dialog.py" line="217" />
             <source>Pick Color</source>
-            <translation>Pick Color</translation>
+            <translation>Выбрать цвет</translation>
         </message>
+        <message><source>If Collision At</source><translation>Если столкновение в</translation></message>
+        <message><source>If Can Push</source><translation>Если можно толкнуть</translation></message>
+        <message><source>If Condition</source><translation>Если условие</translation></message>
+        <message><source>Jump To Position</source><translation>Прыгнуть к позиции</translation></message>
+        <message><source>Stop Movement</source><translation>Остановить движение</translation></message>
+        <message><source>Set Horizontal Speed</source><translation>Задать горизонтальную скорость</translation></message>
+        <message><source>Set Vertical Speed</source><translation>Задать вертикальную скорость</translation></message>
+        <message><source>Test Expression</source><translation>Проверить выражение</translation></message>
+        <message><source>Relative</source><translation>Относительно</translation></message>
+        <message><source>Then Actions</source><translation>Действия Тогда</translation></message>
+        <message><source>Else Actions</source><translation>Действия Иначе</translation></message>
+    </context>
+    <context>
+        <name>ConditionalEditor</name>
+        <message><source>If Collision At</source><translation>Если столкновение в</translation></message>
+        <message><source>Jump To Position</source><translation>Прыгнуть к позиции</translation></message>
+        <message><source>Stop Movement</source><translation>Остановить движение</translation></message>
+        <message><source>Set Horizontal Speed</source><translation>Задать горизонтальную скорость</translation></message>
+        <message><source>Set Vertical Speed</source><translation>Задать вертикальную скорость</translation></message>
+        <message><source>Create Instance</source><translation>Создать экземпляр</translation></message>
+        <message><source>Destroy Instance</source><translation>Уничтожить экземпляр</translation></message>
+        <message><source>Set Variable</source><translation>Задать переменную</translation></message>
+        <message><source>Show Message</source><translation>Показать сообщение</translation></message>
+        <message><source>Movement</source><translation>Движение</translation></message>
+        <message><source>Control</source><translation>Управление</translation></message>
+        <message><source>Instance</source><translation>Экземпляр</translation></message>
+        <message><source>Room</source><translation>Комната</translation></message>
+        <message><source>Score</source><translation>Счёт</translation></message>
+        <message><source>Grid</source><translation>Сетка</translation></message>
+        <message><source>Timing</source><translation>Таймер</translation></message>
+        <message><source>Game</source><translation>Игра</translation></message>
     </context>
     <context>
         <name>GM80EventsPanel</name>
