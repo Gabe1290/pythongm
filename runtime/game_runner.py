@@ -341,6 +341,7 @@ class GameInstance:
 
     def __init__(self, object_name: str, x: float, y: float, instance_data: dict, action_executor=None):
         self.object_name = object_name
+        self._original_object_name = object_name  # Tracks type before change_instance
         self._x = float(x)
         self._y = float(y)
         # Store starting position for jump_to_start action
@@ -2370,6 +2371,14 @@ class GameRunner:
             event_name = f"collision_with_{other.object_name}"
             events = instance._cached_object_data.get('events', {}) if instance._cached_object_data else {}
 
+            # Fall back to original object name if current name has no event
+            if event_name not in events:
+                original = getattr(other, '_original_object_name', None)
+                if original and original != other.object_name:
+                    alt_event = f"collision_with_{original}"
+                    if alt_event in events:
+                        event_name = alt_event
+
             # Also check if the blocker has a collision event with the mover
             blocker_event_name = f"collision_with_{instance.object_name}"
             blocker_events = other._cached_object_data.get('events', {}) if other._cached_object_data else {}
@@ -2467,6 +2476,16 @@ class GameRunner:
 
                         event_name = f"collision_with_{blocker.object_name}"
                         events = instance._cached_object_data.get('events', {}) if instance._cached_object_data else {}
+
+                        # If mover doesn't have an event for the blocker's current name,
+                        # try the original name (before change_instance).
+                        # e.g. Soko has collision_with_obj_box, blocker is now obj_box_stored
+                        if event_name not in events:
+                            original = getattr(blocker, '_original_object_name', None)
+                            if original and original != blocker.object_name:
+                                alt_event = f"collision_with_{original}"
+                                if alt_event in events:
+                                    event_name = alt_event
 
                         # Also fire collision event on the blocker (e.g. box collision_with_soko)
                         blocker_event_name = f"collision_with_{instance.object_name}"
@@ -2580,14 +2599,23 @@ class GameRunner:
             # 1. The mover has a push-type collision event with them (if_can_push), OR
             # 2. The other object has a collision event with the mover (e.g. box has collision_with_soko)
             if not should_block and collision_targets:
-                target_name = other_instance.object_name
-                if target_name in collision_targets:
-                    event_data = collision_targets[target_name]
-                    actions = event_data.get('actions', [])
-                    for action in actions:
-                        if action.get('action') == 'if_can_push':
-                            should_block = True
-                            break
+                # Check both current name and original name (before change_instance)
+                # e.g. Soko has collision_with_obj_box but box changed to obj_box_stored
+                names_to_check = {other_instance.object_name}
+                original = getattr(other_instance, '_original_object_name', None)
+                if original and original != other_instance.object_name:
+                    names_to_check.add(original)
+
+                for target_name in names_to_check:
+                    if target_name in collision_targets:
+                        event_data = collision_targets[target_name]
+                        actions = event_data.get('actions', [])
+                        for action in actions:
+                            if action.get('action') == 'if_can_push':
+                                should_block = True
+                                break
+                    if should_block:
+                        break
 
             if not should_block:
                 # Check if the other instance has a collision event with the mover
