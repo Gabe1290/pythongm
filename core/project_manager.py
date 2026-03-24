@@ -416,6 +416,9 @@ class ProjectManager(QObject):
             # Save objects to separate files (if objects/ directory exists)
             self._save_objects_to_files(save_path)
 
+            # Save sprites to separate files (if sprites/ directory exists)
+            self._save_sprites_to_files(save_path)
+
             # Create a copy of project data without room instance data for main file
             # (room metadata stays in project.json, instance data goes to room files)
             project_data_for_save = self._prepare_project_data_for_save()
@@ -510,6 +513,29 @@ class ProjectManager(QObject):
 
             event_count = len(object_data.get('events', {}))
             logger.debug(f"💾 Saved object: {object_name} ({event_count} events)")
+
+    def _save_sprites_to_files(self, project_path: Path) -> None:
+        """Save each sprite's metadata to a separate file in sprites/ directory
+
+        Only saves if sprites/ directory already exists (to maintain compatibility
+        with projects that don't use external sprite files).
+        """
+        sprites_dir = project_path / "sprites"
+
+        if not sprites_dir.exists():
+            logger.debug(f"💾 DEBUG _save_sprites_to_files: sprites_dir does not exist: {sprites_dir}")
+            return
+
+        sprites_data = self.current_project_data.get('assets', {}).get('sprites', {})
+        logger.debug(f"💾 DEBUG _save_sprites_to_files: Found {len(sprites_data)} sprites to save")
+
+        for sprite_name, sprite_data in sprites_data.items():
+            sprite_file = sprites_dir / f"{sprite_name}.json"
+
+            with open(sprite_file, 'w', encoding='utf-8') as f:
+                json.dump(sprite_data, f, indent=2, ensure_ascii=False)
+
+            logger.debug(f"💾 Saved sprite: {sprite_name}")
 
     def _prepare_project_data_for_save(self) -> dict:
         """Prepare project data for saving - rooms store only metadata, not instances"""
