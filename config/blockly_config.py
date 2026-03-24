@@ -77,6 +77,7 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "instance_destroy", "name": "Destroy Instance", "description": "Destroy this object", "implemented": True},
         {"type": "instance_destroy_other", "name": "Destroy Other", "description": "Destroy colliding object", "implemented": True},
         {"type": "instance_create", "name": "Create Instance", "description": "Spawn new object", "implemented": True},
+        {"type": "instance_change", "name": "Change Instance", "description": "Transform into different object type", "implemented": True},
         {"type": "if_can_push", "name": "If Can Push", "description": "Sokoban-style push check", "implemented": True},
     ],
     "Room": [
@@ -305,6 +306,7 @@ class BlocklyConfig:
         # Basic instance
         config.enable_block("instance_destroy")
         config.enable_block("instance_create")
+        config.enable_block("instance_change")
 
         # Score
         config.enable_block("score_set")
@@ -395,6 +397,7 @@ class BlocklyConfig:
         # Instance
         config.enable_block("instance_destroy")
         config.enable_block("instance_create")
+        config.enable_block("instance_change")
 
         # Score/Lives
         config.enable_block("score_set")
@@ -438,6 +441,7 @@ class BlocklyConfig:
         # Instance
         config.enable_block("instance_destroy")
         config.enable_block("instance_create")
+        config.enable_block("instance_change")
 
         # Health system
         config.enable_block("health_set")
@@ -483,6 +487,7 @@ class BlocklyConfig:
         # Instance - for changing box types
         config.enable_block("instance_destroy")
         config.enable_block("instance_create")
+        config.enable_block("instance_change")
         config.enable_block("if_can_push")  # Sokoban push mechanic
 
         # Room - level progression
@@ -569,6 +574,7 @@ class BlocklyConfig:
         # Phase 1 Instance
         config.enable_block("instance_destroy")
         config.enable_block("instance_create")
+        config.enable_block("instance_change")
 
         # Phase 1 Room
         config.enable_block("room_goto_next")
@@ -748,6 +754,7 @@ class BlocklyConfig:
         # =====================================================================
         config.enable_block("instance_destroy")     # destroy_instance
         config.enable_block("instance_create")      # create_instance
+        config.enable_block("instance_change")      # change_instance
 
         # =====================================================================
         # ROOM - Navigation actions
@@ -899,6 +906,7 @@ class BlocklyConfig:
         config.enable_block("instance_destroy")
         config.enable_block("instance_destroy_other")
         config.enable_block("instance_create")
+        config.enable_block("instance_change")
         config.enable_block("if_can_push")
 
         # =====================================================================

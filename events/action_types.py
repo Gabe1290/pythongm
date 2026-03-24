@@ -998,6 +998,30 @@ ACTION_TYPES = {
         ]
     ),
 
+    "change_instance": ActionType(
+        name="change_instance",
+        display_name="Change Instance",
+        description="Transform into different object type",
+        category="Instance",
+        icon="🔄",
+        parameters=[
+            ActionParameter(
+                name="object",
+                display_name="Change Into",
+                param_type="object",
+                default_value="",
+                description="New object type"
+            ),
+            ActionParameter(
+                name="perform_events",
+                display_name="Perform Events",
+                param_type="boolean",
+                default_value=True,
+                description="Execute destroy/create events"
+            )
+        ]
+    ),
+
     # POSITION ACTIONS
     "jump_to_position": ActionType(
         name="jump_to_position",
@@ -1139,6 +1163,7 @@ BLOCKLY_TO_ACTION_MAP = {
     "instance_destroy": "destroy_instance",
     "instance_destroy_other": "destroy_other",
     "instance_create": "create_instance",
+    "instance_change": "change_instance",
     # Room
     "room_goto_next": "room_goto_next",
     "room_goto_previous": "room_goto_previous",
