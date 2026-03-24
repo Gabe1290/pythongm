@@ -3018,11 +3018,21 @@ class ActionExecutor:
             target_instance.set_sprite(self.game_runner.sprites[sprite_name])
             logger.debug(f"  🖼️ Updated sprite to: {sprite_name}")
 
-        # Reset collision tracking for the changed instance
-        if hasattr(target_instance, '_active_collisions'):
-            target_instance._active_collisions = set()
-        if hasattr(target_instance, '_collision_cooldowns'):
-            target_instance._collision_cooldowns = {}
+        # Preserve collision tracking - the instance is at the same position,
+        # so existing overlap state is still valid. Resetting would cause
+        # residual overlaps to be treated as new collisions, triggering
+        # spurious collision events (e.g., box pushed onto store changes to
+        # box_stored, then the reset causes a "new" collision with the pusher
+        # which moves box_stored an extra grid cell).
+
+        # Reset movement so the new object type doesn't inherit the old speed.
+        # The old object may have had step-event logic (e.g. if_on_grid → stop)
+        # that the new type lacks, causing it to keep moving forever.
+        target_instance.hspeed = 0
+        target_instance.vspeed = 0
+        target_instance.speed = 0
+        # Clear any pending grid movement
+        target_instance._has_intended_move = False
 
         # Execute create event for new object type if requested
         if perform_events:

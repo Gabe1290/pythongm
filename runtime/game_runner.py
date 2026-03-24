@@ -2811,6 +2811,9 @@ class GameRunner:
                                 'event_name': event_name,
                                 'events': instance._cached_object_data.get('events', {}),
                                 'other_instance': other_instance,
+                                # Capture object names so we can detect change_instance
+                                'object_name': instance.object_name,
+                                'other_object_name': other_instance.object_name,
                                 # Capture speeds at moment of collision detection
                                 'self_hspeed': inst_hspeed,
                                 'self_vspeed': inst_vspeed,
@@ -2834,6 +2837,17 @@ class GameRunner:
         event_name = collision_data['event_name']
         events = collision_data['events']
         other_instance = collision_data['other_instance']
+
+        # Skip if either instance changed type since detection (e.g., change_instance
+        # transformed box into box_stored — remaining box events are stale)
+        detected_name = collision_data.get('object_name')
+        if detected_name and instance.object_name != detected_name:
+            logger.debug(f"  ⏭️ Skipping stale collision {event_name}: {detected_name} changed to {instance.object_name}")
+            return
+        detected_other_name = collision_data.get('other_object_name')
+        if detected_other_name and other_instance.object_name != detected_other_name:
+            logger.debug(f"  ⏭️ Skipping stale collision {event_name}: other {detected_other_name} changed to {other_instance.object_name}")
+            return
 
         # Use INFO level for important collisions (box with store)
         if 'obj_box' in instance.object_name and 'obj_store' in other_instance.object_name:
