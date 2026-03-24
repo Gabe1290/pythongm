@@ -448,9 +448,6 @@ class ActionExecutor:
             return
         old_speed = instance.hspeed
         instance.hspeed = speed
-        # Clear perpendicular axis when setting non-zero speed to prevent diagonal movement
-        if speed != 0:
-            instance.vspeed = 0
         if old_speed != speed:
             logger.debug(f"  🏃 {instance.object_name} hspeed: {old_speed} → {speed}")
 
@@ -471,9 +468,6 @@ class ActionExecutor:
             return
         old_speed = instance.vspeed
         instance.vspeed = speed
-        # Clear perpendicular axis when setting non-zero speed to prevent diagonal movement
-        if speed != 0:
-            instance.hspeed = 0
         if old_speed != speed:
             logger.debug(f"  🏃 {instance.object_name} vspeed: {old_speed} → {speed}")
 
