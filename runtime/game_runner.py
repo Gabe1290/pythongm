@@ -2432,10 +2432,15 @@ class GameRunner:
                     other.y += other.vspeed
                 logger.debug(f"  ➡️ Applied first frame of blocker movement: {other.object_name} → ({other.x}, {other.y})")
 
-            # If the blocker was pushed (position changed), allow original movement
+            # If the blocker was pushed (position changed), move mover into
+            # the blocker's vacated position. Using the old position instead of
+            # adding raw hspeed ensures the mover stays grid-aligned (e.g. Soko
+            # at 60 with hspeed=5 should land at 64, not 65).
             if other.x != blocker_old_x or other.y != blocker_old_y:
-                instance.x += collision['self_hspeed']
-                instance.y += collision['self_vspeed']
+                if collision['self_hspeed'] != 0:
+                    instance.x = blocker_old_x
+                if collision['self_vspeed'] != 0:
+                    instance.y = blocker_old_y
         # Handle intended movement (grid-based) with collision checking
         for instance in self.current_room.instances:
             if instance._has_intended_move:
