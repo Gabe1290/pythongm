@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 4: Game Controller</h1>
+
+    <p>The final step! We'll add an invisible game controller that manages lives,
+    displays the score on screen, and makes the ball lose a life when it falls.</p>
+
+    <!-- ============= CREATE OBJECT ============= -->
+    <h2>Create the Game Controller Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create a new object named <code>obj_game_controller</code></li>
+            <li><strong>No sprite needed</strong> (leave it empty)</li>
+            <li>Leave Solid <strong>unchecked</strong></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>What is a game controller?</strong> It's an invisible object that manages
+        things like score and lives. Since it has no sprite, it doesn't appear
+        in the game &mdash; it just works in the background.
+    </div>
+
+    <!-- ============= INITIALIZE ============= -->
+    <h2>Initialize Lives and Score</h2>
+    <div class="step">
+        <ol>
+            <li>Double-click <code>obj_game_controller</code> to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab</li>
+            <li>Build these blocks:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Create Event</span><br>
+            <span class="block block-score block-indent">Set lives to <span class="block-num">3</span></span><br>
+            <span class="block block-score block-indent">Set score to <span class="block-num">0</span></span>
+        </div>
+        <p>The Create Event runs once when the game starts.
+        It gives the player 3 lives and resets the score to zero.</p>
+    </div>
+
+    <!-- ============= DRAW ============= -->
+    <h2>Display Score and Lives</h2>
+    <div class="step">
+        <p>Add a second event block to show the score and lives on screen:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Draw Event</span><br>
+            <span class="block block-score block-indent">Draw score at x: <span class="block-num">10</span> y: <span class="block-num">10</span></span><br>
+            <span class="block block-score block-indent">Draw lives at x: <span class="block-num">200</span> y: <span class="block-num">10</span></span>
+        </div>
+        <p>The Draw Event runs every frame. It paints the score and lives text on screen.</p>
+    </div>
+
+    <div class="step">
+        <p>You should have <strong>2 event blocks</strong>. Click <strong>Apply to Events</strong>.</p>
+    </div>
+
+    <!-- ============= UPDATE BALL ============= -->
+    <h2>Update the Ball: Lose a Life</h2>
+    <p>Currently, the ball just respawns when it falls. Let's make it subtract a life too.</p>
+
+    <div class="step">
+        <ol>
+            <li>Double-click <code>obj_ball</code> to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab</li>
+            <li>Find the <strong>collision with obj_death_zone</strong> event block</li>
+            <li>Add a new block <strong>before</strong> the jump block:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_death_zone</span><br>
+            <span class="block block-score block-indent">Add to lives <span class="block-num">-1</span></span><br>
+            <span class="block block-move block-indent">Jump to x: <span class="block-num">320</span> y: <span class="block-num">400</span></span>
+        </div>
+        <p><strong>Add to lives -1</strong> (from <em>Score/Lives/Health</em>) subtracts one life
+        each time the ball falls past the paddle.</p>
+    </div>
+
+    <div class="step">
+        <p>Click <strong>Apply to Events</strong> to save the updated ball.</p>
+    </div>
+
+    <!-- ============= PLACE IN ROOM ============= -->
+    <h2>Place the Game Controller in the Room</h2>
+    <div class="step">
+        <ol>
+            <li>Open <code>room_breakout</code></li>
+            <li>Place <code>obj_game_controller</code> anywhere in the room
+            (it has no sprite, so location doesn't matter)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Don't forget!</strong> The game controller must be in the room for lives and score to work.
+        Even though it's invisible, it needs to exist in the room.
+    </div>
+
+    <!-- ============= FINAL TEST ============= -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Congratulations! Test Your Final Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>Use <strong>Left</strong> and <strong>Right</strong> arrow keys to move the paddle</li>
+            <li>Break all the bricks to win!</li>
+            <li>Don't let the ball fall past the paddle &mdash; you only have 3 lives!</li>
+            <li>Watch your score and lives in the top-left corner</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>Challenge Ideas:</strong>
+        <ul>
+            <li>Give different colored bricks different point values (red = 40, orange = 30, yellow = 20, green = 10)</li>
+            <li>Make the ball speed up as bricks are destroyed</li>
+            <li>Add a second level with a different brick layout</li>
+            <li>End the game when lives reach zero</li>
+        </ul>
+    </div>
+</body>
+</html>

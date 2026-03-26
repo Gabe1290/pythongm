@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-instance { background-color: #A65C81; }
+        .block-draw { background-color: #5BA58B; }
+        .block-game { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3: Targets and Game Controller</h1>
+
+    <p>Let's finish the game by adding target spots, visual feedback, and a controller with instructions!</p>
+
+    <h2>Create the Target and Crate-OK Sprites</h2>
+    <div class="step">
+        <ol>
+            <li>Create a new sprite: <code>spr_target</code> (32&times;32 pixels)</li>
+            <li>Draw a red or yellow X, diamond, or circle to mark the target spot</li>
+            <li>Import from <code>Tutorials/05_sokoban/assets/</code> if you prefer</li>
+            <li>Press <strong>Ctrl+S</strong> to save</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Create a new sprite: <code>spr_crate_ok</code> (32&times;32 pixels)</li>
+            <li>Draw a green version of your crate &mdash; this shows a correctly placed crate</li>
+            <li>Press <strong>Ctrl+S</strong> to save</li>
+        </ol>
+    </div>
+
+    <h2>Create the Target Object</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click on <strong>Objects</strong> &rarr; <strong>Create New Object</strong></li>
+            <li>Name it <code>obj_target</code>, set its sprite to <code>spr_target</code></li>
+            <li>Do <strong>NOT</strong> check the Solid checkbox &mdash; the player and crates must be able to walk over targets</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Why not solid?</strong> Targets are floor markers. The player walks over them and
+        crates rest on top of them. If targets were solid, nothing could reach them!
+    </div>
+
+    <h2>Program the Crate: Visual Feedback</h2>
+    <div class="step">
+        <ol>
+            <li>Double-click <code>obj_crate</code> to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab</li>
+            <li>Add a <strong>Step</strong> event with an if/else check:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Step</span><br>
+            <span class="block block-control block-indent">If colliding with <span class="block-val">obj_target</span></span><br>
+            <span class="block block-instance block-indent2">Set sprite to <span class="block-val">spr_crate_ok</span></span><br>
+            <span class="block block-control block-indent">Else</span><br>
+            <span class="block block-instance block-indent2">Set sprite to <span class="block-val">spr_crate</span></span>
+        </div>
+        <p>Find <strong>Step</strong> in the <em>Events</em> category.
+        Then find <strong>Check Collision</strong> in the <em>Control</em> category and type <code>obj_target</code>.
+        Snap a <strong>Set Sprite</strong> block (from <em>Instance</em>) inside for the "then" case with <code>spr_crate_ok</code>.
+        Add an <strong>Else</strong> section with another <strong>Set Sprite</strong> block for <code>spr_crate</code>.</p>
+    </div>
+
+    <div class="step">
+        <p>Click <strong>Apply to Events</strong> to save the crate's blocks.</p>
+    </div>
+
+    <div class="info">
+        <strong>Visual Feedback:</strong> When a crate is on a target, it turns green. When pushed off, it returns to its normal color.
+        This tells the player which crates are correctly placed!
+    </div>
+
+    <h2>Create the Game Controller</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click on <strong>Objects</strong> &rarr; <strong>Create New Object</strong></li>
+            <li>Name it <code>obj_controller</code></li>
+            <li>No sprite is needed for this object</li>
+        </ol>
+    </div>
+
+    <h2>Program the Controller: Draw Instructions</h2>
+    <div class="step">
+        <ol>
+            <li>Double-click <code>obj_controller</code> to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab</li>
+            <li>Add a <strong>Draw</strong> event to show instructions:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Draw</span><br>
+            <span class="block block-draw block-indent">Draw Text <span class="block-val">"Push crates onto targets!"</span> at <span class="block-val">10</span>, <span class="block-val">10</span></span>
+        </div>
+        <p>Find <strong>Draw</strong> in the <em>Events</em> category.
+        Then find <strong>Draw Text</strong> in the <em>Drawing</em> category.
+        Type <code>Push crates onto targets!</code> as the text, and set X to <strong>10</strong>, Y to <strong>10</strong>.</p>
+    </div>
+
+    <h2>Program the Controller: Restart Level</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard Press: R</span><br>
+            <span class="block block-game block-indent">Restart Room</span>
+        </div>
+        <p>Find <strong>Keyboard Press</strong> in <em>Events</em> and select <strong>R</strong>.
+        Then find <strong>Restart Room</strong> in the <em>Room</em> category.
+        This lets the player reset the puzzle if they get stuck!</p>
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>You should have <strong>2 event blocks</strong> (Draw + Keyboard Press R)</li>
+            <li>Click <strong>Apply to Events</strong> to save</li>
+        </ol>
+    </div>
+
+    <h2>Update the Room</h2>
+    <div class="step">
+        <ol>
+            <li>Open <code>room_sokoban</code></li>
+            <li>Place <code>obj_target</code> instances where you want crates to end up</li>
+            <li>Make sure the <strong>number of targets equals the number of crates</strong></li>
+            <li>Place <code>obj_controller</code> anywhere in the room (it has no sprite, so it won't be visible)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Important:</strong> Number of crates MUST equal number of targets!
+        If you have 2 crates, place exactly 2 targets.
+    </div>
+
+    <h2>Example Level Layout</h2>
+    <pre>
+W W W W W W W W W W
+W . . . . . . . . W
+W . P . . . C . . W
+W . . W W . . . . W
+W . . W T . . C . W
+W . . . . . W W . W
+W . T . . . . . . W
+W . . . . . . . . W
+W . . . . . . . . W
+W W W W W W W W W W
+
+W = Wall     T = Target
+P = Player   C = Crate
+. = Empty</pre>
+
+    <div class="info">
+        <strong>Tip:</strong> Start with a simple puzzle! Make sure the player can actually solve it
+        by mentally tracing a path before placing the objects.
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>Use the <strong>arrow keys</strong> to walk and push crates</li>
+            <li>Push each crate onto a target spot &mdash; it turns <strong>green</strong>!</li>
+            <li>When all crates are green, you've solved the puzzle</li>
+            <li>Press <strong>R</strong> to restart the level if you get stuck</li>
+            <li>The instructions appear at the top of the screen</li>
+        </ul>
+    </div>
+
+    <div class="success">
+        <p style="text-align: center;"><strong>Congratulations!</strong> Your Sokoban game is complete!</p>
+    </div>
+
+    <h2>Challenge Ideas</h2>
+    <div class="challenge">
+        <ul>
+            <li><strong>Harder levels:</strong> Create new rooms with more crates and tighter corridors</li>
+            <li><strong>Move counter:</strong> Add a variable to count how many moves the player makes</li>
+            <li><strong>Multiple rooms:</strong> Create several rooms with increasing difficulty and use <code>Go to next room</code> when all crates are placed</li>
+            <li><strong>Undo feature:</strong> Store the previous position and let the player press U to undo the last move</li>
+        </ul>
+    </div>
+</body>
+</html>

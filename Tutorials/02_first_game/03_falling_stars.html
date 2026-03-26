@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-instance { background-color: #A65C81; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2: Falling Stars</h1>
+
+    <p>Now let's make stars appear at the top of the screen and fall down!</p>
+
+    <h2>Create the Star Sprite</h2>
+    <div class="step">
+        <ol>
+            <li>Create a new sprite named <code>spr_star</code></li>
+            <li>Draw a star or coin (32&times;32 pixels) and save</li>
+        </ol>
+    </div>
+
+    <h2>Create the Star Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create a new object named <code>obj_star</code></li>
+            <li>Set the sprite to <code>spr_star</code></li>
+        </ol>
+    </div>
+
+    <h2>Make Stars Fall</h2>
+    <div class="step">
+        <ol>
+            <li>Double-click <code>obj_star</code> &rarr; <strong>Blockly</strong> tab</li>
+            <li>Add this block:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Create Event</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">3</span></span>
+        </div>
+        <p>Each star falls downward at speed 3 as soon as it appears.</p>
+    </div>
+
+    <div class="step">
+        <p>Click <strong>Apply to Events</strong> to save.</p>
+    </div>
+
+    <h2>Create a Spawner</h2>
+    <p>We need an invisible object that creates stars at random positions.</p>
+
+    <div class="step">
+        <ol>
+            <li>Create a new object named <code>obj_spawner</code></li>
+            <li><strong>No sprite needed</strong> (it will be invisible)</li>
+        </ol>
+    </div>
+
+    <h2>Program the Spawner</h2>
+    <div class="step">
+        <ol>
+            <li>Double-click <code>obj_spawner</code> &rarr; <strong>Blockly</strong> tab</li>
+            <li>Add these blocks:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Create Event</span><br>
+            <span class="block block-move block-indent">Set Alarm 0 to <span class="block-num">60</span></span>
+        </div>
+        <div class="blockly-group">
+            <span class="block block-event">Alarm 0</span><br>
+            <span class="block block-instance block-indent">Create instance of obj_star at x: random y: <span class="block-num">0</span></span><br>
+            <span class="block block-move block-indent">Set Alarm 0 to <span class="block-num">60</span></span>
+        </div>
+        <p>The Create event starts a timer. When the alarm fires (every 2 seconds),
+        it creates a star at a random x position at the top of the screen, then restarts the timer.</p>
+    </div>
+
+    <div class="step">
+        <p>Click <strong>Apply to Events</strong> to save.</p>
+    </div>
+
+    <h2>Place the Spawner in the Room</h2>
+    <div class="step">
+        <ol>
+            <li>Open <code>room_game</code></li>
+            <li>Place <code>obj_spawner</code> anywhere (it's invisible, location doesn't matter)</li>
+        </ol>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>Stars should fall from random positions at the top</li>
+            <li>Move the player to dodge or reach them</li>
+            <li>Stars pass through the player for now &mdash; we'll add catching next!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Click "Next" to add collision and scoring.
+    </div>
+</body>
+</html>

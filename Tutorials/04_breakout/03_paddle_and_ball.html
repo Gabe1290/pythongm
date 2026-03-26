@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: Objects, Paddle and Ball</h1>
+
+    <p>Let's create the game objects and program them so we can test the game quickly!</p>
+
+    <!-- ============= OBJECTS ============= -->
+    <h2>Create the Objects</h2>
+    <p>We need two different wall types so the ball knows which direction to bounce.</p>
+
+    <div class="step">
+        <ol>
+            <li>Right-click on <strong>Objects</strong> &rarr; <strong>Create New Object</strong></li>
+            <li>Create <code>obj_wall_side</code> &mdash; sprite: <code>spr_wall</code>, check <strong>Solid</strong></li>
+            <li>Create <code>obj_wall_top</code> &mdash; sprite: <code>spr_wall</code>, check <strong>Solid</strong></li>
+            <li>Create <code>obj_paddle</code> &mdash; sprite: <code>spr_paddle</code>, check <strong>Solid</strong></li>
+            <li>Create <code>obj_ball</code> &mdash; sprite: <code>spr_ball</code>, leave Solid <strong>unchecked</strong></li>
+            <li>Create <code>obj_death_zone</code> &mdash; sprite: <code>spr_death_zone</code>, uncheck <strong>Visible</strong></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Why two wall types?</strong> When the ball hits a side wall, it reverses its
+        horizontal direction. When it hits the top wall, it reverses its vertical direction.
+        Using two objects lets us program different bounce behaviors!
+    </div>
+
+    <!-- ============= PADDLE ============= -->
+    <h2>Program the Paddle</h2>
+    <div class="step">
+        <ol>
+            <li>Double-click <code>obj_paddle</code> to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab</li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>How Blockly works:</strong> Drag blocks from the toolbox on the left into the workspace.
+        Snap action blocks inside event blocks to define what happens. When you're done,
+        click <strong>Apply to Events</strong> to save your blocks.
+    </div>
+
+    <h2>Move Left</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">-8</span></span>
+        </div>
+        <p>Find <strong>Keyboard (held)</strong> in <em>Events</em>, select <strong>Left</strong>.
+        Then snap <strong>Set Horizontal Speed</strong> from <em>Movement</em> inside.
+        Type <strong>-8</strong> (negative = left).</p>
+    </div>
+
+    <h2>Move Right</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">8</span></span>
+        </div>
+        <p>Same as above, but choose <strong>Right</strong> and type <strong>8</strong> (positive = right).</p>
+    </div>
+
+    <h2>Stop When No Key Pressed</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: No key</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>This prevents the paddle from sliding forever when you release the key.</p>
+    </div>
+
+    <h2>Stop at Side Walls</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_wall_side</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>This keeps the paddle inside the play area.</p>
+    </div>
+
+    <div class="step">
+        <p>You should have <strong>4 event blocks</strong>. Click <strong>Apply to Events</strong> to save.</p>
+    </div>
+
+    <!-- ============= BALL ============= -->
+    <h2>Program the Ball</h2>
+    <div class="step">
+        <ol>
+            <li>Double-click <code>obj_ball</code> to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab</li>
+        </ol>
+    </div>
+
+    <h2>Start the Ball Moving</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Create Event</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">3</span></span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">-3</span></span>
+        </div>
+        <p>The Create Event runs once when the game starts.
+        Setting both speeds makes the ball move diagonally upward.</p>
+    </div>
+
+    <div class="info">
+        <strong>Why two speeds?</strong> Horizontal speed (3) moves the ball sideways.
+        Vertical speed (-3) moves it upward (negative = up). Together, the ball moves diagonally!
+    </div>
+
+    <h2>Bounce Off Side Walls</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_wall_side</span><br>
+            <span class="block block-move block-indent">Reverse horizontal movement</span>
+        </div>
+        <p>The ball reverses its left/right direction when hitting a side wall.</p>
+    </div>
+
+    <h2>Bounce Off Top Wall</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_wall_top</span><br>
+            <span class="block block-move block-indent">Reverse vertical movement</span>
+        </div>
+        <p>The ball bounces downward when hitting the top wall.</p>
+    </div>
+
+    <h2>Bounce Off Paddle</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_paddle</span><br>
+            <span class="block block-move block-indent">Reverse vertical movement</span>
+        </div>
+        <p>Same as the top wall &mdash; the ball bounces back upward.</p>
+    </div>
+
+    <h2>Ball Falls Off Screen</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_death_zone</span><br>
+            <span class="block block-move block-indent">Jump to x: <span class="block-num">320</span> y: <span class="block-num">400</span></span>
+        </div>
+        <p>When the ball hits the death zone at the bottom, it respawns above the paddle.
+        We'll add lives later &mdash; for now, the ball just comes back!</p>
+    </div>
+
+    <div class="step">
+        <p>You should have <strong>5 event blocks</strong>. Click <strong>Apply to Events</strong> to save.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>How bouncing works:</strong> The ball always moves diagonally. When it hits a
+        vertical surface (side wall), we reverse horizontal movement. When it hits a horizontal
+        surface (top wall, paddle), we reverse vertical movement. This creates realistic bouncing!
+    </div>
+
+    <div class="info">
+        Click "Next" to create the room and play your game!
+    </div>
+</body>
+</html>

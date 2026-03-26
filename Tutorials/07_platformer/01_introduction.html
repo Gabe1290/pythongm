@@ -8,12 +8,28 @@
         h2 { color: #34495e; font-size: 14px; }
         .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
-        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
     </style>
 </head>
 <body>
-    <h1>Platformer: Run, Jump, and Collect</h1>
+    <h1>Platformer: Run, Jump, Collect</h1>
 
     <div class="game-preview">
         <img src="thumbnails/07_platformer.png" width="280" height="210" style="border-radius: 5px;">
@@ -23,31 +39,39 @@
     </div>
 
     <h2>What We'll Create</h2>
-    <p>In this tutorial, you'll build a classic platformer game:</p>
-    <ul>
-        <li>A player affected by gravity that falls down</li>
-        <li>Jumping mechanics with ground detection</li>
-        <li>Platforms to stand on and jump between</li>
-        <li>Coins to collect for points</li>
-        <li>Spikes that hurt the player</li>
-        <li>A flag to complete the level</li>
-    </ul>
+    <p>In this tutorial, you'll build a classic platformer game step by step.
+    The game is <strong>playable at the end of each phase</strong>, so you can test as you go!</p>
+
+    <div class="phase">
+        <strong>Phase 1 &mdash; A Jumping Player</strong><br>
+        Create a player with gravity and jumping on platforms. You can already run and jump!
+    </div>
+
+    <div class="phase">
+        <strong>Phase 2 &mdash; Coins and Hazards</strong><br>
+        Add coins to collect, spikes to avoid, and a flag to reach. The level becomes a real challenge!
+    </div>
+
+    <div class="phase">
+        <strong>Phase 3 &mdash; Game Controller</strong><br>
+        Display the score and lives on screen, and add a lives system for the spikes.
+    </div>
 
     <h2>What You'll Learn</h2>
     <ul>
         <li>Gravity and falling physics</li>
-        <li>Jump mechanics with ground detection</li>
-        <li>Platform collision (landing on top)</li>
+        <li>Jump mechanics with platform collision</li>
         <li>Left/right movement controls</li>
-        <li>Collectibles and hazards</li>
+        <li>Collectibles, hazards, and a goal</li>
+        <li>Score and lives display with a game controller</li>
     </ul>
 
     <div class="highlight">
-        <strong>Time Required:</strong> About 30-40 minutes
+        <strong>Time Required:</strong> About 25-30 minutes
     </div>
 
     <div class="info">
-        <strong>Ready?</strong> Click "Next" to start creating your sprites!
+        <strong>Ready?</strong> Click "Next" to start building your jumping player!
     </div>
 </body>
 </html>

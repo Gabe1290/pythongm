@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #7f8c8d; font-size: 13px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: Create the Room &mdash; Let's Play!</h1>
+
+    <p>Time to build the room and test your game! We'll place walls around the edges,
+    a death zone at the bottom, a paddle, and the ball.</p>
+
+    <h2>Create the Room</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click on <strong>Rooms</strong> and select <strong>Create New Room</strong></li>
+            <li>Name it <code>room_breakout</code></li>
+            <li>Set size to <strong>640&times;480</strong> pixels</li>
+        </ol>
+    </div>
+
+    <h2>Room Layout</h2>
+    <pre>
+S T T T T T T T T T T T T T T T T T S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                (o)                  S
+S                                     S
+S            [==PADDLE==]             S
+D D D D D D D D D D D D D D D D D D D
+
+S = Side Wall (obj_wall_side)
+T = Top Wall (obj_wall_top)
+D = Death Zone (obj_death_zone, invisible)
+(o) = Ball</pre>
+
+    <h2>Place the Objects</h2>
+
+    <h3>1. Side Walls</h3>
+    <div class="step">
+        <p>Place <code>obj_wall_side</code> along the <strong>left and right</strong> edges,
+        from top to bottom. Stack them vertically to form solid columns.</p>
+    </div>
+
+    <h3>2. Top Wall</h3>
+    <div class="step">
+        <p>Place <code>obj_wall_top</code> along the <strong>top</strong> edge,
+        between the side walls.</p>
+    </div>
+
+    <h3>3. Death Zone</h3>
+    <div class="step">
+        <p>Place <code>obj_death_zone</code> along the <strong>bottom</strong> edge.
+        It will be invisible during gameplay &mdash; it catches the ball when it falls.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Important:</strong> There is NO wall at the bottom! The open bottom is where
+        the ball can escape. The invisible death zone detects when that happens.
+    </div>
+
+    <h3>4. Paddle</h3>
+    <div class="step">
+        <p>Place <code>obj_paddle</code> near the bottom of the room, centered horizontally.</p>
+    </div>
+
+    <h3>5. Ball</h3>
+    <div class="step">
+        <p>Place <code>obj_ball</code> just above the paddle, near the center of the room.</p>
+    </div>
+
+    <!-- ============= TEST ============= -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>Use <strong>Left</strong> and <strong>Right</strong> arrow keys to move the paddle</li>
+            <li>The ball should bounce off the walls and the paddle</li>
+            <li>When the ball falls past the paddle, it respawns in the center</li>
+        </ul>
+        <p>If something isn't working, go back and check your Blockly blocks.
+        Make sure you clicked <strong>Apply to Events</strong> for both the paddle and the ball!</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Well done!</strong> You already have a playable game with a bouncing ball.
+        Now let's make it more interesting by adding bricks to break!
+    </div>
+
+    <div class="info">
+        Click "Next" to add your first row of bricks.
+    </div>
+</body>
+</html>

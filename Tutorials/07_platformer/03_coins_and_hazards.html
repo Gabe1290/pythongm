@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2: Coins and Hazards</h1>
+
+    <p>Now we add collectible coins, dangerous spikes, and a flag to reach.
+    We program everything as new collision events on <code>obj_player</code>.</p>
+
+    <h2>Create Sprites</h2>
+    <div class="step">
+        <ol>
+            <li>Create sprite <code>spr_coin</code>, size <strong>32x32</strong> &mdash; draw a yellow/gold circle (or import from <code>Tutorials/07_platformer/assets/</code>)</li>
+            <li>Create sprite <code>spr_spike</code>, size <strong>32x32</strong> &mdash; draw triangular spikes pointing up</li>
+            <li>Create sprite <code>spr_flag</code>, size <strong>32x32</strong> &mdash; draw a flag on a pole</li>
+        </ol>
+    </div>
+
+    <h2>Create Objects</h2>
+    <div class="step">
+        <ol>
+            <li>Create <code>obj_coin</code>, assign sprite <code>spr_coin</code></li>
+            <li>Create <code>obj_spike</code>, assign sprite <code>spr_spike</code></li>
+            <li>Create <code>obj_flag</code>, assign sprite <code>spr_flag</code></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>No Blockly needed on these objects!</strong> We will program all the interactions
+        as collision events on <code>obj_player</code>, since the player is the one who
+        touches coins, spikes, and the flag.
+    </div>
+
+    <h2>Program obj_player &mdash; Add Collision Events</h2>
+    <div class="step">
+        <p>Open the Blockly editor for <code>obj_player</code> (the blocks from Phase 1 are still there).
+        Add these new event blocks:</p>
+    </div>
+
+    <h2>Collect Coins</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_coin</span><br>
+            <span class="block block-score block-indent">Add to score <span class="block-val">10</span></span><br>
+            <span class="block block-instance block-indent">Destroy other instance</span>
+        </div>
+        <p>Find <strong>Collision</strong> in <em>Events</em>, type <code>obj_coin</code>.
+        Snap <strong>Add to Score</strong> (from <em>Score/Lives/Health</em>) with value <strong>10</strong>.
+        Then snap <strong>Destroy Instance</strong> (from <em>Instance</em>) set to <strong>Other</strong>,
+        so the coin disappears when collected.</p>
+    </div>
+
+    <h2>Hit a Spike</h2>
+    <div class="danger">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_spike</span><br>
+            <span class="block block-room block-indent">Restart room</span>
+        </div>
+        <p>Find <strong>Collision</strong> in <em>Events</em>, type <code>obj_spike</code>.
+        Snap <strong>Restart Room</strong> (from <em>Room</em>) inside.
+        When the player touches a spike, the level resets!</p>
+    </div>
+
+    <h2>Reach the Flag</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_flag</span><br>
+            <span class="block block-room block-indent">Show message <span class="block-val">"You Win!"</span></span>
+        </div>
+        <p>Find <strong>Collision</strong> in <em>Events</em>, type <code>obj_flag</code>.
+        Snap <strong>Show Message</strong> (from <em>Output</em>) and type <strong>You Win!</strong>.
+        A popup appears when the player reaches the flag!</p>
+    </div>
+
+    <h2>Apply Your Blocks</h2>
+    <div class="step">
+        <ol>
+            <li>You should now have <strong>9 event blocks</strong> total for <code>obj_player</code>
+            (6 from Phase 1 + 3 new collision events)</li>
+            <li>Click <strong>Apply to Events</strong> to save</li>
+        </ol>
+    </div>
+
+    <h2>Update Your Room</h2>
+    <div class="step">
+        <ol>
+            <li>Open <code>room_level1</code></li>
+            <li>Place <code>obj_coin</code> on platforms and hard-to-reach spots</li>
+            <li>Place <code>obj_spike</code> near pits or on dangerous platforms</li>
+            <li>Place <code>obj_flag</code> at the end of the level (right side)</li>
+        </ol>
+    </div>
+
+    <pre>
+                                        F
+                                      ====
+                  C           C
+                ====        ====
+    C                               C
+  ====  X     X         X     ====
+    P               C
+  ====  ====  ====  ====  ====  ====  ====
+  GGGGGG      GGGG  GGGG       GGGGGGGGGG
+
+G = Ground    P = Player    F = Flag    C = Coin    X = Spike</pre>
+
+    <div class="highlight">
+        <strong>Level design tip:</strong> Place spikes near gaps to create tension.
+        Put coins on high platforms to reward skilled jumping. Place the flag
+        at the far end so the player must traverse the whole level!
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>Collect coins &mdash; each one gives 10 points and disappears</li>
+            <li>Touch a spike &mdash; the room restarts!</li>
+            <li>Reach the flag &mdash; a "You Win!" message appears</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Click "Next" to add a game controller that displays the score and lives!
+    </div>
+</body>
+</html>

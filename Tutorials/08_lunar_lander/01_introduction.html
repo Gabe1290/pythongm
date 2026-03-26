@@ -8,14 +8,30 @@
         h2 { color: #34495e; font-size: 14px; }
         .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
-        .game-preview { background-color: #1a1a2e; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A6745C; }
+        .block-draw { background-color: #5BA58B; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <h1>Lunar Lander: Land on the Moon</h1>
+    <h1>&#128640; Lunar Lander: Land on the Moon</h1>
 
-    <div class="game-preview">
+    <div style="background-color: #1a1a2e; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0;">
         <img src="thumbnails/08_lunar_lander.png" width="280" height="210" style="border-radius: 5px;">
         <p style="font-size: 24px;">&#128640;</p>
         <p><strong>LUNAR LANDER</strong></p>
@@ -23,31 +39,32 @@
     </div>
 
     <h2>What We'll Create</h2>
-    <p>In this tutorial, you'll build a classic lunar lander game:</p>
-    <ul>
-        <li>A spacecraft affected by gravity</li>
-        <li>Thrust controls to counteract gravity</li>
-        <li>Fuel management system</li>
-        <li>Landing pad for safe landing</li>
-        <li>Crash detection if too fast</li>
-        <li>HUD showing fuel and speed</li>
-    </ul>
+    <p>In this tutorial, you'll build a classic lunar lander game step by step.
+    The game is <strong>playable at every phase</strong> &mdash; you test early and add features as you go!</p>
 
-    <h2>What You'll Learn</h2>
-    <ul>
-        <li>Gravity and thrust physics</li>
-        <li>Velocity-based landing detection</li>
-        <li>Fuel management (resource system)</li>
-        <li>Speed limiting with clamp()</li>
-        <li>HUD display for game state</li>
-    </ul>
+    <h2>Three Phases</h2>
+
+    <div class="phase">
+        <strong>Phase 1: A Flying Lander</strong><br>
+        Create sprites and objects, add gravity and controls. Fly your lander around the screen!
+    </div>
+
+    <div class="phase">
+        <strong>Phase 2: Landing and Crashing</strong><br>
+        Add a landing pad and collision detection. Land on the pad to win, crash into the ground to restart!
+    </div>
+
+    <div class="phase">
+        <strong>Phase 3: Game Controller</strong><br>
+        Add a HUD with title text and instructions. Complete the game!
+    </div>
 
     <div class="highlight">
-        <strong>Time Required:</strong> About 30-40 minutes
+        <strong>Time Required:</strong> About 20&ndash;25 minutes
     </div>
 
     <div class="info">
-        <strong>Ready?</strong> Click "Next" to start creating your sprites!
+        <strong>Ready?</strong> Click "Next" to start building your flying lander!
     </div>
 </body>
 </html>

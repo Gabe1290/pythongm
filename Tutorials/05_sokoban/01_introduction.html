@@ -8,8 +8,26 @@
         h2 { color: #34495e; font-size: 14px; }
         .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
-        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-instance { background-color: #A65C81; }
+        .block-draw { background-color: #5BA58B; }
+        .block-game { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
     </style>
 </head>
 <body>
@@ -17,35 +35,48 @@
 
     <div class="game-preview">
         <img src="thumbnails/05_sokoban.png" width="280" height="210" style="border-radius: 5px;">
-        <p style="font-size: 24px;">&#128230;</p>
+        <p style="font-size: 24px;">&#129513;</p>
         <p><strong>SOKOBAN</strong></p>
         <p>Push all the crates onto the target spots!</p>
     </div>
 
     <h2>What We'll Create</h2>
-    <p>In this tutorial, you'll build a classic Sokoban puzzle game:</p>
-    <ul>
-        <li>A player that moves on a grid (one step at a time)</li>
-        <li>Crates that the player can push (but not pull)</li>
-        <li>Target spots where crates need to be placed</li>
-        <li>Win condition when all crates are on targets</li>
-    </ul>
+    <p>In this tutorial, you'll build a classic Sokoban puzzle game step by step using
+    <strong>Blockly visual blocks</strong>. Instead of building everything before testing,
+    we'll take a progressive approach &mdash; you'll have a playable game at each phase!</p>
+
+    <h2>How This Tutorial Works</h2>
+
+    <div class="phase">
+        <strong>Phase 1 &mdash; Walking Player in a Room</strong><br>
+        Create a player and walls. Walk around a room with grid-based movement. Playable right away!
+    </div>
+
+    <div class="phase">
+        <strong>Phase 2 &mdash; Crates to Push</strong><br>
+        Add crates the player can push. Crates stop at walls &mdash; the core Sokoban mechanic!
+    </div>
+
+    <div class="phase">
+        <strong>Phase 3 &mdash; Targets, Visual Feedback &amp; Game Controller</strong><br>
+        Add target spots, crate color feedback, on-screen instructions, and a restart key.
+    </div>
 
     <h2>What You'll Learn</h2>
     <ul>
-        <li>Grid-based movement (moving in fixed steps)</li>
-        <li>Push mechanics - detecting and moving other objects</li>
-        <li>Checking multiple conditions before moving</li>
-        <li>Win condition detection</li>
+        <li>Grid-based movement (moving in fixed 32-pixel steps)</li>
+        <li>Push mechanics &mdash; detecting and moving other objects</li>
+        <li>Visual feedback with sprite swapping</li>
+        <li>Drawing text on screen</li>
         <li>Level design for puzzle games</li>
     </ul>
 
     <div class="highlight">
-        <strong>Time Required:</strong> About 30-35 minutes
+        <strong>Time Required:</strong> About 20&ndash;25 minutes
     </div>
 
     <div class="info">
-        <strong>Ready?</strong> Click "Next" to start creating your sprites!
+        <strong>Ready?</strong> Click "Next" to start building Phase 1!
     </div>
 </body>
 </html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2: First Row of Bricks</h1>
+
+    <p>Now let's add bricks for the ball to break! We'll use a clever trick called a
+    <strong>parent object</strong> so that later, when we add more brick colors,
+    we won't have to rewrite the collision code.</p>
+
+    <!-- ============= SPRITE ============= -->
+    <h2>Create the Brick Sprite</h2>
+    <div class="step">
+        <ol>
+            <li>Create a new sprite named <code>spr_brick_red</code></li>
+        </ol>
+
+        <h3>Option A &mdash; Draw it yourself</h3>
+        <div class="option-box">
+            <ol>
+                <li>Open the Sprite Editor and draw a solid <strong>red</strong> rectangle</li>
+                <li>Size: <strong>32&times;16 pixels</strong></li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Load the sample sprite</h3>
+        <div class="option-box">
+            <ol>
+                <li>Right-click <code>spr_brick_red</code> &rarr; <strong>Import Image...</strong></li>
+                <li>Select <code>Tutorials/04_breakout/assets/spr_brick_red.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ============= PARENT OBJECT ============= -->
+    <h2>Create the Parent Brick Object</h2>
+    <p>A parent object is a template. Any object that uses it as a parent will automatically
+    inherit its collision behavior. This way, we only write the "ball hits brick" code <strong>once</strong>.</p>
+
+    <div class="step">
+        <ol>
+            <li>Create a new object named <code>obj_brick_parent</code></li>
+            <li><strong>No sprite needed</strong> &mdash; it's just a template, it won't appear in the game</li>
+            <li>Check <strong>Solid</strong></li>
+        </ol>
+    </div>
+
+    <!-- ============= RED BRICK ============= -->
+    <h2>Create the Red Brick Object</h2>
+    <div class="step">
+        <ol>
+            <li>Create a new object named <code>obj_brick_red</code></li>
+            <li>Set the sprite to <code>spr_brick_red</code></li>
+            <li>Set <strong>Parent</strong> to <code>obj_brick_parent</code></li>
+            <li>Check <strong>Solid</strong></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>What does setting a parent do?</strong> When the ball checks for a collision with
+        <code>obj_brick_parent</code>, it will also detect collisions with <code>obj_brick_red</code>
+        and any other child brick we add later. One collision event covers all brick colors!
+    </div>
+
+    <!-- ============= BALL COLLISION ============= -->
+    <h2>Add Brick Collision to the Ball</h2>
+    <p>We need to tell the ball what to do when it hits a brick.</p>
+
+    <div class="step">
+        <ol>
+            <li>Double-click <code>obj_ball</code> to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab &mdash; you should see your 5 existing blocks</li>
+            <li>Add this new event block:</li>
+        </ol>
+
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_brick_parent</span><br>
+            <span class="block block-move block-indent">Reverse vertical movement</span><br>
+            <span class="block block-instance block-indent">Destroy other instance</span><br>
+            <span class="block block-score block-indent">Add to score <span class="block-num">10</span></span>
+        </div>
+
+        <p>Snap three blocks inside:</p>
+        <ul>
+            <li><strong>Reverse vertical movement</strong> (from <em>Movement</em>) &mdash; ball bounces back</li>
+            <li><strong>Destroy other instance</strong> (from <em>Instance</em>) &mdash; destroys the brick, not the ball!</li>
+            <li><strong>Add to score 10</strong> (from <em>Score/Lives/Health</em>) &mdash; earn points</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <p>You should now have <strong>6 event blocks</strong> for the ball. Click <strong>Apply to Events</strong>.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Key Point:</strong> The collision is with <code>obj_brick_parent</code>, not
+        <code>obj_brick_red</code>. This means it will automatically work with every brick color
+        we add later!
+    </div>
+
+    <!-- ============= UPDATE ROOM ============= -->
+    <h2>Add Bricks to the Room</h2>
+    <div class="step">
+        <ol>
+            <li>Open <code>room_breakout</code></li>
+            <li>Place a row of <code>obj_brick_red</code> near the top, between the side walls</li>
+            <li>Enable <strong>Snap to Grid</strong> (32&times;16) for easy alignment</li>
+            <li>Fill one complete row with red bricks</li>
+        </ol>
+    </div>
+
+    <!-- ============= TEST ============= -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>The ball should bounce off bricks and destroy them</li>
+            <li>Each brick adds 10 points to the score</li>
+            <li>Try to break all the bricks!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Click "Next" to add more colorful rows of bricks.
+    </div>
+</body>
+</html>

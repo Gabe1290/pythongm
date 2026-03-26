@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A6745C; }
+        .block-draw { background-color: #5BA58B; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: A Flying Lander</h1>
+
+    <p>In this phase, we create the sprites, objects, and controls to fly a lander with lunar gravity.
+    At the end, you'll have a playable lander you can fly around!</p>
+
+    <h2>Create the Sprites</h2>
+
+    <div class="step">
+        <p><strong>spr_lander</strong> (32x32) &mdash; The spacecraft</p>
+        <ol>
+            <li>Right-click <strong>Sprites</strong> &gt; <strong>Create New Sprite</strong></li>
+            <li>Name it <code>spr_lander</code> (32x32 pixels)</li>
+            <li>Draw a small spacecraft (triangle or classic lander shape), or import from <code>Tutorials/08_lunar_lander/assets/</code></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>spr_ground</strong> (32x32) &mdash; Rocky terrain</p>
+        <ol>
+            <li>Create a new sprite named <code>spr_ground</code> (32x32 pixels)</li>
+            <li>Draw rocky terrain using gray or brown colors, or import from assets</li>
+        </ol>
+    </div>
+
+    <h2>Create the Objects</h2>
+
+    <div class="step">
+        <p><strong>obj_ground</strong></p>
+        <ol>
+            <li>Right-click <strong>Objects</strong> &gt; <strong>Create New Object</strong></li>
+            <li>Name it <code>obj_ground</code>, assign <code>spr_ground</code></li>
+            <li>Check the <strong>Solid</strong> checkbox</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>obj_lander</strong></p>
+        <ol>
+            <li>Create a new object named <code>obj_lander</code></li>
+            <li>Assign <code>spr_lander</code></li>
+        </ol>
+    </div>
+
+    <h2>Program the Lander (Blockly)</h2>
+    <p>Double-click <code>obj_lander</code> and open the <strong>Blockly</strong> tab.</p>
+
+    <h2>1. Enable Gravity (Create Event)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Create</span><br>
+            <span class="block block-move block-indent">Set Gravity: direction <span class="block-val">270</span>, strength <span class="block-val">0.05</span></span>
+        </div>
+        <p>Find <strong>Create</strong> in the <em>Events</em> category.
+        Then find <strong>Set Gravity</strong> in the <em>Movement</em> category.
+        Set direction to <strong>270</strong> (down) and strength to <strong>0.05</strong>.</p>
+    </div>
+
+    <div class="info">
+        <strong>Why 0.05?</strong> The Moon's gravity is about 1/6th of Earth's.
+        A very low value like 0.05 gives the lander a slow, floaty feel &mdash; just like a real lunar landing!
+    </div>
+
+    <h2>2. Thrust Upward (Keyboard Up Held)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard Held: Up</span><br>
+            <span class="block block-move block-indent">Set vspeed <span class="block-val">-2</span></span>
+        </div>
+        <p>Find <strong>Keyboard Held</strong> in <em>Events</em>, choose <strong>Up</strong>.
+        Add <strong>Set vspeed</strong> (from <em>Movement</em>) with value <strong>-2</strong>.
+        A negative vspeed moves the lander upward (thrust against gravity).</p>
+    </div>
+
+    <h2>3. Steer Left (Keyboard Left Held)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard Held: Left</span><br>
+            <span class="block block-move block-indent">Set hspeed <span class="block-val">-2</span></span>
+        </div>
+        <p>Find <strong>Keyboard Held</strong> in <em>Events</em>, choose <strong>Left</strong>.
+        Add <strong>Set hspeed</strong> (from <em>Movement</em>) with value <strong>-2</strong>.</p>
+    </div>
+
+    <h2>4. Steer Right (Keyboard Right Held)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard Held: Right</span><br>
+            <span class="block block-move block-indent">Set hspeed <span class="block-val">2</span></span>
+        </div>
+        <p>Find <strong>Keyboard Held</strong> in <em>Events</em>, choose <strong>Right</strong>.
+        Add <strong>Set hspeed</strong> (from <em>Movement</em>) with value <strong>2</strong>.</p>
+    </div>
+
+    <h2>5. Stop Horizontal When No Key Pressed</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">No Key</span><br>
+            <span class="block block-move block-indent">Set hspeed <span class="block-val">0</span></span>
+        </div>
+        <p>Find <strong>No Key</strong> in <em>Events</em>.
+        Add <strong>Set hspeed</strong> with value <strong>0</strong>.
+        This stops horizontal movement when no arrow is pressed, but gravity keeps pulling the lander down!</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Important:</strong> We only reset <code>hspeed</code> to 0, not <code>vspeed</code>.
+        This lets gravity continue to work on the lander when no key is pressed &mdash; the lander keeps falling!
+    </div>
+
+    <h2>Apply Your Blocks</h2>
+    <div class="step">
+        <ol>
+            <li>You should have <strong>5 event blocks</strong> (Create + 3 keyboard + No key)</li>
+            <li>Click the <strong>Apply to Events</strong> button to save</li>
+        </ol>
+    </div>
+
+    <h2>Create the Room</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Rooms</strong> &gt; <strong>Create New Room</strong></li>
+            <li>Name it <code>room_game</code></li>
+            <li>Set size: <strong>640 x 480</strong></li>
+            <li>Set background color to <strong>black</strong> (space!)</li>
+            <li>Enable "Snap to Grid" (32x32)</li>
+            <li>Place <code>obj_ground</code> blocks along the entire bottom row</li>
+            <li>Place <code>obj_lander</code> near the top of the room</li>
+        </ol>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>The lander falls slowly toward the ground (lunar gravity!)</li>
+            <li><strong>Up Arrow:</strong> Thrust upward to fight gravity</li>
+            <li><strong>Left/Right Arrows:</strong> Steer horizontally</li>
+            <li>Release all keys and watch the lander drift down slowly</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Click "Next" to add landing and crashing!
+    </div>
+</body>
+</html>

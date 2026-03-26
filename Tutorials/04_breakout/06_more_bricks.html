@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; margin: 8px 0; }
+        td, th { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+        th { background-color: #eee; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3: More Brick Rows</h1>
+
+    <p>Let's add three more rows of colorful bricks! Thanks to the parent object,
+    we don't need to change the ball's code at all &mdash; each new brick color
+    automatically inherits the collision behavior.</p>
+
+    <!-- ============= SPRITES ============= -->
+    <h2>Create the New Brick Sprites</h2>
+    <p>Create three new sprites. For each one, draw a solid rectangle or import the sample image:</p>
+
+    <div class="step">
+        <table>
+            <tr><th>Sprite</th><th>Size</th><th>Color</th><th>Sample file</th></tr>
+            <tr><td><code>spr_brick_orange</code></td><td>32&times;16</td><td>Orange</td><td><code>spr_brick_orange.png</code></td></tr>
+            <tr><td><code>spr_brick_yellow</code></td><td>32&times;16</td><td>Yellow</td><td><code>spr_brick_yellow.png</code></td></tr>
+            <tr><td><code>spr_brick_green</code></td><td>32&times;16</td><td>Green</td><td><code>spr_brick_green.png</code></td></tr>
+        </table>
+
+        <h3>Option A &mdash; Draw them yourself</h3>
+        <div class="option-box">
+            <p>For each sprite, open the Sprite Editor and draw a solid rectangle
+            in the matching color. Size: <strong>32&times;16 pixels</strong>.</p>
+        </div>
+
+        <h3>Option B &mdash; Load the sample sprites</h3>
+        <div class="option-box">
+            <p>For each sprite, right-click &rarr; <strong>Import Image...</strong> and select
+            the matching file from <code>Tutorials/04_breakout/assets/</code>.</p>
+        </div>
+    </div>
+
+    <!-- ============= OBJECTS ============= -->
+    <h2>Create the New Brick Objects</h2>
+    <p>Each brick uses the same parent, so the ball's collision code works for all of them.</p>
+
+    <div class="step">
+        <p>For each new brick color:</p>
+        <ol>
+            <li>Create the object with the name and sprite below</li>
+            <li>Set <strong>Parent</strong> to <code>obj_brick_parent</code></li>
+            <li>Check <strong>Solid</strong></li>
+        </ol>
+        <table>
+            <tr><th>Object</th><th>Sprite</th><th>Parent</th></tr>
+            <tr><td><code>obj_brick_orange</code></td><td><code>spr_brick_orange</code></td><td><code>obj_brick_parent</code></td></tr>
+            <tr><td><code>obj_brick_yellow</code></td><td><code>spr_brick_yellow</code></td><td><code>obj_brick_parent</code></td></tr>
+            <tr><td><code>obj_brick_green</code></td><td><code>spr_brick_green</code></td><td><code>obj_brick_parent</code></td></tr>
+        </table>
+    </div>
+
+    <div class="highlight">
+        <strong>No programming needed!</strong> Because all bricks share the same parent
+        (<code>obj_brick_parent</code>), the ball already knows how to bounce off them
+        and destroy them. That's the power of parent objects!
+    </div>
+
+    <!-- ============= UPDATE ROOM ============= -->
+    <h2>Add Brick Rows to the Room</h2>
+    <div class="step">
+        <ol>
+            <li>Open <code>room_breakout</code></li>
+            <li>Arrange the bricks in 4 rows near the top of the room:</li>
+        </ol>
+    </div>
+
+    <pre>
+S T T T T T T T T T T T T T T T T T S
+S                                     S
+S   [R][R][R][R][R][R][R][R][R][R]    S
+S   [O][O][O][O][O][O][O][O][O][O]    S
+S   [Y][Y][Y][Y][Y][Y][Y][Y][Y][Y]    S
+S   [G][G][G][G][G][G][G][G][G][G]    S
+S                                     S
+S                                     S
+S                (o)                  S
+S                                     S
+S            [==PADDLE==]             S
+D D D D D D D D D D D D D D D D D D D
+
+R = Red   O = Orange   Y = Yellow   G = Green</pre>
+
+    <div class="step">
+        <ul>
+            <li><strong>Top row:</strong> Red bricks (<code>obj_brick_red</code>)</li>
+            <li><strong>Second row:</strong> Orange bricks (<code>obj_brick_orange</code>)</li>
+            <li><strong>Third row:</strong> Yellow bricks (<code>obj_brick_yellow</code>)</li>
+            <li><strong>Fourth row:</strong> Green bricks (<code>obj_brick_green</code>)</li>
+        </ul>
+        <p>Use <strong>Snap to Grid</strong> (32&times;16) for easy alignment.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Tip:</strong> Keep brick sizes consistent (32&times;16) so they line up nicely in rows!
+    </div>
+
+    <!-- ============= TEST ============= -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>All four colors of bricks should break when the ball hits them</li>
+            <li>Each brick gives 10 points</li>
+            <li>Try to clear all the rows!</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <strong>Challenge:</strong> Right now all bricks give 10 points. In a classic Breakout game,
+        the top rows are worth more because they're harder to reach. We could give different
+        point values to each color &mdash; but first, let's add a proper game controller
+        to manage lives and display the score!
+    </div>
+
+    <div class="info">
+        Click "Next" to add the game controller.
+    </div>
+</body>
+</html>

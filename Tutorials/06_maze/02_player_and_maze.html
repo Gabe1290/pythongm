@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
+        h3 { color: #555; font-size: 12px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1: Player and Maze</h1>
+
+    <p>In this phase you will create the player and wall sprites, build objects,
+    program movement with Blockly, and design a simple maze.
+    By the end, you can walk around inside your maze!</p>
+
+    <!-- ========== SPRITES ========== -->
+    <h2>Step 1: Create the Sprites</h2>
+
+    <h2>spr_player (32x32)</h2>
+    <div class="step">
+        <ol>
+            <li>In the Asset Tree, right-click on <strong>Sprites</strong> and select <strong>Create New Sprite</strong></li>
+            <li>Name it <code>spr_player</code></li>
+        </ol>
+
+        <h3>Option A &mdash; Draw it yourself</h3>
+        <div class="option-box">
+            <ol>
+                <li>Double-click <code>spr_player</code> to open the Sprite Editor</li>
+                <li>Set the size to <strong>32x32 pixels</strong></li>
+                <li>Draw a small character (a circle with eyes, or a simple person)</li>
+                <li>Use a bright color like <strong>blue</strong></li>
+                <li>Save with <strong>Ctrl+S</strong></li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Load the sample sprite</h3>
+        <div class="option-box">
+            <ol>
+                <li>Right-click on <code>spr_player</code> in the Asset Tree</li>
+                <li>Select <strong>Import Image...</strong></li>
+                <li>Browse to <code>Tutorials/06_maze/assets/</code></li>
+                <li>Select <code>spr_player.png</code> and click Open</li>
+            </ol>
+        </div>
+    </div>
+
+    <h2>spr_wall (32x32)</h2>
+    <div class="step">
+        <ol>
+            <li>Create a new sprite named <code>spr_wall</code></li>
+        </ol>
+
+        <h3>Option A &mdash; Draw it yourself</h3>
+        <div class="option-box">
+            <ol>
+                <li>Open the Sprite Editor and set the size to <strong>32x32 pixels</strong></li>
+                <li>Draw a brick or stone pattern</li>
+                <li>Use <strong>gray or brown</strong> colors</li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Load the sample sprite</h3>
+        <div class="option-box">
+            <ol>
+                <li>Right-click <code>spr_wall</code> &rarr; <strong>Import Image...</strong></li>
+                <li>Select <code>Tutorials/06_maze/assets/spr_wall.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ========== OBJECTS ========== -->
+    <h2>Step 2: Create the Objects</h2>
+
+    <h2>obj_wall (Solid)</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click on <strong>Objects</strong> &rarr; <strong>Create New Object</strong></li>
+            <li>Name it <code>obj_wall</code></li>
+            <li>Set the sprite to <code>spr_wall</code></li>
+            <li><strong>Check "Solid"</strong> &mdash; this is essential so the player cannot walk through walls</li>
+            <li>No events needed for the wall</li>
+        </ol>
+    </div>
+
+    <h2>obj_player</h2>
+    <div class="step">
+        <ol>
+            <li>Create a new object named <code>obj_player</code></li>
+            <li>Set the sprite to <code>spr_player</code></li>
+            <li>Leave "Solid" unchecked</li>
+        </ol>
+    </div>
+
+    <!-- ========== BLOCKLY PROGRAMMING ========== -->
+    <h2>Step 3: Program the Player (Blockly)</h2>
+
+    <div class="info">
+        <strong>How Blockly works:</strong> Drag blocks from the toolbox on the left into the workspace.
+        Snap action blocks inside event blocks to define what happens. When you're done,
+        click <strong>Apply to Events</strong> to save your blocks.
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Double-click <code>obj_player</code> in the Asset Tree to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab at the top of the editor</li>
+        </ol>
+    </div>
+
+    <h2>Move Right</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">4</span></span>
+        </div>
+        <p>Find <strong>Keyboard (held)</strong> in the <em>Events</em> category and select <strong>Right</strong> from the dropdown.
+        Then find <strong>Set Horizontal Speed</strong> in the <em>Movement</em> category and snap it inside.
+        Type <strong>4</strong> in the number field.</p>
+    </div>
+
+    <h2>Move Left</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">-4</span></span>
+        </div>
+        <p>Same as above, but choose <strong>Left</strong> and type <strong>-4</strong> (negative = left direction).</p>
+    </div>
+
+    <h2>Move Down</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Down (held)</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">4</span></span>
+        </div>
+        <p>Use <strong>Set Vertical Speed</strong> from <em>Movement</em>. Positive = downward.</p>
+    </div>
+
+    <h2>Move Up</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Up (held)</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">-4</span></span>
+        </div>
+        <p>Type <strong>-4</strong> for upward movement.</p>
+    </div>
+
+    <h2>Stop When No Key Pressed</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: No key</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>Find <strong>Keyboard: No key</strong> in <em>Events</em> and <strong>Stop Movement</strong> in <em>Movement</em>.
+        This prevents the player from sliding forever!</p>
+    </div>
+
+    <h2>Stop at Walls</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_wall</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>Find <strong>Collision</strong> in <em>Events</em>. Type <code>obj_wall</code> in the text field.
+        Snap a <strong>Stop Movement</strong> block inside.</p>
+    </div>
+
+    <h2>Apply Your Blocks</h2>
+    <div class="step">
+        <ol>
+            <li>You should have <strong>6 event blocks</strong> in your workspace</li>
+            <li>Click the <strong>Apply to Events</strong> button to save</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>How it works:</strong> Each arrow key sets the speed in that direction.
+        When you release all keys, the player stops. If the player hits a wall, it also stops.
+    </div>
+
+    <!-- ========== ROOM ========== -->
+    <h2>Step 4: Create the Room</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Rooms</strong> &rarr; <strong>Create New Room</strong></li>
+            <li>Name it <code>room_maze</code></li>
+            <li>Set size to <strong>640x480</strong></li>
+            <li>Enable <strong>Snap to Grid</strong>: 32x32</li>
+        </ol>
+    </div>
+
+    <h2>Build a Simple Maze</h2>
+    <div class="step">
+        <ol>
+            <li>Select <code>obj_wall</code> and click to place walls around the border</li>
+            <li>Add internal walls to create corridors and paths</li>
+            <li>Place <code>obj_player</code> near the top-left of the maze</li>
+            <li>Leave some open space so you can walk around</li>
+        </ol>
+    </div>
+
+    <h2>Example Maze Layout</h2>
+    <pre>
+W W W W W W W W W W W W W W W W W W W W
+W P . . . . W . . . . . . . W . . . . W
+W . W W W . W . W W W W W . W . W W . W
+W . W . . . . . . . . . . . . . . W . W
+W . W . W W W W W . W W W W W W . W . W
+W . . . W . . . . . . . . . . W . . . W
+W W W . W . W W W W W W W . . W W W . W
+W . . . . . W . . . . . W . . . . . . W
+W . W W W W W . W W W . W W W W W W . W
+W . . . . . . . . . . . . . . . . . . W
+W . W W W W W W W W W . W W W W W W . W
+W . . . . . . . . . . . W . . . . . . W
+W W W W W W W W W W W . W . W W W W . W
+W . . . . . . . . . . . . . W . . . . W
+W W W W W W W W W W W W W W W W W W W W
+
+W = obj_wall   P = obj_player   . = Empty space</pre>
+
+    <div class="highlight">
+        <strong>Tip:</strong> Hold down the mouse button and drag to place many wall tiles quickly.
+        Make sure every corridor is at least one tile wide so the player can fit through.
+    </div>
+
+    <!-- ========== TEST ========== -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>Use the <strong>arrow keys</strong> to move the player</li>
+            <li>The player should stop when hitting walls</li>
+            <li>The player should stop when you release all keys</li>
+            <li>Try navigating through the corridors of your maze</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Your maze is already playable! Click "Next" to add coins and an exit.
+    </div>
+</body>
+</html>

@@ -19,12 +19,10 @@
             "thumbnail": "thumbnails/02_first_game.png",
             "pages": [
                 "01_introduction.html",
-                "02_create_sprites.html",
-                "03_create_objects.html",
-                "04_add_movement.html",
-                "05_add_star.html",
-                "06_scoring.html",
-                "07_finishing.html"
+                "02_moving_player.html",
+                "03_falling_stars.html",
+                "04_scoring.html",
+                "05_finishing.html"
             ]
         },
         {
@@ -34,13 +32,9 @@
             "thumbnail": "thumbnails/03_pong.png",
             "pages": [
                 "01_introduction.html",
-                "02_create_sprites.html",
-                "03_create_objects.html",
-                "04_paddle_movement.html",
-                "05_ball_movement.html",
-                "06_scoring.html",
-                "07_score_display.html",
-                "08_room_setup.html"
+                "02_paddles_and_ball.html",
+                "03_goals_and_scoring.html",
+                "04_score_display.html"
             ]
         },
         {
@@ -50,13 +44,12 @@
             "thumbnail": "thumbnails/04_breakout.png",
             "pages": [
                 "01_introduction.html",
-                "02_create_sprites.html",
-                "03_create_objects.html",
-                "04_paddle_movement.html",
-                "05_ball_movement.html",
-                "06_lives_system.html",
-                "07_score_display.html",
-                "08_room_setup.html"
+                "02_sprites_basic.html",
+                "03_paddle_and_ball.html",
+                "04_first_room.html",
+                "05_first_bricks.html",
+                "06_more_bricks.html",
+                "07_game_controller.html"
             ]
         },
         {
@@ -66,12 +59,9 @@
             "thumbnail": "thumbnails/05_sokoban.png",
             "pages": [
                 "01_introduction.html",
-                "02_create_sprites.html",
-                "03_create_objects.html",
-                "04_crate_behavior.html",
-                "05_player_movement.html",
-                "06_win_condition.html",
-                "07_room_setup.html"
+                "02_player_and_walls.html",
+                "03_pushing_crates.html",
+                "04_targets_and_controller.html"
             ]
         },
         {
@@ -81,12 +71,9 @@
             "thumbnail": "thumbnails/06_maze.png",
             "pages": [
                 "01_introduction.html",
-                "02_create_sprites.html",
-                "03_create_objects.html",
-                "04_player_movement.html",
-                "05_collectibles.html",
-                "06_game_controller.html",
-                "07_room_setup.html"
+                "02_player_and_maze.html",
+                "03_coins_and_exit.html",
+                "04_game_controller.html"
             ]
         },
         {
@@ -96,13 +83,9 @@
             "thumbnail": "thumbnails/07_platformer.png",
             "pages": [
                 "01_introduction.html",
-                "02_create_sprites.html",
-                "03_create_objects.html",
-                "04_player_physics.html",
-                "05_player_movement.html",
-                "06_collectibles_hazards.html",
-                "07_game_controller.html",
-                "08_room_setup.html"
+                "02_jumping_player.html",
+                "03_coins_and_hazards.html",
+                "04_game_controller.html"
             ]
         },
         {
@@ -112,13 +95,9 @@
             "thumbnail": "thumbnails/08_lunar_lander.png",
             "pages": [
                 "01_introduction.html",
-                "02_create_sprites.html",
-                "03_create_objects.html",
-                "04_lander_physics.html",
-                "05_lander_controls.html",
-                "06_collisions.html",
-                "07_game_controller.html",
-                "08_room_setup.html"
+                "02_flying_lander.html",
+                "03_landing_and_crashing.html",
+                "04_game_controller.html"
             ]
         }
     ]

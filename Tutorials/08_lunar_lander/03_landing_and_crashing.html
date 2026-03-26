@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A6745C; }
+        .block-draw { background-color: #5BA58B; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2: Landing and Crashing</h1>
+
+    <p>Now we add a landing pad and collision detection.
+    Land on the pad to win &mdash; crash into the ground to restart!</p>
+
+    <h2>Create the Landing Pad Sprite</h2>
+    <div class="step">
+        <p><strong>spr_pad</strong> (32x32) &mdash; A flat green landing pad</p>
+        <ol>
+            <li>Right-click <strong>Sprites</strong> &gt; <strong>Create New Sprite</strong></li>
+            <li>Name it <code>spr_pad</code> (32x32 pixels)</li>
+            <li>Draw a flat green platform (a bright green rectangle), or import from assets</li>
+        </ol>
+    </div>
+
+    <h2>Create the Landing Pad Object</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Objects</strong> &gt; <strong>Create New Object</strong></li>
+            <li>Name it <code>obj_pad</code>, assign <code>spr_pad</code></li>
+            <li>Check the <strong>Solid</strong> checkbox</li>
+        </ol>
+    </div>
+
+    <h2>Program Lander Collisions (Blockly)</h2>
+    <p>Open the Blockly editor for <code>obj_lander</code> and add two new collision events.</p>
+
+    <h2>1. Landing on the Pad (Success!)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_pad</span><br>
+            <span class="block block-move block-indent">Stop movement</span><br>
+            <span class="block block-game block-indent">Show Message <span class="block-val">"Landing successful!"</span></span>
+        </div>
+        <p>Find <strong>Collision</strong> in <em>Events</em>, type <code>obj_pad</code>.
+        Add <strong>Stop Movement</strong> (from <em>Movement</em>) to halt the lander.
+        Then add <strong>Show Message</strong> (from <em>Game</em>) with your victory text.</p>
+    </div>
+
+    <h2>2. Crashing into the Ground (Failure!)</h2>
+    <div class="danger">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_ground</span><br>
+            <span class="block block-game block-indent">Show Message <span class="block-val">"Crashed!"</span></span><br>
+            <span class="block block-game block-indent">Restart Room</span>
+        </div>
+        <p>Find <strong>Collision</strong> in <em>Events</em>, type <code>obj_ground</code>.
+        Add <strong>Show Message</strong> (from <em>Game</em>) with crash text,
+        then <strong>Restart Room</strong> (from <em>Room</em>).
+        Hitting the rocky ground resets the level!</p>
+    </div>
+
+    <h2>Apply Your Blocks</h2>
+    <div class="step">
+        <ol>
+            <li>You should now have <strong>7 event blocks</strong> total (Create + 3 keyboard + No key + 2 collisions)</li>
+            <li>Click <strong>Apply to Events</strong> to save</li>
+        </ol>
+    </div>
+
+    <h2>Update the Room</h2>
+    <div class="step">
+        <p>Open <code>room_game</code> and update the terrain:</p>
+        <ol>
+            <li>Make the ground <strong>uneven</strong> &mdash; stack some <code>obj_ground</code> blocks higher in places to create hills</li>
+            <li>Remove one or two ground blocks from the bottom row to create a gap</li>
+            <li>Place <code>obj_pad</code> in the gap (the landing zone!)</li>
+        </ol>
+    </div>
+
+    <h2>Example Level Layout</h2>
+    <pre>
+        L                          &lt;- Lander starts here
+
+
+
+GG       GG
+GGG     GGGG    PP     GGGGG     GGG
+GGGGGGGGGGGG    PP     GGGGGGGGGGGGG
+
+G = Ground (crash!)    L = Lander    P = Landing Pad (safe!)</pre>
+
+    <div class="highlight">
+        <strong>Tip:</strong> Make the landing area small enough to be a challenge, but not impossibly tiny!
+        One or two pad blocks side by side works well.
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>Fly toward the <strong>green landing pad</strong></li>
+            <li>Land on the pad &rarr; "Landing successful!" message appears</li>
+            <li>Crash into the ground &rarr; "Crashed!" message, then room restarts</li>
+            <li>Use short bursts of thrust (tap Up) to control your descent</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Click "Next" to add the game controller with HUD text!
+    </div>
+</body>
+</html>
