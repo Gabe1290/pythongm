@@ -779,8 +779,8 @@ class ActionExecutor:
         x_expr = str(parameters.get("x", "0"))
         y_expr = str(parameters.get("y", "0"))
         relative = parameters.get("relative", False)
-        # By default, move the "other" instance (pusher) to fill the gap in collision events
-        push_other = parameters.get("push_other", True)
+        # Only move the "other" instance if explicitly requested
+        push_other = parameters.get("push_other", False)
 
         # Store current position before moving (for push_other feature)
         old_x = instance.x

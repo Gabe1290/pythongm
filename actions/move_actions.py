@@ -233,4 +233,27 @@ MOVE_ACTIONS = {
             ActionParameter("speed", "float", "Speed", "Movement speed in pixels per frame", default=4.0)
         ]
     ),
+    "snap_object_to_grid": ActionDefinition(
+        name="snap_object_to_grid",
+        display_name="Snap Object to Grid",
+        category="movement",
+        tab="move",
+        description="Snap all instances of a specific object to the nearest grid position",
+        icon="📐",
+        parameters=[
+            ActionParameter("object", "object", "Object", "Object to snap to grid"),
+            ActionParameter("grid_size", "int", "Grid Size", "Grid cell size in pixels", default=32)
+        ]
+    ),
+    "stop_object_movement": ActionDefinition(
+        name="stop_object_movement",
+        display_name="Stop Object Movement",
+        category="movement",
+        tab="move",
+        description="Stop all movement for all instances of a specific object",
+        icon="🛑",
+        parameters=[
+            ActionParameter("object", "object", "Object", "Object to stop")
+        ]
+    ),
 }

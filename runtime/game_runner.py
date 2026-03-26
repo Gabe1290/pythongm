@@ -451,6 +451,11 @@ class GameInstance:
                 self.image_index = self.sprite.frame_count + (self.image_index % self.sprite.frame_count)
 
         if self.object_data and "events" in self.object_data:
+            # Skip step event if flagged (blocker just gained speed from a push,
+            # needs one frame to move off its grid position before if_on_grid stops it)
+            if getattr(self, '_skip_next_step', False):
+                self._skip_next_step = False
+                return
             # Execute regular step event
             # NOTE: Alarms are now processed in main game loop (before step)
             # to match GameMaker 7.0 event execution order
@@ -2422,20 +2427,43 @@ class GameRunner:
                     }
                 )
 
-            # If the blocker gained speed from the collision event, apply one frame
-            # of movement immediately. This prevents step events (e.g. if_on_grid)
-            # from killing the speed before the blocker can move off its starting position.
+            # If the blocker gained speed from the collision event, try to move it
+            # one frame WITH collision checking. If the path is blocked (e.g. by
+            # another Box or a Wall), the blocker stays put and loses its speed.
+            # Also skip the blocker's next step event so if_on_grid won't kill
+            # the speed before it can leave its starting grid cell.
             if other.hspeed != blocker_old_hspeed or other.vspeed != blocker_old_vspeed:
-                if other.hspeed != 0:
-                    other.x += other.hspeed
-                if other.vspeed != 0:
-                    other.y += other.vspeed
-                logger.debug(f"  ➡️ Applied first frame of blocker movement: {other.object_name} → ({other.x}, {other.y})")
+                # Check if the blocker can actually move
+                other.intended_x = other.x + (other.hspeed if other.hspeed != 0 else 0)
+                other.intended_y = other.y + (other.vspeed if other.vspeed != 0 else 0)
+                can_move, _ = self.check_movement_collision_with_blocker(other, objects_data)
+                if can_move:
+                    if other.hspeed != 0:
+                        other.x += other.hspeed
+                    if other.vspeed != 0:
+                        other.y += other.vspeed
+                    # Skip next step so if_on_grid doesn't kill speed at start pos
+                    other._skip_next_step = True
+                    logger.debug(f"  ➡️ Applied first frame of blocker movement: {other.object_name} → ({other.x}, {other.y})")
+                else:
+                    # Blocker can't move — stop it
+                    other.hspeed = 0
+                    other.vspeed = 0
+                    logger.debug(f"  🚫 Blocker {other.object_name} blocked, cannot move")
 
             # If the blocker was pushed (position changed), allow original movement
+            # and snap the pusher to the nearest grid position so it stays aligned
             if other.x != blocker_old_x or other.y != blocker_old_y:
                 instance.x += collision['self_hspeed']
                 instance.y += collision['self_vspeed']
+                # Snap pusher to grid on both axes to prevent off-grid drift
+                grid_size = self._get_step_grid_size(other)
+                if not grid_size:
+                    grid_size = self._get_any_grid_size(instance)
+                if grid_size:
+                    from runtime.action_handlers.base import snap_to_grid
+                    instance.x = snap_to_grid(instance.x, grid_size)
+                    instance.y = snap_to_grid(instance.y, grid_size)
         # Handle intended movement (grid-based) with collision checking
         for instance in self.current_room.instances:
             if instance._has_intended_move:
@@ -2548,6 +2576,60 @@ class GameRunner:
 
         # NOTE: Step events are executed in the main game loop, not here
         # (see run_game_loop where instance.step() is called)
+
+    @staticmethod
+    def _get_step_grid_size(instance) -> int:
+        """Detect grid size from an instance's step event (if_on_grid parameter).
+
+        Returns the grid_size if the instance has an if_on_grid action in its
+        step event, or 0 if not found.
+        """
+        obj_data = instance._cached_object_data if instance._cached_object_data else {}
+        step_event = obj_data.get('events', {}).get('step', {})
+        for action in step_event.get('actions', []):
+            if action.get('action') == 'if_on_grid':
+                grid = action.get('parameters', {}).get('grid_size')
+                if grid:
+                    try:
+                        return int(grid)
+                    except (ValueError, TypeError):
+                        pass
+        return 0
+
+    @staticmethod
+    def _get_any_grid_size(instance) -> int:
+        """Detect grid size from any event on an instance (if_on_grid parameter).
+
+        Searches all events (step, keyboard nokey, etc.) for if_on_grid.
+        Returns the grid_size or 0 if not found.
+        """
+        obj_data = instance._cached_object_data if instance._cached_object_data else {}
+        events = obj_data.get('events', {})
+        for event_name, event_data in events.items():
+            # Handle nested keyboard events (keyboard -> nokey -> actions)
+            if isinstance(event_data, dict):
+                actions = event_data.get('actions', [])
+                if not actions and isinstance(event_data, dict):
+                    # Check nested events (e.g., keyboard -> nokey)
+                    for sub_name, sub_data in event_data.items():
+                        if isinstance(sub_data, dict):
+                            for action in sub_data.get('actions', []):
+                                if action.get('action') == 'if_on_grid':
+                                    grid = action.get('parameters', {}).get('grid_size')
+                                    if grid:
+                                        try:
+                                            return int(grid)
+                                        except (ValueError, TypeError):
+                                            pass
+                for action in actions:
+                    if action.get('action') == 'if_on_grid':
+                        grid = action.get('parameters', {}).get('grid_size')
+                        if grid:
+                            try:
+                                return int(grid)
+                            except (ValueError, TypeError):
+                                pass
+        return 0
 
     def check_movement_collision(self, moving_instance, objects_data: dict) -> bool:
         """Check if intended movement would be blocked by solid objects.
@@ -2876,6 +2958,31 @@ class GameRunner:
         if detected_other_name and other_instance.object_name != detected_other_name:
             logger.debug(f"  ⏭️ Skipping stale collision {event_name}: other {detected_other_name} changed to {other_instance.object_name}")
             return
+
+        # If the colliding instance is moving and has a grid-based step event,
+        # snap it to the next grid position in its movement direction before
+        # processing the event. Overlap collisions fire as soon as sprite edges
+        # touch, but the instance should be on-grid when actions like
+        # change_instance execute (e.g. Box landing on Store).
+        # This is safe because the collision-checked push in the blocked
+        # collision handler prevents moving instances from overlapping blockers.
+        self_hspeed = collision_data.get('self_hspeed', 0)
+        self_vspeed = collision_data.get('self_vspeed', 0)
+        if self_hspeed != 0 or self_vspeed != 0:
+            grid_size = self._get_step_grid_size(instance)
+            if grid_size:
+                if self_hspeed > 0:
+                    instance.x = math.ceil(instance.x / grid_size) * grid_size
+                elif self_hspeed < 0:
+                    instance.x = math.floor(instance.x / grid_size) * grid_size
+                if self_vspeed > 0:
+                    instance.y = math.ceil(instance.y / grid_size) * grid_size
+                elif self_vspeed < 0:
+                    instance.y = math.floor(instance.y / grid_size) * grid_size
+                # Stop since we snapped to destination
+                instance.hspeed = 0
+                instance.vspeed = 0
+                logger.debug(f"  📐 Snapped moving instance to grid: {instance.object_name} → ({instance.x}, {instance.y})")
 
         # Use INFO level for important collisions (box with store)
         if 'obj_box' in instance.object_name and 'obj_store' in other_instance.object_name:

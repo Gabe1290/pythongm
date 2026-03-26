@@ -312,7 +312,7 @@ def handle_jump_to_position(ctx: HandlerContext, instance: Instance, params: Par
     x_value = parse_float(ctx, params.get("x", 0), instance, default=0.0)
     y_value = parse_float(ctx, params.get("y", 0), instance, default=0.0)
     relative = parse_bool(params.get("relative", False))
-    push_other = parse_bool(params.get("push_other", True))
+    push_other = parse_bool(params.get("push_other", False))
 
     old_x, old_y = instance.x, instance.y
 
@@ -484,6 +484,35 @@ def handle_check_keys_and_move(ctx: HandlerContext, instance: Instance, params: 
         instance.vspeed = speed
 
 
+def handle_snap_object_to_grid(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
+    """Snap all instances of a named object to the nearest grid position."""
+    object_name = params.get("object", "")
+    grid_size = parse_int(ctx, params.get("grid_size", DEFAULT_GRID_SIZE), instance, default=DEFAULT_GRID_SIZE)
+
+    if not ctx.game_runner or not ctx.game_runner.current_room:
+        return
+
+    for inst in ctx.game_runner.current_room.instances:
+        if inst.object_name == object_name:
+            inst.x = snap_to_grid(inst.x, grid_size)
+            inst.y = snap_to_grid(inst.y, grid_size)
+            logger.debug(f"  📐 Snapped {object_name} to grid ({inst.x}, {inst.y})")
+
+
+def handle_stop_object_movement(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
+    """Stop all movement for all instances of a named object."""
+    object_name = params.get("object", "")
+
+    if not ctx.game_runner or not ctx.game_runner.current_room:
+        return
+
+    for inst in ctx.game_runner.current_room.instances:
+        if inst.object_name == object_name:
+            inst.hspeed = 0
+            inst.vspeed = 0
+            logger.debug(f"  🛑 Stopped movement for {object_name}")
+
+
 # =============================================================================
 # Handler Registry
 # =============================================================================
@@ -519,4 +548,8 @@ MOVEMENT_HANDLERS: Dict[str, Any] = {
     "if_on_grid": handle_if_on_grid,
     "stop_if_no_keys": handle_stop_if_no_keys,
     "check_keys_and_move": handle_check_keys_and_move,
+
+    # Cross-object grid movement
+    "snap_object_to_grid": handle_snap_object_to_grid,
+    "stop_object_movement": handle_stop_object_movement,
 }
