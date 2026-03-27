@@ -1086,6 +1086,14 @@ class ProjectManager(QObject):
         # Create thumbnails directory
         (project_path / "thumbnails").mkdir(exist_ok=True)
 
+    def _get_default_blockly_preset(self) -> str:
+        """Get the default blockly preset based on the current IDE edition"""
+        try:
+            from config.editions import get_current_edition
+            return get_current_edition()["default_blockly_preset"]
+        except Exception:
+            return "beginner"
+
     def _create_default_project_data(self, project_name: str) -> Dict[str, Any]:
         """Create default project data structure"""
         now = datetime.now().isoformat()
@@ -1100,7 +1108,8 @@ class ProjectManager(QObject):
                 "window_width": 1024,
                 "window_height": 768,
                 "room_speed": 60,
-                "fullscreen": False
+                "fullscreen": False,
+                "blockly_preset": self._get_default_blockly_preset()
             },
             "assets": {}
         }

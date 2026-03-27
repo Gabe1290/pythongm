@@ -34,6 +34,7 @@ class PreferencesDialog(QDialog):
         self.tabs = QTabWidget()
 
         # Create tabs
+        self.create_general_tab()
         self.create_appearance_tab()
         self.create_editor_tab()
         self.create_project_tab()
@@ -51,6 +52,40 @@ class PreferencesDialog(QDialog):
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel | QDialogButtonBox.Apply
         )
         main_layout.addWidget(self.button_box)
+
+    def create_general_tab(self):
+        """Create the General settings tab with IDE edition selector"""
+        general_tab = QWidget()
+        general_layout = QVBoxLayout(general_tab)
+
+        # IDE Edition Group
+        edition_group = QGroupBox(self.tr("IDE Edition"))
+        edition_form = QFormLayout(edition_group)
+
+        self.edition_combo = QComboBox()
+        from config.editions import EDITIONS, EDITION_KEYS
+        for key in EDITION_KEYS:
+            self.edition_combo.addItem(EDITIONS[key]["name"], key)
+        edition_form.addRow(self.tr("Edition:"), self.edition_combo)
+
+        self.edition_description = QLabel()
+        self.edition_description.setWordWrap(True)
+        self.edition_description.setStyleSheet(
+            "color: #666; font-style: italic; padding: 5px;"
+        )
+        edition_form.addRow("", self.edition_description)
+
+        edition_info = QLabel(self.tr(
+            "The edition controls which tutorials are shown and the default\n"
+            "block preset for new projects. Existing projects are not affected."
+        ))
+        edition_info.setStyleSheet("color: #888; padding: 5px;")
+        edition_form.addRow("", edition_info)
+
+        general_layout.addWidget(edition_group)
+        general_layout.addStretch()
+
+        self.tabs.addTab(general_tab, self.tr("General"))
 
     def create_appearance_tab(self):
         """Create the Appearance settings tab"""
@@ -217,6 +252,14 @@ class PreferencesDialog(QDialog):
 
     def load_current_settings(self):
         """Load current settings from config"""
+        # Edition setting
+        from config.editions import EDITIONS, DEFAULT_EDITION
+        current_edition = Config.get("edition", DEFAULT_EDITION)
+        index = self.edition_combo.findData(current_edition)
+        if index >= 0:
+            self.edition_combo.setCurrentIndex(index)
+        self._update_edition_description()
+
         # Font settings
         font_config = Config.get_font_config()
         self.size_spin.setValue(font_config['size'])
@@ -258,8 +301,18 @@ class PreferencesDialog(QDialog):
         # Update font preview
         self.update_font_preview()
 
+    def _update_edition_description(self):
+        """Update the edition description label based on current selection"""
+        from config.editions import EDITIONS, EDITION_KEYS
+        key = self.edition_combo.currentData()
+        if key and key in EDITIONS:
+            self.edition_description.setText(EDITIONS[key]["description"])
+
     def connect_signals(self):
         """Connect all signals"""
+        # Edition description update
+        self.edition_combo.currentIndexChanged.connect(self._update_edition_description)
+
         # Font preview updates
         self.size_spin.valueChanged.connect(self.update_font_preview)
         self.family_combo.currentIndexChanged.connect(self.update_font_preview)
@@ -295,6 +348,11 @@ class PreferencesDialog(QDialog):
 
     def apply_settings(self):
         """Apply all settings without closing"""
+        # Edition setting
+        edition_key = self.edition_combo.currentData()
+        if edition_key:
+            Config.set("edition", edition_key)
+
         # Font settings
         font_family = None if self.family_combo.currentIndex() == 0 else self.family_combo.currentText()
         Config.set_font_config(family=font_family, size=self.size_spin.value())

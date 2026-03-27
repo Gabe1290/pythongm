@@ -128,7 +128,9 @@ class TutorialDialog(QDialog):
                 with open(index_file, 'r', encoding='utf-8') as f:
                     index_data = json.load(f)
 
-                for tutorial in index_data.get('tutorials', []):
+                from config.editions import filter_tutorials_for_edition
+                tutorials = filter_tutorials_for_edition(index_data.get('tutorials', []))
+                for tutorial in tutorials:
                     title = tutorial.get('title', 'Untitled')
                     item = QListWidgetItem(title)
                     item.setData(Qt.UserRole, tutorial)
