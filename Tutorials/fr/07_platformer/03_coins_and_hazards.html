@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2 : Pièces et dangers</h1>
+
+    <p>Maintenant nous ajoutons des pièces à collecter, des pics dangereux et un drapeau à atteindre.
+    Nous programmons tout sous forme de nouveaux événements de collision sur <code>obj_player</code>.</p>
+
+    <h2>Créer les Sprites</h2>
+    <div class="step">
+        <ol>
+            <li>Créez le sprite <code>spr_coin</code>, taille <strong>32x32</strong> &mdash; dessinez un cercle jaune/doré (ou importez depuis <code>Tutorials/07_platformer/assets/</code>)</li>
+            <li>Créez le sprite <code>spr_spike</code>, taille <strong>32x32</strong> &mdash; dessinez des pics triangulaires pointant vers le haut</li>
+            <li>Créez le sprite <code>spr_flag</code>, taille <strong>32x32</strong> &mdash; dessinez un drapeau sur un mât</li>
+        </ol>
+    </div>
+
+    <h2>Créer les Objets</h2>
+    <div class="step">
+        <ol>
+            <li>Créez <code>obj_coin</code>, assignez le sprite <code>spr_coin</code></li>
+            <li>Créez <code>obj_spike</code>, assignez le sprite <code>spr_spike</code></li>
+            <li>Créez <code>obj_flag</code>, assignez le sprite <code>spr_flag</code></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Pas besoin de Blockly sur ces objets !</strong> Nous allons programmer toutes les interactions
+        sous forme d'événements de collision sur <code>obj_player</code>, puisque c'est le joueur qui
+        touche les pièces, les pics et le drapeau.
+    </div>
+
+    <h2>Programmer obj_player &mdash; Ajouter des événements de collision</h2>
+    <div class="step">
+        <p>Ouvrez l'éditeur Blockly pour <code>obj_player</code> (les blocs de la Phase 1 sont toujours là).
+        Ajoutez ces nouveaux blocs d'événements :</p>
+    </div>
+
+    <h2>Collecter les pièces</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_coin</span><br>
+            <span class="block block-score block-indent">Add to score <span class="block-val">10</span></span><br>
+            <span class="block block-instance block-indent">Destroy other instance</span>
+        </div>
+        <p>Trouvez <strong>Collision</strong> dans <em>Events</em>, tapez <code>obj_coin</code>.
+        Ajoutez <strong>Ajouter au score</strong> (depuis <em>Score/Lives/Health</em>) avec la valeur <strong>10</strong>.
+        Puis ajoutez <strong>Détruire l'instance</strong> (depuis <em>Instance</em>) réglé sur <strong>Other</strong>,
+        pour que la pièce disparaisse quand elle est collectée.</p>
+    </div>
+
+    <h2>Toucher un pic</h2>
+    <div class="danger">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_spike</span><br>
+            <span class="block block-room block-indent">Restart room</span>
+        </div>
+        <p>Trouvez <strong>Collision</strong> dans <em>Events</em>, tapez <code>obj_spike</code>.
+        Ajoutez <strong>Redémarrer la salle</strong> (depuis <em>Room</em>) à l'intérieur.
+        Quand le joueur touche un pic, le niveau se réinitialise !</p>
+    </div>
+
+    <h2>Atteindre le drapeau</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_flag</span><br>
+            <span class="block block-room block-indent">Show message <span class="block-val">"You Win!"</span></span>
+        </div>
+        <p>Trouvez <strong>Collision</strong> dans <em>Events</em>, tapez <code>obj_flag</code>.
+        Ajoutez <strong>Afficher un message</strong> (depuis <em>Output</em>) et tapez <strong>You Win!</strong>.
+        Un message apparaît quand le joueur atteint le drapeau !</p>
+    </div>
+
+    <h2>Appliquer vos blocs</h2>
+    <div class="step">
+        <ol>
+            <li>Vous devriez maintenant avoir <strong>9 blocs d'événements</strong> au total pour <code>obj_player</code>
+            (6 de la Phase 1 + 3 nouveaux événements de collision)</li>
+            <li>Cliquez sur <strong>Appliquer aux événements</strong> pour sauvegarder</li>
+        </ol>
+    </div>
+
+    <h2>Mettre à jour votre salle</h2>
+    <div class="step">
+        <ol>
+            <li>Ouvrez <code>room_level1</code></li>
+            <li>Placez <code>obj_coin</code> sur les plateformes et les endroits difficiles d'accès</li>
+            <li>Placez <code>obj_spike</code> près des gouffres ou sur les plateformes dangereuses</li>
+            <li>Placez <code>obj_flag</code> à la fin du niveau (côté droit)</li>
+        </ol>
+    </div>
+
+    <pre>
+                                        F
+                                      ====
+                  C           C
+                ====        ====
+    C                               C
+  ====  X     X         X     ====
+    P               C
+  ====  ====  ====  ====  ====  ====  ====
+  GGGGGG      GGGG  GGGG       GGGGGGGGGG
+
+G = Sol    P = Joueur    F = Drapeau    C = Pièce    X = Pic</pre>
+
+    <div class="highlight">
+        <strong>Conseil de conception de niveau :</strong> Placez les pics près des trous pour créer de la tension.
+        Mettez les pièces sur les plateformes hautes pour récompenser les sauts habiles. Placez le drapeau
+        tout au bout pour que le joueur doive traverser tout le niveau !
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Collectez les pièces &mdash; chacune donne 10 points et disparaît</li>
+            <li>Touchez un pic &mdash; la salle redémarre !</li>
+            <li>Atteignez le drapeau &mdash; un message « You Win! » apparaît</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Cliquez sur « Suivant » pour ajouter un contrôleur de jeu qui affiche le score et les vies !
+    </div>
+</body>
+</html>

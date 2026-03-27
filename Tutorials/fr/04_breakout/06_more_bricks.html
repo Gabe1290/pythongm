@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        table { border-collapse: collapse; margin: 8px 0; }
+        td, th { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+        th { background-color: #eee; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3 : Plus de rangées de briques</h1>
+
+    <p>Ajoutons trois rangées supplémentaires de briques colorées ! Grâce à l'objet parent,
+    nous n'avons pas besoin de modifier le code de la balle &mdash; chaque nouvelle couleur de brique
+    hérite automatiquement du comportement de collision.</p>
+
+    <!-- ============= SPRITES ============= -->
+    <h2>Créer les nouveaux sprites de briques</h2>
+    <p>Créez trois nouveaux sprites. Pour chacun, dessinez un rectangle plein ou importez l'image d'exemple :</p>
+
+    <div class="step">
+        <table>
+            <tr><th>Sprite</th><th>Taille</th><th>Couleur</th><th>Fichier d'exemple</th></tr>
+            <tr><td><code>spr_brick_orange</code></td><td>32&times;16</td><td>Orange</td><td><code>spr_brick_orange.png</code></td></tr>
+            <tr><td><code>spr_brick_yellow</code></td><td>32&times;16</td><td>Jaune</td><td><code>spr_brick_yellow.png</code></td></tr>
+            <tr><td><code>spr_brick_green</code></td><td>32&times;16</td><td>Vert</td><td><code>spr_brick_green.png</code></td></tr>
+        </table>
+
+        <h3>Option A &mdash; Dessinez-les vous-même</h3>
+        <div class="option-box">
+            <p>Pour chaque sprite, ouvrez l'éditeur de sprites et dessinez un rectangle plein
+            dans la couleur correspondante. Taille : <strong>32&times;16 pixels</strong>.</p>
+        </div>
+
+        <h3>Option B &mdash; Charger les sprites d'exemple</h3>
+        <div class="option-box">
+            <p>Pour chaque sprite, faites un clic droit &rarr; <strong>Importer une image...</strong> et sélectionnez
+            le fichier correspondant depuis <code>Tutorials/04_breakout/assets/</code>.</p>
+        </div>
+    </div>
+
+    <!-- ============= OBJECTS ============= -->
+    <h2>Créer les nouveaux objets de briques</h2>
+    <p>Chaque brique utilise le même parent, donc le code de collision de la balle fonctionne pour toutes.</p>
+
+    <div class="step">
+        <p>Pour chaque nouvelle couleur de brique :</p>
+        <ol>
+            <li>Créez l'objet avec le nom et le sprite ci-dessous</li>
+            <li>Définissez le <strong>Parent</strong> à <code>obj_brick_parent</code></li>
+            <li>Cochez <strong>Solide</strong></li>
+        </ol>
+        <table>
+            <tr><th>Objet</th><th>Sprite</th><th>Parent</th></tr>
+            <tr><td><code>obj_brick_orange</code></td><td><code>spr_brick_orange</code></td><td><code>obj_brick_parent</code></td></tr>
+            <tr><td><code>obj_brick_yellow</code></td><td><code>spr_brick_yellow</code></td><td><code>obj_brick_parent</code></td></tr>
+            <tr><td><code>obj_brick_green</code></td><td><code>spr_brick_green</code></td><td><code>obj_brick_parent</code></td></tr>
+        </table>
+    </div>
+
+    <div class="highlight">
+        <strong>Aucune programmation nécessaire !</strong> Comme toutes les briques partagent le même parent
+        (<code>obj_brick_parent</code>), la balle sait déjà comment rebondir dessus
+        et les détruire. C'est la puissance des objets parents !
+    </div>
+
+    <!-- ============= UPDATE ROOM ============= -->
+    <h2>Ajouter des rangées de briques à la salle</h2>
+    <div class="step">
+        <ol>
+            <li>Ouvrez <code>room_breakout</code></li>
+            <li>Disposez les briques en 4 rangées près du haut de la salle :</li>
+        </ol>
+    </div>
+
+    <pre>
+S T T T T T T T T T T T T T T T T T S
+S                                     S
+S   [R][R][R][R][R][R][R][R][R][R]    S
+S   [O][O][O][O][O][O][O][O][O][O]    S
+S   [J][J][J][J][J][J][J][J][J][J]    S
+S   [V][V][V][V][V][V][V][V][V][V]    S
+S                                     S
+S                                     S
+S                (o)                  S
+S                                     S
+S            [==RAQUETTE==]           S
+D D D D D D D D D D D D D D D D D D D
+
+R = Rouge   O = Orange   J = Jaune   V = Vert</pre>
+
+    <div class="step">
+        <ul>
+            <li><strong>Rangée du haut :</strong> Briques rouges (<code>obj_brick_red</code>)</li>
+            <li><strong>Deuxième rangée :</strong> Briques orange (<code>obj_brick_orange</code>)</li>
+            <li><strong>Troisième rangée :</strong> Briques jaunes (<code>obj_brick_yellow</code>)</li>
+            <li><strong>Quatrième rangée :</strong> Briques vertes (<code>obj_brick_green</code>)</li>
+        </ul>
+        <p>Utilisez <strong>Aligner sur la grille</strong> (32&times;16) pour un alignement facile.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Astuce :</strong> Gardez des tailles de briques cohérentes (32&times;16) pour qu'elles s'alignent bien en rangées !
+    </div>
+
+    <!-- ============= TEST ============= -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Les quatre couleurs de briques devraient se casser quand la balle les touche</li>
+            <li>Chaque brique donne 10 points</li>
+            <li>Essayez de tout casser !</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <strong>Défi :</strong> Pour l'instant, toutes les briques donnent 10 points. Dans un Breakout classique,
+        les rangées du haut valent plus car elles sont plus difficiles à atteindre. On pourrait donner des
+        valeurs de points différentes à chaque couleur &mdash; mais d'abord, ajoutons un contrôleur de jeu
+        pour gérer les vies et afficher le score !
+    </div>
+
+    <div class="info">
+        Cliquez sur « Suivant » pour ajouter le contrôleur de jeu.
+    </div>
+</body>
+</html>

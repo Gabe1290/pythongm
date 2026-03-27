@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        h3 { color: #7f8c8d; font-size: 13px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1 : Créer la salle &mdash; Jouons !</h1>
+
+    <p>Il est temps de construire la salle et de tester votre jeu ! Nous allons placer des murs sur les bords,
+    une zone de mort en bas, une raquette et la balle.</p>
+
+    <h2>Créer la salle</h2>
+    <div class="step">
+        <ol>
+            <li>Faites un clic droit sur <strong>Rooms</strong> et sélectionnez <strong>Créer une nouvelle salle</strong></li>
+            <li>Nommez-la <code>room_breakout</code></li>
+            <li>Définissez la taille à <strong>640&times;480</strong> pixels</li>
+        </ol>
+    </div>
+
+    <h2>Disposition de la salle</h2>
+    <pre>
+S T T T T T T T T T T T T T T T T T S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                                     S
+S                (o)                  S
+S                                     S
+S            [==RAQUETTE==]           S
+D D D D D D D D D D D D D D D D D D D
+
+S = Mur latéral (obj_wall_side)
+T = Mur du haut (obj_wall_top)
+D = Zone de mort (obj_death_zone, invisible)
+(o) = Balle</pre>
+
+    <h2>Placer les objets</h2>
+
+    <h3>1. Murs latéraux</h3>
+    <div class="step">
+        <p>Placez <code>obj_wall_side</code> le long des bords <strong>gauche et droit</strong>,
+        de haut en bas. Empilez-les verticalement pour former des colonnes solides.</p>
+    </div>
+
+    <h3>2. Mur du haut</h3>
+    <div class="step">
+        <p>Placez <code>obj_wall_top</code> le long du bord <strong>supérieur</strong>,
+        entre les murs latéraux.</p>
+    </div>
+
+    <h3>3. Zone de mort</h3>
+    <div class="step">
+        <p>Placez <code>obj_death_zone</code> le long du bord <strong>inférieur</strong>.
+        Elle sera invisible pendant le jeu &mdash; elle attrape la balle quand elle tombe.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Important :</strong> Il n'y a PAS de mur en bas ! Le bas ouvert est l'endroit où
+        la balle peut s'échapper. La zone de mort invisible détecte quand cela se produit.
+    </div>
+
+    <h3>4. Raquette</h3>
+    <div class="step">
+        <p>Placez <code>obj_paddle</code> près du bas de la salle, centré horizontalement.</p>
+    </div>
+
+    <h3>5. Balle</h3>
+    <div class="step">
+        <p>Placez <code>obj_ball</code> juste au-dessus de la raquette, près du centre de la salle.</p>
+    </div>
+
+    <!-- ============= TEST ============= -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Utilisez les touches fléchées <strong>Gauche</strong> et <strong>Droite</strong> pour déplacer la raquette</li>
+            <li>La balle devrait rebondir sur les murs et la raquette</li>
+            <li>Quand la balle tombe sous la raquette, elle réapparaît au centre</li>
+        </ul>
+        <p>Si quelque chose ne fonctionne pas, retournez vérifier vos blocs Blockly.
+        Assurez-vous d'avoir cliqué sur <strong>Appliquer aux événements</strong> pour la raquette et la balle !</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Bien joué !</strong> Vous avez déjà un jeu jouable avec une balle rebondissante.
+        Maintenant, rendons-le plus intéressant en ajoutant des briques à casser !
+    </div>
+
+    <div class="info">
+        Cliquez sur « Suivant » pour ajouter votre première rangée de briques.
+    </div>
+</body>
+</html>

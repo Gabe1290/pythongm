@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        /* Blockly block styles */
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 4 : Contrôleur de jeu</h1>
+
+    <p>La dernière étape ! Nous allons ajouter un contrôleur de jeu invisible qui gère les vies,
+    affiche le score à l'écran et fait perdre une vie à la balle quand elle tombe.</p>
+
+    <!-- ============= CREATE OBJECT ============= -->
+    <h2>Créer l'objet contrôleur de jeu</h2>
+    <div class="step">
+        <ol>
+            <li>Créez un nouvel objet nommé <code>obj_game_controller</code></li>
+            <li><strong>Pas de sprite nécessaire</strong> (laissez-le vide)</li>
+            <li>Laissez Solide <strong>décoché</strong></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Qu'est-ce qu'un contrôleur de jeu ?</strong> C'est un objet invisible qui gère
+        des éléments comme le score et les vies. Comme il n'a pas de sprite, il n'apparaît pas
+        dans le jeu &mdash; il travaille simplement en arrière-plan.
+    </div>
+
+    <!-- ============= INITIALIZE ============= -->
+    <h2>Initialiser les vies et le score</h2>
+    <div class="step">
+        <ol>
+            <li>Double-cliquez sur <code>obj_game_controller</code> pour ouvrir l'éditeur d'objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+            <li>Construisez ces blocs :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Create Event</span><br>
+            <span class="block block-score block-indent">Set lives to <span class="block-num">3</span></span><br>
+            <span class="block block-score block-indent">Set score to <span class="block-num">0</span></span>
+        </div>
+        <p>L'Événement Création s'exécute une seule fois au démarrage du jeu.
+        Il donne au joueur 3 vies et remet le score à zéro.</p>
+    </div>
+
+    <!-- ============= DRAW ============= -->
+    <h2>Afficher le score et les vies</h2>
+    <div class="step">
+        <p>Ajoutez un deuxième bloc d'événement pour afficher le score et les vies à l'écran :</p>
+        <div class="blockly-group">
+            <span class="block block-event">Draw Event</span><br>
+            <span class="block block-score block-indent">Draw score at x: <span class="block-num">10</span> y: <span class="block-num">10</span></span><br>
+            <span class="block block-score block-indent">Draw lives at x: <span class="block-num">200</span> y: <span class="block-num">10</span></span>
+        </div>
+        <p>L'Événement Dessin s'exécute à chaque image. Il dessine le texte du score et des vies à l'écran.</p>
+    </div>
+
+    <div class="step">
+        <p>Vous devriez avoir <strong>2 blocs d'événements</strong>. Cliquez sur <strong>Appliquer aux événements</strong>.</p>
+    </div>
+
+    <!-- ============= UPDATE BALL ============= -->
+    <h2>Mettre à jour la balle : perdre une vie</h2>
+    <p>Actuellement, la balle réapparaît simplement quand elle tombe. Faisons-lui aussi perdre une vie.</p>
+
+    <div class="step">
+        <ol>
+            <li>Double-cliquez sur <code>obj_ball</code> pour ouvrir l'éditeur d'objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+            <li>Trouvez le bloc d'événement <strong>collision avec obj_death_zone</strong></li>
+            <li>Ajoutez un nouveau bloc <strong>avant</strong> le bloc de saut :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_death_zone</span><br>
+            <span class="block block-score block-indent">Add to lives <span class="block-num">-1</span></span><br>
+            <span class="block block-move block-indent">Jump to x: <span class="block-num">320</span> y: <span class="block-num">400</span></span>
+        </div>
+        <p><strong>Add to lives -1</strong> (depuis <em>Score/Lives/Health</em>) soustrait une vie
+        chaque fois que la balle tombe sous la raquette.</p>
+    </div>
+
+    <div class="step">
+        <p>Cliquez sur <strong>Appliquer aux événements</strong> pour enregistrer la balle mise à jour.</p>
+    </div>
+
+    <!-- ============= PLACE IN ROOM ============= -->
+    <h2>Placer le contrôleur de jeu dans la salle</h2>
+    <div class="step">
+        <ol>
+            <li>Ouvrez <code>room_breakout</code></li>
+            <li>Placez <code>obj_game_controller</code> n'importe où dans la salle
+            (il n'a pas de sprite, donc l'emplacement n'a pas d'importance)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>N'oubliez pas !</strong> Le contrôleur de jeu doit être dans la salle pour que les vies et le score fonctionnent.
+        Même s'il est invisible, il doit exister dans la salle.
+    </div>
+
+    <!-- ============= FINAL TEST ============= -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Félicitations ! Testez votre jeu final !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Utilisez les touches fléchées <strong>Gauche</strong> et <strong>Droite</strong> pour déplacer la raquette</li>
+            <li>Cassez toutes les briques pour gagner !</li>
+            <li>Ne laissez pas la balle tomber sous la raquette &mdash; vous n'avez que 3 vies !</li>
+            <li>Surveillez votre score et vos vies dans le coin supérieur gauche</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>Idées de défis :</strong>
+        <ul>
+            <li>Donnez des valeurs de points différentes aux briques de couleurs différentes (rouge = 40, orange = 30, jaune = 20, vert = 10)</li>
+            <li>Faites accélérer la balle à mesure que les briques sont détruites</li>
+            <li>Ajoutez un deuxième niveau avec une disposition de briques différente</li>
+            <li>Terminez le jeu quand les vies atteignent zéro</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2 : Buts et score</h1>
+
+    <p>La balle s'envole par les côtés, mais personne ne marque ! Ajoutons des buts invisibles
+    derrière chaque raquette.</p>
+
+    <!-- ============= GOAL SPRITE ============= -->
+    <h2>Créer le sprite du but</h2>
+    <div class="step">
+        <ol>
+            <li>Créez un nouveau sprite nommé <code>spr_goal</code></li>
+            <li>Dessinez un rectangle de 32&times;32 de n'importe quelle couleur (il sera invisible)</li>
+        </ol>
+    </div>
+
+    <!-- ============= GOAL OBJECTS ============= -->
+    <h2>Créer les objets but</h2>
+    <div class="step">
+        <ol>
+            <li>Créez <code>obj_goal_left</code> &mdash; sprite : <code>spr_goal</code>, décochez <strong>Visible</strong>, cochez <strong>Solide</strong></li>
+            <li>Créez <code>obj_goal_right</code> &mdash; sprite : <code>spr_goal</code>, décochez <strong>Visible</strong>, cochez <strong>Solide</strong></li>
+        </ol>
+    </div>
+
+    <!-- ============= BALL SCORING ============= -->
+    <h2>Ajouter le score à la balle</h2>
+    <div class="step">
+        <p>Double-cliquez sur <code>obj_ball</code> &rarr; onglet <strong>Blockly</strong>. Ajoutez deux nouveaux événements de collision :</p>
+
+        <div class="blockly-group">
+            <span class="block block-event">En collision avec obj_goal_left</span><br>
+            <span class="block block-score block-indent">Set variable global.p2score relative <span class="block-num">+1</span></span><br>
+            <span class="block block-move block-indent">Sauter à la position de départ</span>
+        </div>
+        <p>Quand la balle atteint le but gauche, le Joueur 2 marque et la balle se réinitialise.</p>
+
+        <div class="blockly-group">
+            <span class="block block-event">En collision avec obj_goal_right</span><br>
+            <span class="block block-score block-indent">Set variable global.p1score relative <span class="block-num">+1</span></span><br>
+            <span class="block block-move block-indent">Sauter à la position de départ</span>
+        </div>
+        <p>Quand la balle atteint le but droit, le Joueur 1 marque.</p>
+    </div>
+
+    <div class="step">
+        <p>Cliquez sur <strong>Appliquer aux événements</strong>.</p>
+    </div>
+
+    <div class="info">
+        <strong>Qu'est-ce que <code>global.</code> ?</strong> Le préfixe <code>global.</code> signifie que la variable
+        est partagée entre tous les objets. N'importe quel objet peut lire ou modifier <code>global.p1score</code>.
+    </div>
+
+    <!-- ============= PLACE GOALS ============= -->
+    <h2>Placer les buts dans la salle</h2>
+    <div class="step">
+        <ol>
+            <li>Ouvrez <code>room_pong</code></li>
+            <li>Empilez <code>obj_goal_left</code> le long du <strong>bord gauche</strong> (derrière la raquette gauche)</li>
+            <li>Empilez <code>obj_goal_right</code> le long du <strong>bord droit</strong> (derrière la raquette droite)</li>
+        </ol>
+        <p>Les buts sont invisibles, ils ne seront donc pas affichés pendant le jeu.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Quand la balle passe derrière une raquette, elle se réinitialise au centre</li>
+            <li>Le score est suivi en interne (nous l'afficherons ensuite !)</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Cliquez sur « Suivant » pour afficher les scores à l'écran.
+    </div>
+</body>
+</html>

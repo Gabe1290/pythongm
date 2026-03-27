@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-instance { background-color: #A65C81; }
+        .block-draw { background-color: #5BA58B; }
+        .block-game { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3 : Cibles et contrôleur de jeu</h1>
+
+    <p>Terminons le jeu en ajoutant des emplacements cibles, un retour visuel et un contrôleur avec des instructions !</p>
+
+    <h2>Créer les sprites de cible et de caisse validée</h2>
+    <div class="step">
+        <ol>
+            <li>Créez un nouveau sprite : <code>spr_target</code> (32&times;32 pixels)</li>
+            <li>Dessinez un X, un losange ou un cercle rouge ou jaune pour marquer l'emplacement cible</li>
+            <li>Importez depuis <code>Tutorials/05_sokoban/assets/</code> si vous préférez</li>
+            <li>Appuyez sur <strong>Ctrl+S</strong> pour enregistrer</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Créez un nouveau sprite : <code>spr_crate_ok</code> (32&times;32 pixels)</li>
+            <li>Dessinez une version verte de votre caisse &mdash; elle indique une caisse correctement placée</li>
+            <li>Appuyez sur <strong>Ctrl+S</strong> pour enregistrer</li>
+        </ol>
+    </div>
+
+    <h2>Créer l'objet cible</h2>
+    <div class="step">
+        <ol>
+            <li>Faites un clic droit sur <strong>Objets</strong> &rarr; <strong>Créer un nouvel Objet</strong></li>
+            <li>Nommez-le <code>obj_target</code>, définissez son sprite à <code>spr_target</code></li>
+            <li>Ne cochez <strong>PAS</strong> la case Solide &mdash; le joueur et les caisses doivent pouvoir passer sur les cibles</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Pourquoi pas solide ?</strong> Les cibles sont des marqueurs au sol. Le joueur marche dessus et
+        les caisses se posent par-dessus. Si les cibles étaient solides, rien ne pourrait les atteindre !
+    </div>
+
+    <h2>Programmer la caisse : retour visuel</h2>
+    <div class="step">
+        <ol>
+            <li>Double-cliquez sur <code>obj_crate</code> pour ouvrir l'éditeur d'objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+            <li>Ajoutez un événement <strong>Step</strong> avec une vérification si/sinon :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Step</span><br>
+            <span class="block block-control block-indent">Si en collision avec <span class="block-val">obj_target</span></span><br>
+            <span class="block block-instance block-indent2">Définir le sprite à <span class="block-val">spr_crate_ok</span></span><br>
+            <span class="block block-control block-indent">Sinon</span><br>
+            <span class="block block-instance block-indent2">Définir le sprite à <span class="block-val">spr_crate</span></span>
+        </div>
+        <p>Trouvez <strong>Step</strong> dans la catégorie <em>Événements</em>.
+        Puis trouvez <strong>Vérifier collision</strong> dans la catégorie <em>Contrôle</em> et tapez <code>obj_target</code>.
+        Insérez un bloc <strong>Définir le sprite</strong> (depuis <em>Instance</em>) pour le cas « alors » avec <code>spr_crate_ok</code>.
+        Ajoutez une section <strong>Sinon</strong> avec un autre bloc <strong>Définir le sprite</strong> pour <code>spr_crate</code>.</p>
+    </div>
+
+    <div class="step">
+        <p>Cliquez sur <strong>Appliquer aux événements</strong> pour enregistrer les blocs de la caisse.</p>
+    </div>
+
+    <div class="info">
+        <strong>Retour visuel :</strong> Lorsqu'une caisse est sur une cible, elle devient verte. Lorsqu'elle est poussée ailleurs, elle reprend sa couleur normale.
+        Cela indique au joueur quelles caisses sont correctement placées !
+    </div>
+
+    <h2>Créer le contrôleur de jeu</h2>
+    <div class="step">
+        <ol>
+            <li>Faites un clic droit sur <strong>Objets</strong> &rarr; <strong>Créer un nouvel Objet</strong></li>
+            <li>Nommez-le <code>obj_controller</code></li>
+            <li>Aucun sprite n'est nécessaire pour cet objet</li>
+        </ol>
+    </div>
+
+    <h2>Programmer le contrôleur : afficher les instructions</h2>
+    <div class="step">
+        <ol>
+            <li>Double-cliquez sur <code>obj_controller</code> pour ouvrir l'éditeur d'objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+            <li>Ajoutez un événement <strong>Événement Dessin</strong> pour afficher les instructions :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Draw</span><br>
+            <span class="block block-draw block-indent">Draw Text <span class="block-val">"Poussez les caisses sur les cibles !"</span> at <span class="block-val">10</span>, <span class="block-val">10</span></span>
+        </div>
+        <p>Trouvez <strong>Draw</strong> dans la catégorie <em>Événements</em>.
+        Puis trouvez <strong>Draw Text</strong> dans la catégorie <em>Dessin</em>.
+        Tapez <code>Poussez les caisses sur les cibles !</code> comme texte, et réglez X à <strong>10</strong>, Y à <strong>10</strong>.</p>
+    </div>
+
+    <h2>Programmer le contrôleur : redémarrer le niveau</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Appui clavier : R</span><br>
+            <span class="block block-game block-indent">Redémarrer la salle</span>
+        </div>
+        <p>Trouvez <strong>Appui clavier</strong> dans <em>Événements</em> et sélectionnez <strong>R</strong>.
+        Puis trouvez <strong>Redémarrer la salle</strong> dans la catégorie <em>Salle</em>.
+        Cela permet au joueur de réinitialiser le puzzle s'il est bloqué !</p>
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Vous devriez avoir <strong>2 blocs d'événements</strong> (Draw + Appui clavier R)</li>
+            <li>Cliquez sur <strong>Appliquer aux événements</strong> pour enregistrer</li>
+        </ol>
+    </div>
+
+    <h2>Mettre à jour la salle</h2>
+    <div class="step">
+        <ol>
+            <li>Ouvrez <code>room_sokoban</code></li>
+            <li>Placez des instances de <code>obj_target</code> aux endroits où vous voulez que les caisses arrivent</li>
+            <li>Assurez-vous que le <strong>nombre de cibles est égal au nombre de caisses</strong></li>
+            <li>Placez <code>obj_controller</code> n'importe où dans la salle (il n'a pas de sprite, donc il ne sera pas visible)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Important :</strong> Le nombre de caisses DOIT être égal au nombre de cibles !
+        Si vous avez 2 caisses, placez exactement 2 cibles.
+    </div>
+
+    <h2>Exemple de disposition de niveau</h2>
+    <pre>
+W W W W W W W W W W
+W . . . . . . . . W
+W . P . . . C . . W
+W . . W W . . . . W
+W . . W T . . C . W
+W . . . . . W W . W
+W . T . . . . . . W
+W . . . . . . . . W
+W . . . . . . . . W
+W W W W W W W W W W
+
+W = Mur       T = Cible
+P = Joueur    C = Caisse
+. = Vide</pre>
+
+    <div class="info">
+        <strong>Astuce :</strong> Commencez avec un puzzle simple ! Assurez-vous que le joueur peut réellement le résoudre
+        en traçant mentalement un chemin avant de placer les objets.
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Utilisez les <strong>touches fléchées</strong> pour vous déplacer et pousser les caisses</li>
+            <li>Poussez chaque caisse sur un emplacement cible &mdash; elle devient <strong>verte</strong> !</li>
+            <li>Lorsque toutes les caisses sont vertes, vous avez résolu le puzzle</li>
+            <li>Appuyez sur <strong>R</strong> pour redémarrer le niveau si vous êtes bloqué</li>
+            <li>Les instructions apparaissent en haut de l'écran</li>
+        </ul>
+    </div>
+
+    <div class="success">
+        <p style="text-align: center;"><strong>Félicitations !</strong> Votre jeu Sokoban est terminé !</p>
+    </div>
+
+    <h2>Idées de défis</h2>
+    <div class="challenge">
+        <ul>
+            <li><strong>Niveaux plus difficiles :</strong> Créez de nouvelles salles avec plus de caisses et des couloirs plus étroits</li>
+            <li><strong>Compteur de mouvements :</strong> Ajoutez une variable pour compter le nombre de mouvements du joueur</li>
+            <li><strong>Plusieurs salles :</strong> Créez plusieurs salles avec une difficulté croissante et utilisez <code>Go to next room</code> lorsque toutes les caisses sont placées</li>
+            <li><strong>Fonction annuler :</strong> Enregistrez la position précédente et permettez au joueur d'appuyer sur U pour annuler le dernier mouvement</li>
+        </ul>
+    </div>
+</body>
+</html>

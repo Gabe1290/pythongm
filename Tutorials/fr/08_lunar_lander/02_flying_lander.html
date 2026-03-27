@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        .danger { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A6745C; }
+        .block-draw { background-color: #5BA58B; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1 : Un atterrisseur volant</h1>
+
+    <p>Dans cette phase, nous créons les sprites, les objets et les contrôles pour piloter un atterrisseur avec la gravité lunaire.
+    À la fin, vous aurez un atterrisseur jouable que vous pourrez piloter !</p>
+
+    <h2>Créer les Sprites</h2>
+
+    <div class="step">
+        <p><strong>spr_lander</strong> (32x32) &mdash; Le vaisseau spatial</p>
+        <ol>
+            <li>Clic droit sur <strong>Sprites</strong> &gt; <strong>Créer un nouveau Sprite</strong></li>
+            <li>Nommez-le <code>spr_lander</code> (32x32 pixels)</li>
+            <li>Dessinez un petit vaisseau spatial (triangle ou forme classique d'atterrisseur), ou importez depuis <code>Tutorials/08_lunar_lander/assets/</code></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>spr_ground</strong> (32x32) &mdash; Terrain rocheux</p>
+        <ol>
+            <li>Créez un nouveau sprite nommé <code>spr_ground</code> (32x32 pixels)</li>
+            <li>Dessinez un terrain rocheux avec des couleurs grises ou marron, ou importez depuis les ressources</li>
+        </ol>
+    </div>
+
+    <h2>Créer les Objets</h2>
+
+    <div class="step">
+        <p><strong>obj_ground</strong></p>
+        <ol>
+            <li>Clic droit sur <strong>Objets</strong> &gt; <strong>Créer un nouvel Objet</strong></li>
+            <li>Nommez-le <code>obj_ground</code>, assignez <code>spr_ground</code></li>
+            <li>Cochez la case <strong>Solide</strong></li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <p><strong>obj_lander</strong></p>
+        <ol>
+            <li>Créez un nouvel objet nommé <code>obj_lander</code></li>
+            <li>Assignez <code>spr_lander</code></li>
+        </ol>
+    </div>
+
+    <h2>Programmer l'atterrisseur (Blockly)</h2>
+    <p>Double-cliquez sur <code>obj_lander</code> et ouvrez l'onglet <strong>Blockly</strong>.</p>
+
+    <h2>1. Activer la gravité (Événement Création)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Create</span><br>
+            <span class="block block-move block-indent">Set Gravity: direction <span class="block-val">270</span>, strength <span class="block-val">0.05</span></span>
+        </div>
+        <p>Trouvez <strong>Create</strong> dans la catégorie <em>Events</em>.
+        Puis trouvez <strong>Définir la gravité</strong> dans la catégorie <em>Movement</em>.
+        Réglez la direction à <strong>270</strong> (vers le bas) et la force à <strong>0.05</strong>.</p>
+    </div>
+
+    <div class="info">
+        <strong>Pourquoi 0.05 ?</strong> La gravité de la Lune est environ 1/6e de celle de la Terre.
+        Une valeur très faible comme 0.05 donne à l'atterrisseur une sensation lente et flottante &mdash; comme un vrai alunissage !
+    </div>
+
+    <h2>2. Poussée vers le haut (Clavier Haut maintenu)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard Held: Up</span><br>
+            <span class="block block-move block-indent">Set vspeed <span class="block-val">-2</span></span>
+        </div>
+        <p>Trouvez <strong>Clavier (maintenu)</strong> dans <em>Events</em>, choisissez <strong>Up</strong>.
+        Ajoutez <strong>Set vspeed</strong> (depuis <em>Movement</em>) avec la valeur <strong>-2</strong>.
+        Un vspeed négatif déplace l'atterrisseur vers le haut (poussée contre la gravité).</p>
+    </div>
+
+    <h2>3. Diriger à gauche (Clavier Gauche maintenu)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard Held: Left</span><br>
+            <span class="block block-move block-indent">Set hspeed <span class="block-val">-2</span></span>
+        </div>
+        <p>Trouvez <strong>Clavier (maintenu)</strong> dans <em>Events</em>, choisissez <strong>Left</strong>.
+        Ajoutez <strong>Set hspeed</strong> (depuis <em>Movement</em>) avec la valeur <strong>-2</strong>.</p>
+    </div>
+
+    <h2>4. Diriger à droite (Clavier Droite maintenu)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard Held: Right</span><br>
+            <span class="block block-move block-indent">Set hspeed <span class="block-val">2</span></span>
+        </div>
+        <p>Trouvez <strong>Clavier (maintenu)</strong> dans <em>Events</em>, choisissez <strong>Right</strong>.
+        Ajoutez <strong>Set hspeed</strong> (depuis <em>Movement</em>) avec la valeur <strong>2</strong>.</p>
+    </div>
+
+    <h2>5. Arrêter le mouvement horizontal quand aucune touche n'est pressée</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">No Key</span><br>
+            <span class="block block-move block-indent">Set hspeed <span class="block-val">0</span></span>
+        </div>
+        <p>Trouvez <strong>Aucune touche</strong> dans <em>Events</em>.
+        Ajoutez <strong>Set hspeed</strong> avec la valeur <strong>0</strong>.
+        Cela arrête le mouvement horizontal quand aucune flèche n'est pressée, mais la gravité continue d'attirer l'atterrisseur vers le bas !</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Important :</strong> Nous ne remettons à 0 que <code>hspeed</code>, pas <code>vspeed</code>.
+        Cela permet à la gravité de continuer à agir sur l'atterrisseur quand aucune touche n'est pressée &mdash; l'atterrisseur continue de tomber !
+    </div>
+
+    <h2>Appliquer vos blocs</h2>
+    <div class="step">
+        <ol>
+            <li>Vous devriez avoir <strong>5 blocs d'événements</strong> (Create + 3 clavier + No key)</li>
+            <li>Cliquez sur le bouton <strong>Appliquer aux événements</strong> pour sauvegarder</li>
+        </ol>
+    </div>
+
+    <h2>Créer la salle</h2>
+    <div class="step">
+        <ol>
+            <li>Clic droit sur <strong>Rooms</strong> &gt; <strong>Créer une nouvelle salle</strong></li>
+            <li>Nommez-la <code>room_game</code></li>
+            <li>Définissez la taille : <strong>640 x 480</strong></li>
+            <li>Définissez la couleur de fond en <strong>noir</strong> (l'espace !)</li>
+            <li>Activez « Aligner sur la grille » (32x32)</li>
+            <li>Placez des blocs <code>obj_ground</code> le long de toute la rangée du bas</li>
+            <li>Placez <code>obj_lander</code> près du haut de la salle</li>
+        </ol>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>L'atterrisseur tombe lentement vers le sol (gravité lunaire !)</li>
+            <li><strong>Flèche Haut :</strong> Poussée vers le haut pour lutter contre la gravité</li>
+            <li><strong>Flèches Gauche/Droite :</strong> Déplacement horizontal</li>
+            <li>Relâchez toutes les touches et observez l'atterrisseur dériver lentement vers le bas</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Cliquez sur « Suivant » pour ajouter l'atterrissage et le crash !
+    </div>
+</body>
+</html>

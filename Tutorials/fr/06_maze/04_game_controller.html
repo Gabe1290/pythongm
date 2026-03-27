@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3 : Contrôleur de jeu</h1>
+
+    <p>Le jeu fonctionne, mais vous ne pouvez pas encore voir votre score à l'écran !
+    Dans cette dernière phase, vous allez créer un objet contrôleur de jeu invisible
+    qui affiche le score et le réinitialise au début de la partie.</p>
+
+    <div class="info">
+        <strong>Qu'est-ce qu'un contrôleur de jeu ?</strong> C'est un objet sans sprite qui gère
+        des éléments comme l'affichage du score. Comme il est invisible, il n'interfère pas
+        avec le jeu &mdash; il s'exécute simplement en arrière-plan.
+    </div>
+
+    <!-- ========== CREATE OBJECT ========== -->
+    <h2>Étape 1 : Créer l'objet</h2>
+    <div class="step">
+        <ol>
+            <li>Faites un clic droit sur <strong>Objets</strong> &rarr; <strong>Créer un nouvel Objet</strong></li>
+            <li>Nommez-le <code>obj_game_controller</code></li>
+            <li><strong>Aucun sprite nécessaire</strong> &mdash; laissez le champ sprite vide</li>
+            <li>Laissez « Solide » décoché</li>
+        </ol>
+    </div>
+
+    <!-- ========== BLOCKLY PROGRAMMING ========== -->
+    <h2>Étape 2 : Programmer le contrôleur de jeu (Blockly)</h2>
+    <div class="step">
+        <ol>
+            <li>Double-cliquez sur <code>obj_game_controller</code> pour ouvrir l'éditeur d'objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Réinitialiser le score au démarrage</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Événement Création</span><br>
+            <span class="block block-score block-indent">Set score to <span class="block-num">0</span></span>
+        </div>
+        <p>Depuis <em>Événements</em>, glissez un bloc <strong>Événement Création</strong>.
+        Depuis <em>Score/Vies/Santé</em>, emboîtez <strong>Set Score</strong> à l'intérieur et tapez <strong>0</strong>.</p>
+        <p>Cela garantit que le score commence à zéro à chaque chargement de la salle.</p>
+    </div>
+
+    <h2>Afficher le score à l'écran</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Événement Dessin</span><br>
+            <span class="block block-score block-indent">Draw score at x: <span class="block-num">10</span> y: <span class="block-num">10</span></span>
+        </div>
+        <p>Depuis <em>Événements</em>, glissez un bloc <strong>Événement Dessin</strong>.
+        Depuis <em>Score/Vies/Santé</em>, emboîtez <strong>Draw Score</strong> à l'intérieur.
+        Réglez x à <strong>10</strong> et y à <strong>10</strong> (coin supérieur gauche).</p>
+    </div>
+
+    <h2>Appliquer vos blocs</h2>
+    <div class="step">
+        <ol>
+            <li>Vous devriez avoir <strong>2 blocs d'événements</strong> dans votre espace de travail (Création et Dessin)</li>
+            <li>Cliquez sur le bouton <strong>Appliquer aux événements</strong> pour enregistrer</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Comment ça fonctionne :</strong> L'Événement Création s'exécute une fois lorsque l'objet apparaît dans la salle,
+        mettant le score à 0. L'Événement Dessin s'exécute à chaque image et affiche
+        « Score : X » dans le coin supérieur gauche. Au fur et à mesure que le joueur collecte des pièces,
+        le score se met à jour automatiquement !
+    </div>
+
+    <!-- ========== PLACE IN ROOM ========== -->
+    <h2>Étape 3 : Placer dans la salle</h2>
+    <div class="step">
+        <ol>
+            <li>Ouvrez <code>room_maze</code></li>
+            <li>Sélectionnez <code>obj_game_controller</code> et placez-le n'importe où dans la salle</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>N'oubliez pas !</strong> Le contrôleur de jeu doit être placé dans la salle
+        pour que le score s'affiche. Comme il n'a pas de sprite, vous ne le verrez pas pendant le jeu,
+        mais il sera toujours en cours d'exécution.
+    </div>
+
+    <!-- ========== FINAL TEST ========== -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Le score devrait s'afficher comme <strong>« Score : 0 »</strong> dans le coin supérieur gauche</li>
+            <li>Collectez des pièces &mdash; le score devrait augmenter de <strong>10</strong> pour chaque pièce</li>
+            <li>Naviguez jusqu'à la sortie &mdash; un message <strong>« Vous avez gagné ! »</strong> apparaît</li>
+            <li>Après le message, la salle redémarre et le score revient à 0</li>
+        </ul>
+    </div>
+
+    <div class="success">
+        <p style="font-size: 14px; text-align: center;">
+            <strong>Félicitations !</strong> Vous avez construit un jeu de labyrinthe complet !
+        </p>
+        <p>Votre jeu dispose d'un joueur qui navigue dans des couloirs, de pièces à collecter,
+        d'un affichage du score et d'une sortie victorieuse. Bravo !</p>
+    </div>
+
+    <!-- ========== CHALLENGES ========== -->
+    <h2>Idées de défis</h2>
+    <div class="challenge">
+        <p>Vous voulez améliorer encore votre jeu de labyrinthe ? Essayez ces défis :</p>
+        <ul>
+            <li><strong>Plusieurs niveaux :</strong> Créez des salles supplémentaires (<code>room_maze2</code>, <code>room_maze3</code>)
+            avec des labyrinthes plus difficiles. Remplacez le bloc <strong>Restart room</strong> de la sortie par <strong>Go to next room</strong>.</li>
+            <li><strong>Chronomètre :</strong> Ajoutez un compte à rebours avec une variable. Si le temps est écoulé, redémarrez la salle !</li>
+            <li><strong>Ennemis :</strong> Créez un objet ennemi qui patrouille en faisant des allers-retours.
+            Si le joueur entre en collision avec l'ennemi, redémarrez la salle.</li>
+            <li><strong>Clés et portes :</strong> Ajoutez un objet clé qui doit être collecté avant que la sortie ne s'ouvre.</li>
+        </ul>
+    </div>
+</body>
+</html>

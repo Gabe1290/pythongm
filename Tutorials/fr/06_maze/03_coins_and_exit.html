@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .option-box { background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin: 8px 0; }
+        h3 { color: #555; font-size: 12px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2 : Pièces et sortie</h1>
+
+    <p>Votre labyrinthe est déjà praticable ! Ajoutons maintenant un objectif : collecter des pièces pour des points
+    et atteindre la sortie pour gagner.</p>
+
+    <!-- ========== SPRITES ========== -->
+    <h2>Étape 1 : Créer les Sprites</h2>
+
+    <h2>spr_coin (32x32)</h2>
+    <div class="step">
+        <ol>
+            <li>Faites un clic droit sur <strong>Sprites</strong> &rarr; <strong>Créer un nouveau Sprite</strong></li>
+            <li>Nommez-le <code>spr_coin</code></li>
+        </ol>
+
+        <h3>Option A &mdash; Dessinez-le vous-même</h3>
+        <div class="option-box">
+            <ol>
+                <li>Ouvrez l'éditeur de Sprites et réglez la taille à <strong>32x32 pixels</strong></li>
+                <li>Dessinez un petit cercle jaune ou doré</li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Charger le sprite d'exemple</h3>
+        <div class="option-box">
+            <ol>
+                <li>Faites un clic droit sur <code>spr_coin</code> &rarr; <strong>Importer une image...</strong></li>
+                <li>Naviguez vers <code>Tutorials/06_maze/assets/</code></li>
+                <li>Sélectionnez <code>spr_coin.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <h2>spr_exit (32x32)</h2>
+    <div class="step">
+        <ol>
+            <li>Créez un nouveau sprite nommé <code>spr_exit</code></li>
+        </ol>
+
+        <h3>Option A &mdash; Dessinez-le vous-même</h3>
+        <div class="option-box">
+            <ol>
+                <li>Réglez la taille à <strong>32x32 pixels</strong></li>
+                <li>Dessinez une porte, un drapeau ou un marqueur lumineux</li>
+                <li>Utilisez des couleurs <strong>vertes ou dorées</strong> pour qu'il se démarque</li>
+            </ol>
+        </div>
+
+        <h3>Option B &mdash; Charger le sprite d'exemple</h3>
+        <div class="option-box">
+            <ol>
+                <li>Faites un clic droit sur <code>spr_exit</code> &rarr; <strong>Importer une image...</strong></li>
+                <li>Sélectionnez <code>Tutorials/06_maze/assets/spr_exit.png</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- ========== OBJECTS ========== -->
+    <h2>Étape 2 : Créer les Objets</h2>
+
+    <h2>obj_coin</h2>
+    <div class="step">
+        <ol>
+            <li>Faites un clic droit sur <strong>Objets</strong> &rarr; <strong>Créer un nouvel Objet</strong></li>
+            <li>Nommez-le <code>obj_coin</code></li>
+            <li>Définissez le sprite à <code>spr_coin</code></li>
+            <li>Laissez « Solide » décoché</li>
+        </ol>
+    </div>
+
+    <h2>obj_exit</h2>
+    <div class="step">
+        <ol>
+            <li>Créez un nouvel objet nommé <code>obj_exit</code></li>
+            <li>Définissez le sprite à <code>spr_exit</code></li>
+            <li>Laissez « Solide » décoché</li>
+        </ol>
+    </div>
+
+    <!-- ========== BLOCKLY: COIN ========== -->
+    <h2>Étape 3 : Programmer la pièce (Blockly)</h2>
+    <div class="step">
+        <ol>
+            <li>Double-cliquez sur <code>obj_coin</code> dans l'Arbre des ressources pour ouvrir l'éditeur d'objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+            <li>Construisez ces blocs :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_player</span><br>
+            <span class="block block-score block-indent">Add to score <span class="block-num">10</span></span><br>
+            <span class="block block-instance block-indent">Destroy this instance</span>
+        </div>
+        <p>Depuis <em>Événements</em>, glissez un bloc <strong>Collision</strong> et tapez <code>obj_player</code>.
+        Depuis <em>Score/Vies/Santé</em>, emboîtez <strong>Add to Score</strong> à l'intérieur et tapez <strong>10</strong>.
+        Depuis <em>Instance</em>, emboîtez <strong>Destroy Instance</strong> en dessous.</p>
+        <ol start="4">
+            <li>Cliquez sur <strong>Appliquer aux événements</strong></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Comment ça fonctionne :</strong> Lorsque le joueur touche une pièce, 10 points sont ajoutés
+        au score et la pièce disparaît.
+    </div>
+
+    <!-- ========== BLOCKLY: EXIT ========== -->
+    <h2>Étape 4 : Programmer la sortie (Blockly)</h2>
+    <div class="step">
+        <ol>
+            <li>Double-cliquez sur <code>obj_exit</code> dans l'Arbre des ressources pour ouvrir l'éditeur d'objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+            <li>Construisez ces blocs :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_player</span><br>
+            <span class="block block-output block-indent">Show message <span class="block-str">"Vous avez gagné !"</span></span><br>
+            <span class="block block-room block-indent">Restart room</span>
+        </div>
+        <p>Depuis <em>Événements</em>, glissez un bloc <strong>Collision</strong> et tapez <code>obj_player</code>.
+        Depuis <em>Sortie</em>, emboîtez <strong>Afficher un message</strong> à l'intérieur et tapez <strong>Vous avez gagné !</strong>.
+        Depuis <em>Salle</em>, emboîtez <strong>Redémarrer la salle</strong> en dessous.</p>
+        <ol start="4">
+            <li>Cliquez sur <strong>Appliquer aux événements</strong></li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Astuce :</strong> Si vous créez plus tard plusieurs niveaux, utilisez <strong>Go to next room</strong>
+        (depuis la catégorie <em>Salle</em>) au lieu de <strong>Restart room</strong>
+        pour passer au labyrinthe suivant !
+    </div>
+
+    <!-- ========== UPDATE ROOM ========== -->
+    <h2>Étape 5 : Mettre à jour votre salle</h2>
+    <div class="step">
+        <ol>
+            <li>Ouvrez <code>room_maze</code> en double-cliquant dessus</li>
+            <li>Sélectionnez <code>obj_coin</code> et dispersez plusieurs pièces le long des couloirs de votre labyrinthe</li>
+            <li>Sélectionnez <code>obj_exit</code> et placez-le à l'extrémité du labyrinthe (loin du point de départ du joueur)</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Conseil de conception :</strong> Placez les pièces le long de différents chemins pour récompenser l'exploration.
+        Mettez la sortie dans le coin le plus éloigné de la position de départ du joueur
+        pour rendre le labyrinthe plus intéressant.
+    </div>
+
+    <!-- ========== TEST ========== -->
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Naviguez dans le labyrinthe et touchez les pièces &mdash; elles devraient <strong>disparaître</strong></li>
+            <li>Chaque pièce ajoute <strong>10 points</strong> à votre score (vous le verrez à l'écran dans la Phase 3)</li>
+            <li>Atteignez la sortie &mdash; un message <strong>« Vous avez gagné ! »</strong> devrait apparaître</li>
+            <li>Après le message, la salle redémarre pour que vous puissiez rejouer</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Les pièces et la sortie fonctionnent ! Cliquez sur « Suivant » pour ajouter l'affichage du score.
+    </div>
+</body>
+</html>

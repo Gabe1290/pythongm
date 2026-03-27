@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 4 : Finitions</h1>
+
+    <p>Ajoutons quelques améliorations pour donner à votre jeu un aspect abouti !</p>
+
+    <h2>Garder le joueur à l'écran</h2>
+    <div class="step">
+        <p>Ouvrez <code>obj_player</code> dans l'éditeur Blockly et ajoutez un événement <strong>Step</strong>
+        avec des vérifications de limites :</p>
+        <ul>
+            <li>Si x &lt; 0, définir x = 0</li>
+            <li>Si x &gt; room_width &minus; sprite_width, définir x = room_width &minus; sprite_width</li>
+        </ul>
+        <p>Cela empêche le joueur de quitter l'écran.</p>
+    </div>
+
+    <div class="step">
+        <p>Cliquez sur <strong>Appliquer aux événements</strong>.</p>
+    </div>
+
+    <h2>Définir une couleur d'arrière-plan</h2>
+    <div class="step">
+        <p>Ouvrez <code>room_game</code> dans l'éditeur de salle et définissez la couleur d'arrière-plan
+        sur un joli bleu ciel ou une couleur d'espace sombre.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Félicitations !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Votre premier jeu est terminé !</strong></p>
+        <p>Appuyez sur <strong>F5</strong> pour jouer au jeu terminé. Attrapez autant d'étoiles que possible !</p>
+    </div>
+
+    <h2>Idées de défis</h2>
+    <div class="challenge">
+        <strong>Vous voulez aller plus loin ? Essayez ceci :</strong>
+        <ul>
+            <li>Ajoutez des vies &mdash; perdez une vie quand une étoile atteint le bas</li>
+            <li>Faites tomber les étoiles plus vite à mesure que le score augmente</li>
+            <li>Ajoutez des étoiles de différentes couleurs valant des points différents</li>
+            <li>Ajoutez un objet « dangereux » (bombe) qui termine la partie s'il est attrapé</li>
+            <li>Ajoutez des effets sonores quand on attrape des étoiles</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <strong>Et ensuite ?</strong><br>
+        Explorez d'autres tutoriels pour apprendre les balles rebondissantes, les puzzles et les jeux de plateformes !
+    </div>
+</body>
+</html>

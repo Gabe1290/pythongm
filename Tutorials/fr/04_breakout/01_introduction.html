@@ -10,10 +10,12 @@
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
         .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
     </style>
 </head>
 <body>
-    <h1>Breakout : Jeu de Casse-Briques</h1>
+    <h1>Breakout : Jeu de casse-briques</h1>
 
     <div class="game-preview">
         <img src="thumbnails/04_breakout.png" width="280" height="210" style="border-radius: 5px;">
@@ -22,33 +24,49 @@
         <p>Cassez toutes les briques avec votre balle et votre raquette !</p>
     </div>
 
-    <h2>Ce que nous allons cr&eacute;er</h2>
-    <p>Dans ce tutoriel, vous allez construire un jeu Breakout classique en utilisant
-    les <strong>blocs visuels Blockly</strong> pour programmer le comportement du jeu :</p>
-    <ul>
-        <li>Une raquette qui se d&eacute;place &agrave; gauche et &agrave; droite avec les touches fl&eacute;ch&eacute;es</li>
-        <li>Une balle qui rebondit sur l'&eacute;cran</li>
-        <li>Des rang&eacute;es de briques color&eacute;es &agrave; d&eacute;truire</li>
-        <li>Un suivi du score quand vous cassez des briques</li>
-        <li>Un syst&egrave;me de vies &mdash; perdez une vie quand la balle tombe</li>
-    </ul>
+    <h2>Ce que nous allons créer</h2>
+    <p>Dans ce tutoriel, vous allez construire un jeu de Breakout classique étape par étape en utilisant
+    les <strong>blocs visuels Blockly</strong>. Au lieu de tout construire avant de tester,
+    nous adopterons une approche progressive &mdash; vous aurez un jeu jouable à chaque phase !</p>
+
+    <h2>Comment fonctionne ce tutoriel</h2>
+
+    <div class="phase">
+        <strong>Phase 1 &mdash; Une balle rebondissante</strong><br>
+        Créez une raquette, une balle et des murs. La balle rebondit partout et vous pouvez jouer tout de suite !
+    </div>
+
+    <div class="phase">
+        <strong>Phase 2 &mdash; Première rangée de briques</strong><br>
+        Ajoutez une rangée de briques à casser. Découvrez les objets parents et le score.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 3 &mdash; Plus de rangées de briques</strong><br>
+        Ajoutez des rangées colorées de briques, chacune valant un nombre de points différent.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 4 &mdash; Contrôleur de jeu</strong><br>
+        Ajoutez un système de vies et affichez le score à l'écran.
+    </div>
 
     <h2>Ce que vous apprendrez</h2>
     <ul>
-        <li>La <strong>programmation visuelle Blockly</strong> pour cr&eacute;er des comportements de jeu</li>
-        <li>Les contr&ocirc;les clavier pour le mouvement de la raquette</li>
-        <li>Les m&eacute;caniques de rebond de la balle (inversion horizontale et verticale)</li>
-        <li>La destruction d'objets lors des collisions</li>
+        <li>Utiliser les <strong>blocs visuels Blockly</strong> pour programmer le comportement du jeu</li>
+        <li>Les contrôles clavier pour le déplacement de la raquette</li>
+        <li>Le rebond de la balle avec les blocs d'inversion de mouvement</li>
+        <li>La destruction d'objets lors d'une collision</li>
+        <li>L'utilisation des <strong>objets parents</strong> pour des briques similaires</li>
         <li>Le suivi du score et des vies</li>
-        <li>L'utilisation d'objets parents pour des briques similaires</li>
     </ul>
 
     <div class="highlight">
-        <strong>Temps requis :</strong> Environ 25-30 minutes
+        <strong>Temps nécessaire :</strong> Environ 25&ndash;30 minutes
     </div>
 
     <div class="info">
-        <strong>Pr&ecirc;t ?</strong> Cliquez sur &laquo; Suivant &raquo; pour commencer &agrave; cr&eacute;er vos sprites !
+        <strong>Prêt ?</strong> Cliquez sur « Suivant » pour commencer à créer vos premiers sprites !
     </div>
 </body>
 </html>

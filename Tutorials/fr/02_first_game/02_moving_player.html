@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1 : Un joueur qui se déplace</h1>
+
+    <p>Créons un joueur, plaçons-le dans une salle et faisons-le bouger tout de suite !</p>
+
+    <h2>Créer un nouveau projet</h2>
+    <div class="step">
+        <p>Allez dans <code>Fichier &gt; Nouveau projet</code> et nommez-le <strong>CatchTheStar</strong>.</p>
+    </div>
+
+    <h2>Créer le sprite du joueur</h2>
+    <div class="step">
+        <ol>
+            <li>Faites un clic droit sur <strong>Sprites</strong> dans l'Arbre des ressources &rarr; <strong>Créer un nouveau sprite</strong></li>
+            <li>Nommez-le <code>spr_player</code></li>
+            <li>Double-cliquez dessus pour ouvrir l'éditeur de sprites et dessinez un personnage simple de 32&times;32
+            (un vaisseau, un personnage ou un panier). Appuyez sur <strong>Ctrl+S</strong> pour sauvegarder.</li>
+        </ol>
+    </div>
+
+    <h2>Créer l'objet du joueur</h2>
+    <div class="step">
+        <ol>
+            <li>Faites un clic droit sur <strong>Objets</strong> &rarr; <strong>Créer un nouvel objet</strong></li>
+            <li>Nommez-le <code>obj_player</code></li>
+            <li>Définissez le sprite sur <code>spr_player</code></li>
+        </ol>
+    </div>
+
+    <h2>Créer la salle</h2>
+    <div class="step">
+        <ol>
+            <li>Faites un clic droit sur <strong>Salles</strong> &rarr; <strong>Créer une nouvelle salle</strong></li>
+            <li>Nommez-la <code>room_game</code></li>
+            <li>Ouvrez la salle et placez <code>obj_player</code> près du <strong>centre en bas</strong></li>
+        </ol>
+    </div>
+
+    <h2>Ajouter le mouvement du joueur</h2>
+    <div class="step">
+        <ol>
+            <li>Double-cliquez sur <code>obj_player</code> pour ouvrir l'éditeur d'objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Se déplacer à gauche</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Clavier : Gauche (maintenu)</span><br>
+            <span class="block block-move block-indent">Définir la vitesse horizontale à <span class="block-num">-5</span></span>
+        </div>
+    </div>
+
+    <h2>Se déplacer à droite</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Clavier : Droite (maintenu)</span><br>
+            <span class="block block-move block-indent">Définir la vitesse horizontale à <span class="block-num">5</span></span>
+        </div>
+    </div>
+
+    <h2>S'arrêter quand aucune touche n'est pressée</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Clavier : Aucune touche</span><br>
+            <span class="block block-move block-indent">Arrêter le mouvement</span>
+        </div>
+    </div>
+
+    <div class="step">
+        <p>Vous devriez avoir <strong>3 blocs d'événements</strong>. Cliquez sur <strong>Appliquer aux événements</strong> pour sauvegarder.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Utilisez les touches fléchées <strong>Gauche</strong> et <strong>Droite</strong> pour déplacer le joueur</li>
+            <li>Le joueur peut sortir de l'écran &mdash; nous corrigerons cela plus tard !</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Cliquez sur « Suivant » pour ajouter les étoiles qui tombent.
+    </div>
+</body>
+</html>

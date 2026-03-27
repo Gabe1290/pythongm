@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-draw { background-color: #5BA58B; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3 : Contrôleur de jeu</h1>
+
+    <p>Le contrôleur de jeu est un objet invisible qui gère l'affichage du score et des vies.
+    Nous mettons aussi à jour la collision avec les pics pour utiliser un système de vies.</p>
+
+    <h2>Créer l'objet contrôleur</h2>
+    <div class="step">
+        <ol>
+            <li>Clic droit sur <strong>Objets</strong> &gt; <strong>Créer un nouvel Objet</strong></li>
+            <li>Nommez-le <code>obj_game_controller</code></li>
+            <li>N'assignez PAS de sprite &mdash; il reste invisible</li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Qu'est-ce qu'un contrôleur de jeu ?</strong> C'est un objet invisible qui fonctionne en arrière-plan
+        pour gérer des choses comme l'affichage du score et des vies. Comme il n'a pas de sprite, il n'apparaîtra pas
+        dans le jeu &mdash; il se contente de dessiner des informations à l'écran.
+    </div>
+
+    <h2>Programmer obj_game_controller avec Blockly</h2>
+    <div class="step">
+        <ol>
+            <li>Double-cliquez sur <code>obj_game_controller</code> pour ouvrir l'éditeur d'Objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Initialiser le score et les vies (Événement Création)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Create</span><br>
+            <span class="block block-score block-indent">Set score to <span class="block-val">0</span></span><br>
+            <span class="block block-score block-indent">Set lives to <span class="block-val">3</span></span>
+        </div>
+        <p>Trouvez <strong>Create</strong> dans <em>Events</em>.
+        Depuis <em>Score/Lives/Health</em>, ajoutez <strong>Set Score</strong> avec la valeur <strong>0</strong>
+        et <strong>Set Lives</strong> avec la valeur <strong>3</strong>.</p>
+    </div>
+
+    <h2>Dessiner le score et les vies (Événement Dessin)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Draw</span><br>
+            <span class="block block-draw block-indent">Draw score at x: <span class="block-val">10</span> y: <span class="block-val">10</span></span><br>
+            <span class="block block-draw block-indent">Draw lives at x: <span class="block-val">200</span> y: <span class="block-val">10</span></span>
+        </div>
+        <p>Trouvez <strong>Draw</strong> dans <em>Events</em>.
+        Depuis <em>Score/Lives/Health</em>, ajoutez <strong>Draw Score</strong> à la position (10, 10)
+        et <strong>Draw Lives</strong> à la position (200, 10).
+        Le score et les vies apparaîtront en haut à gauche de l'écran.</p>
+    </div>
+
+    <h2>Appliquer vos blocs</h2>
+    <div class="step">
+        <ol>
+            <li>Vous devriez avoir <strong>2 blocs d'événements</strong> (Create + Draw)</li>
+            <li>Cliquez sur <strong>Appliquer aux événements</strong> pour sauvegarder</li>
+        </ol>
+    </div>
+
+    <h2>Mettre à jour obj_player &mdash; Collision avec les pics et système de vies</h2>
+    <div class="step">
+        <p>Maintenant ouvrez l'éditeur Blockly pour <code>obj_player</code> et mettez à jour la collision avec les pics.
+        Trouvez le bloc de collision existant avec <code>obj_spike</code> et ajoutez un bloc avant le redémarrage :</p>
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_spike</span><br>
+            <span class="block block-score block-indent">Add to lives <span class="block-val">-1</span></span><br>
+            <span class="block block-room block-indent">Restart room</span>
+        </div>
+        <p>Ajoutez <strong>Add to Lives</strong> (depuis <em>Score/Lives/Health</em>) avec la valeur <strong>-1</strong>
+        avant le bloc Redémarrer la salle. Maintenant chaque pic touché coûte une vie !</p>
+        <ol>
+            <li>Cliquez sur <strong>Appliquer aux événements</strong> pour sauvegarder</li>
+        </ol>
+    </div>
+
+    <div class="highlight">
+        <strong>Comment ça marche :</strong> Quand le joueur touche un pic, il perd une vie et la salle redémarre.
+        Le contrôleur de jeu affiche le score actuel et les vies restantes à chaque image.
+    </div>
+
+    <h2>Placer le contrôleur dans votre salle</h2>
+    <div class="step">
+        <ol>
+            <li>Ouvrez <code>room_level1</code></li>
+            <li>Placez un <code>obj_game_controller</code> n'importe où dans la salle</li>
+            <li>Comme il n'a pas de sprite, il sera invisible &mdash; la position n'a pas d'importance</li>
+        </ol>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Le score et les vies apparaissent en haut à gauche</li>
+            <li>Collecter des pièces augmente le score</li>
+            <li>Toucher un pic coûte une vie et redémarre la salle</li>
+            <li>Atteindre le drapeau affiche « You Win! »</li>
+        </ul>
+    </div>
+
+    <div class="success">
+        <p style="font-size: 14px; text-align: center;">
+            <strong>Félicitations !</strong> Vous avez construit un jeu de plateformes complet
+            avec la gravité, le saut, les pièces, les dangers, le score et les vies !
+        </p>
+    </div>
+
+    <h2>Idées de défis</h2>
+    <div class="challenge">
+        <p>Envie d'aller plus loin ? Essayez ces idées :</p>
+        <ul>
+            <li><strong>Plateformes mobiles :</strong> Créez un objet qui se déplace automatiquement de gauche à droite</li>
+            <li><strong>Ennemis :</strong> Ajoutez des objets qui patrouillent sur les plateformes et blessent le joueur</li>
+            <li><strong>Double saut :</strong> Utilisez une variable pour permettre un saut supplémentaire en l'air</li>
+            <li><strong>Plusieurs niveaux :</strong> Créez des salles supplémentaires et utilisez « Salle suivante » sur le drapeau</li>
+            <li><strong>Game over :</strong> Vérifiez si les vies atteignent 0 et affichez un message « Game Over »</li>
+        </ul>
+    </div>
+</body>
+</html>

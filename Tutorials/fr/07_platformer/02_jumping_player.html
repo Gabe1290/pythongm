@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-val { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 1 : Un joueur qui saute</h1>
+
+    <p>Dans cette phase, nous créons le joueur et le sol, configurons la gravité et le mouvement,
+    et construisons une salle avec des plateformes. À la fin, vous pourrez courir et sauter !</p>
+
+    <h2>Créer les Sprites</h2>
+    <div class="step">
+        <ol>
+            <li>Clic droit sur <strong>Sprites</strong> &gt; <strong>Créer un nouveau Sprite</strong></li>
+            <li>Nommez-le <code>spr_player</code>, taille <strong>32x32</strong></li>
+            <li>Dessinez un personnage (ou importez depuis <code>Tutorials/07_platformer/assets/</code>)</li>
+            <li>Créez un autre sprite : <code>spr_ground</code>, taille <strong>32x32</strong></li>
+            <li>Dessinez une tuile de sol (vert en haut, marron en bas) ou importez-la</li>
+        </ol>
+    </div>
+
+    <h2>Créer les Objets</h2>
+    <div class="step">
+        <ol>
+            <li>Clic droit sur <strong>Objets</strong> &gt; <strong>Créer un nouvel Objet</strong></li>
+            <li>Créez <code>obj_ground</code>, assignez le sprite <code>spr_ground</code></li>
+            <li>Cochez la case <strong>Solide</strong> pour <code>obj_ground</code></li>
+            <li>Créez <code>obj_player</code>, assignez le sprite <code>spr_player</code></li>
+        </ol>
+    </div>
+
+    <div class="info">
+        <strong>Pourquoi Solide ?</strong> Marquer <code>obj_ground</code> comme Solide indique au moteur
+        que les autres objets ne doivent pas le traverser. C'est essentiel pour les plateformes !
+    </div>
+
+    <h2>Programmer obj_player avec Blockly</h2>
+    <div class="step">
+        <ol>
+            <li>Double-cliquez sur <code>obj_player</code> pour ouvrir l'éditeur d'Objets</li>
+            <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
+        </ol>
+    </div>
+
+    <h2>Activer la gravité (Événement Création)</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Create</span><br>
+            <span class="block block-move block-indent">Set Gravity: direction <span class="block-val">270</span>, strength <span class="block-val">0.5</span></span>
+        </div>
+        <p>Trouvez <strong>Create</strong> dans la catégorie <em>Events</em>.
+        Puis trouvez <strong>Définir la gravité</strong> dans la catégorie <em>Movement</em>.
+        Réglez la direction à <strong>270</strong> (vers le bas) et la force à <strong>0.5</strong>.</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Direction 270 = vers le bas.</strong> Les angles commencent à 0 (droite) et vont dans le sens antihoraire :
+        90 = haut, 180 = gauche, 270 = bas.
+    </div>
+
+    <h2>Se déplacer à gauche</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Left (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-val">-4</span></span>
+        </div>
+        <p>Trouvez <strong>Clavier (maintenu)</strong> dans <em>Events</em>, sélectionnez <strong>Left</strong>.
+        Puis ajoutez <strong>Définir la vitesse horizontale</strong> depuis <em>Movement</em> avec la valeur <strong>-4</strong>
+        (négatif = gauche).</p>
+    </div>
+
+    <h2>Se déplacer à droite</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: Right (held)</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-val">4</span></span>
+        </div>
+    </div>
+
+    <h2>Arrêter quand aucune touche n'est pressée</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard: No key</span><br>
+            <span class="block block-move block-indent">Set horizontal speed to <span class="block-val">0</span></span>
+        </div>
+        <p>Cela arrête le mouvement horizontal quand aucune touche n'est pressée.
+        Nous utilisons <strong>Définir la vitesse horizontale à 0</strong> (PAS « Arrêter le mouvement ») pour que la gravité continue de fonctionner !</p>
+    </div>
+
+    <div class="highlight">
+        <strong>Important :</strong> Si vous utilisez « Arrêter le mouvement » ici, cela annulerait aussi la vitesse verticale
+        et la gravité s'arrêterait. En ne réglant que la vitesse horizontale à 0, le joueur continue de tomber normalement.
+    </div>
+
+    <h2>Sauter</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">Keyboard Press: Up</span><br>
+            <span class="block block-move block-indent">Set vertical speed to <span class="block-val">-10</span></span>
+        </div>
+        <p>Trouvez <strong>Appui clavier</strong> dans <em>Events</em>, sélectionnez <strong>Up</strong>.
+        Réglez la vitesse verticale à <strong>-10</strong> (négatif = vers le haut).
+        L'événement <em>Press</em> ne se déclenche qu'une seule fois, donnant une impulsion de saut unique.</p>
+    </div>
+
+    <h2>Collision avec le sol</h2>
+    <div class="step">
+        <div class="blockly-group">
+            <span class="block block-event">When colliding with obj_ground</span><br>
+            <span class="block block-move block-indent">Stop movement</span>
+        </div>
+        <p>Trouvez <strong>Collision</strong> dans <em>Events</em>, tapez <code>obj_ground</code>.
+        Ajoutez <strong>Arrêter le mouvement</strong> à l'intérieur. Cela empêche le joueur de passer à travers
+        le sol et l'arrête quand il touche les murs.</p>
+    </div>
+
+    <h2>Appliquer vos blocs</h2>
+    <div class="step">
+        <ol>
+            <li>Vous devriez avoir <strong>6 blocs d'événements</strong> dans votre espace de travail
+            (Create + Left + Right + No key + Press Up + Collision)</li>
+            <li>Cliquez sur le bouton <strong>Appliquer aux événements</strong> pour sauvegarder</li>
+        </ol>
+    </div>
+
+    <h2>Créer la salle</h2>
+    <div class="step">
+        <ol>
+            <li>Clic droit sur <strong>Rooms</strong> &gt; <strong>Créer une nouvelle salle</strong></li>
+            <li>Nommez-la <code>room_level1</code></li>
+            <li>Définissez la taille : <strong>800 x 480</strong></li>
+            <li>Définissez la couleur de fond en bleu clair (ciel)</li>
+            <li>Activez « Aligner sur la grille » et réglez la grille à <strong>32x32</strong></li>
+            <li>Placez <code>obj_ground</code> le long de la rangée du bas</li>
+            <li>Créez des plateformes à différentes hauteurs en plaçant d'autres blocs <code>obj_ground</code> en l'air</li>
+            <li>Placez un <code>obj_player</code> sur le côté gauche, au-dessus du sol</li>
+        </ol>
+    </div>
+
+    <pre>
+                        ====
+            ====                  ====
+    P                 ====
+  ====  ====  ====          ====  ====  ====
+  GGGGGGGGGGGGGGGG    GGGGGGGGGGGGGGGGGGGGGG
+
+G = Sol (obj_ground)     P = Joueur (obj_player)
+==== = Plateformes à différentes hauteurs</pre>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Le joueur tombe avec la gravité</li>
+            <li>Les flèches gauche/droite déplacent le joueur</li>
+            <li>La flèche haut fait sauter le joueur</li>
+            <li>Le joueur atterrit sur les plateformes et le sol</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Cliquez sur « Suivant » pour ajouter des pièces, des pics et un drapeau !
+    </div>
+</body>
+</html>

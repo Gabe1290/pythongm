@@ -9,11 +9,12 @@
         .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
         .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
-        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
     </style>
 </head>
 <body>
-    <h1>Pong Classique : Jeu à Deux Joueurs</h1>
+    <h1>Pong classique : Jeu à deux joueurs</h1>
 
     <div class="game-preview">
         <img src="thumbnails/03_pong.png" width="280" height="210" style="border-radius: 5px;">
@@ -23,29 +24,38 @@
     </div>
 
     <h2>Ce que nous allons créer</h2>
-    <p>Dans ce tutoriel, vous allez construire un jeu Pong classique :</p>
-    <ul>
-        <li>Deux raquettes contrôlées par des touches différentes (W/S et Haut/Bas)</li>
-        <li>Une balle qui rebondit sur les raquettes et les murs</li>
-        <li>Un suivi du score pour les deux joueurs</li>
-        <li>Des buts qui détectent quand un joueur marque</li>
-    </ul>
+    <p>Dans ce tutoriel, vous allez construire un jeu de Pong classique à deux joueurs étape par étape.
+    Vous aurez quelque chose de jouable à chaque phase !</p>
+
+    <div class="phase">
+        <strong>Phase 1 &mdash; Raquettes et balle</strong><br>
+        Créez les raquettes, les murs, une balle rebondissante, et jouez tout de suite !
+    </div>
+
+    <div class="phase">
+        <strong>Phase 2 &mdash; Buts et score</strong><br>
+        Ajoutez des buts derrière chaque raquette et suivez le score.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 3 &mdash; Affichage du score</strong><br>
+        Affichez les scores à l'écran avec un contrôleur de jeu.
+    </div>
 
     <h2>Ce que vous apprendrez</h2>
     <ul>
-        <li>Les contrôles clavier à deux joueurs</li>
-        <li>Les mécaniques de rebond avec détection de collision</li>
-        <li>L'utilisation de variables globales pour le suivi du score</li>
-        <li>L'affichage des scores à l'écran</li>
-        <li>Les événements de touche appuyée et relâchée</li>
+        <li>Contrôles clavier à deux joueurs (W/S et Haut/Bas)</li>
+        <li>Mécaniques de rebond avec détection de collision</li>
+        <li>Utilisation de variables globales pour le suivi du score</li>
+        <li>Affichage de texte à l'écran</li>
     </ul>
 
     <div class="highlight">
-        <strong>Temps requis :</strong> Environ 20-25 minutes
+        <strong>Temps nécessaire :</strong> Environ 20&ndash;25 minutes
     </div>
 
     <div class="info">
-        <strong>Prêt ?</strong> Cliquez sur « Suivant » pour commencer à créer les sprites de votre jeu !
+        <strong>Prêt ?</strong> Cliquez sur « Suivant » pour commencer !
     </div>
 </body>
 </html>

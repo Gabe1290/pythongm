@@ -8,46 +8,76 @@
         h2 { color: #34495e; font-size: 14px; }
         .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
         .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
-        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        .challenge { background-color: #f8d7da; padding: 10px; border-left: 4px solid #dc3545; margin: 10px 0; }
         code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 11px; }
+        ol li { margin-bottom: 8px; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-output { background-color: #745CA6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-str { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
     </style>
 </head>
 <body>
-    <h1>Labyrinthe : trouvez la sortie</h1>
+    <h1>Labyrinthe : Trouvez la sortie &#128737;</h1>
 
     <div class="game-preview">
         <img src="thumbnails/06_maze.png" width="280" height="210" style="border-radius: 5px;">
-        <p style="font-size: 24px;">&#128736;</p>
+        <p style="font-size: 24px;">&#128737;</p>
         <p><strong>JEU DE LABYRINTHE</strong></p>
         <p>Trouvez votre chemin à travers le labyrinthe et collectez les pièces !</p>
     </div>
 
     <h2>Ce que nous allons créer</h2>
-    <p>Dans ce tutoriel, vous allez construire un jeu de navigation dans un labyrinthe :</p>
-    <ul>
-        <li>Un joueur qui se déplace de manière fluide avec les touches fléchées</li>
-        <li>Des murs qui bloquent le mouvement du joueur</li>
-        <li>Des pièces à collecter pour des points</li>
-        <li>Une sortie qui termine le niveau</li>
-        <li>Un chronomètre pour suivre votre rapidité</li>
-    </ul>
+    <p>Dans ce tutoriel, vous allez construire un jeu de navigation dans un labyrinthe étape par étape.
+    Le jeu est <strong>jouable à la fin de chaque phase</strong>, vous pouvez donc tester au fur et à mesure !</p>
+
+    <div class="phase">
+        <strong>Phase 1 &mdash; Se déplacer dans un labyrinthe</strong><br>
+        Créez un joueur qui se déplace avec les touches fléchées et des murs qui bloquent le chemin.
+        Construisez un labyrinthe simple et promenez-vous dedans.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 2 &mdash; Collecter des pièces et sortie</strong><br>
+        Ajoutez des pièces à collecter qui augmentent votre score et une porte de sortie
+        qui affiche un message de victoire.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 3 &mdash; Affichage du score</strong><br>
+        Ajoutez un contrôleur de jeu qui affiche le score à l'écran
+        pour que le joueur puisse voir sa progression.
+    </div>
 
     <h2>Ce que vous apprendrez</h2>
     <ul>
         <li>Utiliser les <strong>blocs visuels Blockly</strong> pour programmer le comportement du jeu</li>
-        <li>Le mouvement fluide avec les blocs d'entrée clavier</li>
+        <li>Le déplacement fluide avec les blocs de saisie clavier</li>
         <li>La détection et la gestion des collisions avec les murs</li>
         <li>La création d'objets à collecter</li>
-        <li>L'affichage du score</li>
+        <li>L'affichage du score avec un objet contrôleur de jeu</li>
         <li>La conception de niveaux pour les jeux de labyrinthe</li>
     </ul>
 
     <div class="highlight">
-        <strong>Temps requis :</strong> Environ 25-30 minutes
+        <strong>Temps nécessaire :</strong> Environ 20&ndash;25 minutes
     </div>
 
     <div class="info">
-        <strong>Prêt ?</strong> Cliquez sur « Suivant » pour commencer à créer vos sprites !
+        <strong>Prêt ?</strong> Cliquez sur « Suivant » pour commencer la Phase 1 : créer le joueur et le labyrinthe !
     </div>
 </body>
 </html>
