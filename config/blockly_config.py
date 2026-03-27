@@ -288,88 +288,108 @@ class BlocklyConfig:
 
     @classmethod
     def get_beginner(cls) -> 'BlocklyConfig':
-        """Simplified for beginners - basic blocks only"""
+        """Beginner preset — covers Getting Started, First Game, Pong, Breakout tutorials"""
         config = cls(preset_name="beginner")
 
-        # Essential events
-        config.enable_block("event_create")
-        config.enable_block("event_step")
-        config.enable_block("event_keyboard_press")
-        config.enable_block("event_collision")
+        # Events needed by beginner tutorials
+        config.enable_block("event_create")       # First Game, Pong, Breakout
+        config.enable_block("event_step")          # First Game
+        config.enable_block("event_draw")          # First Game, Pong, Breakout (score/lives display)
+        config.enable_block("event_keyboard_held") # First Game, Pong, Breakout (continuous movement)
+        config.enable_block("event_keyboard_nokey")# First Game, Pong, Breakout (stop when no key)
+        config.enable_block("event_collision")     # First Game, Pong, Breakout
+        config.enable_block("event_alarm")         # First Game (star spawning timer)
 
-        # Basic movement
-        config.enable_block("move_set_hspeed")
-        config.enable_block("move_set_vspeed")
-        config.enable_block("move_stop")
-        config.enable_block("move_jump_to")
+        # Movement
+        config.enable_block("move_set_hspeed")     # First Game, Pong, Breakout
+        config.enable_block("move_set_vspeed")     # First Game, Pong, Breakout
+        config.enable_block("move_stop")           # First Game, Pong, Breakout
+        config.enable_block("move_jump_to")        # Pong (ball reset), Breakout
+        config.enable_block("move_direction")      # Pong (ball start direction)
+        config.enable_block("bounce")              # Pong (ball bouncing)
+        config.enable_block("reverse_horizontal")  # Breakout (ball direction)
+        config.enable_block("reverse_vertical")    # Breakout (ball direction)
 
-        # Basic instance
-        config.enable_block("instance_destroy")
-        config.enable_block("instance_create")
-        config.enable_block("instance_change")
+        # Timing
+        config.enable_block("set_alarm")           # First Game (star spawn interval)
 
-        # Score
-        config.enable_block("score_set")
-        config.enable_block("score_add")
-        config.enable_block("draw_score")
+        # Drawing
+        config.enable_block("draw_text")           # First Game, Pong (score display)
+        config.enable_block("draw_score")          # First Game, Breakout
+
+        # Score and Lives
+        config.enable_block("score_set")           # First Game, Pong, Breakout
+        config.enable_block("score_add")           # First Game, Breakout
+        config.enable_block("lives_set")           # Breakout
+        config.enable_block("lives_add")           # Breakout
+        config.enable_block("draw_lives")          # Breakout
+
+        # Instance
+        config.enable_block("instance_destroy")       # First Game, Breakout
+        config.enable_block("instance_destroy_other") # First Game (star), Breakout (bricks)
+        config.enable_block("instance_create")        # First Game (star spawning)
 
         # Room
-        config.enable_block("room_goto_next")
-        config.enable_block("room_goto_previous")
-        config.enable_block("room_restart")
-        config.enable_block("room_goto")
-        config.enable_block("room_if_next_exists")
-        config.enable_block("room_if_previous_exists")
+        config.enable_block("room_restart")        # Breakout (game over)
 
         # Output
-        config.enable_block("output_message")
-        config.enable_block("execute_code")
+        config.enable_block("output_message")      # Game over messages
 
         # Enable categories that have blocks
-        config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Output"}
+        config.enabled_categories = {
+            "Events", "Movement", "Timing", "Drawing",
+            "Score/Lives/Health", "Instance", "Room", "Output"
+        }
 
         return config
 
     @classmethod
     def get_intermediate(cls) -> 'BlocklyConfig':
-        """Intermediate - adds more features"""
+        """Intermediate preset — adds Sokoban, Maze, Platformer, Lunar Lander tutorials"""
         config = cls.get_beginner()
         config.preset_name = "intermediate"
 
-        # More events
-        config.enable_block("event_draw")
-        config.enable_block("event_destroy")
-        config.enable_block("event_mouse")
-        config.enable_block("event_alarm")
+        # Additional events
+        config.enable_block("event_keyboard_press")  # Sokoban (one move per press)
+        config.enable_block("event_destroy")         # General cleanup
 
-        # More movement
-        config.enable_block("move_direction")
-        config.enable_block("move_towards")
+        # Grid movement for Sokoban and Maze
+        config.enable_block("move_snap_to_grid")
+        config.enable_block("grid_move")
+        config.enable_block("grid_if_on_grid")
 
-        # Timing
-        config.enable_block("set_alarm")
+        # Physics for Platformer and Lunar Lander
+        config.enable_block("set_gravity")
+        config.enable_block("set_friction")
 
-        # Score
-        config.enable_block("score_set")
+        # Instance management
+        config.enable_block("instance_change")       # Sokoban (crate on target)
+        config.enable_block("if_can_push")           # Sokoban (push mechanic)
 
-        # Lives and health
-        config.enable_block("lives_set")
-        config.enable_block("lives_add")
-        config.enable_block("draw_lives")
+        # Drawing
+        config.enable_block("set_sprite")            # Sokoban (crate appearance)
+
+        # Health system
         config.enable_block("health_set")
         config.enable_block("health_add")
         config.enable_block("draw_health_bar")
+
+        # Room navigation
+        config.enable_block("room_goto_next")
+        config.enable_block("room_goto_previous")
+        config.enable_block("room_goto")
+        config.enable_block("room_if_next_exists")
+        config.enable_block("room_if_previous_exists")
 
         # Sound
         config.enable_block("sound_play")
         config.enable_block("music_play")
         config.enable_block("music_stop")
 
-        # Room
-        config.enable_block("room_goto_next")
-        config.enable_block("room_restart")
+        # Output
+        config.enable_block("execute_code")
 
-        config.enabled_categories.update({"Timing", "Sound", "Room"})
+        config.enabled_categories.update({"Sound"})
 
         return config
 
