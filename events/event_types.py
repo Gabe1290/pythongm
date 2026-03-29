@@ -62,7 +62,7 @@ EVENT_TYPES = {
     ),
     "keyboard": EventType(
         name="keyboard",
-        display_name="Keyboard",
+        display_name="Keyboard (held)",
         description="Executed continuously while a key is held down (for smooth movement)",
         category="Input",
         icon="⌨️",

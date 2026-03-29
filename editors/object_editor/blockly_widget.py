@@ -531,9 +531,14 @@ class BlocklyWidget(QWidget):
 
     def _apply_saved_configuration(self):
         """Apply the saved configuration on startup"""
-        from config.blockly_config import load_config
+        from config.blockly_config import load_config, PRESETS, BlocklyConfig
 
-        config = load_config()
+        # Try project preset first, fall back to global config
+        project_preset = self._get_project_preset()
+        if project_preset and project_preset in PRESETS:
+            config = BlocklyConfig.from_dict(PRESETS[project_preset].to_dict())
+        else:
+            config = load_config()
         self.apply_configuration(config)
 
     def request_detach(self):
