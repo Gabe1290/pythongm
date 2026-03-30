@@ -66,6 +66,9 @@ chm_extracted.zip
 dist/
 *.egg-info/
 
+# Checklists
+beginner_mode_checklist.*
+
 # Test artifacts and exports
 export_output/
 test_thymio_project.json
