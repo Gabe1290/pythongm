@@ -1,0 +1,105 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygamemaker"
+version = "1.0.0rc5"
+description = "A GameMaker-inspired IDE for creating 2D games with Python"
+readme = "README.md"
+license = "GPL-3.0-or-later"
+requires-python = ">=3.10"
+authors = [
+    { name = "Gabriel Thullen" },
+]
+keywords = ["gamemaker", "ide", "game-development", "pygame", "education"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Games/Entertainment",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Education",
+]
+
+dependencies = [
+    "PySide6>=6.4.0",
+    "Pillow>=9.0.0",
+    "pygame>=2.1.0",
+    "watchdog>=2.1.9",
+    "QScintilla>=2.13.0",
+    "jinja2>=3.1.0",
+]
+
+[project.optional-dependencies]
+kivy = [
+    "kivy>=2.3.0",
+    "buildozer>=1.5.0",
+    "cython>=0.29.33,<3.0",
+]
+build = [
+    "pyinstaller>=5.0.0",
+]
+dev = [
+    "pytest",
+    "pytest-qt",
+    "pytest-cov",
+    "pytest-xdist",
+    "pytest-mock",
+    "flake8",
+]
+
+[project.urls]
+Homepage = "https://github.com/Gabe1290/pythongm"
+Repository = "https://github.com/Gabe1290/pythongm"
+Issues = "https://github.com/Gabe1290/pythongm/issues"
+
+[project.gui-scripts]
+pygamemaker = "main:main"
+
+[tool.setuptools]
+py-modules = ["main"]
+packages = [
+    "actions",
+    "config",
+    "core",
+    "dialogs",
+    "editors",
+    "editors.object_editor",
+    "editors.room_editor",
+    "editors.sprite_editor",
+    "export",
+    "export.Kivy",
+    "export.HTML5",
+    "export.exe",
+    "export.linux",
+    "export.macos",
+    "export.android",
+    "export.ios",
+    "export.Aseba",
+    "importers",
+    "plugins",
+    "runtime",
+    "utils",
+    "widgets",
+    "widgets.asset_tree",
+]
+
+[tool.setuptools.package-data]
+"*" = ["*.json"]
+editors = [
+    "object_editor/blockly/*.html",
+    "object_editor/blockly/*.js",
+    "object_editor/blockly/lib/*.js",
+]
+utils = ["themes.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+qt_api = "pyside6"

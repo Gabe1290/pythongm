@@ -64,6 +64,7 @@ docs/code_editor_test_projects.odt
 chm_extracted/
 chm_extracted.zip
 dist/
+*.egg-info/
 
 # Test artifacts and exports
 export_output/

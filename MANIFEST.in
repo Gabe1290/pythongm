@@ -1,0 +1,31 @@
+# Python source
+include main.py
+include requirements.txt
+include LICENSE
+include README.md
+
+# PyInstaller spec files
+include PyGameMaker.spec
+include PyGameMaker-full.spec
+
+# Translation files
+recursive-include translations *.qm *.ts
+
+# Resource files (flags only - sprites/sounds are not in the repo)
+recursive-include resources/flags *.png
+
+# Tutorials
+recursive-include Tutorials *.html *.css *.js *.png *.jpg *.gif *.json
+
+# Blockly visual programming editor
+recursive-include editors/object_editor/blockly *.html *.js *.css
+
+# Configuration files
+include config/blockly_config.json
+include utils/themes.json
+
+# Exclude build artifacts and dev files
+global-exclude __pycache__
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude .DS_Store

@@ -215,12 +215,49 @@ jobs:
           if-no-files-found: error
 
   # ============================================================================
+  # Build Python source distribution (pip-installable tarball)
+  # ============================================================================
+  build-python-package:
+    name: Build Python Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install build tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+
+      - name: Build source distribution
+        run: |
+          python -m build --sdist
+
+      - name: List build output
+        run: |
+          ls -lh dist/
+
+      - name: Upload Python package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_NAME }}-Python-Package
+          path: dist/*.tar.gz
+          if-no-files-found: error
+
+  # ============================================================================
   # Create Release Assets (on release or manual trigger)
   # ============================================================================
   upload-release:
     name: Upload Release Assets
     runs-on: ubuntu-latest
-    needs: [build-windows, build-macos-intel, build-macos-arm, build-linux]
+    needs: [build-windows, build-macos-intel, build-macos-arm, build-linux, build-python-package]
 
     permissions:
       contents: write
@@ -244,6 +281,7 @@ jobs:
             artifacts/${{ env.APP_NAME }}-macOS-Intel/${{ env.APP_NAME }}-macOS-Intel.zip
             artifacts/${{ env.APP_NAME }}-macOS-ARM/${{ env.APP_NAME }}-macOS-ARM.zip
             artifacts/${{ env.APP_NAME }}-Linux/${{ env.APP_NAME }}-Linux.tar.gz
+            artifacts/${{ env.APP_NAME }}-Python-Package/*.tar.gz
 
       - name: Create/Update Draft Release (manual builds)
         if: github.event_name == 'workflow_dispatch'
@@ -265,3 +303,4 @@ jobs:
             artifacts/${{ env.APP_NAME }}-macOS-Intel/${{ env.APP_NAME }}-macOS-Intel.zip
             artifacts/${{ env.APP_NAME }}-macOS-ARM/${{ env.APP_NAME }}-macOS-ARM.zip
             artifacts/${{ env.APP_NAME }}-Linux/${{ env.APP_NAME }}-Linux.tar.gz
+            artifacts/${{ env.APP_NAME }}-Python-Package/*.tar.gz
