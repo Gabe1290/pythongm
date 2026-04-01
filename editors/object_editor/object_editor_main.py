@@ -1173,9 +1173,11 @@ class ObjectEditor(BaseEditor):
     def _sync_events_to_blockly(self):
         """Sync current events to Blockly visual programming tab"""
         if not hasattr(self, 'blockly_tab') or not self.blockly_tab:
+            print("[SYNC] No blockly_tab available")
             return
 
         if not hasattr(self, 'events_panel') or not self.events_panel:
+            print("[SYNC] No events_panel available")
             return
 
         # Get current events data

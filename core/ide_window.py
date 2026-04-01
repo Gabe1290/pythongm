@@ -2676,16 +2676,30 @@ class PyGameMakerIDE(QMainWindow):
             logger.info("✅ Thymio configuration updated")
 
     def refresh_event_panels_config(self):
-        """Refresh configuration in all open object events panels"""
-        # Find all open object editors with events panels
+        """Refresh configuration in all open object editors (events panel + blockly)"""
+        from config.blockly_config import PRESETS, BlocklyConfig, load_config
+
+        # Determine the active config
+        config = None
+        if self.current_project_data:
+            preset_name = self.current_project_data.get('settings', {}).get('blockly_preset')
+            if preset_name and preset_name in PRESETS:
+                config = BlocklyConfig.from_dict(PRESETS[preset_name].to_dict())
+        if not config:
+            config = load_config()
+
+        # Apply to all open object editors
         for i in range(self.editor_tabs.count()):
             widget = self.editor_tabs.widget(i)
-            # Check if it's an object editor with events_panel
-            if hasattr(widget, 'events_panel'):
-                # Reload configuration in the events panel if it has that method
-                if hasattr(widget.events_panel, 'reload_config'):
-                    widget.events_panel.reload_config()
-                    logger.debug(f"   ♻️ Reloaded event panel config for: {self.editor_tabs.tabText(i)}")
+            # Update events panel
+            if hasattr(widget, 'events_panel') and widget.events_panel:
+                widget.events_panel.apply_config(config)
+                logger.debug(f"   ♻️ Reloaded event panel config for: {self.editor_tabs.tabText(i)}")
+            # Update blockly editor
+            if hasattr(widget, 'blockly_tab') and widget.blockly_tab:
+                blockly_widget = getattr(widget.blockly_tab, 'blockly_widget', None)
+                if blockly_widget and hasattr(blockly_widget, 'apply_configuration'):
+                    blockly_widget.apply_configuration(config)
 
     def toggle_thymio_tab(self):
         """Toggle visibility of Thymio tab in object editors"""

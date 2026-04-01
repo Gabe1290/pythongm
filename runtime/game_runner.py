@@ -2089,10 +2089,14 @@ class GameRunner:
         if not isinstance(keyboard_event, dict):
             return
 
-        # Skip if instance is already moving — prevents grid movement from
-        # re-triggering before the current move completes. The nokey/stop event
-        # will clear the speed when the instance reaches the next grid position.
-        if getattr(instance, 'hspeed', 0) != 0 or getattr(instance, 'vspeed', 0) != 0:
+        # Only skip if a grid move is in progress (intended position differs from current).
+        # For smooth movement (set_hspeed/set_vspeed), always process held keys so the
+        # player can change direction even when already moving or blocked by a wall.
+        is_grid_moving = (
+            getattr(instance, 'intended_x', instance.x) != instance.x or
+            getattr(instance, 'intended_y', instance.y) != instance.y
+        )
+        if is_grid_moving:
             return
 
         for sub_key in instance.keys_pressed:
@@ -2328,7 +2332,11 @@ class GameRunner:
                 can_move, blocker = self.check_movement_collision_with_blocker(instance, objects_data)
                 if can_move:
                     instance.x = instance.intended_x
-                elif blocker:
+                else:
+                    # Movement blocked — reset intended position so it doesn't
+                    # look like a grid move is in progress to _process_held_keys
+                    instance.intended_x = instance.x
+                if not can_move and blocker:
                     # Movement blocked horizontally - track in map by instance only
                     key = id(instance)
                     if key not in blocked_collisions_map:
@@ -2351,7 +2359,11 @@ class GameRunner:
                 can_move, blocker = self.check_movement_collision_with_blocker(instance, objects_data)
                 if can_move:
                     instance.y = instance.intended_y
-                elif blocker:
+                else:
+                    # Movement blocked — reset intended position so it doesn't
+                    # look like a grid move is in progress to _process_held_keys
+                    instance.intended_y = instance.y
+                if not can_move and blocker:
                     # Movement blocked vertically - track in map by instance only
                     key = id(instance)
                     if key not in blocked_collisions_map:
@@ -2674,15 +2686,15 @@ class GameRunner:
 
             is_solid = other_obj_data.get('solid', False)
 
-            # Solid objects always block
-            should_block = is_solid
+            # Only block movement if a collision event is defined between these
+            # objects. Solid objects don't automatically block — the collision
+            # event decides what happens (stop, bounce, destroy, etc.).
+            # This matches standard game IDE behavior where objects pass through
+            # each other unless a collision event handles them.
+            should_block = False
 
-            # Non-solid objects block if:
-            # 1. The mover has a push-type collision event with them (if_can_push), OR
-            # 2. The other object has a collision event with the mover (e.g. box has collision_with_soko)
-            if not should_block and collision_targets:
+            if collision_targets:
                 # Check both current name and original name (before change_instance)
-                # e.g. Soko has collision_with_obj_box but box changed to obj_box_stored
                 names_to_check = {other_instance.object_name}
                 original = getattr(other_instance, '_original_object_name', None)
                 if original and original != other_instance.object_name:
@@ -2690,13 +2702,7 @@ class GameRunner:
 
                 for target_name in names_to_check:
                     if target_name in collision_targets:
-                        event_data = collision_targets[target_name]
-                        actions = event_data.get('actions', [])
-                        for action in actions:
-                            if action.get('action') == 'if_can_push':
-                                should_block = True
-                                break
-                    if should_block:
+                        should_block = True
                         break
 
             if not should_block:

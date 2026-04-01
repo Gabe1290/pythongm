@@ -351,7 +351,12 @@ class PreferencesDialog(QDialog):
         # Edition setting
         edition_key = self.edition_combo.currentData()
         if edition_key:
+            old_edition = Config.get("edition", "beginner")
             Config.set("edition", edition_key)
+
+            # If edition changed, apply the corresponding blockly preset
+            if edition_key != old_edition:
+                self._apply_edition_blockly_preset(edition_key)
 
         # Font settings
         font_family = None if self.family_combo.currentIndex() == 0 else self.family_combo.currentText()
@@ -398,6 +403,35 @@ class PreferencesDialog(QDialog):
             self.tr("Settings have been saved successfully.\n\n"
                    "Some changes may require restarting the IDE to take effect.")
         )
+
+    def _apply_edition_blockly_preset(self, edition_key):
+        """Apply the blockly preset for the given edition to the current project and open editors"""
+        from config.editions import EDITIONS
+        from config.blockly_config import PRESETS, BlocklyConfig, save_config
+
+        edition = EDITIONS.get(edition_key)
+        if not edition:
+            return
+
+        preset_name = edition["default_blockly_preset"]
+        if preset_name not in PRESETS:
+            return
+
+        config = BlocklyConfig.from_dict(PRESETS[preset_name].to_dict())
+        save_config(config)
+
+        # Update current project settings and refresh open editors
+        ide_window = self.parent()
+        if ide_window and hasattr(ide_window, 'current_project_data'):
+            if ide_window.current_project_data:
+                if 'settings' not in ide_window.current_project_data:
+                    ide_window.current_project_data['settings'] = {}
+                ide_window.current_project_data['settings']['blockly_preset'] = preset_name
+                if hasattr(ide_window, 'save_project'):
+                    ide_window.save_project()
+
+        if ide_window and hasattr(ide_window, 'refresh_event_panels_config'):
+            ide_window.refresh_event_panels_config()
 
     def accept_settings(self):
         """Save settings and close"""
