@@ -11,12 +11,20 @@ from typing import Dict, Any, Optional
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QMainWindow
 from PySide6.QtCore import Signal, Slot, QUrl, QObject, Qt
 from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWebEngineCore import QWebEngineSettings
+from PySide6.QtWebEngineCore import QWebEngineSettings, QWebEnginePage
 from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtGui import QCloseEvent
 
 from core.logger import get_logger
 logger = get_logger(__name__)
+
+
+class _DebugPage(QWebEnginePage):
+    """QWebEnginePage subclass that forwards JS console messages to stdout"""
+    def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
+        if '[Blockly]' in message or level == QWebEnginePage.JavaScriptConsoleMessageLevel.ErrorMessageLevel:
+            print(f"[JS] {message}")
+        super().javaScriptConsoleMessage(level, message, lineNumber, sourceID)
 
 
 class BlocklyBridge(QObject):
@@ -43,7 +51,7 @@ class DetachedBlocklyWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle(self.tr("Visual Block Programming (Detached)"))
-        self.setMinimumSize(800, 600)
+        self.setMinimumSize(400, 300)
         self.resize(1000, 700)
 
         # Central widget container
@@ -139,9 +147,11 @@ class BlocklyWidget(QWidget):
 
         layout.addLayout(toolbar)
 
-        # Web view for Blockly
+        # Web view for Blockly with debug page for JS console forwarding
         self.web_view = QWebEngineView()
-        self.web_view.setMinimumHeight(400)
+        self._debug_page = _DebugPage(self.web_view)
+        self.web_view.setPage(self._debug_page)
+        self.web_view.setMinimumHeight(200)
 
         # Hide web view until loaded to prevent visual flickering
         self.web_view.setVisible(False)
@@ -390,7 +400,6 @@ class BlocklyWidget(QWidget):
 
         # Queue data if the page hasn't finished loading yet
         if not self._page_ready:
-            logger.debug("Page not ready yet, queuing events data for later")
             self._pending_events_data = events_data
             return
 

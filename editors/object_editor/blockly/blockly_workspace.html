@@ -50,10 +50,6 @@
             background-color: #2d2d2d !important;
             min-width: 180px !important;
         }
-        .blocklyToolboxDiv {
-            background-color: #2d2d2d !important;
-            min-width: 180px !important;
-        }
         .blocklyToolboxCategory {
             padding: 6px 4px !important;
         }
@@ -1443,7 +1439,7 @@
             'fontStyle': {
                 'family': 'Arial, sans-serif',
                 'weight': 'normal',
-                'size': 12
+                'size': 14
             }
         });
 
@@ -1459,7 +1455,7 @@
             zoom: {
                 controls: true,
                 wheel: true,
-                startScale: 1.0,
+                startScale: 1.2,
                 maxScale: 3,
                 minScale: 0.3,
                 scaleSpeed: 1.2
@@ -1467,6 +1463,19 @@
             trashcan: true,
             theme: darkTheme
         });
+
+        // Resize Blockly when the window/container changes size
+        window.addEventListener('resize', function() {
+            Blockly.svgResize(workspace);
+        });
+
+        // Observe the blocklyDiv for size changes (e.g. Qt widget resize)
+        if (typeof ResizeObserver !== 'undefined') {
+            var ro = new ResizeObserver(function() {
+                Blockly.svgResize(workspace);
+            });
+            ro.observe(document.getElementById('blocklyDiv'));
+        }
 
         // Function to get workspace XML
         function getWorkspaceXml() {
@@ -1855,16 +1864,34 @@
 
                 // Handle nested keyboard/keyboard_press events
                 // Format: {"keyboard": {"right": {"actions": [...]}, "left": {"actions": [...]}}}
+                // Check if eventData has sub-keys that are key names (not just "actions")
+                var hasKeySubEvents = false;
                 if ((eventName === 'keyboard' || eventName === 'keyboard_press' || eventName === 'keyboard_release')
-                    && typeof eventData === 'object' && !eventData.actions) {
+                    && typeof eventData === 'object') {
+                    for (var k in eventData) {
+                        if (k !== 'actions' && typeof eventData[k] === 'object' && eventData[k] !== null) {
+                            hasKeySubEvents = true;
+                            break;
+                        }
+                    }
+                }
+                if (hasKeySubEvents) {
                     console.log('[Blockly] Handling nested keyboard event');
+                    // Top-level actions (legacy format: actions stored on keyboard event itself)
+                    var topLevelActions = (eventData.actions && Array.isArray(eventData.actions)) ? eventData.actions : [];
+                    if (topLevelActions.length > 0) {
+                        console.log('[Blockly] Found', topLevelActions.length, 'top-level actions to distribute to sub-keys');
+                    }
+
                     // This is a nested keyboard event - iterate over keys
                     // First pass: collect unique keys, preferring prefixed entries (press_down) over bare ones (down)
                     var keyEntries = {};
                     for (var keyName in eventData) {
                         if (keyName === 'actions') continue;
                         var keyData = eventData[keyName];
-                        if (typeof keyData !== 'object' || !keyData.actions) continue;
+                        if (typeof keyData !== 'object' || keyData === null) continue;
+                        // Ensure actions array exists
+                        if (!keyData.actions) keyData.actions = [];
 
                         var cleanKey = keyName;
                         if (eventName === 'keyboard_press' && keyName.startsWith('press_')) {
@@ -1876,6 +1903,17 @@
                         // Keep the entry with more actions (prefer non-empty over empty)
                         if (!keyEntries[cleanKey] || keyData.actions.length > keyEntries[cleanKey].actions.length) {
                             keyEntries[cleanKey] = keyData;
+                        }
+                    }
+
+                    // If sub-keys have empty actions but there are top-level actions,
+                    // assign top-level actions to each sub-key
+                    if (topLevelActions.length > 0) {
+                        for (var ck in keyEntries) {
+                            if (keyEntries[ck].actions.length === 0) {
+                                keyEntries[ck].actions = topLevelActions;
+                                console.log('[Blockly] Assigned top-level actions to sub-key:', ck);
+                            }
                         }
                     }
 
