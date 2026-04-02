@@ -1352,6 +1352,18 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
             <translation>Obrni navpično</translation>
         </message>
         <message>
+            <source>Bounce</source>
+            <translation>Odbij se</translation>
+        </message>
+        <message>
+            <source>Move to Contact</source>
+            <translation>Premakni do stika</translation>
+        </message>
+        <message>
+            <source>Wrap Around Room</source>
+            <translation>Pojavi se na drugi strani</translation>
+        </message>
+        <message>
             <source>Jump To Position</source>
             <translation>Skoči na položaj</translation>
         </message>
@@ -1362,10 +1374,6 @@ Kliknite desno tipko na Levo puščico, Desno puščico, Puščico gor ali Puš�
         <message>
             <source>Jump To Random</source>
             <translation>Skoči naključno</translation>
-        </message>
-        <message>
-            <source>Bounce</source>
-            <translation>Odbij se</translation>
         </message>
         <message>
             <source>Move Towards Point</source>

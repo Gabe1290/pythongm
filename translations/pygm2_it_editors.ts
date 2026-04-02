@@ -1352,6 +1352,18 @@ Fai clic destro su Freccia sinistra, Freccia destra, Freccia su o Freccia giù.<
             <translation>Inverti verticale</translation>
         </message>
         <message>
+            <source>Bounce</source>
+            <translation>Rimbalza</translation>
+        </message>
+        <message>
+            <source>Move to Contact</source>
+            <translation>Muovi al contatto</translation>
+        </message>
+        <message>
+            <source>Wrap Around Room</source>
+            <translation>Riappari dall'altro lato</translation>
+        </message>
+        <message>
             <source>Jump To Position</source>
             <translation>Vai alla posizione</translation>
         </message>
@@ -1362,10 +1374,6 @@ Fai clic destro su Freccia sinistra, Freccia destra, Freccia su o Freccia giù.<
         <message>
             <source>Jump To Random</source>
             <translation>Vai a caso</translation>
-        </message>
-        <message>
-            <source>Bounce</source>
-            <translation>Rimbalza</translation>
         </message>
         <message>
             <source>Move Towards Point</source>

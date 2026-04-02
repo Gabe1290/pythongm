@@ -1352,6 +1352,18 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
             <translation>Обратить вертикально</translation>
         </message>
         <message>
+            <source>Bounce</source>
+            <translation>Отскок</translation>
+        </message>
+        <message>
+            <source>Move to Contact</source>
+            <translation>Двигаться до контакта</translation>
+        </message>
+        <message>
+            <source>Wrap Around Room</source>
+            <translation>Появиться с другой стороны</translation>
+        </message>
+        <message>
             <source>Jump To Position</source>
             <translation>Перейти на позицию</translation>
         </message>
@@ -1362,10 +1374,6 @@ Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.</source>
         <message>
             <source>Jump To Random</source>
             <translation>Перейти в случайное место</translation>
-        </message>
-        <message>
-            <source>Bounce</source>
-            <translation>Отскочить</translation>
         </message>
         <message>
             <source>Move Towards Point</source>

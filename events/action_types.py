@@ -595,6 +595,33 @@ ACTION_TYPES = {
         parameters=[]
     ),
 
+    "bounce": ActionType(
+        name="bounce",
+        display_name="Bounce",
+        description="Bounce off solid objects",
+        category="Movement",
+        icon="",
+        parameters=[]
+    ),
+
+    "move_to_contact": ActionType(
+        name="move_to_contact",
+        display_name="Move to Contact",
+        description="Move until touching a solid object",
+        category="Movement",
+        icon="🎯",
+        parameters=[]
+    ),
+
+    "wrap_around_room": ActionType(
+        name="wrap_around_room",
+        display_name="Wrap Around Room",
+        description="Wrap to opposite side of the room",
+        category="Movement",
+        icon="🔄",
+        parameters=[]
+    ),
+
     "set_speed": ActionType(
         name="set_speed",
         display_name="Set Speed",

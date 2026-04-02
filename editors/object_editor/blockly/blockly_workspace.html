@@ -49,6 +49,7 @@
         .blocklyToolbox {
             background-color: #2d2d2d !important;
             min-width: 180px !important;
+            padding-bottom: 20px !important;
         }
         .blocklyToolboxCategory {
             padding: 6px 4px !important;
@@ -1464,6 +1465,12 @@
             theme: darkTheme
         });
 
+        // Increase flyout bottom margin so the last block is fully visible when scrolling
+        var flyout = workspace.getFlyout();
+        if (flyout) {
+            flyout.MARGIN = 24;
+        }
+
         // Resize Blockly when the window/container changes size
         window.addEventListener('resize', function() {
             Blockly.svgResize(workspace);
@@ -2733,6 +2740,9 @@
             xml += '<block type="logic_boolean"></block>';
             xml += '</category>';
 
+            // Track which custom categories have been merged into hardcoded ones
+            var mergedCustomCats = {};
+
             // Generate categories based on config
             for (var categoryName in categories) {
                 var category = categories[categoryName];
@@ -2742,7 +2752,7 @@
                     continue;
                 }
 
-                // Filter blocks
+                // Filter hardcoded blocks
                 var categoryBlocks = [];
                 for (var i = 0; i < category.blocks.length; i++) {
                     var blockXml = category.blocks[i];
@@ -2753,6 +2763,21 @@
                     }
                 }
 
+                // Merge dynamic blocks that belong to this same category
+                if (customCategories[categoryName]) {
+                    var customBlocks = customCategories[categoryName].blocks;
+                    for (var j = 0; j < customBlocks.length; j++) {
+                        var customBlockType = extractBlockType(customBlocks[j]);
+                        // Dynamic blocks use "custom_" prefix but presets use
+                        // the base name, so check both forms
+                        var baseName = customBlockType.replace(/^custom_/, '');
+                        if (showAll || enabledBlocks.has(customBlockType) || enabledBlocks.has(baseName)) {
+                            categoryBlocks.push(customBlocks[j]);
+                        }
+                    }
+                    mergedCustomCats[categoryName] = true;
+                }
+
                 // Only add category if it has blocks
                 if (categoryBlocks.length > 0) {
                     xml += '<category name="' + getCategoryMessage(categoryName, window.BLOCKLY_LANG) + '" colour="' + category.color + '">';
@@ -2761,8 +2786,9 @@
                 }
             }
 
-            // Append dynamically registered custom categories
+            // Append dynamically registered custom categories (only those not merged)
             for (var customName in customCategories) {
+                if (mergedCustomCats[customName]) continue;
                 var custom = customCategories[customName];
                 if (custom.blocks.length > 0) {
                     xml += '<category name="' + getCategoryMessage(customName, window.BLOCKLY_LANG) + '" colour="' + custom.color + '">';
@@ -2903,7 +2929,9 @@
                     };
                 })(blockType, def);
 
-                // Add to dynamic toolbox category
+                // Add to dynamic toolbox category. If the category already exists
+                // in the hardcoded categories dict, append blocks there instead of
+                // creating a duplicate custom category.
                 var cat = def.category || 'Custom';
                 if (!customCategories[cat]) {
                     customCategories[cat] = {

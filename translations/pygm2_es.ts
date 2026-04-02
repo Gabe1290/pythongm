@@ -3319,6 +3319,18 @@ Haga clic derecho en Flecha izquierda, Flecha derecha, Flecha arriba o Flecha ab
             <translation>Invertir vertical</translation>
         </message>
         <message>
+            <source>Bounce</source>
+            <translation>Rebotar</translation>
+        </message>
+        <message>
+            <source>Move to Contact</source>
+            <translation>Mover al contacto</translation>
+        </message>
+        <message>
+            <source>Wrap Around Room</source>
+            <translation>Reaparecer en el otro lado</translation>
+        </message>
+        <message>
             <source>Jump To Position</source>
             <translation>Ir a la posición</translation>
         </message>
@@ -3329,10 +3341,6 @@ Haga clic derecho en Flecha izquierda, Flecha derecha, Flecha arriba o Flecha ab
         <message>
             <source>Jump To Random</source>
             <translation>Ir a lugar aleatorio</translation>
-        </message>
-        <message>
-            <source>Bounce</source>
-            <translation>Rebotar</translation>
         </message>
         <message>
             <source>Move Towards Point</source>

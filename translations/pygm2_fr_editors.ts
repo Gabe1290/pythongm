@@ -1352,6 +1352,18 @@ Faites un clic droit sur Flèche gauche, Flèche droite, Flèche haut ou Flèche
             <translation>Inverser verticalement</translation>
         </message>
         <message>
+            <source>Bounce</source>
+            <translation>Rebondir</translation>
+        </message>
+        <message>
+            <source>Move to Contact</source>
+            <translation>Déplacer au contact</translation>
+        </message>
+        <message>
+            <source>Wrap Around Room</source>
+            <translation>Réapparaître de l'autre côté</translation>
+        </message>
+        <message>
             <source>Jump To Position</source>
             <translation>Aller à la position</translation>
         </message>
@@ -1362,10 +1374,6 @@ Faites un clic droit sur Flèche gauche, Flèche droite, Flèche haut ou Flèche
         <message>
             <source>Jump To Random</source>
             <translation>Aller aléatoirement</translation>
-        </message>
-        <message>
-            <source>Bounce</source>
-            <translation>Rebondir</translation>
         </message>
         <message>
             <source>Move Towards Point</source>

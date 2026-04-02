@@ -1352,6 +1352,18 @@ Klicken Sie mit der rechten Maustaste auf Pfeil links, Pfeil rechts, Pfeil oben 
             <translation>Vertikal umkehren</translation>
         </message>
         <message>
+            <source>Bounce</source>
+            <translation>Abprallen</translation>
+        </message>
+        <message>
+            <source>Move to Contact</source>
+            <translation>Zum Kontakt bewegen</translation>
+        </message>
+        <message>
+            <source>Wrap Around Room</source>
+            <translation>Auf anderer Seite erscheinen</translation>
+        </message>
+        <message>
             <source>Jump To Position</source>
             <translation>Zur Position springen</translation>
         </message>
@@ -1362,10 +1374,6 @@ Klicken Sie mit der rechten Maustaste auf Pfeil links, Pfeil rechts, Pfeil oben 
         <message>
             <source>Jump To Random</source>
             <translation>Zufällig springen</translation>
-        </message>
-        <message>
-            <source>Bounce</source>
-            <translation>Abprallen</translation>
         </message>
         <message>
             <source>Move Towards Point</source>
