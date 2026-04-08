@@ -11,20 +11,28 @@ from typing import Dict, Any, Optional
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QMainWindow
 from PySide6.QtCore import Signal, Slot, QUrl, QObject, Qt
 from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWebEngineCore import QWebEngineSettings, QWebEnginePage
+from PySide6.QtWebEngineCore import QWebEngineSettings
 from PySide6.QtWebChannel import QWebChannel
 from PySide6.QtGui import QCloseEvent
 
 from core.logger import get_logger
 logger = get_logger(__name__)
 
+try:
+    from PySide6.QtWebEngineCore import QWebEnginePage
 
-class _DebugPage(QWebEnginePage):
-    """QWebEnginePage subclass that forwards JS console messages to stdout"""
-    def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
-        if '[Blockly]' in message or level == QWebEnginePage.JavaScriptConsoleMessageLevel.ErrorMessageLevel:
-            print(f"[JS] {message}")
-        super().javaScriptConsoleMessage(level, message, lineNumber, sourceID)
+    class _DebugPage(QWebEnginePage):
+        """QWebEnginePage subclass that forwards JS console messages to stdout"""
+        def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
+            try:
+                is_error = (level == QWebEnginePage.JavaScriptConsoleMessageLevel.ErrorMessageLevel)
+            except Exception:
+                is_error = False
+            if '[Blockly]' in message or is_error:
+                print(f"[JS] {message}")
+            super().javaScriptConsoleMessage(level, message, lineNumber, sourceID)
+except Exception:
+    _DebugPage = None
 
 
 class BlocklyBridge(QObject):
@@ -147,10 +155,11 @@ class BlocklyWidget(QWidget):
 
         layout.addLayout(toolbar)
 
-        # Web view for Blockly with debug page for JS console forwarding
+        # Web view for Blockly (with optional debug page for JS console forwarding)
         self.web_view = QWebEngineView()
-        self._debug_page = _DebugPage(self.web_view)
-        self.web_view.setPage(self._debug_page)
+        if _DebugPage is not None:
+            self._debug_page = _DebugPage(self.web_view)
+            self.web_view.setPage(self._debug_page)
         self.web_view.setMinimumHeight(200)
 
         # Hide web view until loaded to prevent visual flickering
