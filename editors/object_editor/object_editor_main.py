@@ -25,7 +25,9 @@ from .object_properties_panel import ObjectPropertiesPanel
 from .object_events_panel import ObjectEventsPanel
 from .thymio_events_panel import ThymioEventsPanel
 from .python_syntax_highlighter import PythonSyntaxHighlighter
-from .blockly_widget import BlocklyVisualProgrammingTab
+# Lazy import: BlocklyVisualProgrammingTab uses QtWebEngine which can
+# crash in some PyInstaller builds. Imported on first use instead.
+BlocklyVisualProgrammingTab = None
 from ..object_editor_components import ActionListWidget, VisualScriptingArea
 from .python_code_parser import PythonToActionsParser, ActionsToPythonGenerator, events_to_python
 from .sync_coordinator import SyncCoordinator, SyncSource, SyncContext
@@ -551,15 +553,29 @@ class ObjectEditor(BaseEditor):
 
     def create_visual_programming_tab(self) -> QWidget:
         """Create the visual programming tab with Blockly"""
-        # Create Blockly visual programming tab
-        self.blockly_tab = BlocklyVisualProgrammingTab()
+        try:
+            # Lazy import to avoid crash if QtWebEngine is unavailable
+            from .blockly_widget import BlocklyVisualProgrammingTab
 
-        # Connect signals
-        self.blockly_tab.events_modified.connect(self.on_blockly_events_modified)
-        self.blockly_tab.sync_requested.connect(self.on_blockly_sync_requested)
-        self.blockly_tab.config_changed.connect(self.on_blockly_config_changed)
+            # Create Blockly visual programming tab
+            self.blockly_tab = BlocklyVisualProgrammingTab()
 
-        return self.blockly_tab
+            # Connect signals
+            self.blockly_tab.events_modified.connect(self.on_blockly_events_modified)
+            self.blockly_tab.sync_requested.connect(self.on_blockly_sync_requested)
+            self.blockly_tab.config_changed.connect(self.on_blockly_config_changed)
+
+            return self.blockly_tab
+        except Exception as e:
+            logger.error(f"Failed to create Blockly tab: {e}")
+            import traceback
+            traceback.print_exc()
+            # Return a fallback placeholder so the object editor still opens
+            self.blockly_tab = None
+            fallback = QLabel(self.tr("Blockly visual programming is not available.\n\n"
+                                       "Error: {0}").format(str(e)))
+            fallback.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            return fallback
 
     def on_blockly_config_changed(self, config):
         """Handle Blockly configuration change - update events panel"""
@@ -1173,11 +1189,9 @@ class ObjectEditor(BaseEditor):
     def _sync_events_to_blockly(self):
         """Sync current events to Blockly visual programming tab"""
         if not hasattr(self, 'blockly_tab') or not self.blockly_tab:
-            print("[SYNC] No blockly_tab available")
             return
 
         if not hasattr(self, 'events_panel') or not self.events_panel:
-            print("[SYNC] No events_panel available")
             return
 
         # Get current events data
