@@ -3175,9 +3175,18 @@ class PyGameMakerIDE(QMainWindow):
 
         except Exception as e:
             import traceback
+            tb = traceback.format_exc()
             traceback.print_exc()
+            # Write crash log for GUI-only builds (no console)
+            try:
+                from pathlib import Path
+                crash_log = Path.home() / 'pygamemaker_crash.log'
+                with open(crash_log, 'a') as f:
+                    f.write(f"\n{'='*60}\nObject editor crash:\n{tb}\n")
+            except Exception:
+                pass
             QMessageBox.critical(self, self.tr("Error"),
-                            self.tr("Failed to open object editor: {0}").format(e))
+                            self.tr("Failed to open object editor:\n\n{0}").format(tb))
 
     def open_sprite_editor(self, sprite_name: str, sprite_data: dict):
         """Open a sprite in the sprite editor"""
