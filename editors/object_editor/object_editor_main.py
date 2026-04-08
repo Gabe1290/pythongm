@@ -422,18 +422,17 @@ class ObjectEditor(BaseEditor):
         # ✅ TRANSLATABLE: Tab titles
         self.center_tabs.addTab(traditional_tab, self.tr("📋 Event List"))
 
-        logger.debug("Creating visual programming tab...")
-        # Tab 2: Visual Programming with Blockly (ENABLED!)
-        try:
-            visual_tab = self.create_visual_programming_tab()
-            visual_tab_index = self.center_tabs.addTab(visual_tab, self.tr("🧩 Blockly"))
-            self.center_tabs.setTabEnabled(visual_tab_index, True)  # NOW ENABLED!
-            self.center_tabs.setTabToolTip(visual_tab_index, self.tr("Scratch-like block programming"))
-            logger.debug("Blockly visual programming tab created and ENABLED")
-        except Exception as e:
-            logger.error(f"Error creating visual programming tab: {e}")
-            import traceback
-            traceback.print_exc()
+        logger.debug("Creating visual programming tab placeholder...")
+        # Tab 2: Visual Programming with Blockly — deferred until tab is selected
+        # to avoid QtWebEngine segfaults in PyInstaller builds
+        self._blockly_placeholder = QWidget()
+        self._blockly_tab_index = self.center_tabs.addTab(
+            self._blockly_placeholder, self.tr("🧩 Blockly"))
+        self.center_tabs.setTabEnabled(self._blockly_tab_index, True)
+        self.center_tabs.setTabToolTip(
+            self._blockly_tab_index, self.tr("Scratch-like block programming"))
+        self._blockly_initialized = False
+        self.center_tabs.currentChanged.connect(self._on_center_tab_changed)
 
         logger.debug("Creating code editor tab...")
         # Tab 3: Code Editor (ENABLED - Editable with Syntax Highlighting)
@@ -576,6 +575,20 @@ class ObjectEditor(BaseEditor):
                                        "Error: {0}").format(str(e)))
             fallback.setAlignment(Qt.AlignmentFlag.AlignCenter)
             return fallback
+
+    def _on_center_tab_changed(self, index):
+        """Initialize Blockly lazily when its tab is first selected"""
+        if index == self._blockly_tab_index and not self._blockly_initialized:
+            self._blockly_initialized = True
+            visual_tab = self.create_visual_programming_tab()
+            self.center_tabs.removeTab(self._blockly_tab_index)
+            self._blockly_tab_index = self.center_tabs.insertTab(
+                index, visual_tab, self.tr("🧩 Blockly"))
+            self.center_tabs.setCurrentIndex(self._blockly_tab_index)
+            self.center_tabs.setTabToolTip(
+                self._blockly_tab_index, self.tr("Scratch-like block programming"))
+            # Sync events into the newly created Blockly tab
+            self._sync_events_to_blockly()
 
     def on_blockly_config_changed(self, config):
         """Handle Blockly configuration change - update events panel"""
