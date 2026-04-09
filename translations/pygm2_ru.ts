@@ -5084,14 +5084,10 @@ Would you like to:
             <location filename="../core/ide_window.py" line="379" />
             <source>Language changed to {0}.
 
-The IDE needs to restart for the language change to take effect.
-
-Do you want to restart now?</source>
+Please close and restart the IDE for the change to take effect.</source>
             <translation>Язык изменён на {0}.
 
-Для применения изменений необходимо перезапустить IDE.
-
-Перезапустить сейчас?</translation>
+Закройте и перезапустите IDE, чтобы изменения вступили в силу.</translation>
         </message>
         <message>
             <source>Configure &amp;Thymio Blocks...</source>

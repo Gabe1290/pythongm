@@ -3552,14 +3552,10 @@ Some changes may require restarting the IDE to take effect.</source>
             <location filename="../core/ide_window.py" line="379" />
             <source>Language changed to {0}.
 
-The IDE needs to restart for the language change to take effect.
-
-Do you want to restart now?</source>
+Please close and restart the IDE for the change to take effect.</source>
             <translation>Мову змінено на {0}.
 
-IDE потрібно перезапустити, щоб зміна мови набула чинності.
-
-Бажаєте перезапустити зараз?</translation>
+Закрийте та перезапустіть IDE, щоб зміни набули чинності.</translation>
         </message>
         <message>
             <location filename="../core/ide_window.py" line="406" />
