@@ -419,10 +419,15 @@ class PyGameMakerIDE(QMainWindow):
                 logger.info("💾 Config saved before restart")
 
                 # Restart the application
-                QCoreApplication.quit()
                 import subprocess
                 import sys
-                subprocess.Popen([sys.executable] + sys.argv)
+                if getattr(sys, 'frozen', False):
+                    # PyInstaller build: sys.executable is the .exe itself
+                    subprocess.Popen([sys.executable] + sys.argv[1:])
+                else:
+                    # Running from source
+                    subprocess.Popen([sys.executable] + sys.argv)
+                QCoreApplication.quit()
         else:
             # Translation file not found
             # Use QCoreApplication.translate() for consistency
