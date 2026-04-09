@@ -421,9 +421,31 @@ class PyGameMakerIDE(QMainWindow):
                 # Restart the application
                 import subprocess
                 import sys
-                if getattr(sys, 'frozen', False):
-                    # PyInstaller build: sys.executable is the .exe itself
-                    subprocess.Popen([sys.executable] + sys.argv[1:])
+                import os
+                if getattr(sys, 'frozen', False) and sys.platform == 'win32':
+                    # PyInstaller one-file build on Windows: launch the .exe
+                    # as a fully detached process so it gets its own temp
+                    # extraction directory and doesn't conflict with cleanup.
+                    DETACHED = 0x00000008  # DETACHED_PROCESS
+                    CREATE_NEW = 0x00000010  # CREATE_NEW_CONSOLE
+                    env = os.environ.copy()
+                    env.pop('_MEIPASS2', None)  # Clear PyInstaller internal env
+                    subprocess.Popen(
+                        [sys.executable] + sys.argv[1:],
+                        creationflags=DETACHED | CREATE_NEW,
+                        close_fds=True,
+                        env=env,
+                    )
+                elif getattr(sys, 'frozen', False):
+                    # PyInstaller on macOS/Linux
+                    env = os.environ.copy()
+                    env.pop('_MEIPASS2', None)
+                    subprocess.Popen(
+                        [sys.executable] + sys.argv[1:],
+                        start_new_session=True,
+                        close_fds=True,
+                        env=env,
+                    )
                 else:
                     # Running from source
                     subprocess.Popen([sys.executable] + sys.argv)
