@@ -387,69 +387,23 @@ class PyGameMakerIDE(QMainWindow):
         QCoreApplication.processEvents()
 
         if success or language_code == 'en':
-            # Ask if user wants to restart now
+            # Save config to ensure language setting is persisted
+            from utils.config import Config
+            Config.save()
+
+            # Inform user to restart manually
             if language_code == 'en':
-                # For English, use hardcoded strings since there's no translator
                 title = "Language Changed"
                 message = (
                     f"Language changed to {lang_name}.\n\n"
-                    "The IDE needs to restart for the language change to take effect.\n\n"
-                    "Do you want to restart now?")
+                    "Please close and restart the IDE for the change to take effect.")
             else:
-                # For other languages, use QCoreApplication.translate() to get fresh translations
-                # This ensures the dialog appears in the NEW language, not the old one
                 title = QCoreApplication.translate("PyGameMakerIDE", "Language Changed")
                 message = QCoreApplication.translate("PyGameMakerIDE",
                     "Language changed to {0}.\n\n"
-                    "The IDE needs to restart for the language change to take effect.\n\n"
-                    "Do you want to restart now?").format(lang_name)
+                    "Please close and restart the IDE for the change to take effect.").format(lang_name)
 
-            reply = QMessageBox.question(
-                self,
-                title,
-                message,
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.Yes
-            )
-
-            if reply == QMessageBox.Yes:
-                # Save config to ensure language setting is persisted
-                from utils.config import Config
-                Config.save()
-                logger.info("💾 Config saved before restart")
-
-                # Restart the application
-                import subprocess
-                import sys
-                import os
-                if getattr(sys, 'frozen', False) and sys.platform == 'win32':
-                    # PyInstaller one-file build on Windows: launch the .exe
-                    # as a fully detached process so it gets its own temp
-                    # extraction directory and doesn't conflict with cleanup.
-                    DETACHED = 0x00000008  # DETACHED_PROCESS
-                    CREATE_NEW = 0x00000010  # CREATE_NEW_CONSOLE
-                    env = os.environ.copy()
-                    env.pop('_MEIPASS2', None)  # Clear PyInstaller internal env
-                    subprocess.Popen(
-                        [sys.executable] + sys.argv[1:],
-                        creationflags=DETACHED | CREATE_NEW,
-                        close_fds=True,
-                        env=env,
-                    )
-                elif getattr(sys, 'frozen', False):
-                    # PyInstaller on macOS/Linux
-                    env = os.environ.copy()
-                    env.pop('_MEIPASS2', None)
-                    subprocess.Popen(
-                        [sys.executable] + sys.argv[1:],
-                        start_new_session=True,
-                        close_fds=True,
-                        env=env,
-                    )
-                else:
-                    # Running from source
-                    subprocess.Popen([sys.executable] + sys.argv)
-                QCoreApplication.quit()
+            QMessageBox.information(self, title, message)
         else:
             # Translation file not found
             # Use QCoreApplication.translate() for consistency
