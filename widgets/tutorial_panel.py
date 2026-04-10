@@ -286,6 +286,12 @@ class TutorialPanel(QDialog):
             if hasattr(self, 'base_tutorials_path') and self.base_tutorials_path:
                 search_paths.append(str(self.base_tutorials_path))
             self.content_browser.setSearchPaths(search_paths)
+            # Qt's QTextBrowser doesn't reliably resolve the generic "monospace"
+            # CSS family to an actual monospace font, so map it explicitly.
+            html_content = html_content.replace(
+                "font-family: monospace",
+                "font-family: 'Courier New', Courier, monospace"
+            )
             self.content_browser.setHtml(html_content)
 
         except Exception as e:
