@@ -71,16 +71,16 @@
         <ol>
             <li>Double-cliquez sur <code>obj_crate</code> pour ouvrir l'éditeur d'objets</li>
             <li>Cliquez sur l'onglet <strong>Blockly</strong></li>
-            <li>Ajoutez un événement <strong>Step</strong> avec une vérification si/sinon :</li>
+            <li>Ajoutez un événement <strong>Pas</strong> avec une vérification si/sinon :</li>
         </ol>
         <div class="blockly-group">
-            <span class="block block-event">Step</span><br>
+            <span class="block block-event">Pas</span><br>
             <span class="block block-control block-indent">Si en collision avec <span class="block-val">obj_target</span></span><br>
             <span class="block block-instance block-indent2">Définir le sprite à <span class="block-val">spr_crate_ok</span></span><br>
             <span class="block block-control block-indent">Sinon</span><br>
             <span class="block block-instance block-indent2">Définir le sprite à <span class="block-val">spr_crate</span></span>
         </div>
-        <p>Trouvez <strong>Step</strong> dans la catégorie <em>Événements</em>.
+        <p>Trouvez <strong>Pas</strong> dans la catégorie <em>Événements</em>.
         Puis trouvez <strong>Vérifier collision</strong> dans la catégorie <em>Contrôle</em> et tapez <code>obj_target</code>.
         Insérez un bloc <strong>Définir le sprite</strong> (depuis <em>Instance</em>) pour le cas « alors » avec <code>spr_crate_ok</code>.
         Ajoutez une section <strong>Sinon</strong> avec un autre bloc <strong>Définir le sprite</strong> pour <code>spr_crate</code>.</p>
@@ -112,11 +112,11 @@
             <li>Ajoutez un événement <strong>Événement Dessin</strong> pour afficher les instructions :</li>
         </ol>
         <div class="blockly-group">
-            <span class="block block-event">Draw</span><br>
-            <span class="block block-draw block-indent">Draw Text <span class="block-val">"Poussez les caisses sur les cibles !"</span> at <span class="block-val">10</span>, <span class="block-val">10</span></span>
+            <span class="block block-event">Dessiner</span><br>
+            <span class="block block-draw block-indent">Dessiner du texte <span class="block-val">"Poussez les caisses sur les cibles !"</span> at <span class="block-val">10</span>, <span class="block-val">10</span></span>
         </div>
-        <p>Trouvez <strong>Draw</strong> dans la catégorie <em>Événements</em>.
-        Puis trouvez <strong>Draw Text</strong> dans la catégorie <em>Dessin</em>.
+        <p>Trouvez <strong>Dessiner</strong> dans la catégorie <em>Événements</em>.
+        Puis trouvez <strong>Dessiner du texte</strong> dans la catégorie <em>Dessin</em>.
         Tapez <code>Poussez les caisses sur les cibles !</code> comme texte, et réglez X à <strong>10</strong>, Y à <strong>10</strong>.</p>
     </div>
 
@@ -133,7 +133,7 @@
 
     <div class="step">
         <ol>
-            <li>Vous devriez avoir <strong>2 blocs d'événements</strong> (Draw + Appui clavier R)</li>
+            <li>Vous devriez avoir <strong>2 blocs d'événements</strong> (Dessiner + Appui clavier R)</li>
             <li>Cliquez sur <strong>Appliquer aux événements</strong> pour enregistrer</li>
         </ol>
     </div>
@@ -196,7 +196,7 @@ P = Joueur    C = Caisse
         <ul>
             <li><strong>Niveaux plus difficiles :</strong> Créez de nouvelles salles avec plus de caisses et des couloirs plus étroits</li>
             <li><strong>Compteur de mouvements :</strong> Ajoutez une variable pour compter le nombre de mouvements du joueur</li>
-            <li><strong>Plusieurs salles :</strong> Créez plusieurs salles avec une difficulté croissante et utilisez <code>Go to next room</code> lorsque toutes les caisses sont placées</li>
+            <li><strong>Plusieurs salles :</strong> Créez plusieurs salles avec une difficulté croissante et utilisez <code>Aller à la salle suivante</code> lorsque toutes les caisses sont placées</li>
             <li><strong>Fonction annuler :</strong> Enregistrez la position précédente et permettez au joueur d'appuyer sur U pour annuler le dernier mouvement</li>
         </ul>
     </div>

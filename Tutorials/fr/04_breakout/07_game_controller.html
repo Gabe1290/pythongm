@@ -54,9 +54,9 @@
             <li>Construisez ces blocs :</li>
         </ol>
         <div class="blockly-group">
-            <span class="block block-event">Create Event</span><br>
-            <span class="block block-score block-indent">Set lives to <span class="block-num">3</span></span><br>
-            <span class="block block-score block-indent">Set score to <span class="block-num">0</span></span>
+            <span class="block block-event">Événement Créer</span><br>
+            <span class="block block-score block-indent">Définir les vies à <span class="block-num">3</span></span><br>
+            <span class="block block-score block-indent">Définir le score à <span class="block-num">0</span></span>
         </div>
         <p>L'Événement Création s'exécute une seule fois au démarrage du jeu.
         Il donne au joueur 3 vies et remet le score à zéro.</p>
@@ -67,9 +67,9 @@
     <div class="step">
         <p>Ajoutez un deuxième bloc d'événement pour afficher le score et les vies à l'écran :</p>
         <div class="blockly-group">
-            <span class="block block-event">Draw Event</span><br>
-            <span class="block block-score block-indent">Draw score at x: <span class="block-num">10</span> y: <span class="block-num">10</span></span><br>
-            <span class="block block-score block-indent">Draw lives at x: <span class="block-num">200</span> y: <span class="block-num">10</span></span>
+            <span class="block block-event">Événement Dessiner</span><br>
+            <span class="block block-score block-indent">Afficher le score à x: <span class="block-num">10</span> y: <span class="block-num">10</span></span><br>
+            <span class="block block-score block-indent">Afficher les vies à x: <span class="block-num">200</span> y: <span class="block-num">10</span></span>
         </div>
         <p>L'Événement Dessin s'exécute à chaque image. Il dessine le texte du score et des vies à l'écran.</p>
     </div>
@@ -90,11 +90,11 @@
             <li>Ajoutez un nouveau bloc <strong>avant</strong> le bloc de saut :</li>
         </ol>
         <div class="blockly-group">
-            <span class="block block-event">When colliding with obj_death_zone</span><br>
-            <span class="block block-score block-indent">Add to lives <span class="block-num">-1</span></span><br>
-            <span class="block block-move block-indent">Jump to x: <span class="block-num">320</span> y: <span class="block-num">400</span></span>
+            <span class="block block-event">Collision avec obj_death_zone</span><br>
+            <span class="block block-score block-indent">Ajouter aux vies <span class="block-num">-1</span></span><br>
+            <span class="block block-move block-indent">Aller à x: <span class="block-num">320</span> y: <span class="block-num">400</span></span>
         </div>
-        <p><strong>Add to lives -1</strong> (depuis <em>Score/Lives/Health</em>) soustrait une vie
+        <p><strong>Ajouter aux vies -1</strong> (depuis <em>Score/Vies/Santé</em>) soustrait une vie
         chaque fois que la balle tombe sous la raquette.</p>
     </div>
 

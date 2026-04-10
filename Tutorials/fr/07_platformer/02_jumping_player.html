@@ -70,11 +70,11 @@
     <h2>Activer la gravité (Événement Création)</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Create</span><br>
-            <span class="block block-move block-indent">Set Gravity: direction <span class="block-val">270</span>, strength <span class="block-val">0.5</span></span>
+            <span class="block block-event">Créer</span><br>
+            <span class="block block-move block-indent">Définir la gravité : direction <span class="block-val">270</span>, force <span class="block-val">0.5</span></span>
         </div>
-        <p>Trouvez <strong>Create</strong> dans la catégorie <em>Events</em>.
-        Puis trouvez <strong>Définir la gravité</strong> dans la catégorie <em>Movement</em>.
+        <p>Trouvez <strong>Créer</strong> dans la catégorie <em>Événements</em>.
+        Puis trouvez <strong>Définir la gravité</strong> dans la catégorie <em>Mouvement</em>.
         Réglez la direction à <strong>270</strong> (vers le bas) et la force à <strong>0.5</strong>.</p>
     </div>
 
@@ -86,27 +86,27 @@
     <h2>Se déplacer à gauche</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Keyboard: Left (held)</span><br>
-            <span class="block block-move block-indent">Set horizontal speed to <span class="block-val">-4</span></span>
+            <span class="block block-event">Clavier : Gauche (maintenue)</span><br>
+            <span class="block block-move block-indent">Définir la vitesse horizontale à <span class="block-val">-4</span></span>
         </div>
-        <p>Trouvez <strong>Clavier (maintenu)</strong> dans <em>Events</em>, sélectionnez <strong>Left</strong>.
-        Puis ajoutez <strong>Définir la vitesse horizontale</strong> depuis <em>Movement</em> avec la valeur <strong>-4</strong>
+        <p>Trouvez <strong>Clavier (maintenue)</strong> dans <em>Événements</em>, sélectionnez <strong>Gauche</strong>.
+        Puis ajoutez <strong>Définir la vitesse horizontale</strong> depuis <em>Mouvement</em> avec la valeur <strong>-4</strong>
         (négatif = gauche).</p>
     </div>
 
     <h2>Se déplacer à droite</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Keyboard: Right (held)</span><br>
-            <span class="block block-move block-indent">Set horizontal speed to <span class="block-val">4</span></span>
+            <span class="block block-event">Clavier : Droite (maintenue)</span><br>
+            <span class="block block-move block-indent">Définir la vitesse horizontale à <span class="block-val">4</span></span>
         </div>
     </div>
 
     <h2>Arrêter quand aucune touche n'est pressée</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Keyboard: No key</span><br>
-            <span class="block block-move block-indent">Set horizontal speed to <span class="block-val">0</span></span>
+            <span class="block block-event">Clavier : Aucune touche</span><br>
+            <span class="block block-move block-indent">Définir la vitesse horizontale à <span class="block-val">0</span></span>
         </div>
         <p>Cela arrête le mouvement horizontal quand aucune touche n'est pressée.
         Nous utilisons <strong>Définir la vitesse horizontale à 0</strong> (PAS « Arrêter le mouvement ») pour que la gravité continue de fonctionner !</p>
@@ -120,10 +120,10 @@
     <h2>Sauter</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Keyboard Press: Up</span><br>
-            <span class="block block-move block-indent">Set vertical speed to <span class="block-val">-10</span></span>
+            <span class="block block-event">Appui clavier : Haut</span><br>
+            <span class="block block-move block-indent">Définir la vitesse verticale à <span class="block-val">-10</span></span>
         </div>
-        <p>Trouvez <strong>Appui clavier</strong> dans <em>Events</em>, sélectionnez <strong>Up</strong>.
+        <p>Trouvez <strong>Appui clavier</strong> dans <em>Événements</em>, sélectionnez <strong>Haut</strong>.
         Réglez la vitesse verticale à <strong>-10</strong> (négatif = vers le haut).
         L'événement <em>Press</em> ne se déclenche qu'une seule fois, donnant une impulsion de saut unique.</p>
     </div>
@@ -131,10 +131,10 @@
     <h2>Collision avec le sol</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">When colliding with obj_ground</span><br>
-            <span class="block block-move block-indent">Stop movement</span>
+            <span class="block block-event">Collision avec obj_ground</span><br>
+            <span class="block block-move block-indent">Arrêter le mouvement</span>
         </div>
-        <p>Trouvez <strong>Collision</strong> dans <em>Events</em>, tapez <code>obj_ground</code>.
+        <p>Trouvez <strong>Collision</strong> dans <em>Événements</em>, tapez <code>obj_ground</code>.
         Ajoutez <strong>Arrêter le mouvement</strong> à l'intérieur. Cela empêche le joueur de passer à travers
         le sol et l'arrête quand il touche les murs.</p>
     </div>
@@ -143,7 +143,7 @@
     <div class="step">
         <ol>
             <li>Vous devriez avoir <strong>6 blocs d'événements</strong> dans votre espace de travail
-            (Create + Left + Right + No key + Press Up + Collision)</li>
+            (Créer + Gauche + Droite + Aucune touche + Appui Haut + Collision)</li>
             <li>Cliquez sur le bouton <strong>Appliquer aux événements</strong> pour sauvegarder</li>
         </ol>
     </div>

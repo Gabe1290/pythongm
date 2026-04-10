@@ -60,32 +60,32 @@
     <h2>Initialiser le score et les vies (Événement Création)</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Create</span><br>
-            <span class="block block-score block-indent">Set score to <span class="block-val">0</span></span><br>
-            <span class="block block-score block-indent">Set lives to <span class="block-val">3</span></span>
+            <span class="block block-event">Créer</span><br>
+            <span class="block block-score block-indent">Définir le score à <span class="block-val">0</span></span><br>
+            <span class="block block-score block-indent">Définir les vies à <span class="block-val">3</span></span>
         </div>
-        <p>Trouvez <strong>Create</strong> dans <em>Events</em>.
-        Depuis <em>Score/Lives/Health</em>, ajoutez <strong>Set Score</strong> avec la valeur <strong>0</strong>
-        et <strong>Set Lives</strong> avec la valeur <strong>3</strong>.</p>
+        <p>Trouvez <strong>Créer</strong> dans <em>Événements</em>.
+        Depuis <em>Score/Vies/Santé</em>, ajoutez <strong>Définir le score</strong> avec la valeur <strong>0</strong>
+        et <strong>Définir les vies</strong> avec la valeur <strong>3</strong>.</p>
     </div>
 
     <h2>Dessiner le score et les vies (Événement Dessin)</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Draw</span><br>
-            <span class="block block-draw block-indent">Draw score at x: <span class="block-val">10</span> y: <span class="block-val">10</span></span><br>
-            <span class="block block-draw block-indent">Draw lives at x: <span class="block-val">200</span> y: <span class="block-val">10</span></span>
+            <span class="block block-event">Dessiner</span><br>
+            <span class="block block-draw block-indent">Afficher le score à x: <span class="block-val">10</span> y: <span class="block-val">10</span></span><br>
+            <span class="block block-draw block-indent">Afficher les vies à x: <span class="block-val">200</span> y: <span class="block-val">10</span></span>
         </div>
-        <p>Trouvez <strong>Draw</strong> dans <em>Events</em>.
-        Depuis <em>Score/Lives/Health</em>, ajoutez <strong>Draw Score</strong> à la position (10, 10)
-        et <strong>Draw Lives</strong> à la position (200, 10).
+        <p>Trouvez <strong>Dessiner</strong> dans <em>Événements</em>.
+        Depuis <em>Score/Vies/Santé</em>, ajoutez <strong>Afficher le score</strong> à la position (10, 10)
+        et <strong>Afficher les vies</strong> à la position (200, 10).
         Le score et les vies apparaîtront en haut à gauche de l'écran.</p>
     </div>
 
     <h2>Appliquer vos blocs</h2>
     <div class="step">
         <ol>
-            <li>Vous devriez avoir <strong>2 blocs d'événements</strong> (Create + Draw)</li>
+            <li>Vous devriez avoir <strong>2 blocs d'événements</strong> (Créer + Dessiner)</li>
             <li>Cliquez sur <strong>Appliquer aux événements</strong> pour sauvegarder</li>
         </ol>
     </div>
@@ -95,12 +95,12 @@
         <p>Maintenant ouvrez l'éditeur Blockly pour <code>obj_player</code> et mettez à jour la collision avec les pics.
         Trouvez le bloc de collision existant avec <code>obj_spike</code> et ajoutez un bloc avant le redémarrage :</p>
         <div class="blockly-group">
-            <span class="block block-event">When colliding with obj_spike</span><br>
-            <span class="block block-score block-indent">Add to lives <span class="block-val">-1</span></span><br>
-            <span class="block block-room block-indent">Restart room</span>
+            <span class="block block-event">Collision avec obj_spike</span><br>
+            <span class="block block-score block-indent">Ajouter aux vies <span class="block-val">-1</span></span><br>
+            <span class="block block-room block-indent">Recommencer la salle</span>
         </div>
-        <p>Ajoutez <strong>Add to Lives</strong> (depuis <em>Score/Lives/Health</em>) avec la valeur <strong>-1</strong>
-        avant le bloc Redémarrer la salle. Maintenant chaque pic touché coûte une vie !</p>
+        <p>Ajoutez <strong>Ajouter aux vies</strong> (depuis <em>Score/Vies/Santé</em>) avec la valeur <strong>-1</strong>
+        avant le bloc Recommencer la salle. Maintenant chaque pic touché coûte une vie !</p>
         <ol>
             <li>Cliquez sur <strong>Appliquer aux événements</strong> pour sauvegarder</li>
         </ol>

@@ -65,19 +65,19 @@
     <h2>Déplacement à gauche</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Keyboard: Left (held)</span><br>
-            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">-8</span></span>
+            <span class="block block-event">Clavier : Gauche (maintenue)</span><br>
+            <span class="block block-move block-indent">Définir la vitesse horizontale à <span class="block-num">-8</span></span>
         </div>
-        <p>Trouvez <strong>Keyboard (held)</strong> dans <em>Events</em>, sélectionnez <strong>Left</strong>.
-        Puis emboîtez <strong>Set Horizontal Speed</strong> depuis <em>Movement</em> à l'intérieur.
+        <p>Trouvez <strong>Clavier (maintenue)</strong> dans <em>Événements</em>, sélectionnez <strong>Gauche</strong>.
+        Puis emboîtez <strong>Définir la vitesse horizontale</strong> depuis <em>Mouvement</em> à l'intérieur.
         Tapez <strong>-8</strong> (négatif = gauche).</p>
     </div>
 
     <h2>Déplacement à droite</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Keyboard: Right (held)</span><br>
-            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">8</span></span>
+            <span class="block block-event">Clavier : Droite (maintenue)</span><br>
+            <span class="block block-move block-indent">Définir la vitesse horizontale à <span class="block-num">8</span></span>
         </div>
         <p>Comme ci-dessus, mais choisissez <strong>Right</strong> et tapez <strong>8</strong> (positif = droite).</p>
     </div>
@@ -85,8 +85,8 @@
     <h2>Arrêt quand aucune touche n'est pressée</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Keyboard: No key</span><br>
-            <span class="block block-move block-indent">Stop movement</span>
+            <span class="block block-event">Clavier : Aucune touche</span><br>
+            <span class="block block-move block-indent">Arrêter le mouvement</span>
         </div>
         <p>Cela empêche la raquette de glisser indéfiniment quand vous relâchez la touche.</p>
     </div>
@@ -94,8 +94,8 @@
     <h2>Arrêt aux murs latéraux</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">When colliding with obj_wall_side</span><br>
-            <span class="block block-move block-indent">Stop movement</span>
+            <span class="block block-event">Collision avec obj_wall_side</span><br>
+            <span class="block block-move block-indent">Arrêter le mouvement</span>
         </div>
         <p>Cela maintient la raquette à l'intérieur de la zone de jeu.</p>
     </div>
@@ -116,9 +116,9 @@
     <h2>Lancer la balle en mouvement</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">Create Event</span><br>
-            <span class="block block-move block-indent">Set horizontal speed to <span class="block-num">3</span></span><br>
-            <span class="block block-move block-indent">Set vertical speed to <span class="block-num">-3</span></span>
+            <span class="block block-event">Événement Créer</span><br>
+            <span class="block block-move block-indent">Définir la vitesse horizontale à <span class="block-num">3</span></span><br>
+            <span class="block block-move block-indent">Définir la vitesse verticale à <span class="block-num">-3</span></span>
         </div>
         <p>L'Événement Création s'exécute une seule fois au démarrage du jeu.
         Définir les deux vitesses fait bouger la balle en diagonale vers le haut.</p>
@@ -132,8 +132,8 @@
     <h2>Rebond sur les murs latéraux</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">When colliding with obj_wall_side</span><br>
-            <span class="block block-move block-indent">Reverse horizontal movement</span>
+            <span class="block block-event">Collision avec obj_wall_side</span><br>
+            <span class="block block-move block-indent">Inverser le mouvement horizontal</span>
         </div>
         <p>La balle inverse sa direction gauche/droite lorsqu'elle touche un mur latéral.</p>
     </div>
@@ -141,8 +141,8 @@
     <h2>Rebond sur le mur du haut</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">When colliding with obj_wall_top</span><br>
-            <span class="block block-move block-indent">Reverse vertical movement</span>
+            <span class="block block-event">Collision avec obj_wall_top</span><br>
+            <span class="block block-move block-indent">Inverser le mouvement vertical</span>
         </div>
         <p>La balle rebondit vers le bas lorsqu'elle touche le mur du haut.</p>
     </div>
@@ -150,8 +150,8 @@
     <h2>Rebond sur la raquette</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">When colliding with obj_paddle</span><br>
-            <span class="block block-move block-indent">Reverse vertical movement</span>
+            <span class="block block-event">Collision avec obj_paddle</span><br>
+            <span class="block block-move block-indent">Inverser le mouvement vertical</span>
         </div>
         <p>Comme pour le mur du haut &mdash; la balle rebondit vers le haut.</p>
     </div>
@@ -159,8 +159,8 @@
     <h2>La balle tombe hors de l'écran</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">When colliding with obj_death_zone</span><br>
-            <span class="block block-move block-indent">Jump to x: <span class="block-num">320</span> y: <span class="block-num">400</span></span>
+            <span class="block block-event">Collision avec obj_death_zone</span><br>
+            <span class="block block-move block-indent">Aller à x: <span class="block-num">320</span> y: <span class="block-num">400</span></span>
         </div>
         <p>Quand la balle touche la zone de mort en bas, elle réapparaît au-dessus de la raquette.
         Nous ajouterons les vies plus tard &mdash; pour l'instant, la balle revient simplement !</p>

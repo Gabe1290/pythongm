@@ -67,35 +67,35 @@
     <h2>Collecter les pièces</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">When colliding with obj_coin</span><br>
-            <span class="block block-score block-indent">Add to score <span class="block-val">10</span></span><br>
-            <span class="block block-instance block-indent">Destroy other instance</span>
+            <span class="block block-event">Collision avec obj_coin</span><br>
+            <span class="block block-score block-indent">Ajouter au score <span class="block-val">10</span></span><br>
+            <span class="block block-instance block-indent">Détruire l'autre instance</span>
         </div>
-        <p>Trouvez <strong>Collision</strong> dans <em>Events</em>, tapez <code>obj_coin</code>.
-        Ajoutez <strong>Ajouter au score</strong> (depuis <em>Score/Lives/Health</em>) avec la valeur <strong>10</strong>.
-        Puis ajoutez <strong>Détruire l'instance</strong> (depuis <em>Instance</em>) réglé sur <strong>Other</strong>,
+        <p>Trouvez <strong>Collision</strong> dans <em>Événements</em>, tapez <code>obj_coin</code>.
+        Ajoutez <strong>Ajouter au score</strong> (depuis <em>Score/Vies/Santé</em>) avec la valeur <strong>10</strong>.
+        Puis ajoutez <strong>Détruire l'autre instance</strong> (depuis <em>Instance</em>) réglé sur <strong>Autre</strong>,
         pour que la pièce disparaisse quand elle est collectée.</p>
     </div>
 
     <h2>Toucher un pic</h2>
     <div class="danger">
         <div class="blockly-group">
-            <span class="block block-event">When colliding with obj_spike</span><br>
-            <span class="block block-room block-indent">Restart room</span>
+            <span class="block block-event">Collision avec obj_spike</span><br>
+            <span class="block block-room block-indent">Recommencer la salle</span>
         </div>
-        <p>Trouvez <strong>Collision</strong> dans <em>Events</em>, tapez <code>obj_spike</code>.
-        Ajoutez <strong>Redémarrer la salle</strong> (depuis <em>Room</em>) à l'intérieur.
+        <p>Trouvez <strong>Collision</strong> dans <em>Événements</em>, tapez <code>obj_spike</code>.
+        Ajoutez <strong>Recommencer la salle</strong> (depuis <em>Salle</em>) à l'intérieur.
         Quand le joueur touche un pic, le niveau se réinitialise !</p>
     </div>
 
     <h2>Atteindre le drapeau</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">When colliding with obj_flag</span><br>
-            <span class="block block-room block-indent">Show message <span class="block-val">"You Win!"</span></span>
+            <span class="block block-event">Collision avec obj_flag</span><br>
+            <span class="block block-room block-indent">Afficher un message <span class="block-val">"You Win!"</span></span>
         </div>
-        <p>Trouvez <strong>Collision</strong> dans <em>Events</em>, tapez <code>obj_flag</code>.
-        Ajoutez <strong>Afficher un message</strong> (depuis <em>Output</em>) et tapez <strong>You Win!</strong>.
+        <p>Trouvez <strong>Collision</strong> dans <em>Événements</em>, tapez <code>obj_flag</code>.
+        Ajoutez <strong>Afficher un message</strong> (depuis <em>Sortie</em>) et tapez <strong>You Win!</strong>.
         Un message apparaît quand le joueur atteint le drapeau !</p>
     </div>
 

@@ -59,32 +59,32 @@
     <h2>1. Atterrir sur l'aire (Succès !)</h2>
     <div class="step">
         <div class="blockly-group">
-            <span class="block block-event">When colliding with obj_pad</span><br>
-            <span class="block block-move block-indent">Stop movement</span><br>
-            <span class="block block-game block-indent">Show Message <span class="block-val">"Landing successful!"</span></span>
+            <span class="block block-event">Collision avec obj_pad</span><br>
+            <span class="block block-move block-indent">Arrêter le mouvement</span><br>
+            <span class="block block-game block-indent">Afficher un message <span class="block-val">"Landing successful!"</span></span>
         </div>
-        <p>Trouvez <strong>Collision</strong> dans <em>Events</em>, tapez <code>obj_pad</code>.
-        Ajoutez <strong>Arrêter le mouvement</strong> (depuis <em>Movement</em>) pour stopper l'atterrisseur.
-        Puis ajoutez <strong>Afficher un message</strong> (depuis <em>Game</em>) avec votre texte de victoire.</p>
+        <p>Trouvez <strong>Collision</strong> dans <em>Événements</em>, tapez <code>obj_pad</code>.
+        Ajoutez <strong>Arrêter le mouvement</strong> (depuis <em>Mouvement</em>) pour stopper l'atterrisseur.
+        Puis ajoutez <strong>Afficher un message</strong> (depuis <em>Jeu</em>) avec votre texte de victoire.</p>
     </div>
 
     <h2>2. S'écraser sur le sol (Échec !)</h2>
     <div class="danger">
         <div class="blockly-group">
-            <span class="block block-event">When colliding with obj_ground</span><br>
-            <span class="block block-game block-indent">Show Message <span class="block-val">"Crashed!"</span></span><br>
-            <span class="block block-game block-indent">Restart Room</span>
+            <span class="block block-event">Collision avec obj_ground</span><br>
+            <span class="block block-game block-indent">Afficher un message <span class="block-val">"Crashed!"</span></span><br>
+            <span class="block block-game block-indent">Recommencer la salle</span>
         </div>
-        <p>Trouvez <strong>Collision</strong> dans <em>Events</em>, tapez <code>obj_ground</code>.
-        Ajoutez <strong>Afficher un message</strong> (depuis <em>Game</em>) avec le texte de crash,
-        puis <strong>Redémarrer la salle</strong> (depuis <em>Room</em>).
+        <p>Trouvez <strong>Collision</strong> dans <em>Événements</em>, tapez <code>obj_ground</code>.
+        Ajoutez <strong>Afficher un message</strong> (depuis <em>Jeu</em>) avec le texte de crash,
+        puis <strong>Recommencer la salle</strong> (depuis <em>Salle</em>).
         Toucher le sol rocheux réinitialise le niveau !</p>
     </div>
 
     <h2>Appliquer vos blocs</h2>
     <div class="step">
         <ol>
-            <li>Vous devriez maintenant avoir <strong>7 blocs d'événements</strong> au total (Create + 3 clavier + No key + 2 collisions)</li>
+            <li>Vous devriez maintenant avoir <strong>7 blocs d'événements</strong> au total (Créer + 3 clavier + Aucune touche + 2 collisions)</li>
             <li>Cliquez sur <strong>Appliquer aux événements</strong> pour sauvegarder</li>
         </ol>
     </div>
