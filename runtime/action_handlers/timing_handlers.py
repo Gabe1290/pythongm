@@ -18,30 +18,43 @@ logger = get_logger(__name__)
 
 def handle_set_alarm(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
     """Set an alarm to trigger after specified steps."""
-    alarm_id = parse_int(ctx, params.get("alarm", 0), instance, default=0)
+    # Accept "alarm_number", "alarm_num", and "alarm" parameter names
+    alarm_raw = params.get("alarm_number", params.get("alarm_num", params.get("alarm", 0)))
+    alarm_id = parse_int(ctx, alarm_raw, instance, default=0)
     steps = parse_int(ctx, params.get("steps", 30), instance, default=30)
     relative = parse_bool(params.get("relative", False))
 
-    # Ensure alarm array exists
-    if not hasattr(instance, 'alarms'):
-        instance.alarms = {}
+    # Validate alarm number
+    if alarm_id < 0 or alarm_id > 11:
+        logger.warning(f"  ⚠️ set_alarm: Invalid alarm number {alarm_id} (must be 0-11)")
+        return
+
+    # Ensure alarm array exists (list of 12, matching game_runner expectations)
+    if not hasattr(instance, 'alarm'):
+        instance.alarm = [-1] * 12
 
     if relative:
-        current = instance.alarms.get(alarm_id, 0)
-        instance.alarms[alarm_id] = max(0, current + steps)
-    else:
-        instance.alarms[alarm_id] = max(0, steps)
+        current = instance.alarm[alarm_id]
+        if current < 0:
+            current = 0
+        steps = current + steps
 
-    logger.debug(f"  ⏰ Set alarm[{alarm_id}] = {instance.alarms[alarm_id]} steps")
+    instance.alarm[alarm_id] = steps
+
+    if steps < 0:
+        logger.debug(f"  ⏰ Alarm {alarm_id} disabled for {instance.object_name}")
+    else:
+        logger.debug(f"  ⏰ Set alarm[{alarm_id}] = {steps} steps")
 
 
 def handle_if_alarm(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
     """Check if an alarm is active (not fired)."""
-    alarm_id = parse_int(ctx, params.get("alarm", 0), instance, default=0)
+    alarm_raw = params.get("alarm_number", params.get("alarm_num", params.get("alarm", 0)))
+    alarm_id = parse_int(ctx, alarm_raw, instance, default=0)
     not_flag = parse_bool(params.get("not_flag", False))
 
-    alarms = getattr(instance, 'alarms', {})
-    result = alarm_id in alarms and alarms[alarm_id] > 0
+    alarm_list = getattr(instance, 'alarm', [-1] * 12)
+    result = 0 <= alarm_id < 12 and alarm_list[alarm_id] > 0
 
     if not_flag:
         result = not result

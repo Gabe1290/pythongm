@@ -194,7 +194,7 @@ function generateActionCode(block) {
         case 'output_message':
             return {action: 'show_message', parameters: {message: getInputValue(block, 'MESSAGE', '')}};
         case 'set_alarm':
-            return {action: 'set_alarm', parameters: {alarm_num: parseInt(block.getFieldValue('ALARM_NUM')), steps: getInputValue(block, 'STEPS', 30)}};
+            return {action: 'set_alarm', parameters: {alarm_number: parseInt(block.getFieldValue('ALARM_NUM')), steps: getInputValue(block, 'STEPS', 30)}};
         case 'draw_text':
             return {action: 'draw_text', parameters: {text: getInputValue(block, 'TEXT', ''), x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0)}};
         case 'draw_rectangle':

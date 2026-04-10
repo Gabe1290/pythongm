@@ -2027,8 +2027,8 @@ class ActionExecutor:
             steps: Number of steps until alarm triggers (-1 to disable)
             relative: If True, add to current alarm value
         """
-        # Accept both "alarm_number" and "alarm" parameter names for flexibility
-        alarm_number = parameters.get("alarm_number", parameters.get("alarm", 0))
+        # Accept "alarm_number", "alarm_num", and "alarm" parameter names for flexibility
+        alarm_number = parameters.get("alarm_number", parameters.get("alarm_num", parameters.get("alarm", 0)))
         alarm_number = int(alarm_number)
         steps_param = parameters.get("steps", "30")
         relative = parameters.get("relative", False)
