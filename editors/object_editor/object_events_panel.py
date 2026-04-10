@@ -826,8 +826,43 @@ class ObjectEventsPanel(QWidget):
             return
 
         if dialog.exec() == QDialog.Accepted:
-            # Update parameters
-            action_data["parameters"] = dialog.get_parameter_values()
+            new_params = dialog.get_parameter_values()
+
+            # Locate the action in self.current_events_data (not the tree copy)
+            parent_item = action_item.parent()
+            if not parent_item:
+                return
+
+            grandparent_item = parent_item.parent()
+            action_index = parent_item.indexOfChild(action_item)
+
+            if grandparent_item is not None:
+                # Nested structure (keyboard sub-event): Grandparent → Parent → Action
+                main_event_name = grandparent_item.data(0, Qt.UserRole)
+                sub_event_data = parent_item.data(0, Qt.UserRole)
+
+                if isinstance(sub_event_data, str) and sub_event_data.startswith(main_event_name + "_"):
+                    sub_event_key = sub_event_data[len(main_event_name) + 1:]
+                else:
+                    sub_event_key = None
+
+                if (sub_event_key and
+                    main_event_name in self.current_events_data and
+                    sub_event_key in self.current_events_data[main_event_name] and
+                    0 <= action_index < len(self.current_events_data[main_event_name][sub_event_key]["actions"])):
+                    self.current_events_data[main_event_name][sub_event_key]["actions"][action_index]["parameters"] = new_params
+                else:
+                    return
+            else:
+                # Direct event action: Parent → Action
+                event_name = parent_item.data(0, Qt.UserRole)
+
+                if (event_name in self.current_events_data and
+                    "actions" in self.current_events_data[event_name] and
+                    0 <= action_index < len(self.current_events_data[event_name]["actions"])):
+                    self.current_events_data[event_name]["actions"][action_index]["parameters"] = new_params
+                else:
+                    return
 
             self.refresh_events_display()
             self.events_modified.emit()

@@ -2735,7 +2735,8 @@ class GameRunner:
         """Separate instances that are overlapping after collision events.
 
         When object A pushes object B but B can't move (hits solid), A should be pushed back.
-        This only applies to instances that have collision events defined between them.
+        This only applies to instances that have collision events defined between them,
+        and only when at least one of the objects is solid.
         """
         processed_pairs = set()
 
@@ -2763,6 +2764,14 @@ class GameRunner:
 
                 # Check if there's a collision event between these objects using pre-parsed targets
                 if other_instance.object_name not in collision_targets:
+                    continue
+
+                # Only separate when at least one object is solid.
+                # Non-solid collisions (e.g. ball/paddle bounce, death zone triggers)
+                # should not cause physical separation.
+                inst_obj_data = objects_data.get(instance.object_name, {})
+                other_obj_data = objects_data.get(other_instance.object_name, {})
+                if not inst_obj_data.get('solid', False) and not other_obj_data.get('solid', False):
                     continue
 
                 # Use cached dimensions
