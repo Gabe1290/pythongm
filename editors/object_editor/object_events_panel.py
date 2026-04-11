@@ -248,6 +248,15 @@ class ObjectEventsPanel(QWidget):
                 action = menu.addAction(f"{event_type.icon} {self.tr(event_type.display_name)}...")
                 action.triggered.connect(lambda checked: self.add_mouse_event_with_selector())
 
+            elif event_type.name == "alarm":
+                # Alarm event with alarm number selector (0-11)
+                alarm_menu = menu.addMenu(f"{event_type.icon} {self.tr(event_type.display_name)}")
+                for alarm_num in range(12):
+                    alarm_action = alarm_menu.addAction(f"⏰ {self.tr('Alarm')} {alarm_num}")
+                    alarm_action.triggered.connect(
+                        lambda checked, n=alarm_num: self.add_alarm_event(n)
+                    )
+
             elif event_type.parameters and isinstance(event_type.parameters, list):
                 # Handle old-style keyboard events with sub_events
                 has_sub_events = any(
@@ -438,6 +447,31 @@ class ObjectEventsPanel(QWidget):
 
                 self.refresh_events_display()
                 self.events_modified.emit()
+
+    def add_alarm_event(self, alarm_num: int):
+        """Add an alarm event for a specific alarm number (0-11)"""
+        alarm_key = f"alarm_{alarm_num}"
+
+        # Initialize alarm event structure if it doesn't exist
+        if "alarm" not in self.current_events_data:
+            self.current_events_data["alarm"] = {}
+
+        # Check if this specific alarm already exists
+        if alarm_key in self.current_events_data["alarm"]:
+            QMessageBox.information(
+                self,
+                self.tr("Alarm Event Exists"),
+                self.tr("Alarm {0} event already exists.").format(alarm_num)
+            )
+            return
+
+        # Create new alarm sub-event with empty actions list
+        self.current_events_data["alarm"][alarm_key] = {
+            "actions": []
+        }
+
+        self.refresh_events_display()
+        self.events_modified.emit()
 
     def add_thymio_event_with_selector(self):
         """Add a Thymio event using the visual Thymio event selector dialog"""
@@ -682,7 +716,17 @@ class ObjectEventsPanel(QWidget):
         if not action_type:
             return
 
-        # Check if this event has sub-events (keyboard, keyboard_press)
+        # Check if this event has sub-events (keyboard, keyboard_press, alarm)
+        if event_name == "alarm":
+            QMessageBox.information(
+                self,
+                self.tr("Cannot Add Action"),
+                self.tr("Cannot add actions directly to Alarm.\n\n"
+                        "Please add actions to a specific alarm number instead:\n"
+                        "Right-click on Alarm 0, Alarm 1, etc.")
+            )
+            return
+
         event_type = get_event_type(event_name)
         if event_type and event_type.parameters:
             # Check if it has sub_events parameter
@@ -1030,6 +1074,53 @@ class ObjectEventsPanel(QWidget):
                             action_item.setText(0, f"  ❓ {action_name}")
 
                         # Use smart parameter formatting
+                        params = action_data.get("parameters", {})
+                        if params:
+                            param_summary = ActionParametersFormatter.format_action_parameters(
+                                action_name, params
+                            )
+                            action_item.setText(1, param_summary)
+
+                        action_item.setData(0, Qt.UserRole, action_data)
+
+            # Handle alarm events (nested structure: {"alarm": {"alarm_0": {...}, "alarm_1": {...}}})
+            elif event_name == "alarm" and isinstance(event_data, dict) and not event_data.get("actions"):
+                event_type = get_event_type(event_name)
+                if not event_type:
+                    continue
+
+                event_item = QTreeWidgetItem(self.events_tree)
+                event_item.setText(0, f"{event_type.icon} {self.tr(event_type.display_name)}")
+                event_item.setData(0, Qt.UserRole, event_name)
+
+                total_actions = sum(len(sub_data.get("actions", [])) for key, sub_data in event_data.items() if key != "actions" and isinstance(sub_data, dict))
+                event_item.setText(1, self.tr("{0} total actions").format(total_actions))
+
+                # Sort alarm sub-events numerically
+                alarm_keys = sorted(
+                    [k for k in event_data.keys() if k.startswith("alarm_") and isinstance(event_data[k], dict)],
+                    key=lambda k: int(k.split("_")[1]) if k.split("_")[1].isdigit() else 0
+                )
+
+                for alarm_key in alarm_keys:
+                    sub_data = event_data[alarm_key]
+                    alarm_num = alarm_key.split("_")[1]
+
+                    sub_item = QTreeWidgetItem(event_item)
+                    sub_item.setText(0, f"⏰ {self.tr('Alarm')} {alarm_num}")
+                    sub_item.setText(1, self.tr("{0} actions").format(len(sub_data.get('actions', []))))
+                    sub_item.setData(0, Qt.UserRole, f"alarm_{alarm_key}")
+
+                    for action_data in sub_data.get("actions", []):
+                        action_name = action_data.get("action", "unknown")
+                        action_type = get_action_type(action_name)
+
+                        action_item = QTreeWidgetItem(sub_item)
+                        if action_type:
+                            action_item.setText(0, f"  {action_type.icon} {self.tr(action_type.display_name)}")
+                        else:
+                            action_item.setText(0, f"  ❓ {action_name}")
+
                         params = action_data.get("parameters", {})
                         if params:
                             param_summary = ActionParametersFormatter.format_action_parameters(
