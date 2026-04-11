@@ -442,7 +442,6 @@ class BlocklyWidget(QWidget):
                 }}
                 try {{
                     var eventsData = JSON.parse('{escaped_json}');
-                    console.log('[Blockly] Parsed events data:', JSON.stringify(eventsData, null, 2));
                     return window.blocklyApi.loadEvents(eventsData);
                 }} catch (e) {{
                     console.error('[Blockly] Error loading events:', e);

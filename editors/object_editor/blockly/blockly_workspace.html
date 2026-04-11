@@ -1515,9 +1515,9 @@
                 if (eventType) {
                     var code = generateBlockCode(block);
 
-                    // Handle keyboard events with nested format
-                    // Output: {"keyboard": {"right": {"actions": [...]}}}
-                    if (eventType.subtype && (eventType.event === 'keyboard' || eventType.event === 'keyboard_press' || eventType.event === 'keyboard_release')) {
+                    // Handle keyboard and alarm events with nested format
+                    // Output: {"keyboard": {"right": {"actions": [...]}}} or {"alarm": {"alarm_0": {"actions": [...]}}}
+                    if (eventType.subtype && (eventType.event === 'keyboard' || eventType.event === 'keyboard_press' || eventType.event === 'keyboard_release' || eventType.event === 'alarm')) {
                         if (!events[eventType.event]) {
                             events[eventType.event] = {};
                         }
@@ -1542,7 +1542,7 @@
                 case 'event_step': return {event: 'step'};
                 case 'event_draw': return {event: 'draw'};
                 case 'event_destroy': return {event: 'destroy'};
-                case 'event_alarm': return {event: 'alarm_' + block.getFieldValue('ALARM_NUM')};
+                case 'event_alarm': return {event: 'alarm', subtype: 'alarm_' + block.getFieldValue('ALARM_NUM')};
                 case 'event_keyboard_nokey': return {event: 'keyboard', subtype: 'nokey'};
                 case 'event_keyboard_anykey': return {event: 'keyboard', subtype: 'anykey'};
                 case 'event_keyboard_held': return {event: 'keyboard', subtype: block.getFieldValue('KEY')};
@@ -1849,11 +1849,6 @@
             // Parse JSON if string
             var events = typeof eventsJson === 'string' ? JSON.parse(eventsJson) : eventsJson;
 
-            console.log('[Blockly] ========== loadEventsData START ==========');
-            console.log('[Blockly] Input type:', typeof eventsJson);
-            console.log('[Blockly] Parsed events:', JSON.stringify(events, null, 2));
-            console.log('[Blockly] Event keys:', Object.keys(events));
-
             // Clear workspace and disable change events temporarily
             ignoreChanges = true;
             workspace.clear();
@@ -1863,11 +1858,6 @@
 
             for (var eventName in events) {
                 var eventData = events[eventName];
-
-                console.log('[Blockly] Processing event:', eventName);
-                console.log('[Blockly] Event data:', JSON.stringify(eventData, null, 2));
-                console.log('[Blockly] Event data type:', typeof eventData);
-                console.log('[Blockly] Has actions?:', eventData && eventData.actions ? 'YES (' + eventData.actions.length + ')' : 'NO');
 
                 // Handle nested keyboard/keyboard_press events
                 // Format: {"keyboard": {"right": {"actions": [...]}, "left": {"actions": [...]}}}
@@ -1882,14 +1872,40 @@
                         }
                     }
                 }
-                if (hasKeySubEvents) {
-                    console.log('[Blockly] Handling nested keyboard event');
+                // Handle nested alarm events
+                // Format: {"alarm": {"alarm_0": {"actions": [...]}, "alarm_1": {"actions": [...]}}}
+                var hasAlarmSubEvents = false;
+                if (eventName === 'alarm' && typeof eventData === 'object') {
+                    for (var k in eventData) {
+                        if (k !== 'actions' && k.startsWith('alarm_') && typeof eventData[k] === 'object' && eventData[k] !== null) {
+                            hasAlarmSubEvents = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (hasAlarmSubEvents) {
+                    for (var alarmKey in eventData) {
+                        if (alarmKey === 'actions' || !alarmKey.startsWith('alarm_')) continue;
+                        var alarmData = eventData[alarmKey];
+                        if (typeof alarmData !== 'object' || alarmData === null) continue;
+                        if (!alarmData.actions) alarmData.actions = [];
+
+                        // Extract alarm number from key (e.g., "alarm_0" -> "0")
+                        var alarmNum = alarmKey.replace('alarm_', '');
+                        var eventBlock = createEventBlock('alarm_' + alarmNum, alarmData);
+                        if (eventBlock) {
+                            eventBlock.moveBy(50, yOffset);
+                            yOffset += 150;
+                            if (alarmData.actions.length > 0) {
+                                attachActionsToEvent(eventBlock, alarmData.actions);
+                            }
+                            eventCount++;
+                        }
+                    }
+                } else if (hasKeySubEvents) {
                     // Top-level actions (legacy format: actions stored on keyboard event itself)
                     var topLevelActions = (eventData.actions && Array.isArray(eventData.actions)) ? eventData.actions : [];
-                    if (topLevelActions.length > 0) {
-                        console.log('[Blockly] Found', topLevelActions.length, 'top-level actions to distribute to sub-keys');
-                    }
-
                     // This is a nested keyboard event - iterate over keys
                     // First pass: collect unique keys, preferring prefixed entries (press_down) over bare ones (down)
                     var keyEntries = {};
@@ -1919,7 +1935,6 @@
                         for (var ck in keyEntries) {
                             if (keyEntries[ck].actions.length === 0) {
                                 keyEntries[ck].actions = topLevelActions;
-                                console.log('[Blockly] Assigned top-level actions to sub-key:', ck);
                             }
                         }
                     }
@@ -1928,13 +1943,11 @@
                     for (var cleanKey in keyEntries) {
                         var keyData = keyEntries[cleanKey];
                         var flatEventName = eventName + '_' + cleanKey;
-                        console.log('[Blockly] Creating event block:', flatEventName);
                         var eventBlock = createEventBlock(flatEventName, keyData);
                         if (eventBlock) {
                             eventBlock.moveBy(50, yOffset);
                             yOffset += 150;
                             if (keyData.actions.length > 0) {
-                                console.log('[Blockly] Attaching', keyData.actions.length, 'actions to', flatEventName);
                                 attachActionsToEvent(eventBlock, keyData.actions);
                             }
                             eventCount++;
@@ -1942,7 +1955,6 @@
                     }
                 } else {
                     // Regular event (create, step, draw, etc.) or flat keyboard event
-                    console.log('[Blockly] Handling regular event:', eventName);
                     var eventBlock = createEventBlock(eventName, eventData);
 
                     if (eventBlock) {
@@ -1952,14 +1964,11 @@
 
                         // Create action blocks and connect them
                         if (eventData && eventData.actions && eventData.actions.length > 0) {
-                            console.log('[Blockly] Attaching', eventData.actions.length, 'actions to', eventName);
                             attachActionsToEvent(eventBlock, eventData.actions);
-                        } else {
-                            console.log('[Blockly] No actions to attach for', eventName);
                         }
                         eventCount++;
                     } else {
-                        console.log('[Blockly] WARNING: Failed to create event block for:', eventName);
+                        console.warn('[Blockly] Failed to create event block for:', eventName);
                     }
                 }
             }
@@ -1976,42 +1985,33 @@
 
         function attachActionsToEvent(eventBlock, actions) {
             // Create action blocks and connect them to the event
-            console.log('[Blockly] attachActionsToEvent called with', actions ? actions.length : 0, 'actions');
-            console.log('[Blockly] Actions data:', JSON.stringify(actions, null, 2));
-
             if (!actions || actions.length === 0) {
-                console.log('[Blockly] No actions to attach');
                 return;
             }
 
             var prevBlock = null;
             for (var i = 0; i < actions.length; i++) {
-                console.log('[Blockly] Creating action block for:', JSON.stringify(actions[i]));
                 var actionBlock = createActionBlock(actions[i]);
                 if (actionBlock) {
-                    console.log('[Blockly] Action block created:', actionBlock.type);
                     if (prevBlock === null) {
                         // Connect first action to event's DO input
                         var doInput = eventBlock.getInput('DO');
                         if (doInput && doInput.connection) {
-                            console.log('[Blockly] Connecting first action to event DO input');
                             doInput.connection.connect(actionBlock.previousConnection);
                         } else {
-                            console.log('[Blockly] WARNING: Event block has no DO input or connection');
+                            console.warn('[Blockly] Event block has no DO input or connection');
                         }
                     } else {
                         // Connect to previous action
                         if (prevBlock.nextConnection && actionBlock.previousConnection) {
-                            console.log('[Blockly] Connecting action to previous action');
                             prevBlock.nextConnection.connect(actionBlock.previousConnection);
                         }
                     }
                     prevBlock = actionBlock;
                 } else {
-                    console.log('[Blockly] WARNING: Failed to create action block for:', actions[i].action);
+                    console.warn('[Blockly] Failed to create action block for:', actions[i].action);
                 }
             }
-            console.log('[Blockly] Finished attaching actions, total attached:', prevBlock ? 'at least 1' : '0');
         }
 
         function createEventBlock(eventName, eventData) {
@@ -2088,10 +2088,7 @@
         }
 
         function createActionBlock(actionData) {
-            console.log('[Blockly] createActionBlock called with:', JSON.stringify(actionData));
-
             if (!actionData || (!actionData.action && !actionData.type)) {
-                console.log('[Blockly] Invalid actionData - missing action/type field');
                 return null;
             }
 
@@ -2102,59 +2099,43 @@
             if (actionData.sub_actions) {
                 params.sub_actions = actionData.sub_actions;
             }
-            console.log('[Blockly] Action name:', actionName, 'Params:', JSON.stringify(params));
-
             // Handle if_collision_at which doesn't have a direct block equivalent
             if (actionName === 'if_collision_at') {
-                console.log('[Blockly] Wrapper action detected (if_collision_at), checking for then_actions');
                 var thenActions = params.then_actions || [];
                 if (thenActions.length > 0) {
-                    // Try each inner action until we find one that creates a block
-                    console.log('[Blockly] Searching', thenActions.length, 'then_actions for supported action');
                     for (var i = 0; i < thenActions.length; i++) {
                         var innerBlock = createActionBlock(thenActions[i]);
                         if (innerBlock) {
-                            console.log('[Blockly] Found supported action at index', i);
                             return innerBlock;
                         }
                     }
-                    console.log('[Blockly] No supported actions found in then_actions');
                 }
-                console.log('[Blockly] No then_actions found in wrapper');
                 return null;
             }
 
             // Skip truly unsupported custom actions gracefully
             var unsupportedActions = [];
             if (unsupportedActions.indexOf(actionName) !== -1) {
-                console.log('[Blockly] Skipping unsupported custom action:', actionName);
                 return null;
             }
 
             var blockType = actionToBlockType[actionName];
-            console.log('[Blockly] Initial blockType from mapping:', blockType);
 
             // Handle relative flag for score/lives/health
             if (actionName === 'set_score') {
                 blockType = params.relative ? 'score_add' : 'score_set';
-                console.log('[Blockly] set_score: relative=' + params.relative + ' -> blockType=' + blockType);
             } else if (actionName === 'set_lives') {
                 blockType = params.relative ? 'lives_add' : 'lives_set';
-                console.log('[Blockly] set_lives: relative=' + params.relative + ' -> blockType=' + blockType);
             } else if (actionName === 'set_health') {
                 blockType = params.relative ? 'health_add' : 'health_set';
-                console.log('[Blockly] set_health: relative=' + params.relative + ' -> blockType=' + blockType);
             } else if (actionName === 'destroy_instance') {
                 blockType = params.target === 'other' ? 'instance_destroy_other' : 'instance_destroy';
             }
 
             if (!blockType) {
-                console.log('[Blockly] WARNING: Unknown action type:', actionName);
-                console.log('[Blockly] Available mappings:', JSON.stringify(Object.keys(actionToBlockType)));
+                console.warn('[Blockly] Unknown action type:', actionName);
                 return null;
             }
-
-            console.log('[Blockly] Creating block of type:', blockType);
 
             // Create the block
             try {
@@ -2166,7 +2147,6 @@
                 block.initSvg();
                 block.render();
 
-                console.log('[Blockly] Block created successfully:', block.id);
                 return block;
             } catch (e) {
                 console.error('[Blockly] Error creating block:', e);
@@ -2240,7 +2220,6 @@
                         } else if (typeof dirs === 'string') {
                             direction = dirs.toLowerCase();
                         }
-                        console.log('[Blockly] Converted directions', params.directions, 'to', direction);
                     }
 
                     block.setFieldValue(direction, 'DIRECTION');
@@ -2585,15 +2564,12 @@
              * Reconfigure the toolbox with a new set of enabled blocks
              * config: {enabled_blocks: [block_types...], enabled_categories: [categories...]}
              */
-            console.log('[Blockly] Reconfiguring toolbox with config:', config);
-
             // Generate new toolbox XML
             var toolboxXml = generateToolboxXml(config);
 
             // Update the workspace toolbox
             workspace.updateToolbox(toolboxXml);
 
-            console.log('[Blockly] Toolbox reconfigured');
         }
 
         function generateToolboxXml(config) {
@@ -2822,7 +2798,6 @@
              *
              * actionDefs: Array of {name, display_name, description, category, icon, parameters: [{name, display_name, param_type, default_value, choices}]}
              */
-            console.log('[Blockly] registerCustomBlocks called with', actionDefs.length, 'action definitions');
             var registered = 0;
 
             // Category color mapping
@@ -2957,7 +2932,6 @@
                 registered++;
             }
 
-            console.log('[Blockly] Registered', registered, 'custom blocks');
             return registered;
         }
 
