@@ -2385,27 +2385,21 @@ class GameRunner:
             v_blocked = collision.get('v_blocked', False)
 
             # Check if the mover has a collision event for the blocking object
-            event_name = f"collision_with_{other.object_name}"
+            # (walks parent chain so e.g. collision_with_obj_brick_parent fires
+            # when the actual blocker is an obj_brick_green child).
             events = instance._cached_object_data.get('events', {}) if instance._cached_object_data else {}
-
-            # Fall back to original object name if current name has no event
-            if event_name not in events:
-                original = getattr(other, '_original_object_name', None)
-                if original and original != other.object_name:
-                    alt_event = f"collision_with_{original}"
-                    if alt_event in events:
-                        event_name = alt_event
+            event_name = self._resolve_collision_event(events, other)
 
             # Also check if the blocker has a collision event with the mover
-            blocker_event_name = f"collision_with_{instance.object_name}"
             blocker_events = other._cached_object_data.get('events', {}) if other._cached_object_data else {}
+            blocker_event_name = self._resolve_collision_event(blocker_events, instance)
 
             blocker_old_x = other.x
             blocker_old_y = other.y
             blocker_old_hspeed = other.hspeed
             blocker_old_vspeed = other.vspeed
 
-            if event_name in events:
+            if event_name:
                 logger.debug(f"🎯 BLOCKED COLLISION: {instance.object_name} with {other.object_name} (h:{h_blocked}, v:{v_blocked})")
                 instance.action_executor.execute_collision_event(
                     instance,
@@ -2422,7 +2416,7 @@ class GameRunner:
                     }
                 )
 
-            if blocker_event_name in blocker_events:
+            if blocker_event_name:
                 logger.debug(f"🎯 BLOCKED COLLISION (reverse): {other.object_name} with {instance.object_name} (h:{h_blocked}, v:{v_blocked})")
                 other.action_executor.execute_collision_event(
                     other,
@@ -2514,33 +2508,22 @@ class GameRunner:
                             'other_vspeed': norm_dy,
                         }
 
-                        event_name = f"collision_with_{blocker.object_name}"
                         events = instance._cached_object_data.get('events', {}) if instance._cached_object_data else {}
+                        event_name = self._resolve_collision_event(events, blocker)
 
-                        # If mover doesn't have an event for the blocker's current name,
-                        # try the original name (before change_instance).
-                        # e.g. Soko has collision_with_obj_box, blocker is now obj_box_stored
-                        if event_name not in events:
-                            original = getattr(blocker, '_original_object_name', None)
-                            if original and original != blocker.object_name:
-                                alt_event = f"collision_with_{original}"
-                                if alt_event in events:
-                                    event_name = alt_event
-
-                        # Also fire collision event on the blocker (e.g. box collision_with_soko)
-                        blocker_event_name = f"collision_with_{instance.object_name}"
                         blocker_events = blocker._cached_object_data.get('events', {}) if blocker._cached_object_data else {}
+                        blocker_event_name = self._resolve_collision_event(blocker_events, instance)
 
                         blocker_old_x = blocker.x
                         blocker_old_y = blocker.y
 
-                        if event_name in events:
+                        if event_name:
                             logger.debug(f"🔄 Grid blocked collision: {instance.object_name} with {blocker.object_name}")
                             instance.action_executor.execute_collision_event(
                                 instance, event_name, events, blocker, collision_speeds_mover
                             )
 
-                        if blocker_event_name in blocker_events:
+                        if blocker_event_name:
                             logger.debug(f"🔄 Grid blocked collision (reverse): {blocker.object_name} with {instance.object_name}")
                             blocker.action_executor.execute_collision_event(
                                 blocker, blocker_event_name, blocker_events, instance, collision_speeds_blocker
@@ -2727,6 +2710,12 @@ class GameRunner:
             # Check rectangle overlap at intended position
             if self.rectangles_overlap(intended_x - ox1, intended_y - oy1, w1, h1,
                                       other_instance.x - ox2, other_instance.y - oy2, w2, h2):
+                # If the mover already overlaps the blocker at its current
+                # position, let it escape: blocking every direction would
+                # trap it in an oscillation freeze on the next bounce.
+                if self.rectangles_overlap(moving_instance.x - ox1, moving_instance.y - oy1, w1, h1,
+                                          other_instance.x - ox2, other_instance.y - oy2, w2, h2):
+                    continue
                 return (False, other_instance)
 
         return (True, None)
@@ -3082,6 +3071,35 @@ class GameRunner:
                 return True
             current = parent
         return False
+
+    def _resolve_collision_event(self, events: dict, other_instance) -> str:
+        """Find the collision event in `events` that matches `other_instance`.
+
+        Tries the other's current name, then walks its parent chain, then
+        falls back to _original_object_name (set by change_instance). Returns
+        the matching event name, or None if no event applies.
+        """
+        if not events:
+            return None
+        direct = f"collision_with_{other_instance.object_name}"
+        if direct in events:
+            return direct
+        objects_data = self._objects_data
+        current = other_instance.object_name
+        for _ in range(10):
+            parent = objects_data.get(current, {}).get('parent', '')
+            if not parent:
+                break
+            candidate = f"collision_with_{parent}"
+            if candidate in events:
+                return candidate
+            current = parent
+        original = getattr(other_instance, '_original_object_name', None)
+        if original and original != other_instance.object_name:
+            alt = f"collision_with_{original}"
+            if alt in events:
+                return alt
+        return None
 
     def instances_overlap(self, inst1, inst2) -> bool:
         """Check if two instances overlap (accounting for sprite origin)"""

@@ -19,6 +19,8 @@
         .block-event { background-color: #FFD500; color: #333; }
         .block-move { background-color: #5C81A6; }
         .block-score { background-color: #5CA65C; }
+        .block-game { background-color: #A65CA6; }
+        .block-output { background-color: #A6745C; }
         .block-indent { margin-left: 20px; }
         .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
     </style>
@@ -117,6 +119,51 @@
         Even though it's invisible, it needs to exist in the room.
     </div>
 
+    <!-- ============= GAME OVER ============= -->
+    <h2>Game Over and Highscore</h2>
+    <p>Right now, when the player runs out of lives the ball just keeps respawning
+    forever. Let's make the game show a <strong>Game Over</strong> message, display
+    the highscore table, and then close.</p>
+
+    <div class="info">
+        <strong>The <code>No More Lives</code> event</strong> runs automatically the
+        moment the player's lives drop to zero. You don't have to check for it yourself
+        &mdash; just add the event and the engine will trigger it.
+    </div>
+
+    <div class="step">
+        <ol>
+            <li>Open <code>obj_game_controller</code> in the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab</li>
+            <li>Add a third event block. From <em>Events</em>, pick <strong>Other Events</strong>
+                and choose <strong>No More Lives</strong></li>
+            <li>Snap these three blocks inside it, in order:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">When No More Lives</span><br>
+            <span class="block block-output block-indent">Show message "Game Over!"</span><br>
+            <span class="block block-game block-indent">Show Highscore</span><br>
+            <span class="block block-game block-indent">End Game</span>
+        </div>
+        <ul>
+            <li><strong>Show message</strong> (from <em>Output</em>) &mdash; pops a "Game Over!" dialog</li>
+            <li><strong>Show Highscore</strong> (from <em>Game</em>) &mdash; displays the highscore table
+                and, if the player made the top list, asks for their name</li>
+            <li><strong>End Game</strong> (from <em>Game</em>) &mdash; closes the game window</li>
+        </ul>
+    </div>
+
+    <div class="highlight">
+        <strong>Order matters!</strong> Put <em>Show Highscore</em> <strong>before</strong>
+        <em>End Game</em>. If you end the game first, the highscore dialog never gets a
+        chance to appear.
+    </div>
+
+    <div class="step">
+        <p>You should now have <strong>3 event blocks</strong> on the game controller
+        (Create, Draw, No More Lives). Click <strong>Apply to Events</strong>.</p>
+    </div>
+
     <!-- ============= FINAL TEST ============= -->
     <h1 style="color: #28a745; border-bottom-color: #28a745;">Congratulations! Test Your Final Game!</h1>
     <div class="success">
@@ -135,7 +182,7 @@
             <li>Give different colored bricks different point values (red = 40, orange = 30, yellow = 20, green = 10)</li>
             <li>Make the ball speed up as bricks are destroyed</li>
             <li>Add a second level with a different brick layout</li>
-            <li>End the game when lives reach zero</li>
+            <li>Play a sound when the game ends (add it to the <em>No More Lives</em> event)</li>
         </ul>
     </div>
 </body>

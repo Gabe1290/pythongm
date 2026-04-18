@@ -205,12 +205,16 @@ class ObjectEventsPanel(QWidget):
 
         available_events = get_available_events(self.blockly_config)
 
+        # Hide Thymio events unless the project has at least one playground
+        show_thymio = self.project_has_playgrounds()
+
         # Separate standard events from Thymio events
         standard_events = []
         thymio_events = []
         for event_type in available_events:
             if is_thymio_event(event_type.name):
-                thymio_events.append(event_type)
+                if show_thymio:
+                    thymio_events.append(event_type)
             else:
                 standard_events.append(event_type)
 
@@ -596,10 +600,11 @@ class ObjectEventsPanel(QWidget):
                             lambda checked, e=event_name, a=action_type.name: self.add_action_to_collision_event(e, a)
                         )
 
-                # Add Thymio action option
-                add_action_menu.addSeparator()
-                thymio_action = add_action_menu.addAction(self.tr("🤖 Thymio Action..."))
-                thymio_action.triggered.connect(lambda checked, e=event_name: self.add_thymio_action_with_selector(e))
+                # Add Thymio action option (only visible when project has playgrounds)
+                if self.project_has_playgrounds():
+                    add_action_menu.addSeparator()
+                    thymio_action = add_action_menu.addAction(self.tr("🤖 Thymio Action..."))
+                    thymio_action.triggered.connect(lambda checked, e=event_name: self.add_thymio_action_with_selector(e))
 
                 menu.addSeparator()
                 remove_action = menu.addAction(self.tr("Remove Collision Event"))
@@ -619,10 +624,11 @@ class ObjectEventsPanel(QWidget):
                             lambda checked, e=event_name, a=action_type.name: self.add_action_to_mouse_event(e, a)
                         )
 
-                # Add Thymio action option
-                add_action_menu.addSeparator()
-                thymio_action = add_action_menu.addAction(self.tr("🤖 Thymio Action..."))
-                thymio_action.triggered.connect(lambda checked, e=event_name: self.add_thymio_action_with_selector(e))
+                # Add Thymio action option (only visible when project has playgrounds)
+                if self.project_has_playgrounds():
+                    add_action_menu.addSeparator()
+                    thymio_action = add_action_menu.addAction(self.tr("🤖 Thymio Action..."))
+                    thymio_action.triggered.connect(lambda checked, e=event_name: self.add_thymio_action_with_selector(e))
 
                 menu.addSeparator()
                 remove_action = menu.addAction(self.tr("Remove Mouse Event"))
@@ -642,10 +648,11 @@ class ObjectEventsPanel(QWidget):
                             lambda checked, e=event_name, a=action_type.name: self.add_action_to_event(e, a)
                         )
 
-                # Add Thymio action option
-                add_action_menu.addSeparator()
-                thymio_action = add_action_menu.addAction(self.tr("🤖 Thymio Action..."))
-                thymio_action.triggered.connect(lambda checked, e=event_name: self.add_thymio_action_with_selector(e))
+                # Add Thymio action option (only visible when project has playgrounds)
+                if self.project_has_playgrounds():
+                    add_action_menu.addSeparator()
+                    thymio_action = add_action_menu.addAction(self.tr("🤖 Thymio Action..."))
+                    thymio_action.triggered.connect(lambda checked, e=event_name: self.add_thymio_action_with_selector(e))
 
                 menu.addSeparator()
                 remove_action = menu.addAction(self.tr("Remove Event"))
@@ -679,12 +686,13 @@ class ObjectEventsPanel(QWidget):
                                 self.add_action_to_sub_event(e, k, a)
                             )
 
-                    # Add Thymio action option
-                    add_action_menu.addSeparator()
-                    thymio_action = add_action_menu.addAction(self.tr("🤖 Thymio Action..."))
-                    thymio_action.triggered.connect(
-                        lambda checked, e=event_name, k=sub_event_key: self.add_thymio_action_to_sub_event(e, k)
-                    )
+                    # Add Thymio action option (only visible when project has playgrounds)
+                    if self.project_has_playgrounds():
+                        add_action_menu.addSeparator()
+                        thymio_action = add_action_menu.addAction(self.tr("🤖 Thymio Action..."))
+                        thymio_action.triggered.connect(
+                            lambda checked, e=event_name, k=sub_event_key: self.add_thymio_action_to_sub_event(e, k)
+                        )
 
                     menu.addSeparator()
                     remove_action = menu.addAction(self.tr("Remove {0} Event").format(sub_event_key.title()))
@@ -1655,6 +1663,19 @@ class ObjectEventsPanel(QWidget):
 
         # Fallback: return some common object types
         return ["obj_wall", "obj_box", "obj_goal", "obj_player"]
+
+    def project_has_playgrounds(self) -> bool:
+        """Check if the current project contains any playground assets"""
+        parent = self.parent()
+        while parent:
+            if hasattr(parent, 'current_project_data'):
+                project_data = parent.current_project_data
+                if project_data and 'assets' in project_data:
+                    playgrounds = project_data['assets'].get('playgrounds', {})
+                    return bool(playgrounds)
+                break
+            parent = parent.parent()
+        return False
 
     def add_collision_event(self, target_object: str):
         """Add a collision event for a specific object type with optional negation"""

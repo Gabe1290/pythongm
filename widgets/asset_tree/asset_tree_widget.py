@@ -82,6 +82,7 @@ class AssetTreeWidget(QTreeWidget):
             "separator",  # First separator
             ("objects", self.tr("Objects")),
             ("rooms", self.tr("Rooms")),
+            ("playgrounds", self.tr("Playgrounds")),
             "separator",  # Second separator
             ("scripts", self.tr("Scripts")),
             ("fonts", self.tr("Fonts"))
@@ -181,8 +182,8 @@ class AssetTreeWidget(QTreeWidget):
             create_action.triggered.connect(lambda: self.trigger_create_for_category(item.asset_type))
             context_menu.addAction(create_action)
 
-            # Import asset action (only for sprites, sounds, backgrounds - not rooms/objects)
-            if item.asset_type not in ["rooms", "objects"]:
+            # Import asset action (only for sprites, sounds, backgrounds - not rooms/objects/playgrounds)
+            if item.asset_type not in ["rooms", "objects", "playgrounds"]:
                 import_action = QAction(self.tr("📥 Import {0}...").format(item.asset_type.title()), self)
                 import_action.triggered.connect(lambda: self.trigger_import_for_category(item.asset_type))
                 context_menu.addAction(import_action)
@@ -917,7 +918,7 @@ class AssetTreeWidget(QTreeWidget):
             while parent:
                 if hasattr(parent, 'project_manager'):
                     project_manager = parent.project_manager
-                    current_path = project_manager.get_current_project_path()
+                    current_path = project_manager.current_project_path
                     if current_path:
                         project_manager.load_project(current_path)
                         logger.debug("Forced project manager to reload")

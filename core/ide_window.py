@@ -144,6 +144,7 @@ class PyGameMakerIDE(QMainWindow):
         file_menu.addAction(self.export_project_action)
 
         file_menu.addAction(self.create_action(self.tr("Open &Zip Project..."), None, self.open_project_zip))
+        file_menu.addAction(self.create_action(self.tr("Import Open &Roberta XML..."), None, self.import_roberta_xml))
         file_menu.addSeparator()
 
         # Auto-save as zip toggle
@@ -265,6 +266,8 @@ class PyGameMakerIDE(QMainWindow):
         thymio_menu.addSeparator()
         thymio_menu.addAction(self.create_action(self.tr("Add &Event..."), None, self.show_thymio_event_selector))
         thymio_menu.addAction(self.create_action(self.tr("Add &Action..."), None, self.show_thymio_action_selector))
+        thymio_menu.addSeparator()
+        thymio_menu.addAction(self.create_action(self.tr("Import Open &Roberta XML..."), None, self.import_roberta_xml))
 
         help_menu = menubar.addMenu(self.tr("&Help"))
         help_menu.addAction(self.create_action(self.tr("&Documentation"), "F1", self.show_documentation))
@@ -601,6 +604,66 @@ class PyGameMakerIDE(QMainWindow):
                     self.tr("Failed to import room package")
                 )
                 self.update_status(self.tr("Import failed"))
+
+    def import_roberta_xml(self):
+        """Import an Open Roberta Lab XML program as a new project"""
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            self.tr("Import Open Roberta XML"),
+            str(Path.home()),
+            self.tr("Open Roberta XML (*.xml)")
+        )
+
+        if not file_path:
+            return
+
+        # Ask user where to save the new project
+        output_dir = QFileDialog.getExistingDirectory(
+            self,
+            self.tr("Select Output Directory for Imported Project"),
+            str(Path.home())
+        )
+
+        if not output_dir:
+            return
+
+        from importers.roberta_importer import import_roberta_detailed, RobertaImportError
+
+        self.update_status(self.tr("Importing Open Roberta program..."))
+
+        try:
+            result = import_roberta_detailed(file_path, output_dir)
+
+            # Show warnings if any
+            warning_text = ""
+            if result.warnings:
+                warning_text = self.tr("\n\nWarnings:\n") + "\n".join(
+                    f"  - {w}" for w in result.warnings[:20])
+
+            QMessageBox.information(
+                self,
+                self.tr("Import Successful"),
+                self.tr("Project '{0}' imported successfully!\n"
+                         "Events: {1}, Actions: {2}{3}").format(
+                    result.project_name,
+                    result.events_imported,
+                    result.actions_imported,
+                    warning_text)
+            )
+            self.update_status(self.tr("Roberta import complete: {0}").format(result.project_name))
+
+            # Open the newly imported project
+            project_file = Path(output_dir) / "project.json"
+            if project_file.exists():
+                self.load_project(Path(output_dir))
+
+        except RobertaImportError as exc:
+            QMessageBox.warning(
+                self,
+                self.tr("Import Failed"),
+                self.tr("Failed to import Open Roberta XML:\n{0}").format(str(exc))
+            )
+            self.update_status(self.tr("Roberta import failed"))
 
     def create_toolbar(self):
         toolbar = self.addToolBar(self.tr("Main"))
@@ -1288,6 +1351,24 @@ class PyGameMakerIDE(QMainWindow):
                     'asset_type': 'object',
                     'imported': True,
                     'events': {}
+                }
+            elif asset_type == 'playgrounds':
+                asset_data = {
+                    'name': asset_name,
+                    'asset_type': 'playground',
+                    'imported': True,
+                    'arena': {
+                        'width': 400,
+                        'height': 400,
+                        'color': 'white',
+                        'ground_texture': '',
+                    },
+                    'colors': [
+                        {'name': 'white', 'r': 1.0, 'g': 1.0, 'b': 1.0},
+                        {'name': 'wall', 'r': 0.45, 'g': 0.45, 'b': 0.5},
+                    ],
+                    'walls': [],
+                    'robots': [],
                 }
             else:
                 # Generic asset data
@@ -2992,7 +3073,7 @@ class PyGameMakerIDE(QMainWindow):
         """Show comprehensive About PyGameMaker dialog"""
         about_text = self.tr(
             "<h2>PyGameMaker IDE</h2>"
-            "<p><b>Version 0.10.1-alpha</b></p>"
+            "<p><b>Version 1.0.0-rc.6</b></p>"
             "<p>A comprehensive visual game development environment<br>"
             "inspired by GameMaker Studio, built with Python.</p>"
 
@@ -3066,6 +3147,8 @@ class PyGameMakerIDE(QMainWindow):
             self.open_object_editor(asset_name, asset_info)
         elif asset_type == 'sprites':
             self.open_sprite_editor(asset_name, asset_info)
+        elif asset_type == 'playgrounds':
+            self.open_playground_editor(asset_name, asset_info)
         else:
             # For now, just show a message for other asset types
             from PySide6.QtWidgets import QMessageBox
@@ -3114,6 +3197,44 @@ class PyGameMakerIDE(QMainWindow):
             traceback.print_exc()
             QMessageBox.critical(self, self.tr("Error"),
                             self.tr("Failed to open room editor: {0}").format(e))
+
+    def open_playground_editor(self, playground_name: str, playground_data: dict):
+        """Open a playground in the playground editor"""
+
+        # Check if already open
+        if playground_name in self.open_editors:
+            for i in range(self.editor_tabs.count()):
+                if self.editor_tabs.tabText(i) == playground_name:
+                    self.editor_tabs.setCurrentIndex(i)
+                    return
+
+        try:
+            from editors.playground_editor import PlaygroundEditor
+
+            editor = PlaygroundEditor(str(self.current_project_path), self)
+            editor.load_asset(playground_name, playground_data)
+
+            # Connect signals
+            editor.save_requested.connect(
+                self.on_editor_save_requested, Qt.ConnectionType.UniqueConnection)
+            editor.close_requested.connect(
+                self.on_editor_close_requested, Qt.ConnectionType.UniqueConnection)
+            editor.data_modified.connect(
+                self.on_editor_data_modified, Qt.ConnectionType.UniqueConnection)
+
+            # Add to tabs
+            tab_index = self.editor_tabs.addTab(editor, playground_name)
+            self.editor_tabs.setCurrentIndex(tab_index)
+            self.open_editors[playground_name] = editor
+
+            self.update_status(self.tr("Opened playground: {0}").format(playground_name))
+
+        except Exception as e:
+            logger.error(f"Error opening playground editor: {e}")
+            import traceback
+            traceback.print_exc()
+            QMessageBox.critical(self, self.tr("Error"),
+                                 self.tr("Failed to open playground editor: {0}").format(e))
 
     def open_object_editor(self, object_name: str, object_data: dict):
         """Open an object in the object editor"""

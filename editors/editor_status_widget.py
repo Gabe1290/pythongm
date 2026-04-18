@@ -92,7 +92,7 @@ class EditorStatusWidget(QWidget):
         self.blink_timer.stop()
 
         # Show checkmark briefly
-        QTimer.singleShot(2000, lambda: self.status_label.setText(self.tr("Saved")))
+        QTimer.singleShot(2000, self, lambda: self.status_label.setText(self.tr("Saved")))
 
     def toggle_blink(self):
         """Toggle blink state for unsaved indicator using color transparency to avoid layout shift."""

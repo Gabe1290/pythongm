@@ -130,10 +130,12 @@ def setup_qtwebengine_paths():
                 break
         os.environ['QTWEBENGINE_RESOURCES_PATH'] = resources_path
 
-        # --- Locales ---
+        # --- Locales --- prefer the nested qtwebengine_locales dir, which
+        # is where the .pak files actually live in newer PySide6 layouts.
         for loc_candidate in [
-            os.path.join(base_path, 'PySide6', 'Qt', 'translations'),
+            os.path.join(base_path, 'PySide6', 'Qt', 'translations', 'qtwebengine_locales'),
             os.path.join(base_path, 'qtwebengine_locales'),
+            os.path.join(base_path, 'PySide6', 'Qt', 'translations'),
         ]:
             if os.path.isdir(loc_candidate):
                 os.environ['QTWEBENGINE_LOCALES_PATH'] = loc_candidate
@@ -173,10 +175,16 @@ def setup_qtwebengine_paths():
                 if os.path.exists(qt_resources):
                     os.environ['QTWEBENGINE_RESOURCES_PATH'] = qt_resources
 
-                # Set locales path
-                locales_path = os.path.join(pyside6_dir, 'Qt', 'translations')
-                if os.path.exists(locales_path):
-                    os.environ['QTWEBENGINE_LOCALES_PATH'] = locales_path
+                # Set locales path — must point directly at the folder
+                # containing the .pak files, which is either
+                # translations/qtwebengine_locales (newer PySide6) or
+                # translations/ itself (older layouts).
+                translations_dir = os.path.join(pyside6_dir, 'Qt', 'translations')
+                nested = os.path.join(translations_dir, 'qtwebengine_locales')
+                if os.path.isdir(nested):
+                    os.environ['QTWEBENGINE_LOCALES_PATH'] = nested
+                elif os.path.isdir(translations_dir):
+                    os.environ['QTWEBENGINE_LOCALES_PATH'] = translations_dir
 
                 print("🔧 QtWebEngine paths configured for development:")
                 print(f"   Process: {process_path}")

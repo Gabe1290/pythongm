@@ -47,6 +47,7 @@ class AssetTreeItem(QTreeWidgetItem):
                     "backgrounds": "🖼️ Backgrounds",
                     "objects": "📦 Objects",
                     "rooms": "🏠 Rooms",
+                    "playgrounds": "🏟️ Playgrounds",
                     "scripts": "📜 Scripts",
                     "fonts": "🔤 Fonts",
                     "data": "📄 Data"
@@ -99,6 +100,8 @@ class AssetTreeItem(QTreeWidgetItem):
                             self.setText(0, f"📦 {self.asset_name}")
                     elif self.asset_type == "rooms":
                         self.setText(0, f"🏠 {self.asset_name}")
+                    elif self.asset_type == "playgrounds":
+                        self.setText(0, f"🏟️ {self.asset_name}")
                     elif self.asset_type == "scripts":
                         self.setText(0, f"📜 {self.asset_name}")
                     elif self.asset_type == "fonts":
@@ -152,11 +155,16 @@ class AssetTreeItem(QTreeWidgetItem):
                 pixmap.loadFromData(image_data)
 
                 if not pixmap.isNull():
-                    # Scale to exact 16x16 size for tree widget
+                    # Nearest-neighbor for small sprites keeps pixel art crisp;
+                    # larger source images get smooth scaling.
+                    use_fast = max(pixmap.width(), pixmap.height()) <= 64
+                    transform = (Qt.TransformationMode.FastTransformation
+                                 if use_fast
+                                 else Qt.TransformationMode.SmoothTransformation)
                     scaled_pixmap = pixmap.scaled(
-                        16, 16,
-                        Qt.AspectRatioMode.IgnoreAspectRatio,
-                        Qt.TransformationMode.SmoothTransformation
+                        32, 32,
+                        Qt.AspectRatioMode.KeepAspectRatio,
+                        transform
                     )
                     self.setIcon(0, QIcon(scaled_pixmap))
                     return True
@@ -234,11 +242,14 @@ class AssetTreeItem(QTreeWidgetItem):
                         # Extract first frame (top-left corner)
                         pixmap = pixmap.copy(0, 0, frame_width, frame_height)
 
-                # Scale to exact 16x16 size for tree widget
+                use_fast = max(pixmap.width(), pixmap.height()) <= 64
+                transform = (Qt.TransformationMode.FastTransformation
+                             if use_fast
+                             else Qt.TransformationMode.SmoothTransformation)
                 scaled_pixmap = pixmap.scaled(
-                    16, 16,
-                    Qt.AspectRatioMode.IgnoreAspectRatio,
-                    Qt.TransformationMode.SmoothTransformation
+                    32, 32,
+                    Qt.AspectRatioMode.KeepAspectRatio,
+                    transform
                 )
                 self.setIcon(0, QIcon(scaled_pixmap))
                 return True

@@ -11,7 +11,7 @@ from typing import Dict, Optional
 from PySide6.QtWidgets import (QTreeWidget, QMenu, QMessageBox, QInputDialog,
                                QDialog, QVBoxLayout, QHBoxLayout,
                                QLineEdit, QPushButton, QLabel)
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QSize
 from PySide6.QtGui import QAction
 
 from core.logger import get_logger
@@ -484,6 +484,9 @@ class AssetTreeWidget(QTreeWidget):
         # Set minimum width
         self.setMinimumWidth(200)
 
+        # Sprite/background thumbnails render at this size in the tree
+        self.setIconSize(QSize(32, 32))
+
         # Enable selection
         self.setSelectionMode(QTreeWidget.SelectionMode.SingleSelection)
 
@@ -759,7 +762,7 @@ class AssetTreeWidget(QTreeWidget):
             while parent:
                 if hasattr(parent, 'project_manager'):
                     project_manager = parent.project_manager
-                    current_path = project_manager.get_current_project_path()
+                    current_path = project_manager.current_project_path
                     if current_path:
                         project_manager.load_project(current_path)
                         logger.debug("Forced project manager to reload")

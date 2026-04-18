@@ -35,6 +35,7 @@ class ProjectManager(QObject):
         "backgrounds": "Background images",
         "objects": "Game objects",
         "rooms": "Game rooms/levels",
+        "playgrounds": "Aseba playground environments",
         "scripts": "GML scripts",
         "fonts": "Font assets",
         "data": "Data files"
@@ -182,6 +183,7 @@ class ProjectManager(QObject):
             self._load_rooms_from_files(project_path, project_data)
             self._load_objects_from_files(project_path, project_data)
             self._load_sprites_from_files(project_path, project_data)
+            self._load_playgrounds_from_files(project_path, project_data)
 
             # Validate project data
             if not self._validate_project_data(project_data):
@@ -419,6 +421,9 @@ class ProjectManager(QObject):
             # Save sprites to separate files (if sprites/ directory exists)
             self._save_sprites_to_files(save_path)
 
+            # Save playgrounds to separate files
+            self._save_playgrounds_to_files(save_path)
+
             # Create a copy of project data without room instance data for main file
             # (room metadata stays in project.json, instance data goes to room files)
             project_data_for_save = self._prepare_project_data_for_save()
@@ -537,6 +542,52 @@ class ProjectManager(QObject):
 
             logger.debug(f"💾 Saved sprite: {sprite_name}")
 
+    def _load_playgrounds_from_files(self, project_path: Path, project_data: dict) -> None:
+        """Load playground data from separate files in playgrounds/ directory"""
+        playgrounds_dir = project_path / "playgrounds"
+
+        if not playgrounds_dir.exists():
+            return
+
+        playgrounds_data = project_data.get('assets', {}).get('playgrounds', {})
+
+        for pg_name, pg_data in list(playgrounds_data.items()):
+            pg_file = playgrounds_dir / f"{pg_name}.json"
+
+            if isinstance(pg_data, str):
+                pg_data = {"name": pg_name, "asset_type": "playground"}
+                playgrounds_data[pg_name] = pg_data
+
+            if pg_file.exists():
+                try:
+                    with open(pg_file, 'r', encoding='utf-8') as f:
+                        file_data = json.load(f)
+                    # Merge file data into playground data
+                    for key in ['arena', 'colors', 'walls', 'robots']:
+                        if key in file_data:
+                            pg_data[key] = file_data[key]
+                    if '_external_file' in pg_data:
+                        del pg_data['_external_file']
+                    logger.debug(f"Loaded playground: {pg_name}")
+                except Exception as e:
+                    logger.warning(f"Failed to load playground file {pg_file}: {e}")
+
+    def _save_playgrounds_to_files(self, project_path: Path) -> None:
+        """Save each playground's data to a separate file in playgrounds/ directory"""
+        playgrounds_dir = project_path / "playgrounds"
+        playgrounds_data = self.current_project_data.get('assets', {}).get('playgrounds', {})
+
+        if not playgrounds_data:
+            return
+
+        playgrounds_dir.mkdir(exist_ok=True)
+
+        for pg_name, pg_data in playgrounds_data.items():
+            pg_file = playgrounds_dir / f"{pg_name}.json"
+            with open(pg_file, 'w', encoding='utf-8') as f:
+                json.dump(pg_data, f, indent=2, ensure_ascii=False)
+            logger.debug(f"Saved playground: {pg_name}")
+
     def _prepare_project_data_for_save(self) -> dict:
         """Prepare project data for saving - rooms store only metadata, not instances"""
         from copy import deepcopy
@@ -554,6 +605,15 @@ class ProjectManager(QObject):
                     room_data['instance_count'] = len(room_data['instances'])
                     room_data['instances'] = []  # Clear instances from main file
                     room_data['_external_file'] = f"rooms/{room_name}.json"
+
+        # For playgrounds, strip detail data (walls/robots go to separate files)
+        if 'assets' in data and 'playgrounds' in data['assets']:
+            playgrounds = data['assets']['playgrounds']
+            for pg_name, pg_data in playgrounds.items():
+                pg_data.pop('walls', None)
+                pg_data.pop('robots', None)
+                pg_data.pop('colors', None)
+                pg_data['_external_file'] = f"playgrounds/{pg_name}.json"
 
         return data
 
@@ -826,6 +886,7 @@ class ProjectManager(QObject):
                 'backgrounds': 'background',
                 'objects': 'object',
                 'rooms': 'room',
+                'playgrounds': 'playground',
                 'scripts': 'script',
                 'fonts': 'font',
                 'enemies': 'enemy',

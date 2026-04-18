@@ -11,5 +11,6 @@ Usage:
 """
 
 from importers.gmk_importer import import_gmk, GmkImportError
+from importers.roberta_importer import import_roberta, RobertaImportError
 
-__all__ = ['import_gmk', 'GmkImportError']
+__all__ = ['import_gmk', 'GmkImportError', 'import_roberta', 'RobertaImportError']

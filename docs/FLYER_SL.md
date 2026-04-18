@@ -72,4 +72,4 @@ python main.py
 
 ---
 
-*PyGameMaker IDE v1.0.0-rc.4 — Copyright 2024-2025 Gabriel Thullen*
+*PyGameMaker IDE v1.0.0-rc.6 — Copyright 2024-2025 Gabriel Thullen*

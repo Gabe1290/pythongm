@@ -299,6 +299,7 @@ class BlocklyConfig:
         config.enable_block("event_keyboard_nokey")# First Game, Pong, Breakout (stop when no key)
         config.enable_block("event_collision")     # First Game, Pong, Breakout
         config.enable_block("event_alarm")         # First Game (star spawning timer)
+        config.enable_block("event_other")         # Breakout (no_more_lives game-over hook)
 
         # Movement
         config.enable_block("move_set_hspeed")     # First Game, Pong, Breakout
@@ -332,13 +333,17 @@ class BlocklyConfig:
         # Room
         config.enable_block("room_restart")        # Breakout (game over)
 
+        # Game control — game-over flow and highscore
+        config.enable_block("game_end")            # Breakout (end game on no_more_lives)
+        config.enable_block("show_highscore")      # Breakout (display highscore table)
+
         # Output
         config.enable_block("output_message")      # Game over messages
 
         # Enable categories that have blocks
         config.enabled_categories = {
             "Events", "Movement", "Timing", "Drawing",
-            "Score/Lives/Health", "Instance", "Room", "Output"
+            "Score/Lives/Health", "Instance", "Room", "Output", "Game"
         }
 
         return config
