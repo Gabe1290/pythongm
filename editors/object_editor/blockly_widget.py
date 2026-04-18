@@ -525,10 +525,19 @@ class BlocklyWidget(QWidget):
     def apply_configuration(self, config):
         """Apply a new block configuration to the toolbox"""
 
-        # Convert config to JSON format expected by JavaScript
+        enabled_blocks = set(config.enabled_blocks)
+        enabled_categories = set(config.enabled_categories)
+
+        # Hide Thymio blocks/categories when the project has no playground
+        # to run them in — mirrors the gating in object_events_panel so the
+        # toolbox and events panel stay in sync.
+        if not self.project_has_playgrounds():
+            enabled_blocks = {b for b in enabled_blocks if not b.startswith("thymio_")}
+            enabled_categories = {c for c in enabled_categories if not c.startswith("Thymio ")}
+
         config_dict = {
-            'enabled_blocks': list(config.enabled_blocks),
-            'enabled_categories': list(config.enabled_categories),
+            'enabled_blocks': list(enabled_blocks),
+            'enabled_categories': list(enabled_categories),
             'preset_name': config.preset_name
         }
         config_json = json.dumps(config_dict)
@@ -538,13 +547,27 @@ class BlocklyWidget(QWidget):
             f"window.blocklyApi.reconfigureToolbox({config_json})"
         )
 
-        # Update status
-        total_blocks = len(config.enabled_blocks)
-        total_categories = len(config.enabled_categories)
+        # Update status — reflect what the user actually sees in the toolbox
+        total_blocks = len(enabled_blocks)
+        total_categories = len(enabled_categories)
         self.update_status(self.tr("Configuration applied: {0} blocks, {1} categories").format(total_blocks, total_categories))
 
-        # Emit signal so other components (events panel) can update
+        # Emit signal with the original (unfiltered) config so other components
+        # can make their own playground-aware decisions.
         self.config_changed.emit(config)
+
+    def project_has_playgrounds(self) -> bool:
+        """Check if the current project contains any playground assets"""
+        parent = self.parent()
+        while parent:
+            if hasattr(parent, 'current_project_data'):
+                project_data = parent.current_project_data
+                if project_data and 'assets' in project_data:
+                    playgrounds = project_data['assets'].get('playgrounds', {})
+                    return bool(playgrounds)
+                break
+            parent = parent.parent()
+        return False
 
     def _apply_saved_configuration(self):
         """Apply the saved configuration on startup"""
