@@ -384,23 +384,44 @@ class RoomEditor(QWidget):
                 self.tile_palette.set_project_info(project_path, project_data)
 
     def load_available_objects(self):
-        """Load available objects from the project"""
+        """Load available objects from the project (in-memory data preferred)"""
         try:
-            project_file = self.project_path / "project.json"
-            if project_file.exists():
-                with open(project_file, 'r') as f:
-                    project_data = json.load(f)
+            # Prefer in-memory project data from the IDE window (always up-to-date)
+            project_data = None
+            parent = self.parent()
+            while parent:
+                if hasattr(parent, 'current_project_data') and parent.current_project_data:
+                    project_data = parent.current_project_data
+                    break
+                parent = parent.parent()
 
+            # Fall back to disk if in-memory data not available
+            if not project_data:
+                project_file = self.project_path / "project.json"
+                if project_file.exists():
+                    with open(project_file, 'r') as f:
+                        project_data = json.load(f)
+
+            if project_data:
                 objects = project_data.get('assets', {}).get('objects', {})
-
                 self.object_palette.set_project_info(self.project_path, project_data)
                 self.object_palette.set_available_objects(objects)
-
                 self.update_status(self.tr("Loaded {0} objects").format(len(objects)))
 
         except Exception as e:
             logger.error(f"Error loading objects: {e}")
             self.update_status(self.tr("Error loading objects: {0}").format(e), 5000)
+
+    def rename_object_in_instances(self, old_name, new_name):
+        """Update all room instances that reference a renamed object"""
+        changed = False
+        for inst in self.room_canvas.instances:
+            if inst.object_name == old_name:
+                inst.object_name = new_name
+                changed = True
+        if changed:
+            self.room_canvas.update()
+            self.mark_modified()
 
     def on_object_selected(self, object_name):
         """Handle object selection from palette"""

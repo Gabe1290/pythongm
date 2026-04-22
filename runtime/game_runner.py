@@ -46,6 +46,44 @@ CAPTION_TRANSLATIONS = {
     'uk': {'score': 'Рахунок', 'lives': 'Життя', 'health': 'Здоров\'я', 'room': 'Кімната'},
 }
 
+def merge_parent_events(object_data: dict, objects: Dict[str, dict]) -> dict:
+    """Merge parent events into child object data.
+
+    Child events take priority — parent events are only inherited for
+    event types the child doesn't define.  Walks up the parent chain
+    (max 10 levels) so grandparent events are inherited too.
+    """
+    parent_name = object_data.get('parent', '')
+    if not parent_name:
+        return object_data
+
+    # Collect ancestor events, closest parent first
+    inherited_events = {}
+    current = parent_name
+    for _ in range(10):
+        parent_data = objects.get(current, {})
+        if not parent_data:
+            break
+        for event_name, event_data in parent_data.get('events', {}).items():
+            if event_name not in inherited_events:
+                inherited_events[event_name] = event_data
+        current = parent_data.get('parent', '')
+        if not current:
+            break
+
+    if not inherited_events:
+        return object_data
+
+    # Merge: child events override inherited ones
+    child_events = object_data.get('events', {})
+    merged_events = dict(inherited_events)
+    merged_events.update(child_events)
+
+    merged = dict(object_data)
+    merged['events'] = merged_events
+    return merged
+
+
 # Pre-computed alarm key strings to avoid f-string creation in hot loops
 ALARM_KEYS = tuple(f"alarm_{i}" for i in range(12))
 
@@ -1089,7 +1127,7 @@ class GameRoom:
         for instance in self.instances:
             # Get object data
             if instance.object_name in objects:
-                object_data = objects[instance.object_name]
+                object_data = merge_parent_events(objects[instance.object_name], objects)
                 instance.set_object_data(object_data)
 
                 # Get sprite name from object
@@ -3459,7 +3497,8 @@ class GameRunner:
                 # IMPORTANT: Refresh the persistent instance's object_data from project
                 # This ensures any changes to events/properties are picked up
                 if persistent_inst.object_name in objects_data:
-                    persistent_inst.set_object_data(objects_data[persistent_inst.object_name])
+                    merged = merge_parent_events(objects_data[persistent_inst.object_name], objects_data)
+                    persistent_inst.set_object_data(merged)
 
                 # Reset velocity when entering a new room to prevent momentum carry-over
                 # This fixes the bug where player bounces back onto a door due to residual speed

@@ -474,7 +474,7 @@ class AssetManager(QObject):
         """Update all references to a renamed asset in other assets"""
         try:
             if asset_type == "sprites":
-                # Update sprite references in objects
+                # Update sprite references in objects (default sprite)
                 objects = self.assets_cache.get("objects", {})
                 for obj_name, obj_data in objects.items():
                     if obj_data.get("sprite") == old_name:
@@ -482,12 +482,8 @@ class AssetManager(QObject):
                         obj_data["modified"] = datetime.now().isoformat()
                         logger.debug(f"  📝 Updated sprite reference in object '{obj_name}': {old_name} → {new_name}")
 
-                # Update sprite references in room instances
-                rooms = self.assets_cache.get("rooms", {})
-                for room_name, room_data in rooms.items():
-                    # Room instances typically use object_name, not sprite directly
-                    # But some rooms might have direct sprite references
-                    pass
+                # Update set_sprite action parameters across all objects
+                self._update_param_in_all_actions(old_name, new_name, "sprite")
 
             elif asset_type == "objects":
                 # Update object references in rooms
@@ -503,44 +499,48 @@ class AssetManager(QObject):
                     if updated:
                         room_data["modified"] = datetime.now().isoformat()
 
-                # Update collision event references in ALL objects
+                # Update references in ALL objects: collision events, parent, action params
                 objects = self.assets_cache.get("objects", {})
                 for obj_name, obj_data in objects.items():
+                    obj_modified = False
+
+                    # Update parent reference
+                    if obj_data.get("parent") == old_name:
+                        obj_data["parent"] = new_name
+                        logger.debug(f"  📝 Updated parent in object '{obj_name}': {old_name} → {new_name}")
+                        obj_modified = True
+
                     events = obj_data.get("events", {})
                     if not events:
+                        if obj_modified:
+                            obj_data["modified"] = datetime.now().isoformat()
                         continue
 
                     updated_events = {}
-                    obj_modified = False
 
                     for event_name, event_data in events.items():
                         new_event_name = event_name
 
-                        # Rename collision_with_X events
+                        # Rename collision_with_X and not_collision_with_X events
                         if event_name == f"collision_with_{old_name}":
                             new_event_name = f"collision_with_{new_name}"
                             logger.debug(f"  📝 Updated event name in object '{obj_name}': {event_name} → {new_event_name}")
                             obj_modified = True
+                        elif event_name == f"not_collision_with_{old_name}":
+                            new_event_name = f"not_collision_with_{new_name}"
+                            logger.debug(f"  📝 Updated event name in object '{obj_name}': {event_name} → {new_event_name}")
+                            obj_modified = True
 
                         # Update target_object in event data
-                        if event_data.get("target_object") == old_name:
+                        if isinstance(event_data, dict) and event_data.get("target_object") == old_name:
                             event_data["target_object"] = new_name
-                            logger.debug(f"  📝 Updated target_object in object '{obj_name}' event '{new_event_name}': {old_name} → {new_name}")
                             obj_modified = True
 
                         # Update object references in action parameters
-                        actions = event_data.get("actions", [])
-                        for action in actions:
-                            params = action.get("parameters", {})
-                            # Check 'object' parameter (used in if_collision, create_instance, etc.)
-                            if params.get("object") == old_name:
-                                params["object"] = new_name
-                                logger.debug(f"  📝 Updated action parameter in object '{obj_name}': object={old_name} → {new_name}")
-                                obj_modified = True
-                            # Check 'target_object' parameter
-                            if params.get("target_object") == old_name:
-                                params["target_object"] = new_name
-                                obj_modified = True
+                        # (handles both top-level actions and sub-event actions)
+                        obj_modified |= self._update_actions_object_refs(
+                            event_data, old_name, new_name, obj_name, new_event_name
+                        )
 
                         updated_events[new_event_name] = event_data
 
@@ -549,9 +549,13 @@ class AssetManager(QObject):
                         obj_data["modified"] = datetime.now().isoformat()
 
             elif asset_type == "sounds":
-                # Sounds might be referenced in object events
-                # This would require parsing action parameters
-                pass
+                # Update sound references in all object action parameters
+                self._update_param_in_all_actions(old_name, new_name, "sound")
+                self._update_param_in_all_actions(old_name, new_name, "music")
+
+            elif asset_type == "rooms":
+                # Update room references in all object action parameters
+                self._update_param_in_all_actions(old_name, new_name, "room")
 
             elif asset_type == "backgrounds":
                 # Update background references in rooms
@@ -564,6 +568,74 @@ class AssetManager(QObject):
 
         except Exception as e:
             logger.warning(f"⚠️ Error updating asset references: {e}")
+
+    def _update_param_in_all_actions(self, old_name, new_name, param_key):
+        """Update a specific parameter across all actions in all objects.
+
+        Used when renaming sprites, sounds, or rooms to update references
+        like set_sprite(sprite=old_name), sound_play(sound=old_name), etc.
+        """
+        objects = self.assets_cache.get("objects", {})
+        for obj_name, obj_data in objects.items():
+            events = obj_data.get("events", {})
+            if not events:
+                continue
+            obj_modified = False
+            for event_name, event_data in events.items():
+                if not isinstance(event_data, dict):
+                    continue
+                # Top-level actions
+                for action in event_data.get("actions", []):
+                    params = action.get("parameters", {})
+                    if params.get(param_key) == old_name:
+                        params[param_key] = new_name
+                        obj_modified = True
+                # Sub-event actions (keyboard sub-keys, etc.)
+                for key, sub_data in event_data.items():
+                    if key == "actions" or not isinstance(sub_data, dict):
+                        continue
+                    for action in sub_data.get("actions", []):
+                        params = action.get("parameters", {})
+                        if params.get(param_key) == old_name:
+                            params[param_key] = new_name
+                            obj_modified = True
+            if obj_modified:
+                obj_data["modified"] = datetime.now().isoformat()
+                logger.debug(f"  📝 Updated '{param_key}' references in object '{obj_name}': {old_name} → {new_name}")
+
+    def _update_actions_object_refs(self, event_data, old_name, new_name, obj_name, event_name) -> bool:
+        """Update object references in action parameters, handling nested sub-events."""
+        modified = False
+        if not isinstance(event_data, dict):
+            return False
+
+        # Parameter names that hold object references:
+        #   "object"        - create_instance, change_instance
+        #   "target_object" - various collision/targeting actions
+        #   "object_type"   - if_can_push (stores object name like "box")
+        OBJ_PARAM_KEYS = ("object", "target_object", "object_type")
+
+        def update_action_params(action):
+            nonlocal modified
+            params = action.get("parameters", {})
+            for key in OBJ_PARAM_KEYS:
+                if params.get(key) == old_name:
+                    params[key] = new_name
+                    logger.debug(f"  📝 Updated action param in '{obj_name}'.{event_name}: {key}={old_name} → {new_name}")
+                    modified = True
+
+        # Top-level actions list
+        for action in event_data.get("actions", []):
+            update_action_params(action)
+
+        # Sub-events (keyboard sub-keys, etc.)
+        for key, sub_data in event_data.items():
+            if key == "actions" or not isinstance(sub_data, dict):
+                continue
+            for action in sub_data.get("actions", []):
+                update_action_params(action)
+
+        return modified
 
     def duplicate_asset(self, asset_type: str, asset_name: str) -> Optional[Dict[str, Any]]:
         """Create a copy of an existing asset"""

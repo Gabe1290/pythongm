@@ -2923,8 +2923,10 @@ class ActionExecutor:
             action_executor=self
         )
 
-        # Set up the new instance with object data and sprite
-        new_instance.set_object_data(object_data)
+        # Set up the new instance with object data (with parent event inheritance)
+        from runtime.game_runner import merge_parent_events
+        merged_data = merge_parent_events(object_data, self.game_runner._objects_data)
+        new_instance.set_object_data(merged_data)
 
         # Get sprite for the new instance
         sprite_name = object_data.get('sprite', '')
@@ -3006,10 +3008,11 @@ class ActionExecutor:
         old_x = target_instance.x
         old_y = target_instance.y
 
-        # Change the object type
+        # Change the object type (with parent event inheritance)
         target_instance.object_name = new_object_name
-        # Use set_object_data to properly update cached fields (_cached_object_data, _collision_targets)
-        target_instance.set_object_data(new_object_data)
+        from runtime.game_runner import merge_parent_events
+        merged_data = merge_parent_events(new_object_data, self.game_runner._objects_data)
+        target_instance.set_object_data(merged_data)
 
         # Update sprite if the new object has a different one
         sprite_name = new_object_data.get('sprite', '')
@@ -4585,8 +4588,10 @@ class ActionExecutor:
             action_executor=self
         )
 
-        # Set up the new instance with object data and sprite
-        new_instance.set_object_data(object_data)
+        # Set up the new instance with object data (with parent event inheritance)
+        from runtime.game_runner import merge_parent_events
+        merged_data = merge_parent_events(object_data, self.game_runner._objects_data)
+        new_instance.set_object_data(merged_data)
 
         # Get sprite for the new instance
         sprite_name = object_data.get('sprite', '')
@@ -4599,7 +4604,7 @@ class ActionExecutor:
             self.game_runner.current_room._add_to_grid(new_instance)
 
             # Defer create event to run after current event completes
-            events = object_data.get('events', {})
+            events = merged_data.get('events', {})
             if 'create' in events:
                 if self._event_depth > 0:
                     self._deferred_create_events.append((new_instance, events))

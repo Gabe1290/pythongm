@@ -1218,6 +1218,30 @@ class PyGameMakerIDE(QMainWindow):
                                 # Refresh the properties panel with new data
                                 self.properties_panel.set_asset(updated_asset_item.asset_data)
 
+                # Sync in-memory project data from asset manager cache
+                if hasattr(self, 'project_manager') and self.project_manager:
+                    if hasattr(self.project_manager, 'asset_manager') and self.project_manager.asset_manager:
+                        cache = self.project_manager.asset_manager.assets_cache
+                        if self.current_project_data and 'assets' in self.current_project_data:
+                            for cat_name, cat_data in cache.items():
+                                self.current_project_data['assets'][cat_name] = cat_data
+
+                # When an object is renamed, update all open editors
+                if asset_type == 'object':
+                    for i in range(self.editor_tabs.count()):
+                        widget = self.editor_tabs.widget(i)
+                        # Update room editor instances and palette
+                        if hasattr(widget, 'rename_object_in_instances'):
+                            widget.rename_object_in_instances(old_name, new_name)
+                        if hasattr(widget, 'load_available_objects'):
+                            widget.load_available_objects()
+                        # Reload open object editors whose events were updated
+                        if hasattr(widget, 'events_panel') and widget.events_panel:
+                            if hasattr(widget, 'load_asset_data') and hasattr(widget, 'asset_name'):
+                                obj_data = self.current_project_data.get('assets', {}).get('objects', {}).get(widget.asset_name)
+                                if obj_data:
+                                    widget.events_panel.load_events_data(obj_data.get('events', {}))
+
             except Exception as e:
                 logger.error(f"❌ Error handling asset rename in main window: {e}")
 

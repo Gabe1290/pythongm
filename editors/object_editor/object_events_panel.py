@@ -1651,6 +1651,7 @@ class ObjectEventsPanel(QWidget):
     def get_available_objects(self):
         """Get list of available objects from the project"""
         # Walk up to find the main IDE window and get project data
+        from PySide6.QtWidgets import QApplication
         parent = self.parent()
         while parent:
             if hasattr(parent, 'current_project_data'):
@@ -1661,8 +1662,13 @@ class ObjectEventsPanel(QWidget):
                 break
             parent = parent.parent()
 
-        # Fallback: return some common object types
-        return ["obj_wall", "obj_box", "obj_goal", "obj_player"]
+        # Try top-level windows as fallback
+        for widget in QApplication.topLevelWidgets():
+            if hasattr(widget, 'current_project_data') and widget.current_project_data:
+                objects = widget.current_project_data.get('assets', {}).get('objects', {})
+                return list(objects.keys())
+
+        return []
 
     def project_has_playgrounds(self) -> bool:
         """Check if the current project contains any playground assets"""
