@@ -94,6 +94,10 @@ class MockGameRunner:
         """Mock trigger for no more health event"""
         pass
 
+    @property
+    def _objects_data(self):
+        return self.project_data.get('assets', {}).get('objects', {})
+
 
 # ==============================================================================
 # ActionExecutor Initialization Tests
