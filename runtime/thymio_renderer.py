@@ -6,7 +6,7 @@ Provides visual rendering for simulated Thymio robot
 
 import math
 import pygame
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 
 
 # ============================================================================
@@ -50,12 +50,30 @@ SENSOR_RAY_WIDTH = 2
 # Ground sensor visualization
 GROUND_SENSOR_SIZE = 8
 
+# Button hitboxes in robot-frame coordinates (centered on robot).
+# Frame: +x = forward, -y = robot's left side, +y = robot's right side.
+# Each entry: (button_name, dx, dy, half_w, half_h)
+# Values mirror the positions used in _render_body_surface so clicking matches what's drawn.
+BUTTON_HITBOXES = [
+    ('forward',  15,   0, 8, 8),
+    ('backward', -25,  0, 8, 8),
+    ('left',      -5, -20, 8, 8),
+    ('right',     -5,  20, 8, 8),
+    ('center',    -5,   0, 8, 8),
+]
+
 
 class ThymioRenderer:
-    """Renders Thymio robot with LEDs and sensor feedback"""
+    """Renders Thymio robot with LEDs and sensor feedback.
 
-    def __init__(self):
+    `scale` is a visual-only multiplier (default 1.0 = real Thymio size in the
+    simulation). The simulator's physics is unaffected; only the rendered body,
+    LEDs, sensor rays, and button hitboxes shrink/grow.
+    """
+
+    def __init__(self, scale: float = 1.0):
         """Initialize renderer"""
+        self.scale = float(scale)
         self.show_sensors = True  # Toggle sensor visualization
         self.show_collision_box = False  # Toggle collision box
 
@@ -197,6 +215,12 @@ class ThymioRenderer:
         # Back right
         pygame.draw.circle(self.body_surface, back_sensor_color, (cx - body_h + 5, cy + 25), 4)
 
+        # Scale the pre-rendered body once if needed (smooth-scaled to keep edges clean).
+        if self.scale != 1.0:
+            new_size = max(1, int(size * self.scale))
+            self.body_surface = pygame.transform.smoothscale(
+                self.body_surface, (new_size, new_size))
+
     def render(self, screen: pygame.Surface, thymio_data: dict):
         """
         Render Thymio robot on screen
@@ -237,28 +261,29 @@ class ThymioRenderer:
         angle_rad = math.radians(angle)
         cos_a = math.cos(angle_rad)
         sin_a = math.sin(angle_rad)
+        s = self.scale
 
         # Top LED (center of robot body)
-        self._draw_led(screen, x, y, leds['top'], LED_SIZE)
+        self._draw_led(screen, x, y, leds['top'], max(2, int(LED_SIZE * s)))
 
         # Bottom LEDs (underneath, near ground sensors at front)
         # These illuminate the ground
         # Left ground LED
-        left_offset = (40, -12)  # Forward and left
+        left_offset = (40 * s, -12 * s)  # Forward and left
         left_x = x + (left_offset[0] * cos_a - left_offset[1] * sin_a)
         left_y = y + (left_offset[0] * sin_a + left_offset[1] * cos_a)
-        self._draw_led(screen, left_x, left_y, leds['bottom_left'], LED_SIZE // 2)
+        self._draw_led(screen, left_x, left_y, leds['bottom_left'], max(2, int((LED_SIZE // 2) * s)))
 
         # Right ground LED
-        right_offset = (40, 12)  # Forward and right
+        right_offset = (40 * s, 12 * s)  # Forward and right
         right_x = x + (right_offset[0] * cos_a - right_offset[1] * sin_a)
         right_y = y + (right_offset[0] * sin_a + right_offset[1] * cos_a)
-        self._draw_led(screen, right_x, right_y, leds['bottom_right'], LED_SIZE // 2)
+        self._draw_led(screen, right_x, right_y, leds['bottom_right'], max(2, int((LED_SIZE // 2) * s)))
 
         # Circle LEDs (8 LEDs around the top edge of the robot)
         # On real Thymio, these form an arc around the curved front
         # Positioned from back-left around front to back-right
-        circle_led_radius = 42
+        circle_led_radius = 42 * s
         circle_led_angles = [135, 90, 45, 22, 0, -22, -45, -90]  # Around the robot
 
         for i, led_angle_offset in enumerate(circle_led_angles):
@@ -275,7 +300,7 @@ class ThymioRenderer:
                     int(180 * intensity / 32),  # Green (slightly less for orange)
                     0  # Blue
                 )
-                self._draw_led(screen, led_x, led_y, color, CIRCLE_LED_SIZE)
+                self._draw_led(screen, led_x, led_y, color, max(2, int(CIRCLE_LED_SIZE * s)))
 
     def _draw_led(self, screen: pygame.Surface, x: float, y: float, color: Tuple[int, int, int], size: int):
         """Draw a single LED with glow effect"""
@@ -306,6 +331,7 @@ class ThymioRenderer:
         angle_rad = math.radians(angle)
         cos_a = math.cos(angle_rad)
         sin_a = math.sin(angle_rad)
+        s = self.scale
 
         # Sensor configurations: (direction_angle, distance_from_center, side_offset)
         # Thymio has 5 front sensors and 2 back sensors
@@ -324,8 +350,10 @@ class ThymioRenderer:
             sensor_value = sensor_values[i]
 
             # Calculate sensor start position (on robot body edge)
-            start_x = x + (forward_offset * cos_a - side_offset * sin_a)
-            start_y = y + (forward_offset * sin_a + side_offset * cos_a)
+            fo = forward_offset * s
+            so = side_offset * s
+            start_x = x + (fo * cos_a - so * sin_a)
+            start_y = y + (fo * sin_a + so * cos_a)
 
             # Only draw if sensor detects something
             if sensor_value > 100:  # Threshold for visibility
@@ -334,8 +362,8 @@ class ThymioRenderer:
 
                 # Calculate ray end point based on sensor value
                 # Higher value = closer obstacle = shorter ray
-                ray_length = SENSOR_RAY_LENGTH * (1 - sensor_value / 4500)
-                ray_length = max(ray_length, 15)  # Minimum visible length
+                ray_length = SENSOR_RAY_LENGTH * s * (1 - sensor_value / 4500)
+                ray_length = max(ray_length, 15 * s)  # Minimum visible length
 
                 end_x = start_x + ray_length * math.cos(sensor_angle_rad)
                 end_y = start_y + ray_length * math.sin(sensor_angle_rad)
@@ -357,10 +385,11 @@ class ThymioRenderer:
         angle_rad = math.radians(angle)
         cos_a = math.cos(angle_rad)
         sin_a = math.sin(angle_rad)
+        s = self.scale
 
         # Ground sensor positions (at front underside of robot)
         # (forward_offset, side_offset) - positive forward is front, positive side is right
-        sensor_positions = [(48, -12), (48, 12)]  # Left, Right at front
+        sensor_positions = [(48 * s, -12 * s), (48 * s, 12 * s)]  # Left, Right at front
 
         for i, (forward, side) in enumerate(sensor_positions):
             # Calculate sensor world position
@@ -379,24 +408,44 @@ class ThymioRenderer:
                 color = (60, 255, 60, 200)  # Green
 
             # Draw sensor indicator as a small rounded square
-            size = GROUND_SENSOR_SIZE
+            size = max(2, int(GROUND_SENSOR_SIZE * s))
             sensor_surface = pygame.Surface((size * 2, size * 2), pygame.SRCALPHA)
             pygame.draw.rect(sensor_surface, color, (0, 0, size * 2, size * 2), border_radius=3)
             screen.blit(sensor_surface, (int(sensor_x - size), int(sensor_y - size)))
 
     def _render_collision_box(self, screen: pygame.Surface, x: float, y: float):
         """Render collision bounding box (for debugging)"""
-        rect = pygame.Rect(
-            int(x - THYMIO_WIDTH // 2),
-            int(y - THYMIO_HEIGHT // 2),
-            THYMIO_WIDTH,
-            THYMIO_HEIGHT
-        )
+        s = self.scale
+        w = int(THYMIO_WIDTH * s)
+        h = int(THYMIO_HEIGHT * s)
+        rect = pygame.Rect(int(x - w // 2), int(y - h // 2), w, h)
         pygame.draw.rect(screen, (255, 0, 255), rect, 2)  # Magenta outline
 
     # ========================================================================
     # TOGGLE FUNCTIONS
     # ========================================================================
+
+    def hit_test_button(self, robot_x: float, robot_y: float, robot_angle: float,
+                        mouse_x: float, mouse_y: float) -> Optional[str]:
+        """Return the name of the Thymio button under the mouse, or None.
+
+        All coordinates are in screen pixels. robot_angle is in degrees, matching
+        ThymioSimulator's convention (0 = facing screen +x). Hitboxes scale with
+        `self.scale` so they always match what's drawn.
+        """
+        angle_rad = math.radians(robot_angle)
+        cos_a = math.cos(angle_rad)
+        sin_a = math.sin(angle_rad)
+        dx = mouse_x - robot_x
+        dy = mouse_y - robot_y
+        # Inverse rotation: world -> robot frame
+        local_x =  dx * cos_a + dy * sin_a
+        local_y = -dx * sin_a + dy * cos_a
+        s = self.scale
+        for name, bdx, bdy, hw, hh in BUTTON_HITBOXES:
+            if abs(local_x - bdx * s) <= hw * s and abs(local_y - bdy * s) <= hh * s:
+                return name
+        return None
 
     def toggle_sensors(self):
         """Toggle sensor visualization on/off"""

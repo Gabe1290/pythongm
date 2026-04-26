@@ -18,9 +18,10 @@ from PySide6.QtWidgets import (
     QPushButton, QLabel as QLabelWidget,
 )
 from PySide6.QtCore import Qt, QTimer, Signal
-from PySide6.QtGui import QImage, QPixmap, QKeyEvent
+from PySide6.QtGui import QImage, QPixmap, QKeyEvent, QMouseEvent
 
 from runtime.thymio_simulator import ThymioSimulator
+from runtime.thymio_renderer import ThymioRenderer
 from runtime.action_executor import ActionExecutor
 from runtime.thymio_action_handlers import register_thymio_actions
 
@@ -32,10 +33,16 @@ FPS = 60
 
 
 class _PygameCanvas(QLabel):
-    """Qt label that displays a pygame surface and forwards key events"""
+    """Qt label that displays a pygame surface and forwards key/mouse events.
+
+    Mouse positions are emitted in surface coordinates (the QLabel is fixed-size
+    and contains the surface 1:1, so widget-local coords == surface coords).
+    """
 
     key_pressed = Signal(int)
     key_released = Signal(int)
+    mouse_pressed = Signal(int, int, int)   # qt_button, x, y
+    mouse_released = Signal(int, int, int)  # qt_button, x, y
 
     def __init__(self, width, height, parent=None):
         super().__init__(parent)
@@ -62,6 +69,17 @@ class _PygameCanvas(QLabel):
 
     def keyReleaseEvent(self, event: QKeyEvent):
         self.key_released.emit(event.key())
+        event.accept()
+
+    def mousePressEvent(self, event: QMouseEvent):
+        pos = event.position().toPoint()
+        self.mouse_pressed.emit(event.button().value, pos.x(), pos.y())
+        self.setFocus()  # keep keyboard focus after a click
+        event.accept()
+
+    def mouseReleaseEvent(self, event: QMouseEvent):
+        pos = event.position().toPoint()
+        self.mouse_released.emit(event.button().value, pos.x(), pos.y())
         event.accept()
 
 
@@ -125,6 +143,14 @@ class PlaygroundRunnerWindow(QMainWindow):
 
         # Build obstacle list (axis-aligned bounding boxes of walls)
         self.obstacles = self._build_obstacles(playground_data.get('walls', []))
+
+        # Shared Thymio renderer (also exposes hit_test_button for mouse clicks).
+        # Half-scale so multiple robots fit comfortably in a small playground arena.
+        self.thymio_renderer = ThymioRenderer(scale=0.5)
+
+        # Tracks Thymio button presses originating from the mouse:
+        # {qt_button_int: (instance, button_name)}
+        self._thymio_mouse_presses = {}
 
         # Create ActionExecutor (shared across all robots)
         self.action_executor = ActionExecutor(game_runner=None)
@@ -223,11 +249,13 @@ class PlaygroundRunnerWindow(QMainWindow):
         self.canvas = _PygameCanvas(self.arena_w, self.arena_h)
         self.canvas.key_pressed.connect(self._on_key_pressed)
         self.canvas.key_released.connect(self._on_key_released)
+        self.canvas.mouse_pressed.connect(self._on_mouse_pressed)
+        self.canvas.mouse_released.connect(self._on_mouse_released)
         layout.addWidget(self.canvas)
 
         # Hint
         hint = QLabel(self.tr(
-            "Arrow keys / Space = simulate Thymio buttons. "
+            "Arrow keys / Space = all robots; click a robot's button = that robot only. "
             "The linked object's code runs automatically."))
         hint.setStyleSheet("color: #666; font-size: 10px;")
         layout.addWidget(hint)
@@ -265,6 +293,44 @@ class PlaygroundRunnerWindow(QMainWindow):
 
     def _on_key_released(self, key):
         pass  # Could trigger release events here
+
+    # ─── Mouse → Thymio button hit-testing ──────────────────────
+
+    def _on_mouse_pressed(self, qt_button, x, y):
+        """Click on a Thymio's button → fire that robot's button event only."""
+        if qt_button != Qt.LeftButton.value:
+            return
+        for inst in self.instances:
+            sim = inst.thymio_simulator
+            if sim is None:
+                continue
+            hit = self.thymio_renderer.hit_test_button(sim.x, sim.y, sim.angle, x, y)
+            if not hit:
+                continue
+            sim.set_button(hit, True)
+            self._thymio_mouse_presses[qt_button] = (inst, hit)
+
+            event_name = f"thymio_button_{hit}"
+            events = (inst.object_data or {}).get('events', {})
+            if event_name in events:
+                try:
+                    self.action_executor.execute_event(inst, event_name, events)
+                except Exception as e:
+                    logger.error(f"Event {event_name} failed: {e}")
+            if 'thymio_any_button' in events:
+                try:
+                    self.action_executor.execute_event(inst, 'thymio_any_button', events)
+                except Exception as e:
+                    logger.error(f"thymio_any_button failed: {e}")
+            return
+
+    def _on_mouse_released(self, qt_button, x, y):
+        press = self._thymio_mouse_presses.pop(qt_button, None)
+        if press is None:
+            return
+        inst, btn_name = press
+        if inst.thymio_simulator:
+            inst.thymio_simulator.set_button(btn_name, False)
 
     # ─── Simulation loop ────────────────────────────────────────
 
@@ -350,22 +416,14 @@ class PlaygroundRunnerWindow(QMainWindow):
         pygame.draw.polygon(surface, (0, 0, 0), pts, 1)
 
     def _draw_robot(self, surface, inst):
-        """Draw a Thymio robot"""
-        x, y = int(inst.x), int(inst.y)
-        # Body
-        pygame.draw.circle(surface, (250, 250, 250), (x, y), 12)
-        pygame.draw.circle(surface, (40, 40, 40), (x, y), 12, 2)
-        # Direction indicator (use simulator angle, which is in degrees, -90 = up)
-        angle_rad = math.radians(inst.thymio_simulator.angle)
-        dx = math.cos(angle_rad) * 12
-        dy = math.sin(angle_rad) * 12
-        pygame.draw.line(surface, (0, 200, 0), (x, y),
-                         (int(x + dx), int(y + dy)), 3)
-        # LED top (show RGB)
-        led = inst.thymio_simulator.leds.top
-        led_color = (min(255, led[0] * 8), min(255, led[1] * 8), min(255, led[2] * 8))
-        if sum(led) > 0:
-            pygame.draw.circle(surface, led_color, (x, y), 5)
+        """Draw a Thymio robot using the shared ThymioRenderer.
+
+        This matches the in-game appearance and exposes the 5 buttons for clicking.
+        """
+        sim = inst.thymio_simulator
+        if sim is None:
+            return
+        self.thymio_renderer.render(surface, sim.get_render_data())
 
     def _resolve_color(self, name):
         for c in self.playground_data.get('colors', []):

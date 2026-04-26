@@ -1389,6 +1389,10 @@ class GameRunner:
         # Thymio robot renderer (shared for all Thymio robots)
         self.thymio_renderer = ThymioRenderer()
 
+        # Tracks Thymio button presses originating from the mouse so that
+        # release maps back to the same instance/button: {pygame_button: (instance, button_name)}
+        self._thymio_mouse_presses = {}
+
         # Game settings
         self.fps = 60
         self.window_width = 800
@@ -2216,6 +2220,12 @@ class GameRunner:
         mouse_x, mouse_y = pos
         logger.debug(f"\n🖱️  Mouse pressed: {button_name} at ({mouse_x}, {mouse_y})")
 
+        # Thymio button click takes precedence over generic mouse events:
+        # if the click lands on a Thymio button, fire that robot's button event
+        # and don't fall through to the per-instance mouse handlers.
+        if button == 1 and self._handle_thymio_button_press(button, mouse_x, mouse_y):
+            return
+
         # Execute mouse events for all instances
         for instance in self.current_room.instances:
             if not instance.object_data:
@@ -2235,9 +2245,41 @@ class GameRunner:
                         instance.mouse_y = mouse_y
                         instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
+    def _handle_thymio_button_press(self, mouse_button, mouse_x, mouse_y):
+        """Hit-test Thymio buttons under the mouse and fire the matching event.
+
+        Returns True if a Thymio button was pressed (caller should swallow the click).
+        """
+        for instance in self.current_room.instances:
+            if not (instance.is_thymio and instance.thymio_simulator):
+                continue
+            sim = instance.thymio_simulator
+            hit = self.thymio_renderer.hit_test_button(sim.x, sim.y, sim.angle, mouse_x, mouse_y)
+            if not hit:
+                continue
+
+            sim.set_button(hit, True)
+            self._thymio_mouse_presses[mouse_button] = (instance, hit)
+
+            event_name = f"thymio_button_{hit}"
+            events = (instance.object_data or {}).get('events', {})
+            if event_name in events:
+                logger.debug(f"  🤖 Mouse-clicked {event_name} on {instance.object_name}")
+                instance.action_executor.execute_event(instance, event_name, events)
+            return True
+        return False
+
     def handle_mouse_release(self, button, pos):
         """Handle mouse button release event"""
         if not self.current_room:
+            return
+
+        # If this mouse button had pressed a Thymio button, release it and stop here.
+        press = self._thymio_mouse_presses.pop(button, None)
+        if press is not None:
+            instance, btn_name = press
+            if instance.thymio_simulator:
+                instance.thymio_simulator.set_button(btn_name, False)
             return
 
         button_map = {
