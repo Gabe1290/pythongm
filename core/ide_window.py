@@ -1242,8 +1242,23 @@ class PyGameMakerIDE(QMainWindow):
                                 if obj_data:
                                     widget.events_panel.load_events_data(obj_data.get('events', {}))
 
+                # Refresh asset dropdowns in any open Blockly tab so the new
+                # name shows up immediately (works for any asset_type).
+                self._refresh_blockly_asset_lists()
+
             except Exception as e:
                 logger.error(f"❌ Error handling asset rename in main window: {e}")
+
+    def _refresh_blockly_asset_lists(self):
+        """Push fresh asset-name lists to every open Blockly editor."""
+        try:
+            for i in range(self.editor_tabs.count()):
+                widget = self.editor_tabs.widget(i)
+                blockly_tab = getattr(widget, 'blockly_tab', None)
+                if blockly_tab and hasattr(blockly_tab, 'push_asset_lists'):
+                    blockly_tab.push_asset_lists()
+        except Exception as e:
+            logger.debug(f"Could not refresh Blockly asset lists: {e}")
 
     def find_renamed_asset(self, asset_name, asset_type):
         """Find an asset item by name and type in the asset tree"""
@@ -1304,6 +1319,10 @@ class PyGameMakerIDE(QMainWindow):
                 if asset_name in self.open_editors:
                     self.close_editor_by_name(asset_name)
                     logger.debug(f"🔄 Closed deleted object's editor: {asset_name}")
+
+            # Refresh asset dropdowns in any open Blockly tab so the deleted
+            # name disappears from the lists.
+            self._refresh_blockly_asset_lists()
 
         except Exception as e:
             logger.error(f"❌ Error handling asset deletion: {e}")
@@ -1435,6 +1454,9 @@ class PyGameMakerIDE(QMainWindow):
                 # Refresh any open room editors' object palette when a new object is created
                 if asset_type == 'objects':
                     self._refresh_room_editor_objects()
+
+                # Push the new asset name into Blockly dropdowns of any open editor.
+                self._refresh_blockly_asset_lists()
             else:
                 logger.error(f"Failed to save project after creating {asset_name}")
 
@@ -3158,6 +3180,9 @@ class PyGameMakerIDE(QMainWindow):
             # Also refresh open object editors so they see the new sprite
             logger.debug("🔄 Refreshing open object editors after sprite import...")
             self.refresh_open_object_editors()
+
+        # Push new asset name into Blockly dropdowns for any open editor.
+        self._refresh_blockly_asset_lists()
 
     def on_asset_double_clicked(self, asset_data):
         """Handle double-click on assets to open in appropriate editor"""

@@ -237,6 +237,10 @@ class BlocklyWidget(QWidget):
             # Register custom blocks from ActionType definitions
             self._register_custom_blocks()
 
+            # Push project asset lists into Blockly so the dropdown fields
+            # (object/sprite/sound/room) show real choices from this project.
+            self.push_asset_lists()
+
             # Apply saved configuration to toolbox
             self._apply_saved_configuration()
 
@@ -412,6 +416,10 @@ class BlocklyWidget(QWidget):
             self._pending_events_data = events_data
             return
 
+        # Refresh asset dropdowns from the current project before the blocks
+        # are (re)created, so dropdown labels show real names from the start.
+        self.push_asset_lists()
+
         # Debug: Log the events data being sent
         logger.debug(f"Loading events data: {json.dumps(events_data, indent=2)}")
 
@@ -569,6 +577,67 @@ class BlocklyWidget(QWidget):
             parent = parent.parent()
         return False
 
+    def _collect_project_assets(self) -> Dict[str, list]:
+        """Walk up to find project assets and return name lists for each
+        category that the Blockly dropdowns consume."""
+        result = {'objects': [], 'sprites': [], 'sounds': [], 'rooms': []}
+
+        # First try a parent that exposes current_project_data (the IDE window).
+        assets = None
+        parent = self.parent()
+        while parent:
+            if hasattr(parent, 'current_project_data'):
+                data = parent.current_project_data
+                if data and 'assets' in data:
+                    assets = data['assets']
+                break
+            parent = parent.parent()
+
+        # Fall back to reading project.json via the owning editor's project_path.
+        if assets is None:
+            parent = self.parent()
+            while parent:
+                if hasattr(parent, 'project_path') and getattr(parent, 'project_path', None):
+                    try:
+                        project_file = Path(parent.project_path) / "project.json"
+                        if project_file.exists():
+                            with open(project_file, 'r') as f:
+                                data = json.load(f)
+                            assets = data.get('assets', {})
+                    except Exception as e:
+                        logger.debug(f"Could not read project.json for asset lists: {e}")
+                    break
+                parent = parent.parent()
+
+        if not assets:
+            return result
+
+        for key in result.keys():
+            bucket = assets.get(key, {})
+            if isinstance(bucket, dict):
+                result[key] = list(bucket.keys())
+            elif isinstance(bucket, list):
+                result[key] = list(bucket)
+        return result
+
+    def push_asset_lists(self):
+        """Send current project asset names to Blockly so dropdown fields
+        reflect what's actually in the project. Safe to call repeatedly."""
+        if not self._page_ready:
+            return
+        try:
+            lists = self._collect_project_assets()
+            payload = json.dumps(lists)
+            script = (
+                "(function(){"
+                "if (window.blocklyApi && typeof window.blocklyApi.setAssetLists === 'function') {"
+                f"return window.blocklyApi.setAssetLists({payload});"
+                "} return 0; })()"
+            )
+            self.web_view.page().runJavaScript(script)
+        except Exception as e:
+            logger.debug(f"push_asset_lists failed: {e}")
+
     def _apply_saved_configuration(self):
         """Apply the saved configuration on startup"""
         from config.blockly_config import load_config, PRESETS, BlocklyConfig
@@ -722,3 +791,9 @@ class BlocklyVisualProgrammingTab(QWidget):
     def load_workspace_xml(self, xml: str):
         """Load workspace from XML"""
         self.blockly_widget.load_workspace_xml(xml)
+
+    def push_asset_lists(self):
+        """Refresh the dropdown choices for object/sprite/sound/room fields
+        from the current project. Safe to call any time."""
+        if hasattr(self, 'blockly_widget') and self.blockly_widget:
+            self.blockly_widget.push_asset_lists()
