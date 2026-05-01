@@ -75,16 +75,13 @@ class ProjectManager(QObject):
         Args:
             project_name: Name of the project
             location: Parent directory where project folder will be created
-            template: Project template (currently unused, for future expansion)
+            template: Project template id ("empty", "gameover", ...) or display name
 
         Returns:
             bool: True if successful, False otherwise
         """
-        # Convert string path to Path object
         location_path = Path(location)
-
-        # Call the actual implementation
-        return self.create_new_project(project_name, location_path)
+        return self.create_new_project(project_name, location_path, template)
 
     def set_asset_manager(self, asset_manager):
         """Set or update the asset manager reference"""
@@ -109,7 +106,7 @@ class ProjectManager(QObject):
             if self.current_project_path:
                 self.asset_manager.set_project_directory(self.current_project_path)
 
-    def create_new_project(self, project_name: str, location: Path) -> bool:
+    def create_new_project(self, project_name: str, location: Path, template: str = "empty") -> bool:
         """Create a new project at the specified location"""
         try:
             project_path = Path(location) / project_name
@@ -127,6 +124,7 @@ class ProjectManager(QObject):
 
             # Create default project data
             project_data = self._create_default_project_data(project_name)
+            self._apply_project_template(project_data, template)
 
             # Save project file
             project_file = project_path / self.PROJECT_FILE
@@ -1194,6 +1192,59 @@ class ProjectManager(QObject):
         }
 
         return project_data
+
+    # Map dialog display strings -> template directory names under resources/templates/
+    TEMPLATE_ALIASES = {
+        "empty": "empty",
+        "empty project": "empty",
+        "with game over screen": "gameover",
+        "game over": "gameover",
+        "gameover": "gameover",
+    }
+
+    def _resolve_template_id(self, template: str) -> str:
+        if not template:
+            return "empty"
+        return self.TEMPLATE_ALIASES.get(template.strip().lower(), template.strip().lower())
+
+    def _apply_project_template(self, project_data: Dict[str, Any], template: str) -> None:
+        """Merge a starter-content template (objects + rooms) into a fresh project."""
+        template_id = self._resolve_template_id(template)
+        if template_id == "empty":
+            return
+
+        import sys
+        if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+            base = Path(sys._MEIPASS)
+        else:
+            base = Path(__file__).parent.parent
+        snippet_path = base / 'templates' / template_id / 'snippet.json'
+
+        if not snippet_path.exists():
+            logger.warning(f"Template '{template_id}' not found at {snippet_path}; using empty project")
+            return
+
+        try:
+            with open(snippet_path, 'r', encoding='utf-8') as f:
+                snippet = json.load(f)
+        except Exception as e:
+            logger.warning(f"Failed to load template '{template_id}': {e}")
+            return
+
+        now = datetime.now().isoformat()
+        assets = project_data["assets"]
+
+        for obj_name, obj_data in snippet.get("objects", {}).items():
+            obj_data.setdefault("created", now)
+            obj_data.setdefault("modified", now)
+            assets["objects"][obj_name] = obj_data
+
+        for room_name, room_data in snippet.get("rooms", {}).items():
+            room_data.setdefault("created", now)
+            room_data.setdefault("modified", now)
+            assets["rooms"][room_name] = room_data
+
+        logger.info(f"Applied project template: {template_id}")
 
     def _validate_project_data(self, project_data: Dict[str, Any]) -> bool:
         """Validate project data structure"""

@@ -54,6 +54,16 @@ class NewProjectDialog(QDialog):
         self.description_edit.setPlaceholderText(self.tr("Optional project description..."))
         details_layout.addRow(self.tr("Description:"), self.description_edit)
 
+        # Template selection: display name -> template id passed to ProjectManager
+        self.template_combo = QComboBox()
+        self._template_options = [
+            (self.tr("Empty Project"), "empty"),
+            (self.tr("With Game Over Screen"), "gameover"),
+        ]
+        for label, _id in self._template_options:
+            self.template_combo.addItem(label)
+        details_layout.addRow(self.tr("Template:"), self.template_combo)
+
         layout.addWidget(details_group)
 
         button_box = QDialogButtonBox(
@@ -107,11 +117,13 @@ class NewProjectDialog(QDialog):
             QMessageBox.warning(self, self.tr("Invalid Input"), self.tr("Please choose a project location."))
             return
 
+        template_id = self._template_options[self.template_combo.currentIndex()][1]
+
         self.project_data = {
             "name": project_name,
             "path": project_path,
             "location": project_path,
-            "template": "Empty Project",
+            "template": template_id,
             "description": self.description_edit.toPlainText(),
             "create_folder": True,
             "target_platform": "Desktop"

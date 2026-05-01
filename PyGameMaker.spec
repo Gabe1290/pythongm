@@ -148,6 +148,7 @@ for _dir, _prefix in [
     ('Tutorials', 'Tutorials'),
     ('resources/flags', 'resources/flags'),
     ('resources/Sprites', 'resources/Sprites'),
+    ('templates', 'templates'),
     ('editors/object_editor/blockly', 'editors/object_editor/blockly'),
 ]:
     _path = project_dir / _dir

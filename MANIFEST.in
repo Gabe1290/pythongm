@@ -14,6 +14,9 @@ recursive-include translations *.qm *.ts
 # Resource files (flags only - sprites/sounds are not in the repo)
 recursive-include resources/flags *.png
 
+# Project templates (starter content for new projects)
+recursive-include templates *.json
+
 # Tutorials
 recursive-include Tutorials *.html *.css *.js *.png *.jpg *.gif *.json
 

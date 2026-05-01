@@ -1,0 +1,44 @@
+{
+  "objects": {
+    "obj_gameover_text": {
+      "name": "obj_gameover_text",
+      "sprite": "",
+      "visible": true,
+      "solid": false,
+      "persistent": false,
+      "asset_type": "object",
+      "imported": true,
+      "events": {
+        "draw": {
+          "actions": [
+            { "action": "set_draw_color", "parameters": { "color": "#FFFFFF" } },
+            { "action": "draw_text", "parameters": { "x": 412, "y": 320, "text": "GAME OVER" } },
+            { "action": "draw_text", "parameters": { "x": 360, "y": 400, "text": "Press SPACE to restart" } }
+          ]
+        },
+        "keyboard": {
+          "space": {
+            "actions": [
+              { "action": "restart_game" }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "rooms": {
+    "room_gameover": {
+      "name": "room_gameover",
+      "asset_type": "room",
+      "width": 1024,
+      "height": 768,
+      "background_color": "#000000",
+      "views_enabled": false,
+      "instances": [
+        { "object_name": "obj_gameover_text", "x": 0, "y": 0 }
+      ],
+      "creation_code": "",
+      "imported": true
+    }
+  }
+}
