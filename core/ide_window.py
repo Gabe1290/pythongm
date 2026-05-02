@@ -145,8 +145,12 @@ class PyGameMakerIDE(QMainWindow):
         file_menu.addAction(self.export_project_action)
 
         file_menu.addAction(self.create_action(self.tr("Open &Zip Project..."), None, self.open_project_zip))
-        file_menu.addAction(self.create_action(self.tr("Import Open &Roberta XML..."), None, self.import_roberta_xml))
-        file_menu.addAction(self.create_action(self.tr("Import &GameMaker .gmk File..."), None, self.import_gmk_file))
+        # Import-as-new-project actions: stored on self so update_ui_state can keep
+        # them enabled regardless of whether a project is currently loaded.
+        self.import_roberta_action = self.create_action(self.tr("Import Open &Roberta XML..."), None, self.import_roberta_xml)
+        self.import_gmk_action = self.create_action(self.tr("Import &GameMaker .gmk File..."), None, self.import_gmk_file)
+        file_menu.addAction(self.import_roberta_action)
+        file_menu.addAction(self.import_gmk_action)
         file_menu.addSeparator()
 
         # Auto-save as zip toggle
@@ -270,7 +274,8 @@ class PyGameMakerIDE(QMainWindow):
         thymio_menu.addAction(self.create_action(self.tr("Add &Event..."), None, self.show_thymio_event_selector))
         thymio_menu.addAction(self.create_action(self.tr("Add &Action..."), None, self.show_thymio_action_selector))
         thymio_menu.addSeparator()
-        thymio_menu.addAction(self.create_action(self.tr("Import Open &Roberta XML..."), None, self.import_roberta_xml))
+        self.thymio_import_roberta_action = self.create_action(self.tr("Import Open &Roberta XML..."), None, self.import_roberta_xml)
+        thymio_menu.addAction(self.thymio_import_roberta_action)
 
         help_menu = menubar.addMenu(self.tr("&Help"))
         help_menu.addAction(self.create_action(self.tr("&Documentation"), "F1", self.show_documentation))
@@ -3700,7 +3705,18 @@ class PyGameMakerIDE(QMainWindow):
     def update_ui_state(self):
         has_project = self.current_project_path is not None
 
+        # Import-as-new-project actions create a project from a source file, so
+        # they must stay enabled even when no project is currently loaded. The
+        # generic "Import" substring match below would otherwise grey them out.
+        always_enabled_imports = set()
+        for attr in ('import_roberta_action', 'import_gmk_action', 'thymio_import_roberta_action'):
+            if hasattr(self, attr):
+                always_enabled_imports.add(getattr(self, attr))
+
         for action in self.findChildren(QAction):
+            if action in always_enabled_imports:
+                action.setEnabled(True)
+                continue
             if action.text() in [self.tr("Save Project"), self.tr("Save Project As..."), self.tr("Project Settings...")]:
                 action.setEnabled(has_project)
             elif self.tr("Import") in action.text() or self.tr("Create") in action.text():
