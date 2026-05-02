@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-control { background-color: #FFAB19; color: #333; }
+        .block-room { background-color: #A6745C; }
+        .block-game { background-color: #B36BAA; }
+        .block-draw { background-color: #9B59B6; }
+        .block-indent { margin-left: 20px; }
+        .block-indent2 { margin-left: 40px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 4: Winning the Game</h1>
+
+    <p>Right now the player can lose, but there's no way to <em>win</em>. We'll fix that
+    by checking after every step: <strong>"Are there any coins left?"</strong> &mdash;
+    if not, we go to a brand-new win room.</p>
+
+    <h2>Build the Win Room</h2>
+
+    <h2>Create the Win Sprite (Optional)</h2>
+    <div class="step">
+        <p>If you want a celebration look, create a sprite called <code>spr_win_text</code>.
+        This step is optional &mdash; the text drawn in the next step works without a sprite.</p>
+    </div>
+
+    <h2>Create the Win-Text Object</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Objects</strong> &rarr; <strong>Create New Object</strong></li>
+            <li>Name it <code>obj_win_text</code></li>
+            <li>Open the <strong>Blockly</strong> tab and add these two events:</li>
+        </ol>
+
+        <p style="margin-top: 8px;"><strong>Show the win message:</strong></p>
+        <div class="blockly-group">
+            <span class="block block-event">When drawing</span><br>
+            <span class="block block-draw block-indent">Draw text <span class="block-text">YOU WIN!</span> at x:<span class="block-num">412</span> y:<span class="block-num">320</span></span><br>
+            <span class="block block-draw block-indent">Draw text <span class="block-text">Press SPACE to play again</span> at x:<span class="block-num">340</span> y:<span class="block-num">400</span></span>
+        </div>
+
+        <p style="margin-top: 8px;"><strong>Restart on space:</strong></p>
+        <div class="blockly-group">
+            <span class="block block-event">Key press: space</span><br>
+            <span class="block block-game block-indent">Restart Game</span>
+        </div>
+        <p style="margin-top: 8px;">Click <strong>Apply to Events</strong>.</p>
+    </div>
+
+    <h2>Create the Win Room</h2>
+    <div class="step">
+        <ol>
+            <li>Right-click <strong>Rooms</strong> &rarr; <strong>Create New Room</strong></li>
+            <li>Name it <code>room_win</code></li>
+            <li>Set the background color to a celebratory color (light green or gold)</li>
+            <li>Place one <code>obj_win_text</code> instance anywhere in the room (its drawing is at fixed coordinates)</li>
+        </ol>
+    </div>
+
+    <h2>The Win Check</h2>
+    <p>Now the important part: every step, the player checks if any coins are left.
+    When the count reaches zero, we go to the win room.</p>
+
+    <div class="step">
+        <ol>
+            <li>Open <code>obj_player</code></li>
+            <li>Click the <strong>Blockly</strong> tab</li>
+            <li>Add this <strong>Step</strong> event:</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Every step</span><br>
+            <span class="block block-control block-indent">If count of <span class="block-text">obj_coin</span> <span class="block-num">==</span> <span class="block-num">0</span> then</span><br>
+            <span class="block block-room block-indent2">Go to room <span class="block-text">room_win</span></span>
+        </div>
+        <p style="margin-top: 8px;">Click <strong>Apply to Events</strong>.</p>
+
+        <div class="info" style="margin-top: 10px;">
+            <strong>What this does:</strong> The <strong>If Count Of</strong> block looks at the room
+            and counts how many <code>obj_coin</code> instances are still alive. When you've caught them
+            all, the count is zero, the comparison <code>== 0</code> is true, and the
+            <strong>Go to room</strong> action runs.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Full Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>Catch every coin &rarr; <strong>YOU WIN!</strong> screen appears</li>
+            <li>Touch the enemy &rarr; <strong>GAME OVER</strong> screen appears</li>
+            <li>Press <strong>SPACE</strong> from either ending to play again</li>
+        </ul>
+    </div>
+
+    <h2>You Built a Complete Game!</h2>
+    <p>Congratulations &mdash; that's a full game loop with:</p>
+    <ul>
+        <li>Player input (keyboard movement)</li>
+        <li>Two kinds of collision (good and bad)</li>
+        <li>A score the player can see grow</li>
+        <li>A clear win state and lose state</li>
+        <li>A way to restart and try again</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Try this next:</strong> add more coins, place a second enemy, or change the
+        coin and enemy speeds in their <strong>When created</strong> events.
+        Every change is just a number you can edit and test.
+    </div>
+</body>
+</html>

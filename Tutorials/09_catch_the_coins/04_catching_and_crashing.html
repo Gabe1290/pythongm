@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-score { background-color: #5CA65C; }
+        .block-instance { background-color: #A65C81; }
+        .block-room { background-color: #A6745C; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+        .block-text { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Phase 3: Catching and Crashing</h1>
+
+    <p>Time to make the coins and the enemy actually <em>do</em> something. We'll add three rules:</p>
+    <ul>
+        <li>Touching a coin: <strong>+1 score</strong>, the coin disappears</li>
+        <li>Touching the enemy: <strong>game over</strong></li>
+        <li>The score is shown on screen</li>
+    </ul>
+
+    <h2>Open the Player Object</h2>
+    <div class="step">
+        <ol>
+            <li>Double-click <code>obj_player</code> to open the Object Editor</li>
+            <li>Click the <strong>Blockly</strong> tab</li>
+        </ol>
+    </div>
+
+    <h2>Reset the Score When the Game Starts</h2>
+    <div class="step">
+        <p>Add this event so the score begins at zero each time:</p>
+        <div class="blockly-group">
+            <span class="block block-event">When created</span><br>
+            <span class="block block-score block-indent">Set score to <span class="block-num">0</span></span>
+        </div>
+    </div>
+
+    <h2>Catch a Coin (Score and Destroy It)</h2>
+    <div class="step">
+        <p>Add a <strong>Collision</strong> event with <code>obj_coin</code>:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Collision with obj_coin</span><br>
+            <span class="block block-score block-indent">Add to score <span class="block-num">1</span></span><br>
+            <span class="block block-instance block-indent">Destroy other instance</span>
+        </div>
+        <p style="margin-top: 8px;"><strong>Destroy other instance</strong> means &ldquo;destroy the coin we just touched&rdquo; &mdash;
+        not the player.</p>
+    </div>
+
+    <h2>Crash Into the Enemy (Game Over)</h2>
+    <div class="step">
+        <p>Add another <strong>Collision</strong> event, this time with <code>obj_enemy</code>:</p>
+        <div class="blockly-group">
+            <span class="block block-event">Collision with obj_enemy</span><br>
+            <span class="block block-room block-indent">Go to room <span class="block-text">room_gameover</span></span>
+        </div>
+        <p style="margin-top: 8px;">The <code>room_gameover</code> room came from the
+        <strong>"With Game Over Screen"</strong> template &mdash; it already shows
+        "GAME OVER" and restarts when the player presses <strong>SPACE</strong>.</p>
+    </div>
+
+    <h2>Show the Score on Screen</h2>
+    <div class="step">
+        <p>Add a <strong>Draw</strong> event so the score is visible while you play:</p>
+        <div class="blockly-group">
+            <span class="block block-event">When drawing</span><br>
+            <span class="block block-score block-indent">Draw Score at x:<span class="block-num">10</span> y:<span class="block-num">10</span></span>
+        </div>
+    </div>
+
+    <div class="step">
+        <p>Click <strong>Apply to Events</strong> to save all four events.
+        Your <code>obj_player</code> now has:
+        <strong>When created</strong>, <strong>When drawing</strong>, <strong>two collisions</strong>,
+        and the <strong>three keyboard events</strong> from Phase 1 &mdash; <strong>seven event blocks total</strong>.</p>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Test Your Game!</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Press F5 to play!</strong></p>
+        <ul>
+            <li>Catch coins &rarr; <strong>score goes up</strong>, coins disappear</li>
+            <li>Touch the enemy &rarr; <strong>Game Over screen appears</strong></li>
+            <li>Press <strong>SPACE</strong> on the Game Over screen to restart</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Click "Next" to add the win screen.
+    </div>
+</body>
+</html>

@@ -7,9 +7,9 @@ Controls which tutorials are shown and the default blockly preset for new projec
 EDITIONS = {
     "committee": {
         "name": "Committee Demo",
-        "description": "Stripped-down demo edition for committee approval — minimal toolbox, no tutorials",
+        "description": "Stripped-down demo edition for committee approval — minimal toolbox, single curated tutorial",
         "default_blockly_preset": "minimal",
-        "tutorial_folders": [],  # empty list = hide all tutorials
+        "tutorial_folders": ["09_catch_the_coins"],
     },
     "beginner": {
         "name": "Beginner",

@@ -99,6 +99,19 @@
                 "03_landing_and_crashing.html",
                 "04_game_controller.html"
             ]
+        },
+        {
+            "title": "Catch the Coins: Win and Lose",
+            "folder": "09_catch_the_coins",
+            "description": "Build a complete game: catch coins to win, avoid the enemy or game over",
+            "thumbnail": "thumbnails/09_catch_the_coins.png",
+            "pages": [
+                "01_introduction.html",
+                "02_moving_player.html",
+                "03_coins_and_enemy.html",
+                "04_catching_and_crashing.html",
+                "05_winning.html"
+            ]
         }
     ]
 }

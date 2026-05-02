@@ -325,6 +325,7 @@ class BlocklyConfig:
         # Score
         config.enable_block("score_set")
         config.enable_block("score_add")
+        config.enable_block("draw_score")  # canned "Score: X" display, no concat needed
 
         # Instance lifecycle (no spawning — pre-place objects in the room editor)
         config.enable_block("instance_destroy")
@@ -337,12 +338,9 @@ class BlocklyConfig:
         # Game control
         config.enable_block("game_restart")
 
-        # Values (composable score reading for draw_text)
-        config.enable_block("value_score")
-
         config.enabled_categories = {
             "Events", "Control", "Movement", "Drawing",
-            "Score/Lives/Health", "Instance", "Room", "Game", "Values",
+            "Score/Lives/Health", "Instance", "Room", "Game",
         }
 
         return config
