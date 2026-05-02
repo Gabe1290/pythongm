@@ -73,14 +73,19 @@ class AssetManager(QObject):
         return self.project_directory / relative_path
 
     def get_relative_path(self, absolute_path: Path) -> str:
-        """Convert absolute path to relative project path"""
+        """Convert absolute path to relative project path.
+
+        Always uses forward slashes — the result is written into project.json
+        (asset file_path, thumbnail) and projects need to round-trip across
+        Windows/macOS/Linux. as_posix() normalises the separator.
+        """
         if not self.project_directory:
-            return str(absolute_path)
+            return Path(absolute_path).as_posix()
         try:
-            return str(Path(absolute_path).relative_to(self.project_directory))
+            return Path(absolute_path).relative_to(self.project_directory).as_posix()
         except ValueError:
             # If path is not relative to project directory, return as-is
-            return str(absolute_path)
+            return Path(absolute_path).as_posix()
 
     def ensure_directories(self) -> None:
         """Create necessary asset directories in the project directory"""
