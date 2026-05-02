@@ -428,6 +428,11 @@ class GameInstance:
         # Track if movement keys are currently pressed
         self.keys_pressed = set()  # Set of currently pressed keys
 
+        # Delayed actions queued by `delay_action`. Eagerly initialised so the
+        # per-frame loop in run_game_loop can do a direct truthiness check
+        # instead of hasattr() for every instance every frame.
+        self._delayed_actions = []
+
         # Alarms - 12 alarms (0-11), -1 means disabled
         self.alarm = [-1] * 12
 
@@ -1877,7 +1882,7 @@ class GameRunner:
                                             instance.action_executor.execute_action_list(instance, alarm_event["actions"])
 
                     # 2b. DELAYED ACTIONS (countdown and execute)
-                    if hasattr(instance, '_delayed_actions') and instance._delayed_actions:
+                    if instance._delayed_actions:
                         completed = []
                         for i, delayed in enumerate(instance._delayed_actions):
                             delayed['frames_remaining'] -= 1
@@ -2123,7 +2128,7 @@ class GameRunner:
         preventing re-triggering while a grid move is in progress.
         For smooth movement: fires every frame since speed is continuously applied.
         """
-        if not hasattr(instance, 'keys_pressed') or not instance.keys_pressed:
+        if not instance.keys_pressed:
             return
 
         events = instance.object_data.get('events', {})
@@ -3097,7 +3102,7 @@ class GameRunner:
         """
         # Iterate over a copy since we may destroy instances
         for instance in list(self.current_room.instances):
-            if not hasattr(instance, '_cached_object_data') or not instance._cached_object_data:
+            if not instance._cached_object_data:
                 continue
 
             events = instance._cached_object_data.get('events', {})

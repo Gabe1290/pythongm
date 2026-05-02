@@ -1526,9 +1526,8 @@ class ActionExecutor:
             logger.warning("⚠️ delay_action: No then_action specified")
             return
 
-        # Initialize delayed actions list if needed
-        if not hasattr(instance, '_delayed_actions'):
-            instance._delayed_actions = []
+        # _delayed_actions is now eagerly initialised in GameInstance.__init__,
+        # so no lazy-init guard is needed here.
 
         # Store the delayed action with remaining frames and parameters
         delayed = {
