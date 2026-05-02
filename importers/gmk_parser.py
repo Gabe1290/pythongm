@@ -362,12 +362,18 @@ class GmkParser:
             logger.info(f"GMK version {self.file_version}, "
                         f"game ID {project.header.game_id}")
 
+            logger.info("Parsing settings...")
             project.settings = self._parse_settings()
+            logger.info(f"  Settings parsed (now at pos 0x{self.stream.position:X})")
 
             # Triggers and constants only exist in v800+
             if self.file_version >= 800:
+                logger.info("Parsing triggers...")
                 self._skip_triggers()
+                logger.info(f"  Triggers parsed (now at pos 0x{self.stream.position:X})")
+                logger.info("Parsing constants...")
                 self._skip_constants()
+                logger.info(f"  Constants parsed (now at pos 0x{self.stream.position:X})")
 
             logger.info("Parsing sounds...")
             project.sounds = self._parse_resource_section(self._parse_single_sound)
