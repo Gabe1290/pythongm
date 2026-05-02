@@ -28,7 +28,7 @@ class TestNewProjectDialog:
 
     def test_dialog_creates(self, qtbot):
         """NewProjectDialog should create without errors"""
-        from dialogs.new_project import NewProjectDialog
+        from dialogs.project_dialogs import NewProjectDialog
 
         dialog = NewProjectDialog()
         qtbot.addWidget(dialog)
@@ -38,7 +38,7 @@ class TestNewProjectDialog:
 
     def test_dialog_has_name_field(self, qtbot):
         """NewProjectDialog should have a project name input"""
-        from dialogs.new_project import NewProjectDialog
+        from dialogs.project_dialogs import NewProjectDialog
 
         dialog = NewProjectDialog()
         qtbot.addWidget(dialog)
@@ -48,7 +48,7 @@ class TestNewProjectDialog:
 
     def test_dialog_has_location_field(self, qtbot):
         """NewProjectDialog should have a location input"""
-        from dialogs.new_project import NewProjectDialog
+        from dialogs.project_dialogs import NewProjectDialog
 
         dialog = NewProjectDialog()
         qtbot.addWidget(dialog)

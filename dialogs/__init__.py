@@ -4,13 +4,14 @@ Dialogs package for PyGameMaker IDE
 """
 
 # Main dialogs
-from .new_project import NewProjectDialog
 from .about import AboutDialog
 from .preferences_dialog import PreferencesDialog
 from .auto_save_dialog import AutoSaveSettingsDialog
 
-# Project dialogs
+# Project dialogs (NewProjectDialog lives here — the standalone dialogs/new_project.py
+# was an unused early prototype and has been removed)
 from .project_dialogs import (
+    NewProjectDialog,
     ProjectSettingsDialog,
     OpenProjectDialog,
     ExportProjectDialog
