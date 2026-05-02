@@ -1191,11 +1191,15 @@ BLOCKLY_TO_ACTION_MAP = {
     "instance_destroy_other": "destroy_other",
     "instance_create": "create_instance",
     "instance_change": "change_instance",
-    # Room
-    "room_goto_next": "room_goto_next",
-    "room_goto_previous": "room_goto_previous",
-    "room_restart": "room_restart",
-    "room_goto": "room_goto",
+    "if_can_push": "if_can_push",
+    # Room — block names map to the action names the Blockly generators
+    # actually emit (verified in blockly_generators.js cases for these blocks).
+    "room_goto_next": "next_room",
+    "room_goto_previous": "previous_room",
+    "room_restart": "restart_room",
+    "room_goto": "goto_room",
+    "room_if_next_exists": "if_next_room_exists",
+    "room_if_previous_exists": "if_previous_room_exists",
     "game_restart": "game_restart",
     "game_end": "game_end",
     # Values/Control flow
@@ -1219,6 +1223,18 @@ BLOCKLY_TO_ACTION_MAP = {
 
 # Reverse mapping: action_types name -> Blockly block type
 ACTION_TO_BLOCKLY_MAP = {v: k for k, v in BLOCKLY_TO_ACTION_MAP.items()}
+
+# ACTION_TYPES contains duplicate registrations of room actions under both their
+# canonical names (next_room, previous_room, restart_room, room_goto) and their
+# block-style aliases (room_goto_next, room_goto_previous, room_restart). Without
+# the entries below, the alias variant falls through the picker's "include if
+# unmapped" backward-compat path and leaks past preset gating.
+ACTION_TO_BLOCKLY_MAP.update({
+    "room_goto_next": "room_goto_next",
+    "room_goto_previous": "room_goto_previous",
+    "room_restart": "room_restart",
+    "room_goto": "room_goto",
+})
 
 
 def get_action_type(action_name: str) -> Optional[ActionType]:
