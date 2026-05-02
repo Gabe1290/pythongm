@@ -16,18 +16,6 @@ from runtime.action_handlers.base import (
 logger = get_logger(__name__)
 
 
-def handle_set_score(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Set the game score."""
-    value = parse_int(ctx, params.get("value", 0), instance, default=0)
-    relative = parse_bool(params.get("relative", False))
-
-    if ctx.game_runner:
-        if relative:
-            ctx.game_runner.score = getattr(ctx.game_runner, 'score', 0) + value
-        else:
-            ctx.game_runner.score = value
-        logger.debug(f"  🏆 Score = {ctx.game_runner.score}")
-
 
 def handle_if_score(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
     """Check if score meets condition."""
@@ -57,52 +45,8 @@ def handle_if_score(ctx: HandlerContext, instance: Instance, params: Parameters)
     return result
 
 
-def handle_draw_score(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Draw the score at a position."""
-    from runtime.action_handlers.base import queue_draw_command
-
-    x = parse_int(ctx, params.get("x", 0), instance, default=0)
-    y = parse_int(ctx, params.get("y", 0), instance, default=0)
-    caption = params.get("caption", "Score: ")
-
-    score = getattr(ctx.game_runner, 'score', 0) if ctx.game_runner else 0
-    text = f"{caption}{score}"
-    color = getattr(instance, 'draw_color', (0, 0, 0))
-
-    queue_draw_command(instance, {
-        'type': 'text',
-        'x': x,
-        'y': y,
-        'text': text,
-        'color': color
-    })
 
 
-def handle_show_highscore(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Show the highscore table."""
-    if ctx.game_runner:
-        ctx.game_runner.show_highscore_flag = True
-    logger.debug("  📊 Show highscore requested")
-
-
-def handle_clear_highscore(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Clear the highscore table."""
-    if ctx.game_runner:
-        ctx.game_runner.highscores = []
-    logger.debug("  🗑️ Highscores cleared")
-
-
-def handle_set_lives(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Set the number of lives."""
-    value = parse_int(ctx, params.get("value", 3), instance, default=3)
-    relative = parse_bool(params.get("relative", False))
-
-    if ctx.game_runner:
-        if relative:
-            ctx.game_runner.lives = getattr(ctx.game_runner, 'lives', 3) + value
-        else:
-            ctx.game_runner.lives = value
-        logger.debug(f"  ❤️ Lives = {ctx.game_runner.lives}")
 
 
 def handle_if_lives(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
@@ -133,26 +77,6 @@ def handle_if_lives(ctx: HandlerContext, instance: Instance, params: Parameters)
     return result
 
 
-def handle_draw_lives(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Draw lives at a position."""
-    from runtime.action_handlers.base import queue_draw_command
-
-    x = parse_int(ctx, params.get("x", 0), instance, default=0)
-    y = parse_int(ctx, params.get("y", 0), instance, default=0)
-    caption = params.get("caption", "Lives: ")
-
-    lives = getattr(ctx.game_runner, 'lives', 3) if ctx.game_runner else 3
-    text = f"{caption}{lives}"
-    color = getattr(instance, 'draw_color', (0, 0, 0))
-
-    queue_draw_command(instance, {
-        'type': 'text',
-        'x': x,
-        'y': y,
-        'text': text,
-        'color': color
-    })
-
 
 def handle_draw_lives_images(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
     """Draw lives as sprite images."""
@@ -172,20 +96,6 @@ def handle_draw_lives_images(ctx: HandlerContext, instance: Instance, params: Pa
         'count': lives
     })
 
-
-def handle_set_health(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Set health value."""
-    value = parse_int(ctx, params.get("value", 100), instance, default=100)
-    relative = parse_bool(params.get("relative", False))
-
-    if ctx.game_runner:
-        if relative:
-            ctx.game_runner.health = getattr(ctx.game_runner, 'health', 100) + value
-        else:
-            ctx.game_runner.health = value
-        # Clamp health to 0-100
-        ctx.game_runner.health = max(0, min(100, ctx.game_runner.health))
-        logger.debug(f"  💚 Health = {ctx.game_runner.health}")
 
 
 def handle_if_health(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
@@ -259,19 +169,7 @@ def handle_set_caption(ctx: HandlerContext, instance: Instance, params: Paramete
     logger.debug(f"  📝 Set caption: '{caption}' (score={show_score}, lives={show_lives}, health={show_health})")
 
 
-def handle_test_score(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
-    """Test if score meets condition (alias for if_score)."""
-    return handle_if_score(ctx, instance, params)
 
-
-def handle_test_lives(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
-    """Test if lives meet condition (alias for if_lives)."""
-    return handle_if_lives(ctx, instance, params)
-
-
-def handle_test_health(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
-    """Test if health meets condition (alias for if_health)."""
-    return handle_if_health(ctx, instance, params)
 
 
 # =============================================================================
@@ -279,21 +177,11 @@ def handle_test_health(ctx: HandlerContext, instance: Instance, params: Paramete
 # =============================================================================
 
 SCORE_HANDLERS: Dict[str, Any] = {
-    "set_score": handle_set_score,
     "if_score": handle_if_score,
-    "draw_score": handle_draw_score,
-    "show_highscore": handle_show_highscore,
-    "clear_highscore": handle_clear_highscore,
-    "set_lives": handle_set_lives,
     "if_lives": handle_if_lives,
-    "draw_lives": handle_draw_lives,
     "draw_lives_images": handle_draw_lives_images,
-    "set_health": handle_set_health,
     "if_health": handle_if_health,
     "draw_health": handle_draw_health,
     "set_caption": handle_set_caption,
     # Test aliases
-    "test_score": handle_test_score,
-    "test_lives": handle_test_lives,
-    "test_health": handle_test_health,
 }

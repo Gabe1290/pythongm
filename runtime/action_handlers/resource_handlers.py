@@ -16,65 +16,7 @@ from runtime.action_handlers.base import (
 logger = get_logger(__name__)
 
 
-def handle_replace_sprite(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Replace a sprite resource with an external image."""
-    sprite = params.get("sprite", "")
-    filename = params.get("filename", "")
-    images = parse_int(ctx, params.get("images", 1), instance, default=1)
-    remove_back = parse_bool(params.get("remove_back", False))
-    smooth = parse_bool(params.get("smooth", False))
-    preload = parse_bool(params.get("preload", True))
-    origin_x = parse_int(ctx, params.get("origin_x", 0), instance, default=0)
-    origin_y = parse_int(ctx, params.get("origin_y", 0), instance, default=0)
 
-    if ctx.game_runner:
-        ctx.game_runner.pending_resource_ops.append({
-            'type': 'replace_sprite',
-            'sprite': sprite,
-            'filename': filename,
-            'images': images,
-            'remove_back': remove_back,
-            'smooth': smooth,
-            'preload': preload,
-            'origin_x': origin_x,
-            'origin_y': origin_y
-        })
-
-    logger.debug(f"  🖼️ Replace sprite '{sprite}' with '{filename}'")
-
-
-def handle_replace_sound(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Replace a sound resource with an external file."""
-    sound = params.get("sound", "")
-    filename = params.get("filename", "")
-
-    if ctx.game_runner:
-        if not hasattr(ctx.game_runner, 'pending_resource_ops'):
-            ctx.game_runner.pending_resource_ops = []
-        ctx.game_runner.pending_resource_ops.append({
-            'type': 'replace_sound',
-            'sound': sound,
-            'filename': filename
-        })
-
-    logger.debug(f"  🔊 Replace sound '{sound}' with '{filename}'")
-
-
-def handle_replace_background(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Replace a background resource with an external image."""
-    background = params.get("background", "")
-    filename = params.get("filename", "")
-
-    if ctx.game_runner:
-        if not hasattr(ctx.game_runner, 'pending_resource_ops'):
-            ctx.game_runner.pending_resource_ops = []
-        ctx.game_runner.pending_resource_ops.append({
-            'type': 'replace_background',
-            'background': background,
-            'filename': filename
-        })
-
-    logger.debug(f"  🏞️ Replace background '{background}' with '{filename}'")
 
 
 def handle_replace_font(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
@@ -175,9 +117,6 @@ def handle_free_sound(ctx: HandlerContext, instance: Instance, params: Parameter
 # =============================================================================
 
 RESOURCE_HANDLERS: Dict[str, Any] = {
-    "replace_sprite": handle_replace_sprite,
-    "replace_sound": handle_replace_sound,
-    "replace_background": handle_replace_background,
     "replace_font": handle_replace_font,
     "define_sprite": handle_define_sprite,
     "define_sound": handle_define_sound,

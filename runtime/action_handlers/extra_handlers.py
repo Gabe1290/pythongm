@@ -134,50 +134,9 @@ def handle_debug_show_value(ctx: HandlerContext, instance: Instance, params: Par
         logger.info(f"🐛 {variable} = {value}")
 
 
-def handle_show_info(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Show game info dialog."""
-    if ctx.game_runner:
-        ctx.game_runner.show_game_info_flag = True
-    logger.debug("  ℹ️ Show info requested")
 
 
-def handle_show_video(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Show a video file."""
-    filename = params.get("filename", params.get("video", ""))
-    loop = parse_bool(params.get("loop", False))
 
-    if ctx.game_runner:
-        ctx.game_runner.pending_video = {
-            'filename': filename,
-            'loop': loop
-        }
-
-    logger.debug(f"  🎬 Show video: '{filename}'")
-
-
-def handle_open_webpage(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Open a webpage in the default browser (alias for open_url)."""
-    handle_open_url(ctx, instance, params)
-
-
-def handle_save_game(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Save the game state to a file."""
-    filename = params.get("filename", "savegame.sav")
-
-    if ctx.game_runner:
-        ctx.game_runner.pending_save_game = filename
-
-    logger.debug(f"  💾 Save game requested: '{filename}'")
-
-
-def handle_load_game(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Load the game state from a file."""
-    filename = params.get("filename", "savegame.sav")
-
-    if ctx.game_runner:
-        ctx.game_runner.pending_load_game = filename
-
-    logger.debug(f"  📂 Load game requested: '{filename}'")
 
 
 # =============================================================================
@@ -202,9 +161,4 @@ EXTRA_HANDLERS: Dict[str, Any] = {
     "debug_message": handle_debug_message,
     "debug_show_value": handle_debug_show_value,
     # Additional handlers
-    "show_info": handle_show_info,
-    "show_video": handle_show_video,
-    "open_webpage": handle_open_webpage,
-    "save_game": handle_save_game,
-    "load_game": handle_load_game,
 }

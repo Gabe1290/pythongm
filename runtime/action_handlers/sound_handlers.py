@@ -37,20 +37,6 @@ def handle_play_sound(ctx: HandlerContext, instance: Instance, params: Parameter
     logger.debug(f"  🔊 Queue play sound '{sound}' (loop={loop})")
 
 
-def handle_stop_sound(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Stop a playing sound."""
-    sound = params.get("sound", "")
-
-    if not hasattr(instance, 'pending_sounds'):
-        instance.pending_sounds = []
-
-    instance.pending_sounds.append({
-        'sound': sound,
-        'action': 'stop'
-    })
-
-    logger.debug(f"  🔇 Queue stop sound '{sound}'")
-
 
 def handle_stop_all_sounds(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
     """Stop all playing sounds."""
@@ -97,10 +83,6 @@ def handle_set_sound_volume(ctx: HandlerContext, instance: Instance, params: Par
     logger.debug(f"  🔊 Queue set volume for '{sound}' = {volume}")
 
 
-def handle_check_sound(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
-    """Check if a sound is playing (alias for if_sound_playing)."""
-    return handle_if_sound_playing(ctx, instance, params)
-
 
 # =============================================================================
 # Handler Registry
@@ -108,10 +90,8 @@ def handle_check_sound(ctx: HandlerContext, instance: Instance, params: Paramete
 
 SOUND_HANDLERS: Dict[str, Any] = {
     "play_sound": handle_play_sound,
-    "stop_sound": handle_stop_sound,
     "stop_all_sounds": handle_stop_all_sounds,
     "if_sound_playing": handle_if_sound_playing,
     "set_sound_volume": handle_set_sound_volume,
     # Aliases
-    "check_sound": handle_check_sound,
 }

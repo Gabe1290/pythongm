@@ -43,44 +43,6 @@ def handle_if_collision(ctx: HandlerContext, instance: Instance, params: Paramet
     return result
 
 
-def handle_if_collision_at(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Execute collision check with conditional actions (Blockly-style)."""
-    x_expr = params.get("x", "self.x")
-    y_expr = params.get("y", "self.y")
-    object_type = params.get("object_type", params.get("object", "any"))
-    then_actions = params.get("then_actions", [])
-    else_actions = params.get("else_actions", [])
-
-    if not hasattr(instance, 'collision_checks'):
-        instance.collision_checks = []
-
-    instance.collision_checks.append({
-        'x': x_expr,
-        'y': y_expr,
-        'object_type': object_type,
-        'then_actions': then_actions,
-        'else_actions': else_actions
-    })
-
-
-def handle_if_object_exists(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
-    """Check if any instance of an object type exists in the room."""
-    object_type = params.get("object", "")
-    not_flag = parse_bool(params.get("not_flag", False))
-
-    if not object_type:
-        return False
-
-    exists = False
-    if ctx.game_runner and ctx.game_runner.current_room:
-        for room_instance in ctx.game_runner.current_room.instances:
-            if room_instance.object_name == object_type:
-                exists = True
-                break
-
-    result = not exists if not_flag else exists
-    logger.debug(f"  ❓ if_object_exists: '{object_type}' exists={exists}, result={result}")
-    return result
 
 
 def handle_if_variable(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
@@ -217,90 +179,8 @@ def handle_if_key_pressed(ctx: HandlerContext, instance: Instance, params: Param
     return result
 
 
-def handle_test_chance(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
-    """Test random chance - returns True with 1/sides probability."""
-    import random
-    from runtime.action_handlers.base import parse_int
-
-    sides = parse_int(ctx, params.get("sides", 2), instance, default=2)
-    not_flag = parse_bool(params.get("not_flag", False))
-
-    if sides < 1:
-        sides = 1
-
-    result = random.randint(1, sides) == 1
-
-    if not_flag:
-        result = not result
-
-    logger.debug(f"  🎲 test_chance: 1 in {sides} = {result}")
-    return result
 
 
-def handle_test_expression(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
-    """Test if an expression evaluates to true."""
-    expression = params.get("expression", "0")
-    not_flag = parse_bool(params.get("not_flag", False))
-
-    result = ctx._evaluate_expression(expression, instance)
-
-    if isinstance(result, (int, float)):
-        result = result != 0
-    else:
-        result = bool(result)
-
-    if not_flag:
-        result = not result
-
-    logger.debug(f"  📝 test_expression: '{expression}' = {result}")
-    return result
-
-
-def handle_test_instance_count(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
-    """Test if instance count of an object meets condition."""
-    from runtime.action_handlers.base import parse_int
-
-    object_name = params.get("object", "")
-    count = parse_int(ctx, params.get("count", 0), instance, default=0)
-    operation = params.get("operation", "equals")
-    not_flag = parse_bool(params.get("not_flag", False))
-
-    actual_count = 0
-    if ctx.game_runner:
-        for inst in getattr(ctx.game_runner, 'instances', []):
-            # Exclude instances marked for destruction
-            if getattr(inst, 'object_name', '') == object_name and not getattr(inst, 'to_destroy', False):
-                actual_count += 1
-
-    if operation == "equals":
-        result = actual_count == count
-    elif operation == "less_than":
-        result = actual_count < count
-    elif operation == "greater_than":
-        result = actual_count > count
-    else:
-        result = actual_count == count
-
-    if not_flag:
-        result = not result
-
-    logger.debug(f"  🔢 test_instance_count: {object_name} count={actual_count} {operation} {count} = {result}")
-    return result
-
-
-def handle_test_question(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
-    """Display a yes/no question and return result."""
-    question = params.get("question", "")
-
-    # Queue the question for the game runner to display
-    if ctx.game_runner:
-        if not hasattr(ctx.game_runner, 'pending_questions'):
-            ctx.game_runner.pending_questions = []
-        ctx.game_runner.pending_questions.append(question)
-
-    logger.debug(f"  ❓ test_question: '{question}'")
-    # Default to True (yes) - actual result comes from dialog
-    return True
 
 
 def handle_code(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
@@ -364,9 +244,6 @@ def handle_script(ctx: HandlerContext, instance: Instance, params: Parameters) -
 # =============================================================================
 
 CONTROL_HANDLERS: Dict[str, Any] = {
-    "if_collision": handle_if_collision,
-    "if_collision_at": handle_if_collision_at,
-    "if_object_exists": handle_if_object_exists,
     "if_variable": handle_if_variable,
     "if_random_chance": handle_if_random_chance,
     "if_dice": handle_if_dice,
@@ -374,10 +251,6 @@ CONTROL_HANDLERS: Dict[str, Any] = {
     "if_mouse_button": handle_if_mouse_button,
     "if_key_pressed": handle_if_key_pressed,
     # Test actions (alternate names)
-    "test_chance": handle_test_chance,
-    "test_expression": handle_test_expression,
-    "test_instance_count": handle_test_instance_count,
-    "test_question": handle_test_question,
     # Note: 'test_variable' was previously aliased here to handle_if_variable,
     # but ActionExecutor.execute_test_variable_action wins by Phase-1 priority
     # and uses incompatible operation strings ("equal" vs "equals"). The alias
