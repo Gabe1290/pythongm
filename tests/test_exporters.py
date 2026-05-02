@@ -1567,9 +1567,9 @@ class TestHTML5ActionCodeInEngine:
 
     @pytest.fixture
     def engine_js_content(self):
-        """Load engine.js content"""
+        """Load engine.js content (force UTF-8; on Windows read_text defaults to cp1252)."""
         engine_path = Path(__file__).parent.parent / "export" / "HTML5" / "templates" / "engine.js"
-        return engine_path.read_text()
+        return engine_path.read_text(encoding="utf-8")
 
     def test_engine_has_movement_actions(self, engine_js_content):
         """Engine should handle movement actions"""
