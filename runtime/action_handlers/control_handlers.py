@@ -363,11 +363,6 @@ def handle_script(ctx: HandlerContext, instance: Instance, params: Parameters) -
 # Handler Registry
 # =============================================================================
 
-def handle_test_variable(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
-    """Test variable condition (alias for if_variable)."""
-    return handle_if_variable(ctx, instance, params)
-
-
 CONTROL_HANDLERS: Dict[str, Any] = {
     "if_collision": handle_if_collision,
     "if_collision_at": handle_if_collision_at,
@@ -383,7 +378,10 @@ CONTROL_HANDLERS: Dict[str, Any] = {
     "test_expression": handle_test_expression,
     "test_instance_count": handle_test_instance_count,
     "test_question": handle_test_question,
-    "test_variable": handle_test_variable,
+    # Note: 'test_variable' was previously aliased here to handle_if_variable,
+    # but ActionExecutor.execute_test_variable_action wins by Phase-1 priority
+    # and uses incompatible operation strings ("equal" vs "equals"). The alias
+    # was dead code and has been removed.
     # Code execution
     "code": handle_code,
     "script": handle_script,

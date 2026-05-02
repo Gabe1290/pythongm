@@ -16,94 +16,14 @@ from runtime.action_handlers.base import (
 logger = get_logger(__name__)
 
 
-def handle_set_variable(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
-    """Set a variable to a value."""
-    variable = params.get("variable", "")
-    value = params.get("value", 0)
-    relative = parse_bool(params.get("relative", False))
-
-    if not variable:
-        logger.debug("⚠️ set_variable: No variable name specified")
-        return
-
-    # Parse the value
-    parsed_value = ctx._parse_value(str(value), instance)
-
-    # Determine scope
-    if '.' in variable:
-        scope, var_name = variable.split('.', 1)
-        scope = scope.lower()
-    else:
-        scope = 'self'
-        var_name = variable
-
-    # Get current value for relative mode
-    if relative:
-        if scope == 'self':
-            current = getattr(instance, var_name, 0)
-        elif scope == 'global' and ctx.game_runner:
-            current = ctx.game_runner.global_variables.get(var_name, 0)
-        else:
-            current = 0
-
-        try:
-            parsed_value = float(current) + float(parsed_value)
-        except (ValueError, TypeError):
-            pass
-
-    # Set the value
-    if scope == 'self':
-        setattr(instance, var_name, parsed_value)
-        logger.debug(f"  📝 Set self.{var_name} = {parsed_value}")
-    elif scope == 'global' and ctx.game_runner:
-        ctx.game_runner.global_variables[var_name] = parsed_value
-        logger.debug(f"  📝 Set global.{var_name} = {parsed_value}")
-    elif scope == 'other':
-        other = getattr(ctx, '_collision_other', None)
-        if other:
-            setattr(other, var_name, parsed_value)
-            logger.debug(f"  📝 Set other.{var_name} = {parsed_value}")
-
-
-def handle_test_variable(ctx: HandlerContext, instance: Instance, params: Parameters) -> bool:
-    """Test a variable against a value - returns True/False."""
-    variable = params.get("variable", "")
-    operation = params.get("operation", "equals")
-    value = params.get("value", 0)
-    not_flag = parse_bool(params.get("not_flag", False))
-
-    if not variable:
-        return False
-
-    var_value = ctx._parse_value(variable, instance)
-    compare_value = ctx._parse_value(str(value), instance)
-
-    try:
-        var_float = float(var_value) if var_value is not None else 0
-        cmp_float = float(compare_value) if compare_value is not None else 0
-
-        if operation == "equals":
-            result = var_value == compare_value or var_float == cmp_float
-        elif operation == "not_equals":
-            result = var_value != compare_value and var_float != cmp_float
-        elif operation == "less_than":
-            result = var_float < cmp_float
-        elif operation == "greater_than":
-            result = var_float > cmp_float
-        elif operation == "less_equal":
-            result = var_float <= cmp_float
-        elif operation == "greater_equal":
-            result = var_float >= cmp_float
-        else:
-            result = var_value == compare_value
-    except (ValueError, TypeError):
-        result = str(var_value) == str(compare_value) if operation == "equals" else False
-
-    if not_flag:
-        result = not result
-
-    logger.debug(f"  ❓ test_variable: {variable} {operation} {value} = {result}")
-    return result
+# NOTE: handle_set_variable and handle_test_variable previously lived here as
+# modular handlers, but ActionExecutor.execute_set_variable_action and
+# .execute_test_variable_action take Phase-1 priority and the modular versions
+# were never reached. Worse, they used different operation strings (e.g.
+# "equals" vs "equal") and a different scope-encoding ("self.name" vs separate
+# `scope` param), which made their presence actively misleading. They have
+# been removed; the executor methods are the canonical implementations.
+# (See also: ~115 other actions with the same dead-modular-handler pattern.)
 
 
 def handle_draw_variable(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
@@ -179,8 +99,6 @@ def handle_comment(ctx: HandlerContext, instance: Instance, params: Parameters) 
 # =============================================================================
 
 VARIABLE_HANDLERS: Dict[str, Any] = {
-    "set_variable": handle_set_variable,
-    "test_variable": handle_test_variable,
     "draw_variable": handle_draw_variable,
     "execute_code": handle_execute_code,
     "execute_script": handle_execute_script,
