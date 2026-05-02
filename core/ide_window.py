@@ -145,6 +145,7 @@ class PyGameMakerIDE(QMainWindow):
 
         file_menu.addAction(self.create_action(self.tr("Open &Zip Project..."), None, self.open_project_zip))
         file_menu.addAction(self.create_action(self.tr("Import Open &Roberta XML..."), None, self.import_roberta_xml))
+        file_menu.addAction(self.create_action(self.tr("Import &GameMaker .gmk File..."), None, self.import_gmk_file))
         file_menu.addSeparator()
 
         # Auto-save as zip toggle
@@ -664,6 +665,72 @@ class PyGameMakerIDE(QMainWindow):
                 self.tr("Failed to import Open Roberta XML:\n{0}").format(str(exc))
             )
             self.update_status(self.tr("Roberta import failed"))
+
+    def import_gmk_file(self):
+        """Import a legacy GameMaker 8.0/8.1 .gmk file as a new project."""
+        gmk_path, _ = QFileDialog.getOpenFileName(
+            self,
+            self.tr("Import GameMaker File"),
+            str(Path.home()),
+            self.tr("GameMaker Files (*.gmk)")
+        )
+        if not gmk_path:
+            return
+
+        gmk_file = Path(gmk_path)
+        # Default output: a sibling folder named after the .gmk stem.
+        # Picks a non-clashing sibling if one already exists, so grading multiple
+        # submissions in the same folder doesn't silently overwrite anything.
+        default_parent = gmk_file.parent
+        candidate = default_parent / gmk_file.stem
+        suffix = 2
+        while candidate.exists() and any(candidate.iterdir()):
+            candidate = default_parent / f"{gmk_file.stem}_{suffix}"
+            suffix += 1
+        output_dir = candidate
+
+        try:
+            output_dir.mkdir(parents=True, exist_ok=True)
+        except OSError as exc:
+            QMessageBox.warning(
+                self,
+                self.tr("Import Failed"),
+                self.tr("Could not create output folder:\n{0}").format(str(exc))
+            )
+            return
+
+        from importers.gmk_importer import import_gmk_detailed
+
+        self.update_status(self.tr("Importing GameMaker file..."))
+        result = import_gmk_detailed(str(gmk_file), str(output_dir))
+
+        if not result.success:
+            warning_text = "\n".join(f"  - {w}" for w in result.warnings[:20]) or self.tr("(no details)")
+            QMessageBox.warning(
+                self,
+                self.tr("Import Failed"),
+                self.tr("Failed to import {0}:\n\n{1}").format(gmk_file.name, warning_text)
+            )
+            self.update_status(self.tr("GMK import failed"))
+            return
+
+        stats_text = ", ".join(f"{k}: {v}" for k, v in result.stats.items() if v > 0) or self.tr("(empty project)")
+        warning_text = ""
+        if result.warnings:
+            shown = "\n".join(f"  - {w}" for w in result.warnings[:20])
+            extra = self.tr("\n  ...and {0} more").format(len(result.warnings) - 20) if len(result.warnings) > 20 else ""
+            warning_text = self.tr("\n\nWarnings:\n") + shown + extra
+
+        QMessageBox.information(
+            self,
+            self.tr("Import Successful"),
+            self.tr("Imported '{0}' to:\n{1}\n\n{2}{3}").format(
+                gmk_file.name, str(output_dir), stats_text, warning_text)
+        )
+        self.update_status(self.tr("GMK import complete: {0}").format(gmk_file.stem))
+
+        if (output_dir / "project.json").exists():
+            self.load_project(output_dir)
 
     def create_toolbar(self):
         toolbar = self.addToolBar(self.tr("Main"))
