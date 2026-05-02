@@ -179,6 +179,12 @@ class GmkConverter:
             "show_score_in_caption": False,
             "starting_health": 100,
             "show_health_in_caption": False,
+            # GMK files came from real GameMaker, which exposes the full action
+            # set. Stamp `full` so the imported project shows every action in the
+            # picker regardless of the IDE's active edition — important for
+            # grading workflows where the teacher needs to inspect anything the
+            # student used. Users can lock the project down via Project Settings.
+            "blockly_preset": "full",
         }
 
     # ================================================================
