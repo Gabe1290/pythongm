@@ -2731,6 +2731,9 @@
                         '<block type="move_set_vspeed"><value name="SPEED"><shadow type="math_number"><field name="NUM">4</field></shadow></value></block>',
                         '<block type="move_stop"></block>',
                         '<block type="move_direction"><value name="SPEED"><shadow type="math_number"><field name="NUM">4</field></shadow></value></block>',
+                        '<block type="move_free"><value name="DIRECTION"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="SPEED"><shadow type="math_number"><field name="NUM">4</field></shadow></value></block>',
+                        '<block type="set_speed"><value name="SPEED"><shadow type="math_number"><field name="NUM">4</field></shadow></value></block>',
+                        '<block type="set_direction"><value name="DIRECTION"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
                         '<block type="move_towards"><value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="SPEED"><shadow type="math_number"><field name="NUM">4</field></shadow></value></block>',
                         '<block type="move_snap_to_grid"><value name="GRID_SIZE"><shadow type="math_number"><field name="NUM">32</field></shadow></value></block>',
                         '<block type="move_jump_to"><value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
@@ -2787,7 +2790,9 @@
                 'Control': {
                     color: '#FFAB19',
                     blocks: [
-                        '<block type="if_condition"><field name="OBJECT_NAME">obj_coin</field><field name="OPERATOR">==</field><field name="VALUE">0</field></block>'
+                        '<block type="if_condition"><field name="OBJECT_NAME">obj_coin</field><field name="OPERATOR">==</field><field name="VALUE">0</field></block>',
+                        '<block type="set_variable"><field name="VARIABLE">score</field><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
+                        '<block type="test_variable"><field name="VARIABLE">score</field><field name="OPERATION">equal</field><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>'
                     ]
                 },
                 'Room': {

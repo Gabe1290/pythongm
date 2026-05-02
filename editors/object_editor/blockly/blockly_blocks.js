@@ -267,6 +267,51 @@ Blockly.Blocks['move_direction'] = {
     }
 };
 
+// move_free: arbitrary direction angle + speed (the move_direction block above
+// is restricted to 4 cardinal directions; this one accepts any angle in degrees)
+Blockly.Blocks['move_free'] = {
+    init: function() {
+        this.appendValueInput("DIRECTION")
+            .setCheck("Number")
+            .appendField("Move at direction");
+        this.appendValueInput("SPEED")
+            .setCheck("Number")
+            .appendField("with speed");
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour("#5C81A6");
+        this.setTooltip("Move at an exact direction (0=right, 90=up, 180=left, 270=down) with the given speed");
+    }
+};
+
+// set_speed: change speed magnitude, preserving current direction
+Blockly.Blocks['set_speed'] = {
+    init: function() {
+        this.appendValueInput("SPEED")
+            .setCheck("Number")
+            .appendField("Set speed to");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour("#5C81A6");
+        this.setTooltip("Change movement speed magnitude while keeping the current direction");
+    }
+};
+
+// set_direction: change direction angle, preserving current speed
+Blockly.Blocks['set_direction'] = {
+    init: function() {
+        this.appendValueInput("DIRECTION")
+            .setCheck("Number")
+            .appendField("Set direction to")
+            .appendField(new Blockly.FieldLabel("(degrees)"));
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour("#5C81A6");
+        this.setTooltip("Change direction angle (0=right, 90=up, 180=left, 270=down) while keeping the current speed");
+    }
+};
+
 Blockly.Blocks['move_towards'] = {
     init: function() {
         this.appendValueInput("X")
@@ -776,6 +821,46 @@ Blockly.Blocks['if_condition'] = {
         this.setNextStatement(true, null);
         this.setColour("#FFAB19");
         this.setTooltip("Run the nested actions when the chosen object's instance count matches the comparison");
+    }
+};
+
+// set_variable: assign a value to a custom variable on the instance
+Blockly.Blocks['set_variable'] = {
+    init: function() {
+        this.appendValueInput("VALUE")
+            .setCheck(null)
+            .appendField("Set variable")
+            .appendField(new Blockly.FieldTextInput("score"), "VARIABLE")
+            .appendField("to");
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour("#FFAB19");
+        this.setTooltip("Set a custom variable. Use 'self.name' for instance-level, 'global.name' for game-wide.");
+    }
+};
+
+// test_variable: compare a variable's value and run nested actions when true.
+// OPERATION values match the runtime's execute_test_variable_action: equal,
+// not_equal, less, greater, less_equal, greater_equal.
+Blockly.Blocks['test_variable'] = {
+    init: function() {
+        this.appendValueInput("VALUE")
+            .setCheck(null)
+            .appendField("If variable")
+            .appendField(new Blockly.FieldTextInput("score"), "VARIABLE")
+            .appendField(new Blockly.FieldDropdown([
+                ["==", "equal"], ["!=", "not_equal"], ["<", "less"],
+                [">", "greater"], ["<=", "less_equal"], [">=", "greater_equal"]
+            ]), "OPERATION");
+        this.appendStatementInput("DO")
+            .setCheck(null)
+            .appendField("then");
+        this.setInputsInline(true);
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour("#FFAB19");
+        this.setTooltip("Compare a variable against a value and run nested actions when the comparison holds");
     }
 };
 

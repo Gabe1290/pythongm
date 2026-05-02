@@ -91,6 +91,24 @@ function generateBlockCode(eventBlock) {
     return {actions: actions};
 }
 
+// parseScopedVariable: split a 'scope.name' user-typed variable expression
+// into the (scope, name) pair the runtime's set_variable / test_variable
+// actions expect. Accepted prefixes: 'self.' (or 'sel.'), 'global.', 'other.'.
+// A bare name defaults to instance scope ("sel"), the runtime default.
+function parseScopedVariable(raw) {
+    var name = (raw || '').trim();
+    var scope = 'sel';
+    var dotIdx = name.indexOf('.');
+    if (dotIdx > 0) {
+        var prefix = name.substring(0, dotIdx).toLowerCase();
+        var rest = name.substring(dotIdx + 1);
+        if (prefix === 'self' || prefix === 'sel') { scope = 'sel'; name = rest; }
+        else if (prefix === 'global') { scope = 'global'; name = rest; }
+        else if (prefix === 'other')  { scope = 'other';  name = rest; }
+    }
+    return {name: name, scope: scope};
+}
+
 function generateActionCode(block) {
     switch (block.type) {
         case 'move_set_hspeed':
@@ -112,6 +130,15 @@ function generateActionCode(block) {
                 default: directionDegrees = 0;
             }
             return {action: 'start_moving_direction', parameters: {directions: directionDegrees, speed: speed}};
+        case 'move_free':
+            return {action: 'move_free', parameters: {
+                direction: getInputValue(block, 'DIRECTION', 0),
+                speed: getInputValue(block, 'SPEED', 4)
+            }};
+        case 'set_speed':
+            return {action: 'set_speed', parameters: {speed: getInputValue(block, 'SPEED', 0)}};
+        case 'set_direction':
+            return {action: 'set_direction', parameters: {direction: getInputValue(block, 'DIRECTION', 0)}};
         case 'move_snap_to_grid':
             return {action: 'snap_to_grid', parameters: {grid_size: getInputValue(block, 'GRID_SIZE', 32)}};
         case 'move_jump_to':
@@ -174,6 +201,38 @@ function generateActionCode(block) {
                 operator: block.getFieldValue('OPERATOR'),
                 value: block.getFieldValue('VALUE'),
                 then_actions: ifCondActions,
+                else_actions: []
+            }};
+        case 'set_variable':
+            // Split a leading 'self.' / 'global.' / 'other.' prefix into the
+            // separate `scope` parameter the runtime expects. A bare name
+            // defaults to instance scope ("sel"), matching the executor's default.
+            var sv = parseScopedVariable(block.getFieldValue('VARIABLE'));
+            return {action: 'set_variable', parameters: {
+                variable: sv.name,
+                scope: sv.scope,
+                value: getInputValue(block, 'VALUE', 0),
+                relative: false
+            }};
+        case 'test_variable':
+            // Same nested-action pattern as if_condition: collect DO slot
+            // statements into then_actions and let the runtime branch.
+            var tvActions = [];
+            var tvInner = block.getInputTargetBlock('DO');
+            while (tvInner) {
+                var tvAction = generateActionCode(tvInner);
+                if (tvAction) {
+                    tvActions.push(tvAction);
+                }
+                tvInner = tvInner.getNextBlock();
+            }
+            var tv = parseScopedVariable(block.getFieldValue('VARIABLE'));
+            return {action: 'test_variable', parameters: {
+                variable: tv.name,
+                scope: tv.scope,
+                operation: block.getFieldValue('OPERATION'),
+                value: getInputValue(block, 'VALUE', 0),
+                then_actions: tvActions,
                 else_actions: []
             }};
         case 'room_goto_next':

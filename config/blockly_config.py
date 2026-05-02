@@ -34,12 +34,17 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
     ],
     "Control": [
         {"type": "if_condition", "name": "If Condition", "description": "Run actions only when a condition holds (e.g. instance_count == 0)", "implemented": True},
+        {"type": "set_variable", "name": "Set Variable", "description": "Assign a value to a custom variable on the instance or globally", "implemented": True},
+        {"type": "test_variable", "name": "Test Variable", "description": "Compare a variable against a value and run nested actions when true", "implemented": True},
     ],
     "Movement": [
         {"type": "move_set_hspeed", "name": "Set Horizontal Speed", "description": "Set X velocity", "implemented": True},
         {"type": "move_set_vspeed", "name": "Set Vertical Speed", "description": "Set Y velocity", "implemented": True},
         {"type": "move_stop", "name": "Stop Movement", "description": "Stop all movement", "implemented": True},
         {"type": "move_direction", "name": "Move Direction", "description": "Move in 4 directions", "implemented": True},
+        {"type": "move_free", "name": "Move Free", "description": "Move at an arbitrary direction angle and speed", "implemented": True},
+        {"type": "set_speed", "name": "Set Speed", "description": "Set speed magnitude (preserves direction)", "implemented": True},
+        {"type": "set_direction", "name": "Set Direction", "description": "Set direction angle (preserves speed)", "implemented": True},
         {"type": "move_towards", "name": "Move Towards", "description": "Move to point", "implemented": True},
         {"type": "move_snap_to_grid", "name": "Snap to Grid", "description": "Align to grid", "implemented": True},
         {"type": "move_jump_to", "name": "Jump to Position", "description": "Instant teleport", "implemented": True},

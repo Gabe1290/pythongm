@@ -1155,6 +1155,9 @@ BLOCKLY_TO_ACTION_MAP = {
     "move_snap_to_grid": "snap_to_grid",
     "move_jump_to": "jump_to_position",
     "move_direction": "move_fixed",
+    "move_free": "move_free",
+    "set_speed": "set_speed",
+    "set_direction": "set_direction",
     "move_towards": "move_towards",
     "set_gravity": "set_gravity",
     "set_friction": "set_friction",
@@ -1204,6 +1207,8 @@ BLOCKLY_TO_ACTION_MAP = {
     "game_end": "game_end",
     # Values/Control flow
     "if_condition": "if_condition",
+    "set_variable": "set_variable",
+    "test_variable": "test_variable",
     "if_collision_at": "if_collision_at",
     "check_empty": "check_empty",
     "check_collision": "check_collision",
