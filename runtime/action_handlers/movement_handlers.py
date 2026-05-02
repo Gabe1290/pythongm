@@ -14,7 +14,8 @@ from core.logger import get_logger
 from runtime.action_handlers.base import (
     Parameters, Instance, HandlerContext,
     parse_float, parse_int, parse_bool,
-    direction_to_vector, get_room_dimensions, get_instance_dimensions,
+    direction_to_vector, vector_to_direction,
+    get_room_dimensions, get_instance_dimensions,
     snap_to_grid, is_on_grid, get_collision_speeds, get_collision_other,
     DEFAULT_GRID_SIZE, DEFAULT_SPEED,
 )
@@ -77,6 +78,47 @@ def handle_set_direction_speed(ctx: HandlerContext, instance: Instance, params: 
 
     logger.debug(f"  🧭 {instance.object_name} set direction={direction}° speed={speed}")
     logger.debug(f"      hspeed={instance.hspeed:.2f}, vspeed={instance.vspeed:.2f}")
+
+
+def handle_move_free(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
+    """Move at an exact direction and speed.
+
+    Same shape as set_direction_speed (direction + speed). Kept as a separate
+    handler so the action_type registration is honoured directly rather than
+    relying on a redirect.
+    """
+    handle_set_direction_speed(ctx, instance, params)
+
+
+def handle_set_speed(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
+    """Set the instance's speed magnitude, preserving its current direction.
+
+    Reads the current direction from the existing (hspeed, vspeed) vector and
+    rebuilds the velocity at the new magnitude. If currently stationary,
+    direction defaults to 0° (right) so picking a non-zero speed actually
+    starts movement.
+    """
+    speed = parse_float(ctx, params.get("speed", params.get("value", 0)), instance, default=0.0)
+    current_direction = vector_to_direction(instance.hspeed, instance.vspeed)
+    hspeed, vspeed = direction_to_vector(current_direction, speed)
+    instance.hspeed = hspeed
+    instance.vspeed = vspeed
+    logger.debug(f"  🏃 {instance.object_name} speed={speed} (dir preserved at {current_direction:.1f}°)")
+
+
+def handle_set_direction(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
+    """Set the instance's direction angle, preserving its current speed magnitude.
+
+    Reads the current speed magnitude from the existing (hspeed, vspeed) vector
+    and rebuilds the velocity at the new direction. If currently stationary,
+    setting a direction does not start movement (matches GameMaker semantics).
+    """
+    direction = parse_float(ctx, params.get("direction", params.get("value", 0)), instance, default=0.0)
+    current_speed = math.sqrt(instance.hspeed ** 2 + instance.vspeed ** 2)
+    hspeed, vspeed = direction_to_vector(direction, current_speed)
+    instance.hspeed = hspeed
+    instance.vspeed = vspeed
+    logger.debug(f"  🧭 {instance.object_name} direction={direction}° (speed preserved at {current_speed:.2f})")
 
 
 def handle_start_moving_direction(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
@@ -523,6 +565,9 @@ MOVEMENT_HANDLERS: Dict[str, Any] = {
     "set_vspeed": handle_set_vspeed,
     "stop_movement": handle_stop_movement,
     "set_direction_speed": handle_set_direction_speed,
+    "move_free": handle_move_free,
+    "set_speed": handle_set_speed,
+    "set_direction": handle_set_direction,
     "start_moving_direction": handle_start_moving_direction,
     "move_towards_point": handle_move_towards_point,
     "move_to_contact": handle_move_to_contact,
