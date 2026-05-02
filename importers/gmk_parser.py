@@ -625,7 +625,9 @@ class GmkParser:
         count = self.stream.read_int32()
         for _ in range(count):
             self.stream.read_zlib_data()
-        self.stream.read_int32()  # timestamp
+        # Section-end timestamp is a Delphi TDateTime double (8 bytes),
+        # not an int32 — same pattern as the settings block above.
+        self.stream.read_double()
 
     def _skip_constants(self):
         ver = self.stream.read_int32()
@@ -633,7 +635,7 @@ class GmkParser:
         for _ in range(count):
             _name = self.stream.read_string()
             _value = self.stream.read_string()
-        self.stream.read_int32()  # timestamp
+        self.stream.read_double()  # see _skip_triggers
 
     # ----------------------------------------------------------------
     # Generic resource section parser
