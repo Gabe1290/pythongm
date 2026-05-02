@@ -155,6 +155,27 @@ function generateActionCode(block) {
             return {action: 'destroy_instance', parameters: {target: 'self'}};
         case 'instance_destroy_other':
             return {action: 'destroy_instance', parameters: {target: 'other'}};
+        case 'if_condition':
+            // Collect nested actions from the DO slot for then_actions.
+            // condition_type is hardcoded to instance_count for the Blockly form;
+            // the multi-type editor stays available via the traditional picker.
+            var ifCondActions = [];
+            var ifCondInner = block.getInputTargetBlock('DO');
+            while (ifCondInner) {
+                var ifCondAction = generateActionCode(ifCondInner);
+                if (ifCondAction) {
+                    ifCondActions.push(ifCondAction);
+                }
+                ifCondInner = ifCondInner.getNextBlock();
+            }
+            return {action: 'if_condition', parameters: {
+                condition_type: 'instance_count',
+                object_name: block.getFieldValue('OBJECT_NAME'),
+                operator: block.getFieldValue('OPERATOR'),
+                value: block.getFieldValue('VALUE'),
+                then_actions: ifCondActions,
+                else_actions: []
+            }};
         case 'room_goto_next':
             return {action: 'next_room', parameters: {}};
         case 'room_goto_previous':

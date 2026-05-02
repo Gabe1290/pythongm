@@ -32,6 +32,9 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "event_alarm", "name": "Alarm Events", "description": "Alarm triggers (0-11)", "implemented": True},
         {"type": "event_other", "name": "Other Events", "description": "No more lives, health, room events", "implemented": True},
     ],
+    "Control": [
+        {"type": "if_condition", "name": "If Condition", "description": "Run actions only when a condition holds (e.g. instance_count == 0)", "implemented": True},
+    ],
     "Movement": [
         {"type": "move_set_hspeed", "name": "Set Horizontal Speed", "description": "Set X velocity", "implemented": True},
         {"type": "move_set_vspeed", "name": "Set Vertical Speed", "description": "Set Y velocity", "implemented": True},
@@ -284,6 +287,64 @@ class BlocklyConfig:
         config = cls(preset_name="full")
         for category, blocks in BLOCK_REGISTRY.items():
             config.enable_category(category)
+        return config
+
+    @classmethod
+    def get_minimal(cls) -> 'BlocklyConfig':
+        """Minimal preset — committee/demo edition.
+
+        Designed around one playable game ("Catch the Coins"): keyboard player,
+        falling pickups, win-by-clearing via if_condition + instance_count, lose
+        on enemy collision via room_goto to a Game Over screen.
+        Toolbox is roughly 30% smaller than `beginner`. No timing/alarms, no
+        lives/health, no instance spawning, no sound, no debug output.
+        """
+        config = cls(preset_name="minimal")
+
+        # Events — the WHEN
+        config.enable_block("event_create")
+        config.enable_block("event_step")
+        config.enable_block("event_draw")
+        config.enable_block("event_keyboard_held")
+        config.enable_block("event_keyboard_nokey")
+        config.enable_block("event_keyboard_press")
+        config.enable_block("event_collision")
+        config.enable_block("event_mouse")
+
+        # Control — conditional flow (used for win check via instance_count)
+        config.enable_block("if_condition")
+
+        # Movement
+        config.enable_block("move_set_hspeed")
+        config.enable_block("move_set_vspeed")
+        config.enable_block("move_stop")
+
+        # Drawing
+        config.enable_block("draw_text")
+
+        # Score
+        config.enable_block("score_set")
+        config.enable_block("score_add")
+
+        # Instance lifecycle (no spawning — pre-place objects in the room editor)
+        config.enable_block("instance_destroy")
+        config.enable_block("instance_destroy_other")
+
+        # Room transitions (goto needed for the Game Over template flow)
+        config.enable_block("room_goto")
+        config.enable_block("room_restart")
+
+        # Game control
+        config.enable_block("game_restart")
+
+        # Values (composable score reading for draw_text)
+        config.enable_block("value_score")
+
+        config.enabled_categories = {
+            "Events", "Control", "Movement", "Drawing",
+            "Score/Lives/Health", "Instance", "Room", "Game", "Values",
+        }
+
         return config
 
     @classmethod
@@ -992,6 +1053,7 @@ class BlocklyConfig:
 
 PRESETS: Dict[str, BlocklyConfig] = {
     "full": BlocklyConfig.get_full(),
+    "minimal": BlocklyConfig.get_minimal(),
     "beginner": BlocklyConfig.get_beginner(),
     "intermediate": BlocklyConfig.get_intermediate(),
     "platformer": BlocklyConfig.get_platformer(),

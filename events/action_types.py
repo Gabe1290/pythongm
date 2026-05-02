@@ -1199,6 +1199,7 @@ BLOCKLY_TO_ACTION_MAP = {
     "game_restart": "game_restart",
     "game_end": "game_end",
     # Values/Control flow
+    "if_condition": "if_condition",
     "if_collision_at": "if_collision_at",
     "check_empty": "check_empty",
     "check_collision": "check_collision",

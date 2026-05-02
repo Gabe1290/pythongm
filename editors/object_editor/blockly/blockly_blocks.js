@@ -753,6 +753,33 @@ Blockly.Blocks['instance_create'] = {
 };
 
 // ============================================================================
+// CONTROL BLOCKS (flow control / conditionals)
+// ============================================================================
+
+// if_condition: checks an instance count against a value and runs nested actions
+// when the comparison holds. Maps to the runtime's if_condition action with
+// condition_type=instance_count. Other condition types (variable_compare,
+// expression, etc.) are reachable via the traditional action picker.
+Blockly.Blocks['if_condition'] = {
+    init: function() {
+        this.appendDummyInput()
+            .appendField("If count of")
+            .appendField(new Blockly.FieldTextInput("obj_coin"), "OBJECT_NAME")
+            .appendField(new Blockly.FieldDropdown([
+                ["==", "=="], ["!=", "!="], ["<", "<"], [">", ">"], ["<=", "<="], [">=", ">="]
+            ]), "OPERATOR")
+            .appendField(new Blockly.FieldNumber(0, 0), "VALUE");
+        this.appendStatementInput("DO")
+            .setCheck(null)
+            .appendField("then");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour("#FFAB19");
+        this.setTooltip("Run the nested actions when the chosen object's instance count matches the comparison");
+    }
+};
+
+// ============================================================================
 // ROOM BLOCKS
 // ============================================================================
 

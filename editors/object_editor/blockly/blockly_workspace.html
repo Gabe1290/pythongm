@@ -2784,6 +2784,12 @@
                         '<block type="if_can_push"><field name="OBJECT_TYPE">box</field><field name="DIRECTION">facing</field><field name="THEN_ACTION">push_and_move</field><field name="ELSE_ACTION">stop_movement</field></block>'
                     ]
                 },
+                'Control': {
+                    color: '#FFAB19',
+                    blocks: [
+                        '<block type="if_condition"><field name="OBJECT_NAME">obj_coin</field><field name="OPERATOR">==</field><field name="VALUE">0</field></block>'
+                    ]
+                },
                 'Room': {
                     color: '#A6745C',
                     blocks: [
