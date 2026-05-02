@@ -4367,6 +4367,17 @@ class GameRunner:
         if not self.current_room:
             return
 
+        # Find Thymio instances first. If none, the room is non-Thymio and the
+        # obstacle-list scan below would just be wasted work — every frame.
+        # (Profiling on a 131-instance maze showed this function consumed ~10%
+        # of per-frame work time despite no Thymios being present.)
+        thymio_instances = [
+            inst for inst in self.current_room.instances
+            if inst.is_thymio and inst.thymio_simulator
+        ]
+        if not thymio_instances:
+            return
+
         # Get obstacles for collision detection (all solid instances that aren't Thymio)
         obstacles = []
         for instance in self.current_room.instances:
@@ -4384,9 +4395,7 @@ class GameRunner:
                     obstacles.append(rect)
 
         # Update each Thymio robot
-        for instance in self.current_room.instances:
-            if not instance.is_thymio or not instance.thymio_simulator:
-                continue
+        for instance in thymio_instances:
 
             # Update simulator (returns dict of events that occurred)
             dt = 1/60  # 60 FPS
