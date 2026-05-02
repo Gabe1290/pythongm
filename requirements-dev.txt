@@ -1,0 +1,14 @@
+# PyGameMaker IDE — Development / Test Dependencies
+#
+# Install with:  pip install -r requirements-dev.txt
+#
+# These are not needed to run the IDE itself; they're only required for
+# the test suite. Without them many tests skip silently.
+
+-r requirements.txt
+
+# Test runner
+pytest>=7.0
+
+# Qt widget testing — needed for tests/test_widgets.py (16 tests)
+pytest-qt>=4.0

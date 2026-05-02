@@ -53,8 +53,11 @@ class TestNewProjectDialog:
         dialog = NewProjectDialog()
         qtbot.addWidget(dialog)
 
-        # Should have a location input field
-        assert hasattr(dialog, 'location_edit') or hasattr(dialog, 'project_location_edit')
+        # The active dialog uses `project_path_edit`; older prototypes used
+        # `location_edit` / `project_location_edit`. Accept any of them.
+        assert (hasattr(dialog, 'location_edit')
+                or hasattr(dialog, 'project_location_edit')
+                or hasattr(dialog, 'project_path_edit'))
 
 
 class TestPreferencesDialog:
@@ -222,7 +225,7 @@ class TestBlocklyWidget:
     def test_blockly_widget_creates(self, qtbot):
         """BlocklyWidget should create without errors"""
         try:
-            from widgets.blockly.blockly_widget import BlocklyWidget
+            from editors.object_editor.blockly_widget import BlocklyWidget
 
             widget = BlocklyWidget()
             qtbot.addWidget(widget)
