@@ -2937,6 +2937,7 @@ class ActionExecutor:
             self.game_runner.current_room.instances.append(new_instance)
             self.game_runner.current_room._add_to_grid(new_instance)
             self.game_runner.current_room._depth_dirty = True  # Mark for re-sort
+            self.game_runner.current_room.invalidate_collision_listened_types()
 
             # Defer create event to run after current event completes
             # This ensures conditions like instance_count are accurate
@@ -3012,6 +3013,10 @@ class ActionExecutor:
         from runtime.game_runner import merge_parent_events
         merged_data = merge_parent_events(new_object_data, self.game_runner._objects_data)
         target_instance.set_object_data(merged_data)
+        # The instance now has different collision_targets and a different
+        # object_name, so the room's listened-types cache is stale.
+        if self.game_runner.current_room:
+            self.game_runner.current_room.invalidate_collision_listened_types()
 
         # Update sprite if the new object has a different one
         sprite_name = new_object_data.get('sprite', '')
@@ -4601,6 +4606,7 @@ class ActionExecutor:
         if self.game_runner.current_room:
             self.game_runner.current_room.instances.append(new_instance)
             self.game_runner.current_room._add_to_grid(new_instance)
+            self.game_runner.current_room.invalidate_collision_listened_types()
 
             # Defer create event to run after current event completes
             events = merged_data.get('events', {})
@@ -4702,6 +4708,7 @@ class ActionExecutor:
         if self.game_runner.current_room:
             self.game_runner.current_room.instances.append(new_instance)
             self.game_runner.current_room._add_to_grid(new_instance)
+            self.game_runner.current_room.invalidate_collision_listened_types()
 
             # Defer create event to run after current event completes
             events = object_data.get('events', {})

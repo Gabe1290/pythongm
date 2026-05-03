@@ -57,8 +57,12 @@ class MockRoom:
         self.width = 640
         self.height = 480
         self.instances = []
+        self._depth_dirty = False
 
     def _add_to_grid(self, instance):
+        pass
+
+    def invalidate_collision_listened_types(self):
         pass
 
 

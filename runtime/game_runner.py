@@ -917,6 +917,14 @@ class GameRoom:
         # Spatial grid for collision optimization
         # Cell size of 64 pixels works well for 32x32 sprites
         self.grid_cell_size = 64
+
+        # Cache: union of every instance's _collision_targets keys.
+        # Used by check_movement_collision_with_blocker to skip the nearby-
+        # instance scan entirely when no instance in the room cares about
+        # collisions with the moving instance's object_name and the moving
+        # instance has no targets of its own. Lazily computed; invalidated
+        # whenever instances are added/removed/retyped.
+        self._collision_listened_types: Optional[Set[str]] = None
         self.spatial_grid: Dict[Tuple[int, int], List[GameInstance]] = {}
         # Reverse mapping: instance -> set of cells it occupies (for O(k) removal)
         self._instance_cells: Dict[int, Set[Tuple[int, int]]] = {}
@@ -985,6 +993,26 @@ class GameRoom:
 
         # Build initial spatial grid
         self.rebuild_spatial_grid()
+
+    def get_collision_listened_types(self) -> Set[str]:
+        """Return the set of object_names that any instance in this room has
+        a collision_with_<name> event for. Used as a fast-path filter so
+        instances of types nobody cares about can skip movement-collision
+        scans entirely. Recomputed lazily on first access after invalidation.
+        """
+        cached = self._collision_listened_types
+        if cached is None:
+            types: Set[str] = set()
+            for inst in self.instances:
+                types.update(inst._collision_targets.keys())
+            self._collision_listened_types = types
+            return types
+        return cached
+
+    def invalidate_collision_listened_types(self) -> None:
+        """Drop the cached set so it's rebuilt on next access. Callers should
+        invoke this whenever instances are added, removed, or retyped."""
+        self._collision_listened_types = None
 
     def rebuild_spatial_grid(self):
         """Rebuild the entire spatial grid from all instances"""
@@ -1956,6 +1984,7 @@ class GameRunner:
                 if has_destroyed:
                     self.current_room.instances = [inst for inst in self.current_room.instances if not inst.to_destroy]
                     self.current_room.rebuild_spatial_grid()
+                    self.current_room.invalidate_collision_listened_types()
 
                 # Clear screen
                 self.screen.fill((135, 206, 235))  # Sky blue
@@ -2739,6 +2768,16 @@ class GameRunner:
 
         # Pre-parsed collision targets for the moving instance
         collision_targets = moving_instance._collision_targets
+
+        # Fast-path: if neither this instance nor any other in the room would
+        # ever block this movement (no collision targets either way), the
+        # nearby-instance scan below would always return should_block=False.
+        # Skip it entirely. This is the dominant cost in scenes with many
+        # moving instances that don't collide (profiled at ~75% of CPU on a
+        # 1000-instance bouncing-drifters scene).
+        if (not collision_targets
+                and moving_instance.object_name not in self.current_room.get_collision_listened_types()):
+            return (True, None)
 
         # Use spatial grid for faster collision detection
         nearby_instances = self.current_room.get_nearby_instances(intended_x, intended_y, w1, h1)
@@ -3560,6 +3599,7 @@ class GameRunner:
 
             # Rebuild spatial grid with the new instances
             self.current_room.rebuild_spatial_grid()
+            self.current_room.invalidate_collision_listened_types()
 
             # Resize the window if room size is different
             if self.screen:
