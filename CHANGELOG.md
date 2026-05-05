@@ -14,7 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Object events**: alarm event support (`alarm_0` through `alarm_11`) in the events panel.
 - **Blockly actions**: `bounce`, `move_to_contact`, `wrap_around_room`, `move_free`, `set_speed`, `set_direction`. Closes 12 of the previously unmapped action pickers.
 - **Tutorials**: rewritten with a progressive "play early" approach; new Game Over starter template; French translations updated for the redesigned tutorials.
-- **Packaging**: Python source distribution support (`pip install`).
+- **Packaging**: Python source distribution support (`pip install`); `pyproject.toml` version bumped to `1.0.0rc7` (was still `1.0.0rc6`).
+
+### Translations
+- Full French resync: `pygm2_fr.ts` re-run through `lupdate`, picking up 389 new strings added since rc.6, with all 311 unfinished entries translated by hand. The monolithic `pygm2_fr.qm` is regenerated (1399 finished entries) and the six split French `.qm` files (`actions`, `blockly`, `core`, `dialogs`, `editors`, `misc`) are removed — they were 4–7 weeks stale and were overriding the monolithic file at runtime, so the IDE was actually loading outdated French. French is now monolithic-only; other languages still use their split files.
 
 ### Changed
 - **Object editor UI** (Blockly tab): removed the `Test Object` toolbar action (not implemented), removed the duplicate `View Code` controls (the Code Editor tab supersedes them), removed the bottom status strip (`Loaded:` / `Saved` line), moved the Auto-save indicator to the right end of the toolbar, put the Sprite and Parent dropdowns on a single row, and removed the "Visual Block Programming / Drag blocks…" header — all to recover vertical space when working with Blockly.
