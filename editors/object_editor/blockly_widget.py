@@ -674,21 +674,6 @@ class BlocklyVisualProgrammingTab(QWidget):
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setContentsMargins(5, 5, 5, 5)
 
-        # Info bar
-        info_layout = QHBoxLayout()
-
-        self.title_label = QLabel(self.tr("Visual Block Programming"))
-        self.title_label.setStyleSheet("font-size: 14px; font-weight: bold;")
-        info_layout.addWidget(self.title_label)
-
-        info_layout.addStretch()
-
-        self.help_label = QLabel(self.tr("Drag blocks from the toolbox on the left to create game logic"))
-        self.help_label.setStyleSheet("color: #666; font-style: italic;")
-        info_layout.addWidget(self.help_label)
-
-        self.main_layout.addLayout(info_layout)
-
         # Placeholder label shown when editor is detached
         self.detached_placeholder = QLabel(self.tr("Editor is detached. Close the detached window to return it here."))
         self.detached_placeholder.setAlignment(Qt.AlignCenter)

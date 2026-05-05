@@ -1342,5 +1342,142 @@ class TestEventSystemAllEventTypes:
             assert is_valid, f"Unknown event type: {event_name}"
 
 
+class TestResolveParentInheritance:
+    """Tests for resolve_parent_inheritance: events + property inheritance."""
+
+    @pytest.fixture
+    def resolve(self):
+        from runtime.game_runner import resolve_parent_inheritance
+        return resolve_parent_inheritance
+
+    def test_no_parent_returns_input_unchanged(self, resolve):
+        child = {'name': 'obj_child', 'depth': 5}
+        objects = {'obj_child': child}
+        assert resolve(child, objects) is child
+
+    def test_unknown_parent_returns_input_unchanged(self, resolve):
+        child = {'name': 'obj_child', 'parent': 'obj_missing', 'depth': 5}
+        objects = {'obj_child': child}
+        # Parent name is set but not in the objects dict — nothing to inherit.
+        result = resolve(child, objects)
+        assert result == child
+
+    def test_inherits_unset_property_from_parent(self, resolve):
+        parent = {'name': 'obj_parent', 'depth': -100}
+        child = {'name': 'obj_child', 'parent': 'obj_parent'}
+        objects = {'obj_parent': parent, 'obj_child': child}
+        result = resolve(child, objects)
+        assert result['depth'] == -100
+
+    def test_child_property_overrides_parent(self, resolve):
+        parent = {'name': 'obj_parent', 'depth': -100}
+        child = {'name': 'obj_child', 'parent': 'obj_parent', 'depth': 5}
+        objects = {'obj_parent': parent, 'obj_child': child}
+        result = resolve(child, objects)
+        assert result['depth'] == 5
+
+    def test_none_valued_child_property_inherits(self, resolve):
+        # An explicitly-None child value is treated as "not set".
+        parent = {'name': 'obj_parent', 'depth': -100}
+        child = {'name': 'obj_child', 'parent': 'obj_parent', 'depth': None}
+        objects = {'obj_parent': parent, 'obj_child': child}
+        result = resolve(child, objects)
+        assert result['depth'] == -100
+
+    def test_child_only_props_never_inherit(self, resolve):
+        # sprite / visible / solid / persistent must come from the child only.
+        parent = {
+            'name': 'obj_parent',
+            'sprite': 'spr_parent',
+            'visible': False,
+            'solid': True,
+            'persistent': True,
+        }
+        child = {'name': 'obj_child', 'parent': 'obj_parent'}
+        objects = {'obj_parent': parent, 'obj_child': child}
+        result = resolve(child, objects)
+        assert 'sprite' not in result
+        assert 'visible' not in result
+        assert 'solid' not in result
+        assert 'persistent' not in result
+
+    def test_child_only_props_keep_child_value(self, resolve):
+        # When the child does set a child-only prop, its value is preserved
+        # and the parent's is ignored — even if the parent's would "look better".
+        parent = {'name': 'obj_parent', 'sprite': 'spr_parent', 'solid': True}
+        child = {
+            'name': 'obj_child',
+            'parent': 'obj_parent',
+            'sprite': 'spr_child',
+            'solid': False,
+        }
+        objects = {'obj_parent': parent, 'obj_child': child}
+        result = resolve(child, objects)
+        assert result['sprite'] == 'spr_child'
+        assert result['solid'] is False
+
+    def test_grandparent_property_inherits_through_chain(self, resolve):
+        grandparent = {'name': 'obj_grand', 'depth': -50}
+        parent = {'name': 'obj_parent', 'parent': 'obj_grand'}
+        child = {'name': 'obj_child', 'parent': 'obj_parent'}
+        objects = {
+            'obj_grand': grandparent,
+            'obj_parent': parent,
+            'obj_child': child,
+        }
+        result = resolve(child, objects)
+        assert result['depth'] == -50
+
+    def test_closest_parent_wins_over_grandparent(self, resolve):
+        grandparent = {'name': 'obj_grand', 'depth': -50}
+        parent = {'name': 'obj_parent', 'parent': 'obj_grand', 'depth': -100}
+        child = {'name': 'obj_child', 'parent': 'obj_parent'}
+        objects = {
+            'obj_grand': grandparent,
+            'obj_parent': parent,
+            'obj_child': child,
+        }
+        result = resolve(child, objects)
+        assert result['depth'] == -100
+
+    def test_events_still_inherit_from_parent(self, resolve):
+        parent_create = {'actions': [{'action': 'create_action'}]}
+        parent = {'name': 'obj_parent', 'events': {'create': parent_create}}
+        child = {'name': 'obj_child', 'parent': 'obj_parent', 'events': {}}
+        objects = {'obj_parent': parent, 'obj_child': child}
+        result = resolve(child, objects)
+        assert result['events']['create'] is parent_create
+
+    def test_child_event_overrides_parent_event(self, resolve):
+        parent_step = {'actions': [{'action': 'parent_step'}]}
+        child_step = {'actions': [{'action': 'child_step'}]}
+        parent = {'name': 'obj_parent', 'events': {'step': parent_step}}
+        child = {
+            'name': 'obj_child',
+            'parent': 'obj_parent',
+            'events': {'step': child_step},
+        }
+        objects = {'obj_parent': parent, 'obj_child': child}
+        result = resolve(child, objects)
+        assert result['events']['step'] is child_step
+
+    def test_does_not_mutate_input(self, resolve):
+        parent = {'name': 'obj_parent', 'depth': -100, 'events': {'create': {}}}
+        child = {'name': 'obj_child', 'parent': 'obj_parent'}
+        objects = {'obj_parent': parent, 'obj_child': child}
+        resolve(child, objects)
+        assert 'depth' not in child
+        assert 'events' not in child
+
+    def test_self_referential_parent_does_not_loop(self, resolve):
+        # Pathological case: an object listing itself as its parent.  The
+        # 10-level cap must keep this from spinning forever.
+        child = {'name': 'obj_loop', 'parent': 'obj_loop', 'depth': 7}
+        objects = {'obj_loop': child}
+        result = resolve(child, objects)
+        # Child's own depth wins (it's set), and the call returns.
+        assert result['depth'] == 7
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])

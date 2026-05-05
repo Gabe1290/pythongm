@@ -112,8 +112,12 @@ class ObjectEditor(BaseEditor):
             logger.warning("Save action not found in base toolbar")
             self.ensure_save_button_visible()
 
-        # Add object-specific toolbar actions AFTER ensuring save exists
-        self.add_object_toolbar_actions()
+        # Push the auto-save indicator to the right end of the toolbar
+        self._right_align_auto_save_action()
+
+        # Hide the bottom status strip — auto-save now lives on the toolbar
+        if hasattr(self, 'status_widget'):
+            self.status_widget.hide()
 
         # Force toolbar to be visible
         self.toolbar.setVisible(True)
@@ -228,13 +232,15 @@ class ObjectEditor(BaseEditor):
             self._save_shortcut.activated.connect(self.save)
             logger.debug("Added keyboard shortcut backup for save")
 
-    def add_object_toolbar_actions(self):
-        """Add object-specific actions to toolbar"""
-        self.toolbar.addSeparator()
-
-        # ✅ TRANSLATABLE: Toolbar actions
-        self.toolbar.addAction(self.tr("🎮 Test Object"), self.test_object)
-        self.toolbar.addAction(self.tr("📋 View Code"), self.view_generated_code)
+    def _right_align_auto_save_action(self):
+        """Move the auto-save toolbar action to the right end of the toolbar."""
+        if not hasattr(self, 'auto_save_action') or self.auto_save_action is None:
+            return
+        self.toolbar.removeAction(self.auto_save_action)
+        spacer = QWidget()
+        spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        self.toolbar.addWidget(spacer)
+        self.toolbar.addAction(self.auto_save_action)
 
     def create_left_panel(self) -> QWidget:
         """Create left panel with events (tabbed: Standard and Thymio modes)"""
@@ -371,27 +377,6 @@ class ObjectEditor(BaseEditor):
         self.visible_checkbox = self.properties_panel.visible_checkbox
         self.persistent_checkbox = self.properties_panel.persistent_checkbox
         self.solid_checkbox = self.properties_panel.solid_checkbox
-
-        logger.debug("Creating info bar...")
-        # Info bar - extremely compact
-        info_layout = QHBoxLayout()
-        info_layout.setContentsMargins(3, 1, 3, 1)
-        info_layout.setSpacing(10)
-
-        # ✅ TRANSLATABLE: Info labels
-        self.object_info_label = QLabel(self.tr("Object: Not loaded"))
-        self.object_info_label.setFixedHeight(18)
-        self.object_info_label.setStyleSheet("font-size: 9px; padding: 0px;")
-
-        self.event_info_label = QLabel(self.tr("No event selected"))
-        self.event_info_label.setFixedHeight(18)
-        self.event_info_label.setStyleSheet("font-size: 9px; padding: 0px;")
-
-        info_layout.addWidget(self.object_info_label)
-        info_layout.addStretch()
-        info_layout.addWidget(self.event_info_label)
-
-        layout.addLayout(info_layout, 0)
 
         logger.debug("Creating tab widget...")
         # Create tab widget for different views
@@ -1156,29 +1141,14 @@ class ObjectEditor(BaseEditor):
 
     def update_object_info(self):
         """Update object information display"""
-        if self.asset_name:
-            sprite_name = self.current_object_properties.get('sprite', 'None')
-            visible = self.current_object_properties.get('visible', True)
-            solid = self.current_object_properties.get('solid', False)
-            persistent = self.current_object_properties.get('persistent', False)
-
-            # ✅ TRANSLATABLE: Info text
-            info_text = self.tr("Object: {0} | Sprite: {1}").format(self.asset_name, sprite_name)
-            if visible:
-                info_text += " | " + self.tr("Visible")
-            if solid:
-                info_text += " | " + self.tr("Solid")
-            if persistent:
-                info_text += " | " + self.tr("Persistent")
-
-            self.object_info_label.setText(info_text)
+        # The info bar that this populated has been removed; kept as a no-op
+        # so legacy callers (and hasattr guards elsewhere) stay valid.
+        return
 
     # Event handlers
     def on_event_selected(self, event_name: str):
         """Handle event selection"""
         self.scripting_area.set_current_event(event_name)
-        # ✅ TRANSLATABLE: Event info
-        self.event_info_label.setText(self.tr("Event: {0}").format(event_name))
         self.update_status(self.tr("Editing event: {0}").format(event_name))
 
     def on_events_modified(self):

@@ -5,6 +5,45 @@ All notable changes to PyGameMaker will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-rc.7] - 2026-05-05
+
+### Added
+- **IDE editions system**: Beginner, Advanced, and Development modes with per-edition Blockly toolbox presets and event-panel filtering. Switch via `Tools > Edition`. Includes a one-click Committee Demo edition for committee approvals, plus a "Catch the Coins" tutorial tailored to it.
+- **GameMaker 8.0 import**: `File > Import GameMaker .gmk File...` brings legacy `.gmk` projects in. v800 parser now handles double-precision triggers/constants timestamps, with per-phase progress logging.
+- **Object editor: parent-property inheritance**. A child object now inherits any property its ancestors define that the child itself doesn't set (closest parent wins, walks up to 10 levels). `sprite`, `visible`, `solid`, and `persistent` are deliberately child-only — they never come from a parent. Events already inherited; this completes the picture for non-event properties.
+- **Object events**: alarm event support (`alarm_0` through `alarm_11`) in the events panel.
+- **Blockly actions**: `bounce`, `move_to_contact`, `wrap_around_room`, `move_free`, `set_speed`, `set_direction`. Closes 12 of the previously unmapped action pickers.
+- **Tutorials**: rewritten with a progressive "play early" approach; new Game Over starter template; French translations updated for the redesigned tutorials.
+- **Packaging**: Python source distribution support (`pip install`).
+
+### Changed
+- **Object editor UI** (Blockly tab): removed the `Test Object` toolbar action (not implemented), removed the duplicate `View Code` controls (the Code Editor tab supersedes them), removed the bottom status strip (`Loaded:` / `Saved` line), moved the Auto-save indicator to the right end of the toolbar, put the Sprite and Parent dropdowns on a single row, and removed the "Visual Block Programming / Drag blocks…" header — all to recover vertical space when working with Blockly.
+- Lazy-import the Blockly widget and defer QtWebEngine initialization until the tab is selected, reducing startup cost.
+- Asset relative paths normalised to forward slashes for cross-platform project portability.
+- Language change now shows a manual-restart message instead of attempting auto-restart (which crashed under PyInstaller).
+
+### Fixed
+- Asset rename propagation, parent-event inheritance, and collision blocking — multiple regressions resolved.
+- Alarm system: parameter-name mismatch and wrong data structure caused alarms to silently no-op.
+- Action editing not saving in some flows; ball stuck above death zone in Breakout; Sokoban walking through `Box_Stored` after `change_instance`.
+- Grid-based push mechanics: pushers now land on-grid after pushing a blocker; cross-object movement actions added.
+- PyInstaller builds: object editor crash on launch, app restart crash on language change, restart in one-file builds (now fully detaches the new process).
+- GMK v800 parse failure on triggers/constants timestamps.
+- Import-as-new-project menu items being silently disabled.
+- Blockly toolbox and events panel ignoring project preset on startup.
+- Asset dropdowns in Blockly now refresh when assets change.
+- HTML5 engine.js test fixture forced to UTF-8.
+- Monospace font rendering and ASCII-art alignment in tutorial layouts.
+
+### Performance
+- Eliminated per-frame `hasattr()` checks on three hot paths.
+- Short-circuit movement collision check when no collision targets exist.
+- Skip Thymio per-frame work when no Thymio instances are in the room.
+- Removed 113 dead modular action handlers (set_variable, test_variable, and Phase 2 priority losers) — runtime bytecode footprint and dispatch table both shrunk.
+
+### Removed
+- `dialogs/new_project.py` (dead prototype) and the broken `drawing_actions` example plugin.
+
 ## [1.0.0-rc.6] - 2026-04-18
 
 ### Added

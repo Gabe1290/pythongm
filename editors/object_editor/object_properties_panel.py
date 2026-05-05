@@ -5,7 +5,7 @@ Manages object properties: visible, persistent, solid, sprite
 """
 
 from typing import Dict, Any
-from PySide6.QtWidgets import QGroupBox, QHBoxLayout, QVBoxLayout, QFormLayout, QCheckBox, QComboBox
+from PySide6.QtWidgets import QGroupBox, QHBoxLayout, QVBoxLayout, QCheckBox, QComboBox, QLabel
 from PySide6.QtCore import Signal
 
 
@@ -29,25 +29,33 @@ class ObjectPropertiesPanel(QGroupBox):
         main_layout.setContentsMargins(5, 5, 5, 5)
         main_layout.setSpacing(5)
 
-        # Sprite selector (using form layout for label)
-        sprite_layout = QFormLayout()
-        sprite_layout.setContentsMargins(0, 0, 0, 0)
+        # Sprite + Parent selectors on a single row, with narrower combos
+        selectors_layout = QHBoxLayout()
+        selectors_layout.setContentsMargins(0, 0, 0, 0)
+        selectors_layout.setSpacing(6)
 
         self.sprite_combo = QComboBox()
         self.sprite_combo.addItem("None")
         self.sprite_combo.setToolTip(self.tr("Sprite to display for this object"))
+        self.sprite_combo.setMinimumWidth(120)
+        self.sprite_combo.setMaximumWidth(180)
         self.sprite_combo.currentTextChanged.connect(self._on_sprite_changed)
 
-        sprite_layout.addRow(self.tr("Sprite:"), self.sprite_combo)
-
-        # Parent object selector
         self.parent_combo = QComboBox()
         self.parent_combo.addItem(self.tr("<no parent>"))
         self.parent_combo.setToolTip(self.tr("Parent object (inherits collision events)"))
+        self.parent_combo.setMinimumWidth(120)
+        self.parent_combo.setMaximumWidth(180)
         self.parent_combo.currentTextChanged.connect(self._on_parent_changed)
-        sprite_layout.addRow(self.tr("Parent:"), self.parent_combo)
 
-        main_layout.addLayout(sprite_layout)
+        selectors_layout.addWidget(QLabel(self.tr("Sprite:")))
+        selectors_layout.addWidget(self.sprite_combo)
+        selectors_layout.addSpacing(12)
+        selectors_layout.addWidget(QLabel(self.tr("Parent:")))
+        selectors_layout.addWidget(self.parent_combo)
+        selectors_layout.addStretch()
+
+        main_layout.addLayout(selectors_layout)
 
         # Checkboxes in horizontal layout
         checkbox_layout = QHBoxLayout()
@@ -82,21 +90,6 @@ class ObjectPropertiesPanel(QGroupBox):
 
         checkbox_layout.addStretch()
         main_layout.addLayout(checkbox_layout)
-
-        # View Code checkbox (second row)
-        view_code_layout = QHBoxLayout()
-        view_code_layout.setContentsMargins(0, 0, 0, 0)
-
-        self.view_code_checkbox = QCheckBox(self.tr("View Code"))
-        self.view_code_checkbox.setChecked(False)
-        self.view_code_checkbox.setToolTip(self.tr("Show generated code in Code Editor tab"))
-        self.view_code_checkbox.stateChanged.connect(
-            lambda: self.property_changed.emit('view_code', self.view_code_checkbox.isChecked())
-        )
-        view_code_layout.addWidget(self.view_code_checkbox)
-        view_code_layout.addStretch()
-
-        main_layout.addLayout(view_code_layout)
 
     def _on_sprite_changed(self, sprite_name: str):
         """Handle sprite selection change"""

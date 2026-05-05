@@ -2922,9 +2922,9 @@ class ActionExecutor:
             action_executor=self
         )
 
-        # Set up the new instance with object data (with parent event inheritance)
-        from runtime.game_runner import merge_parent_events
-        merged_data = merge_parent_events(object_data, self.game_runner._objects_data)
+        # Set up the new instance with object data (with parent inheritance)
+        from runtime.game_runner import resolve_parent_inheritance
+        merged_data = resolve_parent_inheritance(object_data, self.game_runner._objects_data)
         new_instance.set_object_data(merged_data)
 
         # Get sprite for the new instance
@@ -3008,10 +3008,10 @@ class ActionExecutor:
         old_x = target_instance.x
         old_y = target_instance.y
 
-        # Change the object type (with parent event inheritance)
+        # Change the object type (with parent inheritance)
         target_instance.object_name = new_object_name
-        from runtime.game_runner import merge_parent_events
-        merged_data = merge_parent_events(new_object_data, self.game_runner._objects_data)
+        from runtime.game_runner import resolve_parent_inheritance
+        merged_data = resolve_parent_inheritance(new_object_data, self.game_runner._objects_data)
         target_instance.set_object_data(merged_data)
         # The instance now has different collision_targets and a different
         # object_name, so the room's listened-types cache is stale.
@@ -4592,9 +4592,9 @@ class ActionExecutor:
             action_executor=self
         )
 
-        # Set up the new instance with object data (with parent event inheritance)
-        from runtime.game_runner import merge_parent_events
-        merged_data = merge_parent_events(object_data, self.game_runner._objects_data)
+        # Set up the new instance with object data (with parent inheritance)
+        from runtime.game_runner import resolve_parent_inheritance
+        merged_data = resolve_parent_inheritance(object_data, self.game_runner._objects_data)
         new_instance.set_object_data(merged_data)
 
         # Get sprite for the new instance

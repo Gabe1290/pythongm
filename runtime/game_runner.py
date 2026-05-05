@@ -46,19 +46,39 @@ CAPTION_TRANSLATIONS = {
     'uk': {'score': 'Рахунок', 'lives': 'Життя', 'health': 'Здоров\'я', 'room': 'Кімната'},
 }
 
-def merge_parent_events(object_data: dict, objects: Dict[str, dict]) -> dict:
-    """Merge parent events into child object data.
+# Properties that always come from the child's own data, never inherited.
+# 'sprite' / 'visible' / 'solid' / 'persistent' are deliberately child-only:
+# they default to engine values when the child doesn't set them, instead of
+# silently picking up a parent's value.
+_CHILD_ONLY_OBJECT_PROPS = frozenset({'sprite', 'visible', 'solid', 'persistent'})
 
-    Child events take priority — parent events are only inherited for
-    event types the child doesn't define.  Walks up the parent chain
-    (max 10 levels) so grandparent events are inherited too.
+# Keys that aren't user-facing properties (identity / structure / metadata),
+# plus 'events' which is merged separately with closest-parent-wins semantics.
+_NON_INHERITABLE_OBJECT_KEYS = frozenset({
+    'name', 'asset_type', 'parent', 'imported', 'created', 'modified', 'events',
+})
+
+
+def resolve_parent_inheritance(object_data: dict, objects: Dict[str, dict]) -> dict:
+    """Resolve a child object's data against its parent chain.
+
+    Events: a child inherits any event type its ancestors define and it doesn't.
+    Closest parent wins among ancestors; the child always overrides.
+
+    Properties: a child inherits any property its ancestors define that the
+    child itself doesn't set (key missing or value is None), with one exception
+    — 'sprite', 'visible', 'solid', and 'persistent' always come from the
+    child's own data (or engine defaults), never from a parent.
+
+    Walks up to 10 levels of ancestors so grandparents are reached.
     """
     parent_name = object_data.get('parent', '')
     if not parent_name:
         return object_data
 
-    # Collect ancestor events, closest parent first
-    inherited_events = {}
+    # Collect ancestor events and properties, closest parent first.
+    inherited_events: dict = {}
+    inherited_props: dict = {}
     current = parent_name
     for _ in range(10):
         parent_data = objects.get(current, {})
@@ -67,20 +87,30 @@ def merge_parent_events(object_data: dict, objects: Dict[str, dict]) -> dict:
         for event_name, event_data in parent_data.get('events', {}).items():
             if event_name not in inherited_events:
                 inherited_events[event_name] = event_data
+        for key, value in parent_data.items():
+            if key in _CHILD_ONLY_OBJECT_PROPS or key in _NON_INHERITABLE_OBJECT_KEYS:
+                continue
+            if key not in inherited_props and value is not None:
+                inherited_props[key] = value
         current = parent_data.get('parent', '')
         if not current:
             break
 
-    if not inherited_events:
+    if not inherited_events and not inherited_props:
         return object_data
 
-    # Merge: child events override inherited ones
-    child_events = object_data.get('events', {})
-    merged_events = dict(inherited_events)
-    merged_events.update(child_events)
-
     merged = dict(object_data)
-    merged['events'] = merged_events
+
+    if inherited_events:
+        child_events = object_data.get('events', {})
+        merged_events = dict(inherited_events)
+        merged_events.update(child_events)
+        merged['events'] = merged_events
+
+    for key, value in inherited_props.items():
+        if merged.get(key) is None:
+            merged[key] = value
+
     return merged
 
 
@@ -1160,7 +1190,7 @@ class GameRoom:
         for instance in self.instances:
             # Get object data
             if instance.object_name in objects:
-                object_data = merge_parent_events(objects[instance.object_name], objects)
+                object_data = resolve_parent_inheritance(objects[instance.object_name], objects)
                 instance.set_object_data(object_data)
 
                 # Get sprite name from object
@@ -3583,7 +3613,7 @@ class GameRunner:
                 # IMPORTANT: Refresh the persistent instance's object_data from project
                 # This ensures any changes to events/properties are picked up
                 if persistent_inst.object_name in objects_data:
-                    merged = merge_parent_events(objects_data[persistent_inst.object_name], objects_data)
+                    merged = resolve_parent_inheritance(objects_data[persistent_inst.object_name], objects_data)
                     persistent_inst.set_object_data(merged)
 
                 # Reset velocity when entering a new room to prevent momentum carry-over
