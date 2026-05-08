@@ -2,7 +2,10 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob:;">
+    <!-- `qrc:` is required so we can load qwebchannel.js from Qt's built-in
+         resource (the JS→Python bridge). The default `*` only matches network
+         schemes (http/https/ws/wss/file) and would block qrc:. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob: qrc:;">
     <title>PyGameMaker Visual Programming</title>
     <style>
         html, body {
