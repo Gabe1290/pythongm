@@ -23,8 +23,9 @@ class TutorialPanel(QDialog):
         self.setWindowTitle(self.tr("Tutorials"))
         self.setMinimumSize(450, 500)
         self.resize(520, 650)
-        # Keep the tutorial floating above the IDE so activating the Blockly
-        # tab (or any other focus shift inside the IDE) doesn't push it behind.
+        # Float on top by default so activating the Blockly tab (or any
+        # other focus shift inside the IDE) doesn't push the tutorial
+        # behind. Students can toggle this with the pin button in the header.
         self.setWindowFlag(Qt.WindowStaysOnTopHint, True)
         self.tutorials_path = None
         self.current_tutorial = None
@@ -47,6 +48,16 @@ class TutorialPanel(QDialog):
         header_layout.addWidget(title_label)
 
         header_layout.addStretch()
+
+        # Pin / Unpin toggle: when checked (default), the window stays on top
+        # of the IDE. Unchecking lets the IDE come forward when clicked.
+        self.pin_btn = QPushButton("📌")
+        self.pin_btn.setCheckable(True)
+        self.pin_btn.setChecked(True)
+        self.pin_btn.setMaximumWidth(40)
+        self.pin_btn.setToolTip(self.tr("Pinned — click to let the IDE come forward when activated"))
+        self.pin_btn.toggled.connect(self.on_pin_toggled)
+        header_layout.addWidget(self.pin_btn)
 
         self.close_btn = QPushButton(self.tr("Close"))
         self.close_btn.setMaximumWidth(60)
@@ -336,6 +347,19 @@ class TutorialPanel(QDialog):
         self.current_tutorial = None
         self.tutorial_pages = []
         self.current_page_index = 0
+
+    def on_pin_toggled(self, checked):
+        """Toggle whether the tutorial floats above other windows."""
+        was_visible = self.isVisible()
+        self.setWindowFlag(Qt.WindowStaysOnTopHint, checked)
+        if checked:
+            self.pin_btn.setToolTip(self.tr("Pinned — click to let the IDE come forward when activated"))
+        else:
+            self.pin_btn.setToolTip(self.tr("Unpinned — click to keep this window on top"))
+        # Qt hides the window when window flags change; show it again so
+        # the user doesn't lose the tutorial they were reading.
+        if was_visible:
+            self.show()
 
     def on_link_clicked(self, url):
         """Handle clicks on links in the tutorial content"""
