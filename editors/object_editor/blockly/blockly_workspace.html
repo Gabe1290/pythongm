@@ -111,6 +111,42 @@
     <script src="blockly_blocks.js" onerror="onBlocklyLoadError('blockly_blocks.js')"></script>
     <script src="blockly_generators.js" onerror="onBlocklyLoadError('blockly_generators.js')"></script>
 
+    <!-- Qt WebChannel bridge: wires the Python-side `pyBridge` object to
+         window.pyBridge so the JS change listener can call back into Python.
+         Without this, every "blocks changed" notification (and every other
+         JS→Python call) is silently dropped because window.pyBridge stays
+         undefined. Provided by Qt at this magic URL. -->
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <script>
+        // Queue any JS→Python calls that happen before the channel finishes
+        // setting up, so we never drop the very first onBlocksChanged when
+        // the page is still wiring up.
+        window._pyBridgeQueue = [];
+        window.pyBridge = {
+            onBlocksChanged: function(code) {
+                window._pyBridgeQueue.push({fn: 'onBlocksChanged', args: [code]});
+            }
+        };
+        if (typeof QWebChannel !== 'undefined' && typeof qt !== 'undefined' && qt.webChannelTransport) {
+            new QWebChannel(qt.webChannelTransport, function(channel) {
+                var realBridge = channel.objects.pyBridge;
+                window.pyBridge = realBridge;
+                // Drain any calls that were queued before the channel was ready.
+                var queued = window._pyBridgeQueue || [];
+                for (var i = 0; i < queued.length; i++) {
+                    var c = queued[i];
+                    if (typeof realBridge[c.fn] === 'function') {
+                        realBridge[c.fn].apply(realBridge, c.args);
+                    }
+                }
+                window._pyBridgeQueue = null;
+                console.log('[QWebChannel] pyBridge ready ('+queued.length+' queued calls drained)');
+            });
+        } else {
+            console.warn('[QWebChannel] QWebChannel or qt.webChannelTransport unavailable — JS→Python messaging will not work');
+        }
+    </script>
+
     <xml id="toolbox" style="display: none">
         <!-- Events Category -->
         <category name="Events" colour="#CC8800">
