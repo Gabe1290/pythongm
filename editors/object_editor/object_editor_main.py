@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
     QPushButton, QComboBox, QMessageBox, QGroupBox, QSizePolicy,
     QTabWidget, QTextEdit
 )
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QFont
 
 from core.logger import get_logger
@@ -73,6 +73,14 @@ class ObjectEditor(BaseEditor):
 
         # Initialize sync coordinator for preventing infinite sync loops
         self.sync_coordinator = SyncCoordinator()
+
+        # Debounce timer for code-editor auto-apply: typing Python is usually
+        # unparseable mid-edit, so wait until the user has paused for ~1.5s
+        # before parsing and replacing events.
+        self._code_auto_apply_timer = QTimer(self)
+        self._code_auto_apply_timer.setSingleShot(True)
+        self._code_auto_apply_timer.setInterval(1500)
+        self._code_auto_apply_timer.timeout.connect(self._auto_apply_code)
 
         # Call parent constructor (this sets up base UI including toolbar)
         super().__init__(project_path, parent)
@@ -442,11 +450,12 @@ class ObjectEditor(BaseEditor):
 
             code_toolbar.addStretch()
 
-            # Apply button (for custom code)
-            self.apply_code_button = QPushButton(self.tr("✅ Apply Changes"))
-            self.apply_code_button.clicked.connect(self.apply_code_changes)
-            self.apply_code_button.setVisible(False)  # Hidden in view mode
-            code_toolbar.addWidget(self.apply_code_button)
+            # Auto-apply status pill (visible in Edit mode)
+            self.code_status_label = QLabel("")
+            self.code_status_label.setVisible(False)
+            self.code_status_label.setMinimumWidth(140)
+            self.code_status_label.setAlignment(Qt.AlignCenter)
+            code_toolbar.addWidget(self.code_status_label)
 
             # Refresh button (for generated code)
             self.refresh_code_button = QPushButton(self.tr("🔄 Refresh"))
@@ -1379,21 +1388,26 @@ class ObjectEditor(BaseEditor):
         if is_edit_mode:
             # Switch to Edit Custom Code mode
             self.code_editor.setReadOnly(False)
-            self.apply_code_button.setVisible(True)
+            self.code_status_label.setVisible(True)
+            self._set_code_status('idle')
             self.refresh_code_button.setVisible(False)
             self.code_event_combo.setVisible(False)  # Hide event selector - full class editing
 
-            # Generate current code from events as starting point for editing
+            # Generate current code from events as starting point for editing.
+            # Block signals around setPlainText so the textChanged signal
+            # doesn't kick off a spurious auto-apply pass on the seed text.
             if hasattr(self, 'events_panel') and self.events_panel:
                 events_data = self.events_panel.get_events_data()
                 if events_data:
                     object_name = self.asset_name or 'obj_object'
                     current_code = events_to_python(object_name, events_data)
+                    self.code_editor.blockSignals(True)
                     self.code_editor.setPlainText(current_code)
+                    self.code_editor.blockSignals(False)
                 else:
                     # Provide template code for empty object
                     template_code = f"""# Python code for {self.asset_name or 'obj_object'}
-# Edit this code and click 'Apply Changes' to update events
+# Your edits are applied to the events panel automatically as you type.
 
 class {self.asset_name or 'obj_object'}(GameObject):
     \"\"\"Game object with event handlers\"\"\"
@@ -1410,14 +1424,17 @@ class {self.asset_name or 'obj_object'}(GameObject):
         \"\"\"Called to draw the instance\"\"\"
         pass
 """
+                    self.code_editor.blockSignals(True)
                     self.code_editor.setPlainText(template_code)
+                    self.code_editor.blockSignals(False)
 
-            self.update_status(self.tr("Edit mode: Modify Python code and click Apply"))
+            self.update_status(self.tr("Edit mode: changes apply automatically as you type"))
 
         else:
             # Switch to View Generated Code mode
             self.code_editor.setReadOnly(True)
-            self.apply_code_button.setVisible(False)
+            self.code_status_label.setVisible(False)
+            self._code_auto_apply_timer.stop()
             self.refresh_code_button.setVisible(True)
             self.code_event_combo.setVisible(False)
 
@@ -1444,120 +1461,81 @@ class {self.asset_name or 'obj_object'}(GameObject):
         self.code_editor.setPlainText(custom_code)
 
     def on_code_editor_changed(self):
-        """Handle code editor text changes"""
-        # Enable apply button if in edit mode
-        if hasattr(self, 'code_mode_combo') and self.code_mode_combo.currentIndex() == 1:
-            self.apply_code_button.setEnabled(True)
+        """Handle code editor text changes - schedule a debounced auto-apply"""
+        if not (hasattr(self, 'code_mode_combo') and self.code_mode_combo.currentIndex() == 1):
+            return
+        # Skip if this textChanged was triggered by us syncing events → code.
+        if self.sync_coordinator.is_syncing():
+            return
+        self._set_code_status('typing')
+        self._code_auto_apply_timer.start()
 
-    def apply_code_changes(self):
-        """Apply Python code changes to events - parses code and updates Events panel and Blockly"""
-        custom_code = self.code_editor.toPlainText()
+    _CODE_STATUS_STYLES = {
+        'idle':   ('● Ready',         '#888'),
+        'typing': ('● Typing...',     '#888'),
+        'saved':  ('● Saved',         '#28a745'),
+        'error':  ('● Parse error',   '#d97706'),
+        'empty':  ('● No events',     '#888'),
+        'busy':   ('● Sync busy',     '#888'),
+    }
 
-        if not custom_code.strip():
-            QMessageBox.warning(
-                self,
-                self.tr("No Code"),
-                self.tr("The code editor is empty. Please write some Python code first.")
-            )
+    def _set_code_status(self, state: str, tooltip: str = ''):
+        """Update the code-editor auto-apply status pill."""
+        if not hasattr(self, 'code_status_label'):
+            return
+        text, color = self._CODE_STATUS_STYLES.get(state, ('', '#888'))
+        self.code_status_label.setText(text)
+        self.code_status_label.setStyleSheet(f"color: {color}; font-weight: bold;")
+        self.code_status_label.setToolTip(tooltip)
+
+    def _auto_apply_code(self):
+        """Parse the code editor and replace events when parsing fully succeeds."""
+        if not (hasattr(self, 'code_mode_combo') and self.code_mode_combo.currentIndex() == 1):
             return
 
-        # Use the new parser to convert Python code to events
+        custom_code = self.code_editor.toPlainText()
+        if not custom_code.strip():
+            self._set_code_status('empty')
+            return
+
         parser = PythonToActionsParser()
         try:
             result = parser.parse_full_class(custom_code)
-            parsed_events = result.events
-
-            if result.errors:
-                # Show parsing errors but continue if we got some events
-                error_text = "\n".join(result.errors[:5])  # Show first 5 errors
-                if not parsed_events:
-                    QMessageBox.warning(
-                        self,
-                        self.tr("Parse Error"),
-                        self.tr("Could not parse the Python code:\n\n{0}").format(error_text)
-                    )
-                    return
         except Exception as e:
-            import traceback
-            logger.error(f"Exception during parsing: {e}")
-            traceback.print_exc()
-            QMessageBox.warning(
-                self,
-                self.tr("Parse Error"),
-                self.tr("Could not parse the Python code:\n\n{0}\n\n"
-                       "Please check the syntax and try again.").format(str(e))
-            )
+            logger.error(f"Exception during code parsing: {e}", exc_info=True)
+            self._set_code_status('error', str(e))
             return
 
-        if not parsed_events:
-            QMessageBox.warning(
-                self,
-                self.tr("No Events Found"),
-                self.tr("No recognizable event methods found in the code.\n\n"
-                       "Make sure your code includes a class with event methods like:\n\n"
-                       "class obj_player:\n"
-                       "    def on_create(self):\n"
-                       "        pass\n\n"
-                       "    def on_step(self):\n"
-                       "        pass\n\n"
-                       "    def on_keyboard_left(self):\n"
-                       "        self.hspeed = -4")
-            )
+        if result.errors:
+            self._set_code_status('error', "\n".join(result.errors[:5]))
             return
 
-        # Apply the parsed events using sync coordinator
+        if not result.events:
+            self._set_code_status('empty', self.tr("No event methods found in the code"))
+            return
+
+        if self.sync_coordinator.is_syncing():
+            # Another sync is in flight; keep the status pill visible and
+            # let the next textChanged fire another debounce.
+            self._set_code_status('busy')
+            self._code_auto_apply_timer.start()
+            return
+
         with SyncContext(self.sync_coordinator, SyncSource.CODE) as can_sync:
             if not can_sync:
-                QMessageBox.warning(
-                    self,
-                    self.tr("Sync in Progress"),
-                    self.tr("Another synchronization is currently in progress. Please wait and try again.")
-                )
+                self._set_code_status('busy')
+                self._code_auto_apply_timer.start()
                 return
-            if can_sync and hasattr(self, 'events_panel') and self.events_panel:
-                # Get current events data and merge with parsed events
-                current_events = self.events_panel.get_events_data()
+            if not (hasattr(self, 'events_panel') and self.events_panel):
+                return
 
-                # Update with parsed events (code takes priority for overlapping events)
-                for event_name, event_data in parsed_events.items():
-                    current_events[event_name] = event_data
-
-                # Reload events panel
-                self.events_panel.load_events_data(current_events)
-
-                # Sync to Blockly
-                self._sync_events_to_blockly()
-
-                # Mark as modified
-                self.mark_modified()
-
-                # Show confirmation
-                event_count = len(parsed_events)
-                # Build list of event names for display
-                event_list = []
-                for event_name, event_data in parsed_events.items():
-                    if event_name in ('keyboard', 'keyboard_press', 'keyboard_release'):
-                        # For keyboard events, show the keys
-                        if isinstance(event_data, dict):
-                            keys = [k for k in event_data.keys() if k != 'actions']
-                            if keys:
-                                event_list.append(f"{event_name} ({', '.join(keys)})")
-                            else:
-                                event_list.append(event_name)
-                    else:
-                        event_list.append(event_name)
-
-                event_list_str = "\n".join(f"  • {e}" for e in event_list)
-                self.update_status(self.tr("Applied {0} events from code").format(event_count))
-                QMessageBox.information(
-                    self,
-                    self.tr("Code Applied"),
-                    self.tr("Python code has been parsed and applied:\n\n"
-                           "Events updated:\n{0}\n\n"
-                           "• Events panel synchronized\n"
-                           "• Blockly workspace synchronized\n\n"
-                           "The code will execute when events trigger during gameplay.").format(event_list_str)
-                )
+            # Replace, don't merge: parse_full_class returns the user's
+            # complete intent. If a method was deleted in the editor, the
+            # corresponding event should disappear too.
+            self.events_panel.load_events_data(result.events)
+            self._sync_events_to_blockly()
+            self.mark_modified()
+            self._set_code_status('saved', self.tr("{0} events").format(len(result.events)))
 
     def _generate_action_code(self, action, indent=8) -> str:
         """Generate code for a single action"""

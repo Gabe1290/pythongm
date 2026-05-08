@@ -91,7 +91,9 @@ The system supports two-way synchronization between the visual blocks and the ID
 1. User builds program with blocks
 2. `generatePyGameMakerCode()` converts blocks to JSON
 3. JSON contains events with nested actions
-4. "Apply to Events →" button sends to IDE
+4. The Blockly workspace's `addChangeListener` streams updates to Python
+   via `pyBridge.onBlocksChanged`; a 250 ms debounce in `BlocklyWidget`
+   then auto-applies them to the events panel — no button required
 
 ### Events → Blocks (Import)
 1. User creates events in IDE text panel
@@ -219,7 +221,7 @@ If splitting becomes necessary:
 1. Add block to toolbox and define it
 2. Reload Blockly with "Reload" button
 3. Drag block onto workspace
-4. Click "Apply to Events →"
+4. Wait ~250 ms for the auto-apply to push to the events panel
 5. Check IDE events panel for correct JSON
 6. Add event in IDE, click "← Sync from Events"
 7. Verify block appears with correct parameters
