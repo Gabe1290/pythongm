@@ -23,6 +23,9 @@ class TutorialPanel(QDialog):
         self.setWindowTitle(self.tr("Tutorials"))
         self.setMinimumSize(450, 500)
         self.resize(520, 650)
+        # Keep the tutorial floating above the IDE so activating the Blockly
+        # tab (or any other focus shift inside the IDE) doesn't push it behind.
+        self.setWindowFlag(Qt.WindowStaysOnTopHint, True)
         self.tutorials_path = None
         self.current_tutorial = None
         self.current_page_index = 0
