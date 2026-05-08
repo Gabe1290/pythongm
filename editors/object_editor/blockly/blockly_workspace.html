@@ -1690,6 +1690,23 @@
             return {actions: actions};
         }
 
+        // parseScopedVariable: split a 'scope.name' user-typed variable
+        // expression into (scope, name) for the runtime's set_variable /
+        // test_variable actions. A bare name defaults to instance scope ("sel").
+        function parseScopedVariable(raw) {
+            var name = (raw || '').trim();
+            var scope = 'sel';
+            var dotIdx = name.indexOf('.');
+            if (dotIdx > 0) {
+                var prefix = name.substring(0, dotIdx).toLowerCase();
+                var rest = name.substring(dotIdx + 1);
+                if (prefix === 'self' || prefix === 'sel') { scope = 'sel'; name = rest; }
+                else if (prefix === 'global') { scope = 'global'; name = rest; }
+                else if (prefix === 'other')  { scope = 'other';  name = rest; }
+            }
+            return {name: name, scope: scope};
+        }
+
         function generateActionCode(block) {
             switch (block.type) {
                 case 'move_set_hspeed':
@@ -1711,6 +1728,15 @@
                         default: directionDegrees = 0;
                     }
                     return {action: 'start_moving_direction', parameters: {directions: directionDegrees, speed: speed}};
+                case 'move_free':
+                    return {action: 'move_free', parameters: {
+                        direction: getInputValue(block, 'DIRECTION', 0),
+                        speed: getInputValue(block, 'SPEED', 4)
+                    }};
+                case 'set_speed':
+                    return {action: 'set_speed', parameters: {speed: getInputValue(block, 'SPEED', 0)}};
+                case 'set_direction':
+                    return {action: 'set_direction', parameters: {direction: getInputValue(block, 'DIRECTION', 0)}};
                 case 'move_snap_to_grid':
                     return {action: 'snap_to_grid', parameters: {grid_size: getInputValue(block, 'GRID_SIZE', 32)}};
                 case 'grid_move':
@@ -1755,8 +1781,79 @@
                     return {action: 'destroy_instance', parameters: {target: 'self'}};
                 case 'instance_destroy_other':
                     return {action: 'destroy_instance', parameters: {target: 'other'}};
+                case 'if_condition':
+                    var ifCondActions = [];
+                    var ifCondInner = block.getInputTargetBlock('DO');
+                    while (ifCondInner) {
+                        var ifCondAction = generateActionCode(ifCondInner);
+                        if (ifCondAction) {
+                            ifCondActions.push(ifCondAction);
+                        }
+                        ifCondInner = ifCondInner.getNextBlock();
+                    }
+                    return {action: 'if_condition', parameters: {
+                        condition_type: 'instance_count',
+                        object_name: block.getFieldValue('OBJECT_NAME'),
+                        operator: block.getFieldValue('OPERATOR'),
+                        value: block.getFieldValue('VALUE'),
+                        then_actions: ifCondActions,
+                        else_actions: []
+                    }};
+                case 'set_variable':
+                    var sv = parseScopedVariable(block.getFieldValue('VARIABLE'));
+                    return {action: 'set_variable', parameters: {
+                        variable: sv.name,
+                        scope: sv.scope,
+                        value: getInputValue(block, 'VALUE', 0),
+                        relative: false
+                    }};
+                case 'test_variable':
+                    var tvActions = [];
+                    var tvInner = block.getInputTargetBlock('DO');
+                    while (tvInner) {
+                        var tvAction = generateActionCode(tvInner);
+                        if (tvAction) {
+                            tvActions.push(tvAction);
+                        }
+                        tvInner = tvInner.getNextBlock();
+                    }
+                    var tv = parseScopedVariable(block.getFieldValue('VARIABLE'));
+                    return {action: 'test_variable', parameters: {
+                        variable: tv.name,
+                        scope: tv.scope,
+                        operation: block.getFieldValue('OPERATION'),
+                        value: getInputValue(block, 'VALUE', 0),
+                        then_actions: tvActions,
+                        else_actions: []
+                    }};
                 case 'room_goto_next':
                     return {action: 'next_room', parameters: {}};
+                case 'room_goto_previous':
+                    return {action: 'previous_room', parameters: {}};
+                case 'room_goto':
+                    return {action: 'goto_room', parameters: {room_name: block.getFieldValue('ROOM')}};
+                case 'room_if_next_exists':
+                    var nextExistsActions = [];
+                    var nextExistsBlock = block.getInputTargetBlock('DO');
+                    while (nextExistsBlock) {
+                        var nextExistsAction = generateActionCode(nextExistsBlock);
+                        if (nextExistsAction) {
+                            nextExistsActions.push(nextExistsAction);
+                        }
+                        nextExistsBlock = nextExistsBlock.getNextBlock();
+                    }
+                    return {action: 'if_next_room_exists', parameters: {then_actions: nextExistsActions}};
+                case 'room_if_previous_exists':
+                    var prevExistsActions = [];
+                    var prevExistsBlock = block.getInputTargetBlock('DO');
+                    while (prevExistsBlock) {
+                        var prevExistsAction = generateActionCode(prevExistsBlock);
+                        if (prevExistsAction) {
+                            prevExistsActions.push(prevExistsAction);
+                        }
+                        prevExistsBlock = prevExistsBlock.getNextBlock();
+                    }
+                    return {action: 'if_previous_room_exists', parameters: {then_actions: prevExistsActions}};
                 case 'room_restart':
                     return {action: 'restart_room', parameters: {}};
                 case 'sound_play':
