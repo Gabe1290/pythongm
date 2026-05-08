@@ -543,6 +543,13 @@
          * an arbitrary name.
          */
         function createAssetField(assetKey, defaultValue) {
+            // Blockly calls optionsFn with `this` bound to the FieldDropdown,
+            // so we can read the field's current value to preserve "stale"
+            // names (assets that were deleted/renamed since the block was
+            // saved). Without this preservation, every render of the block
+            // produces a Qt warning ("Cannot set the dropdown's value to an
+            // unavailable option"). The docstring above already promised this
+            // behaviour — this implementation finally delivers it.
             var optionsFn = function() {
                 var items = (window.BLOCKLY_ASSET_LISTS[assetKey] || []).slice();
                 items.sort();
@@ -550,6 +557,19 @@
                 for (var i = 0; i < items.length; i++) {
                     opts.push([items[i], items[i]]);
                 }
+
+                // Preserve the current saved value if it isn't in the active
+                // asset list. Marked with "(missing)" so the user knows the
+                // reference is stale and can pick a valid name.
+                var currentValue = (this && typeof this.getValue === 'function')
+                    ? this.getValue() : null;
+                if (currentValue
+                        && currentValue !== ASSET_CUSTOM_SENTINEL
+                        && currentValue !== ''
+                        && items.indexOf(currentValue) === -1) {
+                    opts.push([currentValue + ' (missing)', currentValue]);
+                }
+
                 if (opts.length === 0) {
                     opts.push([_assetEmptyLabel(), defaultValue || '']);
                 }
