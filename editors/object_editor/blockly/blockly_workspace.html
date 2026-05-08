@@ -171,9 +171,14 @@
             <block type="event_mouse">
                 <field name="BUTTON">left_press</field>
             </block>
-            <block type="event_collision">
-                <field name="OBJECT">obj_wall</field>
-            </block>
+            <!-- No <field> here on purpose: the OBJECT dropdown is populated
+                 from the current project's objects at toolbox-build time, so
+                 hardcoding e.g. "obj_wall" produces a Qt warning ("Cannot set
+                 the dropdown's value to an unavailable option") whenever the
+                 project doesn't have that name. Letting the dropdown default
+                 to its first real option (or the placeholder if the project
+                 has no objects yet) is correct. -->
+            <block type="event_collision"></block>
             <block type="event_alarm">
                 <field name="ALARM_NUM">0</field>
             </block>
@@ -2856,7 +2861,12 @@
                         '<block type="event_keyboard_press"><field name="KEY">space</field></block>',
                         '<block type="event_keyboard_release"><field name="KEY">space</field></block>',
                         '<block type="event_mouse"><field name="BUTTON">left_press</field></block>',
-                        '<block type="event_collision"><field name="OBJECT">obj_wall</field></block>',
+                        // No hardcoded <field name="OBJECT">: the dropdown
+                        // is populated from current project objects, so
+                        // hardcoding any name produces a warning when the
+                        // project doesn't have it. Lets the dropdown pick
+                        // its first available option.
+                        '<block type="event_collision"></block>',
                         '<block type="event_alarm"><field name="ALARM_NUM">0</field></block>'
                     ]
                 },
