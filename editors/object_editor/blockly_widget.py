@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QMainWindow
-from PySide6.QtCore import Signal, Slot, QUrl, QObject, Qt
+from PySide6.QtCore import Signal, Slot, QUrl, QObject, Qt, QTimer
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWebEngineCore import QWebEngineSettings
 from PySide6.QtWebChannel import QWebChannel
@@ -104,6 +104,14 @@ class BlocklyWidget(QWidget):
         self._page_ready = False
         self._pending_events_data = None
 
+        # Debounce timer for auto-apply: dragging a block fires many BLOCK_MOVE
+        # events; coalesce them into a single events-panel update once the user
+        # has stopped editing for a moment.
+        self._auto_apply_timer = QTimer(self)
+        self._auto_apply_timer.setSingleShot(True)
+        self._auto_apply_timer.setInterval(250)
+        self._auto_apply_timer.timeout.connect(self._do_auto_apply)
+
         self.setup_ui()
         self.setup_web_channel()
 
@@ -116,12 +124,6 @@ class BlocklyWidget(QWidget):
         # Toolbar
         toolbar = QHBoxLayout()
         toolbar.setSpacing(5)
-
-        # Apply button (Blockly → Events)
-        self.apply_button = QPushButton(self.tr("Apply to Events →"))
-        self.apply_button.setToolTip(self.tr("Apply block changes to the Events panel"))
-        self.apply_button.clicked.connect(self.apply_blocks_to_events)
-        toolbar.addWidget(self.apply_button)
 
         # Sync from Events button (Events → Blockly)
         self.sync_button = QPushButton(self.tr("← Sync from Events"))
@@ -342,28 +344,18 @@ class BlocklyWidget(QWidget):
         try:
             self.events_data = json.loads(code_json)
             self.blocks_modified.emit()
+            self._auto_apply_timer.start()
             self.update_status(self.tr("Blocks updated - {0} events").format(len(self.events_data)))
         except json.JSONDecodeError as e:
+            # Keep self.events_data at the last successful parse so a transient
+            # mid-edit failure doesn't propagate broken state to the events panel.
             logger.error(f"Error parsing blocks JSON: {e}")
 
-    def apply_blocks_to_events(self):
-        """Apply the current blocks to the object's events"""
-        # Get the generated events from Blockly
-        self.web_view.page().runJavaScript(
-            "window.blocklyApi.getCode()",
-            self._on_code_received
-        )
-
-    def _on_code_received(self, code_json: str):
-        """Callback when code is received from JavaScript"""
-        if code_json:
-            try:
-                events = json.loads(code_json)
-                self.events_data = events
-                self.events_generated.emit(events)
-                self.update_status(self.tr("Applied {0} events").format(len(events)))
-            except json.JSONDecodeError as e:
-                logger.error(f"Error parsing code JSON: {e}")
+    def _do_auto_apply(self):
+        """Push the current blocks to the events panel (debounce timer fired)"""
+        if self._loading:
+            return
+        self.events_generated.emit(self.events_data)
 
     def clear_workspace(self):
         """Clear the Blockly workspace"""
