@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .success { background-color: #d4edda; padding: 10px; border-left: 4px solid #28a745; margin: 10px 0; }
+        .step { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        ol li { margin-bottom: 8px; }
+
+        .blockly-group { background-color: #f5f5f5; padding: 10px; border-radius: 6px; margin: 8px 0; }
+        .block { display: inline-block; padding: 4px 10px; border-radius: 4px; color: white; font-weight: bold; font-size: 11px; margin: 2px 0; }
+        .block-event { background-color: #FFD500; color: #333; }
+        .block-move { background-color: #5C81A6; }
+        .block-indent { margin-left: 20px; }
+        .block-num { background-color: #5b67a5; color: white; padding: 1px 6px; border-radius: 10px; font-size: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Phase 2 : Pièces et un ennemi</h1>
+
+    <p>Maintenant, nous allons ajouter les pièces à ramasser et un ennemi à éviter. Les deux tombent tout droit.</p>
+
+    <h2>Créer le sprite de la pièce</h2>
+    <div class="step">
+        <ol>
+            <li>Clic droit sur <strong>Sprites</strong> &rarr; <strong>Créer un nouveau sprite</strong></li>
+            <li>Nommez-le <code>spr_coin</code></li>
+            <li>Ouvrez l'éditeur de sprite et dessinez un cercle jaune de 24&times;24. Enregistrez avec <strong>Ctrl+S</strong>.</li>
+        </ol>
+    </div>
+
+    <h2>Créer le sprite de l'ennemi</h2>
+    <div class="step">
+        <ol>
+            <li>Répétez les étapes ci-dessus pour un sprite appelé <code>spr_enemy</code></li>
+            <li>Dessinez un carré rouge de 32&times;32 pour que l'ennemi soit facile à repérer</li>
+        </ol>
+    </div>
+
+    <h2>Créer l'objet pièce</h2>
+    <div class="step">
+        <ol>
+            <li>Clic droit sur <strong>Objets</strong> &rarr; <strong>Créer un nouvel objet</strong></li>
+            <li>Nommez-le <code>obj_coin</code></li>
+            <li>Réglez le sprite sur <code>spr_coin</code></li>
+            <li>Ouvrez l'onglet <strong>Blockly</strong> et ajoutez ceci :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Quand créé</span><br>
+            <span class="block block-move block-indent">Définir vitesse verticale à <span class="block-num">3</span></span>
+        </div>
+        <p>Cliquez sur <strong>Appliquer aux événements</strong>.</p>
+    </div>
+
+    <h2>Créer l'objet ennemi</h2>
+    <div class="step">
+        <ol>
+            <li>Créez un autre objet appelé <code>obj_enemy</code></li>
+            <li>Réglez son sprite sur <code>spr_enemy</code></li>
+            <li>Ajoutez le même événement <strong>Quand créé</strong> pour qu'il tombe aussi :</li>
+        </ol>
+        <div class="blockly-group">
+            <span class="block block-event">Quand créé</span><br>
+            <span class="block block-move block-indent">Définir vitesse verticale à <span class="block-num">3</span></span>
+        </div>
+    </div>
+
+    <h2>Les placer dans la salle</h2>
+    <div class="step">
+        <ol>
+            <li>Ouvrez <code>room_main</code></li>
+            <li>Placez <strong>5 à 8 pièces</strong> en haut de la salle, espacées horizontalement</li>
+            <li>Placez <strong>1 ennemi</strong> quelque part en haut, entre les pièces</li>
+            <li>Vérifiez que <code>obj_player</code> est toujours en bas au centre</li>
+        </ol>
+        <div class="info" style="margin-top: 8px;">
+            <strong>Astuce :</strong> Le nombre de pièces est le score que le joueur doit atteindre pour gagner.
+            Commencez avec 5 pour une démo rapide &mdash; vous pourrez toujours en ajouter plus tard.
+        </div>
+    </div>
+
+    <h1 style="color: #28a745; border-bottom-color: #28a745;">Testez votre jeu !</h1>
+    <div class="success">
+        <p style="font-size: 16px; text-align: center;"><strong>Appuyez sur F5 pour jouer !</strong></p>
+        <ul>
+            <li>Les pièces et l'ennemi devraient tomber depuis le haut de la salle</li>
+            <li>Le joueur peut se déplacer à gauche et à droite en dessous</li>
+            <li>Les toucher ne fait rien pour le moment &mdash; c'est la prochaine phase !</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        Cliquez sur « Suivant » pour câbler le score et la collision de fin de partie.
+    </div>
+</body>
+</html>

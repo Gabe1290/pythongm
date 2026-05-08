@@ -99,6 +99,19 @@
                 "04_game_controller.html"
             ],
             "thumbnail": "thumbnails/08_lunar_lander.png"
+        },
+        {
+            "title": "Attrape les pièces : gagner et perdre",
+            "folder": "09_catch_the_coins",
+            "description": "Construisez un jeu complet : attrapez les pièces pour gagner, évitez l'ennemi sinon c'est la fin de partie",
+            "thumbnail": "thumbnails/09_catch_the_coins.png",
+            "pages": [
+                "01_introduction.html",
+                "02_moving_player.html",
+                "03_coins_and_enemy.html",
+                "04_catching_and_crashing.html",
+                "05_winning.html"
+            ]
         }
     ]
 }

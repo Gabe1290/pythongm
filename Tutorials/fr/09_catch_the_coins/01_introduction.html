@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; padding: 10px; background-color: #f9f9f9; }
+        h1 { color: #2c3e50; font-size: 18px; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        h2 { color: #34495e; font-size: 14px; }
+        .highlight { background-color: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+        .info { background-color: #d1ecf1; padding: 10px; border-left: 4px solid #17a2b8; margin: 10px 0; }
+        .game-preview { background-color: #2c3e50; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 10px 0; }
+        code { background-color: #e9ecef; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        .phase { background-color: #e8f5e9; padding: 10px; border-left: 4px solid #4caf50; margin: 8px 0; }
+        .phase strong { color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <h1>Attrape les pièces !</h1>
+
+    <div class="game-preview">
+        <img src="thumbnails/09_catch_the_coins.png" width="280" height="210" style="border-radius: 5px;">
+        <p style="font-size: 24px;">&#128176;</p>
+        <p><strong>Attrapez toutes les pièces &mdash; sans heurter l'ennemi !</strong></p>
+        <p>Déplacez-vous à gauche et à droite, ramassez toutes les pièces qui tombent pour gagner, et évitez l'ennemi sinon c'est la fin de la partie.</p>
+    </div>
+
+    <h2>Ce que nous allons construire</h2>
+    <p>Vous allez créer un jeu complet avec une condition claire de victoire et de défaite.
+    Le jeu sera jouable à la fin de chaque phase, vous pouvez donc vous arrêter et l'essayer
+    quand vous voulez.</p>
+
+    <h2>Comment fonctionne ce tutoriel</h2>
+
+    <div class="phase">
+        <strong>Phase 1 &mdash; Un joueur qui se déplace</strong><br>
+        Créez un joueur qui se déplace à gauche et à droite. Testez tout de suite !
+    </div>
+
+    <div class="phase">
+        <strong>Phase 2 &mdash; Pièces et un ennemi</strong><br>
+        Ajoutez des pièces qui tombent du ciel, plus un ennemi. Placez-les dans la salle.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 3 &mdash; Attraper et s'écraser</strong><br>
+        Attrapez les pièces pour des points, touchez l'ennemi et la partie s'arrête.
+    </div>
+
+    <div class="phase">
+        <strong>Phase 4 &mdash; Gagner la partie</strong><br>
+        Ajoutez un écran de victoire qui apparaît quand toutes les pièces ont été attrapées.
+    </div>
+
+    <h2>Ce que vous allez apprendre</h2>
+    <ul>
+        <li>Créer des sprites, des objets et des salles</li>
+        <li>Utiliser les événements clavier pour contrôler le joueur</li>
+        <li>Détecter les collisions entre les objets</li>
+        <li>Suivre et afficher un score</li>
+        <li>Utiliser les transitions de salle pour les écrans de fin de partie et de victoire</li>
+        <li>Utiliser le bloc <strong>If count of</strong> pour vérifier combien d'objets restent</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Temps requis :</strong> Environ 15 à 20 minutes
+    </div>
+
+    <div class="info">
+        <strong>Prêt ?</strong> Cliquez sur « Suivant » pour commencer la construction.
+    </div>
+</body>
+</html>
