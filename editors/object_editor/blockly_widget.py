@@ -339,10 +339,13 @@ class BlocklyWidget(QWidget):
     def on_blocks_changed(self, code_json: str):
         """Handle blocks changed from JavaScript"""
         if self._loading:
+            logger.info("[Blockly→Python] on_blocks_changed: skipped (loading flag set)")
             return
 
         try:
             self.events_data = json.loads(code_json)
+            event_keys = list(self.events_data.keys())
+            logger.info(f"[Blockly→Python] on_blocks_changed: received {len(self.events_data)} events: {event_keys}")
             self.blocks_modified.emit()
             self._auto_apply_timer.start()
             self.update_status(self.tr("Blocks updated - {0} events").format(len(self.events_data)))
@@ -350,11 +353,15 @@ class BlocklyWidget(QWidget):
             # Keep self.events_data at the last successful parse so a transient
             # mid-edit failure doesn't propagate broken state to the events panel.
             logger.error(f"Error parsing blocks JSON: {e}")
+            logger.error(f"  Raw JSON was: {code_json[:500]}")
 
     def _do_auto_apply(self):
         """Push the current blocks to the events panel (debounce timer fired)"""
         if self._loading:
+            logger.info("[Blockly→Python] _do_auto_apply: skipped (loading flag set)")
             return
+        event_keys = list(self.events_data.keys())
+        logger.info(f"[Blockly→Python] _do_auto_apply firing: pushing {len(self.events_data)} events to panel: {event_keys}")
         self.events_generated.emit(self.events_data)
 
     def flush_pending_apply(self):
