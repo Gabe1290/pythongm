@@ -74,16 +74,17 @@ class ObjectEditor(BaseEditor):
         # Initialize sync coordinator for preventing infinite sync loops
         self.sync_coordinator = SyncCoordinator()
 
+        # Call parent constructor (this sets up base UI including toolbar)
+        super().__init__(project_path, parent)
+
         # Debounce timer for code-editor auto-apply: typing Python is usually
         # unparseable mid-edit, so wait until the user has paused for ~1.5s
-        # before parsing and replacing events.
+        # before parsing and replacing events. Must be created after
+        # super().__init__() so the QObject base is initialised first.
         self._code_auto_apply_timer = QTimer(self)
         self._code_auto_apply_timer.setSingleShot(True)
         self._code_auto_apply_timer.setInterval(1500)
         self._code_auto_apply_timer.timeout.connect(self._auto_apply_code)
-
-        # Call parent constructor (this sets up base UI including toolbar)
-        super().__init__(project_path, parent)
 
         # Object-specific setup AFTER base setup
         self.setup_object_ui()
