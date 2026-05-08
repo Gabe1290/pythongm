@@ -726,6 +726,12 @@ class ObjectEditor(BaseEditor):
 
         logger.debug(f"Manual save triggered for: {self.asset_name}")
 
+        # Flush any pending auto-apply work so save reads the latest state.
+        # Without this, a save that lands inside the Blockly (250 ms) or
+        # code-editor (1500 ms) debounce window would persist the events
+        # panel's pre-edit snapshot.
+        self._flush_pending_auto_applies()
+
         self._saving = True
         try:
             # Validate data first
@@ -1125,6 +1131,26 @@ class ObjectEditor(BaseEditor):
 
         finally:
             self._processing_update = False
+
+    def _flush_pending_auto_applies(self):
+        """Synchronously apply any pending Blockly or code-editor edits.
+
+        The Blockly editor and the code editor both auto-apply changes on
+        a debounce timer. If save fires inside that window the events
+        panel hasn't seen the latest edit yet, so save would persist a
+        stale snapshot. Flushing forces both timers to fire now.
+        """
+        if hasattr(self, 'blockly_tab') and self.blockly_tab:
+            try:
+                self.blockly_tab.flush_pending_apply()
+            except Exception as e:
+                logger.debug(f"Could not flush Blockly pending apply: {e}")
+        if hasattr(self, '_code_auto_apply_timer') and self._code_auto_apply_timer.isActive():
+            self._code_auto_apply_timer.stop()
+            try:
+                self._auto_apply_code()
+            except Exception as e:
+                logger.debug(f"Could not flush code-editor pending apply: {e}")
 
     def mark_modified(self):
         """Mark the object as modified and enable save button"""

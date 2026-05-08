@@ -357,6 +357,17 @@ class BlocklyWidget(QWidget):
             return
         self.events_generated.emit(self.events_data)
 
+    def flush_pending_apply(self):
+        """If a debounce is pending, apply it synchronously.
+
+        Called by the object editor before save/auto-save so that a Save
+        that lands inside the debounce window still persists the latest
+        Blockly state instead of the events panel's pre-edit snapshot.
+        """
+        if self._auto_apply_timer.isActive():
+            self._auto_apply_timer.stop()
+            self._do_auto_apply()
+
     def clear_workspace(self):
         """Clear the Blockly workspace"""
         self.web_view.page().runJavaScript("window.blocklyApi.clear()")
@@ -760,6 +771,10 @@ class BlocklyVisualProgrammingTab(QWidget):
     def load_events_data(self, events_data: Dict[str, Any]):
         """Load events data into blocks"""
         self.blockly_widget.load_events_data(events_data)
+
+    def flush_pending_apply(self):
+        """Forward to the inner widget — see BlocklyWidget.flush_pending_apply."""
+        self.blockly_widget.flush_pending_apply()
 
     def get_workspace_xml(self) -> str:
         """Get workspace XML for saving"""
