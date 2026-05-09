@@ -322,9 +322,8 @@
                 </value>
                 <field name="COLOR">#00FF00</field>
             </block>
-            <block type="set_sprite">
-                <field name="SPRITE">spr_player</field>
-            </block>
+            <!-- No <field> here on purpose; see the OBJECT comment above. -->
+            <block type="set_sprite"></block>
             <block type="set_alpha">
                 <value name="ALPHA">
                     <shadow type="math_number"><field name="NUM">1.0</field></shadow>
@@ -415,8 +414,8 @@
         <category name="Instance" colour="#A65C81">
             <block type="instance_destroy"></block>
             <block type="instance_destroy_other"></block>
+            <!-- No <field name="OBJECT"> here on purpose; see the OBJECT comment above. -->
             <block type="instance_create">
-                <field name="OBJECT">obj_bullet</field>
                 <value name="X">
                     <shadow type="math_number"><field name="NUM">0</field></shadow>
                 </value>
@@ -430,9 +429,8 @@
         <category name="Rooms" colour="#A6745C">
             <block type="room_goto_next"></block>
             <block type="room_restart"></block>
-            <block type="room_goto">
-                <field name="ROOM">room0</field>
-            </block>
+            <!-- No <field name="ROOM"> here on purpose; see the OBJECT comment above. -->
+            <block type="room_goto"></block>
         </category>
 
         <!-- Values Category -->
@@ -475,12 +473,9 @@
 
         <!-- Sound Category -->
         <category name="Sound" colour="#9966FF">
-            <block type="sound_play">
-                <field name="SOUND">snd_jump</field>
-            </block>
-            <block type="music_play">
-                <field name="MUSIC">bgm_main</field>
-            </block>
+            <!-- No <field> here on purpose; see the OBJECT comment above. -->
+            <block type="sound_play"></block>
+            <block type="music_play"></block>
             <block type="music_stop"></block>
         </category>
 
@@ -843,7 +838,7 @@
             init: function() {
                 this.appendDummyInput()
                     .appendField(getBlockMessage('event_collision_prefix', window.BLOCKLY_LANG) || "When colliding with")
-                    .appendField(createAssetField('objects', 'obj_wall'), "OBJECT");
+                    .appendField(createAssetField('objects', ''), "OBJECT");
                 this.appendStatementInput("DO")
                     .setCheck(null);
                 this.setColour("#CC8800");
@@ -1207,7 +1202,7 @@
                 this.appendValueInput("X")
                     .setCheck("Number")
                     .appendField(getBlockMessage('instance_create_prefix', window.BLOCKLY_LANG) || "Create")
-                    .appendField(createAssetField('objects', 'obj_bullet'), "OBJECT")
+                    .appendField(createAssetField('objects', ''), "OBJECT")
                     .appendField(getBlockMessage('instance_create_x', window.BLOCKLY_LANG) || "at x:");
                 this.appendValueInput("Y")
                     .setCheck("Number")
@@ -1247,7 +1242,7 @@
             init: function() {
                 this.appendDummyInput()
                     .appendField(getBlockMessage('room_goto_prefix', window.BLOCKLY_LANG) || "Go to room")
-                    .appendField(createAssetField('rooms', 'room0'), "ROOM");
+                    .appendField(createAssetField('rooms', ''), "ROOM");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#A6745C");
@@ -1342,7 +1337,7 @@
             init: function() {
                 this.appendDummyInput()
                     .appendField(getBlockMessage('sound_play_prefix', window.BLOCKLY_LANG) || "Play sound")
-                    .appendField(createAssetField('sounds', 'snd_jump'), "SOUND");
+                    .appendField(createAssetField('sounds', ''), "SOUND");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#9966FF");
@@ -1354,7 +1349,7 @@
             init: function() {
                 this.appendDummyInput()
                     .appendField(getBlockMessage('music_play_prefix', window.BLOCKLY_LANG) || "Play music")
-                    .appendField(createAssetField('sounds', 'bgm_main'), "MUSIC");
+                    .appendField(createAssetField('sounds', ''), "MUSIC");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#9966FF");
@@ -1511,7 +1506,7 @@
             init: function() {
                 this.appendDummyInput()
                     .appendField(getBlockMessage('set_sprite_prefix', window.BLOCKLY_LANG) || "Set sprite to")
-                    .appendField(createAssetField('sprites', 'spr_player'), "SPRITE");
+                    .appendField(createAssetField('sprites', ''), "SPRITE");
                 this.setPreviousStatement(true, null);
                 this.setNextStatement(true, null);
                 this.setColour("#9B59B6");
@@ -1684,308 +1679,11 @@
             }
         }
 
-        // Function to generate Python code
-        function generatePythonCode() {
-            return generatePyGameMakerCode(workspace);
-        }
-
-        // Custom Python code generator for PyGameMaker
-        function generatePyGameMakerCode(workspace) {
-            var events = {};
-            var topBlocks = workspace.getTopBlocks(true);
-
-            for (var i = 0; i < topBlocks.length; i++) {
-                var block = topBlocks[i];
-                var eventType = getEventType(block);
-                if (eventType) {
-                    var code = generateBlockCode(block);
-
-                    // Handle keyboard and alarm events with nested format
-                    // Output: {"keyboard": {"right": {"actions": [...]}}} or {"alarm": {"alarm_0": {"actions": [...]}}}
-                    if (eventType.subtype && (eventType.event === 'keyboard' || eventType.event === 'keyboard_press' || eventType.event === 'keyboard_release' || eventType.event === 'alarm')) {
-                        if (!events[eventType.event]) {
-                            events[eventType.event] = {};
-                        }
-                        // Create nested structure: keyboard -> key -> actions
-                        events[eventType.event][eventType.subtype] = {actions: code.actions || []};
-                    } else {
-                        // Regular event (create, step, draw, etc.)
-                        if (!events[eventType.event]) {
-                            events[eventType.event] = {actions: []};
-                        }
-                        events[eventType.event].actions = events[eventType.event].actions.concat(code.actions || []);
-                    }
-                }
-            }
-
-            return JSON.stringify(events, null, 2);
-        }
-
-        function getEventType(block) {
-            switch (block.type) {
-                case 'event_create': return {event: 'create'};
-                case 'event_step': return {event: 'step'};
-                case 'event_draw': return {event: 'draw'};
-                case 'event_destroy': return {event: 'destroy'};
-                case 'event_alarm': return {event: 'alarm', subtype: 'alarm_' + block.getFieldValue('ALARM_NUM')};
-                case 'event_keyboard_nokey': return {event: 'keyboard', subtype: 'nokey'};
-                case 'event_keyboard_anykey': return {event: 'keyboard', subtype: 'anykey'};
-                case 'event_keyboard_held': return {event: 'keyboard', subtype: block.getFieldValue('KEY')};
-                case 'event_keyboard_press': return {event: 'keyboard_press', subtype: block.getFieldValue('KEY')};
-                case 'event_keyboard_release': return {event: 'keyboard_release', subtype: block.getFieldValue('KEY')};
-                case 'event_mouse': return {event: 'mouse_' + block.getFieldValue('BUTTON')};
-                case 'event_collision': return {event: 'collision_with_' + block.getFieldValue('OBJECT')};
-                default: return null;
-            }
-        }
-
-        function generateBlockCode(eventBlock) {
-            var actions = [];
-            var doBlock = eventBlock.getInputTargetBlock('DO');
-
-            while (doBlock) {
-                var action = generateActionCode(doBlock);
-                if (action) {
-                    actions.push(action);
-                }
-                doBlock = doBlock.getNextBlock();
-            }
-
-            return {actions: actions};
-        }
-
-        // parseScopedVariable: split a 'scope.name' user-typed variable
-        // expression into (scope, name) for the runtime's set_variable /
-        // test_variable actions. A bare name defaults to instance scope ("sel").
-        function parseScopedVariable(raw) {
-            var name = (raw || '').trim();
-            var scope = 'sel';
-            var dotIdx = name.indexOf('.');
-            if (dotIdx > 0) {
-                var prefix = name.substring(0, dotIdx).toLowerCase();
-                var rest = name.substring(dotIdx + 1);
-                if (prefix === 'self' || prefix === 'sel') { scope = 'sel'; name = rest; }
-                else if (prefix === 'global') { scope = 'global'; name = rest; }
-                else if (prefix === 'other')  { scope = 'other';  name = rest; }
-            }
-            return {name: name, scope: scope};
-        }
-
-        function generateActionCode(block) {
-            switch (block.type) {
-                case 'move_set_hspeed':
-                    return {action: 'set_hspeed', parameters: {value: getInputValue(block, 'SPEED', 0)}};
-                case 'move_set_vspeed':
-                    return {action: 'set_vspeed', parameters: {value: getInputValue(block, 'SPEED', 0)}};
-                case 'move_stop':
-                    return {action: 'stop_movement', parameters: {}};
-                case 'move_direction':
-                    var dir = block.getFieldValue('DIRECTION');
-                    var speed = getInputValue(block, 'SPEED', 4);
-                    // Convert direction string to numeric degrees for game compatibility
-                    var directionDegrees;
-                    switch (dir) {
-                        case 'right': directionDegrees = 0; break;
-                        case 'up': directionDegrees = 90; break;
-                        case 'left': directionDegrees = 180; break;
-                        case 'down': directionDegrees = 270; break;
-                        default: directionDegrees = 0;
-                    }
-                    return {action: 'start_moving_direction', parameters: {directions: directionDegrees, speed: speed}};
-                case 'move_free':
-                    return {action: 'move_free', parameters: {
-                        direction: getInputValue(block, 'DIRECTION', 0),
-                        speed: getInputValue(block, 'SPEED', 4)
-                    }};
-                case 'set_speed':
-                    return {action: 'set_speed', parameters: {speed: getInputValue(block, 'SPEED', 0)}};
-                case 'set_direction':
-                    return {action: 'set_direction', parameters: {direction: getInputValue(block, 'DIRECTION', 0)}};
-                case 'move_snap_to_grid':
-                    return {action: 'snap_to_grid', parameters: {grid_size: getInputValue(block, 'GRID_SIZE', 32)}};
-                case 'grid_move':
-                    return {action: 'move_grid', parameters: {direction: block.getFieldValue('DIRECTION') || 'right', grid_size: getInputValue(block, 'GRID_SIZE', 32)}};
-                case 'move_jump_to':
-                    return {action: 'jump_to_position', parameters: {x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0)}};
-                case 'grid_stop_if_no_keys':
-                    return {action: 'stop_if_no_keys', parameters: {grid_size: getInputValue(block, 'GRID_SIZE', 32)}};
-                case 'grid_check_keys_and_move':
-                    return {action: 'check_keys_and_move', parameters: {grid_size: getInputValue(block, 'GRID_SIZE', 32), speed: getInputValue(block, 'SPEED', 4)}};
-                case 'grid_if_on_grid':
-                    // This is a wrapper action - collect inner actions
-                    var innerActions = [];
-                    var innerBlock = block.getInputTargetBlock('DO');
-                    while (innerBlock) {
-                        var innerAction = generateActionCode(innerBlock);
-                        if (innerAction) {
-                            innerActions.push(innerAction);
-                        }
-                        innerBlock = innerBlock.getNextBlock();
-                    }
-                    return {action: 'if_on_grid', parameters: {grid_size: getInputValue(block, 'GRID_SIZE', 32), then_actions: innerActions}};
-                case 'score_set':
-                    return {action: 'set_score', parameters: {value: getInputValue(block, 'VALUE', 0), relative: false}};
-                case 'score_add':
-                    return {action: 'set_score', parameters: {value: getInputValue(block, 'VALUE', 0), relative: true}};
-                case 'lives_set':
-                    return {action: 'set_lives', parameters: {value: getInputValue(block, 'VALUE', 0), relative: false}};
-                case 'lives_add':
-                    return {action: 'set_lives', parameters: {value: getInputValue(block, 'VALUE', 0), relative: true}};
-                case 'health_set':
-                    return {action: 'set_health', parameters: {value: getInputValue(block, 'VALUE', 0), relative: false}};
-                case 'health_add':
-                    return {action: 'set_health', parameters: {value: getInputValue(block, 'VALUE', 0), relative: true}};
-                case 'draw_score':
-                    return {action: 'draw_score', parameters: {x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0), caption: "Score: "}};
-                case 'draw_lives':
-                    return {action: 'draw_lives', parameters: {x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0)}};
-                case 'draw_health_bar':
-                    return {action: 'draw_health_bar', parameters: {x1: getInputValue(block, 'X', 0), y1: getInputValue(block, 'Y', 0), x2: getInputValue(block, 'X', 0) + getInputValue(block, 'WIDTH', 100), y2: getInputValue(block, 'Y', 0) + 20}};
-                case 'instance_destroy':
-                    return {action: 'destroy_instance', parameters: {target: 'self'}};
-                case 'instance_destroy_other':
-                    return {action: 'destroy_instance', parameters: {target: 'other'}};
-                case 'if_condition':
-                    var ifCondActions = [];
-                    var ifCondInner = block.getInputTargetBlock('DO');
-                    while (ifCondInner) {
-                        var ifCondAction = generateActionCode(ifCondInner);
-                        if (ifCondAction) {
-                            ifCondActions.push(ifCondAction);
-                        }
-                        ifCondInner = ifCondInner.getNextBlock();
-                    }
-                    return {action: 'if_condition', parameters: {
-                        condition_type: 'instance_count',
-                        object_name: block.getFieldValue('OBJECT_NAME'),
-                        operator: block.getFieldValue('OPERATOR'),
-                        value: block.getFieldValue('VALUE'),
-                        then_actions: ifCondActions,
-                        else_actions: []
-                    }};
-                case 'set_variable':
-                    var sv = parseScopedVariable(block.getFieldValue('VARIABLE'));
-                    return {action: 'set_variable', parameters: {
-                        variable: sv.name,
-                        scope: sv.scope,
-                        value: getInputValue(block, 'VALUE', 0),
-                        relative: false
-                    }};
-                case 'test_variable':
-                    var tvActions = [];
-                    var tvInner = block.getInputTargetBlock('DO');
-                    while (tvInner) {
-                        var tvAction = generateActionCode(tvInner);
-                        if (tvAction) {
-                            tvActions.push(tvAction);
-                        }
-                        tvInner = tvInner.getNextBlock();
-                    }
-                    var tv = parseScopedVariable(block.getFieldValue('VARIABLE'));
-                    return {action: 'test_variable', parameters: {
-                        variable: tv.name,
-                        scope: tv.scope,
-                        operation: block.getFieldValue('OPERATION'),
-                        value: getInputValue(block, 'VALUE', 0),
-                        then_actions: tvActions,
-                        else_actions: []
-                    }};
-                case 'room_goto_next':
-                    return {action: 'next_room', parameters: {}};
-                case 'room_goto_previous':
-                    return {action: 'previous_room', parameters: {}};
-                case 'room_goto':
-                    return {action: 'goto_room', parameters: {room_name: block.getFieldValue('ROOM')}};
-                case 'room_if_next_exists':
-                    var nextExistsActions = [];
-                    var nextExistsBlock = block.getInputTargetBlock('DO');
-                    while (nextExistsBlock) {
-                        var nextExistsAction = generateActionCode(nextExistsBlock);
-                        if (nextExistsAction) {
-                            nextExistsActions.push(nextExistsAction);
-                        }
-                        nextExistsBlock = nextExistsBlock.getNextBlock();
-                    }
-                    return {action: 'if_next_room_exists', parameters: {then_actions: nextExistsActions}};
-                case 'room_if_previous_exists':
-                    var prevExistsActions = [];
-                    var prevExistsBlock = block.getInputTargetBlock('DO');
-                    while (prevExistsBlock) {
-                        var prevExistsAction = generateActionCode(prevExistsBlock);
-                        if (prevExistsAction) {
-                            prevExistsActions.push(prevExistsAction);
-                        }
-                        prevExistsBlock = prevExistsBlock.getNextBlock();
-                    }
-                    return {action: 'if_previous_room_exists', parameters: {then_actions: prevExistsActions}};
-                case 'room_restart':
-                    return {action: 'restart_room', parameters: {}};
-                case 'sound_play':
-                    return {action: 'play_sound', parameters: {sound: block.getFieldValue('SOUND')}};
-                case 'music_play':
-                    return {action: 'play_music', parameters: {music: block.getFieldValue('MUSIC')}};
-                case 'music_stop':
-                    return {action: 'stop_music', parameters: {}};
-                case 'output_message':
-                    return {action: 'show_message', parameters: {message: getInputValue(block, 'MESSAGE', '')}};
-                case 'set_alarm':
-                    return {action: 'set_alarm', parameters: {alarm_number: parseInt(block.getFieldValue('ALARM_NUM')), steps: getInputValue(block, 'STEPS', 30)}};
-                case 'draw_text':
-                    return {action: 'draw_text', parameters: {text: getInputValue(block, 'TEXT', ''), x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0)}};
-                case 'draw_rectangle':
-                    return {action: 'draw_rectangle', parameters: {x1: getInputValue(block, 'X', 0), y1: getInputValue(block, 'Y', 0), x2: getInputValue(block, 'X', 0) + getInputValue(block, 'WIDTH', 100), y2: getInputValue(block, 'Y', 0) + getInputValue(block, 'HEIGHT', 100), color: getInputValue(block, 'COLOR', 'white')}};
-                case 'draw_circle':
-                    return {action: 'draw_circle', parameters: {x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0), radius: getInputValue(block, 'RADIUS', 50), color: getInputValue(block, 'COLOR', 'white')}};
-                case 'set_sprite':
-                    return {action: 'set_sprite', parameters: {sprite: block.getFieldValue('SPRITE')}};
-                case 'set_alpha':
-                    return {action: 'set_alpha', parameters: {alpha: getInputValue(block, 'ALPHA', 1.0)}};
-                case 'set_gravity':
-                    return {action: 'set_gravity', parameters: {direction: getInputValue(block, 'DIRECTION', 270), strength: getInputValue(block, 'STRENGTH', 0.5)}};
-                case 'set_friction':
-                    return {action: 'set_friction', parameters: {friction: getInputValue(block, 'FRICTION', 0)}};
-                case 'reverse_horizontal':
-                    return {action: 'reverse_horizontal', parameters: {}};
-                case 'reverse_vertical':
-                    return {action: 'reverse_vertical', parameters: {}};
-                case 'wrap_around_room':
-                    return {action: 'wrap_around_room', parameters: {
-                        horizontal: block.getFieldValue('HORIZONTAL') === 'TRUE',
-                        vertical: block.getFieldValue('VERTICAL') === 'TRUE'
-                    }};
-                case 'if_can_push':
-                    return {action: 'if_can_push', parameters: {
-                        direction: block.getFieldValue('DIRECTION') || 'facing',
-                        object_type: block.getFieldValue('OBJECT_TYPE') || 'box',
-                        then_action: block.getFieldValue('THEN_ACTION') || 'push_and_move',
-                        else_action: block.getFieldValue('ELSE_ACTION') || 'stop_movement'
-                    }};
-                default:
-                    return null;
-            }
-        }
-
-        function getInputValue(block, inputName, defaultValue) {
-            var input = block.getInputTargetBlock(inputName);
-            if (input) {
-                if (input.type === 'math_number') {
-                    return parseFloat(input.getFieldValue('NUM')) || defaultValue;
-                } else if (input.type === 'text') {
-                    return input.getFieldValue('TEXT') || defaultValue;
-                } else if (input.type === 'value_x') {
-                    return 'self.x';
-                } else if (input.type === 'value_y') {
-                    return 'self.y';
-                } else if (input.type === 'value_score') {
-                    return 'game.score';
-                } else if (input.type === 'value_lives') {
-                    return 'game.lives';
-                } else if (input.type === 'value_health') {
-                    return 'game.health';
-                }
-            }
-            return defaultValue;
-        }
+        // Code generation, event/action mapping, and getInputValue live in
+        // blockly_generators.js (loaded near the top of this file). This was
+        // previously duplicated inline; the inline copies drifted away from
+        // the file and shadowed it, which is why merging happens in one place
+        // now.
 
         // Listen for workspace changes
         var ignoreChanges = false;  // Flag to prevent infinite loops during sync
@@ -2575,21 +2273,21 @@
                     break;
 
                 case 'instance_create':
-                    block.setFieldValue(params.object || 'obj_bullet', 'OBJECT');
+                    if (params.object) block.setFieldValue(params.object, 'OBJECT');
                     connectNumberBlock('X', params.x || 0);
                     connectNumberBlock('Y', params.y || 0);
                     break;
 
                 case 'room_goto':
-                    block.setFieldValue(params.room || 'room0', 'ROOM');
+                    if (params.room) block.setFieldValue(params.room, 'ROOM');
                     break;
 
                 case 'sound_play':
-                    block.setFieldValue(params.sound || 'snd_jump', 'SOUND');
+                    if (params.sound) block.setFieldValue(params.sound, 'SOUND');
                     break;
 
                 case 'music_play':
-                    block.setFieldValue(params.music || 'bgm_main', 'MUSIC');
+                    if (params.music) block.setFieldValue(params.music, 'MUSIC');
                     break;
 
                 case 'output_message':
@@ -2623,7 +2321,7 @@
                     break;
 
                 case 'set_sprite':
-                    block.setFieldValue(params.sprite || 'spr_player', 'SPRITE');
+                    if (params.sprite) block.setFieldValue(params.sprite, 'SPRITE');
                     break;
 
                 case 'set_alpha':
@@ -2926,7 +2624,7 @@
                         '<block type="draw_text"><value name="TEXT"><shadow type="text"><field name="TEXT">Hello!</field></shadow></value><value name="X"><shadow type="math_number"><field name="NUM">100</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">100</field></shadow></value></block>',
                         '<block type="draw_rectangle"><value name="X"><shadow type="math_number"><field name="NUM">100</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">100</field></shadow></value><value name="WIDTH"><shadow type="math_number"><field name="NUM">50</field></shadow></value><value name="HEIGHT"><shadow type="math_number"><field name="NUM">50</field></shadow></value><value name="COLOR"><shadow type="text"><field name="TEXT">#FF0000</field></shadow></value></block>',
                         '<block type="draw_circle"><value name="X"><shadow type="math_number"><field name="NUM">100</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">100</field></shadow></value><value name="RADIUS"><shadow type="math_number"><field name="NUM">25</field></shadow></value><value name="COLOR"><shadow type="text"><field name="TEXT">#00FF00</field></shadow></value></block>',
-                        '<block type="set_sprite"><field name="SPRITE">spr_player</field></block>',
+                        '<block type="set_sprite"></block>',
                         '<block type="set_alpha"><value name="ALPHA"><shadow type="math_number"><field name="NUM">1.0</field></shadow></value></block>'
                     ]
                 },
@@ -2949,14 +2647,14 @@
                     blocks: [
                         '<block type="instance_destroy"></block>',
                         '<block type="instance_destroy_other"></block>',
-                        '<block type="instance_create"><field name="OBJECT">obj_bullet</field><value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
+                        '<block type="instance_create"><value name="X"><shadow type="math_number"><field name="NUM">0</field></shadow></value><value name="Y"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
                         '<block type="if_can_push"><field name="OBJECT_TYPE">box</field><field name="DIRECTION">facing</field><field name="THEN_ACTION">push_and_move</field><field name="ELSE_ACTION">stop_movement</field></block>'
                     ]
                 },
                 'Control': {
                     color: '#FFAB19',
                     blocks: [
-                        '<block type="if_condition"><field name="OBJECT_NAME">obj_coin</field><field name="OPERATOR">==</field><field name="VALUE">0</field></block>',
+                        '<block type="if_condition"><field name="OPERATOR">==</field><field name="VALUE">0</field></block>',
                         '<block type="set_variable"><field name="VARIABLE">score</field><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
                         '<block type="test_variable"><field name="VARIABLE">score</field><field name="OPERATION">equal</field><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>'
                     ]
@@ -2966,7 +2664,7 @@
                     blocks: [
                         '<block type="room_goto_next"></block>',
                         '<block type="room_restart"></block>',
-                        '<block type="room_goto"><field name="ROOM">room0</field></block>'
+                        '<block type="room_goto"></block>'
                     ]
                 },
                 'Values': {
@@ -2986,8 +2684,8 @@
                 'Sound': {
                     color: '#9966FF',
                     blocks: [
-                        '<block type="sound_play"><field name="SOUND">snd_jump</field></block>',
-                        '<block type="music_play"><field name="MUSIC">bgm_main</field></block>',
+                        '<block type="sound_play"></block>',
+                        '<block type="music_play"></block>',
                         '<block type="music_stop"></block>'
                     ]
                 },

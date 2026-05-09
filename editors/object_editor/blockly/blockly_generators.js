@@ -22,9 +22,9 @@ function generatePyGameMakerCode(workspace) {
         if (eventType) {
             var code = generateBlockCode(block);
 
-            // Handle keyboard events with nested format
-            // Output: {"keyboard": {"right": {"actions": [...]}}}
-            if (eventType.subtype && (eventType.event === 'keyboard' || eventType.event === 'keyboard_press' || eventType.event === 'keyboard_release')) {
+            // Handle keyboard and alarm events with nested format
+            // Output: {"keyboard": {"right": {"actions": [...]}}} or {"alarm": {"alarm_0": {"actions": [...]}}}
+            if (eventType.subtype && (eventType.event === 'keyboard' || eventType.event === 'keyboard_press' || eventType.event === 'keyboard_release' || eventType.event === 'alarm')) {
                 if (!events[eventType.event]) {
                     events[eventType.event] = {};
                 }
@@ -49,7 +49,7 @@ function getEventType(block) {
         case 'event_step': return {event: 'step'};
         case 'event_draw': return {event: 'draw'};
         case 'event_destroy': return {event: 'destroy'};
-        case 'event_alarm': return {event: 'alarm_' + block.getFieldValue('ALARM_NUM')};
+        case 'event_alarm': return {event: 'alarm', subtype: 'alarm_' + block.getFieldValue('ALARM_NUM')};
         case 'event_keyboard_nokey': return {event: 'keyboard', subtype: 'nokey'};
         case 'event_keyboard_anykey': return {event: 'keyboard', subtype: 'anykey'};
         case 'event_keyboard_held': return {event: 'keyboard', subtype: block.getFieldValue('KEY')};
@@ -141,6 +141,8 @@ function generateActionCode(block) {
             return {action: 'set_direction', parameters: {direction: getInputValue(block, 'DIRECTION', 0)}};
         case 'move_snap_to_grid':
             return {action: 'snap_to_grid', parameters: {grid_size: getInputValue(block, 'GRID_SIZE', 32)}};
+        case 'grid_move':
+            return {action: 'move_grid', parameters: {direction: block.getFieldValue('DIRECTION') || 'right', grid_size: getInputValue(block, 'GRID_SIZE', 32)}};
         case 'move_jump_to':
             var relative = block.getFieldValue('RELATIVE') === 'TRUE';
             return {action: 'jump_to_position', parameters: {x: getInputValue(block, 'X', 0), y: getInputValue(block, 'Y', 0), relative: relative}};
@@ -303,6 +305,13 @@ function generateActionCode(block) {
             return {action: 'wrap_around_room', parameters: {
                 horizontal: block.getFieldValue('HORIZONTAL') === 'TRUE',
                 vertical: block.getFieldValue('VERTICAL') === 'TRUE'
+            }};
+        case 'if_can_push':
+            return {action: 'if_can_push', parameters: {
+                direction: block.getFieldValue('DIRECTION') || 'facing',
+                object_type: block.getFieldValue('OBJECT_TYPE') || 'box',
+                then_action: block.getFieldValue('THEN_ACTION') || 'push_and_move',
+                else_action: block.getFieldValue('ELSE_ACTION') || 'stop_movement'
             }};
         case 'execute_code':
             return {action: 'execute_code', parameters: {code: block.getFieldValue('CODE') || ''}};
