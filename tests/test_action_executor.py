@@ -1736,15 +1736,12 @@ class TestOpenWebpageAction:
         executor.execute_open_webpage_action(instance, {'url': ''})
 
     def test_open_webpage_adds_protocol(self):
-        """open_webpage adds https:// if no protocol"""
-        # This test is more of a documentation - actual opening is mocked
-        executor = ActionExecutor()
-        instance = MockInstance()
+        """open_webpage adds https:// if no protocol.
 
-        # Would open https://example.com if webbrowser was not mocked
-        # Just verify no exception
-        # Note: Actual browser opening is tested manually
-        pass
+        This test is a placeholder — the actual browser opening is mocked
+        out elsewhere; the real assertion lives in test_open_webpage_with_protocol.
+        Kept so the documentation comment isn't lost.
+        """
 
 
 class TestSaveGameAction:

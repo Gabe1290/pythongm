@@ -276,7 +276,6 @@ class TestDeleteAssetWorkflow:
     def test_delete_asset_removes_files(self, project_with_assets):
         """Deleting asset should remove physical files"""
         am = project_with_assets["am"]
-        pm = project_with_assets["pm"]
 
         sprite = am.get_asset("sprites", "spr_deletable")
         file_path = am.get_absolute_path(sprite["file_path"])

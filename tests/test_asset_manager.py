@@ -59,7 +59,7 @@ class TestAssetManagerBasics:
         """ensure_directories should create asset folders"""
         with patch('pygame.mixer.init'):
             from core.asset_manager import AssetManager
-            am = AssetManager(project_directory=temp_project_dir)
+            AssetManager(project_directory=temp_project_dir)
 
             # Directories should be created on init
             expected = ["sprites", "sounds", "backgrounds", "objects", "rooms", "fonts", "data"]

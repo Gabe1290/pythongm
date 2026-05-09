@@ -61,7 +61,7 @@ class TestHTML5ExporterBasics:
         with patch.object(Path, 'read_text') as mock_read:
             mock_read.return_value = "template"
             from export.HTML5.html5_exporter import HTML5Exporter
-            exporter = HTML5Exporter()
+            HTML5Exporter()
 
             assert mock_read.call_count == 2  # template_html and engine_code
 
@@ -961,8 +961,8 @@ class TestActionCodeGeneratorBlocks:
         lines = code.split('\n')
 
         # Find the destroy line and check it's indented more than the if
-        if_line = next((l for l in lines if 'if self.check_collision' in l), None)
-        destroy_line = next((l for l in lines if 'self.destroy()' in l), None)
+        if_line = next((line for line in lines if 'if self.check_collision' in line), None)
+        destroy_line = next((line for line in lines if 'self.destroy()' in line), None)
 
         assert if_line is not None
         assert destroy_line is not None
@@ -1045,9 +1045,9 @@ class TestActionCodeGeneratorBlocks:
         code = code_generator.get_code()
 
         # Both actions should be at same indentation level inside the block
-        lines = [l for l in code.split('\n') if l.strip()]
-        hspeed_line_1 = next((l for l in lines if 'self.hspeed = 1' in l), None)
-        hspeed_line_2 = next((l for l in lines if 'self.hspeed = 2' in l), None)
+        lines = [line for line in code.split('\n') if line.strip()]
+        hspeed_line_1 = next((line for line in lines if 'self.hspeed = 1' in line), None)
+        hspeed_line_2 = next((line for line in lines if 'self.hspeed = 2' in line), None)
 
         assert hspeed_line_1 is not None
         assert hspeed_line_2 is not None
@@ -1153,9 +1153,9 @@ class TestActionCodeGeneratorBlocks:
         }, 'step')
         code = code_generator.get_code()
 
-        lines = [l for l in code.split('\n') if l.strip()]
+        lines = [line for line in code.split('\n') if line.strip()]
         # Should have two if statements
-        if_lines = [l for l in lines if l.strip().startswith('if ')]
+        if_lines = [line for line in lines if line.strip().startswith('if ')]
         assert len(if_lines) >= 2
 
 

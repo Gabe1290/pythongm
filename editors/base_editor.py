@@ -69,8 +69,9 @@ class BaseEditor(QWidget):
         self.undo_stack.canUndoChanged.connect(self.update_undo_actions)
         self.undo_stack.canRedoChanged.connect(self.update_undo_actions)
 
-        # Auto-save timer
-        self.auto_save_timer = QTimer()
+        # Auto-save timer (parented to self so it dies with the editor and
+        # doesn't fire after the widget is gone)
+        self.auto_save_timer = QTimer(self)
         self.auto_save_timer.timeout.connect(self.auto_save)
         self.auto_save_timer.setSingleShot(True)
 
@@ -465,6 +466,9 @@ class BaseEditor(QWidget):
     def closeEvent(self, event):
         """Handle widget close event"""
         if self.request_close():
+            # Stop the timer before accept so it can't fire after deleteLater
+            if hasattr(self, 'auto_save_timer'):
+                self.auto_save_timer.stop()
             event.accept()
         else:
             event.ignore()

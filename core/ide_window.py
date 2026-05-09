@@ -912,6 +912,10 @@ class PyGameMakerIDE(QMainWindow):
                         self.safe_disconnect_signal(editor_widget.close_requested, self.on_editor_close_requested)
                     if hasattr(editor_widget, 'data_modified'):
                         self.safe_disconnect_signal(editor_widget.data_modified, self.on_editor_data_modified)
+                    if hasattr(editor_widget, 'float_requested'):
+                        self.safe_disconnect_signal(editor_widget.float_requested, self.float_editor)
+                    if hasattr(editor_widget, 'reattach_requested'):
+                        self.safe_disconnect_signal(editor_widget.reattach_requested, self.reattach_editor)
 
                     # Disconnect editor-specific signals
                     if hasattr(editor_widget, 'room_editor_activated'):
@@ -1322,11 +1326,11 @@ class PyGameMakerIDE(QMainWindow):
                             for cat_name, cat_data in cache.items():
                                 self.current_project_data['assets'][cat_name] = cat_data
 
-                # When an object is renamed, update all open editors
+                # When an object is renamed, update all open editors (tabbed
+                # AND detached) — palettes, room instance references, and
+                # other editors' events panels.
                 if asset_type == 'object':
-                    for i in range(self.editor_tabs.count()):
-                        widget = self.editor_tabs.widget(i)
-                        # Update room editor instances and palette
+                    for widget in self._iter_open_editors():
                         if hasattr(widget, 'rename_object_in_instances'):
                             widget.rename_object_in_instances(old_name, new_name)
                         if hasattr(widget, 'load_available_objects'):
@@ -1337,6 +1341,29 @@ class PyGameMakerIDE(QMainWindow):
                                 obj_data = self.current_project_data.get('assets', {}).get('objects', {}).get(widget.asset_name)
                                 if obj_data:
                                     widget.events_panel.load_events_data(obj_data.get('events', {}))
+
+                # If the renamed asset itself is open as an editor, update
+                # its asset_name and propagate to dicts / tab text / window
+                # title so the IDE doesn't keep stale references.
+                if old_name in self.open_editors:
+                    editor = self.open_editors.pop(old_name)
+                    self.open_editors[new_name] = editor
+                    if hasattr(editor, 'asset_name'):
+                        editor.asset_name = new_name
+                    # If currently floated, move the window registration too.
+                    if old_name in self.detached_editor_windows:
+                        self.detached_editor_windows[new_name] = self.detached_editor_windows.pop(old_name)
+                    # Refresh window title if the editor knows how.
+                    if hasattr(editor, 'update_window_title'):
+                        try:
+                            editor.update_window_title()
+                        except Exception:
+                            pass
+                    # Update tab text if the editor is in a tab.
+                    for i in range(self.editor_tabs.count()):
+                        if self.editor_tabs.widget(i) is editor:
+                            self.editor_tabs.setTabText(i, new_name)
+                            break
 
                 # Refresh asset dropdowns in any open Blockly tab so the new
                 # name shows up immediately (works for any asset_type).
@@ -2625,67 +2652,66 @@ class PyGameMakerIDE(QMainWindow):
         progress_dialog.exec()
         export_thread.wait()
 
+    def _active_editor(self):
+        """Return the editor the user is interacting with right now.
+
+        Prefers the currently focused widget's owning editor (which works
+        for detached editor windows), falling back to the active tab's
+        widget. Returns None if no editor is in focus or the active tab
+        is the welcome tab.
+        """
+        from PySide6.QtWidgets import QApplication
+        focused = QApplication.focusWidget()
+        if focused is not None:
+            open_set = set(self.open_editors.values())
+            walk = focused
+            while walk is not None:
+                if walk in open_set:
+                    return walk
+                walk = walk.parent()
+        current = self.editor_tabs.currentWidget()
+        if current is None or current is self.welcome_tab:
+            return None
+        return current
+
     def undo(self):
-        """Handle undo - delegate to active editor if applicable"""
-        current_widget = self.editor_tabs.currentWidget()
-
-        # Check if it's a room editor
-        if hasattr(current_widget, '__class__') and current_widget.__class__.__name__ == 'RoomEditor':
-            if hasattr(current_widget, 'undo'):
-                current_widget.undo()
-                return
-
-        # Check if it's an object editor or other editor with undo functionality
-        if hasattr(current_widget, 'undo'):
+        """Handle undo - delegate to active editor (tabbed or detached)."""
+        editor = self._active_editor()
+        if editor is None:
+            logger.debug("Undo (no editor-specific undo available)")
+            return
+        if hasattr(editor, 'undo'):
             try:
-                current_widget.undo()
-                return
+                editor.undo()
             except Exception:
-                pass
-
-        # Default: project-level undo (if implemented)
-        logger.debug("Undo (no editor-specific undo available)")
+                logger.debug("Undo: editor.undo() raised", exc_info=True)
 
     def redo(self):
-        """Handle redo - delegate to active editor if applicable"""
-        current_widget = self.editor_tabs.currentWidget()
-
-        # Check if it's a room editor
-        if hasattr(current_widget, '__class__') and current_widget.__class__.__name__ == 'RoomEditor':
-            if hasattr(current_widget, 'redo'):
-                current_widget.redo()
-                return
-
-        # Check if it's an object editor or other editor with redo functionality
-        if hasattr(current_widget, 'redo'):
+        """Handle redo - delegate to active editor (tabbed or detached)."""
+        editor = self._active_editor()
+        if editor is None:
+            logger.debug("Redo (no editor-specific redo available)")
+            return
+        if hasattr(editor, 'redo'):
             try:
-                current_widget.redo()
-                return
+                editor.redo()
             except Exception:
-                pass
-
-        # Default: project-level redo (if implemented)
-        logger.debug("Redo (no editor-specific redo available)")
+                logger.debug("Redo: editor.redo() raised", exc_info=True)
 
     def cut(self):
-        """Handle cut - delegate to active editor if applicable"""
-        current_widget = self.editor_tabs.currentWidget()
-
-        # Check if it's a room editor
-        if hasattr(current_widget, '__class__') and current_widget.__class__.__name__ == 'RoomEditor':
-            if hasattr(current_widget, 'cut_instance'):
-                current_widget.cut_instance()
+        """Handle cut - delegate to active editor (tabbed or detached)."""
+        editor = self._active_editor()
+        if editor is not None:
+            if editor.__class__.__name__ == 'RoomEditor' and hasattr(editor, 'cut_instance'):
+                editor.cut_instance()
                 return
-
-        # Check if it's an object editor or other editor with cut functionality
-        if hasattr(current_widget, 'cut'):
-            try:
-                current_widget.cut()
-                return
-            except Exception:
-                pass
-
-        # Default: try to cut from focused widget
+            if hasattr(editor, 'cut'):
+                try:
+                    editor.cut()
+                    return
+                except Exception:
+                    pass
+        # Fall back to the focused widget for plain text-edit cut
         focused_widget = self.focusWidget()
         if focused_widget and hasattr(focused_widget, 'cut'):
             try:
@@ -2694,24 +2720,18 @@ class PyGameMakerIDE(QMainWindow):
                 pass
 
     def copy(self):
-        """Handle copy - delegate to active editor if applicable"""
-        current_widget = self.editor_tabs.currentWidget()
-
-        # Check if it's a room editor
-        if hasattr(current_widget, '__class__') and current_widget.__class__.__name__ == 'RoomEditor':
-            if hasattr(current_widget, 'copy_instance'):
-                current_widget.copy_instance()
+        """Handle copy - delegate to active editor (tabbed or detached)."""
+        editor = self._active_editor()
+        if editor is not None:
+            if editor.__class__.__name__ == 'RoomEditor' and hasattr(editor, 'copy_instance'):
+                editor.copy_instance()
                 return
-
-        # Check if it's an object editor or other editor with copy functionality
-        if hasattr(current_widget, 'copy'):
-            try:
-                current_widget.copy()
-                return
-            except Exception:
-                pass
-
-        # Default: try to copy from focused widget
+            if hasattr(editor, 'copy'):
+                try:
+                    editor.copy()
+                    return
+                except Exception:
+                    pass
         focused_widget = self.focusWidget()
         if focused_widget and hasattr(focused_widget, 'copy'):
             try:
@@ -2720,24 +2740,18 @@ class PyGameMakerIDE(QMainWindow):
                 pass
 
     def paste(self):
-        """Handle paste - delegate to active editor if applicable"""
-        current_widget = self.editor_tabs.currentWidget()
-
-        # Check if it's a room editor
-        if hasattr(current_widget, '__class__') and current_widget.__class__.__name__ == 'RoomEditor':
-            if hasattr(current_widget, 'paste_instance'):
-                current_widget.paste_instance()
+        """Handle paste - delegate to active editor (tabbed or detached)."""
+        editor = self._active_editor()
+        if editor is not None:
+            if editor.__class__.__name__ == 'RoomEditor' and hasattr(editor, 'paste_instance'):
+                editor.paste_instance()
                 return
-
-        # Check if it's an object editor or other editor with paste functionality
-        if hasattr(current_widget, 'paste'):
-            try:
-                current_widget.paste()
-                return
-            except Exception:
-                pass
-
-        # Default: try to paste to focused widget
+            if hasattr(editor, 'paste'):
+                try:
+                    editor.paste()
+                    return
+                except Exception:
+                    pass
         focused_widget = self.focusWidget()
         if focused_widget and hasattr(focused_widget, 'paste'):
             try:
@@ -2746,16 +2760,12 @@ class PyGameMakerIDE(QMainWindow):
                 pass
 
     def duplicate(self):
-        """Handle duplicate - delegate to active editor if applicable"""
-        current_widget = self.editor_tabs.currentWidget()
-
-        # Check if it's a room editor
-        if hasattr(current_widget, '__class__') and current_widget.__class__.__name__ == 'RoomEditor':
-            if hasattr(current_widget, 'duplicate_instance'):
-                current_widget.duplicate_instance()
+        """Handle duplicate - delegate to active editor (tabbed or detached)."""
+        editor = self._active_editor()
+        if editor is not None and editor.__class__.__name__ == 'RoomEditor':
+            if hasattr(editor, 'duplicate_instance'):
+                editor.duplicate_instance()
                 return
-
-        # For other editors, could implement duplicate functionality here
         logger.debug("Duplicate action (no room editor active)")
 
     def find(self):
@@ -3422,8 +3432,10 @@ class PyGameMakerIDE(QMainWindow):
     def open_playground_editor(self, playground_name: str, playground_data: dict):
         """Open a playground in the playground editor"""
 
-        # Check if already open
+        # Check if already open — focus tab or detached window
         if playground_name in self.open_editors:
+            if self._focus_detached_editor(playground_name):
+                return
             for i in range(self.editor_tabs.count()):
                 if self.editor_tabs.tabText(i) == playground_name:
                     self.editor_tabs.setCurrentIndex(i)
@@ -3442,6 +3454,10 @@ class PyGameMakerIDE(QMainWindow):
                 self.on_editor_close_requested, Qt.ConnectionType.UniqueConnection)
             editor.data_modified.connect(
                 self.on_editor_data_modified, Qt.ConnectionType.UniqueConnection)
+            editor.float_requested.connect(
+                self.float_editor, Qt.ConnectionType.UniqueConnection)
+            editor.reattach_requested.connect(
+                self.reattach_editor, Qt.ConnectionType.UniqueConnection)
 
             # Add to tabs
             tab_index = self.editor_tabs.addTab(editor, playground_name)
@@ -3449,6 +3465,10 @@ class PyGameMakerIDE(QMainWindow):
             self.open_editors[playground_name] = editor
 
             self.update_status(self.tr("Opened playground: {0}").format(playground_name))
+
+            # Honor global window mode.
+            if self.window_mode == 'floating':
+                self.float_editor(editor)
 
         except Exception as e:
             logger.error(f"Error opening playground editor: {e}")
@@ -3504,7 +3524,7 @@ class PyGameMakerIDE(QMainWindow):
             if self.window_mode == 'floating':
                 self.float_editor(object_editor)
 
-        except Exception as e:
+        except Exception:
             import traceback
             tb = traceback.format_exc()
             traceback.print_exc()
@@ -4016,12 +4036,14 @@ class PyGameMakerIDE(QMainWindow):
                 logger.debug(f"🔄 Refreshed sprites in object editor: {getattr(widget, 'asset_name', '?')}")
 
     def refresh_object_sprites(self, object_name: str, old_sprite: str, new_sprite: str):
-        """Refresh object sprites in room editors when they change"""
+        """Refresh object sprites in room editors when they change.
+
+        Walks both tabbed and detached editors so floated rooms see the
+        new sprite assignment without a manual refresh.
+        """
         logger.debug(f"Refreshing sprite for object {object_name}: {old_sprite} -> {new_sprite}")
 
-        # Refresh all room editors
-        for i in range(self.editor_tabs.count()):
-            widget = self.editor_tabs.widget(i)
+        for widget in self._iter_open_editors():
             if hasattr(widget, 'room_canvas') and hasattr(widget, 'object_palette'):
                 # Update room canvas with latest project data so it sees the new sprite assignment
                 if hasattr(widget.room_canvas, 'set_project_info') and self.current_project_data:

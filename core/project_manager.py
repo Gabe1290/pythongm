@@ -62,8 +62,8 @@ class ProjectManager(QObject):
         self._auto_save_as_zip = False  # NEW: Auto-save as zip preference
         self._zip_handler = None  # NEW: Direct zip handler
 
-        # Auto-save timer
-        self.auto_save_timer = QTimer()
+        # Auto-save timer (parented to self for deterministic cleanup)
+        self.auto_save_timer = QTimer(self)
         self.auto_save_timer.timeout.connect(self.auto_save)
         self.auto_save_enabled = True
         self.auto_save_interval = 30000  # 30 seconds

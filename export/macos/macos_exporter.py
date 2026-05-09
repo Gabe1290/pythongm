@@ -708,6 +708,9 @@ app = BUNDLE(
         Returns:
             True on success, or an error message string on failure.
         """
+        # Defined so the timeout / generic-except branches can safely
+        # check `if process:` even if Popen never ran.
+        process = None
         try:
             logger.info("=" * 60)
             logger.info("Running PyInstaller (this may take 5-10 minutes)...")

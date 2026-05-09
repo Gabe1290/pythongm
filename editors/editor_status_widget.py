@@ -16,8 +16,9 @@ class EditorStatusWidget(QWidget):
         self._blink_color = "#4CAF50"
         self.setup_ui()
 
-        # Animation timer for unsaved indicator
-        self.blink_timer = QTimer()
+        # Animation timer for unsaved indicator (parented to self so it
+        # stops firing when the widget is destroyed)
+        self.blink_timer = QTimer(self)
         self.blink_timer.timeout.connect(self.toggle_blink)
         self.blink_state = False
 

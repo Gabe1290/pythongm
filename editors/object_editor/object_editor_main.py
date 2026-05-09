@@ -828,6 +828,9 @@ class ObjectEditor(BaseEditor):
     def load_project_assets(self):
         """Load available sprites from project"""
         sprite_count = 0
+        # Initialise outside the try so the post-except properties-panel
+        # path doesn't NameError when load_project_data raises.
+        project_data = None
         try:
             project_data = self.load_project_data()
 
@@ -873,16 +876,18 @@ class ObjectEditor(BaseEditor):
 
     def load_data(self, data: Dict[str, Any]):
         """Load object data into the editor"""
+        # Initialise so the Blockly-fallback elif below can read it even
+        # when the events_panel branch was skipped.
+        events_data = data.get('events', {}) if isinstance(data, dict) else {}
         try:
             # Store object properties
             self.current_object_properties = data.copy()
 
             # Store events data for later if UI not ready
-            self._pending_events_data = data.get('events', {})
+            self._pending_events_data = events_data
 
             # Load events data only if events_panel exists
             if hasattr(self, 'events_panel') and self.events_panel:
-                events_data = data.get('events', {})
 
                 if events_data:
                     # Extract custom code from execute_code actions

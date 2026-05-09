@@ -11,7 +11,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QGridLayout, QSplitter, QWidget, QLabel, QSpinBox, QMessageBox, QToolButton, QMenu, QFrame,
     QComboBox, QDialog, QDialogButtonBox, QGroupBox, QRadioButton, QFileDialog,
 )
-from PySide6.QtCore import Qt, Signal, QRect, QPoint
+from PySide6.QtCore import Qt, QRect, QPoint
 from PySide6.QtGui import (
     QImage, QColor, QUndoCommand, QAction, QActionGroup, QIcon,
     QPainter, QPixmap, QPen, QBrush,
@@ -175,8 +175,6 @@ class ResizeCanvasDialog(QDialog):
 
 class SpriteEditor(BaseEditor):
     """Rudimentary sprite/pixel-art editor."""
-
-    sprite_editor_activated = Signal(str, dict)
 
     def __init__(self, project_path: str = None, parent=None):
         # Instance attributes used before super().__init__ calls setup_base_ui

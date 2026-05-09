@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 from pathlib import Path
 from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout
-from PySide6.QtCore import Signal
 
 from core.logger import get_logger
 logger = get_logger(__name__)
 
 class EventActionWidget(QWidget):
-    actionSelected = Signal(str)
-    eventSelected = Signal(str)
     def __init__(self, parent=None):
         super().__init__(parent)
         layout = QVBoxLayout(self)

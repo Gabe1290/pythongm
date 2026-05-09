@@ -491,6 +491,9 @@ class AndroidExporter(QObject):
         Returns:
             True on success, or an error message string on failure.
         """
+        # Initialize so the timeout / generic-except branches can safely
+        # check `if process:` even if assignment never happened.
+        process = None
         try:
             logger.info("=" * 60)
             logger.info("Running Buildozer (this may take 15-30 minutes on first run)...")

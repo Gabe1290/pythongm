@@ -48,7 +48,7 @@ class RoomEditor(QWidget):
         }
         self.is_modified = False
 
-        self.auto_save_timer = QTimer()
+        self.auto_save_timer = QTimer(self)
         self.auto_save_timer.setSingleShot(True)
 
         self.setup_ui()

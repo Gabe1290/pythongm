@@ -337,7 +337,8 @@ class iOSExporter(QObject):
 
         except Exception as e:
             logger.error("Error generating Kivy game: %s", e)
-            import traceback; traceback.print_exc()
+            import traceback
+            traceback.print_exc()
             return False
 
     def _build_ios_dist(self, build_dir: Path):
@@ -601,5 +602,6 @@ class iOSExporter(QObject):
                     "faster once the libraries are cached.").format(
                         Path(cmd[0]).name, timeout // 60)
         except Exception as e:
-            import traceback; traceback.print_exc()
+            import traceback
+            traceback.print_exc()
             return "Error running {}: {}".format(Path(cmd[0]).name, e)

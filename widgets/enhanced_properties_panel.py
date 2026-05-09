@@ -1114,7 +1114,7 @@ def _migrate_backgrounds(room_data: dict) -> list:
     """
     existing = room_data.get('backgrounds')
     if isinstance(existing, list) and existing and isinstance(existing[0], dict):
-        layers = [dict(l) for l in existing]
+        layers = [dict(layer) for layer in existing]
     else:
         layer0 = _default_bg_layer()
         bg_img = room_data.get('background_image', '')
@@ -1141,7 +1141,7 @@ class BackgroundLayersDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle(self.tr("Background Layers"))
         self.setMinimumWidth(350)
-        self._layers = [dict(l) for l in layers_data]
+        self._layers = [dict(layer) for layer in layers_data]
         self._available_bgs = available_backgrounds
 
         layout = QVBoxLayout(self)

@@ -32,7 +32,8 @@ class PlaygroundEditor(QWidget):
     save_requested = Signal(str, dict)
     close_requested = Signal(str)
     data_modified = Signal(str)
-    playground_editor_activated = Signal(str, dict)
+    float_requested = Signal(object)  # IDE handles the actual reparent
+    reattach_requested = Signal(object)
 
     def __init__(self, project_path, parent=None):
         super().__init__(parent)
@@ -41,7 +42,7 @@ class PlaygroundEditor(QWidget):
         self.is_modified = False
         self.ground_texture_filename = ""  # filename relative to playgrounds/
 
-        self.auto_save_timer = QTimer()
+        self.auto_save_timer = QTimer(self)
         self.auto_save_timer.setSingleShot(True)
         self.auto_save_timer.timeout.connect(self.auto_save)
 
@@ -185,6 +186,43 @@ class PlaygroundEditor(QWidget):
         export_action.setToolTip(self.tr("Export as Aseba .playground file"))
         export_action.triggered.connect(self.export_playground)
 
+        self.toolbar.addSeparator()
+
+        # Float / Attach — pop the editor into its own window. The IDE
+        # listens on float_requested to do the reparent; the label flips
+        # via set_floating_state() once detached.
+        self.float_action = self.toolbar.addAction(self.tr("🪟 Float"))
+        self.float_action.setToolTip(self.tr("Open this editor in its own window"))
+        self.float_action.triggered.connect(self._on_float_clicked)
+        self._is_floating = False
+
+    def _on_float_clicked(self):
+        if self._is_floating:
+            self.reattach_requested.emit(self)
+        else:
+            self.float_requested.emit(self)
+
+    def set_floating_state(self, is_floating: bool):
+        """Called by the IDE after a successful float/attach so the toolbar
+        button reflects the current state."""
+        self._is_floating = bool(is_floating)
+        if not hasattr(self, 'float_action'):
+            return
+        if self._is_floating:
+            self.float_action.setText(self.tr("📥 Attach"))
+            self.float_action.setToolTip(self.tr("Return this editor to the IDE's tab strip"))
+        else:
+            self.float_action.setText(self.tr("🪟 Float"))
+            self.float_action.setToolTip(self.tr("Open this editor in its own window"))
+
+    def update_window_title(self):
+        """Sync window title with asset name + dirty marker. Drives the
+        title bar of the floating window when the editor is detached."""
+        title = self.asset_name or "Playground"
+        if self.is_modified:
+            title += " *"
+        self.setWindowTitle(title)
+
     def setup_connections(self):
         """Connect signals between components"""
         # Tool palette -> canvas edit mode
@@ -251,7 +289,7 @@ class PlaygroundEditor(QWidget):
         self._refresh_linkable_objects()
 
         self.is_modified = False
-        self.playground_editor_activated.emit(asset_name, data)
+        self.update_window_title()
         logger.info(f"Loaded playground: {asset_name}")
 
     def _refresh_linkable_objects(self):
@@ -366,6 +404,7 @@ class PlaygroundEditor(QWidget):
         data = self.get_data()
         self.save_requested.emit(self.asset_name, data)
         self.is_modified = False
+        self.update_window_title()
         logger.info(f"Saved playground: {self.asset_name}")
         return True
 
@@ -378,6 +417,7 @@ class PlaygroundEditor(QWidget):
         """Mark playground as modified"""
         self.is_modified = True
         self.data_modified.emit(self.asset_name)
+        self.update_window_title()
         # Start auto-save timer
         self.auto_save_timer.start(3000)
 

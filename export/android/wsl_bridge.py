@@ -96,8 +96,8 @@ class WSLBridge:
 
             # wsl -l output is UTF-16LE on Windows
             output = result.stdout.decode('utf-16-le', errors='replace')
-            lines = [l.strip().strip('\x00') for l in output.splitlines()]
-            lines = [l for l in lines if l]
+            lines = [line.strip().strip('\x00') for line in output.splitlines()]
+            lines = [line for line in lines if line]
             return lines[0] if lines else None
 
         except (FileNotFoundError, subprocess.TimeoutExpired):

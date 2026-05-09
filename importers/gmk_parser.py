@@ -419,7 +419,7 @@ class GmkParser:
 
             # Room execution order
             try:
-                ver = self.stream.read_int32()
+                _ver = self.stream.read_int32()
                 count = self.stream.read_int32()
                 project.room_order = [self.stream.read_int32() for _ in range(count)]
             except GmkReadError:
@@ -620,7 +620,7 @@ class GmkParser:
     # ----------------------------------------------------------------
 
     def _skip_triggers(self):
-        ver = self.stream.read_int32()
+        _ver = self.stream.read_int32()
         count = self.stream.read_int32()
         for _ in range(count):
             self.stream.read_zlib_data()
@@ -629,7 +629,7 @@ class GmkParser:
         self.stream.read_double()
 
     def _skip_constants(self):
-        ver = self.stream.read_int32()
+        _ver = self.stream.read_int32()
         count = self.stream.read_int32()
         for _ in range(count):
             _name = self.stream.read_string()
@@ -685,8 +685,8 @@ class GmkParser:
 
         if subver < 800:
             # Pre-v800: width/height/bbox/transparency before origin
-            spr_width = s.read_int32()
-            spr_height = s.read_int32()
+            _spr_width = s.read_int32()
+            _spr_height = s.read_int32()
             _bbox_left = s.read_int32()
             _bbox_right = s.read_int32()
             _bbox_bottom = s.read_int32()
@@ -711,7 +711,7 @@ class GmkParser:
         for _ in range(subimage_count):
             if subver >= 800:
                 # v800+: raw BGRA pixel data
-                img_ver = s.read_int32()
+                _img_ver = s.read_int32()
                 width = s.read_int32()
                 height = s.read_int32()
                 if width > 0 and height > 0:
@@ -793,7 +793,7 @@ class GmkParser:
 
         if subver >= 710:
             # v710+: inner version + raw BGRA data (no transparent/width/height prefix)
-            bg_inner_ver = s.read_int32()  # 800
+            _bg_inner_ver = s.read_int32()  # 800
             bg.width = s.read_int32()
             bg.height = s.read_int32()
             if bg.width > 0 and bg.height > 0:
@@ -1001,7 +1001,7 @@ class GmkParser:
     # ----------------------------------------------------------------
 
     def _parse_actions(self, s: GmkStream) -> List[GmkAction]:
-        ver = s.read_int32()  # 400
+        _ver = s.read_int32()  # 400
         action_count = s.read_int32()
         actions = []
 
@@ -1014,7 +1014,7 @@ class GmkParser:
     def _parse_single_action(self, s: GmkStream) -> GmkAction:
         act = GmkAction()
 
-        sub_ver = s.read_int32()  # 440
+        _sub_ver = s.read_int32()  # 440
         act.library_id = s.read_int32()
         act.action_id = s.read_int32()
         act.action_kind = s.read_int32()
