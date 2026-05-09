@@ -1223,15 +1223,15 @@ class ObjectEditor(BaseEditor):
     def on_blockly_events_modified(self, events: dict):
         """Handle events modified from Blockly visual programming"""
         event_keys = list(events.keys()) if isinstance(events, dict) else None
-        logger.info(f"[Editor] on_blockly_events_modified: got {len(events) if events else 0} events: {event_keys}")
+        logger.debug(f"[Editor] on_blockly_events_modified: got {len(events) if events else 0} events: {event_keys}")
         # Skip if this change is from a sync operation (not user-initiated)
         if self.sync_coordinator.should_skip_for(SyncSource.BLOCKLY):
-            logger.info(f"[Editor] on_blockly_events_modified: SKIPPED (sync_coordinator says skip; current source = {self.sync_coordinator.get_sync_source()})")
+            logger.debug(f"[Editor] on_blockly_events_modified: SKIPPED (sync_coordinator says skip; current source = {self.sync_coordinator.get_sync_source()})")
             return
 
         with SyncContext(self.sync_coordinator, SyncSource.BLOCKLY) as can_sync:
             if can_sync and hasattr(self, 'events_panel') and self.events_panel:
-                logger.info(f"[Editor] on_blockly_events_modified: pushing to events_panel.load_events_data")
+                logger.debug(f"[Editor] on_blockly_events_modified: pushing to events_panel.load_events_data")
                 # Replace events panel with Blockly events (handles deletions)
                 self.events_panel.load_events_data(events)
 
