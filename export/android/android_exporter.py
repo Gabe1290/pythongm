@@ -505,7 +505,8 @@ class AndroidExporter(QObject):
                 timeout = 2400  # 40 min — WSL filesystem I/O is slower
             else:
                 # Native Linux/macOS execution
-                import sys, os
+                import sys
+                import os
                 python_exe = sys.executable
 
                 # Ensure the venv's bin dir is on PATH so buildozer can find
@@ -695,7 +696,8 @@ class AndroidExporter(QObject):
         Git pack files and other WSL-created files may be read-only on
         Windows, causing shutil.rmtree to fail with Access Denied.
         """
-        import os, stat
+        import os
+        import stat
         try:
             os.chmod(path, stat.S_IWRITE)
             func(path)

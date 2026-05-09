@@ -5,17 +5,16 @@ A standalone simulator window for testing Thymio robot programs.
 Embeds pygame rendering in a Qt window.
 """
 
-import sys
 import os
 from enum import Enum, auto
 from typing import List, Optional, Tuple
 
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QPushButton, QFrame, QGroupBox, QSlider, QSpinBox,
-    QSplitter, QStatusBar, QToolBar, QMessageBox, QButtonGroup
+    QPushButton, QSlider, QSpinBox,
+    QStatusBar, QToolBar
 )
-from PySide6.QtCore import Qt, QTimer, Signal, QSize, QPoint
+from PySide6.QtCore import Qt, QTimer, Signal, QSize
 from PySide6.QtGui import QImage, QPixmap, QKeyEvent, QAction, QMouseEvent, QActionGroup
 
 # Import pygame for the playground
@@ -28,7 +27,7 @@ if _original_sdl_driver not in ('x11', 'windows', 'cocoa'):
     os.environ['SDL_VIDEODRIVER'] = 'dummy'
 import pygame
 
-from runtime.thymio_simulator import ThymioSimulator, THYMIO_WIDTH, THYMIO_HEIGHT
+from runtime.thymio_simulator import ThymioSimulator
 from runtime.thymio_renderer import ThymioRenderer
 
 from core.logger import get_logger

@@ -8,7 +8,6 @@ and buildozer execution inside Windows Subsystem for Linux.
 
 import subprocess
 import re
-from pathlib import Path
 from typing import Optional, Tuple, List, Callable
 
 from core.logger import get_logger

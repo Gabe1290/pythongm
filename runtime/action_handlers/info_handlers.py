@@ -10,8 +10,7 @@ from typing import Dict, Any
 from core.logger import get_logger
 from runtime.action_handlers.base import (
     Parameters, Instance, HandlerContext,
-    parse_int, parse_bool, parse_color,
-    queue_draw_command,
+    parse_int, parse_bool, queue_draw_command,
 )
 
 logger = get_logger(__name__)

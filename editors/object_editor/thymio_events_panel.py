@@ -4,17 +4,17 @@ Thymio Events Panel
 Dedicated panel for Thymio robot programming with embedded visual diagram.
 """
 
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel,
     QTreeWidget, QTreeWidgetItem, QMenu, QMessageBox, QDialog,
-    QFrame, QSplitter, QSizePolicy, QScrollArea
+    QFrame, QSplitter
 )
-from PySide6.QtCore import Qt, Signal, QTimer
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont
 
 from widgets.thymio_diagram_widget import (
-    ThymioDiagramWidget, get_events_for_region, get_actions_for_region
+    ThymioDiagramWidget, get_events_for_region
 )
 from events.thymio_events import THYMIO_EVENT_TYPES, THYMIO_EVENT_CATEGORIES
 from actions.thymio_actions import THYMIO_ACTIONS

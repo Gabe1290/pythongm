@@ -6,9 +6,9 @@ Foreground/background swatches, quick-access color grid, QColorDialog integratio
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel,
-    QColorDialog, QSizePolicy, QFrame
+    QColorDialog, QSizePolicy
 )
-from PySide6.QtCore import Qt, Signal, QSize, QRect
+from PySide6.QtCore import Qt, Signal, QRect
 from PySide6.QtGui import QColor, QPainter, QPen, QMouseEvent
 
 

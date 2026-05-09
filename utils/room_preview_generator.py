@@ -7,7 +7,7 @@ Generates preview images for rooms without requiring a full room editor
 from pathlib import Path
 from typing import Dict, Any, Optional
 from PySide6.QtGui import QPainter, QColor, QPen, QPixmap, QFont
-from PySide6.QtCore import Qt, QRect
+from PySide6.QtCore import Qt
 
 
 class RoomPreviewGenerator:

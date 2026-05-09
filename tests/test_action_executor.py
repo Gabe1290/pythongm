@@ -2021,7 +2021,6 @@ class TestMain1TabActions:
     @skip_without_pygame
     def test_create_moving_instance_sets_motion(self):
         """create_moving_instance creates instance with speed and direction"""
-        import math
         mock_runner = MockGameRunner()
         mock_runner.project_data = {
             'assets': {
@@ -2377,7 +2376,6 @@ class TestDrawTabActions:
 
     def test_draw_arrow_calculates_tip_points(self):
         """draw_arrow calculates arrow tip points correctly"""
-        import math
         executor = ActionExecutor()
         instance = MockInstance()
 

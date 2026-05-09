@@ -7,7 +7,7 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QDoubleSpinBox,
     QSpinBox, QComboBox, QLineEdit, QCheckBox, QGroupBox, QPushButton,
 )
-from PySide6.QtCore import Signal, Qt
+from PySide6.QtCore import Signal
 
 from editors.playground_editor.playground_elements import PlaygroundWall, PlaygroundRobot
 

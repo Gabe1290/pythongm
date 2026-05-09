@@ -7,7 +7,7 @@ Provides Select, Wall, and Robot mode buttons.
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QPushButton, QButtonGroup,
 )
-from PySide6.QtCore import Signal, Qt
+from PySide6.QtCore import Signal
 
 
 class PlaygroundToolPalette(QWidget):

@@ -5,11 +5,10 @@ Inherits BaseEditor and integrates canvas, tools, color palette, and frame timel
 """
 
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 from PySide6.QtWidgets import (
-    QVBoxLayout, QHBoxLayout, QGridLayout, QSplitter, QWidget, QToolBar,
-    QLabel, QSpinBox, QSizePolicy, QMessageBox, QToolButton, QMenu, QFrame,
+    QVBoxLayout, QHBoxLayout, QGridLayout, QSplitter, QWidget, QLabel, QSpinBox, QMessageBox, QToolButton, QMenu, QFrame,
     QComboBox, QDialog, QDialogButtonBox, QGroupBox, QRadioButton, QFileDialog,
 )
 from PySide6.QtCore import Qt, Signal, QRect, QPoint
@@ -18,7 +17,7 @@ from PySide6.QtGui import (
     QPainter, QPixmap, QPen, QBrush,
 )
 
-from editors.base_editor import BaseEditor, EditorUndoCommand
+from editors.base_editor import BaseEditor
 from core.logger import get_logger
 
 from .sprite_canvas import SpriteCanvas

@@ -10,7 +10,7 @@ from typing import Dict, Any
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QSplitter, QLabel,
-    QPushButton, QComboBox, QMessageBox, QGroupBox, QSizePolicy,
+    QPushButton, QComboBox, QMessageBox, QSizePolicy,
     QTabWidget, QTextEdit
 )
 from PySide6.QtCore import Qt, Signal, QTimer
@@ -29,7 +29,7 @@ from .python_syntax_highlighter import PythonSyntaxHighlighter
 # crash in some PyInstaller builds. Imported on first use instead.
 BlocklyVisualProgrammingTab = None
 from ..object_editor_components import ActionListWidget, VisualScriptingArea
-from .python_code_parser import PythonToActionsParser, ActionsToPythonGenerator, events_to_python
+from .python_code_parser import PythonToActionsParser, events_to_python
 from .sync_coordinator import SyncCoordinator, SyncSource, SyncContext
 # from visual_programming import (
 #     VisualCanvas, NodePalette, NodePropertiesPanel,
@@ -1242,7 +1242,7 @@ class ObjectEditor(BaseEditor):
 
         with SyncContext(self.sync_coordinator, SyncSource.BLOCKLY) as can_sync:
             if can_sync and hasattr(self, 'events_panel') and self.events_panel:
-                logger.debug(f"[Editor] on_blockly_events_modified: pushing to events_panel.load_events_data")
+                logger.debug("[Editor] on_blockly_events_modified: pushing to events_panel.load_events_data")
                 # Replace events panel with Blockly events (handles deletions)
                 self.events_panel.load_events_data(events)
 

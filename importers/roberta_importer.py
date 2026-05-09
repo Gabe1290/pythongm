@@ -12,7 +12,6 @@ Usage:
 """
 
 import json
-import os
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path

@@ -2821,8 +2821,6 @@ class GameRunner:
             if not other_obj_data:
                 other_obj_data = objects_data.get(other_instance.object_name, {})
 
-            is_solid = other_obj_data.get('solid', False)
-
             # Only block movement if a collision event is defined between these
             # objects. Solid objects don't automatically block — the collision
             # event decides what happens (stop, bounce, destroy, etc.).

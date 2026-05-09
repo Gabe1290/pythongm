@@ -6,7 +6,7 @@ Provides physics simulation and sensor modeling for Thymio educational robot
 
 import math
 import pygame
-from typing import List, Tuple, Optional, Set
+from typing import List, Tuple, Set
 from dataclasses import dataclass
 
 

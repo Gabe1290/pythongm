@@ -5,7 +5,6 @@ Visual editor for creating Aseba .playground files.
 """
 
 import json
-import math
 import shutil
 from pathlib import Path
 from PySide6.QtWidgets import (
@@ -24,7 +23,6 @@ from .playground_canvas import PlaygroundCanvas, PlaygroundEditMode, DEFAULT_COL
 from .playground_properties import PlaygroundElementProperties
 from .playground_tool_palette import PlaygroundToolPalette
 from .color_manager import PlaygroundColorManager
-from .playground_elements import PlaygroundWall, PlaygroundRobot
 from .playground_undo_commands import ModifyElementCommand
 
 

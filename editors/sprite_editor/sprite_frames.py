@@ -7,10 +7,10 @@ and provides animation preview playback.
 
 from PySide6.QtWidgets import (
     QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLabel,
-    QScrollArea, QSizePolicy, QFrame
+    QScrollArea, QSizePolicy
 )
-from PySide6.QtCore import Qt, Signal, QTimer, QSize, QRect
-from PySide6.QtGui import QImage, QPainter, QColor, QPixmap, QPen
+from PySide6.QtCore import Qt, Signal, QTimer, QRect
+from PySide6.QtGui import QImage, QPainter, QColor, QPen
 
 
 _THUMB_SIZE = 64

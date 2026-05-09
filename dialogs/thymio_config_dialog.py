@@ -13,7 +13,7 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QColor, QBrush
 
 from config.blockly_config import (
-    BlocklyConfig, BLOCK_REGISTRY, PRESETS, save_config, load_config,
+    BlocklyConfig, BLOCK_REGISTRY, save_config, load_config,
     BLOCK_DEPENDENCIES, is_block_implemented
 )
 from config.blockly_translations import (

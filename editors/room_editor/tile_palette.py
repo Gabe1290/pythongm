@@ -7,9 +7,9 @@ Floating window that displays available tilesets and allows selecting individual
 from pathlib import Path
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox,
                                 QPushButton, QScrollArea, QSpinBox, QDialog,
-                                QGroupBox, QFormLayout)
-from PySide6.QtCore import Qt, Signal, QSize, QRect, QPoint
-from PySide6.QtGui import QFont, QPixmap, QPainter, QColor, QPen
+                                QFormLayout)
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QPixmap, QPainter, QColor, QPen
 
 from core.logger import get_logger
 logger = get_logger(__name__)

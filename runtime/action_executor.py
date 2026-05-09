@@ -2386,7 +2386,7 @@ class ActionExecutor:
             try:
                 hex_str = hex_str.lstrip('#')
                 return tuple(int(hex_str[i:i+2], 16) for i in (0, 2, 4))
-            except:
+            except (ValueError, IndexError, TypeError):
                 return default
 
         background = hex_to_rgb(parameters.get('background'), (255, 255, 220))
@@ -2500,7 +2500,6 @@ class ActionExecutor:
         # Try to play video using available methods
         try:
             # Attempt to use system default video player
-            import webbrowser
             import sys
             import subprocess
 
@@ -3076,7 +3075,7 @@ class ActionExecutor:
             hex_str = hex_str.lstrip('#')
             try:
                 return tuple(int(hex_str[i:i+2], 16) for i in (0, 2, 4))
-            except:
+            except (ValueError, IndexError, TypeError):
                 return (0, 0, 0)
 
         rgb_color = hex_to_rgb(color)
@@ -3098,7 +3097,6 @@ class ActionExecutor:
             y: Y coordinate (default: instance.y)
             text: Text string to draw (supports expressions)
         """
-        import pygame
 
         # Parse parameters with expression support
         x = self._parse_value(parameters.get("x", instance.x), instance)
@@ -3176,7 +3174,6 @@ class ActionExecutor:
             y2: Bottom Y coordinate
             filled: True for filled, False for outline (default: True)
         """
-        import pygame
 
         # Parse parameters with expression support
         x1 = self._parse_value(parameters.get("x1", 0), instance)
@@ -3219,7 +3216,6 @@ class ActionExecutor:
             y2: Bottom Y coordinate
             filled: True for filled, False for outline (default: True)
         """
-        import pygame
 
         # Parse parameters with expression support
         x1 = self._parse_value(parameters.get("x1", 0), instance)
@@ -3261,7 +3257,6 @@ class ActionExecutor:
             radius: Circle radius
             filled: True for filled, False for outline (default: True)
         """
-        import pygame
 
         # Parse parameters with expression support
         x = self._parse_value(parameters.get("x", 0), instance)
@@ -3301,7 +3296,6 @@ class ActionExecutor:
             x2: End X coordinate
             y2: End Y coordinate
         """
-        import pygame
 
         # Parse parameters with expression support
         x1 = self._parse_value(parameters.get("x1", 0), instance)
@@ -3336,7 +3330,6 @@ class ActionExecutor:
             y: Y coordinate (default: 0)
             subimage: Frame index for animated sprites (default: 0)
         """
-        import pygame
 
         # Parse parameters with expression support
         sprite_name = self._parse_value(parameters.get("sprite", ""), instance)
@@ -3755,7 +3748,6 @@ class ActionExecutor:
 
         # Look up the background/sprite
         import pygame
-        from pathlib import Path
 
         background_surface = None
 

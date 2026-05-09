@@ -253,7 +253,7 @@ class PreferencesDialog(QDialog):
     def load_current_settings(self):
         """Load current settings from config"""
         # Edition setting
-        from config.editions import EDITIONS, DEFAULT_EDITION
+        from config.editions import DEFAULT_EDITION
         current_edition = Config.get("edition", DEFAULT_EDITION)
         index = self.edition_combo.findData(current_edition)
         if index >= 0:
@@ -303,7 +303,7 @@ class PreferencesDialog(QDialog):
 
     def _update_edition_description(self):
         """Update the edition description label based on current selection"""
-        from config.editions import EDITIONS, EDITION_KEYS
+        from config.editions import EDITIONS
         key = self.edition_combo.currentData()
         if key and key in EDITIONS:
             self.edition_description.setText(EDITIONS[key]["description"])

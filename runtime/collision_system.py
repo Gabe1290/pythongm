@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING
 from core.logger import get_logger
 
 if TYPE_CHECKING:
-    from runtime.game_runner import GameInstance, GameRoom
+    from runtime.game_runner import GameRoom
 
 logger = get_logger(__name__)
 

@@ -6,7 +6,7 @@ linked object code. Embeds pygame in a Qt window.
 
 import math
 import os
-from typing import List, Dict, Any, Optional
+from typing import List
 
 # Set SDL driver for off-screen rendering before importing pygame
 if os.environ.get('SDL_VIDEODRIVER') not in ('x11', 'windows', 'cocoa'):
@@ -14,8 +14,7 @@ if os.environ.get('SDL_VIDEODRIVER') not in ('x11', 'windows', 'cocoa'):
 import pygame
 
 from PySide6.QtWidgets import (
-    QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QPushButton, QLabel as QLabelWidget,
+    QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
 )
 from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtGui import QImage, QPixmap, QKeyEvent, QMouseEvent

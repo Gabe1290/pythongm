@@ -7,8 +7,8 @@ Visual dialog for selecting Thymio robot actions with interactive robot diagram.
 from typing import Dict, Any, Optional, Tuple
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QListWidget,
-    QListWidgetItem, QDialogButtonBox, QWidget, QLineEdit,
-    QPushButton, QFrame, QSizePolicy, QMessageBox
+    QListWidgetItem, QDialogButtonBox, QLineEdit,
+    QPushButton, QFrame, QMessageBox
 )
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont

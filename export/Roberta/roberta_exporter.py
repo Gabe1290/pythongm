@@ -13,7 +13,7 @@ Usage:
 import json
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 from xml.dom import minidom
 
 from core.logger import get_logger

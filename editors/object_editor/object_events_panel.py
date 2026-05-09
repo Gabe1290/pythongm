@@ -15,7 +15,7 @@ from PySide6.QtGui import QFont
 
 # Import our new event/action system
 from events.event_types import get_available_events, get_event_type
-from events.thymio_events import THYMIO_EVENT_CATEGORIES, is_thymio_event, get_thymio_events_by_category
+from events.thymio_events import THYMIO_EVENT_CATEGORIES, is_thymio_event
 from events.action_types import get_action_type as _get_action_type, get_actions_by_category
 from events.action_editor import ActionConfigDialog
 
@@ -553,7 +553,7 @@ class ObjectEventsPanel(QWidget):
     def remove_selected_event(self):
         """Remove the currently selected event"""
         current_item = self.events_tree.currentItem()
-        if not current_item or not current_item.parent() is None:
+        if not current_item or current_item.parent() is not None:
             return  # Must be a top-level event item
 
         event_name = current_item.data(0, Qt.UserRole)

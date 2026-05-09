@@ -8,16 +8,12 @@ wrapping, bouncing, etc.
 
 from typing import Dict, Any
 import math
-import random
 
 from core.logger import get_logger
 from runtime.action_handlers.base import (
     Parameters, Instance, HandlerContext,
-    parse_float, parse_int, parse_bool,
-    direction_to_vector, vector_to_direction,
-    get_room_dimensions, get_instance_dimensions,
-    snap_to_grid, is_on_grid, get_collision_speeds, get_collision_other,
-    DEFAULT_GRID_SIZE, DEFAULT_SPEED,
+    parse_float, parse_int, direction_to_vector, vector_to_direction,
+    snap_to_grid, DEFAULT_GRID_SIZE,
 )
 
 logger = get_logger(__name__)
@@ -34,11 +30,11 @@ logger = get_logger(__name__)
 def handle_move_free(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:
     """Move at an exact direction and speed.
 
-    Same shape as set_direction_speed (direction + speed). Kept as a separate
-    handler so the action_type registration is honoured directly rather than
-    relying on a redirect.
+    Delegates to the executor's set_direction_speed implementation — same
+    semantics, kept as a separate registered handler so action_type
+    registration is honoured directly.
     """
-    handle_set_direction_speed(ctx, instance, params)
+    ctx.execute_set_direction_speed_action(instance, params)
 
 
 def handle_set_speed(ctx: HandlerContext, instance: Instance, params: Parameters) -> None:

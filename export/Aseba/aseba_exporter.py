@@ -6,7 +6,7 @@ Exports PyGameMaker Thymio projects to Aseba AESL format
 
 import json
 from pathlib import Path
-from typing import Dict, List, Set, Any
+from typing import Dict, List
 from datetime import datetime
 
 from core.logger import get_logger

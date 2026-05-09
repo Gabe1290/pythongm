@@ -6,9 +6,8 @@ This module provides common utilities, type definitions, and helper functions
 used across all action handler modules.
 """
 
-from typing import Dict, Any, Optional, Union, Tuple, TYPE_CHECKING
+from typing import Dict, Any, Optional, Tuple, TYPE_CHECKING
 import math
-import random
 
 from core.logger import get_logger
 from runtime.constants import (
@@ -18,7 +17,7 @@ from runtime.constants import (
 )
 
 if TYPE_CHECKING:
-    from runtime.action_executor import ActionExecutor
+    pass
 
 logger = get_logger(__name__)
 

@@ -11,7 +11,7 @@ import random
 from core.logger import get_logger
 from runtime.action_handlers.base import (
     Parameters, Instance, HandlerContext,
-    parse_int, parse_float, parse_color,
+    parse_int,
 )
 
 logger = get_logger(__name__)

@@ -11,7 +11,7 @@ from PySide6.QtWidgets import QWidget
 from PySide6.QtCore import Qt, Signal, QPointF, QRectF
 from PySide6.QtGui import (
     QPainter, QPen, QBrush, QColor, QFont, QPolygonF,
-    QUndoStack, QTransform,
+    QUndoStack,
 )
 
 from editors.playground_editor.playground_elements import PlaygroundWall, PlaygroundRobot
@@ -650,7 +650,6 @@ class PlaygroundCanvas(QWidget):
         """Push a single undo command for the whole paint stroke"""
         if self._batch_paint_walls:
             # Build a batch add command
-            from editors.playground_editor.playground_undo_commands import AddElementCommand
             from PySide6.QtGui import QUndoCommand
 
             walls = list(self._batch_paint_walls)

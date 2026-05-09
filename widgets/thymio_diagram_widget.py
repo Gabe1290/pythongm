@@ -7,10 +7,9 @@ for sensors, buttons, LEDs, and motors.
 
 import math
 from PySide6.QtWidgets import QWidget, QToolTip
-from PySide6.QtCore import Qt, Signal, QRect, QPoint, QRectF
+from PySide6.QtCore import Qt, Signal, QRect, QRectF
 from PySide6.QtGui import (
-    QPainter, QPen, QBrush, QColor, QFont, QPainterPath,
-    QLinearGradient, QRadialGradient
+    QPainter, QPen, QBrush, QColor, QFont, QRadialGradient
 )
 
 
