@@ -5,6 +5,32 @@ All notable changes to PyGameMaker will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-rc.9] - 2026-05-09
+
+Pre-1.0 codebase audit pass. No new features — focus is correctness, lifecycle, and parity for the floating-window infrastructure introduced in rc.8.
+
+### Added
+- **Playground editor floating-window support**: 🪟 Float button in the toolbar, `update_window_title()` method so the floating title bar reflects modification state, and connection plumbing in `open_playground_editor`. Brings parity with Object/Sprite/Room editors.
+- **Cross-window CI release pipeline**: pushing a `v*.*.*` tag now builds Windows / macOS Intel / macOS ARM / Linux / Python sdist and creates the GitHub Release automatically using the relevant `CHANGELOG.md` section as the release body.
+
+### Fixed
+- **Crash on Object editor load** (NameError): `load_project_assets` referenced `project_data` after a try-block that could leave it unbound; `load_data` referenced `events_data` from a branch that could skip its assignment. Both initialised before the relevant block.
+- **Crash on exporter timeout** (NameError): `process` was referenced from `subprocess.TimeoutExpired` / generic-except branches before `Popen` had bound it. Affected android, exe, linux, and macos exporters; all four initialise `process = None` up front so the existing `if process:` guards behave.
+- **Movement runtime crash** (NameError): `handle_move_free` called the undefined `handle_set_direction_speed`; now delegates to `ctx.execute_set_direction_speed_action`.
+- **Bare `except:` in two `hex_to_rgb` helpers** narrowed to `(ValueError, IndexError, TypeError)` so they no longer swallow `KeyboardInterrupt` / `SystemExit`.
+- **Connection leak**: `close_editor_tab` now disconnects `float_requested` / `reattach_requested` (parity with `_destroy_detached_editor`), so closing and reopening editors no longer accumulates stale connections.
+- **Detached editors ignored Undo / Redo / Cut / Copy / Paste / Duplicate**: the IDE menu actions always dispatched to the active *tab*. They now use a focus-aware `_active_editor()` helper that finds the editor whether it lives in a tab or a detached window.
+- **`refresh_object_sprites` skipped detached editors**: a sprite assignment change now propagates to floated room editors immediately.
+- **Asset rename didn't follow detached editors**: renaming an asset that's open in a floating window now rekeys `open_editors` / `detached_editor_windows`, updates the editor's `asset_name`, refreshes its window title, and updates tab text in lockstep.
+- **`auto_save_timer` could fire after a widget was deleted**: stopped in `BaseEditor.closeEvent`. Five `QTimer` instances (BaseEditor, EditorStatusWidget, ProjectManager, RoomEditor, PlaygroundEditor) now have explicit Qt parents so they don't outlive their owners.
+- **Restored `QLabel` import** in `runtime/playground_runner.py` that the rc.8 unused-import sweep mistakenly removed (it was used as a base class).
+- **Floating window minimum height** halved (Object editor's `center_tabs` and Blockly's `web_view` minimums) so floated windows can be made meaningfully smaller for side-by-side comparison.
+
+### Changed
+- **Removed dead orphan signals**: `actionSelected` / `eventSelected` on `EventActionWidget`, `sprite_editor_activated` on `SpriteEditor`, `playground_editor_activated` on `PlaygroundEditor` — none had any consumers.
+- **Lint cleanup**: 98 unused imports removed (auto-fixed across 41 files); 15 F841 unused-locals addressed (gmk_parser binary-stream reads renamed to `_var` per Python convention; placeholder tests cleaned); 13 E741 ambiguous variable names (`l` → `line` / `layer`); 2 multi-statement-on-one-line splits.
+- **Removed dead `is_solid` read** in `runtime/game_runner.py` movement collision loop — comment already said solid no longer auto-blocks.
+
 ## [1.0.0-rc.8] - 2026-05-09
 
 ### Added

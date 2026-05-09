@@ -545,7 +545,7 @@ class ObjectEditor(BaseEditor):
 
         self.center_tabs.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.center_tabs.setMinimumWidth(200)
-        self.center_tabs.setMinimumHeight(400)
+        self.center_tabs.setMinimumHeight(200)
 
         logger.debug("Center panel created with all UI elements")
 

@@ -139,7 +139,7 @@ class BlocklyWidget(QWidget):
         if _DebugPage is not None:
             self._debug_page = _DebugPage(self.web_view)
             self.web_view.setPage(self._debug_page)
-        self.web_view.setMinimumHeight(200)
+        self.web_view.setMinimumHeight(100)
 
         # Hide web view until loaded to prevent visual flickering
         self.web_view.setVisible(False)
