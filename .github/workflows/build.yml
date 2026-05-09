@@ -269,6 +269,11 @@ jobs:
       contents: write
 
     steps:
+      - name: Checkout code
+        # Needed so we can read CHANGELOG.md to use as the release body.
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        uses: actions/checkout@v4
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
@@ -278,11 +283,35 @@ jobs:
         run: |
           find artifacts -type f
 
+      - name: Extract release notes from CHANGELOG
+        # Pulls the section for the current tag out of CHANGELOG.md so the
+        # release body uses the hand-written notes instead of GitHub's
+        # auto-generated PR list. Falls back to an empty file if no
+        # matching entry is found, in which case generate_release_notes
+        # will fill the body.
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          awk -v v="$VERSION" '
+            $0 ~ "^## \\[" v "\\]" { flag=1; next }
+            flag && /^## \[/ { exit }
+            flag { print }
+          ' CHANGELOG.md > release_notes.md
+          if [ -s release_notes.md ]; then
+            echo "::group::Extracted release notes for $VERSION"
+            cat release_notes.md
+            echo "::endgroup::"
+          else
+            echo "No CHANGELOG entry for $VERSION; will fall back to auto-generated notes."
+          fi
+
       - name: Create Release from version tag
         # Fired when a tag matching v*.*.* is pushed. The action creates
         # the GitHub Release if it doesn't yet exist, otherwise it just
         # attaches the artifacts. Tags containing -rc / -alpha / -beta /
         # -dev are flagged as pre-releases so they don't become "Latest".
+        # body_path uses the CHANGELOG excerpt; generate_release_notes
+        # appends GitHub's auto-generated "What's Changed" list below it.
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
@@ -290,6 +319,7 @@ jobs:
           name: ${{ github.ref_name }}
           prerelease: ${{ contains(github.ref_name, '-rc') || contains(github.ref_name, '-alpha') || contains(github.ref_name, '-beta') || contains(github.ref_name, '-dev') }}
           generate_release_notes: true
+          body_path: release_notes.md
           files: |
             artifacts/${{ env.APP_NAME }}-Windows/${{ env.APP_NAME }}.exe
             artifacts/${{ env.APP_NAME }}-macOS-Intel/${{ env.APP_NAME }}-macOS-Intel.zip
