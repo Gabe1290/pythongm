@@ -4,9 +4,15 @@
 name: Build
 
 on:
-  # Build on releases
+  # Build on releases (created in the GitHub UI)
   release:
     types: [created]
+  # Build whenever a version tag is pushed. The tag-push path also creates
+  # a GitHub Release pointing at the tag (see upload-release below) so the
+  # artifacts are published automatically without a manual UI step.
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
   # Allow manual triggering
   workflow_dispatch:
     inputs:
@@ -271,6 +277,25 @@ jobs:
       - name: List downloaded artifacts
         run: |
           find artifacts -type f
+
+      - name: Create Release from version tag
+        # Fired when a tag matching v*.*.* is pushed. The action creates
+        # the GitHub Release if it doesn't yet exist, otherwise it just
+        # attaches the artifacts. Tags containing -rc / -alpha / -beta /
+        # -dev are flagged as pre-releases so they don't become "Latest".
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          prerelease: ${{ contains(github.ref_name, '-rc') || contains(github.ref_name, '-alpha') || contains(github.ref_name, '-beta') || contains(github.ref_name, '-dev') }}
+          generate_release_notes: true
+          files: |
+            artifacts/${{ env.APP_NAME }}-Windows/${{ env.APP_NAME }}.exe
+            artifacts/${{ env.APP_NAME }}-macOS-Intel/${{ env.APP_NAME }}-macOS-Intel.zip
+            artifacts/${{ env.APP_NAME }}-macOS-ARM/${{ env.APP_NAME }}-macOS-ARM.zip
+            artifacts/${{ env.APP_NAME }}-Linux/${{ env.APP_NAME }}-Linux.tar.gz
+            artifacts/${{ env.APP_NAME }}-Python-Package/*.tar.gz
 
       - name: Upload to existing Release
         if: github.event_name == 'release'
