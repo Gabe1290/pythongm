@@ -64,6 +64,11 @@ class ObjectEditor(BaseEditor):
     object_property_changed = Signal(str, object)  # property_name, value
     object_editor_activated = Signal(str, dict)    # object_name, properties
 
+    # Splitter sizes for [events panel | center tabs]. Numbers are relative;
+    # Qt distributes them proportionally to fill the available width.
+    _DEFAULT_SPLIT = [350, 750]   # Event List / Code Editor tabs
+    _BLOCKLY_SPLIT = [200, 900]   # Blockly tab — events panel at its minimum
+
     def __init__(self, project_path: str = None, parent=None):
         # Initialize data before calling super().__init__()
         self.available_sprites = {}
@@ -136,29 +141,30 @@ class ObjectEditor(BaseEditor):
         self.ensure_save_button_visible()
 
         # Create main splitter (2-panel layout)
-        main_splitter = QSplitter(Qt.Horizontal)
+        self.main_splitter = QSplitter(Qt.Horizontal)
 
         # Create left panel
         left_panel = self.create_left_panel()
-        main_splitter.addWidget(left_panel)
+        self.main_splitter.addWidget(left_panel)
 
         # Create center panel
         center_panel = self.create_center_panel()
-        main_splitter.addWidget(center_panel)
+        self.main_splitter.addWidget(center_panel)
 
-        # Set splitter sizes - left panel MUCH wider by default
-        main_splitter.setSizes([500, 600])
+        # Default split favors the center tabs; events panel shrinks to its
+        # minimum when the Blockly tab is active (see _apply_splitter_for_tab).
+        self.main_splitter.setSizes(self._DEFAULT_SPLIT)
 
         # Make BOTH panels resizable and stretchable
-        main_splitter.setStretchFactor(0, 1)
-        main_splitter.setStretchFactor(1, 1)
+        self.main_splitter.setStretchFactor(0, 1)
+        self.main_splitter.setStretchFactor(1, 1)
 
         # Make splitter handle more visible and adjustable
-        main_splitter.setHandleWidth(4)
-        main_splitter.setChildrenCollapsible(False)
+        self.main_splitter.setHandleWidth(4)
+        self.main_splitter.setChildrenCollapsible(False)
 
         # Add splitter to content layout
-        content_layout.addWidget(main_splitter)
+        content_layout.addWidget(self.main_splitter)
 
         logger.debug("Object UI setup complete")
 
@@ -556,7 +562,6 @@ class ObjectEditor(BaseEditor):
 
             # Connect signals
             self.blockly_tab.events_modified.connect(self.on_blockly_events_modified)
-            self.blockly_tab.sync_requested.connect(self.on_blockly_sync_requested)
             self.blockly_tab.config_changed.connect(self.on_blockly_config_changed)
 
             return self.blockly_tab
@@ -584,6 +589,16 @@ class ObjectEditor(BaseEditor):
                 self._blockly_tab_index, self.tr("Scratch-like block programming"))
             # Sync events into the newly created Blockly tab
             self._sync_events_to_blockly()
+
+        self._apply_splitter_for_tab(index)
+
+    def _apply_splitter_for_tab(self, index: int):
+        """Snap the events/center splitter so Blockly gets max width when
+        active and the events panel returns to default for other tabs."""
+        if not hasattr(self, 'main_splitter') or self.main_splitter is None:
+            return
+        sizes = self._BLOCKLY_SPLIT if index == self._blockly_tab_index else self._DEFAULT_SPLIT
+        self.main_splitter.setSizes(sizes)
 
     def on_blockly_config_changed(self, config):
         """Handle Blockly configuration change - update events panel"""
@@ -621,10 +636,6 @@ class ObjectEditor(BaseEditor):
             logger.debug("Events panel using global config (no project preset)")
         except Exception as e:
             logger.warning(f"Error loading project config for events panel: {e}")
-
-    def on_blockly_sync_requested(self):
-        """Handle sync request from Blockly (user clicked 'Sync from Events')"""
-        self._sync_events_to_blockly()
 
     def add_node_to_canvas(self, type_id: str):
         """Add a node to the visual canvas"""

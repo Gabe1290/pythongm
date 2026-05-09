@@ -50,6 +50,8 @@ class BaseEditor(QWidget):
     save_requested = Signal(str, dict)  # asset_name, data
     close_requested = Signal(str)  # asset_name
     status_changed = Signal(str)  # status_message
+    float_requested = Signal(object)  # the editor widget itself (for IDE detach)
+    reattach_requested = Signal(object)  # editor asks IDE to put it back in a tab
 
     def __init__(self, project_path: Optional[str] = None, parent=None):
         super().__init__(parent)
@@ -141,6 +143,14 @@ class BaseEditor(QWidget):
 
         self.toolbar.addSeparator()
 
+        # Float / Attach toggle — lets the user pop this editor out into its
+        # own window and back. The IDE listens on float_requested to do the
+        # reparent; reattach happens automatically when the floating window
+        # closes (see DetachedEditorWindow). The label flips to indicate state.
+        self.float_action = self.toolbar.addAction(self.tr("🪟 Float"), self._on_float_clicked)
+        self.float_action.setToolTip(self.tr("Open this editor in its own window"))
+        self._is_floating = False
+
     def update_auto_save_button_text(self):
         """Update auto-save button text to show current state"""
         if hasattr(self, 'auto_save_action'):
@@ -170,6 +180,26 @@ class BaseEditor(QWidget):
 
         # Refresh shortcut
         QShortcut(QKeySequence("F5"), self, self.refresh)
+
+    def _on_float_clicked(self):
+        """Toolbar Float/Attach button — IDE handles the actual reparent."""
+        if self._is_floating:
+            self.reattach_requested.emit(self)
+        else:
+            self.float_requested.emit(self)
+
+    def set_floating_state(self, is_floating: bool):
+        """Called by the IDE after a successful float/attach so the toolbar
+        button reflects the current state."""
+        self._is_floating = bool(is_floating)
+        if not hasattr(self, 'float_action'):
+            return
+        if self._is_floating:
+            self.float_action.setText(self.tr("📥 Attach"))
+            self.float_action.setToolTip(self.tr("Return this editor to the IDE's tab strip"))
+        else:
+            self.float_action.setText(self.tr("🪟 Float"))
+            self.float_action.setToolTip(self.tr("Open this editor in its own window"))
 
     def update_undo_actions(self):
         """Update undo/redo action states"""

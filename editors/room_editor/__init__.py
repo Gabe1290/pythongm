@@ -29,6 +29,8 @@ class RoomEditor(QWidget):
     close_requested = Signal(str)
     data_modified = Signal(str)
     room_editor_activated = Signal(str, dict)
+    float_requested = Signal(object)  # the editor itself — IDE handles detach
+    reattach_requested = Signal(object)
 
     def __init__(self, project_path, parent=None):
         super().__init__(parent)
@@ -186,9 +188,38 @@ class RoomEditor(QWidget):
 
         self.toolbar.addSeparator()
 
+        # Float / Attach — pop the room editor into its own window. The IDE
+        # listens on float_requested to do the reparent; the label flips
+        # via set_floating_state() once detached.
+        self.float_action = self.toolbar.addAction(self.tr("🪟 Float"))
+        self.float_action.setToolTip(self.tr("Open this editor in its own window"))
+        self.float_action.triggered.connect(self._on_float_clicked)
+        self._is_floating = False
+
+        self.toolbar.addSeparator()
+
         # Status label
         self.status_label = QLabel(self.tr("Ready"))
         self.toolbar.addWidget(self.status_label)
+
+    def _on_float_clicked(self):
+        if self._is_floating:
+            self.reattach_requested.emit(self)
+        else:
+            self.float_requested.emit(self)
+
+    def set_floating_state(self, is_floating: bool):
+        """Called by the IDE after a successful float/attach so the toolbar
+        button reflects the current state."""
+        self._is_floating = bool(is_floating)
+        if not hasattr(self, 'float_action'):
+            return
+        if self._is_floating:
+            self.float_action.setText(self.tr("📥 Attach"))
+            self.float_action.setToolTip(self.tr("Return this editor to the IDE's tab strip"))
+        else:
+            self.float_action.setText(self.tr("🪟 Float"))
+            self.float_action.setToolTip(self.tr("Open this editor in its own window"))
 
     def toggle_grid(self, checked):
         """Toggle grid visibility"""
@@ -365,6 +396,7 @@ class RoomEditor(QWidget):
         self.room_editor_activated.emit(asset_name, self.current_room_properties)
 
         self.is_modified = False
+        self.update_window_title()
         self.update_status(self.tr("Loaded room '{0}' with {1} instances").format(asset_name, len(instances_data)))
 
     def pass_project_info_to_canvas(self):
@@ -500,6 +532,15 @@ class RoomEditor(QWidget):
         if not self.is_modified:
             self.is_modified = True
             self.data_modified.emit(self.asset_name)
+            self.update_window_title()
+
+    def update_window_title(self):
+        """Sync window title with asset name + dirty marker. Drives the
+        title bar of the floating window when the editor is detached."""
+        title = self.asset_name or "Room"
+        if self.is_modified:
+            title += " *"
+        self.setWindowTitle(title)
 
     def get_data(self):
         """Get current room data with all required fields"""
@@ -530,6 +571,7 @@ class RoomEditor(QWidget):
             data = self.get_data()
             self.save_requested.emit(self.asset_name, data)
             self.is_modified = False
+            self.update_window_title()
             self.auto_save_timer.stop()
             self.update_status(self.tr("Room '{0}' saved successfully").format(self.asset_name))
 

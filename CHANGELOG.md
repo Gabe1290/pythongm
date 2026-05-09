@@ -5,6 +5,24 @@ All notable changes to PyGameMaker will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-rc.8] - 2026-05-09
+
+### Added
+- **Floating editor windows**: Object, Sprite, and Room editors can be popped out of the tab strip into independent movable windows for side-by-side comparison. Each editor's toolbar has a "🪟 Float" button; closing the floating window reattaches it. Floating window title bars track the editor's modification state.
+- **Global window-mode toolbar button**: single click toggles every open editor between Tabbed and Floating mode. Doubles as the recovery affordance — when a floating window has been dragged off-screen, the toggle pulls every detached editor back into tabs. The chosen mode is persisted across sessions and applied to newly opened editors.
+- **Cross-editor asset sync**: saving in one editor now broadcasts to siblings, so floated/tabbed Object editors refresh their Blockly asset dropdowns immediately rather than waiting for the next manual refresh.
+
+### Changed
+- **Object editor toolbar streamlined**: `Sync from Events`, `Clear All`, `Reload`, and `Configure Blocks…` buttons removed (Events / Blockly / Python now auto-sync, so they were dead weight). The Detach button remains.
+- **Object editor default layout**: events panel narrower by default. Switching to the Blockly tab snaps the events panel to its minimum width to give Blockly maximum working space; switching back to Event List or Code Editor restores the default split.
+- **Blockly action coverage**: alarm events route through the same nested-subtype format as keyboard events; `grid_move` and `if_can_push` action mappings are now wired up.
+
+### Fixed
+- Removed dead `core/event_system.py` module and the malformed `events/__init__,py` file (typo'd filename — was unused).
+- Eliminated duplicate inline copies of the Blockly code generators that had drifted out of sync with `blockly_generators.js`.
+- Hardcoded asset preset names (`spr_player`, `snd_jump`, `bgm_main`, `obj_bullet`, `room0`) removed from Blockly toolbox / `createAssetField` defaults so dropdowns reflect the current project rather than ghost names.
+- Floating editor window now reparents and shows the editor explicitly — `QTabWidget.removeTab` hides the page widget without reparenting it, which previously caused the floated window to appear blank.
+
 ## [1.0.0-rc.7] - 2026-05-05
 
 ### Added

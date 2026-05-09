@@ -92,7 +92,6 @@ class BlocklyWidget(QWidget):
     # Signals
     blocks_modified = Signal()  # Emitted when blocks are modified
     events_generated = Signal(dict)  # Emitted with generated events data
-    sync_requested = Signal()  # Emitted when user wants to sync from events panel
     detach_requested = Signal()  # Emitted when user wants to detach the editor
     config_changed = Signal(object)  # Emitted when Blockly config changes (passes BlocklyConfig)
 
@@ -121,32 +120,10 @@ class BlocklyWidget(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(2)
 
-        # Toolbar
+        # Toolbar — only the Detach button remains; events/blocks/python
+        # auto-sync now, so manual Sync/Clear/Reload/Configure are gone.
         toolbar = QHBoxLayout()
         toolbar.setSpacing(5)
-
-        # Sync from Events button (Events → Blockly)
-        self.sync_button = QPushButton(self.tr("← Sync from Events"))
-        self.sync_button.setToolTip(self.tr("Load events from the Events panel into blocks"))
-        self.sync_button.clicked.connect(self.request_sync_from_events)
-        toolbar.addWidget(self.sync_button)
-
-        # Clear button
-        self.clear_button = QPushButton(self.tr("Clear All"))
-        self.clear_button.clicked.connect(self.clear_workspace)
-        toolbar.addWidget(self.clear_button)
-
-        # Reload button (for debugging/reloading Blockly)
-        self.reload_button = QPushButton(self.tr("Reload"))
-        self.reload_button.clicked.connect(self.reload_blockly)
-        toolbar.addWidget(self.reload_button)
-
-        # Configure blocks button
-        self.configure_btn = QPushButton(self.tr("Configure Blocks..."))
-        self.configure_btn.setToolTip(self.tr("Choose which blocks are available in the toolbox"))
-        self.configure_btn.clicked.connect(self.open_configure_dialog)
-        toolbar.addWidget(self.configure_btn)
-
         toolbar.addStretch()
 
         # Detach button
@@ -255,7 +232,7 @@ class BlocklyWidget(QWidget):
 
             self.update_status(self.tr("Drag blocks from the toolbox on the left to create game logic!"))
         else:
-            self.update_status(self.tr("Error loading Blockly - click Reload to try again"))
+            self.update_status(self.tr("Error loading Blockly"))
 
     def _register_custom_blocks(self):
         """Send ActionType definitions to JavaScript to auto-generate Blockly blocks"""
@@ -320,12 +297,6 @@ class BlocklyWidget(QWidget):
             f"if (typeof setBlocklyLanguage !== 'undefined') {{ setBlocklyLanguage('{current_lang}'); }}"
         )
 
-    def reload_blockly(self):
-        """Reload the Blockly workspace"""
-        self.update_status(self.tr("Reloading Blockly..."))
-        self.web_view.setVisible(False)  # Hide during reload
-        self._load_blockly_html()
-
     def setup_web_channel(self):
         """Setup Qt WebChannel for JavaScript communication"""
         self.bridge = BlocklyBridge(self)
@@ -374,12 +345,6 @@ class BlocklyWidget(QWidget):
         if self._auto_apply_timer.isActive():
             self._auto_apply_timer.stop()
             self._do_auto_apply()
-
-    def clear_workspace(self):
-        """Clear the Blockly workspace"""
-        self.web_view.page().runJavaScript("window.blocklyApi.clear()")
-        self.events_data = {}
-        self.update_status(self.tr("Workspace cleared"))
 
     def get_workspace_xml(self) -> str:
         """Get the current workspace as XML (for saving)"""
@@ -472,31 +437,6 @@ class BlocklyWidget(QWidget):
 
     def update_status(self, message: str):
         """Update status (no-op - status label removed to save space)"""
-
-    def request_sync_from_events(self):
-        """Request sync from events panel (emits signal for parent to handle)"""
-        self.update_status(self.tr("Requesting sync from events..."))
-        self.sync_requested.emit()
-
-    def open_configure_dialog(self):
-        """Open the block configuration dialog"""
-        from dialogs.blockly_config_dialog import BlocklyConfigDialog
-        from config.blockly_config import load_config, PRESETS, BlocklyConfig
-
-        # Try to load preset from project settings first
-        current_config = None
-        project_preset = self._get_project_preset()
-        if project_preset and project_preset in PRESETS:
-            # Make a copy to avoid modifying the original preset
-            current_config = BlocklyConfig.from_dict(PRESETS[project_preset].to_dict())
-        else:
-            current_config = load_config()
-
-        dialog = BlocklyConfigDialog(self, current_config)
-        dialog.config_changed.connect(self.apply_configuration)
-        if dialog.exec():
-            # Save preset to project settings
-            self._save_project_preset(dialog.config.preset_name)
 
     def _get_project_preset(self) -> Optional[str]:
         """Get Blockly preset from project settings"""
@@ -670,7 +610,6 @@ class BlocklyVisualProgrammingTab(QWidget):
 
     # Signals
     events_modified = Signal(dict)  # Emitted when events are modified
-    sync_requested = Signal()  # Emitted when user wants to sync from events panel
     config_changed = Signal(object)  # Emitted when Blockly config changes
 
     def __init__(self, parent=None):
@@ -695,7 +634,6 @@ class BlocklyVisualProgrammingTab(QWidget):
         self.blockly_widget = BlocklyWidget()
         self.blockly_widget.events_generated.connect(self.on_events_generated)
         self.blockly_widget.blocks_modified.connect(self.on_blocks_modified)
-        self.blockly_widget.sync_requested.connect(self.on_sync_requested)
         self.blockly_widget.detach_requested.connect(self.detach_editor)
         self.blockly_widget.config_changed.connect(self.config_changed)  # Forward config changes
         self.main_layout.addWidget(self.blockly_widget)
@@ -766,10 +704,6 @@ class BlocklyVisualProgrammingTab(QWidget):
     def on_blocks_modified(self):
         """Handle blocks being modified"""
         # Could add auto-save or dirty state tracking here
-
-    def on_sync_requested(self):
-        """Handle sync request from Blockly widget"""
-        self.sync_requested.emit()
 
     def get_events_data(self) -> Dict[str, Any]:
         """Get events data from blocks"""

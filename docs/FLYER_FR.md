@@ -64,5 +64,5 @@ python main.py
 **GitHub :** [https://github.com/Gabe1290/pythongm](https://github.com/Gabe1290/pythongm)
 
 
-*PyGameMaker IDE v1.0.0-rc.7 — Copyright 2024-2025 Gabriel Thullen*
+*PyGameMaker IDE v1.0.0-rc.8 — Copyright 2024-2025 Gabriel Thullen*
 

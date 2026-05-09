@@ -57,6 +57,14 @@ class PyGameMakerIDE(QMainWindow):
         self.current_project_path = None
         self.current_project_data = None
 
+        # Global preferred window mode for new editor opens. Read here so
+        # create_toolbar (called from setup_ui) can label its toggle button
+        # correctly. The detached-windows registry is initialized later in
+        # create_center_panel_with_editors but stays consistent with this.
+        self.window_mode = Config.get('window_mode', 'tabbed')
+        if self.window_mode not in ('tabbed', 'floating'):
+            self.window_mode = 'tabbed'
+
         # Initialize export helper module
         self.exporters = IDEExporters(self)
 
@@ -776,6 +784,16 @@ class PyGameMakerIDE(QMainWindow):
         thymio_action.setToolTip(self.tr("Add Thymio Event"))
         toolbar.addAction(thymio_action)
 
+        toolbar.addSeparator()
+        # Global window-mode toggle. Doubles as the recovery affordance when
+        # a floating editor has been dragged off-screen — clicking "Tabbed"
+        # snaps every detached window back into the tab strip.
+        self.window_mode_action = self.create_action(
+            self.tr("Tabbed"), None, self.toggle_window_mode, None
+        )
+        self._update_window_mode_action_label()
+        toolbar.addAction(self.window_mode_action)
+
         # Force update
         toolbar.update()
 
@@ -851,6 +869,10 @@ class PyGameMakerIDE(QMainWindow):
         # Store reference to open editors
         self.open_editors = {}  # name -> editor_widget
         self.modified_editors = set()
+        # Asset name -> DetachedEditorWindow for editors floated out of the
+        # tab strip. Editors in this dict still appear in self.open_editors
+        # but are NOT in self.editor_tabs.
+        self.detached_editor_windows = {}
 
         # Welcome tab (default)
         self.welcome_tab = WelcomeTab(self)
@@ -1324,15 +1346,31 @@ class PyGameMakerIDE(QMainWindow):
                 logger.error(f"❌ Error handling asset rename in main window: {e}")
 
     def _refresh_blockly_asset_lists(self):
-        """Push fresh asset-name lists to every open Blockly editor."""
+        """Push fresh asset-name lists to every open Blockly editor (tabbed
+        and floated)."""
         try:
-            for i in range(self.editor_tabs.count()):
-                widget = self.editor_tabs.widget(i)
+            for widget in self._iter_open_editors():
                 blockly_tab = getattr(widget, 'blockly_tab', None)
                 if blockly_tab and hasattr(blockly_tab, 'push_asset_lists'):
                     blockly_tab.push_asset_lists()
         except Exception as e:
             logger.debug(f"Could not refresh Blockly asset lists: {e}")
+
+    def _iter_open_editors(self):
+        """Yield every open editor widget regardless of whether it's currently
+        in a tab or floated. Used by cross-editor refresh paths so that
+        detached windows stay in sync with tabbed ones."""
+        seen = set()
+        for i in range(self.editor_tabs.count()):
+            widget = self.editor_tabs.widget(i)
+            if widget is None or widget is self.welcome_tab:
+                continue
+            seen.add(id(widget))
+            yield widget
+        for editor in self.open_editors.values():
+            if editor is None or id(editor) in seen:
+                continue
+            yield editor
 
     def find_renamed_asset(self, asset_name, asset_type):
         """Find an asset item by name and type in the asset tree"""
@@ -3246,7 +3284,7 @@ class PyGameMakerIDE(QMainWindow):
         """Show comprehensive About PyGameMaker dialog"""
         about_text = self.tr(
             "<h2>PyGameMaker IDE</h2>"
-            "<p><b>Version 1.0.0-rc.7</b></p>"
+            "<p><b>Version 1.0.0-rc.8</b></p>"
             "<p>A comprehensive visual game development environment<br>"
             "inspired by GameMaker Studio, built with Python.</p>"
 
@@ -3335,9 +3373,10 @@ class PyGameMakerIDE(QMainWindow):
     def open_room_editor(self, room_name: str, room_data: dict):
         """Open a room in the room editor"""
 
-        # Check if room is already open
+        # Check if room is already open — focus tab or detached window.
         if room_name in self.open_editors:
-            # Switch to existing tab
+            if self._focus_detached_editor(room_name):
+                return
             for i in range(self.editor_tabs.count()):
                 if self.editor_tabs.tabText(i) == room_name:
                     self.editor_tabs.setCurrentIndex(i)
@@ -3354,6 +3393,8 @@ class PyGameMakerIDE(QMainWindow):
             room_editor.save_requested.connect(self.on_editor_save_requested, Qt.ConnectionType.UniqueConnection)
             room_editor.close_requested.connect(self.on_editor_close_requested, Qt.ConnectionType.UniqueConnection)
             room_editor.data_modified.connect(self.on_editor_data_modified, Qt.ConnectionType.UniqueConnection)
+            room_editor.float_requested.connect(self.float_editor, Qt.ConnectionType.UniqueConnection)
+            room_editor.reattach_requested.connect(self.reattach_editor, Qt.ConnectionType.UniqueConnection)
 
             # Connect room editor activation signal
             room_editor.room_editor_activated.connect(self.on_room_editor_activated, Qt.ConnectionType.UniqueConnection)
@@ -3366,6 +3407,10 @@ class PyGameMakerIDE(QMainWindow):
             self.open_editors[room_name] = room_editor
 
             self.update_status(self.tr("Opened room: {0}").format(room_name))
+
+            # Honor global window mode.
+            if self.window_mode == 'floating':
+                self.float_editor(room_editor)
 
         except Exception as e:
             logger.error(f"Error opening room editor: {e}")
@@ -3415,9 +3460,10 @@ class PyGameMakerIDE(QMainWindow):
     def open_object_editor(self, object_name: str, object_data: dict):
         """Open an object in the object editor"""
 
-        # Check if object is already open
+        # Check if object is already open — focus its tab or its detached window
         if object_name in self.open_editors:
-            # Switch to existing tab
+            if self._focus_detached_editor(object_name):
+                return
             for i in range(self.editor_tabs.count()):
                 if self.editor_tabs.tabText(i) == object_name:
                     self.editor_tabs.setCurrentIndex(i)
@@ -3434,6 +3480,8 @@ class PyGameMakerIDE(QMainWindow):
             object_editor.save_requested.connect(self.on_editor_save_requested, Qt.ConnectionType.UniqueConnection)
             object_editor.close_requested.connect(self.on_editor_close_requested, Qt.ConnectionType.UniqueConnection)
             object_editor.data_modified.connect(self.on_editor_data_modified, Qt.ConnectionType.UniqueConnection)
+            object_editor.float_requested.connect(self.float_editor, Qt.ConnectionType.UniqueConnection)
+            object_editor.reattach_requested.connect(self.reattach_editor, Qt.ConnectionType.UniqueConnection)
 
             # Connect object editor activation signal
             object_editor.object_editor_activated.connect(self.on_object_editor_activated, Qt.ConnectionType.UniqueConnection)
@@ -3450,6 +3498,11 @@ class PyGameMakerIDE(QMainWindow):
             self._collapse_right_panel()
 
             self.update_status(self.tr("Opened object: {0}").format(object_name))
+
+            # Honor global window mode — float immediately if that's the
+            # current default. Done last so the editor is fully wired up.
+            if self.window_mode == 'floating':
+                self.float_editor(object_editor)
 
         except Exception as e:
             import traceback
@@ -3469,8 +3522,10 @@ class PyGameMakerIDE(QMainWindow):
     def open_sprite_editor(self, sprite_name: str, sprite_data: dict):
         """Open a sprite in the sprite editor"""
 
-        # Check if sprite is already open
+        # Check if sprite is already open — focus its tab or its detached window
         if sprite_name in self.open_editors:
+            if self._focus_detached_editor(sprite_name):
+                return
             for i in range(self.editor_tabs.count()):
                 if self.editor_tabs.tabText(i) == sprite_name:
                     self.editor_tabs.setCurrentIndex(i)
@@ -3483,6 +3538,8 @@ class PyGameMakerIDE(QMainWindow):
             sprite_editor.save_requested.connect(self.on_editor_save_requested, Qt.ConnectionType.UniqueConnection)
             sprite_editor.close_requested.connect(self.on_editor_close_requested, Qt.ConnectionType.UniqueConnection)
             sprite_editor.data_modified.connect(self.on_editor_data_modified, Qt.ConnectionType.UniqueConnection)
+            sprite_editor.float_requested.connect(self.float_editor, Qt.ConnectionType.UniqueConnection)
+            sprite_editor.reattach_requested.connect(self.reattach_editor, Qt.ConnectionType.UniqueConnection)
 
             tab_index = self.editor_tabs.addTab(sprite_editor, sprite_name)
             self.editor_tabs.setCurrentIndex(tab_index)
@@ -3490,6 +3547,11 @@ class PyGameMakerIDE(QMainWindow):
             self.open_editors[sprite_name] = sprite_editor
 
             self.update_status(self.tr("Opened sprite: {0}").format(sprite_name))
+
+            # Honor global window mode — float immediately if that's the
+            # current default.
+            if self.window_mode == 'floating':
+                self.float_editor(sprite_editor)
 
         except Exception as e:
             import traceback
@@ -3604,6 +3666,10 @@ class PyGameMakerIDE(QMainWindow):
                         self.editor_tabs.setTabText(i, asset_name)
                         break
 
+                # Broadcast so any *other* open editor (including floated
+                # ones) refreshes its asset dropdowns. Cheap and idempotent.
+                self._refresh_blockly_asset_lists()
+
                 logger.info(f"✅ Save completed successfully for {asset_name}")
 
             else:
@@ -3639,11 +3705,190 @@ class PyGameMakerIDE(QMainWindow):
         # populated when the editor tab is selected.
 
     def close_editor_by_name(self, asset_name: str):
-        """Close editor tab by asset name"""
+        """Close editor by asset name (handles tabbed and detached editors)."""
+        # Detached path: tear down the floating window and drop the editor.
+        if asset_name in self.detached_editor_windows:
+            self._destroy_detached_editor(asset_name)
+            return
         for i in range(self.editor_tabs.count()):
             if self.editor_tabs.tabText(i).replace('*', '') == asset_name:
                 self.close_editor_tab(i)
                 break
+
+    def _focus_detached_editor(self, asset_name: str) -> bool:
+        """If the editor is currently floated, raise its window. Returns True
+        if a detached window was found and focused."""
+        window = self.detached_editor_windows.get(asset_name)
+        if window is None:
+            return False
+        window.showNormal()
+        window.raise_()
+        window.activateWindow()
+        return True
+
+    def float_editor(self, editor):
+        """Pop an editor out of the tab strip into its own floating window."""
+        from editors.detached_editor_window import DetachedEditorWindow
+
+        asset_name = getattr(editor, "asset_name", None)
+        if not asset_name:
+            logger.warning("float_editor called on editor with no asset_name")
+            return
+        if asset_name in self.detached_editor_windows:
+            self._focus_detached_editor(asset_name)
+            return
+
+        # Find and remove the tab without going through close_editor_tab
+        # (which would prompt about unsaved changes).
+        tab_index = -1
+        for i in range(self.editor_tabs.count()):
+            if self.editor_tabs.widget(i) is editor:
+                tab_index = i
+                break
+        if tab_index >= 0:
+            self.editor_tabs.removeTab(tab_index)
+
+        # Build the floating window. Keep the IDE as logical parent so the
+        # window inherits stylesheet/icons but stays independently movable.
+        window = DetachedEditorWindow(editor, parent=self)
+        window.reattach_requested.connect(self._on_detached_reattach_requested)
+        self.detached_editor_windows[asset_name] = window
+
+        if hasattr(editor, "set_floating_state"):
+            editor.set_floating_state(True)
+
+        window.show()
+        window.raise_()
+        window.activateWindow()
+
+        # If the tab strip is now empty, restore the welcome tab so the
+        # center panel doesn't look broken.
+        if self.editor_tabs.count() == 0:
+            self.editor_tabs.addTab(self.welcome_tab, self.tr("Welcome"))
+
+        self.update_status(self.tr("Floated: {0}").format(asset_name))
+
+    def reattach_editor(self, editor):
+        """Move a floated editor back into the tab strip."""
+        asset_name = getattr(editor, "asset_name", None)
+        if not asset_name:
+            return
+        window = self.detached_editor_windows.get(asset_name)
+        if window is None:
+            return
+        # Closing the window triggers _on_detached_reattach_requested below.
+        window.close()
+
+    def _on_detached_reattach_requested(self, editor):
+        """The detached window is closing — pull the editor back into a tab."""
+        asset_name = getattr(editor, "asset_name", None)
+        if not asset_name:
+            return
+
+        window = self.detached_editor_windows.pop(asset_name, None)
+        if window is not None:
+            taken = window.take_editor()
+            if taken is not None:
+                editor = taken
+            window.deleteLater()
+
+        # Drop the welcome tab if it's the only thing showing — we're about
+        # to replace it with the real editor.
+        if (self.editor_tabs.count() == 1
+                and self.editor_tabs.widget(0) is self.welcome_tab):
+            self.editor_tabs.removeTab(0)
+
+        tab_index = self.editor_tabs.addTab(editor, asset_name)
+        self.editor_tabs.setCurrentIndex(tab_index)
+
+        if hasattr(editor, "set_floating_state"):
+            editor.set_floating_state(False)
+
+        self.update_status(self.tr("Reattached: {0}").format(asset_name))
+
+    def toggle_window_mode(self):
+        """Flip between global tabbed / floating mode and apply immediately."""
+        new_mode = 'floating' if self.window_mode == 'tabbed' else 'tabbed'
+        self.set_window_mode(new_mode)
+
+    def set_window_mode(self, mode: str):
+        """Set global window mode and apply it to all currently open editors.
+
+        ``mode='tabbed'`` reattaches every floating editor (the recovery path
+        when a window has been dragged off-screen). ``mode='floating'`` pops
+        every tabbed editor out into its own window.
+        """
+        if mode not in ('tabbed', 'floating'):
+            return
+        self.window_mode = mode
+        Config.set('window_mode', mode)
+        self._update_window_mode_action_label()
+
+        if mode == 'tabbed':
+            # Reattach every detached editor. close() routes through
+            # _on_detached_reattach_requested which puts the editor back.
+            for asset_name in list(self.detached_editor_windows.keys()):
+                window = self.detached_editor_windows.get(asset_name)
+                if window is not None:
+                    window.close()
+            self.update_status(self.tr("Window mode: Tabbed"))
+        else:
+            # Float every editor currently in the tab strip.
+            to_float = []
+            for i in range(self.editor_tabs.count()):
+                widget = self.editor_tabs.widget(i)
+                if widget is None or widget is self.welcome_tab:
+                    continue
+                if hasattr(widget, 'asset_name') and widget.asset_name:
+                    to_float.append(widget)
+            for editor in to_float:
+                self.float_editor(editor)
+            self.update_status(self.tr("Window mode: Floating"))
+
+    def _update_window_mode_action_label(self):
+        """Sync the toolbar action's label and tooltip to the current mode."""
+        if not hasattr(self, 'window_mode_action'):
+            return
+        if self.window_mode == 'floating':
+            self.window_mode_action.setText(self.tr("⧉ Floating"))
+            self.window_mode_action.setToolTip(self.tr(
+                "Window mode: Floating. Click to switch all editors back into tabs "
+                "(use this if a floating window has been dragged off-screen)."
+            ))
+        else:
+            self.window_mode_action.setText(self.tr("⊞ Tabbed"))
+            self.window_mode_action.setToolTip(self.tr(
+                "Window mode: Tabbed. Click to pop every editor out into its own window."
+            ))
+
+    def _destroy_detached_editor(self, asset_name: str):
+        """Fully close a floated editor (used by close_editor_by_name and
+        project teardown — bypasses the reattach path)."""
+        window = self.detached_editor_windows.pop(asset_name, None)
+        editor = self.open_editors.pop(asset_name, None)
+        if window is not None:
+            window.reattach_on_close = False
+            # take_editor() unparents the editor so deleteLater on the
+            # window doesn't take the editor down with it before we get a
+            # chance to disconnect signals.
+            window.take_editor()
+            window.close()
+            window.deleteLater()
+        if editor is not None:
+            try:
+                if hasattr(editor, 'save_requested'):
+                    self.safe_disconnect_signal(editor.save_requested, self.on_editor_save_requested)
+                if hasattr(editor, 'close_requested'):
+                    self.safe_disconnect_signal(editor.close_requested, self.on_editor_close_requested)
+                if hasattr(editor, 'data_modified'):
+                    self.safe_disconnect_signal(editor.data_modified, self.on_editor_data_modified)
+                if hasattr(editor, 'float_requested'):
+                    self.safe_disconnect_signal(editor.float_requested, self.float_editor)
+                if hasattr(editor, 'reattach_requested'):
+                    self.safe_disconnect_signal(editor.reattach_requested, self.reattach_editor)
+            except Exception:
+                pass
+            editor.deleteLater()
 
     def on_project_loaded(self, project_path, project_data):
         logger.debug(f"DEBUG on_project_loaded: START - path={project_path}, data_keys={list(project_data.keys()) if project_data else None}")
@@ -3654,6 +3899,9 @@ class PyGameMakerIDE(QMainWindow):
             self.editor_tabs.removeTab(0)
             if widget and widget is not self.welcome_tab:
                 widget.deleteLater()
+        # Tear down any floated editors from the previous project too.
+        for asset_name in list(self.detached_editor_windows.keys()):
+            self._destroy_detached_editor(asset_name)
         self.open_editors.clear()
         self.editor_tabs.addTab(self.welcome_tab, self.tr("Welcome"))
 
@@ -3761,13 +4009,11 @@ class PyGameMakerIDE(QMainWindow):
         QTimer.singleShot(3000, lambda: self.status_label.setText(self.tr("Ready")))
 
     def refresh_open_object_editors(self):
-        """Refresh sprite lists in all open object editors"""
-        for i in range(self.editor_tabs.count()):
-            widget = self.editor_tabs.widget(i)
-            # Check if this is an object editor (has load_project_assets method)
+        """Refresh sprite lists in all open object editors (tabbed + floated)."""
+        for widget in self._iter_open_editors():
             if hasattr(widget, 'load_project_assets'):
                 widget.load_project_assets()
-                logger.debug(f"🔄 Refreshed sprites in object editor: {self.editor_tabs.tabText(i)}")
+                logger.debug(f"🔄 Refreshed sprites in object editor: {getattr(widget, 'asset_name', '?')}")
 
     def refresh_object_sprites(self, object_name: str, old_sprite: str, new_sprite: str):
         """Refresh object sprites in room editors when they change"""
@@ -3859,6 +4105,11 @@ class PyGameMakerIDE(QMainWindow):
             elif reply == QMessageBox.Cancel:
                 event.ignore()
                 return
+
+        # Close any detached editor windows without trying to reattach —
+        # the IDE itself is going away, so there's nowhere to attach to.
+        for window in list(self.detached_editor_windows.values()):
+            window.reattach_on_close = False
 
         event.accept()
 
