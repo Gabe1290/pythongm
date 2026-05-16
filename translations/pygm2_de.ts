@@ -5687,6 +5687,27 @@ Check the console for error details.</source>
     <context>
         <name>TutorialPanel</name>
         <message>
+            <source>Float</source>
+            <translation>Abdocken</translation>
+        </message>
+        <message>
+            <source>Re-dock</source>
+            <translation>Andocken</translation>
+        </message>
+        <message>
+            <source>Detach this tutorial into its own movable window</source>
+            <translation>Dieses Tutorial in ein eigenes verschiebbares Fenster lösen</translation>
+        </message>
+        <message>
+            <source>Dock this tutorial back into the IDE</source>
+            <translation>Dieses Tutorial wieder an die IDE andocken</translation>
+        </message>
+        <message>
+            <source>Tutorials</source>
+            <translation>Tutorials</translation>
+        </message>
+
+        <message>
             <location filename="../widgets/tutorial_panel.py" line="42" />
             <source>&lt;b&gt;Tutorials&lt;/b&gt;</source>
             <translation>&lt;b&gt;Tutorials&lt;/b&gt;</translation>

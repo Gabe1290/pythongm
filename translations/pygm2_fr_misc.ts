@@ -70,6 +70,27 @@
     <context>
         <name>TutorialPanel</name>
         <message>
+            <source>Float</source>
+            <translation>Détacher</translation>
+        </message>
+        <message>
+            <source>Re-dock</source>
+            <translation>Rattacher</translation>
+        </message>
+        <message>
+            <source>Detach this tutorial into its own movable window</source>
+            <translation>Détacher ce tutoriel dans sa propre fenêtre déplaçable</translation>
+        </message>
+        <message>
+            <source>Dock this tutorial back into the IDE</source>
+            <translation>Rattacher ce tutoriel à l'IDE</translation>
+        </message>
+        <message>
+            <source>Tutorials</source>
+            <translation>Tutoriels</translation>
+        </message>
+
+        <message>
             <location filename="../widgets/tutorial_panel.py" line="42" />
             <source>&lt;b&gt;Tutorials&lt;/b&gt;</source>
             <translation>&lt;b&gt;Tutoriels&lt;/b&gt;</translation>

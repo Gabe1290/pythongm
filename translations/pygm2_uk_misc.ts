@@ -70,6 +70,27 @@
     <context>
         <name>TutorialPanel</name>
         <message>
+            <source>Float</source>
+            <translation>Відкріпити</translation>
+        </message>
+        <message>
+            <source>Re-dock</source>
+            <translation>Прикріпити</translation>
+        </message>
+        <message>
+            <source>Detach this tutorial into its own movable window</source>
+            <translation>Відкріпити цей підручник в окреме рухоме вікно</translation>
+        </message>
+        <message>
+            <source>Dock this tutorial back into the IDE</source>
+            <translation>Прикріпити цей підручник назад до IDE</translation>
+        </message>
+        <message>
+            <source>Tutorials</source>
+            <translation>Підручники</translation>
+        </message>
+
+        <message>
             <location filename="../widgets/tutorial_panel.py" line="42" />
             <source>&lt;b&gt;Tutorials&lt;/b&gt;</source>
             <translation>&lt;b&gt;Посібники&lt;/b&gt;</translation>

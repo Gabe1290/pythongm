@@ -8045,6 +8045,23 @@ Voulez-vous quand même enregistrer ?</translation>
 </context>
 <context>
     <name>TutorialPanel</name>
+        <message>
+            <source>Float</source>
+            <translation>Détacher</translation>
+        </message>
+        <message>
+            <source>Re-dock</source>
+            <translation>Rattacher</translation>
+        </message>
+        <message>
+            <source>Detach this tutorial into its own movable window</source>
+            <translation>Détacher ce tutoriel dans sa propre fenêtre déplaçable</translation>
+        </message>
+        <message>
+            <source>Dock this tutorial back into the IDE</source>
+            <translation>Rattacher ce tutoriel à l'IDE</translation>
+        </message>
+
     <message>
         <location filename="../widgets/tutorial_panel.py" line="23" />
         <source>Tutorials</source>

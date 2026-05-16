@@ -70,6 +70,27 @@
     <context>
         <name>TutorialPanel</name>
         <message>
+            <source>Float</source>
+            <translation>Stacca</translation>
+        </message>
+        <message>
+            <source>Re-dock</source>
+            <translation>Riaggancia</translation>
+        </message>
+        <message>
+            <source>Detach this tutorial into its own movable window</source>
+            <translation>Stacca questo tutorial in una finestra mobile separata</translation>
+        </message>
+        <message>
+            <source>Dock this tutorial back into the IDE</source>
+            <translation>Riaggancia questo tutorial nell'IDE</translation>
+        </message>
+        <message>
+            <source>Tutorials</source>
+            <translation>Tutorial</translation>
+        </message>
+
+        <message>
             <location filename="../widgets/tutorial_panel.py" line="42" />
             <source>&lt;b&gt;Tutorials&lt;/b&gt;</source>
             <translation>&lt;b&gt;Tutorial&lt;/b&gt;</translation>

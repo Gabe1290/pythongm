@@ -5687,6 +5687,27 @@ Preverite konzolo za podrobnosti o napaki.</translation>
     <context>
         <name>TutorialPanel</name>
         <message>
+            <source>Float</source>
+            <translation>Odpni</translation>
+        </message>
+        <message>
+            <source>Re-dock</source>
+            <translation>Pripni</translation>
+        </message>
+        <message>
+            <source>Detach this tutorial into its own movable window</source>
+            <translation>Odpni to vadnico v lastno premakljivo okno</translation>
+        </message>
+        <message>
+            <source>Dock this tutorial back into the IDE</source>
+            <translation>Ponovno pripni to vadnico v IDE</translation>
+        </message>
+        <message>
+            <source>Tutorials</source>
+            <translation>Vadnice</translation>
+        </message>
+
+        <message>
             <location filename="../widgets/tutorial_panel.py" line="42" />
             <source>&lt;b&gt;Tutorials&lt;/b&gt;</source>
             <translation>&lt;b&gt;Vadnice&lt;/b&gt;</translation>

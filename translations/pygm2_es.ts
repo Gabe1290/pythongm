@@ -6042,6 +6042,27 @@ Consulte la consola para ver los detalles del error.</translation>
     <context>
         <name>TutorialPanel</name>
         <message>
+            <source>Float</source>
+            <translation>Desacoplar</translation>
+        </message>
+        <message>
+            <source>Re-dock</source>
+            <translation>Acoplar</translation>
+        </message>
+        <message>
+            <source>Detach this tutorial into its own movable window</source>
+            <translation>Desacoplar este tutorial en su propia ventana móvil</translation>
+        </message>
+        <message>
+            <source>Dock this tutorial back into the IDE</source>
+            <translation>Acoplar este tutorial de nuevo en el IDE</translation>
+        </message>
+        <message>
+            <source>Tutorials</source>
+            <translation>Tutoriales</translation>
+        </message>
+
+        <message>
             <location filename="../widgets/tutorial_panel.py" line="42" />
             <source>&lt;b&gt;Tutorials&lt;/b&gt;</source>
             <translation>&lt;b&gt;Tutoriales&lt;/b&gt;</translation>
