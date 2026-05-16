@@ -3269,26 +3269,87 @@ class PyGameMakerIDE(QMainWindow):
             if candidate.exists():
                 tutorials_path = candidate
 
-        # If a tutorial window is already open and visible, bring it to front
-        if hasattr(self, '_tutorial_window') and self._tutorial_window is not None:
-            try:
-                if self._tutorial_window.isVisible():
-                    self._tutorial_window.raise_()
-                    self._tutorial_window.activateWindow()
-                    return
-                else:
-                    self._tutorial_window = None
-            except RuntimeError:
-                self._tutorial_window = None
-
+        # Let the user pick a tutorial (modal selector).
         dialog = TutorialDialog(self, tutorials_path)
-        if dialog.exec() == QDialog.Accepted:
-            selected_tutorial = dialog.get_selected_tutorial()
-            if selected_tutorial and tutorials_path:
-                self._tutorial_window = TutorialPanel(self)
-                self._tutorial_window.set_tutorials_path(tutorials_path)
-                self._tutorial_window.open_tutorial_by_data(selected_tutorial)
-                self._tutorial_window.show()
+        if dialog.exec() != QDialog.Accepted:
+            return
+        selected_tutorial = dialog.get_selected_tutorial()
+        if not (selected_tutorial and tutorials_path):
+            return
+
+        # Host the tutorial viewer in a QDockWidget, created once and
+        # reused. Docked, it stays visible alongside the IDE on every
+        # platform and is owned by the IDE main window (destroyed with
+        # it). Detaching is NOT done via QDockWidget's float (unmovable
+        # on Wayland — Qt's float-drag uses grabMouse() which the Wayland
+        # plugin only allows for popups). Instead the panel's Float
+        # button pops it into a DetachedEditorWindow — a plain QMainWindow
+        # with native decorations that the compositor can move normally,
+        # exactly like a detached editor.
+        from PySide6.QtWidgets import QDockWidget
+
+        if getattr(self, '_tutorial_dock', None) is None:
+            self._tutorial_detached_window = None
+            self._tutorial_panel = TutorialPanel(self)
+            self._tutorial_panel.float_toggle_requested.connect(
+                self._toggle_tutorial_float)
+            dock = QDockWidget(self.tr("Tutorials"), self)
+            dock.setObjectName("TutorialDock")
+            dock.setWidget(self._tutorial_panel)
+            dock.setFeatures(
+                QDockWidget.DockWidgetClosable
+                | QDockWidget.DockWidgetMovable
+            )
+            dock.setAllowedAreas(
+                Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+            self.addDockWidget(Qt.RightDockWidgetArea, dock)
+            self._tutorial_dock = dock
+
+        self._tutorial_panel.set_tutorials_path(tutorials_path)
+        self._tutorial_panel.open_tutorial_by_data(selected_tutorial)
+        if self._tutorial_detached_window is not None:
+            # Currently floated — surface the floating window instead.
+            self._tutorial_detached_window.show()
+            self._tutorial_detached_window.raise_()
+            self._tutorial_detached_window.activateWindow()
+        else:
+            self._tutorial_dock.show()
+            self._tutorial_dock.raise_()
+
+    def _toggle_tutorial_float(self):
+        """Float the docked tutorial into an editor-style movable window,
+        or re-dock it if it is already floating."""
+        if getattr(self, '_tutorial_detached_window', None) is not None:
+            # Already floating — closing the window re-docks it via
+            # _on_tutorial_redock (mirrors the editor reattach path).
+            self._tutorial_detached_window.close()
+            return
+
+        from editors.detached_editor_window import DetachedEditorWindow
+
+        # Constructing the window reparents the panel out of the dock.
+        window = DetachedEditorWindow(self._tutorial_panel, parent=self)
+        window.reattach_requested.connect(self._on_tutorial_redock)
+        self._tutorial_detached_window = window
+        self._tutorial_dock.hide()  # dock is now empty
+        self._tutorial_panel.set_floating_state(True)
+        window.show()
+        window.raise_()
+        window.activateWindow()
+
+    def _on_tutorial_redock(self, _panel):
+        """The detached tutorial window is closing — put the panel back
+        into the dock."""
+        window = getattr(self, '_tutorial_detached_window', None)
+        if window is None:
+            return
+        panel = window.take_editor() or self._tutorial_panel
+        self._tutorial_detached_window = None
+        self._tutorial_dock.setWidget(panel)
+        self._tutorial_panel.set_floating_state(False)
+        self._tutorial_dock.show()
+        self._tutorial_dock.raise_()
+        window.deleteLater()
 
     def about(self):
         """Show comprehensive About PyGameMaker dialog"""
@@ -4132,6 +4193,12 @@ class PyGameMakerIDE(QMainWindow):
         # the IDE itself is going away, so there's nowhere to attach to.
         for window in list(self.detached_editor_windows.values()):
             window.reattach_on_close = False
+
+        # Same for a floated tutorial window: don't try to re-dock into
+        # an IDE that is tearing down.
+        tutorial_win = getattr(self, '_tutorial_detached_window', None)
+        if tutorial_win is not None:
+            tutorial_win.reattach_on_close = False
 
         event.accept()
 

@@ -1,32 +1,41 @@
 #!/usr/bin/env python3
 """
 Tutorial Panel Widget for PyGameMaker IDE
-Displays HTML tutorials in a detached floating window
+
+Displays HTML tutorials. This is a plain content widget hosted inside a
+QDockWidget by the IDE (see core/ide_window.py), so it can be docked
+alongside the IDE or detached as a normal window. It deliberately does
+NOT manage its own window flags or "always on top" behaviour — that was
+unfixable on Wayland and is now handled entirely by the dock.
 """
 import json
 from pathlib import Path
-from PySide6.QtWidgets import (QDialog, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
+from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                                QPushButton, QListWidget, QListWidgetItem,
                                QStackedWidget, QTextBrowser)
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QDesktopServices
 
 from core.logger import get_logger
 logger = get_logger(__name__)
 
 
-class TutorialPanel(QDialog):
-    """Floating window for displaying HTML tutorials"""
+class TutorialPanel(QWidget):
+    """HTML tutorial viewer.
+
+    Normally hosted inside a QDockWidget by the IDE. The Float button
+    emits ``float_toggle_requested``; the IDE pops the panel out into an
+    editor-style movable window (DetachedEditorWindow) and back.
+    """
+
+    # Emitted when the user clicks the Float / Re-dock button.
+    float_toggle_requested = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.setMinimumSize(360, 400)
+        # Used by DetachedEditorWindow as the floating window's title.
         self.setWindowTitle(self.tr("Tutorials"))
-        self.setMinimumSize(450, 500)
-        self.resize(520, 650)
-        # Float on top by default so activating the Blockly tab (or any
-        # other focus shift inside the IDE) doesn't push the tutorial
-        # behind. Students can toggle this with the pin button in the header.
-        self.setWindowFlag(Qt.WindowStaysOnTopHint, True)
         self.tutorials_path = None
         self.current_tutorial = None
         self.current_page_index = 0
@@ -38,7 +47,7 @@ class TutorialPanel(QDialog):
         layout.setContentsMargins(5, 5, 5, 5)
         layout.setSpacing(5)
 
-        # Header with title and close button
+        # Header with title (the dock title bar provides close/float).
         header = QWidget()
         header_layout = QHBoxLayout(header)
         header_layout.setContentsMargins(0, 0, 0, 0)
@@ -49,20 +58,13 @@ class TutorialPanel(QDialog):
 
         header_layout.addStretch()
 
-        # Pin / Unpin toggle: when checked (default), the window stays on top
-        # of the IDE. Unchecking lets the IDE come forward when clicked.
-        self.pin_btn = QPushButton("📌")
-        self.pin_btn.setCheckable(True)
-        self.pin_btn.setChecked(True)
-        self.pin_btn.setMaximumWidth(40)
-        self.pin_btn.setToolTip(self.tr("Pinned — click to let the IDE come forward when activated"))
-        self.pin_btn.toggled.connect(self.on_pin_toggled)
-        header_layout.addWidget(self.pin_btn)
-
-        self.close_btn = QPushButton(self.tr("Close"))
-        self.close_btn.setMaximumWidth(60)
-        self.close_btn.clicked.connect(self.close)
-        header_layout.addWidget(self.close_btn)
+        # Float / Re-dock toggle — mirrors the editor "Float" button. The
+        # IDE owns the actual detach/redock (see core/ide_window.py); we
+        # just request it and reflect the current state in the label.
+        self.float_btn = QPushButton()
+        self.float_btn.clicked.connect(self.float_toggle_requested)
+        header_layout.addWidget(self.float_btn)
+        self.set_floating_state(False)
 
         layout.addWidget(header)
 
@@ -348,18 +350,16 @@ class TutorialPanel(QDialog):
         self.tutorial_pages = []
         self.current_page_index = 0
 
-    def on_pin_toggled(self, checked):
-        """Toggle whether the tutorial floats above other windows."""
-        was_visible = self.isVisible()
-        self.setWindowFlag(Qt.WindowStaysOnTopHint, checked)
-        if checked:
-            self.pin_btn.setToolTip(self.tr("Pinned — click to let the IDE come forward when activated"))
+    def set_floating_state(self, floating):
+        """Reflect docked/floated state on the toggle button."""
+        if floating:
+            self.float_btn.setText("⤓ " + self.tr("Re-dock"))
+            self.float_btn.setToolTip(
+                self.tr("Dock this tutorial back into the IDE"))
         else:
-            self.pin_btn.setToolTip(self.tr("Unpinned — click to keep this window on top"))
-        # Qt hides the window when window flags change; show it again so
-        # the user doesn't lose the tutorial they were reading.
-        if was_visible:
-            self.show()
+            self.float_btn.setText("⤢ " + self.tr("Float"))
+            self.float_btn.setToolTip(
+                self.tr("Detach this tutorial into its own movable window"))
 
     def on_link_clicked(self, url):
         """Handle clicks on links in the tutorial content"""
