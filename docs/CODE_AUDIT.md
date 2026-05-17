@@ -2,7 +2,8 @@
 
 **Date:** 2026-05-17
 **Status:** Findings reference for pre-1.0 testing. §0 and §1 fixed 2026-05-17;
-§2–§4 unaddressed (no fixes applied).
+the platform-exporter cluster of §3 consolidated 2026-05-17; §2 and the rest of
+§3/§4 unaddressed (no fixes applied).
 
 **Method:** pyflakes + vulture + symilar (pylint's duplicate detector) over 179 app
 files (~80k LOC), then three verification passes that grep-checked every finding
@@ -114,10 +115,27 @@ availability checks (already `# noqa`).
 
 ## 3. Duplicate code — high-severity clusters (maintenance/divergence hazards)
 
+> **Platform-exporter cluster — ✅ CONSOLIDATED 2026-05-17.** Added
+> `export/base_exporter.py::BaseKivyExporter(QObject)` holding the verified
+> byte-identical members (signals, `__init__`, `_load_rooms_from_files`,
+> `_load_objects_from_files`, `_check_pyinstaller/_check_kivy/_check_pillow`,
+> `_generate_kivy_game`). `exe/linux/macos` now subclass it (their identical
+> copies deleted); `android` subclasses it but keeps its legitimately
+> divergent loaders/`_generate_kivy_game`/`__init__` and only dedups
+> signals + `_check_kivy`. `ios` left untouched (genuinely divergent —
+> Xcode/kivy-ios flow). Behaviour preserved: each refactored exporter was
+> proven AST-identical to its pre-refactor HEAD (62 method equivalences),
+> full suite stays 498-pass, net −517 LOC across the 4 files vs a 205-line
+> base. **Deferred (not done):** the same loaders also live in
+> `core/project_manager.py:217,266` and `runtime/game_runner.py:1548,1584`
+> with different signatures/logging and no test coverage — folding those in
+> touches the game-runtime/project-load hot path and is out of scope for an
+> exporter-only consolidation; tracked as a separate follow-up.
+
 | Cluster | Where | Issue |
 |---|---|---|
-| Platform exporters are structural clones | `export/{exe,linux,macos,android,ios}/*_exporter.py` | `__init__`/signals, `export_project`, `_check_*`, `_create_build_directory`, `_generate_kivy_game`, `_run_*` near-identical (dup blocks 50–78 lines). Android's `export_project` docstring still says "macOS .app bundle" — copy-paste leftover. |
-| `_load_rooms_from_files` / `_load_objects_from_files` copied 7× | 4 exporters + `core/project_manager.py:217,266` + `runtime/game_runner.py:1548,1584` | Same two loaders reimplemented seven times — high drift risk. |
+| ~~Platform exporters are structural clones~~ ✅ done | `export/{exe,linux,macos,android}` now share `export/base_exporter.py`; `ios` intentionally separate | Resolved (see note above). Android's `export_project` docstring "macOS .app bundle" copy-paste leftover **still open** (cosmetic, untouched to keep the refactor behaviour-preserving). |
+| `_load_rooms_from_files` / `_load_objects_from_files` — partially done | ✅ unified for the 4 exporters via base; **still 3×** in `core/project_manager.py:217,266` + `runtime/game_runner.py:1548,1584` | Exporter copies removed; the project_manager/game_runner copies deferred (see note — different signatures, no tests, runtime hot path). |
 | `tree_main.py` vs `asset_tree_widget.py` | widgets/asset_tree | Two `AssetTreeWidget` classes, overlapping `add/remove/clear/refresh/rename`; already drifted (see §1). |
 | Blockly vs Thymio config dialogs | `dialogs/blockly_config_dialog.py` ↔ `dialogs/thymio_config_dialog.py` | `_detect_language`, `_is_dark_color`, `_get_block_name`, tree population, button bar, `on_item_changed`, save-confirm duplicated (~6 blocks). Thymio is Blockly filtered by category. |
 | room_editor sprite/pixmap helpers | `editors/room_editor/room_canvas.py` ↔ `object_palette.py` and ↔ `utils/room_preview_generator.py` | Placeholder-pixmap creation, `get_object_color`, object→sprite resolution, image→QPixmap loader duplicated. Canvas and preview **must render identically** — divergence already likely. |

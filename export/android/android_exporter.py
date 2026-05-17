@@ -10,17 +10,15 @@ import json
 import platform
 from pathlib import Path
 from typing import Dict
-from PySide6.QtCore import QObject, Signal
 
 from core.logger import get_logger
+from export.base_exporter import BaseKivyExporter
+
 logger = get_logger(__name__)
 
 
-class AndroidExporter(QObject):
+class AndroidExporter(BaseKivyExporter):
     """Handles exporting games as Android APK packages using Kivy + Buildozer"""
-
-    progress_update = Signal(int, str)  # progress percentage, status message
-    export_complete = Signal(bool, str)  # success, message
 
     def __init__(self):
         super().__init__()
@@ -336,14 +334,6 @@ class AndroidExporter(QObject):
         """Check if Buildozer is installed"""
         try:
             import buildozer  # noqa: F401
-            return True
-        except ImportError:
-            return False
-
-    def _check_kivy(self) -> bool:
-        """Check if Kivy is installed"""
-        try:
-            import kivy  # noqa: F401
             return True
         except ImportError:
             return False
