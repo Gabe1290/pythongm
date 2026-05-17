@@ -15,6 +15,7 @@ from editors.room_undo_commands import (
     AddTileCommand, BatchAddTilesCommand, BatchRemoveTilesCommand
 )
 from .object_instance import ObjectInstance
+from .object_render import object_color, draw_object_placeholder
 
 from core.logger import get_logger
 logger = get_logger(__name__)
@@ -772,43 +773,14 @@ class RoomCanvas(QWidget):
             if sprite and not sprite.isNull():
                 painter.drawPixmap(-width / 2, -height / 2, sprite)
             else:
-                # Draw placeholder rectangle
-                color = self.get_object_color(instance.object_name)
-                painter.fillRect(-width / 2, -height / 2, width, height, color)
-                painter.setPen(QPen(QColor("#000000"), 1))
-                painter.drawRect(-width / 2, -height / 2, width, height)
-
-                painter.setPen(QPen(QColor("#FFFFFF"), 1))
-                font = QFont()
-                font.setPointSize(8)
-                painter.setFont(font)
-
-                name = instance.object_name
-                if len(name) > 6:
-                    name = name[:4] + ".."
-
-                painter.drawText(-width / 2 + 2, -height / 2 + 12, name)
+                draw_object_placeholder(painter, instance.object_name, -width / 2, -height / 2, width, height)
         else:
             # No transformation needed - draw normally
             if sprite and not sprite.isNull():
                 sprite_rect = QRect(draw_x, draw_y, width, height)
                 painter.drawPixmap(sprite_rect, sprite)
             else:
-                color = self.get_object_color(instance.object_name)
-                painter.fillRect(draw_x, draw_y, width, height, color)
-                painter.setPen(QPen(QColor("#000000"), 1))
-                painter.drawRect(draw_x, draw_y, width, height)
-
-                painter.setPen(QPen(QColor("#FFFFFF"), 1))
-                font = QFont()
-                font.setPointSize(8)
-                painter.setFont(font)
-
-                name = instance.object_name
-                if len(name) > 6:
-                    name = name[:4] + ".."
-
-                painter.drawText(draw_x + 2, draw_y + 12, name)
+                draw_object_placeholder(painter, instance.object_name, draw_x, draw_y, width, height)
 
         painter.restore()  # Restore previous state
 
@@ -845,21 +817,7 @@ class RoomCanvas(QWidget):
             sprite_rect = QRect(snapped_pos.x(), snapped_pos.y(), sprite.width(), sprite.height())
             painter.drawPixmap(sprite_rect, sprite)
         else:
-            color = self.get_object_color(self.current_object_type)
-            painter.fillRect(snapped_pos.x(), snapped_pos.y(), 32, 32, color)
-            painter.setPen(QPen(QColor("#000000"), 1))
-            painter.drawRect(snapped_pos.x(), snapped_pos.y(), 32, 32)
-
-            painter.setPen(QPen(QColor("#FFFFFF"), 1))
-            font = QFont()
-            font.setPointSize(8)
-            painter.setFont(font)
-
-            name = self.current_object_type
-            if len(name) > 6:
-                name = name[:4] + ".."
-
-            painter.drawText(snapped_pos.x() + 2, snapped_pos.y() + 12, name)
+            draw_object_placeholder(painter, self.current_object_type, snapped_pos.x(), snapped_pos.y(), 32, 32)
 
         painter.setOpacity(1.0)
         painter.setPen(QPen(QColor("#00FF00"), 2, Qt.DashLine))
@@ -1008,25 +966,8 @@ class RoomCanvas(QWidget):
         return pixmap
 
     def get_object_color(self, object_name):
-        """Get a color for an object type"""
-        colors = {
-            'player': QColor("#00FF00"),
-            'enemy': QColor("#FF0000"),
-            'wall': QColor("#808080"),
-            'coin': QColor("#FFFF00"),
-            'door': QColor("#8B4513"),
-            'key': QColor("#FFD700"),
-        }
-
-        if object_name not in colors:
-            hash_val = hash(object_name) % 6
-            default_colors = [
-                QColor("#FF6B6B"), QColor("#4ECDC4"), QColor("#45B7D1"),
-                QColor("#96CEB4"), QColor("#FECA57"), QColor("#FF9FF3")
-            ]
-            return default_colors[hash_val]
-
-        return colors[object_name]
+        """Get a color for an object type (delegates to shared object_render)."""
+        return object_color(object_name)
 
     # Mouse event handlers
     def mousePressEvent(self, event):

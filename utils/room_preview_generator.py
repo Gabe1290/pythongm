@@ -6,8 +6,10 @@ Generates preview images for rooms without requiring a full room editor
 
 from pathlib import Path
 from typing import Dict, Any, Optional
-from PySide6.QtGui import QPainter, QColor, QPen, QPixmap, QFont
+from PySide6.QtGui import QPainter, QColor, QPen, QPixmap
 from PySide6.QtCore import Qt
+
+from editors.room_editor.object_render import draw_object_placeholder
 
 
 class RoomPreviewGenerator:
@@ -173,30 +175,13 @@ class RoomPreviewGenerator:
 
     def _draw_placeholder(self, painter: QPainter, object_name: str,
                           x: int, y: int, width: int, height: int):
-        """Draw a placeholder rectangle for objects without sprites"""
-        color = self._get_object_color(object_name)
-        painter.fillRect(x, y, width, height, color)
-        painter.setPen(QPen(QColor("#000000"), 1))
-        painter.drawRect(x, y, width, height)
+        """Draw a placeholder rectangle for objects without sprites.
 
-        # Draw object name
-        painter.setPen(QPen(QColor("#FFFFFF"), 1))
-        font = QFont()
-        font.setPointSize(8)
-        painter.setFont(font)
-
-        name = object_name
-        if len(name) > 6:
-            name = name[:4] + ".."
-        painter.drawText(x + 2, y + 12, name)
-
-    def _get_object_color(self, object_name: str) -> QColor:
-        """Get a consistent color for an object based on its name"""
-        hash_val = hash(object_name)
-        r = (hash_val & 0xFF0000) >> 16
-        g = (hash_val & 0x00FF00) >> 8
-        b = hash_val & 0x0000FF
-        return QColor(r, g, b, 180)
+        Delegates to the shared room-editor renderer so room-preview
+        thumbnails colour and label objects identically to the editor
+        canvas (previously this used a different hash-based colour).
+        """
+        draw_object_placeholder(painter, object_name, x, y, width, height)
 
     def _load_background_image(self, image_name: str) -> Optional[QPixmap]:
         """Load a background image from the project"""

@@ -10,6 +10,7 @@ from PySide6.QtCore import Qt, Signal, QSize
 from PySide6.QtGui import QFont, QPixmap, QPainter, QColor, QPen
 
 from core.logger import get_logger
+from .object_render import object_color
 logger = get_logger(__name__)
 
 
@@ -149,25 +150,8 @@ class ObjectPalette(QWidget):
         return pixmap
 
     def get_object_color(self, object_name):
-        """Get color for object (same as canvas)"""
-        colors = {
-            'player': QColor("#00FF00"),
-            'enemy': QColor("#FF0000"),
-            'wall': QColor("#808080"),
-            'coin': QColor("#FFFF00"),
-            'door': QColor("#8B4513"),
-            'key': QColor("#FFD700"),
-        }
-
-        if object_name not in colors:
-            hash_val = hash(object_name) % 6
-            default_colors = [
-                QColor("#FF6B6B"), QColor("#4ECDC4"), QColor("#45B7D1"),
-                QColor("#96CEB4"), QColor("#FECA57"), QColor("#FF9FF3")
-            ]
-            return default_colors[hash_val]
-
-        return colors[object_name]
+        """Get color for object (same as canvas; delegates to shared object_render)."""
+        return object_color(object_name)
 
     def on_object_clicked(self, item):
         """Handle object selection"""
