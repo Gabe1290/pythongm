@@ -5,7 +5,7 @@ Refactored asset tree components with better separation of concerns
 """
 
 # Main widget and item classes
-from .tree_main import AssetTreeWidget
+from .asset_tree_widget import AssetTreeWidget
 from .asset_tree_item import AssetTreeItem
 
 # Operations and dialogs
