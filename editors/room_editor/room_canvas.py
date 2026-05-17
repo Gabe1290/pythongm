@@ -16,7 +16,7 @@ from editors.room_undo_commands import (
 )
 from .object_instance import ObjectInstance
 from .object_render import (
-    object_color, draw_object_placeholder,
+    object_color, draw_object_placeholder, load_image_asset,
     create_default_sprite as _shared_default_sprite,
     resolve_object_sprite as _shared_resolve_sprite,
 )
@@ -619,31 +619,10 @@ class RoomCanvas(QWidget):
                 painter.drawPixmap(lx, ly, bg_pixmap)
 
     def load_background_image(self, image_name):
-        """Load background image from project"""
-        if not self.project_data or not self.project_path:
-            return None
-
-        if image_name in self.sprite_cache:
-            return self.sprite_cache[image_name]
-
-        try:
-            for asset_type in ['backgrounds', 'sprites']:
-                assets = self.project_data.get('assets', {}).get(asset_type, {})
-                if image_name in assets:
-                    asset_data = assets[image_name]
-                    file_path = asset_data.get('file_path', '')
-
-                    if file_path:
-                        full_path = self.project_path / file_path
-                        if full_path.exists():
-                            pixmap = QPixmap(str(full_path))
-                            if not pixmap.isNull():
-                                self.sprite_cache[image_name] = pixmap
-                                return pixmap
-            return None
-        except Exception as e:
-            logger.error(f"Error loading background image {image_name}: {e}")
-            return None
+        """Load background image from project (shared object_render loader)."""
+        return load_image_asset(self.project_data, self.project_path,
+                                image_name, self.sprite_cache,
+                                image_name, logger.error)
 
     def draw_grid(self, painter):
         """Draw the grid"""

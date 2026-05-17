@@ -9,7 +9,9 @@ from typing import Dict, Any, Optional
 from PySide6.QtGui import QPainter, QColor, QPen, QPixmap
 from PySide6.QtCore import Qt
 
-from editors.room_editor.object_render import draw_object_placeholder, resolve_object_sprite
+from editors.room_editor.object_render import (
+    draw_object_placeholder, resolve_object_sprite, load_image_asset,
+)
 
 
 class RoomPreviewGenerator:
@@ -184,32 +186,14 @@ class RoomPreviewGenerator:
         draw_object_placeholder(painter, object_name, x, y, width, height)
 
     def _load_background_image(self, image_name: str) -> Optional[QPixmap]:
-        """Load a background image from the project"""
-        if not self.project_data or not self.project_path:
-            return None
+        """Load a background image (shared object_render loader).
 
-        cache_key = f"bg_{image_name}"
-        if cache_key in self.sprite_cache:
-            return self.sprite_cache[cache_key]
-
-        try:
-            for asset_type in ['backgrounds', 'sprites']:
-                assets = self.project_data.get('assets', {}).get(asset_type, {})
-                if image_name in assets:
-                    asset_data = assets[image_name]
-                    file_path = asset_data.get('file_path', '')
-
-                    if file_path:
-                        full_path = self.project_path / file_path
-                        if full_path.exists():
-                            pixmap = QPixmap(str(full_path))
-                            if not pixmap.isNull():
-                                self.sprite_cache[cache_key] = pixmap
-                                return pixmap
-            return None
-        except Exception as e:
-            print(f"Error loading background image {image_name}: {e}")
-            return None
+        Keeps the preview's own ``bg_`` cache-key prefix and print-based
+        error reporting, so behaviour is unchanged from before.
+        """
+        return load_image_asset(self.project_data, self.project_path,
+                                image_name, self.sprite_cache,
+                                f"bg_{image_name}", print)
 
     def _load_object_sprite(self, object_name: str) -> Optional[QPixmap]:
         """Load an object's sprite via the shared room-editor resolver.

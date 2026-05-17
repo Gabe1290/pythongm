@@ -7,10 +7,10 @@ Displays available objects for placement in the room
 from pathlib import Path
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QListWidget, QListWidgetItem, QPushButton
 from PySide6.QtCore import Qt, Signal, QSize
-from PySide6.QtGui import QFont, QPixmap, QPainter, QColor, QPen
+from PySide6.QtGui import QFont, QPixmap
 
 from core.logger import get_logger
-from .object_render import object_color
+from .object_render import object_color, create_default_sprite
 logger = get_logger(__name__)
 
 
@@ -113,41 +113,13 @@ class ObjectPalette(QWidget):
             return self.create_default_icon(object_name)
 
     def create_default_icon(self, object_name):
-        """Create a default icon for objects without sprites"""
-        pixmap = QPixmap(32, 32)
-        pixmap.fill(Qt.transparent)
+        """Create a default 32px icon for objects without sprites.
 
-        painter = QPainter(pixmap)
-        painter.setRenderHint(QPainter.Antialiasing)
-
-        # Draw colored rectangle
-        color = self.get_object_color(object_name)
-        painter.fillRect(0, 0, 32, 32, color)
-
-        # Draw border
-        painter.setPen(QPen(QColor("#000000"), 1))
-        painter.drawRect(0, 0, 31, 31)
-
-        # Draw abbreviated name
-        painter.setPen(QPen(QColor("#FFFFFF"), 1))
-        font = QFont()
-        font.setPointSize(8)
-        font.setBold(True)
-        painter.setFont(font)
-
-        # Abbreviate object name
-        name = object_name
-        if len(name) > 4:
-            name = name[:2] + ".."
-
-        # Center text
-        text_rect = painter.fontMetrics().boundingRect(name)
-        x = (32 - text_rect.width()) // 2
-        y = (32 + text_rect.height()) // 2 - 2
-        painter.drawText(x, y, name)
-
-        painter.end()
-        return pixmap
+        Delegates to the shared renderer with the palette's own shorter
+        abbreviation rule (>4 chars -> first 2 + "..") so the icons keep
+        their previous appearance while sharing the drawing code.
+        """
+        return create_default_sprite(object_name, abbrev_over=4, abbrev_keep=2)
 
     def get_object_color(self, object_name):
         """Get color for object (same as canvas; delegates to shared object_render)."""

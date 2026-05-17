@@ -77,11 +77,15 @@ def draw_object_placeholder(painter, object_name, x, y, width, height):
     painter.drawText(x + 2, y + 12, name)
 
 
-def create_default_sprite(object_name):
+def create_default_sprite(object_name, abbrev_over=6, abbrev_keep=4):
     """Create a 32x32 default sprite pixmap for objects without a sprite.
 
     Verbatim of the former RoomCanvas.create_default_sprite (bold, centred
     abbreviated name) so canvas and preview produce the identical fallback.
+    The default abbreviation (name truncated to ``abbrev_keep`` chars when
+    longer than ``abbrev_over``) matches the canvas/preview behaviour; the
+    object palette delegates with its own shorter rule (4/2) so its 32px
+    icons keep their previous appearance.
     """
     pixmap = QPixmap(32, 32)
     pixmap.fill(Qt.transparent)
@@ -101,8 +105,8 @@ def create_default_sprite(object_name):
     painter.setFont(font)
 
     name = object_name
-    if len(name) > 6:
-        name = name[:4] + ".."
+    if len(name) > abbrev_over:
+        name = name[:abbrev_keep] + ".."
 
     text_rect = painter.fontMetrics().boundingRect(name)
     x = (32 - text_rect.width()) // 2
@@ -191,3 +195,40 @@ def resolve_object_sprite(project_data, project_path, object_name, cache):
         pixmap = create_default_sprite(object_name)
         cache[object_name] = pixmap
         return pixmap
+
+
+def load_image_asset(project_data, project_path, image_name, cache, cache_key, on_error):
+    """Load a background/sprite image asset by name. Returns QPixmap or None.
+
+    Shared body of the former RoomCanvas.load_background_image and
+    RoomPreviewGenerator._load_background_image, which were byte-identical
+    except for the cache key and the error logger. Behaviour is preserved
+    per caller: each passes its own ``cache_key`` (canvas uses the raw
+    image name, the preview uses ``bg_<name>``) and ``on_error`` callback
+    (canvas → logger.error, preview → print), so the message text and
+    return value (None on miss/error) are unchanged.
+    """
+    if not project_data or not project_path:
+        return None
+
+    if cache_key in cache:
+        return cache[cache_key]
+
+    try:
+        for asset_type in ['backgrounds', 'sprites']:
+            assets = project_data.get('assets', {}).get(asset_type, {})
+            if image_name in assets:
+                asset_data = assets[image_name]
+                file_path = asset_data.get('file_path', '')
+
+                if file_path:
+                    full_path = project_path / file_path
+                    if full_path.exists():
+                        pixmap = QPixmap(str(full_path))
+                        if not pixmap.isNull():
+                            cache[cache_key] = pixmap
+                            return pixmap
+        return None
+    except Exception as e:
+        on_error(f"Error loading background image {image_name}: {e}")
+        return None
