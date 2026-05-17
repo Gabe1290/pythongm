@@ -137,7 +137,31 @@ def process(ts_path: Path) -> bool:
     return True
 
 
+def should_compile(ts_path: Path) -> bool:
+    """Only compile a .ts whose .qm the language manager will actually use.
+
+    The loader prefers split files (pygm2_<lang>_<group>.qm) but ONLY if
+    a split set already exists; otherwise it uses the monolithic
+    pygm2_<lang>.qm. Compiling a split _misc.ts for a language that has
+    no split set (e.g. fr) would create a brand-new split .qm that
+    hijacks the loader and drops the full monolithic translation. Guard
+    against that: a split *_<group>.ts is compiled only when that
+    language already uses split files (pygm2_<lang>_core.qm exists).
+    """
+    parts = ts_path.stem.split("_")
+    if len(parts) <= 2:
+        return True  # monolithic pygm2_<lang>.ts — always safe
+    lang = parts[1]
+    if (TRANS / f"pygm2_{lang}_core.qm").exists():
+        return True
+    print(f"  skip {ts_path.with_suffix('.qm').name}: "
+          f"'{lang}' uses the monolithic .qm (no split set)")
+    return False
+
+
 def compile_qm(ts_path: Path) -> None:
+    if not should_compile(ts_path):
+        return
     qm_path = ts_path.with_suffix(".qm")
     subprocess.run(
         [str(LRELEASE), str(ts_path), "-qm", str(qm_path)],
