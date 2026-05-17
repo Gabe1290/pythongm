@@ -134,32 +134,6 @@ class MoveInstanceCommand(QUndoCommand):
             logger.error(f"Error in MoveInstanceCommand.undo: {e}")
 
 
-class ChangeInstancePropertyCommand(QUndoCommand):
-    """Command for changing instance property"""
-
-    def __init__(self, canvas, instance, property_name, old_value, new_value):
-        super().__init__(f"Change {property_name}")
-        self.canvas = canvas
-        self.instance = instance
-        self.property_name = property_name
-        self.old_value = old_value
-        self.new_value = new_value
-
-    def redo(self):
-        """Apply new value"""
-        try:
-            setattr(self.instance, self.property_name, self.new_value)
-            QTimer.singleShot(0, self.canvas.update)
-        except (RuntimeError, AttributeError) as e:
-            logger.error(f"Error in ChangeInstancePropertyCommand.redo: {e}")
-
-    def undo(self):
-        """Restore old value"""
-        try:
-            setattr(self.instance, self.property_name, self.old_value)
-            QTimer.singleShot(0, self.canvas.update)
-        except (RuntimeError, AttributeError) as e:
-            logger.error(f"Error in ChangeInstancePropertyCommand.undo: {e}")
 
 
 class BatchAddInstancesCommand(QUndoCommand):

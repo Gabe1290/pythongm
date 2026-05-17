@@ -340,13 +340,6 @@ class BaseEditor(QWidget):
         status = "enabled" if enabled else "disabled"
         self.update_status(f"Auto-save {status}")
 
-    def set_auto_save_delay(self, delay_ms: int):
-        """Set auto-save delay in milliseconds"""
-        self.auto_save_delay_ms = max(1000, delay_ms)  # Minimum 1 second
-
-        # Restart timer if currently running
-        if self.auto_save_timer.isActive():
-            self.start_auto_save_timer()
 
     def refresh(self):
         """Refresh the editor content"""
@@ -426,27 +419,8 @@ class BaseEditor(QWidget):
         if self.undo_stack.canRedo():
             self.undo_stack.redo()
 
-    def add_undo_command(self, command: EditorUndoCommand):
-        """Add an undo command to the stack"""
-        # Store current state as new_data
-        command.new_data = self.get_data()
-        self.undo_stack.push(command)
 
-        # Mark as modified
-        self.data_modified.emit(self.asset_name)
 
-    def set_read_only(self, read_only: bool):
-        """Set read-only state"""
-        self.is_read_only = read_only
-        self.save_action.setEnabled(not read_only and self.is_modified)
-        self.update_window_title()
-
-    def get_project_asset_path(self, asset_type: str, asset_name: str) -> Path:
-        """Get path to asset file in project"""
-        if not self.project_path:
-            return None
-
-        return Path(self.project_path) / asset_type / asset_name
 
     def load_project_data(self) -> Dict[str, Any]:
         """Load project.json data"""

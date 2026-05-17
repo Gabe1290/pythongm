@@ -1,9 +1,11 @@
 # Code Audit — Duplicate & Dead Code
 
 **Date:** 2026-05-17
-**Status:** Findings reference for pre-1.0 testing. §0 and §1 fixed 2026-05-17;
-the platform-exporter cluster of §3 consolidated 2026-05-17; §2 and the rest of
-§3/§4 unaddressed (no fixes applied).
+**Status:** Findings reference for pre-1.0 testing. §0, §1 fixed 2026-05-17.
+§3 platform-exporter cluster + room-editor render cluster (colour, placeholder,
+and object→sprite resolution) consolidated 2026-05-17/18. §2 dead-symbol
+removal completed 2026-05-18 (65 symbols, ~800 lines). Remaining: §3 background-
+image loader pair + icon-variant abbreviation, and §4 (no fixes applied).
 
 **Method:** pyflakes + vulture + symilar (pylint's duplicate detector) over 179 app
 files (~80k LOC), then three verification passes that grep-checked every finding
@@ -67,7 +69,21 @@ triggered — every consumer imports submodules directly (e.g.
 
 ---
 
-## 2. Individually dead symbols (verified, 0 refs repo-wide incl. tests/JSON)
+## 2. Individually dead symbols — ✅ DONE 2026-05-18
+
+Re-verified every listed symbol against the *current* tree (a fresh repo-wide
+pass — grep across py/json/js, dynamic-dispatch, Qt signals, tests; the audit
+is a lead, not ground truth). Result: 65 symbols removed (~800 lines) via an
+AST-precise tool + targeted edits for the `_zip_handler`/`modified_editors`
+attributes and the duplicate `import_dialogs` aliases. `on_action_selected`
+was **kept** — re-verification flagged it RISKY (a textbook Qt slot matching
+existing `action_selected` signals), so it needs a human decision, not blind
+removal. Orphaned imports left by the removals were cleaned; one real
+regression (a re-exported `DEFAULT_GRID_SIZE`) was caught by the app-import
+check and fixed at the true source. Validated: pyflakes clean, byte-compiles,
+full app/handler import, **498 tests pass**. (Original list retained below.)
+
+### Original list (verified, 0 refs repo-wide incl. tests/JSON)
 
 High-confidence dead functions/methods/classes:
 
@@ -138,7 +154,7 @@ availability checks (already `# noqa`).
 | `_load_rooms_from_files` / `_load_objects_from_files` — partially done | ✅ unified for the 4 exporters via base; **still 3×** in `core/project_manager.py:217,266` + `runtime/game_runner.py:1548,1584` | Exporter copies removed; the project_manager/game_runner copies deferred (see note — different signatures, no tests, runtime hot path). |
 | `tree_main.py` vs `asset_tree_widget.py` | widgets/asset_tree | Two `AssetTreeWidget` classes, overlapping `add/remove/clear/refresh/rename`; already drifted (see §1). |
 | Blockly vs Thymio config dialogs | `dialogs/blockly_config_dialog.py` ↔ `dialogs/thymio_config_dialog.py` | `_detect_language`, `_is_dark_color`, `_get_block_name`, tree population, button bar, `on_item_changed`, save-confirm duplicated (~6 blocks). Thymio is Blockly filtered by category. |
-| ~~room_editor sprite/pixmap helpers~~ ✅ mostly done 2026-05-17 | shared `editors/room_editor/object_render.py` | `get_object_color` (was duplicated identically in `room_canvas` + `object_palette`) and the in-place placeholder draw (duplicated 3× in `room_canvas` + 1× in `room_preview_generator`) extracted to `object_render.{object_color,draw_object_placeholder}`. Canvas/palette colour + placeholder proven **pixel-identical to HEAD** (behaviour-preserving; 5006-name colour check + 6-case pixel diff + 498 tests). `room_preview_generator` now uses the shared renderer so thumbnails render **identically to the editor canvas** — *intended visual change* (placeholder objects now use the curated palette, e.g. player `#00ff00`, instead of the old arbitrary hash colour; user-approved). **Still open (deferred):** the larger `_draw_instance` parallel render path — object→sprite resolution & image→QPixmap loader — remains duplicated between `room_canvas` and `room_preview_generator`; and the *icon* variant (`room_canvas.create_default_sprite` vs `object_palette.create_default_icon`) differs only by abbreviation rule (`>6→[:4]` vs `>4→[:2]`) so was left as-is (needs its own decision). |
+| ~~room_editor sprite/pixmap helpers~~ ✅ done 2026-05-17/18 | shared `editors/room_editor/object_render.py` | Extracted to `object_render`: `object_color`, `draw_object_placeholder`, `create_default_sprite`, `resolve_object_sprite`. **Behaviour-preserving** for canvas/palette — proven vs HEAD: 5006-name colour check, pixel-identical placeholder (6 cases) and default-sprite, functional-identical sprite resolver (10 cases), 498 tests. **Approved visual change to room-preview thumbnails:** `room_preview_generator` now uses the shared colour/placeholder *and* sprite resolver, so previews render identically to the editor canvas (curated palette instead of arbitrary hash colours; objects without a sprite now show a default-sprite pixmap + 64px cap instead of a bare placeholder/None). **Remaining (minor, documented decisions — not oversights):** the background-image loader pair (`load_background_image` vs `_load_background_image`) is byte-identical except cache-key (`name` vs `bg_{name}`) and `logger` vs `print` — left separate to avoid changing cache semantics; and `object_palette.create_default_icon` keeps its own abbreviation rule (`>4→[:2]`, bold/centred 32px icon) distinct from the shared default sprite. |
 | Editor float/attach toolbar | `editors/base_editor.py:184-204` duplicated verbatim in `editors/room_editor/__init__.py:204-223` | RoomEditor redefines instead of inheriting `set_floating_state`/`_on_float_clicked` (recent feature — will drift). |
 | Tutorial path/list logic | `widgets/tutorial_dialog.py` ↔ `widgets/tutorial_panel.py` | `_get_localized_tutorials_path` + `load_tutorial_list` duplicated; tutorial was just made dockable, so these are actively drifting. |
 | pygame keymap | `runtime/game_runner.py:2068-2119` ↔ `runtime/input_handler.py:282-332` | 44-line keycode→name table duplicated. |

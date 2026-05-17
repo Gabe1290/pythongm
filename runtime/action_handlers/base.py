@@ -10,11 +10,6 @@ from typing import Dict, Any, Optional, Tuple, TYPE_CHECKING
 import math
 
 from core.logger import get_logger
-from runtime.constants import (
-    DEFAULT_GRID_SIZE,
-    DEFAULT_ROOM_WIDTH,
-    DEFAULT_ROOM_HEIGHT,
-)
 
 if TYPE_CHECKING:
     pass
@@ -32,20 +27,6 @@ MAX_COLOR_VALUE = 255
 FULL_CIRCLE_DEGREES = 360
 
 
-def parse_value(ctx: HandlerContext, value_str: str, instance: Instance = None) -> Any:
-    """Parse a value string using the executor's parser.
-
-    This is a convenience wrapper around the executor's _parse_value method.
-
-    Args:
-        ctx: The ActionExecutor instance providing context
-        value_str: The value string to parse
-        instance: The game instance for variable resolution
-
-    Returns:
-        The parsed value (int, float, bool, string, or resolved variable)
-    """
-    return ctx._parse_value(value_str, instance)
 
 
 def parse_float(ctx: HandlerContext, value: Any, instance: Instance = None,
@@ -161,33 +142,8 @@ def parse_color(color_value: Any, default: Tuple[int, int, int] = (255, 255, 255
     return default
 
 
-def get_room_dimensions(ctx: HandlerContext) -> Tuple[int, int]:
-    """Get the current room dimensions.
-
-    Args:
-        ctx: The ActionExecutor instance
-
-    Returns:
-        Tuple of (width, height)
-    """
-    if ctx.game_runner and ctx.game_runner.current_room:
-        return (ctx.game_runner.current_room.width,
-                ctx.game_runner.current_room.height)
-    return (DEFAULT_ROOM_WIDTH, DEFAULT_ROOM_HEIGHT)
 
 
-def get_instance_dimensions(instance: Instance) -> Tuple[int, int]:
-    """Get an instance's sprite dimensions.
-
-    Args:
-        instance: The game instance
-
-    Returns:
-        Tuple of (width, height)
-    """
-    width = getattr(instance, '_cached_width', DEFAULT_GRID_SIZE)
-    height = getattr(instance, '_cached_height', DEFAULT_GRID_SIZE)
-    return (width, height)
 
 
 def direction_to_vector(direction_degrees: float, speed: float = 1.0) -> Tuple[float, float]:
@@ -228,34 +184,8 @@ def vector_to_direction(hspeed: float, vspeed: float) -> float:
     return math.degrees(math.atan2(-vspeed, hspeed)) % FULL_CIRCLE_DEGREES
 
 
-def point_distance(x1: float, y1: float, x2: float, y2: float) -> float:
-    """Calculate distance between two points.
-
-    Args:
-        x1, y1: First point
-        x2, y2: Second point
-
-    Returns:
-        Distance in pixels
-    """
-    dx = x2 - x1
-    dy = y2 - y1
-    return math.sqrt(dx * dx + dy * dy)
 
 
-def point_direction(x1: float, y1: float, x2: float, y2: float) -> float:
-    """Calculate direction from point 1 to point 2.
-
-    Args:
-        x1, y1: Starting point
-        x2, y2: Target point
-
-    Returns:
-        Direction in degrees (0-360)
-    """
-    dx = x2 - x1
-    dy = y2 - y1
-    return math.degrees(math.atan2(-dy, dx)) % FULL_CIRCLE_DEGREES
 
 
 def snap_to_grid(value: float, grid_size: int) -> float:
@@ -271,24 +201,6 @@ def snap_to_grid(value: float, grid_size: int) -> float:
     return round(value / grid_size) * grid_size
 
 
-def is_on_grid(x: float, y: float, grid_size: int, tolerance: float = 0.5) -> bool:
-    """Check if position is aligned to grid.
-
-    Args:
-        x, y: Position to check
-        grid_size: Grid cell size
-        tolerance: Allowed deviation in pixels
-
-    Returns:
-        True if on grid
-    """
-    x_remainder = abs(x % grid_size)
-    y_remainder = abs(y % grid_size)
-
-    x_aligned = (x_remainder < tolerance) or (x_remainder > grid_size - tolerance)
-    y_aligned = (y_remainder < tolerance) or (y_remainder > grid_size - tolerance)
-
-    return x_aligned and y_aligned
 
 
 def queue_draw_command(instance: Instance, command: Dict[str, Any]) -> None:
@@ -303,19 +215,6 @@ def queue_draw_command(instance: Instance, command: Dict[str, Any]) -> None:
     instance._draw_queue.append(command)
 
 
-def get_collision_speeds(ctx: HandlerContext) -> Dict[str, Any]:
-    """Get stored collision speeds from the executor context.
-
-    During collision events, the executor stores the pre-collision speeds
-    of both instances.
-
-    Args:
-        ctx: The ActionExecutor instance
-
-    Returns:
-        Dictionary with self_hspeed, self_vspeed, other_hspeed, other_vspeed, etc.
-    """
-    return getattr(ctx, '_collision_speeds', {})
 
 
 def get_collision_other(ctx: HandlerContext) -> Optional[Instance]:

@@ -868,7 +868,6 @@ class PyGameMakerIDE(QMainWindow):
 
         # Store reference to open editors
         self.open_editors = {}  # name -> editor_widget
-        self.modified_editors = set()
         # Asset name -> DetachedEditorWindow for editors floated out of the
         # tab strip. Editors in this dict still appear in self.open_editors
         # but are NOT in self.editor_tabs.

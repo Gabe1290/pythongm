@@ -9,7 +9,7 @@ from typing import Dict, Any, Optional
 from PySide6.QtGui import QPainter, QColor, QPen, QPixmap
 from PySide6.QtCore import Qt
 
-from editors.room_editor.object_render import draw_object_placeholder
+from editors.room_editor.object_render import draw_object_placeholder, resolve_object_sprite
 
 
 class RoomPreviewGenerator:
@@ -212,62 +212,15 @@ class RoomPreviewGenerator:
             return None
 
     def _load_object_sprite(self, object_name: str) -> Optional[QPixmap]:
-        """Load sprite for an object from the project"""
-        if not self.project_data or not self.project_path:
-            return None
+        """Load an object's sprite via the shared room-editor resolver.
 
-        if object_name in self.sprite_cache:
-            return self.sprite_cache[object_name]
-
-        try:
-            objects = self.project_data.get('assets', {}).get('objects', {})
-            if object_name not in objects:
-                return None
-
-            object_data = objects[object_name]
-            sprite_name = object_data.get('sprite', '')
-
-            if not sprite_name:
-                return None
-
-            sprites = self.project_data.get('assets', {}).get('sprites', {})
-            if sprite_name not in sprites:
-                return None
-
-            sprite_data = sprites[sprite_name]
-            sprite_file_path = sprite_data.get('file_path', '')
-
-            if not sprite_file_path:
-                return None
-
-            full_sprite_path = self.project_path / sprite_file_path
-            if not full_sprite_path.exists():
-                return None
-
-            pixmap = QPixmap(str(full_sprite_path))
-
-            if pixmap.isNull():
-                return None
-
-            # Extract first frame if animated
-            animation_type = sprite_data.get('animation_type', 'single')
-            frames = sprite_data.get('frames', 1)
-
-            if frames > 1 and animation_type != 'single':
-                frame_width = sprite_data.get('frame_width', pixmap.width())
-                frame_height = sprite_data.get('frame_height', pixmap.height())
-
-                frame_width = min(frame_width, pixmap.width())
-                frame_height = min(frame_height, pixmap.height())
-
-                pixmap = pixmap.copy(0, 0, frame_width, frame_height)
-
-            self.sprite_cache[object_name] = pixmap
-            return pixmap
-
-        except Exception as e:
-            print(f"Error loading object sprite {object_name}: {e}")
-            return None
+        Aligned with the editor canvas (approved change): objects without a
+        usable sprite now get a default-sprite pixmap instead of None,
+        sprites are capped at 64px, and results are cached by object name —
+        so room-preview thumbnails resolve sprites identically to the canvas.
+        """
+        return resolve_object_sprite(self.project_data, self.project_path,
+                                     object_name, self.sprite_cache)
 
     def clear_cache(self):
         """Clear the sprite cache"""

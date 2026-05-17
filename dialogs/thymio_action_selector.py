@@ -429,13 +429,7 @@ class ThymioActionSelector(QDialog):
             self.action_selected.emit(self.selected_action, self.configured_parameters)
             self.accept()
 
-    def get_selected_action(self) -> Optional[str]:
-        """Get the selected action name"""
-        return self.selected_action
 
-    def get_configured_parameters(self) -> Dict[str, Any]:
-        """Get the configured parameters"""
-        return self.configured_parameters
 
     def get_result(self) -> Tuple[Optional[str], Dict[str, Any]]:
         """Get the complete result (action name and parameters)"""

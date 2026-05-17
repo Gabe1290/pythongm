@@ -320,35 +320,7 @@ class ConfigManager:
         """Load configuration"""
         return Config.load()
 
-    def save_window_geometry(self, window):
-        """Save window geometry (JSON-safe version)"""
-        try:
-            # Only save basic geometry info, skip Qt objects
-            Config.set_window_config(
-                width=window.width(),
-                height=window.height(),
-                x=window.x(),
-                y=window.y(),
-                maximized=window.isMaximized()
-            )
-            print("💾 Window geometry saved")
-        except Exception as e:
-            print(f"❌ Error saving window geometry: {e}")
 
-    def restore_window_geometry(self, window):
-        """Restore window geometry"""
-        try:
-            window_config = Config.get_window_config()
-
-            window.resize(window_config["width"], window_config["height"])
-            window.move(window_config["x"], window_config["y"])
-
-            if window_config.get("maximized", False):
-                window.showMaximized()
-
-            print("🔄 Window geometry restored")
-        except Exception as e:
-            print(f"❌ Error restoring window geometry: {e}")
 
 
 # Create global instance for compatibility

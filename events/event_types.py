@@ -7,8 +7,8 @@ Includes all keyboard (A-Z, 0-9, special keys) and mouse events
 
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
-from events.keyboard_events_complete import PYGAME_KEY_CODES, get_all_keyboard_events
-from events.mouse_events_complete import PYGAME_MOUSE_BUTTONS, get_all_mouse_events
+from events.keyboard_events_complete import get_all_keyboard_events
+from events.mouse_events_complete import get_all_mouse_events
 from events.thymio_events import THYMIO_EVENT_TYPES
 
 @dataclass
@@ -355,26 +355,4 @@ def get_mouse_events_for_selector() -> List[Dict]:
 
     return organized
 
-def get_keyboard_event_by_key_code(key_code: int) -> Optional[Dict]:
-    """Get keyboard event info by key code"""
-    for key, code in PYGAME_KEY_CODES.items():
-        if code == key_code:
-            return {
-                'key': key,
-                'key_code': code,
-                'name': f'Key {key}',
-                'display_name': f'Keyboard <{key}>',
-            }
-    return None
 
-def get_mouse_event_by_button_code(button_code: int) -> Optional[Dict]:
-    """Get mouse event info by button code"""
-    for button, code in PYGAME_MOUSE_BUTTONS.items():
-        if code == button_code:
-            return {
-                'button': button,
-                'button_code': code,
-                'name': f'Mouse {button}',
-                'display_name': f'Mouse <{button}>',
-            }
-    return None

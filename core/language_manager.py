@@ -133,21 +133,11 @@ class LanguageManager:
             self._available_languages = self._discover_languages()
         return self._available_languages
 
-    def refresh_available_languages(self):
-        """Force re-discovery of available languages"""
-        self._available_languages = None
-        return self.get_available_languages()
 
     def get_current_language(self):
         """Get current language code"""
         return self.current_language
 
-    def get_current_language_name(self):
-        """Get current language display name"""
-        for code, name, flag in self.get_available_languages():
-            if code == self.current_language:
-                return f"{flag} {name}"
-        return "🇬🇧 English"
 
     def _get_translation_files(self, language_code: str) -> list:
         """
@@ -280,67 +270,8 @@ class LanguageManager:
             logger.info("   ✅ Set to English")
             return True
 
-    def load_current_language(self):
-        """Force load the current language translator (used at startup)"""
-        logger.debug(f"🌐 load_current_language called, current: {self.current_language}")
 
-        if self.current_language == 'en':
-            logger.debug("   ✅ Using English (built-in)")
-            return True
 
-        # Force load the translator for current language
-        app = QApplication.instance()
-        if not app:
-            logger.error("   ❌ No app instance")
-            return False
-
-        translation_files = self._get_translation_files(self.current_language)
-
-        if not translation_files:
-            logger.warning(f"   ❌ No translation files found for {self.current_language}")
-            return False
-
-        logger.debug(f"   📁 Found {len(translation_files)} translation file(s)")
-        loaded_count = 0
-
-        for tf in translation_files:
-            logger.debug(f"   📂 Loading {tf.name}...")
-            translator = QTranslator()
-            if translator.load(str(tf)):
-                self.translators.append(translator)
-                app.installTranslator(translator)
-                loaded_count += 1
-                logger.debug(f"   ✅ Loaded {tf.name}")
-            else:
-                logger.warning(f"   ⚠️ Failed to load {tf.name}")
-
-        if loaded_count > 0:
-            logger.debug(f"   ✅ {loaded_count} translator(s) installed")
-
-            # Load Qt's built-in translations for standard buttons (Yes, No, OK, Cancel, etc.)
-            from PySide6.QtCore import QLibraryInfo
-            qt_translations_path = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
-            if self.qt_translator.load(f"qtbase_{self.current_language}", qt_translations_path):
-                app.installTranslator(self.qt_translator)
-                logger.debug(f"   ✅ Qt base translator installed for {self.current_language}")
-            else:
-                logger.warning(f"   ⚠️ Qt base translations not found for {self.current_language}")
-
-            return True
-        else:
-            logger.error("   ❌ Failed to load any translation files")
-            return False
-
-    def get_translation_file_path(self, language_code: str) -> Path:
-        """Get path to translation file for a language (returns first available)"""
-        files = self._get_translation_files(language_code)
-        if files:
-            return files[0]
-        return self.translations_dir / f"pygm2_{language_code}.qm"
-
-    def get_translation_file_paths(self, language_code: str) -> list:
-        """Get all translation file paths for a language"""
-        return self._get_translation_files(language_code)
 
     def is_translation_available(self, language_code: str) -> bool:
         """Check if translation file exists for a language"""

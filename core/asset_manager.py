@@ -694,9 +694,6 @@ class AssetManager(QObject):
         """Get all assets of a specific type"""
         return self.assets_cache.get(asset_type, {})
 
-    def get_all_assets(self) -> Dict[str, Dict[str, Dict[str, Any]]]:
-        """Get all assets"""
-        return self.assets_cache.copy()
 
     def asset_exists(self, asset_type: str, asset_name: str) -> bool:
         """Check if an asset exists"""
@@ -806,141 +803,8 @@ class AssetManager(QObject):
             self.status_changed.emit(f"Failed to generate thumbnail: {str(e)}")
             return None
 
-    def get_asset_info(self, asset_type: str, asset_name: str) -> Dict[str, Any]:
-        """Get detailed information about an asset"""
-        asset_data = self.get_asset(asset_type, asset_name)
-        if not asset_data:
-            return {}
 
-        info = asset_data.copy()
 
-        if asset_data.get("file_path"):
-            file_path = self.get_absolute_path(asset_data["file_path"])
-            if file_path.exists():
-                stat = file_path.stat()
-                info.update({
-                    "file_size": stat.st_size,
-                    "file_modified": datetime.fromtimestamp(stat.st_mtime).isoformat(),
-                    "absolute_path": str(file_path)
-                })
-
-                if asset_type in ["sprites", "backgrounds"]:
-                    try:
-                        with Image.open(file_path) as img:
-                            info.update({
-                                "width": img.width,
-                                "height": img.height,
-                                "format": img.format,
-                                "mode": img.mode
-                            })
-                    except (FileNotFoundError, OSError, IOError) as e:
-                        logger.warning("Could not read image %s: %s", file_path, e)
-                    except Exception:
-                        logger.exception("Unexpected error reading image info for %s", file_path)
-
-                elif asset_type == "sounds":
-                    # Only attempt to load sound metadata if audio backend initialized
-                    if getattr(self, "audio_available", False):
-                        try:
-                            sound = pygame.mixer.Sound(file_path)
-                            info.update({
-                                "length": sound.get_length()
-                            })
-                        except (FileNotFoundError, pygame.error) as e:
-                            logger.warning("Could not load sound %s: %s", file_path, e)
-                        except Exception:
-                            logger.exception("Unexpected error loading sound info for %s", file_path)
-                    else:
-                        # Audio not available; provide a safe default length
-                        info.update({
-                            "length": 0.0,
-                            "audio_available": False
-                        })
-
-        return info
-
-    def validate_project_assets(self) -> List[Dict[str, Any]]:
-        """Validate all project assets and return list of issues"""
-        issues = []
-
-        if not self.project_directory:
-            return issues
-
-        for asset_type, assets in self.assets_cache.items():
-            for asset_name, asset_data in assets.items():
-                if asset_data.get("file_path"):
-                    file_path = self.get_absolute_path(asset_data["file_path"])
-                    if not file_path.exists():
-                        issues.append({
-                            "type": "missing_file",
-                            "asset_type": asset_type,
-                            "asset_name": asset_name,
-                            "file_path": str(file_path),
-                            "relative_path": asset_data["file_path"],
-                            "message": f"File not found: {asset_data['file_path']}"
-                        })
-                    elif not self.is_supported_format(file_path, asset_type):
-                        issues.append({
-                            "type": "unsupported_format",
-                            "asset_type": asset_type,
-                            "asset_name": asset_name,
-                            "file_path": str(file_path),
-                            "relative_path": asset_data["file_path"],
-                            "message": f"Unsupported format: {file_path.suffix}"
-                        })
-
-                if asset_data.get("thumbnail"):
-                    thumbnail_path = self.get_absolute_path(asset_data["thumbnail"])
-                    if not thumbnail_path.exists():
-                        issues.append({
-                            "type": "missing_thumbnail",
-                            "asset_type": asset_type,
-                            "asset_name": asset_name,
-                            "thumbnail_path": str(thumbnail_path),
-                            "relative_path": asset_data["thumbnail"],
-                            "message": f"Thumbnail not found: {asset_data['thumbnail']}"
-                        })
-
-        return issues
-
-    def clean_unused_files(self) -> List[str]:
-        """Remove files that are not referenced by any assets"""
-        if not self.project_directory:
-            return []
-
-        removed_files = []
-        asset_directories = ["sprites", "sounds", "backgrounds", "thumbnails"]
-
-        for directory in asset_directories:
-            dir_path = self.project_directory / directory
-            if not dir_path.exists():
-                continue
-
-            for file_path in dir_path.iterdir():
-                if file_path.is_file():
-                    relative_path = self.get_relative_path(file_path)
-
-                    is_used = False
-                    for asset_type, assets in self.assets_cache.items():
-                        for asset_data in assets.values():
-                            if (asset_data.get("file_path") == relative_path or
-                                asset_data.get("thumbnail") == relative_path):
-                                is_used = True
-                                break
-                        if is_used:
-                            break
-
-                    if not is_used:
-                        try:
-                            file_path.unlink()
-                            removed_files.append(relative_path)
-                        except Exception as e:
-                            self.status_changed.emit(f"Failed to remove {file_path}: {str(e)}")
-
-        if removed_files:
-            self.status_changed.emit(f"Removed {len(removed_files)} unused files")
-
-        return removed_files
 
     def get_file_hash(self, file_path: Path) -> str:
             """Generate MD5 hash of a file

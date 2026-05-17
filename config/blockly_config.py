@@ -245,9 +245,6 @@ class BlocklyConfig:
         """Check if a block is enabled"""
         return block_type in self.enabled_blocks
 
-    def is_category_enabled(self, category: str) -> bool:
-        """Check if a category is enabled"""
-        return category in self.enabled_categories
 
     def enable_block(self, block_type: str):
         """Enable a specific block"""

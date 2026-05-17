@@ -13,8 +13,9 @@ from core.logger import get_logger
 from runtime.action_handlers.base import (
     Parameters, Instance, HandlerContext,
     parse_float, parse_int, direction_to_vector, vector_to_direction,
-    snap_to_grid, DEFAULT_GRID_SIZE,
+    snap_to_grid,
 )
+from runtime.constants import DEFAULT_GRID_SIZE
 
 logger = get_logger(__name__)
 

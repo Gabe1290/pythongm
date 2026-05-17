@@ -1102,10 +1102,6 @@ class GameRoom:
                         cell_instances.remove(instance)
             self._instance_cells[instance_id].clear()
 
-    def update_instance_grid_position(self, instance: 'GameInstance'):
-        """Update an instance's position in the spatial grid"""
-        self._remove_from_grid(instance)
-        self._add_to_grid(instance)
 
     def update_dirty_instances(self):
         """Update spatial grid only for instances that have moved (lazy update)"""
@@ -1200,28 +1196,6 @@ class GameRoom:
                 # else: No sprite assigned - instance.sprite remains None
                 # The render method will skip instances with no sprite
 
-    def create_default_sprite_for_object(self, object_name: str) -> GameSprite:
-        """Create a default sprite for an object"""
-        # Generate color from object name hash for consistency
-        hash_val = hash(object_name)
-        color = (
-            (hash_val % 128) + 127,
-            ((hash_val >> 8) % 128) + 127,
-            ((hash_val >> 16) % 128) + 127
-        )
-
-        # Create sprite surface
-        surface = pygame.Surface((32, 32))
-        surface.fill(color)
-        pygame.draw.rect(surface, (0, 0, 0), (0, 0, 32, 32), 2)  # Black border
-
-        # Create sprite object
-        sprite = GameSprite("")  # Empty path since we're creating manually
-        sprite.surface = surface
-        sprite.width = 32
-        sprite.height = 32
-
-        return sprite
 
     def render(self, screen: pygame.Surface):
         """Render the room and all its instances"""
@@ -2770,14 +2744,6 @@ class GameRunner:
                                 pass
         return 0
 
-    def check_movement_collision(self, moving_instance, objects_data: dict) -> bool:
-        """Check if intended movement would be blocked by solid objects.
-
-        Only solid objects block movement. Non-solid objects don't block -
-        they rely on collision events to handle interactions.
-        """
-        can_move, _ = self.check_movement_collision_with_blocker(moving_instance, objects_data)
-        return can_move
 
     def check_movement_collision_with_blocker(self, moving_instance, objects_data: dict):
         """Check if intended movement would be blocked by solid objects or pushable objects.
@@ -3768,22 +3734,6 @@ class GameRunner:
                 logger.debug(f"  📢 Executing no_more_health for {instance.object_name}")
                 instance.action_executor.execute_event(instance, 'no_more_health', events)
 
-    def show_debug_info(self):
-        """Print debug information"""
-        logger.debug("\n=== DEBUG INFO ===")
-        logger.debug(f"Project: {self.project_data.get('name', 'Unknown')}")
-        logger.debug(f"Current room: {self.current_room.name if self.current_room else 'None'}")
-
-        if self.current_room:
-            logger.debug(f"Room size: {self.current_room.width}x{self.current_room.height}")
-            logger.debug(f"Background: {self.current_room.background_color}")
-            logger.debug(f"Instances: {len(self.current_room.instances)}")
-
-            for i, instance in enumerate(self.current_room.instances):
-                sprite_info = "no sprite" if not instance.sprite else "sprite loaded"
-                logger.debug(f"  {i+1}. {instance.object_name} at ({instance.x}, {instance.y}) - {sprite_info}")
-
-        logger.debug("===================\n")
 
     def stop_game(self):
         """Stop the game"""

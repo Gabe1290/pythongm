@@ -7,7 +7,7 @@ Handles drawing and interaction with room instances
 from pathlib import Path
 from PySide6.QtWidgets import QWidget
 from PySide6.QtCore import Qt, Signal, QRect, QPoint
-from PySide6.QtGui import QPainter, QColor, QPen, QBrush, QPixmap, QFont, QUndoStack
+from PySide6.QtGui import QPainter, QColor, QPen, QBrush, QPixmap, QUndoStack
 
 from editors.room_undo_commands import (
     AddInstanceCommand, RemoveInstanceCommand, MoveInstanceCommand,
@@ -15,7 +15,11 @@ from editors.room_undo_commands import (
     AddTileCommand, BatchAddTilesCommand, BatchRemoveTilesCommand
 )
 from .object_instance import ObjectInstance
-from .object_render import object_color, draw_object_placeholder
+from .object_render import (
+    object_color, draw_object_placeholder,
+    create_default_sprite as _shared_default_sprite,
+    resolve_object_sprite as _shared_resolve_sprite,
+)
 
 from core.logger import get_logger
 logger = get_logger(__name__)
@@ -391,42 +395,14 @@ class RoomCanvas(QWidget):
             instance.y += dy
         self.update()
 
-    def select_instance(self, instance, add_to_selection=False):
-        """Select an instance (or add to selection with Shift)"""
-        if not add_to_selection:
-            self.selected_instances.clear()
 
-        if instance and instance not in self.selected_instances:
-            self.selected_instances.append(instance)
-
-        # Emit with first selected instance or None
-        self.instance_selected.emit(
-            self.selected_instances[0] if self.selected_instances else None
-        )
-        self.update()
-
-    def deselect_all(self):
-        """Deselect all instances"""
-        self.selected_instances.clear()
-        self.instance_selected.emit(None)
-        self.update()
 
     def get_selected_count(self):
         """Get number of selected instances"""
         return len(self.selected_instances)
 
-    def get_primary_selected_instance(self):
-        """Get the primary selected instance (first in list)"""
-        return self.selected_instances[0] if self.selected_instances else None
 
     # Copy/Paste/Cut methods
-    def copy_selected_instance(self):
-        """Copy the selected instance to clipboard"""
-        if self.selected_instance:
-            self.clipboard_instances = [self.selected_instance.to_dict()]
-            logger.debug(f"Copied {self.selected_instance.object_name} to clipboard")
-            return True
-        return False
 
     def copy_selected_instances(self):
         """Copy the selected instances to clipboard"""
@@ -479,19 +455,6 @@ class RoomCanvas(QWidget):
         logger.debug(f"Pasted {len(pasted_instances)} instance(s)")
         return True
 
-    def cut_selected_instance(self):
-        """Cut the selected instance (copy + delete)"""
-        if not self.selected_instance:
-            logger.debug("No instance selected to cut")
-            return False
-
-        self.clipboard_instances = [self.selected_instance.to_dict()]
-        instance_to_cut = self.selected_instance
-        command = RemoveInstanceCommand(self, instance_to_cut, f"Cut {instance_to_cut.object_name}")
-        self.undo_stack.push(command)
-
-        logger.debug(f"Cut {instance_to_cut.object_name} to clipboard")
-        return True
 
     def cut_selected_instances(self):
         """Cut the selected instances (copy + delete)"""
@@ -512,37 +475,6 @@ class RoomCanvas(QWidget):
         return True
 
 
-    def duplicate_selected_instance(self):
-        """Duplicate the selected instance (copy + paste at offset)"""
-        if not self.selected_instance:
-            logger.debug("No instance selected to duplicate")
-            return False
-
-        self.clipboard_instances = [self.selected_instance.to_dict()]
-        offset_x = self.grid_size
-        offset_y = self.grid_size
-
-        instance_data = self.clipboard_instances[0]
-        new_instance = ObjectInstance(
-            instance_data['object_name'],
-            instance_data['x'] + offset_x,
-            instance_data['y'] + offset_y
-        )
-        new_instance.rotation = instance_data.get('rotation', 0)
-        new_instance.scale_x = instance_data.get('scale_x', 1.0)
-        new_instance.scale_y = instance_data.get('scale_y', 1.0)
-        new_instance.visible = instance_data.get('visible', True)
-
-        self.instances.append(new_instance)
-        command = AddInstanceCommand(self, new_instance, f"Duplicate {new_instance.object_name}", already_added=True)
-        self.undo_stack.push(command)
-
-        self.selected_instance = new_instance
-        self.instance_selected.emit(new_instance)
-
-        self.update()
-        logger.debug(f"Duplicated {new_instance.object_name}")
-        return True
 
     def duplicate_selected_instances(self):
         """Duplicate the selected instances (copy + paste at offset)"""
@@ -825,77 +757,13 @@ class RoomCanvas(QWidget):
         painter.setOpacity(1.0)
 
     def load_object_sprite(self, object_name):
-        """Load sprite for an object from the project (first frame for animated sprites)"""
-        if not self.project_data or not self.project_path:
-            return None
+        """Load sprite for an object (first frame, ≤64px, default fallback).
 
-        if object_name in self.sprite_cache:
-            return self.sprite_cache[object_name]
-
-        try:
-            objects = self.project_data.get('assets', {}).get('objects', {})
-            if object_name not in objects:
-                return None
-
-            object_data = objects[object_name]
-            sprite_name = object_data.get('sprite', '')
-
-            if not sprite_name:
-                pixmap = self.create_default_sprite(object_name)
-                self.sprite_cache[object_name] = pixmap
-                return pixmap
-
-            sprites = self.project_data.get('assets', {}).get('sprites', {})
-            if sprite_name not in sprites:
-                pixmap = self.create_default_sprite(object_name)
-                self.sprite_cache[object_name] = pixmap
-                return pixmap
-
-            sprite_data = sprites[sprite_name]
-            sprite_file_path = sprite_data.get('file_path', '')
-
-            if not sprite_file_path:
-                pixmap = self.create_default_sprite(object_name)
-                self.sprite_cache[object_name] = pixmap
-                return pixmap
-
-            full_sprite_path = self.project_path / sprite_file_path
-            if full_sprite_path.exists():
-                pixmap = QPixmap(str(full_sprite_path))
-
-                if not pixmap.isNull():
-                    # Check if this is an animated sprite - extract first frame
-                    animation_type = sprite_data.get('animation_type', 'single')
-                    frames = sprite_data.get('frames', 1)
-
-                    if frames > 1 and animation_type != 'single':
-                        # Extract first frame from sprite sheet
-                        frame_width = sprite_data.get('frame_width', pixmap.width())
-                        frame_height = sprite_data.get('frame_height', pixmap.height())
-
-                        # Ensure frame dimensions are valid
-                        frame_width = min(frame_width, pixmap.width())
-                        frame_height = min(frame_height, pixmap.height())
-
-                        # Extract first frame (top-left corner)
-                        pixmap = pixmap.copy(0, 0, frame_width, frame_height)
-
-                    # Scale if too large for room editor display
-                    if pixmap.width() > 64 or pixmap.height() > 64:
-                        pixmap = pixmap.scaled(64, 64, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-
-                    self.sprite_cache[object_name] = pixmap
-                    return pixmap
-
-            pixmap = self.create_default_sprite(object_name)
-            self.sprite_cache[object_name] = pixmap
-            return pixmap
-
-        except Exception as e:
-            logger.error(f"Error loading sprite for {object_name}: {e}")
-            pixmap = self.create_default_sprite(object_name)
-            self.sprite_cache[object_name] = pixmap
-            return pixmap
+        Delegates to the shared room-editor resolver so the editor canvas
+        and the room-preview thumbnails resolve sprites identically.
+        """
+        return _shared_resolve_sprite(self.project_data, self.project_path,
+                                      object_name, self.sprite_cache)
 
     def get_sprite_origin(self, object_name):
         """Get (origin_x, origin_y) for an object's sprite. Returns (0, 0) if unknown."""
@@ -922,48 +790,10 @@ class RoomCanvas(QWidget):
         self.origin_cache[object_name] = origin
         return origin
 
-    def clear_sprite_cache(self, object_name=None):
-        """Clear sprite cache for specific object or all objects"""
-        if object_name:
-            if object_name in self.sprite_cache:
-                del self.sprite_cache[object_name]
-                logger.debug(f"Cleared sprite cache for {object_name}")
-            self.origin_cache.pop(object_name, None)
-        else:
-            self.sprite_cache.clear()
-            self.origin_cache.clear()
-            logger.debug("Cleared all sprite cache")
 
     def create_default_sprite(self, object_name):
-        """Create a default sprite for objects without sprites"""
-        pixmap = QPixmap(32, 32)
-        pixmap.fill(Qt.transparent)
-
-        painter = QPainter(pixmap)
-        painter.setRenderHint(QPainter.Antialiasing)
-
-        color = self.get_object_color(object_name)
-        painter.fillRect(0, 0, 32, 32, color)
-        painter.setPen(QPen(QColor("#000000"), 1))
-        painter.drawRect(0, 0, 31, 31)
-
-        painter.setPen(QPen(QColor("#FFFFFF"), 1))
-        font = QFont()
-        font.setPointSize(8)
-        font.setBold(True)
-        painter.setFont(font)
-
-        name = object_name
-        if len(name) > 6:
-            name = name[:4] + ".."
-
-        text_rect = painter.fontMetrics().boundingRect(name)
-        x = (32 - text_rect.width()) // 2
-        y = (32 + text_rect.height()) // 2 - 2
-        painter.drawText(x, y, name)
-
-        painter.end()
-        return pixmap
+        """Create a default sprite for objects without sprites (shared object_render)."""
+        return _shared_default_sprite(object_name)
 
     def get_object_color(self, object_name):
         """Get a color for an object type (delegates to shared object_render)."""

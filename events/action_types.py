@@ -1246,9 +1246,6 @@ def get_action_type(action_name: str) -> Optional[ActionType]:
     """Get action type by name"""
     return ACTION_TYPES.get(action_name)
 
-def get_available_actions() -> List[ActionType]:
-    """Get list of all available actions"""
-    return list(ACTION_TYPES.values())
 
 def get_actions_by_category(blockly_config=None) -> Dict[str, List[ActionType]]:
     """Get actions organized by category

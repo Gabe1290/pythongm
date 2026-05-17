@@ -407,6 +407,3 @@ class BlocklyConfigDialog(QDialog):
         # Close dialog
         self.accept()
 
-    def get_config(self) -> BlocklyConfig:
-        """Get the current configuration"""
-        return self.config

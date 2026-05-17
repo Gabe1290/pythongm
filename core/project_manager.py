@@ -60,7 +60,6 @@ class ProjectManager(QObject):
         self._original_zip_path = None
         self._temp_extraction_dir = None
         self._auto_save_as_zip = False  # NEW: Auto-save as zip preference
-        self._zip_handler = None  # NEW: Direct zip handler
 
         # Auto-save timer (parented to self for deterministic cleanup)
         self.auto_save_timer = QTimer(self)
@@ -663,7 +662,6 @@ class ProjectManager(QObject):
             self._original_zip_path = None
             self._temp_extraction_dir = None
             self._auto_save_as_zip = False
-            self._zip_handler = None
 
             # Clear asset manager
             if self.asset_manager:
@@ -719,9 +717,6 @@ class ProjectManager(QObject):
         """Check if the project has unsaved changes (compatibility method)"""
         return self.is_dirty_flag
 
-    def get_is_dirty(self) -> bool:
-        """Get dirty status as property"""
-        return self.is_dirty_flag
 
     def save_project_as(self, new_path: Path) -> bool:
         """Save project to a new location"""
@@ -1347,18 +1342,12 @@ class ProjectManager(QObject):
         """Check if current project was loaded from a .zip file"""
         return hasattr(self, '_original_zip_path') and self._original_zip_path is not None
 
-    def get_original_zip_path(self) -> Path:
-        """Get the original .zip path if project was loaded from zip"""
-        return getattr(self, '_original_zip_path', None)
 
     def set_auto_save_as_zip(self, enabled: bool):
         """Enable/disable auto-save as zip"""
         self._auto_save_as_zip = enabled
         logger.info(f"📦 Auto-save as zip: {'enabled' if enabled else 'disabled'}")
 
-    def is_auto_save_as_zip(self) -> bool:
-        """Check if auto-save as zip is enabled"""
-        return self._auto_save_as_zip
 
     def validate_project(self) -> List[Dict[str, Any]]:
         """

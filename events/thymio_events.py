@@ -4,7 +4,6 @@ Thymio Robot Event Types
 Events specific to the Thymio educational robot
 """
 
-from typing import Dict
 from dataclasses import dataclass, field
 
 
@@ -245,26 +244,10 @@ THYMIO_EVENT_UPDATE_RATES = {
 # HELPER FUNCTIONS
 # ============================================================================
 
-def get_thymio_event(event_name: str) -> EventType:
-    """Get a specific Thymio event type"""
-    return THYMIO_EVENT_TYPES.get(event_name)
 
 
-def get_thymio_events_by_category(category: str) -> Dict[str, EventType]:
-    """Get all Thymio events in a specific category"""
-    return {
-        name: event
-        for name, event in THYMIO_EVENT_TYPES.items()
-        if event.category == category
-    }
 
 
-def get_all_thymio_categories() -> list:
-    """Get list of all Thymio event categories"""
-    categories = set()
-    for event in THYMIO_EVENT_TYPES.values():
-        categories.add(event.category)
-    return sorted(list(categories))
 
 
 def is_thymio_event(event_name: str) -> bool:
@@ -272,19 +255,10 @@ def is_thymio_event(event_name: str) -> bool:
     return event_name in THYMIO_EVENT_TYPES
 
 
-def get_aseba_event_name(pygm_event_name: str) -> str:
-    """Get the corresponding Aseba event handler name for a PyGameMaker event"""
-    return THYMIO_EVENT_TO_ASEBA.get(pygm_event_name, "")
 
 
-def get_keyboard_mapping(thymio_button_event: str) -> str:
-    """Get the keyboard key mapped to a Thymio button event (for simulation)"""
-    return THYMIO_BUTTON_TO_KEYBOARD.get(thymio_button_event, "")
 
 
-def get_event_update_rate(event_name: str) -> int:
-    """Get the update rate (Hz) for a Thymio event, or None if not periodic"""
-    return THYMIO_EVENT_UPDATE_RATES.get(event_name)
 
 
 # ============================================================================

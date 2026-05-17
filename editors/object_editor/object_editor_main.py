@@ -20,7 +20,7 @@ from core.logger import get_logger
 logger = get_logger(__name__)
 
 from utils.config import Config
-from ..base_editor import BaseEditor, EditorUndoCommand
+from ..base_editor import BaseEditor
 from .object_properties_panel import ObjectPropertiesPanel
 from .object_events_panel import ObjectEventsPanel
 from .thymio_events_panel import ThymioEventsPanel
@@ -49,12 +49,6 @@ class VisualCodeGenerator:
         return {}
 
 
-class ObjectChangeCommand(EditorUndoCommand):
-    """Undo command for object changes"""
-
-    def __init__(self, object_editor, description: str, old_data: Dict[str, Any]):
-        super().__init__(object_editor, description)
-        self.old_data = old_data.copy()
 
 
 class ObjectEditor(BaseEditor):
@@ -370,10 +364,6 @@ class ObjectEditor(BaseEditor):
             if hasattr(self, 'thymio_events_panel') and hasattr(self, 'events_panel'):
                 self.thymio_events_panel.load_events_data(self.events_panel.current_events_data)
 
-    def switch_to_standard_mode(self):
-        """Switch to standard events panel"""
-        if hasattr(self, 'events_tab_widget'):
-            self.events_tab_widget.setCurrentIndex(0)
 
     def create_center_panel(self) -> QWidget:
         """Create center panel with properties and tabs"""
@@ -637,35 +627,10 @@ class ObjectEditor(BaseEditor):
         except Exception as e:
             logger.warning(f"Error loading project config for events panel: {e}")
 
-    def add_node_to_canvas(self, type_id: str):
-        """Add a node to the visual canvas"""
-        node = create_node_from_type(type_id)
-        if node:
-            view_center = self.visual_canvas.mapToScene(
-                self.visual_canvas.viewport().rect().center()
-            )
-            self.visual_canvas.add_node(node, view_center)
-            logger.debug(f"Added node: {node.title}")
 
-    def on_visual_node_selected(self, node):
-        """Handle visual node selection"""
-        self.node_properties.set_node(node)
-        logger.debug(f"Selected node: {node.title}")
 
-    def on_visual_node_deselected(self):
-        """Handle visual node deselection"""
-        self.node_properties.set_node(None)
 
-    def on_visual_nodes_modified(self):
-        """Handle visual nodes modification"""
-        self.mark_modified()
-        logger.debug("Visual nodes modified")
 
-    def on_node_property_changed(self, node, property_name, value):
-        """Handle node property change"""
-        logger.debug(f"Node property changed: {property_name} = {value}")
-        self.mark_modified()
-        self.visual_canvas.update()
 
     def setup_object_connections(self):
         """Setup object editor specific connections"""

@@ -34,21 +34,6 @@ class CollisionMixin:
     current_room: Optional['GameRoom']
     action_executor: Any
 
-    def check_movement_collision(self, moving_instance: Instance, objects_data: ObjectsData) -> bool:
-        """Check if intended movement would be blocked by solid objects.
-
-        Only solid objects block movement. Non-solid objects don't block -
-        they rely on collision events to handle interactions.
-
-        Args:
-            moving_instance: Instance attempting to move
-            objects_data: Dictionary of object definitions
-
-        Returns:
-            True if movement is allowed, False if blocked
-        """
-        can_move, _ = self.check_movement_collision_with_blocker(moving_instance, objects_data)
-        return can_move
 
     def check_movement_collision_with_blocker(
         self, moving_instance: Instance, objects_data: ObjectsData

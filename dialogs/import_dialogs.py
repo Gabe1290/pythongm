@@ -136,11 +136,6 @@ class ImportAssetsDialog(QDialog):
 
         return []
 
-    def get_asset_names(self):
-        """Get the asset names for import"""
-        if hasattr(self, 'asset_name') and self.asset_name:
-            return [self.asset_name]
-        return []
     def exec(self):
         # Auto-open file dialog
         self.add_files()
@@ -151,12 +146,5 @@ class ImportAssetsDialog(QDialog):
         else:
             return 0  # Cancel
 
-# Aliases for compatibility
-AssetImportDialog = ImportAssetsDialog
-ImportDialog = ImportAssetsDialog
-
-
-# Additional aliases for compatibility
+# Backward-compatible alias (the only one still imported anywhere)
 ImportAssetDialog = ImportAssetsDialog
-AssetImportDialog = ImportAssetsDialog
-ImportDialog = ImportAssetsDialog
