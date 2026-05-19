@@ -69,37 +69,7 @@ class MacOSExporter(BaseKivyExporter):
             # Step 2: Verify dependencies are available
             self.progress_update.emit(10, "Checking dependencies...")
 
-            if not self._check_pyinstaller():
-                self.export_complete.emit(
-                    False,
-                    "PyInstaller not found.\n\n"
-                    "Please install it in your virtual environment:\n"
-                    "pip install pyinstaller"
-                )
-                return False
-
-            if not self._check_kivy():
-                self.export_complete.emit(
-                    False,
-                    "Kivy not found.\n\n"
-                    "The macOS exporter requires Kivy to be installed.\n"
-                    "Please install it in your virtual environment:\n\n"
-                    "pip install kivy\n\n"
-                    "Or install all dependencies:\n"
-                    "pip install -r requirements.txt"
-                )
-                return False
-
-            if not self._check_pillow():
-                self.export_complete.emit(
-                    False,
-                    "Pillow (PIL) not found.\n\n"
-                    "The macOS exporter requires Pillow for image handling.\n"
-                    "Please install it in your virtual environment:\n\n"
-                    "pip install pillow\n\n"
-                    "Or install all dependencies:\n"
-                    "pip install -r requirements.txt"
-                )
+            if not self._require_kivy_dependencies("macOS exporter"):
                 return False
 
             if not self._check_xcode_tools():

@@ -142,6 +142,52 @@ class BaseKivyExporter(QObject):
         except ImportError:
             return False
 
+    def _require_kivy_dependencies(self, platform_label: str) -> bool:
+        """Verify PyInstaller + Kivy + Pillow are available.
+
+        On the first missing dependency, emits the standard failure message
+        (parameterised by ``platform_label`` such as ``"Linux exporter"``)
+        via ``export_complete`` and returns ``False``; returns ``True`` only
+        when all three are present. Single-sourced from the previously
+        verbatim-duplicated dependency-check blocks in the exe/linux/macos
+        exporters' ``export_project`` — message text and the
+        PyInstaller→Kivy→Pillow order are preserved exactly.
+        """
+        if not self._check_pyinstaller():
+            self.export_complete.emit(
+                False,
+                "PyInstaller not found.\n\n"
+                "Please install it in your virtual environment:\n"
+                "pip install pyinstaller"
+            )
+            return False
+
+        if not self._check_kivy():
+            self.export_complete.emit(
+                False,
+                "Kivy not found.\n\n"
+                f"The {platform_label} requires Kivy to be installed.\n"
+                "Please install it in your virtual environment:\n\n"
+                "pip install kivy\n\n"
+                "Or install all dependencies:\n"
+                "pip install -r requirements.txt"
+            )
+            return False
+
+        if not self._check_pillow():
+            self.export_complete.emit(
+                False,
+                "Pillow (PIL) not found.\n\n"
+                f"The {platform_label} requires Pillow for image handling.\n"
+                "Please install it in your virtual environment:\n\n"
+                "pip install pillow\n\n"
+                "Or install all dependencies:\n"
+                "pip install -r requirements.txt"
+            )
+            return False
+
+        return True
+
     def _generate_kivy_game(self, build_dir: Path) -> bool:
         """
         Use KivyExporter to generate the Kivy game in the build directory

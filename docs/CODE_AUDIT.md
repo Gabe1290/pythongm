@@ -18,10 +18,13 @@ task). **All §3 duplicate-code hazards are now resolved**, including the
 once-deferred project_manager/game_runner/base_exporter loaders: their
 byte-identical merge kernel is single-sourced in `utils/project_file_merge.py`
 (2026-05-19, hot-path behaviour proven HEAD-identical), with the
-divergent-by-design orchestration intentionally left. The only items left
-untouched are the two "Medium" sub-items (key/mouse selector dialogs,
-dependency-error strings) — low-value boilerplate, explicitly not divergence
-hazards, not worth the churn.
+divergent-by-design orchestration intentionally left. Both "Medium"
+sub-items are now also resolved: the exe/linux/macos **dependency-error
+strings** were a genuine duplicate → single-sourced to
+`BaseKivyExporter._require_kivy_dependencies` (behaviour proven HEAD-identical);
+the **key/mouse selector dialogs** are evidence-based won't-do (their only
+byte-identical method is a one-line undriftable delegate, everything else
+genuinely diverges — see §3). Nothing in §1–§3 remains open.
 
 **Method:** pyflakes + vulture + symilar (pylint's duplicate detector) over 179 app
 files (~80k LOC), then three verification passes that grep-checked every finding
@@ -236,9 +239,30 @@ matrix shows `setup_ui`/`__init__`/`on_diagram_clicked`/`accept_selection`/
 bases: 2×`QDialog`, 1×`QWidget`); folding them would change behaviour.
 `on_diagram_hovered` *is* identical across all three but it is an inert
 `pass` stub (no drift hazard — boilerplate, not a task). `action_to_regions`
-is single-use (only `thymio_action_selector`), so not a duplicate. Remaining
-Medium sub-items (key/mouse selector dialogs, dependency-error strings) are
-low-value boilerplate, left as-is.
+is single-use (only `thymio_action_selector`), so not a duplicate.
+
+✅ **Dependency-error strings done 2026-05-19** — the
+PyInstaller→Kivy→Pillow dependency-check failure blocks in
+`export_project` were verbatim-duplicated across the `exe`/`linux`/`macos`
+exporters (PyInstaller block byte-identical; Kivy/Pillow differing *only* by
+a platform phrase). Single-sourced to
+`BaseKivyExporter._require_kivy_dependencies(platform_label)` (they already
+share that base); each `export_project` now calls
+`if not self._require_kivy_dependencies("Linux exporter"): return False`.
+macOS keeps its extra `_check_xcode_tools` block. Behaviour proven
+byte-identical to HEAD (emitted message + abort/proceed) over 3 platforms ×
+all 8 pyinstaller/kivy/pillow combinations, with HEAD messages AST-extracted
+from the pre-refactor snapshots (not retyped); suite stays 481-pass.
+
+❌ **Key/mouse selector dialogs — won't-do (evidence-based).** A per-method
+AST identity matrix of `KeySelectorDialog` ↔ `MouseEventSelectorDialog`
+(both `QDialog`, different domains) shows the **only** byte-identical method
+is `on_item_double_clicked`, and that is a one-line
+`self.accept_selection()` delegate — an inert stub that cannot meaningfully
+drift (same category as Thymio `on_diagram_hovered`). `__init__`,
+`setup_ui`, `accept_selection` and the key-vs-event filters/getters all
+genuinely diverge. A shared mixin here would add import+MRO indirection to
+save one undriftable line — net-negative. Correctly left as-is.
 **Low (boilerplate, not hazards):** `get_logger(__name__)` init (~70),
 `QMessageBox.critical` shape (~111), ad-hoc JSON load try/except (~35),
 ancestor-walk `while parent:` idiom.
