@@ -297,3 +297,27 @@ THYMIO_EVENT_CATEGORIES = {
         "description": "Thymio inter-robot communication"
     },
 }
+
+
+# ============================================================================
+# EVENT → DIAGRAM REGION MAP
+# ============================================================================
+# Single source for the Thymio diagram regions highlighted when an event is
+# selected. Used by ThymioEventSelector and ThymioEventsPanel (previously a
+# verbatim duplicate in each). Events with no physical region (timers, sound,
+# messages) are simply absent — callers use .get(name, []) so absence and an
+# explicit [] are equivalent (`if regions:` skips empty in both).
+
+EVENT_TO_REGIONS = {
+    'thymio_button_forward': ['button_forward'],
+    'thymio_button_backward': ['button_backward'],
+    'thymio_button_left': ['button_left'],
+    'thymio_button_right': ['button_right'],
+    'thymio_button_center': ['button_center'],
+    'thymio_any_button': ['button_forward', 'button_backward', 'button_left',
+                          'button_right', 'button_center'],
+    'thymio_proximity_update': ['prox_0', 'prox_1', 'prox_2', 'prox_3',
+                                'prox_4', 'prox_5', 'prox_6'],
+    'thymio_ground_update': ['ground_left', 'ground_right'],
+    'thymio_tap': ['robot_body'],
+}
