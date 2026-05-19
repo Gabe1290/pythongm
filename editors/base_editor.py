@@ -16,6 +16,7 @@ from PySide6.QtCore import Signal, QTimer
 from PySide6.QtGui import QKeySequence, QShortcut, QUndoCommand, QUndoStack
 
 from core.logger import get_logger
+from editors._floatable_editor import FloatableEditorMixin
 logger = get_logger(__name__)
 
 
@@ -39,19 +40,17 @@ class EditorUndoCommand(QUndoCommand):
             self.editor.load_data(self.new_data)
 
 
-class BaseEditor(QWidget):
+class BaseEditor(FloatableEditorMixin, QWidget):
     """
     Base class for all asset editors in the IDE
     Provides common functionality like save/load, undo/redo, etc.
     """
 
-    # Signals
+    # Signals (float_requested/reattach_requested come from FloatableEditorMixin)
     data_modified = Signal(str)  # asset_name
     save_requested = Signal(str, dict)  # asset_name, data
     close_requested = Signal(str)  # asset_name
     status_changed = Signal(str)  # status_message
-    float_requested = Signal(object)  # the editor widget itself (for IDE detach)
-    reattach_requested = Signal(object)  # editor asks IDE to put it back in a tab
 
     def __init__(self, project_path: Optional[str] = None, parent=None):
         super().__init__(parent)
@@ -182,25 +181,7 @@ class BaseEditor(QWidget):
         # Refresh shortcut
         QShortcut(QKeySequence("F5"), self, self.refresh)
 
-    def _on_float_clicked(self):
-        """Toolbar Float/Attach button — IDE handles the actual reparent."""
-        if self._is_floating:
-            self.reattach_requested.emit(self)
-        else:
-            self.float_requested.emit(self)
-
-    def set_floating_state(self, is_floating: bool):
-        """Called by the IDE after a successful float/attach so the toolbar
-        button reflects the current state."""
-        self._is_floating = bool(is_floating)
-        if not hasattr(self, 'float_action'):
-            return
-        if self._is_floating:
-            self.float_action.setText(self.tr("📥 Attach"))
-            self.float_action.setToolTip(self.tr("Return this editor to the IDE's tab strip"))
-        else:
-            self.float_action.setText(self.tr("🪟 Float"))
-            self.float_action.setToolTip(self.tr("Open this editor in its own window"))
+    # _on_float_clicked / set_floating_state provided by FloatableEditorMixin
 
     def update_undo_actions(self):
         """Update undo/redo action states"""

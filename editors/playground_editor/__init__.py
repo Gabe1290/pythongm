@@ -17,6 +17,7 @@ from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QPixmap
 
 from core.logger import get_logger
+from editors._floatable_editor import FloatableEditorMixin
 logger = get_logger(__name__)
 
 from .playground_canvas import PlaygroundCanvas, PlaygroundEditMode, DEFAULT_COLORS
@@ -26,14 +27,13 @@ from .color_manager import PlaygroundColorManager
 from .playground_undo_commands import ModifyElementCommand
 
 
-class PlaygroundEditor(QWidget):
+class PlaygroundEditor(FloatableEditorMixin, QWidget):
     """Visual editor for Aseba playground files"""
 
     save_requested = Signal(str, dict)
     close_requested = Signal(str)
     data_modified = Signal(str)
-    float_requested = Signal(object)  # IDE handles the actual reparent
-    reattach_requested = Signal(object)
+    # float_requested/reattach_requested come from FloatableEditorMixin
 
     def __init__(self, project_path, parent=None):
         super().__init__(parent)
@@ -196,24 +196,7 @@ class PlaygroundEditor(QWidget):
         self.float_action.triggered.connect(self._on_float_clicked)
         self._is_floating = False
 
-    def _on_float_clicked(self):
-        if self._is_floating:
-            self.reattach_requested.emit(self)
-        else:
-            self.float_requested.emit(self)
-
-    def set_floating_state(self, is_floating: bool):
-        """Called by the IDE after a successful float/attach so the toolbar
-        button reflects the current state."""
-        self._is_floating = bool(is_floating)
-        if not hasattr(self, 'float_action'):
-            return
-        if self._is_floating:
-            self.float_action.setText(self.tr("📥 Attach"))
-            self.float_action.setToolTip(self.tr("Return this editor to the IDE's tab strip"))
-        else:
-            self.float_action.setText(self.tr("🪟 Float"))
-            self.float_action.setToolTip(self.tr("Open this editor in its own window"))
+    # _on_float_clicked / set_floating_state provided by FloatableEditorMixin
 
     def update_window_title(self):
         """Sync window title with asset name + dirty marker. Drives the
