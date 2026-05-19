@@ -22,6 +22,7 @@ from pathlib import Path
 from PySide6.QtCore import QObject, Signal
 
 from core.logger import get_logger
+from utils.project_file_merge import merge_room_file, merge_object_file
 
 logger = get_logger(__name__)
 
@@ -62,15 +63,9 @@ class BaseKivyExporter(QObject):
                         file_room_data = json.load(f)
 
                     # Merge file data into room data (file takes precedence for instances)
-                    if 'instances' in file_room_data:
-                        room_data['instances'] = file_room_data['instances']
-                        logger.debug(f"Loaded room: {room_name} ({len(room_data['instances'])} instances from file)")
-
-                    # Also copy other room properties from file if present
-                    for key in ['width', 'height', 'background_color', 'background_image',
-                               'tile_horizontal', 'tile_vertical']:
-                        if key in file_room_data:
-                            room_data[key] = file_room_data[key]
+                    instance_count = merge_room_file(room_data, file_room_data)
+                    if instance_count is not None:
+                        logger.debug(f"Loaded room: {room_name} ({instance_count} instances from file)")
 
                 except Exception as e:
                     logger.warning(f"Could not load room file {room_file}: {e}")
@@ -111,12 +106,7 @@ class BaseKivyExporter(QObject):
                         file_object_data = json.load(f, object_pairs_hook=OrderedDict)
 
                     # Merge file data into object data (file takes precedence)
-                    for key in ['events', 'sprite', 'visible', 'solid', 'persistent',
-                               'depth', 'parent', 'mask', 'imported', 'created', 'modified']:
-                        if key in file_object_data:
-                            object_data[key] = file_object_data[key]
-
-                    event_count = len(file_object_data.get('events', {}))
+                    event_count = merge_object_file(object_data, file_object_data)
                     logger.debug(f"Loaded object: {object_name} ({event_count} events from file)")
 
                 except Exception as e:

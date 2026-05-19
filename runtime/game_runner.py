@@ -27,6 +27,7 @@ from PIL import Image
 
 from runtime.action_executor import ActionExecutor
 from runtime._keymap import pygame_key_name
+from utils.project_file_merge import merge_room_file, merge_object_file
 from events.plugin_loader import load_all_plugins
 from config.blockly_translations import get_runtime_translation
 from runtime.thymio_simulator import ThymioSimulator
@@ -1539,15 +1540,9 @@ class GameRunner:
                         file_room_data = json.load(f)
 
                     # Merge file data into room data (file takes precedence for instances)
-                    if 'instances' in file_room_data:
-                        room_data['instances'] = file_room_data['instances']
-                        logger.debug(f"📂 Loaded room: {room_name} ({len(room_data['instances'])} instances from file)")
-
-                    # Also copy other room properties from file if present
-                    for key in ['width', 'height', 'background_color', 'background_image',
-                               'tile_horizontal', 'tile_vertical']:
-                        if key in file_room_data:
-                            room_data[key] = file_room_data[key]
+                    instance_count = merge_room_file(room_data, file_room_data)
+                    if instance_count is not None:
+                        logger.debug(f"📂 Loaded room: {room_name} ({instance_count} instances from file)")
 
                 except Exception as e:
                     logger.error(f"⚠️ Failed to load room file {room_file}: {e}")
@@ -1576,13 +1571,7 @@ class GameRunner:
                         file_object_data = json.load(f)
 
                     # Merge file data into object data (file takes precedence)
-                    # Copy all properties from file, especially events
-                    for key in ['events', 'sprite', 'visible', 'solid', 'persistent',
-                               'depth', 'parent', 'mask', 'imported', 'created', 'modified']:
-                        if key in file_object_data:
-                            object_data[key] = file_object_data[key]
-
-                    event_count = len(file_object_data.get('events', {}))
+                    event_count = merge_object_file(object_data, file_object_data)
                     logger.debug(f"📂 Loaded object: {object_name} ({event_count} events from file)")
 
                 except Exception as e:
