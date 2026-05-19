@@ -5,6 +5,40 @@ All notable changes to PyGameMaker will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-rc.10] - 2026-05-19
+
+Completes the pre-1.0 codebase audit (duplicate- and dead-code pass) and fixes a
+latent UTF-8 bug that affected exported games. No intentional feature changes in
+the audit work — every consolidation is behaviour-preserving and was proven
+identical to the previous release before landing; the full test suite stays green.
+
+### Fixed
+- **Exported games could corrupt or fail to load on non-UTF-8 locales.** The
+  game runtime read the split `rooms/`, `objects/` and `sprites/` JSON files with
+  the OS-default text encoding, while the editor writes them as UTF-8. On end-user
+  systems whose locale is not UTF-8 (e.g. some Windows code pages), any project
+  containing non-ASCII instance data, event scripts or asset filenames could
+  mojibake or crash on load. The runtime now reads these files as UTF-8, matching
+  the editor and exporters. Added a regression test that reproduces a non-UTF-8
+  end-user locale.
+- **French translation regression**: removed a spurious `pygm2_fr_misc.qm` and
+  hardened the translation loader so it can no longer be reintroduced.
+
+### Added
+- **Dockable tutorial panel** with editor-style detach/re-dock (and translated
+  Float / Re-dock strings for DE/ES/FR/IT/RU/SL/UK).
+- Per-platform pre-1.0 IDE test-checklist PDF generator (developer tooling).
+
+### Changed
+- **Pre-1.0 codebase audit (§0–§3) completed.** Fixed a broken package root,
+  removed 10 orphaned modules and 65 verified-dead symbols (~800 lines), and
+  single-sourced every remaining duplicate-code cluster onto shared bases/helpers:
+  Kivy platform exporters, the room-editor rendering stack, the Blockly/Thymio
+  configuration dialogs, the editor Float/Attach toolbar, the tutorials-path
+  helper, the pygame keymap, the Thymio event→region map, the split-project-file
+  merge kernel, and the exe/linux/macOS dependency-check messages. All
+  behaviour-preserving, each proven against the prior release.
+
 ## [1.0.0-rc.9] - 2026-05-09
 
 Pre-1.0 codebase audit pass. No new features — focus is correctness, lifecycle, and parity for the floating-window infrastructure introduced in rc.8.
