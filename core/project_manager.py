@@ -8,6 +8,7 @@ from typing import Dict, List, Optional, Any
 from PySide6.QtCore import QObject, Signal, QTimer
 
 from utils.project_compression import ProjectCompressor
+from utils.project_file_merge import merge_room_file, merge_object_file
 
 from core.logger import get_logger
 logger = get_logger(__name__)
@@ -239,15 +240,9 @@ class ProjectManager(QObject):
                         file_room_data = json.load(f, object_pairs_hook=OrderedDict)
 
                     # Merge file data into room data (file takes precedence for instances)
-                    if 'instances' in file_room_data:
-                        room_data['instances'] = file_room_data['instances']
-                        logger.debug(f"📂 Loaded room: {room_name} ({len(room_data['instances'])} instances from file)")
-
-                    # Also copy other room properties from file if present
-                    for key in ['width', 'height', 'background_color', 'background_image',
-                               'tile_horizontal', 'tile_vertical']:
-                        if key in file_room_data:
-                            room_data[key] = file_room_data[key]
+                    instance_count = merge_room_file(room_data, file_room_data)
+                    if instance_count is not None:
+                        logger.debug(f"📂 Loaded room: {room_name} ({instance_count} instances from file)")
 
                     # Clean up external file marker
                     if '_external_file' in room_data:
@@ -288,13 +283,7 @@ class ProjectManager(QObject):
                         file_object_data = json.load(f, object_pairs_hook=OrderedDict)
 
                     # Merge file data into object data (file takes precedence)
-                    # Copy all properties from file, especially events
-                    for key in ['events', 'sprite', 'visible', 'solid', 'persistent',
-                               'depth', 'parent', 'mask', 'imported', 'created', 'modified']:
-                        if key in file_object_data:
-                            object_data[key] = file_object_data[key]
-
-                    event_count = len(file_object_data.get('events', {}))
+                    event_count = merge_object_file(object_data, file_object_data)
                     logger.debug(f"📂 Loaded object: {object_name} ({event_count} events from file)")
 
                     # Clean up external file marker
