@@ -5,9 +5,10 @@
 §2 dead-symbol removal completed 2026-05-18 (65 symbols, ~800 lines). §3
 platform-exporter cluster and the entire room-editor render cluster (colour,
 placeholder, sprite resolution, background-image loader, icon abbreviation)
-consolidated 2026-05-17/18. §4 re-verified still accurate (it is a
-non-actionable false-positive guard list, not a task). Remaining §3 clusters
-(config dialogs, float/attach, tutorial paths, pygame keymap, Thymio
+consolidated 2026-05-17/18; the Blockly/Thymio config-dialog cluster
+consolidated 2026-05-19 onto a shared `BaseBlockConfigDialog`. §4 re-verified
+still accurate (it is a non-actionable false-positive guard list, not a task).
+Remaining §3 clusters (float/attach, tutorial paths, pygame keymap, Thymio
 selectors) untouched.
 
 **Method:** pyflakes + vulture + symilar (pylint's duplicate detector) over 179 app
@@ -151,12 +152,44 @@ availability checks (already `# noqa`).
 > touches the game-runtime/project-load hot path and is out of scope for an
 > exporter-only consolidation; tracked as a separate follow-up.
 
+> **Blockly/Thymio config-dialog cluster — ✅ CONSOLIDATED 2026-05-19.**
+> Added `dialogs/_block_config_dialog_base.py::BaseBlockConfigDialog(QDialog)`
+> holding the verified-identical scaffold (`config_changed` signal,
+> `_detect_language`, `_is_dark_color`, `_get_block_name`, `setup_ui`,
+> `populate_tree`, `on_item_changed`, `load_config_to_ui`, `check_dependencies`
+> + extracted `_render_dependency_warning` tail, `save_and_close`). Both
+> dialogs now subclass it and override only the genuinely divergent template
+> hooks (window title/size, preset list, category filter/colours,
+> preset-index detection, missing-deps computation + message,
+> `update_info_label`, `on_preset_changed`, `select_all/none`, plus Thymio's
+> `_is_/_apply_thymio_*`). `THYMIO_CATEGORIES` is single-sourced in the base
+> and re-exported by both modules (no external importers; verified). Net
+> −125 LOC (866→741) and, more importantly, the ~6 duplicated blocks are now
+> single-sourced instead of drift-prone copies. **Behaviour-preserving** —
+> proven against pre-refactor HEAD by an offscreen-Qt harness over 36
+> scenarios (9 configs × 2 dialogs: construction, every preset change,
+> select-all/none, `on_item_changed` for category+block, reload round-trip,
+> and the `save_and_close` emit/accept path under both prompt responses),
+> comparing full tree structure (text, check state, flags, brushes,
+> tooltips, expansion), preset combo, labels and window geometry; full suite
+> stays 481-pass (1 pre-existing env-only failure unrelated to dialogs).
+> **Translation note (no regression):** PySide6 `QObject.tr()` resolves its
+> context from the *concrete* runtime class (empirically verified), so the
+> moved `tr()` calls still look up under `BlocklyConfigDialog` /
+> `ThymioConfigDialog` and the existing .qm files keep working unchanged;
+> divergent strings were kept lexically inside subclass hooks. The project
+> ships .ts/.qm by hand and runs no `lupdate` (only `lrelease` via
+> `scripts/compile_translations.py`), so nothing reassigns the context; a
+> *future* manual `lupdate` would file the ~12 shared UI strings under a
+> `BaseBlockConfigDialog` context — a translation-maintenance follow-up, not
+> a runtime change.
+
 | Cluster | Where | Issue |
 |---|---|---|
 | ~~Platform exporters are structural clones~~ ✅ done | `export/{exe,linux,macos,android}` now share `export/base_exporter.py`; `ios` intentionally separate | Resolved (see note above). *Correction (2026-05-17): the previously-noted "Android `export_project` docstring still says 'macOS .app bundle'" was an audit inaccuracy — verified at HEAD and working tree, that docstring correctly reads "Export the project as an Android APK using Kivy + Buildozer"; no such leftover exists. Nothing to fix.* |
 | `_load_rooms_from_files` / `_load_objects_from_files` — partially done | ✅ unified for the 4 exporters via base; **still 3×** in `core/project_manager.py:217,266` + `runtime/game_runner.py:1548,1584` | Exporter copies removed; the project_manager/game_runner copies deferred (see note — different signatures, no tests, runtime hot path). |
 | `tree_main.py` vs `asset_tree_widget.py` | widgets/asset_tree | Two `AssetTreeWidget` classes, overlapping `add/remove/clear/refresh/rename`; already drifted (see §1). |
-| Blockly vs Thymio config dialogs | `dialogs/blockly_config_dialog.py` ↔ `dialogs/thymio_config_dialog.py` | `_detect_language`, `_is_dark_color`, `_get_block_name`, tree population, button bar, `on_item_changed`, save-confirm duplicated (~6 blocks). Thymio is Blockly filtered by category. |
+| ~~Blockly vs Thymio config dialogs~~ ✅ done 2026-05-19 | shared `dialogs/_block_config_dialog_base.py::BaseBlockConfigDialog` | Resolved (see note above). The ~6 duplicated blocks (`_detect_language`, `_is_dark_color`, `_get_block_name`, tree population, button bar, `on_item_changed`, save-confirm) are now single-sourced; subclasses keep only the divergent hooks. Behaviour proven HEAD-identical over 36 harness scenarios; translation-safe. |
 | ~~room_editor sprite/pixmap helpers~~ ✅ done 2026-05-17/18 | shared `editors/room_editor/object_render.py` | Extracted to `object_render`: `object_color`, `draw_object_placeholder`, `create_default_sprite`, `resolve_object_sprite`. **Behaviour-preserving** for canvas/palette — proven vs HEAD: 5006-name colour check, pixel-identical placeholder (6 cases) and default-sprite, functional-identical sprite resolver (10 cases), 498 tests. **Approved visual change to room-preview thumbnails:** `room_preview_generator` now uses the shared colour/placeholder *and* sprite resolver, so previews render identically to the editor canvas (curated palette instead of arbitrary hash colours; objects without a sprite now show a default-sprite pixmap + 64px cap instead of a bare placeholder/None). **Background-image loader + icon abbreviation now also consolidated (2026-05-18, behaviour-preserving):** `load_image_asset` shared by `load_background_image`/`_load_background_image` — each caller still passes its own cache-key (`name` vs `bg_{name}`) and error sink (`logger.error` vs `print`), so behaviour is unchanged (proven over 12 cases, both variants). `create_default_sprite` gained `abbrev_over`/`abbrev_keep` params (default 6/4 = canvas/preview unchanged); `object_palette.create_default_icon` delegates with 4/2 → pixel-identical to before. Whole room-editor render cluster is now single-sourced. |
 | Editor float/attach toolbar | `editors/base_editor.py:184-204` duplicated verbatim in `editors/room_editor/__init__.py:204-223` | RoomEditor redefines instead of inheriting `set_floating_state`/`_on_float_clicked` (recent feature — will drift). |
 | Tutorial path/list logic | `widgets/tutorial_dialog.py` ↔ `widgets/tutorial_panel.py` | `_get_localized_tutorials_path` + `load_tutorial_list` duplicated; tutorial was just made dockable, so these are actively drifting. |
