@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
 from PySide6.QtCore import Qt, Signal, QTimer
 
 from core.logger import get_logger
+from editors._floatable_editor import FloatableEditorMixin
 logger = get_logger(__name__)
 
 from .room_canvas import RoomCanvas
@@ -22,15 +23,14 @@ from .tile_palette import TilePaletteDialog
 from .instance_properties import InstanceProperties
 
 
-class RoomEditor(QWidget):
+class RoomEditor(FloatableEditorMixin, QWidget):
     """Complete room editor with object placement"""
 
     save_requested = Signal(str, dict)
     close_requested = Signal(str)
     data_modified = Signal(str)
     room_editor_activated = Signal(str, dict)
-    float_requested = Signal(object)  # the editor itself — IDE handles detach
-    reattach_requested = Signal(object)
+    # float_requested/reattach_requested come from FloatableEditorMixin
 
     def __init__(self, project_path, parent=None):
         super().__init__(parent)
@@ -202,24 +202,7 @@ class RoomEditor(QWidget):
         self.status_label = QLabel(self.tr("Ready"))
         self.toolbar.addWidget(self.status_label)
 
-    def _on_float_clicked(self):
-        if self._is_floating:
-            self.reattach_requested.emit(self)
-        else:
-            self.float_requested.emit(self)
-
-    def set_floating_state(self, is_floating: bool):
-        """Called by the IDE after a successful float/attach so the toolbar
-        button reflects the current state."""
-        self._is_floating = bool(is_floating)
-        if not hasattr(self, 'float_action'):
-            return
-        if self._is_floating:
-            self.float_action.setText(self.tr("📥 Attach"))
-            self.float_action.setToolTip(self.tr("Return this editor to the IDE's tab strip"))
-        else:
-            self.float_action.setText(self.tr("🪟 Float"))
-            self.float_action.setToolTip(self.tr("Open this editor in its own window"))
+    # _on_float_clicked / set_floating_state provided by FloatableEditorMixin
 
     def toggle_grid(self, checked):
         """Toggle grid visibility"""
