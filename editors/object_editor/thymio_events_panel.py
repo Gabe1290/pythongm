@@ -16,7 +16,9 @@ from PySide6.QtGui import QFont
 from widgets.thymio_diagram_widget import (
     ThymioDiagramWidget, get_events_for_region
 )
-from events.thymio_events import THYMIO_EVENT_TYPES, THYMIO_EVENT_CATEGORIES
+from events.thymio_events import (
+    THYMIO_EVENT_TYPES, THYMIO_EVENT_CATEGORIES, EVENT_TO_REGIONS
+)
 from actions.thymio_actions import THYMIO_ACTIONS
 from editors.object_editor.gm80_action_dialog import GM80ActionDialog
 
@@ -375,21 +377,8 @@ class ThymioEventsPanel(QWidget):
         """Highlight diagram regions related to an event"""
         self.diagram.clear_highlights()
 
-        event_to_regions = {
-            'thymio_button_forward': ['button_forward'],
-            'thymio_button_backward': ['button_backward'],
-            'thymio_button_left': ['button_left'],
-            'thymio_button_right': ['button_right'],
-            'thymio_button_center': ['button_center'],
-            'thymio_any_button': ['button_forward', 'button_backward', 'button_left',
-                                  'button_right', 'button_center'],
-            'thymio_proximity_update': ['prox_0', 'prox_1', 'prox_2', 'prox_3',
-                                        'prox_4', 'prox_5', 'prox_6'],
-            'thymio_ground_update': ['ground_left', 'ground_right'],
-            'thymio_tap': ['robot_body'],
-        }
-
-        regions = event_to_regions.get(event_name, [])
+        # Map events to diagram regions (single-sourced in events.thymio_events)
+        regions = EVENT_TO_REGIONS.get(event_name, [])
         if regions:
             self.diagram.highlight_regions(regions)
 

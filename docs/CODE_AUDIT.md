@@ -11,9 +11,14 @@ editor float/attach cluster the same day onto a shared
 `FloatableEditorMixin`, and the tutorial path helper the same day onto a
 shared `localized_tutorials_path` (the audit's paired `load_tutorial_list`
 claim was inaccurate — see §3 note), and the pygame keymap onto a shared
-`runtime/_keymap.py::pygame_key_name`. §4 re-verified still accurate (it is a
-non-actionable false-positive guard list, not a task). Remaining §3 clusters
-(Thymio selector/panel trio — the "Medium" item) untouched.
+`runtime/_keymap.py::pygame_key_name`, and the Thymio `event_to_regions`
+map onto a shared `events.thymio_events.EVENT_TO_REGIONS`. §4 re-verified
+still accurate (it is a non-actionable false-positive guard list, not a
+task). **All high/medium §3 duplicate-code hazards are now resolved.** What
+remains untouched is deliberately deferred: the deferred project_manager/
+game_runner loaders (runtime hot path, no tests — see §3 note), and the two
+remaining "Medium" sub-items (key/mouse selector dialogs, dependency-error
+strings) which are low-value boilerplate, not divergence hazards.
 
 **Method:** pyflakes + vulture + symilar (pylint's duplicate detector) over 179 app
 files (~80k LOC), then three verification passes that grep-checked every finding
@@ -200,9 +205,23 @@ availability checks (already `# noqa`).
 | ~~pygame keymap~~ ✅ done 2026-05-19 | shared `runtime/_keymap.py::pygame_key_name` | Resolved. The 44-line keycode→name mapping was **AST-identical** in `game_runner.GameRunner._get_key_name` and `input_handler.InputMixin._get_key_name` (differing only by input_handler's `_PYGAME_AVAILABLE` guard + type hint). Extracted to a pure `pygame_key_name(key)`; both methods now delegate (input_handler keeps its guard). `_keymap` imports pygame defensively (mirrors input_handler) so input_handler stays importable without pygame; game_runner imports pygame unconditionally so its behaviour is unchanged. `GameRunner` does **not** actually inherit `InputMixin` (no bases; InputMixin only re-exported in `runtime/__init__.py`), so the two methods are independent — delegation is behaviour-preserving for both. **Exhaustively proven**: byte-identical to both HEAD methods over 467 keys (every `pygame.K_*` constant + dense 0–399 + negative/huge/boundary ints); full suite stays 481-pass. |
 
 **Medium:** Thymio selector/panel trio
-(`thymio_action_selector`/`thymio_event_selector`/`thymio_events_panel` share UI
-scaffold + `event_to_regions` map), key/mouse selector dialogs,
-dependency-error strings.
+(`thymio_action_selector`/`thymio_event_selector`/`thymio_events_panel`).
+✅ **`event_to_regions` map done 2026-05-19** — single-sourced to
+`events.thymio_events.EVENT_TO_REGIONS` (was a verbatim duplicate in
+`thymio_event_selector` and `thymio_events_panel`; `event_selector`'s 5 extra
+`[]`-valued keys were behaviourally inert — `.get(name, [])` makes absence and
+explicit `[]` equivalent under the `if regions:` guard). Proven by a 36-case
+HEAD-vs-refactored diagram call-trace check over the full event universe;
+suite stays 481-pass. **Audit overstated the rest:** the trio does **not**
+"share UI scaffold" in any byte-identical sense — a per-method AST identity
+matrix shows `setup_ui`/`__init__`/`on_diagram_clicked`/`accept_selection`/
+`filter_by_category` all materially diverge across the three (different
+bases: 2×`QDialog`, 1×`QWidget`); folding them would change behaviour.
+`on_diagram_hovered` *is* identical across all three but it is an inert
+`pass` stub (no drift hazard — boilerplate, not a task). `action_to_regions`
+is single-use (only `thymio_action_selector`), so not a duplicate. Remaining
+Medium sub-items (key/mouse selector dialogs, dependency-error strings) are
+low-value boilerplate, left as-is.
 **Low (boilerplate, not hazards):** `get_logger(__name__)` init (~70),
 `QMessageBox.critical` shape (~111), ad-hoc JSON load try/except (~35),
 ancestor-walk `while parent:` idiom.
