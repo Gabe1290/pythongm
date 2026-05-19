@@ -24,7 +24,11 @@ strings** were a genuine duplicate → single-sourced to
 `BaseKivyExporter._require_kivy_dependencies` (behaviour proven HEAD-identical);
 the **key/mouse selector dialogs** are evidence-based won't-do (their only
 byte-identical method is a one-line undriftable delegate, everything else
-genuinely diverges — see §3). Nothing in §1–§3 remains open.
+genuinely diverges — see §3). A **latent UTF-8 decoding bug** in
+`game_runner` (split-file reads used the locale-default encoding; would
+mojibake/crash exported games on non-UTF-8 locales) was surfaced during the
+loader analysis and fixed in its own behaviour-change commit with a
+regression test (suite now 482-pass). Nothing in §1–§3 remains open.
 
 **Method:** pyflakes + vulture + symilar (pylint's duplicate detector) over 179 app
 files (~80k LOC), then three verification passes that grep-checked every finding
@@ -166,9 +170,8 @@ availability checks (already `# noqa`).
 > `runtime/game_runner.py`. Whole-method consolidation was correctly rejected:
 > the three are *divergent by design* (different signatures/data source;
 > project_manager handles string-path refs + OrderedDict ordering + marker
-> cleanup; game_runner is lean read-only and opens files without
-> `encoding='utf-8'` — a separate pre-existing inconsistency, left as-is, not
-> silently changed; logging differs per loader). **But** the actual drift
+> cleanup; game_runner is lean read-only; logging differs per loader). **But**
+> the actual drift
 > hazard — the fixed list of room/object property keys copied from the split
 > file (6 room keys, 11 object keys) plus the instance/event merge — was
 > byte-identical in all three and is now single-sourced in
@@ -180,6 +183,22 @@ availability checks (already `# noqa`).
 > deep-compares both the mutated `project_data` *and* the exact per-loader
 > log call sequence; full suite stays 481-pass. Divergent orchestration
 > deliberately left intact (not a hazard).
+>
+> **Latent bug surfaced here — ✅ FIXED 2026-05-19 (own commit).** While
+> classifying the loaders, found `game_runner` opened `rooms/`, `objects/`
+> and `sprites/` JSON with a bare `open(path, 'r')` (locale-default
+> encoding), whereas `project_manager` writes them with
+> `json.dump(ensure_ascii=False)` (raw UTF-8 bytes) and both other readers
+> use `encoding='utf-8'`. On a non-UTF-8 end-user locale the *shipped/exported*
+> game would mojibake (cp1252) or `UnicodeDecodeError` on any project with
+> non-ASCII instance data, event scripts or asset filenames — invisible on a
+> UTF-8 dev box. This is a behaviour change, so it was deliberately **not**
+> folded into the kernel dedup: fixed in its own commit (3 reads →
+> `encoding='utf-8'`; the highscore read is safe — written `ensure_ascii=True`)
+> with a `tests/test_game_runner_encoding.py` regression test that reproduces a
+> hostile locale via a `LC_ALL=C` + `PYTHONUTF8=0` subprocess (the only
+> reliable repro in CPython 3.11 — monkeypatching `locale` doesn't affect
+> `open()` and PEP 538/540 coerce `LC_ALL=C` back to UTF-8). Suite now 482-pass.
 
 > **Blockly/Thymio config-dialog cluster — ✅ CONSOLIDATED 2026-05-19.**
 > Added `dialogs/_block_config_dialog_base.py::BaseBlockConfigDialog(QDialog)`
@@ -216,7 +235,7 @@ availability checks (already `# noqa`).
 | Cluster | Where | Issue |
 |---|---|---|
 | ~~Platform exporters are structural clones~~ ✅ done | `export/{exe,linux,macos,android}` now share `export/base_exporter.py`; `ios` intentionally separate | Resolved (see note above). *Correction (2026-05-17): the previously-noted "Android `export_project` docstring still says 'macOS .app bundle'" was an audit inaccuracy — verified at HEAD and working tree, that docstring correctly reads "Export the project as an Android APK using Kivy + Buildozer"; no such leftover exists. Nothing to fix.* |
-| ~~`_load_rooms_from_files` / `_load_objects_from_files`~~ ✅ done 2026-05-19 | merge kernel in `utils/project_file_merge.py`; per-loader orchestration kept | Exporter copies unified via base (earlier); the byte-identical merge kernel (6 room keys / 11 object keys + instance/event merge) now single-sourced and shared by `project_manager`, `game_runner` and `base_exporter`. Divergent orchestration (signatures, string-ref handling, logging, file-open encoding) is divergent-by-design and intentionally left. Hot-path behaviour proven HEAD-identical over a 16-scenario data+log harness. |
+| ~~`_load_rooms_from_files` / `_load_objects_from_files`~~ ✅ done 2026-05-19 | merge kernel in `utils/project_file_merge.py`; per-loader orchestration kept | Exporter copies unified via base (earlier); the byte-identical merge kernel (6 room keys / 11 object keys + instance/event merge) now single-sourced and shared by `project_manager`, `game_runner` and `base_exporter`. Divergent orchestration (signatures, string-ref handling, logging) is divergent-by-design and intentionally left. Hot-path behaviour proven HEAD-identical over a 16-scenario data+log harness. A latent encoding bug spotted here (game_runner read split files without `encoding='utf-8'`) was fixed in its own behaviour-change commit + regression test — see the loader note above. |
 | `tree_main.py` vs `asset_tree_widget.py` | widgets/asset_tree | Two `AssetTreeWidget` classes, overlapping `add/remove/clear/refresh/rename`; already drifted (see §1). |
 | ~~Blockly vs Thymio config dialogs~~ ✅ done 2026-05-19 | shared `dialogs/_block_config_dialog_base.py::BaseBlockConfigDialog` | Resolved (see note above). The ~6 duplicated blocks (`_detect_language`, `_is_dark_color`, `_get_block_name`, tree population, button bar, `on_item_changed`, save-confirm) are now single-sourced; subclasses keep only the divergent hooks. Behaviour proven HEAD-identical over 36 harness scenarios; translation-safe. |
 | ~~room_editor sprite/pixmap helpers~~ ✅ done 2026-05-17/18 | shared `editors/room_editor/object_render.py` | Extracted to `object_render`: `object_color`, `draw_object_placeholder`, `create_default_sprite`, `resolve_object_sprite`. **Behaviour-preserving** for canvas/palette — proven vs HEAD: 5006-name colour check, pixel-identical placeholder (6 cases) and default-sprite, functional-identical sprite resolver (10 cases), 498 tests. **Approved visual change to room-preview thumbnails:** `room_preview_generator` now uses the shared colour/placeholder *and* sprite resolver, so previews render identically to the editor canvas (curated palette instead of arbitrary hash colours; objects without a sprite now show a default-sprite pixmap + 64px cap instead of a bare placeholder/None). **Background-image loader + icon abbreviation now also consolidated (2026-05-18, behaviour-preserving):** `load_image_asset` shared by `load_background_image`/`_load_background_image` — each caller still passes its own cache-key (`name` vs `bg_{name}`) and error sink (`logger.error` vs `print`), so behaviour is unchanged (proven over 12 cases, both variants). `create_default_sprite` gained `abbrev_over`/`abbrev_keep` params (default 6/4 = canvas/preview unchanged); `object_palette.create_default_icon` delegates with 4/2 → pixel-identical to before. Whole room-editor render cluster is now single-sourced. |
