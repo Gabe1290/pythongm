@@ -1536,7 +1536,7 @@ class GameRunner:
 
             if room_file.exists():
                 try:
-                    with open(room_file, 'r') as f:
+                    with open(room_file, 'r', encoding='utf-8') as f:
                         file_room_data = json.load(f)
 
                     # Merge file data into room data (file takes precedence for instances)
@@ -1567,7 +1567,7 @@ class GameRunner:
 
             if object_file.exists():
                 try:
-                    with open(object_file, 'r') as f:
+                    with open(object_file, 'r', encoding='utf-8') as f:
                         file_object_data = json.load(f)
 
                     # Merge file data into object data (file takes precedence)
@@ -1591,7 +1591,7 @@ class GameRunner:
 
             if sprite_file.exists():
                 try:
-                    with open(sprite_file, 'r') as f:
+                    with open(sprite_file, 'r', encoding='utf-8') as f:
                         file_sprite_data = json.load(f)
 
                     # Merge file data into sprite data (file takes precedence)
