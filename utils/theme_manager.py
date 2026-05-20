@@ -10,6 +10,10 @@ from typing import Dict
 from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QPalette, QColor
 
+from core.logger import get_logger
+
+logger = get_logger(__name__)
+
 
 class ThemeManager:
     """Manages application themes and color schemes"""
@@ -28,15 +32,15 @@ class ThemeManager:
         themes_file = os.path.join(current_dir, 'themes.json')
 
         if not os.path.exists(themes_file):
-            print(f"⚠️ themes.json not found at {themes_file}, using fallback themes")
+            logger.warning(f"themes.json not found at {themes_file}, using fallback themes")
             cls._themes = cls._get_fallback_themes()
         else:
             try:
-                with open(themes_file, 'r') as f:
+                with open(themes_file, 'r', encoding='utf-8') as f:
                     cls._themes = json.load(f)
-                print(f"✅ Loaded themes from {themes_file}")
+                logger.info(f"Loaded themes from {themes_file}")
             except Exception as e:
-                print(f"❌ Error loading themes.json: {e}")
+                logger.error(f"Error loading themes.json: {e}")
                 cls._themes = cls._get_fallback_themes()
 
         cls._themes_loaded = True
@@ -63,14 +67,14 @@ class ThemeManager:
         theme_name = theme_name.lower()
 
         if theme_name not in cls._themes:
-            print(f"⚠️ Unknown theme: {theme_name}, using default")
+            logger.warning(f"Unknown theme: {theme_name}, using default")
             theme_name = 'default'
 
         theme = cls._themes[theme_name]
         app = QApplication.instance()
 
         if not app:
-            print("❌ No QApplication instance found")
+            logger.error("No QApplication instance found")
             return
 
         # Set application style
@@ -80,11 +84,11 @@ class ThemeManager:
         if 'colors' in theme:
             palette = cls._create_palette(theme['colors'])
             app.setPalette(palette)
-            print(f"✅ Applied {theme['name']} theme with custom palette")
+            logger.info(f"Applied {theme['name']} theme with custom palette")
         else:
             # Reset to default palette
             app.setPalette(QApplication.style().standardPalette())
-            print(f"✅ Applied {theme['name']} theme (system default)")
+            logger.info(f"Applied {theme['name']} theme (system default)")
 
         # Apply stylesheet for additional styling
         stylesheet = cls._generate_stylesheet(theme_name, theme.get('colors', {}))

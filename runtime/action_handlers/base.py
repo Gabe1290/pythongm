@@ -10,6 +10,7 @@ from typing import Dict, Any, Optional, Tuple, TYPE_CHECKING
 import math
 
 from core.logger import get_logger
+from utils.color import to_rgb255
 
 if TYPE_CHECKING:
     pass
@@ -97,49 +98,13 @@ def parse_bool(value: Any, default: bool = False) -> bool:
 
 
 def parse_color(color_value: Any, default: Tuple[int, int, int] = (255, 255, 255)) -> Tuple[int, int, int]:
-    """Parse a color value to RGB tuple.
+    """Parse a color value to an ``(r, g, b)`` 0-255 tuple.
 
-    Supports:
-    - Hex strings: "#FF0000", "#f00"
-    - RGB tuples: (255, 0, 0)
-    - Integer values (GameMaker BGR format)
-
-    Args:
-        color_value: The color to parse
-        default: Fallback RGB tuple
-
-    Returns:
-        RGB tuple (r, g, b)
+    Delegates to :func:`utils.color.to_rgb255`. Kept as the name action
+    handlers import so the many existing call sites don't need to change;
+    see ``utils/color.py`` for the Kivy-flavoured counterpart.
     """
-    if color_value is None:
-        return default
-
-    if isinstance(color_value, tuple) and len(color_value) >= 3:
-        return (int(color_value[0]), int(color_value[1]), int(color_value[2]))
-
-    if isinstance(color_value, str):
-        color_str = color_value.strip()
-        if color_str.startswith('#'):
-            try:
-                hex_color = color_str.lstrip('#')
-                if len(hex_color) == 3:
-                    # Short form: #RGB -> #RRGGBB
-                    hex_color = ''.join(c * 2 for c in hex_color)
-                r = int(hex_color[0:2], 16)
-                g = int(hex_color[2:4], 16)
-                b = int(hex_color[4:6], 16)
-                return (r, g, b)
-            except (ValueError, IndexError):
-                return default
-
-    if isinstance(color_value, int):
-        # GameMaker uses BGR format
-        b = (color_value >> 16) & 0xFF
-        g = (color_value >> 8) & 0xFF
-        r = color_value & 0xFF
-        return (r, g, b)
-
-    return default
+    return to_rgb255(color_value, default)
 
 
 

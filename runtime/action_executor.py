@@ -5,9 +5,23 @@ Converts visual actions into runtime behavior
 """
 
 import math
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
 from core.logger import get_logger
 logger = get_logger(__name__)
+
+
+def _hex_to_rgb(hex_str: str, default: Tuple[int, int, int] = (0, 0, 0)) -> Tuple[int, int, int]:
+    """Parse ``#RRGGBB`` (or ``RRGGBB``) to an ``(r, g, b)`` 0-255 tuple.
+
+    Returns ``default`` on empty input or any parse failure.
+    """
+    if not hex_str:
+        return default
+    try:
+        hex_str = hex_str.lstrip('#')
+        return tuple(int(hex_str[i:i + 2], 16) for i in (0, 2, 4))
+    except (ValueError, IndexError, TypeError):
+        return default
 
 class ActionExecutor:
     """Executes visual actions during gameplay with auto-discovery"""
@@ -2380,18 +2394,9 @@ class ActionExecutor:
             return
 
         # Parse color parameters (GameMaker uses BGR format, we use RGB)
-        def hex_to_rgb(hex_str, default):
-            if not hex_str:
-                return default
-            try:
-                hex_str = hex_str.lstrip('#')
-                return tuple(int(hex_str[i:i+2], 16) for i in (0, 2, 4))
-            except (ValueError, IndexError, TypeError):
-                return default
-
-        background = hex_to_rgb(parameters.get('background'), (255, 255, 220))
-        new_color = hex_to_rgb(parameters.get('new_color'), (255, 0, 0))
-        other_color = hex_to_rgb(parameters.get('other_color'), (0, 0, 0))
+        background = _hex_to_rgb(parameters.get('background'), (255, 255, 220))
+        new_color = _hex_to_rgb(parameters.get('new_color'), (255, 0, 0))
+        other_color = _hex_to_rgb(parameters.get('other_color'), (0, 0, 0))
         allow_new_entry = parameters.get('allow_new_entry', True)
 
         logger.debug(f"🏆 Show highscore action - current score: {self.game_runner.score}")
@@ -2607,8 +2612,8 @@ class ActionExecutor:
                 save_data['instances'].append(inst_data)
 
         try:
-            with open(save_path, 'w') as f:
-                json.dump(save_data, f, indent=2)
+            with open(save_path, 'w', encoding='utf-8') as f:
+                json.dump(save_data, f, indent=2, ensure_ascii=False)
             logger.info(f"💾 Game saved to: {save_path}")
         except Exception as e:
             logger.error(f"❌ Error saving game: {e}")
@@ -2645,7 +2650,7 @@ class ActionExecutor:
             return
 
         try:
-            with open(save_path, 'r') as f:
+            with open(save_path, 'r', encoding='utf-8') as f:
                 save_data = json.load(f)
 
             # Restore game state
@@ -3068,17 +3073,7 @@ class ActionExecutor:
         """
         color = parameters.get("color", "#000000")
 
-        # Parse hex color to RGB tuple
-        def hex_to_rgb(hex_str):
-            if not hex_str:
-                return (0, 0, 0)
-            hex_str = hex_str.lstrip('#')
-            try:
-                return tuple(int(hex_str[i:i+2], 16) for i in (0, 2, 4))
-            except (ValueError, IndexError, TypeError):
-                return (0, 0, 0)
-
-        rgb_color = hex_to_rgb(color)
+        rgb_color = _hex_to_rgb(color)
 
         # Store drawing color on instance for draw events
         instance.draw_color = rgb_color

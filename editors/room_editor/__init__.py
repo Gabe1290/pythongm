@@ -414,7 +414,7 @@ class RoomEditor(FloatableEditorMixin, QWidget):
             if not project_data:
                 project_file = self.project_path / "project.json"
                 if project_file.exists():
-                    with open(project_file, 'r') as f:
+                    with open(project_file, 'r', encoding='utf-8') as f:
                         project_data = json.load(f)
 
             if project_data:

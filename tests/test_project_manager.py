@@ -270,3 +270,40 @@ class TestProjectManagerValidation:
         except TypeError:
             # Also acceptable - None is not a valid dict
             pass
+
+
+class TestAtomicWriteJson:
+    """Test the _atomic_write_json helper guards against partial-write corruption."""
+
+    def test_writes_data_to_target(self, tmp_path):
+        from core.project_manager import _atomic_write_json
+        target = tmp_path / "out.json"
+        _atomic_write_json(target, {"name": "café", "emoji": "🎮"})
+
+        with open(target, encoding="utf-8") as f:
+            assert json.load(f) == {"name": "café", "emoji": "🎮"}
+
+    def test_no_leftover_tmp_on_success(self, tmp_path):
+        from core.project_manager import _atomic_write_json
+        target = tmp_path / "out.json"
+        _atomic_write_json(target, {"x": 1})
+        assert not (tmp_path / "out.json.tmp").exists()
+
+    def test_existing_file_preserved_on_failure(self, tmp_path):
+        """If os.replace fails, the old file at the target must be untouched."""
+        from core import project_manager
+
+        target = tmp_path / "out.json"
+        with open(target, "w", encoding="utf-8") as f:
+            json.dump({"original": True}, f)
+
+        with patch("core.project_manager.os.replace",
+                   side_effect=OSError("simulated replace failure")):
+            with pytest.raises(OSError):
+                project_manager._atomic_write_json(target, {"original": False})
+
+        # Original content survived
+        with open(target, encoding="utf-8") as f:
+            assert json.load(f) == {"original": True}
+        # Tmp file cleaned up
+        assert not (tmp_path / "out.json.tmp").exists()

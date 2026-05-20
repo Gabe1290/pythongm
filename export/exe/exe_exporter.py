@@ -6,7 +6,6 @@ Uses Kivy runtime (80% GameMaker 7.0 compatible) bundled with PyInstaller
 
 import subprocess
 import shutil
-import json
 import platform
 from pathlib import Path
 from typing import Dict
@@ -32,10 +31,6 @@ class ExeExporter(BaseKivyExporter):
         Returns:
             True if export successful, False otherwise
         """
-        self.project_path = Path(project_path)
-        self.output_path = Path(output_path)
-        self.export_settings = settings
-
         try:
             # PyInstaller cannot cross-compile: it builds for the host platform only.
             # A Linux-built binary is an ELF executable, not a Windows PE (.exe).
@@ -52,22 +47,7 @@ class ExeExporter(BaseKivyExporter):
                 )
                 return False
 
-            # Load project data - handle both directory and file paths
-            if self.project_path.is_dir():
-                project_file = self.project_path / "project.json"
-                project_dir = self.project_path
-            else:
-                project_file = self.project_path
-                project_dir = self.project_path.parent
-
-            with open(project_file, 'r') as f:
-                self.project_data = json.load(f)
-
-            # Load room data from external files (instances are stored separately)
-            self._load_rooms_from_files(project_dir)
-
-            # Load object data from external files (events are stored separately)
-            self._load_objects_from_files(project_dir)
+            self._load_project(project_path, output_path, settings)
 
             # Step 1: Verify dependencies are available
             self.progress_update.emit(5, "Checking dependencies...")
@@ -203,7 +183,7 @@ if __name__ == "__main__":
     main()
 '''
 
-        with open(launcher_script, 'w') as f:
+        with open(launcher_script, 'w', encoding='utf-8') as f:
             f.write(script_content)
 
         return launcher_script
@@ -283,7 +263,7 @@ if __name__ == "__main__":
 </assembly>'''
 
         manifest_file = build_dir / "game.manifest"
-        with open(manifest_file, 'w') as f:
+        with open(manifest_file, 'w', encoding='utf-8') as f:
             f.write(manifest_content)
 
         # Create spec content
@@ -347,7 +327,7 @@ exe = EXE(
 )
 '''
 
-        with open(spec_file, 'w') as f:
+        with open(spec_file, 'w', encoding='utf-8') as f:
             f.write(spec_content)
 
         return spec_file

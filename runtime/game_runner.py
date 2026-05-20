@@ -1484,7 +1484,7 @@ class GameRunner:
                 return False
 
             # Load project data
-            with open(project_file, 'r') as f:
+            with open(project_file, 'r', encoding='utf-8') as f:
                 self.project_data = json.load(f)
 
             # Cache objects data early so _load_objects_from_files can merge external files
@@ -1686,7 +1686,7 @@ class GameRunner:
                     # Load from individual sound JSON file
                     sound_json_path = self.project_path / 'sounds' / f'{sound_name}.json'
                     if sound_json_path.exists():
-                        with open(sound_json_path, 'r') as f:
+                        with open(sound_json_path, 'r', encoding='utf-8') as f:
                             sound_metadata = json.load(f)
                             kind = sound_metadata.get('kind', 'sound')
                             volume = sound_metadata.get('volume', volume)
@@ -1976,9 +1976,21 @@ class GameRunner:
                         break
 
                 if has_destroyed:
-                    self.current_room.instances = [inst for inst in self.current_room.instances if not inst.to_destroy]
-                    self.current_room.rebuild_spatial_grid()
-                    self.current_room.invalidate_collision_listened_types()
+                    # Incremental grid removal: each destroyed instance only
+                    # touches the cells it actually occupied (O(k) per instance
+                    # via _instance_cells), avoiding the full O(n) rebuild that
+                    # would otherwise walk every surviving instance.
+                    room = self.current_room
+                    kept = []
+                    for inst in room.instances:
+                        if inst.to_destroy:
+                            room._remove_from_grid(inst)
+                            room._instance_cells.pop(id(inst), None)
+                        else:
+                            kept.append(inst)
+                    room.instances = kept
+                    room._depth_dirty = True
+                    room.invalidate_collision_listened_types()
 
                 # Clear screen
                 self.screen.fill((135, 206, 235))  # Sky blue
@@ -3862,7 +3874,7 @@ class GameRunner:
 
         try:
             if self.highscore_file.exists():
-                with open(self.highscore_file, 'r') as f:
+                with open(self.highscore_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
                     self.highscores = [(entry['name'], entry['score']) for entry in data]
                     logger.debug(f"📊 Loaded {len(self.highscores)} highscores from {self.highscore_file}")
@@ -3880,8 +3892,8 @@ class GameRunner:
             self.highscore_file.parent.mkdir(parents=True, exist_ok=True)
 
             data = [{'name': name, 'score': score} for name, score in self.highscores]
-            with open(self.highscore_file, 'w') as f:
-                json.dump(data, f, indent=2)
+            with open(self.highscore_file, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
             logger.debug(f"💾 Saved {len(self.highscores)} highscores to {self.highscore_file}")
         except Exception as e:
             logger.debug(f"⚠️ Could not save highscores: {e}")

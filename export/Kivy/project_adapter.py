@@ -4,59 +4,19 @@ Works with your actual project structure where rooms/sprites/etc are in 'assets'
 """
 
 from core.logger import get_logger
+from utils.color import to_kivy_rgba
+
 logger = get_logger(__name__)
 
 
 def parse_color(color_value):
+    """Convert a color value to ``[R, G, B, A]`` floats (0.0 to 1.0).
+
+    Delegates to :func:`utils.color.to_kivy_rgba`. Kept as the name the
+    Kivy-exported code expects; see ``utils/color.py`` for the runtime
+    0-255 counterpart.
     """
-    Convert any color format to [R, G, B, A] floats (0.0 to 1.0)
-
-    Args:
-        color_value: Can be:
-            - List: [R, G, B] or [R, G, B, A]
-            - String: "#RRGGBB" hex color
-            - String: "RRGGBB" hex color without #
-
-    Returns:
-        list: [R, G, B, A] with values 0.0 to 1.0
-    """
-    if isinstance(color_value, list) and len(color_value) >= 3:
-        # Already a list, ensure 4 values and normalize to 0-1 range
-        result = list(color_value[:4])
-
-        # If values are > 1, assume 0-255 range and normalize
-        if any(v > 1.0 for v in result):
-            result = [v / 255.0 for v in result]
-
-        # Ensure we have alpha
-        if len(result) == 3:
-            result.append(1.0)
-
-        return result
-
-    if isinstance(color_value, str):
-        # Hex color like "#RRGGBB" or "RRGGBB"
-        color_value = color_value.strip()
-        if color_value.startswith('#'):
-            color_value = color_value[1:]
-
-        try:
-            if len(color_value) == 6:
-                r = int(color_value[0:2], 16) / 255.0
-                g = int(color_value[2:4], 16) / 255.0
-                b = int(color_value[4:6], 16) / 255.0
-                return [r, g, b, 1.0]
-            elif len(color_value) == 8:  # With alpha
-                r = int(color_value[0:2], 16) / 255.0
-                g = int(color_value[2:4], 16) / 255.0
-                b = int(color_value[4:6], 16) / 255.0
-                a = int(color_value[6:8], 16) / 255.0
-                return [r, g, b, a]
-        except (ValueError, IndexError):
-            logger.warning(f"Failed to parse color '{color_value}', using black")
-
-    # Default to black
-    return [0.0, 0.0, 0.0, 1.0]
+    return to_kivy_rgba(color_value)
 
 
 def adapt_project_for_kivy_export(project_manager):

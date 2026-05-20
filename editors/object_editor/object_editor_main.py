@@ -611,7 +611,7 @@ class ObjectEditor(BaseEditor):
             # Try to load project-specific preset
             project_file = Path(self.project_path) / "project.json"
             if project_file.exists():
-                with open(project_file, 'r') as f:
+                with open(project_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
                 preset_name = data.get('settings', {}).get('blockly_preset')
 

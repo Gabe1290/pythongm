@@ -1229,17 +1229,20 @@ BLOCKLY_TO_ACTION_MAP = {
 # Reverse mapping: action_types name -> Blockly block type
 ACTION_TO_BLOCKLY_MAP = {v: k for k, v in BLOCKLY_TO_ACTION_MAP.items()}
 
-# ACTION_TYPES contains duplicate registrations of room actions under both their
-# canonical names (next_room, previous_room, restart_room, room_goto) and their
-# block-style aliases (room_goto_next, room_goto_previous, room_restart). Without
-# the entries below, the alias variant falls through the picker's "include if
-# unmapped" backward-compat path and leaks past preset gating.
-ACTION_TO_BLOCKLY_MAP.update({
-    "room_goto_next": "room_goto_next",
-    "room_goto_previous": "room_goto_previous",
-    "room_restart": "room_restart",
-    "room_goto": "room_goto",
-})
+# Some actions are registered in ACTION_TYPES under their block-style alias
+# (e.g. ``room_goto_next``) while the runtime executor knows them by a
+# different canonical name (``next_room``). For those, the reverse mapping
+# above only covers the canonical -> block direction; the picker also needs
+# alias -> alias self-mapping or the alias variant falls through the
+# "include if unmapped" backward-compat path and leaks past preset gating.
+#
+# This is single-sourced: any Blockly block name that is *also* an
+# ACTION_TYPES key gets a self-mapping automatically, so adding a new alias
+# in those two dicts is the only edit required.
+for _block_name in BLOCKLY_TO_ACTION_MAP:
+    if _block_name in ACTION_TYPES:
+        ACTION_TO_BLOCKLY_MAP[_block_name] = _block_name
+del _block_name
 
 
 def get_action_type(action_name: str) -> Optional[ActionType]:

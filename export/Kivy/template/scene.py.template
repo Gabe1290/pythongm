@@ -114,7 +114,7 @@ class {{ room_name }}(FloatLayout):
                 r, g, b, a = 0, 0, 0, 1
             
             return (r, g, b, a)
-        except:
+        except (ValueError, IndexError, TypeError):
             Logger.warning(f"{{ room_name }}: Failed to parse color '{color_str}', using black")
             return (0, 0, 0, 1)
     
@@ -150,7 +150,8 @@ class {{ room_name }}(FloatLayout):
             Window.unbind(on_key_down=self._on_keyboard_down)
             Window.unbind(on_key_up=self._on_keyboard_up)
             Logger.debug(f"{{ room_name }}: Keyboard events unbound")
-        except:
+        except (AttributeError, KeyError):
+            # Window not initialized or handler never bound
             pass
     
     def _on_keyboard_down(self, window, keycode, scancode, text, modifiers):

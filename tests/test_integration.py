@@ -70,7 +70,7 @@ class TestCompleteProjectWorkflow:
 
         # 5. Verify project file contains everything
         project_file = pm.current_project_path / "project.json"
-        with open(project_file, 'r') as f:
+        with open(project_file, 'r', encoding='utf-8') as f:
             saved_data = json.load(f)
 
         assert "spr_player" in saved_data["assets"]["sprites"]

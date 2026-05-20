@@ -129,8 +129,8 @@ class TestHTML5ExporterBasics:
                 'rooms': {}
             }
         }
-        with open(temp_project_dir / "project.json", 'w') as f:
-            json.dump(project_data, f)
+        with open(temp_project_dir / "project.json", 'w', encoding='utf-8') as f:
+            json.dump(project_data, f, ensure_ascii=False)
 
         output_dir = temp_dir / "output"
         output_dir.mkdir()
@@ -578,8 +578,8 @@ class TestExeExporterDependencyChecks:
         """export_project should fail if PyInstaller is not installed"""
         # Create project file
         project_file = temp_project_dir / "project.json"
-        with open(project_file, 'w') as f:
-            json.dump({'name': 'Test'}, f)
+        with open(project_file, 'w', encoding='utf-8') as f:
+            json.dump({'name': 'Test'}, f, ensure_ascii=False)
 
         # Mock PyInstaller not installed
         with patch.object(exe_exporter, '_check_pyinstaller', return_value=False):
@@ -601,8 +601,8 @@ class TestExeExporterDependencyChecks:
     def test_export_fails_without_kivy(self, exe_exporter, temp_project_dir, temp_dir):
         """export_project should fail if Kivy is not installed"""
         project_file = temp_project_dir / "project.json"
-        with open(project_file, 'w') as f:
-            json.dump({'name': 'Test'}, f)
+        with open(project_file, 'w', encoding='utf-8') as f:
+            json.dump({'name': 'Test'}, f, ensure_ascii=False)
 
         with patch('platform.system', return_value='Windows'):
             with patch.object(exe_exporter, '_check_pyinstaller', return_value=True):
@@ -710,8 +710,8 @@ class TestLinuxExporterPlatformCheck:
     def test_export_fails_on_non_linux(self, linux_exporter, temp_project_dir, temp_dir):
         """export_project should fail on non-Linux platforms"""
         project_file = temp_project_dir / "project.json"
-        with open(project_file, 'w') as f:
-            json.dump({'name': 'Test'}, f)
+        with open(project_file, 'w', encoding='utf-8') as f:
+            json.dump({'name': 'Test'}, f, ensure_ascii=False)
 
         with patch('platform.system', return_value='Windows'):
             signal_spy = MagicMock()
@@ -1649,8 +1649,8 @@ class TestHTML5ExporterTemplateGeneration:
             'settings': {'window_width': 800, 'window_height': 600},
             'assets': {'sprites': {}, 'backgrounds': {}, 'rooms': {}}
         }
-        with open(temp_project_dir / "project.json", 'w') as f:
-            json.dump(project_data, f)
+        with open(temp_project_dir / "project.json", 'w', encoding='utf-8') as f:
+            json.dump(project_data, f, ensure_ascii=False)
 
         output_dir = temp_dir / "output"
         output_dir.mkdir()
@@ -1673,8 +1673,8 @@ class TestHTML5ExporterTemplateGeneration:
                 }
             }
         }
-        with open(temp_project_dir / "project.json", 'w') as f:
-            json.dump(project_data, f)
+        with open(temp_project_dir / "project.json", 'w', encoding='utf-8') as f:
+            json.dump(project_data, f, ensure_ascii=False)
 
         output_dir = temp_dir / "output"
         output_dir.mkdir()
@@ -1696,8 +1696,8 @@ class TestHTML5ExporterTemplateGeneration:
                 'rooms': {'room1': {'width': 800, 'height': 600}}
             }
         }
-        with open(temp_project_dir / "project.json", 'w') as f:
-            json.dump(project_data, f)
+        with open(temp_project_dir / "project.json", 'w', encoding='utf-8') as f:
+            json.dump(project_data, f, ensure_ascii=False)
 
         output_dir = temp_dir / "output"
         output_dir.mkdir()

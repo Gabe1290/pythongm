@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (QMainWindow, QVBoxLayout, QHBoxLayout, QWidget,
                                QProgressBar, QLabel, QStyle, QTabWidget, QToolBar,
                                QApplication)
 
-from PySide6.QtCore import Qt, QTimer, QSize
+from PySide6.QtCore import Qt, QTimer, QSize, QThread
 from PySide6.QtGui import QAction
 
 from widgets.asset_tree.asset_tree_widget import AssetTreeWidget
@@ -30,6 +30,29 @@ from runtime.game_runner import GameRunner
 
 from core.logger import get_logger
 logger = get_logger(__name__)
+
+
+class ExportThread(QThread):
+    """Run an exporter's ``export_project`` on a background thread.
+
+    All five platform exports (exe, linux, macOS, android, ios) drive the
+    same exporter contract, so they share one thread class.
+    """
+
+    def __init__(self, exporter, project_path, output_path, settings):
+        super().__init__()
+        self.exporter = exporter
+        self.project_path = project_path
+        self.output_path = output_path
+        self.settings = settings
+
+    def run(self):
+        self.exporter.export_project(
+            self.project_path,
+            self.output_path,
+            self.settings,
+        )
+
 
 class PyGameMakerIDE(QMainWindow):
 
@@ -2143,23 +2166,6 @@ class PyGameMakerIDE(QMainWindow):
         exporter.export_complete.connect(export_finished)
 
         # Start export in background thread
-        from PySide6.QtCore import QThread
-
-        class ExportThread(QThread):
-            def __init__(self, exporter, project_path, output_path, settings):
-                super().__init__()
-                self.exporter = exporter
-                self.project_path = project_path
-                self.output_path = output_path
-                self.settings = settings
-
-            def run(self):
-                self.exporter.export_project(
-                    self.project_path,
-                    self.output_path,
-                    self.settings
-                )
-
         export_thread = ExportThread(
             exporter,
             str(self.current_project_path),
@@ -2252,23 +2258,6 @@ class PyGameMakerIDE(QMainWindow):
         exporter.export_complete.connect(export_finished)
 
         # Start export in background thread
-        from PySide6.QtCore import QThread
-
-        class ExportThread(QThread):
-            def __init__(self, exporter, project_path, output_path, settings):
-                super().__init__()
-                self.exporter = exporter
-                self.project_path = project_path
-                self.output_path = output_path
-                self.settings = settings
-
-            def run(self):
-                self.exporter.export_project(
-                    self.project_path,
-                    self.output_path,
-                    self.settings
-                )
-
         export_thread = ExportThread(
             exporter,
             str(self.current_project_path),
@@ -2368,23 +2357,6 @@ class PyGameMakerIDE(QMainWindow):
         exporter.export_complete.connect(export_finished)
 
         # Start export in background thread
-        from PySide6.QtCore import QThread
-
-        class ExportThread(QThread):
-            def __init__(self, exporter, project_path, output_path, settings):
-                super().__init__()
-                self.exporter = exporter
-                self.project_path = project_path
-                self.output_path = output_path
-                self.settings = settings
-
-            def run(self):
-                self.exporter.export_project(
-                    self.project_path,
-                    self.output_path,
-                    self.settings
-                )
-
         export_thread = ExportThread(
             exporter,
             str(self.current_project_path),
@@ -2502,23 +2474,6 @@ class PyGameMakerIDE(QMainWindow):
         cancel_btn.clicked.connect(cancel_export)
 
         # Start export in background thread
-        from PySide6.QtCore import QThread
-
-        class ExportThread(QThread):
-            def __init__(self, exporter, project_path, output_path, settings):
-                super().__init__()
-                self.exporter = exporter
-                self.project_path = project_path
-                self.output_path = output_path
-                self.settings = settings
-
-            def run(self):
-                self.exporter.export_project(
-                    self.project_path,
-                    self.output_path,
-                    self.settings
-                )
-
         export_thread = ExportThread(
             exporter,
             str(self.current_project_path),
@@ -2621,23 +2576,6 @@ class PyGameMakerIDE(QMainWindow):
         exporter.progress_update.connect(update_progress)
         exporter.export_complete.connect(export_finished)
         cancel_btn.clicked.connect(cancel_export)
-
-        from PySide6.QtCore import QThread
-
-        class ExportThread(QThread):
-            def __init__(self, exporter, project_path, output_path, settings):
-                super().__init__()
-                self.exporter = exporter
-                self.project_path = project_path
-                self.output_path = output_path
-                self.settings = settings
-
-            def run(self):
-                self.exporter.export_project(
-                    self.project_path,
-                    self.output_path,
-                    self.settings
-                )
 
         export_thread = ExportThread(
             exporter,
@@ -3538,7 +3476,7 @@ class PyGameMakerIDE(QMainWindow):
             try:
                 from pathlib import Path
                 crash_log = Path.home() / 'pygamemaker_crash.log'
-                with open(crash_log, 'a') as f:
+                with open(crash_log, 'a', encoding='utf-8', errors='replace') as f:
                     f.write(f"\n{'='*60}\nObject editor crash:\n{tb}\n")
             except Exception:
                 pass

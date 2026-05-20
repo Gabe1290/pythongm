@@ -8,8 +8,6 @@ This module re-exports all action definitions from individual category modules
 for backward compatibility with existing code.
 """
 
-from typing import List
-
 # Import core definitions
 from actions.core import (
     ActionParameter,
@@ -56,17 +54,6 @@ GM80_ALL_ACTIONS = {
 }
 
 
-# Re-export helper functions with GM80_ALL_ACTIONS pre-bound
-def get_actions_by_tab_v2(tab: str) -> List[ActionDefinition]:
-    """Get all actions in a specific tab"""
-    return get_actions_by_tab(GM80_ALL_ACTIONS, tab)
-
-
-def get_action_v2(action_name: str) -> ActionDefinition:
-    """Get a specific action definition"""
-    return get_action(GM80_ALL_ACTIONS, action_name)
-
-
 # Export everything for backward compatibility
 __all__ = [
     'ActionParameter',
@@ -89,8 +76,6 @@ __all__ = [
     'THYMIO_ACTIONS',
     'THYMIO_TAB',
     'get_actions_by_tab',
-    'get_actions_by_tab_v2',
     'get_action_tabs_ordered',
     'get_action',
-    'get_action_v2',
 ]

@@ -205,8 +205,8 @@ def temp_project_dir(temp_dir):
             "fps": 60
         }
     }
-    with open(project_dir / "project.json", "w") as f:
-        json.dump(project_data, f, indent=2)
+    with open(project_dir / "project.json", "w", encoding="utf-8") as f:
+        json.dump(project_data, f, indent=2, ensure_ascii=False)
 
     return project_dir
 
@@ -316,8 +316,8 @@ def mock_config(temp_config_dir):
         }
     }
     config_path = temp_config_dir / "config.json"
-    with open(config_path, "w") as f:
-        json.dump(config_data, f, indent=2)
+    with open(config_path, "w", encoding="utf-8") as f:
+        json.dump(config_data, f, indent=2, ensure_ascii=False)
 
     return config_path
 
@@ -506,8 +506,8 @@ def project_with_objects(temp_project_dir):
         }
     }
 
-    with open(project_file, "w") as f:
-        json.dump(data, f, indent=2)
+    with open(project_file, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
 
     return temp_project_dir
 
@@ -547,8 +547,8 @@ def project_with_rooms(temp_project_dir):
         }
     }
 
-    with open(project_file, "w") as f:
-        json.dump(data, f, indent=2)
+    with open(project_file, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
 
     return temp_project_dir
 

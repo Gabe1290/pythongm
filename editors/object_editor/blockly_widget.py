@@ -449,7 +449,7 @@ class BlocklyWidget(QWidget):
             if parent and parent.project_path:
                 project_file = Path(parent.project_path) / "project.json"
                 if project_file.exists():
-                    with open(project_file, 'r') as f:
+                    with open(project_file, 'r', encoding='utf-8') as f:
                         data = json.load(f)
                     return data.get('settings', {}).get('blockly_preset')
         except Exception as e:
@@ -467,15 +467,15 @@ class BlocklyWidget(QWidget):
             if parent and parent.project_path:
                 project_file = Path(parent.project_path) / "project.json"
                 if project_file.exists():
-                    with open(project_file, 'r') as f:
+                    with open(project_file, 'r', encoding='utf-8') as f:
                         data = json.load(f)
 
                     if 'settings' not in data:
                         data['settings'] = {}
                     data['settings']['blockly_preset'] = preset_name
 
-                    with open(project_file, 'w') as f:
-                        json.dump(data, f, indent=2)
+                    with open(project_file, 'w', encoding='utf-8') as f:
+                        json.dump(data, f, indent=2, ensure_ascii=False)
                     logger.info(f"Saved Blockly preset '{preset_name}' to project")
         except Exception as e:
             logger.error(f"Error saving project preset: {e}")
@@ -551,7 +551,7 @@ class BlocklyWidget(QWidget):
                     try:
                         project_file = Path(parent.project_path) / "project.json"
                         if project_file.exists():
-                            with open(project_file, 'r') as f:
+                            with open(project_file, 'r', encoding='utf-8') as f:
                                 data = json.load(f)
                             assets = data.get('assets', {})
                     except Exception as e:
