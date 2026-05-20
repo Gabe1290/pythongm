@@ -5,8 +5,35 @@ Fixes all JSON serialization and import errors
 """
 
 import json
+import sys
 import base64
 from pathlib import Path
+
+
+def _safe_print(*args, **kwargs):
+    """print() that never raises UnicodeEncodeError.
+
+    This module prints decorative emojis (📄 ❌ 💾 🧹 ⚠️) and is loaded *at
+    import time* — including transitively by ``runtime.game_runner`` inside
+    exported games. On an end-user machine whose locale forces an ASCII
+    ``sys.stdout`` (LC_ALL=C, no PEP 540 coercion, e.g. a stripped CI runner
+    or a minimal locale-less desktop) any of those prints would raise
+    ``UnicodeEncodeError`` and abort the whole import chain. Fall back to
+    ``errors='replace'`` so decorative output degrades gracefully instead of
+    killing the runtime.
+    """
+    try:
+        print(*args, **kwargs)
+    except UnicodeEncodeError:
+        stream = kwargs.get('file', sys.stdout)
+        sep = kwargs.get('sep', ' ')
+        end = kwargs.get('end', '\n')
+        enc = getattr(stream, 'encoding', None) or 'ascii'
+        text = sep.join(str(a) for a in args) + end
+        try:
+            stream.write(text.encode(enc, errors='replace').decode(enc, errors='replace'))
+        except Exception:
+            pass  # decorative output; never let it break callers
 
 
 class Config:
@@ -25,7 +52,7 @@ class Config:
                 if hasattr(value, '__class__'):
                     class_name = value.__class__.__name__
                     if class_name in ['QByteArray', 'QSize', 'QPoint', 'QRect', 'QMainWindow', 'QWidget']:
-                        print(f"🧹 Skipping non-serializable object: {class_name}")
+                        _safe_print(f"🧹 Skipping non-serializable object: {class_name}")
                         continue  # Skip Qt objects
 
                 if isinstance(value, (dict, list)):
@@ -34,7 +61,7 @@ class Config:
                     clean_data[key] = value
                 else:
                     # Skip other non-serializable objects
-                    print(f"🧹 Skipping non-serializable type: {type(value).__name__}")
+                    _safe_print(f"🧹 Skipping non-serializable type: {type(value).__name__}")
                     continue
             return clean_data
         elif isinstance(data, list):
@@ -45,7 +72,7 @@ class Config:
                 elif isinstance(item, (dict, list)):
                     clean_list.append(cls._clean_config_for_json(item))
                 else:
-                    print(f"🧹 Skipping non-serializable list item: {type(item).__name__}")
+                    _safe_print(f"🧹 Skipping non-serializable list item: {type(item).__name__}")
             return clean_list
         else:
             return data
@@ -75,12 +102,12 @@ class Config:
                     "window": {"width": 1200, "height": 800, "x": 100, "y": 100},
                     "ui": {"theme": "default"}
                 }
-                print("📄 Created new config with defaults")
+                _safe_print("📄 Created new config with defaults")
 
             return cls._config_data
 
         except Exception as e:
-            print(f"❌ Config load error: {e}")
+            _safe_print(f"❌ Config load error: {e}")
             cls._config_data = {
                 "version": "0.4",
                 "recent_projects": [],
@@ -106,7 +133,7 @@ class Config:
             return True
 
         except Exception as e:
-            print(f"❌ Config save error: {e}")
+            _safe_print(f"❌ Config save error: {e}")
             return False
 
     @classmethod
@@ -126,7 +153,7 @@ class Config:
             # Convert QByteArray to bytes, then to base64 string
             return base64.b64encode(bytes(qbytearray)).decode('utf-8')
         except Exception as e:
-            print(f"❌ Error serializing QByteArray: {e}")
+            _safe_print(f"❌ Error serializing QByteArray: {e}")
             return None
 
     @classmethod
@@ -137,7 +164,7 @@ class Config:
             data = base64.b64decode(b64_string)
             return QByteArray(data)
         except Exception as e:
-            print(f"❌ Error deserializing QByteArray: {e}")
+            _safe_print(f"❌ Error deserializing QByteArray: {e}")
             return None
 
     @classmethod
@@ -148,7 +175,7 @@ class Config:
             serialized = cls._serialize_qbytearray(value)
             if serialized:
                 cls._config_data[f"{key}_b64"] = serialized
-                print(f"💾 Saved {key} as base64 string")
+                _safe_print(f"💾 Saved {key} as base64 string")
             return
 
         # Check if value is JSON-serializable
@@ -156,7 +183,7 @@ class Config:
             json.dumps(value)  # Test serialization
             cls._config_data[key] = value
         except (TypeError, ValueError):
-            print(f"⚠️  Skipping non-JSON-serializable value for key '{key}': {type(value).__name__}")
+            _safe_print(f"⚠️  Skipping non-JSON-serializable value for key '{key}': {type(value).__name__}")
 
     @classmethod
     def get_recent_projects(cls):
@@ -343,11 +370,11 @@ def save_on_exit():
     try:
         success = Config.save()
         if success:
-            print("💾 Configuration saved on exit")
+            _safe_print("💾 Configuration saved on exit")
         else:
-            print("⚠️  Configuration save had issues but completed")
+            _safe_print("⚠️  Configuration save had issues but completed")
     except Exception as e:
-        print(f"❌ Error saving config on exit: {e}")
+        _safe_print(f"❌ Error saving config on exit: {e}")
 
 
 # Export all needed symbols
