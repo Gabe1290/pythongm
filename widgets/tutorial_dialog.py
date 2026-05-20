@@ -47,13 +47,14 @@ class TutorialDialog(QDialog):
         layout.addWidget(header)
 
         # Instructions
-        instructions = QLabel(self.tr("Double-click a tutorial to start:"))
+        instructions = QLabel(self.tr("Select a tutorial and click Open (or double-click):"))
         layout.addWidget(instructions)
 
         # Tutorial list
         self.tutorial_list = QListWidget()
         self.tutorial_list.itemClicked.connect(self.on_tutorial_clicked)
         self.tutorial_list.itemDoubleClicked.connect(self.on_tutorial_double_clicked)
+        self.tutorial_list.itemSelectionChanged.connect(self._update_open_button)
         layout.addWidget(self.tutorial_list)
 
         # Description area with thumbnail
@@ -87,11 +88,29 @@ class TutorialDialog(QDialog):
         button_layout = QHBoxLayout()
         button_layout.addStretch()
 
+        self.open_btn = QPushButton(self.tr("Open"))
+        self.open_btn.setDefault(True)
+        self.open_btn.setEnabled(False)  # Enabled when a tutorial is selected.
+        self.open_btn.clicked.connect(self._open_selected_tutorial)
+        button_layout.addWidget(self.open_btn)
+
         close_btn = QPushButton(self.tr("Close"))
         close_btn.clicked.connect(self.reject)
         button_layout.addWidget(close_btn)
 
         layout.addLayout(button_layout)
+
+    def _update_open_button(self):
+        """Enable Open only when a real (selectable) tutorial item is highlighted."""
+        item = self.tutorial_list.currentItem()
+        enabled = bool(item and (item.flags() & Qt.ItemIsEnabled) and isinstance(item.data(Qt.UserRole), dict))
+        self.open_btn.setEnabled(enabled)
+
+    def _open_selected_tutorial(self):
+        """Shared open-action used by the Open button and Enter key."""
+        item = self.tutorial_list.currentItem()
+        if item is not None:
+            self.on_tutorial_double_clicked(item)
 
     def load_tutorial_list(self):
         """Load the list of available tutorials"""
