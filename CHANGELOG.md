@@ -21,6 +21,16 @@ identical to the previous release before landing; the full test suite stays gree
   mojibake or crash on load. The runtime now reads these files as UTF-8, matching
   the editor and exporters. Added a regression test that reproduces a non-UTF-8
   end-user locale.
+- **Exported games could fail to *start* on non-UTF-8 locales** (regression
+  surfaced by the new encoding test). `utils.config` ran `Config.load()` eagerly
+  at module-import time and printed decorative emojis (`📄`, `❌`, …) to stdout
+  for first-run / error paths. When `sys.stdout.encoding` was `ascii` (LC_ALL=C,
+  minimal Windows code page, stripped CI runner), the prints raised
+  `UnicodeEncodeError`, the exception handler raised the same on its own emoji
+  print, and the second crash escaped — aborting the entire `runtime.game_runner`
+  import chain. All such prints now route through a `_safe_print` helper that
+  falls back to `errors='replace'`, so decorative output degrades to `?` instead
+  of taking down the runtime.
 - **French translation regression**: removed a spurious `pygm2_fr_misc.qm` and
   hardened the translation loader so it can no longer be reintroduced.
 
