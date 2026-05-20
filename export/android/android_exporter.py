@@ -126,27 +126,8 @@ class AndroidExporter(BaseKivyExporter):
         Returns:
             True if export successful, False otherwise
         """
-        self.project_path = Path(project_path)
-        self.output_path = Path(output_path)
-        self.export_settings = settings
-
         try:
-            # Load project data - handle both directory and file paths
-            if self.project_path.is_dir():
-                project_file = self.project_path / "project.json"
-                project_dir = self.project_path
-            else:
-                project_file = self.project_path
-                project_dir = self.project_path.parent
-
-            with open(project_file, 'r') as f:
-                self.project_data = json.load(f)
-
-            # Load room data from external files (instances are stored separately)
-            self._load_rooms_from_files(project_dir)
-
-            # Load object data from external files (events are stored separately)
-            self._load_objects_from_files(project_dir)
+            self._load_project(project_path, output_path, settings)
 
             # Step 1: Verify platform (Buildozer only runs on Linux and macOS)
             self.progress_update.emit(5, "Checking platform...")

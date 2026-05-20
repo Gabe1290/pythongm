@@ -39,7 +39,7 @@ class AsebaExporter:
             logger.error(f"Project not found: {project_path}")
             return False
 
-        with open(project_path, 'r') as f:
+        with open(project_path, 'r', encoding='utf-8') as f:
             project_data = json.load(f)
 
         # Determine output directory

@@ -469,8 +469,8 @@ class TestProjectLoading:
                 }
             }
 
-            with open(project_file, 'w') as f:
-                json.dump(project_data, f)
+            with open(project_file, 'w', encoding='utf-8') as f:
+                json.dump(project_data, f, ensure_ascii=False)
 
             yield project_dir
 

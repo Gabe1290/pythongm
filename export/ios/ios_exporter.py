@@ -125,7 +125,7 @@ class iOSExporter(QObject):
                 project_file = self.project_path
                 project_dir = self.project_path.parent
 
-            with open(project_file, 'r') as f:
+            with open(project_file, 'r', encoding='utf-8') as f:
                 self.project_data = json.load(f)
 
             self._load_rooms_from_files(project_dir)

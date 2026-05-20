@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+import os
 import shutil
 from pathlib import Path
 from datetime import datetime
@@ -12,6 +13,28 @@ from utils.project_file_merge import merge_room_file, merge_object_file
 
 from core.logger import get_logger
 logger = get_logger(__name__)
+
+
+def _atomic_write_json(path: Path, data: Any, *, sort_keys: bool = False) -> None:
+    """Write ``data`` to ``path`` as JSON atomically.
+
+    Writes to a sibling ``<path>.tmp`` first, then ``os.replace`` swaps it
+    into place. A crash or power loss mid-write therefore leaves either the
+    old file intact or the new file fully written — never a truncated mix.
+    """
+    tmp_path = path.with_name(path.name + '.tmp')
+    try:
+        with open(tmp_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False, sort_keys=sort_keys)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp_path, path)
+    except Exception:
+        try:
+            tmp_path.unlink()
+        except OSError:
+            pass
+        raise
 
 class ProjectManager(QObject):
     """
@@ -128,8 +151,7 @@ class ProjectManager(QObject):
 
             # Save project file
             project_file = project_path / self.PROJECT_FILE
-            with open(project_file, 'w', encoding='utf-8') as f:
-                json.dump(project_data, f, indent=2, ensure_ascii=False)
+            _atomic_write_json(project_file, project_data)
 
             # Update asset manager with new project location
             if self.asset_manager:
@@ -415,8 +437,7 @@ class ProjectManager(QObject):
             project_data_for_save = self._prepare_project_data_for_save()
 
             # Save main project file (without room instance data)
-            with open(project_file, 'w', encoding='utf-8') as f:
-                json.dump(project_data_for_save, f, indent=2, ensure_ascii=False, sort_keys=False)
+            _atomic_write_json(project_file, project_data_for_save)
 
             logger.info(f"✅ DEBUG: Project saved successfully to {project_file}")
 
@@ -465,16 +486,14 @@ class ProjectManager(QObject):
                         logger.warning(f"⚠️ Preserving {len(existing_instances)} instances from existing file for {room_name}")
                         room_data_to_save = dict(room_data)
                         room_data_to_save['instances'] = existing_instances
-                        with open(room_file, 'w', encoding='utf-8') as f:
-                            json.dump(room_data_to_save, f, indent=2, ensure_ascii=False)
+                        _atomic_write_json(room_file, room_data_to_save)
                         logger.debug(f"💾 Saved room: {room_name} ({len(existing_instances)} instances preserved)")
                         continue
                 except Exception as e:
                     logger.warning(f"⚠️ Could not read existing room file {room_file}: {e}")
 
             # Save full room data including instances
-            with open(room_file, 'w', encoding='utf-8') as f:
-                json.dump(room_data, f, indent=2, ensure_ascii=False)
+            _atomic_write_json(room_file, room_data)
 
             logger.debug(f"💾 Saved room: {room_name} ({len(instances_to_save)} instances)")
 
@@ -499,8 +518,7 @@ class ProjectManager(QObject):
             object_file = objects_dir / f"{object_name}.json"
 
             # Save full object data including events
-            with open(object_file, 'w', encoding='utf-8') as f:
-                json.dump(object_data, f, indent=2, ensure_ascii=False)
+            _atomic_write_json(object_file, object_data)
 
             event_count = len(object_data.get('events', {}))
             logger.debug(f"💾 Saved object: {object_name} ({event_count} events)")
@@ -523,8 +541,7 @@ class ProjectManager(QObject):
         for sprite_name, sprite_data in sprites_data.items():
             sprite_file = sprites_dir / f"{sprite_name}.json"
 
-            with open(sprite_file, 'w', encoding='utf-8') as f:
-                json.dump(sprite_data, f, indent=2, ensure_ascii=False)
+            _atomic_write_json(sprite_file, sprite_data)
 
             logger.debug(f"💾 Saved sprite: {sprite_name}")
 
@@ -570,8 +587,7 @@ class ProjectManager(QObject):
 
         for pg_name, pg_data in playgrounds_data.items():
             pg_file = playgrounds_dir / f"{pg_name}.json"
-            with open(pg_file, 'w', encoding='utf-8') as f:
-                json.dump(pg_data, f, indent=2, ensure_ascii=False)
+            _atomic_write_json(pg_file, pg_data)
             logger.debug(f"Saved playground: {pg_name}")
 
     def _prepare_project_data_for_save(self) -> dict:
@@ -793,8 +809,7 @@ class ProjectManager(QObject):
             objects_data = self.current_project_data.get('assets', {}).get('objects', {})
             for object_name, object_data in objects_data.items():
                 object_file = objects_dir / f"{object_name}.json"
-                with open(object_file, 'w', encoding='utf-8') as f:
-                    json.dump(object_data, f, indent=2, ensure_ascii=False)
+                _atomic_write_json(object_file, object_data)
                 event_count = len(object_data.get('events', {}))
                 logger.info(f"💾 Migrated object: {object_name} ({event_count} events)")
 
@@ -802,8 +817,7 @@ class ProjectManager(QObject):
             rooms_data = self.current_project_data.get('assets', {}).get('rooms', {})
             for room_name, room_data in rooms_data.items():
                 room_file = rooms_dir / f"{room_name}.json"
-                with open(room_file, 'w', encoding='utf-8') as f:
-                    json.dump(room_data, f, indent=2, ensure_ascii=False)
+                _atomic_write_json(room_file, room_data)
                 instance_count = len(room_data.get('instances', []))
                 logger.info(f"💾 Migrated room: {room_name} ({instance_count} instances)")
 

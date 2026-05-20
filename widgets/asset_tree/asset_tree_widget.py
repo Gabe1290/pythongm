@@ -704,7 +704,7 @@ class AssetTreeWidget(QTreeWidget):
             if not project_file.exists():
                 return []
 
-            with open(project_file, 'r') as f:
+            with open(project_file, 'r', encoding='utf-8') as f:
                 project_data = json.load(f)
 
             rooms = project_data.get('assets', {}).get('rooms', {})
@@ -740,7 +740,7 @@ class AssetTreeWidget(QTreeWidget):
                 return
 
             # Load project data with order preservation
-            with open(project_file, 'r') as f:
+            with open(project_file, 'r', encoding='utf-8') as f:
                 project_data = json.load(f, object_pairs_hook=OrderedDict)
 
             rooms = project_data.get('assets', {}).get('rooms', OrderedDict())
@@ -778,8 +778,8 @@ class AssetTreeWidget(QTreeWidget):
             logger.debug(f"Built new_rooms OrderedDict with keys: {list(new_rooms.keys())}")
 
             # Save project back to file with order preservation
-            with open(project_file, 'w') as f:
-                json.dump(project_data, f, indent=2, sort_keys=False)
+            with open(project_file, 'w', encoding='utf-8') as f:
+                json.dump(project_data, f, indent=2, sort_keys=False, ensure_ascii=False)
 
             logger.debug(f"Saved new room order to project.json: {room_list}")
 
@@ -863,7 +863,7 @@ class AssetTreeWidget(QTreeWidget):
 
             # Load project data for room details
             project_file = Path(self.project_path) / "project.json"
-            with open(project_file, 'r') as f:
+            with open(project_file, 'r', encoding='utf-8') as f:
                 project_data = json.load(f)
 
             rooms_data = project_data.get('assets', {}).get('rooms', {})

@@ -411,7 +411,7 @@ class BaseEditor(FloatableEditorMixin, QWidget):
         try:
             project_file = Path(self.project_path) / "project.json"
             if project_file.exists():
-                with open(project_file, 'r') as f:
+                with open(project_file, 'r', encoding='utf-8') as f:
                     return json.load(f)
         except Exception as e:
             logger.error(f"Error loading project data: {e}")

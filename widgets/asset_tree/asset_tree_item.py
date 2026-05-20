@@ -207,7 +207,7 @@ class AssetTreeItem(QTreeWidgetItem):
                 project_file = project_root / "project.json"
                 if project_file.exists():
                     try:
-                        with open(project_file, 'r') as f:
+                        with open(project_file, 'r', encoding='utf-8') as f:
                             project_data = json.load(f)
                         sprite_data = project_data.get('assets', {}).get('sprites', {}).get(sprite_name)
                         if sprite_data:

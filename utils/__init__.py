@@ -91,8 +91,8 @@ class ProjectManager:
             }
 
             project_file = project_dir / "project.json"
-            with open(project_file, 'w') as f:
-                json.dump(project_data, f, indent=2)
+            with open(project_file, 'w', encoding='utf-8') as f:
+                json.dump(project_data, f, indent=2, ensure_ascii=False)
 
             logger.info(f"Created new project: {project_dir}")
             return True
@@ -125,7 +125,7 @@ class ProjectManager:
                 logger.error(f"Project file not found: {project_file}")
                 return None
 
-            with open(project_file, 'r') as f:
+            with open(project_file, 'r', encoding='utf-8') as f:
                 project_data = json.load(f)
 
             logger.info(f"Loaded project: {project_file}")
@@ -156,8 +156,8 @@ class ProjectManager:
             else:
                 project_file = project_path
 
-            with open(project_file, 'w') as f:
-                json.dump(project_data, f, indent=2)
+            with open(project_file, 'w', encoding='utf-8') as f:
+                json.dump(project_data, f, indent=2, ensure_ascii=False)
 
             logger.info(f"Saved project: {project_file}")
             return True
@@ -437,7 +437,7 @@ class Config:
 
         if config_path.exists():
             try:
-                with open(config_path, 'r') as f:
+                with open(config_path, 'r', encoding='utf-8') as f:
                     loaded_config = json.load(f)
 
                 # Merge with defaults
@@ -468,8 +468,8 @@ class Config:
                     # This will filter out QByteArray objects from window geometry/state
                     continue
 
-            with open(config_path, 'w') as f:
-                json.dump(serializable_config, f, indent=2)
+            with open(config_path, 'w', encoding='utf-8') as f:
+                json.dump(serializable_config, f, indent=2, ensure_ascii=False)
 
             return True
 
@@ -486,7 +486,7 @@ def export_project_summary(project_data: Dict, output_path: Union[str, Path]) ->
     try:
         output_path = Path(output_path)
 
-        with open(output_path, 'w') as f:
+        with open(output_path, 'w', encoding='utf-8') as f:
             f.write(f"Project: {project_data.get('name', 'Unknown')}\n")
             f.write(f"Version: {project_data.get('version', '1.0.0')}\n")
             f.write(f"Created: {project_data.get('created', 'Unknown')}\n\n")

@@ -40,6 +40,38 @@ class BaseKivyExporter(QObject):
         self.export_settings = {}
         self.project_data = None
 
+    def _load_project(self, project_path: str, output_path: str, settings: dict) -> Path:
+        """Set up exporter state and load project + split asset files.
+
+        Centralises the boilerplate that every platform subclass used to
+        repeat verbatim: store the three input paths/settings on ``self``,
+        read ``project.json`` as UTF-8, then merge in the external
+        ``rooms/`` and ``objects/`` files.
+
+        Returns the resolved ``project_dir`` for any further per-platform
+        work (PyInstaller spec paths, etc.).
+        """
+        self.project_path = Path(project_path)
+        self.output_path = Path(output_path)
+        self.export_settings = settings
+
+        if self.project_path.is_dir():
+            project_file = self.project_path / "project.json"
+            project_dir = self.project_path
+        else:
+            project_file = self.project_path
+            project_dir = self.project_path.parent
+
+        with open(project_file, 'r', encoding='utf-8') as f:
+            self.project_data = json.load(f)
+
+        # Load room data from external files (instances are stored separately).
+        self._load_rooms_from_files(project_dir)
+        # Load object data from external files (events are stored separately).
+        self._load_objects_from_files(project_dir)
+
+        return project_dir
+
     def _load_rooms_from_files(self, project_dir: Path) -> None:
         """Load room instance data from separate files in rooms/ directory
 

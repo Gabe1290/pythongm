@@ -276,13 +276,14 @@ if not IS_ANDROID:
             import ctypes
             try:
                 ctypes.windll.shcore.SetProcessDpiAwareness(2)
-            except:
+            except (OSError, AttributeError):
+                # OSError: shcore missing (pre-Win 8.1); AttributeError: no SetProcessDpiAwareness
                 pass
             hdc = ctypes.windll.user32.GetDC(0)
             dpi = ctypes.windll.gdi32.GetDeviceCaps(hdc, 88)
             ctypes.windll.user32.ReleaseDC(0, hdc)
             return dpi / 96.0
-        except:
+        except Exception:
             return 1.0
 
     DPI_SCALE = get_dpi_scale()
@@ -353,10 +354,11 @@ def _log(msg):
     # Always print to stdout (goes to logcat on Android)
     print(f"[PYGM] {{msg}}")
     try:
-        with open(_get_log_path(), 'a') as f:
+        with open(_get_log_path(), 'a', encoding='utf-8', errors='replace') as f:
             f.write(f"[{{_dt.datetime.now():%H:%M:%S}}] {{msg}}\\n")
             f.flush()
-    except:
+    except (OSError, ValueError):
+        # OSError: disk/perm failure; ValueError: stream closed during shutdown
         pass
 
 _log("=== App starting ===")
@@ -492,8 +494,8 @@ def _save_state_and_restart(room_index):
     }}
     _log(f"_save_state_and_restart: saving {{state}}")
     try:
-        with open(_STATE_FILE, 'w') as f:
-            _json.dump(state, f)
+        with open(_STATE_FILE, 'w', encoding='utf-8') as f:
+            _json.dump(state, f, ensure_ascii=False)
             f.flush()
             _os.fsync(f.fileno())
     except Exception as exc:
@@ -527,7 +529,7 @@ def _load_saved_state():
     if not _os.path.exists(_STATE_FILE):
         return None
     try:
-        with open(_STATE_FILE) as f:
+        with open(_STATE_FILE, encoding='utf-8') as f:
             state = _json.load(f)
         _os.remove(_STATE_FILE)
         _log(f"_load_saved_state: restored {{state}}")
@@ -536,7 +538,7 @@ def _load_saved_state():
         _log(f"_load_saved_state: failed: {{exc}}")
         try:
             _os.remove(_STATE_FILE)
-        except:
+        except OSError:
             pass
         return None
 

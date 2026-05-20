@@ -5,6 +5,106 @@ All notable changes to PyGameMaker will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+Follow-up to rc.10's encoding audit: the rc.10 fix only covered the runtime's
+split-file readers, but the same locale-dependent `open()` pattern was still
+present in 25+ other sites across the IDE, exporters, and runtime. This pass
+closes the rest of the cluster, hardens project-file writes against partial-
+write corruption, and narrows the bare `except:` clauses in shipped Kivy
+runtime code. All behaviour-preserving; the full test suite stays green (502
+tests, including extended encoding regressions and new atomic-write tests).
+
+### Fixed
+- **Encoding gaps closed across the IDE, exporters and runtime.** rc.10 added
+  `encoding='utf-8'` to the runtime's split rooms/objects/sprites readers; this
+  pass extends the same fix to every remaining text-mode `open()` that touches
+  project, config, save-state, highscore, log, or generated-launcher files —
+  approximately 30 sites across `runtime/game_runner.py`,
+  `runtime/action_executor.py` (`save_state` / `load_state`), every desktop
+  exporter (`exe`, `linux`, `macos`, `android`, `ios`, `Aseba`), the Kivy
+  exporter's emitted state file, every editor and asset-tree widget that reads
+  project.json directly, `utils/config.py`, `utils/theme_manager.py`,
+  `config/blockly_config.py`, and the IDE crash log. The encoding regression
+  test now also exercises `project.json` and the highscore save/load round-
+  trip under the hostile-locale subprocess, not just the split files.
+- **Project saves are now atomic.** `core/project_manager.py` previously wrote
+  `project.json` and every external `rooms/*.json`, `objects/*.json`,
+  `sprites/*.json`, `playgrounds/*.json` with a plain `open(..., 'w')` →
+  `json.dump(...)`. A crash, kernel panic, or power loss mid-write could leave
+  the user with a truncated, unparseable project. A single
+  `_atomic_write_json(path, data)` helper now backs all nine save sites: it
+  writes to `path.tmp`, `fsync`s, and `os.replace`s into the final name (atomic
+  on POSIX and Windows). On any failure the `.tmp` is unlinked and the original
+  file is left untouched. Added tests covering the success path, the no-stray-
+  tmp invariant, and the crash-during-replace scenario.
+- **Bare `except:` clauses in shipped Kivy runtime code narrowed.** Four
+  in `export/Kivy/kivy_exporter.py` (DPI-awareness probe, DPI-scale lookup,
+  crash-log write, and stale-state-file cleanup) and two in
+  `export/Kivy/template/scene.py.template` (color parser and keyboard unbind)
+  were swallowing `KeyboardInterrupt` and `SystemExit` along with the
+  exception they actually meant to handle. Each is now narrowed to specific
+  expected types (`(OSError, AttributeError)`, `Exception` at the outer
+  boundary, `(OSError, ValueError)`, `OSError`, `(ValueError, IndexError,
+  TypeError)`, `(AttributeError, KeyError)` respectively), matching the
+  pattern rc.9 established for the two `hex_to_rgb` helpers.
+- **Spatial-grid full-rebuild on destroy replaced with incremental removal.**
+  After each frame's destroy pass, `runtime/game_runner.py` rebuilt the entire
+  spatial grid from scratch — O(n) over every surviving instance, even when
+  only one was destroyed. Bullet/explosion patterns with many simultaneous
+  destroys paid this cost repeatedly. The destroy pass now calls the existing
+  `_remove_from_grid()` (O(k) per instance via the `_instance_cells` reverse
+  map) only for the instances actually being removed, walks the instance list
+  exactly once to filter, and flips `_depth_dirty` directly. Net: O(destroyed
+  × cells) instead of O(surviving).
+
+### Changed
+- **Single `_hex_to_rgb` helper.** Two scope-local copies inside
+  `runtime/action_executor.py` (in `execute_show_highscore_action` and
+  `execute_set_draw_color_action`) collapsed to one module-level function.
+  Behavior preserved; ~25 LOC removed.
+- **Single module-level `ExportThread`.** The same five-line `QThread`
+  subclass was defined inline inside each of the five platform-export methods
+  in `core/ide_window.py` (`export_exe`, `export_linux_binary`,
+  `export_macos`, `export_android`, `export_ios`). All five copies are
+  byte-identical. Pulled to one module-level class; ~85 LOC removed.
+- **Removed dead `actions/__init__.py` re-exports.** `get_action_v2` and
+  `get_actions_by_tab_v2` were `GM80_ALL_ACTIONS`-prebound wrappers from a
+  long-completed migration; no callers in the source tree. Deleted along with
+  their `__all__` entries and the now-unused `typing.List` import.
+- **Platform-exporter preamble single-sourced.** The exe / linux / macOS /
+  Android exporters each repeated the same 15-line `export_project` preamble
+  verbatim — set ``self.project_path`` / ``output_path`` / ``export_settings``,
+  branch on file-vs-directory project paths, read ``project.json`` as UTF-8,
+  call ``_load_rooms_from_files`` and ``_load_objects_from_files``. Lifted to
+  ``BaseKivyExporter._load_project()``; each subclass now calls it on a single
+  line. Removed the now-unused ``json`` module import from all four
+  subclasses. ~60 LOC removed; encoding fixes propagate automatically.
+- **`ThemeManager` switched from `print()` to logger.** Seven raw stdout
+  prints (theme-load warnings, fallback-theme notice, "applied X theme"
+  confirmations) routed through `core.logger.get_logger(__name__)` to match
+  the rest of the codebase. Removes the last `print()` outside generated /
+  exported game code.
+- **`parse_color` clusters single-sourced to `utils/color.py`.** The runtime
+  (``runtime/action_handlers/base.py``) and the Kivy exporter
+  (``export/Kivy/project_adapter.py``) each defined a ``parse_color`` with
+  the same shape but different output (0-255 ints vs 0-1 floats). Both now
+  delegate to `to_rgb255` / `to_kivy_rgba` in a new ``utils/color.py``
+  module; the existing import names are preserved so the 10+ runtime call
+  sites don't churn. The unit gap between the two flavours is now explicit
+  in one place instead of duplicated.
+- **`action_types` alias self-mapping derived, not enumerated.** The
+  four-entry ``ACTION_TO_BLOCKLY_MAP.update({...})`` literal that kept the
+  picker UI from leaking block-style room aliases past preset gating is now
+  generated from the intersection of ``BLOCKLY_TO_ACTION_MAP`` and
+  ``ACTION_TYPES``. Adding a new room alias requires editing only the two
+  source dicts; the self-mapping follows automatically.
+- **Test fixture writers now write UTF-8.** Thirteen ``open(..., 'w')`` /
+  ``open(..., 'r')`` sites across ``tests/conftest.py``, ``test_exporters.py``,
+  ``test_game_runner.py`` and ``test_integration.py`` now specify
+  ``encoding='utf-8'`` (with ``ensure_ascii=False`` on the ``json.dump``s),
+  bringing the test fixtures into parity with the runtime/IDE encoding pass.
+
 ## [1.0.0-rc.10] - 2026-05-19
 
 Completes the pre-1.0 codebase audit (duplicate- and dead-code pass) and fixes a

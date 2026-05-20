@@ -84,7 +84,7 @@ class Config:
             cls._config_file.parent.mkdir(exist_ok=True)
 
             if cls._config_file.exists():
-                with open(cls._config_file, 'r') as f:
+                with open(cls._config_file, 'r', encoding='utf-8') as f:
                     loaded_data = json.load(f)
 
                 # Merge with defaults
@@ -127,8 +127,8 @@ class Config:
             # Clean the config data before saving
             clean_data = cls._clean_config_for_json(cls._config_data)
 
-            with open(cls._config_file, 'w') as f:
-                json.dump(clean_data, f, indent=2)
+            with open(cls._config_file, 'w', encoding='utf-8') as f:
+                json.dump(clean_data, f, indent=2, ensure_ascii=False)
 
             return True
 

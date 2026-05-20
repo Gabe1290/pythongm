@@ -1081,8 +1081,8 @@ def get_config_path() -> Path:
 def save_config(config: BlocklyConfig):
     """Save configuration to file"""
     config_path = get_config_path()
-    with open(config_path, 'w') as f:
-        json.dump(config.to_dict(), f, indent=2)
+    with open(config_path, 'w', encoding='utf-8') as f:
+        json.dump(config.to_dict(), f, indent=2, ensure_ascii=False)
 
 
 def load_config() -> BlocklyConfig:
@@ -1090,7 +1090,7 @@ def load_config() -> BlocklyConfig:
     config_path = get_config_path()
     if config_path.exists():
         try:
-            with open(config_path) as f:
+            with open(config_path, encoding='utf-8') as f:
                 data = json.load(f)
                 config = BlocklyConfig.from_dict(data)
 
