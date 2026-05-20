@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (QMainWindow, QVBoxLayout, QHBoxLayout, QWidget,
                                QProgressBar, QLabel, QStyle, QTabWidget, QToolBar,
                                QApplication)
 
-from PySide6.QtCore import Qt, QTimer, QSize, QProcess
+from PySide6.QtCore import Qt, QTimer, QSize
 from PySide6.QtGui import QAction
 
 from widgets.asset_tree.asset_tree_widget import AssetTreeWidget
@@ -251,7 +251,6 @@ class PyGameMakerIDE(QMainWindow):
 
         tools_menu = menubar.addMenu(self.tr("&Tools"))
         tools_menu.addAction(self.create_action(self.tr("&Preferences..."), None, self.preferences))
-        tools_menu.addAction(self.create_action(self.tr("Switch to &Committee Demo Edition..."), None, self.switch_to_committee_demo))
         tools_menu.addAction(self.create_action(self.tr("&Asset Manager..."), None, self.show_asset_manager))
         tools_menu.addAction(self.create_action(self.tr("Configure &Action Blocks..."), None, self.configure_blockly))
         tools_menu.addAction(self.create_action(self.tr("Configure &Thymio Blocks..."), None, self.configure_thymio))
@@ -2788,59 +2787,6 @@ class PyGameMakerIDE(QMainWindow):
             from dialogs.preferences_dialog import PreferencesDialog
             dialog = PreferencesDialog(self)
             dialog.exec()
-
-    def switch_to_committee_demo(self):
-        """One-click switch to Committee Demo edition + restart prompt.
-
-        Equivalent to opening Preferences, picking the "Committee Demo" edition,
-        clicking Apply, and restarting the IDE — but in two clicks instead of five
-        and without the chance of forgetting the restart (which would leave the
-        tutorial list and new-project defaults stale).
-        """
-        current = Config.get("edition", "beginner")
-
-        if current == "committee":
-            reply = QMessageBox.question(
-                self,
-                self.tr("Already in Committee Demo"),
-                self.tr("The IDE is already running in Committee Demo edition.\n\n"
-                        "Restart anyway to refresh the tutorial list and toolbox?"),
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No
-            )
-            if reply != QMessageBox.Yes:
-                return
-        else:
-            reply = QMessageBox.question(
-                self,
-                self.tr("Switch to Committee Demo Edition"),
-                self.tr("Switch the IDE to Committee Demo edition?\n\n"
-                        "• Toolbox shrinks to 21 minimal blocks\n"
-                        "• Tutorial list filters down to \"Catch the Coins\"\n"
-                        "• New projects default to the minimal Blockly preset\n\n"
-                        "The IDE will restart to apply the change. "
-                        "Save your work first if you have unsaved changes."),
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No
-            )
-            if reply != QMessageBox.Yes:
-                return
-            Config.set("edition", "committee")
-            Config.save()
-
-        # Try to relaunch automatically. closeEvent still fires, so unsaved-changes
-        # prompts and config save-on-exit run normally; if the user cancels close,
-        # the new process simply opens alongside the unchanged one.
-        try:
-            QProcess.startDetached(sys.executable, sys.argv)
-            QApplication.instance().quit()
-        except Exception as exc:
-            QMessageBox.information(
-                self,
-                self.tr("Restart Required"),
-                self.tr("Settings saved. Please close and reopen the IDE manually "
-                        "to see the new edition.\n\nDetails: {0}").format(str(exc))
-            )
 
     def show_asset_manager(self):
         """Show asset manager window for managing project assets"""
