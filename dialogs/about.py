@@ -64,7 +64,7 @@ class AboutDialog(QDialog):
 
         credits_text = QTextEdit()
         credits_text.setReadOnly(True)
-        credits_text.setPlainText(self.tr("Credits:\n\nDevelopment:\n- Gabriel Thullen\n\nSpecial Thanks:\n- The GameMaker Studio community for inspiration\n- The Python and Pygame communities\n- All contributors and testers\n\nThird-Party Libraries:\n- PySide6 (Qt for Python) - LGPLv3\n- Pygame (game development library) - LGPLv2.1\n- Pillow (image processing) - HPND\n- Blockly (visual programming) - Apache 2.0\n\nLicense:\nThis software is released under the GNU General Public License v3 (GPLv3).\nGabriel Thullen, 2025-2026"))
+        credits_text.setPlainText(self.tr("Credits:\n\nDevelopment:\n- Gabriel Thullen\n\nSpecial Thanks:\n- The GameMaker Studio community for inspiration\n- The Python and Pygame communities\n- All contributors and testers\n\nThird-Party Libraries:\n- PySide6 (Qt for Python) - LGPLv3\n- Pygame (game development library) - LGPLv2.1\n- Pillow (image processing) - HPND\n- Blockly (visual programming) - Apache 2.0\n\nLicense:\nThis software is licensed under the MIT License.\nDocumentation is licensed under CC BY 4.0.\nGabriel Thullen, 2025-2026"))
 
         credits_layout.addWidget(credits_text)
         tabs.addTab(credits_tab, self.tr("Credits"))

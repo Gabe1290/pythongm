@@ -59,7 +59,7 @@ English | Francais | Espanol | Deutsch | Italiano | Russian | Slovenscina | Ukra
 
 ## Empieza Hoy
 
-**Gratuito y de Código Abierto** — Licenciado bajo GNU GPLv3
+**Gratuito y de Código Abierto** — Licencia MIT (software) + CC BY 4.0 (este folleto)
 
 **Requisitos:** Python 3.10+ | PySide6 | Pygame | Pillow
 

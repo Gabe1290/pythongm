@@ -1249,5 +1249,5 @@ Vadnice so na voljo v več jezikih (angleščina, nemščina, španščina, fran
 
 **PyGameMaker IDE** - Različica 1.0.0-rc.9
 Gabriel Thullen, 2025-2026
-Licencirano pod GNU General Public License v3 (GPLv3)
+Programska oprema: licenca MIT. Dokumentacija: CC BY 4.0.
 GitHub: https://github.com/Gabe1290/pythongm

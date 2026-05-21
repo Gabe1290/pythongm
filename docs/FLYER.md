@@ -59,7 +59,7 @@ English | Francais | Espanol | Deutsch | Italiano | Russian | Slovenscina | Ukra
 
 ## Get Started Today
 
-**Free and Open Source** — Licensed under GNU GPLv3
+**Free and Open Source** — MIT License (software) + CC BY 4.0 (this flyer)
 
 **Requirements:** Python 3.10+ | PySide6 | Pygame | Pillow
 

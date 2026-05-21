@@ -3,7 +3,7 @@
 A GameMaker-style visual game development IDE for creating 2D games with Python.
 
 ![Version](https://img.shields.io/badge/version-1.0.0--rc.6-blue)
-![License](https://img.shields.io/badge/license-GPLv3-green)
+![License](https://img.shields.io/badge/license-MIT-green) ![Docs License](https://img.shields.io/badge/docs-CC%20BY%204.0-lightgrey)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
 
@@ -116,11 +116,15 @@ python scripts/build_nuitka.py
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+The PyGameMaker **source code** is licensed under the **MIT License** — see [LICENSE](LICENSE).
+
+The **documentation** (everything under `docs/`, `wiki/`, in-app tutorials, this README, the CHANGELOG, manuals and flyers) is licensed under **Creative Commons Attribution 4.0 International (CC BY 4.0)** — see [LICENSE-docs](LICENSE-docs).
+
+Attribution: *Gabriel Thullen, 2025-2026*.
 
 ## Third-Party Libraries
 
-- [PySide6](https://www.qt.io/qt-for-python) - Qt for Python (LGPLv3/GPLv3)
+- [PySide6](https://www.qt.io/qt-for-python) - Qt for Python (LGPLv3)
 - [Pygame](https://www.pygame.org/) - Game development library (LGPLv2.1)
 - [Pillow](https://python-pillow.org/) - Image processing (HPND License)
 - [Blockly](https://developers.google.com/blockly) - Visual programming (Apache 2.0)

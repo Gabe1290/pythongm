@@ -59,7 +59,7 @@ English | Francais | Espanol | Deutsch | Italiano | Russian | Slovenscina | Ukra
 
 ## Inizia Oggi
 
-**Gratuito e Open Source** — Licenza GNU GPLv3
+**Gratuito e Open Source** — Licenza MIT (software) + CC BY 4.0 (questo volantino)
 
 **Requisiti:** Python 3.10+ | PySide6 | Pygame | Pillow
 

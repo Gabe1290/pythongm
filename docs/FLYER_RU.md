@@ -59,7 +59,7 @@ English | Francais | Espanol | Deutsch | Italiano | Russian | Slovenscina | Ukra
 
 ## Начните прямо сейчас
 
-**Бесплатный и с открытым исходным кодом** — Лицензия GNU GPLv3
+**Бесплатный и с открытым исходным кодом** — Лицензия MIT (программа) + CC BY 4.0 (эта листовка)
 
 **Требования:** Python 3.10+ | PySide6 | Pygame | Pillow
 
