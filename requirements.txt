@@ -1,4 +1,10 @@
 # PyGameMaker IDE Dependencies
+#
+# Supported Python versions: 3.10, 3.11, 3.12, 3.13
+# Python 3.14+ is NOT yet supported: several deps below (pygame, kivy, watchdog,
+# PySide6) have no pre-built wheels for cp314, so pip falls back to source
+# builds that require Xcode/clang/SDL2 and typically fail. Use Python 3.13 or
+# earlier until upstreams publish 3.14 wheels.
 
 # Core GUI Framework
 PySide6>=6.4.0
