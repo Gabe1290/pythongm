@@ -7,7 +7,7 @@ name = "pygamemaker"
 version = "1.0.0rc10"
 description = "A GameMaker-inspired IDE for creating 2D games with Python"
 readme = "README.md"
-license = "GPL-3.0-or-later"
+license = "MIT"
 requires-python = ">=3.10,<3.14"
 authors = [
     { name = "Gabriel Thullen" },

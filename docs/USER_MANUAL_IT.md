@@ -1249,5 +1249,5 @@ I tutorial sono disponibili in piu lingue (Inglese, Tedesco, Spagnolo, Francese,
 
 **PyGameMaker IDE** - Versione 1.0.0-rc.9
 Gabriel Thullen, 2025-2026
-Rilasciato sotto Licenza Pubblica Generale GNU v3 (GPLv3)
+Software: Licenza MIT. Documentazione: CC BY 4.0.
 GitHub: https://github.com/Gabe1290/pythongm

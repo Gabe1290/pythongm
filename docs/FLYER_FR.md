@@ -52,7 +52,7 @@ English | Francais | Espanol | Deutsch | Italiano | Russian | Slovenscina | Ukra
 
 ## Commencez des aujourd'hui
 
-**Gratuit et open source** — Sous licence GNU GPLv3
+**Gratuit et open source** — Licence MIT (logiciel) + CC BY 4.0 (ce dépliant)
 
 **Pre-requis :** Python 3.10+ | PySide6 | Pygame | Pillow
 

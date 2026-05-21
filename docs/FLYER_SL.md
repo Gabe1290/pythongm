@@ -59,7 +59,7 @@ English | Francais | Espanol | Deutsch | Italiano | Russian | Slovenscina | Ukra
 
 ## Začnite danes
 
-**Brezplačno in odprtokodno** — Licencirano pod GNU GPLv3
+**Brezplačno in odprtokodno** — Licenca MIT (programska oprema) + CC BY 4.0 (ta letak)
 
 **Zahteve:** Python 3.10+ | PySide6 | Pygame | Pillow
 
