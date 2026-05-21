@@ -64,6 +64,14 @@ def _write_project(tmp_path: Path):
 
 # Runs inside the hostile-locale subprocess. Loads via the REAL game_runner
 # loaders and round-trips the non-ASCII payloads back to the parent as JSON.
+#
+# Written to a temp .py file (NOT passed via -c) and given only ASCII argv,
+# because under LC_ALL=C/PYTHONUTF8=0 the child Python decodes both -c source
+# and argv through the locale codec; non-ASCII bytes there become lone
+# surrogates that strict UTF-8 re-encoding rejects ("surrogates not allowed"),
+# killing the child before it ever imports game_runner. Source files, by
+# contrast, are read as UTF-8 regardless of locale (PEP 3120), and the
+# highscore-name input is passed through a UTF-8 file for the same reason.
 _CHILD = textwrap.dedent(
     """
     import json, sys
@@ -91,10 +99,12 @@ _CHILD = textwrap.dedent(
     gr._load_objects_from_files()
     obj = gr._objects_data["hero"]
 
-    # Round-trip a highscore file through GameRunner's loader/saver — covers
-    # game_runner.py:3865/3883 (formerly bare open()).
+    # Round-trip a highscore file through GameRunner's loader/saver to cover
+    # game_runner.py:3865/3883 (formerly bare open()). The non-ASCII name
+    # comes from a UTF-8 file, not argv (see module docstring + comment above).
+    hs_name_in = (proj / "_hs_name.txt").read_text(encoding="utf-8")
     gr.highscore_file = proj / "highscores.json"
-    gr.highscores = [(sys.argv[2], 99999)]
+    gr.highscores = [(hs_name_in, 99999)]
     gr.save_highscores()
     gr.highscores = []
     gr.load_highscores()
@@ -117,6 +127,14 @@ def test_game_runner_reads_split_files_as_utf8(tmp_path):
     OS locale is not UTF-8 (the exported-game end-user scenario)."""
     _write_project(tmp_path)
 
+    # Materialize the child script as a UTF-8 .py file and write the
+    # non-ASCII highscore name to a UTF-8 file. Both routes bypass the
+    # locale-coded argv/-c path that would otherwise kill the child under
+    # LC_ALL=C/PYTHONUTF8=0 before any GameRunner code runs.
+    child_py = tmp_path / "_child.py"
+    child_py.write_text(_CHILD, encoding="utf-8")
+    (tmp_path / "_hs_name.txt").write_text(HIGHSCORE_NAME, encoding="utf-8")
+
     env = {
         **os.environ,
         "LC_ALL": "C",
@@ -128,7 +146,7 @@ def test_game_runner_reads_split_files_as_utf8(tmp_path):
         "SDL_AUDIODRIVER": "dummy",
     }
     proc = subprocess.run(
-        [sys.executable, "-c", _CHILD, str(tmp_path), HIGHSCORE_NAME],
+        [sys.executable, str(child_py), str(tmp_path)],
         cwd=str(REPO_ROOT), env=env, capture_output=True, text=True, timeout=120,
     )
     out = proc.stdout.strip()
