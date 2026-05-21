@@ -4,7 +4,6 @@ Dialogs package for PyGameMaker IDE
 """
 
 # Main dialogs
-from .about import AboutDialog
 from .preferences_dialog import PreferencesDialog
 from .auto_save_dialog import AutoSaveSettingsDialog
 
@@ -28,7 +27,6 @@ from .thymio_config_dialog import ThymioConfigDialog
 # Export everything
 __all__ = [
     'NewProjectDialog',
-    'AboutDialog',
     'PreferencesDialog',
     'AutoSaveSettingsDialog',
     'ProjectSettingsDialog',

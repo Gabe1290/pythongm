@@ -3272,7 +3272,20 @@ class PyGameMakerIDE(QMainWindow):
             "<p><small>Built with ❤️ using Python and Qt</small></p>"
         )
 
-        QMessageBox.about(self, self.tr("About PyGameMaker"), about_text)
+        license_text = self.tr(
+            "<h3>License</h3>"
+            "<p>"
+            "• <b>Source code:</b> MIT License<br>"
+            "• <b>Documentation:</b> Creative Commons Attribution 4.0 (CC BY 4.0)<br>"
+            "<small>Relicensed from GPLv3 to MIT + CC BY 4.0 to lower the barrier "
+            "to reuse for educators, students, and downstream projects. "
+            "See the <code>LICENSE</code> and <code>LICENSE-docs</code> files "
+            "for full terms.</small>"
+            "</p>"
+            "<p>&copy; Gabriel Thullen, 2025-2026</p>"
+        )
+
+        QMessageBox.about(self, self.tr("About PyGameMaker"), about_text + license_text)
 
     def on_asset_selected(self, asset_data):
         self.properties_panel.set_asset(asset_data)

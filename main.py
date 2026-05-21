@@ -296,7 +296,6 @@ def setup_application():
                 else:
                     print(f"   ⚠️ Failed to load {tf.name}")
             print(f"✅ Loaded and installed translation: {language_config}")
-            print(f"✅ Testing: AboutDialog/Close = {app.translate('AboutDialog', 'Close')}")
         else:
             print(f"ℹ️ No translation files for {language_config}, using English")
     else:
