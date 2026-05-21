@@ -25,6 +25,22 @@ import os
 import warnings
 from pathlib import Path
 
+# Refuse to launch on unsupported Python versions before any third-party import.
+# pyproject.toml caps requires-python at <3.14 because pygame/kivy/watchdog/
+# PySide6 (and others) ship no cp314 wheels yet; without this guard a user who
+# somehow has dependencies installed on Python 3.14+ would see confusing import
+# failures instead of a clear message. Revisit the upper bound when upstreams
+# publish 3.14 wheels.
+if sys.version_info < (3, 10) or sys.version_info >= (3, 14):
+    sys.stderr.write(
+        "PyGameMaker requires Python 3.10-3.13 (detected %d.%d).\n"
+        "Several dependencies (pygame, kivy, watchdog, PySide6) currently\n"
+        "have no pre-built wheels for Python 3.14+, so installs and runs\n"
+        "fail in confusing ways. Please use Python 3.13 or earlier.\n"
+        % sys.version_info[:2]
+    )
+    sys.exit(1)
+
 # Suppress pygame's pkg_resources deprecation warning (not our code)
 warnings.filterwarnings("ignore", message="pkg_resources is deprecated", category=UserWarning)
 
