@@ -2,7 +2,7 @@
 """
 PyGameMaker IDE - A GameMaker-inspired IDE for creating 2D games with Python
 
-Copyright (C) 2024-2025 Gabriel Thullen
+Gabriel Thullen, 2025-2026
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

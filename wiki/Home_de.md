@@ -201,7 +201,7 @@ Beiträge sind willkommen! Siehe unsere Beitragsrichtlinien für:
 
 PyGameMaker ist unter der **GNU General Public License v3 (GPLv3)** lizenziert.
 
-Copyright (c) 2024-2025 Gabriel Thullen
+Gabriel Thullen, 2025-2026
 
 ---
 
