@@ -216,9 +216,6 @@ class PyGameMakerIDE(QMainWindow):
         edit_menu.addAction(self.create_action(self.tr("&Copy"), "Ctrl+C", self.copy))
         edit_menu.addAction(self.create_action(self.tr("&Paste"), "Ctrl+V", self.paste))
         edit_menu.addAction(self.create_action(self.tr("&Duplicate"), "Ctrl+D", self.duplicate))
-        edit_menu.addSeparator()
-        edit_menu.addAction(self.create_action(self.tr("&Find..."), "Ctrl+F", self.find))
-        edit_menu.addAction(self.create_action(self.tr("Find and &Replace..."), "Ctrl+H", self.find_replace))
 
         # Store references to all asset actions and enable them
         self.import_sprite_action = self.create_action(self.tr("Import &Sprite..."), None, self.import_sprite)
@@ -260,26 +257,30 @@ class PyGameMakerIDE(QMainWindow):
         # Store references to build actions
         self.test_game_action = self.create_action(self.tr("&Test Game"), "F5", self.test_game)
         self.debug_game_action = self.create_action(self.tr("&Debug Game"), "F6", self.debug_game)
-        self.build_game_action = self.create_action(self.tr("&Build Game..."), "F7", self.build_game)
-        self.build_and_run_action = self.create_action(self.tr("Build and &Run"), "F8", self.build_and_run)
         self.export_game_action = self.create_action(self.tr("&Export Game..."), None, self.export_game)
 
         self.build_menu.addAction(self.test_game_action)
         self.build_menu.addAction(self.debug_game_action)
         self.build_menu.addSeparator()
-        self.build_menu.addAction(self.build_game_action)
-        self.build_menu.addAction(self.build_and_run_action)
-        self.build_menu.addSeparator()
         self.build_menu.addAction(self.export_game_action)
 
         tools_menu = menubar.addMenu(self.tr("&Tools"))
-        tools_menu.addAction(self.create_action(self.tr("&Preferences..."), None, self.preferences))
-        tools_menu.addAction(self.create_action(self.tr("&Asset Manager..."), None, self.show_asset_manager))
-        tools_menu.addAction(self.create_action(self.tr("Configure &Action Blocks..."), None, self.configure_blockly))
-        tools_menu.addAction(self.create_action(self.tr("Configure &Thymio Blocks..."), None, self.configure_thymio))
+        # On macOS, Qt auto-promotes actions to the App menu via text heuristics
+        # ("Preferences", "Settings", "Config", "Setup" all match PreferencesRole).
+        # Pin the real Preferences to PreferencesRole and force NoRole on the
+        # Configure ... actions so the App-menu Preferences slot doesn't get
+        # hijacked by "Configure Thymio Blocks..." etc.
+        preferences_action = self.create_action(self.tr("&Preferences..."), None, self.preferences)
+        preferences_action.setMenuRole(QAction.PreferencesRole)
+        tools_menu.addAction(preferences_action)
+        configure_blockly_action = self.create_action(self.tr("Configure &Action Blocks..."), None, self.configure_blockly)
+        configure_blockly_action.setMenuRole(QAction.NoRole)
+        tools_menu.addAction(configure_blockly_action)
+        configure_thymio_action = self.create_action(self.tr("Configure &Thymio Blocks..."), None, self.configure_thymio)
+        configure_thymio_action.setMenuRole(QAction.NoRole)
+        tools_menu.addAction(configure_thymio_action)
         tools_menu.addSeparator()
         tools_menu.addAction(self.create_action(self.tr("&Validate Project"), None, self.validate_project))
-        tools_menu.addAction(self.create_action(self.tr("&Clean Project"), None, self.clean_project))
         tools_menu.addAction(self.create_action(self.tr("&Migrate to Modular Structure"), None, self.migrate_project_structure))
         tools_menu.addSeparator()
 
@@ -1836,85 +1837,6 @@ class PyGameMakerIDE(QMainWindow):
                 self.tr("Failed to start the game. Check console for details.")
             )
 
-    def build_game(self):
-        """Build standalone game executable"""
-        # Save project first
-        if self.project_manager.is_dirty():
-            reply = QMessageBox.question(
-                self,
-                self.tr("Unsaved Changes"),
-                self.tr("You have unsaved changes. Save before building?"),
-                QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel
-            )
-
-            if reply == QMessageBox.Cancel:
-                return
-            elif reply == QMessageBox.Yes:
-                if not self.save_project():
-                    return
-
-        # Ask for build output directory
-        output_dir = QFileDialog.getExistingDirectory(
-            self,
-            self.tr("Select Build Output Directory"),
-            str(Path.home() / "Desktop")
-        )
-
-        if not output_dir:
-            return  # User cancelled
-
-        self.update_status(self.tr("Building game..."))
-
-        # Show info about build process
-        QMessageBox.information(
-            self,
-            self.tr("Build Game"),
-            self.tr("Standalone executable building is not yet implemented.\n\n"
-                    "Current workaround:\n"
-                    "• Use 'Export as HTML5' to create a web version\n"
-                    "• Use 'Test Game' to run from source\n\n"
-                    "Future build targets:\n"
-                    "• Windows .exe\n"
-                    "• Linux binary\n"
-                    "• macOS .app\n"
-                    "• Android .apk\n\n"
-                    "Would you like to export as HTML5 instead?")
-        )
-
-        self.update_status(self.tr("Build cancelled - use HTML5 export instead"))
-
-    def build_and_run(self):
-        """Build game and immediately run the built executable"""
-        reply = QMessageBox.question(
-            self,
-            self.tr("Build and Run"),
-            self.tr("This will build a standalone executable and run it.\n\n"
-                    "Building may take several minutes.\n\n"
-                    "Continue?"),
-            QMessageBox.Yes | QMessageBox.No
-        )
-
-        if reply != QMessageBox.Yes:
-            return
-
-        # Save project first
-        if self.project_manager.is_dirty():
-            if not self.save_project():
-                return
-
-        self.update_status(self.tr("Building and running game..."))
-
-        # For now, just run in test mode
-        QMessageBox.information(
-            self,
-            self.tr("Build and Run"),
-            self.tr("Standalone build is not yet implemented.\n\n"
-                    "Running game in test mode instead...")
-        )
-
-        # Run in test mode
-        self.test_game()
-
     def _show_validation_warnings(self):
         """Validate project and show any warnings to the user"""
         issues = self.project_manager.validate_project()
@@ -2704,50 +2626,11 @@ class PyGameMakerIDE(QMainWindow):
                 return
         logger.debug("Duplicate action (no room editor active)")
 
-    def find(self):
-        """Find text in current editor - to be implemented"""
-        QMessageBox.information(
-            self,
-            self.tr("Not Implemented"),
-            self.tr("Find functionality is not yet implemented.")
-        )
-
-    def find_replace(self):
-        """Find and replace text in current editor - to be implemented"""
-        QMessageBox.information(
-            self,
-            self.tr("Not Implemented"),
-            self.tr("Find and Replace functionality is not yet implemented.")
-        )
-
     def preferences(self):
             """Open preferences/settings dialog"""
             from dialogs.preferences_dialog import PreferencesDialog
             dialog = PreferencesDialog(self)
             dialog.exec()
-
-    def show_asset_manager(self):
-        """Show asset manager window for managing project assets"""
-        if not self.current_project_path:
-            QMessageBox.information(
-                self,
-                self.tr("No Project"),
-                self.tr("Please open a project first to manage assets.")
-            )
-            return
-
-        QMessageBox.information(
-            self,
-            self.tr("Asset Manager"),
-            self.tr("Asset Manager is not yet implemented.\n\n"
-                    "Current workaround:\n"
-                    "Use the Asset Tree panel on the left to manage your assets.\n\n"
-                    "Future features:\n"
-                    "• Bulk asset operations\n"
-                    "• Asset search and filter\n"
-                    "• Asset usage tracking\n"
-                    "• Unused asset cleanup")
-        )
 
     def configure_blockly(self):
         """Open Blockly configuration dialog to customize available blocks"""
@@ -3011,40 +2894,6 @@ class PyGameMakerIDE(QMainWindow):
                 self.tr("Project structure is valid!\n\n"
                         "✓ All required directories exist\n"
                         "✓ project.json is present")
-            )
-
-    def clean_project(self):
-        """Clean temporary files and unused assets from project"""
-        if not self.current_project_path:
-            QMessageBox.information(
-                self,
-                self.tr("No Project"),
-                self.tr("Please open a project first to clean.")
-            )
-            return
-
-        reply = QMessageBox.question(
-            self,
-            self.tr("Clean Project"),
-            self.tr("Project cleanup is not yet implemented.\n\n"
-                    "Future features:\n"
-                    "• Remove temporary files\n"
-                    "• Delete unused assets\n"
-                    "• Clean build artifacts\n"
-                    "• Optimize project size\n\n"
-                    "Would you like to learn more?"),
-            QMessageBox.Yes | QMessageBox.No
-        )
-
-        if reply == QMessageBox.Yes:
-            QMessageBox.information(
-                self,
-                self.tr("Coming Soon"),
-                self.tr("This feature will be available in a future update.\n\n"
-                        "For now, you can manually delete temporary files from:\n"
-                        "• .cache/ directory\n"
-                        "• __pycache__/ directories\n"
-                        "• *.pyc files")
             )
 
     def migrate_project_structure(self):
@@ -3331,11 +3180,7 @@ class PyGameMakerIDE(QMainWindow):
         elif asset_type == 'playgrounds':
             self.open_playground_editor(asset_name, asset_info)
         else:
-            # For now, just show a message for other asset types
-            from PySide6.QtWidgets import QMessageBox
-            QMessageBox.information(self, self.tr("Editor"),
-                                self.tr("Editor for {0} not yet implemented.\n"
-                                    "Asset: {1}").format(asset_type, asset_name))
+            logger.warning(f"No editor registered for asset type '{asset_type}' (asset: {asset_name})")
 
     def open_room_editor(self, room_name: str, room_data: dict):
         """Open a room in the room editor"""
@@ -3964,10 +3809,6 @@ class PyGameMakerIDE(QMainWindow):
             self.test_game_action.setEnabled(has_project)
         if hasattr(self, 'debug_game_action'):
             self.debug_game_action.setEnabled(has_project)
-        if hasattr(self, 'build_game_action'):
-            self.build_game_action.setEnabled(has_project)
-        if hasattr(self, 'build_and_run_action'):
-            self.build_and_run_action.setEnabled(has_project)
         if hasattr(self, 'export_game_action'):
             self.export_game_action.setEnabled(has_project)
 

@@ -1235,12 +1235,6 @@ class ObjectEditor(BaseEditor):
         # ✅ TRANSLATABLE: Status message
         self.update_status(self.tr("Selected action: {0} ({1})").format(action_name, category))
 
-    # Toolbar actions
-    def test_object(self):
-        """Test the object (placeholder)"""
-        # ✅ TRANSLATABLE: Status message
-        self.update_status(self.tr("Object testing not implemented yet"))
-
     def _update_code_view(self):
         """Update the code editor with generated Python code from events.
 
