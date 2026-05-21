@@ -201,7 +201,7 @@ PyGameMaker интегрирует Google Blockly для визуального 
 
 PyGameMaker лицензирован под **GNU General Public License v3 (GPLv3)**.
 
-Copyright (c) 2024-2025 Gabriel Thullen
+Gabriel Thullen, 2025-2026
 
 ---
 
