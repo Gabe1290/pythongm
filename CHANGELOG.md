@@ -7,16 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Two unrelated tracks bundled in this entry. First, a relicensing pass: the
-project is now MIT-licensed for the source code and CC BY 4.0 for the
-documentation (see License section below). Second, follow-up to rc.10's
+## [1.0.0-rc.11] - 2026-05-21
+
+Three tracks bundled in this entry. First, a relicensing pass: the project is
+now MIT-licensed for the source code and CC BY 4.0 for the documentation (see
+License section below) — and the new licensing is surfaced in the About
+dialog so users see it without leaving the app. Second, follow-up to rc.10's
 encoding audit: the rc.10 fix only covered the runtime's split-file readers,
 but the same locale-dependent `open()` pattern was still present in 25+ other
-sites across the IDE, exporters, and runtime. This pass closes the rest of the
-cluster, hardens project-file writes against partial-write corruption, and
-narrows the bare `except:` clauses in shipped Kivy runtime code. All behaviour-
-preserving; the full test suite stays green (502 tests, including extended
-encoding regressions and new atomic-write tests).
+sites across the IDE, exporters, and runtime. This pass closes the rest of
+the cluster, hardens project-file writes against partial-write corruption,
+and narrows the bare `except:` clauses in shipped Kivy runtime code. Third,
+a UX truth-in-advertising sweep: every menu item that used to open a "Not
+Implemented" placeholder dialog has been removed, the deferred features are
+now tracked in a top-level `TODO.md`, and a macOS-specific Qt menu-role bug
+that was silently hijacking the App-menu Preferences slot was fixed. All
+behaviour-preserving; the full test suite stays green (502 tests, including
+extended encoding regressions and new atomic-write tests).
 
 ### License
 - **Source code relicensed from GPLv3 to the MIT License.** The author is the
@@ -146,6 +153,56 @@ encoding regressions and new atomic-write tests).
   ``test_game_runner.py`` and ``test_integration.py`` now specify
   ``encoding='utf-8'`` (with ``ensure_ascii=False`` on the ``json.dump``s),
   bringing the test fixtures into parity with the runtime/IDE encoding pass.
+
+### Added
+- **About dialog now surfaces the new licensing.** The About PyGameMaker
+  dialog (`core/ide_window.py`) gained a License section listing the
+  MIT-licensed source code and CC BY 4.0-licensed documentation, with a one-
+  line note about the GPLv3 → MIT/CC BY 4.0 relicensing rationale (lowering
+  the barrier to reuse for educators, students, and downstream projects).
+  The new section is wrapped in its own `self.tr(...)` call rather than
+  appended to the existing About body, so previously translated locales
+  (FR/DE/IT/RU/SL/UK) keep working unchanged — only the License paragraph
+  itself needs to be picked up by translators per locale.
+- **French translation for the new License paragraph** added to
+  `pygm2_fr.ts` (the source compiled to `pygm2_fr.qm`, the .qm French users
+  actually load) and mirrored in the split `pygm2_fr_core.ts`.
+- **`TODO.md` at the repo root** lists every deferred feature with scope,
+  current workaround, and the file path where the stub used to live. Created
+  to replace the "Not Implemented" placeholder dialogs (see Removed below)
+  so deferred work isn't lost now that the lying UI is gone.
+
+### Removed
+- **User-visible "Not Implemented" placeholder dialogs.** Every menu item or
+  button that produced a `QMessageBox` saying "X is not yet implemented" has
+  been removed along with its handler and any enable/disable references:
+  `Edit → Find...` (Ctrl+F), `Edit → Find and Replace...` (Ctrl+H),
+  `Build → Build Game...` (F7), `Build → Build and Run` (F8),
+  `Tools → Asset Manager...`, `Tools → Clean Project`. Two defensive
+  fallback dialogs (`open_asset_editor`'s unknown-asset-type branch and
+  `asset_tree`'s create-asset fallback) were demoted to silent
+  `logger.warning` since they were catch-alls the user shouldn't normally
+  hit. The orphaned `test_object` method in the Object Editor (no UI
+  element called it; the planned "Play Object" toolbar button was never
+  wired) is also gone. All of these are tracked in the new `TODO.md`.
+- ~190 lines of dead handler code removed; net diff including `TODO.md` and
+  the macOS Preferences fix was −49 lines.
+
+### macOS
+- **App-menu Preferences no longer hijacked by `Configure Thymio Blocks...`.**
+  On macOS, Qt auto-promotes `QAction`s to the App menu by matching the
+  action text against keywords like `preferences`, `settings`, `config`,
+  `setup` (case-insensitive contains-match). `Configure &Thymio Blocks...`
+  was matching the `config` substring and getting promoted to the App-menu
+  Preferences slot — silently shadowing the real `&Preferences...` action,
+  so on Mac the App-menu Preferences opened the Thymio block configurator
+  instead of the multi-tab PreferencesDialog (with the IDE Edition
+  selector, etc.). Linux/Windows were unaffected because they don't have
+  the App-menu merge mechanism. Fixed by explicitly setting
+  `QAction.PreferencesRole` on the real Preferences action and
+  `QAction.NoRole` on the two `Configure ...` actions, bypassing Qt's
+  text heuristic. Bug was reproducible from both git clone and the rc.10
+  release build.
 
 ## [1.0.0-rc.10] - 2026-05-19
 
