@@ -310,12 +310,7 @@ class AssetTreeWidget(QTreeWidget):
             if hasattr(self, 'create_asset'):
                 self.create_asset(asset_type)
             else:
-                logger.warning("Could not find parent with create_asset method")
-                QMessageBox.information(
-                    self,
-                    self.tr("Create Asset"),
-                    self.tr("Asset creation for {0} is not yet implemented.").format(asset_type)
-                )
+                logger.warning(f"No create_asset handler available for asset type '{asset_type}'")
 
     def trigger_import_for_category(self, asset_type: str):
         """Trigger import dialog for a specific asset category"""
