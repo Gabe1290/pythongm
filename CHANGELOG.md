@@ -7,13 +7,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Follow-up to rc.10's encoding audit: the rc.10 fix only covered the runtime's
-split-file readers, but the same locale-dependent `open()` pattern was still
-present in 25+ other sites across the IDE, exporters, and runtime. This pass
-closes the rest of the cluster, hardens project-file writes against partial-
-write corruption, and narrows the bare `except:` clauses in shipped Kivy
-runtime code. All behaviour-preserving; the full test suite stays green (502
-tests, including extended encoding regressions and new atomic-write tests).
+Two unrelated tracks bundled in this entry. First, a relicensing pass: the
+project is now MIT-licensed for the source code and CC BY 4.0 for the
+documentation (see License section below). Second, follow-up to rc.10's
+encoding audit: the rc.10 fix only covered the runtime's split-file readers,
+but the same locale-dependent `open()` pattern was still present in 25+ other
+sites across the IDE, exporters, and runtime. This pass closes the rest of the
+cluster, hardens project-file writes against partial-write corruption, and
+narrows the bare `except:` clauses in shipped Kivy runtime code. All behaviour-
+preserving; the full test suite stays green (502 tests, including extended
+encoding regressions and new atomic-write tests).
+
+### License
+- **Source code relicensed from GPLv3 to the MIT License.** The author is the
+  sole copyright holder (sole git contributor across the repo's history) and
+  chose to drop the copyleft for a permissive license that requires attribution
+  only. Verified no dependency required GPL compatibility: `QScintilla` was
+  declared in `requirements.txt` but had **zero imports** anywhere in the
+  source — it has been removed (and with it the transitive `PyQt5` / `PyQt5-Qt5`
+  / `PyQt5-sip` chain). PySide6 (LGPLv3) and Pygame (LGPLv2.1) remain compatible
+  with MIT via dynamic linking; Pillow / Blockly / Kivy / watchdog / Jinja2 /
+  PyInstaller (runtime-exception) are all permissive-compatible.
+- **Documentation relicensed under Creative Commons Attribution 4.0
+  International (CC BY 4.0).** Covers everything under `docs/`, `wiki/`, the
+  in-app tutorial content, the README, the CHANGELOG, the manuals and the
+  flyers. Teachers and other adopters can now remix the documentation into
+  class handouts under a single attribution requirement. The CC license
+  applies to content only; the IDE source code stays MIT. New `LICENSE-docs`
+  file added at the repo root with the CC BY 4.0 notice, attribution text and
+  canonical URL.
+- **Required attribution form: "Gabriel Thullen, 2025-2026".** Both licenses
+  require attribution. Use this exact form in any reuse or derivative work.
+  The standard MIT `LICENSE` file contains a `Copyright (c) 2025-2026 Gabriel
+  Thullen` line because the license format requires identifying the
+  rights-holder; informational/attribution lines elsewhere in the project
+  (file docstrings, About dialog, flyer footers, manual footers, wiki license
+  sections) use the bare `Gabriel Thullen, 2025-2026` form per author
+  preference.
+- **Previously released versions (`1.0.0-rc.10` and earlier) remain under
+  GPLv3.** A retroactive license change is not possible for copies already
+  distributed under the prior license; only the current `main` branch and
+  future releases are MIT + CC BY 4.0.
+- Touches: `LICENSE` (rewritten as MIT + dual-license note + updated third-
+  party list), new `LICENSE-docs`, `pyproject.toml` (license field), `main.py`
+  (GPL preamble stripped from module docstring), `dialogs/about.py` (credits
+  text), `version_info.txt` (Windows `LegalCopyright` suffix), `README.md`
+  (license badge + License section rewritten), `requirements.txt` (QScintilla
+  removed), 8 × `docs/USER_MANUAL*.md` (localized footers), 8 ×
+  `docs/FLYER*.md` (localized license bullets), 9 × `wiki/Home*.md` (localized
+  License sections in EN, FR, DE, ES, IT, PT, RU, SL, UK).
 
 ### Fixed
 - **Encoding gaps closed across the IDE, exporters and runtime.** rc.10 added
