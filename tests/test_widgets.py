@@ -219,6 +219,49 @@ class TestObjectEditor:
             pytest.skip("ObjectEditor requires additional initialization")
 
 
+class TestSpriteEditorPreciseCheckbox:
+    """Sprite editor exposes a `Precise Collision` checkbox that round-trips
+    through `sprite_data['precise']`. The runtime side is covered by
+    TestPixelPerfectCollision in test_game_runner.py — these tests just
+    verify the IDE wiring."""
+
+    def test_precise_checkbox_exists_and_defaults_unchecked(self, qtbot):
+        try:
+            from editors.sprite_editor.sprite_editor_main import SpriteEditor
+        except ImportError:
+            pytest.skip("SpriteEditor not available")
+        editor = SpriteEditor()
+        qtbot.addWidget(editor)
+        assert hasattr(editor, '_precise_check')
+        assert editor._precise_check.isChecked() is False
+
+    def test_precise_round_trips_through_load_and_get(self, qtbot):
+        """load_data(precise=True) checks the box; toggling it back updates get_data()."""
+        try:
+            from editors.sprite_editor.sprite_editor_main import SpriteEditor
+        except ImportError:
+            pytest.skip("SpriteEditor not available")
+        editor = SpriteEditor()
+        qtbot.addWidget(editor)
+        editor.asset_name = "spr_test"
+        editor.load_data({
+            "file_path": "",
+            "frame_width": 32,
+            "frame_height": 32,
+            "frames": 1,
+            "animation_type": "single",
+            "speed": 10.0,
+            "origin_x": 16,
+            "origin_y": 16,
+            "precise": True,
+        })
+        assert editor._precise_check.isChecked() is True
+        assert editor.get_data()["precise"] is True
+        # Flip and confirm get_data round-trips.
+        editor._precise_check.setChecked(False)
+        assert editor.get_data()["precise"] is False
+
+
 class TestBlocklyWidget:
     """Test the Blockly widget integration"""
 

@@ -102,8 +102,14 @@ class ObjectEventsPanel(QWidget):
 
         # Set initial 55-45 split after widget is shown (Event column slightly wider)
         def set_initial_widths():
-            total_width = self.events_tree.viewport().width()
-            self.events_tree.setColumnWidth(0, int(total_width * 0.55))
+            # Guard: the panel may be destroyed before the 100ms timer fires
+            # (common in fast test teardown), leaving events_tree as a wrapper
+            # around a freed C++ object. Calling .viewport() on it raises.
+            try:
+                total_width = self.events_tree.viewport().width()
+                self.events_tree.setColumnWidth(0, int(total_width * 0.55))
+            except RuntimeError:
+                pass
 
         # Delay setting widths until widget is visible
         QTimer.singleShot(100, set_initial_widths)

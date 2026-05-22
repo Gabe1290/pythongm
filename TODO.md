@@ -103,14 +103,6 @@ Other:
 - **Room transition effects** — `runtime/action_executor.py:5111`. Parameter
   accepted but ignored; transitions are instant.
 
-### Pixel-perfect collision (precise) — IDE UI follow-up
-
-The runtime now honors `sprite_data['precise'] = True` with `pygame.mask`-based
-collision refinement (and GMK imports propagate the source project's flag).
-There's no sprite-editor checkbox yet to toggle it on a native pygm2 sprite —
-that's a small follow-up. Until then, set the field in JSON directly or import
-a GMK project that already has it enabled.
-
 ## Export
 
 - **Kivy export — long-tail action coverage** —
