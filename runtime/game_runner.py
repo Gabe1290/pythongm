@@ -605,16 +605,21 @@ class GameInstance:
         # NOTE: Create event is NOT triggered here!
         # It's triggered when the room becomes active (in change_room or run_game_loop)
 
-    def render(self, screen: pygame.Surface):
-        """Render this instance"""
+    def render(self, screen: pygame.Surface, view_offset=(0, 0)):
+        """Render this instance.
+
+        view_offset: (dx, dy) added to the final blit position so the instance
+        appears at the correct screen pixel under the active view. Defaults to
+        (0, 0), which preserves identical behavior when views are disabled.
+        """
         if not self.visible:
             return
 
         # Render sprite if present
         if self.sprite:
-            # Calculate render position (offset by sprite origin)
-            render_x = int(self.x - self.sprite.origin_x)
-            render_y = int(self.y - self.sprite.origin_y)
+            # Calculate render position (offset by sprite origin + view offset)
+            render_x = int(self.x - self.sprite.origin_x + view_offset[0])
+            render_y = int(self.y - self.sprite.origin_y + view_offset[1])
 
             # Get current animation frame
             frame_idx = int(self.image_index)
@@ -1216,18 +1221,58 @@ class GameRoom:
 
 
     def render(self, screen: pygame.Surface):
-        """Render the room and all its instances"""
-        # Clear screen with background color
-        screen.fill(self.background_color)
+        """Render the room and all its instances.
 
+        When views_enabled, the first visible view defines a port rect on
+        the screen and a view rect into the room. Drawing is clipped to
+        the port and translated so the view's top-left maps to the port's
+        top-left. (Phase 2b: single-view minimum. Phase 2c will loop over
+        all visible views.)
+        """
+        active_view = self._first_active_view() if self.views_enabled else None
+
+        if active_view is None:
+            screen.fill(self.background_color)
+            self._render_room(screen, (0, 0))
+            return
+
+        port_x = int(active_view['port_x'])
+        port_y = int(active_view['port_y'])
+        port_w = int(active_view['port_w'])
+        port_h = int(active_view['port_h'])
+        view_x = int(active_view['view_x'])
+        view_y = int(active_view['view_y'])
+        offset = (port_x - view_x, port_y - view_y)
+
+        prev_clip = screen.get_clip()
+        screen.set_clip(pygame.Rect(port_x, port_y, port_w, port_h))
+        try:
+            screen.fill(self.background_color)
+            self._render_room(screen, offset)
+        finally:
+            screen.set_clip(prev_clip)
+
+    def _first_active_view(self):
+        """Return the first visible view, or None if no views are visible."""
+        for view in self.views:
+            if view.get('visible'):
+                return view
+        return None
+
+    def _render_room(self, screen: pygame.Surface, offset):
+        """Internal: render room contents translated by offset.
+
+        offset: (dx, dy) added to every blit so room coords (0, 0) lands at
+        (dx, dy) on screen. (0, 0) preserves the legacy no-view behavior.
+        """
         # Draw background layers (non-foreground) or legacy single background
         if self.bg_layers:
-            self._render_bg_layers(screen, foreground=False)
+            self._render_bg_layers(screen, foreground=False, view_offset=offset)
         elif self.background_surface:
-            self._render_legacy_background(screen)
+            self._render_legacy_background(screen, view_offset=offset)
 
         # Render tile layer (behind instances, at depth 1000000 by default)
-        self.render_tiles(screen)
+        self.render_tiles(screen, view_offset=offset)
 
         # Render all instances sorted by depth (higher depth = drawn first/behind)
         # In GameMaker, lower depth values are drawn on top (in front)
@@ -1238,11 +1283,11 @@ class GameRoom:
         for instance in self._sorted_instances:
             # Regular instances render their sprites
             if not instance.is_thymio:
-                instance.render(screen)
+                instance.render(screen, view_offset=offset)
 
         # Draw foreground background layers
         if self.bg_layers:
-            self._render_bg_layers(screen, foreground=True)
+            self._render_bg_layers(screen, foreground=True, view_offset=offset)
 
         # Render Thymio robots separately (on top)
         for instance in self.instances:
@@ -1251,12 +1296,68 @@ class GameRoom:
                 # Note: thymio_renderer is accessed from game_runner
                 pass  # Will be handled by game_runner's render method
 
-    def render_tiles(self, screen: pygame.Surface):
+    def update_views(self):
+        """Per-tick view update: follow targets, clamp to room bounds.
+
+        Called from GameRunner.render() before current_room.render(). When a
+        view has a follow target, the view's (view_x, view_y) is nudged so
+        the target stays within (hborder, vborder) of the view edges. The
+        view is then clamped so it never extends past the room.
+        """
+        if not self.views_enabled:
+            return
+        for view in self.views:
+            if not view.get('visible'):
+                continue
+            target_name = view.get('follow')
+            if not target_name:
+                continue
+            target = self._find_first_instance(target_name)
+            if target is None:
+                continue
+            vw = int(view['view_w'])
+            vh = int(view['view_h'])
+            hborder = int(view['hborder'])
+            vborder = int(view['vborder'])
+            vx = int(view['view_x'])
+            vy = int(view['view_y'])
+            tx = target.x
+            ty = target.y
+            # Push the view edge if target is outside the border zone
+            if tx < vx + hborder:
+                vx = int(tx - hborder)
+            elif tx > vx + vw - hborder:
+                vx = int(tx - vw + hborder)
+            if ty < vy + vborder:
+                vy = int(ty - vborder)
+            elif ty > vy + vh - vborder:
+                vy = int(ty - vh + vborder)
+            # Clamp to room (never show outside the room)
+            if vw < self.width:
+                vx = max(0, min(vx, self.width - vw))
+            else:
+                vx = 0
+            if vh < self.height:
+                vy = max(0, min(vy, self.height - vh))
+            else:
+                vy = 0
+            view['view_x'] = vx
+            view['view_y'] = vy
+
+    def _find_first_instance(self, object_name: str):
+        """Return the first instance matching object_name, or None."""
+        for inst in self.instances:
+            if inst.object_name == object_name:
+                return inst
+        return None
+
+    def render_tiles(self, screen: pygame.Surface, view_offset=(0, 0)):
         """Render tile layer"""
         if not self.tiles_data:
             return
 
         backgrounds = getattr(self, '_game_runner_backgrounds', {})
+        ox, oy = view_offset
 
         for tile in self._sorted_tiles:
             bg_name = tile.get('background_name', '')
@@ -1293,17 +1394,17 @@ class GameRoom:
                     base_x = base_x % self.width
                     if base_x > self.width - tile['width']:
                         # Draw wrapped copy on the other side
-                        screen.blit(self.tile_surfaces[key], (base_x - self.width, base_y))
+                        screen.blit(self.tile_surfaces[key], (base_x - self.width + ox, base_y + oy))
                 if vspeed != 0.0 and self.height > 0:
                     base_y = base_y % self.height
                     if base_y > self.height - tile['height']:
-                        screen.blit(self.tile_surfaces[key], (base_x, base_y - self.height))
+                        screen.blit(self.tile_surfaces[key], (base_x + ox, base_y - self.height + oy))
                     # Corner case: wrapping in both axes
                     if hspeed != 0.0 and base_x > self.width - tile['width'] and base_y > self.height - tile['height']:
-                        screen.blit(self.tile_surfaces[key], (base_x - self.width, base_y - self.height))
-                screen.blit(self.tile_surfaces[key], (base_x, base_y))
+                        screen.blit(self.tile_surfaces[key], (base_x - self.width + ox, base_y - self.height + oy))
+                screen.blit(self.tile_surfaces[key], (base_x + ox, base_y + oy))
             else:
-                screen.blit(self.tile_surfaces[key], (tx, ty))
+                screen.blit(self.tile_surfaces[key], (tx + ox, ty + oy))
 
     def set_backgrounds_ref(self, backgrounds_dict):
         """Store reference to loaded backgrounds for tile rendering and multi-layer bg"""
@@ -1314,10 +1415,11 @@ class GameRoom:
             if img_name and img_name in backgrounds_dict:
                 self.bg_layer_surfaces[i] = backgrounds_dict[img_name]
 
-    def _render_legacy_background(self, screen):
+    def _render_legacy_background(self, screen, view_offset=(0, 0)):
         """Render old single-background format"""
         img_width = self.background_surface.get_width()
         img_height = self.background_surface.get_height()
+        ox, oy = view_offset
 
         if self.bg_hspeed != 0.0 or self.bg_vspeed != 0.0:
             self.bg_scroll_x = (self.bg_scroll_x + self.bg_hspeed) % img_width
@@ -1337,19 +1439,20 @@ class GameRoom:
             while x < self.width:
                 y = start_y
                 while y < self.height:
-                    screen.blit(self.background_surface, (x, y))
+                    screen.blit(self.background_surface, (x + ox, y + oy))
                     y += step_y
                 x += step_x
         else:
             if self.bg_stretch:
                 if self._stretched_bg_cache is None:
                     self._stretched_bg_cache = pygame.transform.scale(self.background_surface, (self.width, self.height))
-                screen.blit(self._stretched_bg_cache, (0, 0))
+                screen.blit(self._stretched_bg_cache, (ox, oy))
             else:
-                screen.blit(self.background_surface, (0, 0))
+                screen.blit(self.background_surface, (ox, oy))
 
-    def _render_bg_layers(self, screen, foreground=False):
+    def _render_bg_layers(self, screen, foreground=False, view_offset=(0, 0)):
         """Render background layers (foreground=True for layers on top of instances)"""
+        vox, voy = view_offset
         for i, layer in enumerate(self.bg_layers):
             if not layer.get('visible'):
                 continue
@@ -1387,16 +1490,16 @@ class GameRoom:
                 while x < self.width:
                     y = sy
                     while y < self.height:
-                        screen.blit(surface, (x, y))
+                        screen.blit(surface, (x + vox, y + voy))
                         y += step_y
                     x += step_x
             else:
                 if layer.get('stretch', False):
                     if i not in self._stretched_layer_cache:
                         self._stretched_layer_cache[i] = pygame.transform.scale(surface, (self.width, self.height))
-                    screen.blit(self._stretched_layer_cache[i], (lx, ly))
+                    screen.blit(self._stretched_layer_cache[i], (lx + vox, ly + voy))
                 else:
-                    screen.blit(surface, (lx, ly))
+                    screen.blit(surface, (lx + vox, ly + voy))
 
 
 class GameRunner:
@@ -3685,6 +3788,9 @@ class GameRunner:
 
         # Update window caption with score/lives/health
         self.update_caption()
+
+        # Per-tick view update (follow targets, clamp to room) before rendering.
+        self.current_room.update_views()
 
         # Render current room
         self.current_room.render(self.screen)

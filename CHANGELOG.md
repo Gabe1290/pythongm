@@ -39,6 +39,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   set `precise` in the sprite JSON or import from a GMK that uses it.
   Removes the corresponding `TODO.md` entry at
   `runtime/action_executor.py:497`.
+- **Views / camera system (Phase 2b — single-view minimum).** The 8-view
+  data structure that's been declared on every `GameRoom` since the
+  views action was first added is now actually read by the renderer.
+  When `room.views_enabled` is True and at least one view is visible,
+  `GameRoom.render()` clips to the view's port rect and translates room
+  coords so the view's top-left maps to the port's top-left. View 0 is
+  visible by default. `GameRoom.update_views()` (called per frame from
+  `GameRunner.render()`) handles follow targets: when a view's `follow`
+  names an instance, the view nudges so the target stays inside
+  `(hborder, vborder)` of the view edges, clamped to the room. With
+  `views_enabled=False` (the default) behaviour is byte-identical to
+  before — the new `view_offset` parameter on `GameInstance.render`,
+  `render_tiles`, `_render_legacy_background`, and `_render_bg_layers`
+  defaults to `(0, 0)`. Phase 2c will add the multi-view / split-screen
+  loop and per-view action handlers.
 
 ## [1.0.0-rc.11] - 2026-05-21
 

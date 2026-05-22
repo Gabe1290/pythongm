@@ -1301,6 +1301,228 @@ class TestPixelPerfectCollision:
         assert game_runner.instances_overlap(i1, i2) is True
 
 
+class TestViewsRendering:
+    """Tests for the views/camera system (Phase 2b: single-view minimum)."""
+
+    def _make_room(self, width=1600, height=1200, views_enabled=False, follow=None):
+        """Construct a GameRoom directly with predictable view config."""
+        with patch('runtime.game_runner.pygame'):
+            with patch('runtime.game_runner.load_all_plugins'):
+                from runtime.game_runner import GameRoom
+                room_data = {
+                    'width': width,
+                    'height': height,
+                    'background_color': '#000000',
+                    'views_enabled': views_enabled,
+                }
+                if follow is not None:
+                    room_data['views'] = {
+                        'view_0': {
+                            'visible': True,
+                            'view_x': 0, 'view_y': 0,
+                            'view_w': 800, 'view_h': 600,
+                            'port_x': 0, 'port_y': 0,
+                            'port_w': 800, 'port_h': 600,
+                            'follow': follow,
+                            'hborder': 100, 'vborder': 100,
+                        }
+                    }
+                room = GameRoom("test_room", room_data, action_executor=MagicMock())
+                return room
+
+    def test_views_default_disabled(self):
+        room = self._make_room()
+        assert room.views_enabled is False
+        # 8 view slots always exist with default config.
+        assert len(room.views) == 8
+        assert room.views[0]['visible'] is True
+        for v in room.views[1:]:
+            assert v['visible'] is False
+
+    def test_first_active_view_returns_first_visible(self):
+        room = self._make_room()
+        room.views[0]['visible'] = False
+        room.views[2]['visible'] = True
+        assert room._first_active_view() is room.views[2]
+
+    def test_first_active_view_returns_none_when_all_invisible(self):
+        room = self._make_room()
+        for v in room.views:
+            v['visible'] = False
+        assert room._first_active_view() is None
+
+    def test_render_no_views_skips_clip(self):
+        """Back-compat: views disabled → no clip manipulation, single fill."""
+        room = self._make_room(views_enabled=False)
+        screen = MagicMock()
+        room.render(screen)
+        screen.set_clip.assert_not_called()
+        assert screen.fill.call_count == 1  # background_color fill
+
+    def test_render_views_enabled_sets_port_clip(self):
+        """View 0 has a port; render() must clip to that port and restore."""
+        room = self._make_room(views_enabled=True)
+        # Configure a non-default port to verify it's applied
+        room.views[0]['port_x'] = 100
+        room.views[0]['port_y'] = 50
+        room.views[0]['port_w'] = 640
+        room.views[0]['port_h'] = 480
+        room.views[0]['view_w'] = 640
+        room.views[0]['view_h'] = 480
+
+        prior_clip = object()  # sentinel
+        screen = MagicMock()
+        screen.get_clip.return_value = prior_clip
+
+        room.render(screen)
+
+        screen.set_clip.assert_any_call(
+            __import__('pygame').Rect(100, 50, 640, 480)
+        )
+        # Final restore call uses the captured prior clip.
+        screen.set_clip.assert_called_with(prior_clip)
+
+    def test_render_no_visible_views_falls_back_to_legacy(self):
+        """views_enabled but no view is visible → behave like views off."""
+        room = self._make_room(views_enabled=True)
+        for v in room.views:
+            v['visible'] = False
+        screen = MagicMock()
+        room.render(screen)
+        screen.set_clip.assert_not_called()
+
+
+class TestInstanceViewOffset:
+    """Tests that GameInstance.render applies view_offset to blit position."""
+
+    def _make_instance_with_sprite(self):
+        import pygame
+        from runtime.game_runner import GameInstance, GameSprite
+
+        sprite = GameSprite.__new__(GameSprite)
+        sprite.path = ""
+        sprite.sprite_data = {}
+        sprite.surface = pygame.Surface((16, 16), pygame.SRCALPHA)
+        sprite.frames = [sprite.surface]
+        sprite.masks = []
+        sprite.frame_count = 1
+        sprite.frame_width = 16
+        sprite.frame_height = 16
+        sprite.width = 16
+        sprite.height = 16
+        sprite.origin_x = 0
+        sprite.origin_y = 0
+        sprite.speed = 10.0
+        sprite.animation_type = "single"
+        sprite.precise = False
+
+        with patch('runtime.game_runner.load_all_plugins'):
+            inst = GameInstance("test", 200, 150, {}, MagicMock())
+        inst.sprite = sprite
+        inst.scale_x = 1.0
+        inst.scale_y = 1.0
+        inst.image_index = 0
+        return inst
+
+    def test_render_no_offset_blits_at_world_pos(self):
+        inst = self._make_instance_with_sprite()
+        screen = MagicMock()
+        inst.render(screen)
+        screen.blit.assert_called_once()
+        _, kwargs = screen.blit.call_args
+        args = screen.blit.call_args[0]
+        # blit(surface, (x, y))
+        assert args[1] == (200, 150)
+
+    def test_render_with_offset_shifts_blit_position(self):
+        inst = self._make_instance_with_sprite()
+        screen = MagicMock()
+        inst.render(screen, view_offset=(-50, 100))
+        args = screen.blit.call_args[0]
+        # world (200, 150) - origin (0, 0) + offset (-50, 100) = (150, 250)
+        assert args[1] == (150, 250)
+
+
+class TestViewFollow:
+    """Tests for GameRoom.update_views() follow-target logic."""
+
+    def _make_room_with_follow(self, room_w=1600, room_h=1200):
+        with patch('runtime.game_runner.pygame'):
+            with patch('runtime.game_runner.load_all_plugins'):
+                from runtime.game_runner import GameRoom, GameInstance
+                room = GameRoom("test", {
+                    'width': room_w,
+                    'height': room_h,
+                    'views_enabled': True,
+                    'views': {
+                        'view_0': {
+                            'visible': True,
+                            'view_x': 0, 'view_y': 0,
+                            'view_w': 800, 'view_h': 600,
+                            'port_x': 0, 'port_y': 0,
+                            'port_w': 800, 'port_h': 600,
+                            'follow': 'player',
+                            'hborder': 100, 'vborder': 100,
+                        }
+                    }
+                }, action_executor=MagicMock())
+                player = GameInstance("player", 0, 0, {}, MagicMock())
+                room.instances.append(player)
+                return room, player
+
+    def test_follow_pushes_view_right_when_target_passes_hborder(self):
+        room, player = self._make_room_with_follow()
+        # view_x=0, view_w=800, hborder=100 → trigger zone is x > 700.
+        player.x = 750
+        player.y = 50  # vborder zone doesn't matter for this assertion
+        room.update_views()
+        # Expected: view_x = target - view_w + hborder = 750 - 800 + 100 = 50
+        assert room.views[0]['view_x'] == 50
+
+    def test_follow_pushes_view_left_when_target_below_hborder(self):
+        room, player = self._make_room_with_follow()
+        room.views[0]['view_x'] = 400  # start scrolled-right
+        player.x = 450  # target at view_x + 50, inside hborder=100 → push left
+        player.y = 50
+        room.update_views()
+        # Expected: view_x = target - hborder = 450 - 100 = 350
+        assert room.views[0]['view_x'] == 350
+
+    def test_follow_clamps_view_to_room_right_edge(self):
+        room, player = self._make_room_with_follow(room_w=1000, room_h=1200)
+        room.views[0]['view_x'] = 200
+        player.x = 950  # would push view_x = 950 - 800 + 100 = 250
+        player.y = 50
+        room.update_views()
+        # Clamp: view_x cannot exceed room_w - view_w = 1000 - 800 = 200
+        assert room.views[0]['view_x'] == 200
+
+    def test_follow_clamps_view_to_room_left_edge(self):
+        room, player = self._make_room_with_follow()
+        room.views[0]['view_x'] = 500
+        player.x = 10  # would push view_x = 10 - 100 = -90
+        player.y = 50
+        room.update_views()
+        assert room.views[0]['view_x'] == 0
+
+    def test_follow_missing_target_is_noop(self):
+        room, _ = self._make_room_with_follow()
+        room.instances.clear()  # remove the player
+        room.views[0]['view_x'] = 400
+        room.views[0]['view_y'] = 300
+        room.update_views()
+        assert room.views[0]['view_x'] == 400
+        assert room.views[0]['view_y'] == 300
+
+    def test_update_views_noop_when_disabled(self):
+        room, player = self._make_room_with_follow()
+        room.views_enabled = False
+        room.views[0]['view_x'] = 100
+        player.x = 5000  # would normally trigger a huge shift
+        room.update_views()
+        assert room.views[0]['view_x'] == 100
+
+
 class TestEventSystemAnimationAndDrawing:
     """Tests for animation and drawing-related properties"""
 
