@@ -159,13 +159,17 @@ def register_thymio_actions(action_executor: Any) -> None:
         instance.thymio_simulator.play_tone(int(frequency), int(duration))
 
     def execute_thymio_play_system_sound_action(instance, parameters):
-        """Play a system sound (placeholder - just play a tone)"""
+        """Approximate a Thymio system sound with a distinct tone.
+
+        The simulator's audio surface is tone-only (no sampled playback),
+        so each of the 8 built-in system sounds is rendered as a half-second
+        tone at a distinguishing frequency.
+        """
         if not hasattr(instance, 'thymio_simulator'):
             return
 
         sound_id = _parse_value(parameters.get('sound_id', 0), instance)
 
-        # Map system sounds to frequencies (simplified)
         sound_frequencies = {
             0: 440,   # Startup
             1: 330,   # Shutdown
@@ -178,7 +182,7 @@ def register_thymio_actions(action_executor: Any) -> None:
         }
 
         freq = sound_frequencies.get(int(sound_id), 440)
-        instance.thymio_simulator.play_tone(freq, 30)  # 0.5 seconds
+        instance.thymio_simulator.play_tone(freq, 30)  # 30/60s = 0.5s
 
     def execute_thymio_stop_sound_action(instance, parameters):
         """Stop currently playing sound"""
