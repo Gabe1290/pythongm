@@ -68,6 +68,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     action handler (already defined in
     `runtime/action_executor.py:3841`) is unchanged but now actually
     affects what's drawn.
+- **Sprite editor: `Precise Collision` checkbox.** The sprite editor
+  now exposes a checkbox below the origin spinboxes that toggles the
+  per-sprite `precise` flag — the same field already honored by the
+  runtime (Phase 2a) and the GMK importer. Round-trips through
+  `load_data` / `get_data` and emits `data_modified` on toggle. Closes
+  the IDE-UI follow-up that previously lived in `TODO.md`.
+
+### Fixed
+- `editors/object_editor/object_events_panel.py`: defensive
+  `try / except RuntimeError` around the `QTimer.singleShot(100, ...)`
+  column-width callback. The closure captured `self.events_tree`; when
+  the panel was destroyed before the 100 ms timer fired (common in
+  fast test teardown), calling `.viewport()` on the freed-C++
+  `QTreeWidget` raised. Surfaced once new sprite-editor tests were
+  added; root cause is the deferred callback, not the new tests.
 
 ## [1.0.0-rc.11] - 2026-05-21
 

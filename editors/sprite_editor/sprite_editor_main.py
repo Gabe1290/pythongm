@@ -9,7 +9,7 @@ from typing import Dict, Any
 
 from PySide6.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QGridLayout, QSplitter, QWidget, QLabel, QSpinBox, QMessageBox, QToolButton, QMenu, QFrame,
-    QComboBox, QDialog, QDialogButtonBox, QGroupBox, QRadioButton, QFileDialog,
+    QComboBox, QDialog, QDialogButtonBox, QGroupBox, QRadioButton, QFileDialog, QCheckBox,
 )
 from PySide6.QtCore import Qt, QRect, QPoint
 from PySide6.QtGui import (
@@ -369,6 +369,16 @@ class SpriteEditor(BaseEditor):
         self._tool_grid.addLayout(ox_layout, 7, 0, 1, 2)
         self._tool_grid.addLayout(oy_layout, 7, 2, 1, 2)
 
+        # Precise (pixel-perfect) collision opt-in. When checked, the runtime
+        # builds a pygame.mask per frame and refines AABB collisions against
+        # it (rotated/scaled instances still fall back to AABB).
+        self._precise_check = QCheckBox(self.tr("Precise Collision"))
+        self._precise_check.setToolTip(self.tr(
+            "Enable pixel-perfect collision for this sprite. "
+            "Static-only: rotated or scaled instances fall back to AABB."))
+        self._precise_check.toggled.connect(self._on_precise_toggled)
+        self._tool_grid.addWidget(self._precise_check, 8, 0, 1, 4)
+
         # Filled mode toggle (for rect/ellipse) — icon
         self._filled_action = self.toolbar.addAction(
             self._make_toolbar_icon("filled"), self.tr("Filled"), self._toggle_filled)
@@ -673,6 +683,10 @@ class SpriteEditor(BaseEditor):
             self._origin_x_spin.value(), self._origin_y_spin.value())
         self.data_modified.emit(self.asset_name)
 
+    def _on_precise_toggled(self, _checked: bool):
+        """Mark the editor modified when the precise checkbox flips."""
+        self.data_modified.emit(self.asset_name)
+
     def _sync_origin_preset(self):
         """After loading data, set the preset combo to match the origin values."""
         fw, fh = self.frame_timeline.get_frame_size()
@@ -968,6 +982,11 @@ class SpriteEditor(BaseEditor):
         self._sync_origin_preset()
         self.canvas.set_origin_marker(ox, oy)
 
+        # Pixel-perfect collision opt-in
+        self._precise_check.blockSignals(True)
+        self._precise_check.setChecked(bool(data.get("precise", False)))
+        self._precise_check.blockSignals(False)
+
     def get_data(self) -> Dict[str, Any]:
         """Return sprite metadata dict (image saving happens in save())."""
         frames = self.frame_timeline.get_frames()
@@ -985,6 +1004,7 @@ class SpriteEditor(BaseEditor):
             "speed": self.frame_timeline._fps,
             "origin_x": self._origin_x_spin.value(),
             "origin_y": self._origin_y_spin.value(),
+            "precise": self._precise_check.isChecked(),
             "asset_type": "sprite",
         })
         return data
