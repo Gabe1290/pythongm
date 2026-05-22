@@ -445,45 +445,37 @@ class ActionExecutor:
 
     # ==================== SPEED-BASED MOVEMENT ====================
 
+    def _set_speed_component(self, instance, parameters: Dict[str, Any], component: str) -> None:
+        # Shared kernel for execute_set_{h,v}speed_action.
+        # component is "hspeed" or "vspeed" — also the preferred parameter key.
+        action_name = f"set_{component}"
+        speed_value = parameters.get(component, parameters.get("value", parameters.get("speed", "0")))
+        logger.debug(f"  🔍 {action_name}: raw value = '{speed_value}', _collision_other = {getattr(self, '_collision_other', None)}")
+        speed = self._parse_value(str(speed_value), instance)
+        logger.debug(f"  🔍 {action_name}: parsed value = {speed}")
+        try:
+            speed = float(speed)
+        except (ValueError, TypeError):
+            logger.warning(f"⚠️  {action_name}: Invalid speed value '{speed_value}'")
+            return
+        old_speed = getattr(instance, component)
+        setattr(instance, component, speed)
+        if old_speed != speed:
+            logger.debug(f"  🏃 {instance.object_name} {component}: {old_speed} → {speed}")
+
     def execute_set_hspeed_action(self, instance, parameters: Dict[str, Any]):
         """Set horizontal speed for smooth movement
 
         Accepts numbers or variable references like other.hspeed
         """
-        # Accept 'hspeed', 'value', or 'speed' parameters
-        speed_value = parameters.get("hspeed", parameters.get("value", parameters.get("speed", "0")))
-        logger.debug(f"  🔍 set_hspeed: raw value = '{speed_value}', _collision_other = {getattr(self, '_collision_other', None)}")
-        speed = self._parse_value(str(speed_value), instance)
-        logger.debug(f"  🔍 set_hspeed: parsed value = {speed}")
-        try:
-            speed = float(speed)
-        except (ValueError, TypeError):
-            logger.warning(f"⚠️  set_hspeed: Invalid speed value '{speed_value}'")
-            return
-        old_speed = instance.hspeed
-        instance.hspeed = speed
-        if old_speed != speed:
-            logger.debug(f"  🏃 {instance.object_name} hspeed: {old_speed} → {speed}")
+        self._set_speed_component(instance, parameters, "hspeed")
 
     def execute_set_vspeed_action(self, instance, parameters: Dict[str, Any]):
         """Set vertical speed for smooth movement
 
         Accepts numbers or variable references like other.vspeed
         """
-        # Accept 'vspeed', 'value', or 'speed' parameters
-        speed_value = parameters.get("vspeed", parameters.get("value", parameters.get("speed", "0")))
-        logger.debug(f"  🔍 set_vspeed: raw value = '{speed_value}', _collision_other = {getattr(self, '_collision_other', None)}")
-        speed = self._parse_value(str(speed_value), instance)
-        logger.debug(f"  🔍 set_vspeed: parsed value = {speed}")
-        try:
-            speed = float(speed)
-        except (ValueError, TypeError):
-            logger.warning(f"⚠️  set_vspeed: Invalid speed value '{speed_value}'")
-            return
-        old_speed = instance.vspeed
-        instance.vspeed = speed
-        if old_speed != speed:
-            logger.debug(f"  🏃 {instance.object_name} vspeed: {old_speed} → {speed}")
+        self._set_speed_component(instance, parameters, "vspeed")
 
     def execute_stop_movement_action(self, instance, parameters: Dict[str, Any]):
         """Stop all movement by setting speeds to zero"""
