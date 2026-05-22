@@ -5,15 +5,24 @@ context follows across machines.
 
 ## Running tests
 
-`python3 -m pytest tests/ -q` from the repo root.
+From the repo root:
 
-- **Baseline:** 486 passed, 16 skipped, 0 failed (as of rc.11 + post-rc.11
-  polish). Treat any non-zero failure as a real regression.
-- No `venv` despite some older docs referencing `venv/bin/...` — use system
-  `python3` (3.11+, PySide6 6.9.2).
+- **Linux/macOS:** `python3 -m pytest tests/ -q` (Python 3.11+, PySide6 6.9.2).
+- **Windows:** `py -3.12 -m pytest tests/ -q`. Do **not** use bare `python3` —
+  it resolves to `pythoncore-3.14`, which is outside the supported 3.10–3.13
+  range (commit `faa8f00`) and lacks pygame on this box, producing ~34 errors
+  / 7 failures that aren't real regressions. The `venv/` directory at repo
+  root is a Linux artifact synced via Dropbox and is unusable from Windows.
+
+- **Baseline:** 512 passed, 0 failed (post-Phase-2a, 2026-05-22) on
+  Python 3.12 + pygame 2.6.1 + PySide6 6.10.1. The earlier "486 passed, 16
+  skipped" figure was an older snapshot — the current count is 512 passing
+  with no skips on a healthy env. Treat any non-zero failure as a real
+  regression.
 - `pyflakes` is **not** installed; substitute `py_compile` + import sanity for
   static checks.
-- For headless / offscreen Qt: `QT_QPA_PLATFORM=offscreen`.
+- For headless / offscreen Qt: `QT_QPA_PLATFORM=offscreen` (`conftest.py`
+  already sets `SDL_VIDEODRIVER=dummy` / `SDL_AUDIODRIVER=dummy` for pygame).
 - Skip `-x`; tests are independent and the full count is the signal.
 
 ## Audit-cleanup history (§1–§3 closed)
@@ -46,12 +55,13 @@ Methodology for any future audit work (§4, follow-ups, or new audits):
 Anything that was a "Not Implemented" placeholder or click-then-dead-end
 stub was removed in rc.11 and tracked in `TODO.md` instead. **Don't propose
 adding "Not Implemented" dialogs back** — that's the exact pattern rc.11
-cleaned up (commit 77e9dbf: *"stop lying to users"*). Items already listed
-in `TODO.md` include pixel-perfect collision
-(`runtime/action_executor.py:497`), room scrolling
-(`runtime/action_executor.py:3781`), room transitions
-(`runtime/action_executor.py:5111`), and Thymio sampled-audio playback
-(`runtime/thymio_action_handlers.py`).
+cleaned up (commit 77e9dbf: *"stop lying to users"*). Items still listed
+in `TODO.md` include room scrolling (`runtime/action_executor.py:3781`),
+room transitions (`runtime/action_executor.py:5111`), and Thymio
+sampled-audio playback (`runtime/thymio_action_handlers.py`).
+Pixel-perfect collision was implemented in Phase 2a (2026-05-22) and is
+no longer in `TODO.md` as a stub — what remains is the IDE-UI follow-up
+for toggling `precise` on a native sprite asset.
 
 ## Recent agent-session notes
 
@@ -67,8 +77,14 @@ existed since 2025-10-26.
 
 The Phase-1 items genuinely worth doing were folded into the post-rc.11
 polish commits (README badge fix, `set_hspeed`/`set_vspeed` consolidation,
-honest Thymio docstring). The Phase-2 proposals (viewport scrolling +
-pixel-perfect collision detection as new features for 1.0) were deferred —
-they're already tracked in `TODO.md` as known limitations, not RC-blocking
-work, and adding gameplay features in an RC runs against the rc.11
-trajectory.
+honest Thymio docstring).
+
+**2026-05-22 — Phase 2 reversal.** The user approved Phase-2 work
+(viewport scrolling + pixel-perfect collision) for inclusion in 1.0, with
+the rc.11 release window slipping accordingly. Phase 2a (pixel-perfect
+collision) has landed: static-only, opt-in per sprite via
+`sprite_data['precise']`, GMK importer captures the source flag, AABB
+fallback for rotated/scaled instances. Phase 2b–2c (views/camera system)
+is next on the queue. The general "stability over features" principle
+still applies to *other* work in the repo — this is a scoped exception
+limited to the two named features.

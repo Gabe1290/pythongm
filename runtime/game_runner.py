@@ -146,6 +146,7 @@ class GameSprite:
         self.sprite_data = sprite_data or {}
         self.surface = None  # Full sprite sheet surface
         self.frames = []  # List of individual frame surfaces
+        self.masks = []  # Per-frame pygame.Mask, populated only when precise=True
         self.frame_count = 1
         self.frame_width = 32
         self.frame_height = 32
@@ -155,10 +156,18 @@ class GameSprite:
         self.origin_y = 0
         self.speed = 10.0  # Animation FPS
         self.animation_type = "single"  # single, strip_h, strip_v, grid
+        # Opt-in pixel-perfect collision. Static-only: rotation/scale fall back to AABB.
+        self.precise = bool(self.sprite_data.get('precise', False))
         self.load_image()
         # Apply origin from sprite data (after load_image sets dimensions)
         self.origin_x = self.sprite_data.get('origin_x', 0)
         self.origin_y = self.sprite_data.get('origin_y', 0)
+        if self.precise:
+            self._build_masks()
+
+    def _build_masks(self):
+        """Build per-frame pygame.Mask for pixel-perfect collision."""
+        self.masks = [pygame.mask.from_surface(f) for f in self.frames]
 
     def load_image(self):
         """Load the sprite image and extract frames if animated"""
@@ -393,6 +402,13 @@ class GameSprite:
         # Wrap index to valid range
         frame_idx = int(image_index) % len(self.frames)
         return self.frames[frame_idx]
+
+    def get_mask(self, image_index: float):
+        """Get the per-frame pygame.Mask, or None if precise collision is disabled."""
+        if not self.masks:
+            return None
+        frame_idx = int(image_index) % len(self.masks)
+        return self.masks[frame_idx]
 
     def create_default_sprite(self):
         """Create a default sprite (colored rectangle)"""
@@ -2780,6 +2796,11 @@ class GameRunner:
             # Check rectangle overlap at intended position
             if self.rectangles_overlap(intended_x - ox1, intended_y - oy1, w1, h1,
                                       other_instance.x - ox2, other_instance.y - oy2, w2, h2):
+                # Pixel-perfect refinement (no-op unless either sprite opts in).
+                if not self._precise_refine(
+                        moving_instance, intended_x - ox1, intended_y - oy1,
+                        other_instance, other_instance.x - ox2, other_instance.y - oy2):
+                    continue
                 # If the mover already overlaps the blocker at its current
                 # position, let it escape: blocking every direction would
                 # trap it in an oscillation freeze on the next bounce.
@@ -3185,13 +3206,46 @@ class GameRunner:
         ox2 = inst2.sprite.origin_x if inst2.sprite else 0
         oy2 = inst2.sprite.origin_y if inst2.sprite else 0
 
-        return self.rectangles_overlap(
-            inst1.x - ox1, inst1.y - oy1, w1, h1,
-            inst2.x - ox2, inst2.y - oy2, w2, h2)
+        ax1 = inst1.x - ox1
+        ay1 = inst1.y - oy1
+        ax2 = inst2.x - ox2
+        ay2 = inst2.y - oy2
+        if not self.rectangles_overlap(ax1, ay1, w1, h1, ax2, ay2, w2, h2):
+            return False
+        return self._precise_refine(inst1, ax1, ay1, inst2, ax2, ay2)
 
     def rectangles_overlap(self, x1, y1, w1, h1, x2, y2, w2, h2) -> bool:
         """Check if two rectangles overlap"""
         return not (x1 + w1 <= x2 or x2 + w2 <= x1 or y1 + h1 <= y2 or y2 + h2 <= y1)
+
+    def _precise_refine(self, inst1, ax1, ay1, inst2, ax2, ay2) -> bool:
+        """Post-AABB refinement for pixel-perfect collision.
+
+        Returns True to keep an AABB-positive hit, False to reject it.
+        Pixel-perfect is opt-in per sprite (sprite.precise). Static-only:
+        rotated or scaled instances bypass the mask check, so the AABB
+        result stands.
+
+        ax1, ay1, ax2, ay2 are the AABB top-left positions actually used
+        at the call site (already origin-adjusted). Identical coordinates
+        to the rectangles_overlap that just returned True.
+        """
+        s1 = inst1.sprite if inst1 else None
+        s2 = inst2.sprite if inst2 else None
+        if not (s1 and s2):
+            return True
+        if not (getattr(s1, 'precise', False) or getattr(s2, 'precise', False)):
+            return True
+        if (getattr(inst1, 'rotation', 0) or getattr(inst2, 'rotation', 0)
+                or getattr(inst1, 'image_angle', 0) or getattr(inst2, 'image_angle', 0)
+                or getattr(inst1, 'scale_x', 1) != 1 or getattr(inst1, 'scale_y', 1) != 1
+                or getattr(inst2, 'scale_x', 1) != 1 or getattr(inst2, 'scale_y', 1) != 1):
+            return True
+        m1 = s1.get_mask(inst1.image_index) if hasattr(s1, 'get_mask') else None
+        m2 = s2.get_mask(inst2.image_index) if hasattr(s2, 'get_mask') else None
+        if m1 is None or m2 is None:
+            return True
+        return m1.overlap(m2, (int(ax2 - ax1), int(ay2 - ay1))) is not None
 
     def check_collision_at_position(self, instance, check_x: float, check_y: float,
                                     object_type: str = "any", exclude_instance=None) -> bool:
@@ -3244,6 +3298,11 @@ class GameRunner:
             # Check if positions overlap
             if self.rectangles_overlap(check_x - ox1, check_y - oy1, w1, h1,
                                        other_instance.x - ox2, other_instance.y - oy2, w2, h2):
+                # Pixel-perfect refinement (no-op unless either sprite opts in).
+                if not self._precise_refine(
+                        instance, check_x - ox1, check_y - oy1,
+                        other_instance, other_instance.x - ox2, other_instance.y - oy2):
+                    continue
                 # Use cached object data for properties
                 other_obj_data = other_instance._cached_object_data
                 if not other_obj_data:

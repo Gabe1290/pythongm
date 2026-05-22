@@ -93,13 +93,19 @@ Other:
 
 ## Runtime features called out in code
 
-- **Precise (pixel-perfect) collision detection** — parameter accepted but
-  ignored in `runtime/action_executor.py:497`. Currently all collisions are
-  bounding-box.
 - **Room scrolling** — `runtime/action_executor.py:3781`. Currently rooms are
-  single-screen.
+  single-screen. *(Phase 2b–2c of the Copilot-audit follow-up is implementing
+  the full views/camera system; this entry will be removed when that lands.)*
 - **Room transition effects** — `runtime/action_executor.py:5111`. Parameter
   accepted but ignored; transitions are instant.
+
+### Pixel-perfect collision (precise) — IDE UI follow-up
+
+The runtime now honors `sprite_data['precise'] = True` with `pygame.mask`-based
+collision refinement (and GMK imports propagate the source project's flag).
+There's no sprite-editor checkbox yet to toggle it on a native pygm2 sprite —
+that's a small follow-up. Until then, set the field in JSON directly or import
+a GMK project that already has it enabled.
 
 ## Export
 
