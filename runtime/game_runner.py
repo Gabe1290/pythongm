@@ -990,6 +990,10 @@ class GameRoom:
 
         # View system - 8 views like GameMaker
         self.views_enabled = room_data.get('views_enabled', room_data.get('enable_views', False))
+        # Index of the view currently being rendered (set during render), or -1
+        # outside the render loop / when views are disabled. Draw events that
+        # want to query the active camera read this.
+        self.current_view_index = -1
         self.views = []
         views_raw = room_data.get('views', {})
         # Handle both list and dict formats for views
@@ -1223,41 +1227,44 @@ class GameRoom:
     def render(self, screen: pygame.Surface):
         """Render the room and all its instances.
 
-        When views_enabled, the first visible view defines a port rect on
-        the screen and a view rect into the room. Drawing is clipped to
-        the port and translated so the view's top-left maps to the port's
-        top-left. (Phase 2b: single-view minimum. Phase 2c will loop over
-        all visible views.)
+        When views_enabled and at least one view is visible, the renderer
+        loops over every visible view in index order (0 first, 7 last) and
+        for each one: sets a clip to the port rect, translates room coords
+        so the view's top-left maps to the port's top-left, and renders
+        the room into the clipped region. The bg color fills the entire
+        screen once before the loop so areas not covered by any port show
+        the bg color, not stale pixels.
         """
-        active_view = self._first_active_view() if self.views_enabled else None
+        active_views = self._active_views() if self.views_enabled else []
 
-        if active_view is None:
+        if not active_views:
             screen.fill(self.background_color)
+            self.current_view_index = -1
             self._render_room(screen, (0, 0))
             return
 
-        port_x = int(active_view['port_x'])
-        port_y = int(active_view['port_y'])
-        port_w = int(active_view['port_w'])
-        port_h = int(active_view['port_h'])
-        view_x = int(active_view['view_x'])
-        view_y = int(active_view['view_y'])
-        offset = (port_x - view_x, port_y - view_y)
-
+        screen.fill(self.background_color)
         prev_clip = screen.get_clip()
-        screen.set_clip(pygame.Rect(port_x, port_y, port_w, port_h))
         try:
-            screen.fill(self.background_color)
-            self._render_room(screen, offset)
+            for i, view in active_views:
+                port_x = int(view['port_x'])
+                port_y = int(view['port_y'])
+                port_w = int(view['port_w'])
+                port_h = int(view['port_h'])
+                view_x = int(view['view_x'])
+                view_y = int(view['view_y'])
+                offset = (port_x - view_x, port_y - view_y)
+
+                screen.set_clip(pygame.Rect(port_x, port_y, port_w, port_h))
+                self.current_view_index = i
+                self._render_room(screen, offset)
         finally:
             screen.set_clip(prev_clip)
+            self.current_view_index = -1
 
-    def _first_active_view(self):
-        """Return the first visible view, or None if no views are visible."""
-        for view in self.views:
-            if view.get('visible'):
-                return view
-        return None
+    def _active_views(self):
+        """Return list of (index, view) tuples for visible views, in order."""
+        return [(i, v) for i, v in enumerate(self.views) if v.get('visible')]
 
     def _render_room(self, screen: pygame.Surface, offset):
         """Internal: render room contents translated by offset.
@@ -1319,30 +1326,47 @@ class GameRoom:
             vh = int(view['view_h'])
             hborder = int(view['hborder'])
             vborder = int(view['vborder'])
-            vx = int(view['view_x'])
-            vy = int(view['view_y'])
+            old_vx = int(view['view_x'])
+            old_vy = int(view['view_y'])
             tx = target.x
             ty = target.y
-            # Push the view edge if target is outside the border zone
-            if tx < vx + hborder:
-                vx = int(tx - hborder)
-            elif tx > vx + vw - hborder:
-                vx = int(tx - vw + hborder)
-            if ty < vy + vborder:
-                vy = int(ty - vborder)
-            elif ty > vy + vh - vborder:
-                vy = int(ty - vh + vborder)
+            # Compute the desired view position (push edge when target outside border zone)
+            new_vx = old_vx
+            new_vy = old_vy
+            if tx < old_vx + hborder:
+                new_vx = int(tx - hborder)
+            elif tx > old_vx + vw - hborder:
+                new_vx = int(tx - vw + hborder)
+            if ty < old_vy + vborder:
+                new_vy = int(ty - vborder)
+            elif ty > old_vy + vh - vborder:
+                new_vy = int(ty - vh + vborder)
+            # Per-axis speed limit on follow shift. -1 (the default) means no limit.
+            hspeed_limit = int(view.get('hspeed', -1))
+            vspeed_limit = int(view.get('vspeed', -1))
+            if hspeed_limit >= 0:
+                dx = new_vx - old_vx
+                if dx > hspeed_limit:
+                    new_vx = old_vx + hspeed_limit
+                elif dx < -hspeed_limit:
+                    new_vx = old_vx - hspeed_limit
+            if vspeed_limit >= 0:
+                dy = new_vy - old_vy
+                if dy > vspeed_limit:
+                    new_vy = old_vy + vspeed_limit
+                elif dy < -vspeed_limit:
+                    new_vy = old_vy - vspeed_limit
             # Clamp to room (never show outside the room)
             if vw < self.width:
-                vx = max(0, min(vx, self.width - vw))
+                new_vx = max(0, min(new_vx, self.width - vw))
             else:
-                vx = 0
+                new_vx = 0
             if vh < self.height:
-                vy = max(0, min(vy, self.height - vh))
+                new_vy = max(0, min(new_vy, self.height - vh))
             else:
-                vy = 0
-            view['view_x'] = vx
-            view['view_y'] = vy
+                new_vy = 0
+            view['view_x'] = new_vx
+            view['view_y'] = new_vy
 
     def _find_first_instance(self, object_name: str):
         """Return the first instance matching object_name, or None."""

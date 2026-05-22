@@ -1339,17 +1339,21 @@ class TestViewsRendering:
         for v in room.views[1:]:
             assert v['visible'] is False
 
-    def test_first_active_view_returns_first_visible(self):
+    def test_active_views_returns_visible_in_order(self):
         room = self._make_room()
         room.views[0]['visible'] = False
         room.views[2]['visible'] = True
-        assert room._first_active_view() is room.views[2]
+        room.views[5]['visible'] = True
+        active = room._active_views()
+        assert [i for i, _ in active] == [2, 5]
+        assert active[0][1] is room.views[2]
+        assert active[1][1] is room.views[5]
 
-    def test_first_active_view_returns_none_when_all_invisible(self):
+    def test_active_views_empty_when_all_invisible(self):
         room = self._make_room()
         for v in room.views:
             v['visible'] = False
-        assert room._first_active_view() is None
+        assert room._active_views() == []
 
     def test_render_no_views_skips_clip(self):
         """Back-compat: views disabled → no clip manipulation, single fill."""
@@ -1390,6 +1394,149 @@ class TestViewsRendering:
         screen = MagicMock()
         room.render(screen)
         screen.set_clip.assert_not_called()
+
+
+class TestMultiViewSplitScreen:
+    """Tests for Phase 2c: multiple visible views rendered in split-screen."""
+
+    def _make_room_with_two_views(self):
+        with patch('runtime.game_runner.pygame'):
+            with patch('runtime.game_runner.load_all_plugins'):
+                from runtime.game_runner import GameRoom
+                room = GameRoom("test", {
+                    'width': 1600,
+                    'height': 1200,
+                    'views_enabled': True,
+                    'views': {
+                        'view_0': {
+                            'visible': True,
+                            'view_x': 0, 'view_y': 0,
+                            'view_w': 400, 'view_h': 300,
+                            'port_x': 0, 'port_y': 0,
+                            'port_w': 400, 'port_h': 300,
+                        },
+                        'view_1': {
+                            'visible': True,
+                            'view_x': 800, 'view_y': 600,
+                            'view_w': 400, 'view_h': 300,
+                            'port_x': 400, 'port_y': 0,
+                            'port_w': 400, 'port_h': 300,
+                        },
+                    },
+                }, action_executor=MagicMock())
+                return room
+
+    def test_render_iterates_all_visible_views(self):
+        """Each visible view gets its own set_clip call with its own port."""
+        room = self._make_room_with_two_views()
+        import pygame
+        screen = MagicMock()
+        screen.get_clip.return_value = pygame.Rect(0, 0, 800, 600)
+
+        room.render(screen)
+
+        clip_calls = [c.args[0] for c in screen.set_clip.call_args_list
+                      if c.args and isinstance(c.args[0], pygame.Rect)]
+        # Two ports set (one per view), plus the final restore call.
+        assert pygame.Rect(0, 0, 400, 300) in clip_calls
+        assert pygame.Rect(400, 0, 400, 300) in clip_calls
+        # The fill happens once before the loop, not per-view, so areas not
+        # covered by any port still show the bg color.
+        assert screen.fill.call_count == 1
+
+    def test_render_restores_clip_via_finally(self):
+        """An exception mid-render must still restore the prior clip."""
+        room = self._make_room_with_two_views()
+        import pygame
+        sentinel_clip = pygame.Rect(0, 0, 800, 600)
+        screen = MagicMock()
+        screen.get_clip.return_value = sentinel_clip
+
+        room.render(screen)
+
+        # Last set_clip call is the restore with the sentinel.
+        assert screen.set_clip.call_args_list[-1].args == (sentinel_clip,)
+        assert room.current_view_index == -1  # reset after loop
+
+    def test_current_view_index_starts_negative(self):
+        room = self._make_room_with_two_views()
+        assert room.current_view_index == -1
+
+    def test_render_skips_invisible_views(self):
+        room = self._make_room_with_two_views()
+        room.views[1]['visible'] = False
+        import pygame
+        screen = MagicMock()
+        screen.get_clip.return_value = pygame.Rect(0, 0, 800, 600)
+        room.render(screen)
+        clip_rects = [c.args[0] for c in screen.set_clip.call_args_list
+                      if c.args and isinstance(c.args[0], pygame.Rect)]
+        assert pygame.Rect(0, 0, 400, 300) in clip_rects
+        assert pygame.Rect(400, 0, 400, 300) not in clip_rects
+
+
+class TestViewFollowSpeedLimit:
+    """Tests for hspeed/vspeed clamp on follow-induced view shifts."""
+
+    def _make_room(self, hspeed=-1, vspeed=-1):
+        with patch('runtime.game_runner.pygame'):
+            with patch('runtime.game_runner.load_all_plugins'):
+                from runtime.game_runner import GameRoom, GameInstance
+                room = GameRoom("test", {
+                    'width': 4000,
+                    'height': 4000,
+                    'views_enabled': True,
+                    'views': {
+                        'view_0': {
+                            'visible': True,
+                            'view_x': 0, 'view_y': 0,
+                            'view_w': 800, 'view_h': 600,
+                            'port_x': 0, 'port_y': 0,
+                            'port_w': 800, 'port_h': 600,
+                            'follow': 'player',
+                            'hborder': 100, 'vborder': 100,
+                            'hspeed': hspeed,
+                            'vspeed': vspeed,
+                        }
+                    }
+                }, action_executor=MagicMock())
+                player = GameInstance("player", 0, 0, {}, MagicMock())
+                room.instances.append(player)
+                return room, player
+
+    def test_default_minus_one_means_no_speed_limit(self):
+        """hspeed=-1 (the default) lets the view jump in one tick."""
+        room, player = self._make_room(hspeed=-1)
+        player.x = 2000  # huge shift required
+        player.y = 50
+        room.update_views()
+        # Unlimited: view_x = target - view_w + hborder = 2000 - 800 + 100 = 1300
+        assert room.views[0]['view_x'] == 1300
+
+    def test_hspeed_clamps_rightward_shift(self):
+        """Positive hspeed caps the per-tick rightward camera movement."""
+        room, player = self._make_room(hspeed=50)
+        player.x = 2000  # would jump 1300 px without a limit
+        player.y = 50
+        room.update_views()
+        assert room.views[0]['view_x'] == 50  # clamped to old_vx + hspeed
+
+    def test_hspeed_clamps_leftward_shift(self):
+        room, player = self._make_room(hspeed=30)
+        room.views[0]['view_x'] = 500  # start scrolled right
+        player.x = 0  # would jump view_x → -100 without a limit
+        player.y = 50
+        room.update_views()
+        assert room.views[0]['view_x'] == 470  # old_vx - hspeed
+
+    def test_vspeed_independent_of_hspeed(self):
+        """Each axis has its own clamp."""
+        room, player = self._make_room(hspeed=10, vspeed=200)
+        player.x = 2000
+        player.y = 2000
+        room.update_views()
+        assert room.views[0]['view_x'] == 10
+        assert room.views[0]['view_y'] == 200
 
 
 class TestInstanceViewOffset:
