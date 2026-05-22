@@ -93,9 +93,13 @@ Other:
 
 ## Runtime features called out in code
 
-- **Room scrolling** — `runtime/action_executor.py:3781`. Currently rooms are
-  single-screen. *(Phase 2b–2c of the Copilot-audit follow-up is implementing
-  the full views/camera system; this entry will be removed when that lands.)*
+- **Background auto-scroll on `set_background`** —
+  `runtime/action_executor.py:3781`. The `hspeed`/`vspeed` accepted by
+  the `set_background` action are still ignored; only the room's own
+  `bg_hspeed`/`bg_vspeed` (from room config or `set_view`) drive layer
+  scrolling today. The view/camera system (Phase 2b–2c) handles full
+  room-larger-than-window scrolling, but this specific per-call setter
+  needs wiring.
 - **Room transition effects** — `runtime/action_executor.py:5111`. Parameter
   accepted but ignored; transitions are instant.
 

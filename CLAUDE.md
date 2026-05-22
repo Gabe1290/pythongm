@@ -14,9 +14,9 @@ From the repo root:
   / 7 failures that aren't real regressions. The `venv/` directory at repo
   root is a Linux artifact synced via Dropbox and is unusable from Windows.
 
-- **Baseline:** 526 passed, 0 failed (post-Phase-2b, 2026-05-22) on
+- **Baseline:** 534 passed, 0 failed (post-Phase-2c, 2026-05-22) on
   Python 3.12 + pygame 2.6.1 + PySide6 6.10.1. The earlier "486 passed, 16
-  skipped" figure was an older snapshot — the current count is 526 passing
+  skipped" figure was an older snapshot — the current count is 534 passing
   with no skips on a healthy env. Treat any non-zero failure as a real
   regression.
 - `pyflakes` is **not** installed; substitute `py_compile` + import sanity for
