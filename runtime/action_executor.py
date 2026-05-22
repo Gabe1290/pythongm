@@ -2645,7 +2645,13 @@ class ActionExecutor:
         else:
             save_path = Path(filename)
 
-        if not save_path.exists():
+        try:
+            save_exists = save_path.exists()
+        except OSError as e:
+            logger.warning(f"⚠️ load_game: Cannot access save file {save_path}: {e}")
+            return
+
+        if not save_exists:
             logger.warning(f"⚠️ load_game: Save file not found: {save_path}")
             return
 
