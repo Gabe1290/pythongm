@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- README version badge bumped from `1.0.0-rc.6` to `1.0.0-rc.11` (was
+  factually wrong on `main` after the rc.11 release).
+
+### Changed
+- `runtime/action_executor.py`: extracted shared `_set_speed_component`
+  kernel for `execute_set_hspeed_action` / `execute_set_vspeed_action`.
+  Behaviour-preserving — same parameter precedence (`hspeed`/`vspeed` →
+  `value` → `speed`), same log strings, same float-coercion path.
+- `runtime/thymio_action_handlers.py`: reworded the
+  `execute_thymio_play_system_sound_action` docstring to honestly describe
+  the simulator's tone-only audio surface (was: *"placeholder - just play a
+  tone"*). Sampled-audio playback remains a known limitation tracked in
+  `TODO.md`.
+
+### Added
+- `CLAUDE.md` at the repo root: working notes for Claude / agent sessions —
+  test baseline, audit-cleanup methodology, TODO.md conventions, and recent
+  agent-session context. Travels with the repo across machines.
+
 ## [1.0.0-rc.11] - 2026-05-21
 
 Three tracks bundled in this entry. First, a relicensing pass: the project is
