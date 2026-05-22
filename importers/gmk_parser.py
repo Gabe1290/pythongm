@@ -38,6 +38,7 @@ class GmkSprite:
     name: str
     origin_x: int = 0
     origin_y: int = 0
+    precise: bool = False  # Pixel-perfect collision opt-in
     subimages: List[Tuple[int, int, bytes]] = field(default_factory=list)
     # Each subimage is (width, height, bgra_pixel_data)
 
@@ -700,6 +701,7 @@ class GmkParser:
                 _preload = not s.read_bool()
             _bbox_mode = s.read_int32()
             _precise = s.read_bool()
+            sprite.precise = bool(_precise)
             transparent = True  # used for BMP key color
         else:
             transparent = False
@@ -731,7 +733,8 @@ class GmkParser:
                     self._warn(f"Failed to parse BMP subimage for '{name}': {e}")
 
         if subver >= 800:
-            # v800+: shape/alpha/separate_mask/bbox read after subimages
+            # v800+: shape/alpha/separate_mask/bbox read after subimages.
+            # Shape kind: 0 = precise mask, 1 = rectangle, 2 = disk, 3 = diamond.
             _shape = s.read_int32()
             _alpha_tolerance = s.read_int32()
             _separate_mask = s.read_bool()
@@ -740,6 +743,7 @@ class GmkParser:
             _bbox_right = s.read_int32()
             _bbox_bottom = s.read_int32()
             _bbox_top = s.read_int32()
+            sprite.precise = (_shape == 0)
 
         return sprite
 

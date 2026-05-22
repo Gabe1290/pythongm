@@ -1165,6 +1165,142 @@ class TestEventSystemCollision:
                 assert 'wall' in instance._collision_targets
 
 
+class TestPixelPerfectCollision:
+    """Tests for static (unrotated/unscaled) pixel-perfect collision.
+
+    Uses real pygame (conftest initializes it with dummy SDL drivers) because
+    pygame.mask is the unit under test. Rotation or non-unity scale falls back
+    to AABB — that's the documented static-only limitation.
+    """
+
+    @pytest.fixture
+    def game_runner(self):
+        """A bare GameRunner just sufficient to call _precise_refine / instances_overlap."""
+        with patch('runtime.game_runner.load_all_plugins'):
+            from runtime.game_runner import GameRunner
+            return GameRunner.__new__(GameRunner)
+
+    def _make_sprite(self, opaque_pixels, size=(8, 8), precise=True):
+        """Build a GameSprite directly, bypassing file load.
+
+        opaque_pixels: iterable of (x, y) pixel coordinates that should be
+        opaque. Everything else is transparent.
+        """
+        import pygame
+        from runtime.game_runner import GameSprite
+
+        surface = pygame.Surface(size, pygame.SRCALPHA)
+        surface.fill((0, 0, 0, 0))
+        for (px, py) in opaque_pixels:
+            surface.set_at((px, py), (255, 255, 255, 255))
+
+        sprite = GameSprite.__new__(GameSprite)
+        sprite.path = ""
+        sprite.sprite_data = {}
+        sprite.surface = surface
+        sprite.frames = [surface]
+        sprite.masks = []
+        sprite.frame_count = 1
+        sprite.frame_width = size[0]
+        sprite.frame_height = size[1]
+        sprite.width = size[0]
+        sprite.height = size[1]
+        sprite.origin_x = 0
+        sprite.origin_y = 0
+        sprite.speed = 10.0
+        sprite.animation_type = "single"
+        sprite.precise = precise
+        if precise:
+            sprite._build_masks()
+        return sprite
+
+    def _make_instance(self, sprite, x, y):
+        from runtime.game_runner import GameInstance
+        with patch('runtime.game_runner.load_all_plugins'):
+            inst = GameInstance("test", x, y, {}, MagicMock())
+        inst.sprite = sprite
+        inst._cached_width = sprite.width
+        inst._cached_height = sprite.height
+        inst.image_index = 0
+        return inst
+
+    def test_sprite_precise_false_no_masks(self):
+        sprite = self._make_sprite({(0, 0)}, precise=False)
+        assert sprite.masks == []
+        assert sprite.get_mask(0) is None
+
+    def test_sprite_precise_true_builds_masks(self):
+        sprite = self._make_sprite({(0, 0), (1, 1)}, precise=True)
+        assert len(sprite.masks) == 1
+        mask = sprite.get_mask(0)
+        assert mask is not None
+        assert mask.count() == 2  # two opaque pixels
+
+    def test_get_mask_wraps_animation_index(self):
+        sprite = self._make_sprite({(0, 0)}, precise=True)
+        # Single frame; out-of-range index wraps.
+        assert sprite.get_mask(0) is sprite.get_mask(5)
+
+    def test_refine_accepts_when_neither_precise(self, game_runner):
+        s1 = self._make_sprite({(0, 0)}, precise=False)
+        s2 = self._make_sprite({(0, 0)}, precise=False)
+        i1 = self._make_instance(s1, 0, 0)
+        i2 = self._make_instance(s2, 0, 0)
+        assert game_runner._precise_refine(i1, 0, 0, i2, 0, 0) is True
+
+    def test_refine_rejects_when_masks_dont_overlap(self, game_runner):
+        # i1 opaque at (0,0); i2 opaque at (7,7). At zero offset, AABBs overlap
+        # but the opaque pixels are at opposite corners — no mask intersection.
+        s1 = self._make_sprite({(0, 0)}, precise=True)
+        s2 = self._make_sprite({(7, 7)}, precise=True)
+        i1 = self._make_instance(s1, 0, 0)
+        i2 = self._make_instance(s2, 1, 0)  # shift so masks definitely miss
+        assert game_runner._precise_refine(i1, 0, 0, i2, 1, 0) is False
+
+    def test_refine_keeps_when_masks_overlap(self, game_runner):
+        s1 = self._make_sprite({(0, 0)}, precise=True)
+        s2 = self._make_sprite({(0, 0)}, precise=True)
+        i1 = self._make_instance(s1, 0, 0)
+        i2 = self._make_instance(s2, 0, 0)
+        assert game_runner._precise_refine(i1, 0, 0, i2, 0, 0) is True
+
+    def test_refine_falls_back_when_rotated(self, game_runner):
+        s1 = self._make_sprite({(0, 0)}, precise=True)
+        s2 = self._make_sprite({(7, 7)}, precise=True)
+        i1 = self._make_instance(s1, 0, 0)
+        i2 = self._make_instance(s2, 1, 0)
+        i1.rotation = 45
+        # Would reject under precise, but rotation forces AABB fallback (True).
+        assert game_runner._precise_refine(i1, 0, 0, i2, 1, 0) is True
+
+    def test_refine_falls_back_when_scaled(self, game_runner):
+        s1 = self._make_sprite({(0, 0)}, precise=True)
+        s2 = self._make_sprite({(7, 7)}, precise=True)
+        i1 = self._make_instance(s1, 0, 0)
+        i2 = self._make_instance(s2, 1, 0)
+        i1.scale_x = 2.0
+        assert game_runner._precise_refine(i1, 0, 0, i2, 1, 0) is True
+
+    def test_refine_returns_true_without_sprites(self, game_runner):
+        i1 = MagicMock()
+        i1.sprite = None
+        i2 = MagicMock()
+        i2.sprite = None
+        assert game_runner._precise_refine(i1, 0, 0, i2, 0, 0) is True
+
+    def test_instances_overlap_uses_precise(self, game_runner):
+        # End-to-end wiring: AABBs overlap but masks don't.
+        s1 = self._make_sprite({(0, 0)}, precise=True)
+        s2 = self._make_sprite({(7, 7)}, precise=True)
+        i1 = self._make_instance(s1, 0, 0)
+        i2 = self._make_instance(s2, 1, 0)
+        assert game_runner.instances_overlap(i1, i2) is False
+        # Flip precise off and the AABB result wins.
+        s1.precise = False
+        s2.precise = False
+        assert game_runner.instances_overlap(i1, i2) is True
+
+
 class TestEventSystemAnimationAndDrawing:
     """Tests for animation and drawing-related properties"""
 

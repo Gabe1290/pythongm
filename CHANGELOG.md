@@ -26,6 +26,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CLAUDE.md` at the repo root: working notes for Claude / agent sessions —
   test baseline, audit-cleanup methodology, TODO.md conventions, and recent
   agent-session context. Travels with the repo across machines.
+- **Pixel-perfect collision (static-only).** Opt-in per sprite via a new
+  `precise` field on the sprite asset (`sprite_data['precise'] = True`).
+  When enabled, `GameSprite` builds a `pygame.mask` per frame at load
+  time. Collision checks (`instances_overlap`,
+  `check_collision_at_position`, `check_movement_collision_with_blocker`,
+  and the per-tick collision-event detector that consumes them) refine
+  AABB hits via `mask.overlap()`. Rotated or non-unity-scaled instances
+  fall back to AABB — that's the honest documented static-only
+  limitation. GMK imports honor the source project's per-sprite precise
+  flag (pre-v800 `_precise` bool; v800+ `shape == 0`). No IDE UI yet —
+  set `precise` in the sprite JSON or import from a GMK that uses it.
+  Removes the corresponding `TODO.md` entry at
+  `runtime/action_executor.py:497`.
 
 ## [1.0.0-rc.11] - 2026-05-21
 
