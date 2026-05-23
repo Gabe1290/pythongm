@@ -12,6 +12,8 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QFormLayout,
                                QComboBox, QSpinBox, QMessageBox, QListWidget,
                                QProgressBar)
 
+from utils import desktop_dir, documents_dir
+
 
 class NewProjectDialog(QDialog):
     """FIXED New Project Dialog"""
@@ -86,20 +88,20 @@ class NewProjectDialog(QDialog):
             self.project_path_edit.setText(path)
 
             if not path:
-                default_path = str(Path.home() / "Documents" / "PyGameMaker Projects")
+                default_path = str(documents_dir() / "PyGameMaker Projects")
                 self.project_path_edit.setText(default_path)
 
             print("✅ New project dialog settings loaded")
         except Exception as e:
             print(f"⚠️  New project dialog error: {e}")
             self.project_name_edit.setText("")
-            default_path = str(Path.home() / "Documents" / "PyGameMaker Projects")
+            default_path = str(documents_dir() / "PyGameMaker Projects")
             self.project_path_edit.setText(default_path)
 
     def browse_project_path(self):
         current_path = self.project_path_edit.text()
         if not current_path:
-            current_path = str(Path.home() / "Documents")
+            current_path = str(documents_dir())
 
         folder = QFileDialog.getExistingDirectory(self, self.tr("Choose Project Location"), current_path)
         if folder:
@@ -198,7 +200,7 @@ class OpenProjectDialog(QDialog):
 
     def browse_project(self):
         file_path, _ = QFileDialog.getOpenFileName(
-            self, self.tr("Open PyGameMaker Project"), str(Path.home() / "Documents"),
+            self, self.tr("Open PyGameMaker Project"), str(documents_dir()),
             self.tr("PyGameMaker Projects (*.json);;All Files (*)")
         )
         if file_path:
@@ -492,18 +494,18 @@ class ExportProjectDialog(QDialog):
             # Set default output path
             if isinstance(self.project_data, dict):
                 project_name = self.project_data.get("name", "Untitled")
-                default_output = str(Path.home() / "Desktop" / f"{project_name}_export")
+                default_output = str(desktop_dir() / f"{project_name}_export")
                 self.output_path_edit.setText(default_output)
 
             print("✅ Export dialog settings loaded")
         except Exception as e:
             print(f"⚠️  Export dialog error: {e}")
-            self.output_path_edit.setText(str(Path.home() / "Desktop" / "exported_game"))
+            self.output_path_edit.setText(str(desktop_dir() / "exported_game"))
 
     def browse_output_path(self):
         current_path = self.output_path_edit.text()
         if not current_path:
-            current_path = str(Path.home() / "Desktop")
+            current_path = str(desktop_dir())
 
         folder = QFileDialog.getExistingDirectory(self, self.tr("Choose Export Location"), current_path)
         if folder:

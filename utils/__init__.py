@@ -394,6 +394,44 @@ def get_relative_path(file_path: Union[str, Path], base_path: Union[str, Path]) 
     except ValueError:
         return Path(file_path)
 
+
+def _qt_standard_path(location_name: str, fallback_subdir: str) -> Path:
+    """Resolve a Qt StandardLocation to a Path, with a sensible fallback.
+
+    Qt returns localised paths on Linux (Bureau, Schreibtisch, ...) and
+    follows Windows redirections (OneDrive-managed Desktop, etc.) that a
+    naive ``Path.home() / "Desktop"`` would miss. We lazy-import Qt so
+    callers who only need other utils don't pay for the import.
+    """
+    try:
+        from PySide6.QtCore import QStandardPaths
+    except ImportError:
+        return _home_fallback(fallback_subdir)
+    location = getattr(QStandardPaths.StandardLocation, location_name, None)
+    if location is None:
+        return _home_fallback(fallback_subdir)
+    resolved = QStandardPaths.writableLocation(location)
+    if resolved:
+        return Path(resolved)
+    return _home_fallback(fallback_subdir)
+
+
+def _home_fallback(subdir: str) -> Path:
+    """Fallback when Qt can't resolve a StandardLocation."""
+    candidate = Path.home() / subdir
+    return candidate if candidate.exists() else Path.home()
+
+
+def desktop_dir() -> Path:
+    """Return the user's localized writable Desktop directory."""
+    return _qt_standard_path("DesktopLocation", "Desktop")
+
+
+def documents_dir() -> Path:
+    """Return the user's localized writable Documents directory."""
+    return _qt_standard_path("DocumentsLocation", "Documents")
+
+
 # =============================================================================
 # EXPORT UTILITIES
 # =============================================================================
@@ -444,7 +482,9 @@ __all__ = [
     'find_project_files',
     'get_relative_path',
     'export_project_summary',
-    'logger'
+    'desktop_dir',
+    'documents_dir',
+    'logger',
 ]
 
 # Initialize package

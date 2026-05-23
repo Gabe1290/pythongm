@@ -1735,13 +1735,20 @@ class PyGameMakerIDE(QMainWindow):
                 # Force X11 driver on Linux for better compatibility when launched from Qt
                 env['SDL_VIDEODRIVER'] = 'x11'
 
+            # On Windows, suppress the brief python.exe console window that
+            # would otherwise flash before pygame's SDL window appears.
+            # CREATE_NO_WINDOW is Windows-only; getattr() yields 0 elsewhere,
+            # which is a no-op for Popen on POSIX.
+            creationflags = getattr(subprocess, 'CREATE_NO_WINDOW', 0)
+
             process = subprocess.Popen(
                 [sys.executable, str(game_script), str(project_json), language],
                 cwd=str(self.current_project_path),
                 env=env,
                 # Don't capture output to avoid potential deadlocks
                 stdout=None,
-                stderr=None
+                stderr=None,
+                creationflags=creationflags,
             )
 
             # Store reference to allow stopping the game
@@ -2226,15 +2233,20 @@ class PyGameMakerIDE(QMainWindow):
 
     def _ask_export_dir(self, suffix: str) -> str:
         """Prompt the user for an output directory, defaulting to
-        ``~/Desktop/<sanitised-project-name><suffix>``. Returns the
-        absolute path string or "" if cancelled — matching the
-        observable contract of the previous per-method inline calls.
+        ``<localised-Desktop>/<sanitised-project-name><suffix>``.
+        Returns the absolute path string or "" if cancelled.
+
+        Uses ``utils.desktop_dir()`` instead of ``Path.home() / "Desktop"``
+        so the default works on Linux locales whose desktop is "Bureau",
+        "Schreibtisch", etc., and on Windows where the desktop may be
+        OneDrive-redirected.
         """
+        from utils import desktop_dir
         default_name = self.current_project_data.get('name', 'Game').replace(' ', '_')
         return QFileDialog.getExistingDirectory(
             self,
             self.tr("Choose Export Location"),
-            str(Path.home() / "Desktop" / f"{default_name}{suffix}"),
+            str(desktop_dir() / f"{default_name}{suffix}"),
             QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks
         )
 
