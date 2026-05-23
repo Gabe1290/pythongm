@@ -17,8 +17,13 @@ copy — the bundled folders themselves are never modified.
 | `maze_2/`        | imported from a GameMaker 8.x .gmk  | 3 rooms, 9 objects, 7 sprites, 4 sounds          |
 | `maze_3/`        | imported from a GameMaker 8.x .gmk  | 6 rooms, 17 objects, 16 sprites, 8 sounds        |
 | `maze_4/`        | imported from a GameMaker 8.x .gmk  | 21 rooms, 24 objects, 24 sprites, 10 sounds      |
-| `treasure/`      | imported from a GameMaker 8.x .gmk  | 4 rooms, 7 objects, 10 sprites, 6 sounds         |
 | `maze.playground`| Aseba playground (for Thymio tests) | XML file, used by `File → Open Playground`       |
+
+A sixth sample (`treasure/`) shipped briefly in rc.12 but was removed
+after user testing surfaced GMK-import edge cases the IDE could only
+partially round-trip. It can be reintroduced by running the
+regeneration steps below against the `treasure.gmk` source once the
+importer is hardened against that case.
 
 ## Regenerating from `.gmk` originals
 

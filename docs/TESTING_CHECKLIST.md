@@ -29,8 +29,10 @@ then reuse the same projects for the phase-specific tests.
 | [ ] | `maze_2` | Phase 1–2 | 3 rooms / 9 objects / 7 sprites / 4 sounds |
 | [ ] | `maze_3` | Phase 1–2 | 6 rooms / 17 objects / 16 sprites / 8 sounds |
 | [ ] | `maze_4` | Phase 1–2 | 21 rooms / 24 objects / 24 sprites / 10 sounds |
-| [ ] | `treasure` | Phase 1–2 (collect / score) | 4 rooms / 7 objects / 10 sprites / 6 sounds |
 | [ ] | `maze.playground` | Aseba playground export round-trip | XML file, opens via the Playground editor |
+
+(`treasure` was dropped from the bundled set after rc.12 testing
+surfaced GMK-import edge cases — see `samples/README.md`.)
 
 For each sample, confirm: click in the Welcome tab opens immediately
 (no destination prompt), title bar shows the sample name, working copy
