@@ -8,8 +8,8 @@ import json
 from pathlib import Path
 from typing import Dict, List, Optional
 from PySide6.QtWidgets import QTreeWidget, QMenu, QMessageBox, QFileDialog
-from PySide6.QtCore import Qt, Signal, QSize
-from PySide6.QtGui import QAction
+from PySide6.QtCore import Qt, Signal, QSize, QRect
+from PySide6.QtGui import QAction, QPainter, QPalette
 
 from core.logger import get_logger
 logger = get_logger(__name__)
@@ -72,6 +72,51 @@ class AssetTreeWidget(QTreeWidget):
 
         # Set icon size to ensure all icons display at consistent 16x16 size
         self.setIconSize(QSize(16, 16))
+
+    def paintEvent(self, event):
+        """Paint a centered empty-state hint when no project is loaded.
+
+        The category rows still render normally; the hint appears in the
+        empty area below them so the asset tree doesn't look like a blank
+        clickable surface on first launch. Uses the palette's disabled
+        text colour so the hint dims correctly under both light and
+        dark themes.
+        """
+        super().paintEvent(event)
+        if self.project_path:
+            return  # Project loaded — categories will fill or be populated.
+
+        viewport = self.viewport()
+        hint = self.tr(
+            "No project loaded.\n"
+            "Use File → New Project or File → Open Project to begin."
+        )
+
+        # Locate the first separator (or the viewport bottom if none),
+        # so the hint sits below the category list without overlapping it.
+        y_anchor = 0
+        for i in range(self.topLevelItemCount()):
+            item = self.topLevelItem(i)
+            rect = self.visualItemRect(item)
+            if not rect.isNull():
+                y_anchor = max(y_anchor, rect.bottom())
+        y_anchor += 24  # breathing room below the last visible row
+        if y_anchor > viewport.height() - 40:
+            # Tree is short enough that there's no space below — fall
+            # back to centring vertically in the visible area.
+            y_anchor = viewport.height() // 2
+
+        painter = QPainter(viewport)
+        painter.setPen(self.palette().color(QPalette.Disabled, QPalette.WindowText))
+        font = painter.font()
+        font.setItalic(True)
+        painter.setFont(font)
+        painter.drawText(
+            QRect(8, y_anchor, viewport.width() - 16, viewport.height() - y_anchor),
+            Qt.AlignHCenter | Qt.AlignTop | Qt.TextWordWrap,
+            hint,
+        )
+        painter.end()
 
     def setup_categories(self):
         """Setup default asset categories with separators"""

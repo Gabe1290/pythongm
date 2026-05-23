@@ -5,7 +5,7 @@ Allows configuring sprite sheets/strips with frame detection
 """
 
 from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QLabel,
+    QDialog, QDialogButtonBox, QVBoxLayout, QHBoxLayout, QLabel,
     QPushButton, QSpinBox, QDoubleSpinBox, QGroupBox,
     QFormLayout, QComboBox, QWidget, QSizePolicy,
     QSlider
@@ -327,17 +327,15 @@ class SpriteStripDialog(QDialog):
 
         right_panel.addStretch()
 
-        # Dialog buttons
-        button_layout = QHBoxLayout()
-        cancel_btn = QPushButton(self.tr("Cancel"))
-        cancel_btn.clicked.connect(self.reject)
-        ok_btn = QPushButton(self.tr("OK"))
-        ok_btn.clicked.connect(self.accept_config)
-        ok_btn.setDefault(True)
-        button_layout.addStretch()
-        button_layout.addWidget(cancel_btn)
-        button_layout.addWidget(ok_btn)
-        right_panel.addLayout(button_layout)
+        # Dialog buttons — use QDialogButtonBox so OK/Cancel ordering
+        # follows the host-platform convention (OK-then-Cancel on Windows
+        # and Linux, Cancel-then-OK on macOS) instead of a hardcoded order.
+        button_box = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        button_box.accepted.connect(self.accept_config)
+        button_box.rejected.connect(self.reject)
+        right_panel.addWidget(button_box)
 
         layout.addLayout(right_panel, stretch=1)
 

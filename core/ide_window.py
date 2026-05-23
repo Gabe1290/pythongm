@@ -152,11 +152,17 @@ class PyGameMakerIDE(QMainWindow):
         menubar = self.menuBar()
 
         file_menu = menubar.addMenu(self.tr("&File"))
-        file_menu.addAction(self.create_action(self.tr("&New Project..."), "Ctrl+N", self.new_project))
-        file_menu.addAction(self.create_action(self.tr("&Open Project..."), "Ctrl+O", self.open_project))
+        # Store references so the toolbar can reuse the same QAction
+        # instances. Qt then shares enable/disable state automatically.
+        self.new_project_action = self.create_action(self.tr("&New Project..."), "Ctrl+N", self.new_project)
+        self.open_project_action = self.create_action(self.tr("&Open Project..."), "Ctrl+O", self.open_project)
+        self.save_project_action = self.create_action(self.tr("&Save Project"), "Ctrl+S", self.save_project)
+        self.save_project_as_action = self.create_action(self.tr("Save Project &As..."), "Ctrl+Shift+S", self.save_project_as)
+        file_menu.addAction(self.new_project_action)
+        file_menu.addAction(self.open_project_action)
         file_menu.addSeparator()
-        file_menu.addAction(self.create_action(self.tr("&Save Project"), "Ctrl+S", self.save_project))
-        file_menu.addAction(self.create_action(self.tr("Save Project &As..."), "Ctrl+Shift+S", self.save_project_as))
+        file_menu.addAction(self.save_project_action)
+        file_menu.addAction(self.save_project_as_action)
         file_menu.addSeparator()
 
         self.recent_projects_menu = file_menu.addMenu(self.tr("Recent Projects"))
@@ -791,50 +797,83 @@ class PyGameMakerIDE(QMainWindow):
         toolbar = self.addToolBar(self.tr("Main"))
         toolbar.setObjectName("MainToolbar")
         toolbar.setMovable(False)
-
-        # Set explicit icon size
         toolbar.setIconSize(QSize(16, 16))
-
-        # Force toolbar to show icons
         toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
 
-        # Create actions first, then add to toolbar
-        actions = [
-            self.create_action(self.tr("New"), None, self.new_project, "SP_FileIcon"),
-            self.create_action(self.tr("Open"), None, self.open_project, "SP_DialogOpenButton"),
-            self.create_action(self.tr("Save"), None, self.save_project, "SP_DialogSaveButton"),
-        ]
+        # Reuse the QAction instances from the menus so a single Qt object
+        # drives both menu and toolbar — enable/disable state from
+        # update_ui_state() then applies to the toolbar automatically.
+        # Apply icons here (the menu definitions stayed iconless).
+        style = self.style()
 
-        for action in actions:
+        def _icon(icon_name: str):
+            try:
+                pixmap_enum = getattr(QStyle.StandardPixmap, icon_name, None)
+                if pixmap_enum is not None:
+                    icon = style.standardIcon(pixmap_enum)
+                    if not icon.isNull():
+                        return icon
+            except Exception:
+                pass
+            return None
+
+        def _attach(action, icon_name, tooltip):
+            """Set the toolbar icon + tooltip on a shared menu action.
+
+            ``tooltip`` is the descriptive hover text the user sees on the
+            toolbar (e.g., "New Project (Ctrl+N)"). Setting it via
+            setToolTip on the QAction also improves the menu hover tooltip,
+            which is fine — descriptive tooltips help in both contexts.
+            """
+            icon = _icon(icon_name)
+            if icon is not None:
+                action.setIcon(icon)
+            action.setToolTip(tooltip)
             toolbar.addAction(action)
 
-        toolbar.addSeparator()
-
-        toolbar.addAction(self.create_action(self.tr("Test"), None, self.test_game, "SP_MediaPlay"))
-        toolbar.addAction(self.create_action(self.tr("Debug"), None, self.debug_game, "SP_ComputerIcon"))
-        toolbar.addAction(self.create_action(self.tr("Export"), None, self.export_game, "SP_DialogApplyButton"))
-        toolbar.addSeparator()
-
-        toolbar.addAction(self.create_action(self.tr("Import Sprite"), None, self.import_sprite, "SP_FileIcon"))
-        toolbar.addAction(self.create_action(self.tr("Import Sound"), None, self.import_sound, "SP_MediaVolume"))
+        # Project group ------------------------------------------------
+        _attach(self.new_project_action,  "SP_FileIcon",        self.tr("New Project (Ctrl+N)"))
+        _attach(self.open_project_action, "SP_DialogOpenButton", self.tr("Open Project (Ctrl+O)"))
+        _attach(self.save_project_action, "SP_DialogSaveButton", self.tr("Save Project (Ctrl+S)"))
 
         toolbar.addSeparator()
-        # Thymio button - opens event selector by default
-        thymio_action = self.create_action(self.tr("Thymio"), None, self.show_thymio_event_selector, "SP_DriveNetIcon")
-        thymio_action.setToolTip(self.tr("Add Thymio Event"))
-        toolbar.addAction(thymio_action)
+
+        # Build group --------------------------------------------------
+        _attach(self.test_game_action,   "SP_MediaPlay",         self.tr("Test Game (F5)"))
+        _attach(self.debug_game_action,  "SP_ComputerIcon",      self.tr("Debug Game (F6)"))
+        _attach(self.export_game_action, "SP_DialogApplyButton", self.tr("Export Game…"))
 
         toolbar.addSeparator()
-        # Global window-mode toggle. Doubles as the recovery affordance when
-        # a floating editor has been dragged off-screen — clicking "Tabbed"
-        # snaps every detached window back into the tab strip.
+
+        # Asset import group -------------------------------------------
+        _attach(self.import_sprite_action, "SP_FileIcon",     self.tr("Import Sprite…"))
+        _attach(self.import_sound_action,  "SP_MediaVolume",  self.tr("Import Sound…"))
+
+        toolbar.addSeparator()
+
+        # Thymio quick-add (new QAction — no corresponding menu item with
+        # the same exact semantics, since the menu has Add Event/Action
+        # split into two entries; the toolbar exposes the most common one)
+        self.thymio_toolbar_action = self.create_action(
+            self.tr("Thymio"), None, self.show_thymio_event_selector, "SP_DriveNetIcon"
+        )
+        self.thymio_toolbar_action.setToolTip(self.tr("Add Thymio Event"))
+        toolbar.addAction(self.thymio_toolbar_action)
+
+        toolbar.addSeparator()
+
+        # Window-mode toggle — doubles as the recovery affordance when a
+        # floating editor has been dragged off-screen (clicking "Tabbed"
+        # snaps every detached window back into the tab strip).
         self.window_mode_action = self.create_action(
             self.tr("Tabbed"), None, self.toggle_window_mode, None
+        )
+        self.window_mode_action.setToolTip(
+            self.tr("Toggle between Tabbed and Floating editor layouts")
         )
         self._update_window_mode_action_label()
         toolbar.addAction(self.window_mode_action)
 
-        # Force update
         toolbar.update()
 
     def create_main_widget(self):
@@ -1082,6 +1121,13 @@ class PyGameMakerIDE(QMainWindow):
         self.project_manager.project_loaded.connect(self.on_project_loaded, Qt.ConnectionType.UniqueConnection)
         self.project_manager.project_saved.connect(self.on_project_saved, Qt.ConnectionType.UniqueConnection)
         self.project_manager.status_changed.connect(self.update_status, Qt.ConnectionType.UniqueConnection)
+        # Refresh the window title when the project's dirty state flips so
+        # the trailing " *" appears as soon as the user makes an unsaved
+        # change and clears when they save.
+        self.project_manager.dirty_changed.connect(
+            lambda _is_dirty: self.update_window_title(),
+            Qt.ConnectionType.UniqueConnection,
+        )
 
     def create_action(self, text, shortcut, slot, icon_name=None):
         """Create a QAction with optional icon, shortcut, and slot
@@ -3624,6 +3670,11 @@ class PyGameMakerIDE(QMainWindow):
         # Set project base path for properties panel
         if hasattr(self.properties_panel, 'set_project_base_path'):
             self.properties_panel.set_project_base_path(str(project_path))
+        # Reveal the asset-detail groups; they are hidden by default so
+        # the right panel doesn't show three empty "No asset selected"
+        # stubs on first launch (see EnhancedPropertiesPanel.set_project_loaded).
+        if hasattr(self.properties_panel, 'set_project_loaded'):
+            self.properties_panel.set_project_loaded(True)
 
         self.update_window_title()
         self.update_ui_state()
@@ -3634,13 +3685,20 @@ class PyGameMakerIDE(QMainWindow):
         self.update_status(self.tr("Project saved"))
 
     def update_window_title(self):
+        """Update the main window title to reflect the loaded project.
+
+        Format follows the Windows/Linux convention "<Document> — <App>"
+        so the project name shows in taskbar previews and Alt-Tab
+        switchers (those clip the right-hand app name first). A trailing
+        " *" marks the project as having unsaved changes, matching the
+        per-editor dirty marker used by BaseEditor.
+        """
         if self.current_project_data:
-            title = f"PyGameMaker - {self.current_project_data['name']}"
-            if self.project_manager.is_dirty():
-                title += " *"
+            project_name = self.current_project_data.get('name', 'Untitled')
+            dirty = ' *' if self.project_manager.is_dirty() else ''
+            title = f"{project_name}{dirty} — PyGameMaker IDE"
         else:
             title = "PyGameMaker IDE"
-
         self.setWindowTitle(title)
 
     def update_ui_state(self):
@@ -3688,6 +3746,20 @@ class PyGameMakerIDE(QMainWindow):
             self.thymio_add_event_action.setEnabled(has_project)
         if hasattr(self, 'thymio_add_action_action'):
             self.thymio_add_action_action.setEnabled(has_project)
+        # File-menu / toolbar shared actions. Save and Save As require a
+        # project; New and Open stay always-enabled (they're entry points).
+        # These are stored as attributes specifically so update_ui_state
+        # can drive both the menu copy and the toolbar copy through one
+        # call (Qt shares QAction state across containers).
+        if hasattr(self, 'save_project_action'):
+            self.save_project_action.setEnabled(has_project)
+        if hasattr(self, 'save_project_as_action'):
+            self.save_project_as_action.setEnabled(has_project)
+        # Toolbar quick-add for Thymio events — same constraint as the
+        # submenu Add Event/Action (needs an object editor, which needs
+        # a project as the minimum precondition).
+        if hasattr(self, 'thymio_toolbar_action'):
+            self.thymio_toolbar_action.setEnabled(has_project)
         # Enable/disable build actions based on project state
         if hasattr(self, 'test_game_action'):
             self.test_game_action.setEnabled(has_project)
