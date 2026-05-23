@@ -27,14 +27,17 @@ from utils.config import Config
 
 logger = get_logger(__name__)
 
-# Repo-root candidates that the Welcome tab can offer as starting points.
-# (filename relative to repo root, display label).
+# Bundled sample games the Welcome tab can offer as starting points.
+# Paths are relative to the repo root; the samples/ subfolder is shipped
+# in git (see .gitignore: `!samples/*.gmk`) so a fresh clone has them.
+# Missing files are skipped silently by `_build_left_column`, so trimming
+# this list is also a valid way to disable an entry.
 SAMPLE_PROJECTS: List[Tuple[str, str]] = [
-    ("maze_1.gmk", "Maze — Level 1"),
-    ("maze_2.gmk", "Maze — Level 2"),
-    ("maze_3.gmk", "Maze — Level 3"),
-    ("maze_4.gmk", "Maze — Level 4"),
-    ("treasure.gmk", "Treasure hunt"),
+    ("samples/maze_1.gmk",   "Maze — Level 1"),
+    ("samples/maze_2.gmk",   "Maze — Level 2"),
+    ("samples/maze_3.gmk",   "Maze — Level 3"),
+    ("samples/maze_4.gmk",   "Maze — Level 4"),
+    ("samples/treasure.gmk", "Treasure hunt"),
 ]
 
 
@@ -339,7 +342,7 @@ class WelcomeTab(QWidget):
         return btn
 
     def _repo_root(self) -> Path:
-        """Locate the repo root that hosts the bundled sample .gmk files.
+        """Locate the repo root, which hosts the bundled samples/ folder.
 
         widgets/welcome_tab.py is one level under the repo root, so the
         parent of this file's parent is the repo root. Cached on self
