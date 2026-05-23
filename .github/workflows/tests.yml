@@ -106,11 +106,14 @@ jobs:
           fi
           exit ${exit_code:-0}
         env:
-          # No QT_QPA_PLATFORM=offscreen here: Xvfb provides a real display
+          # Qt main process uses 'offscreen' so QApplication starts without
+          # a display (the xcb plugin would otherwise SIGABRT under the
+          # CI's minimal X stack). xvfb-run still provides a real $DISPLAY
           # for QtWebEngine's Chromium subprocess, which can't initialise
-          # without one. The 'offscreen' platform plugin would conflict.
+          # without one. Removing 'offscreen' was attempted in the previous
+          # commit and broke QApplication setup for every widget test.
+          QT_QPA_PLATFORM: offscreen
           SDL_AUDIODRIVER: dummy
-          DISPLAY: ':99'
           # Chromium's sandbox doesn't work in unprivileged CI containers;
           # without these flags QtWebEngineProcess hangs at init.
           QTWEBENGINE_DISABLE_SANDBOX: '1'
@@ -159,10 +162,12 @@ jobs:
           fi
           exit ${exit_code:-0}
         env:
-          # No QT_QPA_PLATFORM=offscreen — Xvfb provides the display
-          # QtWebEngine needs. See widget-tests job for details.
+          # See widget-tests job for the rationale on this env mix:
+          # 'offscreen' keeps QApplication from SIGABRTing under CI's
+          # minimal X stack while xvfb-run still gives QtWebEngine's
+          # Chromium subprocess a real display.
+          QT_QPA_PLATFORM: offscreen
           SDL_AUDIODRIVER: dummy
-          DISPLAY: ':99'
           QTWEBENGINE_DISABLE_SANDBOX: '1'
           QTWEBENGINE_CHROMIUM_FLAGS: '--no-sandbox --disable-gpu --disable-dev-shm-usage'
 
