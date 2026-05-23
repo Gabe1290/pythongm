@@ -180,8 +180,10 @@ class WelcomeTab(QWidget):
         # QListWidget gives us the "clear list format" look the user asked
         # for: native single-line rows, built-in hover + selection highlight,
         # scrollbar when the list grows, all theme-aware out of the box.
+        # StyledPanel keeps a visible border around the list so the items
+        # read as one unified list rather than free-floating labels.
         self._recent_list = QListWidget()
-        self._recent_list.setFrameShape(QFrame.NoFrame)
+        self._recent_list.setFrameShape(QFrame.StyledPanel)
         self._recent_list.setUniformItemSizes(True)
         self._recent_list.setMouseTracking(True)
         self._recent_list.setCursor(Qt.PointingHandCursor)
