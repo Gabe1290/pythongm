@@ -182,8 +182,8 @@ phase("Phase 12 — Thymio integration", "10 min", [
     (68, "In an object's events panel, switch to the Thymio tab. Add a thymio_button_forward event with a movement action.", {}),
     (69, "Open a Thymio playground. Place a Thymio robot, link it to the object above.", {}),
     (70, "Run the playground (Run). Verify the robot responds to the Thymio events.", {}),
-    (71, "Aseba export: File → Export → Aseba .playground — produces a working .playground file.", {}),
-], note="Pass criteria: Thymio events fire end-to-end; Aseba export round-trips into Aseba Studio. (Skip if your install doesn't use Thymio.)")
+    (71, "Aseba export — both paths: (a) playground editor → File → Export produces a working .playground file Aseba Studio can open; (b) main IDE → File → Export Aseba (Thymio) code… writes one .aesl file per Thymio object plus a README.md. Both load in Aseba Studio.", {}),
+], note="Pass criteria: Thymio events fire end-to-end; both Aseba export paths round-trip into Aseba Studio. (Skip if your install doesn't use Thymio.)")
 
 
 # --- Phase 13 ---
