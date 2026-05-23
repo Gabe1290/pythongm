@@ -1123,10 +1123,12 @@ class PyGameMakerIDE(QMainWindow):
         self.project_manager.status_changed.connect(self.update_status, Qt.ConnectionType.UniqueConnection)
         # Refresh the window title when the project's dirty state flips so
         # the trailing " *" appears as soon as the user makes an unsaved
-        # change and clears when they save.
+        # change and clears when they save. Qt's UniqueConnection only
+        # works with bound methods (not lambdas), so we route through
+        # `_on_dirty_changed` to keep the connection deduplicated across
+        # re-entries of setup_connections.
         self.project_manager.dirty_changed.connect(
-            lambda _is_dirty: self.update_window_title(),
-            Qt.ConnectionType.UniqueConnection,
+            self._on_dirty_changed, Qt.ConnectionType.UniqueConnection
         )
 
     def create_action(self, text, shortcut, slot, icon_name=None):
@@ -3700,6 +3702,17 @@ class PyGameMakerIDE(QMainWindow):
         else:
             title = "PyGameMaker IDE"
         self.setWindowTitle(title)
+
+    def _on_dirty_changed(self, _is_dirty: bool):
+        """Slot bound to project_manager.dirty_changed.
+
+        Kept as a real bound method (rather than the obvious lambda)
+        because Qt's UniqueConnection flag requires a pointer to a member
+        function — passing a lambda fails with a runtime warning and the
+        connection silently becomes non-unique (re-entries of
+        setup_connections would then double-fire the slot).
+        """
+        self.update_window_title()
 
     def update_ui_state(self):
         has_project = self.current_project_path is not None
