@@ -18,6 +18,7 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     strategy:
       fail-fast: false
@@ -60,6 +61,10 @@ jobs:
   widget-tests:
     name: Widget Tests (Qt)
     runs-on: ubuntu-latest
+    # Job-level safety net: even with pytest-timeout below, give the
+    # whole step a hard ceiling so a wedged Xvfb/QtWebEngine can't burn
+    # the 6-hour GitHub Actions job limit.
+    timeout-minutes: 10
     continue-on-error: true  # Widget tests are optional for now
 
     steps:
@@ -75,7 +80,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb libegl1 libxkbcommon0 libasound2-dev || true
+          sudo apt-get install -y xvfb libegl1 libxkbcommon0 libasound2-dev libnss3 libxcomposite1 libxdamage1 libxrandr2 libxkbfile1 libxshmfence1 || true
 
       - name: Install Python dependencies
         run: |
@@ -85,9 +90,15 @@ jobs:
 
       - name: Run widget tests with Xvfb
         run: |
-          # Run tests and capture exit code; ignore segfault (139) that occurs during Qt cleanup
+          # --timeout=60 (via pytest-timeout) fails any single test that
+          # hangs >60s with a traceback, instead of letting the job sit
+          # waiting forever (e.g. on QtWebEngineProcess sandbox deadlock).
+          # --timeout-method=thread is required for tests that block on
+          # C-level calls (Qt's event loop) — the default 'signal' method
+          # can't interrupt those.
           cd tests && xvfb-run -a --server-args="-screen 0 1920x1080x24" \
-            pytest test_widgets.py -v -m widget --tb=short -o qt_api=pyside6 || exit_code=$?
+            pytest test_widgets.py -v -m widget --tb=short -o qt_api=pyside6 \
+            --timeout=60 --timeout-method=thread || exit_code=$?
           # Exit code 139 is SIGSEGV - ignore it as it's a Qt cleanup issue, not a test failure
           if [ "${exit_code:-0}" -eq 139 ]; then
             echo "Note: Qt WebEngine segfault during cleanup (exit 139) - ignoring"
@@ -95,9 +106,15 @@ jobs:
           fi
           exit ${exit_code:-0}
         env:
-          QT_QPA_PLATFORM: offscreen
+          # No QT_QPA_PLATFORM=offscreen here: Xvfb provides a real display
+          # for QtWebEngine's Chromium subprocess, which can't initialise
+          # without one. The 'offscreen' platform plugin would conflict.
           SDL_AUDIODRIVER: dummy
-          DISPLAY: :99
+          DISPLAY: ':99'
+          # Chromium's sandbox doesn't work in unprivileged CI containers;
+          # without these flags QtWebEngineProcess hangs at init.
+          QTWEBENGINE_DISABLE_SANDBOX: '1'
+          QTWEBENGINE_CHROMIUM_FLAGS: '--no-sandbox --disable-gpu --disable-dev-shm-usage'
 
   # ============================================================================
   # Full Integration Tests
@@ -106,6 +123,7 @@ jobs:
     name: Integration Tests
     runs-on: ubuntu-latest
     needs: [unit-tests]  # Only run after unit tests pass
+    timeout-minutes: 20
 
     steps:
       - name: Checkout code
@@ -120,7 +138,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb libegl1 libxkbcommon0 libasound2-dev || true
+          sudo apt-get install -y xvfb libegl1 libxkbcommon0 libasound2-dev libnss3 libxcomposite1 libxdamage1 libxrandr2 libxkbfile1 libxshmfence1 || true
 
       - name: Install Python dependencies
         run: |
@@ -130,9 +148,10 @@ jobs:
 
       - name: Run all tests with coverage
         run: |
-          # Run tests and capture exit code; ignore segfault (139) that occurs during Qt cleanup
+          # See widget-tests job for the --timeout / --no-sandbox rationale.
           cd tests && xvfb-run -a --server-args="-screen 0 1920x1080x24" \
-            pytest . -v --tb=short --cov=.. --cov-report=xml --cov-report=term-missing -o qt_api=pyside6 || exit_code=$?
+            pytest . -v --tb=short --cov=.. --cov-report=xml --cov-report=term-missing \
+            -o qt_api=pyside6 --timeout=60 --timeout-method=thread || exit_code=$?
           # Exit code 139 is SIGSEGV - ignore it as it's a Qt cleanup issue, not a test failure
           if [ "${exit_code:-0}" -eq 139 ]; then
             echo "Note: Qt WebEngine segfault during cleanup (exit 139) - ignoring"
@@ -140,9 +159,12 @@ jobs:
           fi
           exit ${exit_code:-0}
         env:
-          QT_QPA_PLATFORM: offscreen
+          # No QT_QPA_PLATFORM=offscreen — Xvfb provides the display
+          # QtWebEngine needs. See widget-tests job for details.
           SDL_AUDIODRIVER: dummy
-          DISPLAY: :99
+          DISPLAY: ':99'
+          QTWEBENGINE_DISABLE_SANDBOX: '1'
+          QTWEBENGINE_CHROMIUM_FLAGS: '--no-sandbox --disable-gpu --disable-dev-shm-usage'
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
@@ -157,6 +179,7 @@ jobs:
   windows-tests:
     name: Windows Tests
     runs-on: windows-latest
+    timeout-minutes: 10
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     continue-on-error: true  # Don't fail the whole workflow on Windows issues
 
@@ -189,6 +212,7 @@ jobs:
   code-quality:
     name: Code Quality
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - name: Checkout code
