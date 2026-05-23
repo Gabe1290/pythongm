@@ -16,6 +16,28 @@ Cross-cutting runtime capabilities that apply across all game types
 below. Worth validating once before going through the per-game-type
 sections.
 
+### Bundled sample projects (Welcome tab → Try a sample game)
+The bundled samples below double as ready-made fixtures for the per-game-type
+sections that follow. Each click opens a fresh editable copy under
+`<Documents>/PyGameMaker Projects/`; the bundled `samples/<name>/` folder
+stays pristine (read-only by copy-on-open). Validate the click flow once,
+then reuse the same projects for the phase-specific tests.
+
+| Status | Sample | Useful for testing | Notes |
+|--------|--------|--------------------|-------|
+| [ ] | `maze_1` | Phase 1–2 (Sokoban / Labyrinth) | smallest, 2 rooms / 3 objects / 3 sprites |
+| [ ] | `maze_2` | Phase 1–2 | 3 rooms / 9 objects / 7 sprites / 4 sounds |
+| [ ] | `maze_3` | Phase 1–2 | 6 rooms / 17 objects / 16 sprites / 8 sounds |
+| [ ] | `maze_4` | Phase 1–2 | 21 rooms / 24 objects / 24 sprites / 10 sounds |
+| [ ] | `treasure` | Phase 1–2 (collect / score) | 4 rooms / 7 objects / 10 sprites / 6 sounds |
+| [ ] | `maze.playground` | Aseba playground export round-trip | XML file, opens via the Playground editor |
+
+For each sample, confirm: click in the Welcome tab opens immediately
+(no destination prompt), title bar shows the sample name, working copy
+lives under `<Documents>/PyGameMaker Projects/`, original
+`samples/<name>/` is unchanged after Save.
+
+
 ### Pixel-perfect collision — static, opt-in per sprite
 | Status | Item | Notes |
 |--------|------|-------|
