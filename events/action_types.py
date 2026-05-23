@@ -968,6 +968,50 @@ ACTION_TYPES = {
         ]
     ),
 
+    # Runtime: runtime/action_executor.py:2361 execute_set_window_caption_action.
+    # Configures whether the score/lives/health counters are appended to
+    # the window title in addition to (or replacing) the project's static
+    # title. Common in GameMaker projects that surface the player's state
+    # via the title bar rather than an in-game HUD.
+    "set_window_caption": ActionType(
+        name="set_window_caption",
+        display_name="Set Window Caption",
+        description="Configure score/lives/health display in window title",
+        category="Game",
+        icon="🪟",
+        parameters=[
+            ActionParameter(
+                name="show_score",
+                display_name="Show Score",
+                param_type="boolean",
+                default_value=True,
+                description="Append the current score to the window caption"
+            ),
+            ActionParameter(
+                name="show_lives",
+                display_name="Show Lives",
+                param_type="boolean",
+                default_value=True,
+                description="Append the current lives count to the window caption"
+            ),
+            ActionParameter(
+                name="show_health",
+                display_name="Show Health",
+                param_type="boolean",
+                default_value=False,
+                description="Append the current health value to the window caption"
+            ),
+            ActionParameter(
+                name="caption",
+                display_name="Caption Prefix",
+                param_type="string",
+                default_value="",
+                description="Optional caption prefix shown before the counters",
+                required=False,
+            ),
+        ],
+    ),
+
     # INSTANCE ACTIONS
     "destroy_instance": ActionType(
         name="destroy_instance",
@@ -1047,6 +1091,41 @@ ACTION_TYPES = {
                 description="Execute destroy/create events"
             )
         ]
+    ),
+
+    # Runtime: runtime/action_executor.py:4321 execute_set_sprite_action.
+    # The "<self>" sentinel keeps the sprite name unchanged so only
+    # subimage / speed get overwritten — used by GameMaker imports to
+    # restart an animation without re-pointing the sprite.
+    "set_sprite": ActionType(
+        name="set_sprite",
+        display_name="Set Sprite",
+        description="Change an instance's sprite and/or animation frame/speed",
+        category="Instance",
+        icon="🖼️",
+        parameters=[
+            ActionParameter(
+                name="sprite",
+                display_name="Sprite",
+                param_type="sprite",
+                default_value="<self>",
+                description="Sprite to use (or '<self>' to keep current)"
+            ),
+            ActionParameter(
+                name="subimage",
+                display_name="Frame",
+                param_type="number",
+                default_value=-1,
+                description="Frame index to set; -1 to leave unchanged"
+            ),
+            ActionParameter(
+                name="speed",
+                display_name="Speed",
+                param_type="float",
+                default_value=-1,
+                description="Animation speed; -1 to leave unchanged"
+            ),
+        ],
     ),
 
     # POSITION ACTIONS
