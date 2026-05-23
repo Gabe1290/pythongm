@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pygamemaker"
-version = "1.0.0rc11"
+version = "1.0.0rc12"
 description = "A GameMaker-inspired IDE for creating 2D games with Python"
 readme = "README.md"
 license = "MIT"

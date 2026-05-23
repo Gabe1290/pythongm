@@ -23,8 +23,10 @@ from typing import Dict, List, Optional, Union
 from PIL import Image
 import logging
 
-# Package version
-__version__ = "1.0.0"
+# Package version. Surfaces in the Welcome tab's title block and in
+# `export_project_summary()`. Bumped in lockstep with README.md,
+# version_info.txt, and pyproject.toml.
+__version__ = "1.0.0-rc.12"
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
