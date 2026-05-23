@@ -1,0 +1,94 @@
+{
+  "name": "explosion",
+  "asset_type": "object",
+  "sprite": "sprite_explosion",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": -10,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_friction",
+          "parameters": {
+            "friction": "-200",
+            "relative": true
+          }
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+          }
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+          }
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+          }
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+          }
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+          }
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+          }
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+          }
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+          }
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+          }
+        },
+        {
+          "action": "set_friction",
+          "parameters": {
+            "friction": "200",
+            "relative": true
+          }
+        }
+      ]
+    },
+    "animation_end": {
+      "actions": [
+        {
+          "action": "create_random_instance",
+          "parameters": {}
+        }
+      ]
+    }
+  },
+  "imported": true,
+  "created": "2026-05-23T14:34:56.567174",
+  "modified": "2026-05-23T14:34:56.567174"
+}

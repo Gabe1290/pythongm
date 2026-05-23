@@ -28,16 +28,20 @@ from utils.config import Config
 logger = get_logger(__name__)
 
 # Bundled sample games the Welcome tab can offer as starting points.
-# Paths are relative to the repo root; the samples/ subfolder is shipped
-# in git (see .gitignore: `!samples/*.gmk`) so a fresh clone has them.
-# Missing files are skipped silently by `_build_left_column`, so trimming
-# this list is also a valid way to disable an entry.
+# Paths are relative to the repo root and resolve to **native pygm2
+# project folders** (samples/<name>/project.json) — *not* .gmk files.
+# The samples ship in git so a fresh clone has them ready to play.
+# Clicking a sample copies the folder into the user's working area
+# rather than opening the original in-place, so the bundled samples
+# stay pristine. Missing folders are skipped silently by
+# `_build_left_column`, so trimming this list is also a valid way to
+# disable an entry.
 SAMPLE_PROJECTS: List[Tuple[str, str]] = [
-    ("samples/maze_1.gmk",   "Maze — Level 1"),
-    ("samples/maze_2.gmk",   "Maze — Level 2"),
-    ("samples/maze_3.gmk",   "Maze — Level 3"),
-    ("samples/maze_4.gmk",   "Maze — Level 4"),
-    ("samples/treasure.gmk", "Treasure hunt"),
+    ("samples/maze_1",   "Maze — Level 1"),
+    ("samples/maze_2",   "Maze — Level 2"),
+    ("samples/maze_3",   "Maze — Level 3"),
+    ("samples/maze_4",   "Maze — Level 4"),
+    ("samples/treasure", "Treasure hunt"),
 ]
 
 
@@ -148,12 +152,15 @@ class WelcomeTab(QWidget):
 
         # Sample games are also a dropdown — five vertical buttons made the
         # Welcome tab feel overstuffed (user feedback after first revision).
+        # Each sample is a native pygm2 project folder; we look for
+        # project.json inside it to confirm the folder is a usable project
+        # (catches half-extracted releases too).
         repo_root = self._repo_root()
         sample_items = []
-        for filename, label in SAMPLE_PROJECTS:
-            sample = repo_root / filename
-            if not sample.exists():
-                continue  # missing in this checkout — skip silently
+        for relative_path, label in SAMPLE_PROJECTS:
+            sample = repo_root / relative_path
+            if not (sample.is_dir() and (sample / 'project.json').exists()):
+                continue  # missing or incomplete in this checkout — skip silently
             sample_items.append((
                 self.tr("🎮  {0}").format(label),
                 lambda _checked=False, p=sample: self._on_open_sample(p),
@@ -407,52 +414,67 @@ class WelcomeTab(QWidget):
             self.main_window.about()
 
     def _on_open_sample(self, sample_path: Path):
-        """Import a bundled sample .gmk into a user-chosen folder so the
-        original sample is never modified, then open the result.
+        """Copy a bundled sample project into the user's working area
+        and open the copy.
+
+        The samples shipped under ``samples/`` are native pygm2 project
+        folders, but we deliberately never open them in-place: doing so
+        would risk a user pressing Ctrl+S and overwriting the bundled
+        copy. Instead we ``shutil.copytree`` into
+        ``<Documents>/PyGameMaker Projects/<name>/`` (using a numbered
+        suffix when that directory already exists) and load the copy.
+
+        Caller side this is the same flow the Welcome tab had before:
+        the user clicks a sample → an editable project is open in the
+        IDE — they just don't see the GMK import dialog anymore because
+        no import is needed.
         """
-        from PySide6.QtWidgets import QFileDialog, QMessageBox
+        import shutil
+        from PySide6.QtWidgets import QMessageBox
+
         if self.main_window is None:
             return
-        # Default save location: <Documents>/PyGameMaker Projects/<sample-stem>
+
         from utils import documents_dir
         default_parent = documents_dir() / "PyGameMaker Projects"
         try:
             default_parent.mkdir(parents=True, exist_ok=True)
         except OSError:
             default_parent = Path.home()
-        default_output = str(default_parent / sample_path.stem)
 
-        output_dir = QFileDialog.getExistingDirectory(
-            self,
-            self.tr("Save sample project to..."),
-            default_output,
-            QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks,
-        )
-        if not output_dir:
-            return
+        # Pick a non-clashing destination so clicking the same sample
+        # twice doesn't quietly stomp the first copy's edits.
+        base_name = sample_path.name
+        dest = default_parent / base_name
+        suffix = 2
+        while dest.exists():
+            dest = default_parent / f"{base_name}_{suffix}"
+            suffix += 1
 
         try:
-            from importers.gmk_importer import import_gmk_detailed
-            result = import_gmk_detailed(str(sample_path), output_dir)
+            shutil.copytree(str(sample_path), str(dest))
         except Exception as exc:
-            logger.error(f"Sample import failed: {exc}", exc_info=True)
+            logger.error(f"Sample copy failed: {exc}", exc_info=True)
             QMessageBox.warning(
                 self,
-                self.tr("Sample import failed"),
-                self.tr("Could not import the sample project:\n{0}").format(str(exc)),
+                self.tr("Could not open sample"),
+                self.tr(
+                    "Failed to copy the sample to:\n{0}\n\nError:\n{1}"
+                ).format(str(dest), str(exc)),
             )
             return
 
-        if not getattr(result, 'success', False):
+        project_file = dest / "project.json"
+        if not project_file.exists():
             QMessageBox.warning(
                 self,
-                self.tr("Sample import failed"),
-                self.tr("The bundled sample could not be imported. "
-                        "See the console output for details."),
+                self.tr("Could not open sample"),
+                self.tr(
+                    "The sample was copied to:\n{0}\n\nbut no project.json "
+                    "was found inside. The bundled sample may be incomplete."
+                ).format(str(dest)),
             )
             return
 
-        # Open the freshly imported project
-        project_file = Path(output_dir) / "project.json"
-        if project_file.exists() and hasattr(self.main_window, 'load_project'):
-            self.main_window.load_project(Path(output_dir))
+        if hasattr(self.main_window, 'load_project'):
+            self.main_window.load_project(dest)

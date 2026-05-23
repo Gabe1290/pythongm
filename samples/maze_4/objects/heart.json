@@ -1,0 +1,37 @@
+{
+  "name": "heart",
+  "asset_type": "object",
+  "sprite": "sprite_heart",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "collision_with_obj_person": {
+      "actions": [
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "1",
+            "relative": true
+          }
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "sound_life",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "create_random_instance",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_person"
+    }
+  },
+  "imported": true,
+  "created": "2026-05-23T14:34:56.567174",
+  "modified": "2026-05-23T14:34:56.567174"
+}

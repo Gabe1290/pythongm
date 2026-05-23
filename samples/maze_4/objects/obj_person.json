@@ -1,0 +1,450 @@
+{
+  "name": "obj_person",
+  "asset_type": "object",
+  "sprite": "sprite_person",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": -5,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "sprite_person",
+            "subimage": "0",
+            "speed": "0"
+          }
+        }
+      ]
+    },
+    "step": {
+      "actions": [
+        {
+          "action": "test_alignment",
+          "parameters": {
+            "hsnap": "32",
+            "vsnap": "8"
+          }
+        },
+        {
+          "action": "draw_score",
+          "parameters": {
+            "x": "move_up",
+            "y": "0",
+            "caption": "0",
+            "relative": true
+          }
+        },
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "up",
+            "speed": "8"
+          }
+        },
+        {
+          "action": "test_alignment",
+          "parameters": {
+            "hsnap": "32",
+            "vsnap": "8"
+          }
+        },
+        {
+          "action": "draw_score",
+          "parameters": {
+            "x": "move_down",
+            "y": "0",
+            "caption": "0",
+            "relative": true
+          }
+        },
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "down",
+            "speed": "8"
+          }
+        },
+        {
+          "action": "test_alignment",
+          "parameters": {
+            "hsnap": "8",
+            "vsnap": "32"
+          }
+        },
+        {
+          "action": "draw_score",
+          "parameters": {
+            "x": "move_left",
+            "y": "0",
+            "caption": "0",
+            "relative": true
+          }
+        },
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "left",
+            "speed": "8"
+          }
+        },
+        {
+          "action": "test_alignment",
+          "parameters": {
+            "hsnap": "8",
+            "vsnap": "32"
+          }
+        },
+        {
+          "action": "draw_score",
+          "parameters": {
+            "x": "move_right",
+            "y": "0",
+            "caption": "0",
+            "relative": true
+          }
+        },
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "right",
+            "speed": "8"
+          }
+        }
+      ]
+    },
+    "collision_with_block": {
+      "actions": [
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Unmapped GM action: lib=1, id=605, kind=0"
+          }
+        }
+      ],
+      "target_object": "block"
+    },
+    "collision_with_monster_all": {
+      "actions": [
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "afraid",
+            "value": "1",
+            "operation": "0"
+          }
+        },
+        {
+          "action": "test_health",
+          "parameters": {}
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "sound_monster",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "goto_room",
+          "parameters": {
+            "room": "50",
+            "relative": true
+          }
+        },
+        {
+          "action": "jump_to_start",
+          "parameters": {}
+        },
+        {
+          "action": "if_collision",
+          "parameters": {
+            "x": "1",
+            "y": "0"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "set_health",
+          "parameters": {}
+        },
+        {
+          "action": "test_health",
+          "parameters": {}
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "sound_dead",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "if_object_exists",
+          "parameters": {
+            "object": "1000",
+            "count": "1"
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "-1",
+            "relative": true
+          }
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Unmapped GM action: lib=1, id=223, kind=0, func=action_current_room"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        }
+      ],
+      "target_object": "monster_all"
+    },
+    "collision_with_monster_ud": {
+      "actions": [
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "sound_dead",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "if_object_exists",
+          "parameters": {
+            "object": "1000",
+            "count": "1"
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "-1",
+            "relative": true
+          }
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Unmapped GM action: lib=1, id=223, kind=0, func=action_current_room"
+          }
+        }
+      ],
+      "target_object": "monster_ud"
+    },
+    "collision_with_monster_lr": {
+      "actions": [
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "sound_dead",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "if_object_exists",
+          "parameters": {
+            "object": "1000",
+            "count": "1"
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "-1",
+            "relative": true
+          }
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Unmapped GM action: lib=1, id=223, kind=0, func=action_current_room"
+          }
+        }
+      ],
+      "target_object": "monster_lr"
+    },
+    "collision_with_wall_corner": {
+      "actions": [
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "stop",
+            "speed": "8"
+          }
+        }
+      ],
+      "target_object": "wall_corner"
+    },
+    "keyboard": {
+      "down": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "test_health",
+            "parameters": {}
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "down",
+              "speed": "4"
+            }
+          },
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "sprite_person",
+              "subimage": "0",
+              "speed": "0"
+            }
+          },
+          {
+            "action": "start_block",
+            "parameters": {}
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "test_health",
+            "parameters": {}
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "right",
+              "speed": "4"
+            }
+          },
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "sprite_person",
+              "subimage": "2",
+              "speed": "0"
+            }
+          },
+          {
+            "action": "start_block",
+            "parameters": {}
+          }
+        ]
+      },
+      "up": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "test_health",
+            "parameters": {}
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "up",
+              "speed": "4"
+            }
+          },
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "sprite_person",
+              "subimage": "1",
+              "speed": "0"
+            }
+          },
+          {
+            "action": "start_block",
+            "parameters": {}
+          }
+        ]
+      },
+      "left": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "test_health",
+            "parameters": {}
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "left",
+              "speed": "4"
+            }
+          },
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "sprite_person",
+              "subimage": "3",
+              "speed": "0"
+            }
+          },
+          {
+            "action": "start_block",
+            "parameters": {}
+          }
+        ]
+      },
+      "nokey": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "stop",
+              "speed": "8"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "imported": true,
+  "created": "2026-05-23T14:34:56.567174",
+  "modified": "2026-05-23T14:34:56.567174"
+}

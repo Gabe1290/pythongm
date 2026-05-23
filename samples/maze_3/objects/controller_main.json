@@ -1,0 +1,90 @@
+{
+  "name": "controller_main",
+  "asset_type": "object",
+  "sprite": "",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "keyboard": {
+      "r": {
+        "actions": [
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "sound_dead",
+              "subimage": "0"
+            }
+          },
+          {
+            "action": "set_lives",
+            "parameters": {
+              "value": "-1",
+              "relative": true
+            }
+          },
+          {
+            "action": "comment",
+            "parameters": {
+              "text": "Unmapped GM action: lib=1, id=223, kind=0, func=action_current_room"
+            }
+          }
+        ]
+      }
+    },
+    "no_more_lives": {
+      "actions": [
+        {
+          "action": "show_highscore",
+          "parameters": {}
+        },
+        {
+          "action": "restart_game",
+          "parameters": {}
+        }
+      ]
+    },
+    "draw": {
+      "actions": [
+        {
+          "action": "fill_color",
+          "parameters": {
+            "color": "score_font"
+          }
+        },
+        {
+          "action": "set_draw_color",
+          "parameters": {
+            "color": "255"
+          }
+        },
+        {
+          "action": "next_room",
+          "parameters": {
+            "transition": "300",
+            "relative": true
+          }
+        },
+        {
+          "action": "draw_scaled_text",
+          "parameters": {
+            "text": "Lives:",
+            "x": "8",
+            "y": "0",
+            "relative": true
+          }
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Unmapped GM action: lib=1, id=714, kind=0, func=action_draw_life_images"
+          }
+        }
+      ]
+    }
+  },
+  "imported": true,
+  "created": "2026-05-23T14:34:55.669706",
+  "modified": "2026-05-23T14:34:55.669706"
+}

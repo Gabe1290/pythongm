@@ -1,0 +1,37 @@
+{
+  "name": "monster_lr",
+  "asset_type": "object",
+  "sprite": "sprite_monster1",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": [
+              "left",
+              "right"
+            ],
+            "speed": "32/6"
+          }
+        }
+      ]
+    },
+    "collision_with_wall_corner": {
+      "actions": [
+        {
+          "action": "jump_to_random",
+          "parameters": {}
+        }
+      ],
+      "target_object": "wall_corner"
+    }
+  },
+  "imported": true,
+  "created": "2026-05-23T14:34:55.669706",
+  "modified": "2026-05-23T14:34:55.669706"
+}

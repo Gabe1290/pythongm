@@ -1,0 +1,42 @@
+{
+  "name": "obj_door",
+  "asset_type": "object",
+  "sprite": "sprite_door",
+  "visible": true,
+  "solid": true,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "step": {
+      "actions": [
+        {
+          "action": "show_highscore",
+          "parameters": {}
+        },
+        {
+          "action": "test_health",
+          "parameters": {}
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "sound_door",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "create_random_instance",
+          "parameters": {}
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        }
+      ]
+    }
+  },
+  "imported": true,
+  "created": "2026-05-23T14:34:55.271791",
+  "modified": "2026-05-23T14:34:55.271791",
+  "parent": "wall_corner"
+}

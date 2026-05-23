@@ -1,0 +1,14 @@
+{
+  "name": "wall_horizontal",
+  "asset_type": "object",
+  "sprite": "sprite_wall_horizontal",
+  "visible": true,
+  "solid": true,
+  "persistent": false,
+  "depth": 0,
+  "events": {},
+  "imported": true,
+  "created": "2026-05-23T14:34:55.669706",
+  "modified": "2026-05-23T14:34:55.669706",
+  "parent": "wall_corner"
+}

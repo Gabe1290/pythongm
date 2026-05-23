@@ -1,0 +1,83 @@
+{
+  "name": "obj_goal",
+  "asset_type": "object",
+  "sprite": "spr_goal",
+  "visible": false,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "collision_with_obj_person": {
+      "actions": [
+        {
+          "action": "test_next_room",
+          "parameters": {}
+        },
+        {
+          "action": "next_room",
+          "parameters": {
+            "transition": "0"
+          }
+        },
+        {
+          "action": "set_health",
+          "parameters": {}
+        },
+        {
+          "action": "restart_game",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_person"
+    },
+    "keyboard_press": {
+      "p": {
+        "actions": [
+          {
+            "action": "test_next_room",
+            "parameters": {}
+          },
+          {
+            "action": "next_room",
+            "parameters": {
+              "transition": "0"
+            }
+          },
+          {
+            "action": "set_health",
+            "parameters": {}
+          },
+          {
+            "action": "restart_game",
+            "parameters": {}
+          }
+        ]
+      },
+      "n": {
+        "actions": [
+          {
+            "action": "test_next_room",
+            "parameters": {}
+          },
+          {
+            "action": "next_room",
+            "parameters": {
+              "transition": "0"
+            }
+          },
+          {
+            "action": "set_health",
+            "parameters": {}
+          },
+          {
+            "action": "restart_game",
+            "parameters": {}
+          }
+        ]
+      }
+    }
+  },
+  "imported": true,
+  "created": "2026-05-23T14:34:54.997955",
+  "modified": "2026-05-23T14:34:54.997955"
+}

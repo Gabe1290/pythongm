@@ -1,0 +1,13 @@
+{
+  "name": "move_up",
+  "asset_type": "object",
+  "sprite": "sprite_up",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {},
+  "imported": true,
+  "created": "2026-05-23T14:34:56.567174",
+  "modified": "2026-05-23T14:34:56.567174"
+}

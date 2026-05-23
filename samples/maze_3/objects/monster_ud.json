@@ -1,0 +1,37 @@
+{
+  "name": "monster_ud",
+  "asset_type": "object",
+  "sprite": "sprite_monster2",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": [
+              "down",
+              "up"
+            ],
+            "speed": "32/6"
+          }
+        }
+      ]
+    },
+    "collision_with_wall_corner": {
+      "actions": [
+        {
+          "action": "snap_to_grid",
+          "parameters": {}
+        }
+      ],
+      "target_object": "wall_corner"
+    }
+  },
+  "imported": true,
+  "created": "2026-05-23T14:34:55.669706",
+  "modified": "2026-05-23T14:34:55.669706"
+}

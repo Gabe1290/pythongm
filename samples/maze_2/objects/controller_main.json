@@ -1,0 +1,37 @@
+{
+  "name": "controller_main",
+  "asset_type": "object",
+  "sprite": "",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "draw": {
+      "actions": [
+        {
+          "action": "set_draw_color",
+          "parameters": {
+            "color": "255"
+          }
+        },
+        {
+          "action": "fill_color",
+          "parameters": {
+            "color": "score_font"
+          }
+        },
+        {
+          "action": "next_room",
+          "parameters": {
+            "transition": "0",
+            "relative": true
+          }
+        }
+      ]
+    }
+  },
+  "imported": true,
+  "created": "2026-05-23T14:34:55.271791",
+  "modified": "2026-05-23T14:34:55.271791"
+}
