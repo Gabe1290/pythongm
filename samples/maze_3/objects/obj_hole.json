@@ -1,0 +1,35 @@
+{
+  "name": "obj_hole",
+  "asset_type": "object",
+  "sprite": "sprite_hole",
+  "visible": true,
+  "solid": true,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "collision_with_obj_block": {
+      "actions": [
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "sound_hole",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "create_random_instance",
+          "parameters": {}
+        },
+        {
+          "action": "create_random_instance",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_block"
+    }
+  },
+  "imported": true,
+  "created": "2026-05-23T14:34:55.669706",
+  "modified": "2026-05-23T14:34:55.669706",
+  "parent": "wall_corner"
+}

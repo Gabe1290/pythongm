@@ -1,0 +1,13 @@
+{
+  "name": "wall_corner",
+  "asset_type": "object",
+  "sprite": "sprite_wall_corner",
+  "visible": true,
+  "solid": true,
+  "persistent": false,
+  "depth": 0,
+  "events": {},
+  "imported": true,
+  "created": "2026-05-23T14:34:56.567174",
+  "modified": "2026-05-23T14:34:56.567174"
+}

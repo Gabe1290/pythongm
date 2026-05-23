@@ -1,0 +1,1538 @@
+{
+  "name": "maze_3",
+  "version": "1.0.0",
+  "created": "2026-05-23T14:34:55.460208",
+  "modified": "2026-05-23T14:34:55.460208",
+  "settings": {
+    "window_title": "",
+    "window_width": 480,
+    "window_height": 512,
+    "room_speed": 30,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": false,
+    "starting_health": 100,
+    "show_health_in_caption": false,
+    "blockly_preset": "full"
+  },
+  "assets": {
+    "sprites": {
+      "sprite_wall_corner": {
+        "name": "sprite_wall_corner",
+        "asset_type": "sprite",
+        "file_path": "sprites/sprite_wall_corner.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.460208",
+        "modified": "2026-05-23T14:34:55.460208"
+      },
+      "sprite_goal": {
+        "name": "sprite_goal",
+        "asset_type": "sprite",
+        "file_path": "sprites/sprite_goal.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.460208",
+        "modified": "2026-05-23T14:34:55.460208"
+      },
+      "sprite_person": {
+        "name": "sprite_person",
+        "asset_type": "sprite",
+        "file_path": "sprites/sprite_person.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.460208",
+        "modified": "2026-05-23T14:34:55.460208"
+      },
+      "sprite_door": {
+        "name": "sprite_door",
+        "asset_type": "sprite",
+        "file_path": "sprites/sprite_door.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.460208",
+        "modified": "2026-05-23T14:34:55.460208"
+      },
+      "sprite_diamond": {
+        "name": "sprite_diamond",
+        "asset_type": "sprite",
+        "file_path": "sprites/sprite_diamond.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.460208",
+        "modified": "2026-05-23T14:34:55.460208"
+      },
+      "sprite_wall_horizontal": {
+        "name": "sprite_wall_horizontal",
+        "asset_type": "sprite",
+        "file_path": "sprites/sprite_wall_horizontal.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.460208",
+        "modified": "2026-05-23T14:34:55.460208"
+      },
+      "sprite_wall_vertical": {
+        "name": "sprite_wall_vertical",
+        "asset_type": "sprite",
+        "file_path": "sprites/sprite_wall_vertical.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.460208",
+        "modified": "2026-05-23T14:34:55.460208"
+      },
+      "sprite_monster1": {
+        "name": "sprite_monster1",
+        "asset_type": "sprite",
+        "file_path": "sprites/sprite_monster1.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.460208",
+        "modified": "2026-05-23T14:34:55.460208"
+      },
+      "sprite_monster2": {
+        "name": "sprite_monster2",
+        "asset_type": "sprite",
+        "file_path": "sprites/sprite_monster2.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.460208",
+        "modified": "2026-05-23T14:34:55.460208"
+      },
+      "sprite_monster3": {
+        "name": "sprite_monster3",
+        "asset_type": "sprite",
+        "file_path": "sprites/sprite_monster3.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.460208",
+        "modified": "2026-05-23T14:34:55.460208"
+      },
+      "sprite_bomb": {
+        "name": "sprite_bomb",
+        "asset_type": "sprite",
+        "file_path": "sprites/sprite_bomb.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.460208",
+        "modified": "2026-05-23T14:34:55.460208"
+      },
+      "sprite_trigger": {
+        "name": "sprite_trigger",
+        "asset_type": "sprite",
+        "file_path": "sprites/sprite_trigger.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.460208",
+        "modified": "2026-05-23T14:34:55.460208"
+      },
+      "sprite_explosion": {
+        "name": "sprite_explosion",
+        "asset_type": "sprite",
+        "file_path": "sprites/sprite_explosion.png",
+        "width": 1536,
+        "height": 96,
+        "origin_x": 32,
+        "origin_y": 32,
+        "precise": false,
+        "frames": 16,
+        "frame_width": 96,
+        "frame_height": 96,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.460208",
+        "modified": "2026-05-23T14:34:55.460208"
+      },
+      "sprite_block": {
+        "name": "sprite_block",
+        "asset_type": "sprite",
+        "file_path": "sprites/sprite_block.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.460208",
+        "modified": "2026-05-23T14:34:55.460208"
+      },
+      "sprite_hole": {
+        "name": "sprite_hole",
+        "asset_type": "sprite",
+        "file_path": "sprites/sprite_hole.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.460208",
+        "modified": "2026-05-23T14:34:55.460208"
+      },
+      "sprite_lives": {
+        "name": "sprite_lives",
+        "asset_type": "sprite",
+        "file_path": "sprites/sprite_lives.png",
+        "width": 16,
+        "height": 16,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 16,
+        "frame_height": 16,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.460208",
+        "modified": "2026-05-23T14:34:55.460208"
+      }
+    },
+    "sounds": {
+      "sound_background": {
+        "name": "sound_background",
+        "asset_type": "sound",
+        "file_path": "sounds/sound_background.mid",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.492866",
+        "modified": "2026-05-23T14:34:55.492866"
+      },
+      "sound_diamond": {
+        "name": "sound_diamond",
+        "asset_type": "sound",
+        "file_path": "sounds/sound_diamond.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.492866",
+        "modified": "2026-05-23T14:34:55.492866"
+      },
+      "sound_door": {
+        "name": "sound_door",
+        "asset_type": "sound",
+        "file_path": "sounds/sound_door.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.492866",
+        "modified": "2026-05-23T14:34:55.492866"
+      },
+      "sound_goal": {
+        "name": "sound_goal",
+        "asset_type": "sound",
+        "file_path": "sounds/sound_goal.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.492866",
+        "modified": "2026-05-23T14:34:55.492866"
+      },
+      "sound_dead": {
+        "name": "sound_dead",
+        "asset_type": "sound",
+        "file_path": "sounds/sound_dead.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.492866",
+        "modified": "2026-05-23T14:34:55.492866"
+      },
+      "sound_explode": {
+        "name": "sound_explode",
+        "asset_type": "sound",
+        "file_path": "sounds/sound_explode.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.492866",
+        "modified": "2026-05-23T14:34:55.492866"
+      },
+      "sound_hole": {
+        "name": "sound_hole",
+        "asset_type": "sound",
+        "file_path": "sounds/sound_hole.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.492866",
+        "modified": "2026-05-23T14:34:55.492866"
+      },
+      "sound_push": {
+        "name": "sound_push",
+        "asset_type": "sound",
+        "file_path": "sounds/sound_push.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.492866",
+        "modified": "2026-05-23T14:34:55.492866"
+      }
+    },
+    "backgrounds": {
+      "background_start": {
+        "name": "background_start",
+        "asset_type": "background",
+        "file_path": "backgrounds/background_start.png",
+        "width": 480,
+        "height": 480,
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "use_as_tileset": false,
+        "tile_width": 0,
+        "tile_height": 0,
+        "h_offset": 16,
+        "v_offset": 16,
+        "h_sep": 0,
+        "v_sep": 0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.497866",
+        "modified": "2026-05-23T14:34:55.497866"
+      },
+      "background_main": {
+        "name": "background_main",
+        "asset_type": "background",
+        "file_path": "backgrounds/background_main.png",
+        "width": 80,
+        "height": 80,
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "use_as_tileset": false,
+        "tile_width": 0,
+        "tile_height": 0,
+        "h_offset": 16,
+        "v_offset": 16,
+        "h_sep": 0,
+        "v_sep": 0,
+        "imported": true,
+        "created": "2026-05-23T14:34:55.497866",
+        "modified": "2026-05-23T14:34:55.497866"
+      }
+    },
+    "objects": {
+      "wall_corner": {
+        "name": "wall_corner",
+        "asset_type": "object",
+        "sprite": "sprite_wall_corner",
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706"
+      },
+      "obj_goal": {
+        "name": "obj_goal",
+        "asset_type": "object",
+        "sprite": "sprite_goal",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "collision_with_obj_person": {
+            "actions": [
+              {
+                "action": "goto_room",
+                "parameters": {
+                  "room": "40",
+                  "relative": true
+                }
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "sound_goal",
+                  "subimage": "0"
+                }
+              },
+              {
+                "action": "if_object_exists",
+                "parameters": {
+                  "object": "1000",
+                  "count": "1"
+                }
+              },
+              {
+                "action": "test_next_room",
+                "parameters": {}
+              },
+              {
+                "action": "next_room",
+                "parameters": {
+                  "transition": "0"
+                }
+              },
+              {
+                "action": "set_health",
+                "parameters": {}
+              },
+              {
+                "action": "test_health",
+                "parameters": {}
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "goto_room",
+                "parameters": {
+                  "room": "100"
+                }
+              },
+              {
+                "action": "show_highscore",
+                "parameters": {}
+              },
+              {
+                "action": "restart_game",
+                "parameters": {}
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              }
+            ],
+            "target_object": "obj_person"
+          }
+        },
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706"
+      },
+      "obj_person": {
+        "name": "obj_person",
+        "asset_type": "object",
+        "sprite": "sprite_person",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "collision_with_obj_block": {
+            "actions": [
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Unmapped GM action: lib=1, id=605, kind=0"
+                }
+              }
+            ],
+            "target_object": "obj_block"
+          },
+          "collision_with_monster_all": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "sound_dead",
+                  "subimage": "0"
+                }
+              },
+              {
+                "action": "if_object_exists",
+                "parameters": {
+                  "object": "1000",
+                  "count": "1"
+                }
+              },
+              {
+                "action": "set_lives",
+                "parameters": {
+                  "value": "-1",
+                  "relative": true
+                }
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Unmapped GM action: lib=1, id=223, kind=0, func=action_current_room"
+                }
+              }
+            ],
+            "target_object": "monster_all"
+          },
+          "collision_with_monster_ud": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "sound_dead",
+                  "subimage": "0"
+                }
+              },
+              {
+                "action": "if_object_exists",
+                "parameters": {
+                  "object": "1000",
+                  "count": "1"
+                }
+              },
+              {
+                "action": "set_lives",
+                "parameters": {
+                  "value": "-1",
+                  "relative": true
+                }
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Unmapped GM action: lib=1, id=223, kind=0, func=action_current_room"
+                }
+              }
+            ],
+            "target_object": "monster_ud"
+          },
+          "collision_with_monster_lr": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "sound_dead",
+                  "subimage": "0"
+                }
+              },
+              {
+                "action": "if_object_exists",
+                "parameters": {
+                  "object": "1000",
+                  "count": "1"
+                }
+              },
+              {
+                "action": "set_lives",
+                "parameters": {
+                  "value": "-1",
+                  "relative": true
+                }
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Unmapped GM action: lib=1, id=223, kind=0, func=action_current_room"
+                }
+              }
+            ],
+            "target_object": "monster_lr"
+          },
+          "collision_with_wall_corner": {
+            "actions": [
+              {
+                "action": "start_moving_direction",
+                "parameters": {
+                  "directions": "stop",
+                  "speed": "8"
+                }
+              }
+            ],
+            "target_object": "wall_corner"
+          },
+          "keyboard": {
+            "down": {
+              "actions": [
+                {
+                  "action": "test_alignment",
+                  "parameters": {
+                    "hsnap": "32",
+                    "vsnap": "32"
+                  }
+                },
+                {
+                  "action": "start_moving_direction",
+                  "parameters": {
+                    "directions": "down",
+                    "speed": "4"
+                  }
+                }
+              ]
+            },
+            "right": {
+              "actions": [
+                {
+                  "action": "test_alignment",
+                  "parameters": {
+                    "hsnap": "32",
+                    "vsnap": "32"
+                  }
+                },
+                {
+                  "action": "start_moving_direction",
+                  "parameters": {
+                    "directions": "right",
+                    "speed": "4"
+                  }
+                }
+              ]
+            },
+            "up": {
+              "actions": [
+                {
+                  "action": "test_alignment",
+                  "parameters": {
+                    "hsnap": "32",
+                    "vsnap": "32"
+                  }
+                },
+                {
+                  "action": "start_moving_direction",
+                  "parameters": {
+                    "directions": "up",
+                    "speed": "4"
+                  }
+                }
+              ]
+            },
+            "left": {
+              "actions": [
+                {
+                  "action": "test_alignment",
+                  "parameters": {
+                    "hsnap": "32",
+                    "vsnap": "32"
+                  }
+                },
+                {
+                  "action": "start_moving_direction",
+                  "parameters": {
+                    "directions": "left",
+                    "speed": "4"
+                  }
+                }
+              ]
+            },
+            "nokey": {
+              "actions": [
+                {
+                  "action": "test_alignment",
+                  "parameters": {
+                    "hsnap": "32",
+                    "vsnap": "32"
+                  }
+                },
+                {
+                  "action": "start_moving_direction",
+                  "parameters": {
+                    "directions": "stop",
+                    "speed": "8"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706"
+      },
+      "obj_door": {
+        "name": "obj_door",
+        "asset_type": "object",
+        "sprite": "sprite_door",
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "step": {
+            "actions": [
+              {
+                "action": "show_highscore",
+                "parameters": {}
+              },
+              {
+                "action": "test_health",
+                "parameters": {}
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "sound_door",
+                  "subimage": "0"
+                }
+              },
+              {
+                "action": "create_random_instance",
+                "parameters": {}
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              }
+            ]
+          }
+        },
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706",
+        "parent": "wall_corner"
+      },
+      "obj_diamond": {
+        "name": "obj_diamond",
+        "asset_type": "object",
+        "sprite": "sprite_diamond",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "destroy": {
+            "actions": [
+              {
+                "action": "goto_room",
+                "parameters": {
+                  "room": "5",
+                  "relative": true
+                }
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "sound_diamond",
+                  "subimage": "0"
+                }
+              }
+            ]
+          },
+          "collision_with_obj_person": {
+            "actions": [
+              {
+                "action": "create_random_instance",
+                "parameters": {}
+              }
+            ],
+            "target_object": "obj_person"
+          }
+        },
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706"
+      },
+      "wall_horizontal": {
+        "name": "wall_horizontal",
+        "asset_type": "object",
+        "sprite": "sprite_wall_horizontal",
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706",
+        "parent": "wall_corner"
+      },
+      "wall_vertical": {
+        "name": "wall_vertical",
+        "asset_type": "object",
+        "sprite": "sprite_wall_vertical",
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706",
+        "parent": "wall_corner"
+      },
+      "controller_start": {
+        "name": "controller_start",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": false,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "goto_room",
+                "parameters": {
+                  "room": "0"
+                }
+              },
+              {
+                "action": "set_window_caption",
+                "parameters": {
+                  "score": "0",
+                  "lives": "score: ",
+                  "health": "0"
+                }
+              },
+              {
+                "action": "set_lives",
+                "parameters": {
+                  "value": "3"
+                }
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "sound_background",
+                  "subimage": "1"
+                }
+              }
+            ]
+          },
+          "keyboard": {
+            "anykey": {
+              "actions": [
+                {
+                  "action": "next_room",
+                  "parameters": {
+                    "transition": "0"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706"
+      },
+      "controller_main": {
+        "name": "controller_main",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "keyboard": {
+            "r": {
+              "actions": [
+                {
+                  "action": "set_sprite",
+                  "parameters": {
+                    "sprite": "sound_dead",
+                    "subimage": "0"
+                  }
+                },
+                {
+                  "action": "set_lives",
+                  "parameters": {
+                    "value": "-1",
+                    "relative": true
+                  }
+                },
+                {
+                  "action": "comment",
+                  "parameters": {
+                    "text": "Unmapped GM action: lib=1, id=223, kind=0, func=action_current_room"
+                  }
+                }
+              ]
+            }
+          },
+          "no_more_lives": {
+            "actions": [
+              {
+                "action": "show_highscore",
+                "parameters": {}
+              },
+              {
+                "action": "restart_game",
+                "parameters": {}
+              }
+            ]
+          },
+          "draw": {
+            "actions": [
+              {
+                "action": "fill_color",
+                "parameters": {
+                  "color": "score_font"
+                }
+              },
+              {
+                "action": "set_draw_color",
+                "parameters": {
+                  "color": "255"
+                }
+              },
+              {
+                "action": "next_room",
+                "parameters": {
+                  "transition": "300",
+                  "relative": true
+                }
+              },
+              {
+                "action": "draw_scaled_text",
+                "parameters": {
+                  "text": "Lives:",
+                  "x": "8",
+                  "y": "0",
+                  "relative": true
+                }
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Unmapped GM action: lib=1, id=714, kind=0, func=action_draw_life_images"
+                }
+              }
+            ]
+          }
+        },
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706"
+      },
+      "monster_lr": {
+        "name": "monster_lr",
+        "asset_type": "object",
+        "sprite": "sprite_monster1",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "start_moving_direction",
+                "parameters": {
+                  "directions": [
+                    "left",
+                    "right"
+                  ],
+                  "speed": "32/6"
+                }
+              }
+            ]
+          },
+          "collision_with_wall_corner": {
+            "actions": [
+              {
+                "action": "jump_to_random",
+                "parameters": {}
+              }
+            ],
+            "target_object": "wall_corner"
+          }
+        },
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706"
+      },
+      "monster_ud": {
+        "name": "monster_ud",
+        "asset_type": "object",
+        "sprite": "sprite_monster2",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "start_moving_direction",
+                "parameters": {
+                  "directions": [
+                    "down",
+                    "up"
+                  ],
+                  "speed": "32/6"
+                }
+              }
+            ]
+          },
+          "collision_with_wall_corner": {
+            "actions": [
+              {
+                "action": "snap_to_grid",
+                "parameters": {}
+              }
+            ],
+            "target_object": "wall_corner"
+          }
+        },
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706"
+      },
+      "monster_all": {
+        "name": "monster_all",
+        "asset_type": "object",
+        "sprite": "sprite_monster3",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "start_moving_direction",
+                "parameters": {
+                  "directions": [
+                    "down",
+                    "left",
+                    "right",
+                    "up"
+                  ],
+                  "speed": "32/6"
+                }
+              }
+            ]
+          },
+          "collision_with_wall_corner": {
+            "actions": [
+              {
+                "action": "set_direction_speed",
+                "parameters": {
+                  "direction": "direction+90",
+                  "speed": "32/6"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "hspeed",
+                  "relative": true
+                }
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Unmapped GM action: lib=1, id=425, kind=4"
+                }
+              },
+              {
+                "action": "set_direction_speed",
+                "parameters": {
+                  "direction": "direction+180",
+                  "speed": "32/6"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "hspeed",
+                  "relative": true
+                }
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Unmapped GM action: lib=1, id=425, kind=4"
+                }
+              },
+              {
+                "action": "set_direction_speed",
+                "parameters": {
+                  "direction": "direction-90",
+                  "speed": "32/6"
+                }
+              }
+            ],
+            "target_object": "wall_corner"
+          }
+        },
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706"
+      },
+      "obj_bomb": {
+        "name": "obj_bomb",
+        "asset_type": "object",
+        "sprite": "sprite_bomb",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 10,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706"
+      },
+      "obj trigger": {
+        "name": "obj trigger",
+        "asset_type": "object",
+        "sprite": "sprite_trigger",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "collision_with_obj_person": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "sound_explode",
+                  "subimage": "0"
+                }
+              },
+              {
+                "action": "create_moving_instance",
+                "parameters": {
+                  "object": "obj_explosion",
+                  "x": "1"
+                }
+              },
+              {
+                "action": "create_random_instance",
+                "parameters": {}
+              }
+            ],
+            "target_object": "obj_person"
+          }
+        },
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706"
+      },
+      "obj_explosion": {
+        "name": "obj_explosion",
+        "asset_type": "object",
+        "sprite": "sprite_explosion",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": -10,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_friction",
+                "parameters": {
+                  "friction": "-200",
+                  "relative": true
+                }
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+                }
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+                }
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+                }
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+                }
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+                }
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+                }
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+                }
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+                }
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
+                }
+              },
+              {
+                "action": "set_friction",
+                "parameters": {
+                  "friction": "200",
+                  "relative": true
+                }
+              }
+            ]
+          },
+          "animation_end": {
+            "actions": [
+              {
+                "action": "create_random_instance",
+                "parameters": {}
+              }
+            ]
+          }
+        },
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706"
+      },
+      "obj_block": {
+        "name": "obj_block",
+        "asset_type": "object",
+        "sprite": "sprite_block",
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "collision_with_obj_person": {
+            "actions": [
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "8*other.hspeed",
+                  "relative": true
+                }
+              },
+              {
+                "action": "test_health",
+                "parameters": {}
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "sound_push",
+                  "subimage": "0"
+                }
+              },
+              {
+                "action": "set_friction",
+                "parameters": {
+                  "friction": "8*other.hspeed",
+                  "relative": true
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "set_health",
+                "parameters": {}
+              },
+              {
+                "action": "test_health",
+                "parameters": {}
+              },
+              {
+                "action": "draw_score",
+                "parameters": {
+                  "x": "obj_hole",
+                  "y": "8*other.hspeed",
+                  "caption": "8*other.vspeed",
+                  "relative": true
+                }
+              },
+              {
+                "action": "set_friction",
+                "parameters": {
+                  "friction": "8*other.hspeed",
+                  "relative": true
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              }
+            ],
+            "target_object": "obj_person"
+          }
+        },
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706",
+        "parent": "wall_corner"
+      },
+      "obj_hole": {
+        "name": "obj_hole",
+        "asset_type": "object",
+        "sprite": "sprite_hole",
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "collision_with_obj_block": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "sound_hole",
+                  "subimage": "0"
+                }
+              },
+              {
+                "action": "create_random_instance",
+                "parameters": {}
+              },
+              {
+                "action": "create_random_instance",
+                "parameters": {}
+              }
+            ],
+            "target_object": "obj_block"
+          }
+        },
+        "imported": true,
+        "created": "2026-05-23T14:34:55.669706",
+        "modified": "2026-05-23T14:34:55.669706",
+        "parent": "wall_corner"
+      }
+    },
+    "rooms": {
+      "room_start": {
+        "name": "room_start",
+        "asset_type": "room",
+        "width": 480,
+        "height": 480,
+        "background_color": "#c0c0c0",
+        "background_image": "background_start",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 1,
+        "instances": [],
+        "_external_file": "rooms/room_start.json",
+        "created": "2026-05-23T14:34:55.685267",
+        "modified": "2026-05-23T14:34:55.685267",
+        "imported": true
+      },
+      "room1": {
+        "name": "room1",
+        "asset_type": "room",
+        "width": 480,
+        "height": 512,
+        "background_color": "#c0c0c0",
+        "background_image": "background_main",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 130,
+        "instances": [],
+        "_external_file": "rooms/room1.json",
+        "created": "2026-05-23T14:34:55.685267",
+        "modified": "2026-05-23T14:34:55.685267",
+        "imported": true
+      },
+      "room2": {
+        "name": "room2",
+        "asset_type": "room",
+        "width": 480,
+        "height": 512,
+        "background_color": "#c0c0c0",
+        "background_image": "background_main",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 96,
+        "instances": [],
+        "_external_file": "rooms/room2.json",
+        "created": "2026-05-23T14:34:55.685267",
+        "modified": "2026-05-23T14:34:55.685267",
+        "imported": true
+      },
+      "room3": {
+        "name": "room3",
+        "asset_type": "room",
+        "width": 480,
+        "height": 512,
+        "background_color": "#c0c0c0",
+        "background_image": "background_main",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 105,
+        "instances": [],
+        "_external_file": "rooms/room3.json",
+        "created": "2026-05-23T14:34:55.685267",
+        "modified": "2026-05-23T14:34:55.685267",
+        "imported": true
+      },
+      "room4": {
+        "name": "room4",
+        "asset_type": "room",
+        "width": 480,
+        "height": 512,
+        "background_color": "#c0c0c0",
+        "background_image": "background_main",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 94,
+        "instances": [],
+        "_external_file": "rooms/room4.json",
+        "created": "2026-05-23T14:34:55.685267",
+        "modified": "2026-05-23T14:34:55.685267",
+        "imported": true
+      },
+      "room5": {
+        "name": "room5",
+        "asset_type": "room",
+        "width": 480,
+        "height": 512,
+        "background_color": "#c0c0c0",
+        "background_image": "background_main",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 98,
+        "instances": [],
+        "_external_file": "rooms/room5.json",
+        "created": "2026-05-23T14:34:55.685267",
+        "modified": "2026-05-23T14:34:55.685267",
+        "imported": true
+      }
+    },
+    "scripts": {},
+    "fonts": {
+      "score_font": {
+        "name": "score_font",
+        "asset_type": "font",
+        "font_name": "Arial",
+        "size": 14,
+        "bold": true,
+        "italic": false,
+        "charset": "ascii",
+        "imported": true,
+        "created": "2026-05-23T14:34:55.833470",
+        "modified": "2026-05-23T14:34:55.833470"
+      }
+    },
+    "data": {}
+  }
+}

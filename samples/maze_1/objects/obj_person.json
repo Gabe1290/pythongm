@@ -1,0 +1,118 @@
+{
+  "name": "obj_person",
+  "asset_type": "object",
+  "sprite": "spr_person",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "collision_with_obj_wall": {
+      "actions": [
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "stop",
+            "speed": "8"
+          }
+        }
+      ],
+      "target_object": "obj_wall"
+    },
+    "keyboard": {
+      "down": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "down",
+              "speed": "4"
+            }
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "right",
+              "speed": "4"
+            }
+          }
+        ]
+      },
+      "up": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "up",
+              "speed": "4"
+            }
+          }
+        ]
+      },
+      "left": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "left",
+              "speed": "4"
+            }
+          }
+        ]
+      },
+      "nokey": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "stop",
+              "speed": "8"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "imported": true,
+  "created": "2026-05-23T14:34:54.997955",
+  "modified": "2026-05-23T14:34:54.997955"
+}
