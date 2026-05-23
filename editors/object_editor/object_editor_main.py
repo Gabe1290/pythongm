@@ -31,24 +31,6 @@ BlocklyVisualProgrammingTab = None
 from ..object_editor_components import ActionListWidget, VisualScriptingArea
 from .python_code_parser import PythonToActionsParser, events_to_python
 from .sync_coordinator import SyncCoordinator, SyncSource, SyncContext
-# from visual_programming import (
-#     VisualCanvas, NodePalette, NodePropertiesPanel,
-#     create_node_from_type, VisualCodeGenerator
-# )
-
-# Stub functions for visual programming (not yet implemented)
-def create_node_from_type(type_id: str):
-    """Stub: Create a visual programming node from type ID"""
-    return None
-
-class VisualCodeGenerator:
-    """Stub: Visual programming code generator"""
-    def set_graph(self, nodes, connections):
-        pass
-    def generate(self):
-        return {}
-
-
 
 
 class ObjectEditor(BaseEditor):
@@ -877,11 +859,6 @@ class ObjectEditor(BaseEditor):
             if hasattr(self, 'properties_panel'):
                 self.properties_panel.load_properties(data)
 
-            # Load visual programming data (old format)
-            visual_data = data.get('visual_programming', {})
-            if visual_data and hasattr(self, 'visual_canvas'):
-                self.load_visual_programming_data(visual_data)
-
             # Load Blockly workspace data
             blockly_xml = data.get('blockly_workspace', '')
             if blockly_xml and hasattr(self, 'blockly_tab') and self.blockly_tab:
@@ -966,11 +943,6 @@ class ObjectEditor(BaseEditor):
             'asset_type': 'object',
             'imported': True
         }
-
-        # Add visual programming data (old format)
-        visual_data = self.get_visual_programming_data()
-        if visual_data and visual_data.get('nodes'):
-            object_data['visual_programming'] = visual_data
 
         # Add Blockly workspace data
         if hasattr(self, 'blockly_tab') and self.blockly_tab:
@@ -1647,43 +1619,3 @@ class {self.asset_name or 'obj_object'}(GameObject):
 
         logger.debug("======================")
 
-    def sync_visual_to_events(self):
-        """Convert visual programming nodes to event/action data"""
-        if not hasattr(self, 'visual_canvas'):
-            return
-
-        if not self.visual_canvas.nodes:
-            logger.debug("No visual nodes to sync")
-            return
-
-        # Generate code from visual nodes
-        generator = VisualCodeGenerator()
-        generator.set_graph(self.visual_canvas.nodes, self.visual_canvas.connections)
-
-        events_data = generator.generate()
-
-        if events_data:
-            if hasattr(self, 'events_panel') and self.events_panel:
-                self.events_panel.load_events_data(events_data)
-                logger.debug(f"Synced visual programming to events: {len(events_data)} events")
-        else:
-            logger.debug("No events generated from visual programming")
-
-    def sync_events_to_visual(self):
-        """Convert event/action data to visual programming nodes (future feature)"""
-        logger.debug("Sync events to visual: Not implemented yet")
-
-    def get_visual_programming_data(self) -> dict:
-        """Get visual programming data for saving"""
-        if hasattr(self, 'visual_canvas'):
-            return self.visual_canvas.to_dict()
-        return {}
-
-    def load_visual_programming_data(self, data: dict):
-        """Load visual programming data"""
-        if hasattr(self, 'visual_canvas') and data:
-            def node_factory(node_data):
-                return create_node_from_type(node_data['node_id'])
-
-            self.visual_canvas.from_dict(data, node_factory)
-            logger.debug(f"Loaded visual programming: {len(data.get('nodes', []))} nodes")
