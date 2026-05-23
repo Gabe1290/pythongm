@@ -51,7 +51,6 @@ kivy-export-documentation.odt
 PyGameMaker-Test-Setup.odt
 docs/*.docx
 docs/blockly_editor_test_checklist.md
-docs/test_checklist.md
 docs/code_editor_test_projects.odt
 
 # IDE files
