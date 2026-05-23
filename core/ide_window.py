@@ -1158,6 +1158,9 @@ class PyGameMakerIDE(QMainWindow):
             Config.save()
             # Update the menu
             self.update_recent_projects_menu(self.recent_projects_menu)
+            # Refresh the Welcome tab's inline list too
+            if hasattr(self, 'welcome_tab') and hasattr(self.welcome_tab, 'refresh_recent_projects'):
+                self.welcome_tab.refresh_recent_projects()
             self.update_status(self.tr("Recent projects list cleared"))
 
     def new_project(self):
@@ -3753,6 +3756,12 @@ class PyGameMakerIDE(QMainWindow):
         recent = recent[:10]
 
         Config.set("recent_projects", recent)
+
+        # Keep the Welcome tab's inline recent-projects list in sync so a
+        # user who opens a project, closes it, then comes back to Welcome
+        # sees the project they just had open at the top of the list.
+        if hasattr(self, 'welcome_tab') and hasattr(self.welcome_tab, 'refresh_recent_projects'):
+            self.welcome_tab.refresh_recent_projects()
 
     def restore_geometry(self):
         geometry = Config.get("window_geometry")
