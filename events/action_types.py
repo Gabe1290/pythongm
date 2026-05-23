@@ -1222,6 +1222,487 @@ ACTION_TYPES = {
         icon="🛑🎮",
         parameters=[]
     ),
+
+    # ---------------------------------------------------------------------
+    # Bulk-added in rc.12: actions that the runtime already handled but had
+    # no UI metadata, so the events panel logged "Unknown action type: X"
+    # when loading bundled samples (maze_*, treasure). Source line numbers
+    # reference runtime/action_executor.py unless noted otherwise. See
+    # `.scratch_find_missing_actions.py` (one-shot survey, removed) for
+    # the discovery method.
+    # ---------------------------------------------------------------------
+
+    # Comment — modular handler `handle_comment` is a no-op; the UI shows
+    # the freeform text for documentation purposes.
+    "comment": ActionType(
+        name="comment",
+        display_name="Comment",
+        description="A comment in the action list (no runtime effect)",
+        category="Control",
+        icon="💬",
+        parameters=[
+            ActionParameter(
+                name="text",
+                display_name="Comment",
+                param_type="string",
+                default_value="",
+                description="Free-form comment text",
+                required=False,
+            ),
+        ],
+    ),
+
+    # Runtime: execute_goto_room_action (line 5103)
+    "goto_room": ActionType(
+        name="goto_room",
+        display_name="Go to Room",
+        description="Switch to a specific room",
+        category="Room",
+        icon="🚪",
+        parameters=[
+            ActionParameter(
+                name="room",
+                display_name="Room",
+                param_type="room",
+                default_value="",
+                description="Target room name"
+            ),
+            ActionParameter(
+                name="transition",
+                display_name="Transition",
+                param_type="choice",
+                default_value="none",
+                description="Transition effect (currently accepted but not rendered)",
+                choices=["none"],
+                required=False,
+            ),
+        ],
+    ),
+
+    # Runtime: execute_create_random_instance_action (line 4510)
+    "create_random_instance": ActionType(
+        name="create_random_instance",
+        display_name="Create Random Instance",
+        description="Create one of several object types chosen at random",
+        category="Instance",
+        icon="🎲",
+        parameters=[
+            ActionParameter(
+                name="x", display_name="X", param_type="number", default_value=0,
+                description="X position"
+            ),
+            ActionParameter(
+                name="y", display_name="Y", param_type="number", default_value=0,
+                description="Y position"
+            ),
+            ActionParameter(
+                name="object1", display_name="Object 1", param_type="object",
+                default_value="", description="First candidate object", required=False,
+            ),
+            ActionParameter(
+                name="object2", display_name="Object 2", param_type="object",
+                default_value="", description="Second candidate object", required=False,
+            ),
+            ActionParameter(
+                name="object3", display_name="Object 3", param_type="object",
+                default_value="", description="Third candidate object", required=False,
+            ),
+            ActionParameter(
+                name="object4", display_name="Object 4", param_type="object",
+                default_value="", description="Fourth candidate object", required=False,
+            ),
+        ],
+    ),
+
+    # Runtime: execute_start_moving_direction_action (line 960). Supports either
+    # an 8-direction bitmask (GameMaker convention) or a direct expression.
+    "start_moving_direction": ActionType(
+        name="start_moving_direction",
+        display_name="Start Moving (Direction)",
+        description="Begin moving in a direction at a given speed",
+        category="Movement",
+        icon="➡️",
+        parameters=[
+            ActionParameter(
+                name="directions", display_name="Direction Bitmask",
+                param_type="number", default_value=0,
+                description="8-direction bitmask (GameMaker convention)",
+            ),
+            ActionParameter(
+                name="direction_expr", display_name="Direction Expression",
+                param_type="string", default_value="",
+                description="Alternative: free expression evaluated as degrees",
+                required=False,
+            ),
+            ActionParameter(
+                name="speed", display_name="Speed",
+                param_type="float", default_value=4.0,
+                description="Speed in pixels per frame",
+            ),
+        ],
+    ),
+
+    # Runtime: execute_execute_code_action (line 2709)
+    "execute_code": ActionType(
+        name="execute_code",
+        display_name="Execute Code",
+        description="Run an inline block of Python code",
+        category="Control",
+        icon="📜",
+        parameters=[
+            ActionParameter(
+                name="code", display_name="Code",
+                param_type="code", default_value="",
+                description="Python source to evaluate against the instance",
+            ),
+        ],
+    ),
+
+    # Runtime: execute_test_health_action (line 2307)
+    "test_health": ActionType(
+        name="test_health",
+        display_name="Test Health",
+        description="Conditional: compare current health against a value",
+        category="Score",
+        icon="❓💚",
+        parameters=[
+            ActionParameter(
+                name="operation", display_name="Operation",
+                param_type="choice", default_value="equal",
+                description="Comparison operator",
+                choices=["equal", "less", "greater", "less_or_equal", "greater_or_equal", "not_equal"],
+            ),
+            ActionParameter(
+                name="value", display_name="Value",
+                param_type="number", default_value=0,
+                description="Value to compare against",
+            ),
+        ],
+    ),
+
+    # Runtime: execute_show_highscore_action (line 2375)
+    "show_highscore": ActionType(
+        name="show_highscore",
+        display_name="Show High-Score Table",
+        description="Display the high-score table dialog",
+        category="Score",
+        icon="🏆",
+        parameters=[
+            ActionParameter(
+                name="background", display_name="Background Color",
+                param_type="color", default_value="#FFFFDD",
+                description="Dialog background colour",
+                required=False,
+            ),
+            ActionParameter(
+                name="new_color", display_name="New Entry Color",
+                param_type="color", default_value="#FF0000",
+                description="Colour used for the new (qualifying) entry",
+                required=False,
+            ),
+            ActionParameter(
+                name="other_color", display_name="Other Entries Color",
+                param_type="color", default_value="#000000",
+                description="Colour used for the other entries",
+                required=False,
+            ),
+            ActionParameter(
+                name="allow_new_entry", display_name="Allow New Entry",
+                param_type="boolean", default_value=True,
+                description="Prompt for name if the current score qualifies",
+            ),
+        ],
+    ),
+
+    # Runtime: execute_if_object_exists_action (line 1316)
+    "if_object_exists": ActionType(
+        name="if_object_exists",
+        display_name="If Object Exists",
+        description="Conditional: true if at least one instance of object exists",
+        category="Control",
+        icon="❓",
+        parameters=[
+            ActionParameter(
+                name="object", display_name="Object",
+                param_type="object", default_value="",
+                description="Object type to check",
+            ),
+            ActionParameter(
+                name="not_flag", display_name="Negate",
+                param_type="boolean", default_value=False,
+                description="Negate the result (act when the object does NOT exist)",
+                required=False,
+            ),
+        ],
+    ),
+
+    # Runtime: execute_restart_game_action (line 2420) — no parameters
+    "restart_game": ActionType(
+        name="restart_game",
+        display_name="Restart Game",
+        description="Restart the game from the start room",
+        category="Room",
+        icon="🔁🎮",
+        parameters=[],
+    ),
+
+    # Runtime: execute_jump_to_start_action (line 852) — no parameters
+    "jump_to_start": ActionType(
+        name="jump_to_start",
+        display_name="Jump to Start Position",
+        description="Move the instance back to its creation position",
+        category="Movement",
+        icon="↩️",
+        parameters=[],
+    ),
+
+    # Runtime: execute_if_collision_action (line 1229). Note: the existing
+    # `check_collision` UI entry covers a similar feature with different
+    # parameter names; this one mirrors what the GMK importer actually
+    # emits so legacy projects load without "Unknown action type" warnings.
+    "if_collision": ActionType(
+        name="if_collision",
+        display_name="If Collision",
+        description="Conditional: true if the instance would collide at offset (x, y)",
+        category="Control",
+        icon="❓💥",
+        parameters=[
+            ActionParameter(
+                name="x", display_name="X Offset",
+                param_type="number", default_value=0,
+                description="Horizontal offset to test"
+            ),
+            ActionParameter(
+                name="y", display_name="Y Offset",
+                param_type="number", default_value=0,
+                description="Vertical offset to test"
+            ),
+            ActionParameter(
+                name="object", display_name="Against",
+                param_type="string", default_value="any",
+                description="'any', 'solid', or an object name",
+                required=False,
+            ),
+            ActionParameter(
+                name="not_flag", display_name="Negate",
+                param_type="boolean", default_value=False,
+                description="Negate the result", required=False,
+            ),
+        ],
+    ),
+
+    # Runtime: execute_set_direction_speed_action (line 566)
+    "set_direction_speed": ActionType(
+        name="set_direction_speed",
+        display_name="Set Direction & Speed",
+        description="Set the instance's direction (degrees) and speed magnitude",
+        category="Movement",
+        icon="🧭",
+        parameters=[
+            ActionParameter(
+                name="direction", display_name="Direction",
+                param_type="number", default_value=0,
+                description="Direction in degrees (0=right, 90=up)",
+            ),
+            ActionParameter(
+                name="speed", display_name="Speed",
+                param_type="float", default_value=4.0,
+                description="Speed in pixels per frame",
+            ),
+        ],
+    ),
+
+    # Runtime: execute_create_moving_instance_action (line 4609)
+    "create_moving_instance": ActionType(
+        name="create_moving_instance",
+        display_name="Create Moving Instance",
+        description="Create an instance and start it moving in a direction",
+        category="Instance",
+        icon="✨➡️",
+        parameters=[
+            ActionParameter(
+                name="object", display_name="Object",
+                param_type="object", default_value="",
+                description="Object to create",
+            ),
+            ActionParameter(
+                name="x", display_name="X",
+                param_type="number", default_value=0,
+                description="X position",
+            ),
+            ActionParameter(
+                name="y", display_name="Y",
+                param_type="number", default_value=0,
+                description="Y position",
+            ),
+            ActionParameter(
+                name="speed", display_name="Speed",
+                param_type="float", default_value=0,
+                description="Initial speed magnitude",
+            ),
+            ActionParameter(
+                name="direction", display_name="Direction",
+                param_type="number", default_value=0,
+                description="Initial direction in degrees",
+            ),
+        ],
+    ),
+
+    # Runtime: execute_draw_score_action (line 2180)
+    "draw_score": ActionType(
+        name="draw_score",
+        display_name="Draw Score",
+        description="Draw the current score on screen",
+        category="Score",
+        icon="🖍️🏆",
+        parameters=[
+            ActionParameter(
+                name="x", display_name="X", param_type="number", default_value=0,
+                description="X position",
+            ),
+            ActionParameter(
+                name="y", display_name="Y", param_type="number", default_value=0,
+                description="Y position",
+            ),
+            ActionParameter(
+                name="caption", display_name="Caption",
+                param_type="string", default_value="Score: ",
+                description="Text shown before the score value",
+                required=False,
+            ),
+        ],
+    ),
+
+    # Runtime: execute_test_alignment_action (line 1076)
+    "test_alignment": ActionType(
+        name="test_alignment",
+        display_name="Test Grid Alignment",
+        description="Conditional: true if the instance is aligned to a grid",
+        category="Grid",
+        icon="❓▦",
+        parameters=[
+            ActionParameter(
+                name="hsnap", display_name="Horizontal Snap",
+                param_type="number", default_value=32,
+                description="Horizontal grid spacing in pixels",
+            ),
+            ActionParameter(
+                name="vsnap", display_name="Vertical Snap",
+                param_type="number", default_value=32,
+                description="Vertical grid spacing in pixels",
+            ),
+        ],
+    ),
+
+    # Runtime: alias `test_next_room` → execute_if_next_room_exists_action.
+    # ActionExecutor.ACTION_ALIASES (runtime/action_executor.py:324) maps
+    # this; the events panel needs the alias spelled out so events loaded
+    # straight from .gmk imports don't warn.
+    "test_next_room": ActionType(
+        name="test_next_room",
+        display_name="Test Next Room Exists",
+        description="Conditional: true if a 'next room' is defined",
+        category="Room",
+        icon="❓🚪",
+        parameters=[],
+    ),
+
+    # Runtime: execute_set_draw_color_action (line 3065)
+    "set_draw_color": ActionType(
+        name="set_draw_color",
+        display_name="Set Draw Color",
+        description="Set the colour used by subsequent draw_* actions",
+        category="Game",
+        icon="🎨",
+        parameters=[
+            ActionParameter(
+                name="color", display_name="Color",
+                param_type="color", default_value="#000000",
+                description="RGB hex colour",
+            ),
+        ],
+    ),
+
+    # Runtime: execute_fill_color_action (line 4969)
+    "fill_color": ActionType(
+        name="fill_color",
+        display_name="Fill Screen Color",
+        description="Fill the entire viewport with a solid colour",
+        category="Game",
+        icon="🪣",
+        parameters=[
+            ActionParameter(
+                name="color", display_name="Color",
+                param_type="color", default_value="#000000",
+                description="RGB hex colour",
+            ),
+        ],
+    ),
+
+    # Runtime: execute_jump_to_random_action (line 866)
+    "jump_to_random": ActionType(
+        name="jump_to_random",
+        display_name="Jump to Random Position",
+        description="Teleport to a random position (optionally grid-snapped)",
+        category="Movement",
+        icon="🎲↪️",
+        parameters=[
+            ActionParameter(
+                name="snap_h", display_name="Horizontal Snap",
+                param_type="number", default_value=1,
+                description="Horizontal grid snap (1 = no snap)",
+            ),
+            ActionParameter(
+                name="snap_v", display_name="Vertical Snap",
+                param_type="number", default_value=1,
+                description="Vertical grid snap (1 = no snap)",
+            ),
+        ],
+    ),
+
+    # Runtime: execute_draw_scaled_text_action (line 3115)
+    "draw_scaled_text": ActionType(
+        name="draw_scaled_text",
+        display_name="Draw Scaled Text",
+        description="Draw text at an arbitrary scale",
+        category="Game",
+        icon="🖍️",
+        parameters=[
+            ActionParameter(
+                name="text", display_name="Text",
+                param_type="string", default_value="",
+                description="Text to draw",
+            ),
+            ActionParameter(
+                name="x", display_name="X", param_type="number", default_value=0,
+                description="X position",
+            ),
+            ActionParameter(
+                name="y", display_name="Y", param_type="number", default_value=0,
+                description="Y position",
+            ),
+            ActionParameter(
+                name="xscale", display_name="X Scale",
+                param_type="float", default_value=1.0,
+                description="Horizontal scale factor",
+            ),
+            ActionParameter(
+                name="yscale", display_name="Y Scale",
+                param_type="float", default_value=1.0,
+                description="Vertical scale factor",
+            ),
+        ],
+    ),
+
+    # Runtime: execute_clear_highscore_action (line 2403) — no parameters
+    "clear_highscore": ActionType(
+        name="clear_highscore",
+        display_name="Clear High-Score Table",
+        description="Clear all high-score entries",
+        category="Score",
+        icon="🗑️🏆",
+        parameters=[],
+    ),
 }
 
 # Mapping from Blockly block types to action_types names
