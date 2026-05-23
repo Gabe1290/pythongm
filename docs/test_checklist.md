@@ -106,7 +106,7 @@ references the commit it shipped in so a regression is easy to bisect.
 
 ## 1. Application Startup & Basic Operations
 
-- [ ] Application launches without errors
+- [x] Application launches without errors  *(verified post-`afb9c75`: clean console, no Qt UniqueConnection warning, no duplicate `pygm.X` log lines)*
 - [ ] Main window displays correctly
 - [ ] Menu bar is visible and responsive
 - [ ] Toolbar buttons are visible and clickable
