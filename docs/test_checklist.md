@@ -12,13 +12,20 @@ references the commit it shipped in so a regression is easy to bisect.
 - [ ] Title "Welcome to PyGameMaker IDE" + version label "v1.0.0-rc.12" visible
 - [ ] **Get started** column shows New Project, Open Project, **More options** dropdown
 - [ ] "More options" dropdown opens a menu with Open ZIP / Import GMK / Import Roberta entries
-- [ ] **Try a sample game** dropdown opens a menu listing Maze 1–4 + Treasure hunt
-- [ ] Clicking a sample import prompts for output folder and opens the imported project
 - [ ] **Continue where you left off** list shows recent projects with "N days ago" timestamps
 - [ ] Clicking a recent-project row opens that project
 - [ ] Recent-project list is wrapped in a visible rectangle (themed frame)
 - [ ] "Clear recent projects" link hides itself when the list is empty
 - [ ] Footer links (Documentation / Tutorials / About) open the right targets
+
+### Try a sample game — bundled samples + copy-on-open (commits a8f78d0 / f8a0eb7)
+- [ ] **Try a sample game** dropdown opens a menu listing Maze 1–4 + Treasure hunt
+- [ ] Clicking a sample opens **immediately** — no "choose output folder" prompt, no GMK-import wait
+- [ ] After clicking, the IDE title shows the sample's name (e.g. `maze_1 — PyGameMaker IDE`)
+- [ ] The newly-opened project lives at `<Documents>/PyGameMaker Projects/<sample>/` — not under `samples/`
+- [ ] Clicking the same sample twice opens a fresh copy at `<sample>_2/`, leaving the first one alone
+- [ ] After editing and pressing Ctrl+S, only the working copy changes; `samples/<sample>/` on disk is untouched
+- [ ] Each sample loads to an editable state (assets visible in the asset tree, rooms openable, etc.)
 
 ### Window title (commit 00911b3)
 - [ ] No-project title: "PyGameMaker IDE"
