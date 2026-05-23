@@ -2168,7 +2168,14 @@ class PyGameMakerIDE(QMainWindow):
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                 )
                 if result == QMessageBox.StandardButton.Yes:
-                    subprocess.run(['xdg-open', output_dir])
+                    import os
+                    import platform
+                    if platform.system() == 'Windows':
+                        os.startfile(output_dir)
+                    elif platform.system() == 'Darwin':  # macOS
+                        subprocess.run(['open', output_dir])
+                    else:  # Linux
+                        subprocess.run(['xdg-open', output_dir])
             else:
                 QMessageBox.critical(
                     self,
@@ -2480,7 +2487,14 @@ class PyGameMakerIDE(QMainWindow):
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                 )
                 if result == QMessageBox.StandardButton.Yes:
-                    subprocess.run(['open', output_dir])
+                    import os
+                    import platform
+                    if platform.system() == 'Windows':
+                        os.startfile(output_dir)
+                    elif platform.system() == 'Darwin':  # macOS
+                        subprocess.run(['open', output_dir])
+                    else:  # Linux
+                        subprocess.run(['xdg-open', output_dir])
             else:
                 QMessageBox.critical(
                     self,
