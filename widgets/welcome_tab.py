@@ -37,11 +37,14 @@ logger = get_logger(__name__)
 # `_build_left_column`, so trimming this list is also a valid way to
 # disable an entry.
 SAMPLE_PROJECTS: List[Tuple[str, str]] = [
-    ("samples/maze_1",   "Maze — Level 1"),
-    ("samples/maze_2",   "Maze — Level 2"),
-    ("samples/maze_3",   "Maze — Level 3"),
-    ("samples/maze_4",   "Maze — Level 4"),
-    ("samples/treasure", "Treasure hunt"),
+    ("samples/maze_1", "Maze — Level 1"),
+    ("samples/maze_2", "Maze — Level 2"),
+    ("samples/maze_3", "Maze — Level 3"),
+    ("samples/maze_4", "Maze — Level 4"),
+    # `treasure` was dropped from the bundled set after user testing
+    # surfaced GMK-import edge cases that produced a project the IDE
+    # could only partially round-trip. Reintroduce once the importer
+    # is hardened against that case.
 ]
 
 

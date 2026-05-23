@@ -19,7 +19,7 @@ references the commit it shipped in so a regression is easy to bisect.
 - [ ] Footer links (Documentation / Tutorials / About) open the right targets
 
 ### Try a sample game — bundled samples + copy-on-open (commits a8f78d0 / f8a0eb7)
-- [ ] **Try a sample game** dropdown opens a menu listing Maze 1–4 + Treasure hunt
+- [ ] **Try a sample game** dropdown opens a menu listing Maze 1–4
 - [ ] Clicking a sample opens **immediately** — no "choose output folder" prompt, no GMK-import wait
 - [ ] After clicking, the IDE title shows the sample's name (e.g. `maze_1 — PyGameMaker IDE`)
 - [ ] The newly-opened project lives at `<Documents>/PyGameMaker Projects/<sample>/` — not under `samples/`
