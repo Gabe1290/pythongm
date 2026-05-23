@@ -3093,6 +3093,8 @@ class PyGameMakerIDE(QMainWindow):
             self.open_sprite_editor(asset_name, asset_info)
         elif asset_type == 'playgrounds':
             self.open_playground_editor(asset_name, asset_info)
+        elif asset_type == 'scripts':
+            self.open_script_editor(asset_name, asset_info)
         else:
             logger.warning(f"No editor registered for asset type '{asset_type}' (asset: {asset_name})")
 
@@ -3297,6 +3299,52 @@ class PyGameMakerIDE(QMainWindow):
             traceback.print_exc()
             QMessageBox.critical(self, self.tr("Error"),
                             self.tr("Failed to open sprite editor: {0}").format(e))
+
+    def open_script_editor(self, script_name: str, script_data: dict):
+        """Open a project-level script in the minimal script editor.
+
+        Mirrors the open_sprite_editor / open_object_editor wiring:
+        single tab per asset, same save/close/modified/float signal
+        connections, same focus-existing-on-reopen behaviour. The script
+        editor itself (editors/script_editor.py) is a thin QPlainTextEdit
+        wrapper — see the module docstring for why it's intentionally
+        minimal rather than a full code IDE.
+        """
+        from editors.script_editor import ScriptEditor
+
+        if script_name in self.open_editors:
+            if self._focus_detached_editor(script_name):
+                return
+            for i in range(self.editor_tabs.count()):
+                if self.editor_tabs.tabText(i) == script_name:
+                    self.editor_tabs.setCurrentIndex(i)
+                    return
+
+        try:
+            script_editor = ScriptEditor(str(self.current_project_path), self)
+            script_editor.load_asset(script_name, script_data)
+
+            script_editor.save_requested.connect(self.on_editor_save_requested, Qt.ConnectionType.UniqueConnection)
+            script_editor.close_requested.connect(self.on_editor_close_requested, Qt.ConnectionType.UniqueConnection)
+            script_editor.data_modified.connect(self.on_editor_data_modified, Qt.ConnectionType.UniqueConnection)
+            script_editor.float_requested.connect(self.float_editor, Qt.ConnectionType.UniqueConnection)
+            script_editor.reattach_requested.connect(self.reattach_editor, Qt.ConnectionType.UniqueConnection)
+
+            tab_index = self.editor_tabs.addTab(script_editor, script_name)
+            self.editor_tabs.setCurrentIndex(tab_index)
+
+            self.open_editors[script_name] = script_editor
+
+            self.update_status(self.tr("Opened script: {0}").format(script_name))
+
+            if self.window_mode == 'floating':
+                self.float_editor(script_editor)
+
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            QMessageBox.critical(self, self.tr("Error"),
+                            self.tr("Failed to open script editor: {0}").format(e))
 
     def on_object_editor_activated(self, object_name: str, object_properties: dict):
         """Handle object editor activation"""

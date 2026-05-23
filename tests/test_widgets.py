@@ -262,6 +262,69 @@ class TestSpriteEditorPreciseCheckbox:
         assert editor.get_data()["precise"] is False
 
 
+class TestScriptEditor:
+    """The minimal script editor (editors/script_editor.py) round-trips
+    a script's ``code`` field through load_data / get_data and tags the
+    saved data with the correct ``asset_type`` so the IDE save path
+    routes it into the ``scripts`` category.
+    """
+
+    def test_load_get_round_trip_preserves_code(self, qtbot):
+        try:
+            from editors.script_editor import ScriptEditor
+        except ImportError:
+            pytest.skip("ScriptEditor not available")
+        editor = ScriptEditor()
+        qtbot.addWidget(editor)
+        editor.asset_name = "adapt_direction"
+        sample_code = (
+            "# This script adapts the direction of the monster\n"
+            "if instance.hspeed == 0:\n"
+            "    instance.hspeed = 4\n"
+        )
+        editor.load_data({
+            "code": sample_code,
+            "language": "python",
+            "imported": True,
+        })
+        out = editor.get_data()
+        assert out["code"] == sample_code
+        assert out["asset_type"] == "script"
+        assert out["language"] == "python"
+        assert out["name"] == "adapt_direction"
+        # 'imported' must round-trip — IDE save path relies on it for
+        # categorising assets from GMK imports separately from native ones.
+        assert out["imported"] is True
+
+    def test_default_language_is_python(self, qtbot):
+        """A script loaded without an explicit `language` should save as Python."""
+        try:
+            from editors.script_editor import ScriptEditor
+        except ImportError:
+            pytest.skip("ScriptEditor not available")
+        editor = ScriptEditor()
+        qtbot.addWidget(editor)
+        editor.asset_name = "untyped"
+        editor.load_data({"code": "pass"})
+        assert editor.get_data()["language"] == "python"
+
+    def test_load_does_not_mark_dirty(self, qtbot):
+        """Loading an asset shouldn't immediately flag it as modified —
+        otherwise pytest-qt's auto-close teardown would hit the
+        unsaved-changes prompt and deadlock (see conftest auto-dismiss
+        fixture for the matching safety net).
+        """
+        try:
+            from editors.script_editor import ScriptEditor
+        except ImportError:
+            pytest.skip("ScriptEditor not available")
+        editor = ScriptEditor()
+        qtbot.addWidget(editor)
+        editor.asset_name = "x"
+        editor.load_data({"code": "print('hi')"})
+        assert editor.is_modified is False
+
+
 class TestBlocklyWidget:
     """Test the Blockly widget integration"""
 

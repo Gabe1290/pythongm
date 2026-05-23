@@ -62,10 +62,15 @@ move it to a feature branch and remove the entry once the feature ships.
 ### Generic asset-type editor fallback
 - Currently when `open_asset_editor` is called with an asset type that has no
   registered editor (anything other than `rooms`, `objects`, `sprites`,
-  `playgrounds`), it logs a warning and does nothing.
+  `playgrounds`, `scripts`), it logs a warning and does nothing. The
+  remaining holes are `sounds`, `backgrounds`, and `fonts` — those still
+  show "No editor registered for asset type 'X'" if double-clicked.
 - TODO: register editors for the remaining asset types, or formalize the
   registration so adding a new asset type fails loudly at startup rather than
   silently at click time.
+- `scripts` got a minimal QPlainTextEdit-backed editor in rc.12
+  (`editors/script_editor.py`); the same pattern is the cheapest fix
+  for the others.
 - Same applies to the create-asset fallback in
   `widgets/asset_tree/asset_tree_widget.py` — it now logs and returns silently
   when no `create_asset` handler is reachable.
