@@ -75,6 +75,24 @@ move it to a feature branch and remove the entry once the feature ships.
   `widgets/asset_tree/asset_tree_widget.py` — it now logs and returns silently
   when no `create_asset` handler is reachable.
 
+### UI metadata coverage for runtime actions (partial in rc.12)
+- The runtime knows ~207 actions (executor `execute_*_action` methods +
+  modular handlers in `runtime/action_handlers/`); the UI-side
+  `events/action_types.py` registry covers ~78 of them after the rc.12
+  bulk-add. The remaining ~129 still trigger "Unknown action type: X" in
+  the events panel when an imported project uses them, even though they
+  execute correctly at runtime.
+- rc.12 closed the subset visible in the bundled samples (maze_1..4,
+  treasure) — 21 ActionType entries added in commit 8c756d7 + this one.
+  The rest are mostly particle/draw/timeline/window-management actions
+  that no shipped sample currently uses.
+- Recipe for adding more: see the comments at the bottom of
+  `events/action_types.py` and the survey script that lived briefly at
+  `.scratch_find_missing_actions.py` (removed after the bulk pass).
+- A future cleanup might generalise `get_action_type` to fall back
+  through `ActionExecutor.ACTION_ALIASES` so legacy/alternate action
+  names resolve to a single ActionType without duplicate entries.
+
 ---
 
 ## Runtime action handlers (stubs that just log and return)
