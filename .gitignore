@@ -80,7 +80,12 @@ scripts/complete_french_translations.py
 run_thymio_playground.py
 
 # Test project artifacts
+# *.gmk blocks the gigabytes of user-imported test outputs that
+# accumulate at the repo root. The samples/ exception below keeps the
+# bundled games surfaced by the Welcome tab's "Try a sample" dropdown
+# tracked in git so a fresh clone has them.
 *.gmk
+!samples/*.gmk
 my_project*/
 myaze_*/
 temp_*.java
