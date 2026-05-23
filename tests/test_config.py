@@ -50,7 +50,7 @@ class TestConfigBasics:
         assert Config._config_file.exists()
 
         # Verify file contents
-        with open(Config._config_file) as f:
+        with open(Config._config_file, encoding="utf-8") as f:
             saved_data = json.load(f)
         assert saved_data["test_key"] == "test_value"
 

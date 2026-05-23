@@ -473,7 +473,7 @@ def sample_sound_path(temp_dir):
 def project_with_objects(temp_project_dir):
     """Create a project with sample objects for testing."""
     project_file = temp_project_dir / "project.json"
-    with open(project_file) as f:
+    with open(project_file, encoding="utf-8") as f:
         data = json.load(f)
 
     data["assets"]["objects"] = {
@@ -516,7 +516,7 @@ def project_with_objects(temp_project_dir):
 def project_with_rooms(temp_project_dir):
     """Create a project with sample rooms for testing."""
     project_file = temp_project_dir / "project.json"
-    with open(project_file) as f:
+    with open(project_file, encoding="utf-8") as f:
         data = json.load(f)
 
     data["room_order"] = ["room_start", "room_game", "room_end"]

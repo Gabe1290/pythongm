@@ -56,7 +56,7 @@ class TestProjectManagerCreation:
         project_file = temp_dir / "TestGame" / "project.json"
         assert project_file.exists()
 
-        with open(project_file) as f:
+        with open(project_file, encoding="utf-8") as f:
             data = json.load(f)
         assert data["name"] == "TestGame"
 
@@ -160,7 +160,7 @@ class TestProjectManagerSaving:
 
         assert result is True
 
-        with open(temp_project_dir / "project.json") as f:
+        with open(temp_project_dir / "project.json", encoding="utf-8") as f:
             data = json.load(f)
         assert data["description"] == "Updated description"
 
