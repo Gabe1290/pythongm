@@ -410,7 +410,10 @@ class SpriteStripDialog(QDialog):
                     self.rows_spin.setValue(max(1, height // frame_h))
                     self.columns_spin.blockSignals(False)
                     self.rows_spin.blockSignals(False)
-        except Exception:
+        except (OSError, ValueError):
+            # OSError covers PIL.UnidentifiedImageError and missing files;
+            # ValueError catches malformed image dimensions. Either way,
+            # leave the spin boxes alone and let update_preview() report.
             pass
 
         self.update_preview()
@@ -431,7 +434,7 @@ class SpriteStripDialog(QDialog):
                     self.frame_height_spin.setValue(height // rows)
                     self.frame_width_spin.blockSignals(False)
                     self.frame_height_spin.blockSignals(False)
-        except Exception:
+        except (OSError, ValueError):
             pass
 
         self.update_preview()

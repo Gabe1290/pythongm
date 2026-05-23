@@ -131,7 +131,9 @@ class WSLBridge:
                         if part in ('1', '2'):
                             info['version'] = part
                             break
-        except Exception:
+        except (OSError, subprocess.TimeoutExpired):
+            # wsl.exe missing/not on PATH, or the listing timed out.
+            # Leave info['version'] empty; we still report the distro name.
             pass
 
         info['message'] = 'WSL {} with {}'.format(

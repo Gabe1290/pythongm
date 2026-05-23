@@ -921,7 +921,8 @@ class GameInstance:
             try:
                 hex_color = color_str.lstrip('#')
                 return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
-            except Exception:
+            except (ValueError, IndexError):
+                # ValueError: non-hex chars; IndexError: shorter than #RRGGBB.
                 pass
         return (255, 255, 255)  # Default to white
 

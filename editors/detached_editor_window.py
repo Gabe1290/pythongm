@@ -37,7 +37,10 @@ class DetachedEditorWindow(QMainWindow):
         self.setWindowTitle(title)
         try:
             editor.windowTitleChanged.connect(self.setWindowTitle)
-        except Exception:
+        except (AttributeError, RuntimeError):
+            # AttributeError: editor isn't a proper QWidget subclass and
+            # has no windowTitleChanged signal. RuntimeError: the editor
+            # has already been deleted by Qt before we get here.
             pass
 
         container = QWidget()
@@ -62,7 +65,10 @@ class DetachedEditorWindow(QMainWindow):
             return None
         try:
             editor.windowTitleChanged.disconnect(self.setWindowTitle)
-        except Exception:
+        except (TypeError, RuntimeError, AttributeError):
+            # TypeError: signal was never connected. RuntimeError: the
+            # underlying Qt object has already been deleted. AttributeError:
+            # editor doesn't have the signal (non-QWidget host).
             pass
         # Remove the editor from this window's central layout. setParent(None)
         # is the cleanest reparent step before the IDE adds it to a QTabWidget.

@@ -976,7 +976,11 @@ class GameApp(App):
             meta = ROOM_META[room_name]
             _log(f"_do_room_switch: target={{room_name}}")
 
-            # 1. Unbind old scene's keyboard handlers from Window
+            # 1. Unbind old scene's keyboard handlers from Window.
+            # Swallow broadly: Kivy's Window.unbind does not document its
+            # exception types, and we cannot tell from here whether the
+            # handlers were ever bound (depends on whether the scene was
+            # ever entered before the room switch).
             old_scene = self.scene
             if old_scene:
                 try:
