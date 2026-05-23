@@ -486,7 +486,6 @@ class ActionExecutor:
         """Bounce off solid objects by reversing velocity.
 
         Parameters:
-            precise: If True, uses more accurate collision detection (not implemented yet)
             against: "solid" to bounce off all solid objects, or specific object name
 
         For simple bouncing, this reverses the velocity component based on

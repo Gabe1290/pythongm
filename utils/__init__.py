@@ -395,89 +395,6 @@ def get_relative_path(file_path: Union[str, Path], base_path: Union[str, Path]) 
         return Path(file_path)
 
 # =============================================================================
-# CONFIGURATION UTILITIES
-# =============================================================================
-
-class Config:
-    """Configuration management for the IDE"""
-
-    DEFAULT_CONFIG = {
-        'window': {
-            'width': 1200,
-            'height': 800,
-            'maximized': False
-        },
-        'panels': {
-            'asset_width': 250,
-            'properties_width': 350,
-            'events_width': 600
-        },
-        'editor': {
-            'font_size': 12,
-            'theme': 'default',
-            'auto_save': True
-        },
-        'project': {
-            'recent_projects': [],
-            'max_recent': 10
-        }
-    }
-
-    @staticmethod
-    def get_config_path() -> Path:
-        """Get path to config file"""
-        config_dir = Path.home() / '.gamemaker_ide'
-        config_dir.mkdir(exist_ok=True)
-        return config_dir / 'config.json'
-
-    @staticmethod
-    def load_config() -> Dict:
-        """Load configuration from file"""
-        config_path = Config.get_config_path()
-
-        if config_path.exists():
-            try:
-                with open(config_path, 'r', encoding='utf-8') as f:
-                    loaded_config = json.load(f)
-
-                # Merge with defaults
-                config = Config.DEFAULT_CONFIG.copy()
-                config.update(loaded_config)
-                return config
-
-            except Exception as e:
-                logger.error(f"Error loading config: {e}")
-
-        return Config.DEFAULT_CONFIG.copy()
-
-    @staticmethod
-    def save_config(config: Dict) -> bool:
-        """Save configuration to file"""
-        try:
-            config_path = Config.get_config_path()
-
-            # Filter out non-serializable values (like Qt objects)
-            serializable_config = {}
-            for key, value in config.items():
-                try:
-                    # Test if the value can be serialized to JSON
-                    json.dumps(value)
-                    serializable_config[key] = value
-                except (TypeError, ValueError):
-                    # Skip non-serializable values silently
-                    # This will filter out QByteArray objects from window geometry/state
-                    continue
-
-            with open(config_path, 'w', encoding='utf-8') as f:
-                json.dump(serializable_config, f, indent=2, ensure_ascii=False)
-
-            return True
-
-        except Exception as e:
-            logger.error(f"Error saving config: {e}")
-            return False
-
-# =============================================================================
 # EXPORT UTILITIES
 # =============================================================================
 
@@ -522,7 +439,6 @@ __all__ = [
     'ProjectManager',
     'AssetManager',
     'UIHelpers',
-    'Config',
     'ensure_directory',
     'safe_filename',
     'find_project_files',
