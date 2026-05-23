@@ -241,7 +241,9 @@ class EnhancedPropertiesPanel(QWidget):
             data = self.current_room_editor.get_data()
             if hasattr(self, '_instance_count_label') and self._instance_count_label:
                 self._instance_count_label.setText(str(len(data.get('instances', []))))
-        except Exception:
+        except (AttributeError, RuntimeError):
+            # AttributeError: room editor was swapped out before get_data().
+            # RuntimeError: the underlying Qt label was already deleted.
             pass
         QTimer.singleShot(100, self.update_room_preview)
 

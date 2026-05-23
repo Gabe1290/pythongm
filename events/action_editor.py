@@ -240,7 +240,9 @@ class ActionConfigDialog(QDialog):
                 try:
                     if isinstance(current_color, str) and current_color.startswith('#'):
                         widget.setStyleSheet(f"background-color: {current_color}; color: white;")
-                except Exception:
+                except RuntimeError:
+                    # Underlying Qt widget was deleted between creation and
+                    # styling — happens during rapid editor switches.
                     pass
 
                 widget.clicked.connect(

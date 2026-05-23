@@ -1380,7 +1380,10 @@ class PyGameMakerIDE(QMainWindow):
                         try:
                             editor.update_window_title()
                         except Exception:
-                            pass
+                            logger.debug(
+                                "rename: editor.update_window_title() raised",
+                                exc_info=True,
+                            )
                     # Update tab text if the editor is in a tab.
                     for i in range(self.editor_tabs.count()):
                         if self.editor_tabs.widget(i) is editor:
@@ -2582,14 +2585,14 @@ class PyGameMakerIDE(QMainWindow):
                     editor.cut()
                     return
                 except Exception:
-                    pass
+                    logger.debug("Cut: editor.cut() raised", exc_info=True)
         # Fall back to the focused widget for plain text-edit cut
         focused_widget = self.focusWidget()
         if focused_widget and hasattr(focused_widget, 'cut'):
             try:
                 focused_widget.cut()
             except Exception:
-                pass
+                logger.debug("Cut: focusWidget().cut() raised", exc_info=True)
 
     def copy(self):
         """Handle copy - delegate to active editor (tabbed or detached)."""
@@ -2603,13 +2606,13 @@ class PyGameMakerIDE(QMainWindow):
                     editor.copy()
                     return
                 except Exception:
-                    pass
+                    logger.debug("Copy: editor.copy() raised", exc_info=True)
         focused_widget = self.focusWidget()
         if focused_widget and hasattr(focused_widget, 'copy'):
             try:
                 focused_widget.copy()
             except Exception:
-                pass
+                logger.debug("Copy: focusWidget().copy() raised", exc_info=True)
 
     def paste(self):
         """Handle paste - delegate to active editor (tabbed or detached)."""
@@ -2623,13 +2626,13 @@ class PyGameMakerIDE(QMainWindow):
                     editor.paste()
                     return
                 except Exception:
-                    pass
+                    logger.debug("Paste: editor.paste() raised", exc_info=True)
         focused_widget = self.focusWidget()
         if focused_widget and hasattr(focused_widget, 'paste'):
             try:
                 focused_widget.paste()
             except Exception:
-                pass
+                logger.debug("Paste: focusWidget().paste() raised", exc_info=True)
 
     def duplicate(self):
         """Handle duplicate - delegate to active editor (tabbed or detached)."""
@@ -3344,7 +3347,10 @@ class PyGameMakerIDE(QMainWindow):
             import traceback
             tb = traceback.format_exc()
             traceback.print_exc()
-            # Write crash log for GUI-only builds (no console)
+            # Write crash log for GUI-only builds (no console).
+            # Swallowed intentionally: we're already in the crash handler;
+            # a failure to log the crash must not raise and replace the
+            # original traceback shown in the QMessageBox below.
             try:
                 from pathlib import Path
                 crash_log = Path.home() / 'pygamemaker_crash.log'
@@ -3723,7 +3729,9 @@ class PyGameMakerIDE(QMainWindow):
                 if hasattr(editor, 'reattach_requested'):
                     self.safe_disconnect_signal(editor.reattach_requested, self.reattach_editor)
             except Exception:
-                pass
+                logger.debug(
+                    "editor teardown: signal disconnect raised", exc_info=True
+                )
             editor.deleteLater()
 
     def on_project_loaded(self, project_path, project_data):

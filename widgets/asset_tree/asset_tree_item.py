@@ -212,7 +212,9 @@ class AssetTreeItem(QTreeWidgetItem):
                         sprite_data = project_data.get('assets', {}).get('sprites', {}).get(sprite_name)
                         if sprite_data:
                             sprite_file_path = sprite_data.get('file_path', '')
-                    except Exception:
+                    except (OSError, json.JSONDecodeError):
+                        # File missing/unreadable or malformed JSON — fall
+                        # through to the constructed-path heuristic below.
                         pass
 
             # If we still didn't get it, construct the path

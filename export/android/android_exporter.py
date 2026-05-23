@@ -675,7 +675,10 @@ class AndroidExporter(BaseKivyExporter):
         try:
             os.chmod(path, stat.S_IWRITE)
             func(path)
-        except Exception:
+        except OSError:
+            # chmod itself or the retried op still failed (file locked
+            # by another process, missing parent dir, FS doesn't honour
+            # chmod). Cleanup is best-effort; leave the leaked file.
             pass
 
     def _cleanup(self, build_dir: Path):
