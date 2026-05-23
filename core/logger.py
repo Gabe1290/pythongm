@@ -94,6 +94,14 @@ def configure_logging(level: Optional[int] = None, stream=None) -> None:
     handler.setFormatter(PyGMFormatter())
     root_logger.addHandler(handler)
 
+    # Don't propagate to Python's root logger. utils/__init__.py calls
+    # logging.basicConfig() during package import, which installs a
+    # second handler on the root logger; without propagate=False every
+    # pygm.* record would print twice (once via our PyGMFormatter, once
+    # via root's default formatter). Reported in IDE startup logs as
+    # duplicate "WARNING:pygm.X:..." lines.
+    root_logger.propagate = False
+
     _logging_configured = True
 
 
