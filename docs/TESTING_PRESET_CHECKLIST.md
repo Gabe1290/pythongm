@@ -3,6 +3,23 @@
 This checklist covers all events and actions available in the "Testing (Validated Only)" Blockly preset.
 Use this to systematically verify that each feature works correctly in the runtime.
 
+## NEW IN 1.0.0-rc.12 — Blockly Config dialog button-bar fix
+
+The Blockly preset / block-config dialogs (`Tools → Configure Action
+Blocks…`, `Tools → Configure Thymio Blocks…`) had hand-rolled
+Save/Cancel button rows that hard-coded Save-then-Cancel. They now
+use `QDialogButtonBox` so the order follows the host-platform
+convention (OK/Cancel on Windows + Linux, Cancel/OK on macOS).
+Utility buttons (Select All / Select None) stay on the left.
+
+- [ ] Tools → Configure Action Blocks opens the dialog
+- [ ] Select All / Select None buttons are on the left of the button row
+- [ ] Save / Cancel pair is on the right, in the correct platform order
+- [ ] Save commits the changes; Cancel discards them; both close the dialog
+- [ ] Tools → Configure Thymio Blocks opens its dialog with the same layout
+
+---
+
 ## Test Project Setup
 
 Before testing, create a simple project with:

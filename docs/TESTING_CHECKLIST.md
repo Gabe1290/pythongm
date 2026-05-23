@@ -10,6 +10,40 @@ This document tracks which events and actions have been tested and validated. Th
 
 ---
 
+## NEW IN 1.0.0-rc.12 — Phase 2 runtime features
+
+Cross-cutting runtime capabilities that apply across all game types
+below. Worth validating once before going through the per-game-type
+sections.
+
+### Pixel-perfect collision — static, opt-in per sprite
+| Status | Item | Notes |
+|--------|------|-------|
+| [ ] | Sprite editor's "Precise Collision" checkbox toggles the per-sprite flag | shipped in rc.12; `editors/sprite_editor` |
+| [ ] | Saving the project then reopening preserves the `precise` flag | |
+| [ ] | At runtime, two `precise=True` sprites whose AABBs overlap but whose masks don't (e.g. circle near corner of square) → no collision event | static instances only |
+| [ ] | Same setup but masks DO overlap → collision event fires | |
+| [ ] | Rotated or non-unity-scaled instance with `precise=True` falls back to AABB | documented static-only limitation |
+| [ ] | GMK import of an old project carries the per-sprite precise flag through | |
+
+### Views / camera (single view — Phase 2b)
+| Status | Item | Notes |
+|--------|------|-------|
+| [ ] | New project with `room.views_enabled = False` renders identically to pre-rc.12 (regression guard) | |
+| [ ] | Setting `room.views_enabled = True` + one visible view → only the view's port rect is drawn into | |
+| [ ] | View's `follow` target stays inside `(hborder, vborder)` of the view edges as it moves | |
+| [ ] | Follow shifts clamp to the room bounds (view doesn't go past the edge) | |
+
+### Views / camera (multi-view / split-screen — Phase 2c)
+| Status | Item | Notes |
+|--------|------|-------|
+| [ ] | Two adjacent visible views with different follow targets → split-screen renders both correctly | |
+| [ ] | Area between/around viewports shows the room background colour, not stale pixels | |
+| [ ] | Per-view `hspeed` / `vspeed` clamps the per-frame camera movement; `-1` is instant | |
+| [ ] | `room.current_view_index` is set during render (queryable from draw events) | |
+
+---
+
 ## PHASE 1: Sokoban-like Games
 *Grid-based puzzle games with push mechanics*
 
