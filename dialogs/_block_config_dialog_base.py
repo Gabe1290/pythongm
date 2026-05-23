@@ -19,8 +19,8 @@ the shared strings move here (the project ships .ts/.qm by hand and runs no
 """
 
 from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QPushButton, QTreeWidget,
-    QTreeWidgetItem, QLabel, QComboBox, QMessageBox
+    QDialog, QDialogButtonBox, QVBoxLayout, QHBoxLayout, QPushButton,
+    QTreeWidget, QTreeWidgetItem, QLabel, QComboBox, QMessageBox
 )
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QColor, QBrush
@@ -187,6 +187,10 @@ class BaseBlockConfigDialog(QDialog):
         self.populate_tree()
 
         # ====== Button Bar ======
+        # Utility buttons (Select All / None) stay on the left; the
+        # primary Save/Cancel pair is delegated to QDialogButtonBox so
+        # ordering follows the host-platform convention rather than the
+        # hardcoded Save-then-Cancel that we used previously.
         button_layout = QHBoxLayout()
 
         self.select_all_btn = QPushButton(self.tr("Select All"))
@@ -199,14 +203,15 @@ class BaseBlockConfigDialog(QDialog):
 
         button_layout.addStretch()
 
-        self.save_btn = QPushButton(self.tr("Save"))
-        self.save_btn.clicked.connect(self.save_and_close)
-        self.save_btn.setDefault(True)
-        button_layout.addWidget(self.save_btn)
-
-        self.cancel_btn = QPushButton(self.tr("Cancel"))
-        self.cancel_btn.clicked.connect(self.reject)
-        button_layout.addWidget(self.cancel_btn)
+        button_box = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Save | QDialogButtonBox.StandardButton.Cancel
+        )
+        button_box.accepted.connect(self.save_and_close)
+        button_box.rejected.connect(self.reject)
+        # Preserve attribute names some subclasses may still reference.
+        self.save_btn = button_box.button(QDialogButtonBox.StandardButton.Save)
+        self.cancel_btn = button_box.button(QDialogButtonBox.StandardButton.Cancel)
+        button_layout.addWidget(button_box)
 
         layout.addLayout(button_layout)
 

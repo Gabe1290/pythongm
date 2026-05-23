@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QGroupBox, QFormLay
                                QComboBox, QDialog, QDialogButtonBox)
 
 from PySide6.QtCore import Qt, Signal, QTimer
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QPalette, QPixmap
 from typing import Dict, Any, Optional
 
 from core.logger import get_logger
@@ -72,9 +72,30 @@ class EnhancedPropertiesPanel(QWidget):
     def setup_ui(self):
         layout = QVBoxLayout(self)
 
+        # ----- Empty-state placeholder (shown when no project is loaded) -----
+        # Replaces the three group boxes below so the right panel doesn't
+        # take up real estate with three "No asset selected / -" stubs on
+        # first launch. Toggled via set_project_loaded() from the IDE.
+        self.empty_project_hint = QLabel(
+            self.tr(
+                "No project loaded.\n\n"
+                "Open or create a project, then select an asset from the "
+                "tree on the left to view its details here."
+            )
+        )
+        self.empty_project_hint.setAlignment(Qt.AlignCenter)
+        self.empty_project_hint.setWordWrap(True)
+        f = self.empty_project_hint.font()
+        f.setItalic(True)
+        self.empty_project_hint.setFont(f)
+        # Standard "Disabled" palette role dims correctly under both light
+        # and dark themes without us hardcoding a colour.
+        self.empty_project_hint.setForegroundRole(QPalette.PlaceholderText)
+        layout.addWidget(self.empty_project_hint)
+
         # Asset info group
-        info_group = QGroupBox(self.tr("Asset Information"))
-        info_layout = QFormLayout(info_group)
+        self.info_group = QGroupBox(self.tr("Asset Information"))
+        info_layout = QFormLayout(self.info_group)
 
         self.name_label = QLabel(self.tr("No asset selected"))
         self.type_label = QLabel("-")
@@ -84,7 +105,7 @@ class EnhancedPropertiesPanel(QWidget):
         info_layout.addRow(self.tr("Type:"), self.type_label)
         info_layout.addRow(self.tr("Status:"), self.status_label)
 
-        layout.addWidget(info_group)
+        layout.addWidget(self.info_group)
 
         # Properties group
         self.properties_group = QGroupBox(self.tr("Properties"))
@@ -94,8 +115,8 @@ class EnhancedPropertiesPanel(QWidget):
         layout.addWidget(self.properties_group)
 
         # Preview group
-        preview_group = QGroupBox(self.tr("Preview"))
-        preview_layout = QVBoxLayout(preview_group)
+        self.preview_group = QGroupBox(self.tr("Preview"))
+        preview_layout = QVBoxLayout(self.preview_group)
 
         self.preview_label = QLabel(self.tr("No preview available"))
         self.preview_label.setAlignment(Qt.AlignCenter)
@@ -110,9 +131,30 @@ class EnhancedPropertiesPanel(QWidget):
         """)
 
         preview_layout.addWidget(self.preview_label)
-        layout.addWidget(preview_group)
+        layout.addWidget(self.preview_group)
 
         layout.addStretch()
+
+        # Default to "no project" state until the IDE flips us via
+        # set_project_loaded(True) on project load.
+        self.set_project_loaded(False)
+
+    def set_project_loaded(self, loaded: bool):
+        """Toggle between the populated asset-detail panel and an empty
+        hint message. The IDE calls this from on_project_loaded() and at
+        startup to keep the right panel honest about its content.
+        """
+        # Each group box has been stored on self so we can flip them as a
+        # set without iterating layout items.
+        for group in (
+            getattr(self, 'info_group', None),
+            getattr(self, 'properties_group', None),
+            getattr(self, 'preview_group', None),
+        ):
+            if group is not None:
+                group.setVisible(loaded)
+        if hasattr(self, 'empty_project_hint'):
+            self.empty_project_hint.setVisible(not loaded)
 
     def set_room_editor_context(self, room_editor, room_name: str, room_properties: Dict[str, Any]):
         """Set context to show room properties from room editor"""
