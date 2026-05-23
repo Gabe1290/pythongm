@@ -282,8 +282,16 @@ class PyGameMakerIDE(QMainWindow):
         configure_thymio_action.setMenuRole(QAction.NoRole)
         tools_menu.addAction(configure_thymio_action)
         tools_menu.addSeparator()
-        tools_menu.addAction(self.create_action(self.tr("&Validate Project"), None, self.validate_project))
-        tools_menu.addAction(self.create_action(self.tr("&Migrate to Modular Structure"), None, self.migrate_project_structure))
+        # Project-scoped tools: stored on self so update_ui_state() can
+        # disable them when no project is open. Without the stored
+        # reference, these used to be clickable from the menu and would
+        # only show a "Please open a project first" dialog after the fact.
+        self.validate_project_action = self.create_action(
+            self.tr("&Validate Project"), None, self.validate_project)
+        self.migrate_project_action = self.create_action(
+            self.tr("&Migrate to Modular Structure"), None, self.migrate_project_structure)
+        tools_menu.addAction(self.validate_project_action)
+        tools_menu.addAction(self.migrate_project_action)
         tools_menu.addSeparator()
 
         # Language submenu
@@ -304,8 +312,15 @@ class PyGameMakerIDE(QMainWindow):
 
         thymio_menu.addAction(self.create_action(self.tr("Open &Playground..."), None, self.show_thymio_playground))
         thymio_menu.addSeparator()
-        thymio_menu.addAction(self.create_action(self.tr("Add &Event..."), None, self.show_thymio_event_selector))
-        thymio_menu.addAction(self.create_action(self.tr("Add &Action..."), None, self.show_thymio_action_selector))
+        # Add Event/Action target the currently active object editor, which
+        # can only exist when a project is open. Stored on self so
+        # update_ui_state() can disable them in that case.
+        self.thymio_add_event_action = self.create_action(
+            self.tr("Add &Event..."), None, self.show_thymio_event_selector)
+        self.thymio_add_action_action = self.create_action(
+            self.tr("Add &Action..."), None, self.show_thymio_action_selector)
+        thymio_menu.addAction(self.thymio_add_event_action)
+        thymio_menu.addAction(self.thymio_add_action_action)
         thymio_menu.addSeparator()
         self.thymio_import_roberta_action = self.create_action(self.tr("Import Open &Roberta XML..."), None, self.import_roberta_xml)
         thymio_menu.addAction(self.thymio_import_roberta_action)
@@ -3659,6 +3674,17 @@ class PyGameMakerIDE(QMainWindow):
             self.export_aseba_action.setEnabled(has_project)
         if hasattr(self, 'export_project_action'):
             self.export_project_action.setEnabled(has_project)
+        # Tools-menu items that only make sense with an open project
+        if hasattr(self, 'validate_project_action'):
+            self.validate_project_action.setEnabled(has_project)
+        if hasattr(self, 'migrate_project_action'):
+            self.migrate_project_action.setEnabled(has_project)
+        # Thymio Add Event/Action target the active object editor, which
+        # cannot exist without an open project.
+        if hasattr(self, 'thymio_add_event_action'):
+            self.thymio_add_event_action.setEnabled(has_project)
+        if hasattr(self, 'thymio_add_action_action'):
+            self.thymio_add_action_action.setEnabled(has_project)
         # Enable/disable build actions based on project state
         if hasattr(self, 'test_game_action'):
             self.test_game_action.setEnabled(has_project)
