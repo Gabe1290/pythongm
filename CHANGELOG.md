@@ -7,25 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
-- README version badge bumped from `1.0.0-rc.6` to `1.0.0-rc.11` (was
-  factually wrong on `main` after the rc.11 release).
+(No entries yet.)
 
-### Changed
-- `runtime/action_executor.py`: extracted shared `_set_speed_component`
-  kernel for `execute_set_hspeed_action` / `execute_set_vspeed_action`.
-  Behaviour-preserving — same parameter precedence (`hspeed`/`vspeed` →
-  `value` → `speed`), same log strings, same float-coercion path.
-- `runtime/thymio_action_handlers.py`: reworded the
-  `execute_thymio_play_system_sound_action` docstring to honestly describe
-  the simulator's tone-only audio surface (was: *"placeholder - just play a
-  tone"*). Sampled-audio playback remains a known limitation tracked in
-  `TODO.md`.
+## [1.0.0-rc.12] - 2026-05-23
+
+Bundles three tracks of work on top of rc.11. First, the Phase 2 features
+the rc.11 trajectory was held open for — pixel-perfect collision and the
+views/camera system. Second, a full pre-1.0 audit: fixed cross-platform
+gaps, removed dead code, consolidated duplicated export paths, narrowed
+silent exception swallowers, and wired the standalone Aseba code exporter
+into the File menu. Third, a focused IDE visual pass: redesigned Welcome
+tab, empty-state hints in the asset tree and right panel, toolbar tooltips
+with shortcut hints, theme-aware window title, dialog button-bar
+consistency.
 
 ### Added
-- `CLAUDE.md` at the repo root: working notes for Claude / agent sessions —
-  test baseline, audit-cleanup methodology, TODO.md conventions, and recent
-  agent-session context. Travels with the repo across machines.
 - **Pixel-perfect collision (static-only).** Opt-in per sprite via a new
   `precise` field on the sprite asset (`sprite_data['precise'] = True`).
   When enabled, `GameSprite` builds a `pygame.mask` per frame at load
@@ -35,10 +31,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   AABB hits via `mask.overlap()`. Rotated or non-unity-scaled instances
   fall back to AABB — that's the honest documented static-only
   limitation. GMK imports honor the source project's per-sprite precise
-  flag (pre-v800 `_precise` bool; v800+ `shape == 0`). No IDE UI yet —
-  set `precise` in the sprite JSON or import from a GMK that uses it.
-  Removes the corresponding `TODO.md` entry at
-  `runtime/action_executor.py:497`.
+  flag (pre-v800 `_precise` bool; v800+ `shape == 0`). Removes the
+  corresponding `TODO.md` entry at `runtime/action_executor.py:497`.
+- **Sprite editor: `Precise Collision` checkbox.** The sprite editor
+  now exposes a checkbox below the origin spinboxes that toggles the
+  per-sprite `precise` flag — the same field already honored by the
+  runtime (Phase 2a) and the GMK importer. Round-trips through
+  `load_data` / `get_data` and emits `data_modified` on toggle.
 - **Views / camera system (Phase 2b–2c).** The 8-view data structure
   that's been declared on every `GameRoom` since the views action was
   first added is now actually read by the renderer.
@@ -68,14 +67,112 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     action handler (already defined in
     `runtime/action_executor.py:3841`) is unchanged but now actually
     affects what's drawn.
-- **Sprite editor: `Precise Collision` checkbox.** The sprite editor
-  now exposes a checkbox below the origin spinboxes that toggles the
-  per-sprite `precise` flag — the same field already honored by the
-  runtime (Phase 2a) and the GMK importer. Round-trips through
-  `load_data` / `get_data` and emits `data_modified` on toggle. Closes
-  the IDE-UI follow-up that previously lived in `TODO.md`.
+- **Aseba (Thymio) code export wired into the File menu.** The existing
+  `AsebaExporter` class is now reachable from `File → Export →
+  Export Aseba (Thymio) code…`. Runs synchronously (it just writes
+  `.aesl` text files), defaults the output directory to
+  `<Desktop>/<project>_aseba`, and offers to open the output folder on
+  success. The class previously only existed as a `__main__` CLI; the
+  menu wiring closes audit item B3.
+- **Welcome tab redesigned.** Two-column layout replacing the small
+  "Quick Actions" frame. Left column: visible New Project and Open
+  Project buttons, plus a "More options" dropdown for Open ZIP /
+  Import GMK / Import Roberta, and a "Choose a sample" dropdown that
+  imports any of the bundled `.gmk` files into a user-chosen output
+  folder. Right column: inline `QListWidget` of up to 8 recent projects
+  with "N days ago" timestamps; previously this required a click into
+  a popup menu. Footer links: Documentation / Tutorials / About.
+  Styling is palette-driven so both light and dark themes render
+  cleanly.
+- **Asset tree empty-state hint.** When no project is loaded, the asset
+  tree paints an italic, palette-aware hint below the category list
+  ("No project loaded. Use File → New / Open Project to begin.") so
+  the panel doesn't read as a blank clickable surface on first launch.
+- **Right panel empty-state placeholder.** The Asset Information /
+  Properties / Preview group boxes are hidden when no project is
+  loaded; a single centred explanatory label takes their place.
+  Switches back to the full panel on project load via the new
+  `EnhancedPropertiesPanel.set_project_loaded(bool)` hook.
+- **Toolbar tooltips with shortcut hints.** Every toolbar action now
+  has a descriptive `setToolTip(...)` (e.g. "Save Project (Ctrl+S)",
+  "Test Game (F5)"). The toolbar now reuses the menu's stored QAction
+  references, so enable/disable state from `update_ui_state()` applies
+  to both menu and toolbar through a single call.
+- **`utils.desktop_dir()` / `utils.documents_dir()` helpers.** Wrap
+  `QStandardPaths.writableLocation(...)` with sensible fallbacks. The
+  IDE now defaults export and project-save dialogs to the localised
+  user folder (Bureau / Schreibtisch on Linux, OneDrive-redirected
+  Desktop on Windows). Closes audit item X3.
+- `CLAUDE.md` at the repo root: working notes for Claude / agent
+  sessions — test baseline, audit-cleanup methodology, TODO.md
+  conventions, and recent agent-session context. Travels with the repo
+  across machines.
+
+### Changed
+- **Consolidated five platform export methods into one helper** (audit
+  item B5). `export_windows_exe`, `export_linux_binary`,
+  `export_macos_app`, `export_android_apk` and `export_ios_app` were
+  ~100-line copy-paste implementations of the same flow. They now
+  delegate to a shared `_run_export_with_progress(...)` helper plus
+  two smaller helpers (`_require_open_project`, `_ask_export_dir`).
+  Net: 430 lines removed, 187 added. New export targets are now ~25
+  lines of shell rather than another 100-line copy. Behaviour preserved
+  per a throwaway offscreen-Qt harness covering four scenarios per
+  method (success, failure, cancel, no-project-open) — diff against
+  pre-refactor HEAD was empty across all 17 exercised scenarios.
+- **Window title format.** Was `"PyGameMaker - <Project>"`; now
+  `"<Project> — PyGameMaker IDE"` (em dash, document name first) so
+  the project name survives taskbar / Alt-Tab clipping. Trailing `*`
+  marker now refreshes live as the user edits, via a new connection to
+  `project_manager.dirty_changed`.
+- **Tools menu greys out items that need a project.** Validate Project,
+  Migrate to Modular Structure, and the Thymio Add Event/Action
+  submenu items are disabled when no project is loaded. Items that
+  legitimately work without a project (Preferences, Configure Action
+  Blocks, Configure Thymio Blocks, Language, Open Playground, Import
+  Open Roberta XML) stay enabled.
+- **Dialog button bars use `QDialogButtonBox`.** `sprite_strip_dialog`
+  and `_block_config_dialog_base` previously used hand-rolled
+  `QHBoxLayout` button rows with hardcoded Cancel/OK or Save/Cancel
+  ordering. Both now use `QDialogButtonBox`, which orders the standard
+  buttons per host-platform convention (OK/Cancel on Windows + Linux,
+  Cancel/OK on macOS).
+- `runtime/action_executor.py`: extracted shared `_set_speed_component`
+  kernel for `execute_set_hspeed_action` / `execute_set_vspeed_action`.
+  Behaviour-preserving — same parameter precedence (`hspeed`/`vspeed` →
+  `value` → `speed`), same log strings, same float-coercion path.
+- `runtime/thymio_action_handlers.py`: reworded the
+  `execute_thymio_play_system_sound_action` docstring to honestly describe
+  the simulator's tone-only audio surface (was: *"placeholder - just play a
+  tone"*). Sampled-audio playback remains a known limitation tracked in
+  `TODO.md`.
+- **Narrowed 20 silent `except Exception: pass` swallowers** across 10
+  files (audit item B4). 18 sites narrowed to specific exception
+  classes (e.g. `(OSError, ValueError)` for PIL image reads,
+  `(TypeError, RuntimeError, AttributeError)` for Qt signal disconnect)
+  or replaced with `logger.debug(...exc_info=True)`. 2 sites kept as
+  broad `pass` with explanatory comments (the crash-log writer inside
+  the object-editor crash handler; the keyboard-handler unbind in the
+  exported Kivy game's `_do_room_switch`).
 
 ### Fixed
+- **Cross-platform export "open folder" prompts** (audit item X1).
+  `export_linux_binary` previously called only `xdg-open` (crashes on
+  Windows / macOS); `export_ios_app` called only `open` (crashes on
+  Windows / Linux). Both now use the proper 3-way `platform.system()`
+  switch matching the other export methods.
+- **Stale `precise` parameter in `execute_bounce_action` docstring**
+  (audit item B1). The docstring claimed a `precise` parameter the
+  function had never read. Removed the misleading line.
+- **Windows console flash when launching the game from the IDE in dev**
+  (audit item X5). `subprocess.Popen` now passes
+  `creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0)` — the
+  getattr keeps the same call working as a no-op on POSIX.
+- **Test fixtures read JSON without `encoding='utf-8'`** (audit item
+  X4). Five sites across `tests/conftest.py`, `tests/test_config.py`
+  and `tests/test_project_manager.py` were relying on the default
+  platform encoding, which is `cp1252` on Windows and would have
+  silently mis-decoded any non-ASCII fixture data.
 - `editors/object_editor/object_events_panel.py`: defensive
   `try / except RuntimeError` around the `QTimer.singleShot(100, ...)`
   column-width callback. The closure captured `self.events_tree`; when
@@ -83,6 +180,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fast test teardown), calling `.viewport()` on the freed-C++
   `QTreeWidget` raised. Surfaced once new sprite-editor tests were
   added; root cause is the deferred callback, not the new tests.
+- **CI: widget-tests and integration-tests jobs no longer wedge on
+  QtWebEngine sandbox.** Added `QTWEBENGINE_DISABLE_SANDBOX=1` and
+  `--no-sandbox --disable-gpu --disable-dev-shm-usage` Chromium flags,
+  per-test `--timeout=60 --timeout-method=thread`, job-level
+  `timeout-minutes` ceilings, and the missing Chromium runtime libs
+  (`libnss3`, `libxcomposite1`, `libxdamage1`, etc.) for the GitHub
+  Actions Ubuntu runner.
+- **CI: widget-test teardown deadlock.** `tests/conftest.py` now
+  auto-dismisses `QMessageBox.question / information / warning /
+  critical` during widget tests so pytest-qt's automatic
+  `widget.close()` teardown can't hit a modal "Save changes?" prompt
+  with no user to click it.
+- **README version badge bumped from `1.0.0-rc.6` to `1.0.0-rc.11`**
+  (was factually wrong on `main` after the rc.11 release; bumped again
+  to `rc.12` for this release).
+
+### Removed
+- **Dead duplicate `Config` class** in `utils/__init__.py` (84 lines,
+  audit item X2). No production code imported it. Its `get_config_path()`
+  pointed to `~/.gamemaker_ide/config.json`, a different location from
+  the real `utils.config.Config` (`~/.pygamemaker/config.json`) — would
+  have silently split user settings across two locations if anything
+  had ever imported it.
+- **Dead `VisualCanvas` / `VisualCodeGenerator` stub subsystem** in
+  `editors/object_editor/object_editor_main.py` (68 lines, audit item
+  B2). The real `visual_programming` module was commented out long ago
+  and replaced with stubs that returned `None` / `{}`. Five methods and
+  the paired project-save/load branches all gated on
+  `hasattr(self, 'visual_canvas')`, which was never True anywhere in
+  the codebase. The active Blockly path (`create_visual_programming_tab`,
+  `blockly_tab`, `blockly_workspace`) is unrelated and untouched.
 
 ## [1.0.0-rc.11] - 2026-05-21
 
