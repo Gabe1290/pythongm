@@ -98,6 +98,11 @@ class PyGameMakerIDE(QMainWindow):
         self.setup_connections()
         self.restore_geometry()
 
+        # One-time cleanup of pre-rc.12 in-place sample paths that may
+        # be sitting in the user's recent_projects from older sessions.
+        # See _strip_samples_from_recent_projects() for why.
+        self._strip_samples_from_recent_projects()
+
         self.update_window_title()
         self.update_ui_state()
 
@@ -1269,8 +1274,96 @@ class PyGameMakerIDE(QMainWindow):
     def open_recent_project(self, project_path):
         self.load_project(Path(project_path))
 
+    # ------------------------------------------------------------------
+    # Bundled-samples protection helpers
+    # ------------------------------------------------------------------
+    #
+    # The Welcome tab ships a samples/ folder of native pygm2 projects
+    # (maze_1..4, treasure). Those folders are tracked in git and must
+    # NEVER be modified by the IDE — otherwise editing inside a sample
+    # leaks back into the repo, and Dropbox / file-system permissions
+    # produce confusing PermissionError noise when the IDE tries to
+    # auto-save.
+    #
+    # We enforce "samples/ is read-only" structurally rather than via a
+    # filesystem chmod (which Dropbox + Windows happily ignore): any
+    # path under samples/ that reaches load_project gets transparently
+    # copied to the user's working area first, and the copy is what the
+    # IDE opens.
+    # ------------------------------------------------------------------
+
+    def _samples_dir(self) -> Path:
+        """Return the repo-bundled samples/ directory (resolved)."""
+        return (Path(__file__).resolve().parent.parent / 'samples').resolve()
+
+    def _is_samples_path(self, path: Path) -> bool:
+        """True if ``path`` is the bundled samples/ folder or a child of it."""
+        try:
+            return path.resolve().is_relative_to(self._samples_dir())
+        except (ValueError, OSError):
+            return False
+
+    def _promote_samples_to_working_copy(self, samples_path: Path):
+        """Copy a bundled-samples project to a fresh folder under the
+        user's Documents and return the new path.
+
+        Returns the destination Path on success, None on failure (the
+        user sees a QMessageBox.warning in that case). Mirrors the
+        destination-picking logic in WelcomeTab._on_open_sample (same
+        ``<name>_2`` / ``_3`` suffix dance) so clicking a sample twice
+        from any entry point produces independent copies.
+        """
+        import shutil
+        from utils import documents_dir
+
+        default_parent = documents_dir() / "PyGameMaker Projects"
+        try:
+            default_parent.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            default_parent = Path.home()
+
+        base_name = samples_path.name
+        dest = default_parent / base_name
+        suffix = 2
+        while dest.exists():
+            dest = default_parent / f"{base_name}_{suffix}"
+            suffix += 1
+
+        try:
+            shutil.copytree(str(samples_path), str(dest))
+        except Exception as exc:
+            logger.error(f"Sample copy failed: {exc}", exc_info=True)
+            QMessageBox.warning(
+                self,
+                self.tr("Could not open sample"),
+                self.tr("Failed to copy the bundled sample to:\n{0}\n\nError:\n{1}").format(
+                    str(dest), str(exc)
+                ),
+            )
+            return None
+
+        logger.info(f"Promoted bundled sample to working copy: {samples_path} -> {dest}")
+        self.update_status(
+            self.tr("Sample copied to: {0}").format(str(dest))
+        )
+        return dest
+
     def load_project(self, project_path):
         logger.debug(f"DEBUG load_project: Attempting to load from {project_path}")
+        project_path = Path(project_path)
+
+        # If the requested project is under the bundled samples/ folder
+        # (clicked from the Welcome dropdown, picked from Recent Projects
+        # that retained a pre-rc.12 in-place sample path, or opened by
+        # File → Open Project pointed at samples/), transparently promote
+        # it to a working copy under <Documents>/PyGameMaker Projects/
+        # before loading. The original samples/ folder stays untouched.
+        if self._is_samples_path(project_path):
+            promoted = self._promote_samples_to_working_copy(project_path)
+            if promoted is None:
+                return  # copy failed; promotion code emitted its own QMessageBox
+            project_path = promoted
+
         if self.project_manager.load_project(project_path):
             logger.debug("DEBUG load_project: project_manager.load_project succeeded")
             self.asset_tree.project_manager = self.project_manager
@@ -3880,6 +3973,18 @@ class PyGameMakerIDE(QMainWindow):
         # The combo will be refreshed when the object editor updates
 
     def add_to_recent_projects(self, project_path):
+        # Refuse to record bundled-samples paths. Clicking such a path
+        # from Recent Projects would skip the load_project promotion in
+        # some entry points (or surprise users on a future build that
+        # removes the samples dir). Anything reachable via the IDE is
+        # always under the user's working area.
+        try:
+            if self._is_samples_path(Path(project_path)):
+                logger.debug(f"Skipping samples/ path in recent projects: {project_path}")
+                return
+        except Exception:
+            pass
+
         recent = Config.get("recent_projects", [])
 
         if project_path in recent:
@@ -3895,6 +4000,28 @@ class PyGameMakerIDE(QMainWindow):
         # sees the project they just had open at the top of the list.
         if hasattr(self, 'welcome_tab') and hasattr(self.welcome_tab, 'refresh_recent_projects'):
             self.welcome_tab.refresh_recent_projects()
+
+    def _strip_samples_from_recent_projects(self) -> None:
+        """One-time cleanup of pre-rc.12 in-place sample opens.
+
+        Before commit f8a0eb7, clicking a sample ran the GMK importer in
+        place under samples/, so the path got persisted into the user's
+        recent_projects list. Those entries are dead: clicking them now
+        promotes to a working copy (via load_project), so the original
+        Recent Projects row would silently point to a different folder
+        on next launch — confusing. Strip them once at startup.
+        """
+        recent = Config.get("recent_projects", [])
+        if not recent:
+            return
+        cleaned = [p for p in recent if not self._is_samples_path(Path(p))]
+        if len(cleaned) != len(recent):
+            removed = [p for p in recent if p not in cleaned]
+            logger.info(
+                f"Removed {len(removed)} stale samples/ path(s) from "
+                f"recent_projects: {removed}"
+            )
+            Config.set("recent_projects", cleaned)
 
     def restore_geometry(self):
         geometry = Config.get("window_geometry")
