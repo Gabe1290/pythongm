@@ -397,6 +397,27 @@ class ProjectManager(QObject):
             save_path = Path(project_path) if project_path else self.current_project_path
             project_file = save_path / self.PROJECT_FILE
 
+            # Defensive guard: refuse to write into the bundled samples/
+            # folder. PyGameMakerIDE.load_project should have promoted
+            # the project to a working copy before reaching us, but this
+            # guard catches future regressions (e.g. someone wiring a
+            # save through a different code path) before the IDE
+            # overwrites the bundled sample files in the repo.
+            try:
+                save_path_resolved = save_path.resolve()
+                # samples/ lives at <repo>/samples/ — two levels up from
+                # this file (core/project_manager.py).
+                samples_dir = (Path(__file__).resolve().parent.parent / 'samples').resolve()
+                if save_path_resolved.is_relative_to(samples_dir):
+                    logger.error(
+                        f"Refusing to save into bundled samples/ folder: "
+                        f"{save_path_resolved}. The IDE should have promoted "
+                        f"this project to a working copy before saving."
+                    )
+                    return False
+            except (ValueError, OSError):
+                pass  # path comparison failed; fall through and try the save
+
             logger.debug(f"💾 DEBUG: Saving to {project_file}")
 
             # Update project metadata

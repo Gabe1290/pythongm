@@ -414,67 +414,17 @@ class WelcomeTab(QWidget):
             self.main_window.about()
 
     def _on_open_sample(self, sample_path: Path):
-        """Copy a bundled sample project into the user's working area
-        and open the copy.
+        """Open a bundled sample by delegating to ``IDE.load_project``.
 
-        The samples shipped under ``samples/`` are native pygm2 project
-        folders, but we deliberately never open them in-place: doing so
-        would risk a user pressing Ctrl+S and overwriting the bundled
-        copy. Instead we ``shutil.copytree`` into
-        ``<Documents>/PyGameMaker Projects/<name>/`` (using a numbered
-        suffix when that directory already exists) and load the copy.
-
-        Caller side this is the same flow the Welcome tab had before:
-        the user clicks a sample → an editable project is open in the
-        IDE — they just don't see the GMK import dialog anymore because
-        no import is needed.
+        The copy-on-open behaviour (samples/<name>/ → <Documents>/
+        PyGameMaker Projects/<name>/) lives in
+        ``PyGameMakerIDE.load_project``, not here. Welcome tab clicks,
+        Recent Projects clicks, and File → Open Project all go through
+        the same auto-promotion path that way — the bundled samples are
+        structurally read-only regardless of how the user reaches them.
         """
-        import shutil
-        from PySide6.QtWidgets import QMessageBox
-
         if self.main_window is None:
             return
-
-        from utils import documents_dir
-        default_parent = documents_dir() / "PyGameMaker Projects"
-        try:
-            default_parent.mkdir(parents=True, exist_ok=True)
-        except OSError:
-            default_parent = Path.home()
-
-        # Pick a non-clashing destination so clicking the same sample
-        # twice doesn't quietly stomp the first copy's edits.
-        base_name = sample_path.name
-        dest = default_parent / base_name
-        suffix = 2
-        while dest.exists():
-            dest = default_parent / f"{base_name}_{suffix}"
-            suffix += 1
-
-        try:
-            shutil.copytree(str(sample_path), str(dest))
-        except Exception as exc:
-            logger.error(f"Sample copy failed: {exc}", exc_info=True)
-            QMessageBox.warning(
-                self,
-                self.tr("Could not open sample"),
-                self.tr(
-                    "Failed to copy the sample to:\n{0}\n\nError:\n{1}"
-                ).format(str(dest), str(exc)),
-            )
+        if not hasattr(self.main_window, 'load_project'):
             return
-
-        project_file = dest / "project.json"
-        if not project_file.exists():
-            QMessageBox.warning(
-                self,
-                self.tr("Could not open sample"),
-                self.tr(
-                    "The sample was copied to:\n{0}\n\nbut no project.json "
-                    "was found inside. The bundled sample may be incomplete."
-                ).format(str(dest)),
-            )
-            return
-
-        if hasattr(self.main_window, 'load_project'):
-            self.main_window.load_project(dest)
+        self.main_window.load_project(sample_path)
