@@ -6,8 +6,8 @@ import subprocess
 from pathlib import Path
 from PySide6.QtWidgets import (QMainWindow, QVBoxLayout, QHBoxLayout, QWidget,
                                QSplitter, QMessageBox, QDialog, QFileDialog, QInputDialog,
-                               QProgressBar, QLabel, QStyle, QTabWidget, QToolBar,
-                               QApplication)
+                               QProgressBar, QLabel, QPushButton, QStyle, QTabWidget,
+                               QToolBar, QApplication)
 
 from PySide6.QtCore import Qt, QTimer, QSize, QThread
 from PySide6.QtGui import QAction
@@ -2003,474 +2003,234 @@ class PyGameMakerIDE(QMainWindow):
                     self.tr("This export format is not yet available.")
                 )
 
+    # ------------------------------------------------------------------
+    # Platform export methods — thin shells delegating to the shared
+    # _run_export_with_progress helper below. Each shell only picks the
+    # exporter class, the per-target settings dict, and the user-facing
+    # labels that differ between targets.
+    # ------------------------------------------------------------------
+
     def export_windows_exe(self):
-        """Handle Windows EXE export with progress dialog"""
-        # Check if project is open
-        if not self.current_project_path:
-            QMessageBox.warning(
-                self,
-                self.tr("No Project"),
-                self.tr("Please open or create a project first.")
-            )
+        """Handle Windows EXE export with progress dialog."""
+        if not self._require_open_project():
             return
-
-        # Ask user for output location
-        from PySide6.QtWidgets import QFileDialog
-
-        default_name = self.current_project_data.get('name', 'Game').replace(' ', '_')
-        output_dir = QFileDialog.getExistingDirectory(
-            self,
-            self.tr("Choose Export Location"),
-            str(Path.home() / "Desktop" / f"{default_name}_exe"),
-            QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks
-        )
-
+        output_dir = self._ask_export_dir('_exe')
         if not output_dir:
-            return  # User cancelled
-
-        # Create export settings
-        export_settings = {
-            'output_path': output_dir,
-            'include_assets': True,
-            'optimize': True,
-            'include_debug': False
-        }
-
-        # Create progress dialog
-        from PySide6.QtWidgets import QDialog, QVBoxLayout, QProgressBar
-
-        progress_dialog = QDialog(self)
-        progress_dialog.setWindowTitle(self.tr("Exporting Game"))
-        progress_dialog.setModal(True)
-        progress_dialog.resize(500, 150)
-
-        layout = QVBoxLayout(progress_dialog)
-
-        status_label = QLabel(self.tr("Preparing export..."))
-        layout.addWidget(status_label)
-
-        progress_bar = QProgressBar()
-        progress_bar.setRange(0, 100)
-        layout.addWidget(progress_bar)
-
-        # Import and create exporter
+            return
         from export.exe.exe_exporter import ExeExporter
-        exporter = ExeExporter()
-
-        # Connect signals
-        def update_progress(percent, message):
-            progress_bar.setValue(percent)
-            status_label.setText(message)
-
-        def export_finished(success, message):
-            progress_dialog.accept()
-            if success:
-                result = QMessageBox.information(
-                    self,
-                    self.tr("Export Complete"),
-                    message + "\n\n" + self.tr("Would you like to open the output folder?"),
-                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-                )
-                if result == QMessageBox.StandardButton.Yes:
-                    import os
-                    import platform
-                    if platform.system() == 'Windows':
-                        os.startfile(output_dir)
-                    elif platform.system() == 'Darwin':  # macOS
-                        subprocess.run(['open', output_dir])
-                    else:  # Linux
-                        subprocess.run(['xdg-open', output_dir])
-            else:
-                QMessageBox.critical(
-                    self,
-                    self.tr("Export Failed"),
-                    message
-                )
-
-        exporter.progress_update.connect(update_progress)
-        exporter.export_complete.connect(export_finished)
-
-        # Start export in background thread
-        export_thread = ExportThread(
-            exporter,
-            str(self.current_project_path),
-            output_dir,
-            export_settings
+        self._run_export_with_progress(
+            exporter_class=ExeExporter,
+            output_dir=output_dir,
+            export_settings={
+                'output_path': output_dir,
+                'include_assets': True,
+                'optimize': True,
+                'include_debug': False,
+            },
+            dialog_title=self.tr("Exporting Game"),
+            status_text=self.tr("Preparing export..."),
+            dialog_size=(500, 150),
+            success_title=self.tr("Export Complete"),
+            failure_title=self.tr("Export Failed"),
+            open_folder_prompt=self.tr("Would you like to open the output folder?"),
+            show_cancel=False,
         )
-
-        export_thread.start()
-        progress_dialog.exec()
-        export_thread.wait()
 
     def export_linux_binary(self):
-        """Handle Linux binary export with progress dialog"""
-        # Check if project is open
-        if not self.current_project_path:
-            QMessageBox.warning(
-                self,
-                self.tr("No Project"),
-                self.tr("Please open or create a project first.")
-            )
+        """Handle Linux binary export with progress dialog."""
+        if not self._require_open_project():
             return
-
-        # Ask user for output location
-        from PySide6.QtWidgets import QFileDialog
-
-        default_name = self.current_project_data.get('name', 'Game').replace(' ', '_')
-        output_dir = QFileDialog.getExistingDirectory(
-            self,
-            self.tr("Choose Export Location"),
-            str(Path.home() / "Desktop" / f"{default_name}_linux"),
-            QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks
-        )
-
+        output_dir = self._ask_export_dir('_linux')
         if not output_dir:
-            return  # User cancelled
-
-        # Create export settings
-        export_settings = {
-            'output_path': output_dir,
-            'include_assets': True,
-            'optimize': True,
-            'include_debug': False
-        }
-
-        # Create progress dialog
-        from PySide6.QtWidgets import QDialog, QVBoxLayout, QProgressBar
-
-        progress_dialog = QDialog(self)
-        progress_dialog.setWindowTitle(self.tr("Exporting Game"))
-        progress_dialog.setModal(True)
-        progress_dialog.resize(500, 150)
-
-        layout = QVBoxLayout(progress_dialog)
-
-        status_label = QLabel(self.tr("Preparing export..."))
-        layout.addWidget(status_label)
-
-        progress_bar = QProgressBar()
-        progress_bar.setRange(0, 100)
-        layout.addWidget(progress_bar)
-
-        # Import and create exporter
+            return
         from export.linux.linux_exporter import LinuxExporter
-        exporter = LinuxExporter()
-
-        # Connect signals
-        def update_progress(percent, message):
-            progress_bar.setValue(percent)
-            status_label.setText(message)
-
-        def export_finished(success, message):
-            progress_dialog.accept()
-            if success:
-                result = QMessageBox.information(
-                    self,
-                    self.tr("Export Complete"),
-                    message + "\n\n" + self.tr("Would you like to open the output folder?"),
-                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-                )
-                if result == QMessageBox.StandardButton.Yes:
-                    import os
-                    import platform
-                    if platform.system() == 'Windows':
-                        os.startfile(output_dir)
-                    elif platform.system() == 'Darwin':  # macOS
-                        subprocess.run(['open', output_dir])
-                    else:  # Linux
-                        subprocess.run(['xdg-open', output_dir])
-            else:
-                QMessageBox.critical(
-                    self,
-                    self.tr("Export Failed"),
-                    message
-                )
-
-        exporter.progress_update.connect(update_progress)
-        exporter.export_complete.connect(export_finished)
-
-        # Start export in background thread
-        export_thread = ExportThread(
-            exporter,
-            str(self.current_project_path),
-            output_dir,
-            export_settings
+        self._run_export_with_progress(
+            exporter_class=LinuxExporter,
+            output_dir=output_dir,
+            export_settings={
+                'output_path': output_dir,
+                'include_assets': True,
+                'optimize': True,
+                'include_debug': False,
+            },
+            dialog_title=self.tr("Exporting Game"),
+            status_text=self.tr("Preparing export..."),
+            dialog_size=(500, 150),
+            success_title=self.tr("Export Complete"),
+            failure_title=self.tr("Export Failed"),
+            open_folder_prompt=self.tr("Would you like to open the output folder?"),
+            show_cancel=False,
         )
-
-        export_thread.start()
-        progress_dialog.exec()
-        export_thread.wait()
 
     def export_macos_app(self):
-        """Handle macOS .app export with progress dialog"""
-        # Check if project is open
-        if not self.current_project_path:
-            QMessageBox.warning(
-                self,
-                self.tr("No Project"),
-                self.tr("Please open or create a project first.")
-            )
+        """Handle macOS .app export with progress dialog."""
+        if not self._require_open_project():
             return
-
-        # Ask user for output location
-        from PySide6.QtWidgets import QFileDialog
-
-        default_name = self.current_project_data.get('name', 'Game').replace(' ', '_')
-        output_dir = QFileDialog.getExistingDirectory(
-            self,
-            self.tr("Choose Export Location"),
-            str(Path.home() / "Desktop" / f"{default_name}_macos"),
-            QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks
-        )
-
+        output_dir = self._ask_export_dir('_macos')
         if not output_dir:
-            return  # User cancelled
-
-        # Create export settings
-        export_settings = {
-            'output_path': output_dir,
-            'include_assets': True,
-            'optimize': True,
-            'include_debug': False
-        }
-
-        # Create progress dialog
-        from PySide6.QtWidgets import QDialog, QVBoxLayout, QProgressBar
-
-        progress_dialog = QDialog(self)
-        progress_dialog.setWindowTitle(self.tr("Exporting Game"))
-        progress_dialog.setModal(True)
-        progress_dialog.resize(500, 150)
-
-        layout = QVBoxLayout(progress_dialog)
-
-        status_label = QLabel(self.tr("Preparing export..."))
-        layout.addWidget(status_label)
-
-        progress_bar = QProgressBar()
-        progress_bar.setRange(0, 100)
-        layout.addWidget(progress_bar)
-
-        # Import and create exporter
+            return
         from export.macos.macos_exporter import MacOSExporter
-        exporter = MacOSExporter()
-
-        # Connect signals
-        def update_progress(percent, message):
-            progress_bar.setValue(percent)
-            status_label.setText(message)
-
-        def export_finished(success, message):
-            progress_dialog.accept()
-            if success:
-                result = QMessageBox.information(
-                    self,
-                    self.tr("Export Complete"),
-                    message + "\n\n" + self.tr("Would you like to open the output folder?"),
-                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-                )
-                if result == QMessageBox.StandardButton.Yes:
-                    import os
-                    import platform
-                    if platform.system() == 'Darwin':
-                        subprocess.run(['open', output_dir])
-                    elif platform.system() == 'Windows':
-                        os.startfile(output_dir)
-                    else:  # Linux
-                        subprocess.run(['xdg-open', output_dir])
-            else:
-                QMessageBox.critical(
-                    self,
-                    self.tr("Export Failed"),
-                    message
-                )
-
-        exporter.progress_update.connect(update_progress)
-        exporter.export_complete.connect(export_finished)
-
-        # Start export in background thread
-        export_thread = ExportThread(
-            exporter,
-            str(self.current_project_path),
-            output_dir,
-            export_settings
+        self._run_export_with_progress(
+            exporter_class=MacOSExporter,
+            output_dir=output_dir,
+            export_settings={
+                'output_path': output_dir,
+                'include_assets': True,
+                'optimize': True,
+                'include_debug': False,
+            },
+            dialog_title=self.tr("Exporting Game"),
+            status_text=self.tr("Preparing export..."),
+            dialog_size=(500, 150),
+            success_title=self.tr("Export Complete"),
+            failure_title=self.tr("Export Failed"),
+            open_folder_prompt=self.tr("Would you like to open the output folder?"),
+            show_cancel=False,
         )
-
-        export_thread.start()
-        progress_dialog.exec()
-        export_thread.wait()
 
     def export_android_apk(self):
-        """Handle Android APK export with progress dialog"""
-        # Check if project is open
-        if not self.current_project_path:
-            QMessageBox.warning(
-                self,
-                self.tr("No Project"),
-                self.tr("Please open or create a project first.")
-            )
+        """Handle Android APK export with progress dialog (Cancel supported)."""
+        if not self._require_open_project():
             return
-
-        # Ask user for output location
-        from PySide6.QtWidgets import QFileDialog
-
-        default_name = self.current_project_data.get('name', 'Game').replace(' ', '_')
-        output_dir = QFileDialog.getExistingDirectory(
-            self,
-            self.tr("Choose Export Location"),
-            str(Path.home() / "Desktop" / "{}_android".format(default_name)),
-            QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks
-        )
-
+        output_dir = self._ask_export_dir('_android')
         if not output_dir:
-            return  # User cancelled
-
-        # Create export settings
-        export_settings = {
-            'output_path': output_dir,
-            'include_assets': True,
-            'optimize': True,
-            'include_debug': False
-        }
-
-        # Create progress dialog with cancel button
-        from PySide6.QtWidgets import QDialog, QVBoxLayout, QProgressBar, QHBoxLayout, QPushButton
-
-        progress_dialog = QDialog(self)
-        progress_dialog.setWindowTitle(self.tr("Exporting Game"))
-        progress_dialog.setModal(True)
-        progress_dialog.resize(500, 150)
-
-        layout = QVBoxLayout(progress_dialog)
-
-        status_label = QLabel(self.tr("Preparing export..."))
-        layout.addWidget(status_label)
-
-        progress_bar = QProgressBar()
-        progress_bar.setRange(0, 100)
-        layout.addWidget(progress_bar)
-
-        btn_layout = QHBoxLayout()
-        btn_layout.addStretch()
-        cancel_btn = QPushButton(self.tr("Cancel"))
-        btn_layout.addWidget(cancel_btn)
-        layout.addLayout(btn_layout)
-
-        # Import and create exporter
+            return
         from export.android.android_exporter import AndroidExporter
-        exporter = AndroidExporter()
-        _export_cancelled = False
-
-        # Connect signals
-        def update_progress(percent, message):
-            progress_bar.setValue(percent)
-            status_label.setText(message)
-
-        def export_finished(success, message):
-            progress_dialog.accept()
-            if _export_cancelled:
-                self.update_status(self.tr("Export cancelled"))
-                return
-            if success:
-                result = QMessageBox.information(
-                    self,
-                    self.tr("Export Complete"),
-                    message + "\n\n" + self.tr("Would you like to open the output folder?"),
-                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-                )
-                if result == QMessageBox.StandardButton.Yes:
-                    import os
-                    import platform
-                    if platform.system() == 'Darwin':
-                        subprocess.run(['open', output_dir])
-                    elif platform.system() == 'Windows':
-                        os.startfile(output_dir)
-                    else:  # Linux
-                        subprocess.run(['xdg-open', output_dir])
-            else:
-                QMessageBox.critical(
-                    self,
-                    self.tr("Export Failed"),
-                    message
-                )
-
-        def cancel_export():
-            nonlocal _export_cancelled
-            _export_cancelled = True
-            cancel_btn.setEnabled(False)
-            status_label.setText(self.tr("Cancelling..."))
-            exporter.cancel_requested = True
-
-        exporter.progress_update.connect(update_progress)
-        exporter.export_complete.connect(export_finished)
-        cancel_btn.clicked.connect(cancel_export)
-
-        # Start export in background thread
-        export_thread = ExportThread(
-            exporter,
-            str(self.current_project_path),
-            output_dir,
-            export_settings
+        self._run_export_with_progress(
+            exporter_class=AndroidExporter,
+            output_dir=output_dir,
+            export_settings={
+                'output_path': output_dir,
+                'include_assets': True,
+                'optimize': True,
+                'include_debug': False,
+            },
+            dialog_title=self.tr("Exporting Game"),
+            status_text=self.tr("Preparing export..."),
+            dialog_size=(500, 150),
+            success_title=self.tr("Export Complete"),
+            failure_title=self.tr("Export Failed"),
+            open_folder_prompt=self.tr("Would you like to open the output folder?"),
+            show_cancel=True,
+            cancel_status_message=self.tr("Export cancelled"),
         )
-
-        export_thread.start()
-        progress_dialog.exec()
-        export_thread.wait()
 
     def export_ios_app(self):
         """Handle iOS IPA export with progress dialog (macOS + free Apple ID)."""
+        if not self._require_open_project():
+            return
+        output_dir = self._ask_export_dir('_ios')
+        if not output_dir:
+            return
+        from export.ios.ios_exporter import iOSExporter
+        # iOS deliberately omits 'optimize' from the settings dict — the
+        # iOSExporter does not currently consume it. Preserve this so the
+        # exporter sees the same payload as before consolidation.
+        self._run_export_with_progress(
+            exporter_class=iOSExporter,
+            output_dir=output_dir,
+            export_settings={
+                'output_path': output_dir,
+                'include_assets': True,
+                'include_debug': False,
+            },
+            dialog_title=self.tr("Building iOS App"),
+            status_text=self.tr("Preparing iOS export..."),
+            dialog_size=(520, 160),
+            success_title=self.tr("iOS Export Complete"),
+            failure_title=self.tr("iOS Export Failed"),
+            open_folder_prompt=self.tr("Open the output folder?"),
+            show_cancel=True,
+            cancel_status_message=self.tr("iOS export cancelled"),
+        )
+
+    # ------------------------------------------------------------------
+    # Helpers backing the shells above.
+    # ------------------------------------------------------------------
+
+    def _require_open_project(self) -> bool:
+        """Show the standard "no project" warning and return False when
+        no project is currently open. Centralises the guard that all five
+        platform-export methods used to inline.
+        """
         if not self.current_project_path:
             QMessageBox.warning(
                 self,
                 self.tr("No Project"),
                 self.tr("Please open or create a project first.")
             )
-            return
+            return False
+        return True
 
-        from PySide6.QtWidgets import QFileDialog
-
+    def _ask_export_dir(self, suffix: str) -> str:
+        """Prompt the user for an output directory, defaulting to
+        ``~/Desktop/<sanitised-project-name><suffix>``. Returns the
+        absolute path string or "" if cancelled — matching the
+        observable contract of the previous per-method inline calls.
+        """
         default_name = self.current_project_data.get('name', 'Game').replace(' ', '_')
-        output_dir = QFileDialog.getExistingDirectory(
+        return QFileDialog.getExistingDirectory(
             self,
             self.tr("Choose Export Location"),
-            str(Path.home() / "Desktop" / "{}_ios".format(default_name)),
+            str(Path.home() / "Desktop" / f"{default_name}{suffix}"),
             QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks
         )
 
-        if not output_dir:
-            return
+    def _run_export_with_progress(
+        self,
+        *,
+        exporter_class,
+        output_dir: str,
+        export_settings: dict,
+        dialog_title: str,
+        status_text: str,
+        dialog_size: tuple,
+        success_title: str,
+        failure_title: str,
+        open_folder_prompt: str,
+        show_cancel: bool = False,
+        cancel_status_message: str = "",
+    ):
+        """Drive an exporter to completion behind a modal progress dialog.
 
-        export_settings = {
-            'output_path': output_dir,
-            'include_assets': True,
-            'include_debug': False,
-        }
+        Centralises the construction of the progress UI and the
+        success/failure/cancel handlers that all five platform export
+        methods previously inlined. Behaviour is identical to those
+        per-method implementations; the only variation between targets
+        is encoded in this function's keyword arguments.
 
-        from PySide6.QtWidgets import QDialog, QVBoxLayout, QProgressBar, QHBoxLayout, QLabel, QPushButton
-
+        Note: ``exporter_class`` is a *class* (not an instance) so the
+        helper can instantiate it AFTER the progress dialog is built,
+        matching the construction order of the original per-method
+        implementations. Caller-side ``ExporterClass()`` would invert
+        the order because keyword arguments are evaluated before the
+        call.
+        """
         progress_dialog = QDialog(self)
-        progress_dialog.setWindowTitle(self.tr("Building iOS App"))
+        progress_dialog.setWindowTitle(dialog_title)
         progress_dialog.setModal(True)
-        progress_dialog.resize(520, 160)
+        progress_dialog.resize(*dialog_size)
 
         layout = QVBoxLayout(progress_dialog)
 
-        status_label = QLabel(
-            self.tr("Preparing iOS export..."))
+        status_label = QLabel(status_text)
         layout.addWidget(status_label)
 
         progress_bar = QProgressBar()
         progress_bar.setRange(0, 100)
         layout.addWidget(progress_bar)
 
-        btn_layout = QHBoxLayout()
-        btn_layout.addStretch()
-        cancel_btn = QPushButton(self.tr("Cancel"))
-        btn_layout.addWidget(cancel_btn)
-        layout.addLayout(btn_layout)
+        cancel_btn = None
+        if show_cancel:
+            btn_layout = QHBoxLayout()
+            btn_layout.addStretch()
+            cancel_btn = QPushButton(self.tr("Cancel"))
+            btn_layout.addWidget(cancel_btn)
+            layout.addLayout(btn_layout)
 
-        from export.ios.ios_exporter import iOSExporter
-        exporter = iOSExporter()
+        # Construct the exporter AFTER the dialog widgets, to preserve
+        # the construction order observable by code review tooling.
+        exporter = exporter_class()
         _export_cancelled = False
 
         def update_progress(percent, message):
@@ -2479,14 +2239,14 @@ class PyGameMakerIDE(QMainWindow):
 
         def export_finished(success, message):
             progress_dialog.accept()
-            if _export_cancelled:
-                self.update_status(self.tr("iOS export cancelled"))
+            if show_cancel and _export_cancelled:
+                self.update_status(cancel_status_message)
                 return
             if success:
                 result = QMessageBox.information(
                     self,
-                    self.tr("iOS Export Complete"),
-                    message + "\n\n" + self.tr("Open the output folder?"),
+                    success_title,
+                    message + "\n\n" + open_folder_prompt,
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                 )
                 if result == QMessageBox.StandardButton.Yes:
@@ -2499,11 +2259,7 @@ class PyGameMakerIDE(QMainWindow):
                     else:  # Linux
                         subprocess.run(['xdg-open', output_dir])
             else:
-                QMessageBox.critical(
-                    self,
-                    self.tr("iOS Export Failed"),
-                    message
-                )
+                QMessageBox.critical(self, failure_title, message)
 
         def cancel_export():
             nonlocal _export_cancelled
@@ -2514,7 +2270,8 @@ class PyGameMakerIDE(QMainWindow):
 
         exporter.progress_update.connect(update_progress)
         exporter.export_complete.connect(export_finished)
-        cancel_btn.clicked.connect(cancel_export)
+        if show_cancel and cancel_btn is not None:
+            cancel_btn.clicked.connect(cancel_export)
 
         export_thread = ExportThread(
             exporter,
