@@ -91,6 +91,45 @@ skip_without_pil = pytest.mark.skipif(
 
 
 # ============================================================================
+# Auto-dismiss modal dialogs during widget tests
+# ============================================================================
+# pytest-qt's `qtbot.addWidget(...)` registers a widget for teardown via
+# `widget.close()`. When that close path triggers a modal dialog (the
+# editor's "Save changes?" prompt is the common case), there is no user
+# in CI to click it and the test session deadlocks until --timeout fires.
+#
+# Patch the three QMessageBox class methods that block on user input
+# (`question`, `information`, `warning`) so they auto-return a safe
+# default without showing a dialog. Tests that explicitly need to drive
+# a dialog can monkeypatch over this fixture themselves.
+
+if HAS_PYSIDE6:
+    @pytest.fixture(autouse=True)
+    def _auto_dismiss_qmessagebox(monkeypatch, request):
+        """Auto-dismiss any QMessageBox during widget-test setup/teardown.
+
+        Only active when the test is marked `widget` (or a fixture
+        registers a qtbot-tracked widget); other tests run untouched.
+        """
+        if 'widget' not in request.keywords and 'qtbot' not in request.fixturenames:
+            return
+        from PySide6.QtWidgets import QMessageBox
+
+        # Discard preserves "close anyway" semantics for the unsaved-changes
+        # prompt. For information/warning, the only sensible default is Ok.
+        def auto_discard(*args, **kwargs):
+            return QMessageBox.StandardButton.Discard
+
+        def auto_ok(*args, **kwargs):
+            return QMessageBox.StandardButton.Ok
+
+        monkeypatch.setattr(QMessageBox, 'question', staticmethod(auto_discard))
+        monkeypatch.setattr(QMessageBox, 'information', staticmethod(auto_ok))
+        monkeypatch.setattr(QMessageBox, 'warning', staticmethod(auto_ok))
+        monkeypatch.setattr(QMessageBox, 'critical', staticmethod(auto_ok))
+
+
+# ============================================================================
 # Project Path and Import Helpers
 # ============================================================================
 # Note: We do NOT add project root to sys.path here because the root __init__.py
