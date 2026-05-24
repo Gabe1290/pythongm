@@ -722,31 +722,53 @@ class ObjectEventsPanel(QWidget):
 
         menu.exec(self.events_tree.mapToGlobal(position))
 
+    # Events whose JSON shape is a container dict keyed by sub-event name
+    # (alarm number, keyboard sub-key) rather than the leaf shape
+    # {"actions": [...]}. Adding an action to the container would land it
+    # as a sibling of the sub-keys (e.g. keyboard_press becomes
+    # {"SPACE": ..., "actions": [...]}); the runtime only reads
+    # keyboard_press[<key>]["actions"], so the action would never fire and
+    # the JSON would round-trip through the file in a malformed shape.
+    # Each value is the hint text shown to the user pointing them at the
+    # right sub-event to right-click on instead.
+    _CONTAINER_EVENT_HINTS = {
+        "alarm": "Alarm 0, Alarm 1, etc.",
+        "keyboard": "a specific key (Left Arrow, Right Arrow, etc.)",
+        "keyboard_press": "a specific key (SPACE, ENTER, etc.)",
+        "keyboard_release": "a specific key (SPACE, ENTER, etc.)",
+    }
+
     def add_action_to_event(self, event_name: str, action_name: str):
         """Add an action to an event"""
         action_type = get_action_type(action_name)
         if not action_type:
             return
 
-        # Check if this event has sub-events (keyboard, keyboard_press, alarm)
-        if event_name == "alarm":
+        # Reject container events early (alarm, keyboard, keyboard_press,
+        # keyboard_release). Without this, the action lands at
+        # current_events_data[event_name]["actions"] as a sibling of the
+        # sub-keys — see _CONTAINER_EVENT_HINTS docstring for why.
+        if event_name in self._CONTAINER_EVENT_HINTS:
             QMessageBox.information(
                 self,
                 self.tr("Cannot Add Action"),
-                self.tr("Cannot add actions directly to Alarm.\n\n"
-                        "Please add actions to a specific alarm number instead:\n"
-                        "Right-click on Alarm 0, Alarm 1, etc.")
+                self.tr("Cannot add actions directly to '{0}'.\n\n"
+                        "Right-click on {1} and add the action there instead.").format(
+                    event_name, self.tr(self._CONTAINER_EVENT_HINTS[event_name])
+                )
             )
             return
 
+        # Forward-compat: some event types may declare sub_events via a
+        # type-parameter rather than by literal name. Kept after the
+        # explicit name check above so the targeted error message wins
+        # when both would fire.
         event_type = get_event_type(event_name)
         if event_type and event_type.parameters:
-            # Check if it has sub_events parameter
             has_sub_events = any(
                 isinstance(p, dict) and p.get("type") == "sub_events"
                 for p in event_type.parameters
             )
-
             if has_sub_events:
                 QMessageBox.information(
                     self,
@@ -754,7 +776,7 @@ class ObjectEventsPanel(QWidget):
                     self.tr("Cannot add actions directly to %1.\n\n"
                             "Please add actions to specific arrow keys instead:\n"
                             "Right-click on Left Arrow, Right Arrow, Up Arrow, or Down Arrow.")
-                    )
+                )
                 return
 
         # Special handling for if_condition action

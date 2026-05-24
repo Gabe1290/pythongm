@@ -10,12 +10,6 @@
     "create": {
       "actions": [
         {
-          "action": "goto_room",
-          "parameters": {
-            "room": "0"
-          }
-        },
-        {
           "action": "set_window_caption",
           "parameters": {
             "score": "0",
@@ -28,30 +22,23 @@
           "parameters": {
             "value": "3"
           }
-        },
-        {
-          "action": "set_sprite",
-          "parameters": {
-            "sprite": "sound_background",
-            "subimage": "1"
-          }
         }
       ]
     },
-    "keyboard": {
-      "anykey": {
+    "keyboard_press": {
+      "SPACE": {
         "actions": [
           {
-            "action": "next_room",
-            "parameters": {
-              "transition": "0"
-            }
+            "action": "room_goto_next",
+            "parameters": {}
           }
-        ]
+        ],
+        "key_code": 32
       }
     }
   },
   "imported": true,
   "created": "2026-05-23T14:34:55.669706",
-  "modified": "2026-05-23T14:34:55.669706"
+  "modified": "2026-05-24T15:47:27.752076",
+  "parent": ""
 }
