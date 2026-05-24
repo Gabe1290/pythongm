@@ -40,11 +40,12 @@ SAMPLE_PROJECTS: List[Tuple[str, str]] = [
     ("samples/maze_1", "Maze — Level 1"),
     ("samples/maze_2", "Maze — Level 2"),
     ("samples/maze_3", "Maze — Level 3"),
-    ("samples/maze_4", "Maze — Level 4"),
-    # `treasure` was dropped from the bundled set after user testing
-    # surfaced GMK-import edge cases that produced a project the IDE
-    # could only partially round-trip. Reintroduce once the importer
-    # is hardened against that case.
+    # `treasure` and `maze_4` were dropped from the bundled set after
+    # rc.12 user testing surfaced enough GMK-import edge cases (bad
+    # action parameters, sprite issues, half-converted events) that
+    # they couldn't be relied on as "click and play" demonstrators.
+    # Reintroduce when the importer is hardened — see TODO.md
+    # ("GMK importer hardening").
 ]
 
 

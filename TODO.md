@@ -94,32 +94,50 @@ move it to a feature branch and remove the entry once the feature ships.
   names resolve to a single ActionType without duplicate entries.
 
 ### GMK importer hardening (post-1.0)
-- During rc.12 sample testing the `treasure.gmk` sample exposed
-  importer edge cases the IDE could only partially round-trip — the
-  imported project loaded but produced confused state and save errors
-  in the editor surface. The sample was dropped from the bundled set
-  in commit d3fd71a; it can be reintroduced once the importer is
-  hardened against whatever cases it tripped over.
-- TODO once we have a concrete reproducer:
-  - Run `importers.gmk_importer.import_gmk_detailed` against the
-    `treasure.gmk` source (regen path documented in
-    `samples/README.md`).
-  - Compare the resulting `samples/treasure/` against the in-game
-    behaviour of the original `.gmk` (e.g. via GameMaker 8.x if
-    available, or by inspecting the .gmk binary structure).
-  - Identify which actions, events, or asset references don't survive
-    the conversion. Likely suspects given what was seen during
-    testing: scripts that reference instance methods not on the
-    pygm2 runtime, room instances that reference assets renamed by
-    the importer, draw events that use Game Maker built-ins
-    (`draw_self`, `draw_sprite_ext`) without UI metadata.
+- During rc.12 user-testing the **`treasure.gmk`** and **`maze_4.gmk`**
+  samples both exposed importer issues the IDE could only partially
+  round-trip — the imported projects loaded but had bad action
+  parameters, sprite issues, and half-converted events that produced
+  confused state and save errors in the editor surface. Both samples
+  were dropped from the bundled set (treasure in commit d3fd71a,
+  maze_4 in the commit that adds this entry); they can be
+  reintroduced once the importer is hardened.
+- The earlier hypothesis that only treasure was affected (because
+  it's the only one using project-level scripts) was wrong: maze_4
+  has no scripts but still imports with significant gaps. The
+  importer issue is broader than first scoped — likely action-
+  parameter parsing across a wider feature set than the smaller
+  maze_1..3 samples happen to exercise.
+- TODO once we have time for it:
+  - Regenerate `samples/treasure/` and `samples/maze_4/` from the
+    `.gmk` originals (regen path documented in `samples/README.md`).
+  - For each, compare against the in-game behaviour of the original
+    `.gmk` — e.g. via GameMaker 8.x if available, or by inspecting
+    the `.gmk` binary structure with `importers/gmk_parser.py`.
+  - Catalog every action whose parameters didn't survive the
+    conversion. Likely categories:
+      * Action parameter keys renamed (GameMaker had positional
+        args; pygm2 expects named) — most-likely root cause
+      * Sprite / object references renamed silently when assets had
+        case-conflicting or whitespace-bearing names
+      * Project-level scripts (`treasure` only) — code that
+        references GameMaker built-ins not implemented in the pygm2
+        runtime
+      * Draw events using `draw_self`, `draw_sprite_ext`, etc.
+        without matching UI metadata (the metadata gap is tracked
+        separately above)
   - Each finding gets a separate fix in `importers/gmk_*.py` and a
     regression test under `tests/test_importers/`.
-- The maze_1..4 samples shipped clean, so the importer works for the
-  simpler GameMaker-8 project shape; treasure's failure suggests the
-  issue is feature-specific (likely the project-level scripts that
-  treasure uses for monster AI — none of the maze samples have
-  scripts) rather than a wholesale importer regression.
+  - Consider building a side-by-side diff tool: import a `.gmk`
+    twice (once raw, once after each fix) and diff the resulting
+    `project.json` trees so regressions in the importer surface as
+    review-blocking diffs in CI.
+- The maze_1..3 samples shipped clean enough for rc.12 user
+  testing — the issue compounds with project complexity
+  (room/object count, action variety), so the smaller samples may
+  hide the same bugs rather than truly being unaffected. Worth
+  re-validating the maze_1..3 imports as part of the eventual
+  hardening pass.
 
 ---
 
