@@ -2947,14 +2947,19 @@ class GameRunner:
             ox2 = other_instance.sprite.origin_x if other_instance.sprite else 0
             oy2 = other_instance.sprite.origin_y if other_instance.sprite else 0
 
-            # Check rectangle overlap at intended position
+            # Check rectangle overlap at intended position.
+            # AABB-only here (no pixel-perfect refine): movement-blocking is
+            # what the player feels as "the wall stops me here", and grid-maze
+            # sprites with a few transparent edge pixels would otherwise let
+            # the mover slip 1–N pixels into the wall's cell every frame
+            # before being snapped back by the post-movement collision event,
+            # producing a visible jitter. Pixel-perfect (sprite.precise) still
+            # refines collision-event firing via instances_overlap, so damage
+            # zones and pickup triggers keep their pixel accuracy. Phase 2a
+            # originally wired precise into all three AABB call sites — this
+            # narrows it to the two firing paths where it actually helps.
             if self.rectangles_overlap(intended_x - ox1, intended_y - oy1, w1, h1,
                                       other_instance.x - ox2, other_instance.y - oy2, w2, h2):
-                # Pixel-perfect refinement (no-op unless either sprite opts in).
-                if not self._precise_refine(
-                        moving_instance, intended_x - ox1, intended_y - oy1,
-                        other_instance, other_instance.x - ox2, other_instance.y - oy2):
-                    continue
                 # If the mover already overlaps the blocker at its current
                 # position, let it escape: blocking every direction would
                 # trap it in an oscillation freeze on the next bounce.
