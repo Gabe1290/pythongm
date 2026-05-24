@@ -428,9 +428,12 @@
         <!-- Room Category -->
         <category name="Rooms" colour="#A6745C">
             <block type="room_goto_next"></block>
+            <block type="room_goto_previous"></block>
             <block type="room_restart"></block>
             <!-- No <field name="ROOM"> here on purpose; see the OBJECT comment above. -->
             <block type="room_goto"></block>
+            <block type="room_if_next_exists"></block>
+            <block type="room_if_previous_exists"></block>
         </category>
 
         <!-- Values Category -->
@@ -2663,8 +2666,11 @@
                     color: '#A6745C',
                     blocks: [
                         '<block type="room_goto_next"></block>',
+                        '<block type="room_goto_previous"></block>',
                         '<block type="room_restart"></block>',
-                        '<block type="room_goto"></block>'
+                        '<block type="room_goto"></block>',
+                        '<block type="room_if_next_exists"></block>',
+                        '<block type="room_if_previous_exists"></block>'
                     ]
                 },
                 'Values': {
