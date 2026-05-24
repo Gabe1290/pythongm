@@ -2783,6 +2783,18 @@ class GameRunner:
         # Check for outside_room events
         self.check_outside_room_events()
 
+        # Re-sync intended_x/y to the post-collision position. Without this,
+        # if a collision event handler moved the instance (e.g. snap_to_grid
+        # after pixel-perfect collision let the mover slip into a wall),
+        # intended_x/y is left at the pre-snap value. _process_held_keys then
+        # sees intended != current next frame, thinks a grid move is in
+        # progress, and silently drops keyboard input forever. Grid-based
+        # intended moves (_has_intended_move) are already cleared above so
+        # this overwrite is safe for them too.
+        for instance in self.current_room.instances:
+            instance.intended_x = instance.x
+            instance.intended_y = instance.y
+
         # NOTE: Step events are executed in the main game loop, not here
         # (see run_game_loop where instance.step() is called)
 
@@ -2888,6 +2900,14 @@ class GameRunner:
             # event decides what happens (stop, bounce, destroy, etc.).
             # This matches standard game IDE behavior where objects pass through
             # each other unless a collision event handles them.
+            #
+            # Parent-chain match (via _object_matches_target) is load-bearing:
+            # the event-firing path resolves collision_with_<parent> to child
+            # instances, so the blocking path must too — otherwise movement
+            # passes through, the post-movement event snaps the mover back,
+            # and intended_x is left stale (it never gets reset on the "no
+            # collision detected" branch). _process_held_keys then sees
+            # intended_x != x and skips keyboard events forever.
             should_block = False
 
             if collision_targets:
@@ -2897,16 +2917,22 @@ class GameRunner:
                 if original and original != other_instance.object_name:
                     names_to_check.add(original)
 
-                for target_name in names_to_check:
-                    if target_name in collision_targets:
-                        should_block = True
+                for target_name in collision_targets:
+                    for name in names_to_check:
+                        if self._object_matches_target(name, target_name):
+                            should_block = True
+                            break
+                    if should_block:
                         break
 
             if not should_block:
                 # Check if the other instance has a collision event with the mover
                 other_collision_targets = other_instance._collision_targets
-                if other_collision_targets and moving_instance.object_name in other_collision_targets:
-                    should_block = True
+                if other_collision_targets:
+                    for target_name in other_collision_targets:
+                        if self._object_matches_target(moving_instance.object_name, target_name):
+                            should_block = True
+                            break
 
             if not should_block:
                 continue
