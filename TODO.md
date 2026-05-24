@@ -93,6 +93,34 @@ move it to a feature branch and remove the entry once the feature ships.
   through `ActionExecutor.ACTION_ALIASES` so legacy/alternate action
   names resolve to a single ActionType without duplicate entries.
 
+### GMK importer hardening (post-1.0)
+- During rc.12 sample testing the `treasure.gmk` sample exposed
+  importer edge cases the IDE could only partially round-trip — the
+  imported project loaded but produced confused state and save errors
+  in the editor surface. The sample was dropped from the bundled set
+  in commit d3fd71a; it can be reintroduced once the importer is
+  hardened against whatever cases it tripped over.
+- TODO once we have a concrete reproducer:
+  - Run `importers.gmk_importer.import_gmk_detailed` against the
+    `treasure.gmk` source (regen path documented in
+    `samples/README.md`).
+  - Compare the resulting `samples/treasure/` against the in-game
+    behaviour of the original `.gmk` (e.g. via GameMaker 8.x if
+    available, or by inspecting the .gmk binary structure).
+  - Identify which actions, events, or asset references don't survive
+    the conversion. Likely suspects given what was seen during
+    testing: scripts that reference instance methods not on the
+    pygm2 runtime, room instances that reference assets renamed by
+    the importer, draw events that use Game Maker built-ins
+    (`draw_self`, `draw_sprite_ext`) without UI metadata.
+  - Each finding gets a separate fix in `importers/gmk_*.py` and a
+    regression test under `tests/test_importers/`.
+- The maze_1..4 samples shipped clean, so the importer works for the
+  simpler GameMaker-8 project shape; treasure's failure suggests the
+  issue is feature-specific (likely the project-level scripts that
+  treasure uses for monster AI — none of the maze samples have
+  scripts) rather than a wholesale importer regression.
+
 ---
 
 ## Runtime action handlers (stubs that just log and return)
