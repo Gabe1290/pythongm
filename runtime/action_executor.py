@@ -321,10 +321,6 @@ class ActionExecutor:
         "game_restart": "restart_game",
         "else_block": "else_action",
         "change_sprite": "set_sprite",
-        "test_next_room": "if_next_room_exists",
-        "test_previous_room": "if_previous_room_exists",
-        "test_no_next_room": "if_no_next_room_exists",
-        "test_no_previous_room": "if_no_previous_room_exists",
     }
 
     def execute_action(self, instance, action_data: Dict[str, Any]):
@@ -1592,11 +1588,12 @@ class ActionExecutor:
         return 0 <= target_index < len(room_list)
 
     def _dispatch_room_test(self, instance, parameters: Dict[str, Any], result: bool, label: str):
-        """Shared kernel for if_(no_)?(next|previous)_room_exists actions.
+        """Shared kernel for if_next_room_exists / if_previous_room_exists.
 
         Supports both Blockly-style nested then_actions/else_actions and the
         GM80 flat skip_next pattern (returns True/False to gate the next
-        action in the list).
+        action in the list). The "if no next room" case is expressed via the
+        nested form's else_actions slot — no separate inverted action needed.
         """
         logger.debug(f"❓ {label}: {result}")
         then_actions = parameters.get('then_actions', [])
@@ -1611,26 +1608,14 @@ class ActionExecutor:
         """Conditional: True iff a next room exists.
 
         Flat (GM80) form: gates the immediately-following action via skip_next.
-        Nested form: runs then_actions / else_actions.
+        Nested form: runs then_actions / else_actions — use else_actions to
+        do something (e.g. game_end) when this is the last room.
         """
         return self._dispatch_room_test(instance, parameters, self._room_neighbor_exists(+1), "Next room exists")
 
     def execute_if_previous_room_exists_action(self, instance, parameters: Dict[str, Any]):
         """Conditional: True iff a previous room exists. See if_next_room_exists for forms."""
         return self._dispatch_room_test(instance, parameters, self._room_neighbor_exists(-1), "Previous room exists")
-
-    def execute_if_no_next_room_exists_action(self, instance, parameters: Dict[str, Any]):
-        """Conditional: True iff there is NO next room (i.e. current is the last).
-
-        Lets a goal/finish object end the game when there's nothing to advance
-        to — typically paired with game_end or show_highscore in the
-        then_actions slot. See if_next_room_exists for the parameter shape.
-        """
-        return self._dispatch_room_test(instance, parameters, not self._room_neighbor_exists(+1), "No next room")
-
-    def execute_if_no_previous_room_exists_action(self, instance, parameters: Dict[str, Any]):
-        """Conditional: True iff there is NO previous room (i.e. current is the first)."""
-        return self._dispatch_room_test(instance, parameters, not self._room_neighbor_exists(-1), "No previous room")
 
     # ==================== VARIABLE ACTIONS ====================
 

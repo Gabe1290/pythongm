@@ -31,7 +31,7 @@
           }
         },
         {
-          "action": "test_next_room",
+          "action": "if_next_room_exists",
           "parameters": {}
         },
         {

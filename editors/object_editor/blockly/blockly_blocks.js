@@ -939,32 +939,6 @@ Blockly.Blocks['room_if_previous_exists'] = {
     }
 };
 
-Blockly.Blocks['room_if_no_next_exists'] = {
-    init: function() {
-        this.appendDummyInput()
-            .appendField("If no next room (last room)");
-        this.appendStatementInput("DO")
-            .setCheck(null);
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
-        this.setColour("#A6745C");
-        this.setTooltip("Execute actions only if the current room is the last one — useful to end the game on the goal");
-    }
-};
-
-Blockly.Blocks['room_if_no_previous_exists'] = {
-    init: function() {
-        this.appendDummyInput()
-            .appendField("If no previous room (first room)");
-        this.appendStatementInput("DO")
-            .setCheck(null);
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
-        this.setColour("#A6745C");
-        this.setTooltip("Execute actions only if the current room is the first one");
-    }
-};
-
 // ============================================================================
 // VALUE BLOCKS
 // ============================================================================

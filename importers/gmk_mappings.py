@@ -302,8 +302,8 @@ GM_ACTION_MAP = {
     (1, 222): "next_room",             # GM7 action_next_room
     (1, 224): "goto_room",             # GM7 action_room_goto
     (1, 225): "previous_room",         # GM7 action_room_previous
-    (1, 226): "test_next_room",        # GM7 action_if_next_room
-    (1, 227): "test_previous_room",    # GM7 action_if_previous_room
+    (1, 226): "if_next_room_exists",   # GM7 action_if_next_room
+    (1, 227): "if_previous_room_exists",  # GM7 action_if_previous_room
     (1, 701): "goto_room",
     (1, 702): "previous_room",
     (1, 703): "next_room",
@@ -439,8 +439,8 @@ GM_ACTION_PARAMS = {
     (1, 222): ["transition"],              # next_room
     (1, 224): ["room", "transition"],      # goto_room
     (1, 225): ["transition"],              # previous_room
-    (1, 226): [],                          # test_next_room
-    (1, 227): [],                          # test_previous_room
+    (1, 226): [],                          # if_next_room_exists
+    (1, 227): [],                          # if_previous_room_exists
     (1, 331): [],                          # restart_game
     (1, 332): [],                          # end_game
     (1, 410): ["hsnap", "vsnap"],          # test_alignment

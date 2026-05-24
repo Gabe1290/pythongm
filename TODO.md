@@ -139,14 +139,17 @@ move it to a feature branch and remove the entry once the feature ships.
   re-validating the maze_1..3 imports as part of the eventual
   hardening pass.
 - **Concrete findings from rc.12 maze_1 testing pass:**
-  - The importer mistranslated `test_previous_room` into
-    `test_next_room` on at least one event in maze_1 (obj_goal's
-    `p` event). The two are opposite-direction conditional checks
-    (`is there a next room?` vs `is there a previous room?`) —
-    swapping them silently inverts a navigation guard. Worth
-    grepping the importer for places that disambiguate the two
-    GMK action codes; the bug is probably a constant lookup with
-    a wrong value rather than a logic error.
+  - The importer mistranslated `if_previous_room_exists` into
+    `if_next_room_exists` on at least one event in maze_1
+    (obj_goal's `p` event — names were `test_previous_room` /
+    `test_next_room` before those aliases were dropped). The two
+    are opposite-direction conditional checks (`is there a next
+    room?` vs `is there a previous room?`) — swapping them
+    silently inverts a navigation guard. Worth grepping the
+    importer (`importers/gmk_mappings.py`) for places that
+    disambiguate the two GMK action codes (1,226 vs 1,227); the
+    bug is probably a constant lookup with a wrong value rather
+    than a logic error.
   - The importer set `visible: false` on `obj_goal` even though
     the source GameMaker project marks the object as visible.
     Symptom: the goal sprite never renders during gameplay, so

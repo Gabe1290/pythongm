@@ -449,54 +449,6 @@ ACTION_TYPES = {
         ]
     ),
 
-    "if_no_next_room_exists": ActionType(
-        name="if_no_next_room_exists",
-        display_name="If No Next Room (Last Room)",
-        description="Run actions when the current room is the last one (no next room) — typically end the game",
-        category="Room",
-        icon="❓🏁",
-        parameters=[
-            ActionParameter(
-                name="then_actions",
-                display_name="Then Actions",
-                param_type="action_list",
-                default_value=[],
-                description="Actions if there is no next room"
-            ),
-            ActionParameter(
-                name="else_actions",
-                display_name="Else Actions",
-                param_type="action_list",
-                default_value=[],
-                description="Actions if a next room exists"
-            )
-        ]
-    ),
-
-    "if_no_previous_room_exists": ActionType(
-        name="if_no_previous_room_exists",
-        display_name="If No Previous Room (First Room)",
-        description="Run actions when the current room is the first one (no previous room)",
-        category="Room",
-        icon="❓🚩",
-        parameters=[
-            ActionParameter(
-                name="then_actions",
-                display_name="Then Actions",
-                param_type="action_list",
-                default_value=[],
-                description="Actions if there is no previous room"
-            ),
-            ActionParameter(
-                name="else_actions",
-                display_name="Else Actions",
-                param_type="action_list",
-                default_value=[],
-                description="Actions if a previous room exists"
-            )
-        ]
-    ),
-
 
     # GAMEMAKER 7.0 MOVEMENT ACTIONS
     "move_fixed": ActionType(
@@ -1642,33 +1594,6 @@ ACTION_TYPES = {
         ],
     ),
 
-    # Runtime: alias `test_next_room` → execute_if_next_room_exists_action.
-    # ActionExecutor.ACTION_ALIASES (runtime/action_executor.py:324) maps
-    # this; the events panel needs the alias spelled out so events loaded
-    # straight from .gmk imports don't warn.
-    "test_next_room": ActionType(
-        name="test_next_room",
-        display_name="Test Next Room Exists",
-        description="Conditional: true if a 'next room' is defined",
-        category="Room",
-        icon="❓🚪",
-        parameters=[],
-    ),
-
-    # Runtime: alias `test_previous_room` → execute_if_previous_room_exists_action.
-    # ActionExecutor.ACTION_ALIASES (runtime/action_executor.py:325) maps
-    # this; the events panel needs the alias spelled out so events loaded
-    # straight from .gmk imports don't warn. Surfaced during rc.12
-    # user-testing of maze_1 — see TODO.md "GMK importer hardening".
-    "test_previous_room": ActionType(
-        name="test_previous_room",
-        display_name="Test Previous Room Exists",
-        description="Conditional: true if a 'previous room' is defined",
-        category="Room",
-        icon="❓🚪",
-        parameters=[],
-    ),
-
     # Runtime: execute_set_draw_color_action (line 3065)
     "set_draw_color": ActionType(
         name="set_draw_color",
@@ -1825,8 +1750,6 @@ BLOCKLY_TO_ACTION_MAP = {
     "room_goto": "goto_room",
     "room_if_next_exists": "if_next_room_exists",
     "room_if_previous_exists": "if_previous_room_exists",
-    "room_if_no_next_exists": "if_no_next_room_exists",
-    "room_if_no_previous_exists": "if_no_previous_room_exists",
     "game_restart": "game_restart",
     "game_end": "game_end",
     # Values/Control flow

@@ -102,7 +102,7 @@
           "collision_with_obj_person": {
             "actions": [
               {
-                "action": "test_next_room",
+                "action": "if_next_room_exists",
                 "parameters": {}
               },
               {
@@ -126,7 +126,7 @@
             "p": {
               "actions": [
                 {
-                  "action": "test_previous_room",
+                  "action": "if_previous_room_exists",
                   "parameters": {}
                 },
                 {
@@ -148,7 +148,7 @@
             "n": {
               "actions": [
                 {
-                  "action": "test_next_room",
+                  "action": "if_next_room_exists",
                   "parameters": {}
                 },
                 {
