@@ -2,7 +2,7 @@
   "name": "obj_goal",
   "asset_type": "object",
   "sprite": "spr_goal",
-  "visible": false,
+  "visible": true,
   "solid": false,
   "persistent": false,
   "depth": 0,
@@ -34,7 +34,7 @@
       "p": {
         "actions": [
           {
-            "action": "test_next_room",
+            "action": "test_previous_room",
             "parameters": {}
           },
           {
@@ -79,5 +79,6 @@
   },
   "imported": true,
   "created": "2026-05-23T14:34:54.997955",
-  "modified": "2026-05-23T14:34:54.997955"
+  "modified": "2026-05-24T10:32:34.419459",
+  "parent": ""
 }

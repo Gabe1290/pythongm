@@ -138,17 +138,25 @@ move it to a feature branch and remove the entry once the feature ships.
   hide the same bugs rather than truly being unaffected. Worth
   re-validating the maze_1..3 imports as part of the eventual
   hardening pass.
-- **Concrete finding from rc.12 maze_1 testing pass:** the importer
-  mistranslated `test_previous_room` into `test_next_room` on at
-  least one event in maze_1. The two are opposite-direction
-  conditional checks (`is there a next room?` vs `is there a
-  previous room?`) — swapping them silently inverts a navigation
-  guard. Worth grepping the importer for places that disambiguate
-  the two GMK action codes; the bug is probably a constant lookup
-  with a wrong value rather than a logic error. (Bundled maze_1
-  was patched manually in the IDE after this finding — see git log
-  around the `room_if_next_exists` / `room_if_previous_exists`
-  beginner-preset addition.)
+- **Concrete findings from rc.12 maze_1 testing pass:**
+  - The importer mistranslated `test_previous_room` into
+    `test_next_room` on at least one event in maze_1 (obj_goal's
+    `p` event). The two are opposite-direction conditional checks
+    (`is there a next room?` vs `is there a previous room?`) —
+    swapping them silently inverts a navigation guard. Worth
+    grepping the importer for places that disambiguate the two
+    GMK action codes; the bug is probably a constant lookup with
+    a wrong value rather than a logic error.
+  - The importer set `visible: false` on `obj_goal` even though
+    the source GameMaker project marks the object as visible.
+    Symptom: the goal sprite never renders during gameplay, so
+    the player has no visual feedback for where to go — only
+    walking into the (invisible) goal trigger advances the room.
+    Possibly the same root cause as the above (wrong constant
+    lookup in the importer's object-attributes table) or a
+    separate import-default-value bug.
+  - Bundled maze_1 was patched manually in the IDE after these
+    findings; the corrected `samples/maze_1/` is back in git.
 
 ---
 
