@@ -95,8 +95,6 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "room_goto", "name": "Go to Room", "description": "Go to specific room", "implemented": True},
         {"type": "room_if_next_exists", "name": "If Next Room Exists", "description": "Check if next room exists", "implemented": True},
         {"type": "room_if_previous_exists", "name": "If Previous Room Exists", "description": "Check if previous room exists", "implemented": True},
-        {"type": "room_if_no_next_exists", "name": "If No Next Room (Last Room)", "description": "Run actions when the current room is the last", "implemented": True},
-        {"type": "room_if_no_previous_exists", "name": "If No Previous Room (First Room)", "description": "Run actions when the current room is the first", "implemented": True},
     ],
     "Values": [
         {"type": "value_x", "name": "X Position", "description": "Get X coordinate", "implemented": True},
@@ -398,13 +396,12 @@ class BlocklyConfig:
         # Room-existence checks — needed so beginners can fix the
         # maze samples' multi-room navigation events (and write their
         # own; the pair is common when guarding goto_next_room /
-        # goto_previous_room on the first / last room). The "no next"
-        # variant is the natural way to express "end the game when
-        # the player reaches the goal in the final level".
+        # goto_previous_room on the first / last room). The "if next
+        # room doesn't exist" case (e.g. end the game on the goal in
+        # the last level) is expressed via else_actions on
+        # `room_if_next_exists` rather than a separate inverted block.
         config.enable_block("room_if_next_exists")
         config.enable_block("room_if_previous_exists")
-        config.enable_block("room_if_no_next_exists")
-        config.enable_block("room_if_no_previous_exists")
 
         # Game control — game-over flow and highscore
         config.enable_block("game_end")            # Breakout (end game on no_more_lives)

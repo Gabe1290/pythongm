@@ -192,10 +192,6 @@ const BLOCK_MESSAGES = {
         'room_if_next_exists_tooltip': 'Exécute si un niveau suivant existe',
         'room_if_previous_exists': 'Si niveau précédent existe',
         'room_if_previous_exists_tooltip': 'Exécute si un niveau précédent existe',
-        'room_if_no_next_exists': 'Si pas de niveau suivant (dernier niveau)',
-        'room_if_no_next_exists_tooltip': 'Exécute si le niveau actuel est le dernier — utile pour terminer le jeu sur le but',
-        'room_if_no_previous_exists': 'Si pas de niveau précédent (premier niveau)',
-        'room_if_no_previous_exists_tooltip': 'Exécute si le niveau actuel est le premier',
 
         // Value blocks
         'value_x': 'position x',
@@ -456,10 +452,6 @@ const BLOCK_MESSAGES = {
         'room_if_next_exists_tooltip': 'Wird ausgeführt, wenn ein nächster Raum existiert',
         'room_if_previous_exists': 'Wenn vorheriger Raum existiert',
         'room_if_previous_exists_tooltip': 'Wird ausgeführt, wenn ein vorheriger Raum existiert',
-        'room_if_no_next_exists': 'Wenn kein nächster Raum (letzter Raum)',
-        'room_if_no_next_exists_tooltip': 'Wird ausgeführt, wenn der aktuelle Raum der letzte ist — nützlich um das Spiel am Ziel zu beenden',
-        'room_if_no_previous_exists': 'Wenn kein vorheriger Raum (erster Raum)',
-        'room_if_no_previous_exists_tooltip': 'Wird ausgeführt, wenn der aktuelle Raum der erste ist',
 
         // Value blocks
         'value_x': 'x Position',
@@ -699,10 +691,6 @@ const BLOCK_MESSAGES = {
         'room_if_next_exists_tooltip': 'Viene eseguito se esiste una stanza successiva',
         'room_if_previous_exists': 'Se stanza precedente esiste',
         'room_if_previous_exists_tooltip': 'Viene eseguito se esiste una stanza precedente',
-        'room_if_no_next_exists': 'Se nessuna stanza successiva (ultima stanza)',
-        'room_if_no_next_exists_tooltip': 'Viene eseguito se la stanza attuale è l’ultima — utile per terminare il gioco all’obiettivo',
-        'room_if_no_previous_exists': 'Se nessuna stanza precedente (prima stanza)',
-        'room_if_no_previous_exists_tooltip': 'Viene eseguito se la stanza attuale è la prima',
 
         // Value blocks
         'value_x': 'posizione x',
@@ -1173,10 +1161,6 @@ const CATEGORY_MESSAGES = {
         'room_if_next_exists_tooltip': 'Виконується якщо існує наступна кімната',
         'room_if_previous_exists': 'Якщо попередня кімната існує',
         'room_if_previous_exists_tooltip': 'Виконується якщо існує попередня кімната',
-        'room_if_no_next_exists': 'Якщо немає наступної кімнати (остання кімната)',
-        'room_if_no_next_exists_tooltip': 'Виконується якщо поточна кімната остання — корисно для завершення гри на цілі',
-        'room_if_no_previous_exists': 'Якщо немає попередньої кімнати (перша кімната)',
-        'room_if_no_previous_exists_tooltip': 'Виконується якщо поточна кімната перша',
 
         // Value blocks
         'value_x': 'позиція x',

@@ -2,7 +2,7 @@
   "name": "maze_2",
   "version": "1.0.0",
   "created": "2026-05-23T14:34:55.094829",
-  "modified": "2026-05-23T14:34:55.094829",
+  "modified": "2026-05-24T13:13:12.552587",
   "settings": {
     "window_title": "",
     "window_width": 480,
@@ -254,28 +254,7 @@
           "collision_with_obj_person": {
             "actions": [
               {
-                "action": "goto_room",
-                "parameters": {
-                  "room": "40",
-                  "relative": true
-                }
-              },
-              {
-                "action": "set_sprite",
-                "parameters": {
-                  "sprite": "sound_goal",
-                  "subimage": "0"
-                }
-              },
-              {
-                "action": "if_object_exists",
-                "parameters": {
-                  "object": "1000",
-                  "count": "1"
-                }
-              },
-              {
-                "action": "test_next_room",
+                "action": "if_next_room_exists",
                 "parameters": {}
               },
               {
@@ -285,34 +264,11 @@
                 }
               },
               {
-                "action": "set_health",
-                "parameters": {}
-              },
-              {
-                "action": "test_health",
-                "parameters": {}
-              },
-              {
-                "action": "start_block",
-                "parameters": {}
-              },
-              {
-                "action": "goto_room",
-                "parameters": {
-                  "room": "100",
-                  "relative": true
-                }
-              },
-              {
                 "action": "show_highscore",
                 "parameters": {}
               },
               {
                 "action": "restart_game",
-                "parameters": {}
-              },
-              {
-                "action": "start_block",
                 "parameters": {}
               }
             ],
@@ -321,7 +277,8 @@
         },
         "imported": true,
         "created": "2026-05-23T14:34:55.271791",
-        "modified": "2026-05-23T14:34:55.271791"
+        "modified": "2026-05-24T13:01:51.752552",
+        "parent": ""
       },
       "obj_person": {
         "name": "obj_person",
@@ -334,6 +291,12 @@
         "events": {
           "collision_with_wall_corner": {
             "actions": [
+              {
+                "action": "snap_to_grid",
+                "parameters": {
+                  "grid_size": "32"
+                }
+              },
               {
                 "action": "start_moving_direction",
                 "parameters": {
@@ -439,7 +402,8 @@
         },
         "imported": true,
         "created": "2026-05-23T14:34:55.271791",
-        "modified": "2026-05-23T14:34:55.271791"
+        "modified": "2026-05-24T13:13:12.440626",
+        "parent": ""
       },
       "obj_door": {
         "name": "obj_door",
@@ -453,34 +417,44 @@
           "step": {
             "actions": [
               {
-                "action": "show_highscore",
-                "parameters": {}
-              },
-              {
-                "action": "test_health",
-                "parameters": {}
-              },
-              {
-                "action": "set_sprite",
+                "action": "if_object_exists",
                 "parameters": {
-                  "sprite": "sound_door",
-                  "subimage": "0"
+                  "object": "obj_diamond",
+                  "not_flag": true
                 }
               },
               {
-                "action": "create_random_instance",
-                "parameters": {}
-              },
-              {
-                "action": "start_block",
-                "parameters": {}
+                "action": "if_next_room_exists",
+                "parameters": {
+                  "then_actions": [
+                    {
+                      "action": "room_goto_next",
+                      "parameters": {}
+                    }
+                  ],
+                  "else_actions": [
+                    {
+                      "action": "show_highscore",
+                      "parameters": {
+                        "background": "#FFFFDD",
+                        "new_color": "#FF0000",
+                        "other_color": "#000000",
+                        "allow_new_entry": true
+                      }
+                    },
+                    {
+                      "action": "game_end",
+                      "parameters": {}
+                    }
+                  ]
+                }
               }
             ]
           }
         },
         "imported": true,
         "created": "2026-05-23T14:34:55.271791",
-        "modified": "2026-05-23T14:34:55.271791",
+        "modified": "2026-05-24T13:13:12.477263",
         "parent": "wall_corner"
       },
       "obj_diamond": {
@@ -495,17 +469,9 @@
           "destroy": {
             "actions": [
               {
-                "action": "goto_room",
+                "action": "add_score",
                 "parameters": {
-                  "room": "5",
-                  "relative": true
-                }
-              },
-              {
-                "action": "set_sprite",
-                "parameters": {
-                  "sprite": "sound_diamond",
-                  "subimage": "0"
+                  "value": "10"
                 }
               }
             ]
@@ -513,8 +479,10 @@
           "collision_with_obj_person": {
             "actions": [
               {
-                "action": "create_random_instance",
-                "parameters": {}
+                "action": "destroy_instance",
+                "parameters": {
+                  "target": "self"
+                }
               }
             ],
             "target_object": "obj_person"
@@ -522,7 +490,8 @@
         },
         "imported": true,
         "created": "2026-05-23T14:34:55.271791",
-        "modified": "2026-05-23T14:34:55.271791"
+        "modified": "2026-05-24T13:13:12.403720",
+        "parent": ""
       },
       "wall_horizontal": {
         "name": "wall_horizontal",
@@ -564,19 +533,6 @@
           "create": {
             "actions": [
               {
-                "action": "goto_room",
-                "parameters": {
-                  "room": "0"
-                }
-              },
-              {
-                "action": "set_sprite",
-                "parameters": {
-                  "sprite": "sound_background",
-                  "subimage": "1"
-                }
-              },
-              {
                 "action": "set_window_caption",
                 "parameters": {
                   "score": "0",
@@ -586,22 +542,22 @@
               }
             ]
           },
-          "keyboard": {
-            "anykey": {
+          "keyboard_press": {
+            "SPACE": {
               "actions": [
                 {
                   "action": "next_room",
-                  "parameters": {
-                    "transition": "0"
-                  }
+                  "parameters": {}
                 }
-              ]
+              ],
+              "key_code": 32
             }
           }
         },
         "imported": true,
         "created": "2026-05-23T14:34:55.271791",
-        "modified": "2026-05-23T14:34:55.271791"
+        "modified": "2026-05-24T12:58:54.974580",
+        "parent": ""
       },
       "controller_main": {
         "name": "controller_main",
@@ -625,20 +581,14 @@
                 "parameters": {
                   "color": "score_font"
                 }
-              },
-              {
-                "action": "next_room",
-                "parameters": {
-                  "transition": "0",
-                  "relative": true
-                }
               }
             ]
           }
         },
         "imported": true,
         "created": "2026-05-23T14:34:55.271791",
-        "modified": "2026-05-23T14:34:55.271791"
+        "modified": "2026-05-24T13:13:12.514518",
+        "parent": ""
       }
     },
     "rooms": {
@@ -653,10 +603,10 @@
         "tile_vertical": false,
         "instance_count": 1,
         "instances": [],
-        "_external_file": "rooms/room_start.json",
         "created": "2026-05-23T14:34:55.284416",
         "modified": "2026-05-23T14:34:55.284416",
-        "imported": true
+        "imported": true,
+        "_external_file": "rooms/room_start.json"
       },
       "room1": {
         "name": "room1",
@@ -669,10 +619,10 @@
         "tile_vertical": false,
         "instance_count": 130,
         "instances": [],
-        "_external_file": "rooms/room1.json",
         "created": "2026-05-23T14:34:55.284416",
         "modified": "2026-05-23T14:34:55.284416",
-        "imported": true
+        "imported": true,
+        "_external_file": "rooms/room1.json"
       },
       "room2": {
         "name": "room2",
@@ -685,10 +635,10 @@
         "tile_vertical": false,
         "instance_count": 96,
         "instances": [],
-        "_external_file": "rooms/room2.json",
         "created": "2026-05-23T14:34:55.284416",
         "modified": "2026-05-23T14:34:55.284416",
-        "imported": true
+        "imported": true,
+        "_external_file": "rooms/room2.json"
       }
     },
     "scripts": {},

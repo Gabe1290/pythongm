@@ -31,8 +31,6 @@ ACTION_ALIASES = {
     'display_message': 'show_message',
     'message': 'show_message',
     'change_sprite': 'set_sprite',
-    'test_next_room': 'if_next_room_exists',
-    'test_previous_room': 'if_previous_room_exists',
 }
 
 def get_action_type(action_name: str):
