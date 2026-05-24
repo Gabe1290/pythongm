@@ -2,7 +2,7 @@
   "name": "maze_1",
   "version": "1.0.0",
   "created": "2026-05-23T14:34:54.961536",
-  "modified": "2026-05-23T14:34:54.961536",
+  "modified": "2026-05-24T10:32:37.809898",
   "settings": {
     "window_title": "",
     "window_width": 480,
@@ -94,7 +94,7 @@
         "name": "obj_goal",
         "asset_type": "object",
         "sprite": "spr_goal",
-        "visible": false,
+        "visible": true,
         "solid": false,
         "persistent": false,
         "depth": 0,
@@ -126,7 +126,7 @@
             "p": {
               "actions": [
                 {
-                  "action": "test_next_room",
+                  "action": "test_previous_room",
                   "parameters": {}
                 },
                 {
@@ -171,7 +171,8 @@
         },
         "imported": true,
         "created": "2026-05-23T14:34:54.997955",
-        "modified": "2026-05-23T14:34:54.997955"
+        "modified": "2026-05-24T10:32:34.419459",
+        "parent": ""
       },
       "obj_person": {
         "name": "obj_person",
@@ -304,10 +305,10 @@
         "tile_vertical": false,
         "instance_count": 131,
         "instances": [],
-        "_external_file": "rooms/room0.json",
         "created": "2026-05-23T14:34:55.001771",
         "modified": "2026-05-23T14:34:55.001771",
-        "imported": true
+        "imported": true,
+        "_external_file": "rooms/room0.json"
       },
       "room1": {
         "name": "room1",
@@ -320,10 +321,10 @@
         "tile_vertical": false,
         "instance_count": 130,
         "instances": [],
-        "_external_file": "rooms/room1.json",
         "created": "2026-05-23T14:34:55.001771",
         "modified": "2026-05-23T14:34:55.001771",
-        "imported": true
+        "imported": true,
+        "_external_file": "rooms/room1.json"
       }
     },
     "scripts": {},
