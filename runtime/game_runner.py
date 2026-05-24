@@ -2223,6 +2223,14 @@ class GameRunner:
                         sub_event_data = keyboard_press_event[found_key]
                         if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
                             instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
+                    # `anykey` (press) — fires once per keydown regardless of which key
+                    anykey_found = _find_key_in_event(keyboard_press_event, "anykey")
+                    if anykey_found:
+                        logger.debug(f"  ✅ Executing keyboard_press.anykey for {instance.object_name}")
+                        events_found = True
+                        anykey_data = keyboard_press_event[anykey_found]
+                        if isinstance(anykey_data, dict) and "actions" in anykey_data:
+                            instance.action_executor.execute_action_list(instance, anykey_data["actions"])
 
             # Note: keyboard (held) events are handled per-frame in _process_held_keys,
             # NOT here on KEYDOWN, to avoid double-firing with keyboard_press events
@@ -2285,6 +2293,18 @@ class GameRunner:
                 if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
                     instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
+        # `anykey` (held) — fires every frame while any key is pressed,
+        # mirroring `nokey` for the empty case. The GMK importer and the
+        # Blockly toolbox both emit keyboard.anykey events, so the runtime
+        # has to dispatch them or pressing keys against an anykey handler
+        # silently does nothing (maze_3's controller_start advances to
+        # room1 on this).
+        anykey_found = _find_key_in_event(keyboard_event, "anykey")
+        if anykey_found:
+            anykey_data = keyboard_event[anykey_found]
+            if isinstance(anykey_data, dict) and "actions" in anykey_data:
+                instance.action_executor.execute_action_list(instance, anykey_data["actions"])
+
     def handle_keyboard_release(self, key):
         """Handle keyboard release event - trigger user-defined keyboard_release events"""
         if not self.current_room:
@@ -2320,6 +2340,12 @@ class GameRunner:
                         sub_event_data = keyboard_release_event[found_key]
                         if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
                             instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
+                    # `anykey` (release) — fires once per keyup regardless of which key
+                    anykey_found = _find_key_in_event(keyboard_release_event, "anykey")
+                    if anykey_found:
+                        anykey_data = keyboard_release_event[anykey_found]
+                        if isinstance(anykey_data, dict) and "actions" in anykey_data:
+                            instance.action_executor.execute_action_list(instance, anykey_data["actions"])
 
             # Handle Thymio button release
             if instance.is_thymio and instance.thymio_simulator:
