@@ -894,11 +894,9 @@ class PyGameMakerIDE(QMainWindow):
 
         # Left panel - Asset tree (unchanged)
         try:
-            logger.debug("DEBUG: About to create AssetTreeWidget...")
             self.asset_tree = AssetTreeWidget(self)
-            logger.debug("DEBUG: AssetTreeWidget created successfully!")
         except Exception as e:
-            logger.error(f"ERROR creating AssetTreeWidget: {e}")
+            logger.error(f"Failed to create AssetTreeWidget: {e}")
             import traceback
             traceback.print_exc()
         self.asset_tree.setMinimumWidth(200)
@@ -1349,7 +1347,7 @@ class PyGameMakerIDE(QMainWindow):
         return dest
 
     def load_project(self, project_path):
-        logger.debug(f"DEBUG load_project: Attempting to load from {project_path}")
+        logger.debug(f"load_project: {project_path}")
         project_path = Path(project_path)
 
         # If the requested project is under the bundled samples/ folder
@@ -1365,13 +1363,11 @@ class PyGameMakerIDE(QMainWindow):
             project_path = promoted
 
         if self.project_manager.load_project(project_path):
-            logger.debug("DEBUG load_project: project_manager.load_project succeeded")
             self.asset_tree.project_manager = self.project_manager
-
             Config.set("last_project_directory", str(project_path.parent))
             self.add_to_recent_projects(str(project_path))
         else:
-            logger.debug("DEBUG load_project: project_manager.load_project FAILED")
+            logger.warning(f"load_project: project_manager.load_project failed for {project_path}")
             QMessageBox.warning(self, self.tr("Error"), self.tr("Failed to load project"))
 
     def save_project(self):

@@ -404,11 +404,7 @@ class AssetManager(QObject):
         if old_name == new_name:
             return True
 
-        # DEBUG: Check state before rename
-        logger.debug(f"🔍 RENAME DEBUG: Attempting to rename {asset_type}")
-        logger.debug(f"  Old name: {old_name}")
-        logger.debug(f"  New name: {new_name}")
-        logger.debug(f"  Cache before: {list(self.assets_cache.get(asset_type, {}).keys())}")
+        logger.debug(f"rename_asset: {asset_type} {old_name!r} → {new_name!r}")
 
         if self.asset_exists(asset_type, new_name):
             self.status_changed.emit(f"Asset {new_name} already exists")
@@ -742,11 +738,6 @@ class AssetManager(QObject):
             if isinstance(assets_of_type, OrderedDict):
                 # Preserve order by converting to list of tuples, then back to dict
                 assets_for_json[asset_type] = dict(assets_of_type.items())
-
-                # DEBUG: Verify room order is preserved
-                if asset_type == 'rooms':
-                    room_order = list(assets_of_type.keys())
-                    logger.debug(f"💾 AssetManager: Saving room order: {room_order}")
             else:
                 assets_for_json[asset_type] = assets_of_type
 
