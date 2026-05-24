@@ -73,6 +73,103 @@ class AssetTreeWidget(QTreeWidget):
         # Set icon size to ensure all icons display at consistent 16x16 size
         self.setIconSize(QSize(16, 16))
 
+    def dragMoveEvent(self, event):
+        """Restrict drag-to-reorder to within the source asset's own category.
+
+        The asset tree is grouped by category (rooms, sprites, objects, …)
+        and each leaf belongs to exactly one of them. Allowing a drop into a
+        different category would silently move it on the tree only, without
+        any corresponding data-model change — confusing and almost never
+        what the user meant. Same goes for dropping a category onto an
+        asset, or onto the empty space outside any category.
+        """
+        source = self.currentItem()
+        target = self.itemAt(event.position().toPoint())
+        if source is None or target is None:
+            event.ignore()
+            return
+        # Categories are not draggable as cargo, and leaves can only be
+        # rearranged within their own category.
+        if isinstance(source, AssetTreeItem) and source.is_category:
+            event.ignore()
+            return
+        source_parent = source.parent()
+        target_parent = target.parent() if not (
+            isinstance(target, AssetTreeItem) and target.is_category
+        ) else target
+        if source_parent is None or source_parent is not target_parent:
+            event.ignore()
+            return
+        super().dragMoveEvent(event)
+
+    def dropEvent(self, event):
+        """After Qt rearranges the tree visually, sync the data model.
+
+        Qt's `InternalMove` drag/drop moves the QTreeWidgetItem to its new
+        position but leaves the underlying asset_manager OrderedDict
+        untouched. Save would then write the old order, the user reruns the
+        game and nothing has changed — surfaced when a user reordered the
+        rooms in maze_3 expecting room3 to start first. Walk the tree
+        under the source's category after the drop and rebuild
+        `asset_manager.assets_cache[<category>]` in the new visual order,
+        then mark the project dirty so the next save persists it.
+        """
+        source = self.currentItem()
+        category_item = source.parent() if source is not None else None
+        super().dropEvent(event)
+
+        if not isinstance(category_item, AssetTreeItem) or not category_item.is_category:
+            return
+        asset_type = category_item.asset_type
+        if not asset_type:
+            return
+
+        # Walk the IDE parent chain to reach the asset manager + project
+        # manager — same lookup `_reorder_room` uses.
+        ide_window = self.parent()
+        while ide_window and not hasattr(ide_window, 'current_project_data'):
+            ide_window = ide_window.parent()
+        if not ide_window or not getattr(ide_window, 'asset_manager', None):
+            return
+        cache = getattr(ide_window.asset_manager, 'assets_cache', None)
+        if not isinstance(cache, dict) or asset_type not in cache:
+            return
+
+        # Collect the new visual order from the tree children
+        new_order = []
+        for i in range(category_item.childCount()):
+            child = category_item.child(i)
+            if isinstance(child, AssetTreeItem) and child.asset_name:
+                new_order.append(child.asset_name)
+
+        # Rebuild the OrderedDict in the new order. Anything in the cache
+        # that didn't appear in the tree (defensive — shouldn't happen)
+        # is appended at the end so we never lose an asset.
+        from collections import OrderedDict
+        old_cache = cache[asset_type]
+        rebuilt = OrderedDict(
+            (name, old_cache[name]) for name in new_order if name in old_cache
+        )
+        for name, data in old_cache.items():
+            if name not in rebuilt:
+                rebuilt[name] = data
+        cache[asset_type] = rebuilt
+
+        # Mirror into current_project_data so an immediate save (or
+        # anything else reading the live project dict) sees the new order
+        # without having to round-trip through save_assets_to_project_data.
+        project_data = getattr(ide_window, 'current_project_data', None) or {}
+        assets = project_data.get('assets')
+        if isinstance(assets, dict):
+            assets[asset_type] = rebuilt
+
+        # Mark dirty so the user's next save persists the change. We
+        # don't save eagerly here: a drag-reorder may be one of several
+        # edits the user is making, and saving on every drop would slow
+        # them down. The standard Ctrl+S path picks up the new order.
+        if getattr(ide_window, 'project_manager', None):
+            ide_window.project_manager.mark_dirty()
+
     def paintEvent(self, event):
         """Paint a centered empty-state hint when no project is loaded.
 
