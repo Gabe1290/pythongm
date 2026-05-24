@@ -1607,6 +1607,20 @@ ACTION_TYPES = {
         parameters=[],
     ),
 
+    # Runtime: alias `test_previous_room` → execute_if_previous_room_exists_action.
+    # ActionExecutor.ACTION_ALIASES (runtime/action_executor.py:325) maps
+    # this; the events panel needs the alias spelled out so events loaded
+    # straight from .gmk imports don't warn. Surfaced during rc.12
+    # user-testing of maze_1 — see TODO.md "GMK importer hardening".
+    "test_previous_room": ActionType(
+        name="test_previous_room",
+        display_name="Test Previous Room Exists",
+        description="Conditional: true if a 'previous room' is defined",
+        category="Room",
+        icon="❓🚪",
+        parameters=[],
+    ),
+
     # Runtime: execute_set_draw_color_action (line 3065)
     "set_draw_color": ActionType(
         name="set_draw_color",

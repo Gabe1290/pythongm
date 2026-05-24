@@ -138,6 +138,17 @@ move it to a feature branch and remove the entry once the feature ships.
   hide the same bugs rather than truly being unaffected. Worth
   re-validating the maze_1..3 imports as part of the eventual
   hardening pass.
+- **Concrete finding from rc.12 maze_1 testing pass:** the importer
+  mistranslated `test_previous_room` into `test_next_room` on at
+  least one event in maze_1. The two are opposite-direction
+  conditional checks (`is there a next room?` vs `is there a
+  previous room?`) — swapping them silently inverts a navigation
+  guard. Worth grepping the importer for places that disambiguate
+  the two GMK action codes; the bug is probably a constant lookup
+  with a wrong value rather than a logic error. (Bundled maze_1
+  was patched manually in the IDE after this finding — see git log
+  around the `room_if_next_exists` / `room_if_previous_exists`
+  beginner-preset addition.)
 
 ---
 
