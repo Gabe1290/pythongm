@@ -638,8 +638,32 @@ class ObjectEventsPanel(QWidget):
                 remove_action = menu.addAction(self.tr("Remove Mouse Event"))
                 remove_action.triggered.connect(lambda: self.remove_mouse_event(event_name))
 
+            elif isinstance(event_name, str) and event_name in self._CONTAINER_EVENT_HINTS:
+                # Container events (keyboard/keyboard_press/keyboard_release/alarm)
+                # don't accept actions directly — actions go on the sub-event
+                # (SPACE, Alarm 0, etc.). Surface a contextual sub-event adder
+                # instead of the misleading "Add Action" submenu so the user
+                # never has to discover the matching add-sub-event button on
+                # the toolbar.
+                if event_name in ("keyboard", "keyboard_press", "keyboard_release"):
+                    add_sub = menu.addAction(self.tr("Add Key…"))
+                    add_sub.triggered.connect(
+                        lambda checked, e=event_name: self.add_keyboard_event_with_selector(e)
+                    )
+                elif event_name == "alarm":
+                    add_sub_menu = menu.addMenu(self.tr("Add Alarm"))
+                    for alarm_num in range(12):
+                        alarm_action = add_sub_menu.addAction(f"⏰ {self.tr('Alarm')} {alarm_num}")
+                        alarm_action.triggered.connect(
+                            lambda checked, n=alarm_num: self.add_alarm_event(n)
+                        )
+
+                menu.addSeparator()
+                remove_action = menu.addAction(self.tr("Remove Event"))
+                remove_action.triggered.connect(self.remove_selected_event)
+
             else:
-                # Regular events (create, step, etc.) or keyboard parent events
+                # Regular leaf events (create, step, etc.) accept actions.
                 add_action_menu = menu.addMenu(self.tr("Add Action"))
 
                 actions_by_category = get_actions_by_category(self.blockly_config)
