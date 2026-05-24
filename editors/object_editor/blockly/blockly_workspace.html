@@ -408,6 +408,7 @@
                 <field name="THEN_ACTION">push_and_move</field>
                 <field name="ELSE_ACTION">stop_movement</field>
             </block>
+            <block type="exit_event"></block>
         </category>
 
         <!-- Instance Category -->
@@ -2659,7 +2660,8 @@
                     blocks: [
                         '<block type="if_condition"><field name="OPERATOR">==</field><field name="VALUE">0</field></block>',
                         '<block type="set_variable"><field name="VARIABLE">score</field><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
-                        '<block type="test_variable"><field name="VARIABLE">score</field><field name="OPERATION">equal</field><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>'
+                        '<block type="test_variable"><field name="VARIABLE">score</field><field name="OPERATION">equal</field><value name="VALUE"><shadow type="math_number"><field name="NUM">0</field></shadow></value></block>',
+                        '<block type="exit_event"></block>'
                     ]
                 },
                 'Room': {

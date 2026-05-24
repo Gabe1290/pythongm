@@ -184,6 +184,8 @@ function generateActionCode(block) {
             return {action: 'destroy_instance', parameters: {target: 'self'}};
         case 'instance_destroy_other':
             return {action: 'destroy_instance', parameters: {target: 'other'}};
+        case 'exit_event':
+            return {action: 'exit_event', parameters: {}};
         case 'if_condition':
             // Collect nested actions from the DO slot for then_actions.
             // condition_type is hardcoded to instance_count for the Blockly form;

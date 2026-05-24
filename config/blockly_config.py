@@ -36,6 +36,7 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "if_condition", "name": "If Condition", "description": "Run actions only when a condition holds (e.g. instance_count == 0)", "implemented": True},
         {"type": "set_variable", "name": "Set Variable", "description": "Assign a value to a custom variable on the instance or globally", "implemented": True},
         {"type": "test_variable", "name": "Test Variable", "description": "Compare a variable against a value and run nested actions when true", "implemented": True},
+        {"type": "exit_event", "name": "Exit Event", "description": "Stop running the rest of this event's actions — typically paired with a test to commit on the first branch that succeeds", "implemented": True},
     ],
     "Movement": [
         {"type": "move_set_hspeed", "name": "Set Horizontal Speed", "description": "Set X velocity", "implemented": True},
@@ -407,13 +408,21 @@ class BlocklyConfig:
         config.enable_block("game_end")            # Breakout (end game on no_more_lives)
         config.enable_block("show_highscore")      # Breakout (display highscore table)
 
+        # Control flow — exit_event lets beginners write GameMaker-style
+        # "try a direction, commit if it fits, otherwise try the next"
+        # patterns (e.g. maze_3's monster bounce on wall collision). The
+        # other Control blocks (if_condition / set_variable /
+        # test_variable) stay out of beginner to keep the picker simple.
+        config.enable_block("exit_event")
+
         # Output
         config.enable_block("output_message")      # Game over messages
 
         # Enable categories that have blocks
         config.enabled_categories = {
             "Events", "Movement", "Timing", "Drawing",
-            "Score/Lives/Health", "Instance", "Room", "Output", "Game"
+            "Score/Lives/Health", "Instance", "Room", "Output", "Game",
+            "Control",
         }
 
         return config
