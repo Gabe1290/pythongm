@@ -866,108 +866,83 @@ class AssetTreeWidget(QTreeWidget):
         self._reorder_room(room_name, 'bottom')
 
     def _reorder_room(self, room_name: str, direction):
-        """Reorder rooms in project data and save"""
-        logger.debug(f"_reorder_room called with room_name='{room_name}', direction={direction}")
+        """Reorder rooms in-place in the live asset_manager.assets_cache.
+
+        Earlier version re-loaded project.json from disk, reordered the dict
+        keys there, and assigned that disk-loaded dict back to
+        current_project_data / assets_cache. That worked for ordering BUT
+        wiped every room's `instances` field in memory: the saved project.json
+        only carries room metadata + a `_external_file` pointer (real
+        instances live in rooms/<room>.json). The disk-loaded dicts had
+        empty instances arrays, so subsequent saves saw "no instances in
+        memory but real instances on disk", which is the trigger condition
+        for the `_save_rooms_to_files` safeguard — yielding the chorus of
+        "⚠️ Preserving N instances from existing file for <room>" warnings
+        the user reported. The safeguard correctly preserved data, but in
+        memory remained empty until the next full project reload.
+
+        Mutate the live cache instead (same pattern as dropEvent), so room
+        order changes and per-room instance lists both stay correct in one
+        save round-trip.
+        """
+        logger.debug(f"_reorder_room: {room_name} → {direction}")
         try:
             from collections import OrderedDict
 
-            project_file = Path(self.project_path) / "project.json"
-            if not project_file.exists():
-                logger.error(f"project.json not found at {project_file}")
+            ide_window = self.parent()
+            while ide_window and not hasattr(ide_window, 'current_project_data'):
+                ide_window = ide_window.parent()
+            if not ide_window or not getattr(ide_window, 'asset_manager', None):
+                logger.error("_reorder_room: could not reach IDE asset_manager")
                 return
 
-            # Load project data with order preservation
-            with open(project_file, 'r', encoding='utf-8') as f:
-                project_data = json.load(f, object_pairs_hook=OrderedDict)
+            cache = ide_window.asset_manager.assets_cache
+            rooms = cache.get('rooms')
+            if not rooms:
+                logger.error("_reorder_room: no rooms in asset_manager cache")
+                return
 
-            rooms = project_data.get('assets', {}).get('rooms', OrderedDict())
             room_list = list(rooms.keys())
-            logger.debug(f"Current room order (before reorder): {room_list}")
-
             if room_name not in room_list:
-                logger.error(f"room_name '{room_name}' not found in room_list")
+                logger.error(f"_reorder_room: '{room_name}' not in cache")
                 return
 
             current_index = room_list.index(room_name)
-            logger.debug(f"Current index of '{room_name}': {current_index}")
-
-            # Remove from current position
             room_list.remove(room_name)
-
-            # Calculate new position
             if direction == 'top':
                 new_index = 0
             elif direction == 'bottom':
                 new_index = len(room_list)
-            else:  # numeric offset
-                new_index = max(0, min(current_index + direction, len(room_list)))
-
-            # Insert at new position
-            room_list.insert(new_index, room_name)
-            logger.debug(f"New room order (after reorder): {room_list}")
-
-            # Rebuild rooms OrderedDict in new order
-            new_rooms = OrderedDict()
-            for room_key in room_list:
-                new_rooms[room_key] = rooms[room_key]
-
-            project_data['assets']['rooms'] = new_rooms
-            logger.debug(f"Built new_rooms OrderedDict with keys: {list(new_rooms.keys())}")
-
-            # Save project back to file with order preservation
-            with open(project_file, 'w', encoding='utf-8') as f:
-                json.dump(project_data, f, indent=2, sort_keys=False, ensure_ascii=False)
-
-            logger.debug(f"Saved new room order to project.json: {room_list}")
-
-            # Find the IDE parent window
-            ide_window = self.parent()
-            while ide_window and not hasattr(ide_window, 'current_project_data'):
-                ide_window = ide_window.parent()
-
-            if ide_window:
-                logger.debug("Found IDE window")
-
-                # CRITICAL: Update the asset manager's cache directly
-                if hasattr(ide_window, 'asset_manager'):
-                    logger.debug("IDE has asset_manager attribute")
-                    if ide_window.asset_manager:
-                        logger.debug("asset_manager is not None")
-                        if hasattr(ide_window.asset_manager, 'assets_cache'):
-                            logger.debug("asset_manager has assets_cache attribute")
-                            # Update the cache with the new room order
-                            ide_window.asset_manager.assets_cache['rooms'] = new_rooms
-                            logger.debug("Updated asset manager cache with new room order")
-                            logger.debug(f"New cache room order: {list(new_rooms.keys())}")
-                        else:
-                            logger.debug("asset_manager does NOT have assets_cache attribute")
-                    else:
-                        logger.debug("asset_manager is None")
-                else:
-                    logger.debug("IDE does NOT have asset_manager attribute")
-
-                # Update the IDE's project data
-                ide_window.current_project_data = project_data
-
-                # Update the project manager's data
-                if hasattr(ide_window, 'project_manager'):
-                    ide_window.project_manager.current_project_data = project_data
-                    ide_window.project_manager.mark_dirty()
-
-                    # Force save to ensure asset manager syncs
-                    if ide_window.project_manager.save_project():
-                        logger.debug("Project saved with new room order")
-
-                # Refresh the entire asset tree from the updated data
-                self.refresh_from_project(project_data)
-
-                # Update status
-                if hasattr(ide_window, 'update_status'):
-                    ide_window.update_status(f"Reordered room: {room_name}")
             else:
-                logger.error("Could not find IDE window")
-                # Fallback to local refresh if we can't find IDE
-                self._refresh_room_display()
+                new_index = max(0, min(current_index + direction, len(room_list)))
+            room_list.insert(new_index, room_name)
+
+            # Rebuild the OrderedDict in the new order — preserve the *same*
+            # room_data dict references so each room's in-memory instances
+            # list (populated at load time by _load_rooms_from_files) stays
+            # attached. This is the key fix.
+            new_rooms = OrderedDict((k, rooms[k]) for k in room_list)
+            cache['rooms'] = new_rooms
+
+            # Mirror into current_project_data so any code reading it during
+            # this save cycle sees the new order without waiting for the next
+            # save_assets_to_project_data() sync.
+            assets = ide_window.current_project_data.get('assets')
+            if isinstance(assets, dict):
+                assets['rooms'] = new_rooms
+
+            # Persist now so the new order survives a crash before next
+            # auto-save. The save reads from assets_cache, which now has
+            # both the new order AND the original room_data refs (with
+            # instances intact), so no "Preserving instances" warning.
+            if getattr(ide_window, 'project_manager', None):
+                ide_window.project_manager.mark_dirty()
+                ide_window.project_manager.save_project()
+
+            # Refresh the tree from the now-current in-memory project data.
+            self.refresh_from_project(ide_window.current_project_data)
+            if hasattr(ide_window, 'update_status'):
+                ide_window.update_status(f"Reordered room: {room_name}")
 
         except Exception as e:
             logger.error(f"Error reordering room: {e}")
