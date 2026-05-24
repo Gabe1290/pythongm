@@ -267,6 +267,28 @@ function generateActionCode(block) {
                 prevExistsBlock = prevExistsBlock.getNextBlock();
             }
             return {action: 'if_previous_room_exists', parameters: {then_actions: prevExistsActions}};
+        case 'room_if_no_next_exists':
+            var noNextActions = [];
+            var noNextBlock = block.getInputTargetBlock('DO');
+            while (noNextBlock) {
+                var noNextAction = generateActionCode(noNextBlock);
+                if (noNextAction) {
+                    noNextActions.push(noNextAction);
+                }
+                noNextBlock = noNextBlock.getNextBlock();
+            }
+            return {action: 'if_no_next_room_exists', parameters: {then_actions: noNextActions}};
+        case 'room_if_no_previous_exists':
+            var noPrevActions = [];
+            var noPrevBlock = block.getInputTargetBlock('DO');
+            while (noPrevBlock) {
+                var noPrevAction = generateActionCode(noPrevBlock);
+                if (noPrevAction) {
+                    noPrevActions.push(noPrevAction);
+                }
+                noPrevBlock = noPrevBlock.getNextBlock();
+            }
+            return {action: 'if_no_previous_room_exists', parameters: {then_actions: noPrevActions}};
         case 'sound_play':
             return {action: 'play_sound', parameters: {sound: block.getFieldValue('SOUND')}};
         case 'music_play':
