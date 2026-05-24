@@ -393,6 +393,12 @@ class BlocklyConfig:
 
         # Room
         config.enable_block("room_restart")        # Breakout (game over)
+        # Room-existence checks — needed so beginners can fix the
+        # maze samples' multi-room navigation events (and write their
+        # own; the pair is common when guarding goto_next_room /
+        # goto_previous_room on the first / last room).
+        config.enable_block("room_if_next_exists")
+        config.enable_block("room_if_previous_exists")
 
         # Game control — game-over flow and highscore
         config.enable_block("game_end")            # Breakout (end game on no_more_lives)
