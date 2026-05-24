@@ -33,17 +33,8 @@
           }
         },
         {
-          "action": "set_score",
-          "parameters": {
-            "value": "hspeed",
-            "relative": true
-          }
-        },
-        {
-          "action": "comment",
-          "parameters": {
-            "text": "Unmapped GM action: lib=1, id=425, kind=4"
-          }
+          "action": "exit_event",
+          "parameters": {}
         },
         {
           "action": "set_direction_speed",
@@ -53,17 +44,8 @@
           }
         },
         {
-          "action": "set_score",
-          "parameters": {
-            "value": "hspeed",
-            "relative": true
-          }
-        },
-        {
-          "action": "comment",
-          "parameters": {
-            "text": "Unmapped GM action: lib=1, id=425, kind=4"
-          }
+          "action": "exit_event",
+          "parameters": {}
         },
         {
           "action": "set_direction_speed",
