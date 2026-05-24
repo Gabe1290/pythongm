@@ -64,6 +64,18 @@ class KeySelectorDialog(QDialog):
                 list_widget = QListWidget()
                 list_widget.itemDoubleClicked.connect(self.on_item_double_clicked)
 
+                # Disable per-item text elision and switch the horizontal
+                # scroll mode to per-pixel so long item labels (translated
+                # key names like "Numeric Keypad Multiply (code: 16777345)")
+                # are reachable via a horizontal scrollbar instead of being
+                # silently clipped with an ellipsis. ScrollBarAsNeeded is
+                # the QListWidget default but stays inert as long as Qt
+                # thinks the text fits — which it always does, when elision
+                # is on. Disabling elision is the load-bearing change.
+                list_widget.setTextElideMode(Qt.TextElideMode.ElideNone)
+                list_widget.setHorizontalScrollMode(QListWidget.ScrollPerPixel)
+                list_widget.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+
                 # Add events to list
                 for event in events:
                     item = QListWidgetItem(f"{event['display_name']} (code: {event['key_code']})")

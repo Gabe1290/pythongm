@@ -63,6 +63,14 @@ class MouseEventSelectorDialog(QDialog):
                 list_widget = QListWidget()
                 list_widget.itemDoubleClicked.connect(self.on_item_double_clicked)
 
+                # Same fix as key_selector_dialog.py: disable text elision
+                # and switch to per-pixel horizontal scrolling so long
+                # item labels (icon + name + description) are reachable
+                # via a horizontal scrollbar instead of being clipped.
+                list_widget.setTextElideMode(Qt.TextElideMode.ElideNone)
+                list_widget.setHorizontalScrollMode(QListWidget.ScrollPerPixel)
+                list_widget.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+
                 # Add events to list
                 for event in events:
                     icon = event.get('icon', '🖱️')
