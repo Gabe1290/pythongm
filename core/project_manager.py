@@ -184,11 +184,9 @@ class ProjectManager(QObject):
         """Load an existing project (compatibility method)"""
         try:
             project_path = Path(project_path)
-            logger.debug(f"DEBUG PM load_project: path={project_path}")
 
             # Check if project file exists
             project_file = project_path / self.PROJECT_FILE
-            logger.debug(f"DEBUG PM load_project: checking for {project_file}, exists={project_file.exists()}")
             if not project_file.exists():
                 self.status_changed.emit(f"Project file not found: {project_file}")
                 return False
@@ -197,7 +195,6 @@ class ProjectManager(QObject):
             with open(project_file, 'r', encoding='utf-8') as f:
                 from collections import OrderedDict
                 project_data = json.load(f, object_pairs_hook=OrderedDict)
-            logger.debug(f"DEBUG PM load_project: loaded data keys={list(project_data.keys())}")
 
             # Load asset data from separate files if they exist
             self._load_rooms_from_files(project_path, project_data)
@@ -207,10 +204,8 @@ class ProjectManager(QObject):
 
             # Validate project data
             if not self._validate_project_data(project_data):
-                logger.debug("DEBUG PM load_project: validation FAILED")
                 self.status_changed.emit("Invalid project file format")
                 return False
-            logger.debug("DEBUG PM load_project: validation passed")
 
             # Update asset manager with project location FIRST
             if self.asset_manager:
@@ -241,7 +236,7 @@ class ProjectManager(QObject):
         rooms_dir = project_path / "rooms"
 
         if not rooms_dir.exists():
-            logger.debug("DEBUG: No rooms/ directory found, using embedded room data")
+            logger.debug("No rooms/ directory found, using embedded room data")
             return
 
         rooms_data = project_data.get('assets', {}).get('rooms', {})
@@ -284,7 +279,7 @@ class ProjectManager(QObject):
         objects_dir = project_path / "objects"
 
         if not objects_dir.exists():
-            logger.debug("DEBUG: No objects/ directory found, using embedded object data")
+            logger.debug("No objects/ directory found, using embedded object data")
             return
 
         objects_data = project_data.get('assets', {}).get('objects', {})
@@ -324,7 +319,7 @@ class ProjectManager(QObject):
         sprites_dir = project_path / "sprites"
 
         if not sprites_dir.exists():
-            logger.debug("DEBUG: No sprites/ directory found, using embedded sprite data")
+            logger.debug("No sprites/ directory found, using embedded sprite data")
             return
 
         sprites_data = project_data.get('assets', {}).get('sprites', {})
@@ -368,10 +363,7 @@ class ProjectManager(QObject):
         If auto-save-as-zip is enabled and project was loaded from zip,
         saves directly back to the zip file
         """
-        logger.debug(f"💾 DEBUG: save_project called with path: {project_path}")
-
         if not self.current_project_path and not project_path:
-            logger.debug("❌ DEBUG: No project to save")
             self.status_changed.emit("No project to save")
             return False
 
@@ -385,7 +377,7 @@ class ProjectManager(QObject):
                 return self._save_to_folder(project_path)
 
         except Exception as e:
-            logger.error(f"💥 DEBUG: Save failed with error: {e}")
+            logger.error(f"Save failed: {e}")
             import traceback
             traceback.print_exc()
             self.status_changed.emit(f"Failed to save project: {str(e)}")
@@ -418,28 +410,14 @@ class ProjectManager(QObject):
             except (ValueError, OSError):
                 pass  # path comparison failed; fall through and try the save
 
-            logger.debug(f"💾 DEBUG: Saving to {project_file}")
+            logger.debug(f"Saving project to {project_file}")
 
             # Update project metadata
             self.current_project_data["modified"] = datetime.now().isoformat()
 
-            # Get latest asset data from asset manager
+            # Get latest asset data from asset manager (preserves order)
             if self.asset_manager:
-                logger.debug("💾 DEBUG: Getting assets from asset manager...")
-                # Use save_assets_to_project_data to preserve order
                 self.asset_manager.save_assets_to_project_data(self.current_project_data)
-
-                # DEBUG: Check room order being saved
-                rooms_data = self.current_project_data.get('assets', {}).get('rooms', {})
-                room_order = list(rooms_data.keys())
-                logger.debug(f"💾 DEBUG: Saving room order: {room_order}")
-
-                # DEBUG: Check what sprite values are actually being saved
-                objects_data = self.current_project_data.get('assets', {}).get('objects', {})
-                logger.debug(f"💾 DEBUG: Asset data updated. Objects in project: {list(objects_data.keys())}")
-                for obj_name, obj_data in objects_data.items():
-                    sprite = obj_data.get('sprite', 'none')
-                    logger.debug(f"💾 DEBUG: Object '{obj_name}' has sprite: '{sprite}'")
 
             # Save rooms to separate files
             self._save_rooms_to_files(save_path)
@@ -460,7 +438,7 @@ class ProjectManager(QObject):
             # Save main project file (without room instance data)
             _atomic_write_json(project_file, project_data_for_save)
 
-            logger.info(f"✅ DEBUG: Project saved successfully to {project_file}")
+            logger.info(f"💾 Saved project: {project_file}")
 
             # Update state
             self.is_dirty_flag = False
@@ -474,7 +452,7 @@ class ProjectManager(QObject):
             return True
 
         except Exception as e:
-            logger.error(f"💥 DEBUG: Folder save failed: {e}")
+            logger.error(f"Folder save failed: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -861,67 +839,36 @@ class ProjectManager(QObject):
 
     def update_asset(self, asset_type: str, asset_name: str, asset_data: Dict[str, Any]) -> bool:
         """Update an asset's data with proper type handling"""
-        logger.debug(f"🔧 DEBUG: update_asset called with: {asset_type}, {asset_name}")
-        logger.debug(f"🔧 DEBUG: Asset data keys: {list(asset_data.keys())}")
-
         try:
-            # Validate asset manager exists
             if not self.asset_manager:
-                logger.error("❌ DEBUG: No asset manager available")
+                logger.error("update_asset: no asset_manager available")
                 self.status_changed.emit("No asset manager available")
                 return False
-
-            logger.debug("✅ DEBUG: Asset manager exists, checking for asset...")
-
-            # Check if asset manager has assets cache
             if not hasattr(self.asset_manager, 'assets_cache'):
-                logger.error("❌ DEBUG: Asset manager has no assets_cache")
+                logger.error("update_asset: asset_manager has no assets_cache")
                 self.status_changed.emit("Asset manager not properly initialized")
                 return False
 
-            logger.debug(f"📊 DEBUG: Assets cache contains: {list(self.asset_manager.assets_cache.keys())}")
-
-            # Normalize asset type to plural form for storage
-            # The asset_type parameter should already be plural (e.g., 'objects', 'rooms')
-            # But the asset_data['asset_type'] field should be singular
+            # Normalize asset_type to plural for storage; asset_data['asset_type']
+            # stays singular. _KNOWN_SINGULAR covers the regular cases; anything
+            # outside that map gets a naive '+s' suffix.
             asset_type_plural = asset_type
             if not asset_type_plural.endswith('s'):
-                # Convert singular to plural if needed
-                if asset_type_plural in ['object', 'room', 'sprite', 'sound', 'background', 'script', 'font']:
-                    asset_type_plural = asset_type_plural + 's'
-                else:
-                    # Unknown type, try adding 's'
-                    asset_type_plural = asset_type_plural + 's'
+                asset_type_plural = asset_type_plural + 's'
 
-            # Determine singular form for the asset_type field in data
             asset_type_singular = asset_type_plural[:-1] if asset_type_plural.endswith('s') else asset_type_plural
-
-            # Special cases for irregular plurals
             plural_to_singular_map = {
-                'sprites': 'sprite',
-                'sounds': 'sound',
-                'backgrounds': 'background',
-                'objects': 'object',
-                'rooms': 'room',
-                'playgrounds': 'playground',
-                'scripts': 'script',
-                'fonts': 'font',
-                'enemies': 'enemy',
-                'entities': 'entity'
+                'sprites': 'sprite', 'sounds': 'sound', 'backgrounds': 'background',
+                'objects': 'object', 'rooms': 'room', 'playgrounds': 'playground',
+                'scripts': 'script', 'fonts': 'font',
+                'enemies': 'enemy', 'entities': 'entity',
             }
-
             if asset_type_plural in plural_to_singular_map:
                 asset_type_singular = plural_to_singular_map[asset_type_plural]
 
-            logger.debug(f"🔧 DEBUG: Using plural form '{asset_type_plural}' for storage")
-            logger.debug(f"🔧 DEBUG: Using singular form '{asset_type_singular}' for asset_type field")
-
-            # Get existing asset from cache
             existing_asset = self.asset_manager.get_asset(asset_type_plural, asset_name)
 
             if existing_asset:
-                logger.debug(f"✅ DEBUG: Found existing asset: {asset_name}")
-
                 # Preserve important fields from existing asset
                 preserved_fields = ['created', 'file_path', 'imported', 'file_hash']
                 for field in preserved_fields:
@@ -942,14 +889,12 @@ class ProjectManager(QObject):
 
                 self.asset_manager.assets_cache[asset_type_plural][asset_name] = existing_asset
 
-                logger.debug("✅ DEBUG: Updated existing asset in cache")
-
                 # Emit update signal
                 self.asset_manager.asset_updated.emit(asset_type_plural, asset_name, existing_asset)
 
             else:
                 # Asset doesn't exist, create new one
-                logger.debug(f"⚠️ DEBUG: Asset '{asset_name}' not found in '{asset_type_plural}', creating new asset")
+                logger.debug(f"update_asset: creating new '{asset_name}' in '{asset_type_plural}'")
 
                 # Create complete asset data
                 new_asset_data = {
@@ -1013,44 +958,35 @@ class ProjectManager(QObject):
                 # Ensure asset_type is singular
                 new_asset_data['asset_type'] = asset_type_singular
 
-                logger.debug(f"📝 DEBUG: New asset data created with keys: {list(new_asset_data.keys())}")
-
                 # Initialize cache structure if needed
                 if not self.asset_manager.assets_cache:
                     self.asset_manager.assets_cache = {}
-
                 if asset_type_plural not in self.asset_manager.assets_cache:
                     self.asset_manager.assets_cache[asset_type_plural] = {}
 
                 # Add to cache
                 self.asset_manager.assets_cache[asset_type_plural][asset_name] = new_asset_data
 
-                logger.debug(f"💾 DEBUG: Added to cache under '{asset_type_plural}' category")
-                logger.debug(f"💾 DEBUG: Cache now has: {list(self.asset_manager.assets_cache.get(asset_type_plural, {}).keys())}")
-
                 # Emit creation signal
                 self.asset_manager.asset_imported.emit(asset_type_plural, asset_name, new_asset_data)
 
             # Mark project as dirty
             self.mark_dirty()
-
-            logger.debug(f"✅ DEBUG: Successfully updated asset '{asset_name}' in category '{asset_type_plural}'")
             self.status_changed.emit(f"Updated {asset_name}")
 
-            # Verify the update
-            verification = self.asset_manager.get_asset(asset_type_plural, asset_name)
-            if verification:
-                logger.debug("✅ DEBUG: Verification successful - asset exists in cache")
-                logger.debug(f"✅ DEBUG: Asset type field: {verification.get('asset_type', 'NOT SET')}")
-            else:
-                logger.error("❌ DEBUG: Verification failed - asset not found in cache")
+            # Verify the update landed in the cache. Failure here is rare
+            # but means the caller's later save will silently drop the asset,
+            # so it's worth keeping the check + the loud error.
+            if not self.asset_manager.get_asset(asset_type_plural, asset_name):
+                logger.error(
+                    f"update_asset: post-write verification failed — "
+                    f"'{asset_name}' not found in '{asset_type_plural}' cache"
+                )
 
             return True
 
         except Exception as e:
-            error_msg = f"Exception in update_asset: {str(e)}"
-            logger.error(f"💥 DEBUG: {error_msg}")
-            logger.error(f"💥 DEBUG: Exception type: {type(e)}")
+            logger.error(f"update_asset: exception {type(e).__name__}: {e}")
             import traceback
             traceback.print_exc()
             self.status_changed.emit(f"Failed to update asset {asset_name}: {str(e)}")
