@@ -10,6 +10,16 @@ from core.logger import get_logger
 logger = get_logger(__name__)
 
 
+class _ExitEvent(Exception):
+    """Internal sentinel: raised by execute_exit_event_action to abort the
+    rest of the current event's action list. Caught by execute_action_list
+    and execute_collision_action_list at the top-level dispatch boundary —
+    so a nested then_actions / else_actions / repeat block can still trip
+    it and unwind through every level at once. Mirrors GameMaker's
+    "exit event" action.
+    """
+
+
 def _hex_to_rgb(hex_str: str, default: Tuple[int, int, int] = (0, 0, 0)) -> Tuple[int, int, int]:
     """Parse ``#RRGGBB`` (or ``RRGGBB``) to an ``(r, g, b)`` 0-255 tuple.
 
@@ -161,8 +171,16 @@ class ActionExecutor:
     def execute_action_list(self, instance, actions: list):
         """Execute a list of actions with conditional flow support
 
-        GM80-style conditionals: test actions set skip_next flag to skip following action(s)
+        GM80-style conditionals: test actions set skip_next flag to skip following action(s).
+        The `exit_event` action raises _ExitEvent to short-circuit the rest of the list;
+        we catch it here so callers don't need to know.
         """
+        try:
+            self._execute_action_list_inner(instance, actions)
+        except _ExitEvent:
+            return
+
+    def _execute_action_list_inner(self, instance, actions: list):
         i = 0
         skip_next = False
         condition_was_false = False  # Track if original condition was false
@@ -228,6 +246,21 @@ class ActionExecutor:
                 condition_was_false = False
 
             i += 1
+
+    def execute_exit_event_action(self, instance, parameters: Dict[str, Any]):
+        """GameMaker's "exit event" — stop running the rest of this event's
+        actions. Common use: a monster's collision_with_wall handler tries
+        each candidate direction, and the moment one fits it commits +
+        exits so the later fallbacks don't undo the choice.
+
+        Implemented by raising the internal _ExitEvent sentinel; the
+        top-level execute_action_list / execute_collision_action_list
+        wrappers catch it. Using an exception here is deliberate — the
+        action may sit inside arbitrarily deep then_actions / else_actions
+        / repeat blocks, and a flag would need to bubble through every
+        recursion level.
+        """
+        raise _ExitEvent()
 
     def _handle_repeat_action(self, instance, actions: list, current_index: int, action_data: dict) -> int:
         """Handle the repeat action - executes following action(s) N times
@@ -368,6 +401,12 @@ class ActionExecutor:
                     return None
 
             return result  # Return result for conditional flow
+        except _ExitEvent:
+            # Sentinel raised by execute_exit_event_action — must
+            # propagate to the top-level action-list dispatcher so the
+            # rest of the event aborts. The catch-all below would
+            # otherwise swallow it and log it as a generic error.
+            raise
         except AttributeError as e:
             logger.debug(f"❌ Attribute error in action {action_name}: {e}")
             logger.debug("   Instance may be missing required attributes")
@@ -4380,7 +4419,18 @@ class ActionExecutor:
         self._collision_speeds = {}
 
     def execute_collision_action_list(self, instance, actions: list, other_instance):
-        """Execute collision actions with conditional flow support"""
+        """Execute collision actions with conditional flow support.
+
+        Catches `_ExitEvent` here (raised by execute_exit_event_action) so a
+        nested exit_event inside a collision handler unwinds out of the
+        whole list — matching the regular execute_action_list path.
+        """
+        try:
+            self._execute_collision_action_list_inner(instance, actions, other_instance)
+        except _ExitEvent:
+            return
+
+    def _execute_collision_action_list_inner(self, instance, actions: list, other_instance):
         i = 0
         skip_next = False
         condition_was_false = False

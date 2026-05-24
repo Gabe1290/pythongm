@@ -509,6 +509,22 @@ class GmkConverter:
                 actions.append(converted)
         return actions
 
+    # GM action_kind values that are LIBRARY-INDEPENDENT control-flow
+    # markers — they always mean the same thing regardless of which
+    # (library_id, action_id) the action carries. Without this, a
+    # custom library's exit-event action (e.g. lib=1, id=425 seen in
+    # maze_3's monster_all) would fall through to the generic mapping
+    # lookup, miss because the id isn't in GM_ACTION_MAP, and degrade
+    # to a `comment "Unmapped GM action: …"` stub — losing the actual
+    # control-flow semantics.
+    _GMK_KIND_TO_ACTION = {
+        1: "start_block",   # begin group
+        2: "end_block",     # end group
+        3: "else_action",   # else
+        4: "exit_event",    # exit event
+        5: "repeat",        # repeat
+    }
+
     def _convert_single_action(self, gm_act: GmkAction) -> Optional[dict]:
         """
         Convert a single GM action to a pygm2 action dict.
@@ -526,6 +542,15 @@ class GmkConverter:
             return {
                 "action": "execute_code",
                 "parameters": {"code": code},
+            }
+
+        # Library-independent control-flow markers (start_block, end_block,
+        # else_action, exit_event, repeat). Authoritative regardless of
+        # what (library_id, action_id) lookup would produce.
+        if gm_act.action_kind in self._GMK_KIND_TO_ACTION:
+            return {
+                "action": self._GMK_KIND_TO_ACTION[gm_act.action_kind],
+                "parameters": {},
             }
 
         # Look up the action in the mapping

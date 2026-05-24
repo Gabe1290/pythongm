@@ -160,6 +160,28 @@ move it to a feature branch and remove the entry once the feature ships.
     separate import-default-value bug.
   - Bundled maze_1 was patched manually in the IDE after these
     findings; the corrected `samples/maze_1/` is back in git.
+- **Concrete findings from rc.12 maze_3 testing pass:**
+  - `samples/maze_3/objects/monster_all.json` originally contained
+    pairs of `(set_score value=hspeed relative=true)` +
+    `(comment "Unmapped GM action: lib=1, id=425, kind=4")` between
+    each `set_direction_speed`. The kind=4 comment was the GameMaker
+    `exit_event` action — the converter only dispatched on
+    `(library_id, action_id)` and missed it. Fixed by adding
+    `_GMK_KIND_TO_ACTION` in `importers/gmk_converter.py` so all
+    action_kind values 1/2/3/4/5 produce the canonical control-flow
+    action regardless of which library/id the GMK file used.
+  - The companion `set_score(value=hspeed, relative=true)` lines were
+    also a mis-import — most likely the original
+    `action_if_free_position(hspeed, vspeed, relative=true)` test
+    that gated each `exit_event`. The importer's parameter mapping
+    matched the unmapped action's first arg ("hspeed") to set_score's
+    `value` field by name. Hand-stripped from the sample for now; the
+    monster now turns +90° deterministically on every wall hit
+    instead of testing each candidate direction. Fixing properly
+    requires either reverse-engineering which (library_id, action_id)
+    that lib=1 unmapped test corresponds to and adding it to
+    `gmk_mappings.py`, or re-importing the `.gmk` with a corrected
+    converter.
 
 ---
 
