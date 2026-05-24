@@ -801,6 +801,21 @@ Blockly.Blocks['instance_create'] = {
 // CONTROL BLOCKS (flow control / conditionals)
 // ============================================================================
 
+// exit_event: GameMaker's "exit event" — stop running the rest of this
+// event's actions. Typically dropped right after a conditional test so the
+// event commits on the first branch that succeeds (e.g. monster bounce
+// logic: try direction, exit_event if it fits, otherwise try the next).
+Blockly.Blocks['exit_event'] = {
+    init: function() {
+        this.appendDummyInput()
+            .appendField("Exit event");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setColour("#FFAB19");
+        this.setTooltip("Stop running the rest of this event's actions");
+    }
+};
+
 // if_condition: checks an instance count against a value and runs nested actions
 // when the comparison holds. Maps to the runtime's if_condition action with
 // condition_type=instance_count. Other condition types (variable_compare,
