@@ -42,7 +42,7 @@ class ObjectEditor(BaseEditor):
 
     # Splitter sizes for [events panel | center tabs]. Numbers are relative;
     # Qt distributes them proportionally to fill the available width.
-    _DEFAULT_SPLIT = [350, 750]   # Event List / Code Editor tabs
+    _DEFAULT_SPLIT = [500, 700]   # Event List / Code Editor tabs
     _BLOCKLY_SPLIT = [200, 900]   # Blockly tab — events panel at its minimum
 
     def __init__(self, project_path: str = None, parent=None):
