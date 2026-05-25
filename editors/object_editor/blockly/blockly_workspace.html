@@ -891,11 +891,16 @@
                 this.appendValueInput("SPEED")
                     .setCheck("Number")
                     .appendField(getBlockMessage('move_direction_prefix', window.BLOCKLY_LANG) || "Move")
+                    // "stop" mirrors the runtime's start_moving_direction("stop")
+                    // shortcut for zeroing both speeds — without it imported
+                    // keyboard-nokey / collision-with-wall handlers produce a
+                    // "Cannot set the dropdown's value" Qt warning at load.
                     .appendField(new Blockly.FieldDropdown([
                         ["right", "right"],
                         ["left", "left"],
                         ["up", "up"],
-                        ["down", "down"]
+                        ["down", "down"],
+                        ["stop", "stop"]
                     ]), "DIRECTION")
                     .appendField(getBlockMessage('move_direction_suffix', window.BLOCKLY_LANG) || "at speed");
                 this.setPreviousStatement(true, null);

@@ -253,17 +253,25 @@ Blockly.Blocks['move_direction'] = {
         this.appendValueInput("SPEED")
             .setCheck("Number")
             .appendField("Move")
+            // The runtime's start_moving_direction also understands "stop"
+            // (and the four diagonals) — without "stop" here the block
+            // can't represent the common GameMaker pattern of
+            // start_moving_direction("stop") in keyboard-nokey or
+            // collision-with-wall handlers, and any imported project
+            // using it produces a "Cannot set the dropdown's value to
+            // an unavailable option" Qt warning when the block loads.
             .appendField(new Blockly.FieldDropdown([
                 ["right", "right"],
                 ["left", "left"],
                 ["up", "up"],
-                ["down", "down"]
+                ["down", "down"],
+                ["stop", "stop"]
             ]), "DIRECTION")
             .appendField("at speed");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour("#5C81A6");
-        this.setTooltip("Move in a direction");
+        this.setTooltip("Move in a direction. 'stop' sets both speeds to 0.");
     }
 };
 

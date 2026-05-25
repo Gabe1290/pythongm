@@ -194,6 +194,23 @@ move it to a feature branch and remove the entry once the feature ships.
     `multi_choice` param_type backed by a row of QCheckBox widgets.
     Same gap likely affects other list-typed action params if any
     exist; check for other `isinstance(directions, list)` consumers.
+  - The GMK importer mis-maps `action_play_sound` (and possibly other
+    sound actions) to `set_sprite` with the sound name in the `sprite`
+    field. Affected five locations in the maze_3 samples:
+    `controller_main.json` (keyboard.r resets sprite to `sound_dead`),
+    `obj_person.json` × 3 (each collision_with_monster_* uses
+    `sound_dead`), `obj_block.json` (sound_push on push), `obj_hole.json`
+    (sound_hole on block fall-in), `obj trigger.json` (sound_explode on
+    activate). Hand-fixed the sample data to use
+    `{"action": "play_sound", "parameters": {"sound": "<name>"}}`. The
+    importer fix likely lives in `importers/gmk_mappings.py` or its
+    GM_ACTION_MAP — the GM action_play_sound action id (probably in
+    the (1, 6XX) range for "Main2" tab) isn't currently mapped, so the
+    converter must be falling through to whichever lookup matches the
+    sound resource argument and producing set_sprite by accident. Worth
+    grepping the GMK action library spec for the action id and adding
+    `(1, <id>): "play_sound"` to GM_ACTION_MAP with the right param
+    name mapping.
 
 ---
 
