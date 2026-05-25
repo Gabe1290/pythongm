@@ -7,6 +7,20 @@ from actions.core import ActionDefinition, ActionParameter
 
 
 CONTROL_ACTIONS = {
+    "check_empty": ActionDefinition(
+        name="check_empty",
+        display_name="Check Empty",
+        category="control",
+        tab="control",
+        description="True when (x, y) has no collision. Pair with start_block/end_block to gate following actions.",
+        icon="🔍",
+        parameters=[
+            ActionParameter("x", "string", "X", "X position (expression OK, e.g. self.x + 32)", default="self.x"),
+            ActionParameter("y", "string", "Y", "Y position (expression OK, e.g. self.y + 32)", default="self.y"),
+            ActionParameter("objects", "choice", "Objects", "Which instances count as occupying the position",
+                            default="solid", options=["solid", "all"]),
+        ]
+    ),
     "if_collision": ActionDefinition(
         name="if_collision",
         display_name="Check Collision",

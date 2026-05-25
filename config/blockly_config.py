@@ -36,6 +36,7 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "if_condition", "name": "If Condition", "description": "Run actions only when a condition holds (e.g. instance_count == 0)", "implemented": True},
         {"type": "set_variable", "name": "Set Variable", "description": "Assign a value to a custom variable on the instance or globally", "implemented": True},
         {"type": "test_variable", "name": "Test Variable", "description": "Compare a variable against a value and run nested actions when true", "implemented": True},
+        {"type": "check_empty", "name": "Check Empty", "description": "True when (x, y) has no collision — gate following action(s) on grid movement", "implemented": True},
         {"type": "exit_event", "name": "Exit Event", "description": "Stop running the rest of this event's actions — typically paired with a test to commit on the first branch that succeeds", "implemented": True},
     ],
     "Movement": [
@@ -449,6 +450,7 @@ class BlocklyConfig:
         # Instance management
         config.enable_block("instance_change")       # Sokoban (crate on target)
         config.enable_block("if_can_push")           # Sokoban (push mechanic)
+        config.enable_block("check_empty")           # Sokoban/Maze (can-I-move-here?)
 
         # Drawing
         config.enable_block("set_sprite")            # Sokoban (crate appearance)
@@ -502,6 +504,7 @@ class BlocklyConfig:
         config.enable_block("instance_destroy")
         config.enable_block("instance_create")
         config.enable_block("instance_change")
+        config.enable_block("check_empty")           # platform/wall checks
 
         # Score/Lives
         config.enable_block("score_set")
@@ -541,6 +544,7 @@ class BlocklyConfig:
         config.enable_block("grid_stop_if_no_keys")
         config.enable_block("grid_check_keys_and_move")
         config.enable_block("grid_if_on_grid")
+        config.enable_block("check_empty")           # "can I move into this cell?"
 
         # Instance
         config.enable_block("instance_destroy")
