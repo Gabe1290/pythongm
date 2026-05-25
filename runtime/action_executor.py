@@ -1114,6 +1114,16 @@ class ActionExecutor:
         instance.hspeed = math.cos(angle_rad) * speed
         instance.vspeed = -math.sin(angle_rad) * speed
 
+        # Snap floating-point noise near zero to exact zero. cos(π/2) is
+        # 6.12e-17 in float64, not 0 — without this, "press Up" leaves a
+        # tiny positive hspeed that downstream sign-tests (e.g. if_can_push:
+        # `push_dx = +32 if dx > 0`) interpret as "moving right", causing
+        # diagonal block pushes when the player presses a cardinal key.
+        if abs(instance.hspeed) < 1e-9:
+            instance.hspeed = 0.0
+        if abs(instance.vspeed) < 1e-9:
+            instance.vspeed = 0.0
+
         # DEBUG
         logger.debug(f"   ➡️ Start Moving Direction: {direction}° at speed {speed}")
         logger.debug(f"      hspeed={instance.hspeed:.2f}, vspeed={instance.vspeed:.2f}")
@@ -1346,6 +1356,56 @@ class ActionExecutor:
 
         logger.debug(f"  ❓ if_collision at ({check_x}, {check_y}) for '{object_type}': collision={has_collision}, not_flag={not_flag}, result={result}")
 
+        return result
+
+    def execute_check_empty_action(self, instance, parameters: Dict[str, Any]):
+        """True when (x, y) has no collision.
+
+        Parameters:
+            x, y: ABSOLUTE position to check (expressions OK, e.g. "self.x + 32").
+            objects: "solid" (only solid instances count as blocking, default)
+                     or "all" (any instance blocks).
+            only_solid: Legacy boolean alias. True → "solid", False → "all".
+                        Used when older saves don't have `objects`.
+
+        Returns True if the position is empty, False otherwise. Pair with
+        start_block/end_block to gate subsequent actions (GM-style).
+        """
+        x_expr = str(parameters.get("x", "self.x"))
+        y_expr = str(parameters.get("y", "self.y"))
+        objects = parameters.get("objects")
+        if objects is None:
+            # Back-compat with the older boolean param
+            objects = "solid" if parameters.get("only_solid", True) else "all"
+
+        # Resolve expressions
+        try:
+            x_val = self._parse_value(x_expr, instance)
+            x_val = float(x_val) if x_val is not None and not isinstance(x_val, str) else 0.0
+        except Exception as e:
+            logger.error(f"⚠️ check_empty: bad X expression '{x_expr}': {e}")
+            x_val = 0.0
+        try:
+            y_val = self._parse_value(y_expr, instance)
+            y_val = float(y_val) if y_val is not None and not isinstance(y_val, str) else 0.0
+        except Exception as e:
+            logger.error(f"⚠️ check_empty: bad Y expression '{y_expr}': {e}")
+            y_val = 0.0
+
+        # "solid" → only solid instances block; "all" → any instance blocks.
+        # check_collision_at_position's filter uses "solid" / "any" tokens.
+        object_type = "solid" if objects == "solid" else "any"
+
+        has_collision = False
+        if self.game_runner:
+            exclude_instance = getattr(self, '_collision_other', None)
+            has_collision = self.game_runner.check_collision_at_position(
+                instance, x_val, y_val, object_type, exclude_instance)
+        else:
+            logger.debug("  ⚠️ check_empty: game_runner is None, treating as empty")
+
+        result = not has_collision
+        logger.debug(f"  🔍 check_empty at ({x_val}, {y_val}) objects={objects}: empty={result}")
         return result
 
     def execute_if_collision_at_action(self, instance, parameters: Dict[str, Any]):

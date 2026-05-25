@@ -695,45 +695,33 @@ ACTION_TYPES = {
     "check_empty": ActionType(
         name="check_empty",
         display_name="Check Empty",
-        description="Check if position is collision-free",
+        description="True when (x, y) is collision-free. Use with start_block/end_block "
+                    "to gate the following action(s), GM-style.",
         category="Control",
         icon="🔍",
         parameters=[
             ActionParameter(
                 name="x",
-                display_name="X Position",
+                display_name="X",
                 param_type="string",
                 default_value="self.x",
-                description="X position to check"
+                description="X position to check (expression OK, e.g. self.x + 32)"
             ),
             ActionParameter(
                 name="y",
-                display_name="Y Position",
+                display_name="Y",
                 param_type="string",
                 default_value="self.y",
-                description="Y position to check"
+                description="Y position to check (expression OK, e.g. self.y + 32)"
             ),
             ActionParameter(
-                name="only_solid",
-                display_name="Only Solid Objects",
-                param_type="boolean",
-                default_value=True,
-                description="Check only solid objects"
+                name="objects",
+                display_name="Objects",
+                param_type="choice",
+                default_value="solid",
+                description="Which instances count as occupying the position",
+                choices=["solid", "all"]
             ),
-            ActionParameter(
-                name="then_actions",
-                display_name="Then Actions",
-                param_type="action_list",
-                default_value=[],
-                description="Actions if empty"
-            ),
-            ActionParameter(
-                name="else_actions",
-                display_name="Else Actions",
-                param_type="action_list",
-                default_value=[],
-                description="Actions if not empty"
-            )
         ]
     ),
 
