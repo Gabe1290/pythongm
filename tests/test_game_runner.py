@@ -607,7 +607,13 @@ class TestInstancesOverlap:
                 return runner
 
     def create_mock_instance(self, x, y, width=32, height=32):
-        """Create a mock instance with position and dimensions"""
+        """Create a mock instance with position and dimensions.
+
+        Sets bbox_* on the sprite mock to the full frame so the bbox-aware
+        AABB check in instances_overlap behaves identically to the historic
+        full-sprite check — keeps these unit tests focused on the AABB
+        algebra rather than bbox derivation.
+        """
         instance = MagicMock()
         instance.x = x
         instance.y = y
@@ -615,6 +621,10 @@ class TestInstancesOverlap:
         instance._cached_height = height
         instance.sprite.origin_x = 0
         instance.sprite.origin_y = 0
+        instance.sprite.bbox_left = 0
+        instance.sprite.bbox_top = 0
+        instance.sprite.bbox_right = width
+        instance.sprite.bbox_bottom = height
         return instance
 
     def test_instances_overlap_true(self, game_runner):
@@ -1210,6 +1220,16 @@ class TestPixelPerfectCollision:
         sprite.speed = 10.0
         sprite.animation_type = "single"
         sprite.precise = precise
+        # Bbox = full frame for these unit tests. instances_overlap reads
+        # bbox_left/top/right/bottom on the sprite directly, so they have
+        # to exist; auto-derivation would shrink to the (single) opaque
+        # pixel and obscure what the test is actually verifying about the
+        # precise-refine pathway. _compute_collision_bbox() runs in normal
+        # GameSprite.__init__ but this test bypasses __init__ via __new__.
+        sprite.bbox_left = 0
+        sprite.bbox_top = 0
+        sprite.bbox_right = size[0]
+        sprite.bbox_bottom = size[1]
         if precise:
             sprite._build_masks()
         return sprite

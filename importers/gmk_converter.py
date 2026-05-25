@@ -210,6 +210,21 @@ class GmkConverter:
         name = gmk_spr.name
         num_frames = len(gmk_spr.subimages)
 
+        # Forward GameMaker's manual / full-image bbox override if present.
+        # `bbox_*` on GmkSprite is None when bbox_mode was "automatic" (0) —
+        # in that case the runtime GameSprite auto-derives the collision box
+        # from the actual non-transparent pixels at load time, which matches
+        # GameMaker's automatic-mode behaviour.
+        bbox_extras = {}
+        if (gmk_spr.bbox_left is not None and gmk_spr.bbox_right is not None
+                and gmk_spr.bbox_top is not None and gmk_spr.bbox_bottom is not None):
+            bbox_extras = {
+                "bbox_left": gmk_spr.bbox_left,
+                "bbox_right": gmk_spr.bbox_right,
+                "bbox_top": gmk_spr.bbox_top,
+                "bbox_bottom": gmk_spr.bbox_bottom,
+            }
+
         if num_frames == 1:
             # Single frame: save as one PNG
             w, h, bgra = gmk_spr.subimages[0]
@@ -225,6 +240,7 @@ class GmkConverter:
                 "origin_x": gmk_spr.origin_x,
                 "origin_y": gmk_spr.origin_y,
                 "precise": gmk_spr.precise,
+                **bbox_extras,
                 "frames": 1,
                 "frame_width": w,
                 "frame_height": h,
@@ -256,6 +272,7 @@ class GmkConverter:
                 "origin_x": gmk_spr.origin_x,
                 "origin_y": gmk_spr.origin_y,
                 "precise": gmk_spr.precise,
+                **bbox_extras,
                 "frames": num_frames,
                 "frame_width": frame_w,
                 "frame_height": frame_h,

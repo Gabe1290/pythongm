@@ -158,16 +158,71 @@ class GameSprite:
         self.animation_type = "single"  # single, strip_h, strip_v, grid
         # Opt-in pixel-perfect collision. Static-only: rotation/scale fall back to AABB.
         self.precise = bool(self.sprite_data.get('precise', False))
+        # Collision bbox in sprite-local pixel coords (matches GameMaker's
+        # bbox_left/right/top/bottom). Defaults to the smallest rect containing
+        # all opaque pixels of frame 0 — that way a 32x32 sprite of a 24-wide
+        # character with transparent edges won't trigger collision while two
+        # cells apart on the grid. JSON overrides win; if the auto-derive can't
+        # produce a sensible answer the box stays at the full frame.
+        # Populated by _compute_collision_bbox after load_image runs.
+        self.bbox_left = 0
+        self.bbox_top = 0
+        self.bbox_right = 32   # provisional; refreshed below
+        self.bbox_bottom = 32
         self.load_image()
         # Apply origin from sprite data (after load_image sets dimensions)
         self.origin_x = self.sprite_data.get('origin_x', 0)
         self.origin_y = self.sprite_data.get('origin_y', 0)
         if self.precise:
             self._build_masks()
+        self._compute_collision_bbox()
 
     def _build_masks(self):
         """Build per-frame pygame.Mask for pixel-perfect collision."""
         self.masks = [pygame.mask.from_surface(f) for f in self.frames]
+
+    def _compute_collision_bbox(self) -> None:
+        """Populate bbox_left/top/right/bottom in sprite-local pixel coords.
+
+        Three sources, in priority order:
+        1. Explicit override in sprite_data (`bbox_left` etc). All four must be
+           present — if any are missing we ignore the override and fall through.
+        2. Automatic — the union of opaque pixels in frame 0 (GameMaker's
+           default "Automatic" bbox mode). Uses a fresh `pygame.mask.from_surface`
+           so the computation works even when `precise` is off (the runtime's
+           per-frame mask cache only exists for precise=True sprites).
+        3. Fallback — full frame (0, 0, width, height). Behaviour-preserving
+           for old sprites that don't load cleanly through mask generation.
+        """
+        d = self.sprite_data
+        if all(k in d for k in ('bbox_left', 'bbox_top', 'bbox_right', 'bbox_bottom')):
+            self.bbox_left = int(d['bbox_left'])
+            self.bbox_top = int(d['bbox_top'])
+            self.bbox_right = int(d['bbox_right'])
+            self.bbox_bottom = int(d['bbox_bottom'])
+            return
+
+        if self.frames:
+            try:
+                mask = pygame.mask.from_surface(self.frames[0])
+                rects = mask.get_bounding_rects()
+                if rects:
+                    union = rects[0]
+                    for r in rects[1:]:
+                        union = union.union(r)
+                    self.bbox_left = union.left
+                    self.bbox_top = union.top
+                    self.bbox_right = union.right  # pygame rect.right is exclusive — matches our half-open AABB convention
+                    self.bbox_bottom = union.bottom
+                    return
+            except Exception:
+                pass  # fall through to full-frame fallback
+
+        # Fallback: full frame
+        self.bbox_left = 0
+        self.bbox_top = 0
+        self.bbox_right = self.width
+        self.bbox_bottom = self.height
 
     def load_image(self):
         """Load the sprite image and extract frames if animated"""
@@ -3013,17 +3068,8 @@ class GameRunner:
             if not (moving_solid or other_solid):
                 continue
 
-            # Use cached dimensions
-            w2 = other_instance._cached_width
-            h2 = other_instance._cached_height
-
-            # Offset by sprite origins
-            ox1 = moving_instance.sprite.origin_x if moving_instance.sprite else 0
-            oy1 = moving_instance.sprite.origin_y if moving_instance.sprite else 0
-            ox2 = other_instance.sprite.origin_x if other_instance.sprite else 0
-            oy2 = other_instance.sprite.origin_y if other_instance.sprite else 0
-
-            # Check rectangle overlap at intended position.
+            # Use collision bboxes (smaller than full sprite for sprites
+            # with transparent borders or explicit bbox_* metadata).
             # AABB-only here (no pixel-perfect refine): movement-blocking is
             # what the player feels as "the wall stops me here", and grid-maze
             # sprites with a few transparent edge pixels would otherwise let
@@ -3034,13 +3080,29 @@ class GameRunner:
             # zones and pickup triggers keep their pixel accuracy. Phase 2a
             # originally wired precise into all three AABB call sites — this
             # narrows it to the two firing paths where it actually helps.
-            if self.rectangles_overlap(intended_x - ox1, intended_y - oy1, w1, h1,
-                                      other_instance.x - ox2, other_instance.y - oy2, w2, h2):
+            s1 = moving_instance.sprite
+            s2 = other_instance.sprite
+            if s1 is None or s2 is None:
+                continue
+            bw1 = s1.bbox_right - s1.bbox_left
+            bh1 = s1.bbox_bottom - s1.bbox_top
+            bw2 = s2.bbox_right - s2.bbox_left
+            bh2 = s2.bbox_bottom - s2.bbox_top
+            # Move-target world position uses intended_*; offsets shift by the
+            # sprite origin and bbox_left/top so we compare collision-bbox
+            # corners, not whole-sprite corners.
+            mx = intended_x - s1.origin_x + s1.bbox_left
+            my = intended_y - s1.origin_y + s1.bbox_top
+            ox = other_instance.x - s2.origin_x + s2.bbox_left
+            oy = other_instance.y - s2.origin_y + s2.bbox_top
+
+            if self.rectangles_overlap(mx, my, bw1, bh1, ox, oy, bw2, bh2):
                 # If the mover already overlaps the blocker at its current
                 # position, let it escape: blocking every direction would
                 # trap it in an oscillation freeze on the next bounce.
-                if self.rectangles_overlap(moving_instance.x - ox1, moving_instance.y - oy1, w1, h1,
-                                          other_instance.x - ox2, other_instance.y - oy2, w2, h2):
+                cur_mx = moving_instance.x - s1.origin_x + s1.bbox_left
+                cur_my = moving_instance.y - s1.origin_y + s1.bbox_top
+                if self.rectangles_overlap(cur_mx, cur_my, bw1, bh1, ox, oy, bw2, bh2):
                     continue
                 return (False, other_instance)
 
@@ -3089,18 +3151,27 @@ class GameRunner:
                 if not inst_obj_data.get('solid', False) and not other_obj_data.get('solid', False):
                     continue
 
-                # Use cached dimensions
-                w2 = other_instance._cached_width
-                h2 = other_instance._cached_height
+                # Check if collision bboxes overlap (smaller than full sprite
+                # when sprite has transparent borders / explicit bbox_* meta).
+                s1 = instance.sprite
+                s2 = other_instance.sprite
+                if s1 is None or s2 is None:
+                    continue
+                bw1 = s1.bbox_right - s1.bbox_left
+                bh1 = s1.bbox_bottom - s1.bbox_top
+                bw2 = s2.bbox_right - s2.bbox_left
+                bh2 = s2.bbox_bottom - s2.bbox_top
+                ix = instance.x - s1.origin_x + s1.bbox_left
+                iy = instance.y - s1.origin_y + s1.bbox_top
+                ox = other_instance.x - s2.origin_x + s2.bbox_left
+                oy = other_instance.y - s2.origin_y + s2.bbox_top
+                # Need w1/h1/w2/h2 names for the push_back_instance call below
+                w1 = bw1
+                h1 = bh1
+                w2 = bw2
+                h2 = bh2
 
-                # Check if they're overlapping (accounting for sprite origin)
-                ox1 = instance.sprite.origin_x if instance.sprite else 0
-                oy1 = instance.sprite.origin_y if instance.sprite else 0
-                ox2 = other_instance.sprite.origin_x if other_instance.sprite else 0
-                oy2 = other_instance.sprite.origin_y if other_instance.sprite else 0
-
-                if self.rectangles_overlap(instance.x - ox1, instance.y - oy1, w1, h1,
-                                          other_instance.x - ox2, other_instance.y - oy2, w2, h2):
+                if self.rectangles_overlap(ix, iy, bw1, bh1, ox, oy, bw2, bh2):
                     # They're overlapping - push the moving instance back
                     # Determine which one was moving based on hspeed/vspeed
                     inst_moving = instance.hspeed != 0 or instance.vspeed != 0
@@ -3355,10 +3426,19 @@ class GameRunner:
 
                 target_object = event_name[19:]  # Remove 'not_collision_with_' prefix
 
-                # Check if instance is colliding with ANY instance of target object
+                # Check if instance is colliding (bbox-level) with ANY instance
+                # of target object. Bbox here matches the other firing paths
+                # (instances_overlap, check_collision_at_position) so a
+                # not_collision_with_X event has the same "what counts as
+                # touching" semantics as collision_with_X.
                 is_colliding = False
-                w1 = instance._cached_width
-                h1 = instance._cached_height
+                s1 = instance.sprite
+                if s1 is None:
+                    continue
+                bw1 = s1.bbox_right - s1.bbox_left
+                bh1 = s1.bbox_bottom - s1.bbox_top
+                ix = instance.x - s1.origin_x + s1.bbox_left
+                iy = instance.y - s1.origin_y + s1.bbox_top
 
                 for other_instance in self.current_room.instances:
                     if other_instance == instance:
@@ -3366,11 +3446,15 @@ class GameRunner:
                     if other_instance.object_name != target_object:
                         continue
 
-                    w2 = other_instance._cached_width
-                    h2 = other_instance._cached_height
+                    s2 = other_instance.sprite
+                    if s2 is None:
+                        continue
+                    bw2 = s2.bbox_right - s2.bbox_left
+                    bh2 = s2.bbox_bottom - s2.bbox_top
+                    ox = other_instance.x - s2.origin_x + s2.bbox_left
+                    oy = other_instance.y - s2.origin_y + s2.bbox_top
 
-                    if self.rectangles_overlap(instance.x, instance.y, w1, h1,
-                                              other_instance.x, other_instance.y, w2, h2):
+                    if self.rectangles_overlap(ix, iy, bw1, bh1, ox, oy, bw2, bh2):
                         is_colliding = True
                         break
 
@@ -3428,26 +3512,39 @@ class GameRunner:
         return None
 
     def instances_overlap(self, inst1, inst2) -> bool:
-        """Check if two instances overlap (accounting for sprite origin)"""
-        # Use cached dimensions for performance
-        w1 = inst1._cached_width
-        h1 = inst1._cached_height
-        w2 = inst2._cached_width
-        h2 = inst2._cached_height
+        """Check if two instances overlap using their sprite collision bboxes.
 
-        # Offset positions by sprite origin
-        ox1 = inst1.sprite.origin_x if inst1.sprite else 0
-        oy1 = inst1.sprite.origin_y if inst1.sprite else 0
-        ox2 = inst2.sprite.origin_x if inst2.sprite else 0
-        oy2 = inst2.sprite.origin_y if inst2.sprite else 0
-
-        ax1 = inst1.x - ox1
-        ay1 = inst1.y - oy1
-        ax2 = inst2.x - ox2
-        ay2 = inst2.y - oy2
-        if not self.rectangles_overlap(ax1, ay1, w1, h1, ax2, ay2, w2, h2):
+        The AABB step uses each sprite's collision bbox (sprite.bbox_left etc),
+        not the full sprite size — so a 32x32 sprite of a character with
+        transparent borders won't trigger collision while two grid cells apart.
+        Precise refinement still uses the full sprite mask aligned at the
+        AABB top-left, matching the previous semantics.
+        """
+        # Bbox dimensions and world top-left (origin- and bbox-adjusted)
+        b1 = self._bbox_in_world(inst1)
+        b2 = self._bbox_in_world(inst2)
+        if b1 is None or b2 is None:
             return False
-        return self._precise_refine(inst1, ax1, ay1, inst2, ax2, ay2)
+        bx1, by1, bw1, bh1 = b1
+        bx2, by2, bw2, bh2 = b2
+
+        if not self.rectangles_overlap(bx1, by1, bw1, bh1, bx2, by2, bw2, bh2):
+            return False
+        return self._precise_refine(inst1, bx1, by1, inst2, bx2, by2)
+
+    @staticmethod
+    def _bbox_in_world(instance):
+        """Return (x, y, w, h) of the instance's collision bbox in world coords,
+        or None if it has no sprite. World x/y is the bbox top-left after
+        applying sprite origin and the sprite's bbox_left/top offsets."""
+        s = instance.sprite
+        if s is None:
+            return None
+        x = instance.x - s.origin_x + s.bbox_left
+        y = instance.y - s.origin_y + s.bbox_top
+        w = s.bbox_right - s.bbox_left
+        h = s.bbox_bottom - s.bbox_top
+        return (x, y, w, h)
 
     def rectangles_overlap(self, x1, y1, w1, h1, x2, y2, w2, h2) -> bool:
         """Check if two rectangles overlap"""
@@ -3520,23 +3617,29 @@ class GameRunner:
             if exclude_instance and other_instance == exclude_instance:
                 continue
 
-            # Use cached dimensions
-            w2 = other_instance._cached_width
-            h2 = other_instance._cached_height
+            # Use sprite collision bboxes (smaller than full sprite when the
+            # sprite has transparent borders or explicit bbox_* metadata)
+            s1 = instance.sprite
+            s2 = other_instance.sprite
+            if s1 is None or s2 is None:
+                continue
+            bw1 = s1.bbox_right - s1.bbox_left
+            bh1 = s1.bbox_bottom - s1.bbox_top
+            bw2 = s2.bbox_right - s2.bbox_left
+            bh2 = s2.bbox_bottom - s2.bbox_top
+            # check_x/y is the candidate top-left of `instance`; the bbox
+            # is offset within the sprite by origin + bbox_left/top.
+            ix = check_x - s1.origin_x + s1.bbox_left
+            iy = check_y - s1.origin_y + s1.bbox_top
+            ox = other_instance.x - s2.origin_x + s2.bbox_left
+            oy = other_instance.y - s2.origin_y + s2.bbox_top
 
-            # Offset by sprite origins
-            ox1 = instance.sprite.origin_x if instance.sprite else 0
-            oy1 = instance.sprite.origin_y if instance.sprite else 0
-            ox2 = other_instance.sprite.origin_x if other_instance.sprite else 0
-            oy2 = other_instance.sprite.origin_y if other_instance.sprite else 0
-
-            # Check if positions overlap
-            if self.rectangles_overlap(check_x - ox1, check_y - oy1, w1, h1,
-                                       other_instance.x - ox2, other_instance.y - oy2, w2, h2):
+            # Check if collision bboxes overlap
+            if self.rectangles_overlap(ix, iy, bw1, bh1, ox, oy, bw2, bh2):
                 # Pixel-perfect refinement (no-op unless either sprite opts in).
                 if not self._precise_refine(
-                        instance, check_x - ox1, check_y - oy1,
-                        other_instance, other_instance.x - ox2, other_instance.y - oy2):
+                        instance, ix, iy,
+                        other_instance, ox, oy):
                     continue
                 # Use cached object data for properties
                 other_obj_data = other_instance._cached_object_data
