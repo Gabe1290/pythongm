@@ -47,6 +47,10 @@ class ActionType:
     category: str
     icon: Optional[str] = None
     parameters: List[ActionParameter] = field(default_factory=list)
+    # When True, the action dialog shows a GM-style "Applies to: Self / Other / Object"
+    # selector at the top; the chosen value is saved as `target` ("self"|"other"|"object")
+    # and the object name as `target_object` in the action's params.
+    supports_applies_to: bool = False
 
 ACTION_TYPES = {
     "move_grid": ActionType(
@@ -1019,16 +1023,8 @@ ACTION_TYPES = {
         description="Destroy an instance",
         category="Instance",
         icon="💥",
-        parameters=[
-            ActionParameter(
-                name="target",
-                display_name="Target",
-                param_type="choice",
-                default_value="self",
-                description="Which instance to destroy",
-                choices=["self", "other"]
-            )
-        ]
+        supports_applies_to=True,
+        parameters=[]
     ),
 
     "create_instance": ActionType(
@@ -1075,6 +1071,7 @@ ACTION_TYPES = {
         description="Transform into different object type",
         category="Instance",
         icon="🔄",
+        supports_applies_to=True,
         parameters=[
             ActionParameter(
                 name="object",
