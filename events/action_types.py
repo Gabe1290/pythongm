@@ -1324,9 +1324,18 @@ ACTION_TYPES = {
         icon="➡️",
         parameters=[
             ActionParameter(
-                name="directions", display_name="Direction Bitmask",
-                param_type="number", default_value=0,
-                description="8-direction bitmask (GameMaker convention)",
+                name="directions", display_name="Directions",
+                # `string` rather than `number` because the GMK importer
+                # converts the original 9-bit bitmask into a Python list
+                # of direction names (e.g. `['down', 'up']` so
+                # start_moving_direction can pick at random). The events
+                # panel currently has no multi-select widget for list
+                # params, so the value round-trips through a QLineEdit
+                # as its stringified repr. The runtime tolerates both
+                # forms (list, stringified list, single name, numeric
+                # angle, expression) — see execute_start_moving_direction_action.
+                param_type="string", default_value="right",
+                description="Direction name ('up', 'down', 'left', 'right'), comma-separated list, or a single numeric angle",
             ),
             ActionParameter(
                 name="direction_expr", display_name="Direction Expression",

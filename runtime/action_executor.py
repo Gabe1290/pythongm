@@ -1038,6 +1038,24 @@ class ActionExecutor:
         if direction_expr and isinstance(direction_expr, str) and direction_expr.strip():
             directions = direction_expr.strip()
 
+        # Tolerate stringified lists like `"['down', 'up']"`. The
+        # events-panel UI round-trips list-typed action params through
+        # a single-line QLineEdit, which serialises a Python list as
+        # its repr() rather than as an actual list — without this
+        # fallback parsing, monster_ud's `directions: "['down', 'up']"`
+        # fell through to direction_map.get("[...]") -> 0 and the
+        # monster sat motionless. See samples/maze_3/objects/monster_ud.
+        if isinstance(directions, str):
+            stripped = directions.strip()
+            if stripped.startswith('[') and stripped.endswith(']'):
+                try:
+                    import ast
+                    parsed = ast.literal_eval(stripped)
+                    if isinstance(parsed, list):
+                        directions = parsed
+                except (ValueError, SyntaxError):
+                    pass  # not a valid list literal, fall through
+
         # Handle different parameter types
         if isinstance(directions, list):
             if len(directions) == 0:
@@ -4690,7 +4708,9 @@ class ActionExecutor:
         new_instance.hspeed = speed * math.cos(rad)
         new_instance.vspeed = -speed * math.sin(rad)  # Negative because Y increases downward
         new_instance.speed = speed
-        new_instance.direction = direction
+        # `direction` is now a derived property on GameInstance (computed
+        # from hspeed/vspeed), so there's nothing to write back here —
+        # setting hspeed/vspeed above is enough.
 
         # Get sprite for the new instance
         sprite_name = object_data.get('sprite', '')
