@@ -211,6 +211,16 @@ move it to a feature branch and remove the entry once the feature ships.
     grepping the GMK action library spec for the action id and adding
     `(1, <id>): "play_sound"` to GM_ACTION_MAP with the right param
     name mapping.
+  - The GMK importer was missing the `(1, 223)` mapping for
+    `action_current_room` ("restart current room"). All collision
+    handlers that ended with a room-restart imported as
+    `comment "Unmapped GM action: lib=1, id=223, kind=0,
+    func=action_current_room"` — silently dropping the restart from
+    e.g. maze_3's three obj_person death handlers, leaving the player
+    overlapping the monster after the life lost and chaining into more
+    collisions. Added `(1, 223): "restart_room"` + matching
+    `["transition"]` param row to `importers/gmk_mappings.py`. Future
+    .gmk re-imports recover the action.
 
 ---
 

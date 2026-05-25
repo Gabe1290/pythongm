@@ -300,6 +300,7 @@ GM_ACTION_MAP = {
     (1, 603): "comment",
     # ---- Room tab ----
     (1, 222): "next_room",             # GM7 action_next_room
+    (1, 223): "restart_room",          # GM7 action_current_room (restart current)
     (1, 224): "goto_room",             # GM7 action_room_goto
     (1, 225): "previous_room",         # GM7 action_room_previous
     (1, 226): "if_next_room_exists",   # GM7 action_if_next_room
@@ -437,6 +438,7 @@ GM_ACTION_PARAMS = {
     # ---- GM7 action param mappings ----
     (1, 110): [],                          # jump_to_start (no params)
     (1, 222): ["transition"],              # next_room
+    (1, 223): ["transition"],              # restart_room
     (1, 224): ["room", "transition"],      # goto_room
     (1, 225): ["transition"],              # previous_room
     (1, 226): [],                          # if_next_room_exists
