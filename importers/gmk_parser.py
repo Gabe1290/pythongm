@@ -39,6 +39,15 @@ class GmkSprite:
     origin_x: int = 0
     origin_y: int = 0
     precise: bool = False  # Pixel-perfect collision opt-in
+    # GameMaker collision bbox in sprite-local pixel coords. Only set when
+    # bbox_mode == 2 ("manual") in the .gmk; for mode 0 ("automatic", the
+    # default) and mode 1 ("full image") these stay None and the runtime
+    # GameSprite either auto-derives from the pixel mask or falls back to
+    # the full frame.
+    bbox_left: Optional[int] = None
+    bbox_right: Optional[int] = None
+    bbox_top: Optional[int] = None
+    bbox_bottom: Optional[int] = None
     subimages: List[Tuple[int, int, bytes]] = field(default_factory=list)
     # Each subimage is (width, height, bgra_pixel_data)
 
@@ -702,6 +711,22 @@ class GmkParser:
             _bbox_mode = s.read_int32()
             _precise = s.read_bool()
             sprite.precise = bool(_precise)
+            # bbox_mode: 0=automatic, 1=full image, 2=manual. Only store
+            # the explicit values when manual; auto-derivation happens at
+            # GameSprite load time from the pixel mask. Full-image mode
+            # also sets explicit values so the runtime doesn't try to
+            # auto-shrink a sprite the author intentionally wants checked
+            # against its full frame.
+            if _bbox_mode == 2:
+                sprite.bbox_left = _bbox_left
+                sprite.bbox_right = _bbox_right
+                sprite.bbox_top = _bbox_top
+                sprite.bbox_bottom = _bbox_bottom
+            elif _bbox_mode == 1:
+                sprite.bbox_left = 0
+                sprite.bbox_top = 0
+                sprite.bbox_right = _spr_width
+                sprite.bbox_bottom = _spr_height
             transparent = True  # used for BMP key color
         else:
             transparent = False
@@ -744,6 +769,17 @@ class GmkParser:
             _bbox_bottom = s.read_int32()
             _bbox_top = s.read_int32()
             sprite.precise = (_shape == 0)
+            # See pre-v800 branch for the bbox_mode semantics — same here.
+            if _bbox_mode == 2:
+                sprite.bbox_left = _bbox_left
+                sprite.bbox_right = _bbox_right
+                sprite.bbox_top = _bbox_top
+                sprite.bbox_bottom = _bbox_bottom
+            elif _bbox_mode == 1 and sprite.subimages:
+                sprite.bbox_left = 0
+                sprite.bbox_top = 0
+                sprite.bbox_right = sprite.subimages[0][0]   # width
+                sprite.bbox_bottom = sprite.subimages[0][1]  # height
 
         return sprite
 
