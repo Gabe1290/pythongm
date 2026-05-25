@@ -12,13 +12,9 @@
         {
           "action": "start_moving_direction",
           "parameters": {
-            "directions": [
-              "down",
-              "left",
-              "right",
-              "up"
-            ],
-            "speed": "32/6"
+            "directions": "['down', 'left', 'right', 'up']",
+            "direction_expr": "",
+            "speed": "32/8"
           }
         }
       ]
@@ -33,6 +29,15 @@
           }
         },
         {
+          "action": "if_collision",
+          "parameters": {
+            "x": "hspeed",
+            "y": "vspeed",
+            "object": "solid",
+            "not_flag": true
+          }
+        },
+        {
           "action": "exit_event",
           "parameters": {}
         },
@@ -41,6 +46,15 @@
           "parameters": {
             "direction": "direction+180",
             "speed": "32/6"
+          }
+        },
+        {
+          "action": "if_collision",
+          "parameters": {
+            "x": "hspeed",
+            "y": "vspeed",
+            "object": "solid",
+            "not_flag": true
           }
         },
         {
@@ -60,5 +74,6 @@
   },
   "imported": true,
   "created": "2026-05-23T14:34:55.669706",
-  "modified": "2026-05-23T14:34:55.669706"
+  "modified": "2026-05-25T09:40:27.938120",
+  "parent": ""
 }

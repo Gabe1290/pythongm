@@ -7,88 +7,34 @@
   "persistent": false,
   "depth": -10,
   "events": {
-    "create": {
+    "animation_end": {
       "actions": [
         {
-          "action": "set_friction",
+          "action": "destroy_instance",
           "parameters": {
-            "friction": "-200",
-            "relative": true
-          }
-        },
-        {
-          "action": "comment",
-          "parameters": {
-            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
-          }
-        },
-        {
-          "action": "comment",
-          "parameters": {
-            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
-          }
-        },
-        {
-          "action": "comment",
-          "parameters": {
-            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
-          }
-        },
-        {
-          "action": "comment",
-          "parameters": {
-            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
-          }
-        },
-        {
-          "action": "comment",
-          "parameters": {
-            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
-          }
-        },
-        {
-          "action": "comment",
-          "parameters": {
-            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
-          }
-        },
-        {
-          "action": "comment",
-          "parameters": {
-            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
-          }
-        },
-        {
-          "action": "comment",
-          "parameters": {
-            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
-          }
-        },
-        {
-          "action": "comment",
-          "parameters": {
-            "text": "Unmapped GM action: lib=1, id=204, kind=0, func=action_kill_position"
-          }
-        },
-        {
-          "action": "set_friction",
-          "parameters": {
-            "friction": "200",
-            "relative": true
+            "target": "self",
+            "target_object": ""
           }
         }
       ]
     },
-    "animation_end": {
+    "create": {
       "actions": [
         {
-          "action": "create_random_instance",
-          "parameters": {}
+          "action": "destroy_at_position",
+          "parameters": {
+            "target": "object",
+            "target_object": "monster_lr",
+            "x": "self.x",
+            "y": "self.y",
+            "radius": "32"
+          }
         }
       ]
     }
   },
   "imported": true,
   "created": "2026-05-23T14:34:55.669706",
-  "modified": "2026-05-23T14:34:55.669706"
+  "modified": "2026-05-25T23:48:10.108369",
+  "parent": ""
 }

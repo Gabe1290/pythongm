@@ -10,33 +10,23 @@
     "step": {
       "actions": [
         {
-          "action": "show_highscore",
-          "parameters": {}
-        },
-        {
-          "action": "test_health",
-          "parameters": {}
-        },
-        {
-          "action": "set_sprite",
+          "action": "if_object_exists",
           "parameters": {
-            "sprite": "sound_door",
-            "subimage": "0"
+            "object": "obj_diamond",
+            "not_flag": true
           }
         },
         {
-          "action": "create_random_instance",
-          "parameters": {}
-        },
-        {
-          "action": "start_block",
-          "parameters": {}
+          "action": "destroy_instance",
+          "parameters": {
+            "target": "self"
+          }
         }
       ]
     }
   },
   "imported": true,
   "created": "2026-05-23T14:34:55.271791",
-  "modified": "2026-05-23T14:34:55.271791",
+  "modified": "2026-05-24T15:29:19.842868",
   "parent": "wall_corner"
 }

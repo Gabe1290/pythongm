@@ -2,7 +2,7 @@
   "name": "maze_2",
   "version": "1.0.0",
   "created": "2026-05-23T14:34:55.094829",
-  "modified": "2026-05-24T13:13:12.552587",
+  "modified": "2026-05-24T15:32:40.008851",
   "settings": {
     "window_title": "",
     "window_width": 480,
@@ -35,7 +35,8 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-23T14:34:55.094829",
-        "modified": "2026-05-23T14:34:55.094829"
+        "modified": "2026-05-24T15:16:16.759204",
+        "thumbnail": "thumbnails\\sprite_wall_corner_thumb.png"
       },
       "sprite_goal": {
         "name": "sprite_goal",
@@ -125,7 +126,8 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-23T14:34:55.094829",
-        "modified": "2026-05-23T14:34:55.094829"
+        "modified": "2026-05-24T15:16:06.233687",
+        "thumbnail": "thumbnails\\sprite_wall_horizontal_thumb.png"
       },
       "sprite_wall_vertical": {
         "name": "sprite_wall_vertical",
@@ -255,21 +257,41 @@
             "actions": [
               {
                 "action": "if_next_room_exists",
-                "parameters": {}
-              },
-              {
-                "action": "next_room",
                 "parameters": {
-                  "transition": "0"
+                  "then_actions": [
+                    {
+                      "action": "add_score",
+                      "parameters": {
+                        "value": "100"
+                      }
+                    },
+                    {
+                      "action": "room_goto_next",
+                      "parameters": {}
+                    }
+                  ],
+                  "else_actions": [
+                    {
+                      "action": "add_score",
+                      "parameters": {
+                        "value": "100"
+                      }
+                    },
+                    {
+                      "action": "show_highscore",
+                      "parameters": {
+                        "background": "#FFFFDD",
+                        "new_color": "#FF0000",
+                        "other_color": "#000000",
+                        "allow_new_entry": true
+                      }
+                    },
+                    {
+                      "action": "game_end",
+                      "parameters": {}
+                    }
+                  ]
                 }
-              },
-              {
-                "action": "show_highscore",
-                "parameters": {}
-              },
-              {
-                "action": "restart_game",
-                "parameters": {}
               }
             ],
             "target_object": "obj_person"
@@ -277,7 +299,7 @@
         },
         "imported": true,
         "created": "2026-05-23T14:34:55.271791",
-        "modified": "2026-05-24T13:01:51.752552",
+        "modified": "2026-05-24T15:30:30.507956",
         "parent": ""
       },
       "obj_person": {
@@ -402,7 +424,7 @@
         },
         "imported": true,
         "created": "2026-05-23T14:34:55.271791",
-        "modified": "2026-05-24T13:13:12.440626",
+        "modified": "2026-05-24T15:29:19.807461",
         "parent": ""
       },
       "obj_door": {
@@ -424,29 +446,9 @@
                 }
               },
               {
-                "action": "if_next_room_exists",
+                "action": "destroy_instance",
                 "parameters": {
-                  "then_actions": [
-                    {
-                      "action": "room_goto_next",
-                      "parameters": {}
-                    }
-                  ],
-                  "else_actions": [
-                    {
-                      "action": "show_highscore",
-                      "parameters": {
-                        "background": "#FFFFDD",
-                        "new_color": "#FF0000",
-                        "other_color": "#000000",
-                        "allow_new_entry": true
-                      }
-                    },
-                    {
-                      "action": "game_end",
-                      "parameters": {}
-                    }
-                  ]
+                  "target": "self"
                 }
               }
             ]
@@ -454,7 +456,7 @@
         },
         "imported": true,
         "created": "2026-05-23T14:34:55.271791",
-        "modified": "2026-05-24T13:13:12.477263",
+        "modified": "2026-05-24T15:29:19.842868",
         "parent": "wall_corner"
       },
       "obj_diamond": {
@@ -556,7 +558,7 @@
         },
         "imported": true,
         "created": "2026-05-23T14:34:55.271791",
-        "modified": "2026-05-24T12:58:54.974580",
+        "modified": "2026-05-24T15:29:19.877344",
         "parent": ""
       },
       "controller_main": {
@@ -571,15 +573,11 @@
           "draw": {
             "actions": [
               {
-                "action": "set_draw_color",
+                "action": "draw_score",
                 "parameters": {
-                  "color": "255"
-                }
-              },
-              {
-                "action": "fill_color",
-                "parameters": {
-                  "color": "score_font"
+                  "x": "8",
+                  "y": "488",
+                  "caption": "Score: "
                 }
               }
             ]
@@ -587,7 +585,7 @@
         },
         "imported": true,
         "created": "2026-05-23T14:34:55.271791",
-        "modified": "2026-05-24T13:13:12.514518",
+        "modified": "2026-05-24T15:29:19.912116",
         "parent": ""
       }
     },
@@ -617,11 +615,110 @@
         "background_image": "background_main",
         "tile_horizontal": false,
         "tile_vertical": false,
-        "instance_count": 130,
+        "instance_count": 134,
         "instances": [],
         "created": "2026-05-23T14:34:55.284416",
-        "modified": "2026-05-23T14:34:55.284416",
+        "modified": "2026-05-24T15:32:40.006845",
         "imported": true,
+        "backgrounds": [
+          {
+            "background_image": "background_main",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": true,
+            "tile_h": true,
+            "tile_v": true,
+            "visible": true,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          }
+        ],
+        "tiles": [],
         "_external_file": "rooms/room1.json"
       },
       "room2": {
@@ -636,8 +733,107 @@
         "instance_count": 96,
         "instances": [],
         "created": "2026-05-23T14:34:55.284416",
-        "modified": "2026-05-23T14:34:55.284416",
+        "modified": "2026-05-24T15:29:19.984771",
         "imported": true,
+        "backgrounds": [
+          {
+            "visible": true,
+            "foreground": false,
+            "background_image": "background_main",
+            "x": 0,
+            "y": 0,
+            "tile_h": true,
+            "tile_v": true,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": true
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          }
+        ],
+        "tiles": [],
         "_external_file": "rooms/room2.json"
       }
     },
