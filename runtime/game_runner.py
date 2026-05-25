@@ -526,6 +526,32 @@ class GameInstance:
             self._y = value
             self._grid_dirty = True
 
+    @property
+    def direction(self):
+        """GameMaker-style direction (degrees, 0°=right, 90°=up) derived
+        from current hspeed/vspeed. Read-only because it's a view over
+        the speed components — to change it, write hspeed/vspeed (or
+        use set_direction_speed).
+
+        Returns 0 when the instance is stationary, matching GameMaker's
+        default. This makes bare `direction` references in action
+        expressions like `set_direction_speed("direction+90", …)`
+        evaluate correctly — without this property, the bare token
+        couldn't resolve and the action silently defaulted to angle 0,
+        so e.g. maze_3's monster_all always headed right on every wall
+        collision instead of probing perpendicular directions.
+
+        Note: `self.direction` in event expressions has its own special
+        path in ActionExecutor._parse_value that prefers the captured
+        pre-collision speed during collision events. This property is
+        the post-collision (current) view that bare-name references
+        use.
+        """
+        if self.hspeed == 0 and self.vspeed == 0:
+            return 0.0
+        # vspeed negated because screen y grows downward
+        return math.degrees(math.atan2(-self.vspeed, self.hspeed)) % 360.0
+
     def step(self):
         """Execute step event every frame"""
         # Advance animation

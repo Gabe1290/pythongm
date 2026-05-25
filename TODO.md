@@ -182,6 +182,18 @@ move it to a feature branch and remove the entry once the feature ships.
     that lib=1 unmapped test corresponds to and adding it to
     `gmk_mappings.py`, or re-importing the `.gmk` with a corrected
     converter.
+  - `start_moving_direction`'s `directions` parameter accepts a list
+    (e.g. `["down", "up"]` for a random-pick monster) but the events
+    panel has no multi-select widget for list-typed action params.
+    The field falls back to a `QLineEdit`, which serialises a list
+    via `str([...])` — so opening + re-saving a list-typed action
+    in the editor permanently converts it to the string
+    `"['down', 'up']"`. Runtime now tolerates this stringified form
+    (`ast.literal_eval` fallback in `execute_start_moving_direction_action`)
+    so existing data keeps working, but a proper fix would be a
+    `multi_choice` param_type backed by a row of QCheckBox widgets.
+    Same gap likely affects other list-typed action params if any
+    exist; check for other `isinstance(directions, list)` consumers.
 
 ---
 
