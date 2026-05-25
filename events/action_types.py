@@ -1482,6 +1482,10 @@ ACTION_TYPES = {
                 param_type="string", default_value="any",
                 description="'any', 'solid', or an object name",
                 required=False,
+                # The dialog's "object" branch prepends these to the
+                # available-objects list so the user can pick the
+                # built-in selectors as easily as a specific object.
+                choices=["any", "solid"],
             ),
             ActionParameter(
                 name="not_flag", display_name="Negate",

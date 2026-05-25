@@ -116,6 +116,16 @@ class ActionConfigDialog(QDialog):
                 widget = QComboBox()
                 widget.setEditable(True)
 
+                # Prepend choice-based selectors (e.g. ["any", "solid"] for
+                # if_collision's "Against" field) ahead of the per-project
+                # object list, so built-in selectors are as discoverable as
+                # specific objects. Without this, if_collision's dropdown
+                # showed "any" as the default-typed text but the value was
+                # not in the list — confusing because the user couldn't
+                # re-select it from the dropdown after editing.
+                if param.choices:
+                    widget.addItems(param.choices)
+
                 available_objects = self.get_available_objects()
                 if available_objects:
                     widget.addItems(available_objects)
