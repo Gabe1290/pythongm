@@ -150,6 +150,9 @@ for _dir, _prefix in [
     ('resources/Sprites', 'resources/Sprites'),
     ('templates', 'templates'),
     ('editors/object_editor/blockly', 'editors/object_editor/blockly'),
+    # Bundled sample projects (read-only at runtime — users must Save As
+    # to a writable location before editing).
+    ('samples', 'samples'),
 ]:
     _path = project_dir / _dir
     if _path.is_dir():
