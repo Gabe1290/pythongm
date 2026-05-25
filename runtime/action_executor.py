@@ -2861,18 +2861,38 @@ class ActionExecutor:
         """Execute destroy instance action
 
         Parameters:
-            target: "self"/"sel" or "other" - which instance to destroy
+            target: "self"|"other"|"object" - which instance(s) to destroy
+                    ("sel" is accepted as a legacy alias for "self")
+            target_object: When target=="object", name of the object whose
+                           instances should be destroyed (applies to every
+                           instance of that object in the current room).
         """
         target = parameters.get("target", "self")
+        target_object = parameters.get("target_object", "")
 
         if target == "other" and hasattr(self, '_collision_other') and self._collision_other:
-            # Destroy the other instance in a collision context
             logger.debug(f"💀 Destroying other instance: {self._collision_other.object_name}")
             self._collision_other.to_destroy = True
-        else:
-            # Destroy self (default behavior) - accept both "self" and "sel"
-            logger.debug(f"💀 Destroying instance: {instance.object_name}")
-            instance.to_destroy = True
+            return
+
+        if target == "object":
+            if not target_object:
+                logger.debug("⚠️ destroy_instance: target='object' but no target_object given")
+                return
+            if not (self.game_runner and self.game_runner.current_room):
+                logger.debug("⚠️ destroy_instance: No current room for target='object'")
+                return
+            count = 0
+            for inst in self.game_runner.current_room.instances:
+                if getattr(inst, 'object_name', None) == target_object:
+                    inst.to_destroy = True
+                    count += 1
+            logger.debug(f"💀 Destroying {count} instance(s) of '{target_object}'")
+            return
+
+        # Default: destroy self ("self" and "sel" both land here).
+        logger.debug(f"💀 Destroying instance: {instance.object_name}")
+        instance.to_destroy = True
 
     def execute_create_instance_action(self, instance, parameters: Dict[str, Any]):
         """Create a new instance of an object at a specified position
@@ -2983,23 +3003,43 @@ class ActionExecutor:
         Parameters:
             object: The new object type to change into
             perform_events: Whether to execute destroy/create events (default True)
-            target: "sel" or "other" - which instance to change (default "sel")
+            target: "self"|"other"|"object" - which instance(s) to change
+                    ("sel" is accepted as a legacy alias for "self")
+            target_object: When target=="object", name of the object whose
+                           instances should be changed (applies to every instance
+                           of that object in the current room).
         """
         new_object_name = parameters.get("object", "")
         perform_events = parameters.get("perform_events", True)
-        target = parameters.get("target", "sel")
+        target = parameters.get("target", "self")
+        target_object = parameters.get("target_object", "")
 
         if not new_object_name:
             logger.debug("⚠️ change_instance: No object specified")
             return
 
-        # Determine which instance to change
+        # Determine which instance(s) to change
+        target_instances = []
         if target == "other" and hasattr(self, '_collision_other') and self._collision_other:
-            target_instance = self._collision_other
+            target_instances = [self._collision_other]
+        elif target == "object":
+            if not target_object:
+                logger.debug("⚠️ change_instance: target='object' but no target_object given")
+                return
+            if not (self.game_runner and self.game_runner.current_room):
+                logger.debug("⚠️ change_instance: No current room for target='object'")
+                return
+            # Snapshot the list — we'll mutate object_name on each, so don't filter
+            # again mid-iteration.
+            target_instances = [
+                inst for inst in self.game_runner.current_room.instances
+                if getattr(inst, 'object_name', None) == target_object
+            ]
+            if not target_instances:
+                logger.debug(f"⚠️ change_instance: no instances of '{target_object}' in room")
+                return
         else:
-            target_instance = instance
-
-        logger.debug(f"🔄 Changing {target_instance.object_name} into {new_object_name}")
+            target_instances = [instance]
 
         # Get the game runner to access objects data and room
         if not self.game_runner:
@@ -3013,6 +3053,16 @@ class ActionExecutor:
             return
 
         new_object_data = objects_data[new_object_name]
+
+        # Apply the same transformation to every target instance.
+        for target_instance in target_instances:
+            self._change_single_instance(
+                target_instance, new_object_name, new_object_data, perform_events)
+
+    def _change_single_instance(self, target_instance, new_object_name,
+                                 new_object_data, perform_events):
+        """Apply the change_instance transformation to one instance."""
+        logger.debug(f"🔄 Changing {target_instance.object_name} into {new_object_name}")
 
         # Execute destroy event if requested
         if perform_events and target_instance.object_data:

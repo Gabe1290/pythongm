@@ -31,6 +31,10 @@ class ActionDefinition:
     parameters: List[ActionParameter] = field(default_factory=list)
     gm_version: str = "8.0"
     applies_to: str = "self"  # self, other, object
+    # When True, the action dialog shows a GM-style "Applies to: Self / Other / Object"
+    # selector at the top; the chosen value is saved as `target` ("self"|"other"|"object")
+    # and the object name as `target_object` in the action's params.
+    supports_applies_to: bool = False
     implemented: bool = True  # False for placeholder/unimplemented actions
 
 
