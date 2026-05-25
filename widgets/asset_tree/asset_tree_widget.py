@@ -44,6 +44,11 @@ class AssetTreeWidget(QTreeWidget):
         self.project_manager = None
         self.current_project = None
 
+        # Suppress the expand/collapse signal handler while we apply the
+        # saved state programmatically, so the apply pass doesn't write
+        # the same state straight back to disk.
+        self._applying_collapse_state = False
+
         # Initialize operations handler
         self.operations = AssetOperations(self)
 
@@ -288,6 +293,44 @@ class AssetTreeWidget(QTreeWidget):
         self.itemClicked.connect(self.on_item_clicked)
         self.itemDoubleClicked.connect(self.on_item_double_clicked)
         self.customContextMenuRequested.connect(self.show_context_menu)
+        self.itemExpanded.connect(self._on_category_toggled)
+        self.itemCollapsed.connect(self._on_category_toggled)
+
+    def _on_category_toggled(self, item):
+        """Persist the per-project asset-tree collapse state when the user
+        expands or collapses a top-level category."""
+        if self._applying_collapse_state or not self.project_path:
+            return
+        if not (isinstance(item, AssetTreeItem) and item.is_category):
+            return
+        collapsed = []
+        for i in range(self.topLevelItemCount()):
+            cat = self.topLevelItem(i)
+            if isinstance(cat, AssetTreeItem) and cat.is_category and not cat.isExpanded():
+                collapsed.append(cat.asset_type)
+        from utils.config import Config
+        Config.update_project_ui_state(
+            self.project_path, {'asset_tree_collapsed': collapsed})
+
+    def _apply_saved_collapse_state(self):
+        """Restore the saved expand/collapse state for top-level categories.
+        Categories not in the saved 'collapsed' list default to expanded."""
+        if not self.project_path:
+            return
+        from utils.config import Config
+        state = Config.get_project_ui_state(self.project_path)
+        collapsed = set(state.get('asset_tree_collapsed', []))
+        self._applying_collapse_state = True
+        try:
+            for i in range(self.topLevelItemCount()):
+                item = self.topLevelItem(i)
+                if isinstance(item, AssetTreeItem) and item.is_category:
+                    if item.asset_type in collapsed:
+                        self.collapseItem(item)
+                    else:
+                        self.expandItem(item)
+        finally:
+            self._applying_collapse_state = False
 
     def show_context_menu(self, position):
         """Show right-click context menu for asset management"""
@@ -1011,6 +1054,11 @@ class AssetTreeWidget(QTreeWidget):
 
             if isinstance(project_data, dict):
                 self.refresh_from_project(project_data)
+                # refresh_from_project only repopulates children; category
+                # expand state survives the clear/repopulate, but on first
+                # load of a project we still need to apply whatever the
+                # user had last time.
+                self._apply_saved_collapse_state()
             else:
                 logger.warning("Invalid project_data, clearing assets")
                 self.clear_assets()
