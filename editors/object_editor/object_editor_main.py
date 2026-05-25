@@ -42,8 +42,8 @@ class ObjectEditor(BaseEditor):
 
     # Splitter sizes for [events panel | center tabs]. Numbers are relative;
     # Qt distributes them proportionally to fill the available width.
-    _DEFAULT_SPLIT = [600, 400]   # Event List / Code Editor tabs
-    _BLOCKLY_SPLIT = [200, 900]   # Blockly tab — events panel at its minimum
+    _DEFAULT_SPLIT = [600, 400]         # Event List tab — events panel wide
+    _NARROW_EVENTS_SPLIT = [200, 900]   # Blockly / Code Editor tabs — events panel at its minimum
 
     def __init__(self, project_path: str = None, parent=None):
         # Initialize data before calling super().__init__()
@@ -565,11 +565,15 @@ class ObjectEditor(BaseEditor):
         self._apply_splitter_for_tab(index)
 
     def _apply_splitter_for_tab(self, index: int):
-        """Snap the events/center splitter so Blockly gets max width when
-        active and the events panel returns to default for other tabs."""
+        """Snap the events/center splitter: the events panel collapses to
+        its minimum on tabs that want the full width (Blockly, Code Editor)
+        and stays wide on the Event List tab."""
         if not hasattr(self, 'main_splitter') or self.main_splitter is None:
             return
-        sizes = self._BLOCKLY_SPLIT if index == self._blockly_tab_index else self._DEFAULT_SPLIT
+        narrow_indices = {self._blockly_tab_index}
+        if hasattr(self, 'code_tab_index'):
+            narrow_indices.add(self.code_tab_index)
+        sizes = self._NARROW_EVENTS_SPLIT if index in narrow_indices else self._DEFAULT_SPLIT
         self.main_splitter.setSizes(sizes)
 
     def on_blockly_config_changed(self, config):
