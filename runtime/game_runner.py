@@ -3718,6 +3718,15 @@ class GameRunner:
             # Assign sprites to instances
             new_room.set_sprites_for_instances(self.sprites, objects_data)
 
+            # Wire pre-loaded background surfaces into the new room. Without
+            # this, multi-layer / tiled backgrounds lose their surface refs
+            # on restart: GameRoom only inspects `background_image_name`
+            # (the legacy single-image field) inside load_background_image,
+            # while the tiled-layer path lives off `_game_runner_backgrounds`
+            # which set_backgrounds_ref populates. Symptom: first room load
+            # showed the tiled background; first room_restart left it blank.
+            new_room.set_backgrounds_ref(self.backgrounds)
+
             # Load background if needed
             if new_room.background_image_name:
                 new_room.load_background_image()
@@ -3777,6 +3786,13 @@ class GameRunner:
 
             # Assign sprites to instances
             new_room.set_sprites_for_instances(self.sprites, objects_data)
+
+            # Wire pre-loaded background surfaces into the new room (mirror
+            # of restart_current_room): without this, multi-layer / tiled
+            # backgrounds render blank after game restart because
+            # load_background_image only handles the legacy single-image
+            # field.
+            new_room.set_backgrounds_ref(self.backgrounds)
 
             # Load background if needed
             if new_room.background_image_name:
