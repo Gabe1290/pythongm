@@ -1027,6 +1027,38 @@ ACTION_TYPES = {
         parameters=[]
     ),
 
+    "destroy_at_position": ActionType(
+        name="destroy_at_position",
+        display_name="Destroy at Position",
+        description="Destroy instances within radius of (x, y)",
+        category="Instance",
+        icon="💣",
+        supports_applies_to=True,
+        parameters=[
+            ActionParameter(
+                name="x",
+                display_name="X",
+                param_type="string",
+                default_value="self.x",
+                description="X position (expression OK, e.g. self.x)",
+            ),
+            ActionParameter(
+                name="y",
+                display_name="Y",
+                param_type="string",
+                default_value="self.y",
+                description="Y position (expression OK, e.g. self.y)",
+            ),
+            ActionParameter(
+                name="radius",
+                display_name="Radius",
+                param_type="number",
+                default_value=32,
+                description="Pixel radius around (x, y). Default 32 = ~one grid cell.",
+            ),
+        ]
+    ),
+
     "create_instance": ActionType(
         name="create_instance",
         display_name="Create Instance",

@@ -610,6 +610,7 @@ class GameInstance:
     def step(self):
         """Execute step event every frame"""
         # Advance animation
+        animation_wrapped = False
         if self.sprite and self.sprite.frame_count > 1 and self.image_speed != 0:
             # Calculate animation advancement based on sprite speed and instance speed multiplier
             # sprite.speed is in FPS, game runs at 30 FPS
@@ -619,8 +620,18 @@ class GameInstance:
             # Wrap around when animation completes
             if self.image_index >= self.sprite.frame_count:
                 self.image_index = self.image_index % self.sprite.frame_count
+                animation_wrapped = True
             elif self.image_index < 0:
                 self.image_index = self.sprite.frame_count + (self.image_index % self.sprite.frame_count)
+                animation_wrapped = True
+
+        # Fire animation_end after we know we wrapped. Done outside the wrap
+        # branch so destroy_instance/change_instance inside the handler can't
+        # leave image_index in a half-updated state.
+        if animation_wrapped and self.object_data:
+            events = self.object_data.get("events", {})
+            if "animation_end" in events:
+                self.action_executor.execute_event(self, "animation_end", events)
 
         if self.object_data and "events" in self.object_data:
             # Skip step event if flagged (blocker just gained speed from a push,
