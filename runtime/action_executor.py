@@ -4788,25 +4788,30 @@ class ActionExecutor:
             logger.debug("⚠️ create_moving_instance: No current room to add instance to")
 
     def execute_destroy_at_position_action(self, instance, parameters: Dict[str, Any]):
-        """Destroy all instances of a specific object at a position
+        """Destroy all matching instances within `radius` pixels of (x, y).
 
         Parameters:
-            x: X position to check
-            y: Y position to check
-            object: Object type to destroy (optional - if empty, destroys all)
+            x, y: Center of the area (expressions OK, e.g. "self.x").
+            radius: Pixel radius. 0 = exact-position match (legacy behavior),
+                    >0 = Euclidean distance check. Default 32 (≈ one grid cell).
+            target: "self"|"other"|"object" — which OBJECT TYPE to filter by:
+                    self   → the calling instance's object_name
+                    other  → the collision other's object_name
+                    object → name in `target_object`
+                    If unset and no `object` legacy param is given, all
+                    instances within the radius are destroyed.
+            target_object: Used when target=="object".
+            object: Legacy fallback when neither target nor target_object is set.
         """
-        x_param = parameters.get("x", 0)
-        y_param = parameters.get("y", 0)
-        object_name = parameters.get("object", "")
-
         if not self.game_runner or not self.game_runner.current_room:
             logger.debug("⚠️ destroy_at_position: No game_runner or current_room")
             return
 
-        # Parse position values
+        # Parse position values (expressions allowed)
+        x_param = parameters.get("x", 0)
+        y_param = parameters.get("y", 0)
         x = self._parse_value(str(x_param), instance)
         y = self._parse_value(str(y_param), instance)
-
         try:
             x = float(x) if x is not None else 0.0
             y = float(y) if y is not None else 0.0
@@ -4814,20 +4819,48 @@ class ActionExecutor:
             x = 0.0
             y = 0.0
 
-        # Find and destroy instances at this position
+        # Radius: 0 keeps the legacy exact-match behavior for older callers/tests.
+        try:
+            radius = float(parameters.get("radius", 0))
+        except (ValueError, TypeError):
+            radius = 0.0
+        radius_sq = radius * radius  # avoid sqrt per instance
+
+        # Resolve object-name filter (None = no filter, destroy any instance).
+        target = parameters.get("target")
+        target_object = parameters.get("target_object", "")
+        legacy_object = parameters.get("object", "")
+        filter_name = None
+        if target == "self":
+            filter_name = getattr(instance, 'object_name', None)
+        elif target == "other":
+            other = getattr(self, '_collision_other', None)
+            filter_name = getattr(other, 'object_name', None) if other else getattr(instance, 'object_name', None)
+        elif target == "object":
+            filter_name = target_object or None
+        elif legacy_object:
+            filter_name = legacy_object
+
         destroyed_count = 0
         for inst in self.game_runner.current_room.instances:
-            # Check if instance is at this position (with small tolerance)
-            if abs(inst.x - x) < 1 and abs(inst.y - y) < 1:
-                # Check object type filter
-                if not object_name or inst.object_name == object_name:
-                    inst.to_destroy = True
-                    destroyed_count += 1
+            if filter_name and getattr(inst, 'object_name', None) != filter_name:
+                continue
+            dx = inst.x - x
+            dy = inst.y - y
+            if radius > 0:
+                if dx * dx + dy * dy > radius_sq:
+                    continue
+            else:
+                # Legacy exact-position match (within 1 pixel)
+                if abs(dx) >= 1 or abs(dy) >= 1:
+                    continue
+            inst.to_destroy = True
+            destroyed_count += 1
 
         if destroyed_count > 0:
-            logger.debug(f"💣 Destroyed {destroyed_count} instance(s) at ({x}, {y})")
+            logger.debug(f"💣 Destroyed {destroyed_count} instance(s) at ({x}, {y}) r={radius}")
         else:
-            logger.debug(f"💣 No instances found at ({x}, {y})")
+            logger.debug(f"💣 No instances destroyed at ({x}, {y}) r={radius}")
 
     # ==================== MAIN2 TAB ACTIONS ====================
 

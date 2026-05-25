@@ -84,12 +84,15 @@ MAIN1_ACTIONS = {
         display_name="Destroy at Position",
         category="instances",
         tab="main1",
-        description="Destroy instances at coordinates",
+        description="Destroy instances within radius of (x, y)",
         icon="💣",
+        supports_applies_to=True,
         parameters=[
-            ActionParameter("x", "float", "X", "X position", default=0),
-            ActionParameter("y", "float", "Y", "Y position", default=0),
-            ActionParameter("object", "object", "Object", "Object type to destroy")
+            ActionParameter("x", "float", "X", "X position (expression OK, e.g. self.x)", default=0),
+            ActionParameter("y", "float", "Y", "Y position (expression OK, e.g. self.y)", default=0),
+            ActionParameter("radius", "float", "Radius",
+                            "Pixel radius around (x, y). Default 32 = ~one grid cell.",
+                            default=32),
         ]
     ),
 }

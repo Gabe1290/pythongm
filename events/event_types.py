@@ -235,6 +235,14 @@ EVENT_TYPES = {
         icon="💔",
         parameters=[]
     ),
+    "animation_end": EventType(
+        name="animation_end",
+        display_name="Animation End",
+        description="Fires when the sprite's animation reaches its last frame and wraps",
+        category="Other",
+        icon="🎬",
+        parameters=[]
+    ),
 
     # ========================================================================
     # THYMIO ROBOT EVENTS
@@ -282,6 +290,7 @@ EVENT_TO_BLOCKLY_MAP = {
     "intersect_boundary": "event_other",
     "no_more_lives": "event_other",
     "no_more_health": "event_other",
+    "animation_end": "event_other",
 }
 # Thymio events map directly (event name == blockly block type)
 for _thymio_name in THYMIO_EVENT_TYPES:
