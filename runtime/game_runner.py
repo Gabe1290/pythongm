@@ -2906,11 +2906,23 @@ class GameRunner:
 
 
     def check_movement_collision_with_blocker(self, moving_instance, objects_data: dict):
-        """Check if intended movement would be blocked by solid objects or pushable objects.
+        """Check if intended movement would be blocked by another instance.
 
-        Blocks movement for:
-        - Solid objects (always block)
-        - Non-solid objects that have a collision event with if_can_push (Sokoban-style)
+        Blocking rule (matches GameMaker 7.0):
+        1. There must be a collision event defined between the two object
+           types (in either direction — walks parent chains).
+        2. At least ONE of the two objects must be marked `solid`. Pairs
+           of two non-solid objects fire their collision events through
+           the post-movement overlap detection path
+           (`detect_collisions_for_instance`) but never physically block
+           each other. This is why e.g. a maze monster can run THROUGH the
+           player and trigger the death animation without getting stuck
+           on top of the player's sprite — both are non-solid.
+
+        Solid + collision-event is the Sokoban shape: the player blocks
+        on the box, the box's `collision_with_player` handler runs
+        if_can_push to move the box one cell, and the blocked-then-pushed
+        loop in `update()` re-tries the player's move.
 
         Returns:
             (can_move: bool, blocking_instance: GameInstance or None)
@@ -2947,12 +2959,7 @@ class GameRunner:
             if not other_obj_data:
                 other_obj_data = objects_data.get(other_instance.object_name, {})
 
-            # Only block movement if a collision event is defined between these
-            # objects. Solid objects don't automatically block — the collision
-            # event decides what happens (stop, bounce, destroy, etc.).
-            # This matches standard game IDE behavior where objects pass through
-            # each other unless a collision event handles them.
-            #
+            # Step 1: is there a collision event in either direction?
             # Parent-chain match (via _object_matches_target) is load-bearing:
             # the event-firing path resolves collision_with_<parent> to child
             # instances, so the blocking path must too — otherwise movement
@@ -2960,7 +2967,7 @@ class GameRunner:
             # and intended_x is left stale (it never gets reset on the "no
             # collision detected" branch). _process_held_keys then sees
             # intended_x != x and skips keyboard events forever.
-            should_block = False
+            has_collision_event = False
 
             if collision_targets:
                 # Check both current name and original name (before change_instance)
@@ -2972,21 +2979,38 @@ class GameRunner:
                 for target_name in collision_targets:
                     for name in names_to_check:
                         if self._object_matches_target(name, target_name):
-                            should_block = True
+                            has_collision_event = True
                             break
-                    if should_block:
+                    if has_collision_event:
                         break
 
-            if not should_block:
+            if not has_collision_event:
                 # Check if the other instance has a collision event with the mover
                 other_collision_targets = other_instance._collision_targets
                 if other_collision_targets:
                     for target_name in other_collision_targets:
                         if self._object_matches_target(moving_instance.object_name, target_name):
-                            should_block = True
+                            has_collision_event = True
                             break
 
-            if not should_block:
+            if not has_collision_event:
+                continue
+
+            # Step 2: also require at least one side to be `solid`. Two
+            # non-solid objects with a collision event fire the event via
+            # the post-movement overlap path (detect_collisions_for_instance)
+            # but never physically block each other — that's why maze_3's
+            # monster_all can run THROUGH obj_person and trigger the death
+            # animation without getting wedged on top of the player sprite.
+            # Sokoban-style pushable boxes work because the box itself is
+            # marked solid; the player blocks on it, the box's collision
+            # event runs if_can_push, and update()'s blocked-then-pushed
+            # loop re-tries the move.
+            moving_solid = bool(
+                (moving_instance._cached_object_data or {}).get('solid', False)
+            )
+            other_solid = bool(other_obj_data.get('solid', False))
+            if not (moving_solid or other_solid):
                 continue
 
             # Use cached dimensions
