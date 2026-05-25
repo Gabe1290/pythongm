@@ -3,16 +3,24 @@
   "asset_type": "object",
   "sprite": "sprite_hole",
   "visible": true,
-  "solid": true,
+  "solid": false,
   "persistent": false,
   "depth": 0,
   "events": {
     "collision_with_obj_block": {
       "actions": [
         {
-          "action": "play_sound",
+          "action": "destroy_instance",
           "parameters": {
-            "sound": "sound_hole"
+            "target": "other",
+            "target_object": ""
+          }
+        },
+        {
+          "action": "destroy_instance",
+          "parameters": {
+            "target": "self",
+            "target_object": ""
           }
         }
       ],
@@ -21,6 +29,6 @@
   },
   "imported": true,
   "created": "2026-05-23T14:34:55.669706",
-  "modified": "2026-05-24T16:32:59.610458",
+  "modified": "2026-05-26T00:50:49.519882",
   "parent": "wall_corner"
 }

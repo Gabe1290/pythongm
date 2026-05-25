@@ -19,13 +19,11 @@
         {
           "action": "play_music",
           "parameters": {
-            "music": "sound_dead",
-            "loop": true,
-            "volume": "0.7"
+            "music": "sound_dead"
           }
         },
         {
-          "action": "room_restart",
+          "action": "restart_room",
           "parameters": {}
         }
       ]
@@ -42,13 +40,11 @@
         {
           "action": "play_music",
           "parameters": {
-            "music": "sound_dead",
-            "loop": true,
-            "volume": "0.7"
+            "music": "sound_dead"
           }
         },
         {
-          "action": "room_restart",
+          "action": "restart_room",
           "parameters": {}
         }
       ]
@@ -65,13 +61,11 @@
         {
           "action": "play_music",
           "parameters": {
-            "music": "sound_dead",
-            "loop": true,
-            "volume": "0.7"
+            "music": "sound_dead"
           }
         },
         {
-          "action": "room_restart",
+          "action": "restart_room",
           "parameters": {}
         }
       ]
@@ -79,20 +73,12 @@
     "collision_with_obj_block": {
       "actions": [
         {
-          "action": "comment",
+          "action": "if_can_push",
           "parameters": {
-            "text": "Unmapped GM action: lib=1, id=605, kind=0"
-          }
-        }
-      ]
-    },
-    "collision_with_wall_corner": {
-      "actions": [
-        {
-          "action": "start_moving_direction",
-          "parameters": {
-            "directions": 0,
-            "speed": 8
+            "direction": "facing",
+            "object_type": "obj_block",
+            "then_action": "push_and_move",
+            "else_action": "stop_movement"
           }
         }
       ]
@@ -189,10 +175,20 @@
           }
         ]
       }
+    },
+    "collision_with_wall_corner": {
+      "actions": [
+        {
+          "action": "stop_movement",
+          "parameters": {}
+        }
+      ],
+      "target_object": "wall_corner",
+      "negate": false
     }
   },
   "imported": true,
   "created": "2026-05-23T14:34:55.669706",
-  "modified": "2026-05-25T12:35:24.149311",
+  "modified": "2026-05-26T01:03:10.792588",
   "parent": ""
 }

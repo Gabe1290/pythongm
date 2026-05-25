@@ -11,21 +11,41 @@
       "actions": [
         {
           "action": "if_next_room_exists",
-          "parameters": {}
-        },
-        {
-          "action": "next_room",
           "parameters": {
-            "transition": "0"
+            "then_actions": [
+              {
+                "action": "add_score",
+                "parameters": {
+                  "value": "100"
+                }
+              },
+              {
+                "action": "room_goto_next",
+                "parameters": {}
+              }
+            ],
+            "else_actions": [
+              {
+                "action": "add_score",
+                "parameters": {
+                  "value": "100"
+                }
+              },
+              {
+                "action": "show_highscore",
+                "parameters": {
+                  "background": "#FFFFDD",
+                  "new_color": "#FF0000",
+                  "other_color": "#000000",
+                  "allow_new_entry": true
+                }
+              },
+              {
+                "action": "game_end",
+                "parameters": {}
+              }
+            ]
           }
-        },
-        {
-          "action": "show_highscore",
-          "parameters": {}
-        },
-        {
-          "action": "restart_game",
-          "parameters": {}
         }
       ],
       "target_object": "obj_person"
@@ -33,6 +53,6 @@
   },
   "imported": true,
   "created": "2026-05-23T14:34:55.271791",
-  "modified": "2026-05-24T13:01:51.752552",
+  "modified": "2026-05-24T15:30:30.507956",
   "parent": ""
 }

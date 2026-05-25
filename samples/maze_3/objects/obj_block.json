@@ -6,64 +6,9 @@
   "solid": true,
   "persistent": false,
   "depth": 0,
-  "events": {
-    "collision_with_obj_person": {
-      "actions": [
-        {
-          "action": "test_health",
-          "parameters": {}
-        },
-        {
-          "action": "play_sound",
-          "parameters": {
-            "sound": "sound_push"
-          }
-        },
-        {
-          "action": "set_friction",
-          "parameters": {
-            "friction": "8*other.hspeed",
-            "relative": true
-          }
-        },
-        {
-          "action": "start_block",
-          "parameters": {}
-        },
-        {
-          "action": "set_health",
-          "parameters": {}
-        },
-        {
-          "action": "test_health",
-          "parameters": {}
-        },
-        {
-          "action": "draw_score",
-          "parameters": {
-            "x": "obj_hole",
-            "y": "8*other.hspeed",
-            "caption": "8*other.vspeed",
-            "relative": true
-          }
-        },
-        {
-          "action": "set_friction",
-          "parameters": {
-            "friction": "8*other.hspeed",
-            "relative": true
-          }
-        },
-        {
-          "action": "start_block",
-          "parameters": {}
-        }
-      ],
-      "target_object": "obj_person"
-    }
-  },
+  "events": {},
   "imported": true,
   "created": "2026-05-23T14:34:55.669706",
-  "modified": "2026-05-24T16:32:59.672715",
+  "modified": "2026-05-26T00:36:32.632833",
   "parent": "wall_corner"
 }

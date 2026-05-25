@@ -10,17 +10,9 @@
     "destroy": {
       "actions": [
         {
-          "action": "goto_room",
+          "action": "add_score",
           "parameters": {
-            "room": "5",
-            "relative": true
-          }
-        },
-        {
-          "action": "set_sprite",
-          "parameters": {
-            "sprite": "sound_diamond",
-            "subimage": "0"
+            "value": "10"
           }
         }
       ]
@@ -28,8 +20,10 @@
     "collision_with_obj_person": {
       "actions": [
         {
-          "action": "create_random_instance",
-          "parameters": {}
+          "action": "destroy_instance",
+          "parameters": {
+            "target": "self"
+          }
         }
       ],
       "target_object": "obj_person"
@@ -37,5 +31,6 @@
   },
   "imported": true,
   "created": "2026-05-23T14:34:55.271791",
-  "modified": "2026-05-23T14:34:55.271791"
+  "modified": "2026-05-24T13:13:12.403720",
+  "parent": ""
 }

@@ -11,9 +11,10 @@
       "r": {
         "actions": [
           {
-            "action": "play_sound",
+            "action": "set_sprite",
             "parameters": {
-              "sound": "sound_dead"
+              "sprite": "sound_dead",
+              "subimage": "0"
             }
           },
           {

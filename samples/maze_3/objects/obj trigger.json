@@ -10,21 +10,28 @@
     "collision_with_obj_person": {
       "actions": [
         {
-          "action": "play_sound",
+          "action": "play_music",
           "parameters": {
-            "sound": "sound_explode"
+            "music": "sound_explode",
+            "loop": true,
+            "volume": "0.7"
           }
         },
         {
-          "action": "create_moving_instance",
+          "action": "change_instance",
           "parameters": {
+            "target": "object",
+            "target_object": "obj_bomb",
             "object": "obj_explosion",
-            "x": "1"
+            "perform_events": true
           }
         },
         {
-          "action": "create_random_instance",
-          "parameters": {}
+          "action": "destroy_instance",
+          "parameters": {
+            "target": "self",
+            "target_object": ""
+          }
         }
       ],
       "target_object": "obj_person"
@@ -32,6 +39,6 @@
   },
   "imported": true,
   "created": "2026-05-23T14:34:55.669706",
-  "modified": "2026-05-24T16:32:59.797512",
+  "modified": "2026-05-25T23:21:13.094381",
   "parent": ""
 }
