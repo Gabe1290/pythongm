@@ -10,19 +10,10 @@
     "collision_with_obj_block": {
       "actions": [
         {
-          "action": "set_sprite",
+          "action": "play_sound",
           "parameters": {
-            "sprite": "sound_hole",
-            "subimage": "0"
+            "sound": "sound_hole"
           }
-        },
-        {
-          "action": "create_random_instance",
-          "parameters": {}
-        },
-        {
-          "action": "create_random_instance",
-          "parameters": {}
         }
       ],
       "target_object": "obj_block"
@@ -30,6 +21,6 @@
   },
   "imported": true,
   "created": "2026-05-23T14:34:55.669706",
-  "modified": "2026-05-23T14:34:55.669706",
+  "modified": "2026-05-24T16:32:59.610458",
   "parent": "wall_corner"
 }

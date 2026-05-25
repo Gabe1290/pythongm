@@ -10,21 +10,13 @@
     "collision_with_obj_person": {
       "actions": [
         {
-          "action": "set_score",
-          "parameters": {
-            "value": "8*other.hspeed",
-            "relative": true
-          }
-        },
-        {
           "action": "test_health",
           "parameters": {}
         },
         {
-          "action": "set_sprite",
+          "action": "play_sound",
           "parameters": {
-            "sprite": "sound_push",
-            "subimage": "0"
+            "sound": "sound_push"
           }
         },
         {
@@ -72,6 +64,6 @@
   },
   "imported": true,
   "created": "2026-05-23T14:34:55.669706",
-  "modified": "2026-05-23T14:34:55.669706",
+  "modified": "2026-05-24T16:32:59.672715",
   "parent": "wall_corner"
 }
