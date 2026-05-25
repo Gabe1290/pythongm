@@ -328,6 +328,21 @@ class Config:
         cls._config_data['advanced'].update(kwargs)
         cls.save()
 
+    # Per-project UI state (asset tree collapse state, etc.) lives in the
+    # global config keyed by project path so it doesn't dirty project.json
+    # or end up in the bundled sample diffs.
+    @classmethod
+    def get_project_ui_state(cls, project_path) -> dict:
+        all_state = cls._config_data.get('project_ui_state', {})
+        return dict(all_state.get(str(project_path), {}))
+
+    @classmethod
+    def update_project_ui_state(cls, project_path, updates: dict):
+        all_state = cls._config_data.setdefault('project_ui_state', {})
+        state = all_state.setdefault(str(project_path), {})
+        state.update(updates)
+        cls.save()
+
 # Initialize config on import
 Config.load()
 
