@@ -62,6 +62,7 @@ MAIN1_ACTIONS = {
         tab="main1",
         description="Transform into different object type",
         icon="🔄",
+        supports_applies_to=True,
         parameters=[
             ActionParameter("object", "object", "Change Into", "New object type"),
             ActionParameter("perform_events", "boolean", "Perform Events",
@@ -75,10 +76,8 @@ MAIN1_ACTIONS = {
         tab="main1",
         description="Destroy an instance",
         icon="💥",
-        parameters=[
-            ActionParameter("target", "choice", "Applies to", "Which instance to destroy",
-                          default="self", options=["self", "other"])
-        ]
+        supports_applies_to=True,
+        parameters=[]
     ),
     "destroy_at_position": ActionDefinition(
         name="destroy_at_position",

@@ -9,7 +9,8 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QFormLayout,
     QLineEdit, QSpinBox, QDoubleSpinBox, QCheckBox,
     QComboBox, QTextEdit, QPushButton, QLabel,
-    QDialogButtonBox, QGroupBox, QColorDialog, QWidget
+    QDialogButtonBox, QGroupBox, QColorDialog, QWidget,
+    QRadioButton, QButtonGroup,
 )
 from PySide6.QtGui import QFont, QColor
 
@@ -50,6 +51,12 @@ class GM80ActionDialog(QDialog):
             desc_label.setStyleSheet("color: gray; padding: 5px;")
             layout.addWidget(desc_label)
 
+        # "Applies to" group (GM-style Self / Other / Object selector)
+        self._applies_to_target = None
+        self._applies_to_object_combo = None
+        if getattr(self.action_def, 'supports_applies_to', False):
+            layout.addWidget(self._build_applies_to_group())
+
         # Parameters
         if self.action_def.parameters:
             params_group = QGroupBox(self.tr("Parameters"))
@@ -78,6 +85,77 @@ class GM80ActionDialog(QDialog):
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
+
+    def _build_applies_to_group(self) -> QGroupBox:
+        """Build the GM-style "Applies to" Self/Other/Object selector.
+
+        Stores choice in self._applies_to_target ('self'|'other'|'object'),
+        with the object name available via self._applies_to_object_combo.
+        Persists in action params as 'target' and 'target_object'.
+        """
+        group = QGroupBox(self.tr("Applies to"))
+        glayout = QVBoxLayout(group)
+
+        self._applies_to_target = self.current_params.get('target', 'self')
+        if self._applies_to_target not in ('self', 'other', 'object'):
+            # Tolerate legacy 'sel' alias from older runtime calls.
+            self._applies_to_target = 'self' if self._applies_to_target == 'sel' else 'self'
+
+        self._applies_to_buttons = QButtonGroup(group)
+        self._self_radio = QRadioButton(self.tr("Self"))
+        self._other_radio = QRadioButton(self.tr("Other"))
+        self._object_radio = QRadioButton(self.tr("Object:"))
+        self._applies_to_buttons.addButton(self._self_radio)
+        self._applies_to_buttons.addButton(self._other_radio)
+        self._applies_to_buttons.addButton(self._object_radio)
+
+        glayout.addWidget(self._self_radio)
+        glayout.addWidget(self._other_radio)
+
+        # Object row: radio + dropdown of project objects
+        object_row = QHBoxLayout()
+        object_row.addWidget(self._object_radio)
+        self._applies_to_object_combo = QComboBox()
+        self._applies_to_object_combo.setEditable(False)
+        self._applies_to_object_combo.setMinimumWidth(180)
+        objects = self.get_available_resources("object")
+        if objects:
+            self._applies_to_object_combo.addItems(objects)
+        saved_obj = self.current_params.get('target_object', '')
+        if saved_obj and saved_obj in objects:
+            self._applies_to_object_combo.setCurrentText(saved_obj)
+        object_row.addWidget(self._applies_to_object_combo, stretch=1)
+        glayout.addLayout(object_row)
+
+        # Restore selection
+        {
+            'self': self._self_radio,
+            'other': self._other_radio,
+            'object': self._object_radio,
+        }[self._applies_to_target].setChecked(True)
+
+        # Object combo only enabled when "Object" radio is selected
+        def _sync_object_combo():
+            self._applies_to_object_combo.setEnabled(self._object_radio.isChecked())
+        _sync_object_combo()
+        self._self_radio.toggled.connect(_sync_object_combo)
+        self._other_radio.toggled.connect(_sync_object_combo)
+        self._object_radio.toggled.connect(_sync_object_combo)
+
+        return group
+
+    def _get_applies_to_values(self) -> Dict[str, Any]:
+        """Read current Applies-to selection. Returns {} if selector wasn't shown."""
+        if not getattr(self.action_def, 'supports_applies_to', False):
+            return {}
+        if self._object_radio.isChecked():
+            return {
+                'target': 'object',
+                'target_object': self._applies_to_object_combo.currentText(),
+            }
+        if self._other_radio.isChecked():
+            return {'target': 'other', 'target_object': ''}
+        return {'target': 'self', 'target_object': ''}
 
     def create_parameter_widget(self, param: ActionParameter):
         """Create appropriate widget for parameter type"""
@@ -231,7 +309,7 @@ class GM80ActionDialog(QDialog):
 
     def get_parameter_values(self) -> Dict[str, Any]:
         """Get all parameter values from widgets"""
-        values = {}
+        values = self._get_applies_to_values()
 
         for param_name, widget in self.param_widgets.items():
             param = next((p for p in self.action_def.parameters if p.name == param_name), None)
