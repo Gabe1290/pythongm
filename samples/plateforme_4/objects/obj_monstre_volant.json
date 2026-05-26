@@ -1,0 +1,90 @@
+{
+  "name": "obj_monstre_volant",
+  "asset_type": "object",
+  "sprite": "spr_volant_droite",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "right",
+            "speed": "3"
+          }
+        },
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "hspeed",
+            "value": "0",
+            "operation": "2"
+          }
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "spr_volant_droite",
+            "subimage": "0",
+            "speed": "0.4"
+          }
+        },
+        {
+          "action": "else_action",
+          "parameters": {}
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "spr_volant_gauche",
+            "subimage": "0",
+            "speed": "0.4"
+          }
+        }
+      ]
+    },
+    "collision_with_obj_brique": {
+      "actions": [
+        {
+          "action": "jump_to_random",
+          "parameters": {}
+        },
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "hspeed",
+            "value": "0",
+            "operation": "2"
+          }
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "spr_volant_droite",
+            "subimage": "0",
+            "speed": "0.4"
+          }
+        },
+        {
+          "action": "else_action",
+          "parameters": {}
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "spr_volant_gauche",
+            "subimage": "0",
+            "speed": "0.4"
+          }
+        }
+      ],
+      "target_object": "obj_brique"
+    }
+  },
+  "imported": true,
+  "created": "2026-05-26T11:59:42.358245",
+  "modified": "2026-05-26T11:59:42.358245"
+}

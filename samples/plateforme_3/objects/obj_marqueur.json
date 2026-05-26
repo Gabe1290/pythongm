@@ -1,0 +1,14 @@
+{
+  "name": "obj_marqueur",
+  "asset_type": "object",
+  "sprite": "spr_marqueur",
+  "visible": false,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {},
+  "imported": true,
+  "created": "2026-05-26T11:59:41.942278",
+  "modified": "2026-05-26T11:59:41.942278",
+  "parent": "obj_brique"
+}

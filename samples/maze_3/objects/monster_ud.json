@@ -12,9 +12,11 @@
         {
           "action": "start_moving_direction",
           "parameters": {
-            "directions": "['down', 'up']",
-            "direction_expr": "",
-            "speed": "32/8"
+            "directions": [
+              "down",
+              "up"
+            ],
+            "speed": "32/6"
           }
         }
       ]
@@ -22,7 +24,7 @@
     "collision_with_wall_corner": {
       "actions": [
         {
-          "action": "reverse_vertical",
+          "action": "snap_to_grid",
           "parameters": {}
         }
       ],
@@ -30,7 +32,6 @@
     }
   },
   "imported": true,
-  "created": "2026-05-23T14:34:55.669706",
-  "modified": "2026-05-25T09:12:23.337931",
-  "parent": ""
+  "created": "2026-05-26T11:59:41.079627",
+  "modified": "2026-05-26T11:59:41.079627"
 }

@@ -1,0 +1,13 @@
+{
+  "name": "obj_echelle",
+  "asset_type": "object",
+  "sprite": "spr_echelle",
+  "visible": false,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {},
+  "imported": true,
+  "created": "2026-05-26T11:59:42.358245",
+  "modified": "2026-05-26T11:59:42.358245"
+}

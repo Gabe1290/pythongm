@@ -222,6 +222,10 @@ GM_ACTION_MAP = {
     (1, 201): "create_instance",
     (1, 202): "create_moving_instance",
     (1, 203): "create_random_instance",
+    # action_kill_position: destroys ALL instances at (x, y) — no object filter.
+    # Same runtime as destroy_at_position; the missing object param means "all".
+    # Seen in samples/maze_3.gmk obj_explosion.create (bomb area damage).
+    (1, 204): "destroy_at_position",
     (1, 206): "change_instance",
     (1, 207): "destroy_instance",
     (1, 208): "destroy_at_position",
@@ -245,6 +249,7 @@ GM_ACTION_MAP = {
     (1, 305): "test_question",
     (1, 306): "test_expression",
     (1, 309): "if_collision",  # "if collision at position" variant
+    (1, 408): "test_expression",       # GM7 action_if (gates next action on GML expression)
     (1, 410): "test_alignment",        # GM7 action_if_aligned
     (1, 321): "start_block",
     (1, 322): "end_block",
@@ -271,6 +276,7 @@ GM_ACTION_MAP = {
     (1, 711): "set_lives",             # GM7 action_set_life
     (1, 712): "test_lives",            # GM7 action_if_life
     (1, 713): "draw_lives",            # GM7 action_draw_life
+    (1, 714): "draw_lives",            # GM7 action_draw_life_images (sprite-based)
     (1, 721): "set_health",            # GM7 action_set_health
     (1, 722): "test_health",           # GM7 action_if_health
     (1, 723): "draw_health_bar",       # GM7 action_draw_health
@@ -298,6 +304,12 @@ GM_ACTION_MAP = {
     (1, 601): "execute_code",
     (1, 602): "execute_script",
     (1, 603): "comment",
+    # GM7 action_message (id=605) is what classic GameMaker authors used as
+    # inline comments — function_name is empty, the single arg holds the
+    # comment text. Authors used it as a section-header annotation in their
+    # action lists. Mapping it to `comment` (no-op at runtime) matches intent;
+    # a real runtime popup uses action id 808 (display_message → show_message).
+    (1, 605): "comment",
     # ---- Room tab ----
     (1, 222): "next_room",             # GM7 action_next_room
     (1, 223): "restart_room",          # GM7 action_current_room (restart current)
@@ -356,6 +368,7 @@ GM_ACTION_PARAMS = {
     (1, 201): ["object", "x", "y"],
     (1, 202): ["object", "x", "y", "speed", "direction"],
     (1, 203): ["object1", "object2", "object3", "object4", "x", "y"],
+    (1, 204): ["x", "y"],           # action_kill_position (destroys all at x, y)
     (1, 206): ["object", "perform_events"],
     (1, 207): [],                   # no params (applies to self/other)
     (1, 208): ["x", "y"],
@@ -408,6 +421,7 @@ GM_ACTION_PARAMS = {
     (1, 601): ["code"],
     (1, 602): ["script"],
     (1, 603): ["text"],
+    (1, 605): ["text"],             # GM7 action_message → comment
     # Rooms
     (1, 701): ["room", "transition"],
     (1, 702): ["transition"],
@@ -445,6 +459,7 @@ GM_ACTION_PARAMS = {
     (1, 227): [],                          # if_previous_room_exists
     (1, 331): [],                          # restart_game
     (1, 332): [],                          # end_game
+    (1, 408): ["expression"],              # action_if
     (1, 410): ["hsnap", "vsnap"],          # test_alignment
     (1, 424): [],                          # start_block (begin group)
     (1, 541): ["sprite", "subimage", "speed"],   # set_sprite
@@ -460,6 +475,7 @@ GM_ACTION_PARAMS = {
     (1, 711): ["value"],                   # set_lives
     (1, 712): ["value", "operation"],      # test_lives
     (1, 713): ["x", "y", "image"],         # draw_lives
+    (1, 714): ["x", "y", "image"],         # draw_lives (sprite-based variant)
     (1, 721): ["value"],                   # set_health
     (1, 722): ["value", "operation"],      # test_health
     (1, 723): ["x1", "y1", "x2", "y2", "back_color", "bar_color"],  # draw_health_bar

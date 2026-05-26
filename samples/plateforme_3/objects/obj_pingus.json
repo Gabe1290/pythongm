@@ -1,0 +1,635 @@
+{
+  "name": "obj_pingus",
+  "asset_type": "object",
+  "sprite": "spr_pingus_dr",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": -100,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "spr_pingus_dr",
+            "subimage": "0",
+            "speed": "0"
+          }
+        },
+        {
+          "action": "execute_code",
+          "parameters": {
+            "code": "power"
+          }
+        }
+      ]
+    },
+    "step": {
+      "actions": [
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Vérifie si en l'air"
+          }
+        },
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "0",
+            "relative": true
+          }
+        },
+        {
+          "action": "reverse_horizontal",
+          "parameters": {}
+        },
+        {
+          "action": "else_action",
+          "parameters": {}
+        },
+        {
+          "action": "reverse_horizontal",
+          "parameters": {}
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Vitesse verticale limitée"
+          }
+        },
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "vspeed",
+            "value": "24",
+            "operation": "2"
+          }
+        },
+        {
+          "action": "execute_code",
+          "parameters": {
+            "code": "vspeed"
+          }
+        }
+      ]
+    },
+    "collision_with_obj_power": {
+      "actions": [
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "son_bonus",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "goto_room",
+          "parameters": {
+            "room": "20",
+            "relative": true
+          }
+        },
+        {
+          "action": "execute_code",
+          "parameters": {
+            "code": "power"
+          }
+        },
+        {
+          "action": "create_random_instance",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_power"
+    },
+    "collision_with_obj_sortie": {
+      "actions": [
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "son_niveaufini",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "if_object_exists",
+          "parameters": {
+            "object": "1000",
+            "count": "1"
+          }
+        },
+        {
+          "action": "if_next_room_exists",
+          "parameters": {}
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "next_room",
+          "parameters": {
+            "transition": "0"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        },
+        {
+          "action": "else_action",
+          "parameters": {}
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "show_highscore",
+          "parameters": {}
+        },
+        {
+          "action": "restart_game",
+          "parameters": {}
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_sortie"
+    },
+    "collision_with_obj_mortel": {
+      "actions": [
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "son_personnage_mort",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "if_object_exists",
+          "parameters": {
+            "object": "1000",
+            "count": "1"
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "-1",
+            "relative": true
+          }
+        },
+        {
+          "action": "restart_room",
+          "parameters": {
+            "transition": "0"
+          }
+        }
+      ],
+      "target_object": "obj_mortel"
+    },
+    "collision_with_obj_bonus": {
+      "actions": [
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "son_bonus",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "goto_room",
+          "parameters": {
+            "room": "10",
+            "relative": true
+          }
+        },
+        {
+          "action": "create_random_instance",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_bonus"
+    },
+    "collision_with_obj_monstre_volant": {
+      "actions": [
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "power",
+            "value": "true",
+            "operation": "0"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "test_expression",
+          "parameters": {
+            "expression": "vspeed > 0 && y < other.y+8"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Pingus vient d'en haut - monstre détruit"
+          }
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "son_monstre_mort",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "goto_room",
+          "parameters": {
+            "room": "50",
+            "relative": true
+          }
+        },
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "stop",
+            "speed": "0"
+          }
+        },
+        {
+          "action": "create_moving_instance",
+          "parameters": {
+            "object": "obj_monstre_volant_mort",
+            "x": "1"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        },
+        {
+          "action": "else_action",
+          "parameters": {}
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Pingus - mort"
+          }
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "son_personnage_mort",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "if_object_exists",
+          "parameters": {
+            "object": "1000",
+            "count": "1"
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "-1",
+            "relative": true
+          }
+        },
+        {
+          "action": "restart_room",
+          "parameters": {
+            "transition": "0"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_monstre_volant"
+    },
+    "collision_with_obj_marqueur": {
+      "actions": [
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Ne rien faire..."
+          }
+        }
+      ],
+      "target_object": "obj_marqueur"
+    },
+    "collision_with_obj_monstre": {
+      "actions": [
+        {
+          "action": "test_expression",
+          "parameters": {
+            "expression": "vspeed > 0 && y < other.y+8"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Pingus vient d'en haut - monstre détruit"
+          }
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "son_monstre_mort",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "goto_room",
+          "parameters": {
+            "room": "50",
+            "relative": true
+          }
+        },
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "stop",
+            "speed": "0"
+          }
+        },
+        {
+          "action": "create_moving_instance",
+          "parameters": {
+            "object": "obj_monstre_mort",
+            "x": "1"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        },
+        {
+          "action": "else_action",
+          "parameters": {}
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Pingus - mort"
+          }
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "son_personnage_mort",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "if_object_exists",
+          "parameters": {
+            "object": "1000",
+            "count": "1"
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "-1",
+            "relative": true
+          }
+        },
+        {
+          "action": "restart_room",
+          "parameters": {
+            "transition": "0"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_monstre"
+    },
+    "collision_with_obj_brique": {
+      "actions": [
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "vspeed",
+            "value": "15",
+            "operation": "2"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "move_to_contact",
+          "parameters": {
+            "direction": "direction",
+            "max_distance": "12"
+          }
+        },
+        {
+          "action": "set_hspeed",
+          "parameters": {
+            "hspeed": "0"
+          }
+        },
+        {
+          "action": "reverse_horizontal",
+          "parameters": {}
+        },
+        {
+          "action": "create_moving_instance",
+          "parameters": {
+            "object": "obj_splat",
+            "x": "1"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        },
+        {
+          "action": "move_to_contact",
+          "parameters": {
+            "direction": "direction",
+            "max_distance": "12"
+          }
+        },
+        {
+          "action": "set_hspeed",
+          "parameters": {
+            "hspeed": "0"
+          }
+        }
+      ],
+      "target_object": "obj_brique"
+    },
+    "keyboard": {
+      "right": {
+        "actions": [
+          {
+            "action": "execute_code",
+            "parameters": {
+              "code": "image_speed"
+            }
+          },
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "spr_pingus_dr",
+              "subimage": "-1",
+              "speed": "0.5"
+            }
+          },
+          {
+            "action": "set_score",
+            "parameters": {
+              "value": "4",
+              "relative": true
+            }
+          },
+          {
+            "action": "set_friction",
+            "parameters": {
+              "friction": "4",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "up": {
+        "actions": [
+          {
+            "action": "test_score",
+            "parameters": {
+              "value": "0",
+              "operation": "1",
+              "relative": true
+            }
+          },
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "-10"
+            }
+          }
+        ]
+      },
+      "left": {
+        "actions": [
+          {
+            "action": "execute_code",
+            "parameters": {
+              "code": "image_speed"
+            }
+          },
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "spr_pingus_ga",
+              "subimage": "-1",
+              "speed": "0.5"
+            }
+          },
+          {
+            "action": "set_score",
+            "parameters": {
+              "value": "-4",
+              "relative": true
+            }
+          },
+          {
+            "action": "set_friction",
+            "parameters": {
+              "friction": "-4",
+              "relative": true
+            }
+          }
+        ]
+      }
+    },
+    "no_more_lives": {
+      "actions": [
+        {
+          "action": "show_highscore",
+          "parameters": {}
+        },
+        {
+          "action": "restart_game",
+          "parameters": {}
+        }
+      ]
+    },
+    "game_start": {
+      "actions": [
+        {
+          "action": "goto_room",
+          "parameters": {
+            "room": "0"
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "3"
+          }
+        },
+        {
+          "action": "set_window_caption",
+          "parameters": {
+            "score": "1",
+            "lives": "score: ",
+            "health": "1"
+          }
+        }
+      ]
+    },
+    "keyboard_release": {
+      "anykey": {
+        "actions": [
+          {
+            "action": "execute_code",
+            "parameters": {
+              "code": "image_speed"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "imported": true,
+  "created": "2026-05-26T11:59:41.942278",
+  "modified": "2026-05-26T11:59:41.942278"
+}

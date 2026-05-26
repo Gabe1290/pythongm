@@ -1,0 +1,728 @@
+{
+  "name": "obj_character",
+  "asset_type": "object",
+  "sprite": "spr_right",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "execute_code",
+          "parameters": {
+            "code": "ammo"
+          }
+        }
+      ]
+    },
+    "step": {
+      "actions": [
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Check whether in the air"
+          }
+        },
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "0",
+            "relative": true
+          }
+        },
+        {
+          "action": "reverse_horizontal",
+          "parameters": {}
+        },
+        {
+          "action": "else_action",
+          "parameters": {}
+        },
+        {
+          "action": "reverse_horizontal",
+          "parameters": {}
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Limit the vertical speed"
+          }
+        },
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "vspeed",
+            "value": "12",
+            "operation": "2"
+          }
+        },
+        {
+          "action": "execute_code",
+          "parameters": {
+            "code": "vspeed"
+          }
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Check whether on a ladder"
+          }
+        },
+        {
+          "action": "draw_score",
+          "parameters": {
+            "x": "obj_ladder",
+            "y": "0",
+            "caption": "0",
+            "relative": true
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "reverse_horizontal",
+          "parameters": {}
+        },
+        {
+          "action": "execute_code",
+          "parameters": {
+            "code": "vspeed"
+          }
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "spr_climbing",
+            "subimage": "0",
+            "speed": "1"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ]
+    },
+    "collision_with_obj_bonus": {
+      "actions": [
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "snd_finishlevel",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "1",
+            "relative": true
+          }
+        },
+        {
+          "action": "create_random_instance",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_bonus"
+    },
+    "collision_with_obj_ammunition": {
+      "actions": [
+        {
+          "action": "execute_code",
+          "parameters": {
+            "code": "ammo"
+          }
+        },
+        {
+          "action": "create_random_instance",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_ammunition"
+    },
+    "collision_with_obj_death": {
+      "actions": [
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "snd_killcharacter",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "if_object_exists",
+          "parameters": {
+            "object": "1000",
+            "count": "1"
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "-1",
+            "relative": true
+          }
+        },
+        {
+          "action": "restart_room",
+          "parameters": {
+            "transition": "0"
+          }
+        }
+      ],
+      "target_object": "obj_death"
+    },
+    "collision_with_obj_levelexit": {
+      "actions": [
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "snd_finishlevel",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "if_object_exists",
+          "parameters": {
+            "object": "1000",
+            "count": "1"
+          }
+        },
+        {
+          "action": "if_next_room_exists",
+          "parameters": {}
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "next_room",
+          "parameters": {
+            "transition": "0"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        },
+        {
+          "action": "else_action",
+          "parameters": {}
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "show_highscore",
+          "parameters": {}
+        },
+        {
+          "action": "restart_game",
+          "parameters": {}
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_levelexit"
+    },
+    "collision_with_obj_mushroom": {
+      "actions": [
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "snd_getmushroom",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "goto_room",
+          "parameters": {
+            "room": "10",
+            "relative": true
+          }
+        },
+        {
+          "action": "create_random_instance",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_mushroom"
+    },
+    "collision_with_obj_flyer": {
+      "actions": [
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "snd_killcharacter",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "if_object_exists",
+          "parameters": {
+            "object": "1000",
+            "count": "1"
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "-1",
+            "relative": true
+          }
+        },
+        {
+          "action": "restart_room",
+          "parameters": {
+            "transition": "0"
+          }
+        }
+      ],
+      "target_object": "obj_flyer"
+    },
+    "collision_with_obj_monster": {
+      "actions": [
+        {
+          "action": "test_expression",
+          "parameters": {
+            "expression": "vspeed > 0 && y < other.y+8"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Destroy the monster"
+          }
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "snd_killmonser",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "goto_room",
+          "parameters": {
+            "room": "50",
+            "relative": true
+          }
+        },
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "stop",
+            "speed": "0"
+          }
+        },
+        {
+          "action": "create_moving_instance",
+          "parameters": {
+            "object": "obj_monster_dead",
+            "x": "1"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        },
+        {
+          "action": "else_action",
+          "parameters": {}
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Destroy the character"
+          }
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "snd_killcharacter",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "if_object_exists",
+          "parameters": {
+            "object": "1000",
+            "count": "1"
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "-1",
+            "relative": true
+          }
+        },
+        {
+          "action": "restart_room",
+          "parameters": {
+            "transition": "0"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_monster"
+    },
+    "collision_with_obj_block": {
+      "actions": [
+        {
+          "action": "move_to_contact",
+          "parameters": {
+            "direction": "direction",
+            "max_distance": "12"
+          }
+        },
+        {
+          "action": "set_hspeed",
+          "parameters": {
+            "hspeed": "0"
+          }
+        }
+      ],
+      "target_object": "obj_block"
+    },
+    "keyboard": {
+      "down": {
+        "actions": [
+          {
+            "action": "draw_score",
+            "parameters": {
+              "x": "obj_ladder",
+              "y": "0",
+              "caption": "0",
+              "relative": true
+            }
+          },
+          {
+            "action": "start_block",
+            "parameters": {}
+          },
+          {
+            "action": "set_score",
+            "parameters": {
+              "value": "0",
+              "relative": true
+            }
+          },
+          {
+            "action": "set_friction",
+            "parameters": {
+              "friction": "0",
+              "relative": true
+            }
+          },
+          {
+            "action": "end_block",
+            "parameters": {}
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "spr_right",
+              "subimage": "0",
+              "speed": "1"
+            }
+          },
+          {
+            "action": "set_score",
+            "parameters": {
+              "value": "4",
+              "relative": true
+            }
+          },
+          {
+            "action": "set_friction",
+            "parameters": {
+              "friction": "4",
+              "relative": true
+            }
+          },
+          {
+            "action": "else_action",
+            "parameters": {}
+          },
+          {
+            "action": "set_score",
+            "parameters": {
+              "value": "4",
+              "relative": true
+            }
+          },
+          {
+            "action": "start_block",
+            "parameters": {}
+          },
+          {
+            "action": "set_friction",
+            "parameters": {
+              "friction": "4",
+              "relative": true
+            }
+          },
+          {
+            "action": "move_to_contact",
+            "parameters": {
+              "direction": "270",
+              "max_distance": "8"
+            }
+          },
+          {
+            "action": "end_block",
+            "parameters": {}
+          }
+        ]
+      },
+      "up": {
+        "actions": [
+          {
+            "action": "draw_score",
+            "parameters": {
+              "x": "obj_ladder",
+              "y": "0",
+              "caption": "0",
+              "relative": true
+            }
+          },
+          {
+            "action": "start_block",
+            "parameters": {}
+          },
+          {
+            "action": "set_score",
+            "parameters": {
+              "value": "0",
+              "relative": true
+            }
+          },
+          {
+            "action": "set_friction",
+            "parameters": {
+              "friction": "0",
+              "relative": true
+            }
+          },
+          {
+            "action": "end_block",
+            "parameters": {}
+          },
+          {
+            "action": "else_action",
+            "parameters": {}
+          },
+          {
+            "action": "start_block",
+            "parameters": {}
+          },
+          {
+            "action": "test_score",
+            "parameters": {
+              "value": "0",
+              "operation": "1",
+              "relative": true
+            }
+          },
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "-10"
+            }
+          },
+          {
+            "action": "end_block",
+            "parameters": {}
+          }
+        ]
+      },
+      "left": {
+        "actions": [
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "spr_left",
+              "subimage": "0",
+              "speed": "1"
+            }
+          },
+          {
+            "action": "set_score",
+            "parameters": {
+              "value": "-4",
+              "relative": true
+            }
+          },
+          {
+            "action": "set_friction",
+            "parameters": {
+              "friction": "-4",
+              "relative": true
+            }
+          },
+          {
+            "action": "else_action",
+            "parameters": {}
+          },
+          {
+            "action": "set_score",
+            "parameters": {
+              "value": "-4",
+              "relative": true
+            }
+          },
+          {
+            "action": "start_block",
+            "parameters": {}
+          },
+          {
+            "action": "set_friction",
+            "parameters": {
+              "friction": "-4",
+              "relative": true
+            }
+          },
+          {
+            "action": "move_to_contact",
+            "parameters": {
+              "direction": "270",
+              "max_distance": "8"
+            }
+          },
+          {
+            "action": "end_block",
+            "parameters": {}
+          }
+        ]
+      }
+    },
+    "outside_room": {
+      "actions": [
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "y",
+            "value": "room_height",
+            "operation": "2"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "snd_killcharacter",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "if_object_exists",
+          "parameters": {
+            "object": "1000",
+            "count": "1"
+          }
+        },
+        {
+          "action": "restart_room",
+          "parameters": {
+            "transition": "0"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ]
+    },
+    "keyboard_press": {
+      "space": {
+        "actions": [
+          {
+            "action": "test_variable",
+            "parameters": {
+              "variable": "ammo",
+              "value": "0",
+              "operation": "2"
+            }
+          },
+          {
+            "action": "start_block",
+            "parameters": {}
+          },
+          {
+            "action": "test_variable",
+            "parameters": {
+              "variable": "sprite_index",
+              "value": "spr_left",
+              "operation": "0"
+            }
+          },
+          {
+            "action": "change_instance",
+            "parameters": {
+              "object": "obj_bullet",
+              "perform_events": "0",
+              "relative": true
+            }
+          },
+          {
+            "action": "test_variable",
+            "parameters": {
+              "variable": "sprite_index",
+              "value": "spr_right",
+              "operation": "0"
+            }
+          },
+          {
+            "action": "change_instance",
+            "parameters": {
+              "object": "obj_bullet",
+              "perform_events": "0",
+              "relative": true
+            }
+          },
+          {
+            "action": "execute_code",
+            "parameters": {
+              "code": "ammo"
+            }
+          },
+          {
+            "action": "end_block",
+            "parameters": {}
+          }
+        ]
+      }
+    }
+  },
+  "imported": true,
+  "created": "2026-05-26T11:59:42.649506",
+  "modified": "2026-05-26T11:59:42.649506"
+}

@@ -1,0 +1,1671 @@
+{
+  "name": "plateforme_3_refresh2",
+  "version": "1.0.0",
+  "created": "2026-05-26T11:59:41.892588",
+  "modified": "2026-05-26T11:59:41.892588",
+  "settings": {
+    "window_title": "",
+    "window_width": 800,
+    "window_height": 640,
+    "room_speed": 30,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": false,
+    "starting_health": 100,
+    "show_health_in_caption": false,
+    "blockly_preset": "full"
+  },
+  "assets": {
+    "sprites": {
+      "spr_32x32_noir": {
+        "name": "spr_32x32_noir",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_32x32_noir.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_32x16_noir": {
+        "name": "spr_32x16_noir",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_32x16_noir.png",
+        "width": 32,
+        "height": 16,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 16,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_16x32_noir": {
+        "name": "spr_16x32_noir",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_16x32_noir.png",
+        "width": 16,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 16,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_pingus_ga": {
+        "name": "spr_pingus_ga",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_pingus_ga.png",
+        "width": 256,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "bbox_left": 4,
+        "bbox_right": 26,
+        "bbox_top": 1,
+        "bbox_bottom": 30,
+        "frames": 8,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_pingus_dr": {
+        "name": "spr_pingus_dr",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_pingus_dr.png",
+        "width": 256,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "bbox_left": 4,
+        "bbox_right": 26,
+        "bbox_top": 1,
+        "bbox_bottom": 30,
+        "frames": 8,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_pingus_splat": {
+        "name": "spr_pingus_splat",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_pingus_splat.png",
+        "width": 416,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "bbox_left": 0,
+        "bbox_right": 32,
+        "bbox_top": 0,
+        "bbox_bottom": 32,
+        "frames": 13,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_monstre_gauche": {
+        "name": "spr_monstre_gauche",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_monstre_gauche.png",
+        "width": 128,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "bbox_left": 0,
+        "bbox_right": 32,
+        "bbox_top": 0,
+        "bbox_bottom": 32,
+        "frames": 4,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_monstre_droite": {
+        "name": "spr_monstre_droite",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_monstre_droite.png",
+        "width": 128,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "bbox_left": 0,
+        "bbox_right": 32,
+        "bbox_top": 0,
+        "bbox_bottom": 32,
+        "frames": 4,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_marqueur": {
+        "name": "spr_marqueur",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_marqueur.png",
+        "width": 8,
+        "height": 8,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 8,
+        "frame_height": 8,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_monstre_mort": {
+        "name": "spr_monstre_mort",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_monstre_mort.png",
+        "width": 64,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "bbox_left": 0,
+        "bbox_right": 32,
+        "bbox_top": 0,
+        "bbox_bottom": 32,
+        "frames": 2,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_volant_gauche": {
+        "name": "spr_volant_gauche",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_volant_gauche.png",
+        "width": 160,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "bbox_left": 0,
+        "bbox_right": 40,
+        "bbox_top": 0,
+        "bbox_bottom": 32,
+        "frames": 4,
+        "frame_width": 40,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_volant_droite": {
+        "name": "spr_volant_droite",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_volant_droite.png",
+        "width": 160,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "bbox_left": 0,
+        "bbox_right": 40,
+        "bbox_top": 0,
+        "bbox_bottom": 32,
+        "frames": 4,
+        "frame_width": 40,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_bonus": {
+        "name": "spr_bonus",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_bonus.png",
+        "width": 128,
+        "height": 16,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 8,
+        "frame_width": 16,
+        "frame_height": 16,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_mortel": {
+        "name": "spr_mortel",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_mortel.png",
+        "width": 16,
+        "height": 8,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 16,
+        "frame_height": 8,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_sortie": {
+        "name": "spr_sortie",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_sortie.png",
+        "width": 64,
+        "height": 64,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "bbox_left": 24,
+        "bbox_right": 36,
+        "bbox_top": 43,
+        "bbox_bottom": 63,
+        "frames": 1,
+        "frame_width": 64,
+        "frame_height": 64,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_16x16": {
+        "name": "spr_16x16",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_16x16.png",
+        "width": 16,
+        "height": 16,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 16,
+        "frame_height": 16,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_volant_mort": {
+        "name": "spr_volant_mort",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_volant_mort.png",
+        "width": 40,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 40,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_power": {
+        "name": "spr_power",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_power.png",
+        "width": 384,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 12,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      }
+    },
+    "sounds": {
+      "son_monstre_mort": {
+        "name": "son_monstre_mort",
+        "asset_type": "sound",
+        "file_path": "sounds/son_monstre_mort.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.922974",
+        "modified": "2026-05-26T11:59:41.922974"
+      },
+      "son_personnage_mort": {
+        "name": "son_personnage_mort",
+        "asset_type": "sound",
+        "file_path": "sounds/son_personnage_mort.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.922974",
+        "modified": "2026-05-26T11:59:41.922974"
+      },
+      "son_bonus": {
+        "name": "son_bonus",
+        "asset_type": "sound",
+        "file_path": "sounds/son_bonus.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.922974",
+        "modified": "2026-05-26T11:59:41.922974"
+      },
+      "son_niveaufini": {
+        "name": "son_niveaufini",
+        "asset_type": "sound",
+        "file_path": "sounds/son_niveaufini.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.922974",
+        "modified": "2026-05-26T11:59:41.922974"
+      }
+    },
+    "backgrounds": {
+      "tuiles_neige": {
+        "name": "tuiles_neige",
+        "asset_type": "background",
+        "file_path": "backgrounds/tuiles_neige.png",
+        "width": 198,
+        "height": 198,
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "use_as_tileset": false,
+        "tile_width": 0,
+        "tile_height": 1,
+        "h_offset": 32,
+        "v_offset": 32,
+        "h_sep": 0,
+        "v_sep": 0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.925969",
+        "modified": "2026-05-26T11:59:41.925969"
+      },
+      "fond_degrade": {
+        "name": "fond_degrade",
+        "asset_type": "background",
+        "file_path": "backgrounds/fond_degrade.png",
+        "width": 20,
+        "height": 640,
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "use_as_tileset": false,
+        "tile_width": 0,
+        "tile_height": 0,
+        "h_offset": 16,
+        "v_offset": 16,
+        "h_sep": 0,
+        "v_sep": 0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.925969",
+        "modified": "2026-05-26T11:59:41.925969"
+      }
+    },
+    "objects": {
+      "obj_pingus": {
+        "name": "obj_pingus",
+        "asset_type": "object",
+        "sprite": "spr_pingus_dr",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": -100,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "spr_pingus_dr",
+                  "subimage": "0",
+                  "speed": "0"
+                }
+              },
+              {
+                "action": "execute_code",
+                "parameters": {
+                  "code": "power"
+                }
+              }
+            ]
+          },
+          "step": {
+            "actions": [
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Vérifie si en l'air"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "0",
+                  "relative": true
+                }
+              },
+              {
+                "action": "reverse_horizontal",
+                "parameters": {}
+              },
+              {
+                "action": "else_action",
+                "parameters": {}
+              },
+              {
+                "action": "reverse_horizontal",
+                "parameters": {}
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Vitesse verticale limitée"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "vspeed",
+                  "value": "24",
+                  "operation": "2"
+                }
+              },
+              {
+                "action": "execute_code",
+                "parameters": {
+                  "code": "vspeed"
+                }
+              }
+            ]
+          },
+          "collision_with_obj_power": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "son_bonus",
+                  "subimage": "0"
+                }
+              },
+              {
+                "action": "goto_room",
+                "parameters": {
+                  "room": "20",
+                  "relative": true
+                }
+              },
+              {
+                "action": "execute_code",
+                "parameters": {
+                  "code": "power"
+                }
+              },
+              {
+                "action": "create_random_instance",
+                "parameters": {}
+              }
+            ],
+            "target_object": "obj_power"
+          },
+          "collision_with_obj_sortie": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "son_niveaufini",
+                  "subimage": "0"
+                }
+              },
+              {
+                "action": "if_object_exists",
+                "parameters": {
+                  "object": "1000",
+                  "count": "1"
+                }
+              },
+              {
+                "action": "if_next_room_exists",
+                "parameters": {}
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "next_room",
+                "parameters": {
+                  "transition": "0"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              },
+              {
+                "action": "else_action",
+                "parameters": {}
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "show_highscore",
+                "parameters": {}
+              },
+              {
+                "action": "restart_game",
+                "parameters": {}
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ],
+            "target_object": "obj_sortie"
+          },
+          "collision_with_obj_mortel": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "son_personnage_mort",
+                  "subimage": "0"
+                }
+              },
+              {
+                "action": "if_object_exists",
+                "parameters": {
+                  "object": "1000",
+                  "count": "1"
+                }
+              },
+              {
+                "action": "set_lives",
+                "parameters": {
+                  "value": "-1",
+                  "relative": true
+                }
+              },
+              {
+                "action": "restart_room",
+                "parameters": {
+                  "transition": "0"
+                }
+              }
+            ],
+            "target_object": "obj_mortel"
+          },
+          "collision_with_obj_bonus": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "son_bonus",
+                  "subimage": "0"
+                }
+              },
+              {
+                "action": "goto_room",
+                "parameters": {
+                  "room": "10",
+                  "relative": true
+                }
+              },
+              {
+                "action": "create_random_instance",
+                "parameters": {}
+              }
+            ],
+            "target_object": "obj_bonus"
+          },
+          "collision_with_obj_monstre_volant": {
+            "actions": [
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "power",
+                  "value": "true",
+                  "operation": "0"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "test_expression",
+                "parameters": {
+                  "expression": "vspeed > 0 && y < other.y+8"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Pingus vient d'en haut - monstre détruit"
+                }
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "son_monstre_mort",
+                  "subimage": "0"
+                }
+              },
+              {
+                "action": "goto_room",
+                "parameters": {
+                  "room": "50",
+                  "relative": true
+                }
+              },
+              {
+                "action": "start_moving_direction",
+                "parameters": {
+                  "directions": "stop",
+                  "speed": "0"
+                }
+              },
+              {
+                "action": "create_moving_instance",
+                "parameters": {
+                  "object": "obj_monstre_volant_mort",
+                  "x": "1"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              },
+              {
+                "action": "else_action",
+                "parameters": {}
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Pingus - mort"
+                }
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "son_personnage_mort",
+                  "subimage": "0"
+                }
+              },
+              {
+                "action": "if_object_exists",
+                "parameters": {
+                  "object": "1000",
+                  "count": "1"
+                }
+              },
+              {
+                "action": "set_lives",
+                "parameters": {
+                  "value": "-1",
+                  "relative": true
+                }
+              },
+              {
+                "action": "restart_room",
+                "parameters": {
+                  "transition": "0"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ],
+            "target_object": "obj_monstre_volant"
+          },
+          "collision_with_obj_marqueur": {
+            "actions": [
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Ne rien faire..."
+                }
+              }
+            ],
+            "target_object": "obj_marqueur"
+          },
+          "collision_with_obj_monstre": {
+            "actions": [
+              {
+                "action": "test_expression",
+                "parameters": {
+                  "expression": "vspeed > 0 && y < other.y+8"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Pingus vient d'en haut - monstre détruit"
+                }
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "son_monstre_mort",
+                  "subimage": "0"
+                }
+              },
+              {
+                "action": "goto_room",
+                "parameters": {
+                  "room": "50",
+                  "relative": true
+                }
+              },
+              {
+                "action": "start_moving_direction",
+                "parameters": {
+                  "directions": "stop",
+                  "speed": "0"
+                }
+              },
+              {
+                "action": "create_moving_instance",
+                "parameters": {
+                  "object": "obj_monstre_mort",
+                  "x": "1"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              },
+              {
+                "action": "else_action",
+                "parameters": {}
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Pingus - mort"
+                }
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "son_personnage_mort",
+                  "subimage": "0"
+                }
+              },
+              {
+                "action": "if_object_exists",
+                "parameters": {
+                  "object": "1000",
+                  "count": "1"
+                }
+              },
+              {
+                "action": "set_lives",
+                "parameters": {
+                  "value": "-1",
+                  "relative": true
+                }
+              },
+              {
+                "action": "restart_room",
+                "parameters": {
+                  "transition": "0"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ],
+            "target_object": "obj_monstre"
+          },
+          "collision_with_obj_brique": {
+            "actions": [
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "vspeed",
+                  "value": "15",
+                  "operation": "2"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "move_to_contact",
+                "parameters": {
+                  "direction": "direction",
+                  "max_distance": "12"
+                }
+              },
+              {
+                "action": "set_hspeed",
+                "parameters": {
+                  "hspeed": "0"
+                }
+              },
+              {
+                "action": "reverse_horizontal",
+                "parameters": {}
+              },
+              {
+                "action": "create_moving_instance",
+                "parameters": {
+                  "object": "obj_splat",
+                  "x": "1"
+                }
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              },
+              {
+                "action": "move_to_contact",
+                "parameters": {
+                  "direction": "direction",
+                  "max_distance": "12"
+                }
+              },
+              {
+                "action": "set_hspeed",
+                "parameters": {
+                  "hspeed": "0"
+                }
+              }
+            ],
+            "target_object": "obj_brique"
+          },
+          "keyboard": {
+            "right": {
+              "actions": [
+                {
+                  "action": "execute_code",
+                  "parameters": {
+                    "code": "image_speed"
+                  }
+                },
+                {
+                  "action": "set_sprite",
+                  "parameters": {
+                    "sprite": "spr_pingus_dr",
+                    "subimage": "-1",
+                    "speed": "0.5"
+                  }
+                },
+                {
+                  "action": "set_score",
+                  "parameters": {
+                    "value": "4",
+                    "relative": true
+                  }
+                },
+                {
+                  "action": "set_friction",
+                  "parameters": {
+                    "friction": "4",
+                    "relative": true
+                  }
+                }
+              ]
+            },
+            "up": {
+              "actions": [
+                {
+                  "action": "test_score",
+                  "parameters": {
+                    "value": "0",
+                    "operation": "1",
+                    "relative": true
+                  }
+                },
+                {
+                  "action": "set_hspeed",
+                  "parameters": {
+                    "hspeed": "-10"
+                  }
+                }
+              ]
+            },
+            "left": {
+              "actions": [
+                {
+                  "action": "execute_code",
+                  "parameters": {
+                    "code": "image_speed"
+                  }
+                },
+                {
+                  "action": "set_sprite",
+                  "parameters": {
+                    "sprite": "spr_pingus_ga",
+                    "subimage": "-1",
+                    "speed": "0.5"
+                  }
+                },
+                {
+                  "action": "set_score",
+                  "parameters": {
+                    "value": "-4",
+                    "relative": true
+                  }
+                },
+                {
+                  "action": "set_friction",
+                  "parameters": {
+                    "friction": "-4",
+                    "relative": true
+                  }
+                }
+              ]
+            }
+          },
+          "no_more_lives": {
+            "actions": [
+              {
+                "action": "show_highscore",
+                "parameters": {}
+              },
+              {
+                "action": "restart_game",
+                "parameters": {}
+              }
+            ]
+          },
+          "game_start": {
+            "actions": [
+              {
+                "action": "goto_room",
+                "parameters": {
+                  "room": "0"
+                }
+              },
+              {
+                "action": "set_lives",
+                "parameters": {
+                  "value": "3"
+                }
+              },
+              {
+                "action": "set_window_caption",
+                "parameters": {
+                  "score": "1",
+                  "lives": "score: ",
+                  "health": "1"
+                }
+              }
+            ]
+          },
+          "keyboard_release": {
+            "anykey": {
+              "actions": [
+                {
+                  "action": "execute_code",
+                  "parameters": {
+                    "code": "image_speed"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-05-26T11:59:41.942278"
+      },
+      "obj_brique": {
+        "name": "obj_brique",
+        "asset_type": "object",
+        "sprite": "spr_32x32_noir",
+        "visible": false,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-05-26T11:59:41.942278"
+      },
+      "obj_brique_h": {
+        "name": "obj_brique_h",
+        "asset_type": "object",
+        "sprite": "spr_32x16_noir",
+        "visible": false,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-05-26T11:59:41.942278",
+        "parent": "obj_brique"
+      },
+      "obj_brique_v": {
+        "name": "obj_brique_v",
+        "asset_type": "object",
+        "sprite": "spr_16x32_noir",
+        "visible": false,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-05-26T11:59:41.942278",
+        "parent": "obj_brique"
+      },
+      "obj_splat": {
+        "name": "obj_splat",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "reverse_horizontal",
+                "parameters": {}
+              },
+              {
+                "action": "start_moving_direction",
+                "parameters": {
+                  "directions": "stop",
+                  "speed": "0"
+                }
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "spr_pingus_splat",
+                  "subimage": "0",
+                  "speed": "0.4"
+                }
+              }
+            ]
+          },
+          "animation_end": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "spr_pingus_splat",
+                  "subimage": "12",
+                  "speed": "0"
+                }
+              },
+              {
+                "action": "if_object_exists",
+                "parameters": {
+                  "object": "1000",
+                  "count": "1"
+                }
+              },
+              {
+                "action": "restart_room",
+                "parameters": {
+                  "transition": "5"
+                }
+              }
+            ]
+          }
+        },
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-05-26T11:59:41.942278"
+      },
+      "obj_monstre": {
+        "name": "obj_monstre",
+        "asset_type": "object",
+        "sprite": "spr_monstre_droite",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "start_moving_direction",
+                "parameters": {
+                  "directions": [
+                    "left",
+                    "right"
+                  ],
+                  "speed": "4"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "hspeed",
+                  "value": "0",
+                  "operation": "2"
+                }
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "spr_monstre_droite",
+                  "subimage": "0",
+                  "speed": "0.4"
+                }
+              },
+              {
+                "action": "else_action",
+                "parameters": {}
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "spr_monstre_gauche",
+                  "subimage": "0",
+                  "speed": "0.4"
+                }
+              }
+            ]
+          },
+          "collision_with_obj_brique": {
+            "actions": [
+              {
+                "action": "jump_to_random",
+                "parameters": {}
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "hspeed",
+                  "value": "0",
+                  "operation": "2"
+                }
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "spr_monstre_droite",
+                  "subimage": "0",
+                  "speed": "0.4"
+                }
+              },
+              {
+                "action": "else_action",
+                "parameters": {}
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "spr_monstre_gauche",
+                  "subimage": "0",
+                  "speed": "0.4"
+                }
+              }
+            ],
+            "target_object": "obj_brique"
+          }
+        },
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-05-26T11:59:41.942278"
+      },
+      "obj_marqueur": {
+        "name": "obj_marqueur",
+        "asset_type": "object",
+        "sprite": "spr_marqueur",
+        "visible": false,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-05-26T11:59:41.942278",
+        "parent": "obj_brique"
+      },
+      "obj_monstre_mort": {
+        "name": "obj_monstre_mort",
+        "asset_type": "object",
+        "sprite": "spr_monstre_mort",
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 50,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "spr_monstre_mort",
+                  "subimage": "random(1)",
+                  "speed": "0"
+                }
+              }
+            ]
+          }
+        },
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-05-26T11:59:41.942278",
+        "parent": "obj_brique"
+      },
+      "obj_monstre_volant": {
+        "name": "obj_monstre_volant",
+        "asset_type": "object",
+        "sprite": "spr_volant_droite",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "start_moving_direction",
+                "parameters": {
+                  "directions": "right",
+                  "speed": "3"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "hspeed",
+                  "value": "0",
+                  "operation": "2"
+                }
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "spr_volant_droite",
+                  "subimage": "0",
+                  "speed": "0.4"
+                }
+              },
+              {
+                "action": "else_action",
+                "parameters": {}
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "spr_volant_gauche",
+                  "subimage": "0",
+                  "speed": "0.4"
+                }
+              }
+            ]
+          },
+          "collision_with_obj_brique": {
+            "actions": [
+              {
+                "action": "jump_to_random",
+                "parameters": {}
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "hspeed",
+                  "value": "0",
+                  "operation": "2"
+                }
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "spr_volant_droite",
+                  "subimage": "0",
+                  "speed": "0.4"
+                }
+              },
+              {
+                "action": "else_action",
+                "parameters": {}
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "spr_volant_gauche",
+                  "subimage": "0",
+                  "speed": "0.4"
+                }
+              }
+            ],
+            "target_object": "obj_brique"
+          }
+        },
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-05-26T11:59:41.942278"
+      },
+      "obj_bonus": {
+        "name": "obj_bonus",
+        "asset_type": "object",
+        "sprite": "spr_bonus",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 10,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "spr_bonus",
+                  "subimage": "random(image_number)",
+                  "speed": "0"
+                }
+              }
+            ]
+          }
+        },
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-05-26T11:59:41.942278"
+      },
+      "obj_mortel": {
+        "name": "obj_mortel",
+        "asset_type": "object",
+        "sprite": "spr_mortel",
+        "visible": false,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-05-26T11:59:41.942278"
+      },
+      "obj_sortie": {
+        "name": "obj_sortie",
+        "asset_type": "object",
+        "sprite": "spr_sortie",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 100,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-05-26T11:59:41.942278"
+      },
+      "obj_brique_c": {
+        "name": "obj_brique_c",
+        "asset_type": "object",
+        "sprite": "spr_16x16",
+        "visible": false,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-05-26T11:59:41.942278",
+        "parent": "obj_brique"
+      },
+      "obj_monstre_volant_mort": {
+        "name": "obj_monstre_volant_mort",
+        "asset_type": "object",
+        "sprite": "spr_volant_mort",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Vérifie si en l'air"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "0",
+                  "relative": true
+                }
+              },
+              {
+                "action": "reverse_horizontal",
+                "parameters": {}
+              },
+              {
+                "action": "else_action",
+                "parameters": {}
+              },
+              {
+                "action": "reverse_horizontal",
+                "parameters": {}
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Vitesse verticale limitée"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "vspeed",
+                  "value": "24",
+                  "operation": "2"
+                }
+              },
+              {
+                "action": "execute_code",
+                "parameters": {
+                  "code": "vspeed"
+                }
+              }
+            ]
+          },
+          "step": {
+            "actions": [
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Vérifie si en l'air"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "0",
+                  "relative": true
+                }
+              },
+              {
+                "action": "reverse_horizontal",
+                "parameters": {}
+              },
+              {
+                "action": "else_action",
+                "parameters": {}
+              },
+              {
+                "action": "reverse_horizontal",
+                "parameters": {}
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Vitesse verticale limitée"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "vspeed",
+                  "value": "24",
+                  "operation": "2"
+                }
+              },
+              {
+                "action": "execute_code",
+                "parameters": {
+                  "code": "vspeed"
+                }
+              }
+            ]
+          },
+          "collision_with_obj_marqueur": {
+            "actions": [
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Ne rien faire..."
+                }
+              }
+            ],
+            "target_object": "obj_marqueur"
+          },
+          "collision_with_obj_brique": {
+            "actions": [
+              {
+                "action": "move_to_contact",
+                "parameters": {
+                  "direction": "direction",
+                  "max_distance": "12"
+                }
+              },
+              {
+                "action": "set_hspeed",
+                "parameters": {
+                  "hspeed": "0"
+                }
+              }
+            ],
+            "target_object": "obj_brique"
+          }
+        },
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-05-26T11:59:41.942278"
+      },
+      "obj_power": {
+        "name": "obj_power",
+        "asset_type": "object",
+        "sprite": "spr_power",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-05-26T11:59:41.942278"
+      }
+    },
+    "rooms": {
+      "niveau_01": {
+        "name": "niveau_01",
+        "asset_type": "room",
+        "width": 800,
+        "height": 640,
+        "background_color": "#c0c0c0",
+        "background_image": "fond_degrade",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 195,
+        "instances": [],
+        "_external_file": "rooms/niveau_01.json",
+        "created": "2026-05-26T11:59:41.956046",
+        "modified": "2026-05-26T11:59:41.956046",
+        "imported": true
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  }
+}

@@ -1,0 +1,416 @@
+{
+  "name": "plateforme_2_refresh2",
+  "version": "1.0.0",
+  "created": "2026-05-26T11:59:41.670961",
+  "modified": "2026-05-26T11:59:41.670961",
+  "settings": {
+    "window_title": "",
+    "window_width": 800,
+    "window_height": 640,
+    "room_speed": 30,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": false,
+    "starting_health": 100,
+    "show_health_in_caption": false,
+    "blockly_preset": "full"
+  },
+  "assets": {
+    "sprites": {
+      "spr_32x32_noir": {
+        "name": "spr_32x32_noir",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_32x32_noir.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.670961",
+        "modified": "2026-05-26T11:59:41.670961"
+      },
+      "spr_32x16_noir": {
+        "name": "spr_32x16_noir",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_32x16_noir.png",
+        "width": 32,
+        "height": 16,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 16,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.670961",
+        "modified": "2026-05-26T11:59:41.670961"
+      },
+      "spr_8x16_noir": {
+        "name": "spr_8x16_noir",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_8x16_noir.png",
+        "width": 8,
+        "height": 16,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 8,
+        "frame_height": 16,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.670961",
+        "modified": "2026-05-26T11:59:41.670961"
+      },
+      "spr_pingus_ga": {
+        "name": "spr_pingus_ga",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_pingus_ga.png",
+        "width": 256,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "bbox_left": 0,
+        "bbox_right": 32,
+        "bbox_top": 0,
+        "bbox_bottom": 32,
+        "frames": 8,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.670961",
+        "modified": "2026-05-26T11:59:41.670961"
+      },
+      "spr_pingus_dr": {
+        "name": "spr_pingus_dr",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_pingus_dr.png",
+        "width": 256,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "bbox_left": 0,
+        "bbox_right": 32,
+        "bbox_top": 0,
+        "bbox_bottom": 32,
+        "frames": 8,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.670961",
+        "modified": "2026-05-26T11:59:41.670961"
+      }
+    },
+    "sounds": {},
+    "backgrounds": {
+      "tuiles_neige": {
+        "name": "tuiles_neige",
+        "asset_type": "background",
+        "file_path": "backgrounds/tuiles_neige.png",
+        "width": 198,
+        "height": 198,
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "use_as_tileset": false,
+        "tile_width": 0,
+        "tile_height": 1,
+        "h_offset": 32,
+        "v_offset": 32,
+        "h_sep": 0,
+        "v_sep": 0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.699488",
+        "modified": "2026-05-26T11:59:41.699488"
+      },
+      "fond_degrade": {
+        "name": "fond_degrade",
+        "asset_type": "background",
+        "file_path": "backgrounds/fond_degrade.png",
+        "width": 5,
+        "height": 640,
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "use_as_tileset": false,
+        "tile_width": 0,
+        "tile_height": 0,
+        "h_offset": 16,
+        "v_offset": 16,
+        "h_sep": 0,
+        "v_sep": 0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.699488",
+        "modified": "2026-05-26T11:59:41.699488"
+      }
+    },
+    "objects": {
+      "obj_personnage": {
+        "name": "obj_personnage",
+        "asset_type": "object",
+        "sprite": "spr_pingus_dr",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "spr_pingus_dr",
+                  "subimage": "0",
+                  "speed": "0"
+                }
+              }
+            ]
+          },
+          "step": {
+            "actions": [
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Check whether in the air"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "0",
+                  "relative": true
+                }
+              },
+              {
+                "action": "reverse_horizontal",
+                "parameters": {}
+              },
+              {
+                "action": "else_action",
+                "parameters": {}
+              },
+              {
+                "action": "reverse_horizontal",
+                "parameters": {}
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Limit the vertical speed"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "vspeed",
+                  "value": "24",
+                  "operation": "2"
+                }
+              },
+              {
+                "action": "execute_code",
+                "parameters": {
+                  "code": "vspeed"
+                }
+              }
+            ]
+          },
+          "collision_with_obj_brique": {
+            "actions": [
+              {
+                "action": "move_to_contact",
+                "parameters": {
+                  "direction": "direction",
+                  "max_distance": "12"
+                }
+              },
+              {
+                "action": "set_hspeed",
+                "parameters": {
+                  "hspeed": "0"
+                }
+              }
+            ],
+            "target_object": "obj_brique"
+          },
+          "keyboard": {
+            "right": {
+              "actions": [
+                {
+                  "action": "execute_code",
+                  "parameters": {
+                    "code": "image_speed"
+                  }
+                },
+                {
+                  "action": "set_sprite",
+                  "parameters": {
+                    "sprite": "spr_pingus_dr",
+                    "subimage": "-1",
+                    "speed": "0.5"
+                  }
+                },
+                {
+                  "action": "set_score",
+                  "parameters": {
+                    "value": "4",
+                    "relative": true
+                  }
+                },
+                {
+                  "action": "set_friction",
+                  "parameters": {
+                    "friction": "4",
+                    "relative": true
+                  }
+                }
+              ]
+            },
+            "up": {
+              "actions": [
+                {
+                  "action": "test_score",
+                  "parameters": {
+                    "value": "0",
+                    "operation": "1",
+                    "relative": true
+                  }
+                },
+                {
+                  "action": "set_hspeed",
+                  "parameters": {
+                    "hspeed": "-10"
+                  }
+                }
+              ]
+            },
+            "left": {
+              "actions": [
+                {
+                  "action": "execute_code",
+                  "parameters": {
+                    "code": "image_speed"
+                  }
+                },
+                {
+                  "action": "set_sprite",
+                  "parameters": {
+                    "sprite": "spr_pingus_ga",
+                    "subimage": "-1",
+                    "speed": "0.5"
+                  }
+                },
+                {
+                  "action": "set_score",
+                  "parameters": {
+                    "value": "-4",
+                    "relative": true
+                  }
+                },
+                {
+                  "action": "set_friction",
+                  "parameters": {
+                    "friction": "-4",
+                    "relative": true
+                  }
+                }
+              ]
+            }
+          },
+          "keyboard_release": {
+            "anykey": {
+              "actions": [
+                {
+                  "action": "execute_code",
+                  "parameters": {
+                    "code": "image_speed"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "imported": true,
+        "created": "2026-05-26T11:59:41.730323",
+        "modified": "2026-05-26T11:59:41.730323"
+      },
+      "obj_brique": {
+        "name": "obj_brique",
+        "asset_type": "object",
+        "sprite": "spr_32x32_noir",
+        "visible": false,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-26T11:59:41.730323",
+        "modified": "2026-05-26T11:59:41.730323"
+      },
+      "obj_brique_h": {
+        "name": "obj_brique_h",
+        "asset_type": "object",
+        "sprite": "spr_32x16_noir",
+        "visible": false,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-26T11:59:41.730323",
+        "modified": "2026-05-26T11:59:41.730323",
+        "parent": "obj_brique"
+      },
+      "obj_brique_v": {
+        "name": "obj_brique_v",
+        "asset_type": "object",
+        "sprite": "spr_8x16_noir",
+        "visible": false,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-26T11:59:41.730323",
+        "modified": "2026-05-26T11:59:41.730323",
+        "parent": "obj_brique"
+      }
+    },
+    "rooms": {
+      "niveau_01": {
+        "name": "niveau_01",
+        "asset_type": "room",
+        "width": 800,
+        "height": 640,
+        "background_color": "#c0c0c0",
+        "background_image": "fond_degrade",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 126,
+        "instances": [],
+        "_external_file": "rooms/niveau_01.json",
+        "created": "2026-05-26T11:59:41.735334",
+        "modified": "2026-05-26T11:59:41.735334",
+        "imported": true
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  }
+}

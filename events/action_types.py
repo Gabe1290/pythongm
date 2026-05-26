@@ -1250,18 +1250,19 @@ ACTION_TYPES = {
     # ---------------------------------------------------------------------
 
     # Comment — modular handler `handle_comment` is a no-op; the UI shows
-    # the freeform text for documentation purposes.
+    # the freeform text for documentation purposes. Yellow ⚠️ icon matches
+    # the classic GameMaker convention for inline comment markers.
     "comment": ActionType(
         name="comment",
         display_name="Comment",
         description="A comment in the action list (no runtime effect)",
         category="Control",
-        icon="💬",
+        icon="⚠️",
         parameters=[
             ActionParameter(
                 name="text",
                 display_name="Comment",
-                param_type="string",
+                param_type="text",
                 default_value="",
                 description="Free-form comment text",
                 required=False,
@@ -1798,8 +1799,9 @@ BLOCKLY_TO_ACTION_MAP = {
     # Sound
     "play_sound": "play_sound",
     "stop_sound": "stop_sound",
-    # Output
-    "show_message": "show_message",
+    # Output — show_message gates on the BLOCK_REGISTRY "output_message" block
+    # (the registry uses the block-name, the action uses the runtime-name).
+    "output_message": "show_message",
     "display_message": "display_message",
 }
 

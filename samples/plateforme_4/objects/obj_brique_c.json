@@ -1,0 +1,14 @@
+{
+  "name": "obj_brique_c",
+  "asset_type": "object",
+  "sprite": "spr_16x16",
+  "visible": false,
+  "solid": true,
+  "persistent": false,
+  "depth": 0,
+  "events": {},
+  "imported": true,
+  "created": "2026-05-26T11:59:42.358245",
+  "modified": "2026-05-26T11:59:42.358245",
+  "parent": "obj_brique"
+}

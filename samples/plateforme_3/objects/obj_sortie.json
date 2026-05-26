@@ -1,0 +1,13 @@
+{
+  "name": "obj_sortie",
+  "asset_type": "object",
+  "sprite": "spr_sortie",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 100,
+  "events": {},
+  "imported": true,
+  "created": "2026-05-26T11:59:41.942278",
+  "modified": "2026-05-26T11:59:41.942278"
+}

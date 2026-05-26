@@ -7,34 +7,106 @@
   "persistent": false,
   "depth": -10,
   "events": {
-    "animation_end": {
+    "create": {
       "actions": [
         {
-          "action": "destroy_instance",
+          "action": "set_friction",
           "parameters": {
-            "target": "self",
-            "target_object": ""
+            "friction": "-200",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200-16",
+            "y": "200-16",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200-16",
+            "y": "200+16",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200-16",
+            "y": "200+48",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200+16",
+            "y": "200-16",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200+16",
+            "y": "200+16",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200+16",
+            "y": "200+48",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200+48",
+            "y": "200-16",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200+48",
+            "y": "200+16",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200+48",
+            "y": "200+48",
+            "relative": true
+          }
+        },
+        {
+          "action": "set_friction",
+          "parameters": {
+            "friction": "200",
+            "relative": true
           }
         }
       ]
     },
-    "create": {
+    "animation_end": {
       "actions": [
         {
-          "action": "destroy_at_position",
-          "parameters": {
-            "target": "object",
-            "target_object": "monster_lr",
-            "x": "self.x",
-            "y": "self.y",
-            "radius": "32"
-          }
+          "action": "create_random_instance",
+          "parameters": {}
         }
       ]
     }
   },
   "imported": true,
-  "created": "2026-05-23T14:34:55.669706",
-  "modified": "2026-05-25T23:48:10.108369",
-  "parent": ""
+  "created": "2026-05-26T11:59:41.079627",
+  "modified": "2026-05-26T11:59:41.079627"
 }
