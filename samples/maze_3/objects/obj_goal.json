@@ -10,50 +10,71 @@
     "collision_with_obj_person": {
       "actions": [
         {
-          "action": "if_next_room_exists",
+          "action": "goto_room",
           "parameters": {
-            "then_actions": [
-              {
-                "action": "add_score",
-                "parameters": {
-                  "value": "100"
-                }
-              },
-              {
-                "action": "room_goto_next",
-                "parameters": {}
-              }
-            ],
-            "else_actions": [
-              {
-                "action": "add_score",
-                "parameters": {
-                  "value": "100"
-                }
-              },
-              {
-                "action": "show_highscore",
-                "parameters": {
-                  "background": "#FFFFDD",
-                  "new_color": "#FF0000",
-                  "other_color": "#000000",
-                  "allow_new_entry": true
-                }
-              },
-              {
-                "action": "game_end",
-                "parameters": {}
-              }
-            ]
+            "room": "40",
+            "relative": true
           }
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "sound_goal",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "if_object_exists",
+          "parameters": {
+            "object": "1000",
+            "count": "1"
+          }
+        },
+        {
+          "action": "if_next_room_exists",
+          "parameters": {}
+        },
+        {
+          "action": "next_room",
+          "parameters": {
+            "transition": "0"
+          }
+        },
+        {
+          "action": "else_action",
+          "parameters": {}
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "goto_room",
+          "parameters": {
+            "room": "100"
+          }
+        },
+        {
+          "action": "show_highscore",
+          "parameters": {}
+        },
+        {
+          "action": "restart_game",
+          "parameters": {}
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
         }
       ],
-      "target_object": "obj_person",
-      "negate": false
+      "target_object": "obj_person"
     }
   },
   "imported": true,
-  "created": "2026-05-23T14:34:55.669706",
-  "modified": "2026-05-24T16:32:59.419503",
-  "parent": ""
+  "created": "2026-05-26T11:59:41.079627",
+  "modified": "2026-05-26T11:59:41.079627"
 }

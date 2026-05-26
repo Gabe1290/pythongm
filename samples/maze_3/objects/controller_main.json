@@ -25,8 +25,10 @@
             }
           },
           {
-            "action": "room_restart",
-            "parameters": {}
+            "action": "restart_room",
+            "parameters": {
+              "transition": "0"
+            }
           }
         ]
       }
@@ -38,14 +40,54 @@
           "parameters": {}
         },
         {
-          "action": "game_end",
+          "action": "restart_game",
           "parameters": {}
+        }
+      ]
+    },
+    "draw": {
+      "actions": [
+        {
+          "action": "fill_color",
+          "parameters": {
+            "color": "score_font"
+          }
+        },
+        {
+          "action": "set_draw_color",
+          "parameters": {
+            "color": "255"
+          }
+        },
+        {
+          "action": "next_room",
+          "parameters": {
+            "transition": "300",
+            "relative": true
+          }
+        },
+        {
+          "action": "draw_scaled_text",
+          "parameters": {
+            "text": "Lives:",
+            "x": "8",
+            "y": "0",
+            "relative": true
+          }
+        },
+        {
+          "action": "draw_lives",
+          "parameters": {
+            "x": "70",
+            "y": "4",
+            "image": "sprite_lives",
+            "relative": true
+          }
         }
       ]
     }
   },
   "imported": true,
-  "created": "2026-05-23T14:34:55.669706",
-  "modified": "2026-05-25T09:04:21.242892",
-  "parent": ""
+  "created": "2026-05-26T11:59:41.079627",
+  "modified": "2026-05-26T11:59:41.079627"
 }

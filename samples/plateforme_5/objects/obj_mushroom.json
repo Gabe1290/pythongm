@@ -1,0 +1,26 @@
+{
+  "name": "obj_mushroom",
+  "asset_type": "object",
+  "sprite": "spr_mushroom",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 10,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "spr_mushroom",
+            "subimage": "random(10)",
+            "speed": "0"
+          }
+        }
+      ]
+    }
+  },
+  "imported": true,
+  "created": "2026-05-26T11:59:42.649506",
+  "modified": "2026-05-26T11:59:42.649506"
+}

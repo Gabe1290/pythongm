@@ -1,0 +1,137 @@
+{
+  "name": "obj_balle",
+  "asset_type": "object",
+  "sprite": "spr_balle",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "step": {
+      "actions": [
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Vérifie s'il est en l'air"
+          }
+        },
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "0",
+            "relative": true
+          }
+        },
+        {
+          "action": "reverse_horizontal",
+          "parameters": {}
+        },
+        {
+          "action": "else_action",
+          "parameters": {}
+        },
+        {
+          "action": "reverse_horizontal",
+          "parameters": {}
+        },
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Vitesse verticale maximale"
+          }
+        },
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "vspeed",
+            "value": "24",
+            "operation": "2"
+          }
+        },
+        {
+          "action": "execute_code",
+          "parameters": {
+            "code": "vspeed"
+          }
+        }
+      ]
+    },
+    "collision_with_obj_brique": {
+      "actions": [
+        {
+          "action": "move_to_contact",
+          "parameters": {
+            "direction": "direction",
+            "max_distance": "12"
+          }
+        },
+        {
+          "action": "set_hspeed",
+          "parameters": {
+            "hspeed": "0"
+          }
+        }
+      ],
+      "target_object": "obj_brique"
+    },
+    "keyboard": {
+      "right": {
+        "actions": [
+          {
+            "action": "set_score",
+            "parameters": {
+              "value": "4",
+              "relative": true
+            }
+          },
+          {
+            "action": "set_friction",
+            "parameters": {
+              "friction": "4",
+              "relative": true
+            }
+          }
+        ]
+      },
+      "up": {
+        "actions": [
+          {
+            "action": "test_score",
+            "parameters": {
+              "value": "0",
+              "operation": "1",
+              "relative": true
+            }
+          },
+          {
+            "action": "set_hspeed",
+            "parameters": {
+              "hspeed": "-10"
+            }
+          }
+        ]
+      },
+      "left": {
+        "actions": [
+          {
+            "action": "set_score",
+            "parameters": {
+              "value": "-4",
+              "relative": true
+            }
+          },
+          {
+            "action": "set_friction",
+            "parameters": {
+              "friction": "-4",
+              "relative": true
+            }
+          }
+        ]
+      }
+    }
+  },
+  "imported": true,
+  "created": "2026-05-26T11:59:41.560849",
+  "modified": "2026-05-26T11:59:41.560849"
+}

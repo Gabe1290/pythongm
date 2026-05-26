@@ -6,9 +6,72 @@
   "solid": true,
   "persistent": false,
   "depth": 0,
-  "events": {},
+  "events": {
+    "collision_with_obj_person": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "8*other.hspeed",
+            "relative": true
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "sound_push",
+            "subimage": "0"
+          }
+        },
+        {
+          "action": "set_friction",
+          "parameters": {
+            "friction": "8*other.hspeed",
+            "relative": true
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        },
+        {
+          "action": "else_action",
+          "parameters": {}
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "draw_score",
+          "parameters": {
+            "x": "obj_hole",
+            "y": "8*other.hspeed",
+            "caption": "8*other.vspeed",
+            "relative": true
+          }
+        },
+        {
+          "action": "set_friction",
+          "parameters": {
+            "friction": "8*other.hspeed",
+            "relative": true
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_person"
+    }
+  },
   "imported": true,
-  "created": "2026-05-23T14:34:55.669706",
-  "modified": "2026-05-26T00:36:32.632833",
+  "created": "2026-05-26T11:59:41.079627",
+  "modified": "2026-05-26T11:59:41.079627",
   "parent": "wall_corner"
 }

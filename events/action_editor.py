@@ -209,6 +209,17 @@ class ActionConfigDialog(QDialog):
                 else:
                     widget.setText(str(param.default_value) if param.default_value else "")
 
+            # Multi-line freeform text (e.g. comments / notes)
+            elif param.param_type == "text":
+                widget = QTextEdit()
+                widget.setAcceptRichText(False)
+                widget.setMinimumHeight(80)
+                widget.setPlaceholderText(str(param.default_value) if param.default_value else "")
+                if param.name in self.current_params:
+                    widget.setPlainText(str(self.current_params[param.name]))
+                elif param.default_value:
+                    widget.setPlainText(str(param.default_value))
+
             elif param.param_type in ("number", "float"):
                 # Use QLineEdit to support both numeric values and expressions
                 # (e.g. "32", "other.x + 16", "self.hspeed * 8")

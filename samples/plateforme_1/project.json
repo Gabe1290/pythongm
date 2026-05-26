@@ -1,0 +1,239 @@
+{
+  "name": "plateforme_1_refresh2",
+  "version": "1.0.0",
+  "created": "2026-05-26T11:59:41.559573",
+  "modified": "2026-05-26T11:59:41.559573",
+  "settings": {
+    "window_title": "",
+    "window_width": 800,
+    "window_height": 640,
+    "room_speed": 30,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": false,
+    "starting_health": 100,
+    "show_health_in_caption": false,
+    "blockly_preset": "full"
+  },
+  "assets": {
+    "sprites": {
+      "spr_32x32_noir": {
+        "name": "spr_32x32_noir",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_32x32_noir.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.559573",
+        "modified": "2026-05-26T11:59:41.559573"
+      },
+      "spr_balle": {
+        "name": "spr_balle",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_balle.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "bbox_left": 0,
+        "bbox_right": 32,
+        "bbox_top": 0,
+        "bbox_bottom": 32,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.559573",
+        "modified": "2026-05-26T11:59:41.559573"
+      }
+    },
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "obj_balle": {
+        "name": "obj_balle",
+        "asset_type": "object",
+        "sprite": "spr_balle",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "step": {
+            "actions": [
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Vérifie s'il est en l'air"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "0",
+                  "relative": true
+                }
+              },
+              {
+                "action": "reverse_horizontal",
+                "parameters": {}
+              },
+              {
+                "action": "else_action",
+                "parameters": {}
+              },
+              {
+                "action": "reverse_horizontal",
+                "parameters": {}
+              },
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Vitesse verticale maximale"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "vspeed",
+                  "value": "24",
+                  "operation": "2"
+                }
+              },
+              {
+                "action": "execute_code",
+                "parameters": {
+                  "code": "vspeed"
+                }
+              }
+            ]
+          },
+          "collision_with_obj_brique": {
+            "actions": [
+              {
+                "action": "move_to_contact",
+                "parameters": {
+                  "direction": "direction",
+                  "max_distance": "12"
+                }
+              },
+              {
+                "action": "set_hspeed",
+                "parameters": {
+                  "hspeed": "0"
+                }
+              }
+            ],
+            "target_object": "obj_brique"
+          },
+          "keyboard": {
+            "right": {
+              "actions": [
+                {
+                  "action": "set_score",
+                  "parameters": {
+                    "value": "4",
+                    "relative": true
+                  }
+                },
+                {
+                  "action": "set_friction",
+                  "parameters": {
+                    "friction": "4",
+                    "relative": true
+                  }
+                }
+              ]
+            },
+            "up": {
+              "actions": [
+                {
+                  "action": "test_score",
+                  "parameters": {
+                    "value": "0",
+                    "operation": "1",
+                    "relative": true
+                  }
+                },
+                {
+                  "action": "set_hspeed",
+                  "parameters": {
+                    "hspeed": "-10"
+                  }
+                }
+              ]
+            },
+            "left": {
+              "actions": [
+                {
+                  "action": "set_score",
+                  "parameters": {
+                    "value": "-4",
+                    "relative": true
+                  }
+                },
+                {
+                  "action": "set_friction",
+                  "parameters": {
+                    "friction": "-4",
+                    "relative": true
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "imported": true,
+        "created": "2026-05-26T11:59:41.560849",
+        "modified": "2026-05-26T11:59:41.560849"
+      },
+      "obj_brique": {
+        "name": "obj_brique",
+        "asset_type": "object",
+        "sprite": "spr_32x32_noir",
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-26T11:59:41.560849",
+        "modified": "2026-05-26T11:59:41.560849"
+      }
+    },
+    "rooms": {
+      "niveau_01": {
+        "name": "niveau_01",
+        "asset_type": "room",
+        "width": 800,
+        "height": 640,
+        "background_color": "#c0c0c0",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 120,
+        "instances": [],
+        "_external_file": "rooms/niveau_01.json",
+        "created": "2026-05-26T11:59:41.563286",
+        "modified": "2026-05-26T11:59:41.563286",
+        "imported": true
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  }
+}

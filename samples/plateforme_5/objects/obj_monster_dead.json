@@ -1,0 +1,33 @@
+{
+  "name": "obj_monster_dead",
+  "asset_type": "object",
+  "sprite": "spr_monsterflat",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "if_collision",
+          "parameters": {
+            "x": "10",
+            "y": "0"
+          }
+        }
+      ]
+    },
+    "alarm_0": {
+      "actions": [
+        {
+          "action": "create_random_instance",
+          "parameters": {}
+        }
+      ]
+    }
+  },
+  "imported": true,
+  "created": "2026-05-26T11:59:42.649506",
+  "modified": "2026-05-26T11:59:42.649506"
+}

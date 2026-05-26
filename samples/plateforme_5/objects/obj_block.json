@@ -1,0 +1,13 @@
+{
+  "name": "obj_block",
+  "asset_type": "object",
+  "sprite": "spr_block",
+  "visible": false,
+  "solid": true,
+  "persistent": false,
+  "depth": 0,
+  "events": {},
+  "imported": true,
+  "created": "2026-05-26T11:59:42.649506",
+  "modified": "2026-05-26T11:59:42.649506"
+}
