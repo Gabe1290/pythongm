@@ -7,7 +7,7 @@ Floating window that displays available tilesets and allows selecting individual
 from pathlib import Path
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox,
                                 QPushButton, QScrollArea, QSpinBox, QDialog,
-                                QFormLayout)
+                                QFormLayout, QCheckBox, QGroupBox, QGridLayout)
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QPixmap, QPainter, QColor, QPen
 
@@ -147,6 +147,11 @@ class TilePaletteDialog(QDialog):
 
     tile_selected = Signal(dict)  # Emits tile info dict
     selection_cleared = Signal()
+    # Emitted when the user edits tilesheet metadata (size, sep, offset,
+    # use_as_tileset) for the current background. Carries the background name
+    # and a snapshot dict of the new metadata so the room editor can persist
+    # it via project_manager.update_asset.
+    background_metadata_changed = Signal(str, dict)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -157,6 +162,7 @@ class TilePaletteDialog(QDialog):
         self.project_data = None
         self.tileset_backgrounds = {}  # name -> asset data
         self.current_bg_name = ""
+        self._loading_metadata = False
         self.setup_ui()
 
     def setup_ui(self):
@@ -169,22 +175,61 @@ class TilePaletteDialog(QDialog):
         selector_layout.addRow(self.tr("Tileset:"), self.tileset_combo)
         layout.addLayout(selector_layout)
 
-        # Tile size override controls
-        size_layout = QHBoxLayout()
-        size_layout.addWidget(QLabel(self.tr("Tile W:")))
+        # Tilesheet grid controls — size, separation (grid-line thickness),
+        # and outer offset. Editing any of these updates the live grid
+        # overlay AND persists back to the background asset, so e.g. a
+        # 32x32 sheet with 1-pixel separator lines can be configured here
+        # instead of hand-editing project.json.
+        grid_group = QGroupBox(self.tr("Tilesheet grid"))
+        grid_form = QGridLayout(grid_group)
+
+        self.use_as_tileset_check = QCheckBox(self.tr("Use as tileset"))
+        self.use_as_tileset_check.toggled.connect(self.on_metadata_changed)
+        grid_form.addWidget(self.use_as_tileset_check, 0, 0, 1, 4)
+
+        grid_form.addWidget(QLabel(self.tr("Tile W:")), 1, 0)
         self.tile_w_spin = QSpinBox()
         self.tile_w_spin.setRange(1, 512)
         self.tile_w_spin.setValue(16)
-        self.tile_w_spin.valueChanged.connect(self.on_tile_size_changed)
-        size_layout.addWidget(self.tile_w_spin)
+        self.tile_w_spin.valueChanged.connect(self.on_metadata_changed)
+        grid_form.addWidget(self.tile_w_spin, 1, 1)
 
-        size_layout.addWidget(QLabel(self.tr("H:")))
+        grid_form.addWidget(QLabel(self.tr("Tile H:")), 1, 2)
         self.tile_h_spin = QSpinBox()
         self.tile_h_spin.setRange(1, 512)
         self.tile_h_spin.setValue(16)
-        self.tile_h_spin.valueChanged.connect(self.on_tile_size_changed)
-        size_layout.addWidget(self.tile_h_spin)
-        layout.addLayout(size_layout)
+        self.tile_h_spin.valueChanged.connect(self.on_metadata_changed)
+        grid_form.addWidget(self.tile_h_spin, 1, 3)
+
+        grid_form.addWidget(QLabel(self.tr("H sep:")), 2, 0)
+        self.h_sep_spin = QSpinBox()
+        self.h_sep_spin.setRange(0, 64)
+        self.h_sep_spin.setToolTip(self.tr("Horizontal gap between tiles, in pixels (set to 1 for sheets with 1-px grid lines)"))
+        self.h_sep_spin.valueChanged.connect(self.on_metadata_changed)
+        grid_form.addWidget(self.h_sep_spin, 2, 1)
+
+        grid_form.addWidget(QLabel(self.tr("V sep:")), 2, 2)
+        self.v_sep_spin = QSpinBox()
+        self.v_sep_spin.setRange(0, 64)
+        self.v_sep_spin.setToolTip(self.tr("Vertical gap between tiles, in pixels"))
+        self.v_sep_spin.valueChanged.connect(self.on_metadata_changed)
+        grid_form.addWidget(self.v_sep_spin, 2, 3)
+
+        grid_form.addWidget(QLabel(self.tr("H offset:")), 3, 0)
+        self.h_offset_spin = QSpinBox()
+        self.h_offset_spin.setRange(0, 512)
+        self.h_offset_spin.setToolTip(self.tr("Left-edge offset before the first tile column, in pixels"))
+        self.h_offset_spin.valueChanged.connect(self.on_metadata_changed)
+        grid_form.addWidget(self.h_offset_spin, 3, 1)
+
+        grid_form.addWidget(QLabel(self.tr("V offset:")), 3, 2)
+        self.v_offset_spin = QSpinBox()
+        self.v_offset_spin.setRange(0, 512)
+        self.v_offset_spin.setToolTip(self.tr("Top-edge offset before the first tile row, in pixels"))
+        self.v_offset_spin.valueChanged.connect(self.on_metadata_changed)
+        grid_form.addWidget(self.v_offset_spin, 3, 3)
+
+        layout.addWidget(grid_group)
 
         # Layer selector
         layer_layout = QHBoxLayout()
@@ -267,40 +312,67 @@ class TilePaletteDialog(QDialog):
             self.tile_grid.clear()
             return
 
-        # Get tile dimensions from background metadata or spin boxes
-        tw = bg_data.get('tile_width', self.tile_w_spin.value())
-        th = bg_data.get('tile_height', self.tile_h_spin.value())
-        ho = bg_data.get('h_offset', 0)
-        vo = bg_data.get('v_offset', 0)
-        hs = bg_data.get('h_sep', 0)
-        vs = bg_data.get('v_sep', 0)
+        # Get tile dimensions from background metadata. tile_width/height
+        # may legitimately be 0 in older project files (non-tileset bgs);
+        # clamp to 1 so the spinbox doesn't reject the value, then preserve
+        # the original 0 in bg_data until the user actually edits.
+        tw = max(1, int(bg_data.get('tile_width') or 16))
+        th = max(1, int(bg_data.get('tile_height') or 16))
+        ho = int(bg_data.get('h_offset', 0) or 0)
+        vo = int(bg_data.get('v_offset', 0) or 0)
+        hs = int(bg_data.get('h_sep', 0) or 0)
+        vs = int(bg_data.get('v_sep', 0) or 0)
+        use_as_tileset = bool(bg_data.get('use_as_tileset', False))
 
-        # Update spin boxes to match
-        self.tile_w_spin.blockSignals(True)
-        self.tile_h_spin.blockSignals(True)
-        self.tile_w_spin.setValue(tw)
-        self.tile_h_spin.setValue(th)
-        self.tile_w_spin.blockSignals(False)
-        self.tile_h_spin.blockSignals(False)
+        # Mirror values to the UI without firing on_metadata_changed.
+        self._loading_metadata = True
+        try:
+            self.tile_w_spin.setValue(tw)
+            self.tile_h_spin.setValue(th)
+            self.h_sep_spin.setValue(hs)
+            self.v_sep_spin.setValue(vs)
+            self.h_offset_spin.setValue(ho)
+            self.v_offset_spin.setValue(vo)
+            self.use_as_tileset_check.setChecked(use_as_tileset)
+        finally:
+            self._loading_metadata = False
 
         self.tile_grid.set_tileset(pixmap, tw, th, ho, vo, hs, vs)
 
-    def on_tile_size_changed(self):
-        """Handle manual tile size change"""
-        if not self.current_bg_name:
+    def on_metadata_changed(self, *_args):
+        """Persist tilesheet metadata edits to bg_data and refresh the grid.
+
+        Triggered by any of the six spinboxes or the use_as_tileset checkbox.
+        Mutates bg_data in place (which is shared by reference with
+        asset_manager.assets_cache) and emits background_metadata_changed so
+        the room editor can route the change through project_manager."""
+        if self._loading_metadata or not self.current_bg_name:
             return
-        bg_data = self.tileset_backgrounds.get(self.current_bg_name, {})
+
+        bg_data = self.tileset_backgrounds.get(self.current_bg_name)
+        if bg_data is None:
+            return
+
+        tw = self.tile_w_spin.value()
+        th = self.tile_h_spin.value()
+        hs = self.h_sep_spin.value()
+        vs = self.v_sep_spin.value()
+        ho = self.h_offset_spin.value()
+        vo = self.v_offset_spin.value()
+
+        bg_data['tile_width'] = tw
+        bg_data['tile_height'] = th
+        bg_data['h_sep'] = hs
+        bg_data['v_sep'] = vs
+        bg_data['h_offset'] = ho
+        bg_data['v_offset'] = vo
+        bg_data['use_as_tileset'] = self.use_as_tileset_check.isChecked()
+
         pixmap = self._load_background_pixmap(self.current_bg_name)
         if pixmap:
-            self.tile_grid.set_tileset(
-                pixmap,
-                self.tile_w_spin.value(),
-                self.tile_h_spin.value(),
-                bg_data.get('h_offset', 0),
-                bg_data.get('v_offset', 0),
-                bg_data.get('h_sep', 0),
-                bg_data.get('v_sep', 0)
-            )
+            self.tile_grid.set_tileset(pixmap, tw, th, ho, vo, hs, vs)
+
+        self.background_metadata_changed.emit(self.current_bg_name, dict(bg_data))
 
     def on_grid_tile_selected(self, tile_x, tile_y):
         """Handle tile selection from grid"""
