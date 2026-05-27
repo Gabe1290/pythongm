@@ -415,6 +415,7 @@ class BlocklyConfig:
         # other Control blocks (if_condition / set_variable /
         # test_variable) stay out of beginner to keep the picker simple.
         config.enable_block("exit_event")
+        config.enable_block("else_action")
 
         # Output
         config.enable_block("output_message")      # Game over messages

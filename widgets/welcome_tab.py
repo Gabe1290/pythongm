@@ -40,12 +40,15 @@ SAMPLE_PROJECTS: List[Tuple[str, str]] = [
     ("samples/maze_1", "Maze — Level 1"),
     ("samples/maze_2", "Maze — Level 2"),
     ("samples/maze_3", "Maze — Level 3"),
+    ("samples/plateforme_1", "Platform — Level 1"),
     # `treasure` and `maze_4` were dropped from the bundled set after
     # rc.12 user testing surfaced enough GMK-import edge cases (bad
     # action parameters, sprite issues, half-converted events) that
     # they couldn't be relied on as "click and play" demonstrators.
     # Reintroduce when the importer is hardened — see TODO.md
-    # ("GMK importer hardening").
+    # ("GMK importer hardening"). plateforme_1 was added back once the
+    # function_name-based dispatch landed and gravity/collision actions
+    # round-tripped cleanly.
 ]
 
 

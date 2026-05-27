@@ -482,6 +482,204 @@ GM_ACTION_PARAMS = {
     (1, 731): ["score", "lives", "health"],  # set_window_caption
 }
 
+
+# ============================================================================
+# FUNCTION-NAME DISPATCH (GM7/8 authoritative)
+# ============================================================================
+# GM6 and GM7/8 reuse the same (library_id, action_id) keys for different
+# actions — e.g. (1, 107) is `reverse_horizontal` in GM6 but `action_set_gravity`
+# in GM7/8. ID-based dispatch alone cannot disambiguate. The GMK file stores
+# the action's standard-library function_name (e.g. "action_set_gravity") which
+# IS unambiguous, so we prefer it when present and fall back to ID dispatch
+# only for actions without a function_name (kind-based control flow, or older
+# files).
+
+GM_FUNCTION_NAME_MAP = {
+    # ---- Move tab ----
+    "action_move":                   "start_moving_direction",
+    "action_set_motion":             "set_direction_speed",
+    "action_move_point":             "move_towards_point",
+    "action_set_hspeed":             "set_hspeed",
+    "action_set_vspeed":             "set_vspeed",
+    "action_set_gravity":            "set_gravity",
+    "action_set_friction":           "set_friction",
+    "action_reverse_xdir":           "reverse_horizontal",
+    "action_reverse_ydir":           "reverse_vertical",
+    "action_move_to":                "jump_to_position",
+    "action_move_start":             "jump_to_start",
+    "action_move_random":            "jump_to_random",
+    "action_snap":                   "snap_to_grid",
+    "action_wrap":                   "wrap_around_room",
+    "action_move_contact":           "move_to_contact",
+    "action_bounce":                 "bounce",
+    # ---- Main1 (Objects) ----
+    "action_create_object":          "create_instance",
+    "action_create_object_motion":   "create_moving_instance",
+    "action_create_object_random":   "create_random_instance",
+    "action_change_object":          "change_instance",
+    "action_kill_object":            "destroy_instance",
+    "action_kill_position":          "destroy_at_position",
+    # ---- Main2 (Sprite/Sound) ----
+    "action_sprite_set":             "set_sprite",
+    "action_sprite_transform":       "change_sprite",
+    "action_sprite_color":           "set_sprite_color",
+    "action_sound":                  "play_sound",
+    "action_sound_stop":             "stop_sound",
+    "action_if_sound":               "check_sound",
+    # ---- Control ----
+    "action_if_empty":               "check_empty",
+    "action_if_collision":           "if_collision",
+    "action_if_object":              "if_collision",   # variant with specific object
+    "action_if_number":              "test_instance_count",
+    "action_if_variable":            "test_variable",
+    "action_if":                     "test_expression",
+    "action_if_question":            "test_question",
+    "action_if_dice":                "test_chance",
+    "action_if_aligned":             "test_alignment",
+    # ---- Score / Lives / Health ----
+    "action_set_score":              "set_score",
+    "action_if_score":               "test_score",
+    "action_draw_score":             "draw_score",
+    "action_highscore_show":         "show_highscore",
+    "action_highscore_clear":        "clear_highscore",
+    "action_set_life":               "set_lives",
+    "action_if_life":                "test_lives",
+    "action_draw_life":              "draw_lives",
+    "action_draw_life_images":       "draw_lives",
+    "action_set_health":             "set_health",
+    "action_if_health":              "test_health",
+    "action_draw_health":            "draw_health_bar",
+    "action_set_caption":            "set_window_caption",
+    # ---- Variable / Code ----
+    "action_set_variable":           "set_variable",
+    "action_execute_script":         "execute_script",
+    # ---- Drawing ----
+    "action_draw_sprite":            "draw_sprite",
+    "action_draw_background":        "draw_background",
+    "action_draw_text":              "draw_text",
+    "action_draw_text_scaled":       "draw_scaled_text",
+    "action_draw_rectangle":         "draw_rectangle",
+    "action_draw_ellipse":           "draw_ellipse",
+    "action_draw_line":              "draw_line",
+    "action_draw_arrow":             "draw_arrow",
+    "action_color":                  "set_draw_color",
+    "action_font":                   "set_draw_font",
+    "action_fill_color":             "fill_color",
+    # ---- Rooms ----
+    "action_next_room":              "next_room",
+    "action_previous_room":          "previous_room",
+    "action_current_room":           "restart_room",
+    "action_room_goto":              "goto_room",
+    "action_if_next_room":           "if_next_room_exists",
+    "action_if_previous_room":       "if_previous_room_exists",
+    # ---- Timing / Game ----
+    "action_set_alarm":              "set_alarm",
+    "action_restart_game":           "restart_game",
+    "action_end_game":               "end_game",
+    "action_message":                "show_message",   # popup (id=321); inline-comment usage has empty fname
+}
+
+# Parameter name lists for function-name-keyed actions.
+# Length and order must match the GMK argument_values; index N → params[name[N]].
+# Only listed when different from the (library_id, action_id) entry that would
+# otherwise be used; entries fall back to GM_ACTION_PARAMS otherwise.
+GM_FUNCTION_NAME_PARAMS = {
+    "action_move":                   ["directions", "speed"],
+    "action_set_motion":             ["direction", "speed"],
+    "action_move_point":             ["x", "y", "speed"],
+    "action_set_hspeed":             ["hspeed"],
+    "action_set_vspeed":             ["vspeed"],
+    "action_set_gravity":            ["direction", "gravity"],
+    "action_set_friction":           ["friction"],
+    "action_move_to":                ["x", "y"],
+    "action_move_contact":           ["direction", "max_distance", "against"],
+    "action_bounce":                 ["precise", "against"],
+    "action_snap":                   ["hsnap", "vsnap"],
+    "action_wrap":                   ["direction"],
+    # Objects
+    "action_create_object":          ["object", "x", "y"],
+    "action_create_object_motion":   ["object", "x", "y", "speed", "direction"],
+    "action_create_object_random":   ["object1", "object2", "object3", "object4", "x", "y"],
+    "action_change_object":          ["object", "perform_events"],
+    "action_kill_position":          ["x", "y"],
+    # Sprite/Sound
+    "action_sprite_set":             ["sprite", "subimage", "speed"],
+    "action_sound":                  ["sound", "loop"],
+    "action_sound_stop":             ["sound"],
+    "action_if_sound":               ["sound"],
+    # Control
+    "action_if_empty":               ["x", "y", "objects"],
+    "action_if_collision":           ["x", "y", "object"],
+    "action_if_object":              ["object", "x", "y"],
+    "action_if_number":              ["object", "count", "operation"],
+    "action_if_variable":            ["variable", "value", "operation"],
+    "action_if":                     ["expression"],
+    "action_if_question":            ["question"],
+    "action_if_dice":                ["sides"],
+    "action_if_aligned":             ["hsnap", "vsnap"],
+    # Score / Lives / Health
+    "action_set_score":              ["value"],
+    "action_if_score":               ["value", "operation"],
+    "action_draw_score":             ["x", "y", "caption"],
+    "action_set_life":               ["value"],
+    "action_if_life":                ["value", "operation"],
+    "action_draw_life":              ["x", "y", "caption"],
+    "action_draw_life_images":       ["x", "y", "image"],
+    "action_set_health":             ["value"],
+    "action_if_health":              ["value", "operation"],
+    "action_draw_health":            ["x1", "y1", "x2", "y2", "back_color", "bar_color"],
+    "action_set_caption":            ["score", "score_caption", "lives", "lives_caption", "health", "health_caption"],
+    # Variable / Code
+    "action_set_variable":           ["variable", "value"],
+    "action_execute_script":         ["script"],
+    # Drawing
+    "action_draw_sprite":            ["sprite", "x", "y", "subimage"],
+    "action_draw_text":              ["text", "x", "y"],
+    "action_draw_text_scaled":       ["text", "x", "y", "xscale", "yscale", "angle"],
+    "action_draw_rectangle":         ["x1", "y1", "x2", "y2", "filled"],
+    "action_draw_ellipse":           ["x1", "y1", "x2", "y2", "filled"],
+    "action_draw_line":              ["x1", "y1", "x2", "y2"],
+    "action_color":                  ["color"],
+    "action_font":                   ["font", "align"],
+    # Rooms
+    "action_room_goto":              ["room", "transition"],
+    # Timing / Game
+    "action_set_alarm":              ["steps", "alarm_number"],
+    "action_message":                ["message"],
+}
+
+# action_if_empty / action_if_collision pack a "kind" byte as their third arg:
+#   "0" = only solid instances block / count, "1" = all instances.
+# pygm2's check_empty wants `objects` as "solid" / "all"; if_collision wants
+# `object` as "solid" / "any". Translate here so the runtime sees the strings
+# it expects.
+GM_COLLISION_KIND_TO_PYGM2 = {
+    "check_empty": {"0": "solid", "1": "all"},
+    "if_collision": {"0": "solid", "1": "any"},
+}
+
+# action_if_variable / action_if_score / action_if_life / action_if_health pack
+# the comparison operator as an integer index. The pygm2 runtime expects the
+# operator name (equal/less/greater/less_equal/greater_equal/not_equal). Older
+# GMK files only ship 0..2; newer GameMaker versions added 3..5.
+GM_COMPARISON_OPS = {
+    "0": "equal",
+    "1": "less",
+    "2": "greater",
+    "3": "less_equal",
+    "4": "greater_equal",
+    "5": "not_equal",
+}
+
+# pygm2 actions that take an `operation` parameter coming from the GMK integer
+# code above. Keep this list narrow so we don't accidentally translate the
+# `operation` of unrelated actions that happen to share the param name.
+GM_OPERATION_ACTIONS = {
+    "test_variable", "test_score", "test_lives", "test_health",
+    "test_instance_count",
+}
+
+
 # GM argument kind constants (for resource-reference resolution)
 ARG_EXPRESSION = 0
 ARG_STRING = 1

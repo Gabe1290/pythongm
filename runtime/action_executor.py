@@ -1362,11 +1362,14 @@ class ActionExecutor:
         """True when (x, y) has no collision.
 
         Parameters:
-            x, y: ABSOLUTE position to check (expressions OK, e.g. "self.x + 32").
+            x, y: position to check (expressions OK, e.g. "self.x + 32").
+                  Absolute by default; treated as offsets from the instance when
+                  `relative` is True (matches GM7/8 action_if_empty semantics).
             objects: "solid" (only solid instances count as blocking, default)
                      or "all" (any instance blocks).
             only_solid: Legacy boolean alias. True → "solid", False → "all".
                         Used when older saves don't have `objects`.
+            relative: If True, x/y are offsets from the instance's position.
 
         Returns True if the position is empty, False otherwise. Pair with
         start_block/end_block to gate subsequent actions (GM-style).
@@ -1391,6 +1394,10 @@ class ActionExecutor:
         except Exception as e:
             logger.error(f"⚠️ check_empty: bad Y expression '{y_expr}': {e}")
             y_val = 0.0
+
+        if parameters.get("relative", False):
+            x_val += instance.x
+            y_val += instance.y
 
         # "solid" → only solid instances block; "all" → any instance blocks.
         # check_collision_at_position's filter uses "solid" / "any" tokens.
