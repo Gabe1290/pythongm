@@ -18,6 +18,11 @@ from PIL import Image
 from importers.gmk_mappings import (
     GM_ACTION_MAP,
     GM_ACTION_PARAMS,
+    GM_FUNCTION_NAME_MAP,
+    GM_FUNCTION_NAME_PARAMS,
+    GM_COLLISION_KIND_TO_PYGM2,
+    GM_COMPARISON_OPS,
+    GM_OPERATION_ACTIONS,
     ARG_KIND_TO_RESOURCE,
     gm_color_to_hex,
     resolve_event,
@@ -546,20 +551,14 @@ class GmkConverter:
         """
         Convert a single GM action to a pygm2 action dict.
 
-        Falls back to execute_code for unmapped actions with code,
-        or comment for unmapped actions without code.
+        Dispatch order:
+            1. action_kind (control-flow markers — library-independent)
+            2. function_name (GM7/8 authoritative; disambiguates ID collisions)
+            3. (library_id, action_id) lookup (older files without function_name)
+            4. execute_code fallback if execution_type=2 with actual code
+            5. comment fallback for unmapped actions
         """
         key = (gm_act.library_id, gm_act.action_id)
-
-        # Special case: code execution (type 2) always becomes execute_code
-        if gm_act.execution_type == 2:
-            code = gm_act.code or ""
-            if not code and gm_act.argument_values:
-                code = gm_act.argument_values[0]
-            return {
-                "action": "execute_code",
-                "parameters": {"code": code},
-            }
 
         # Library-independent control-flow markers (start_block, end_block,
         # else_action, exit_event, repeat). Authoritative regardless of
@@ -570,14 +569,28 @@ class GmkConverter:
                 "parameters": {},
             }
 
-        # Look up the action in the mapping
-        pygm2_action = GM_ACTION_MAP.get(key)
+        # Resolve action + param list via function_name first, then ID.
+        pygm2_action = None
+        param_names = []
+        if gm_act.function_name and gm_act.function_name in GM_FUNCTION_NAME_MAP:
+            pygm2_action = GM_FUNCTION_NAME_MAP[gm_act.function_name]
+            param_names = GM_FUNCTION_NAME_PARAMS.get(
+                gm_act.function_name, GM_ACTION_PARAMS.get(key, [])
+            )
         if pygm2_action is None:
-            # Unmapped action: fall back
+            pygm2_action = GM_ACTION_MAP.get(key)
+            param_names = GM_ACTION_PARAMS.get(key, [])
+
+        if pygm2_action is None:
+            # exec_type=2 with actual code → execute_code; otherwise fallback.
+            if gm_act.execution_type == 2 and gm_act.code:
+                return {
+                    "action": "execute_code",
+                    "parameters": {"code": gm_act.code},
+                }
             return self._fallback_action(gm_act)
 
         # Build parameters dict from argument values
-        param_names = GM_ACTION_PARAMS.get(key, [])
         parameters = {}
 
         for i, param_name in enumerate(param_names):
@@ -600,6 +613,20 @@ class GmkConverter:
             parameters["directions"] = _convert_direction_string(
                 parameters["directions"]
             )
+
+        # Translate GM's "0/1" collision-kind byte into pygm2's "solid"/"all"
+        # (check_empty) or "solid"/"any" (if_collision) string vocabulary.
+        kind_map = GM_COLLISION_KIND_TO_PYGM2.get(pygm2_action)
+        if kind_map:
+            for key_name in ("objects", "object"):
+                if key_name in parameters and parameters[key_name] in kind_map:
+                    parameters[key_name] = kind_map[parameters[key_name]]
+
+        # Translate GM's integer comparison operator into pygm2's name.
+        if pygm2_action in GM_OPERATION_ACTIONS and "operation" in parameters:
+            op_raw = parameters["operation"]
+            if op_raw in GM_COMPARISON_OPS:
+                parameters["operation"] = GM_COMPARISON_OPS[op_raw]
 
         # Handle the 'relative' flag for applicable actions
         if gm_act.is_relative and parameters:

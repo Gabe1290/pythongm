@@ -296,7 +296,7 @@ function generateActionCode(block) {
         case 'set_alpha':
             return {action: 'set_alpha', parameters: {alpha: getInputValue(block, 'ALPHA', 1.0)}};
         case 'set_gravity':
-            return {action: 'set_gravity', parameters: {direction: getInputValue(block, 'DIRECTION', 270), strength: getInputValue(block, 'STRENGTH', 0.5)}};
+            return {action: 'set_gravity', parameters: {direction: getInputValue(block, 'DIRECTION', 270), gravity: getInputValue(block, 'STRENGTH', 0.5)}};
         case 'set_friction':
             return {action: 'set_friction', parameters: {friction: getInputValue(block, 'FRICTION', 0)}};
         case 'reverse_horizontal':

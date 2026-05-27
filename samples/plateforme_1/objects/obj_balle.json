@@ -12,27 +12,35 @@
         {
           "action": "comment",
           "parameters": {
-            "text": "Vérifie s'il est en l'air"
+            "text": "Vérifie si la balle est en l'air"
           }
         },
         {
-          "action": "set_score",
+          "action": "if_collision",
           "parameters": {
-            "value": "0",
-            "relative": true
+            "x": "0",
+            "y": "1",
+            "object": "solid",
+            "not_flag": true
           }
         },
         {
-          "action": "reverse_horizontal",
-          "parameters": {}
+          "action": "set_gravity",
+          "parameters": {
+            "direction": "270",
+            "gravity": "0.45"
+          }
         },
         {
           "action": "else_action",
           "parameters": {}
         },
         {
-          "action": "reverse_horizontal",
-          "parameters": {}
+          "action": "set_gravity",
+          "parameters": {
+            "direction": "270",
+            "gravity": "0"
+          }
         },
         {
           "action": "comment",
@@ -43,15 +51,16 @@
         {
           "action": "test_variable",
           "parameters": {
-            "variable": "vspeed",
+            "variable_name": "vspeed",
             "value": "24",
-            "operation": "2"
+            "scope": "self",
+            "operation": "greater_equal"
           }
         },
         {
-          "action": "execute_code",
+          "action": "set_vspeed",
           "parameters": {
-            "code": "vspeed"
+            "speed": "24"
           }
         }
       ]
@@ -60,15 +69,12 @@
       "actions": [
         {
           "action": "move_to_contact",
-          "parameters": {
-            "direction": "direction",
-            "max_distance": "12"
-          }
+          "parameters": {}
         },
         {
-          "action": "set_hspeed",
+          "action": "set_vspeed",
           "parameters": {
-            "hspeed": "0"
+            "speed": "0"
           }
         }
       ],
@@ -78,16 +84,19 @@
       "right": {
         "actions": [
           {
-            "action": "set_score",
+            "action": "if_collision",
             "parameters": {
-              "value": "4",
-              "relative": true
+              "x": "4",
+              "y": "0",
+              "object": "solid",
+              "not_flag": true
             }
           },
           {
-            "action": "set_friction",
+            "action": "jump_to_position",
             "parameters": {
-              "friction": "4",
+              "x": "4",
+              "y": "0",
               "relative": true
             }
           }
@@ -96,17 +105,18 @@
       "up": {
         "actions": [
           {
-            "action": "test_score",
+            "action": "if_collision",
             "parameters": {
-              "value": "0",
-              "operation": "1",
-              "relative": true
+              "x": "0",
+              "y": "1",
+              "object": "solid",
+              "not_flag": false
             }
           },
           {
-            "action": "set_hspeed",
+            "action": "set_vspeed",
             "parameters": {
-              "hspeed": "-10"
+              "speed": "-10"
             }
           }
         ]
@@ -114,16 +124,19 @@
       "left": {
         "actions": [
           {
-            "action": "set_score",
+            "action": "if_collision",
             "parameters": {
-              "value": "-4",
-              "relative": true
+              "x": "-4",
+              "y": "0",
+              "object": "solid",
+              "not_flag": true
             }
           },
           {
-            "action": "set_friction",
+            "action": "jump_to_position",
             "parameters": {
-              "friction": "-4",
+              "x": "-4",
+              "y": "0",
               "relative": true
             }
           }
@@ -133,5 +146,6 @@
   },
   "imported": true,
   "created": "2026-05-26T11:59:41.560849",
-  "modified": "2026-05-26T11:59:41.560849"
+  "modified": "2026-05-27T12:02:53.342297",
+  "parent": ""
 }
