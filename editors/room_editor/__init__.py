@@ -291,6 +291,8 @@ class RoomEditor(FloatableEditorMixin, QWidget):
         # Tile palette
         self.tile_palette.tile_selected.connect(self.on_tile_selected)
         self.tile_palette.selection_cleared.connect(self.on_tile_cleared)
+        self.tile_palette.background_metadata_changed.connect(
+            self.on_background_metadata_changed)
 
         # Room canvas
         self.room_canvas.instance_selected.connect(self.on_instance_selected)
@@ -453,6 +455,17 @@ class RoomEditor(FloatableEditorMixin, QWidget):
         self.tile_palette.show()
         self.tile_palette.raise_()
         self.tile_palette.activateWindow()
+
+    def on_background_metadata_changed(self, bg_name, bg_data):
+        """Persist tilesheet grid edits made in the tile palette.
+
+        Walks up to the IDE window, routes through project_manager.update_asset
+        so the background lands in assets_cache and mark_dirty fires."""
+        parent = self.parent()
+        while parent and not hasattr(parent, 'project_manager'):
+            parent = parent.parent()
+        if parent and getattr(parent, 'project_manager', None):
+            parent.project_manager.update_asset('backgrounds', bg_name, bg_data)
 
     def on_tile_selected(self, tile_info):
         """Handle tile selection from tile palette"""
