@@ -37,6 +37,10 @@ class ActionParameter:
     min_value: Optional[int] = None  # For number/float types
     max_value: Optional[int] = None  # For number/float types
     multi_select: bool = False  # For choice types - allow multiple selections
+    # Legacy parameter names that older saved JSON might use under different keys.
+    # The dialog and code generator look these up as a fallback so projects from before
+    # an action's canonical name was finalized continue to load and edit correctly.
+    aliases: List[str] = field(default_factory=list)
 
 @dataclass
 class ActionType:
@@ -290,11 +294,12 @@ ACTION_TYPES = {
         icon="📝",
         parameters=[
             ActionParameter(
-                name="variable_name",
+                name="variable",
                 display_name="Variable",
                 param_type="string",
                 default_value="",
-                description="Variable name"
+                description="Variable name",
+                aliases=["variable_name"],
             ),
             ActionParameter(
                 name="value",
@@ -329,11 +334,12 @@ ACTION_TYPES = {
         icon="❓",
         parameters=[
             ActionParameter(
-                name="variable_name",
+                name="variable",
                 display_name="Variable",
                 param_type="string",
                 default_value="",
-                description="Variable name"
+                description="Variable name",
+                aliases=["variable_name"],
             ),
             ActionParameter(
                 name="value",
@@ -455,32 +461,6 @@ ACTION_TYPES = {
 
 
     # GAMEMAKER 7.0 MOVEMENT ACTIONS
-    "move_fixed": ActionType(
-        name="move_fixed",
-        display_name="Move Fixed",
-        description="Start moving in a fixed direction (8-way)",
-        category="Movement",
-        icon="➡️",
-        parameters=[
-            ActionParameter(
-                name="directions",
-                display_name="Directions",
-                param_type="choice",
-                default_value="right",
-                description="Direction to move (can select multiple for random choice)",
-                choices=["left", "right", "up", "down", "up-left", "up-right", "down-left", "down-right", "stop"],
-                multi_select=True
-            ),
-            ActionParameter(
-                name="speed",
-                display_name="Speed",
-                param_type="float",
-                default_value=4.0,
-                description="Movement speed in pixels per step"
-            )
-        ]
-    ),
-
     "move_free": ActionType(
         name="move_free",
         display_name="Move Free",
@@ -496,37 +476,6 @@ ACTION_TYPES = {
                 description="Direction in degrees (0=right, 90=up, counter-clockwise)",
                 min_value=0,
                 max_value=360
-            ),
-            ActionParameter(
-                name="speed",
-                display_name="Speed",
-                param_type="float",
-                default_value=4.0,
-                description="Movement speed"
-            )
-        ]
-    ),
-
-    "move_towards": ActionType(
-        name="move_towards",
-        display_name="Move Towards",
-        description="Move towards a specific position",
-        category="Movement",
-        icon="🎯",
-        parameters=[
-            ActionParameter(
-                name="x",
-                display_name="X Position",
-                param_type="string",
-                default_value="0",
-                description="Target X position (can be expression)"
-            ),
-            ActionParameter(
-                name="y",
-                display_name="Y Position",
-                param_type="string",
-                default_value="0",
-                description="Target Y position (can be expression)"
             ),
             ActionParameter(
                 name="speed",
@@ -722,51 +671,6 @@ ACTION_TYPES = {
                 description="Which instances count as occupying the position",
                 choices=["solid", "all"]
             ),
-        ]
-    ),
-
-    "check_collision": ActionType(
-        name="check_collision",
-        display_name="Check Collision",
-        description="Check if there's a collision at position",
-        category="Control",
-        icon="💥",
-        parameters=[
-            ActionParameter(
-                name="x",
-                display_name="X Position",
-                param_type="string",
-                default_value="self.x",
-                description="X position to check"
-            ),
-            ActionParameter(
-                name="y",
-                display_name="Y Position",
-                param_type="string",
-                default_value="self.y",
-                description="Y position to check"
-            ),
-            ActionParameter(
-                name="only_solid",
-                display_name="Only Solid Objects",
-                param_type="boolean",
-                default_value=True,
-                description="Check only solid objects"
-            ),
-            ActionParameter(
-                name="then_actions",
-                display_name="Then Actions",
-                param_type="action_list",
-                default_value=[],
-                description="Actions if collision"
-            ),
-            ActionParameter(
-                name="else_actions",
-                display_name="Else Actions",
-                param_type="action_list",
-                default_value=[],
-                description="Actions if no collision"
-            )
         ]
     ),
 
@@ -1178,32 +1082,9 @@ ACTION_TYPES = {
     ),
 
     # ROOM ACTIONS
-    "room_restart": ActionType(
-        name="room_restart",
-        display_name="Restart Room",
-        description="Restart the current room",
-        category="Room",
-        icon="🔄",
-        parameters=[]
-    ),
-
-    "room_goto_next": ActionType(
-        name="room_goto_next",
-        display_name="Next Room",
-        description="Go to the next room",
-        category="Room",
-        icon="➡️🚪",
-        parameters=[]
-    ),
-
-    "room_goto_previous": ActionType(
-        name="room_goto_previous",
-        display_name="Previous Room",
-        description="Go to the previous room",
-        category="Room",
-        icon="⬅️🚪",
-        parameters=[]
-    ),
+    # restart_room, next_room, previous_room are defined above as the canonical names.
+    # Legacy aliases (room_restart, room_goto_next, room_goto_previous) are handled
+    # through ACTION_TYPE_ALIASES so older project JSON still loads in the dialog.
 
     "room_goto": ActionType(
         name="room_goto",
@@ -1824,9 +1705,26 @@ for _block_name in BLOCKLY_TO_ACTION_MAP:
 del _block_name
 
 
+# Legacy action-name aliases. When a project's saved JSON references an alias name
+# (typically older GameMaker-style names like "room_restart" / "room_goto_next" that we've
+# consolidated under their canonical equivalents), look up the canonical entry instead so
+# the action dialog still loads. The runtime keeps its own alias map at
+# runtime/action_executor.py:ACTION_ALIASES for handler dispatch.
+ACTION_TYPE_ALIASES = {
+    "room_restart": "restart_room",
+    "room_goto_next": "next_room",
+    "room_goto_previous": "previous_room",
+}
+
+
 def get_action_type(action_name: str) -> Optional[ActionType]:
-    """Get action type by name"""
-    return ACTION_TYPES.get(action_name)
+    """Get action type by name. Follows ACTION_TYPE_ALIASES for legacy names."""
+    if action_name in ACTION_TYPES:
+        return ACTION_TYPES[action_name]
+    aliased = ACTION_TYPE_ALIASES.get(action_name)
+    if aliased:
+        return ACTION_TYPES.get(aliased)
+    return None
 
 
 def get_actions_by_category(blockly_config=None) -> Dict[str, List[ActionType]]:

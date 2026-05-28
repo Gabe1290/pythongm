@@ -1,81 +1,30 @@
 #!/usr/bin/env python3
 """
-GameMaker 8.0 Complete Action System
-All actions organized exactly as they appeared in GM8.0
-Actions are organized into tabs/categories as in the original GM8
+Action schema package.
 
-This module re-exports all action definitions from individual category modules
-for backward compatibility with existing code.
+Historically this package aggregated every GameMaker-8.0 action category
+(MOVE / MAIN1 / MAIN2 / SCORE / etc.) into a GM80_ALL_ACTIONS dict. That
+aggregate was never read outside the package: the IDE form drives off
+events/action_types.py:ACTION_TYPES, the runtime drives off method-name
+dispatch + ACTION_ALIASES, and the GMK importer drives off
+importers/gmk_mappings.py. Those category modules have been removed.
+
+What remains in this package:
+
+* ``actions.core`` — the ``ActionDefinition`` / ``ActionParameter``
+  classes used by ``editors/object_editor/gm80_action_dialog.py``
+  (which the Thymio panels still rely on).
+* ``actions.thymio_actions`` — ``THYMIO_ACTIONS`` and ``THYMIO_TAB``,
+  consumed directly by ``editors/object_editor/thymio_events_panel.py``
+  and ``dialogs/thymio_action_selector.py``.
 """
 
-# Import core definitions
-from actions.core import (
-    ActionParameter,
-    ActionDefinition,
-    GM80_ACTION_TABS,
-    get_actions_by_tab,
-    get_action_tabs_ordered,
-    get_action
-)
-
-# Import all action categories
-from actions.move_actions import MOVE_ACTIONS
-from actions.main1_actions import MAIN1_ACTIONS
-from actions.main2_actions import MAIN2_ACTIONS
-from actions.control_actions import CONTROL_ACTIONS
-from actions.score_actions import SCORE_ACTIONS
-from actions.extra_actions import EXTRA_ACTIONS
-from actions.draw_actions import DRAW_ACTIONS
-from actions.code_actions import CODE_ACTIONS
-from actions.rooms_actions import ROOMS_ACTIONS
-from actions.timing_actions import TIMING_ACTIONS
-from actions.particles_actions import PARTICLES_ACTIONS
-from actions.info_actions import INFO_ACTIONS
-from actions.resources_actions import RESOURCES_ACTIONS
+from actions.core import ActionParameter, ActionDefinition
 from actions.thymio_actions import THYMIO_ACTIONS, THYMIO_TAB
 
-
-# Combined dictionary of all actions (for backward compatibility)
-GM80_ALL_ACTIONS = {
-    **MOVE_ACTIONS,
-    **MAIN1_ACTIONS,
-    **MAIN2_ACTIONS,
-    **CONTROL_ACTIONS,
-    **SCORE_ACTIONS,
-    **EXTRA_ACTIONS,
-    **DRAW_ACTIONS,
-    **CODE_ACTIONS,
-    **ROOMS_ACTIONS,
-    **TIMING_ACTIONS,
-    **PARTICLES_ACTIONS,
-    **INFO_ACTIONS,
-    **RESOURCES_ACTIONS,
-    **THYMIO_ACTIONS,
-}
-
-
-# Export everything for backward compatibility
 __all__ = [
     'ActionParameter',
     'ActionDefinition',
-    'GM80_ACTION_TABS',
-    'GM80_ALL_ACTIONS',
-    'MOVE_ACTIONS',
-    'MAIN1_ACTIONS',
-    'MAIN2_ACTIONS',
-    'CONTROL_ACTIONS',
-    'SCORE_ACTIONS',
-    'EXTRA_ACTIONS',
-    'DRAW_ACTIONS',
-    'CODE_ACTIONS',
-    'ROOMS_ACTIONS',
-    'TIMING_ACTIONS',
-    'PARTICLES_ACTIONS',
-    'INFO_ACTIONS',
-    'RESOURCES_ACTIONS',
     'THYMIO_ACTIONS',
     'THYMIO_TAB',
-    'get_actions_by_tab',
-    'get_action_tabs_ordered',
-    'get_action',
 ]
