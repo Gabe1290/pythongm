@@ -1979,12 +1979,13 @@ class ActionExecutor:
         """Set an instance or global variable
 
         Parameters:
-            variable: Variable name
+            variable: Variable name. "variable_name" is also accepted as a legacy alias
+                for projects saved before the schema alignment (see events/action_types.py).
             value: Value to set (number, string, or expression)
-            scope: "sel" for instance variable, "other" for collision other, "global" for global variable
+            scope: "sel"/"self" instance var, "other" collision other, "global" global var
             relative: If True, add to current value instead of replacing
         """
-        variable = parameters.get("variable", "")
+        variable = parameters.get("variable") or parameters.get("variable_name") or ""
         value_str = parameters.get("value", "0")
         scope = parameters.get("scope", "sel")
         relative = parameters.get("relative", False)
@@ -2048,12 +2049,13 @@ class ActionExecutor:
         Returns True if condition met, False otherwise
 
         Parameters:
-            variable: Variable name
+            variable: Variable name. "variable_name" is also accepted as a legacy alias
+                for projects saved before the schema alignment (see events/action_types.py).
             value: Value to compare against
-            scope: "sel" for instance variable, "other" for collision other, "global" for global variable
+            scope: "sel"/"self" instance var, "other" collision other, "global" global var
             operation: Comparison operator (equal, less, greater, etc.)
         """
-        variable = parameters.get("variable", "")
+        variable = parameters.get("variable") or parameters.get("variable_name") or ""
         value_str = parameters.get("value", "0")
         scope = parameters.get("scope", "sel")
         operation = parameters.get("operation", "equal")

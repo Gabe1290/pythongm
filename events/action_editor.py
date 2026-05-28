@@ -25,7 +25,16 @@ class ActionConfigDialog(QDialog):
     def __init__(self, action_type: ActionType, initial_params: Dict[str, Any] = None, parent=None):
         super().__init__(parent)
         self.action_type = action_type
-        self.current_params = initial_params or {}
+        self.current_params = dict(initial_params) if initial_params else {}
+        # Apply parameter aliases so older saved JSON (which may use a legacy key like
+        # "variable_name" for what's now "variable") populates the dialog correctly.
+        # On save the canonical key is written, so resaving migrates the action.
+        for param in self.action_type.parameters:
+            if param.name not in self.current_params:
+                for alias in param.aliases:
+                    if alias in self.current_params:
+                        self.current_params[param.name] = self.current_params.pop(alias)
+                        break
 
         # Check if this is a conditional action
         self.is_conditional = action_type.name == "if_condition"

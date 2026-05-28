@@ -113,9 +113,7 @@ ACTION_TO_PYTHON = {
     'set_direction_speed': 'self.direction = {direction}\nself.speed = {speed}',
     'wrap_around_room': 'self.wrap_around_room(horizontal={horizontal}, vertical={vertical})',
     'move_grid': 'self.move_grid("{direction}", {grid_size})',
-    'move_fixed': 'self.direction = "{directions}"\nself.speed = {speed}',
     'move_free': 'self.direction = {direction}\nself.speed = {speed}',
-    'move_towards': 'self.move_towards({x}, {y}, {speed})',
     'set_speed': 'self.speed = {speed}',
     'set_direction': 'self.direction = {direction}',
     'stop_if_no_keys': 'self.stop_if_no_keys({grid_size})',
@@ -164,15 +162,13 @@ ACTION_TO_PYTHON = {
 
     # Sound
     'play_sound': 'game.play_sound("{sound}")',
-    'play_music': 'game.play_music("{music}")',
-    'stop_music': 'game.stop_music()',
 
     # Message
     'display_message': 'game.show_message("{message}")',
     'show_message': 'game.show_message("{message}")',
 
     # Variables
-    'set_variable': '{variable_name} = {value}',
+    'set_variable': '{variable} = {value}',
 
     # Control
     'exit_event': 'return',
@@ -187,9 +183,8 @@ ACTION_TO_PYTHON = {
     'if_next_room_exists': 'if game.next_room_exists():',
     'if_previous_room_exists': 'if game.previous_room_exists():',
     'test_expression': 'if {expression}:',
-    'test_variable': 'if {variable_name} {operation} {value}:',
+    'test_variable': 'if {variable} {operation} {value}:',
     'check_empty': 'if game.place_free({x}, {y}, only_solid={only_solid}):',
-    'check_collision': 'if game.place_meeting({x}, {y}, only_solid={only_solid}):',
     'if_condition': 'if {condition_type}:',
     'repeat': 'for _i in range({times}):',
     'start_block': '',  # GM block grouping - no Python equivalent
@@ -1000,8 +995,14 @@ class ActionsToPythonGenerator:
         """Generate Python code for a single action"""
         # Support both 'action' and 'type' keys (Blockly uses 'type')
         action_name = action.get("action") or action.get("type", "")
-        params = action.get("parameters", {})
+        params = dict(action.get("parameters", {}))
         sub_actions = action.get("sub_actions", [])
+
+        # Legacy parameter-name migration: set_variable/test_variable JSON saved before
+        # the canonical-key alignment used "variable_name"; the current templates expect
+        # "variable". Copy across so old projects render without KeyError.
+        if action_name in ('set_variable', 'test_variable') and 'variable' not in params and 'variable_name' in params:
+            params['variable'] = params['variable_name']
 
         # Handle execute_code specially
         if action_name == "execute_code":
@@ -1021,7 +1022,7 @@ class ActionsToPythonGenerator:
             action_name.startswith('thymio_if_') or
             action_name in ('if_collision_at', 'if_on_grid', 'if_next_room_exists',
                             'if_previous_room_exists', 'test_expression', 'test_variable',
-                            'check_empty', 'check_collision', 'if_can_push', 'if_condition',
+                            'check_empty', 'if_can_push', 'if_condition',
                             'repeat')
         )
         # Check for nested actions in sub_actions or parameters
@@ -1059,14 +1060,14 @@ class ActionsToPythonGenerator:
         # Handle set_variable scope
         if action_name == 'set_variable':
             scope = params.get('scope', 'self')
-            var_name = params.get('variable_name', 'var')
+            var_name = params.get('variable', 'var')
             if scope == 'self':
-                params['variable_name'] = f'self.{var_name}'
+                params['variable'] = f'self.{var_name}'
             elif scope == 'global':
-                params['variable_name'] = f'game.{var_name}'
+                params['variable'] = f'game.{var_name}'
             relative = params.get('relative', False)
             if relative:
-                return f"{params['variable_name']} += {params.get('value', 0)}"
+                return f"{params['variable']} += {params.get('value', 0)}"
 
         # Handle if_condition - generate readable condition based on condition_type
         if action_name == 'if_condition':
