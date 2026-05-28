@@ -1,0 +1,19 @@
+{
+  "name": "spr_8x16_noir",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_8x16_noir.png",
+  "width": 8,
+  "height": 16,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": false,
+  "frames": 1,
+  "frame_width": 8,
+  "frame_height": 16,
+  "animation_type": "single",
+  "speed": 10.0,
+  "imported": true,
+  "created": "2026-05-26T11:59:41.670961",
+  "modified": "2026-05-27T12:14:47.347122",
+  "thumbnail": "thumbnails/spr_8x16_noir_thumb.png"
+}

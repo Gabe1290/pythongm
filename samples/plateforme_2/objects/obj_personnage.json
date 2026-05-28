@@ -28,23 +28,31 @@
           }
         },
         {
-          "action": "set_score",
+          "action": "if_collision",
           "parameters": {
-            "value": "0",
-            "relative": true
+            "x": "0",
+            "y": "1",
+            "object": "solid",
+            "not_flag": true
           }
         },
         {
-          "action": "reverse_horizontal",
-          "parameters": {}
+          "action": "set_gravity",
+          "parameters": {
+            "direction": "270",
+            "gravity": "0.45"
+          }
         },
         {
           "action": "else_action",
           "parameters": {}
         },
         {
-          "action": "reverse_horizontal",
-          "parameters": {}
+          "action": "set_gravity",
+          "parameters": {
+            "direction": "270",
+            "gravity": "0"
+          }
         },
         {
           "action": "comment",
@@ -55,15 +63,16 @@
         {
           "action": "test_variable",
           "parameters": {
-            "variable": "vspeed",
+            "variable_name": "vspeed",
             "value": "24",
-            "operation": "2"
+            "scope": "self",
+            "operation": "greater_equal"
           }
         },
         {
-          "action": "execute_code",
+          "action": "set_vspeed",
           "parameters": {
-            "code": "vspeed"
+            "speed": "24"
           }
         }
       ]
@@ -185,5 +194,6 @@
   },
   "imported": true,
   "created": "2026-05-26T11:59:41.730323",
-  "modified": "2026-05-26T11:59:41.730323"
+  "modified": "2026-05-27T17:25:35.041972",
+  "parent": ""
 }
