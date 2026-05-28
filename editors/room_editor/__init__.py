@@ -10,7 +10,7 @@ from pathlib import Path
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
                                QScrollArea, QToolBar, QMessageBox, QLabel,
                                QPushButton, QDialog, QFormLayout, QSpinBox,
-                               QDialogButtonBox)
+                               QDialogButtonBox, QApplication)
 from PySide6.QtCore import Qt, Signal, QTimer
 
 from core.logger import get_logger
@@ -31,6 +31,8 @@ class RoomEditor(FloatableEditorMixin, QWidget):
     data_modified = Signal(str)
     room_editor_activated = Signal(str, dict)
     # float_requested/reattach_requested come from FloatableEditorMixin
+
+    MAX_TILE_PALETTES = 5
 
     def __init__(self, project_path, parent=None):
         super().__init__(parent)
@@ -81,13 +83,23 @@ class RoomEditor(FloatableEditorMixin, QWidget):
         self.object_palette = ObjectPalette()
         left_layout.addWidget(self.object_palette)
 
-        # Tile palette button (opens floating dialog)
+        # Tile palette buttons: primary opens/raises the first palette, "+" opens an additional one
+        tile_palette_row = QHBoxLayout()
+        tile_palette_row.setContentsMargins(0, 0, 0, 0)
         self._tile_palette_btn = QPushButton(self.tr("Tile Palette..."))
         self._tile_palette_btn.clicked.connect(self.open_tile_palette)
-        left_layout.addWidget(self._tile_palette_btn)
+        tile_palette_row.addWidget(self._tile_palette_btn, 1)
+        self._add_tile_palette_btn = QPushButton(self.tr("+"))
+        self._add_tile_palette_btn.setToolTip(self.tr("Open another tile palette (up to {0})").format(self.MAX_TILE_PALETTES))
+        self._add_tile_palette_btn.setMaximumWidth(30)
+        self._add_tile_palette_btn.clicked.connect(self.open_additional_tile_palette)
+        tile_palette_row.addWidget(self._add_tile_palette_btn, 0)
+        left_layout.addLayout(tile_palette_row)
 
-        # Tile palette dialog (created lazily, kept alive)
-        self.tile_palette = TilePaletteDialog(self)
+        # Tile palettes: primary is kept alive at index 0; up to MAX_TILE_PALETTES total
+        self.tile_palettes = []
+        self._active_tile_palette = None  # The palette whose tile is the current placement tile
+        self.tile_palette = self._create_tile_palette(self.tr("Tile Palette"))
 
         # Instance properties
         self.instance_properties = InstanceProperties()
@@ -102,6 +114,10 @@ class RoomEditor(FloatableEditorMixin, QWidget):
 
         self.room_canvas = RoomCanvas()
         scroll_area.setWidget(self.room_canvas)
+        # Re-evaluate the dim overlay whenever focus moves between widgets/windows. This catches
+        # focus shifts that aren't tied to palette activation (e.g. clicking from canvas to
+        # instance-properties) so the dim turns off when leaving the canvas.
+        QApplication.instance().focusChanged.connect(self._recompute_tile_palette_dim)
 
         splitter.addWidget(scroll_area)
 
@@ -288,11 +304,7 @@ class RoomEditor(FloatableEditorMixin, QWidget):
         self.room_canvas.instance_added.connect(self.on_instance_added)
         self.instance_properties.property_changed.connect(self.on_instance_property_changed)
 
-        # Tile palette
-        self.tile_palette.tile_selected.connect(self.on_tile_selected)
-        self.tile_palette.selection_cleared.connect(self.on_tile_cleared)
-        self.tile_palette.background_metadata_changed.connect(
-            self.on_background_metadata_changed)
+        # Tile palette signals are wired in _create_tile_palette() for each palette instance.
 
         # Room canvas
         self.room_canvas.instance_selected.connect(self.on_instance_selected)
@@ -398,7 +410,8 @@ class RoomEditor(FloatableEditorMixin, QWidget):
                 self.room_canvas.sprite_cache.clear()
                 self.room_canvas.set_project_info(project_path, project_data)
                 self.object_palette.set_project_info(project_path, project_data)
-                self.tile_palette.set_project_info(project_path, project_data)
+                for palette in self.tile_palettes:
+                    palette.set_project_info(project_path, project_data)
 
     def load_available_objects(self):
         """Load available objects from the project (in-memory data preferred)"""
@@ -444,17 +457,62 @@ class RoomEditor(FloatableEditorMixin, QWidget):
         """Handle object selection from palette"""
         self.room_canvas.set_current_object_type(object_name)
         if object_name:
-            # Clear tile selection when selecting an object
-            self.tile_palette.clear_selection()
+            # Clear tile selection on every open palette when switching to object placement
+            for palette in self.tile_palettes:
+                palette.clear_selection()
+            self._active_tile_palette = None
             self.update_status(self.tr("Selected '{0}' - Click in room to place").format(object_name))
         else:
             self.update_status(self.tr("No object selected"))
 
+    def _create_tile_palette(self, title):
+        """Create a TilePaletteDialog, wire its signals, register it. Caller is responsible for show()."""
+        palette = TilePaletteDialog(self)
+        palette.setWindowTitle(title)
+        palette.tile_selected.connect(self.on_tile_selected)
+        palette.selection_cleared.connect(self.on_tile_cleared)
+        palette.background_metadata_changed.connect(self.on_background_metadata_changed)
+        palette.visibility_changed.connect(self._recompute_tile_palette_dim)
+        self.tile_palettes.append(palette)
+        return palette
+
+    def _recompute_tile_palette_dim(self, *_args):
+        """Decide whether to dim room instances.
+
+        Dim is ON when any palette is the active foreground window, OR when the user is
+        mid tile-placement gesture — i.e. a palette is open and the canvas has focus (the
+        click that focused the canvas came from a tile-placement gesture). Otherwise OFF.
+        Extra positional args are ignored so this can serve QApplication.focusChanged
+        (old, new) and the palette's visibility_changed (bool) without separate slots.
+        """
+        any_open = any(p.isVisible() for p in self.tile_palettes)
+        if not any_open:
+            self.room_canvas.set_tile_palette_active(False)
+            return
+        any_active = any(p.isActiveWindow() for p in self.tile_palettes)
+        canvas_focused = self.room_canvas.hasFocus()
+        self.room_canvas.set_tile_palette_active(any_active or canvas_focused)
+
     def open_tile_palette(self):
-        """Open the floating tile palette dialog"""
+        """Show/raise the primary tile palette dialog"""
         self.tile_palette.show()
         self.tile_palette.raise_()
         self.tile_palette.activateWindow()
+
+    def open_additional_tile_palette(self):
+        """Create and show an additional tile palette, up to MAX_TILE_PALETTES"""
+        if len(self.tile_palettes) >= self.MAX_TILE_PALETTES:
+            self.update_status(self.tr("Tile palette limit reached ({0})").format(self.MAX_TILE_PALETTES), 4000)
+            return
+        title = self.tr("Tile Palette {0}").format(len(self.tile_palettes) + 1)
+        palette = self._create_tile_palette(title)
+        # Propagate project info from the primary palette so the new one is immediately usable
+        primary = self.tile_palettes[0]
+        if primary.project_path is not None:
+            palette.set_project_info(primary.project_path, primary.project_data)
+        palette.show()
+        palette.raise_()
+        palette.activateWindow()
 
     def on_background_metadata_changed(self, bg_name, bg_data):
         """Persist tilesheet grid edits made in the tile palette.
@@ -468,15 +526,23 @@ class RoomEditor(FloatableEditorMixin, QWidget):
             parent.project_manager.update_asset('backgrounds', bg_name, bg_data)
 
     def on_tile_selected(self, tile_info):
-        """Handle tile selection from tile palette"""
+        """Handle tile selection from any tile palette; the emitting palette becomes active."""
+        sender = self.sender()
+        if sender in self.tile_palettes:
+            self._active_tile_palette = sender
         self.room_canvas.set_current_tile(tile_info)
         # Clear object selection when selecting a tile
         self.object_palette.clear_selection()
         self.update_status(self.tr("Tile selected - Click in room to paint"))
 
     def on_tile_cleared(self):
-        """Handle tile selection cleared"""
+        """Handle a palette's selection_cleared. Only affects placement if the cleared palette is the active one."""
+        sender = self.sender()
+        if sender is not None and sender is not self._active_tile_palette:
+            # Another palette cleared its highlight; the active palette's tile remains the placement tile
+            return
         self.room_canvas.clear_tile_mode()
+        self._active_tile_palette = None
         self.update_status(self.tr("Tile mode cleared"))
 
     def on_instance_selected(self, instance):

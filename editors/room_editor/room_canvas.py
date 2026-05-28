@@ -35,6 +35,9 @@ class RoomCanvas(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setMinimumSize(64, 64)
+        # Accept focus on click so the room editor can detect when the user is mid-canvas-interaction
+        # (used by the Tile Palette dimming overlay to stay dim during tile-placement clicks).
+        self.setFocusPolicy(Qt.ClickFocus)
         self.room_width = 1024
         self.room_height = 768
         self.background_color = QColor("#87CEEB")
@@ -88,6 +91,7 @@ class RoomCanvas(QWidget):
         self.tile_painting_mode = False
         self.tile_erasing_mode = False
         self.current_tile_info = None  # Dict with background_name, tile_x, tile_y, width, height
+        self.tile_palette_active = False  # True while the Tile Palette window is visible; dims instances
         self.painted_tiles = []
         self.erased_tiles = []
         self.last_painted_tile_grid = None
@@ -163,6 +167,14 @@ class RoomCanvas(QWidget):
         self.current_tile_info = None
         self.show_preview = False
         self.preview_position = None
+        self.update()
+
+    def set_tile_palette_active(self, active):
+        """Toggle the Tile Palette dimming overlay (instances render at 20% while active)"""
+        active = bool(active)
+        if self.tile_palette_active == active:
+            return
+        self.tile_palette_active = active
         self.update()
 
     def load_tiles(self, tiles_data):
@@ -533,8 +545,14 @@ class RoomCanvas(QWidget):
         painter.setPen(QPen(QColor("#333333"), 2))
         painter.drawRect(0, 0, self.room_width, self.room_height)
 
+        # Dim instances while the Tile Palette is open so tiles under them stay visible
+        dim_instances = self.tile_palette_active
+        if dim_instances:
+            painter.setOpacity(0.2)
         for instance in self.instances:
             self.draw_instance(painter, instance)
+        if dim_instances:
+            painter.setOpacity(1.0)
 
         # Foreground background layers (on top of instances)
         self.draw_foregrounds(painter)
