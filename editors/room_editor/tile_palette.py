@@ -8,7 +8,7 @@ from pathlib import Path
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox,
                                 QPushButton, QScrollArea, QSpinBox, QDialog,
                                 QFormLayout, QCheckBox, QGroupBox, QGridLayout)
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QEvent
 from PySide6.QtGui import QPixmap, QPainter, QColor, QPen
 
 from core.logger import get_logger
@@ -152,6 +152,7 @@ class TilePaletteDialog(QDialog):
     # and a snapshot dict of the new metadata so the room editor can persist
     # it via project_manager.update_asset.
     background_metadata_changed = Signal(str, dict)
+    visibility_changed = Signal(bool)  # True on show, False on hide/close
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -418,3 +419,18 @@ class TilePaletteDialog(QDialog):
         """Hide instead of closing so we can reopen"""
         self.hide()
         event.ignore()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.visibility_changed.emit(True)
+
+    def hideEvent(self, event):
+        super().hideEvent(event)
+        self.visibility_changed.emit(False)
+
+    def changeEvent(self, event):
+        # Re-emit on window activation changes so the room canvas can recompute the dim overlay.
+        # The bool payload is just a trigger; the receiver re-checks isVisible()/isActiveWindow().
+        super().changeEvent(event)
+        if event.type() == QEvent.ActivationChange:
+            self.visibility_changed.emit(self.isActiveWindow())
