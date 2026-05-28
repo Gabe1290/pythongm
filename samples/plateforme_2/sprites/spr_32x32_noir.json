@@ -1,0 +1,19 @@
+{
+  "name": "spr_32x32_noir",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_32x32_noir.png",
+  "width": 32,
+  "height": 32,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": false,
+  "frames": 1,
+  "frame_width": 32,
+  "frame_height": 32,
+  "animation_type": "single",
+  "speed": 10.0,
+  "imported": true,
+  "created": "2026-05-26T11:59:41.670961",
+  "modified": "2026-05-27T12:14:29.860389",
+  "thumbnail": "thumbnails/spr_32x32_noir_thumb.png"
+}
