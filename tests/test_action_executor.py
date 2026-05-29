@@ -296,6 +296,56 @@ class TestMovementActions:
         assert abs(instance.hspeed) < 0.01
         assert abs(instance.vspeed - (-4.0)) < 0.01  # Up is negative in screen coords
 
+    def test_move_to_contact_closes_gap(self):
+        """move_to_contact moves the instance to rest against the blocker.
+
+        Regression: the handler iterated ``self.game_runner.instances`` which
+        does not exist (instances live on ``current_room``), raising an
+        AttributeError that ``execute_action`` swallowed. The action then did
+        nothing, so a platformer character that stopped a few pixels above the
+        floor (the gap left by the all-or-nothing blocked vertical move) never
+        snapped down to the ground — it floated, couldn't re-detect the ground
+        one pixel below, and so couldn't jump again.
+        """
+        runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=runner)
+
+        mover = MockInstance("obj_personnage")
+        mover.x = 100.0
+        mover.y = 100.0  # bottom edge at 132, with a 4px gap above the brick
+
+        brick = MockInstance("obj_brique")
+        brick.solid = True
+        brick.x = 100.0
+        brick.y = 136.0  # top edge 4px below the mover's bottom
+        runner.current_room.instances = [mover, brick]
+
+        result = executor.execute_move_to_contact_action(
+            mover, {"direction": "270", "max_distance": "12", "object": "solid"}
+        )
+
+        assert result is True
+        # Moved down to rest flush on the brick: bottom (y+32) just above 136.
+        assert 103.0 <= mover.y <= 104.0
+        assert mover.x == 100.0  # straight-down move leaves x untouched
+
+    def test_move_to_contact_no_blocker_reaches_max_distance(self):
+        """With nothing to hit, move_to_contact travels the full max_distance."""
+        runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=runner)
+
+        mover = MockInstance("obj_personnage")
+        mover.x = 100.0
+        mover.y = 100.0
+        runner.current_room.instances = [mover]
+
+        result = executor.execute_move_to_contact_action(
+            mover, {"direction": "270", "max_distance": "8", "object": "solid"}
+        )
+
+        assert result is False
+        assert abs(mover.y - 108.0) < 0.001  # moved the full 8px down
+
 
 # ==============================================================================
 # Grid Utility Tests

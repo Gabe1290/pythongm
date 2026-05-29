@@ -726,7 +726,7 @@ class ActionExecutor:
             logger.warning(f"⚠️  move_to_contact: Invalid values direction={direction}, max_distance={max_distance}")
             return False
 
-        if not self.game_runner:
+        if not self.game_runner or not self.game_runner.current_room:
             logger.debug("⚠️  move_to_contact: No game runner available")
             return False
 
@@ -749,7 +749,7 @@ class ActionExecutor:
             # Check if this position would cause a collision
             collision_found = False
 
-            for other in self.game_runner.instances:
+            for other in self.game_runner.current_room.instances:
                 if other is instance:
                     continue
 
@@ -4232,12 +4232,12 @@ class ActionExecutor:
             return False
 
         # Count instances of this object type
-        if not self.game_runner or not hasattr(self.game_runner, 'instances'):
+        if not self.game_runner or not self.game_runner.current_room:
             logger.debug("⚠️  test_instance_count: No game runner or instances available")
             return False
 
         # Count instances matching the object type, excluding those marked for destruction
-        actual_count = sum(1 for inst in self.game_runner.instances
+        actual_count = sum(1 for inst in self.game_runner.current_room.instances
                           if getattr(inst, 'object_name', '') == object_type
                           and not getattr(inst, 'to_destroy', False))
 
