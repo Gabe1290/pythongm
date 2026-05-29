@@ -99,12 +99,6 @@
       "right": {
         "actions": [
           {
-            "action": "execute_code",
-            "parameters": {
-              "code": "image_speed"
-            }
-          },
-          {
             "action": "set_sprite",
             "parameters": {
               "sprite": "spr_pingus_dr",
@@ -113,17 +107,9 @@
             }
           },
           {
-            "action": "set_score",
+            "action": "set_hspeed",
             "parameters": {
-              "value": "4",
-              "relative": true
-            }
-          },
-          {
-            "action": "set_friction",
-            "parameters": {
-              "friction": "4",
-              "relative": true
+              "speed": "4"
             }
           }
         ]
@@ -131,29 +117,24 @@
       "up": {
         "actions": [
           {
-            "action": "test_score",
+            "action": "if_collision",
             "parameters": {
-              "value": "0",
-              "operation": "1",
-              "relative": true
+              "x": "0",
+              "y": "1",
+              "object": "solid",
+              "not_flag": false
             }
           },
           {
-            "action": "set_hspeed",
+            "action": "set_vspeed",
             "parameters": {
-              "hspeed": "-10"
+              "speed": "-10"
             }
           }
         ]
       },
       "left": {
         "actions": [
-          {
-            "action": "execute_code",
-            "parameters": {
-              "code": "image_speed"
-            }
-          },
           {
             "action": "set_sprite",
             "parameters": {
@@ -163,37 +144,55 @@
             }
           },
           {
-            "action": "set_score",
+            "action": "set_hspeed",
             "parameters": {
-              "value": "-4",
-              "relative": true
-            }
-          },
-          {
-            "action": "set_friction",
-            "parameters": {
-              "friction": "-4",
-              "relative": true
+              "speed": "-4"
             }
           }
         ]
       }
     },
     "keyboard_release": {
-      "anykey": {
+      "LEFT": {
         "actions": [
           {
-            "action": "execute_code",
+            "action": "set_variable",
             "parameters": {
-              "code": "image_speed"
+              "variable_name": "image_speed",
+              "value": "0",
+              "scope": "self",
+              "relative": false
             }
+          },
+          {
+            "action": "stop_movement",
+            "parameters": {}
           }
-        ]
+        ],
+        "key_code": 276
+      },
+      "RIGHT": {
+        "actions": [
+          {
+            "action": "set_variable",
+            "parameters": {
+              "variable_name": "image_speed",
+              "value": "0",
+              "scope": "self",
+              "relative": false
+            }
+          },
+          {
+            "action": "stop_movement",
+            "parameters": {}
+          }
+        ],
+        "key_code": 275
       }
     }
   },
   "imported": true,
   "created": "2026-05-26T11:59:41.730323",
-  "modified": "2026-05-27T17:25:35.041972",
+  "modified": "2026-05-28T15:46:32.671267",
   "parent": ""
 }
