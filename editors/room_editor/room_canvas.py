@@ -169,6 +169,16 @@ class RoomCanvas(QWidget):
         self.preview_position = None
         self.update()
 
+    def _should_dim_instances(self):
+        """Whether room instances should render dimmed (20%) in paintEvent.
+
+        The dim keeps tiles under instances visible *while painting tiles*. It
+        must stay off when an object is selected for placement, because the
+        user is then working with instances and expects them at full opacity —
+        even if a Tile Palette window happens to be open or focused.
+        """
+        return self.tile_palette_active and not self.current_object_type
+
     def set_tile_palette_active(self, active):
         """Toggle the Tile Palette dimming overlay (instances render at 20% while active)"""
         active = bool(active)
@@ -545,8 +555,7 @@ class RoomCanvas(QWidget):
         painter.setPen(QPen(QColor("#333333"), 2))
         painter.drawRect(0, 0, self.room_width, self.room_height)
 
-        # Dim instances while the Tile Palette is open so tiles under them stay visible
-        dim_instances = self.tile_palette_active
+        dim_instances = self._should_dim_instances()
         if dim_instances:
             painter.setOpacity(0.2)
         for instance in self.instances:
