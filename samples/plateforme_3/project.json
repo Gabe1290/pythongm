@@ -2,7 +2,7 @@
   "name": "plateforme_3_refresh2",
   "version": "1.0.0",
   "created": "2026-05-26T11:59:41.892588",
-  "modified": "2026-05-26T11:59:41.892588",
+  "modified": "2026-06-02T11:00:32.877452",
   "settings": {
     "window_title": "",
     "window_width": 800,
@@ -82,10 +82,10 @@
         "origin_x": 0,
         "origin_y": 0,
         "precise": false,
-        "bbox_left": 4,
-        "bbox_right": 26,
-        "bbox_top": 1,
-        "bbox_bottom": 30,
+        "bbox_left": 0,
+        "bbox_right": 32,
+        "bbox_top": 0,
+        "bbox_bottom": 32,
         "frames": 8,
         "frame_width": 32,
         "frame_height": 32,
@@ -93,7 +93,7 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-26T11:59:41.892588",
-        "modified": "2026-05-26T11:59:41.892588"
+        "modified": "2026-06-02T11:29:46.485069"
       },
       "spr_pingus_dr": {
         "name": "spr_pingus_dr",
@@ -104,10 +104,10 @@
         "origin_x": 0,
         "origin_y": 0,
         "precise": false,
-        "bbox_left": 4,
-        "bbox_right": 26,
-        "bbox_top": 1,
-        "bbox_bottom": 30,
+        "bbox_left": 0,
+        "bbox_right": 32,
+        "bbox_top": 0,
+        "bbox_bottom": 32,
         "frames": 8,
         "frame_width": 32,
         "frame_height": 32,
@@ -115,7 +115,7 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-26T11:59:41.892588",
-        "modified": "2026-05-26T11:59:41.892588"
+        "modified": "2026-06-02T11:29:46.485069"
       },
       "spr_pingus_splat": {
         "name": "spr_pingus_splat",
@@ -431,16 +431,16 @@
         "height": 198,
         "tile_horizontal": false,
         "tile_vertical": false,
-        "use_as_tileset": false,
-        "tile_width": 0,
-        "tile_height": 1,
-        "h_offset": 32,
-        "v_offset": 32,
-        "h_sep": 0,
-        "v_sep": 0,
+        "use_as_tileset": true,
+        "tile_width": 32,
+        "tile_height": 32,
+        "h_offset": 0,
+        "v_offset": 0,
+        "h_sep": 1,
+        "v_sep": 1,
         "imported": true,
         "created": "2026-05-26T11:59:41.925969",
-        "modified": "2026-05-26T11:59:41.925969"
+        "modified": "2026-06-02T11:00:32.877452"
       },
       "fond_degrade": {
         "name": "fond_degrade",
@@ -483,9 +483,10 @@
                 }
               },
               {
-                "action": "execute_code",
+                "action": "set_variable",
                 "parameters": {
-                  "code": "power"
+                  "variable": "power",
+                  "value": "false"
                 }
               }
             ]
@@ -499,23 +500,31 @@
                 }
               },
               {
-                "action": "set_score",
+                "action": "check_empty",
                 "parameters": {
-                  "value": "0",
+                  "x": "0",
+                  "y": "1",
+                  "objects": "solid",
                   "relative": true
                 }
               },
               {
-                "action": "reverse_horizontal",
-                "parameters": {}
+                "action": "set_gravity",
+                "parameters": {
+                  "direction": "270",
+                  "gravity": "0.5"
+                }
               },
               {
                 "action": "else_action",
                 "parameters": {}
               },
               {
-                "action": "reverse_horizontal",
-                "parameters": {}
+                "action": "set_gravity",
+                "parameters": {
+                  "direction": "270",
+                  "gravity": "0"
+                }
               },
               {
                 "action": "comment",
@@ -528,13 +537,14 @@
                 "parameters": {
                   "variable": "vspeed",
                   "value": "24",
-                  "operation": "2"
+                  "operation": "greater"
                 }
               },
               {
-                "action": "execute_code",
+                "action": "set_variable",
                 "parameters": {
-                  "code": "vspeed"
+                  "variable": "vspeed",
+                  "value": "24"
                 }
               }
             ]
@@ -542,27 +552,28 @@
           "collision_with_obj_power": {
             "actions": [
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "son_bonus",
-                  "subimage": "0"
+                  "sound": "son_bonus",
+                  "loop": "0"
                 }
               },
               {
-                "action": "goto_room",
+                "action": "set_score",
                 "parameters": {
-                  "room": "20",
+                  "value": "20",
                   "relative": true
                 }
               },
               {
-                "action": "execute_code",
+                "action": "set_variable",
                 "parameters": {
-                  "code": "power"
+                  "variable": "power",
+                  "value": "true"
                 }
               },
               {
-                "action": "create_random_instance",
+                "action": "destroy_instance",
                 "parameters": {}
               }
             ],
@@ -571,10 +582,10 @@
           "collision_with_obj_sortie": {
             "actions": [
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "son_niveaufini",
-                  "subimage": "0"
+                  "sound": "son_niveaufini",
+                  "loop": "0"
                 }
               },
               {
@@ -628,10 +639,10 @@
           "collision_with_obj_mortel": {
             "actions": [
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "son_personnage_mort",
-                  "subimage": "0"
+                  "sound": "son_personnage_mort",
+                  "loop": "0"
                 }
               },
               {
@@ -660,21 +671,21 @@
           "collision_with_obj_bonus": {
             "actions": [
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "son_bonus",
-                  "subimage": "0"
+                  "sound": "son_bonus",
+                  "loop": "0"
                 }
               },
               {
-                "action": "goto_room",
+                "action": "set_score",
                 "parameters": {
-                  "room": "10",
+                  "value": "10",
                   "relative": true
                 }
               },
               {
-                "action": "create_random_instance",
+                "action": "destroy_instance",
                 "parameters": {}
               }
             ],
@@ -687,7 +698,7 @@
                 "parameters": {
                   "variable": "power",
                   "value": "true",
-                  "operation": "0"
+                  "operation": "equal"
                 }
               },
               {
@@ -711,16 +722,16 @@
                 }
               },
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "son_monstre_mort",
-                  "subimage": "0"
+                  "sound": "son_monstre_mort",
+                  "loop": "0"
                 }
               },
               {
-                "action": "goto_room",
+                "action": "set_score",
                 "parameters": {
-                  "room": "50",
+                  "value": "50",
                   "relative": true
                 }
               },
@@ -732,10 +743,10 @@
                 }
               },
               {
-                "action": "create_moving_instance",
+                "action": "change_instance",
                 "parameters": {
                   "object": "obj_monstre_volant_mort",
-                  "x": "1"
+                  "perform_events": "1"
                 }
               },
               {
@@ -761,10 +772,10 @@
                 }
               },
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "son_personnage_mort",
-                  "subimage": "0"
+                  "sound": "son_personnage_mort",
+                  "loop": "0"
                 }
               },
               {
@@ -824,16 +835,16 @@
                 }
               },
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "son_monstre_mort",
-                  "subimage": "0"
+                  "sound": "son_monstre_mort",
+                  "loop": "0"
                 }
               },
               {
-                "action": "goto_room",
+                "action": "set_score",
                 "parameters": {
-                  "room": "50",
+                  "value": "50",
                   "relative": true
                 }
               },
@@ -845,10 +856,10 @@
                 }
               },
               {
-                "action": "create_moving_instance",
+                "action": "change_instance",
                 "parameters": {
                   "object": "obj_monstre_mort",
-                  "x": "1"
+                  "perform_events": "1"
                 }
               },
               {
@@ -870,10 +881,10 @@
                 }
               },
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "son_personnage_mort",
-                  "subimage": "0"
+                  "sound": "son_personnage_mort",
+                  "loop": "0"
                 }
               },
               {
@@ -910,7 +921,7 @@
                 "parameters": {
                   "variable": "vspeed",
                   "value": "15",
-                  "operation": "2"
+                  "operation": "greater"
                 }
               },
               {
@@ -921,24 +932,28 @@
                 "action": "move_to_contact",
                 "parameters": {
                   "direction": "direction",
-                  "max_distance": "12"
+                  "max_distance": "12",
+                  "against": "0"
                 }
               },
               {
-                "action": "set_hspeed",
+                "action": "set_vspeed",
                 "parameters": {
-                  "hspeed": "0"
+                  "vspeed": "0"
                 }
               },
               {
-                "action": "reverse_horizontal",
-                "parameters": {}
+                "action": "set_gravity",
+                "parameters": {
+                  "direction": "0",
+                  "gravity": "0"
+                }
               },
               {
-                "action": "create_moving_instance",
+                "action": "change_instance",
                 "parameters": {
                   "object": "obj_splat",
-                  "x": "1"
+                  "perform_events": "1"
                 }
               },
               {
@@ -949,13 +964,14 @@
                 "action": "move_to_contact",
                 "parameters": {
                   "direction": "direction",
-                  "max_distance": "12"
+                  "max_distance": "12",
+                  "against": "0"
                 }
               },
               {
-                "action": "set_hspeed",
+                "action": "set_vspeed",
                 "parameters": {
-                  "hspeed": "0"
+                  "vspeed": "0"
                 }
               }
             ],
@@ -965,9 +981,10 @@
             "right": {
               "actions": [
                 {
-                  "action": "execute_code",
+                  "action": "set_variable",
                   "parameters": {
-                    "code": "image_speed"
+                    "variable": "image_speed",
+                    "value": "0.5"
                   }
                 },
                 {
@@ -979,16 +996,19 @@
                   }
                 },
                 {
-                  "action": "set_score",
+                  "action": "check_empty",
                   "parameters": {
-                    "value": "4",
+                    "x": "4",
+                    "y": "0",
+                    "objects": "solid",
                     "relative": true
                   }
                 },
                 {
-                  "action": "set_friction",
+                  "action": "jump_to_position",
                   "parameters": {
-                    "friction": "4",
+                    "x": "4",
+                    "y": "0",
                     "relative": true
                   }
                 }
@@ -997,17 +1017,18 @@
             "up": {
               "actions": [
                 {
-                  "action": "test_score",
+                  "action": "if_collision",
                   "parameters": {
-                    "value": "0",
-                    "operation": "1",
+                    "x": "0",
+                    "y": "1",
+                    "object": "solid",
                     "relative": true
                   }
                 },
                 {
-                  "action": "set_hspeed",
+                  "action": "set_vspeed",
                   "parameters": {
-                    "hspeed": "-10"
+                    "vspeed": "-10"
                   }
                 }
               ]
@@ -1015,9 +1036,10 @@
             "left": {
               "actions": [
                 {
-                  "action": "execute_code",
+                  "action": "set_variable",
                   "parameters": {
-                    "code": "image_speed"
+                    "variable": "image_speed",
+                    "value": "0.5"
                   }
                 },
                 {
@@ -1029,16 +1051,19 @@
                   }
                 },
                 {
-                  "action": "set_score",
+                  "action": "check_empty",
                   "parameters": {
-                    "value": "-4",
+                    "x": "-4",
+                    "y": "0",
+                    "objects": "solid",
                     "relative": true
                   }
                 },
                 {
-                  "action": "set_friction",
+                  "action": "jump_to_position",
                   "parameters": {
-                    "friction": "-4",
+                    "x": "-4",
+                    "y": "0",
                     "relative": true
                   }
                 }
@@ -1060,9 +1085,9 @@
           "game_start": {
             "actions": [
               {
-                "action": "goto_room",
+                "action": "set_score",
                 "parameters": {
-                  "room": "0"
+                  "value": "0"
                 }
               },
               {
@@ -1075,8 +1100,11 @@
                 "action": "set_window_caption",
                 "parameters": {
                   "score": "1",
-                  "lives": "score: ",
-                  "health": "1"
+                  "score_caption": "score: ",
+                  "lives": "1",
+                  "lives_caption": "lives: ",
+                  "health": "0",
+                  "health_caption": "health: "
                 }
               }
             ]
@@ -1085,9 +1113,10 @@
             "anykey": {
               "actions": [
                 {
-                  "action": "execute_code",
+                  "action": "set_variable",
                   "parameters": {
-                    "code": "image_speed"
+                    "variable": "image_speed",
+                    "value": "0"
                   }
                 }
               ]
@@ -1096,7 +1125,7 @@
         },
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-05-26T11:59:41.942278"
+        "modified": "2026-06-02T11:00:32.877452"
       },
       "obj_brique": {
         "name": "obj_brique",
@@ -1109,7 +1138,7 @@
         "events": {},
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-05-26T11:59:41.942278"
+        "modified": "2026-06-02T11:00:32.877452"
       },
       "obj_brique_h": {
         "name": "obj_brique_h",
@@ -1122,7 +1151,7 @@
         "events": {},
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-05-26T11:59:41.942278",
+        "modified": "2026-06-02T11:00:32.877452",
         "parent": "obj_brique"
       },
       "obj_brique_v": {
@@ -1136,7 +1165,7 @@
         "events": {},
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-05-26T11:59:41.942278",
+        "modified": "2026-06-02T11:00:32.877452",
         "parent": "obj_brique"
       },
       "obj_splat": {
@@ -1151,8 +1180,11 @@
           "create": {
             "actions": [
               {
-                "action": "reverse_horizontal",
-                "parameters": {}
+                "action": "set_gravity",
+                "parameters": {
+                  "direction": "0",
+                  "gravity": "0"
+                }
               },
               {
                 "action": "start_moving_direction",
@@ -1199,7 +1231,7 @@
         },
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-05-26T11:59:41.942278"
+        "modified": "2026-06-02T11:00:32.877452"
       },
       "obj_monstre": {
         "name": "obj_monstre",
@@ -1227,7 +1259,7 @@
                 "parameters": {
                   "variable": "hspeed",
                   "value": "0",
-                  "operation": "2"
+                  "operation": "greater"
                 }
               },
               {
@@ -1255,7 +1287,7 @@
           "collision_with_obj_brique": {
             "actions": [
               {
-                "action": "jump_to_random",
+                "action": "reverse_horizontal",
                 "parameters": {}
               },
               {
@@ -1263,7 +1295,7 @@
                 "parameters": {
                   "variable": "hspeed",
                   "value": "0",
-                  "operation": "2"
+                  "operation": "greater"
                 }
               },
               {
@@ -1292,7 +1324,7 @@
         },
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-05-26T11:59:41.942278"
+        "modified": "2026-06-02T11:00:32.877452"
       },
       "obj_marqueur": {
         "name": "obj_marqueur",
@@ -1305,7 +1337,7 @@
         "events": {},
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-05-26T11:59:41.942278",
+        "modified": "2026-06-02T11:00:32.877452",
         "parent": "obj_brique"
       },
       "obj_monstre_mort": {
@@ -1332,7 +1364,7 @@
         },
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-05-26T11:59:41.942278",
+        "modified": "2026-06-02T11:00:32.877452",
         "parent": "obj_brique"
       },
       "obj_monstre_volant": {
@@ -1358,7 +1390,7 @@
                 "parameters": {
                   "variable": "hspeed",
                   "value": "0",
-                  "operation": "2"
+                  "operation": "greater"
                 }
               },
               {
@@ -1386,7 +1418,7 @@
           "collision_with_obj_brique": {
             "actions": [
               {
-                "action": "jump_to_random",
+                "action": "reverse_horizontal",
                 "parameters": {}
               },
               {
@@ -1394,7 +1426,7 @@
                 "parameters": {
                   "variable": "hspeed",
                   "value": "0",
-                  "operation": "2"
+                  "operation": "greater"
                 }
               },
               {
@@ -1423,7 +1455,7 @@
         },
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-05-26T11:59:41.942278"
+        "modified": "2026-06-02T11:00:32.877452"
       },
       "obj_bonus": {
         "name": "obj_bonus",
@@ -1449,7 +1481,7 @@
         },
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-05-26T11:59:41.942278"
+        "modified": "2026-06-02T11:00:32.877452"
       },
       "obj_mortel": {
         "name": "obj_mortel",
@@ -1462,7 +1494,7 @@
         "events": {},
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-05-26T11:59:41.942278"
+        "modified": "2026-06-02T11:00:32.877452"
       },
       "obj_sortie": {
         "name": "obj_sortie",
@@ -1475,7 +1507,7 @@
         "events": {},
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-05-26T11:59:41.942278"
+        "modified": "2026-06-02T11:00:32.877452"
       },
       "obj_brique_c": {
         "name": "obj_brique_c",
@@ -1488,7 +1520,7 @@
         "events": {},
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-05-26T11:59:41.942278",
+        "modified": "2026-06-02T11:00:32.877452",
         "parent": "obj_brique"
       },
       "obj_monstre_volant_mort": {
@@ -1509,23 +1541,31 @@
                 }
               },
               {
-                "action": "set_score",
+                "action": "check_empty",
                 "parameters": {
-                  "value": "0",
+                  "x": "0",
+                  "y": "1",
+                  "objects": "solid",
                   "relative": true
                 }
               },
               {
-                "action": "reverse_horizontal",
-                "parameters": {}
+                "action": "set_gravity",
+                "parameters": {
+                  "direction": "270",
+                  "gravity": "0.5"
+                }
               },
               {
                 "action": "else_action",
                 "parameters": {}
               },
               {
-                "action": "reverse_horizontal",
-                "parameters": {}
+                "action": "set_gravity",
+                "parameters": {
+                  "direction": "270",
+                  "gravity": "0"
+                }
               },
               {
                 "action": "comment",
@@ -1538,13 +1578,14 @@
                 "parameters": {
                   "variable": "vspeed",
                   "value": "24",
-                  "operation": "2"
+                  "operation": "greater"
                 }
               },
               {
-                "action": "execute_code",
+                "action": "set_variable",
                 "parameters": {
-                  "code": "vspeed"
+                  "variable": "vspeed",
+                  "value": "24"
                 }
               }
             ]
@@ -1558,23 +1599,31 @@
                 }
               },
               {
-                "action": "set_score",
+                "action": "check_empty",
                 "parameters": {
-                  "value": "0",
+                  "x": "0",
+                  "y": "1",
+                  "objects": "solid",
                   "relative": true
                 }
               },
               {
-                "action": "reverse_horizontal",
-                "parameters": {}
+                "action": "set_gravity",
+                "parameters": {
+                  "direction": "270",
+                  "gravity": "0.5"
+                }
               },
               {
                 "action": "else_action",
                 "parameters": {}
               },
               {
-                "action": "reverse_horizontal",
-                "parameters": {}
+                "action": "set_gravity",
+                "parameters": {
+                  "direction": "270",
+                  "gravity": "0"
+                }
               },
               {
                 "action": "comment",
@@ -1587,13 +1636,14 @@
                 "parameters": {
                   "variable": "vspeed",
                   "value": "24",
-                  "operation": "2"
+                  "operation": "greater"
                 }
               },
               {
-                "action": "execute_code",
+                "action": "set_variable",
                 "parameters": {
-                  "code": "vspeed"
+                  "variable": "vspeed",
+                  "value": "24"
                 }
               }
             ]
@@ -1615,13 +1665,14 @@
                 "action": "move_to_contact",
                 "parameters": {
                   "direction": "direction",
-                  "max_distance": "12"
+                  "max_distance": "12",
+                  "against": "0"
                 }
               },
               {
-                "action": "set_hspeed",
+                "action": "set_vspeed",
                 "parameters": {
-                  "hspeed": "0"
+                  "vspeed": "0"
                 }
               }
             ],
@@ -1630,7 +1681,7 @@
         },
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-05-26T11:59:41.942278"
+        "modified": "2026-06-02T11:00:32.877452"
       },
       "obj_power": {
         "name": "obj_power",
@@ -1643,7 +1694,7 @@
         "events": {},
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-05-26T11:59:41.942278"
+        "modified": "2026-06-02T11:00:32.877452"
       }
     },
     "rooms": {

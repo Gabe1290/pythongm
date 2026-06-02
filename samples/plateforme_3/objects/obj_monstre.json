@@ -24,7 +24,7 @@
           "parameters": {
             "variable": "hspeed",
             "value": "0",
-            "operation": "2"
+            "operation": "greater"
           }
         },
         {
@@ -52,7 +52,7 @@
     "collision_with_obj_brique": {
       "actions": [
         {
-          "action": "jump_to_random",
+          "action": "reverse_horizontal",
           "parameters": {}
         },
         {
@@ -60,7 +60,7 @@
           "parameters": {
             "variable": "hspeed",
             "value": "0",
-            "operation": "2"
+            "operation": "greater"
           }
         },
         {
@@ -89,5 +89,5 @@
   },
   "imported": true,
   "created": "2026-05-26T11:59:41.942278",
-  "modified": "2026-05-26T11:59:41.942278"
+  "modified": "2026-06-02T11:08:29.924701"
 }
