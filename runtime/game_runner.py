@@ -624,9 +624,14 @@ class GameInstance:
         # Advance animation
         animation_wrapped = False
         if self.sprite and self.sprite.frame_count > 1 and self.image_speed != 0:
-            # Calculate animation advancement based on sprite speed and instance speed multiplier
-            # sprite.speed is in FPS, game runs at 30 FPS
-            frame_advance = self.image_speed * (self.sprite.speed / 30.0)
+            # GameMaker semantics: image_speed is subimages advanced per
+            # game step (room_speed handles framerate). The earlier formula
+            # multiplied by sprite.speed/30, but sprite.speed is hard-coded
+            # to 10 by the GMK importer, so every animation effectively ran
+            # at 1/3 the requested rate — pressing right/left set
+            # image_speed=0.5 yielded 0.167 frames/step, which the user
+            # perceived as a freeze (one subimage swap every 6 game frames).
+            frame_advance = self.image_speed
             self.image_index += frame_advance
 
             # Wrap around when animation completes
