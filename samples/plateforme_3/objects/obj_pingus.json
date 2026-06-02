@@ -55,11 +55,27 @@
           "parameters": {}
         },
         {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
           "action": "set_gravity",
           "parameters": {
             "direction": "270",
             "gravity": "0"
           }
+        },
+        {
+          "action": "move_to_contact",
+          "parameters": {
+            "direction": "270",
+            "max_distance": "12",
+            "object": "solid"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
         },
         {
           "action": "comment",
@@ -660,5 +676,5 @@
   },
   "imported": true,
   "created": "2026-05-26T11:59:41.942278",
-  "modified": "2026-06-02T11:08:29.924701"
+  "modified": "2026-06-02T12:02:32.419053"
 }
