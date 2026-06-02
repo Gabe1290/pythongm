@@ -753,11 +753,17 @@ class ActionExecutor:
                 if other is instance:
                     continue
 
-                # Check object type filter
+                # Check object type filter. `solid` lives on the object
+                # definition (cached on the instance as _cached_object_data),
+                # not as a direct GameInstance attribute — reading
+                # getattr(other, 'solid', False) here always returned False
+                # and let move_to_contact pass through every wall, snapping
+                # the mover to max_distance instead of stopping at contact.
                 if object_type == "all":
                     should_check = True
                 elif object_type == "solid":
-                    should_check = getattr(other, 'solid', False)
+                    other_obj_data = getattr(other, '_cached_object_data', None) or {}
+                    should_check = bool(other_obj_data.get('solid', False))
                 else:
                     should_check = (getattr(other, 'object_name', '') == object_type)
 

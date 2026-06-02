@@ -315,7 +315,11 @@ class TestMovementActions:
         mover.y = 100.0  # bottom edge at 132, with a 4px gap above the brick
 
         brick = MockInstance("obj_brique")
-        brick.solid = True
+        # `solid` lives in object-definition data, not as an instance
+        # attribute. move_to_contact reads _cached_object_data — using a
+        # direct .solid attribute here was a fixture-only shortcut that
+        # masked the production-path getattr-on-instance bug.
+        brick._cached_object_data = {'solid': True}
         brick.x = 100.0
         brick.y = 136.0  # top edge 4px below the mover's bottom
         runner.current_room.instances = [mover, brick]
