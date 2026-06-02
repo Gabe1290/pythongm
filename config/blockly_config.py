@@ -38,6 +38,9 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
         {"type": "test_variable", "name": "Test Variable", "description": "Compare a variable against a value and run nested actions when true", "implemented": True},
         {"type": "check_empty", "name": "Check Empty", "description": "True when (x, y) has no collision — gate following action(s) on grid movement", "implemented": True},
         {"type": "exit_event", "name": "Exit Event", "description": "Stop running the rest of this event's actions — typically paired with a test to commit on the first branch that succeeds", "implemented": True},
+        {"type": "else_action", "name": "Else", "description": "Runs the next action only when the preceding test was false — pair with start_block/end_block to put more than one action on the else side", "implemented": True},
+        {"type": "start_block", "name": "Start Block", "description": "Group multiple actions so a preceding conditional applies to all of them, not just the next one", "implemented": True},
+        {"type": "end_block", "name": "End Block", "description": "Closes a Start Block group", "implemented": True},
     ],
     "Movement": [
         {"type": "move_set_hspeed", "name": "Set Horizontal Speed", "description": "Set X velocity", "implemented": True},
@@ -414,8 +417,13 @@ class BlocklyConfig:
         # patterns (e.g. maze_3's monster bounce on wall collision). The
         # other Control blocks (if_condition / set_variable /
         # test_variable) stay out of beginner to keep the picker simple.
+        # start_block/end_block pair with else_action when a branch needs
+        # more than one action (e.g. platformer step: on ground →
+        # zero gravity AND snap to contact).
         config.enable_block("exit_event")
         config.enable_block("else_action")
+        config.enable_block("start_block")
+        config.enable_block("end_block")
 
         # Output
         config.enable_block("output_message")      # Game over messages
