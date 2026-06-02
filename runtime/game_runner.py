@@ -607,6 +607,18 @@ class GameInstance:
         # vspeed negated because screen y grows downward
         return math.degrees(math.atan2(-self.vspeed, self.hspeed)) % 360.0
 
+    @property
+    def image_number(self):
+        """GameMaker-style read-only count of subimages (frames) in this
+        instance's sprite, or 0 when no sprite is assigned. Mirrors GM's
+        built-in `image_number` so bare references resolve in action
+        expressions — e.g. `random(image_number)` (pick a random frame).
+        Without this property the token couldn't bind, the surrounding
+        expression raised NameError, and _evaluate_expression silently
+        defaulted to 0.
+        """
+        return self.sprite.frame_count if self.sprite else 0
+
     def step(self):
         """Execute step event every frame"""
         # Advance animation

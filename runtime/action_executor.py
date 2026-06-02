@@ -1836,9 +1836,17 @@ class ActionExecutor:
             if self.game_runner and value_str in self.game_runner.global_variables:
                 return self.game_runner.global_variables[value_str]
 
-        # Check if this is an arithmetic expression (contains operators)
-        if any(op in value_str for op in ['*', '+', '-', '/', '%']) and not value_str.startswith('"'):
-            # Evaluate arithmetic expression
+        # Route to the expression evaluator for arithmetic (contains an
+        # operator) OR a GML function call like random(...)/irandom(...)/
+        # choose(...). Function calls carry no arithmetic operator, so without
+        # this second trigger they'd fall through to the raw-string return
+        # below — e.g. `random(image_number)` would reach int()/float() in the
+        # calling action as a literal string and silently fail to parse.
+        import re as _re
+        has_operator = any(op in value_str for op in ['*', '+', '-', '/', '%'])
+        has_function = _re.search(r'\b(?:random|irandom|choose)\s*\(', value_str) is not None
+        if (has_operator or has_function) and not value_str.startswith('"'):
+            # Evaluate arithmetic / function expression
             return self._evaluate_expression(value_str, instance)
 
         # Return as string (strip quotes if present)
@@ -1871,6 +1879,11 @@ class ActionExecutor:
         scoped_var_pattern = r'(self|other|global)\.\w+'
         expr_substituted = re.sub(scoped_var_pattern, replace_scoped_var, expr_str)
 
+        # Bare tokens that are function names (substituted further below), not
+        # instance variables — these legitimately don't resolve to an attribute,
+        # so they must be excluded from the "unresolved token" warning.
+        _known_functions = {'random', 'irandom', 'choose'}
+
         # Replace bare variable names (hspeed, vspeed, x, y, etc.) with their instance values
         def replace_bare_var(match):
             var_name = match.group(0)
@@ -1886,6 +1899,15 @@ class ActionExecutor:
                 elif var_name == 'vspeed' and 'self_vspeed' in collision_speeds:
                     return str(collision_speeds['self_vspeed'])
                 return str(getattr(instance, var_name))
+            # Token didn't resolve to a number, a function name, or an instance
+            # attribute. It will reach eval() unbound and raise NameError, so the
+            # whole expression silently defaults to 0 (see the except below).
+            # Warn so unsupported/typo'd variables surface instead of vanishing.
+            if var_name not in _known_functions:
+                logger.warning(
+                    f"⚠️ Unresolved variable '{var_name}' in expression '{expr_str}'"
+                    " — not a known instance attribute; expression will default to 0"
+                )
             return var_name
 
         # Pattern to match bare variable names (word characters not preceded by a dot)
