@@ -16,23 +16,31 @@
           }
         },
         {
-          "action": "set_score",
+          "action": "check_empty",
           "parameters": {
-            "value": "0",
+            "x": "0",
+            "y": "1",
+            "objects": "solid",
             "relative": true
           }
         },
         {
-          "action": "reverse_horizontal",
-          "parameters": {}
+          "action": "set_gravity",
+          "parameters": {
+            "direction": "270",
+            "gravity": "0.5"
+          }
         },
         {
           "action": "else_action",
           "parameters": {}
         },
         {
-          "action": "reverse_horizontal",
-          "parameters": {}
+          "action": "set_gravity",
+          "parameters": {
+            "direction": "270",
+            "gravity": "0"
+          }
         },
         {
           "action": "comment",
@@ -45,13 +53,14 @@
           "parameters": {
             "variable": "vspeed",
             "value": "24",
-            "operation": "2"
+            "operation": "greater"
           }
         },
         {
-          "action": "execute_code",
+          "action": "set_variable",
           "parameters": {
-            "code": "vspeed"
+            "variable": "vspeed",
+            "value": "24"
           }
         }
       ]
@@ -65,23 +74,31 @@
           }
         },
         {
-          "action": "set_score",
+          "action": "check_empty",
           "parameters": {
-            "value": "0",
+            "x": "0",
+            "y": "1",
+            "objects": "solid",
             "relative": true
           }
         },
         {
-          "action": "reverse_horizontal",
-          "parameters": {}
+          "action": "set_gravity",
+          "parameters": {
+            "direction": "270",
+            "gravity": "0.5"
+          }
         },
         {
           "action": "else_action",
           "parameters": {}
         },
         {
-          "action": "reverse_horizontal",
-          "parameters": {}
+          "action": "set_gravity",
+          "parameters": {
+            "direction": "270",
+            "gravity": "0"
+          }
         },
         {
           "action": "comment",
@@ -94,13 +111,14 @@
           "parameters": {
             "variable": "vspeed",
             "value": "24",
-            "operation": "2"
+            "operation": "greater"
           }
         },
         {
-          "action": "execute_code",
+          "action": "set_variable",
           "parameters": {
-            "code": "vspeed"
+            "variable": "vspeed",
+            "value": "24"
           }
         }
       ]
@@ -122,13 +140,14 @@
           "action": "move_to_contact",
           "parameters": {
             "direction": "direction",
-            "max_distance": "12"
+            "max_distance": "12",
+            "against": "0"
           }
         },
         {
-          "action": "set_hspeed",
+          "action": "set_vspeed",
           "parameters": {
-            "hspeed": "0"
+            "vspeed": "0"
           }
         }
       ],
@@ -137,5 +156,5 @@
   },
   "imported": true,
   "created": "2026-05-26T11:59:41.942278",
-  "modified": "2026-05-26T11:59:41.942278"
+  "modified": "2026-06-02T11:08:29.924701"
 }
