@@ -136,6 +136,12 @@ PYGAME_KEY_CODES = {
     'PRINT': 316,
     'PAUSE': 19,
     'MENU': 319,
+
+    # Sentinel "any key" — not a real key code. The runtime matches this by
+    # name ("anykey"/"ANYKEY" via _find_key_in_event), so the integer code
+    # here just has to be unique vs real codes and truthy so the IDE's
+    # `if selected_key_code` validation in object_events_panel passes.
+    'ANYKEY': -1,
 }
 
 
@@ -245,16 +251,20 @@ def get_all_keyboard_events() -> List[Dict]:
             'display_name': f'Keyboard <{arrow}>',
         })
 
-    # Common special keys
-    special_keys = ['SPACE', 'ENTER', 'ESCAPE', 'BACKSPACE', 'TAB', 'DELETE']
+    # Common special keys. "Any Key" first so it's easy to find at the top.
+    # The runtime accepts both 'anykey' (lowercase, what the GMK importer
+    # writes) and 'ANYKEY' (uppercase, what we store from the IDE) via
+    # _find_key_in_event's case-insensitive lookup.
+    special_keys = ['ANYKEY', 'SPACE', 'ENTER', 'ESCAPE', 'BACKSPACE', 'TAB', 'DELETE']
     for key in special_keys:
+        display = 'Any Key' if key == 'ANYKEY' else key
         events.append({
             'name': f'Key {key}',
             'type': 'keyboard',
             'key': key,
             'key_code': PYGAME_KEY_CODES[key],
             'category': 'Special Keys',
-            'display_name': f'Keyboard <{key}>',
+            'display_name': f'Keyboard <{display}>',
         })
 
     # Function keys F1-F12

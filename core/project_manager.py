@@ -21,14 +21,41 @@ def _atomic_write_json(path: Path, data: Any, *, sort_keys: bool = False) -> Non
     Writes to a sibling ``<path>.tmp`` first, then ``os.replace`` swaps it
     into place. A crash or power loss mid-write therefore leaves either the
     old file intact or the new file fully written — never a truncated mix.
+
+    Sync-client retry: Dropbox / OneDrive / iCloud frequently hold a
+    short-lived open handle on the target file as they index it, which makes
+    the rename raise PermissionError (WinError 5) on Windows. The lock
+    typically releases within a few hundred ms. We retry the rename a few
+    times before giving up so a save isn't lost to a transient sync hiccup.
     """
+    import time
+
     tmp_path = path.with_name(path.name + '.tmp')
     try:
         with open(tmp_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False, sort_keys=sort_keys)
             f.flush()
             os.fsync(f.fileno())
-        os.replace(tmp_path, path)
+
+        last_err: Optional[PermissionError] = None
+        for delay in (0.0, 0.1, 0.25, 0.5):
+            if delay:
+                time.sleep(delay)
+            try:
+                os.replace(tmp_path, path)
+                if last_err is not None:
+                    logger.debug(f"  💾 atomic save recovered after retry: {path}")
+                return
+            except PermissionError as e:
+                last_err = e
+                logger.debug(f"  ⏳ atomic save: {path} locked, retrying after {delay}s ({e})")
+
+        # Out of retries — log a more user-actionable message before raising.
+        logger.warning(
+            f"Save blocked on {path} after retries — likely held by Dropbox/OneDrive/"
+            f"iCloud sync. Pause sync or move the project out of the synced folder."
+        )
+        raise last_err  # type: ignore[misc]
     except Exception:
         try:
             tmp_path.unlink()
