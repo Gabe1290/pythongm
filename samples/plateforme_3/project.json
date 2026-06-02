@@ -2,7 +2,7 @@
   "name": "plateforme_3_refresh2",
   "version": "1.0.0",
   "created": "2026-05-26T11:59:41.892588",
-  "modified": "2026-06-02T14:34:32.992309",
+  "modified": "2026-06-02T15:41:01.137610",
   "settings": {
     "window_title": "",
     "window_width": 800,
@@ -956,7 +956,7 @@
                 "parameters": {
                   "direction": "direction",
                   "max_distance": "12",
-                  "against": "0"
+                  "object": "solid"
                 }
               },
               {
@@ -988,7 +988,7 @@
                 "parameters": {
                   "direction": "direction",
                   "max_distance": "12",
-                  "against": "0"
+                  "object": "solid"
                 }
               },
               {

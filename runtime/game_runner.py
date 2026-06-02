@@ -3317,53 +3317,70 @@ class GameRunner:
         inst_hspeed = instance.hspeed
         inst_vspeed = instance.vspeed
 
-        # Use pre-parsed collision targets instead of iterating all events
-        for target_object, event_data in collision_targets.items():
-            event_name = f"collision_with_{target_object}"
+        # For each nearby instance, find the MOST-SPECIFIC collision target it
+        # matches and fire only that event. Inverting the iteration (other-first
+        # instead of target-first) prevents double-firing: when an object like
+        # obj_marqueur (parent=obj_brique) is matched by BOTH
+        # collision_with_obj_marqueur (direct) and collision_with_obj_brique
+        # (parent), the previous target-first loop appended both, so the parent
+        # brique-snap-and-stop behavior also fired on a no-op marker pickup.
+        # Concretely: Pingus would freeze in mid-air when his sprite brushed a
+        # marqueur during a jump, because the brique collision zeroed his
+        # vspeed even though the marqueur-specific event was just `comment`.
+        objects_data = self._objects_data
+        for other_instance in nearby_instances:
+            if other_instance == instance:
+                continue
 
-            # Check collision with target object (only nearby instances)
-            for other_instance in nearby_instances:
-                if other_instance == instance:
-                    continue
+            # Walk other's name + parent chain; first match in collision_targets wins.
+            matched_target = None
+            current = other_instance.object_name
+            for _ in range(10):  # depth cap matches _resolve_collision_event
+                if current in collision_targets:
+                    matched_target = current
+                    break
+                parent = objects_data.get(current, {}).get('parent', '')
+                if not parent:
+                    break
+                current = parent
 
-                if self._object_matches_target(other_instance.object_name, target_object):
-                    if self.instances_overlap(instance, other_instance):
-                        # Create unique collision key
-                        collision_key = (id(other_instance), event_name)
-                        current_collisions.add(collision_key)
+            if matched_target is None:
+                continue
 
-                        # Cache other instance speeds for collision data
-                        other_hspeed = other_instance.hspeed
-                        other_vspeed = other_instance.vspeed
+            if not self.instances_overlap(instance, other_instance):
+                continue
 
-                        # Only fire event if this is a NEW collision AND not in cooldown
-                        in_cooldown = collision_key in instance._collision_cooldowns
-                        is_new_collision = collision_key not in instance._active_collisions
+            event_name = f"collision_with_{matched_target}"
+            collision_key = (id(other_instance), event_name)
+            current_collisions.add(collision_key)
 
-                        # Fire on new collision (not in cooldown)
-                        should_fire = is_new_collision and not in_cooldown
+            # Cache other instance speeds for collision data
+            other_hspeed = other_instance.hspeed
+            other_vspeed = other_instance.vspeed
 
-                        if should_fire:
-                            # Store the collision data with speeds captured NOW
-                            collisions.append({
-                                'instance': instance,
-                                'event_name': event_name,
-                                'events': instance._cached_object_data.get('events', {}),
-                                'other_instance': other_instance,
-                                # Capture object names so we can detect change_instance
-                                'object_name': instance.object_name,
-                                'other_object_name': other_instance.object_name,
-                                # Capture speeds at moment of collision detection
-                                'self_hspeed': inst_hspeed,
-                                'self_vspeed': inst_vspeed,
-                                'other_hspeed': other_hspeed,
-                                'other_vspeed': other_vspeed,
-                            })
-                            # Short cooldown (5 frames) prevents double-trigger in same collision
-                            # This is short enough to allow continuous pushing at normal speeds
-                            instance._collision_cooldowns[collision_key] = 5
-                        # Don't break - continue checking for other instances of this type
-                        # and other collision events (e.g., obj_box_stored at same position as obj_store)
+            # Only fire event if this is a NEW collision AND not in cooldown
+            in_cooldown = collision_key in instance._collision_cooldowns
+            is_new_collision = collision_key not in instance._active_collisions
+            should_fire = is_new_collision and not in_cooldown
+
+            if should_fire:
+                collisions.append({
+                    'instance': instance,
+                    'event_name': event_name,
+                    'events': instance._cached_object_data.get('events', {}),
+                    'other_instance': other_instance,
+                    # Capture object names so we can detect change_instance
+                    'object_name': instance.object_name,
+                    'other_object_name': other_instance.object_name,
+                    # Capture speeds at moment of collision detection
+                    'self_hspeed': inst_hspeed,
+                    'self_vspeed': inst_vspeed,
+                    'other_hspeed': other_hspeed,
+                    'other_vspeed': other_vspeed,
+                })
+                # Short cooldown (5 frames) prevents double-trigger in same collision
+                # This is short enough to allow continuous pushing at normal speeds
+                instance._collision_cooldowns[collision_key] = 5
 
         # Update active collisions for next frame
         instance._active_collisions = current_collisions
