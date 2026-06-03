@@ -360,24 +360,6 @@
         "imported": true,
         "created": "2026-05-26T11:59:41.892588",
         "modified": "2026-05-26T11:59:41.892588"
-      },
-      "spr_power": {
-        "name": "spr_power",
-        "asset_type": "sprite",
-        "file_path": "sprites/spr_power.png",
-        "width": 384,
-        "height": 32,
-        "origin_x": 0,
-        "origin_y": 0,
-        "precise": true,
-        "frames": 12,
-        "frame_width": 32,
-        "frame_height": 32,
-        "animation_type": "strip_h",
-        "speed": 10.0,
-        "imported": true,
-        "created": "2026-05-26T11:59:41.892588",
-        "modified": "2026-05-26T11:59:41.892588"
       }
     },
     "sounds": {
@@ -571,36 +553,6 @@
                 }
               }
             ]
-          },
-          "collision_with_obj_power": {
-            "actions": [
-              {
-                "action": "play_sound",
-                "parameters": {
-                  "sound": "son_bonus",
-                  "loop": "0"
-                }
-              },
-              {
-                "action": "set_score",
-                "parameters": {
-                  "value": "20",
-                  "relative": true
-                }
-              },
-              {
-                "action": "set_variable",
-                "parameters": {
-                  "variable": "power",
-                  "value": "true"
-                }
-              },
-              {
-                "action": "destroy_instance",
-                "parameters": {}
-              }
-            ],
-            "target_object": "obj_power"
           },
           "collision_with_obj_sortie": {
             "actions": [
@@ -940,50 +892,6 @@
           "collision_with_obj_brique": {
             "actions": [
               {
-                "action": "test_variable",
-                "parameters": {
-                  "variable": "vspeed",
-                  "value": "15",
-                  "operation": "greater"
-                }
-              },
-              {
-                "action": "start_block",
-                "parameters": {}
-              },
-              {
-                "action": "move_to_contact",
-                "parameters": {
-                  "direction": "direction",
-                  "max_distance": "12",
-                  "object": "solid"
-                }
-              },
-              {
-                "action": "set_vspeed",
-                "parameters": {
-                  "vspeed": "0"
-                }
-              },
-              {
-                "action": "set_gravity",
-                "parameters": {
-                  "direction": "0",
-                  "gravity": "0"
-                }
-              },
-              {
-                "action": "change_instance",
-                "parameters": {
-                  "object": "obj_splat",
-                  "perform_events": "1"
-                }
-              },
-              {
-                "action": "end_block",
-                "parameters": {}
-              },
-              {
                 "action": "move_to_contact",
                 "parameters": {
                   "direction": "direction",
@@ -1190,71 +1098,6 @@
         "created": "2026-05-26T11:59:41.942278",
         "modified": "2026-06-02T11:00:32.877452",
         "parent": "obj_brique"
-      },
-      "obj_splat": {
-        "name": "obj_splat",
-        "asset_type": "object",
-        "sprite": "",
-        "visible": true,
-        "solid": false,
-        "persistent": false,
-        "depth": 0,
-        "events": {
-          "create": {
-            "actions": [
-              {
-                "action": "set_gravity",
-                "parameters": {
-                  "direction": "0",
-                  "gravity": "0"
-                }
-              },
-              {
-                "action": "start_moving_direction",
-                "parameters": {
-                  "directions": "stop",
-                  "speed": "0"
-                }
-              },
-              {
-                "action": "set_sprite",
-                "parameters": {
-                  "sprite": "spr_pingus_splat",
-                  "subimage": "0",
-                  "speed": "0.4"
-                }
-              }
-            ]
-          },
-          "animation_end": {
-            "actions": [
-              {
-                "action": "set_sprite",
-                "parameters": {
-                  "sprite": "spr_pingus_splat",
-                  "subimage": "12",
-                  "speed": "0"
-                }
-              },
-              {
-                "action": "if_object_exists",
-                "parameters": {
-                  "object": "1000",
-                  "count": "1"
-                }
-              },
-              {
-                "action": "restart_room",
-                "parameters": {
-                  "transition": "5"
-                }
-              }
-            ]
-          }
-        },
-        "imported": true,
-        "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-06-02T11:00:32.877452"
       },
       "obj_monstre": {
         "name": "obj_monstre",
@@ -1702,19 +1545,6 @@
             "target_object": "obj_brique"
           }
         },
-        "imported": true,
-        "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-06-02T11:00:32.877452"
-      },
-      "obj_power": {
-        "name": "obj_power",
-        "asset_type": "object",
-        "sprite": "spr_power",
-        "visible": true,
-        "solid": false,
-        "persistent": false,
-        "depth": 0,
-        "events": {},
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
         "modified": "2026-06-02T11:00:32.877452"

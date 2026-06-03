@@ -107,36 +107,6 @@
         }
       ]
     },
-    "collision_with_obj_power": {
-      "actions": [
-        {
-          "action": "play_sound",
-          "parameters": {
-            "sound": "son_bonus",
-            "loop": "0"
-          }
-        },
-        {
-          "action": "set_score",
-          "parameters": {
-            "value": "20",
-            "relative": true
-          }
-        },
-        {
-          "action": "set_variable",
-          "parameters": {
-            "variable": "power",
-            "value": "true"
-          }
-        },
-        {
-          "action": "destroy_instance",
-          "parameters": {}
-        }
-      ],
-      "target_object": "obj_power"
-    },
     "collision_with_obj_sortie": {
       "actions": [
         {
@@ -474,50 +444,6 @@
     },
     "collision_with_obj_brique": {
       "actions": [
-        {
-          "action": "test_variable",
-          "parameters": {
-            "variable": "vspeed",
-            "value": "15",
-            "operation": "greater"
-          }
-        },
-        {
-          "action": "start_block",
-          "parameters": {}
-        },
-        {
-          "action": "move_to_contact",
-          "parameters": {
-            "direction": "direction",
-            "max_distance": "12",
-            "object": "solid"
-          }
-        },
-        {
-          "action": "set_vspeed",
-          "parameters": {
-            "vspeed": "0"
-          }
-        },
-        {
-          "action": "set_gravity",
-          "parameters": {
-            "direction": "0",
-            "gravity": "0"
-          }
-        },
-        {
-          "action": "change_instance",
-          "parameters": {
-            "object": "obj_splat",
-            "perform_events": "1"
-          }
-        },
-        {
-          "action": "end_block",
-          "parameters": {}
-        },
         {
           "action": "move_to_contact",
           "parameters": {

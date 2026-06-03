@@ -1072,11 +1072,6 @@
       "y": 320
     },
     {
-      "object": "obj_power",
-      "x": 32,
-      "y": 96
-    },
-    {
       "object": "obj_pingus",
       "x": 32,
       "y": 576
