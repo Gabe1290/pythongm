@@ -615,6 +615,52 @@ class TestScoreLivesHealthActions:
         assert executor.execute_test_score_action(instance, {"value": 50, "operation": "greater"}) is True
         assert executor.execute_test_score_action(instance, {"value": 150, "operation": "greater"}) is False
 
+    def test_add_score_legacy_still_adds(self):
+        """Legacy add_score data keeps adding (relative semantics)."""
+        mock_runner = MockGameRunner()
+        mock_runner.score = 50
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_add_score_action(instance, {"value": 10})
+        assert mock_runner.score == 60
+
+
+# ==============================================================================
+# Action-metadata consolidation (UI palette)
+# ==============================================================================
+
+class TestScoreActionConsolidation:
+    """set_score gained a Relative checkbox; add_score is hidden but resolvable.
+
+    The runtime keeps a dedicated execute_add_score_action for legacy project
+    JSON, but the UI exposes a single "Set Score" action with a Relative
+    parameter instead of two separate palette entries.
+    """
+
+    def test_set_score_has_relative_boolean_param(self):
+        from events.action_types import get_action_type
+
+        params = {p.name: p for p in get_action_type("set_score").parameters}
+        assert "relative" in params
+        assert params["relative"].param_type == "boolean"
+        assert params["relative"].default_value is False
+
+    def test_add_score_hidden_but_resolvable(self):
+        from events.action_types import get_action_type, ACTION_TYPES
+
+        # Still in the registry so legacy data loads/displays/edits...
+        assert get_action_type("add_score") is not None
+        assert ACTION_TYPES["add_score"].hidden is True
+
+    def test_add_score_absent_from_palette_set_score_present(self):
+        from events.action_types import get_actions_by_category
+
+        names = {a.name for actions in get_actions_by_category().values()
+                 for a in actions}
+        assert "set_score" in names
+        assert "add_score" not in names
+
 
 # ==============================================================================
 # Alarm Tests

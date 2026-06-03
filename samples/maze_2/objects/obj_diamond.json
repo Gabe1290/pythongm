@@ -10,9 +10,10 @@
     "destroy": {
       "actions": [
         {
-          "action": "add_score",
+          "action": "set_score",
           "parameters": {
-            "value": "10"
+            "value": "10",
+            "relative": true
           }
         }
       ]

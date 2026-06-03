@@ -14,9 +14,10 @@
           "parameters": {
             "then_actions": [
               {
-                "action": "add_score",
+                "action": "set_score",
                 "parameters": {
-                  "value": "100"
+                  "value": "100",
+                  "relative": true
                 }
               },
               {
@@ -26,9 +27,10 @@
             ],
             "else_actions": [
               {
-                "action": "add_score",
+                "action": "set_score",
                 "parameters": {
-                  "value": "100"
+                  "value": "100",
+                  "relative": true
                 }
               },
               {
