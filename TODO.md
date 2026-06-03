@@ -273,6 +273,38 @@ Other:
   translate, compile to `.qm`, and retire the `pygamemaker_*.{ts,qm}` legacy
   files. Until then ja/pt/zh are effectively English with a flag.
 
+## Project format / persistence
+
+### Manifest-ify objects & sprites in project.json (pre-1.0-final)
+- **Do this carefully, with a round-trip test, just before the final
+  validation pass before the 1.0 release.** It changes the on-disk save
+  format for every project, so it is deliberately scheduled late.
+- Today the modular split is half-done. `_prepare_project_data_for_save`
+  (`core/project_manager.py`) strips **rooms** (instances) and **playgrounds**
+  (walls/robots/colors) out of `project.json`, leaving only a metadata stub +
+  `_external_file` pointer — clean single-source-of-truth. **Objects and
+  sprites never got that treatment:** they are written *both* as full bodies in
+  `project.json` *and* to `objects/*.json` / `sprites/*.json`. That dual storage
+  is why editing an asset means editing both files in lockstep or they drift
+  (the loader hides the drift because `merge_object_file` lets the modular file
+  win). Big `project.json`, unreviewable diffs, and Dropbox/git conflict
+  surface are the cost — see the rc.12 plateforme_3 cleanup where obj_power had
+  to be removed from both places.
+- TODO: extend the rooms/playgrounds pattern to objects and sprites — on save,
+  store only a reference/manifest entry in `project.json` (asset name +
+  `_external_file`, like rooms do) and keep the body solely in the per-asset
+  file. The loader already tolerates string-reference entries (`isinstance(
+  object_data, str)` branches in `_load_objects_from_files` /
+  `_load_sprites_from_files`), so the read path mostly works already.
+- Round-trip test is mandatory: load a representative project → save → reload,
+  and assert the in-memory `current_project_data` is byte-for-byte equivalent
+  (no events/sprite-frames/params lost), for both a fresh project and a legacy
+  embedded-only one. Prove it against pre-refactor HEAD per the audit
+  methodology. Also verify `.zip` export/import still round-trips.
+- Why it matters long-term: smaller `project.json`, clean per-asset git diffs,
+  and far less Dropbox "conflicted copy" / merge risk across the multi-machine
+  workflow.
+
 ## Export
 
 - **Kivy export — long-tail action coverage** —
