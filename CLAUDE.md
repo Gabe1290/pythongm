@@ -92,3 +92,11 @@ fallback for rotated/scaled instances. Phase 2b–2c (views/camera system)
 is next on the queue. The general "stability over features" principle
 still applies to *other* work in the repo — this is a scoped exception
 limited to the two named features.
+
+**2026-06-03 — Latent-bug audit.** A multi-agent audit confirmed 30
+logic-level bugs; the registry (with file:line, suggested fixes, and
+checkboxes) lives in `docs/LATENT_BUG_AUDIT_2026-06-03.md`. The **7 highs
+are fixed** (commits `d60f41b`, `67c91e4`) with regression coverage in
+`tests/test_audit_regressions.py`. **14 medium + 9 low remain open** —
+pick up from that doc and flip checkboxes as you fix. Re-running the
+"latent-bug-audit" workflow re-derives findings from current code.
