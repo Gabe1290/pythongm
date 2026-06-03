@@ -2395,109 +2395,110 @@ Preverite konzolo za podrobnosti o napaki.</translation>
     <message>
         <location filename="../widgets/welcome_tab.py" line="124"/>
         <source>Get started</source>
-        <translation type="unfinished"></translation>
+        <translation>Začnite</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="128"/>
         <source>📄  New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>📄  Nov projekt</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="130"/>
         <source>📂  Open Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>📂  Odpri projekt…</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="135"/>
         <source>More options</source>
-        <translation type="unfinished"></translation>
+        <translation>Več možnosti</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="137"/>
         <source>🗜  Open ZIP Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>🗜  Odpri projekt ZIP…</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="138"/>
         <source>📥  Import GameMaker .gmk...</source>
-        <translation type="unfinished"></translation>
+        <translation>📥  Uvozi GameMaker .gmk…</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="139"/>
         <source>📥  Import Open Roberta XML...</source>
-        <translation type="unfinished"></translation>
+        <translation>📥  Uvozi Open Roberta XML…</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="144"/>
         <source>Try a sample game</source>
-        <translation type="unfinished"></translation>
+        <translation>Preizkusite vzorčno igro</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="155"/>
         <source>🎮  {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>🎮  {0}</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="161"/>
         <source>Choose a sample</source>
-        <translation type="unfinished"></translation>
+        <translation>Izberite vzorec</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="163"/>
         <source>(No bundled samples found in this build.)</source>
-        <translation type="unfinished"></translation>
+        <translation>(V tej različici ni priloženih vzorcev.)</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="178"/>
         <source>Continue where you left off</source>
-        <translation type="unfinished"></translation>
+        <translation>Nadaljujte, kjer ste končali</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="197"/>
         <source>Clear recent projects</source>
-        <translation type="unfinished"></translation>
+        <translation>Počisti nedavne projekte</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="210"/>
         <source>Documentation</source>
-        <translation type="unfinished">Dokumentacija</translation>
+        <translation>Dokumentacija</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="211"/>
         <source>Tutorials</source>
-        <translation type="unfinished">Vodniki</translation>
+        <translation>Vodniki</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="212"/>
         <source>About</source>
-        <translation type="unfinished">O programu</translation>
+        <translation>O programu</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="240"/>
         <source>(No recent projects yet.)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Še ni nedavnih projektov.)</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="424"/>
         <source>Save sample project to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Shrani vzorčni projekt v…</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="438"/>
         <location filename="../widgets/welcome_tab.py" line="446"/>
         <source>Sample import failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Uvoz vzorca ni uspel</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="439"/>
         <source>Could not import the sample project:
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Vzorčnega projekta ni bilo mogoče uvoziti:
+{0}</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="447"/>
         <source>The bundled sample could not be imported. See the console output for details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Priloženega vzorca ni bilo mogoče uvoziti. Za podrobnosti glejte izpis konzole.</translation>
     </message>
     <message>
         <source>Create amazing 2D games with visual scripting</source>
