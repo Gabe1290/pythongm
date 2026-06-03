@@ -615,51 +615,109 @@ class TestScoreLivesHealthActions:
         assert executor.execute_test_score_action(instance, {"value": 50, "operation": "greater"}) is True
         assert executor.execute_test_score_action(instance, {"value": 150, "operation": "greater"}) is False
 
-    def test_add_score_legacy_still_adds(self):
-        """Legacy add_score data keeps adding (relative semantics)."""
+    def test_legacy_add_score_dispatches_as_relative(self):
+        """Legacy add_score data still adds via execute_action normalisation."""
         mock_runner = MockGameRunner()
         mock_runner.score = 50
         executor = ActionExecutor(game_runner=mock_runner)
         instance = MockInstance()
 
-        executor.execute_add_score_action(instance, {"value": 10})
+        executor.execute_action(instance, {"action": "add_score",
+                                           "parameters": {"value": 10}})
         assert mock_runner.score == 60
+
+    def test_legacy_add_lives_dispatches_as_relative(self):
+        """Legacy add_lives keeps the relative add (and its clamp/triggers)."""
+        mock_runner = MockGameRunner()
+        mock_runner.lives = 3
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_action(instance, {"action": "add_lives",
+                                           "parameters": {"value": -1}})
+        assert mock_runner.lives == 2
+
+    def test_legacy_add_health_dispatches_as_relative(self):
+        """Legacy add_health keeps the relative add."""
+        mock_runner = MockGameRunner()
+        mock_runner.health = 40
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        executor.execute_action(instance, {"action": "add_health",
+                                            "parameters": {"value": 25}})
+        assert mock_runner.health == 65
+
+    def test_add_executors_removed(self):
+        """The standalone add_* executor methods are gone."""
+        executor = ActionExecutor(game_runner=MockGameRunner())
+        assert not hasattr(executor, "execute_add_score_action")
+        assert not hasattr(executor, "execute_add_lives_action")
+        assert not hasattr(executor, "execute_add_health_action")
+        # ...and they are not registered as handlers either.
+        assert "add_score" not in executor.action_handlers
 
 
 # ==============================================================================
-# Action-metadata consolidation (UI palette)
+# Score/Lives/Health action consolidation (single action + Relative checkbox)
 # ==============================================================================
 
 class TestScoreActionConsolidation:
-    """set_score gained a Relative checkbox; add_score is hidden but resolvable.
+    """set_*/add_* pairs collapsed to one set_* action with a Relative checkbox.
 
-    The runtime keeps a dedicated execute_add_score_action for legacy project
-    JSON, but the UI exposes a single "Set Score" action with a Relative
-    parameter instead of two separate palette entries.
+    The add_score/add_lives/add_health palette entries and runtime executors
+    were deleted; legacy project JSON is normalised to set_*(relative=True) on
+    load (migrate_legacy_actions) and on dispatch (execute_action).
     """
 
-    def test_set_score_has_relative_boolean_param(self):
+    def test_set_actions_have_relative_boolean_param(self):
         from events.action_types import get_action_type
 
-        params = {p.name: p for p in get_action_type("set_score").parameters}
-        assert "relative" in params
-        assert params["relative"].param_type == "boolean"
-        assert params["relative"].default_value is False
+        for name in ("set_score", "set_lives", "set_health"):
+            params = {p.name: p for p in get_action_type(name).parameters}
+            assert "relative" in params, name
+            assert params["relative"].param_type == "boolean"
+            assert params["relative"].default_value is False
 
-    def test_add_score_hidden_but_resolvable(self):
+    def test_add_actions_deleted_but_alias_resolves(self):
         from events.action_types import get_action_type, ACTION_TYPES
 
-        # Still in the registry so legacy data loads/displays/edits...
-        assert get_action_type("add_score") is not None
-        assert ACTION_TYPES["add_score"].hidden is True
+        for add_name, set_name in (("add_score", "set_score"),
+                                   ("add_lives", "set_lives"),
+                                   ("add_health", "set_health")):
+            assert add_name not in ACTION_TYPES
+            # Legacy name still resolves to the consolidated action's dialog.
+            assert get_action_type(add_name) is get_action_type(set_name)
 
-    def test_add_score_absent_from_palette_set_score_present(self):
+    def test_add_actions_absent_from_palette(self):
         from events.action_types import get_actions_by_category
 
         names = {a.name for actions in get_actions_by_category().values()
                  for a in actions}
-        assert "set_score" in names
-        assert "add_score" not in names
+        assert {"set_score", "set_lives", "set_health"} <= names
+        assert names.isdisjoint({"add_score", "add_lives", "add_health"})
+
+    def test_migrate_legacy_actions_rewrites_nested(self):
+        from events.action_types import migrate_legacy_actions
+
+        project = {
+            "assets": {"objects": {"obj": {"events": {"destroy": {"actions": [
+                {"action": "add_score", "parameters": {"value": "10"}},
+                {"action": "if_collision", "parameters": {"then_actions": [
+                    {"action": "add_lives", "parameters": {"value": 1}},
+                    {"action": "add_health"},  # no parameters dict
+                ]}},
+            ]}}}}},
+        }
+        n = migrate_legacy_actions(project)
+        assert n == 3
+        actions = project["assets"]["objects"]["obj"]["events"]["destroy"]["actions"]
+        assert actions[0] == {"action": "set_score",
+                              "parameters": {"value": "10", "relative": True}}
+        nested = actions[1]["parameters"]["then_actions"]
+        assert nested[0]["action"] == "set_lives"
+        assert nested[0]["parameters"]["relative"] is True
+        assert nested[1] == {"action": "set_health", "parameters": {"relative": True}}
 
 
 # ==============================================================================
