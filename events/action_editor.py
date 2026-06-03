@@ -418,7 +418,8 @@ class ActionConfigDialog(QDialog):
         existing_params = self.nested_action_params.get(param_key, {})
 
         # Open the action's configuration dialog
-        dialog = ActionConfigDialog(action_type, existing_params, parent=self)
+        from events.conditional_editor import create_action_dialog
+        dialog = create_action_dialog(action_type, existing_params, parent=self)
 
         if dialog.exec() == QDialog.Accepted:
             # Store the configured parameters
@@ -780,7 +781,8 @@ class MultiActionEditor(QDialog):
 
     def configure_and_add_action(self, action_type):
         """Configure and add a new action"""
-        dialog = ActionConfigDialog(action_type, parent=self)
+        from events.conditional_editor import create_action_dialog
+        dialog = create_action_dialog(action_type, parent=self)
 
         if dialog.exec() == QDialog.Accepted:
             action_data = {
@@ -805,7 +807,8 @@ class MultiActionEditor(QDialog):
         if not action_type:
             return
 
-        dialog = ActionConfigDialog(action_type, action_data.get("parameters", {}), parent=self)
+        from events.conditional_editor import create_action_dialog
+        dialog = create_action_dialog(action_type, action_data.get("parameters", {}), parent=self)
 
         if dialog.exec() == QDialog.Accepted:
             action_data["parameters"] = dialog.get_parameter_values()
