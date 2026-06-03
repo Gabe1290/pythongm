@@ -2312,6 +2312,12 @@ class GameRunner:
 
         # Track which keys are pressed
         for instance in self.current_room.instances:
+            # Skip orphan instances (object_name not in the project's objects dict,
+            # e.g. a renamed/deleted object), matching every other input handler.
+            # Done before keys_pressed.add so they also stay out of _process_held_keys.
+            if not instance.object_data:
+                continue
+
             # keys_pressed is always initialized in __init__
             instance.keys_pressed.add(sub_key)
 
@@ -2375,6 +2381,9 @@ class GameRunner:
         For smooth movement: fires every frame since speed is continuously applied.
         """
         if not instance.keys_pressed:
+            return
+
+        if not instance.object_data:
             return
 
         events = instance.object_data.get('events', {})

@@ -343,16 +343,24 @@ class PythonToActionsParser:
                     # Skip 'self' parameter
                     actions = self._extract_actions_from_body(node.body)
 
-                    # Handle keyboard events specially
-                    if event_name.startswith('keyboard_'):
-                        # e.g., on_keyboard_right -> keyboard.right
-                        parts = event_name.split('_', 1)
-                        if len(parts) == 2:
-                            base_event = parts[0]  # 'keyboard'
-                            key = parts[1]  # 'right'
-                            if base_event not in events:
-                                events[base_event] = {}
-                            events[base_event][key] = {"actions": actions}
+                    # Handle keyboard events specially (nested container keyed by key)
+                    if event_name.startswith('keyboard'):
+                        # Match the base container longest-first so
+                        # 'keyboard_press_space' -> base 'keyboard_press', key 'space'
+                        # (not base 'keyboard', key 'press_space').
+                        for base_event in ('keyboard_press', 'keyboard_release', 'keyboard'):
+                            prefix = base_event + '_'
+                            if event_name.startswith(prefix):
+                                key = event_name[len(prefix):]
+                                events.setdefault(base_event, {})[key] = {"actions": actions}
+                                break
+                        else:
+                            # Bare 'keyboard' with no key — store as-is.
+                            events[event_name] = {"actions": actions}
+                    # Handle alarm events (nested container keyed by alarm_N), mirroring
+                    # the storage shape {'alarm': {'alarm_0': {...}}}.
+                    elif event_name.startswith('alarm_'):
+                        events.setdefault('alarm', {})[event_name] = {"actions": actions}
                     # Handle collision events - normalize to collision_with_<object> format
                     elif event_name.startswith('collision_'):
                         # e.g., collision_obj_wall -> collision_with_obj_wall
@@ -943,13 +951,17 @@ class ActionsToPythonGenerator:
             return "\n".join(lines)
 
         for event_name, event_data in events_data.items():
-            # Handle nested keyboard events
-            if event_name in ('keyboard', 'keyboard_press', 'keyboard_release'):
+            # Handle nested keyboard/alarm events (container keyed by sub-event)
+            if event_name in ('keyboard', 'keyboard_press', 'keyboard_release', 'alarm'):
                 if isinstance(event_data, dict) and 'actions' not in event_data:
-                    # Nested key events
+                    # Nested sub-events
                     for key_name, key_data in event_data.items():
                         if isinstance(key_data, dict) and 'actions' in key_data:
-                            method_name = f"on_{event_name}_{key_name}"
+                            if event_name == 'alarm':
+                                # Sub-keys are already qualified ('alarm_0' -> on_alarm_0).
+                                method_name = EVENT_METHOD_NAMES.get(key_name, f"on_{key_name}")
+                            else:
+                                method_name = f"on_{event_name}_{key_name}"
                             method_code = self._generate_method(method_name, key_data)
                             lines.append(method_code)
                             lines.append("")
