@@ -1739,6 +1739,66 @@ class TestEventSystemAnimationAndDrawing:
                 assert instance2.visible is False
 
 
+class TestSlideAxisToContact:
+    """A blocked axis move slides flush against the blocker instead of being
+    cancelled outright.
+
+    Regression: vertical movement was all-or-nothing, so a faster-than-the-gap
+    descent (Pingus at his terminal-velocity clamp of 24) was rejected whole and
+    left the character up to |vspeed| px above the floor. That gap exceeded the
+    1px ground probe and 12px move_to_contact snap the object logic used, so
+    Pingus hung in mid-air with his animation still cycling. Sliding to contact
+    lands him flush at any speed. The collision check is faked here to model a
+    floor/wall so the slide loop is exercised deterministically without a full
+    room.
+    """
+
+    def _runner(self):
+        with patch('runtime.game_runner.load_all_plugins'):
+            from runtime.game_runner import GameRunner
+            return GameRunner.__new__(GameRunner)
+
+    def test_fast_faller_lands_flush(self):
+        from types import SimpleNamespace
+        runner = self._runner()
+        floor_y = 140.0
+        runner.check_movement_collision_with_blocker = \
+            lambda inst, data: (inst.intended_y < floor_y, object())
+
+        inst = SimpleNamespace(x=50.0, y=120.0, hspeed=0.0, vspeed=24.0,
+                               intended_x=50.0, intended_y=144.0)
+        # Full 24px move (to y=144) collides; without sliding the engine would
+        # leave the faller at y=120 — 20px above the floor.
+        runner._slide_axis_to_contact(inst, 'y', {})
+
+        assert inst.y == 139.0           # slid down flush, 1px above the floor
+        assert inst.intended_y == 139.0  # reset to the resting position
+        assert inst.x == 50.0            # vertical slide leaves x untouched
+
+    def test_no_slide_when_already_flush(self):
+        from types import SimpleNamespace
+        runner = self._runner()
+        # Next pixel always collides: already resting against the blocker.
+        runner.check_movement_collision_with_blocker = \
+            lambda inst, data: (False, object())
+        inst = SimpleNamespace(x=0.0, y=100.0, hspeed=0.0, vspeed=24.0,
+                               intended_x=0.0, intended_y=124.0)
+        runner._slide_axis_to_contact(inst, 'y', {})
+        assert inst.y == 100.0           # couldn't advance a pixel; stays put
+
+    def test_horizontal_slide_against_wall(self):
+        from types import SimpleNamespace
+        runner = self._runner()
+        wall_x = 80.0
+        runner.check_movement_collision_with_blocker = \
+            lambda inst, data: (inst.intended_x < wall_x, object())
+        inst = SimpleNamespace(x=60.0, y=10.0, hspeed=24.0, vspeed=0.0,
+                               intended_x=84.0, intended_y=10.0)
+        runner._slide_axis_to_contact(inst, 'x', {})
+        assert inst.x == 79.0            # slid right flush against the wall
+        assert inst.y == 10.0
+
+
 class TestEventSystemMovement:
     """Tests for movement-related properties used by events"""
 

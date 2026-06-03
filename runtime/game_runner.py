@@ -2683,7 +2683,11 @@ class GameRunner:
                     instance.x = instance.intended_x
                 else:
                     # Movement blocked — reset intended position so it doesn't
-                    # look like a grid move is in progress to _process_held_keys
+                    # look like a grid move is in progress to _process_held_keys.
+                    # (Horizontal is left all-or-nothing for now: hspeed is small
+                    # in practice so the gap is sub-pixel-ish, and sliding here
+                    # would also change how maze/bounce movers rest against walls.
+                    # _slide_axis_to_contact already handles 'x' if we wire it.)
                     instance.intended_x = instance.x
                 if not can_move and blocker:
                     # Movement blocked horizontally - track in map by instance only
@@ -2709,9 +2713,15 @@ class GameRunner:
                 if can_move:
                     instance.y = instance.intended_y
                 else:
-                    # Movement blocked — reset intended position so it doesn't
-                    # look like a grid move is in progress to _process_held_keys
-                    instance.intended_y = instance.y
+                    # Slide flush against the blocker instead of cancelling the
+                    # whole move. All-or-nothing vertical movement left a fast
+                    # faller up to |vspeed| px above the floor; at terminal
+                    # velocity (e.g. Pingus' clamp of 24) that gap exceeded the
+                    # 1px ground probe and 12px move_to_contact snap the object
+                    # logic used, so the character hung in mid-air with its
+                    # animation still cycling. Sliding lands it flush at any
+                    # speed (and resets intended_y to the resting position).
+                    self._slide_axis_to_contact(instance, 'y', objects_data)
                 if not can_move and blocker:
                     # Movement blocked vertically - track in map by instance only
                     key = id(instance)
@@ -2987,6 +2997,45 @@ class GameRunner:
                                 pass
         return 0
 
+
+    def _slide_axis_to_contact(self, instance, axis: str, objects_data: dict):
+        """Advance a blocked instance pixel-by-pixel along one axis until it
+        rests flush against the blocker, instead of cancelling the whole move.
+
+        Called from the blocked branch of the hspeed/vspeed movement step, so
+        the full move has already been found to collide. ``axis`` is 'x' or
+        'y'. Steps at most ``floor(|speed|)`` whole pixels toward the intended
+        position, stopping one pixel before the first colliding cell; this
+        leaves at most a sub-pixel residual gap, well within the 1px ground
+        probe platformer logic relies on. Leaves intended_x/intended_y equal to
+        the resting position so the post-move bookkeeping (and
+        _process_held_keys) sees no pending move.
+
+        O(|speed|) collision checks per blocked instance per frame — negligible
+        for the handful of fast movers in a typical scene; revisit with a
+        binary search if a stress scene ever makes it hot.
+        """
+        speed = instance.hspeed if axis == 'x' else instance.vspeed
+        step = 1.0 if speed > 0 else -1.0
+        remaining = abs(speed)
+        moved = 0.0
+        while moved + 1.0 <= remaining:
+            if axis == 'x':
+                instance.intended_x = instance.x + step
+                instance.intended_y = instance.y
+            else:
+                instance.intended_x = instance.x
+                instance.intended_y = instance.y + step
+            sub_can, _ = self.check_movement_collision_with_blocker(instance, objects_data)
+            if not sub_can:
+                break
+            if axis == 'x':
+                instance.x = instance.intended_x
+            else:
+                instance.y = instance.intended_y
+            moved += 1.0
+        instance.intended_x = instance.x
+        instance.intended_y = instance.y
 
     def check_movement_collision_with_blocker(self, moving_instance, objects_data: dict):
         """Check if intended movement would be blocked by another instance.
