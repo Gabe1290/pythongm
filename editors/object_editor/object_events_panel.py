@@ -17,7 +17,7 @@ from PySide6.QtGui import QFont, QColor, QBrush
 from events.event_types import get_available_events, get_event_type
 from events.thymio_events import THYMIO_EVENT_CATEGORIES, is_thymio_event
 from events.action_types import get_action_type as _get_action_type, get_actions_by_category
-from events.action_editor import ActionConfigDialog
+from events.conditional_editor import create_action_dialog
 
 # Action name aliases (alternative names -> canonical names)
 # Map legacy/alternate action names to their canonical ACTION_TYPES entries.
@@ -803,13 +803,7 @@ class ObjectEventsPanel(QWidget):
                 )
                 return
 
-        # Special handling for if_condition action
-        if action_name == "if_condition":
-            from events.conditional_editor import ConditionalActionEditor
-            dialog = ConditionalActionEditor(parent=self)
-        else:
-            # Show regular configuration dialog
-            dialog = ActionConfigDialog(action_type, parent=self)
+        dialog = create_action_dialog(action_type, parent=self)
 
         if dialog.exec() == QDialog.Accepted:
             # Get configured parameters
@@ -840,13 +834,7 @@ class ObjectEventsPanel(QWidget):
         if not action_type:
             return
 
-        # Special handling for if_condition action
-        if action_name == "if_condition":
-            from events.conditional_editor import ConditionalActionEditor
-            dialog = ConditionalActionEditor(parent=self)
-        else:
-            # Show regular configuration dialog
-            dialog = ActionConfigDialog(action_type, parent=self)
+        dialog = create_action_dialog(action_type, parent=self)
 
         if dialog.exec() == QDialog.Accepted:
             # Get configured parameters
@@ -914,13 +902,7 @@ class ObjectEventsPanel(QWidget):
             return
 
         try:
-            # Special handling for if_condition action
-            if action_data["action"] == "if_condition":
-                from events.conditional_editor import ConditionalActionEditor
-                dialog = ConditionalActionEditor(action_data.get("parameters", {}), parent=self)
-            else:
-                # Show regular configuration dialog with current parameters
-                dialog = ActionConfigDialog(action_type, action_data.get("parameters", {}), parent=self)
+            dialog = create_action_dialog(action_type, action_data.get("parameters", {}), parent=self)
         except Exception as e:
             import traceback
             traceback.print_exc()
@@ -1749,7 +1731,7 @@ class ObjectEventsPanel(QWidget):
         if not action_type:
             return
 
-        dialog = ActionConfigDialog(action_type, parent=self)
+        dialog = create_action_dialog(action_type, parent=self)
 
         if dialog.exec() == QDialog.Accepted:
             parameters = dialog.get_parameter_values()
@@ -1792,12 +1774,7 @@ class ObjectEventsPanel(QWidget):
         if not action_type:
             return
 
-        # Special handling for if_condition action
-        if action_name == "if_condition":
-            from events.conditional_editor import ConditionalActionEditor
-            dialog = ConditionalActionEditor(parent=self)
-        else:
-            dialog = ActionConfigDialog(action_type, parent=self)
+        dialog = create_action_dialog(action_type, parent=self)
 
         if dialog.exec() == QDialog.Accepted:
             parameters = dialog.get_parameter_values()

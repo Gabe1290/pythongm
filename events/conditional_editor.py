@@ -15,6 +15,21 @@ from events.action_types import get_action_type, get_actions_by_category
 from events.action_editor import ActionConfigDialog
 
 
+def create_action_dialog(action_type, current_params: Dict[str, Any] = None, parent=None):
+    """Return the right configuration dialog for an action type.
+
+    ``if_condition`` needs the dedicated :class:`ConditionalActionEditor`
+    (then/else action lists + condition builder); everything else uses the
+    generic :class:`ActionConfigDialog`. Routing through this single factory
+    avoids the scattered ``if action_name == "if_condition"`` special-cases
+    that previously left some "add action" paths (collision events, nested
+    action lists) falling through to ActionConfigDialog's placeholder dialog.
+    """
+    if action_type.name == "if_condition":
+        return ConditionalActionEditor(current_params or {}, parent=parent)
+    return ActionConfigDialog(action_type, current_params, parent=parent)
+
+
 class ConditionalActionEditor(QDialog):
     """Editor for if/else conditional actions with nested action lists"""
 
@@ -422,25 +437,65 @@ class ConditionalActionEditor(QDialog):
         return []
 
     def load_current_values(self):
-        """Load current parameter values into the UI"""
-        self.condition_type.setCurrentText(
-            self.current_params.get("condition_type", "instance_count")
-        )
+        """Load current parameter values into the UI.
 
-        # Handle object_name - now it's a QComboBox
-        object_name = self.current_params.get("object_name", "obj_box")
-        if hasattr(self, 'object_name'):
-            if isinstance(self.object_name, QComboBox):
-                self.object_name.setCurrentText(object_name)
-            else:
-                self.object_name.setText(object_name)
+        Restores the widgets for *every* condition type, not just
+        instance_count — otherwise editing a saved variable_compare /
+        expression / collision_check condition would silently reset its
+        fields to defaults and lose them on re-save.
+        """
+        p = self.current_params
+        condition_type = p.get("condition_type", "instance_count")
+        self.condition_type.setCurrentText(condition_type)
 
-        self.operator.setCurrentText(
-            self.current_params.get("operator", "==")
-        )
-        self.value.setValue(
-            self.current_params.get("value", 0)
-        )
+        def _to_int(val, default=0):
+            try:
+                return int(val)
+            except (ValueError, TypeError):
+                return default
+
+        # instance_count
+        object_name = p.get("object_name", "obj_box")
+        if isinstance(self.object_name, QComboBox):
+            self.object_name.setCurrentText(object_name)
+        else:
+            self.object_name.setText(object_name)
+        self.operator.setCurrentText(p.get("operator", "=="))
+        self.value.setValue(_to_int(p.get("value", 0)))
+
+        # variable_compare
+        self.var_name.setText(str(p.get("variable", "")))
+        self.var_operator.setCurrentText(p.get("operator", "=="))
+        self.var_value.setText(str(p.get("value", "")) if condition_type == "variable_compare" else "")
+
+        # position_check
+        if p.get("check_type"):
+            self.pos_check_type.setCurrentText(p.get("check_type"))
+        self.pos_operator.setCurrentText(p.get("operator", "=="))
+        if condition_type == "position_check":
+            self.pos_value.setValue(_to_int(p.get("value", 0)))
+
+        # collision_check
+        if p.get("object"):
+            self.collision_object.setCurrentText(p.get("object"))
+        self.collision_x.setValue(_to_int(p.get("offset_x", 0)))
+        self.collision_y.setValue(_to_int(p.get("offset_y", 0)))
+
+        # key_pressed
+        if p.get("key"):
+            self.key_check.setCurrentText(p.get("key"))
+        if p.get("state"):
+            self.key_state.setCurrentText(p.get("state"))
+
+        # mouse_check
+        if p.get("check"):
+            self.mouse_check.setCurrentText(p.get("check"))
+
+        # random_chance
+        self.chance_slider.setValue(_to_int(p.get("chance", 50), 50))
+
+        # expression
+        self.expression_edit.setPlainText(str(p.get("expression", "")))
 
         self.refresh_action_lists()
 
@@ -495,11 +550,7 @@ class ConditionalActionEditor(QDialog):
 
     def configure_and_add_action(self, action_type, list_type: str):
         """Configure and add an action to the specified list"""
-        # Special handling for nested conditionals
-        if action_type.name == "if_condition":
-            dialog = ConditionalActionEditor(parent=self)
-        else:
-            dialog = ActionConfigDialog(action_type, parent=self)
+        dialog = create_action_dialog(action_type, parent=self)
 
         if dialog.exec() == QDialog.Accepted:
             action_data = {
@@ -531,11 +582,7 @@ class ConditionalActionEditor(QDialog):
         if not action_type:
             return
 
-        # Special handling for nested conditionals
-        if action_type.name == "if_condition":
-            dialog = ConditionalActionEditor(action_data.get("parameters", {}), parent=self)
-        else:
-            dialog = ActionConfigDialog(action_type, action_data.get("parameters", {}), parent=self)
+        dialog = create_action_dialog(action_type, action_data.get("parameters", {}), parent=self)
 
         if dialog.exec() == QDialog.Accepted:
             action_data["parameters"] = dialog.get_parameter_values()
