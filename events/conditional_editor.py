@@ -30,6 +30,34 @@ def create_action_dialog(action_type, current_params: Dict[str, Any] = None, par
     return ActionConfigDialog(action_type, current_params, parent=parent)
 
 
+def _add_canonical_items(combo: QComboBox, pairs):
+    """Populate a combo with (canonical_value, display_text) pairs.
+
+    The canonical (English) identifier is stored as the item's userData while
+    the translated text is shown to the user. This keeps the value saved to the
+    project JSON — and compared against in the runtime — locale-independent.
+    Without this, ``currentText()`` under a loaded translation returns the
+    translated label (e.g. "nombre_instances"), which no runtime branch matches.
+    """
+    for value, display in pairs:
+        combo.addItem(display, value)
+
+
+def _canonical_value(combo: QComboBox) -> str:
+    """Return the combo's canonical userData, falling back to its text."""
+    data = combo.currentData()
+    return data if data is not None else combo.currentText()
+
+
+def _select_canonical(combo: QComboBox, value: str):
+    """Select the item whose canonical userData (or, for legacy data, text) matches."""
+    idx = combo.findData(value)
+    if idx < 0:
+        idx = combo.findText(value)
+    if idx >= 0:
+        combo.setCurrentIndex(idx)
+
+
 class ConditionalActionEditor(QDialog):
     """Editor for if/else conditional actions with nested action lists"""
 
@@ -58,17 +86,17 @@ class ConditionalActionEditor(QDialog):
         type_layout = QHBoxLayout()
         type_layout.addWidget(QLabel(self.tr("Condition Type:")))
         self.condition_type = QComboBox()
-        self.condition_type.addItems([
-            self.tr("instance_count"),
-            self.tr("variable_compare"),
-            self.tr("position_check"),
-            self.tr("collision_check"),
-            self.tr("key_pressed"),
-            self.tr("mouse_check"),
-            self.tr("random_chance"),
-            self.tr("expression")
+        _add_canonical_items(self.condition_type, [
+            ("instance_count", self.tr("instance_count")),
+            ("variable_compare", self.tr("variable_compare")),
+            ("position_check", self.tr("position_check")),
+            ("collision_check", self.tr("collision_check")),
+            ("key_pressed", self.tr("key_pressed")),
+            ("mouse_check", self.tr("mouse_check")),
+            ("random_chance", self.tr("random_chance")),
+            ("expression", self.tr("expression")),
         ])
-        self.condition_type.currentTextChanged.connect(self.on_condition_type_changed)
+        self.condition_type.currentIndexChanged.connect(self.on_condition_type_changed)
         type_layout.addWidget(self.condition_type)
         type_layout.addStretch()
         condition_layout.addLayout(type_layout)
@@ -253,11 +281,11 @@ class ConditionalActionEditor(QDialog):
         pos_type_layout = QHBoxLayout()
         pos_type_layout.addWidget(QLabel(self.tr("Check if:")))
         self.pos_check_type = QComboBox()
-        self.pos_check_type.addItems([
-            self.tr("x position"),
-            self.tr("y position"),
-            self.tr("in region"),
-            self.tr("distance to object")
+        _add_canonical_items(self.pos_check_type, [
+            ("x position", self.tr("x position")),
+            ("y position", self.tr("y position")),
+            ("in region", self.tr("in region")),
+            ("distance to object", self.tr("distance to object")),
         ])
         pos_type_layout.addWidget(self.pos_check_type)
         pos_type_layout.addStretch()
@@ -323,17 +351,20 @@ class ConditionalActionEditor(QDialog):
         key_layout = QHBoxLayout()
         key_layout.addWidget(QLabel(self.tr("Key:")))
         self.key_check = QComboBox()
-        self.key_check.addItems([
-            self.tr("Space"), self.tr("Enter"), self.tr("Escape"),
-            self.tr("Left Arrow"), self.tr("Right Arrow"), self.tr("Up Arrow"), self.tr("Down Arrow"),
-            "A", "W", "S", "D",
-            self.tr("Shift"), self.tr("Control"), self.tr("Alt")
+        _add_canonical_items(self.key_check, [
+            ("Space", self.tr("Space")), ("Enter", self.tr("Enter")), ("Escape", self.tr("Escape")),
+            ("Left Arrow", self.tr("Left Arrow")), ("Right Arrow", self.tr("Right Arrow")),
+            ("Up Arrow", self.tr("Up Arrow")), ("Down Arrow", self.tr("Down Arrow")),
+            ("A", "A"), ("W", "W"), ("S", "S"), ("D", "D"),
+            ("Shift", self.tr("Shift")), ("Control", self.tr("Control")), ("Alt", self.tr("Alt")),
         ])
         key_layout.addWidget(self.key_check)
 
         key_layout.addWidget(QLabel(self.tr("Is:")))
         self.key_state = QComboBox()
-        self.key_state.addItems([self.tr("Pressed"), self.tr("Held"), self.tr("Released")])
+        _add_canonical_items(self.key_state, [
+            ("Pressed", self.tr("Pressed")), ("Held", self.tr("Held")), ("Released", self.tr("Released")),
+        ])
         key_layout.addWidget(self.key_state)
         key_layout.addStretch()
         layout.addLayout(key_layout)
@@ -349,12 +380,12 @@ class ConditionalActionEditor(QDialog):
         mouse_layout = QHBoxLayout()
         mouse_layout.addWidget(QLabel(self.tr("Mouse:")))
         self.mouse_check = QComboBox()
-        self.mouse_check.addItems([
-            self.tr("Left button pressed"),
-            self.tr("Right button pressed"),
-            self.tr("Middle button pressed"),
-            self.tr("Over object"),
-            self.tr("In region")
+        _add_canonical_items(self.mouse_check, [
+            ("Left button pressed", self.tr("Left button pressed")),
+            ("Right button pressed", self.tr("Right button pressed")),
+            ("Middle button pressed", self.tr("Middle button pressed")),
+            ("Over object", self.tr("Over object")),
+            ("In region", self.tr("In region")),
         ])
         mouse_layout.addWidget(self.mouse_check)
         mouse_layout.addStretch()
@@ -405,21 +436,15 @@ class ConditionalActionEditor(QDialog):
 
         return widget
 
-    def on_condition_type_changed(self, condition_type: str):
-        """Handle condition type changes"""
-        index_map = {
-            "instance_count": 0,
-            "variable_compare": 1,
-            "position_check": 2,
-            "collision_check": 3,
-            "key_pressed": 4,
-            "mouse_check": 5,
-            "random_chance": 6,
-            "expression": 7
-        }
+    def on_condition_type_changed(self, index: int):
+        """Handle condition type changes.
 
-        index = index_map.get(condition_type, 0)
-        self.condition_stack.setCurrentIndex(index)
+        The condition_type combo items are added in the same order as the
+        stacked widget pages, so the combo index maps directly to the page —
+        translation-independent (unlike matching on the displayed text).
+        """
+        if index >= 0:
+            self.condition_stack.setCurrentIndex(index)
 
     def get_available_objects_for_dropdown(self):
         """Get list of available objects from the project"""
@@ -446,7 +471,7 @@ class ConditionalActionEditor(QDialog):
         """
         p = self.current_params
         condition_type = p.get("condition_type", "instance_count")
-        self.condition_type.setCurrentText(condition_type)
+        _select_canonical(self.condition_type, condition_type)
 
         def _to_int(val, default=0):
             try:
@@ -470,7 +495,7 @@ class ConditionalActionEditor(QDialog):
 
         # position_check
         if p.get("check_type"):
-            self.pos_check_type.setCurrentText(p.get("check_type"))
+            _select_canonical(self.pos_check_type, p.get("check_type"))
         self.pos_operator.setCurrentText(p.get("operator", "=="))
         if condition_type == "position_check":
             self.pos_value.setValue(_to_int(p.get("value", 0)))
@@ -483,13 +508,13 @@ class ConditionalActionEditor(QDialog):
 
         # key_pressed
         if p.get("key"):
-            self.key_check.setCurrentText(p.get("key"))
+            _select_canonical(self.key_check, p.get("key"))
         if p.get("state"):
-            self.key_state.setCurrentText(p.get("state"))
+            _select_canonical(self.key_state, p.get("state"))
 
         # mouse_check
         if p.get("check"):
-            self.mouse_check.setCurrentText(p.get("check"))
+            _select_canonical(self.mouse_check, p.get("check"))
 
         # random_chance
         self.chance_slider.setValue(_to_int(p.get("chance", 50), 50))
@@ -603,7 +628,7 @@ class ConditionalActionEditor(QDialog):
 
     def get_parameter_values(self) -> Dict[str, Any]:
         """Get all configured parameter values"""
-        condition_type = self.condition_type.currentText()
+        condition_type = _canonical_value(self.condition_type)
 
         params = {
             "condition_type": condition_type,
@@ -626,7 +651,7 @@ class ConditionalActionEditor(QDialog):
             })
         elif condition_type == "position_check":
             params.update({
-                "check_type": self.pos_check_type.currentText(),
+                "check_type": _canonical_value(self.pos_check_type),
                 "operator": self.pos_operator.currentText(),
                 "value": self.pos_value.value()
             })
@@ -638,12 +663,12 @@ class ConditionalActionEditor(QDialog):
             })
         elif condition_type == "key_pressed":
             params.update({
-                "key": self.key_check.currentText(),
-                "state": self.key_state.currentText()
+                "key": _canonical_value(self.key_check),
+                "state": _canonical_value(self.key_state)
             })
         elif condition_type == "mouse_check":
             params.update({
-                "check": self.mouse_check.currentText()
+                "check": _canonical_value(self.mouse_check)
             })
         elif condition_type == "random_chance":
             params.update({

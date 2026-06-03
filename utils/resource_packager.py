@@ -408,7 +408,10 @@ class ResourcePackager:
         sprites = project_data.get('assets', {}).get('sprites', {})
 
         for instance in instances:
-            obj_name = instance.get('object_type', '')
+            # Instances store the object reference under 'object_name' (canonical)
+            # or 'object' (GMK-imported); 'object_type' is never used. Mirror the
+            # tolerant lookup in runtime/game_runner.py so dependencies are collected.
+            obj_name = instance.get('object_name') or instance.get('object') or ''
             if obj_name and obj_name in objects:
                 # Add object
                 if obj_name not in dependencies['objects']:

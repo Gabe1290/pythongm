@@ -19,6 +19,7 @@ class ImportAssetsDialog(QDialog):
     def __init__(self, asset_type, parent=None):
         super().__init__(parent)
         self.asset_type = asset_type
+        self.selected_files = []
         self.setWindowTitle(self.tr("Import Assets"))
         self.setModal(True)
         self.resize(600, 400)
@@ -93,9 +94,7 @@ class ImportAssetsDialog(QDialog):
         )
 
         if files:
-            self.selected_file = files[0]  # Store the first file
-        else:
-            print("🔥 : No files selected in QFileDialog")
+            self.selected_files = list(files)  # Store ALL selected files
 
         for file_path in files:
             item = QListWidgetItem(Path(file_path).name)
@@ -130,21 +129,14 @@ class ImportAssetsDialog(QDialog):
 
     def get_selected_files(self):
         """Get the selected files for import"""
-
-        if hasattr(self, 'selected_file') and self.selected_file:
-            return [self.selected_file]
-
-        return []
+        return list(self.selected_files)
 
     def exec(self):
-        # Auto-open file dialog
+        # Auto-open file dialog (multi-select)
         self.add_files()
 
-        # Only proceed if file was selected
-        if hasattr(self, 'selected_file') and self.selected_file:
-            return 1  # Accept
-        else:
-            return 0  # Cancel
+        # Only proceed if at least one file was selected
+        return 1 if self.selected_files else 0  # Accept / Cancel
 
 # Backward-compatible alias (the only one still imported anywhere)
 ImportAssetDialog = ImportAssetsDialog

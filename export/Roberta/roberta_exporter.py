@@ -392,6 +392,30 @@ def _build_increase_variable(params: Dict) -> ET.Element:
     return block
 
 
+def _negate_amount(amount) -> str:
+    """Return the negated magnitude as a string (the stored 'amount' is positive)."""
+    try:
+        return str(-int(amount))
+    except (ValueError, TypeError):
+        try:
+            return str(-float(amount))
+        except (ValueError, TypeError):
+            return f"-{amount}"
+
+
+def _build_decrease_variable(params: Dict) -> ET.Element:
+    # Reuses the math_change (add DELTA) block, but the stored 'amount' is a
+    # positive magnitude ("Amount to subtract"), so DELTA must be negated —
+    # otherwise the exported program increments instead of decrements.
+    var = params.get("variable", "var")
+    amount = params.get("amount", "1")
+    block = ET.Element("block", type="math_change",
+                        id=_next_id(), intask="true")
+    ET.SubElement(block, "field", name="VAR").text = var
+    _add_value_num(block, "DELTA", _negate_amount(amount))
+    return block
+
+
 # ======================================================================
 # Action → builder registry
 # ======================================================================
@@ -418,7 +442,7 @@ _ACTION_BUILDERS = {
     # Variables
     "thymio_set_variable":       _build_set_variable,
     "thymio_increase_variable":  _build_increase_variable,
-    "thymio_decrease_variable":  _build_increase_variable,  # same block, sign in value
+    "thymio_decrease_variable":  _build_decrease_variable,  # negates the positive amount
 }
 
 
