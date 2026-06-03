@@ -55,6 +55,12 @@ class ActionType:
     # selector at the top; the chosen value is saved as `target` ("self"|"other"|"object")
     # and the object name as `target_object` in the action's params.
     supports_applies_to: bool = False
+    # When True, the action stays fully resolvable — legacy project JSON that
+    # references it still loads, displays, and runs — but it is omitted from the
+    # "add action" palette so users only reach the consolidated replacement.
+    # Used for deprecated duplicates (e.g. add_score, superseded by set_score +
+    # the Relative checkbox).
+    hidden: bool = False
 
 ACTION_TYPES = {
     "move_grid": ActionType(
@@ -765,7 +771,7 @@ ACTION_TYPES = {
     "set_score": ActionType(
         name="set_score",
         display_name="Set Score",
-        description="Set the score value",
+        description="Set the score, or add to it with Relative",
         category="Score",
         icon="🏆",
         parameters=[
@@ -775,16 +781,28 @@ ACTION_TYPES = {
                 param_type="number",
                 default_value=0,
                 description="Score value to set"
+            ),
+            ActionParameter(
+                name="relative",
+                display_name="Relative",
+                param_type="boolean",
+                default_value=False,
+                description="Add to the current score instead of replacing it"
             )
         ]
     ),
 
+    # Deprecated: consolidated into set_score + the Relative checkbox. Kept
+    # hidden=True so existing project JSON that references "add_score" still
+    # loads, displays, and runs (execute_add_score_action adds), but it no
+    # longer appears as a separate entry in the action palette.
     "add_score": ActionType(
         name="add_score",
         display_name="Add to Score",
-        description="Add points to score",
+        description="Add points to score (legacy — use Set Score with Relative)",
         category="Score",
         icon="➕🏆",
+        hidden=True,
         parameters=[
             ActionParameter(
                 name="value",
@@ -1736,6 +1754,10 @@ def get_actions_by_category(blockly_config=None) -> Dict[str, List[ActionType]]:
     """
     categories = {}
     for action in ACTION_TYPES.values():
+        # Deprecated duplicates stay resolvable for legacy data but are not
+        # offered in the palette.
+        if action.hidden:
+            continue
         # If a config is provided, check if action is enabled
         if blockly_config is not None:
             # Get the Blockly block type for this action

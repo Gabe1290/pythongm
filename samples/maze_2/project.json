@@ -260,9 +260,10 @@
                 "parameters": {
                   "then_actions": [
                     {
-                      "action": "add_score",
+                      "action": "set_score",
                       "parameters": {
-                        "value": "100"
+                        "value": "100",
+                        "relative": true
                       }
                     },
                     {
@@ -272,9 +273,10 @@
                   ],
                   "else_actions": [
                     {
-                      "action": "add_score",
+                      "action": "set_score",
                       "parameters": {
-                        "value": "100"
+                        "value": "100",
+                        "relative": true
                       }
                     },
                     {
@@ -471,9 +473,10 @@
           "destroy": {
             "actions": [
               {
-                "action": "add_score",
+                "action": "set_score",
                 "parameters": {
-                  "value": "10"
+                  "value": "10",
+                  "relative": true
                 }
               }
             ]
