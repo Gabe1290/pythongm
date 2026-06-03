@@ -957,7 +957,7 @@ class PyGameMakerIDE(QMainWindow):
 
         # Welcome tab (default)
         self.welcome_tab = WelcomeTab(self)
-        self.editor_tabs.addTab(self.welcome_tab, "Welcome")
+        self.editor_tabs.addTab(self.welcome_tab, self.tr("Welcome"))
 
         layout.addWidget(self.editor_tabs)
         return center_widget

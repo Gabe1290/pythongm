@@ -2395,109 +2395,110 @@ Consultez la console pour les détails de l&apos;erreur.</translation>
     <message>
         <location filename="../widgets/welcome_tab.py" line="124"/>
         <source>Get started</source>
-        <translation type="unfinished"></translation>
+        <translation>Pour commencer</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="128"/>
         <source>📄  New Project</source>
-        <translation type="unfinished"></translation>
+        <translation>📄  Nouveau projet</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="130"/>
         <source>📂  Open Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>📂  Ouvrir un projet…</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="135"/>
         <source>More options</source>
-        <translation type="unfinished"></translation>
+        <translation>Plus d'options</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="137"/>
         <source>🗜  Open ZIP Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>🗜  Ouvrir un projet ZIP…</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="138"/>
         <source>📥  Import GameMaker .gmk...</source>
-        <translation type="unfinished"></translation>
+        <translation>📥  Importer GameMaker .gmk…</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="139"/>
         <source>📥  Import Open Roberta XML...</source>
-        <translation type="unfinished"></translation>
+        <translation>📥  Importer Open Roberta XML…</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="144"/>
         <source>Try a sample game</source>
-        <translation type="unfinished"></translation>
+        <translation>Essayer un exemple de jeu</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="155"/>
         <source>🎮  {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>🎮  {0}</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="161"/>
         <source>Choose a sample</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisir un exemple</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="163"/>
         <source>(No bundled samples found in this build.)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Aucun exemple fourni dans cette version.)</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="178"/>
         <source>Continue where you left off</source>
-        <translation type="unfinished"></translation>
+        <translation>Reprendre où vous en étiez</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="197"/>
         <source>Clear recent projects</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer les projets récents</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="210"/>
         <source>Documentation</source>
-        <translation type="unfinished">Documentation</translation>
+        <translation>Documentation</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="211"/>
         <source>Tutorials</source>
-        <translation type="unfinished">Tutoriels</translation>
+        <translation>Tutoriels</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="212"/>
         <source>About</source>
-        <translation type="unfinished">À propos</translation>
+        <translation>À propos</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="240"/>
         <source>(No recent projects yet.)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Aucun projet récent pour l'instant.)</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="424"/>
         <source>Save sample project to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer l'exemple de projet sous…</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="438"/>
         <location filename="../widgets/welcome_tab.py" line="446"/>
         <source>Sample import failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Échec de l'importation de l'exemple</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="439"/>
         <source>Could not import the sample project:
 {0}</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d'importer l'exemple de projet :
+{0}</translation>
     </message>
     <message>
         <location filename="../widgets/welcome_tab.py" line="447"/>
         <source>The bundled sample could not be imported. See the console output for details.</source>
-        <translation type="unfinished"></translation>
+        <translation>L'exemple fourni n'a pas pu être importé. Consultez la sortie console pour plus de détails.</translation>
     </message>
     <message>
         <source>Create amazing 2D games with visual scripting</source>
