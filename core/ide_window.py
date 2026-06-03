@@ -3088,9 +3088,12 @@ class PyGameMakerIDE(QMainWindow):
 
     def about(self):
         """Show comprehensive About PyGameMaker dialog"""
+        # Version is interpolated via {0} so bumping it never invalidates the
+        # translated About block (the string stays version-independent).
+        from utils import __version__ as _version
         about_text = self.tr(
             "<h2>PyGameMaker IDE</h2>"
-            "<p><b>Version 1.0.0-rc.11</b></p>"
+            "<p><b>Version {0}</b></p>"
             "<p>A comprehensive visual game development environment<br>"
             "inspired by GameMaker Studio, built with Python.</p>"
 
@@ -3122,7 +3125,7 @@ class PyGameMakerIDE(QMainWindow):
             "</p>"
 
             "<p><small>Built with ❤️ using Python and Qt</small></p>"
-        )
+        ).format(_version)
 
         license_text = self.tr(
             "<h3>License</h3>"
