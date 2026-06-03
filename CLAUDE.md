@@ -14,11 +14,15 @@ From the repo root:
   / 7 failures that aren't real regressions. The `venv/` directory at repo
   root is a Linux artifact synced via Dropbox and is unusable from Windows.
 
-- **Baseline:** 536 passed, 0 failed (post-Phase-2 closeout, 2026-05-22)
-  on Python 3.12 + pygame 2.6.1 + PySide6 6.10.1. The earlier "486 passed,
-  16 skipped" figure was an older snapshot — the current count is 536
-  passing with no skips on a healthy env. Treat any non-zero failure as a
-  real regression.
+- **Baseline:** the pass count grows as tests are added and the skip count is
+  env-dependent, so treat **any non-zero _failure_ count as a real
+  regression** rather than chasing an exact pass number. Recent green
+  snapshots: **532 passed, 21 skipped, 0 failed** on this Linux box
+  (Python 3.11.2 + pygame 2.6.1, 2026-06-03); **536 passed, 0 skipped** on
+  Python 3.12 + pygame 2.6.1 + PySide6 6.10.1 (2026-05-22, pre-rc.12 — fewer
+  tests then). The widget tests that skip on 3.11 run on 3.12, which explains
+  the skip-count gap. The old "486 passed, 16 skipped" figure is a stale
+  snapshot.
 - `pyflakes` is **not** installed; substitute `py_compile` + import sanity for
   static checks.
 - For headless / offscreen Qt: `QT_QPA_PLATFORM=offscreen` (`conftest.py`
