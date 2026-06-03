@@ -138,13 +138,11 @@ ACTION_TO_PYTHON = {
     'game_restart': 'game.restart_game()',
     'game_end': 'game.end_game()',
 
-    # Score/Lives/Health
+    # Score/Lives/Health. add_score/add_lives/add_health were consolidated into
+    # these set_* templates: relative=True renders {op} as += (see line ~1050).
     'set_score': 'game.score {op} {value}',  # op is = or +=
     'set_lives': 'game.lives {op} {value}',
     'set_health': 'game.health {op} {value}',
-    'add_score': 'game.score += {value}',
-    'add_lives': 'game.lives += {value}',
-    'add_health': 'game.health += {value}',
 
     # Drawing (in draw event)
     'draw_score': 'game.draw_score({x}, {y}, "{caption}")',

@@ -229,6 +229,14 @@ class ProjectManager(QObject):
             self._load_sprites_from_files(project_path, project_data)
             self._load_playgrounds_from_files(project_path, project_data)
 
+            # Normalise legacy add_score/add_lives/add_health actions to the
+            # consolidated set_*(relative=True) form so older projects edit and
+            # run identically with a single Relative-checkbox action.
+            from events.action_types import migrate_legacy_actions
+            migrated = migrate_legacy_actions(project_data)
+            if migrated:
+                logger.info(f"Migrated {migrated} legacy add_* action(s) to set_*(relative=True)")
+
             # Validate project data
             if not self._validate_project_data(project_data):
                 self.status_changed.emit("Invalid project file format")

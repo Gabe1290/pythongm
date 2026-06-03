@@ -55,12 +55,6 @@ class ActionType:
     # selector at the top; the chosen value is saved as `target` ("self"|"other"|"object")
     # and the object name as `target_object` in the action's params.
     supports_applies_to: bool = False
-    # When True, the action stays fully resolvable — legacy project JSON that
-    # references it still loads, displays, and runs — but it is omitted from the
-    # "add action" palette so users only reach the consolidated replacement.
-    # Used for deprecated duplicates (e.g. add_score, superseded by set_score +
-    # the Relative checkbox).
-    hidden: bool = False
 
 ACTION_TYPES = {
     "move_grid": ActionType(
@@ -792,32 +786,10 @@ ACTION_TYPES = {
         ]
     ),
 
-    # Deprecated: consolidated into set_score + the Relative checkbox. Kept
-    # hidden=True so existing project JSON that references "add_score" still
-    # loads, displays, and runs (execute_add_score_action adds), but it no
-    # longer appears as a separate entry in the action palette.
-    "add_score": ActionType(
-        name="add_score",
-        display_name="Add to Score",
-        description="Add points to score (legacy — use Set Score with Relative)",
-        category="Score",
-        icon="➕🏆",
-        hidden=True,
-        parameters=[
-            ActionParameter(
-                name="value",
-                display_name="Points",
-                param_type="number",
-                default_value=10,
-                description="Points to add (can be negative)"
-            )
-        ]
-    ),
-
     "set_lives": ActionType(
         name="set_lives",
         display_name="Set Lives",
-        description="Set number of lives",
+        description="Set the lives, or add to them with Relative",
         category="Score",
         icon="❤️",
         parameters=[
@@ -827,23 +799,13 @@ ACTION_TYPES = {
                 param_type="number",
                 default_value=3,
                 description="Number of lives"
-            )
-        ]
-    ),
-
-    "add_lives": ActionType(
-        name="add_lives",
-        display_name="Add Lives",
-        description="Add or remove lives",
-        category="Score",
-        icon="➕❤️",
-        parameters=[
+            ),
             ActionParameter(
-                name="value",
-                display_name="Lives",
-                param_type="number",
-                default_value=1,
-                description="Lives to add (can be negative)"
+                name="relative",
+                display_name="Relative",
+                param_type="boolean",
+                default_value=False,
+                description="Add to the current lives instead of replacing them"
             )
         ]
     ),
@@ -851,7 +813,7 @@ ACTION_TYPES = {
     "set_health": ActionType(
         name="set_health",
         display_name="Set Health",
-        description="Set health value",
+        description="Set the health, or add to it with Relative",
         category="Score",
         icon="💚",
         parameters=[
@@ -861,23 +823,13 @@ ACTION_TYPES = {
                 param_type="number",
                 default_value=100,
                 description="Health value (0-100)"
-            )
-        ]
-    ),
-
-    "add_health": ActionType(
-        name="add_health",
-        display_name="Add Health",
-        description="Add or remove health",
-        category="Score",
-        icon="➕💚",
-        parameters=[
+            ),
             ActionParameter(
-                name="value",
-                display_name="Health",
-                param_type="number",
-                default_value=10,
-                description="Health to add (can be negative)"
+                name="relative",
+                display_name="Relative",
+                param_type="boolean",
+                default_value=False,
+                description="Add to the current health instead of replacing it"
             )
         ]
     ),
@@ -1656,13 +1608,12 @@ BLOCKLY_TO_ACTION_MAP = {
     "draw_circle": "draw_circle",
     "set_sprite": "set_sprite",
     "set_alpha": "set_alpha",
-    # Score/Lives/Health
+    # Score/Lives/Health. The *_add Blockly blocks emit the same set_* action
+    # with relative=True (see blockly_generators.js), so the set_* mapping
+    # covers both blocks; there is no separate add_* action to map to.
     "score_set": "set_score",
-    "score_add": "add_score",
     "lives_set": "set_lives",
-    "lives_add": "add_lives",
     "health_set": "set_health",
-    "health_add": "add_health",
     "draw_score": "draw_score",
     "draw_lives": "draw_lives",
     "draw_health_bar": "draw_health_bar",
@@ -1732,7 +1683,52 @@ ACTION_TYPE_ALIASES = {
     "room_restart": "restart_room",
     "room_goto_next": "next_room",
     "room_goto_previous": "previous_room",
+    # Legacy duplicates consolidated into set_* + the Relative checkbox. Kept so
+    # any add_* still in older project JSON resolves to the right dialog; the
+    # relative semantics are restored by migrate_legacy_actions() on load.
+    "add_score": "set_score",
+    "add_lives": "set_lives",
+    "add_health": "set_health",
 }
+
+
+# Legacy GameMaker-style duplicate actions that were merged into their set_*
+# counterpart plus a Relative flag. Old project JSON (and the deprecated
+# runtime aliases) referenced these standalone names; migrate_legacy_actions()
+# rewrites them to the canonical set_*(relative=True) form on load so a single
+# action with a Relative checkbox is the only thing users see or edit.
+LEGACY_RELATIVE_ADD_ACTIONS = {
+    "add_score": "set_score",
+    "add_lives": "set_lives",
+    "add_health": "set_health",
+}
+
+
+def migrate_legacy_actions(node) -> int:
+    """Recursively rewrite legacy add_* actions to set_*(relative=True) in place.
+
+    Walks any nested structure (asset dicts, event dicts, action lists,
+    then/else branches, action_list parameters) and normalises every
+    ``{"action": "add_*"}`` node it finds. Returns the number of actions
+    migrated so callers can log/skip a no-op save.
+    """
+    count = 0
+    if isinstance(node, dict):
+        action = node.get("action")
+        if isinstance(action, str) and action in LEGACY_RELATIVE_ADD_ACTIONS:
+            node["action"] = LEGACY_RELATIVE_ADD_ACTIONS[action]
+            params = node.get("parameters")
+            if not isinstance(params, dict):
+                params = {}
+                node["parameters"] = params
+            params["relative"] = True
+            count += 1
+        for value in node.values():
+            count += migrate_legacy_actions(value)
+    elif isinstance(node, list):
+        for item in node:
+            count += migrate_legacy_actions(item)
+    return count
 
 
 def get_action_type(action_name: str) -> Optional[ActionType]:
@@ -1754,10 +1750,6 @@ def get_actions_by_category(blockly_config=None) -> Dict[str, List[ActionType]]:
     """
     categories = {}
     for action in ACTION_TYPES.values():
-        # Deprecated duplicates stay resolvable for legacy data but are not
-        # offered in the palette.
-        if action.hidden:
-            continue
         # If a config is provided, check if action is enabled
         if blockly_config is not None:
             # Get the Blockly block type for this action

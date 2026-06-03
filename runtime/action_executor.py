@@ -337,10 +337,6 @@ class ActionExecutor:
         "message": "show_message",
         "goto_next_room": "next_room",
         "goto_previous_room": "previous_room",
-        # Score/Lives/Health aliases
-        "add_score": "add_score",  # Direct mapping (executor exists)
-        "add_lives": "add_lives",  # Direct mapping (executor exists)
-        "add_health": "add_health",  # Direct mapping (executor exists)
         # Room action aliases (GameMaker naming convention)
         "room_restart": "restart_room",
         "room_goto_next": "next_room",
@@ -354,6 +350,17 @@ class ActionExecutor:
         "game_restart": "restart_game",
         "else_block": "else_action",
         "change_sprite": "set_sprite",
+    }
+
+    # Legacy add_score/add_lives/add_health were consolidated into the set_*
+    # actions plus a Relative flag. Pre-consolidation project JSON is rewritten
+    # to set_*(relative=True) on dispatch so it keeps adding instead of
+    # replacing. (Projects loaded through ProjectManager are migrated in-place;
+    # this is the safety net for any data that reaches the runtime unmigrated.)
+    LEGACY_RELATIVE_ADD = {
+        "add_score": "set_score",
+        "add_lives": "set_lives",
+        "add_health": "set_health",
     }
 
     def execute_action(self, instance, action_data: Dict[str, Any]):
@@ -370,6 +377,11 @@ class ActionExecutor:
         if not action_name:
             logger.debug(f"⚠️ Action missing 'action' field: {action_data}")
             return None
+
+        # Normalise legacy add_* duplicates to set_*(relative=True)
+        if action_name in self.LEGACY_RELATIVE_ADD:
+            action_name = self.LEGACY_RELATIVE_ADD[action_name]
+            parameters = {**parameters, "relative": True}
 
         # Apply action name aliases
         if action_name in self.ACTION_ALIASES:
@@ -2199,66 +2211,6 @@ class ActionExecutor:
         self.game_runner.show_score_in_caption = True
 
         logger.debug(f"🏆 Score set to: {self.game_runner.score}")
-
-    def execute_add_score_action(self, instance, parameters: Dict[str, Any]):
-        """Add to the score value"""
-        if not self.game_runner:
-            logger.warning("⚠️  Warning: add_score requires game_runner reference")
-            return
-
-        value = int(parameters.get("value", 0))
-        self.game_runner.score += value
-
-        # Auto-enable score in caption when score is used
-        self.game_runner.show_score_in_caption = True
-
-        logger.debug(f"🏆 Score increased by {value}, now: {self.game_runner.score}")
-
-    def execute_add_lives_action(self, instance, parameters: Dict[str, Any]):
-        """Add to the lives value"""
-        if not self.game_runner:
-            logger.warning("⚠️  Warning: add_lives requires game_runner reference")
-            return
-
-        value = int(parameters.get("value", 1))
-        old_lives = self.game_runner.lives
-        self.game_runner.lives += value
-
-        # Ensure lives doesn't go negative
-        self.game_runner.lives = max(0, self.game_runner.lives)
-
-        # Auto-enable lives in caption when lives are used
-        self.game_runner.show_lives_in_caption = True
-
-        logger.debug(f"❤️ Lives changed by {value}, now: {self.game_runner.lives}")
-
-        # Trigger no_more_lives event if lives just reached 0
-        if old_lives > 0 and self.game_runner.lives <= 0:
-            logger.debug("💀 No more lives! Triggering no_more_lives event...")
-            self.game_runner.trigger_no_more_lives_event(instance)
-
-    def execute_add_health_action(self, instance, parameters: Dict[str, Any]):
-        """Add to the health value"""
-        if not self.game_runner:
-            logger.warning("⚠️  Warning: add_health requires game_runner reference")
-            return
-
-        value = float(parameters.get("value", 10))
-        old_health = self.game_runner.health
-        self.game_runner.health += value
-
-        # Clamp health to 0-100
-        self.game_runner.health = max(0, min(100, self.game_runner.health))
-
-        # Auto-enable health in caption when health is used
-        self.game_runner.show_health_in_caption = True
-
-        logger.debug(f"💚 Health changed by {value}, now: {self.game_runner.health}")
-
-        # Trigger no_more_health event if health just reached 0
-        if old_health > 0 and self.game_runner.health <= 0:
-            logger.debug("💀 No more health! Triggering no_more_health event...")
-            self.game_runner.trigger_no_more_health_event(instance)
 
     def execute_test_score_action(self, instance, parameters: Dict[str, Any]):
         """Test score value and execute conditional actions
