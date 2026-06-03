@@ -255,6 +255,24 @@ Other:
 - **Room transition effects** — `runtime/action_executor.py:5111`. Parameter
   accepted but ignored; transitions are instant.
 
+## Translations / i18n
+
+### Migrate ja / pt / zh off the legacy translation set (post-1.0)
+- The language menu still lists Japanese, Portuguese, and Chinese, but those
+  three run on the abandoned `translations/pygamemaker_{ja,pt,zh}.ts` files
+  (legacy monolithic format). Their contexts reference source strings that no
+  longer exist in the codebase — e.g. the `WelcomeTab` context still lists
+  `Quick Actions`, `Create Room (Ctrl+R)`, and `Create amazing 2D games with
+  visual scripting`, none of which the current `widgets/welcome_tab.py`
+  emits — so essentially the whole IDE renders in English for these locales,
+  not just the Welcome tab.
+- The six maintained locales (fr/de/es/it/ru/sl/uk) live in the `pygm2_XX*`
+  split-file system and were brought fully up to date for the Welcome tab.
+- TODO once we have time: regenerate `pygm2_{ja,pt,zh}*.ts` from current
+  sources (same `pylupdate6`/split-group layout the other languages use),
+  translate, compile to `.qm`, and retire the `pygamemaker_*.{ts,qm}` legacy
+  files. Until then ja/pt/zh are effectively English with a flag.
+
 ## Export
 
 - **Kivy export — long-tail action coverage** —
