@@ -543,3 +543,26 @@ class TestPreciseCollisionMaskOffset:
         bx1, by1 = s1.bbox_left, s1.bbox_top
         bx2, by2 = s2.bbox_left, s2.bbox_top
         assert gr._precise_refine(i1, bx1, by1, i2, bx2, by2) is False
+
+
+# ============================================================================
+# load_game instance restore (#10 distinct instances must not collapse)
+# ============================================================================
+
+class TestRestoreInstancesDistinctMatch:
+    """#10 — _restore_instances matched by object_name with break but never
+    consumed the matched instance, so N saved instances of one object all
+    restored onto the first one in the room."""
+
+    def test_two_same_object_instances_get_distinct_state(self):
+        runner = MockGameRunner()
+        e1, e2 = MockInstance("enemy"), MockInstance("enemy")
+        e1.x = e1.y = e2.x = e2.y = 0
+        runner.current_room.instances = [e1, e2]
+        executor = ActionExecutor(game_runner=runner)
+        executor._restore_instances([
+            {"object_name": "enemy", "x": 100, "y": 100},
+            {"object_name": "enemy", "x": 200, "y": 200},
+        ])
+        got = sorted([(e1.x, e1.y), (e2.x, e2.y)])
+        assert got == [(100, 100), (200, 200)]
