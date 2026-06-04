@@ -11,9 +11,9 @@ This file is the working registry so the cleanup can continue across machines.
 - **Highs (7): all FIXED** in commit `67c91e4` (+ `tests/test_audit_regressions.py`,
   17 regression tests). Earlier related fix: `d60f41b` (create_action_dialog
   factory + missing import).
-- **Remaining: 11 medium + 8 low** — open, listed below with suggested fixes.
-  Batch in `ae76d3e` fixed #8, #9, #11 (medium) and #22 (low) — see
-  `tests/test_audit_regressions.py`.
+- **Remaining: 9 medium + 5 low** — open, listed below with suggested fixes.
+  Fixed so far: `ae76d3e` (#8, #9, #11, #22); `0a4a94c` (#20, #21, #26, #27,
+  #28). See `tests/test_audit_regressions.py`.
 
 Severity reflects the verifier's corrected rating (real impact), not the
 reviewer's initial guess.
@@ -149,14 +149,14 @@ reviewer's initial guess.
   *Fix:* reset `_loading` inside the `runJavaScript` callback (like
   `load_events_data`'s `on_load_complete`).
 
-- [ ] **#20 wrong-variable — room paste sets the wrong selection attr.**
+- [x] **#20 wrong-variable — room paste sets the wrong selection attr.**
   `editors/room_editor/room_canvas.py:473`. Sets `selected_instance` (singular,
   dead attr) instead of `selected_instances`; pasted items aren't selected and
   Delete hits the prior selection. *Fix:* set
   `self.selected_instances = list(pasted_instances)` (mirror
   `duplicate_selected_instances`).
 
-- [ ] **#21 wrong-behavior — Thymio Blockly preset enables `"else"` not `"else_action"`.**
+- [x] **#21 wrong-behavior — Thymio Blockly preset enables `"else"` not `"else_action"`.**
   `config/blockly_config.py:651`. `enable_block` doesn't validate, so the Else
   block never appears in the thymio preset toolbox.
   *Fix:* `enable_block("else_action")`.
@@ -186,19 +186,19 @@ reviewer's initial guess.
   today** (dead path). *Fix:* track per-plugin registered names and pop them,
   or rebuild from a pristine baseline.
 
-- [ ] **#26 — missing-file flag undone by imported-migration.**
+- [x] **#26 — missing-file flag undone by imported-migration.**
   `core/asset_manager.py:727`. `_validate_asset_paths` sets `imported=False`
   for a missing file; the next two lines flip it back to True → broken asset
   shown as present, `file_missing` is dead. *Fix:* gate with
   `and not asset_data.get('file_missing', False)`.
 
-- [ ] **#27 — `DEFAULT_COLORS` mutable shared-reference.**
+- [x] **#27 — `DEFAULT_COLORS` mutable shared-reference.**
   `editors/playground_editor/__init__.py:258`. `list(DEFAULT_COLORS)` shares the
   element dicts; editing a color when a playground lacked a `colors` key mutates
   the module global process-wide. (Non-default trigger: external/legacy JSON.)
   *Fix:* `copy.deepcopy(DEFAULT_COLORS)` for the fallback and on store/return.
 
-- [ ] **#28 — `cut_instance` reports count 0.**
+- [x] **#28 — `cut_instance` reports count 0.**
   `editors/room_editor/__init__.py:716`. Reads `get_selected_count()` *after*
   the cut empties the selection → status shows "Cut 0 instance(s)". *Fix:*
   capture the count before `cut_selected_instances()`.
