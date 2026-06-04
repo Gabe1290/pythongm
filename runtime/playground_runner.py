@@ -63,10 +63,18 @@ class _PygameCanvas(QLabel):
         self.setPixmap(QPixmap.fromImage(image))
 
     def keyPressEvent(self, event: QKeyEvent):
+        # Ignore OS key auto-repeat: a held key otherwise re-fires the button
+        # event (and now set_button) tens of times per second.
+        if event.isAutoRepeat():
+            event.accept()
+            return
         self.key_pressed.emit(event.key())
         event.accept()
 
     def keyReleaseEvent(self, event: QKeyEvent):
+        if event.isAutoRepeat():
+            event.accept()
+            return
         self.key_released.emit(event.key())
         event.accept()
 
@@ -276,8 +284,13 @@ class PlaygroundRunnerWindow(QMainWindow):
         event_name = self._KEY_EVENT_MAP.get(key)
         if not event_name:
             return
+        button = event_name[len('thymio_button_'):]
         # Trigger button event on every Thymio
         for inst in self.instances:
+            # Set the held button state so state-polling code (get_button /
+            # thymio_if_button_pressed) reads 1, mirroring the mouse path.
+            if inst.thymio_simulator is not None:
+                inst.thymio_simulator.set_button(button, True)
             events = (inst.object_data or {}).get('events', {})
             if event_name in events:
                 try:
@@ -291,7 +304,13 @@ class PlaygroundRunnerWindow(QMainWindow):
                     logger.error(f"thymio_any_button failed: {e}")
 
     def _on_key_released(self, key):
-        pass  # Could trigger release events here
+        event_name = self._KEY_EVENT_MAP.get(key)
+        if not event_name:
+            return
+        button = event_name[len('thymio_button_'):]
+        for inst in self.instances:
+            if inst.thymio_simulator is not None:
+                inst.thymio_simulator.set_button(button, False)
 
     # ─── Mouse → Thymio button hit-testing ──────────────────────
 
@@ -437,19 +456,18 @@ class PlaygroundRunnerWindow(QMainWindow):
         self.pause_btn.setText(self.tr("Resume") if self.paused else self.tr("Pause"))
 
     def _reset(self):
-        """Reset all robots to starting positions"""
-        for inst, rd in zip(self.instances, self.playground_data.get('robots', [])):
-            sim = inst.thymio_simulator
-            sim.x = rd.get('x', 100)
-            sim.y = rd.get('y', 100)
-            sim.angle = math.degrees(rd.get('angle', 0)) - 90
-            sim.motors.left_speed = 0
-            sim.motors.right_speed = 0
-            sim.motors.left_target = 0
-            sim.motors.right_target = 0
-            inst.x = sim.x
-            inst.y = sim.y
-            # Re-run create event
+        """Reset all robots to a fully fresh starting state.
+
+        Rebuild instances and simulators from scratch (same path as init) so
+        ALL state resets — not just pose/motors but LEDs, sound, sensors,
+        timers, the proximity counter, and any dynamic instance variables.
+        The old reset restored only pose + motors, leaving the rest stale.
+        """
+        self.instances = []
+        self._thymio_mouse_presses.clear()
+        self._create_robots(self.playground_data.get('robots', []))
+        # Re-run create events on the fresh instances
+        for inst in self.instances:
             events = (inst.object_data or {}).get('events', {})
             if 'create' in events:
                 try:

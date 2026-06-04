@@ -355,3 +355,27 @@ class TestMissingFileFlagSurvivesImportMigration:
         asset = mgr.assets_cache["sprites"]["spr_missing"]
         assert asset.get("file_missing") is True
         assert asset.get("imported") is False
+
+
+# ============================================================================
+# Thymio playground fixes (#13 button state)  [#14/#24 are Qt-runtime paths]
+# ============================================================================
+
+class TestThymioKeyButtonStateMapping:
+    """#13 — keyboard button presses fired events but never set the simulator
+    button state, so state-polling (get_button / thymio_if_button_pressed)
+    always read 0. Every key→event in the map must derive a settable button."""
+
+    def test_key_event_map_buttons_are_settable(self):
+        from runtime.playground_runner import PlaygroundRunnerWindow
+        from runtime.thymio_simulator import ThymioSimulator
+        sim = ThymioSimulator(x=0, y=0, angle=0)
+        assert PlaygroundRunnerWindow._KEY_EVENT_MAP, "key->event map is empty"
+        for event_name in PlaygroundRunnerWindow._KEY_EVENT_MAP.values():
+            assert event_name.startswith("thymio_button_")
+            button = event_name[len("thymio_button_"):]
+            assert button in sim.sensors.buttons
+            sim.set_button(button, True)
+            assert sim.get_button(button) == 1
+            sim.set_button(button, False)
+            assert sim.get_button(button) == 0
