@@ -3,6 +3,23 @@
 <TS version="2.1" language="de_DE">
 <context>
     <name>ActionConfigDialog</name>
+        <message>
+            <source>Use Python operators</source>
+            <translation>Python-Operatoren verwenden</translation>
+        </message>
+        <message>
+            <source>This expression uses C-style operators that Python does not understand:
+
+    {fixes}
+
+Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 and y &lt; other.y".</source>
+            <translation>Dieser Ausdruck verwendet Operatoren im C-Stil, die Python nicht versteht:
+
+    {fixes}
+
+Verwenden Sie stattdessen die Python-Operatoren (and / or / not), z. B. "vspeed &gt; 0 and y &lt; other.y".</translation>
+        </message>
+
     <message>
         <source>Configure {0}</source>
         <translation type="vanished">{0} konfigurieren</translation>
@@ -82,6 +99,49 @@
 </context>
 <context>
     <name>ConditionalActionEditor</name>
+        <message>
+            <source>Custom Python Expression:</source>
+            <translation>Benutzerdefinierter Python-Ausdruck:</translation>
+        </message>
+        <message>
+            <source>Enter any Python expression that evaluates to true/false
+Example: x &gt; 100 and y &lt; 200</source>
+            <translation>Geben Sie einen beliebigen Python-Ausdruck ein, der wahr/falsch ergibt
+Beispiel: x &gt; 100 and y &lt; 200</translation>
+        </message>
+        <message>
+            <source>Use Python operators</source>
+            <translation>Python-Operatoren verwenden</translation>
+        </message>
+        <message>
+            <source>This expression uses C-style operators that Python does not understand:
+
+    {fixes}
+
+Please use the Python operators instead (and / or / not), e.g. "x &gt; 100 and y &lt; 200".</source>
+            <translation>Dieser Ausdruck verwendet Operatoren im C-Stil, die Python nicht versteht:
+
+    {fixes}
+
+Verwenden Sie stattdessen die Python-Operatoren (and / or / not), z. B. "x &gt; 100 and y &lt; 200".</translation>
+        </message>
+        <message>
+            <source>That looks like an expression</source>
+            <translation>Das sieht wie ein Ausdruck aus</translation>
+        </message>
+        <message>
+            <source>The Variable field expects a single variable name (e.g. "vspeed"), not a whole expression.
+
+To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to "expression" and type it in the expression box.</source>
+            <translation>Das Feld "Variable" erwartet einen einzelnen Variablennamen (z. B. "vspeed"), keinen ganzen Ausdruck.
+
+Um etwas wie "vspeed &gt; 0 and y &lt; other.y" zu testen, setzen Sie den Bedingungstyp auf "Ausdruck" und geben Sie ihn im Ausdrucksfeld ein.</translation>
+        </message>
+        <message>
+            <source>A single variable name (e.g. vspeed). For a formula like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to "expression".</source>
+            <translation>Ein einzelner Variablenname (z. B. vspeed). Für eine Formel wie "vspeed &gt; 0 and y &lt; other.y" setzen Sie den Bedingungstyp auf "Ausdruck".</translation>
+        </message>
+
     <message>
         <source>Configure If Condition</source>
         <translation type="vanished">Wenn-Bedingung konfigurieren</translation>

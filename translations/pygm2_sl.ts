@@ -78,6 +78,23 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
 </context>
 <context>
     <name>ActionConfigDialog</name>
+        <message>
+            <source>Use Python operators</source>
+            <translation>Uporabite operatorje Python</translation>
+        </message>
+        <message>
+            <source>This expression uses C-style operators that Python does not understand:
+
+    {fixes}
+
+Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 and y &lt; other.y".</source>
+            <translation>Ta izraz uporablja operatorje v slogu C, ki jih Python ne razume:
+
+    {fixes}
+
+Namesto njih uporabite operatorje Python (and / or / not), na primer "vspeed &gt; 0 and y &lt; other.y".</translation>
+        </message>
+
     <message>
         <location filename="../events/action_editor.py" line="47"/>
         <source>Configure {0}</source>
@@ -1283,6 +1300,49 @@ Voulez-vous enregistrer quand même ?</translation>
 </context>
 <context>
     <name>ConditionalActionEditor</name>
+        <message>
+            <source>Custom Python Expression:</source>
+            <translation>Lasten izraz Python:</translation>
+        </message>
+        <message>
+            <source>Enter any Python expression that evaluates to true/false
+Example: x &gt; 100 and y &lt; 200</source>
+            <translation>Vnesite poljuben izraz Python, ki se ovrednoti kot resnično/neresnično
+Primer: x &gt; 100 and y &lt; 200</translation>
+        </message>
+        <message>
+            <source>Use Python operators</source>
+            <translation>Uporabite operatorje Python</translation>
+        </message>
+        <message>
+            <source>This expression uses C-style operators that Python does not understand:
+
+    {fixes}
+
+Please use the Python operators instead (and / or / not), e.g. "x &gt; 100 and y &lt; 200".</source>
+            <translation>Ta izraz uporablja operatorje v slogu C, ki jih Python ne razume:
+
+    {fixes}
+
+Namesto njih uporabite operatorje Python (and / or / not), na primer "x &gt; 100 and y &lt; 200".</translation>
+        </message>
+        <message>
+            <source>That looks like an expression</source>
+            <translation>To je videti kot izraz</translation>
+        </message>
+        <message>
+            <source>The Variable field expects a single variable name (e.g. "vspeed"), not a whole expression.
+
+To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to "expression" and type it in the expression box.</source>
+            <translation>Polje "Spremenljivka" pričakuje eno ime spremenljivke (na primer "vspeed"), ne celega izraza.
+
+Če želite preveriti nekaj takega kot "vspeed &gt; 0 and y &lt; other.y", nastavite Vrsto pogoja na "expression" in ga vnesite v polje za izraz.</translation>
+        </message>
+        <message>
+            <source>A single variable name (e.g. vspeed). For a formula like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to "expression".</source>
+            <translation>Eno ime spremenljivke (na primer vspeed). Za formulo kot "vspeed &gt; 0 and y &lt; other.y" nastavite Vrsto pogoja na "expression".</translation>
+        </message>
+
     <message>
         <location filename="../events/conditional_editor.py" line="27"/>
         <source>Configure If Condition</source>

@@ -3,6 +3,23 @@
 <TS version="2.1" language="ru_RU">
 <context>
     <name>ActionConfigDialog</name>
+        <message>
+            <source>Use Python operators</source>
+            <translation>Используйте операторы Python</translation>
+        </message>
+        <message>
+            <source>This expression uses C-style operators that Python does not understand:
+
+    {fixes}
+
+Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 and y &lt; other.y".</source>
+            <translation>В этом выражении используются операторы в стиле C, которые Python не понимает:
+
+    {fixes}
+
+Используйте вместо них операторы Python (and / or / not), например "vspeed &gt; 0 and y &lt; other.y".</translation>
+        </message>
+
     <message>
         <source>Configure {0}</source>
         <translation type="vanished">Configurer {0}</translation>
@@ -82,6 +99,49 @@
 </context>
 <context>
     <name>ConditionalActionEditor</name>
+        <message>
+            <source>Custom Python Expression:</source>
+            <translation>Пользовательское выражение Python:</translation>
+        </message>
+        <message>
+            <source>Enter any Python expression that evaluates to true/false
+Example: x &gt; 100 and y &lt; 200</source>
+            <translation>Введите любое выражение Python, дающее истину/ложь
+Пример: x &gt; 100 and y &lt; 200</translation>
+        </message>
+        <message>
+            <source>Use Python operators</source>
+            <translation>Используйте операторы Python</translation>
+        </message>
+        <message>
+            <source>This expression uses C-style operators that Python does not understand:
+
+    {fixes}
+
+Please use the Python operators instead (and / or / not), e.g. "x &gt; 100 and y &lt; 200".</source>
+            <translation>В этом выражении используются операторы в стиле C, которые Python не понимает:
+
+    {fixes}
+
+Используйте вместо них операторы Python (and / or / not), например "x &gt; 100 and y &lt; 200".</translation>
+        </message>
+        <message>
+            <source>That looks like an expression</source>
+            <translation>Это похоже на выражение</translation>
+        </message>
+        <message>
+            <source>The Variable field expects a single variable name (e.g. "vspeed"), not a whole expression.
+
+To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to "expression" and type it in the expression box.</source>
+            <translation>Поле "Переменная" ожидает одно имя переменной (например "vspeed"), а не целое выражение.
+
+Чтобы проверить что-то вроде "vspeed &gt; 0 and y &lt; other.y", установите Тип условия в "expression" и введите его в поле выражения.</translation>
+        </message>
+        <message>
+            <source>A single variable name (e.g. vspeed). For a formula like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to "expression".</source>
+            <translation>Одно имя переменной (например vspeed). Для формулы вроде "vspeed &gt; 0 and y &lt; other.y" установите Тип условия в "expression".</translation>
+        </message>
+
     <message>
         <source>Configure If Condition</source>
         <translation type="vanished">Configurer la condition Si</translation>
