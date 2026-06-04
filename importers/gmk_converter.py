@@ -564,10 +564,14 @@ class GmkConverter:
         # else_action, exit_event, repeat). Authoritative regardless of
         # what (library_id, action_id) lookup would produce.
         if gm_act.action_kind in self._GMK_KIND_TO_ACTION:
-            return {
-                "action": self._GMK_KIND_TO_ACTION[gm_act.action_kind],
-                "parameters": {},
-            }
+            action_name = self._GMK_KIND_TO_ACTION[gm_act.action_kind]
+            params = {}
+            # repeat (kind 5) carries its iteration count as the first argument;
+            # the empty-params early return used to drop it, so the runtime
+            # default made every imported repeat run exactly once.
+            if action_name == "repeat" and gm_act.argument_values:
+                params["times"] = gm_act.argument_values[0]
+            return {"action": action_name, "parameters": params}
 
         # Resolve action + param list via function_name first, then ID.
         pygm2_action = None
@@ -734,7 +738,10 @@ class GmkConverter:
                 self._warn(f"Room '{name}': instance with unknown object ID {inst.object_id}")
                 continue
             inst_data = {
-                "object": obj_name,
+                # Canonical key is "object_name" — asset_manager's rename only
+                # updates that key, so emitting "object" left renamed objects
+                # pointing at a missing placement until the room was re-saved.
+                "object_name": obj_name,
                 "x": inst.x,
                 "y": inst.y,
             }

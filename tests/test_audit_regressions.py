@@ -379,3 +379,29 @@ class TestThymioKeyButtonStateMapping:
             assert sim.get_button(button) == 1
             sim.set_button(button, False)
             assert sim.get_button(button) == 0
+
+
+# ============================================================================
+# GMK import fixes (#16 repeat count)  [#17 verified by loader-compat inspection]
+# ============================================================================
+
+class TestGmkRepeatKeepsCount:
+    """#16 — the action_kind dispatch returned empty params for repeat (kind 5)
+    before the ID path that knows the 'times' arg, so imported repeats ran once."""
+
+    def test_repeat_captures_times_from_first_arg(self):
+        from importers.gmk_converter import GmkConverter
+        from importers.gmk_parser import GmkAction
+        conv = GmkConverter.__new__(GmkConverter)  # no I/O; _convert_single_action is self-contained
+        act = GmkAction(action_kind=5, argument_values=["7"])
+        out = conv._convert_single_action(act)
+        assert out["action"] == "repeat"
+        assert out["parameters"].get("times") == "7"
+
+    def test_other_control_flow_markers_still_empty(self):
+        from importers.gmk_converter import GmkConverter
+        from importers.gmk_parser import GmkAction
+        conv = GmkConverter.__new__(GmkConverter)
+        for kind, name in ((1, "start_block"), (2, "end_block"), (4, "exit_event")):
+            out = conv._convert_single_action(GmkAction(action_kind=kind))
+            assert out == {"action": name, "parameters": {}}
