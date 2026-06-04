@@ -11,7 +11,7 @@ This file is the working registry so the cleanup can continue across machines.
 - **Highs (7): all FIXED** in commit `67c91e4` (+ `tests/test_audit_regressions.py`,
   17 regression tests). Earlier related fix: `d60f41b` (create_action_dialog
   factory + missing import).
-- **Remaining: 3 medium + 0 low** — open, listed below with suggested fixes.
+- **Remaining: 2 medium + 0 low** — open, listed below with suggested fixes.
   Fixed so far: `ae76d3e` (#8, #9, #11, #22); `0a4a94c` (#20, #21, #26, #27,
   #28). See `tests/test_audit_regressions.py`.
 
@@ -114,7 +114,7 @@ reviewer's initial guess.
   *Fix:* reconstruct each `ThymioSimulator` (like `_create_robots`) or
   explicitly reset led/sound/sensor/timer state and clear dynamic vars.
 
-- [ ] **#15 data-loss — emptying a room then saving resurrects instances.**
+- [x] **#15 data-loss — emptying a room then saving resurrects instances.**
   `core/project_manager.py:512`. `_save_rooms_to_files` treats an empty
   in-memory instances list + non-empty file as "data lost" and rewrites the old
   instances; can't tell "never loaded" from "user emptied it".
