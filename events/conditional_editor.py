@@ -255,6 +255,17 @@ class ConditionalActionEditor(QDialog):
         var_layout.addWidget(self.var_name)
         layout.addLayout(var_layout)
 
+        # Teaching hint: this field is a single variable name, not a formula.
+        # Pasting an expression here is the most common mistake (it silently
+        # compares a non-existent variable). Point students at the right tool.
+        var_hint = QLabel(self.tr(
+            "A single variable name (e.g. vspeed). For a formula like "
+            "\"vspeed > 0 and y < other.y\", set Condition Type to \"expression\"."
+        ))
+        var_hint.setWordWrap(True)
+        var_hint.setStyleSheet("color: gray; font-size: 11px;")
+        layout.addWidget(var_hint)
+
         # Comparison
         compare_layout = QHBoxLayout()
         compare_layout.addWidget(QLabel(self.tr("Is:")))
@@ -426,11 +437,11 @@ class ConditionalActionEditor(QDialog):
         widget = QWidget()
         layout = QVBoxLayout(widget)
 
-        layout.addWidget(QLabel(self.tr("Custom GML Expression:")))
+        layout.addWidget(QLabel(self.tr("Custom Python Expression:")))
         self.expression_edit = QTextEdit()
         self.expression_edit.setMaximumHeight(100)
         self.expression_edit.setPlaceholderText(
-            self.tr("Enter any GML expression that evaluates to true/false\nExample: x > 100 && y < 200")
+            self.tr("Enter any Python expression that evaluates to true/false\nExample: x > 100 and y < 200")
         )
         layout.addWidget(self.expression_edit)
 
@@ -625,6 +636,61 @@ class ConditionalActionEditor(QDialog):
                 self.else_actions.pop(current_row)
 
         self.refresh_action_lists()
+
+    def accept(self):
+        """Validate the condition before closing.
+
+        Two teaching guards, both keep the dialog open so the mistake is fixed
+        rather than silently failing at runtime:
+
+        * ``expression`` — reject C/GML operators (``&&`` / ``||`` / ``!``);
+          conditions are strict Python (``and`` / ``or`` / ``not``).
+        * ``variable_compare`` — the Variable field expects a single variable
+          *name*, not a whole expression. Pasting ``vspeed > 0 and ...`` here
+          makes the runtime read a non-existent attribute (always 0), so the
+          comparison is meaningless. Point the student at the ``expression``
+          condition type instead.
+        """
+        from PySide6.QtWidgets import QMessageBox
+        condition_type = _canonical_value(self.condition_type)
+
+        if condition_type == "expression":
+            from runtime.action_executor import detect_c_style_operators
+            offenders = detect_c_style_operators(self.expression_edit.toPlainText())
+            if offenders:
+                fixes = ", ".join(f"'{found}' → '{py}'" for found, py in offenders)
+                QMessageBox.warning(
+                    self,
+                    self.tr("Use Python operators"),
+                    self.tr(
+                        "This expression uses C-style operators that Python "
+                        "does not understand:\n\n    {fixes}\n\n"
+                        "Please use the Python operators instead "
+                        "(and / or / not), e.g. \"x > 100 and y < 200\"."
+                    ).format(fixes=fixes),
+                )
+                return  # keep the dialog open so the student can fix it
+
+        if condition_type == "variable_compare":
+            variable = self.var_name.text().strip()
+            # A real variable name is a single identifier (optionally dotted,
+            # e.g. other.y). Anything with spaces or operators is an expression
+            # entered in the wrong field.
+            if variable and not all(part.isidentifier() for part in variable.split(".")):
+                QMessageBox.warning(
+                    self,
+                    self.tr("That looks like an expression"),
+                    self.tr(
+                        "The Variable field expects a single variable name "
+                        "(e.g. \"vspeed\"), not a whole expression.\n\n"
+                        "To test something like \"vspeed > 0 and y < other.y\", "
+                        "set Condition Type to \"expression\" and type it in the "
+                        "expression box."
+                    ),
+                )
+                return  # keep the dialog open so the student can fix it
+
+        super().accept()
 
     def get_parameter_values(self) -> Dict[str, Any]:
         """Get all configured parameter values"""
