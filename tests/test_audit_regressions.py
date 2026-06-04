@@ -444,3 +444,44 @@ class TestKivyIfObjectExistsGates:
         })
         code = gen.get_code()
         assert "if not self.scene.object_exists('enemy'):" in code
+
+
+# ============================================================================
+# Room save data-loss (#15 emptying a room must not resurrect instances)
+# ============================================================================
+
+class TestRoomSaveRespectsEmptied:
+    """#15 — _save_rooms_to_files preserved the file's instances whenever the
+    in-memory list was empty, so emptying a room then saving resurrected the
+    old instances. Preservation must only apply to rooms NOT loaded this
+    session (empty == 'not loaded', not 'user emptied it')."""
+
+    def _setup(self, tmp_path):
+        import json
+        from core.project_manager import ProjectManager
+        pm = ProjectManager()
+        rooms_dir = tmp_path / "rooms"
+        rooms_dir.mkdir()
+        # File on disk has one instance.
+        (rooms_dir / "room1.json").write_text(json.dumps(
+            {"name": "room1", "instances": [{"object_name": "obj_a", "x": 0, "y": 0}]}))
+        # In-memory room is now empty (user deleted everything).
+        pm.current_project_data = {"assets": {"rooms": {
+            "room1": {"name": "room1", "instances": []}}}}
+        return pm, tmp_path
+
+    def _saved_instances(self, tmp_path):
+        import json
+        return json.loads((tmp_path / "rooms" / "room1.json").read_text())["instances"]
+
+    def test_emptied_loaded_room_saves_empty(self, tmp_path):
+        pm, path = self._setup(tmp_path)
+        pm._rooms_loaded_this_session = {"room1"}  # was loaded -> empty is authoritative
+        pm._save_rooms_to_files(path)
+        assert self._saved_instances(path) == []
+
+    def test_unloaded_room_preserves_file_instances(self, tmp_path):
+        pm, path = self._setup(tmp_path)
+        pm._rooms_loaded_this_session = set()  # never loaded -> protect against data loss
+        pm._save_rooms_to_files(path)
+        assert len(self._saved_instances(path)) == 1
