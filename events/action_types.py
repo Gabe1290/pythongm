@@ -384,48 +384,6 @@ ACTION_TYPES = {
         ]
     ),
 
-    "play_sound": ActionType(
-        name="play_sound",
-        display_name="Play Sound",
-        description="Play a sound effect",
-        category="Sound",
-        icon="🔊",
-        parameters=[
-            ActionParameter(
-                name="sound",
-                display_name="Sound",
-                param_type="sound",
-                default_value="",
-                description="Sound asset to play"
-            ),
-            ActionParameter(
-                name="loop",
-                display_name="Loop",
-                param_type="boolean",
-                default_value=False,
-                description="Repeat the sound until stopped",
-                required=False
-            )
-        ]
-    ),
-
-    "stop_sound": ActionType(
-        name="stop_sound",
-        display_name="Stop Sound",
-        description="Stop a playing sound effect",
-        category="Sound",
-        icon="🔇",
-        parameters=[
-            ActionParameter(
-                name="sound",
-                display_name="Sound",
-                param_type="sound",
-                default_value="",
-                description="Sound asset to stop"
-            )
-        ]
-    ),
-
     "restart_room": ActionType(
         name="restart_room",
         display_name="Restart Room",
@@ -1688,16 +1646,14 @@ BLOCKLY_TO_ACTION_MAP = {
     "else_action": "else_action",
     "repeat": "repeat",
     "exit_event": "exit_event",
-    # Sound — this dict is keyed by BLOCK_REGISTRY block-name. The play-sound
-    # block is named "sound_play" there, while the action/runtime name is
-    # "play_sound". Keying on the wrong block-name ("play_sound") filtered the
-    # Play Sound action out of the Add Action menu (same block-vs-runtime split
-    # as output_message -> show_message below).
+    # Sound — play_sound / stop_sound are provided by the Audio Actions plugin
+    # (plugins/audio_actions.py), not the static ACTION_TYPES above, but they are
+    # gated here just like built-in actions. This dict is keyed by BLOCK_REGISTRY
+    # block-name ("sound_play" / "sound_stop") while the action/runtime name is
+    # "play_sound" / "stop_sound" — the same block-vs-runtime split as
+    # output_message -> show_message below. Keying on the runtime name pointed at
+    # a block that doesn't exist, gating the action out of the Add Action menu.
     "sound_play": "play_sound",
-    # Stop Sound: registry block-name is "sound_stop"; action/runtime name is
-    # "stop_sound" (same block-vs-runtime split as sound_play above). Keying on
-    # "stop_sound" pointed at a block that doesn't exist, so the action was
-    # gated out of the Add Action menu even when enabled in a preset.
     "sound_stop": "stop_sound",
     # Output — show_message gates on the BLOCK_REGISTRY "output_message" block
     # (the registry uses the block-name, the action uses the runtime-name).
