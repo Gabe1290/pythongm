@@ -11,7 +11,9 @@ This file is the working registry so the cleanup can continue across machines.
 - **Highs (7): all FIXED** in commit `67c91e4` (+ `tests/test_audit_regressions.py`,
   17 regression tests). Earlier related fix: `d60f41b` (create_action_dialog
   factory + missing import).
-- **Remaining: 14 medium + 9 low** — open, listed below with suggested fixes.
+- **Remaining: 11 medium + 8 low** — open, listed below with suggested fixes.
+  Batch in `ae76d3e` fixed #8, #9, #11 (medium) and #22 (low) — see
+  `tests/test_audit_regressions.py`.
 
 Severity reflects the verifier's corrected rating (real impact), not the
 reviewer's initial guess.
@@ -66,13 +68,13 @@ reviewer's initial guess.
 
 ## ⬜ Open — Medium (14)
 
-- [ ] **#8 wrong-behavior — `if_condition` `key_pressed` always false.**
+- [x] **#8 wrong-behavior — `if_condition` `key_pressed` always false.**
   `runtime/action_executor.py:4337`. Reads `getattr(game_runner, 'pressed_keys', set())`
   but the attribute is `keys_pressed` — and even that is only mutated on
   *instances* (`instance.keys_pressed`), never on `game_runner`.
   *Fix:* read `instance.keys_pressed` (keys are lowercase pygame names).
 
-- [ ] **#9 wrong-behavior — `destroy_instance target='object'` no-op in collisions.**
+- [x] **#9 wrong-behavior — `destroy_instance target='object'` no-op in collisions.**
   `runtime/action_executor.py:4622`. `handle_collision_action` inlines only
   `self`/`other`; `object` falls through and returns None.
   *Fix:* delegate any non-self/other target to `execute_action`
@@ -86,7 +88,7 @@ reviewer's initial guess.
   stable per-instance id. (Note: cross-room load branch stashes
   `_load_instances`/`_load_room_name` that nothing reads — separate gap.)
 
-- [ ] **#11 wrong-behavior — `repeat` dropped inside collision events.**
+- [x] **#11 wrong-behavior — `repeat` dropped inside collision events.**
   `runtime/action_executor.py:4550`. `_execute_collision_action_list_inner`
   lacks the `repeat` flow-control branch the normal loop has (line ~233), so it
   becomes "Unknown action" and the block runs once.
@@ -163,7 +165,7 @@ reviewer's initial guess.
 
 ## ⬜ Open — Low (9)
 
-- [ ] **#22 — `if_object_exists` counts to-be-destroyed instances.**
+- [x] **#22 — `if_object_exists` counts to-be-destroyed instances.**
   `runtime/action_executor.py:1476`. Missing `and not getattr(inst,'to_destroy',False)`
   that `test_instance_count` and the `instance_count` condition both have →
   one-frame lag on "level cleared" gating. *Fix:* add the filter.
