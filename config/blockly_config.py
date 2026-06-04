@@ -114,6 +114,7 @@ BLOCK_REGISTRY: Dict[str, List[Dict]] = {
     ],
     "Sound": [
         {"type": "sound_play", "name": "Play Sound", "description": "Play sound effect", "implemented": True},
+        {"type": "sound_stop", "name": "Stop Sound", "description": "Stop a sound effect", "implemented": True},
         {"type": "music_play", "name": "Play Music", "description": "Play background music", "implemented": True},
         {"type": "music_stop", "name": "Stop Music", "description": "Stop music", "implemented": True},
     ],
@@ -478,6 +479,7 @@ class BlocklyConfig:
 
         # Sound
         config.enable_block("sound_play")
+        config.enable_block("sound_stop")
         config.enable_block("music_play")
         config.enable_block("music_stop")
 
@@ -529,6 +531,7 @@ class BlocklyConfig:
 
         # Sound
         config.enable_block("sound_play")
+        config.enable_block("sound_stop")
         config.enable_block("music_play")
 
         config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Sound"}
@@ -575,6 +578,7 @@ class BlocklyConfig:
 
         # Sound
         config.enable_block("sound_play")
+        config.enable_block("sound_stop")
         config.enable_block("music_play")
 
         config.enabled_categories = {"Events", "Movement", "Score/Lives/Health", "Instance", "Room", "Output", "Sound"}
@@ -728,6 +732,7 @@ class BlocklyConfig:
 
         # Phase 2 Sound
         # config.enable_block("sound_play")
+        # config.enable_block("sound_stop")
         # config.enable_block("music_play")
         # config.enable_block("music_stop")
 
@@ -915,6 +920,7 @@ class BlocklyConfig:
         # SOUND
         # =====================================================================
         config.enable_block("sound_play")           # play_sound
+        config.enable_block("sound_stop")           # stop_sound
         config.enable_block("music_play")           # play_music
         config.enable_block("music_stop")           # stop_music
 
@@ -1052,6 +1058,7 @@ class BlocklyConfig:
         # SOUND
         # =====================================================================
         config.enable_block("sound_play")
+        config.enable_block("sound_stop")
         config.enable_block("music_play")
         config.enable_block("music_stop")
 
