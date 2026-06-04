@@ -19,6 +19,7 @@ from conftest import import_module_directly, skip_without_pygame
 # This avoids the pygame dependency from game_runner.py
 _action_executor_module = import_module_directly("runtime/action_executor.py")
 ActionExecutor = _action_executor_module.ActionExecutor
+detect_c_style_operators = _action_executor_module.detect_c_style_operators
 
 
 class MockInstance:
@@ -997,6 +998,115 @@ class TestExpressionEvaluation:
 
         result = executor._evaluate_expression("x + 50", instance)
         assert result == 150.0
+
+
+class TestTestExpressionAction:
+    """Regression tests for execute_test_expression_action.
+
+    Reproduces the obj_pingus "land on monster" bug: the condition
+    "vspeed > 0 and y < other.y+8" returned False because `other` was missing
+    from the eval namespace (NameError, swallowed by the bare except). Also
+    pins the strict-Python contract: `and`/`or`/`not` work, C/GML `&&`/`||`
+    do not (this project teaches Python).
+    """
+
+    def test_and_operator_with_other(self):
+        """Python `and` and collision `other` both resolve (pingus lands on monster)"""
+        executor = ActionExecutor()
+        pingus = MockInstance("obj_pingus")
+        pingus.y = 100.0
+        pingus.vspeed = 4.0  # falling
+        monster = MockInstance("obj_monstre")
+        monster.y = 110.0
+        executor._collision_other = monster
+
+        # Falling and above the monster -> monster dies
+        assert executor.execute_test_expression_action(
+            pingus, {"expression": "vspeed > 0 and y < other.y+8"}) is True
+
+    def test_and_operator_rising(self):
+        """Rising into the monster (vspeed<0) -> condition False (pingus dies)"""
+        executor = ActionExecutor()
+        pingus = MockInstance("obj_pingus")
+        pingus.y = 120.0
+        pingus.vspeed = -4.0  # rising
+        monster = MockInstance("obj_monstre")
+        monster.y = 110.0
+        executor._collision_other = monster
+
+        assert executor.execute_test_expression_action(
+            pingus, {"expression": "vspeed > 0 and y < other.y+8"}) is False
+
+    def test_or_operator(self):
+        """Python `or` is supported"""
+        executor = ActionExecutor()
+        inst = MockInstance()
+        inst.vspeed = 4.0
+        assert executor.execute_test_expression_action(
+            inst, {"expression": "vspeed < 0 or vspeed > 0"}) is True
+
+    def test_gml_operators_rejected(self):
+        """Strict Python: C/GML `&&` is a SyntaxError -> treated as False, not translated"""
+        executor = ActionExecutor()
+        inst = MockInstance()
+        inst.vspeed = 4.0
+        # `vspeed > 0` alone is True, but `&&` makes the whole thing invalid
+        # Python, so the expression must NOT silently pass.
+        assert executor.execute_test_expression_action(
+            inst, {"expression": "vspeed > 0 && vspeed > 0"}) is False
+
+    def test_gml_operator_emits_warning(self):
+        """Using `&&` logs a teach-Python warning naming the fix (`and`)"""
+        import logging
+        executor = ActionExecutor()
+        inst = MockInstance()
+
+        # This project's logger doesn't propagate to root, so attach a capturing
+        # handler directly to the module logger rather than relying on caplog.
+        records = []
+
+        class _Capture(logging.Handler):
+            def emit(self, record):
+                records.append(record.getMessage())
+
+        module_logger = _action_executor_module.logger
+        handler = _Capture()
+        module_logger.addHandler(handler)
+        try:
+            executor.execute_test_expression_action(
+                inst, {"expression": "vspeed > 0 && y > 0"})
+        finally:
+            module_logger.removeHandler(handler)
+
+        msgs = " ".join(records)
+        assert "&&" in msgs and "'and'" in msgs
+
+
+class TestDetectCStyleOperators:
+    """Unit tests for the detect_c_style_operators helper"""
+
+    def test_detects_and(self):
+        assert detect_c_style_operators("a && b") == [("&&", "and")]
+
+    def test_detects_or(self):
+        assert detect_c_style_operators("a || b") == [("||", "or")]
+
+    def test_detects_not(self):
+        assert detect_c_style_operators("!flag") == [("!", "not")]
+
+    def test_detects_multiple(self):
+        assert detect_c_style_operators("!a && b || c") == [
+            ("&&", "and"), ("||", "or"), ("!", "not")]
+
+    def test_not_equal_is_valid_python(self):
+        """`!=` must NOT be flagged — it's valid Python"""
+        assert detect_c_style_operators("vspeed != 0") == []
+
+    def test_clean_python_expression(self):
+        assert detect_c_style_operators("vspeed > 0 and y < other.y") == []
+
+    def test_empty(self):
+        assert detect_c_style_operators("") == []
 
 
 # ==============================================================================
