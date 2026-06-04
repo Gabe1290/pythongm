@@ -1498,7 +1498,11 @@ class ActionExecutor:
         count = 0
         if self.game_runner and self.game_runner.current_room:
             for room_instance in self.game_runner.current_room.instances:
-                if room_instance.object_name == object_type:
+                # Skip instances already marked for destruction this frame, so
+                # "level cleared" gating doesn't lag a frame behind the kill
+                # (matches test_instance_count / the instance_count condition).
+                if (room_instance.object_name == object_type
+                        and not getattr(room_instance, 'to_destroy', False)):
                     count += 1
                     exists = True
 
@@ -4365,10 +4369,13 @@ class ActionExecutor:
 
         elif condition_type == "key_pressed":
             key = parameters.get("key", "")
-            if not key or not self.game_runner:
+            if not key:
                 return False
-            pressed_keys = getattr(self.game_runner, 'pressed_keys', set())
-            return key.lower() in pressed_keys
+            # Held keys are tracked per-instance (instance.keys_pressed), not on
+            # game_runner — which has no `pressed_keys` attribute at all, so the
+            # old getattr default made this condition always false. Stored names
+            # are lowercase pygame key names (e.g. "space", "right").
+            return key.lower() in getattr(instance, 'keys_pressed', set())
 
         elif condition_type == "collision_check":
             obj = parameters.get("object", "")
@@ -4627,6 +4634,15 @@ class ActionExecutor:
                 i += 1
                 continue
 
+            # Handle repeat action specially (mirror the normal action loop).
+            # Without this, "repeat" was an unknown action in collision events and
+            # the following action(s) ran once. The repeated actions run through
+            # the standard executor (no `other` context), which matches the
+            # normal-loop semantics.
+            if action_name == "repeat":
+                i = self._handle_repeat_action(instance, actions, i, action_data)
+                continue
+
             # Execute the action
             result = self.handle_collision_action(instance, action_data, other_instance)
 
@@ -4657,9 +4673,15 @@ class ActionExecutor:
 
             if target in ("self", "sel"):
                 instance.to_destroy = True
+                return None
             elif target == "other":
                 other_instance.to_destroy = True
-            return None
+                return None
+            # target == "object" (or an explicit object name) is not a
+            # collision-local reference — delegate to the standard handler,
+            # which destroys all instances of that object type. Falling through
+            # the old self/other-only branch made it a silent no-op.
+            return self.execute_action(instance, action_data)
         else:
             # For all other actions, use the regular action executor
             return self.execute_action(instance, action_data)
