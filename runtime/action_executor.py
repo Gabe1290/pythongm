@@ -2773,10 +2773,17 @@ class ActionExecutor:
         if not self.game_runner or not self.game_runner.current_room:
             return
 
-        # Match saved instances with current instances by object name and approximate position
+        # Match each saved instance to a DISTINCT current instance of the same
+        # object. Without consuming matched instances, every saved instance of a
+        # given object restored onto the first one in the room, so rooms with N
+        # same-object instances collapsed to a single restored state.
+        consumed = set()
         for inst_data in instances_data:
             for inst in self.game_runner.current_room.instances:
+                if id(inst) in consumed:
+                    continue
                 if inst.object_name == inst_data.get('object_name'):
+                    consumed.add(id(inst))
                     # Restore position and state
                     inst.x = inst_data.get('x', inst.x)
                     inst.y = inst_data.get('y', inst.y)
