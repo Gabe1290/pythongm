@@ -11,7 +11,7 @@ This file is the working registry so the cleanup can continue across machines.
 - **Highs (7): all FIXED** in commit `67c91e4` (+ `tests/test_audit_regressions.py`,
   17 regression tests). Earlier related fix: `d60f41b` (create_action_dialog
   factory + missing import).
-- **Remaining: 2 medium + 0 low** — open, listed below with suggested fixes.
+- **Remaining: 1 medium + 0 low** — open, listed below with suggested fixes.
   Fixed so far: `ae76d3e` (#8, #9, #11, #22); `0a4a94c` (#20, #21, #26, #27,
   #28). See `tests/test_audit_regressions.py`.
 
@@ -94,7 +94,7 @@ reviewer's initial guess.
   becomes "Unknown action" and the block runs once.
   *Fix:* mirror `_handle_repeat_action` handling into the collision loop.
 
-- [ ] **#12 off-by-one — pixel-perfect collision mask offset wrong.**
+- [x] **#12 off-by-one — pixel-perfect collision mask offset wrong.**
   `runtime/game_runner.py:3674` (and ~3726). `_precise_refine` gets bbox-in-world
   coords but masks are full-frame, so the overlap offset is off by
   `(bbox_left2-bbox_left1, bbox_top2-bbox_top1)` — false hits/misses for mixed
