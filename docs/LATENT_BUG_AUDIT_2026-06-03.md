@@ -11,7 +11,7 @@ This file is the working registry so the cleanup can continue across machines.
 - **Highs (7): all FIXED** in commit `67c91e4` (+ `tests/test_audit_regressions.py`,
   17 regression tests). Earlier related fix: `d60f41b` (create_action_dialog
   factory + missing import).
-- **Remaining: 9 medium + 5 low** — open, listed below with suggested fixes.
+- **Remaining: 8 medium + 3 low** — open, listed below with suggested fixes.
   Fixed so far: `ae76d3e` (#8, #9, #11, #22); `0a4a94c` (#20, #21, #26, #27,
   #28). See `tests/test_audit_regressions.py`.
 
@@ -180,7 +180,7 @@ reviewer's initial guess.
   `event.isAutoRepeat()` check → held key fires the button event tens of
   times/sec. *Fix:* ignore auto-repeat in keyPress/keyRelease.
 
-- [ ] **#25 — `reload_plugins` doesn't unregister prior plugin actions/events.**
+- [x] **#25 — `reload_plugins` doesn't unregister prior plugin actions/events.**
   `events/plugin_loader.py:186`. Stale entries persist in global
   `ACTION_TYPES`/`EVENT_TYPES`; edited defs ignored (name-skip). **No callers
   today** (dead path). *Fix:* track per-plugin registered names and pop them,
@@ -209,7 +209,7 @@ reviewer's initial guess.
   bridged. *Fix:* feed the editor value into `set_auto_save` (reconcile units),
   or remove the dead control.
 
-- [ ] **#30 — `OpenProjectDialog.accept_project` refs nonexistent widgets.**
+- [x] **#30 — `OpenProjectDialog.accept_project` refs nonexistent widgets.**
   `dialogs/project_dialogs.py:217`. Reads `project_name_edit`/`description_edit`
   never created in this class → AttributeError on OK. **Dead code** (IDE uses
   `QFileDialog`). *Fix:* rewrite to use `project_path_edit`, or delete the class.

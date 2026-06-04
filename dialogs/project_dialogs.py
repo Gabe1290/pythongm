@@ -137,118 +137,6 @@ class NewProjectDialog(QDialog):
         return self.project_data
 
 
-class OpenProjectDialog(QDialog):
-    """Open Project Dialog"""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.project_data = {}
-        self.parent_ide = parent
-        self.selected_project_path = None
-
-        self.setWindowTitle(self.tr("Open Project"))
-        self.setModal(True)
-        self.resize(600, 500)
-
-        self.setup_ui()
-        self.load_settings()
-
-    def setup_ui(self):
-        layout = QVBoxLayout(self)
-
-        recent_group = QGroupBox(self.tr("Recent Projects"))
-        recent_layout = QVBoxLayout(recent_group)
-
-        self.recent_projects_list = QListWidget()
-        self.recent_projects_list.itemDoubleClicked.connect(self.open_selected_project)
-        recent_layout.addWidget(self.recent_projects_list)
-        layout.addWidget(recent_group)
-
-        browse_group = QGroupBox(self.tr("Browse for Project"))
-        browse_layout = QHBoxLayout(browse_group)
-
-        self.project_path_edit = QLineEdit()
-        self.project_path_edit.setPlaceholderText(self.tr("Select project file..."))
-
-        self.browse_button = QPushButton(self.tr("Browse..."))
-        self.browse_button.clicked.connect(self.browse_project)
-
-        browse_layout.addWidget(self.project_path_edit)
-        browse_layout.addWidget(self.browse_button)
-        layout.addWidget(browse_group)
-
-        button_box = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
-        button_box.accepted.connect(self.accept_project)
-        button_box.rejected.connect(self.reject)
-        layout.addWidget(button_box)
-
-    def load_settings(self):
-        try:
-            from utils.config import Config
-            recent_projects = Config.get_recent_projects()
-
-            for project_path in recent_projects:
-                if Path(project_path).exists():
-                    project_name = Path(project_path).name
-                    self.recent_projects_list.addItem(f"{project_name} - {project_path}")
-
-            print("✅ Recent projects loaded")
-        except Exception as e:
-            print(f"⚠️  Error loading recent projects: {e}")
-
-    def browse_project(self):
-        file_path, _ = QFileDialog.getOpenFileName(
-            self, self.tr("Open PyGameMaker Project"), str(documents_dir()),
-            self.tr("PyGameMaker Projects (*.json);;All Files (*)")
-        )
-        if file_path:
-            self.project_path_edit.setText(file_path)
-
-    def open_selected_project(self, item):
-        text = item.text()
-        if " - " in text:
-            project_path = text.split(" - ", 1)[1]
-            self.project_path_edit.setText(project_path)
-
-    def accept_project(self):
-        """Handle project creation - COMPLETE FIX with ALL expected keys"""
-        project_name = self.project_name_edit.text().strip()
-        project_path = self.project_path_edit.text().strip()
-
-        if not project_name:
-            QMessageBox.warning(self, self.tr("Invalid Input"), self.tr("Please enter a project name."))
-            return
-
-        if not project_path:
-            QMessageBox.warning(self, self.tr("Invalid Input"), self.tr("Please choose a project location."))
-            return
-
-        # Store ALL expected project information
-        self.project_data = {
-            "name": project_name,
-            "path": project_path,
-            "location": project_path,  # IDE expects both path and location
-            "description": self.description_edit.toPlainText(),
-            "template": "Empty Project",  # FIX: Add missing template key
-            "project_type": "2D Game",
-            "target_platform": "Desktop",
-            "create_folder": True,
-            "version": "1.0.0",
-            "author": "",
-            "copyright": ""
-        }
-
-        self.accept()
-
-    def get_project_info(self):
-        return {
-            "path": self.selected_project_path,
-            "data": self.project_data
-        }
-
-
 class ProjectSettingsDialog(QDialog):
     """Project Settings Dialog"""
 
@@ -872,7 +760,6 @@ class BuildProjectDialog(QDialog):
 # Export ALL possible dialog classes to prevent ANY import errors
 __all__ = [
     'NewProjectDialog',
-    'OpenProjectDialog',
     'ProjectSettingsDialog',
     'ExportProjectDialog',
     'BuildProjectDialog'

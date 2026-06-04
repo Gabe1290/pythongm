@@ -12,7 +12,6 @@ from .auto_save_dialog import AutoSaveSettingsDialog
 from .project_dialogs import (
     NewProjectDialog,
     ProjectSettingsDialog,
-    OpenProjectDialog,
     ExportProjectDialog
 )
 
@@ -30,7 +29,6 @@ __all__ = [
     'PreferencesDialog',
     'AutoSaveSettingsDialog',
     'ProjectSettingsDialog',
-    'OpenProjectDialog',
     'ExportProjectDialog',
     'ImportAssetsDialog',
     'ThymioEventSelector',

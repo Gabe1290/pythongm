@@ -183,20 +183,6 @@ class PluginLoader:
         """Get information about all loaded plugins"""
         return self.loaded_plugins.copy()
 
-    def reload_plugins(self, plugin_dir: Path):
-        """Reload all plugins from directory
-
-        Warning: This may cause issues with already-created actions.
-        Use with caution during development only.
-        """
-        # Clear previously loaded plugins
-        self.loaded_plugins.clear()
-        self.plugin_modules.clear()
-
-        # Reload
-        return self.load_plugins_from_directory(plugin_dir)
-
-
 def get_plugin_directory() -> Path:
     """Get the default plugin directory"""
     # Look for plugins directory next to this file
