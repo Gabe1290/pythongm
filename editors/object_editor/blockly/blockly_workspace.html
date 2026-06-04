@@ -1742,9 +1742,13 @@
             'room_goto_previous': 'room_goto_previous',  // Alias for GM naming convention
             'goto_room': 'room_goto',
             'room_goto': 'room_goto',  // Alias for GM naming convention
-            'play_sound': 'sound_play',
-            'play_music': 'music_play',
-            'stop_music': 'music_stop',
+            // Audio actions (play_sound, stop_sound, play_music, stop_music,
+            // set_volume) are intentionally NOT mapped here. They are owned by
+            // the Audio Actions plugin and auto-generate into a single "Audio"
+            // toolbox category via registerCustomBlocks — matching the action
+            // list editor and keeping them available in every preset. The legacy
+            // sound_play/music_play/music_stop block DEFINITIONS are kept (in
+            // blockly_blocks.js + generators) so older saved workspaces still load.
             'show_message': 'output_message',
             'set_alarm': 'set_alarm',
             'draw_text': 'draw_text',
@@ -2694,14 +2698,12 @@
                         '<block type="value_mouse_y"></block>'
                     ]
                 },
-                'Sound': {
-                    color: '#9966FF',
-                    blocks: [
-                        '<block type="sound_play"></block>',
-                        '<block type="music_play"></block>',
-                        '<block type="music_stop"></block>'
-                    ]
-                },
+                // NOTE: audio blocks are no longer hardcoded here. play_sound,
+                // stop_sound, play_music, stop_music and set_volume auto-generate
+                // into a single always-visible "Audio" category (see
+                // registerCustomBlocks), so both editors expose the same set in
+                // every preset. Legacy sound_play/music_play/music_stop block
+                // definitions remain in blockly_blocks.js for loading old saves.
                 'Output': {
                     color: '#745CA6',
                     blocks: [
@@ -2819,6 +2821,7 @@
                 'Instance': '#A65C81',
                 'Room': '#A6745C',
                 'Sound': '#9966FF',
+                'Audio': '#9966FF',
                 'Timing': '#FF6B6B',
                 'Output': '#745CA6'
             };
