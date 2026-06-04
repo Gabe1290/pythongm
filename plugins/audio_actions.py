@@ -40,6 +40,23 @@ PLUGIN_ACTIONS = {
         ]
     ),
 
+    "stop_sound": ActionType(
+        name="stop_sound",
+        display_name="Stop Sound",
+        description="Stop a playing sound effect",
+        category="Audio",
+        icon="🔕",
+        parameters=[
+            ActionParameter(
+                name="sound",
+                display_name="Sound",
+                param_type="sound",
+                default_value="",
+                description="Sound to stop"
+            )
+        ]
+    ),
+
     "play_music": ActionType(
         name="play_music",
         display_name="Play Music",
