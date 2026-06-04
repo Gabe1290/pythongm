@@ -78,6 +78,23 @@ Copyright (C) 2024-2025 Gabriel Thullen</translation>
 </context>
 <context>
     <name>ActionConfigDialog</name>
+        <message>
+            <source>Use Python operators</source>
+            <translation>Utilisez les opérateurs Python</translation>
+        </message>
+        <message>
+            <source>This expression uses C-style operators that Python does not understand:
+
+    {fixes}
+
+Please use the Python operators instead (and / or / not), e.g. "vspeed &gt; 0 and y &lt; other.y".</source>
+            <translation>Cette expression utilise des opérateurs de style C que Python ne comprend pas :
+
+    {fixes}
+
+Utilisez plutôt les opérateurs Python (and / or / not), par exemple "vspeed &gt; 0 and y &lt; other.y".</translation>
+        </message>
+
     <message>
         <location filename="../events/action_editor.py" line="47"/>
         <source>Configure {0}</source>
@@ -1284,6 +1301,49 @@ Voulez-vous enregistrer quand même ?</translation>
 </context>
 <context>
     <name>ConditionalActionEditor</name>
+        <message>
+            <source>Custom Python Expression:</source>
+            <translation>Expression Python personnalisée :</translation>
+        </message>
+        <message>
+            <source>Enter any Python expression that evaluates to true/false
+Example: x &gt; 100 and y &lt; 200</source>
+            <translation>Entrez une expression Python qui s'évalue à vrai/faux
+Exemple : x &gt; 100 and y &lt; 200</translation>
+        </message>
+        <message>
+            <source>Use Python operators</source>
+            <translation>Utilisez les opérateurs Python</translation>
+        </message>
+        <message>
+            <source>This expression uses C-style operators that Python does not understand:
+
+    {fixes}
+
+Please use the Python operators instead (and / or / not), e.g. "x &gt; 100 and y &lt; 200".</source>
+            <translation>Cette expression utilise des opérateurs de style C que Python ne comprend pas :
+
+    {fixes}
+
+Utilisez plutôt les opérateurs Python (and / or / not), par exemple "x &gt; 100 and y &lt; 200".</translation>
+        </message>
+        <message>
+            <source>That looks like an expression</source>
+            <translation>Cela ressemble à une expression</translation>
+        </message>
+        <message>
+            <source>The Variable field expects a single variable name (e.g. "vspeed"), not a whole expression.
+
+To test something like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to "expression" and type it in the expression box.</source>
+            <translation>Le champ Variable attend un seul nom de variable (par exemple "vspeed"), pas une expression complète.
+
+Pour tester quelque chose comme "vspeed &gt; 0 and y &lt; other.y", réglez le Type de condition sur "expression" et saisissez-le dans la zone d'expression.</translation>
+        </message>
+        <message>
+            <source>A single variable name (e.g. vspeed). For a formula like "vspeed &gt; 0 and y &lt; other.y", set Condition Type to "expression".</source>
+            <translation>Un seul nom de variable (par exemple vspeed). Pour une formule comme "vspeed &gt; 0 and y &lt; other.y", réglez le Type de condition sur "expression".</translation>
+        </message>
+
     <message>
         <location filename="../events/conditional_editor.py" line="27"/>
         <source>Configure If Condition</source>
