@@ -710,10 +710,12 @@ class RoomEditor(FloatableEditorMixin, QWidget):
     def cut_instance(self):
         """Cut selected instance(s)"""
         if hasattr(self.room_canvas, 'cut_selected_instances'):
+            # Capture the count BEFORE the cut empties the selection, otherwise
+            # the status always reported "Cut 0 instance(s)".
+            count = self.room_canvas.get_selected_count()
             if self.room_canvas.cut_selected_instances():
                 self.paste_action.setEnabled(True)
                 self.mark_modified()
-                count = self.room_canvas.get_selected_count()
                 self.update_status(self.tr("Cut {0} instance(s) to clipboard").format(count))
 
     def copy_instance(self):

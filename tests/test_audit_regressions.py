@@ -324,3 +324,34 @@ class TestIfObjectExistsSkipsToDestroy:
         executor = ActionExecutor(game_runner=runner)
         assert executor.execute_if_object_exists_action(
             MockInstance(), {"object": "enemy"}) is True
+
+
+# ============================================================================
+# Simple independent fixes (#21, #26)  [#20/#27/#28 are Qt-widget paths]
+# ============================================================================
+
+class TestThymioPresetEnablesElseAction:
+    """#21 — the thymio preset called enable_block("else") instead of the
+    canonical "else_action", so the Else block never appeared in its toolbox."""
+
+    def test_thymio_preset_has_else_action_block(self):
+        from config.blockly_config import BlocklyConfig
+        cfg = BlocklyConfig.get_thymio()
+        assert "else_action" in cfg.enabled_blocks
+        assert "else" not in cfg.enabled_blocks
+
+
+class TestMissingFileFlagSurvivesImportMigration:
+    """#26 — load_assets_from_project_data flipped imported back to True right
+    after _validate_asset_paths flagged a missing file, hiding the breakage."""
+
+    def test_missing_file_stays_flagged(self, tmp_path):
+        from core.asset_manager import AssetManager
+        mgr = AssetManager(project_directory=tmp_path)
+        project_data = {"assets": {"sprites": {
+            "spr_missing": {"file_path": "does_not_exist.png", "imported": True},
+        }}}
+        mgr.load_assets_from_project_data(project_data)
+        asset = mgr.assets_cache["sprites"]["spr_missing"]
+        assert asset.get("file_missing") is True
+        assert asset.get("imported") is False

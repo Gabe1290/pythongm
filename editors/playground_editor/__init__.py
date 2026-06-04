@@ -4,6 +4,7 @@ Playground Editor - Main class
 Visual editor for creating Aseba .playground files.
 """
 
+import copy
 import json
 import shutil
 from pathlib import Path
@@ -254,8 +255,10 @@ class PlaygroundEditor(FloatableEditorMixin, QWidget):
         self.ground_texture_filename = arena.get('ground_texture', '') or ''
         self._load_ground_texture()
 
-        # Colors
-        colors = data.get('colors', list(DEFAULT_COLORS))
+        # Colors. deepcopy the fallback: list(DEFAULT_COLORS) copies the list but
+        # shares the element dicts, so editing a color when the playground lacked
+        # a 'colors' key would mutate the module-global DEFAULT_COLORS process-wide.
+        colors = data.get('colors') or copy.deepcopy(DEFAULT_COLORS)
         self.canvas.set_colors(colors)
         self.color_manager.set_colors(colors)
         names = self.color_manager.get_color_names()

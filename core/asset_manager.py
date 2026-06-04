@@ -723,8 +723,11 @@ class AssetManager(QObject):
             for asset_name, asset_data in assets_of_type.items():
                 self._validate_asset_paths(asset_data)
                 # Migration fix: Assets that exist in the project should be marked as imported
-                # This fixes older projects where assets were incorrectly saved with imported=False
-                if not asset_data.get('imported', False):
+                # This fixes older projects where assets were incorrectly saved with imported=False.
+                # Skip assets _validate_asset_paths just flagged file_missing, otherwise this
+                # immediately undoes that flag and a broken asset is shown as present.
+                if (not asset_data.get('imported', False)
+                        and not asset_data.get('file_missing', False)):
                     asset_data['imported'] = True
 
     def save_assets_to_project_data(self, project_data: Dict[str, Any]) -> None:
