@@ -470,8 +470,12 @@ class RoomCanvas(QWidget):
         self.undo_stack.push(command)
 
         if pasted_instances:
-            self.selected_instance = pasted_instances[0]
-            self.instance_selected.emit(self.selected_instance)
+            # Select the pasted instances. The canvas tracks selection in
+            # `selected_instances` (plural); the old `selected_instance` was a
+            # dead attribute, so pasted items weren't selected and Delete hit the
+            # previous selection. Mirror duplicate_selected_instances().
+            self.selected_instances = list(pasted_instances)
+            self.instance_selected.emit(self.selected_instances[0])
 
         self.update()
         logger.debug(f"Pasted {len(pasted_instances)} instance(s)")

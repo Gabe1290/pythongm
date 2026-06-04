@@ -648,7 +648,7 @@ class BlocklyConfig:
         # Add control flow blocks for conditionals
         config.enable_block("start_block")
         config.enable_block("end_block")
-        config.enable_block("else")
+        config.enable_block("else_action")  # canonical block name (was "else", which matches no block)
 
         return config
 
