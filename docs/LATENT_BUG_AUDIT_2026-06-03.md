@@ -11,7 +11,7 @@ This file is the working registry so the cleanup can continue across machines.
 - **Highs (7): all FIXED** in commit `67c91e4` (+ `tests/test_audit_regressions.py`,
   17 regression tests). Earlier related fix: `d60f41b` (create_action_dialog
   factory + missing import).
-- **Remaining: 6 medium + 2 low** — open, listed below with suggested fixes.
+- **Remaining: 5 medium + 2 low** — open, listed below with suggested fixes.
   Fixed so far: `ae76d3e` (#8, #9, #11, #22); `0a4a94c` (#20, #21, #26, #27,
   #28). See `tests/test_audit_regressions.py`.
 
@@ -121,7 +121,7 @@ reviewer's initial guess.
   *Fix:* track a per-room `instances_loaded` flag; only preserve when never
   loaded this session.
 
-- [ ] **#16 data-loss — GMK import: `repeat` loses its count.**
+- [x] **#16 data-loss — GMK import: `repeat` loses its count.**
   `importers/gmk_converter.py:566`. The `action_kind` dispatch (`5:"repeat"`)
   returns `parameters={}` before the ID-based path that knows
   `GM_ACTION_PARAMS[(1,324)]=["times"]`. Runtime default makes it run once.
@@ -129,7 +129,7 @@ reviewer's initial guess.
   or special-case kind 5 to copy `argument_values[0]` into `times`.
   (No bundled sample .gmk currently uses repeat.)
 
-- [ ] **#17 wrong-behavior — GMK room instances use `object` key; rename misses them.**
+- [x] **#17 wrong-behavior — GMK room instances use `object` key; rename misses them.**
   `importers/gmk_converter.py:737`. Writes `{"object": name}`; `asset_manager`
   rename only updates `object_name`. After a rename (without re-saving the room
   in the editor, which normalizes the key) the placement points at a missing
