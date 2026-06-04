@@ -1742,6 +1742,12 @@
             'room_goto_previous': 'room_goto_previous',  // Alias for GM naming convention
             'goto_room': 'room_goto',
             'room_goto': 'room_goto',  // Alias for GM naming convention
+            // Map the conditional room actions to their hardcoded blocks so
+            // registerCustomBlocks doesn't ALSO auto-generate custom_* duplicates
+            // (the auto-gen versions can't hold an action_list, and they appeared
+            // twice in the toolbox alongside these proper DO-input blocks).
+            'if_next_room_exists': 'room_if_next_exists',
+            'if_previous_room_exists': 'room_if_previous_exists',
             // Audio actions (play_sound, stop_sound, play_music, stop_music,
             // set_volume) are intentionally NOT mapped here. They are owned by
             // the Audio Actions plugin and auto-generate into a single "Audio"
@@ -2293,6 +2299,13 @@
 
                 case 'room_goto':
                     if (params.room) block.setFieldValue(params.room, 'ROOM');
+                    break;
+
+                case 'room_if_next_exists':
+                case 'room_if_previous_exists':
+                    // Conditional room blocks have a single DO statement input
+                    // holding the then_actions (see blockly_generators.js).
+                    attachSubActionsToBlock(block, params.then_actions || []);
                     break;
 
                 case 'sound_play':
