@@ -11,7 +11,7 @@ This file is the working registry so the cleanup can continue across machines.
 - **Highs (7): all FIXED** in commit `67c91e4` (+ `tests/test_audit_regressions.py`,
   17 regression tests). Earlier related fix: `d60f41b` (create_action_dialog
   factory + missing import).
-- **Remaining: 5 medium + 2 low** — open, listed below with suggested fixes.
+- **Remaining: 3 medium + 0 low** — open, listed below with suggested fixes.
   Fixed so far: `ae76d3e` (#8, #9, #11, #22); `0a4a94c` (#20, #21, #26, #27,
   #28). See `tests/test_audit_regressions.py`.
 
@@ -135,14 +135,14 @@ reviewer's initial guess.
   in the editor, which normalizes the key) the placement points at a missing
   object. *Fix:* emit canonical `object_name`, or make rename check both keys.
 
-- [ ] **#18 wrong-behavior — Kivy export drops `if_object_exists`.**
+- [x] **#18 wrong-behavior — Kivy export drops `if_object_exists`.**
   `export/Kivy/code_generator.py:650`. No `process_action` branch → falls to a
   bare expression statement; gated actions (e.g. `set_lives`, `restart_room`)
   run unconditionally. *Fix:* add an `if_object_exists` branch that opens an
   `if` block (honor `negate`/count), mirroring `if_condition`. (Also note a
   `negate` vs `not_flag` param-key mismatch vs runtime.)
 
-- [ ] **#19 race — Blockly `_loading` guard cleared synchronously.**
+- [x] **#19 race — Blockly `_loading` guard cleared synchronously.**
   `editors/object_editor/blockly_widget.py:369`. `load_workspace_xml` sets
   `_loading=False` right after the async `runJavaScript`, so load-time change
   events aren't suppressed → spurious dirty state + sync round-trip.
@@ -170,7 +170,7 @@ reviewer's initial guess.
   that `test_instance_count` and the `instance_count` condition both have →
   one-frame lag on "level cleared" gating. *Fix:* add the filter.
 
-- [ ] **#23 — circle-LED color double-scaled.**
+- [x] **#23 — circle-LED color double-scaled.**
   `runtime/thymio_renderer.py:295`. `_render_leds` pre-scales 0-32→0-255, then
   `_draw_led`'s "all ≤32" heuristic rescales again → non-monotonic brightness
   at low intensity. *Fix:* pass raw 0-32 and scale once, or drop the heuristic.
@@ -203,7 +203,7 @@ reviewer's initial guess.
   the cut empties the selection → status shows "Cut 0 instance(s)". *Fix:*
   capture the count before `cut_selected_instances()`.
 
-- [ ] **#29 — Preferences auto-save interval never applied.**
+- [x] **#29 — Preferences auto-save interval never applied.**
   `dialogs/preferences_dialog.py:377`. Persists `editor.auto_save_interval`
   (minutes) but the timer reads top-level `auto_save_interval` (seconds); never
   bridged. *Fix:* feed the editor value into `set_auto_save` (reconcile units),
