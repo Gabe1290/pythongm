@@ -1055,32 +1055,13 @@ ACTION_TYPES = {
     # restart_room, next_room, previous_room are defined above as the canonical names.
     # Legacy aliases (room_restart, room_goto_next, room_goto_previous) are handled
     # through ACTION_TYPE_ALIASES so older project JSON still loads in the dialog.
-
-    "room_goto": ActionType(
-        name="room_goto",
-        display_name="Go to Room",
-        description="Go to a specific room",
-        category="Room",
-        icon="🚪",
-        parameters=[
-            ActionParameter(
-                name="room",
-                display_name="Room",
-                param_type="room",
-                default_value="",
-                description="Room to go to"
-            )
-        ]
-    ),
-
-    "game_restart": ActionType(
-        name="game_restart",
-        display_name="Restart Game",
-        description="Restart the game from the beginning",
-        category="Room",
-        icon="🔄🎮",
-        parameters=[]
-    ),
+    #
+    # "Go to Room" is single-sourced as `goto_room` (defined below — it carries
+    # the richer param set and is what saved projects use) and "Restart Game" as
+    # `restart_game`. The older `room_goto` / `game_restart` UI duplicates were
+    # removed (they produced two identical entries in the Add Action menu); both
+    # names remain runtime-aliased (ACTION_ALIASES) and dialog-aliased
+    # (ACTION_TYPE_ALIASES) to their canonical equivalents.
 
     "game_end": ActionType(
         name="game_end",
@@ -1631,7 +1612,9 @@ BLOCKLY_TO_ACTION_MAP = {
     "room_goto": "goto_room",
     "room_if_next_exists": "if_next_room_exists",
     "room_if_previous_exists": "if_previous_room_exists",
-    "game_restart": "game_restart",
+    # No "game_restart" entry: the canonical action is `restart_game`, which has
+    # no Blockly block and is intentionally always-available (unmapped) in the
+    # Add Action menu. The legacy game_restart block-name has no generator.
     "game_end": "game_end",
     # Values/Control flow
     "if_condition": "if_condition",
@@ -1687,6 +1670,10 @@ ACTION_TYPE_ALIASES = {
     "room_restart": "restart_room",
     "room_goto_next": "next_room",
     "room_goto_previous": "previous_room",
+    # "Go to Room" / "Restart Game" duplicate UI actions consolidated into the
+    # canonical goto_room / restart_game (the names saved projects actually use).
+    "room_goto": "goto_room",
+    "game_restart": "restart_game",
     # Legacy duplicates consolidated into set_* + the Relative checkbox. Kept so
     # any add_* still in older project JSON resolves to the right dialog; the
     # relative semantics are restored by migrate_legacy_actions() on load.
