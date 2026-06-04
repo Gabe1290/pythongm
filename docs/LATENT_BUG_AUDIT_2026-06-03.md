@@ -11,7 +11,7 @@ This file is the working registry so the cleanup can continue across machines.
 - **Highs (7): all FIXED** in commit `67c91e4` (+ `tests/test_audit_regressions.py`,
   17 regression tests). Earlier related fix: `d60f41b` (create_action_dialog
   factory + missing import).
-- **Remaining: 8 medium + 3 low** — open, listed below with suggested fixes.
+- **Remaining: 6 medium + 2 low** — open, listed below with suggested fixes.
   Fixed so far: `ae76d3e` (#8, #9, #11, #22); `0a4a94c` (#20, #21, #26, #27,
   #28). See `tests/test_audit_regressions.py`.
 
@@ -102,13 +102,13 @@ reviewer's initial guess.
   *Fix:* pass frame-origin offset `((inst2.x-org2)-(inst1.x-org1))`, or crop
   masks to bbox.
 
-- [ ] **#13 wrong-behavior — keyboard "button" presses don't set Thymio button state.**
+- [x] **#13 wrong-behavior — keyboard "button" presses don't set Thymio button state.**
   `runtime/playground_runner.py:275`. `_on_key_pressed` fires the events but
   never calls `sim.set_button(...)` (the mouse path does); state-polling code
   reads 0. `_on_key_released` is a no-op stub.
   *Fix:* map key→button and `set_button(True/False)` on press/release.
 
-- [ ] **#14 state-not-restored — playground Reset leaves stale state.**
+- [x] **#14 state-not-restored — playground Reset leaves stale state.**
   `runtime/playground_runner.py:439`. `_reset` restores only pose/motors; LEDs,
   sound, sensors, timers, proximity counter, and instance variables persist.
   *Fix:* reconstruct each `ThymioSimulator` (like `_create_robots`) or
@@ -175,7 +175,7 @@ reviewer's initial guess.
   `_draw_led`'s "all ≤32" heuristic rescales again → non-monotonic brightness
   at low intensity. *Fix:* pass raw 0-32 and scale once, or drop the heuristic.
 
-- [ ] **#24 — key auto-repeat re-fires Thymio button events.**
+- [x] **#24 — key auto-repeat re-fires Thymio button events.**
   `runtime/playground_runner.py:65`. `keyPressEvent` has no
   `event.isAutoRepeat()` check → held key fires the button event tens of
   times/sec. *Fix:* ignore auto-repeat in keyPress/keyRelease.
