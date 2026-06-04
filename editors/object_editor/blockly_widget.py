@@ -369,10 +369,18 @@ class BlocklyWidget(QWidget):
         self._loading = True
         # Escape the XML for JavaScript
         escaped_xml = xml.replace("\\", "\\\\").replace("'", "\\'").replace("\n", "\\n")
+
+        # Clear _loading inside the async callback, not synchronously: runJavaScript
+        # is asynchronous, so resetting the flag right after the call let load-time
+        # block-change events slip through (spurious dirty state + a sync round-trip).
+        # Mirrors load_events_data's on_load_complete.
+        def _on_loaded(_result):
+            self._loading = False
+
         self.web_view.page().runJavaScript(
-            f"window.blocklyApi.loadXml('{escaped_xml}')"
+            f"window.blocklyApi.loadXml('{escaped_xml}')",
+            _on_loaded
         )
-        self._loading = False
 
     def get_events_data(self) -> Dict[str, Any]:
         """Get the current events data"""

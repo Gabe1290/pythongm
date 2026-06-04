@@ -294,11 +294,15 @@ class ThymioRenderer:
 
             intensity = leds['circle'][i]
             if intensity > 0:
-                # Circle LEDs are orange/yellow (Thymio's signature color)
+                # Circle LEDs are orange/yellow (Thymio's signature color).
+                # Express the colour in the same raw 0-32 range the other LEDs
+                # use, so _draw_led scales it to 0-255 exactly once. Pre-scaling
+                # here AND letting _draw_led's "all <= 32" heuristic rescale
+                # double-scaled low intensities (non-monotonic brightness).
                 color = (
-                    int(255 * intensity / 32),  # Red
-                    int(180 * intensity / 32),  # Green (slightly less for orange)
-                    0  # Blue
+                    intensity,                    # Red (0-32)
+                    int(intensity * 180 / 255),   # Green (slightly less for orange)
+                    0                             # Blue
                 )
                 self._draw_led(screen, led_x, led_y, color, max(2, int(CIRCLE_LED_SIZE * s)))
 

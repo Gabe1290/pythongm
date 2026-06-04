@@ -648,14 +648,42 @@ if dist > 0:
                 return "pass  # change_instance: no target object specified"
 
         elif action_type == 'if_object_exists':
-            # Check if an object of a certain type exists - returns True/False
-            # This is a conditional action, handled specially
+            # Conditional: gate the nested then/else actions on object existence.
+            # Returning a bare expression (the old behaviour) left the gated
+            # actions running unconditionally. Mirror if_condition's block handling.
             object_name = params.get('object', '')
-            negate = params.get('negate', params.get('not', False))
-            if negate:
-                return f"not self.scene.object_exists('{object_name}')"
-            else:
-                return f"self.scene.object_exists('{object_name}')"
+            # The runtime stores the negation flag as not_flag; accept the older
+            # negate/not keys too so existing project JSON still exports correctly.
+            negate = params.get('not_flag', params.get('negate', params.get('not', False)))
+            cond = f"self.scene.object_exists('{object_name}')"
+            condition = f"not {cond}" if negate else cond
+
+            self.add_line(f"if {condition}:")
+            self.push_indent()
+            self.block_stack.append('if')
+
+            # Process nested then_actions if present
+            then_actions = params.get('then_actions', [])
+            if then_actions:
+                for nested_action in then_actions:
+                    if isinstance(nested_action, dict):
+                        self.process_action(nested_action, event_type)
+                self.pop_indent()
+
+                # Process else_actions if present
+                else_actions = params.get('else_actions', [])
+                if else_actions:
+                    self.add_line("else:")
+                    self.push_indent()
+                    for nested_action in else_actions:
+                        if isinstance(nested_action, dict):
+                            self.process_action(nested_action, event_type)
+                    self.pop_indent()
+
+                if self.block_stack and self.block_stack[-1] == 'if':
+                    self.block_stack.pop()
+            # If no then_actions, leave block open for sequential action handling
+            return
 
         elif action_type == 'set_variable':
             # Set a variable to a value
