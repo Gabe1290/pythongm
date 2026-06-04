@@ -11,7 +11,8 @@ This file is the working registry so the cleanup can continue across machines.
 - **Highs (7): all FIXED** in commit `67c91e4` (+ `tests/test_audit_regressions.py`,
   17 regression tests). Earlier related fix: `d60f41b` (create_action_dialog
   factory + missing import).
-- **Remaining: 1 medium + 0 low** — open, listed below with suggested fixes.
+- **Remaining: 0 — all 30 confirmed findings fixed** (7 high + 14 medium
+  + 9 low; #25/#30 were dead code and were deleted).
   Fixed so far: `ae76d3e` (#8, #9, #11, #22); `0a4a94c` (#20, #21, #26, #27,
   #28). See `tests/test_audit_regressions.py`.
 
@@ -80,7 +81,7 @@ reviewer's initial guess.
   *Fix:* delegate any non-self/other target to `execute_action`
   (which reaches `execute_destroy_instance_action`).
 
-- [ ] **#10 save-load — `load_game` restores all instances onto the first match.**
+- [x] **#10 save-load — `load_game` restores all instances onto the first match.**
   `runtime/action_executor.py:2749`. `_restore_instances` matches by
   `object_name` + `break`, never consuming matched instances; rooms with N
   same-object instances lose per-instance state.
