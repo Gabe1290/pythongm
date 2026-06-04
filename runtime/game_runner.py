@@ -3680,7 +3680,18 @@ class GameRunner:
         m2 = s2.get_mask(inst2.image_index) if hasattr(s2, 'get_mask') else None
         if m1 is None or m2 is None:
             return True
-        return m1.overlap(m2, (int(ax2 - ax1), int(ay2 - ay1))) is not None
+        # The masks are FULL-FRAME (mask (0,0) == sprite frame top-left), but
+        # ax/ay are the bbox top-left in world coords (origin + bbox offset).
+        # Back out each sprite's bbox offset to align the masks at their frame
+        # origins; using the bbox positions directly left the overlap offset
+        # wrong by (bbox_left2 - bbox_left1, bbox_top2 - bbox_top1), producing
+        # false hits/misses whenever two precise sprites had different bbox
+        # offsets (it self-cancelled only when they happened to match).
+        fx1 = ax1 - getattr(s1, 'bbox_left', 0)
+        fy1 = ay1 - getattr(s1, 'bbox_top', 0)
+        fx2 = ax2 - getattr(s2, 'bbox_left', 0)
+        fy2 = ay2 - getattr(s2, 'bbox_top', 0)
+        return m1.overlap(m2, (int(fx2 - fx1), int(fy2 - fy1))) is not None
 
     def check_collision_at_position(self, instance, check_x: float, check_y: float,
                                     object_type: str = "any", exclude_instance=None) -> bool:

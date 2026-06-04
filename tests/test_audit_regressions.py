@@ -485,3 +485,61 @@ class TestRoomSaveRespectsEmptied:
         pm._rooms_loaded_this_session = set()  # never loaded -> protect against data loss
         pm._save_rooms_to_files(path)
         assert len(self._saved_instances(path)) == 1
+
+
+# ============================================================================
+# Pixel-perfect collision (#12 mask offset must use the FRAME origin)
+# ============================================================================
+
+class TestPreciseCollisionMaskOffset:
+    """#12 — _precise_refine aligned full-frame masks at the bbox top-left, so
+    the overlap offset was wrong by the two sprites' bbox-offset difference.
+    Two precise sprites with DIFFERENT bbox offsets are the failing case."""
+
+    def _make(self):
+        import pygame
+        from runtime.game_runner import GameRunner
+
+        def sprite(px, py):
+            surf = pygame.Surface((16, 16), pygame.SRCALPHA)
+            surf.fill((0, 0, 0, 0))
+            surf.set_at((px, py), (255, 255, 255, 255))
+            s = type("S", (), {})()
+            s.precise = True
+            s.origin_x = s.origin_y = 0
+            s.bbox_left, s.bbox_top = px, py
+            s.bbox_right, s.bbox_bottom = px + 1, py + 1
+            s._mask = pygame.mask.from_surface(surf)
+            s.get_mask = lambda idx, _m=s._mask: _m
+            return s
+
+        def inst(s, x, y):
+            i = type("I", (), {})()
+            i.sprite = s; i.x = x; i.y = y
+            i.image_index = 0; i.rotation = 0; i.image_angle = 0
+            i.scale_x = i.scale_y = 1
+            return i
+
+        gr = GameRunner.__new__(GameRunner)  # _precise_refine uses no self state
+        return gr, sprite, inst
+
+    def test_overlap_detected_across_different_bbox_offsets(self):
+        gr, sprite, inst = self._make()
+        s1, s2 = sprite(2, 2), sprite(10, 10)
+        # inst1 frame TL (0,0) -> opaque world pixel (2,2);
+        # inst2 frame TL (-8,-8) -> opaque world pixel (2,2). They coincide.
+        i1, i2 = inst(s1, 0, 0), inst(s2, -8, -8)
+        bx1 = i1.x - s1.origin_x + s1.bbox_left   # = 2
+        by1 = i1.y - s1.origin_y + s1.bbox_top
+        bx2 = i2.x - s2.origin_x + s2.bbox_left   # = 2
+        by2 = i2.y - s2.origin_y + s2.bbox_top
+        assert gr._precise_refine(i1, bx1, by1, i2, bx2, by2) is True
+
+    def test_non_overlapping_pixels_rejected(self):
+        gr, sprite, inst = self._make()
+        s1, s2 = sprite(2, 2), sprite(10, 10)
+        # Both frames at (0,0): opaque pixels land at world (2,2) and (10,10).
+        i1, i2 = inst(s1, 0, 0), inst(s2, 0, 0)
+        bx1, by1 = s1.bbox_left, s1.bbox_top
+        bx2, by2 = s2.bbox_left, s2.bbox_top
+        assert gr._precise_refine(i1, bx1, by1, i2, bx2, by2) is False
