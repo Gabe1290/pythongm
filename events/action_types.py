@@ -1646,15 +1646,13 @@ BLOCKLY_TO_ACTION_MAP = {
     "else_action": "else_action",
     "repeat": "repeat",
     "exit_event": "exit_event",
-    # Sound — play_sound / stop_sound are provided by the Audio Actions plugin
-    # (plugins/audio_actions.py), not the static ACTION_TYPES above, but they are
-    # gated here just like built-in actions. This dict is keyed by BLOCK_REGISTRY
-    # block-name ("sound_play" / "sound_stop") while the action/runtime name is
-    # "play_sound" / "stop_sound" — the same block-vs-runtime split as
-    # output_message -> show_message below. Keying on the runtime name pointed at
-    # a block that doesn't exist, gating the action out of the Add Action menu.
-    "sound_play": "play_sound",
-    "sound_stop": "stop_sound",
+    # Sound — the Audio Actions plugin (plugins/audio_actions.py) actions
+    # (play_sound, stop_sound, play_music, stop_music, set_volume) are
+    # intentionally NOT mapped here. Actions with no block mapping fall through
+    # the "include if unmapped" path in get_actions_by_category, so basic audio
+    # is available in every preset. Future, more specialised audio actions
+    # (e.g. microphone input) can opt into preset gating by adding a
+    # block-name -> action-name entry here plus a matching BLOCK_REGISTRY block.
     # Output — show_message gates on the BLOCK_REGISTRY "output_message" block
     # (the registry uses the block-name, the action uses the runtime-name).
     "output_message": "show_message",
