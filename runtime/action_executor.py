@@ -4118,24 +4118,36 @@ class ActionExecutor:
         - Instance properties: "self.x", "self.y", "self.hspeed"
         - Collision partner (in collision events): "other.x", "other.y"
         """
-        expression = parameters.get("expression", "")
+        return self._eval_bool_expression(instance, parameters.get("expression", ""))
 
-        if not expression or not expression.strip():
-            logger.debug("⚠️  test_expression: Empty expression")
+    def _eval_bool_expression(self, instance, expression) -> bool:
+        """Evaluate a Python boolean expression in the instance/collision scope.
+
+        Single source of truth shared by the Test Expression action and the
+        if_condition "expression" condition type, so both evaluate identically.
+        Strict Python (`and`/`or`/`not`), with `self`, `other` (the collision
+        partner during collision events), the instance's own variables, and
+        game state in scope. Returns False on empty input or any error.
+
+        This is why a condition like "vspeed > 0 and y < other.y - 16" works:
+        it is real Python via eval(), NOT the arithmetic-only mini-language in
+        _parse_value / _evaluate_expression, which cannot handle `<` `>` or
+        `and`/`or` (they make it return the raw string — always truthy — or 0).
+        """
+        if not expression or not str(expression).strip():
             return False
+        expression = str(expression)
 
         # Teach Python: flag C/GML operators (&&, ||, !) and point at the
-        # Python equivalent. These are SyntaxErrors below, so without this the
-        # student just sees the expression silently do nothing.
+        # Python equivalent. These are SyntaxErrors in eval(), so without this
+        # the student just sees the expression silently do nothing.
         for found, py in detect_c_style_operators(expression):
             logger.warning(
-                f"⚠️  test_expression: '{found}' is not a Python operator — "
+                f"⚠️  expression: '{found}' is not a Python operator — "
                 f"use '{py}' instead (in expression: {expression!r})")
 
         try:
-            # Build safe namespace for evaluation
             namespace = {
-                # Instance properties
                 'self': instance,
                 # Collision partner — populated during collision events so
                 # expressions such as "y < other.y" resolve; None otherwise.
@@ -4148,37 +4160,20 @@ class ActionExecutor:
                 'direction': getattr(instance, 'direction', 0),
                 'image_index': getattr(instance, 'image_index', 0),
                 'image_speed': getattr(instance, 'image_speed', 1.0),
-
-                # Game state (if available)
                 'score': getattr(self.game_runner, 'score', 0) if self.game_runner else 0,
                 'lives': getattr(self.game_runner, 'lives', 0) if self.game_runner else 0,
                 'health': getattr(self.game_runner, 'health', 100) if self.game_runner else 100,
-
-                # Room info (if available)
                 'room_width': getattr(self.game_runner.current_room, 'width', 0) if self.game_runner and self.game_runner.current_room else 0,
                 'room_height': getattr(self.game_runner.current_room, 'height', 0) if self.game_runner and self.game_runner.current_room else 0,
-
-                # Math functions
-                'abs': abs,
-                'min': min,
-                'max': max,
-                'round': round,
-
+                'abs': abs, 'min': min, 'max': max, 'round': round,
                 # Custom instance variables
                 **{k: v for k, v in instance.__dict__.items() if not k.startswith('_')}
             }
-
-            # Evaluate the expression
             result = eval(expression, {"__builtins__": {}}, namespace)
-
-            # Convert to boolean
-            result_bool = bool(result)
-
-            logger.debug(f"📝 Test expression '{expression}' = {result} (bool: {result_bool})")
-            return result_bool
-
+            logger.debug(f"📝 Expression '{expression}' = {result} (bool: {bool(result)})")
+            return bool(result)
         except Exception as e:
-            logger.error(f"⚠️  test_expression: Error evaluating '{expression}': {e}")
+            logger.error(f"⚠️  Error evaluating expression '{expression}': {e}")
             return False
 
     def execute_test_question_action(self, instance, parameters: Dict[str, Any]):
@@ -4352,15 +4347,12 @@ class ActionExecutor:
             return self._compare(current, operator, compare_value)
 
         elif condition_type == "expression":
-            expression = parameters.get("expression", "")
-            if not expression:
-                return False
-
-            try:
-                result = self._parse_value(expression, instance)
-                return bool(result)
-            except Exception:
-                return False
+            # Real Python via the shared evaluator — _parse_value cannot handle
+            # comparison/boolean operators (it would return the raw string,
+            # which is always truthy, or 0). This is the path the if_condition
+            # action uses for a custom "expression" condition.
+            return self._eval_bool_expression(
+                instance, parameters.get("expression", ""))
 
         elif condition_type == "random_chance":
             import random

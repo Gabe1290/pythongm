@@ -1082,6 +1082,59 @@ class TestTestExpressionAction:
         assert "&&" in msgs and "'and'" in msgs
 
 
+class TestIfConditionExpression:
+    """Regression tests for the if_condition `expression` condition type.
+
+    This is the path the IDE's "Configure If Condition" dialog uses, and it
+    was broken: _parse_value/_evaluate_expression can't handle comparison or
+    boolean operators, so `vspeed > 0 and y < other.y` returned the raw string
+    (always truthy) and `... - 16` returned 0 (always false). Both now route
+    through the shared _eval_bool_expression (real Python eval).
+    """
+
+    def _eval(self, executor, instance, expr):
+        return executor._evaluate_if_condition(
+            instance, "expression", {"expression": expr})
+
+    def test_comparison_operator(self):
+        executor = ActionExecutor()
+        inst = MockInstance("obj_pingus")
+        inst.vspeed = 0.0
+        assert self._eval(executor, inst, "vspeed > 0") is False
+        inst.vspeed = 4.0
+        assert self._eval(executor, inst, "vspeed > 0") is True
+
+    def test_boolean_and_with_other_and_margin(self):
+        """The real obj_pingus stomp condition behaves correctly."""
+        executor = ActionExecutor()
+        pingus = MockInstance("obj_pingus")
+        monster = MockInstance("obj_monstre")
+        monster.y = 100.0
+        executor._collision_other = monster
+        expr = "vspeed > 0 and y < other.y - 16\n"  # trailing newline, as authored
+
+        # standing on the ground next to the monster -> Pingus dies (False)
+        pingus.vspeed, pingus.y = 0.0, 100.0
+        assert self._eval(executor, pingus, expr) is False
+        # gravity nudges vspeed but still side-by-side -> still False
+        pingus.vspeed, pingus.y = 0.5, 99.0
+        assert self._eval(executor, pingus, expr) is False
+        # stomping from above -> monster dies (True)
+        pingus.vspeed, pingus.y = 5.0, 68.0
+        assert self._eval(executor, pingus, expr) is True
+
+    def test_old_loose_condition_no_longer_always_true(self):
+        """Without a margin, a motionless Pingus must not trigger the kill."""
+        executor = ActionExecutor()
+        pingus = MockInstance("obj_pingus")
+        pingus.vspeed, pingus.y = 0.0, 100.0
+        monster = MockInstance("obj_monstre")
+        monster.y = 100.0
+        executor._collision_other = monster
+        # vspeed == 0 short-circuits to False (previously returned raw string -> True)
+        assert self._eval(executor, pingus, "vspeed > 0 and y < other.y") is False
+
+
 class TestDetectCStyleOperators:
     """Unit tests for the detect_c_style_operators helper"""
 
