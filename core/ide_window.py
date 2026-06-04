@@ -71,10 +71,14 @@ class PyGameMakerIDE(QMainWindow):
             import traceback
             traceback.print_exc()
 
-        # Load auto-save settings from config
+        # Load auto-save settings from config. The Preferences dialog writes
+        # these under the editor config as auto_save_interval in MINUTES; the
+        # old code read a never-written top-level key (default 30) as seconds,
+        # so the user's interval choice never took effect.
         from utils.config import Config
-        auto_save_enabled = Config.get('auto_save_enabled', True)
-        auto_save_interval = Config.get('auto_save_interval', 30) * 1000  # Convert to milliseconds
+        editor_cfg = Config.get_editor_config()
+        auto_save_enabled = editor_cfg.get('auto_save_enabled', True)
+        auto_save_interval = editor_cfg.get('auto_save_interval', 5) * 60 * 1000  # minutes -> ms
         self.project_manager.set_auto_save(auto_save_enabled, auto_save_interval)
 
         self.current_project_path = None

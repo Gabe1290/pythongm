@@ -405,3 +405,42 @@ class TestGmkRepeatKeepsCount:
         for kind, name in ((1, "start_block"), (2, "end_block"), (4, "exit_event")):
             out = conv._convert_single_action(GmkAction(action_kind=kind))
             assert out == {"action": name, "parameters": {}}
+
+
+# ============================================================================
+# Kivy export (#18 if_object_exists must gate nested actions)
+# ============================================================================
+
+class TestKivyIfObjectExistsGates:
+    """#18 — if_object_exists returned a bare expression, so its then_actions
+    ran unconditionally. It must open an `if` block like if_condition."""
+
+    def test_then_actions_are_indented_under_an_if(self):
+        from export.Kivy.code_generator import ActionCodeGenerator
+        gen = ActionCodeGenerator(base_indent=0)
+        gen.process_action({
+            "action": "if_object_exists",
+            "parameters": {
+                "object": "enemy",
+                "then_actions": [{"action": "restart_room", "parameters": {}}],
+            },
+        })
+        code = gen.get_code()
+        lines = [ln for ln in code.splitlines() if ln.strip()]
+        # First line opens the if; the gated body follows, indented deeper.
+        assert lines[0].startswith("if ") and "object_exists('enemy')" in lines[0]
+        assert len(lines) >= 2, "then_action was not emitted under the if"
+        if_indent = len(lines[0]) - len(lines[0].lstrip())
+        body_indent = len(lines[1]) - len(lines[1].lstrip())
+        assert body_indent > if_indent
+
+    def test_not_flag_negates(self):
+        from export.Kivy.code_generator import ActionCodeGenerator
+        gen = ActionCodeGenerator(base_indent=0)
+        gen.process_action({
+            "action": "if_object_exists",
+            "parameters": {"object": "enemy", "not_flag": True,
+                           "then_actions": [{"action": "restart_room", "parameters": {}}]},
+        })
+        code = gen.get_code()
+        assert "if not self.scene.object_exists('enemy'):" in code
