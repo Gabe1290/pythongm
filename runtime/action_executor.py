@@ -5,9 +5,33 @@ Converts visual actions into runtime behavior
 """
 
 import math
-from typing import Dict, Any, Tuple
+import re
+from typing import Dict, Any, List, Tuple
 from core.logger import get_logger
 logger = get_logger(__name__)
+
+
+def detect_c_style_operators(expression: str) -> List[Tuple[str, str]]:
+    """Find C/GML-style boolean operators that should be Python operators.
+
+    This project teaches Python, so conditions use ``and`` / ``or`` / ``not``
+    rather than the C/GameMaker ``&&`` / ``||`` / ``!``. Returns a list of
+    ``(found, python_equivalent)`` pairs for every offending operator in
+    ``expression`` so callers (the runtime evaluator and the IDE editor) can
+    show a consistent, teachable warning. Empty list means the expression is
+    clean. ``!=`` is deliberately ignored — it's valid Python.
+    """
+    if not expression:
+        return []
+    found: List[Tuple[str, str]] = []
+    if '&&' in expression:
+        found.append(('&&', 'and'))
+    if '||' in expression:
+        found.append(('||', 'or'))
+    # A lone '!' (logical not) but never the '!=' inequality operator.
+    if re.search(r'!(?!=)', expression):
+        found.append(('!', 'not'))
+    return found
 
 
 class _ExitEvent(Exception):
@@ -4082,11 +4106,17 @@ class ActionExecutor:
 
         Returns True if expression evaluates to truthy value, False otherwise
 
+        Expressions are evaluated as strict Python — this project teaches
+        Python, so use Python operators (`and`/`or`/`not`), not C/GML-style
+        `&&`/`||`/`!`. The latter raise SyntaxError and the expression is
+        treated as False.
+
         Supported expressions:
         - Variable comparisons: "x < 100", "score >= 1000"
         - Math expressions: "x + y > 200", "hspeed * 2 < 10"
         - Boolean expressions: "lives > 0 and health > 50"
         - Instance properties: "self.x", "self.y", "self.hspeed"
+        - Collision partner (in collision events): "other.x", "other.y"
         """
         expression = parameters.get("expression", "")
 
@@ -4094,11 +4124,22 @@ class ActionExecutor:
             logger.debug("⚠️  test_expression: Empty expression")
             return False
 
+        # Teach Python: flag C/GML operators (&&, ||, !) and point at the
+        # Python equivalent. These are SyntaxErrors below, so without this the
+        # student just sees the expression silently do nothing.
+        for found, py in detect_c_style_operators(expression):
+            logger.warning(
+                f"⚠️  test_expression: '{found}' is not a Python operator — "
+                f"use '{py}' instead (in expression: {expression!r})")
+
         try:
             # Build safe namespace for evaluation
             namespace = {
                 # Instance properties
                 'self': instance,
+                # Collision partner — populated during collision events so
+                # expressions such as "y < other.y" resolve; None otherwise.
+                'other': getattr(self, '_collision_other', None),
                 'x': instance.x,
                 'y': instance.y,
                 'hspeed': getattr(instance, 'hspeed', 0),
