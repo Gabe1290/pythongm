@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QTreeWidgetItem, QTreeWidget, QMenu,
     QLabel, QPushButton, QLineEdit, QSpinBox, QDoubleSpinBox,
     QCheckBox, QComboBox, QDialogButtonBox, QTextEdit, QColorDialog,
-    QWidget, QScrollArea, QFormLayout,
+    QWidget, QScrollArea, QFormLayout, QMessageBox,
     QGroupBox, QRadioButton, QButtonGroup,
 )
 from PySide6.QtCore import Qt
@@ -659,6 +659,42 @@ class ActionConfigDialog(QDialog):
 
         logger.debug(f"Final values being returned: {values}")
         return values
+
+    def accept(self):
+        """Validate expression fields before closing.
+
+        This project teaches Python, so a condition like
+        ``vspeed > 0 && y < other.y`` is invalid — the student must use
+        ``and`` / ``or`` / ``not``. Catch the common C/GML operators here and
+        keep the dialog open so the mistake is fixed before it silently fails
+        at runtime. Only the ``expression`` field is checked (other fields may
+        legitimately contain ``!`` or ``|``).
+        """
+        from runtime.action_executor import detect_c_style_operators
+
+        widget = self.param_widgets.get("expression") if hasattr(self, "param_widgets") else None
+        if widget is not None:
+            if isinstance(widget, QTextEdit):
+                text = widget.toPlainText()
+            elif isinstance(widget, QLineEdit):
+                text = widget.text()
+            else:
+                text = ""
+            offenders = detect_c_style_operators(text)
+            if offenders:
+                fixes = ", ".join(f"'{found}' → '{py}'" for found, py in offenders)
+                QMessageBox.warning(
+                    self,
+                    self.tr("Use Python operators"),
+                    self.tr(
+                        "This expression uses C-style operators that Python "
+                        "does not understand:\n\n    {fixes}\n\n"
+                        "Please use the Python operators instead "
+                        "(and / or / not), e.g. \"vspeed > 0 and y < other.y\"."
+                    ).format(fixes=fixes),
+                )
+                return  # keep the dialog open so the student can fix it
+        super().accept()
 
     def configure_action_list(self, param_name: str):
         """Open multi-action editor for action lists"""
