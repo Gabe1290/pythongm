@@ -111,6 +111,10 @@ class ProjectManager(QObject):
         self._original_zip_path = None
         self._temp_extraction_dir = None
         self._auto_save_as_zip = False  # NEW: Auto-save as zip preference
+        # Rooms whose instances were materialized into memory this session.
+        # For these, an empty in-memory instance list is authoritative (the user
+        # emptied the room) and must NOT be overwritten with the stale file copy.
+        self._rooms_loaded_this_session = set()
 
         # Auto-save timer (parented to self for deterministic cleanup)
         self.auto_save_timer = QTimer(self)
@@ -270,6 +274,9 @@ class ProjectManager(QObject):
         """Load room instance data from separate files in rooms/ directory"""
         rooms_dir = project_path / "rooms"
 
+        # Fresh session for this project: forget which rooms were loaded.
+        self._rooms_loaded_this_session = set()
+
         if not rooms_dir.exists():
             logger.debug("No rooms/ directory found, using embedded room data")
             return
@@ -294,6 +301,8 @@ class ProjectManager(QObject):
                     # Merge file data into room data (file takes precedence for instances)
                     instance_count = merge_room_file(room_data, file_room_data)
                     if instance_count is not None:
+                        # We read the room's instances into memory this session.
+                        self._rooms_loaded_this_session.add(room_name)
                         logger.debug(f"📂 Loaded room: {room_name} ({instance_count} instances from file)")
 
                     # Clean up external file marker
@@ -305,6 +314,7 @@ class ProjectManager(QObject):
             else:
                 # No external file - check if instances are embedded (legacy format)
                 if room_data.get('instances'):
+                    self._rooms_loaded_this_session.add(room_name)
                     logger.debug(f"📂 Room {room_name}: using embedded instances ({len(room_data['instances'])} instances)")
                 else:
                     logger.warning(f"⚠️ Room {room_name}: no instances found")
@@ -509,8 +519,13 @@ class ProjectManager(QObject):
             # Check if we're about to overwrite a file with good data
             instances_to_save = room_data.get('instances', [])
 
-            if not instances_to_save and room_file.exists():
-                # Current data has no instances, but file exists - preserve file instances
+            if (not instances_to_save and room_file.exists()
+                    and room_name not in self._rooms_loaded_this_session):
+                # Current data has no instances and we never loaded this room's
+                # instances into memory this session — the empty list is "not
+                # loaded", not "user emptied it", so preserve the file's data.
+                # (If the room WAS loaded, an empty list is authoritative and we
+                # let it save through, otherwise emptying a room never sticks.)
                 try:
                     with open(room_file, 'r', encoding='utf-8') as f:
                         existing_data = json.load(f)
