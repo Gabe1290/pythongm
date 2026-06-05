@@ -4905,14 +4905,15 @@ class ActionExecutor:
             x, y: Center of the area (expressions OK, e.g. "self.x").
             radius: Pixel radius. 0 = exact-position match (legacy behavior),
                     >0 = Euclidean distance check. Default 32 (≈ one grid cell).
-            target: "self"|"other"|"object" — which OBJECT TYPE to filter by:
-                    self   → the calling instance's object_name
-                    other  → the collision other's object_name
-                    object → name in `target_object`
-                    If unset and no `object` legacy param is given, all
-                    instances within the radius are destroyed.
-            target_object: Used when target=="object".
-            object: Legacy fallback when neither target nor target_object is set.
+            object: Which OBJECT TYPE to destroy (current UI dropdown + GMK
+                    import). "all"/"any" → no type filter (every instance in
+                    range); "solid" → solid instances only; "non-solid" →
+                    everything except solids; an object name → only that type.
+                    Absent/empty → every instance in range.
+            target / target_object: Legacy fallback for actions saved via the
+                    old "applies to" group, honoured only when `object` is
+                    unset. self → caller's object_name, other → collision
+                    other's, object → `target_object`.
         """
         if not self.game_runner or not self.game_runner.current_room:
             logger.debug("⚠️ destroy_at_position: No game_runner or current_room")
@@ -4938,24 +4939,47 @@ class ActionExecutor:
         radius_sq = radius * radius  # avoid sqrt per instance
 
         # Resolve object-name filter (None = no filter, destroy any instance).
+        #   filter_name None + solid_only False → every instance in range.
+        #   solid_only True                     → only solid instances.
+        #   filter_name set                     → only that object type.
+        obj_param = parameters.get("object", None)
         target = parameters.get("target")
         target_object = parameters.get("target_object", "")
-        legacy_object = parameters.get("object", "")
         filter_name = None
-        if target == "self":
+        # Solidity filter: None = ignore solidity, True = solid only,
+        # False = non-solid only.
+        solid_filter = None
+        if obj_param not in (None, ""):
+            # Explicit object dropdown (current UI + GMK import). The dialog
+            # offers the sentinels "all"/"any" (no type filter), "solid"
+            # (solid instances only) and "non-solid" (everything but solids)
+            # ahead of the real object names.
+            if obj_param in ("all", "any"):
+                filter_name = None
+            elif obj_param == "solid":
+                solid_filter = True
+            elif obj_param == "non-solid":
+                solid_filter = False
+            else:
+                filter_name = obj_param
+        elif target == "self":
+            # Legacy: older saved actions stored the filter via the
+            # "applies to" group (target/target_object) instead of "object".
             filter_name = getattr(instance, 'object_name', None)
         elif target == "other":
             other = getattr(self, '_collision_other', None)
             filter_name = getattr(other, 'object_name', None) if other else getattr(instance, 'object_name', None)
         elif target == "object":
             filter_name = target_object or None
-        elif legacy_object:
-            filter_name = legacy_object
 
         destroyed_count = 0
         for inst in self.game_runner.current_room.instances:
             if filter_name and getattr(inst, 'object_name', None) != filter_name:
                 continue
+            if solid_filter is not None:
+                obj_data = getattr(inst, '_cached_object_data', None) or {}
+                if bool(obj_data.get('solid', False)) != solid_filter:
+                    continue
             dx = inst.x - x
             dy = inst.y - y
             if radius > 0:
