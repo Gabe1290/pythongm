@@ -2270,6 +2270,20 @@ class ActionExecutor:
 
         return result
 
+    def _resolve_draw_color(self, instance, default):
+        """Return the active draw colour for a draw_* action.
+
+        The colour is global state in GameMaker: ``set_draw_color`` stores it
+        both on the calling instance and on the game runner. Drawing actions
+        therefore prefer the instance's own colour (set earlier in the same
+        event) but fall back to the global runner colour (set by any object),
+        and finally to ``default`` when nothing has set a colour yet.
+        """
+        color = getattr(instance, 'draw_color', None)
+        if color is None and self.game_runner is not None:
+            color = getattr(self.game_runner, 'draw_color', None)
+        return color if color is not None else default
+
     def execute_draw_score_action(self, instance, parameters: Dict[str, Any]):
         """Draw score on screen (queued for draw event)"""
         if not self.game_runner:
@@ -2288,7 +2302,9 @@ class ActionExecutor:
             'text': f"{caption}{self.game_runner.score}",
             'x': x,
             'y': y,
-            'color': (255, 255, 255)
+            # Respect the active draw colour; white preserves the prior look
+            # when no Set Draw Color action has run.
+            'color': self._resolve_draw_color(instance, (255, 255, 255))
         })
 
     def execute_set_lives_action(self, instance, parameters: Dict[str, Any]):
@@ -3250,8 +3266,8 @@ class ActionExecutor:
         y = self._parse_value(parameters.get("y", instance.y), instance)
         text = str(self._parse_value(parameters.get("text", ""), instance))
 
-        # Get drawing color (from instance or default black)
-        color = getattr(instance, 'draw_color', (0, 0, 0))
+        # Get the active drawing colour (instance, then global, then black).
+        color = self._resolve_draw_color(instance, (0, 0, 0))
 
         # Queue drawing command for draw event
         if not hasattr(instance, '_draw_queue'):

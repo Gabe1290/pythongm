@@ -3822,5 +3822,63 @@ class TestTimingTabActions:
         assert instance.timeline_position == 0
 
 
+class TestDrawColorResolution:
+    """Regression: draw_text and draw_score must honour the global draw colour.
+
+    ``set_draw_color`` stores the colour both on the calling instance and on
+    the game runner (GameMaker's draw colour is global state). Previously
+    ``draw_text`` only read the per-instance copy — so a colour set by another
+    object (e.g. a controller) was ignored and the text fell back to its
+    default — and ``draw_score`` hard-coded white, ignoring the draw colour
+    entirely. Both now resolve instance -> global -> default.
+    """
+
+    def test_draw_text_uses_global_color_set_by_another_instance(self):
+        runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=runner)
+
+        controller = MockInstance("obj_controller")
+        executor.execute_set_draw_color_action(controller, {"color": "#FF0000"})
+
+        # A different instance, with no draw_color of its own, draws text.
+        other = MockInstance("obj_hud")
+        assert not hasattr(other, "draw_color")
+        executor.execute_draw_text_action(other, {"x": 0, "y": 0, "text": "HI"})
+        assert other._draw_queue[-1]["color"] == (255, 0, 0)
+
+    def test_draw_score_uses_global_color(self):
+        runner = MockGameRunner()
+        runner.score = 42
+        executor = ActionExecutor(game_runner=runner)
+
+        controller = MockInstance("obj_controller")
+        executor.execute_set_draw_color_action(controller, {"color": "#00FF00"})
+
+        other = MockInstance("obj_hud")
+        executor.execute_draw_score_action(other, {"x": 0, "y": 0, "caption": "Score: "})
+        cmd = other._draw_queue[-1]
+        assert cmd["color"] == (0, 255, 0)
+        assert cmd["text"] == "Score: 42"
+
+    def test_draw_text_prefers_instance_color_over_global(self):
+        runner = MockGameRunner()
+        runner.draw_color = (255, 0, 0)  # global red
+        executor = ActionExecutor(game_runner=runner)
+
+        inst = MockInstance("obj_hud")
+        inst.draw_color = (0, 0, 255)  # this instance set its own blue
+        executor.execute_draw_text_action(inst, {"x": 0, "y": 0, "text": "HI"})
+        assert inst._draw_queue[-1]["color"] == (0, 0, 255)
+
+    def test_draw_text_and_score_defaults_when_no_color_set(self):
+        runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=runner)
+        inst = MockInstance("obj_hud")
+        executor.execute_draw_text_action(inst, {"x": 0, "y": 0, "text": "x"})
+        executor.execute_draw_score_action(inst, {"x": 0, "y": 0, "caption": "S"})
+        assert inst._draw_queue[0]["color"] == (0, 0, 0)        # text -> black
+        assert inst._draw_queue[1]["color"] == (255, 255, 255)  # score -> white
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
