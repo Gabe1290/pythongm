@@ -69,7 +69,11 @@
       "actions": [
         {
           "action": "move_to_contact",
-          "parameters": {}
+          "parameters": {
+            "direction": "direction",
+            "max_distance": "16",
+            "object": "all"
+          }
         },
         {
           "action": "set_vspeed",
@@ -146,6 +150,6 @@
   },
   "imported": true,
   "created": "2026-05-26T11:59:41.560849",
-  "modified": "2026-05-27T12:02:53.342297",
+  "modified": "2026-06-05T20:09:35.577938",
   "parent": ""
 }
