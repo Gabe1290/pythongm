@@ -340,7 +340,9 @@ Errore di aggiornamento</translation>
         <source>No project loaded.
 
 Open or create a project, then select an asset from the tree on the left to view its details here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun progetto caricato.
+
+Apri o crea un progetto, quindi seleziona una risorsa dall’albero a sinistra per visualizzarne qui i dettagli.</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="269"/>

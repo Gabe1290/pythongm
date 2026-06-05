@@ -1864,7 +1864,9 @@ Update Error</source>
         <source>No project loaded.
 
 Open or create a project, then select an asset from the tree on the left to view its details here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Проект не завантажено.
+
+Відкрийте або створіть проект, а потім виберіть ресурс у дереві ліворуч, щоб переглянути тут його деталі.</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="235"/>

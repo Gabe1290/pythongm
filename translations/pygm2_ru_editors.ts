@@ -340,7 +340,9 @@ Update Error</translation>
         <source>No project loaded.
 
 Open or create a project, then select an asset from the tree on the left to view its details here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Проект не загружен.
+
+Откройте или создайте проект, затем выберите ресурс в дереве слева, чтобы просмотреть здесь его сведения.</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="269"/>
