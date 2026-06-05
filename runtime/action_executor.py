@@ -1662,8 +1662,29 @@ class ActionExecutor:
 
     # ==================== GAME ACTIONS ====================
 
+    def _show_or_queue_message(self, instance, message):
+        """Display a message dialog in authored action order.
+
+        Shown **synchronously** (blocking) when a live screen is available, so
+        message-style actions (show_message, show_info) appear in the order the
+        user placed them — matching show_highscore, which already shows
+        immediately. Queuing them into ``pending_messages`` (drained by the
+        game loop after the event) made them appear *after* any same-event
+        immediate dialog, inverting the order. Falls back to the queue when
+        there is no live screen yet (headless runs / tests).
+        """
+        runner = self.game_runner
+        if (runner is not None and getattr(runner, 'screen', None) is not None
+                and hasattr(runner, 'show_message_dialog')):
+            runner.show_message_dialog(message)
+            return
+
+        if not hasattr(instance, 'pending_messages'):
+            instance.pending_messages = []
+        instance.pending_messages.append(message)
+
     def execute_show_message_action(self, instance, parameters: Dict[str, Any]):
-        """Execute show message action with optional translation support"""
+        """Execute show message action with optional translation support."""
         message = parameters.get("message", "")
 
         # Resolve translation if available
@@ -1674,11 +1695,7 @@ class ActionExecutor:
                 message = translations[lang]
 
         logger.info(f"💬 MESSAGE: {message}")
-
-        # Store message for game runner to display
-        if not hasattr(instance, 'pending_messages'):
-            instance.pending_messages = []
-        instance.pending_messages.append(message)
+        self._show_or_queue_message(instance, message)
 
     def execute_delay_action_action(self, instance, parameters: Dict[str, Any]):
         """Execute an action after a delay (in frames)
@@ -2569,11 +2586,7 @@ class ActionExecutor:
             info_text += f"\n\n{description}"
 
         logger.info(f"ℹ️ GAME INFO:\n{info_text}")
-
-        # Store as pending message for display
-        if not hasattr(instance, 'pending_messages'):
-            instance.pending_messages = []
-        instance.pending_messages.append(info_text)
+        self._show_or_queue_message(instance, info_text)
 
     def execute_show_video_action(self, instance, parameters: Dict[str, Any]):
         """Play a video file
