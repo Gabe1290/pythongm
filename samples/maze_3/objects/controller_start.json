@@ -10,17 +10,20 @@
     "create": {
       "actions": [
         {
-          "action": "goto_room",
+          "action": "set_score",
           "parameters": {
-            "room": "0"
+            "value": "0"
           }
         },
         {
           "action": "set_window_caption",
           "parameters": {
             "score": "0",
-            "lives": "score: ",
-            "health": "0"
+            "score_caption": "score: ",
+            "lives": "0",
+            "lives_caption": "lives: ",
+            "health": "0",
+            "health_caption": "health: "
           }
         },
         {
@@ -30,10 +33,10 @@
           }
         },
         {
-          "action": "set_sprite",
+          "action": "play_sound",
           "parameters": {
-            "sprite": "sound_background",
-            "subimage": "1"
+            "sound": "sound_background",
+            "loop": "1"
           }
         }
       ]
@@ -52,6 +55,6 @@
     }
   },
   "imported": true,
-  "created": "2026-05-26T11:59:41.079627",
-  "modified": "2026-05-26T11:59:41.079627"
+  "created": "2026-06-05T11:12:38.634466",
+  "modified": "2026-06-05T11:12:38.634466"
 }

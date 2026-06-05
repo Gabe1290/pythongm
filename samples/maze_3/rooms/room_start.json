@@ -107,7 +107,7 @@
   "tile_vertical": false,
   "instances": [
     {
-      "object": "controller_start",
+      "object_name": "controller_start",
       "x": 0,
       "y": 0
     }
@@ -245,7 +245,7 @@
       "follow": ""
     }
   },
-  "created": "2026-05-26T11:59:41.114679",
-  "modified": "2026-05-26T11:59:41.114679",
+  "created": "2026-06-05T11:12:38.636764",
+  "modified": "2026-06-05T11:12:38.636764",
   "imported": true
 }

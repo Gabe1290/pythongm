@@ -24,7 +24,7 @@
     "collision_with_wall_corner": {
       "actions": [
         {
-          "action": "snap_to_grid",
+          "action": "reverse_vertical",
           "parameters": {}
         }
       ],
@@ -32,6 +32,6 @@
     }
   },
   "imported": true,
-  "created": "2026-05-26T11:59:41.079627",
-  "modified": "2026-05-26T11:59:41.079627"
+  "created": "2026-06-05T11:12:38.634466",
+  "modified": "2026-06-05T11:12:38.634466"
 }

@@ -10,9 +10,11 @@
     "collision_with_obj_person": {
       "actions": [
         {
-          "action": "set_score",
+          "action": "check_empty",
           "parameters": {
-            "value": "8*other.hspeed",
+            "x": "8*other.hspeed",
+            "y": "8*other.vspeed",
+            "objects": "all",
             "relative": true
           }
         },
@@ -21,16 +23,17 @@
           "parameters": {}
         },
         {
-          "action": "set_sprite",
+          "action": "play_sound",
           "parameters": {
-            "sprite": "sound_push",
-            "subimage": "0"
+            "sound": "sound_push",
+            "loop": "0"
           }
         },
         {
-          "action": "set_friction",
+          "action": "jump_to_position",
           "parameters": {
-            "friction": "8*other.hspeed",
+            "x": "8*other.hspeed",
+            "y": "8*other.vspeed",
             "relative": true
           }
         },
@@ -47,18 +50,19 @@
           "parameters": {}
         },
         {
-          "action": "draw_score",
+          "action": "if_collision",
           "parameters": {
-            "x": "obj_hole",
-            "y": "8*other.hspeed",
-            "caption": "8*other.vspeed",
+            "object": "obj_hole",
+            "x": "8*other.hspeed",
+            "y": "8*other.vspeed",
             "relative": true
           }
         },
         {
-          "action": "set_friction",
+          "action": "jump_to_position",
           "parameters": {
-            "friction": "8*other.hspeed",
+            "x": "8*other.hspeed",
+            "y": "8*other.vspeed",
             "relative": true
           }
         },
@@ -71,7 +75,7 @@
     }
   },
   "imported": true,
-  "created": "2026-05-26T11:59:41.079627",
-  "modified": "2026-05-26T11:59:41.079627",
+  "created": "2026-06-05T11:12:38.634466",
+  "modified": "2026-06-05T11:12:38.634466",
   "parent": "wall_corner"
 }

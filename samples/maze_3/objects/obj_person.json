@@ -21,10 +21,10 @@
     "collision_with_monster_all": {
       "actions": [
         {
-          "action": "set_sprite",
+          "action": "play_sound",
           "parameters": {
-            "sprite": "sound_dead",
-            "subimage": "0"
+            "sound": "sound_dead",
+            "loop": "0"
           }
         },
         {
@@ -53,10 +53,10 @@
     "collision_with_monster_ud": {
       "actions": [
         {
-          "action": "set_sprite",
+          "action": "play_sound",
           "parameters": {
-            "sprite": "sound_dead",
-            "subimage": "0"
+            "sound": "sound_dead",
+            "loop": "0"
           }
         },
         {
@@ -85,10 +85,10 @@
     "collision_with_monster_lr": {
       "actions": [
         {
-          "action": "set_sprite",
+          "action": "play_sound",
           "parameters": {
-            "sprite": "sound_dead",
-            "subimage": "0"
+            "sound": "sound_dead",
+            "loop": "0"
           }
         },
         {
@@ -220,6 +220,6 @@
     }
   },
   "imported": true,
-  "created": "2026-05-26T11:59:41.079627",
-  "modified": "2026-05-26T11:59:41.079627"
+  "created": "2026-06-05T11:12:38.634466",
+  "modified": "2026-06-05T11:12:38.634466"
 }
