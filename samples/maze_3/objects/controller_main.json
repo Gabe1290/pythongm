@@ -57,40 +57,59 @@
         {
           "action": "set_draw_color",
           "parameters": {
-            "color": "255"
+            "color": "#ffffff"
           }
         },
         {
           "action": "draw_score",
           "parameters": {
-            "x": "300",
-            "y": "4",
-            "caption": "Score: ",
-            "relative": true
+            "x": "8",
+            "y": "488",
+            "caption": "Score: "
           }
         },
         {
           "action": "draw_text",
           "parameters": {
             "text": "Lives:",
-            "x": "8",
-            "y": "0",
-            "relative": true
+            "x": "128",
+            "y": "488"
           }
         },
         {
           "action": "draw_lives",
           "parameters": {
-            "x": "70",
-            "y": "4",
-            "image": "sprite_lives",
-            "relative": true
+            "x": "180",
+            "y": "482",
+            "sprite": "sprite_person",
+            "scale": "0.7"
           }
         }
       ]
+    },
+    "keyboard_press": {
+      "N": {
+        "actions": [
+          {
+            "action": "next_room",
+            "parameters": {}
+          }
+        ],
+        "key_code": 110
+      },
+      "P": {
+        "actions": [
+          {
+            "action": "previous_room",
+            "parameters": {}
+          }
+        ],
+        "key_code": 112
+      }
     }
   },
   "imported": true,
   "created": "2026-06-05T11:12:38.634466",
-  "modified": "2026-06-05T11:12:38.634466"
+  "modified": "2026-06-05T18:15:05.787953",
+  "parent": ""
 }

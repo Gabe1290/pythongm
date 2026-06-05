@@ -12,88 +12,26 @@
         {
           "action": "jump_to_position",
           "parameters": {
-            "x": "-200",
-            "y": "-200",
+            "x": "16",
+            "y": "16",
             "relative": true
           }
         },
         {
           "action": "destroy_at_position",
           "parameters": {
-            "x": "200-16",
-            "y": "200-16",
-            "relative": true
-          }
-        },
-        {
-          "action": "destroy_at_position",
-          "parameters": {
-            "x": "200-16",
-            "y": "200+16",
-            "relative": true
-          }
-        },
-        {
-          "action": "destroy_at_position",
-          "parameters": {
-            "x": "200-16",
-            "y": "200+48",
-            "relative": true
-          }
-        },
-        {
-          "action": "destroy_at_position",
-          "parameters": {
-            "x": "200+16",
-            "y": "200-16",
-            "relative": true
-          }
-        },
-        {
-          "action": "destroy_at_position",
-          "parameters": {
-            "x": "200+16",
-            "y": "200+16",
-            "relative": true
-          }
-        },
-        {
-          "action": "destroy_at_position",
-          "parameters": {
-            "x": "200+16",
-            "y": "200+48",
-            "relative": true
-          }
-        },
-        {
-          "action": "destroy_at_position",
-          "parameters": {
-            "x": "200+48",
-            "y": "200-16",
-            "relative": true
-          }
-        },
-        {
-          "action": "destroy_at_position",
-          "parameters": {
-            "x": "200+48",
-            "y": "200+16",
-            "relative": true
-          }
-        },
-        {
-          "action": "destroy_at_position",
-          "parameters": {
-            "x": "200+48",
-            "y": "200+48",
-            "relative": true
+            "object": "non-solid",
+            "x": "0",
+            "y": "0",
+            "relative": true,
+            "radius": "64"
           }
         },
         {
           "action": "jump_to_position",
           "parameters": {
-            "x": "200",
-            "y": "200",
+            "x": "-16",
+            "y": "-16",
             "relative": true
           }
         }
@@ -110,5 +48,6 @@
   },
   "imported": true,
   "created": "2026-06-05T11:12:38.634466",
-  "modified": "2026-06-05T11:12:38.634466"
+  "modified": "2026-06-05T18:33:11.209387",
+  "parent": ""
 }

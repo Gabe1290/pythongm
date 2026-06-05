@@ -1,0 +1,22 @@
+{
+  "name": "sprite_monster2",
+  "asset_type": "sprite",
+  "file_path": "sprites/sprite_monster2.png",
+  "width": 32,
+  "height": 32,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": false,
+  "bbox_left": 0,
+  "bbox_right": 32,
+  "bbox_top": 0,
+  "bbox_bottom": 32,
+  "frames": 1,
+  "frame_width": 32,
+  "frame_height": 32,
+  "animation_type": "single",
+  "speed": 10.0,
+  "imported": true,
+  "created": "2026-06-05T11:12:38.522582",
+  "modified": "2026-06-05T11:12:38.522582"
+}
