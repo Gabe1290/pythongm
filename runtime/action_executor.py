@@ -2355,6 +2355,10 @@ class ActionExecutor:
         x = int(parameters.get("x", 0))
         y = int(parameters.get("y", 0))
         sprite_name = parameters.get("sprite", "")
+        try:
+            scale = float(parameters.get("scale", 1.0))
+        except (ValueError, TypeError):
+            scale = 1.0
 
         # Queue lives drawing
         if not hasattr(instance, '_draw_queue'):
@@ -2365,7 +2369,8 @@ class ActionExecutor:
             'count': self.game_runner.lives,
             'x': x,
             'y': y,
-            'sprite': sprite_name
+            'sprite': sprite_name,
+            'scale': scale
         })
 
     def execute_set_health_action(self, instance, parameters: Dict[str, Any]):

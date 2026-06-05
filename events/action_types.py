@@ -1491,6 +1491,12 @@ ACTION_TYPES = {
                 description="Sprite drawn once per remaining life",
                 required=False,
             ),
+            ActionParameter(
+                name="scale", display_name="Scale",
+                param_type="float", default_value=1.0,
+                description="Uniform scale factor for the life icon (1.0 = native size)",
+                required=False,
+            ),
         ],
     ),
 

@@ -883,6 +883,12 @@ class GameInstance:
                 surface = sprite.surface
 
         if surface is not None:
+            # Optional uniform scale for the life icon.
+            scale = cmd.get('scale', 1.0) or 1.0
+            if scale != 1.0:
+                w = max(1, int(surface.get_width() * scale))
+                h = max(1, int(surface.get_height() * scale))
+                surface = pygame.transform.scale(surface, (w, h))
             step = surface.get_width()
             for i in range(max(0, count)):
                 screen.blit(surface, (x + i * step, y))

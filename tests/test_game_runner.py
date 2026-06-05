@@ -2113,6 +2113,29 @@ class TestDrawQueueSpriteResolution:
         assert screen.get_at((22, 5))[:3] == (255, 0, 0)
         assert screen.get_at((35, 5))[:3] == (0, 0, 0)
 
+    def test_draw_lives_scales_icon(self):
+        import pygame
+        import types
+        pygame.init()
+        pygame.font.init()
+        icon = self._icon((255, 0, 0))  # 10x10
+        inst = self._make_instance(
+            {'spr_life': types.SimpleNamespace(frames=[icon], surface=icon)}
+        )
+        screen = pygame.Surface((200, 50))
+        screen.fill((0, 0, 0))
+
+        # 2x scale -> 20px-wide icons, so they step by 20: x=0,20,40.
+        inst._draw_lives(
+            screen, {'count': 3, 'x': 0, 'y': 0, 'sprite': 'spr_life', 'scale': 2.0}
+        )
+        assert screen.get_at((2, 5))[:3] == (255, 0, 0)
+        assert screen.get_at((22, 5))[:3] == (255, 0, 0)
+        assert screen.get_at((42, 5))[:3] == (255, 0, 0)
+        # A scaled icon now covers x=15 (inside the first 20px icon), which an
+        # unscaled 10px icon would have left black.
+        assert screen.get_at((15, 5))[:3] == (255, 0, 0)
+
     def test_draw_lives_text_fallback_when_no_sprite(self):
         import pygame
         pygame.init()
