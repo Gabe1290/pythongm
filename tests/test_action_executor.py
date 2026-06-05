@@ -4001,5 +4001,66 @@ class TestCheckEmptyRelative:
         assert seen["object_type"] == "solid"
 
 
+class TestShowMessageOrdering:
+    """show_message must display in the authored action order, like show_highscore.
+
+    Regression: show_message only queued into pending_messages (drained by the
+    game loop after the event), so a same-event show_highscore — which shows
+    immediately — appeared first, inverting the order. show_message now shows
+    synchronously when a live screen is present.
+    """
+
+    def _runner_with_screen(self, calls):
+        runner = MockGameRunner()
+        runner.screen = object()  # a live screen present
+        runner.show_message_dialog = lambda msg: calls.append(("message", msg))
+        runner.show_highscore_dialog = lambda **kw: calls.append(("highscore", kw))
+        return runner
+
+    def test_shown_synchronously_when_screen_present(self):
+        calls = []
+        executor = ActionExecutor(game_runner=self._runner_with_screen(calls))
+        instance = MockInstance()
+        executor.execute_show_message_action(instance, {"message": "Hi"})
+        assert calls == [("message", "Hi")]
+        assert instance.pending_messages == []  # not queued when shown directly
+
+    def test_message_before_highscore(self):
+        calls = []
+        executor = ActionExecutor(game_runner=self._runner_with_screen(calls))
+        instance = MockInstance()
+        # Authored order: message, then highscore.
+        executor.execute_show_message_action(instance, {"message": "You won"})
+        executor.execute_show_highscore_action(instance, {})
+        assert [c[0] for c in calls] == ["message", "highscore"]
+
+    def test_show_info_shown_synchronously_when_screen_present(self):
+        calls = []
+        runner = self._runner_with_screen(calls)
+        runner.project_data = {"name": "My Game", "version": "1.2", "author": "Me"}
+        executor = ActionExecutor(game_runner=runner)
+        instance = MockInstance()
+        executor.execute_show_info_action(instance, {})
+        assert [c[0] for c in calls] == ["message"]
+        assert "My Game" in calls[0][1]
+        assert instance.pending_messages == []  # not queued when shown directly
+
+    def test_show_info_before_highscore(self):
+        calls = []
+        runner = self._runner_with_screen(calls)
+        runner.project_data = {"name": "My Game"}
+        executor = ActionExecutor(game_runner=runner)
+        instance = MockInstance()
+        executor.execute_show_info_action(instance, {})
+        executor.execute_show_highscore_action(instance, {})
+        assert [c[0] for c in calls] == ["message", "highscore"]
+
+    def test_falls_back_to_queue_without_screen(self):
+        executor = ActionExecutor(game_runner=None)
+        instance = MockInstance()
+        executor.execute_show_message_action(instance, {"message": "Queued"})
+        assert "Queued" in instance.pending_messages
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
