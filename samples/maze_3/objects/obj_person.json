@@ -14,6 +14,12 @@
           "parameters": {
             "text": "Do nothing, but notify it"
           }
+        },
+        {
+          "action": "snap_to_grid",
+          "parameters": {
+            "grid_size": "32"
+          }
         }
       ],
       "target_object": "obj_block"
@@ -25,13 +31,6 @@
           "parameters": {
             "sound": "sound_dead",
             "loop": "0"
-          }
-        },
-        {
-          "action": "if_object_exists",
-          "parameters": {
-            "object": "1000",
-            "count": "1"
           }
         },
         {
@@ -60,13 +59,6 @@
           }
         },
         {
-          "action": "if_object_exists",
-          "parameters": {
-            "object": "1000",
-            "count": "1"
-          }
-        },
-        {
           "action": "set_lives",
           "parameters": {
             "value": "-1",
@@ -92,13 +84,6 @@
           }
         },
         {
-          "action": "if_object_exists",
-          "parameters": {
-            "object": "1000",
-            "count": "1"
-          }
-        },
-        {
           "action": "set_lives",
           "parameters": {
             "value": "-1",
@@ -121,6 +106,12 @@
           "parameters": {
             "directions": "stop",
             "speed": "8"
+          }
+        },
+        {
+          "action": "snap_to_grid",
+          "parameters": {
+            "grid_size": "32"
           }
         }
       ],
@@ -221,5 +212,6 @@
   },
   "imported": true,
   "created": "2026-06-05T11:12:38.634466",
-  "modified": "2026-06-05T11:12:38.634466"
+  "modified": "2026-06-05T18:33:11.478892",
+  "parent": ""
 }

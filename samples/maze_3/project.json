@@ -2,7 +2,7 @@
   "name": "maze3_reimport",
   "version": "1.0.0",
   "created": "2026-06-05T11:12:38.522566",
-  "modified": "2026-06-05T11:12:38.522566",
+  "modified": "2026-06-05T19:56:03.638665",
   "settings": {
     "window_title": "",
     "window_width": 480,
@@ -267,7 +267,7 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-06-05T11:12:38.522582",
-        "modified": "2026-06-05T11:12:38.522582"
+        "modified": "2026-06-05T18:33:11.278172"
       },
       "sprite_block": {
         "name": "sprite_block",
@@ -472,13 +472,6 @@
           "collision_with_obj_person": {
             "actions": [
               {
-                "action": "set_score",
-                "parameters": {
-                  "value": "40",
-                  "relative": true
-                }
-              },
-              {
                 "action": "play_sound",
                 "parameters": {
                   "sound": "sound_goal",
@@ -486,53 +479,43 @@
                 }
               },
               {
-                "action": "if_object_exists",
-                "parameters": {
-                  "object": "1000",
-                  "count": "1"
-                }
-              },
-              {
                 "action": "if_next_room_exists",
-                "parameters": {}
-              },
-              {
-                "action": "next_room",
                 "parameters": {
-                  "transition": "0"
+                  "then_actions": [
+                    {
+                      "action": "next_room",
+                      "parameters": {}
+                    }
+                  ],
+                  "else_actions": [
+                    {
+                      "action": "show_message",
+                      "parameters": {
+                        "message": "CONGRATULATIONS#You finished all levels!!!"
+                      }
+                    },
+                    {
+                      "action": "set_score",
+                      "parameters": {
+                        "value": "100",
+                        "relative": true
+                      }
+                    },
+                    {
+                      "action": "show_highscore",
+                      "parameters": {
+                        "background": "#FFFFDD",
+                        "new_color": "#FF0000",
+                        "other_color": "#000000",
+                        "allow_new_entry": true
+                      }
+                    },
+                    {
+                      "action": "restart_game",
+                      "parameters": {}
+                    }
+                  ]
                 }
-              },
-              {
-                "action": "else_action",
-                "parameters": {}
-              },
-              {
-                "action": "start_block",
-                "parameters": {}
-              },
-              {
-                "action": "show_message",
-                "parameters": {
-                  "message": "CONGRATULATIONS#You finished all levels."
-                }
-              },
-              {
-                "action": "set_score",
-                "parameters": {
-                  "value": "100"
-                }
-              },
-              {
-                "action": "show_highscore",
-                "parameters": {}
-              },
-              {
-                "action": "restart_game",
-                "parameters": {}
-              },
-              {
-                "action": "end_block",
-                "parameters": {}
               }
             ],
             "target_object": "obj_person"
@@ -540,7 +523,8 @@
         },
         "imported": true,
         "created": "2026-06-05T11:12:38.634466",
-        "modified": "2026-06-05T11:12:38.634466"
+        "modified": "2026-06-05T19:36:04.821828",
+        "parent": ""
       },
       "obj_person": {
         "name": "obj_person",
@@ -558,6 +542,12 @@
                 "parameters": {
                   "text": "Do nothing, but notify it"
                 }
+              },
+              {
+                "action": "snap_to_grid",
+                "parameters": {
+                  "grid_size": "32"
+                }
               }
             ],
             "target_object": "obj_block"
@@ -569,13 +559,6 @@
                 "parameters": {
                   "sound": "sound_dead",
                   "loop": "0"
-                }
-              },
-              {
-                "action": "if_object_exists",
-                "parameters": {
-                  "object": "1000",
-                  "count": "1"
                 }
               },
               {
@@ -604,13 +587,6 @@
                 }
               },
               {
-                "action": "if_object_exists",
-                "parameters": {
-                  "object": "1000",
-                  "count": "1"
-                }
-              },
-              {
                 "action": "set_lives",
                 "parameters": {
                   "value": "-1",
@@ -636,13 +612,6 @@
                 }
               },
               {
-                "action": "if_object_exists",
-                "parameters": {
-                  "object": "1000",
-                  "count": "1"
-                }
-              },
-              {
                 "action": "set_lives",
                 "parameters": {
                   "value": "-1",
@@ -665,6 +634,12 @@
                 "parameters": {
                   "directions": "stop",
                   "speed": "8"
+                }
+              },
+              {
+                "action": "snap_to_grid",
+                "parameters": {
+                  "grid_size": "32"
                 }
               }
             ],
@@ -765,7 +740,8 @@
         },
         "imported": true,
         "created": "2026-06-05T11:12:38.634466",
-        "modified": "2026-06-05T11:12:38.634466"
+        "modified": "2026-06-05T18:33:11.478892",
+        "parent": ""
       },
       "obj_door": {
         "name": "obj_door",
@@ -926,21 +902,21 @@
             ]
           },
           "keyboard": {
-            "anykey": {
+            "SPACE": {
               "actions": [
                 {
                   "action": "next_room",
-                  "parameters": {
-                    "transition": "0"
-                  }
+                  "parameters": {}
                 }
-              ]
+              ],
+              "key_code": 32
             }
           }
         },
         "imported": true,
         "created": "2026-06-05T11:12:38.634466",
-        "modified": "2026-06-05T11:12:38.634466"
+        "modified": "2026-06-05T18:15:05.925696",
+        "parent": ""
       },
       "controller_main": {
         "name": "controller_main",
@@ -1001,42 +977,61 @@
               {
                 "action": "set_draw_color",
                 "parameters": {
-                  "color": "255"
+                  "color": "#ffffff"
                 }
               },
               {
                 "action": "draw_score",
                 "parameters": {
-                  "x": "300",
-                  "y": "4",
-                  "caption": "Score: ",
-                  "relative": true
+                  "x": "8",
+                  "y": "488",
+                  "caption": "Score: "
                 }
               },
               {
                 "action": "draw_text",
                 "parameters": {
                   "text": "Lives:",
-                  "x": "8",
-                  "y": "0",
-                  "relative": true
+                  "x": "128",
+                  "y": "488"
                 }
               },
               {
                 "action": "draw_lives",
                 "parameters": {
-                  "x": "70",
-                  "y": "4",
-                  "image": "sprite_lives",
-                  "relative": true
+                  "x": "180",
+                  "y": "482",
+                  "sprite": "sprite_person",
+                  "scale": "0.7"
                 }
               }
             ]
+          },
+          "keyboard_press": {
+            "N": {
+              "actions": [
+                {
+                  "action": "next_room",
+                  "parameters": {}
+                }
+              ],
+              "key_code": 110
+            },
+            "P": {
+              "actions": [
+                {
+                  "action": "previous_room",
+                  "parameters": {}
+                }
+              ],
+              "key_code": 112
+            }
           }
         },
         "imported": true,
         "created": "2026-06-05T11:12:38.634466",
-        "modified": "2026-06-05T11:12:38.634466"
+        "modified": "2026-06-05T18:15:05.787953",
+        "parent": ""
       },
       "monster_lr": {
         "name": "monster_lr",
@@ -1205,7 +1200,8 @@
         "events": {},
         "imported": true,
         "created": "2026-06-05T11:12:38.634466",
-        "modified": "2026-06-05T11:12:38.634466"
+        "modified": "2026-06-05T18:15:06.063034",
+        "parent": ""
       },
       "obj trigger": {
         "name": "obj trigger",
@@ -1228,8 +1224,10 @@
               {
                 "action": "change_instance",
                 "parameters": {
+                  "target": "object",
+                  "target_object": "obj_bomb",
                   "object": "obj_explosion",
-                  "perform_events": "1"
+                  "perform_events": true
                 }
               },
               {
@@ -1242,7 +1240,8 @@
         },
         "imported": true,
         "created": "2026-06-05T11:12:38.634466",
-        "modified": "2026-06-05T11:12:38.634466"
+        "modified": "2026-06-05T18:15:06.130977",
+        "parent": ""
       },
       "obj_explosion": {
         "name": "obj_explosion",
@@ -1258,88 +1257,26 @@
               {
                 "action": "jump_to_position",
                 "parameters": {
-                  "x": "-200",
-                  "y": "-200",
+                  "x": "16",
+                  "y": "16",
                   "relative": true
                 }
               },
               {
                 "action": "destroy_at_position",
                 "parameters": {
-                  "x": "200-16",
-                  "y": "200-16",
-                  "relative": true
-                }
-              },
-              {
-                "action": "destroy_at_position",
-                "parameters": {
-                  "x": "200-16",
-                  "y": "200+16",
-                  "relative": true
-                }
-              },
-              {
-                "action": "destroy_at_position",
-                "parameters": {
-                  "x": "200-16",
-                  "y": "200+48",
-                  "relative": true
-                }
-              },
-              {
-                "action": "destroy_at_position",
-                "parameters": {
-                  "x": "200+16",
-                  "y": "200-16",
-                  "relative": true
-                }
-              },
-              {
-                "action": "destroy_at_position",
-                "parameters": {
-                  "x": "200+16",
-                  "y": "200+16",
-                  "relative": true
-                }
-              },
-              {
-                "action": "destroy_at_position",
-                "parameters": {
-                  "x": "200+16",
-                  "y": "200+48",
-                  "relative": true
-                }
-              },
-              {
-                "action": "destroy_at_position",
-                "parameters": {
-                  "x": "200+48",
-                  "y": "200-16",
-                  "relative": true
-                }
-              },
-              {
-                "action": "destroy_at_position",
-                "parameters": {
-                  "x": "200+48",
-                  "y": "200+16",
-                  "relative": true
-                }
-              },
-              {
-                "action": "destroy_at_position",
-                "parameters": {
-                  "x": "200+48",
-                  "y": "200+48",
-                  "relative": true
+                  "object": "non-solid",
+                  "x": "0",
+                  "y": "0",
+                  "relative": true,
+                  "radius": "64"
                 }
               },
               {
                 "action": "jump_to_position",
                 "parameters": {
-                  "x": "200",
-                  "y": "200",
+                  "x": "-16",
+                  "y": "-16",
                   "relative": true
                 }
               }
@@ -1356,7 +1293,8 @@
         },
         "imported": true,
         "created": "2026-06-05T11:12:38.634466",
-        "modified": "2026-06-05T11:12:38.634466"
+        "modified": "2026-06-05T18:33:11.209387",
+        "parent": ""
       },
       "obj_block": {
         "name": "obj_block",
@@ -1374,8 +1312,8 @@
                 "parameters": {
                   "x": "8*other.hspeed",
                   "y": "8*other.vspeed",
-                  "objects": "all",
-                  "relative": true
+                  "relative": true,
+                  "objects": "all"
                 }
               },
               {
@@ -1436,7 +1374,7 @@
         },
         "imported": true,
         "created": "2026-06-05T11:12:38.634466",
-        "modified": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T18:46:05.377432",
         "parent": "wall_corner"
       },
       "obj_hole": {
@@ -1459,7 +1397,10 @@
               },
               {
                 "action": "destroy_instance",
-                "parameters": {}
+                "parameters": {
+                  "target": "other",
+                  "target_object": ""
+                }
               },
               {
                 "action": "destroy_instance",
@@ -1471,7 +1412,7 @@
         },
         "imported": true,
         "created": "2026-06-05T11:12:38.634466",
-        "modified": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T19:05:17.672010",
         "parent": "wall_corner"
       }
     },
@@ -1487,10 +1428,11 @@
         "tile_vertical": false,
         "instance_count": 1,
         "instances": [],
-        "_external_file": "rooms/room_start.json",
         "created": "2026-06-05T11:12:38.636764",
-        "modified": "2026-06-05T11:12:38.636764",
-        "imported": true
+        "modified": "2026-06-05T18:15:05.856093",
+        "imported": true,
+        "tiles": [],
+        "_external_file": "rooms/room_start.json"
       },
       "room1": {
         "name": "room1",
@@ -1501,12 +1443,111 @@
         "background_image": "background_main",
         "tile_horizontal": false,
         "tile_vertical": false,
-        "instance_count": 130,
+        "instance_count": 134,
         "instances": [],
-        "_external_file": "rooms/room1.json",
         "created": "2026-06-05T11:12:38.636764",
-        "modified": "2026-06-05T11:12:38.636764",
-        "imported": true
+        "modified": "2026-06-05T16:59:41.676095",
+        "imported": true,
+        "backgrounds": [
+          {
+            "visible": true,
+            "foreground": false,
+            "background_image": "background_main",
+            "x": 0,
+            "y": 0,
+            "tile_h": true,
+            "tile_v": true,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": true
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          }
+        ],
+        "tiles": [],
+        "_external_file": "rooms/room1.json"
       },
       "room2": {
         "name": "room2",
@@ -1519,10 +1560,109 @@
         "tile_vertical": false,
         "instance_count": 96,
         "instances": [],
-        "_external_file": "rooms/room2.json",
         "created": "2026-06-05T11:12:38.636764",
-        "modified": "2026-06-05T11:12:38.636764",
-        "imported": true
+        "modified": "2026-06-05T18:06:09.747107",
+        "imported": true,
+        "backgrounds": [
+          {
+            "background_image": "background_main",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": true,
+            "tile_h": true,
+            "tile_v": true,
+            "visible": true,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          }
+        ],
+        "tiles": [],
+        "_external_file": "rooms/room2.json"
       },
       "room3": {
         "name": "room3",
@@ -1535,10 +1675,109 @@
         "tile_vertical": false,
         "instance_count": 105,
         "instances": [],
-        "_external_file": "rooms/room3.json",
         "created": "2026-06-05T11:12:38.636764",
-        "modified": "2026-06-05T11:12:38.636764",
-        "imported": true
+        "modified": "2026-06-05T18:06:29.756740",
+        "imported": true,
+        "backgrounds": [
+          {
+            "background_image": "background_main",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": true,
+            "tile_h": true,
+            "tile_v": true,
+            "visible": true,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_image": "",
+            "foreground": false,
+            "hspeed": 0.0,
+            "stretch": false,
+            "tile_h": false,
+            "tile_v": false,
+            "visible": false,
+            "vspeed": 0.0,
+            "x": 0,
+            "y": 0
+          }
+        ],
+        "tiles": [],
+        "_external_file": "rooms/room3.json"
       },
       "room4": {
         "name": "room4",
@@ -1549,12 +1788,111 @@
         "background_image": "background_main",
         "tile_horizontal": false,
         "tile_vertical": false,
-        "instance_count": 94,
+        "instance_count": 95,
         "instances": [],
-        "_external_file": "rooms/room4.json",
         "created": "2026-06-05T11:12:38.636764",
-        "modified": "2026-06-05T11:12:38.636764",
-        "imported": true
+        "modified": "2026-06-05T18:15:06.198489",
+        "imported": true,
+        "backgrounds": [
+          {
+            "visible": true,
+            "foreground": false,
+            "background_image": "background_main",
+            "x": 0,
+            "y": 0,
+            "tile_h": true,
+            "tile_v": true,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": true
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          }
+        ],
+        "tiles": [],
+        "_external_file": "rooms/room4.json"
       },
       "room5": {
         "name": "room5",
@@ -1565,12 +1903,111 @@
         "background_image": "background_main",
         "tile_horizontal": false,
         "tile_vertical": false,
-        "instance_count": 98,
+        "instance_count": 99,
         "instances": [],
-        "_external_file": "rooms/room5.json",
         "created": "2026-06-05T11:12:38.636764",
-        "modified": "2026-06-05T11:12:38.636764",
-        "imported": true
+        "modified": "2026-06-05T19:18:02.674313",
+        "imported": true,
+        "backgrounds": [
+          {
+            "visible": true,
+            "foreground": false,
+            "background_image": "background_main",
+            "x": 0,
+            "y": 0,
+            "tile_h": true,
+            "tile_v": true,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": true
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          },
+          {
+            "visible": false,
+            "foreground": false,
+            "background_image": "",
+            "x": 0,
+            "y": 0,
+            "tile_h": false,
+            "tile_v": false,
+            "hspeed": 0.0,
+            "vspeed": 0.0,
+            "stretch": false
+          }
+        ],
+        "tiles": [],
+        "_external_file": "rooms/room5.json"
       }
     },
     "scripts": {},

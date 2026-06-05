@@ -42,19 +42,19 @@
       ]
     },
     "keyboard": {
-      "anykey": {
+      "SPACE": {
         "actions": [
           {
             "action": "next_room",
-            "parameters": {
-              "transition": "0"
-            }
+            "parameters": {}
           }
-        ]
+        ],
+        "key_code": 32
       }
     }
   },
   "imported": true,
   "created": "2026-06-05T11:12:38.634466",
-  "modified": "2026-06-05T11:12:38.634466"
+  "modified": "2026-06-05T18:15:05.925696",
+  "parent": ""
 }

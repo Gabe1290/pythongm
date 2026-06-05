@@ -14,8 +14,8 @@
           "parameters": {
             "x": "8*other.hspeed",
             "y": "8*other.vspeed",
-            "objects": "all",
-            "relative": true
+            "relative": true,
+            "objects": "all"
           }
         },
         {
@@ -76,6 +76,6 @@
   },
   "imported": true,
   "created": "2026-06-05T11:12:38.634466",
-  "modified": "2026-06-05T11:12:38.634466",
+  "modified": "2026-06-05T18:46:05.377432",
   "parent": "wall_corner"
 }

@@ -1,0 +1,22 @@
+{
+  "name": "sprite_explosion",
+  "asset_type": "sprite",
+  "file_path": "sprites/sprite_explosion.png",
+  "width": 1536,
+  "height": 96,
+  "origin_x": 32,
+  "origin_y": 32,
+  "precise": false,
+  "bbox_left": 0,
+  "bbox_right": 96,
+  "bbox_top": 0,
+  "bbox_bottom": 96,
+  "frames": 16,
+  "frame_width": 96,
+  "frame_height": 96,
+  "animation_type": "strip_h",
+  "speed": 10.0,
+  "imported": true,
+  "created": "2026-06-05T11:12:38.522582",
+  "modified": "2026-06-05T18:33:11.278172"
+}

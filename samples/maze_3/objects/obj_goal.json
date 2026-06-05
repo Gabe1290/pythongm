@@ -10,13 +10,6 @@
     "collision_with_obj_person": {
       "actions": [
         {
-          "action": "set_score",
-          "parameters": {
-            "value": "40",
-            "relative": true
-          }
-        },
-        {
           "action": "play_sound",
           "parameters": {
             "sound": "sound_goal",
@@ -24,53 +17,43 @@
           }
         },
         {
-          "action": "if_object_exists",
-          "parameters": {
-            "object": "1000",
-            "count": "1"
-          }
-        },
-        {
           "action": "if_next_room_exists",
-          "parameters": {}
-        },
-        {
-          "action": "next_room",
           "parameters": {
-            "transition": "0"
+            "then_actions": [
+              {
+                "action": "next_room",
+                "parameters": {}
+              }
+            ],
+            "else_actions": [
+              {
+                "action": "show_message",
+                "parameters": {
+                  "message": "CONGRATULATIONS#You finished all levels!!!"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "100",
+                  "relative": true
+                }
+              },
+              {
+                "action": "show_highscore",
+                "parameters": {
+                  "background": "#FFFFDD",
+                  "new_color": "#FF0000",
+                  "other_color": "#000000",
+                  "allow_new_entry": true
+                }
+              },
+              {
+                "action": "restart_game",
+                "parameters": {}
+              }
+            ]
           }
-        },
-        {
-          "action": "else_action",
-          "parameters": {}
-        },
-        {
-          "action": "start_block",
-          "parameters": {}
-        },
-        {
-          "action": "show_message",
-          "parameters": {
-            "message": "CONGRATULATIONS#You finished all levels."
-          }
-        },
-        {
-          "action": "set_score",
-          "parameters": {
-            "value": "100"
-          }
-        },
-        {
-          "action": "show_highscore",
-          "parameters": {}
-        },
-        {
-          "action": "restart_game",
-          "parameters": {}
-        },
-        {
-          "action": "end_block",
-          "parameters": {}
         }
       ],
       "target_object": "obj_person"
@@ -78,5 +61,6 @@
   },
   "imported": true,
   "created": "2026-06-05T11:12:38.634466",
-  "modified": "2026-06-05T11:12:38.634466"
+  "modified": "2026-06-05T19:36:04.821828",
+  "parent": ""
 }

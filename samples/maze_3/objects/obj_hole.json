@@ -18,7 +18,10 @@
         },
         {
           "action": "destroy_instance",
-          "parameters": {}
+          "parameters": {
+            "target": "other",
+            "target_object": ""
+          }
         },
         {
           "action": "destroy_instance",
@@ -30,6 +33,6 @@
   },
   "imported": true,
   "created": "2026-06-05T11:12:38.634466",
-  "modified": "2026-06-05T11:12:38.634466",
+  "modified": "2026-06-05T19:05:17.672010",
   "parent": "wall_corner"
 }
