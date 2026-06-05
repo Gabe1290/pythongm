@@ -2487,6 +2487,81 @@ class TestMain1TabActions:
             'y': 200
         })
 
+    def test_destroy_at_position_object_all_destroys_every_type(self):
+        """object='all' (the dropdown default) destroys every type in range"""
+        mock_runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        a = MockInstance("obj_a"); a.x = 100; a.y = 200
+        b = MockInstance("obj_b"); b.x = 100; b.y = 200
+        mock_runner.current_room.instances.extend([a, b])
+
+        executor.execute_destroy_at_position_action(instance, {
+            'x': 100, 'y': 200, 'object': 'all'
+        })
+
+        assert a.to_destroy is True
+        assert b.to_destroy is True
+
+    def test_destroy_at_position_object_solid_only(self):
+        """object='solid' destroys only solid instances in range"""
+        mock_runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        solid = MockInstance("wall"); solid.x = 100; solid.y = 200
+        solid._cached_object_data = {'solid': True}
+        loose = MockInstance("coin"); loose.x = 100; loose.y = 200
+        loose._cached_object_data = {'solid': False}
+        mock_runner.current_room.instances.extend([solid, loose])
+
+        executor.execute_destroy_at_position_action(instance, {
+            'x': 100, 'y': 200, 'object': 'solid'
+        })
+
+        assert solid.to_destroy is True
+        assert loose.to_destroy is False
+
+    def test_destroy_at_position_object_non_solid_only(self):
+        """object='non-solid' destroys everything except solid instances —
+        lets an explosion spare the walls."""
+        mock_runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance()
+
+        wall = MockInstance("wall"); wall.x = 100; wall.y = 200
+        wall._cached_object_data = {'solid': True}
+        coin = MockInstance("coin"); coin.x = 100; coin.y = 200
+        coin._cached_object_data = {'solid': False}
+        mock_runner.current_room.instances.extend([wall, coin])
+
+        executor.execute_destroy_at_position_action(instance, {
+            'x': 100, 'y': 200, 'object': 'non-solid'
+        })
+
+        assert wall.to_destroy is False
+        assert coin.to_destroy is True
+
+    def test_destroy_at_position_legacy_target_self(self):
+        """Back-compat: an action saved via the old 'applies to' group
+        (target='self', no 'object' param) still filters to the caller's
+        object type."""
+        mock_runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=mock_runner)
+        instance = MockInstance("hero")
+
+        same = MockInstance("hero"); same.x = 100; same.y = 200
+        other = MockInstance("villain"); other.x = 100; other.y = 200
+        mock_runner.current_room.instances.extend([same, other])
+
+        executor.execute_destroy_at_position_action(instance, {
+            'x': 100, 'y': 200, 'target': 'self'
+        })
+
+        assert same.to_destroy is True
+        assert other.to_destroy is False
+
 
 # ==============================================================================
 # Main2 Tab Actions Tests

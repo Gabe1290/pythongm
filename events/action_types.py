@@ -895,8 +895,17 @@ ACTION_TYPES = {
         description="Destroy instances within radius of (x, y)",
         category="Instance",
         icon="💣",
-        supports_applies_to=True,
         parameters=[
+            ActionParameter(
+                name="object",
+                display_name="Object",
+                param_type="object",
+                default_value="all",
+                description="Which object type to destroy. 'all' destroys "
+                            "every instance in range; 'solid' only solid ones "
+                            "(e.g. walls); 'non-solid' everything except solids.",
+                choices=["all", "solid", "non-solid"],
+            ),
             ActionParameter(
                 name="x",
                 display_name="X",
