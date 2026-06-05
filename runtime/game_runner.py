@@ -856,13 +856,45 @@ class GameInstance:
         screen.blit(text_surface, (int(x), int(y)))
 
     def _draw_lives(self, screen: pygame.Surface, cmd: dict):
-        """Draw lives (as text for now)"""
+        """Draw the life count as repeated sprite images.
+
+        Matches the classic GameMaker "draw lives as image" action: one copy
+        of the chosen sprite is blitted per remaining life, laid out
+        left-to-right. When no sprite is given (or it can't be resolved) we
+        fall back to a ``Lives: N`` text readout.
+        """
+        count = int(cmd.get('count', 0) or 0)
+        x = int(cmd.get('x', 0))
+        y = int(cmd.get('y', 0))
+        sprite_name = cmd.get('sprite', '')
+
+        # Resolve the life-icon surface (first frame for animated sprites).
+        # The sprite registry lives on the GameRunner, reached via this
+        # instance's action_executor back-reference (same pattern as
+        # _draw_background) — GameInstance itself has no `sprites` dict.
+        surface = None
+        runner = getattr(getattr(self, 'action_executor', None), 'game_runner', None)
+        sprites = getattr(runner, 'sprites', None) or {}
+        if sprite_name and sprite_name in sprites:
+            sprite = sprites[sprite_name]
+            if getattr(sprite, 'frames', None):
+                surface = sprite.frames[0]
+            elif getattr(sprite, 'surface', None):
+                surface = sprite.surface
+
+        if surface is not None:
+            step = surface.get_width()
+            for i in range(max(0, count)):
+                screen.blit(surface, (x + i * step, y))
+            return
+
+        # No usable sprite — fall back to a numeric readout (also covers the
+        # case where draw_lives is used without picking a sprite).
+        if sprite_name:
+            logger.warning(
+                f"⚠️ draw_lives: sprite '{sprite_name}' not found; drawing count as text"
+            )
         font = self._get_cached_font(24)
-
-        count = cmd.get('count', 0)
-        x = cmd.get('x', 0)
-        y = cmd.get('y', 0)
-
         text_surface = font.render(f"Lives: {count}", True, (255, 255, 255))
         screen.blit(text_surface, (x, y))
 
