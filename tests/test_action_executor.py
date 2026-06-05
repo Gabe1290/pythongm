@@ -3964,6 +3964,42 @@ class TestCheckEmptyRelative:
         )
         assert seen == [(32.0, -16.0)]
 
+    def test_objects_all_maps_to_all_mode(self):
+        """objects='all' must reach check_collision_at_position as 'all', not 'any'.
+
+        'any' is solid-only and ignores non-solid monsters, which let a pushed
+        block's check_empty see an occupied cell as empty and teleport over a
+        monster (maze_3 regression).
+        """
+        runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=runner)
+        instance = MockInstance()
+
+        seen = {}
+
+        def record(inst, x, y, object_type, exclude=None):
+            seen["object_type"] = object_type
+            return False
+
+        runner.check_collision_at_position = record
+        executor.execute_check_empty_action(instance, {"x": 0, "y": 0, "objects": "all"})
+        assert seen["object_type"] == "all"
+
+    def test_objects_solid_maps_to_solid_mode(self):
+        runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=runner)
+        instance = MockInstance()
+
+        seen = {}
+
+        def record(inst, x, y, object_type, exclude=None):
+            seen["object_type"] = object_type
+            return False
+
+        runner.check_collision_at_position = record
+        executor.execute_check_empty_action(instance, {"x": 0, "y": 0, "objects": "solid"})
+        assert seen["object_type"] == "solid"
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

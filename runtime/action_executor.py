@@ -1441,9 +1441,11 @@ class ActionExecutor:
             x_val += instance.x
             y_val += instance.y
 
-        # "solid" → only solid instances block; "all" → any instance blocks.
-        # check_collision_at_position's filter uses "solid" / "any" tokens.
-        object_type = "solid" if objects == "solid" else "any"
+        # "solid" → only solid instances occupy the cell; "all" → ANY instance
+        # does, solid or not (GM place_empty semantics). Note: do NOT map "all"
+        # to "any" — check_collision_at_position's "any" is solid-only and would
+        # ignore non-solid monsters, letting a pushed block teleport over one.
+        object_type = "solid" if objects == "solid" else "all"
 
         has_collision = False
         if self.game_runner:

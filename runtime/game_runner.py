@@ -3745,6 +3745,8 @@ class GameRunner:
             check_y: Y position to check
             object_type: Type of object to check for:
                 - 'any': Only solid objects (non-solid don't block, collision events fire after move)
+                - 'all': ANY overlapping instance, solid or not (GM place_empty /
+                         "all objects"); used by check_empty's "all" option
                 - 'solid': Only solid objects
                 - specific name: Only that specific object type
             exclude_instance: Additional instance to exclude (e.g., collision other)
@@ -3797,6 +3799,12 @@ class GameRunner:
                         instance, ix, iy,
                         other_instance, ox, oy):
                     continue
+                # "all": every overlapping instance occupies the position,
+                # solid or not (GM "all objects" / place_empty). Solid-only
+                # "any" ignores non-solid monsters, which let a pushed block
+                # teleport over a monster in maze_3.
+                if object_type == "all":
+                    return True
                 # Use cached object data for properties
                 other_obj_data = other_instance._cached_object_data
                 if not other_obj_data:
