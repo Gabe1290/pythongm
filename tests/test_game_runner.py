@@ -2178,5 +2178,52 @@ class TestDrawQueueSpriteResolution:
         assert screen.get_at((5, 5))[:3] == (0, 255, 0)
 
 
+class TestCheckCollisionAllMode:
+    """Regression: object_type='all' must count non-solid instances too.
+
+    check_empty's "all objects" option maps to object_type='all'. The
+    solid-only 'any' mode ignored non-solid monsters, so a pushed block's
+    check_empty saw an occupied cell as empty and teleported the block over
+    the monster (maze_3 "block jumps over monster" -> player loses a life).
+    """
+
+    @staticmethod
+    def _sprite():
+        import types
+        return types.SimpleNamespace(
+            bbox_left=0, bbox_top=0, bbox_right=32, bbox_bottom=32,
+            origin_x=0, origin_y=0,
+        )
+
+    def _runner_and_checker(self):
+        import types
+        from runtime.game_runner import GameRunner
+        gr = GameRunner.__new__(GameRunner)
+        # A non-solid monster overlapping the checked position, with no
+        # stop_movement collision event.
+        monster = types.SimpleNamespace(
+            sprite=self._sprite(), object_name='monster_lr', x=0, y=0,
+            _cached_object_data={'solid': False}, _collision_targets={},
+        )
+        gr.current_room = types.SimpleNamespace(
+            get_nearby_instances=lambda x, y, w, h: [monster]
+        )
+        checker = types.SimpleNamespace(
+            sprite=self._sprite(), _cached_width=32, _cached_height=32,
+            _collision_targets={}, object_name='obj_block', x=0, y=0,
+        )
+        return gr, checker
+
+    def test_any_ignores_nonsolid_monster(self):
+        gr, checker = self._runner_and_checker()
+        # Solid-only mode: a non-solid monster (no stop_movement) does not block.
+        assert gr.check_collision_at_position(checker, 0, 0, 'any') is False
+
+    def test_all_counts_nonsolid_monster(self):
+        gr, checker = self._runner_and_checker()
+        # 'all' mode: any overlapping instance occupies the cell.
+        assert gr.check_collision_at_position(checker, 0, 0, 'all') is True
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
