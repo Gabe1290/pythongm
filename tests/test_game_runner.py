@@ -2064,5 +2064,82 @@ class TestResolveParentInheritance:
         assert result['depth'] == 7
 
 
+class TestDrawQueueSpriteResolution:
+    """Regression tests for the draw_lives / draw_sprite draw-queue handlers.
+
+    Both must resolve sprites from ``GameRunner.sprites`` via the instance's
+    ``action_executor.game_runner`` back-reference. A regression had them read
+    a non-existent ``self.sprites`` on the GameInstance, which crashed the
+    game at draw time with AttributeError the moment a draw_lives/draw_sprite
+    action ran. These tests exercise the real back-reference chain (no
+    manually-injected ``sprites`` attribute that would mask the bug).
+    """
+
+    @staticmethod
+    def _make_instance(sprites):
+        import types
+        from runtime.game_runner import GameInstance
+        inst = GameInstance.__new__(GameInstance)  # skip __init__ / pygame display
+        inst._font_cache = {}
+        inst.action_executor = types.SimpleNamespace(
+            game_runner=types.SimpleNamespace(sprites=sprites)
+        )
+        return inst
+
+    @staticmethod
+    def _icon(color, size=(10, 10)):
+        import pygame
+        surf = pygame.Surface(size)
+        surf.fill(color)
+        return surf
+
+    def test_draw_lives_blits_one_sprite_per_life(self):
+        import pygame
+        import types
+        pygame.init()
+        pygame.font.init()
+        icon = self._icon((255, 0, 0))
+        inst = self._make_instance(
+            {'spr_life': types.SimpleNamespace(frames=[icon], surface=icon)}
+        )
+        screen = pygame.Surface((200, 50))
+        screen.fill((0, 0, 0))
+
+        inst._draw_lives(screen, {'count': 3, 'x': 0, 'y': 0, 'sprite': 'spr_life'})
+
+        # Three 10px-wide icons laid out at x=0,10,20; nothing at x>=30.
+        assert screen.get_at((2, 5))[:3] == (255, 0, 0)
+        assert screen.get_at((12, 5))[:3] == (255, 0, 0)
+        assert screen.get_at((22, 5))[:3] == (255, 0, 0)
+        assert screen.get_at((35, 5))[:3] == (0, 0, 0)
+
+    def test_draw_lives_text_fallback_when_no_sprite(self):
+        import pygame
+        pygame.init()
+        pygame.font.init()
+        inst = self._make_instance({})
+        screen = pygame.Surface((200, 50))
+        screen.fill((0, 0, 0))
+
+        inst._draw_lives(screen, {'count': 3, 'x': 0, 'y': 0, 'sprite': ''})
+
+        # Numeric "Lives: N" readout draws some non-black pixels.
+        assert any(screen.get_at((px, 10))[:3] != (0, 0, 0) for px in range(80))
+
+    def test_draw_lives_no_crash_without_action_executor(self):
+        import pygame
+        from runtime.game_runner import GameInstance
+        pygame.init()
+        pygame.font.init()
+        inst = GameInstance.__new__(GameInstance)
+        inst._font_cache = {}  # deliberately no action_executor attribute
+        screen = pygame.Surface((200, 50))
+        screen.fill((0, 0, 0))
+
+        # Must not raise AttributeError; falls back to text.
+        inst._draw_lives(screen, {'count': 2, 'x': 0, 'y': 0, 'sprite': 'spr_life'})
+        assert any(screen.get_at((px, 10))[:3] != (0, 0, 0) for px in range(80))
+
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
