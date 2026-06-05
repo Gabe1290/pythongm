@@ -116,6 +116,33 @@ def resolve_parent_inheritance(object_data: dict, objects: Dict[str, dict]) -> d
     return merged
 
 
+def expand_hash_newlines(text: str) -> str:
+    r"""Convert GameMaker '#' line breaks in a display string to real newlines.
+
+    In GameMaker display strings (show_message, draw_text, ...) a bare ``#``
+    starts a new line, while an escaped ``\#`` is a literal ``#``. So
+    ``"CONGRATULATIONS#You won"`` renders as two lines, and ``"3 \# 4"``
+    keeps the ``#``.
+    """
+    if not text or '#' not in text:
+        return text
+    out = []
+    i = 0
+    n = len(text)
+    while i < n:
+        ch = text[i]
+        if ch == '\\' and i + 1 < n and text[i + 1] == '#':
+            out.append('#')      # escaped literal '#'
+            i += 2
+        elif ch == '#':
+            out.append('\n')     # GM line break
+            i += 1
+        else:
+            out.append(ch)
+            i += 1
+    return ''.join(out)
+
+
 # Pre-computed alarm key strings to avoid f-string creation in hot loops
 ALARM_KEYS = tuple(f"alarm_{i}" for i in range(12))
 
@@ -4342,18 +4369,6 @@ class GameRunner:
         overlay.fill((0, 0, 0))
         overlay.set_alpha(128)
 
-        # Dialog box dimensions
-        dialog_width = min(400, screen_w - 40)
-        dialog_height = 150
-        dialog_x = (screen_w - dialog_width) // 2
-        dialog_y = (screen_h - dialog_height) // 2
-
-        # Button dimensions
-        button_width = 80
-        button_height = 30
-        button_x = dialog_x + (dialog_width - button_width) // 2
-        button_y = dialog_y + dialog_height - button_height - 15
-
         # Get font
         try:
             font = pygame.font.Font(None, 24)
@@ -4361,6 +4376,40 @@ class GameRunner:
         except Exception:
             font = pygame.font.SysFont('arial', 18)
             title_font = pygame.font.SysFont('arial', 22)
+
+        # Dialog width is fixed; the height grows to fit the message.
+        dialog_width = min(400, screen_w - 40)
+        max_text_width = dialog_width - 30
+        line_height = 22
+        text_top = 45  # first message line, below the 30px title bar
+
+        # GameMaker '#' starts a new line. Honour explicit line breaks first,
+        # then word-wrap each line to the dialog width. Computed once here
+        # rather than every frame inside the dialog loop.
+        lines = []
+        for paragraph in expand_hash_newlines(message).split('\n'):
+            current_line = ""
+            for word in paragraph.split():
+                test_line = current_line + (" " if current_line else "") + word
+                if font.size(test_line)[0] <= max_text_width:
+                    current_line = test_line
+                else:
+                    if current_line:
+                        lines.append(current_line)
+                    current_line = word
+            lines.append(current_line)  # final (possibly empty) line of paragraph
+
+        # Size the dialog to fit the title, every message line and the button,
+        # clamped to the screen.
+        button_width = 80
+        button_height = 30
+        dialog_height = text_top + len(lines) * line_height + 15 + button_height + 15
+        dialog_height = min(dialog_height, screen_h - 40)
+        dialog_x = (screen_w - dialog_width) // 2
+        dialog_y = (screen_h - dialog_height) // 2
+
+        button_x = dialog_x + (dialog_width - button_width) // 2
+        button_y = dialog_y + dialog_height - button_height - 15
 
         # Dialog loop - waits for user to dismiss
         waiting = True
@@ -4394,30 +4443,12 @@ class GameRunner:
             title_text = title_font.render("Message", True, (255, 255, 255))
             self.screen.blit(title_text, (dialog_x + 10, dialog_y + 5))
 
-            # Draw message text (wrap if too long)
-            words = message.split()
-            lines = []
-            current_line = ""
-            max_text_width = dialog_width - 30
-
-            for word in words:
-                test_line = current_line + (" " if current_line else "") + word
-                if font.size(test_line)[0] <= max_text_width:
-                    current_line = test_line
-                else:
-                    if current_line:
-                        lines.append(current_line)
-                    current_line = word
-
-            if current_line:
-                lines.append(current_line)
-
-            # Render message lines
-            y_offset = dialog_y + 45
-            for line in lines[:4]:  # Max 4 lines
+            # Render the pre-wrapped message lines (computed above).
+            y_offset = dialog_y + text_top
+            for line in lines:
                 text_surface = font.render(line, True, (0, 0, 0))
                 self.screen.blit(text_surface, (dialog_x + 15, y_offset))
-                y_offset += 22
+                y_offset += line_height
 
             # Draw OK button
             mouse_pos = pygame.mouse.get_pos()

@@ -2178,6 +2178,29 @@ class TestDrawQueueSpriteResolution:
         assert screen.get_at((5, 5))[:3] == (0, 255, 0)
 
 
+class TestExpandHashNewlines:
+    """GameMaker '#' line-break convention for display strings (show_message)."""
+
+    def test_hash_becomes_newline(self):
+        from runtime.game_runner import expand_hash_newlines
+        assert (expand_hash_newlines("CONGRATULATIONS#You finished all levels.")
+                == "CONGRATULATIONS\nYou finished all levels.")
+
+    def test_multiple_hashes(self):
+        from runtime.game_runner import expand_hash_newlines
+        assert expand_hash_newlines("a#b#c") == "a\nb\nc"
+
+    def test_escaped_hash_is_literal(self):
+        from runtime.game_runner import expand_hash_newlines
+        assert expand_hash_newlines(r"3 \# 4") == "3 # 4"
+        assert expand_hash_newlines(r"mix#a\#b#c") == "mix\na#b\nc"
+
+    def test_no_hash_unchanged(self):
+        from runtime.game_runner import expand_hash_newlines
+        assert expand_hash_newlines("plain text") == "plain text"
+        assert expand_hash_newlines("") == ""
+
+
 class TestCheckCollisionAllMode:
     """Regression: object_type='all' must count non-solid instances too.
 
