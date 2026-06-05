@@ -142,6 +142,39 @@ class TestAssetManagerPaths:
             # Should return path as-is
             assert am.get_absolute_path("some/path") == Path("some/path")
 
+    def test_get_absolute_path_normalises_backslashes(self, asset_manager, temp_project_dir):
+        """A project saved on Windows may store backslash separators in
+        file_path/thumbnail; get_absolute_path must normalise them so the
+        path resolves on POSIX (os.stat on a literal-backslash name raises
+        OSError(EINVAL) and would otherwise abort the whole project load).
+        Regression: maze_2 sample "Failed to load project" on Linux."""
+        absolute = asset_manager.get_absolute_path("thumbnails\\foo_thumb.png")
+        assert absolute == temp_project_dir / "thumbnails" / "foo_thumb.png"
+
+    def test_validate_asset_paths_survives_malformed_path(self, asset_manager):
+        """_validate_asset_paths must never raise on an unreadable stored
+        path — one bad thumbnail reference should not sink the project."""
+        # A backslash thumbnail with no matching file: dropped, no raise.
+        asset = {"thumbnail": "thumbnails\\missing_thumb.png", "imported": True}
+        asset_manager._validate_asset_paths(asset)
+        assert "thumbnail" not in asset
+
+    def test_load_assets_with_backslash_thumbnail_does_not_raise(self, asset_manager):
+        """Loading project data whose asset carries a Windows-style
+        backslash thumbnail path must succeed, not abort."""
+        project_data = {"assets": {"sprites": {
+            "spr": {
+                "name": "spr",
+                "file_path": "sprites/spr.png",
+                "thumbnail": "thumbnails\\spr_thumb.png",
+                "imported": True,
+            }
+        }}}
+        # Must not raise (previously: OSError(EINVAL) from os.stat).
+        asset_manager.load_assets_from_project_data(project_data)
+        # Missing thumbnail file -> reference dropped during validation.
+        assert "thumbnail" not in asset_manager.assets_cache["sprites"]["spr"]
+
 
 class TestAssetManagerImport:
     """Test asset import functionality"""

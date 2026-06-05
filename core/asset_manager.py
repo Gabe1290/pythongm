@@ -67,7 +67,16 @@ class AssetManager(QObject):
         self.thumbnails_cache.clear()
 
     def get_absolute_path(self, relative_path: str) -> Path:
-        """Convert relative project path to absolute path"""
+        """Convert relative project path to absolute path.
+
+        get_relative_path stores separators as forward slashes (as_posix),
+        but projects saved on older Windows builds may carry backslash
+        separators in file_path/thumbnail. Normalise on read so a Windows
+        path like ``thumbnails\\foo.png`` resolves on every platform —
+        otherwise os.stat() on a literal-backslash name raises
+        OSError(EINVAL) and aborts the whole project load.
+        """
+        relative_path = str(relative_path).replace("\\", "/")
         if not self.project_directory:
             return Path(relative_path)  # Return as-is if no project directory
         return self.project_directory / relative_path
@@ -949,11 +958,25 @@ class AssetManager(QObject):
 
         if asset_data.get("file_path"):
             file_path = self.get_absolute_path(asset_data["file_path"])
-            if not file_path.exists():
+            if not self._path_exists(file_path):
                 asset_data["imported"] = False
                 asset_data["file_missing"] = True
 
         if asset_data.get("thumbnail"):
             thumbnail_path = self.get_absolute_path(asset_data["thumbnail"])
-            if not thumbnail_path.exists():
+            if not self._path_exists(thumbnail_path):
                 asset_data.pop("thumbnail", None)
+
+    @staticmethod
+    def _path_exists(path: Path) -> bool:
+        """Path.exists() that treats a malformed path as 'missing'.
+
+        A stored path can be malformed (e.g. embedded NUL, or a separator
+        the OS rejects). os.stat() then raises OSError instead of returning
+        False, and an unhandled raise here would abort the entire project
+        load over a single bad asset reference. Swallow it to 'missing'.
+        """
+        try:
+            return path.exists()
+        except OSError:
+            return False
