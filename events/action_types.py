@@ -560,10 +560,39 @@ ACTION_TYPES = {
     "move_to_contact": ActionType(
         name="move_to_contact",
         display_name="Move to Contact",
-        description="Move until touching a solid object",
+        description="Move in a direction until touching an object (or max distance)",
         category="Movement",
         icon="🎯",
-        parameters=[]
+        parameters=[
+            ActionParameter(
+                name="direction",
+                display_name="Direction",
+                param_type="string",
+                default_value="direction",
+                description="Direction in degrees (0=right, 90=up, 180=left, "
+                            "270=down), or an expression. Defaults to 'direction' "
+                            "= the instance's current heading (collision snap).",
+            ),
+            ActionParameter(
+                name="max_distance",
+                display_name="Max Distance",
+                param_type="number",
+                default_value=1000,
+                description="Maximum distance to move, in pixels",
+            ),
+            ActionParameter(
+                name="object",
+                display_name="Against",
+                param_type="object",
+                default_value="all",
+                description="Stop on contact with: 'all' instances, 'solid' "
+                            "objects only, or a specific object name.",
+                required=False,
+                # The dialog's "object" branch prepends these sentinels to the
+                # available-objects list.
+                choices=["all", "solid"],
+            ),
+        ]
     ),
 
     "wrap_around_room": ActionType(

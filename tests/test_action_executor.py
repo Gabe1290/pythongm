@@ -297,6 +297,19 @@ class TestMovementActions:
         assert abs(instance.hspeed) < 0.01
         assert abs(instance.vspeed - (-4.0)) < 0.01  # Up is negative in screen coords
 
+    def test_move_to_contact_metadata_is_configurable(self):
+        """Move to Contact must expose direction/max_distance/object in the UI.
+
+        Regression: it was registered with parameters=[] so the editor dialog
+        showed no fields and the direction/object could not be set.
+        """
+        from events.action_types import get_action_type
+        params = {p.name: p for p in get_action_type("move_to_contact").parameters}
+        assert set(params) == {"direction", "max_distance", "object"}
+        assert params["direction"].default_value == "direction"
+        assert params["object"].param_type == "object"
+        assert "solid" in params["object"].choices
+
     def test_move_to_contact_closes_gap(self):
         """move_to_contact moves the instance to rest against the blocker.
 
