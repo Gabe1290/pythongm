@@ -1868,7 +1868,9 @@ Erreur de mise à jour</translation>
         <source>No project loaded.
 
 Open or create a project, then select an asset from the tree on the left to view its details here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noben projekt ni naložen.
+
+Odprite ali ustvarite projekt, nato pa v drevesu na levi izberite sredstvo, da si tukaj ogledate njegove podrobnosti.</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="235"/>

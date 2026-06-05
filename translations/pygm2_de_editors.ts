@@ -340,7 +340,9 @@ Aktualisierungsfehler</translation>
         <source>No project loaded.
 
 Open or create a project, then select an asset from the tree on the left to view its details here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Projekt geladen.
+
+Öffnen oder erstellen Sie ein Projekt und wählen Sie dann ein Asset aus dem Baum links aus, um hier dessen Details anzuzeigen.</translation>
     </message>
     <message>
         <location filename="../widgets/enhanced_properties_panel.py" line="269"/>
