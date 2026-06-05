@@ -1445,6 +1445,84 @@ ACTION_TYPES = {
         ],
     ),
 
+    # Runtime: execute_draw_text_action (line 3234)
+    "draw_text": ActionType(
+        name="draw_text",
+        display_name="Draw Text",
+        description="Draw a text string at a position",
+        category="Game",
+        icon="🖍️",
+        parameters=[
+            ActionParameter(
+                name="text", display_name="Text",
+                param_type="string", default_value="",
+                description="Text to draw (supports expressions)",
+            ),
+            ActionParameter(
+                name="x", display_name="X", param_type="number", default_value=0,
+                description="X position",
+            ),
+            ActionParameter(
+                name="y", display_name="Y", param_type="number", default_value=0,
+                description="Y position",
+            ),
+        ],
+    ),
+
+    # Runtime: execute_draw_lives_action (line 2350)
+    "draw_lives": ActionType(
+        name="draw_lives",
+        display_name="Draw Lives",
+        description="Draw the current life count as repeated sprite images",
+        category="Score",
+        icon="🖍️❤️",
+        parameters=[
+            ActionParameter(
+                name="x", display_name="X", param_type="number", default_value=0,
+                description="X position",
+            ),
+            ActionParameter(
+                name="y", display_name="Y", param_type="number", default_value=0,
+                description="Y position",
+            ),
+            ActionParameter(
+                name="sprite", display_name="Sprite",
+                param_type="sprite", default_value="",
+                description="Sprite drawn once per remaining life",
+                required=False,
+            ),
+        ],
+    ),
+
+    # Runtime: execute_set_draw_font_action (line 5197)
+    "set_draw_font": ActionType(
+        name="set_draw_font",
+        display_name="Set Draw Font",
+        description="Set the font and alignment for subsequent text drawing",
+        category="Game",
+        icon="🔤",
+        parameters=[
+            ActionParameter(
+                name="font", display_name="Font",
+                param_type="string", default_value="",
+                description="Font asset name (blank = default font)",
+                required=False,
+            ),
+            ActionParameter(
+                name="halign", display_name="Horizontal Align",
+                param_type="choice", default_value="left",
+                description="Horizontal text alignment",
+                choices=["left", "center", "right"],
+            ),
+            ActionParameter(
+                name="valign", display_name="Vertical Align",
+                param_type="choice", default_value="top",
+                description="Vertical text alignment",
+                choices=["top", "middle", "bottom"],
+            ),
+        ],
+    ),
+
     # Runtime: execute_test_alignment_action (line 1076)
     "test_alignment": ActionType(
         name="test_alignment",
@@ -1550,6 +1628,385 @@ ACTION_TYPES = {
                 param_type="float", default_value=1.0,
                 description="Vertical scale factor",
             ),
+        ],
+    ),
+
+    # ---------------------------------------------------------------------
+    # rc.12 follow-up sweep (2026-06-05): the remaining "safe & worth it"
+    # bucket — runtime actions that already work but had no UI metadata, so
+    # they logged "Unknown action type: X" and were uneditable in the events
+    # panel. Params mirror exactly what each runtime handler reads via
+    # parameters.get(...). Deferred buckets (particles, timelines,
+    # save/load, views/camera, room background) are intentionally NOT added
+    # here — they wait until after the 1.0 release. Line numbers reference
+    # runtime/action_executor.py.
+    # ---------------------------------------------------------------------
+
+    # Drawing primitives -------------------------------------------------
+
+    # Runtime: execute_draw_rectangle_action (line 3309)
+    "draw_rectangle": ActionType(
+        name="draw_rectangle",
+        display_name="Draw Rectangle",
+        description="Draw a filled or outlined rectangle",
+        category="Game",
+        icon="🟥",
+        parameters=[
+            ActionParameter(name="x1", display_name="X1", param_type="number", default_value=0, description="Left X"),
+            ActionParameter(name="y1", display_name="Y1", param_type="number", default_value=0, description="Top Y"),
+            ActionParameter(name="x2", display_name="X2", param_type="number", default_value=100, description="Right X"),
+            ActionParameter(name="y2", display_name="Y2", param_type="number", default_value=100, description="Bottom Y"),
+            ActionParameter(name="filled", display_name="Filled", param_type="boolean", default_value=True, description="Filled, or outline only", required=False),
+        ],
+    ),
+
+    # Runtime: execute_draw_circle_action
+    "draw_circle": ActionType(
+        name="draw_circle",
+        display_name="Draw Circle",
+        description="Draw a filled or outlined circle",
+        category="Game",
+        icon="⭕",
+        parameters=[
+            ActionParameter(name="x", display_name="X", param_type="number", default_value=0, description="Centre X"),
+            ActionParameter(name="y", display_name="Y", param_type="number", default_value=0, description="Centre Y"),
+            ActionParameter(name="radius", display_name="Radius", param_type="number", default_value=50, description="Circle radius"),
+            ActionParameter(name="filled", display_name="Filled", param_type="boolean", default_value=True, description="Filled, or outline only", required=False),
+        ],
+    ),
+
+    # Runtime: execute_draw_line_action
+    "draw_line": ActionType(
+        name="draw_line",
+        display_name="Draw Line",
+        description="Draw a line between two points",
+        category="Game",
+        icon="📏",
+        parameters=[
+            ActionParameter(name="x1", display_name="X1", param_type="number", default_value=0, description="Start X"),
+            ActionParameter(name="y1", display_name="Y1", param_type="number", default_value=0, description="Start Y"),
+            ActionParameter(name="x2", display_name="X2", param_type="number", default_value=100, description="End X"),
+            ActionParameter(name="y2", display_name="Y2", param_type="number", default_value=100, description="End Y"),
+        ],
+    ),
+
+    # Runtime: execute_draw_ellipse_action
+    "draw_ellipse": ActionType(
+        name="draw_ellipse",
+        display_name="Draw Ellipse",
+        description="Draw a filled or outlined ellipse within a bounding box",
+        category="Game",
+        icon="🥚",
+        parameters=[
+            ActionParameter(name="x1", display_name="X1", param_type="number", default_value=0, description="Left X"),
+            ActionParameter(name="y1", display_name="Y1", param_type="number", default_value=0, description="Top Y"),
+            ActionParameter(name="x2", display_name="X2", param_type="number", default_value=100, description="Right X"),
+            ActionParameter(name="y2", display_name="Y2", param_type="number", default_value=100, description="Bottom Y"),
+            ActionParameter(name="filled", display_name="Filled", param_type="boolean", default_value=True, description="Filled, or outline only", required=False),
+        ],
+    ),
+
+    # Runtime: execute_draw_arrow_action
+    "draw_arrow": ActionType(
+        name="draw_arrow",
+        display_name="Draw Arrow",
+        description="Draw an arrow from one point to another",
+        category="Game",
+        icon="➡️",
+        parameters=[
+            ActionParameter(name="x1", display_name="X1", param_type="number", default_value=0, description="Start X"),
+            ActionParameter(name="y1", display_name="Y1", param_type="number", default_value=0, description="Start Y"),
+            ActionParameter(name="x2", display_name="X2", param_type="number", default_value=100, description="Tip X"),
+            ActionParameter(name="y2", display_name="Y2", param_type="number", default_value=100, description="Tip Y"),
+            ActionParameter(name="tip_size", display_name="Tip Size", param_type="number", default_value=10, description="Arrowhead size in pixels"),
+        ],
+    ),
+
+    # Runtime: execute_draw_sprite_action (line 3466)
+    "draw_sprite": ActionType(
+        name="draw_sprite",
+        display_name="Draw Sprite",
+        description="Draw a sprite frame at a position",
+        category="Game",
+        icon="🖼️",
+        parameters=[
+            ActionParameter(name="sprite", display_name="Sprite", param_type="sprite", default_value="", description="Sprite to draw"),
+            ActionParameter(name="x", display_name="X", param_type="number", default_value=0, description="X position"),
+            ActionParameter(name="y", display_name="Y", param_type="number", default_value=0, description="Y position"),
+            ActionParameter(name="subimage", display_name="Frame", param_type="number", default_value=0, description="Frame index to draw"),
+        ],
+    ),
+
+    # Runtime: execute_draw_background_action
+    "draw_background": ActionType(
+        name="draw_background",
+        display_name="Draw Background",
+        description="Draw a background image, optionally tiled across the screen",
+        category="Game",
+        icon="🌄",
+        parameters=[
+            ActionParameter(name="background", display_name="Background", param_type="string", default_value="", description="Background asset name"),
+            ActionParameter(name="x", display_name="X", param_type="number", default_value=0, description="X position"),
+            ActionParameter(name="y", display_name="Y", param_type="number", default_value=0, description="Y position"),
+            ActionParameter(name="tiled", display_name="Tiled", param_type="boolean", default_value=False, description="Tile across the screen", required=False),
+        ],
+    ),
+
+    # Runtime: execute_draw_variable_action
+    "draw_variable": ActionType(
+        name="draw_variable",
+        display_name="Draw Variable",
+        description="Draw the value of a variable on screen",
+        category="Game",
+        icon="🔢",
+        parameters=[
+            ActionParameter(name="x", display_name="X", param_type="number", default_value=0, description="X position"),
+            ActionParameter(name="y", display_name="Y", param_type="number", default_value=0, description="Y position"),
+            ActionParameter(name="variable", display_name="Variable", param_type="string", default_value="", description="Variable name (self.var, global.var, or bare name)"),
+        ],
+    ),
+
+    # Runtime: execute_draw_health_bar_action (line 2427)
+    "draw_health_bar": ActionType(
+        name="draw_health_bar",
+        display_name="Draw Health Bar",
+        description="Draw the current health as a two-colour bar",
+        category="Score",
+        icon="🩺",
+        parameters=[
+            ActionParameter(name="x1", display_name="X1", param_type="number", default_value=0, description="Left X"),
+            ActionParameter(name="y1", display_name="Y1", param_type="number", default_value=0, description="Top Y"),
+            ActionParameter(name="x2", display_name="X2", param_type="number", default_value=100, description="Right X"),
+            ActionParameter(name="y2", display_name="Y2", param_type="number", default_value=20, description="Bottom Y"),
+            ActionParameter(name="back_color", display_name="Back Color", param_type="color", default_value="#FF0000", description="Background (empty) colour"),
+            ActionParameter(name="bar_color", display_name="Bar Color", param_type="color", default_value="#00FF00", description="Filled (health) colour"),
+        ],
+    ),
+
+    # Sprite / drawing state --------------------------------------------
+
+    # Runtime: execute_set_alpha_action
+    "set_alpha": ActionType(
+        name="set_alpha",
+        display_name="Set Alpha",
+        description="Set the drawing transparency for subsequent draws",
+        category="Game",
+        icon="🌫️",
+        parameters=[
+            ActionParameter(name="alpha", display_name="Alpha", param_type="float", default_value=1.0, description="Opacity 0.0 (clear) to 1.0 (opaque)", min_value=0, max_value=1),
+        ],
+    ),
+
+    # Runtime: execute_set_color_action
+    "set_color": ActionType(
+        name="set_color",
+        display_name="Set Color",
+        description="Set the draw colour and alpha for subsequent draws",
+        category="Game",
+        icon="🎨",
+        parameters=[
+            ActionParameter(name="color", display_name="Color", param_type="color", default_value="#FFFFFF", description="RGB hex colour"),
+            ActionParameter(name="alpha", display_name="Alpha", param_type="float", default_value=1.0, description="Opacity 0.0–1.0", required=False, min_value=0, max_value=1),
+        ],
+    ),
+
+    # Runtime: execute_set_image_index_action
+    "set_image_index": ActionType(
+        name="set_image_index",
+        display_name="Set Image Index",
+        description="Set the current animation frame of the instance's sprite",
+        category="Instance",
+        icon="🖼️",
+        parameters=[
+            ActionParameter(name="frame", display_name="Frame", param_type="number", default_value=0, description="Frame index"),
+        ],
+    ),
+
+    # Runtime: execute_set_image_speed_action
+    "set_image_speed": ActionType(
+        name="set_image_speed",
+        display_name="Set Image Speed",
+        description="Set the animation playback speed of the instance's sprite",
+        category="Instance",
+        icon="⏩",
+        parameters=[
+            ActionParameter(name="speed", display_name="Speed", param_type="float", default_value=1.0, description="Frames advanced per step (0 = paused)"),
+        ],
+    ),
+
+    # Runtime: execute_start_animation_action — no parameters
+    "start_animation": ActionType(
+        name="start_animation",
+        display_name="Start Animation",
+        description="Resume the instance's sprite animation (image_speed = 1)",
+        category="Instance",
+        icon="▶️",
+        parameters=[],
+    ),
+
+    # Runtime: execute_stop_animation_action — no parameters
+    "stop_animation": ActionType(
+        name="stop_animation",
+        display_name="Stop Animation",
+        description="Pause the instance's sprite animation (image_speed = 0)",
+        category="Instance",
+        icon="⏸️",
+        parameters=[],
+    ),
+
+    # Conditionals (skip-next-action-if-false model) --------------------
+
+    # Runtime: execute_test_score_action
+    "test_score": ActionType(
+        name="test_score",
+        display_name="Test Score",
+        description="Conditional: compare the score against a value",
+        category="Score",
+        icon="❓🏆",
+        parameters=[
+            ActionParameter(name="value", display_name="Value", param_type="number", default_value=0, description="Value to compare against"),
+            ActionParameter(name="operation", display_name="Comparison", param_type="choice", default_value="equal", description="Comparison operator", choices=["equal", "less", "greater", "less_equal", "greater_equal", "not_equal"]),
+        ],
+    ),
+
+    # Runtime: execute_test_lives_action
+    "test_lives": ActionType(
+        name="test_lives",
+        display_name="Test Lives",
+        description="Conditional: compare the life count against a value",
+        category="Score",
+        icon="❓❤️",
+        parameters=[
+            ActionParameter(name="value", display_name="Value", param_type="number", default_value=0, description="Value to compare against"),
+            ActionParameter(name="operation", display_name="Comparison", param_type="choice", default_value="equal", description="Comparison operator", choices=["equal", "less", "greater", "less_equal", "greater_equal", "not_equal"]),
+        ],
+    ),
+
+    # Runtime: execute_test_chance_action
+    "test_chance": ActionType(
+        name="test_chance",
+        display_name="Test Chance",
+        description="Conditional: true with probability 1 in 'sides'",
+        category="Control",
+        icon="🎲❓",
+        parameters=[
+            ActionParameter(name="sides", display_name="Sides", param_type="number", default_value=6, description="A 1-in-N chance of being true"),
+        ],
+    ),
+
+    # Runtime: execute_test_question_action
+    "test_question": ActionType(
+        name="test_question",
+        display_name="Test Question",
+        description="Conditional: show a yes/no dialog; true if the user answers yes",
+        category="Control",
+        icon="❓💬",
+        parameters=[
+            ActionParameter(name="question", display_name="Question", param_type="string", default_value="Continue?", description="Question shown to the player"),
+        ],
+    ),
+
+    # Runtime: execute_test_instance_count_action
+    "test_instance_count": ActionType(
+        name="test_instance_count",
+        display_name="Test Instance Count",
+        description="Conditional: compare the number of instances of an object",
+        category="Instance",
+        icon="❓🔢",
+        parameters=[
+            ActionParameter(name="object", display_name="Object", param_type="object", default_value="", description="Object to count"),
+            ActionParameter(name="number", display_name="Number", param_type="number", default_value=0, description="Value to compare against"),
+            ActionParameter(name="operation", display_name="Comparison", param_type="choice", default_value="equal", description="Comparison operator", choices=["equal", "less", "greater", "less_equal", "greater_equal", "not_equal"]),
+        ],
+    ),
+
+    # Runtime: execute_check_sound_action
+    "check_sound": ActionType(
+        name="check_sound",
+        display_name="Check Sound Playing",
+        description="Conditional: true if the given sound is currently playing",
+        category="Sound",
+        icon="❓🔊",
+        parameters=[
+            ActionParameter(name="sound", display_name="Sound", param_type="sound", default_value="", description="Sound to check"),
+            ActionParameter(name="not_flag", display_name="Negate", param_type="boolean", default_value=False, description="Invert the result", required=False),
+        ],
+    ),
+
+    # Runtime: execute_check_room_action
+    "check_room": ActionType(
+        name="check_room",
+        display_name="Check Room",
+        description="Conditional: true if the current room matches",
+        category="Room",
+        icon="❓🚪",
+        parameters=[
+            ActionParameter(name="room", display_name="Room", param_type="room", default_value="", description="Room to compare against"),
+            ActionParameter(name="not_flag", display_name="Negate", param_type="boolean", default_value=False, description="Invert the result", required=False),
+        ],
+    ),
+
+    # Sound --------------------------------------------------------------
+
+    # Runtime: execute_stop_sound_action
+    "stop_sound": ActionType(
+        name="stop_sound",
+        display_name="Stop Sound",
+        description="Stop a playing sound",
+        category="Sound",
+        icon="🔇",
+        parameters=[
+            ActionParameter(name="sound", display_name="Sound", param_type="sound", default_value="", description="Sound to stop"),
+        ],
+    ),
+
+    # Movement / misc ----------------------------------------------------
+
+    # Runtime: execute_move_towards_point_action
+    "move_towards_point": ActionType(
+        name="move_towards_point",
+        display_name="Move Towards Point",
+        description="Move towards a point at a given speed",
+        category="Movement",
+        icon="🎯",
+        parameters=[
+            ActionParameter(name="x", display_name="X", param_type="number", default_value=0, description="Target X"),
+            ActionParameter(name="y", display_name="Y", param_type="number", default_value=0, description="Target Y"),
+            ActionParameter(name="speed", display_name="Speed", param_type="float", default_value=4.0, description="Movement speed"),
+        ],
+    ),
+
+    # Runtime: execute_open_webpage_action
+    "open_webpage": ActionType(
+        name="open_webpage",
+        display_name="Open Webpage",
+        description="Open a URL in the default browser",
+        category="Game",
+        icon="🌐",
+        parameters=[
+            ActionParameter(name="url", display_name="URL", param_type="string", default_value="", description="Web address to open"),
+        ],
+    ),
+
+    # Runtime: execute_show_info_action — no parameters
+    "show_info": ActionType(
+        name="show_info",
+        display_name="Show Game Info",
+        description="Display the game information screen",
+        category="Game",
+        icon="ℹ️",
+        parameters=[],
+    ),
+
+    # Runtime: execute_set_room_caption_action
+    "set_room_caption": ActionType(
+        name="set_room_caption",
+        display_name="Set Room Caption",
+        description="Set the game window's title caption",
+        category="Room",
+        icon="🏷️",
+        parameters=[
+            ActionParameter(name="caption", display_name="Caption", param_type="string", default_value="", description="Window title text"),
         ],
     ),
 
