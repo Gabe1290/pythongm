@@ -664,6 +664,15 @@ ACTION_TYPES = {
                 description="Y position to check (expression OK, e.g. self.y + 32)"
             ),
             ActionParameter(
+                name="relative",
+                display_name="Relative",
+                param_type="boolean",
+                default_value=False,
+                description="Treat X/Y as offsets from this instance's position "
+                            "instead of absolute coordinates",
+                required=False,
+            ),
+            ActionParameter(
                 name="objects",
                 display_name="Objects",
                 param_type="choice",
