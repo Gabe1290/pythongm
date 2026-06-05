@@ -78,14 +78,23 @@ move it to a feature branch and remove the entry once the feature ships.
 ### UI metadata coverage for runtime actions (partial in rc.12)
 - The runtime knows ~207 actions (executor `execute_*_action` methods +
   modular handlers in `runtime/action_handlers/`); the UI-side
-  `events/action_types.py` registry covers ~78 of them after the rc.12
-  bulk-add. The remaining ~129 still trigger "Unknown action type: X" in
-  the events panel when an imported project uses them, even though they
-  execute correctly at runtime.
-- rc.12 closed the subset visible in the bundled samples (maze_1..4,
-  treasure) — 21 ActionType entries added in commit 8c756d7 + this one.
-  The rest are mostly particle/draw/timeline/window-management actions
-  that no shipped sample currently uses.
+  `events/action_types.py` registry covers them progressively. After the
+  rc.12 bulk-add + the 2026-06-05 "safe bucket" sweep, the *executor*
+  handlers split as: covered (or aliased) vs. intentionally deferred.
+- **2026-06-05 sweep (for 1.0):** added the "safe & worth it" bucket —
+  30 working actions that lacked metadata (draw_text/lives/set_draw_font
+  first, then draw primitives rectangle/circle/line/ellipse/arrow/sprite/
+  background/variable/health_bar, set_alpha/color/image_index/image_speed,
+  start/stop_animation, the test_*/check_* conditionals, stop_sound,
+  move_towards_point, open_webpage, show_info, set_room_caption). All
+  verified against their runtime handlers' params; edit dialogs round-trip.
+- **Still deferred to post-1.0 (do NOT add UI yet):** particle system
+  (create_emitter/burst_particles/…), timelines (set_timeline/start_timeline/
+  …), save_game/load_game, show_video, execute_script — these need a
+  functional check first; and the views/camera + room-background/scrolling
+  actions (enable_views, set_view, set_background*, set_room_speed/persistent)
+  which are incomplete features — exposing them would re-introduce the
+  rc.11 "stop lying to users" anti-pattern.
 - Recipe for adding more: see the comments at the bottom of
   `events/action_types.py` and the survey script that lived briefly at
   `.scratch_find_missing_actions.py` (removed after the bulk pass).
