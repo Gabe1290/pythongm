@@ -4924,6 +4924,8 @@ class ActionExecutor:
 
         Parameters:
             x, y: Center of the area (expressions OK, e.g. "self.x").
+            relative: If True, x/y are offsets from the caller's position
+                    instead of absolute coordinates. Default False.
             radius: Pixel radius. 0 = exact-position match (legacy behavior),
                     >0 = Euclidean distance check. Default 32 (≈ one grid cell).
             object: Which OBJECT TYPE to destroy (current UI dropdown + GMK
@@ -4951,6 +4953,16 @@ class ActionExecutor:
         except (ValueError, TypeError):
             x = 0.0
             y = 0.0
+
+        # Relative: treat x/y as offsets from the caller's position (matches
+        # create_instance / check_empty semantics). Off by default so saved
+        # absolute actions are unaffected.
+        relative = parameters.get("relative", False)
+        if isinstance(relative, str):
+            relative = relative.lower() in ('true', '1', 'yes')
+        if relative:
+            x += instance.x
+            y += instance.y
 
         # Radius: 0 keeps the legacy exact-match behavior for older callers/tests.
         try:
