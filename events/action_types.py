@@ -1300,7 +1300,7 @@ ACTION_TYPES = {
         name="restart_game",
         display_name="Restart Game",
         description="Restart the game from the start room",
-        category="Room",
+        category="Game",
         icon="🔁🎮",
         parameters=[],
     ),
