@@ -921,6 +921,15 @@ ACTION_TYPES = {
                 description="Y position (expression OK, e.g. self.y)",
             ),
             ActionParameter(
+                name="relative",
+                display_name="Relative",
+                param_type="boolean",
+                default_value=False,
+                description="Treat X/Y as offsets from this instance's position "
+                            "instead of absolute coordinates",
+                required=False,
+            ),
+            ActionParameter(
                 name="radius",
                 display_name="Radius",
                 param_type="number",

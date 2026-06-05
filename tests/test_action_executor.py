@@ -2427,6 +2427,45 @@ class TestMain1TabActions:
 
         assert target.to_destroy is True
 
+    def test_destroy_at_position_relative_offsets_from_caller(self):
+        """With relative=True, x/y are offsets from the caller's position."""
+        mock_runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=mock_runner)
+        caller = MockInstance("obj_bomb")
+        caller.x = 100
+        caller.y = 100
+
+        target = MockInstance("obj_target")
+        target.x = 132  # 32px to the right of the caller
+        target.y = 100
+        mock_runner.current_room.instances.append(target)
+
+        # Relative offset (32, 0) resolves to (132, 100) -> hits the target.
+        executor.execute_destroy_at_position_action(caller, {
+            'x': 32, 'y': 0, 'object': 'obj_target', 'relative': True,
+        })
+
+        assert target.to_destroy is True
+
+    def test_destroy_at_position_relative_off_uses_absolute(self):
+        """Without relative, the same (32, 0) is absolute and misses the target."""
+        mock_runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=mock_runner)
+        caller = MockInstance("obj_bomb")
+        caller.x = 100
+        caller.y = 100
+
+        target = MockInstance("obj_target")
+        target.x = 132
+        target.y = 100
+        mock_runner.current_room.instances.append(target)
+
+        executor.execute_destroy_at_position_action(caller, {
+            'x': 32, 'y': 0, 'object': 'obj_target',  # relative defaults to False
+        })
+
+        assert target.to_destroy is False
+
     def test_destroy_at_position_filters_by_object(self):
         """destroy_at_position only destroys matching object type"""
         mock_runner = MockGameRunner()
