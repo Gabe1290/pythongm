@@ -987,12 +987,16 @@ class GameInstance:
         y = cmd.get('y', 0)
         subimage = cmd.get('subimage', 0)
 
-        # Look up the sprite in the loaded sprites
-        if sprite_name not in self.sprites:
+        # Look up the sprite in the loaded sprites. The registry lives on the
+        # GameRunner, reached via the action_executor back-reference — a
+        # GameInstance has no `sprites` dict of its own.
+        runner = getattr(getattr(self, 'action_executor', None), 'game_runner', None)
+        sprites = getattr(runner, 'sprites', None) or {}
+        if sprite_name not in sprites:
             logger.error(f"⚠️ Warning: Sprite '{sprite_name}' not found for draw_sprite")
             return
 
-        sprite = self.sprites[sprite_name]
+        sprite = sprites[sprite_name]
 
         # Handle animated sprites (multiple frames)
         if len(sprite.frames) > 0:

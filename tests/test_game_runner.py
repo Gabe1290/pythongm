@@ -2140,6 +2140,20 @@ class TestDrawQueueSpriteResolution:
         inst._draw_lives(screen, {'count': 2, 'x': 0, 'y': 0, 'sprite': 'spr_life'})
         assert any(screen.get_at((px, 10))[:3] != (0, 0, 0) for px in range(80))
 
+    def test_draw_sprite_resolves_via_runner(self):
+        import pygame
+        import types
+        pygame.init()
+        icon = self._icon((0, 255, 0))
+        inst = self._make_instance(
+            {'spr_x': types.SimpleNamespace(frames=[icon], surface=icon)}
+        )
+        screen = pygame.Surface((50, 50))
+        screen.fill((0, 0, 0))
+
+        inst._draw_sprite(screen, {'sprite_name': 'spr_x', 'x': 0, 'y': 0, 'subimage': 0})
+        assert screen.get_at((5, 5))[:3] == (0, 255, 0)
+
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
