@@ -3919,5 +3919,51 @@ class TestDrawColorResolution:
         assert inst._draw_queue[1]["color"] == (255, 255, 255)  # score -> white
 
 
+class TestCheckEmptyRelative:
+    """check_empty must honour the Relative flag (x/y as offsets from the instance)."""
+
+    def test_relative_offsets_from_instance(self):
+        runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=runner)
+        instance = MockInstance()
+        instance.x = 100
+        instance.y = 200
+
+        seen = []
+
+        def record(inst, x, y, object_type, exclude=None):
+            seen.append((x, y))
+            return False  # nothing there -> position is empty
+
+        runner.check_collision_at_position = record
+
+        # Relative offset (32, -16) resolves to (132, 184).
+        result = executor.execute_check_empty_action(
+            instance, {"x": 32, "y": -16, "relative": True, "objects": "solid"}
+        )
+        assert result is True
+        assert seen == [(132.0, 184.0)]
+
+    def test_absolute_when_relative_off(self):
+        runner = MockGameRunner()
+        executor = ActionExecutor(game_runner=runner)
+        instance = MockInstance()
+        instance.x = 100
+        instance.y = 200
+
+        seen = []
+
+        def record(inst, x, y, object_type, exclude=None):
+            seen.append((x, y))
+            return False
+
+        runner.check_collision_at_position = record
+
+        executor.execute_check_empty_action(
+            instance, {"x": 32, "y": -16, "objects": "solid"}  # relative defaults off
+        )
+        assert seen == [(32.0, -16.0)]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
