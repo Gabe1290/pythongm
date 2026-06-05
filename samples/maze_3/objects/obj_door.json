@@ -10,22 +10,26 @@
     "step": {
       "actions": [
         {
-          "action": "show_highscore",
-          "parameters": {}
+          "action": "test_instance_count",
+          "parameters": {
+            "object": "obj_diamond",
+            "count": "0",
+            "operation": "equal"
+          }
         },
         {
           "action": "start_block",
           "parameters": {}
         },
         {
-          "action": "set_sprite",
+          "action": "play_sound",
           "parameters": {
-            "sprite": "sound_door",
-            "subimage": "0"
+            "sound": "sound_door",
+            "loop": "0"
           }
         },
         {
-          "action": "create_random_instance",
+          "action": "destroy_instance",
           "parameters": {}
         },
         {
@@ -36,7 +40,7 @@
     }
   },
   "imported": true,
-  "created": "2026-05-26T11:59:41.079627",
-  "modified": "2026-05-26T11:59:41.079627",
+  "created": "2026-06-05T11:12:38.634466",
+  "modified": "2026-06-05T11:12:38.634466",
   "parent": "wall_corner"
 }

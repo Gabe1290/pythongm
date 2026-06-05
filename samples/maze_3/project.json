@@ -1,8 +1,8 @@
 {
-  "name": "maze_3_refresh2",
+  "name": "maze3_reimport",
   "version": "1.0.0",
-  "created": "2026-05-26T11:59:40.835463",
-  "modified": "2026-05-26T11:59:40.835463",
+  "created": "2026-06-05T11:12:38.522566",
+  "modified": "2026-06-05T11:12:38.522566",
   "settings": {
     "window_title": "",
     "window_width": 480,
@@ -34,8 +34,8 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.835463",
-        "modified": "2026-05-26T11:59:40.835463"
+        "created": "2026-06-05T11:12:38.522582",
+        "modified": "2026-06-05T11:12:38.522582"
       },
       "sprite_goal": {
         "name": "sprite_goal",
@@ -52,8 +52,8 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.835463",
-        "modified": "2026-05-26T11:59:40.835463"
+        "created": "2026-06-05T11:12:38.522582",
+        "modified": "2026-06-05T11:12:38.522582"
       },
       "sprite_person": {
         "name": "sprite_person",
@@ -70,8 +70,8 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.835463",
-        "modified": "2026-05-26T11:59:40.835463"
+        "created": "2026-06-05T11:12:38.522582",
+        "modified": "2026-06-05T11:12:38.522582"
       },
       "sprite_door": {
         "name": "sprite_door",
@@ -88,8 +88,8 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.835463",
-        "modified": "2026-05-26T11:59:40.835463"
+        "created": "2026-06-05T11:12:38.522582",
+        "modified": "2026-06-05T11:12:38.522582"
       },
       "sprite_diamond": {
         "name": "sprite_diamond",
@@ -106,8 +106,8 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.835463",
-        "modified": "2026-05-26T11:59:40.835463"
+        "created": "2026-06-05T11:12:38.522582",
+        "modified": "2026-06-05T11:12:38.522582"
       },
       "sprite_wall_horizontal": {
         "name": "sprite_wall_horizontal",
@@ -124,8 +124,8 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.835463",
-        "modified": "2026-05-26T11:59:40.835463"
+        "created": "2026-06-05T11:12:38.522582",
+        "modified": "2026-06-05T11:12:38.522582"
       },
       "sprite_wall_vertical": {
         "name": "sprite_wall_vertical",
@@ -142,8 +142,8 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.835463",
-        "modified": "2026-05-26T11:59:40.835463"
+        "created": "2026-06-05T11:12:38.522582",
+        "modified": "2026-06-05T11:12:38.522582"
       },
       "sprite_monster1": {
         "name": "sprite_monster1",
@@ -164,8 +164,8 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.835463",
-        "modified": "2026-05-26T11:59:40.835463"
+        "created": "2026-06-05T11:12:38.522582",
+        "modified": "2026-06-05T11:12:38.522582"
       },
       "sprite_monster2": {
         "name": "sprite_monster2",
@@ -186,8 +186,8 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.835463",
-        "modified": "2026-05-26T11:59:40.835463"
+        "created": "2026-06-05T11:12:38.522582",
+        "modified": "2026-06-05T11:12:38.522582"
       },
       "sprite_monster3": {
         "name": "sprite_monster3",
@@ -208,8 +208,8 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.835463",
-        "modified": "2026-05-26T11:59:40.835463"
+        "created": "2026-06-05T11:12:38.522582",
+        "modified": "2026-06-05T11:12:38.522582"
       },
       "sprite_bomb": {
         "name": "sprite_bomb",
@@ -226,8 +226,8 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.835463",
-        "modified": "2026-05-26T11:59:40.835463"
+        "created": "2026-06-05T11:12:38.522582",
+        "modified": "2026-06-05T11:12:38.522582"
       },
       "sprite_trigger": {
         "name": "sprite_trigger",
@@ -244,8 +244,8 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.835463",
-        "modified": "2026-05-26T11:59:40.835463"
+        "created": "2026-06-05T11:12:38.522582",
+        "modified": "2026-06-05T11:12:38.522582"
       },
       "sprite_explosion": {
         "name": "sprite_explosion",
@@ -266,8 +266,8 @@
         "animation_type": "strip_h",
         "speed": 10.0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.835463",
-        "modified": "2026-05-26T11:59:40.835463"
+        "created": "2026-06-05T11:12:38.522582",
+        "modified": "2026-06-05T11:12:38.522582"
       },
       "sprite_block": {
         "name": "sprite_block",
@@ -284,8 +284,8 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.835463",
-        "modified": "2026-05-26T11:59:40.835463"
+        "created": "2026-06-05T11:12:38.522582",
+        "modified": "2026-06-05T11:12:38.522582"
       },
       "sprite_hole": {
         "name": "sprite_hole",
@@ -302,8 +302,8 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.835463",
-        "modified": "2026-05-26T11:59:40.835463"
+        "created": "2026-06-05T11:12:38.522582",
+        "modified": "2026-06-05T11:12:38.522582"
       },
       "sprite_lives": {
         "name": "sprite_lives",
@@ -320,8 +320,8 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.835463",
-        "modified": "2026-05-26T11:59:40.835463"
+        "created": "2026-06-05T11:12:38.522582",
+        "modified": "2026-06-05T11:12:38.522582"
       }
     },
     "sounds": {
@@ -332,8 +332,8 @@
         "volume": 1.0,
         "loop": false,
         "imported": true,
-        "created": "2026-05-26T11:59:40.942459",
-        "modified": "2026-05-26T11:59:40.942459"
+        "created": "2026-06-05T11:12:38.546353",
+        "modified": "2026-06-05T11:12:38.546353"
       },
       "sound_diamond": {
         "name": "sound_diamond",
@@ -342,8 +342,8 @@
         "volume": 1.0,
         "loop": false,
         "imported": true,
-        "created": "2026-05-26T11:59:40.942459",
-        "modified": "2026-05-26T11:59:40.942459"
+        "created": "2026-06-05T11:12:38.546353",
+        "modified": "2026-06-05T11:12:38.546353"
       },
       "sound_door": {
         "name": "sound_door",
@@ -352,8 +352,8 @@
         "volume": 1.0,
         "loop": false,
         "imported": true,
-        "created": "2026-05-26T11:59:40.942459",
-        "modified": "2026-05-26T11:59:40.942459"
+        "created": "2026-06-05T11:12:38.546353",
+        "modified": "2026-06-05T11:12:38.546353"
       },
       "sound_goal": {
         "name": "sound_goal",
@@ -362,8 +362,8 @@
         "volume": 1.0,
         "loop": false,
         "imported": true,
-        "created": "2026-05-26T11:59:40.942459",
-        "modified": "2026-05-26T11:59:40.942459"
+        "created": "2026-06-05T11:12:38.546353",
+        "modified": "2026-06-05T11:12:38.546353"
       },
       "sound_dead": {
         "name": "sound_dead",
@@ -372,8 +372,8 @@
         "volume": 1.0,
         "loop": false,
         "imported": true,
-        "created": "2026-05-26T11:59:40.942459",
-        "modified": "2026-05-26T11:59:40.942459"
+        "created": "2026-06-05T11:12:38.546353",
+        "modified": "2026-06-05T11:12:38.546353"
       },
       "sound_explode": {
         "name": "sound_explode",
@@ -382,8 +382,8 @@
         "volume": 1.0,
         "loop": false,
         "imported": true,
-        "created": "2026-05-26T11:59:40.942459",
-        "modified": "2026-05-26T11:59:40.942459"
+        "created": "2026-06-05T11:12:38.546353",
+        "modified": "2026-06-05T11:12:38.546353"
       },
       "sound_hole": {
         "name": "sound_hole",
@@ -392,8 +392,8 @@
         "volume": 1.0,
         "loop": false,
         "imported": true,
-        "created": "2026-05-26T11:59:40.942459",
-        "modified": "2026-05-26T11:59:40.942459"
+        "created": "2026-06-05T11:12:38.546353",
+        "modified": "2026-06-05T11:12:38.546353"
       },
       "sound_push": {
         "name": "sound_push",
@@ -402,8 +402,8 @@
         "volume": 1.0,
         "loop": false,
         "imported": true,
-        "created": "2026-05-26T11:59:40.942459",
-        "modified": "2026-05-26T11:59:40.942459"
+        "created": "2026-06-05T11:12:38.546353",
+        "modified": "2026-06-05T11:12:38.546353"
       }
     },
     "backgrounds": {
@@ -423,8 +423,8 @@
         "h_sep": 0,
         "v_sep": 0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.951541",
-        "modified": "2026-05-26T11:59:40.951541"
+        "created": "2026-06-05T11:12:38.546499",
+        "modified": "2026-06-05T11:12:38.546499"
       },
       "background_main": {
         "name": "background_main",
@@ -442,8 +442,8 @@
         "h_sep": 0,
         "v_sep": 0,
         "imported": true,
-        "created": "2026-05-26T11:59:40.951541",
-        "modified": "2026-05-26T11:59:40.951541"
+        "created": "2026-06-05T11:12:38.546499",
+        "modified": "2026-06-05T11:12:38.546499"
       }
     },
     "objects": {
@@ -457,8 +457,8 @@
         "depth": 0,
         "events": {},
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627"
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466"
       },
       "obj_goal": {
         "name": "obj_goal",
@@ -472,17 +472,17 @@
           "collision_with_obj_person": {
             "actions": [
               {
-                "action": "goto_room",
+                "action": "set_score",
                 "parameters": {
-                  "room": "40",
+                  "value": "40",
                   "relative": true
                 }
               },
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "sound_goal",
-                  "subimage": "0"
+                  "sound": "sound_goal",
+                  "loop": "0"
                 }
               },
               {
@@ -511,13 +511,15 @@
                 "parameters": {}
               },
               {
-                "action": "start_block",
-                "parameters": {}
+                "action": "show_message",
+                "parameters": {
+                  "message": "CONGRATULATIONS#You finished all levels."
+                }
               },
               {
-                "action": "goto_room",
+                "action": "set_score",
                 "parameters": {
-                  "room": "100"
+                  "value": "100"
                 }
               },
               {
@@ -537,8 +539,8 @@
           }
         },
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627"
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466"
       },
       "obj_person": {
         "name": "obj_person",
@@ -563,10 +565,10 @@
           "collision_with_monster_all": {
             "actions": [
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "sound_dead",
-                  "subimage": "0"
+                  "sound": "sound_dead",
+                  "loop": "0"
                 }
               },
               {
@@ -595,10 +597,10 @@
           "collision_with_monster_ud": {
             "actions": [
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "sound_dead",
-                  "subimage": "0"
+                  "sound": "sound_dead",
+                  "loop": "0"
                 }
               },
               {
@@ -627,10 +629,10 @@
           "collision_with_monster_lr": {
             "actions": [
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "sound_dead",
-                  "subimage": "0"
+                  "sound": "sound_dead",
+                  "loop": "0"
                 }
               },
               {
@@ -762,8 +764,8 @@
           }
         },
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627"
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466"
       },
       "obj_door": {
         "name": "obj_door",
@@ -777,22 +779,26 @@
           "step": {
             "actions": [
               {
-                "action": "show_highscore",
-                "parameters": {}
+                "action": "test_instance_count",
+                "parameters": {
+                  "object": "obj_diamond",
+                  "count": "0",
+                  "operation": "equal"
+                }
               },
               {
                 "action": "start_block",
                 "parameters": {}
               },
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "sound_door",
-                  "subimage": "0"
+                  "sound": "sound_door",
+                  "loop": "0"
                 }
               },
               {
-                "action": "create_random_instance",
+                "action": "destroy_instance",
                 "parameters": {}
               },
               {
@@ -803,8 +809,8 @@
           }
         },
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627",
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466",
         "parent": "wall_corner"
       },
       "obj_diamond": {
@@ -819,17 +825,17 @@
           "destroy": {
             "actions": [
               {
-                "action": "goto_room",
+                "action": "set_score",
                 "parameters": {
-                  "room": "5",
+                  "value": "5",
                   "relative": true
                 }
               },
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "sound_diamond",
-                  "subimage": "0"
+                  "sound": "sound_diamond",
+                  "loop": "0"
                 }
               }
             ]
@@ -837,7 +843,7 @@
           "collision_with_obj_person": {
             "actions": [
               {
-                "action": "create_random_instance",
+                "action": "destroy_instance",
                 "parameters": {}
               }
             ],
@@ -845,8 +851,8 @@
           }
         },
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627"
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466"
       },
       "wall_horizontal": {
         "name": "wall_horizontal",
@@ -858,8 +864,8 @@
         "depth": 0,
         "events": {},
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627",
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466",
         "parent": "wall_corner"
       },
       "wall_vertical": {
@@ -872,8 +878,8 @@
         "depth": 0,
         "events": {},
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627",
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466",
         "parent": "wall_corner"
       },
       "controller_start": {
@@ -888,17 +894,20 @@
           "create": {
             "actions": [
               {
-                "action": "goto_room",
+                "action": "set_score",
                 "parameters": {
-                  "room": "0"
+                  "value": "0"
                 }
               },
               {
                 "action": "set_window_caption",
                 "parameters": {
                   "score": "0",
-                  "lives": "score: ",
-                  "health": "0"
+                  "score_caption": "score: ",
+                  "lives": "0",
+                  "lives_caption": "lives: ",
+                  "health": "0",
+                  "health_caption": "health: "
                 }
               },
               {
@@ -908,10 +917,10 @@
                 }
               },
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "sound_background",
-                  "subimage": "1"
+                  "sound": "sound_background",
+                  "loop": "1"
                 }
               }
             ]
@@ -930,8 +939,8 @@
           }
         },
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627"
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466"
       },
       "controller_main": {
         "name": "controller_main",
@@ -946,10 +955,10 @@
             "r": {
               "actions": [
                 {
-                  "action": "set_sprite",
+                  "action": "play_sound",
                   "parameters": {
-                    "sprite": "sound_dead",
-                    "subimage": "0"
+                    "sound": "sound_dead",
+                    "loop": "0"
                   }
                 },
                 {
@@ -983,9 +992,10 @@
           "draw": {
             "actions": [
               {
-                "action": "fill_color",
+                "action": "set_draw_font",
                 "parameters": {
-                  "color": "score_font"
+                  "font": "score_font",
+                  "align": "0"
                 }
               },
               {
@@ -995,14 +1005,16 @@
                 }
               },
               {
-                "action": "next_room",
+                "action": "draw_score",
                 "parameters": {
-                  "transition": "300",
+                  "x": "300",
+                  "y": "4",
+                  "caption": "Score: ",
                   "relative": true
                 }
               },
               {
-                "action": "draw_scaled_text",
+                "action": "draw_text",
                 "parameters": {
                   "text": "Lives:",
                   "x": "8",
@@ -1023,8 +1035,8 @@
           }
         },
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627"
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466"
       },
       "monster_lr": {
         "name": "monster_lr",
@@ -1052,7 +1064,7 @@
           "collision_with_wall_corner": {
             "actions": [
               {
-                "action": "jump_to_random",
+                "action": "reverse_horizontal",
                 "parameters": {}
               }
             ],
@@ -1060,8 +1072,8 @@
           }
         },
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627"
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466"
       },
       "monster_ud": {
         "name": "monster_ud",
@@ -1089,7 +1101,7 @@
           "collision_with_wall_corner": {
             "actions": [
               {
-                "action": "snap_to_grid",
+                "action": "reverse_vertical",
                 "parameters": {}
               }
             ],
@@ -1097,8 +1109,8 @@
           }
         },
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627"
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466"
       },
       "monster_all": {
         "name": "monster_all",
@@ -1135,9 +1147,11 @@
                 }
               },
               {
-                "action": "set_score",
+                "action": "check_empty",
                 "parameters": {
-                  "value": "hspeed",
+                  "x": "hspeed",
+                  "y": "vspeed",
+                  "objects": "solid",
                   "relative": true
                 }
               },
@@ -1153,9 +1167,11 @@
                 }
               },
               {
-                "action": "set_score",
+                "action": "check_empty",
                 "parameters": {
-                  "value": "hspeed",
+                  "x": "hspeed",
+                  "y": "vspeed",
+                  "objects": "solid",
                   "relative": true
                 }
               },
@@ -1175,8 +1191,8 @@
           }
         },
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627"
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466"
       },
       "obj_bomb": {
         "name": "obj_bomb",
@@ -1188,8 +1204,8 @@
         "depth": 10,
         "events": {},
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627"
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466"
       },
       "obj trigger": {
         "name": "obj trigger",
@@ -1203,21 +1219,21 @@
           "collision_with_obj_person": {
             "actions": [
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "sound_explode",
-                  "subimage": "0"
+                  "sound": "sound_explode",
+                  "loop": "0"
                 }
               },
               {
-                "action": "create_moving_instance",
+                "action": "change_instance",
                 "parameters": {
                   "object": "obj_explosion",
-                  "x": "1"
+                  "perform_events": "1"
                 }
               },
               {
-                "action": "create_random_instance",
+                "action": "destroy_instance",
                 "parameters": {}
               }
             ],
@@ -1225,8 +1241,8 @@
           }
         },
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627"
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466"
       },
       "obj_explosion": {
         "name": "obj_explosion",
@@ -1240,9 +1256,10 @@
           "create": {
             "actions": [
               {
-                "action": "set_friction",
+                "action": "jump_to_position",
                 "parameters": {
-                  "friction": "-200",
+                  "x": "-200",
+                  "y": "-200",
                   "relative": true
                 }
               },
@@ -1319,9 +1336,10 @@
                 }
               },
               {
-                "action": "set_friction",
+                "action": "jump_to_position",
                 "parameters": {
-                  "friction": "200",
+                  "x": "200",
+                  "y": "200",
                   "relative": true
                 }
               }
@@ -1330,15 +1348,15 @@
           "animation_end": {
             "actions": [
               {
-                "action": "create_random_instance",
+                "action": "destroy_instance",
                 "parameters": {}
               }
             ]
           }
         },
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627"
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466"
       },
       "obj_block": {
         "name": "obj_block",
@@ -1352,9 +1370,11 @@
           "collision_with_obj_person": {
             "actions": [
               {
-                "action": "set_score",
+                "action": "check_empty",
                 "parameters": {
-                  "value": "8*other.hspeed",
+                  "x": "8*other.hspeed",
+                  "y": "8*other.vspeed",
+                  "objects": "all",
                   "relative": true
                 }
               },
@@ -1363,16 +1383,17 @@
                 "parameters": {}
               },
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "sound_push",
-                  "subimage": "0"
+                  "sound": "sound_push",
+                  "loop": "0"
                 }
               },
               {
-                "action": "set_friction",
+                "action": "jump_to_position",
                 "parameters": {
-                  "friction": "8*other.hspeed",
+                  "x": "8*other.hspeed",
+                  "y": "8*other.vspeed",
                   "relative": true
                 }
               },
@@ -1389,18 +1410,19 @@
                 "parameters": {}
               },
               {
-                "action": "draw_score",
+                "action": "if_collision",
                 "parameters": {
-                  "x": "obj_hole",
-                  "y": "8*other.hspeed",
-                  "caption": "8*other.vspeed",
+                  "object": "obj_hole",
+                  "x": "8*other.hspeed",
+                  "y": "8*other.vspeed",
                   "relative": true
                 }
               },
               {
-                "action": "set_friction",
+                "action": "jump_to_position",
                 "parameters": {
-                  "friction": "8*other.hspeed",
+                  "x": "8*other.hspeed",
+                  "y": "8*other.vspeed",
                   "relative": true
                 }
               },
@@ -1413,8 +1435,8 @@
           }
         },
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627",
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466",
         "parent": "wall_corner"
       },
       "obj_hole": {
@@ -1429,18 +1451,18 @@
           "collision_with_obj_block": {
             "actions": [
               {
-                "action": "set_sprite",
+                "action": "play_sound",
                 "parameters": {
-                  "sprite": "sound_hole",
-                  "subimage": "0"
+                  "sound": "sound_hole",
+                  "loop": "0"
                 }
               },
               {
-                "action": "create_random_instance",
+                "action": "destroy_instance",
                 "parameters": {}
               },
               {
-                "action": "create_random_instance",
+                "action": "destroy_instance",
                 "parameters": {}
               }
             ],
@@ -1448,8 +1470,8 @@
           }
         },
         "imported": true,
-        "created": "2026-05-26T11:59:41.079627",
-        "modified": "2026-05-26T11:59:41.079627",
+        "created": "2026-06-05T11:12:38.634466",
+        "modified": "2026-06-05T11:12:38.634466",
         "parent": "wall_corner"
       }
     },
@@ -1466,8 +1488,8 @@
         "instance_count": 1,
         "instances": [],
         "_external_file": "rooms/room_start.json",
-        "created": "2026-05-26T11:59:41.114679",
-        "modified": "2026-05-26T11:59:41.114679",
+        "created": "2026-06-05T11:12:38.636764",
+        "modified": "2026-06-05T11:12:38.636764",
         "imported": true
       },
       "room1": {
@@ -1482,8 +1504,8 @@
         "instance_count": 130,
         "instances": [],
         "_external_file": "rooms/room1.json",
-        "created": "2026-05-26T11:59:41.114679",
-        "modified": "2026-05-26T11:59:41.114679",
+        "created": "2026-06-05T11:12:38.636764",
+        "modified": "2026-06-05T11:12:38.636764",
         "imported": true
       },
       "room2": {
@@ -1498,8 +1520,8 @@
         "instance_count": 96,
         "instances": [],
         "_external_file": "rooms/room2.json",
-        "created": "2026-05-26T11:59:41.114679",
-        "modified": "2026-05-26T11:59:41.114679",
+        "created": "2026-06-05T11:12:38.636764",
+        "modified": "2026-06-05T11:12:38.636764",
         "imported": true
       },
       "room3": {
@@ -1514,8 +1536,8 @@
         "instance_count": 105,
         "instances": [],
         "_external_file": "rooms/room3.json",
-        "created": "2026-05-26T11:59:41.114679",
-        "modified": "2026-05-26T11:59:41.114679",
+        "created": "2026-06-05T11:12:38.636764",
+        "modified": "2026-06-05T11:12:38.636764",
         "imported": true
       },
       "room4": {
@@ -1530,8 +1552,8 @@
         "instance_count": 94,
         "instances": [],
         "_external_file": "rooms/room4.json",
-        "created": "2026-05-26T11:59:41.114679",
-        "modified": "2026-05-26T11:59:41.114679",
+        "created": "2026-06-05T11:12:38.636764",
+        "modified": "2026-06-05T11:12:38.636764",
         "imported": true
       },
       "room5": {
@@ -1546,8 +1568,8 @@
         "instance_count": 98,
         "instances": [],
         "_external_file": "rooms/room5.json",
-        "created": "2026-05-26T11:59:41.114679",
-        "modified": "2026-05-26T11:59:41.114679",
+        "created": "2026-06-05T11:12:38.636764",
+        "modified": "2026-06-05T11:12:38.636764",
         "imported": true
       }
     },
@@ -1562,8 +1584,8 @@
         "italic": false,
         "charset": "ascii",
         "imported": true,
-        "created": "2026-05-26T11:59:41.134361",
-        "modified": "2026-05-26T11:59:41.134361"
+        "created": "2026-06-05T11:12:38.639029",
+        "modified": "2026-06-05T11:12:38.639029"
       }
     },
     "data": {}
