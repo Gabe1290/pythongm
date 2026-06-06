@@ -52,6 +52,28 @@ append below).
 
 ---
 
+## 2026-06-06 — Decision: replace ALL sample sprites with clearly-licensed art
+
+**Decided:** every sample sprite will be replaced with images that have clear,
+documented copyright/licensing. The proper LICENSE/attribution text will be
+written **after** the swap is complete, to match what actually ships — not before.
+
+This **supersedes** the earlier "open decision" about whether to swap the Pingus
+art (entry below): it's now decided — swap first, then license.
+
+Scope & implications:
+
+- Applies to **both** the platform art (currently Pingus, GPL-3.0-or-later) **and**
+  the still-undocumented maze art. So the maze-provenance TODO is mooted by the
+  swap — no need to trace the old maze art if it's being replaced anyway.
+- Once the Pingus art is gone, the **GPLv3+ copyleft concern** for exported
+  platform games disappears.
+- `docs/ASSET_LICENSES.md` will need a **rewrite** once new art lands; its current
+  Pingus entry + `samples/plateforme_*/CREDITS.txt` + `licenses/GPL-3.0.txt` stay
+  accurate only until the swap, then come out.
+- **Not a candidate:** the gmshaders.com yellow teddy bear (© Xor, no license
+  stated → all-rights-reserved; also not currently in the repo).
+
 ## 2026-06-06 — Asset licensing: platform samples (Pingus) done; maze art still TODO
 
 Documented the copyright status of bundled image assets (commit `b4c188b`):

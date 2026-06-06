@@ -3,6 +3,11 @@
 This file records the copyright and license status of the **image, sound, and
 other media assets** bundled with PyGameMaker (pygm2).
 
+> **Status (2026-06-06):** the sample sprites are being **replaced** with
+> clearly-licensed art. Once that swap lands, this registry will be rewritten to
+> match the new assets and the Pingus/GPL entries below will be removed. See
+> `docs/SESSION_NOTES.md` for the decision.
+
 It is deliberately separate from the project's two code/doc licenses:
 
 - **Source code** → MIT (see [`LICENSE`](../LICENSE)).
