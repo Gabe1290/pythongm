@@ -2202,6 +2202,11 @@ class GameRunner:
                 if instance.object_data and "events" in instance.object_data:
                     self.action_executor.execute_event(instance, "create", instance.object_data["events"])
 
+            # Execute the once-per-game game_start event (after Create, before
+            # Room Start) so startup setup like score/lives/caption runs.
+            logger.info(f"🎬 Triggering game_start events for starting room: {self.current_room.name}")
+            self.trigger_game_start_event()
+
             # Execute room_start event for all instances (after create events)
             logger.info(f"🚪 Triggering room_start events for starting room: {self.current_room.name}")
             self.trigger_room_start_event()
@@ -2695,6 +2700,21 @@ class GameRunner:
                         instance.mouse_y = mouse_y
                         instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
+    def _room_transition_pending(self) -> bool:
+        """True if any instance has queued a room change/restart/game-restart
+        this frame. Used to stop mid-frame collision processing before the room
+        is rebuilt, so one death can't deduct a life per overlapping instance.
+        Mirrors the flags consumed at the top of update()."""
+        room = self.current_room
+        if not room:
+            return False
+        for inst in room.instances:
+            if (inst.restart_room_flag or inst.next_room_flag
+                    or inst.previous_room_flag or inst.restart_game_flag
+                    or inst.goto_room_target):
+                return True
+        return False
+
     def update(self):
         """Update game logic"""
         if not self.current_room:
@@ -3003,9 +3023,16 @@ class GameRunner:
                 collisions = self.detect_collisions_for_instance(instance, objects_data)
                 all_collisions.extend(collisions)
 
-            # Second pass: Process ALL collision events with stored speeds
+            # Second pass: Process collision events with stored speeds. Stop as
+            # soon as a handler queues a room change/restart (or ends the game):
+            # the room is about to be rebuilt, so processing the rest of the
+            # queue would let a single death keep mutating soon-to-be-discarded
+            # instances — e.g. deducting one life per overlapping monster when
+            # several cluster on the player (2–3 lives lost from one hit).
             for collision_data in all_collisions:
                 self.process_collision_event(collision_data)
+                if not self.running or self._room_transition_pending():
+                    break
 
             # Third pass: Check for "not_collision" events (fire when NOT colliding)
             self.check_not_collision_events(objects_data)
@@ -4072,6 +4099,11 @@ class GameRunner:
                 if instance.object_data and "events" in instance.object_data:
                     instance.action_executor.execute_event(instance, "create", instance.object_data["events"])
 
+            # A game restart re-fires game_start (after Create, before Room
+            # Start), matching GameMaker, so startup setup like the lives/score
+            # caption is re-applied on a fresh playthrough.
+            self.trigger_game_start_event()
+
             # Execute room_start event for all instances (after create events)
             self.trigger_room_start_event()
 
@@ -4163,6 +4195,20 @@ class GameRunner:
         for instance in self.current_room.instances:
             if instance.object_data and "events" in instance.object_data:
                 instance.action_executor.execute_event(instance, "room_start", instance.object_data["events"])
+
+    def trigger_game_start_event(self):
+        """Trigger the once-per-game `game_start` event on all instances in the
+        starting room. Fires at launch (and again on game restart), after Create
+        and before Room Start, matching GameMaker's Game Start event. Games
+        commonly use it to initialise score/lives and the window caption — if it
+        never fires, that setup is skipped (e.g. the lives counter stays hidden
+        until something else flips it on)."""
+        if not self.current_room:
+            return
+
+        for instance in self.current_room.instances:
+            if instance.object_data and "events" in instance.object_data:
+                instance.action_executor.execute_event(instance, "game_start", instance.object_data["events"])
 
     def change_room(self, room_name: str):
         """Change to a different room"""
