@@ -1,0 +1,82 @@
+# Session Notes
+
+A **portable, git-tracked** log of significant explanations, decisions, and
+cross-machine context from Claude / agent sessions.
+
+## Why this file exists
+
+The automatic, complete trace of everything an agent says lives in per-machine
+session transcripts:
+
+```
+~/.claude/projects/<encoded-absolute-path>/<session-uuid>.jsonl
+```
+
+Those transcripts are **not portable**:
+
+- They live under `~/.claude` on one specific machine. Nothing syncs them —
+  not GitHub (which only tracks this repo), not Dropbox.
+- They are keyed by the **absolute path** the project was opened from. Even on
+  the same machine, opening `~/projects/pygm2` vs `~/Dropbox/pygm2` produces
+  two separate, non-overlapping histories — and agent *memory* under those
+  paths doesn't carry over either.
+
+`CLAUDE.md` already solves this for standing instructions by living in-repo.
+**This file does the same for session-by-session explanations and decisions.**
+Because it rides GitHub (the canonical cross-machine sync), it follows you to
+every computer.
+
+## Conventions
+
+- **Newest entry at the top.** One dated `## YYYY-MM-DD` heading per
+  significant session (skip trivial ones).
+- Capture the *why* and any cross-machine-relevant state (branch, stash,
+  uncommitted work, machine-specific gotchas) — not a blow-by-blow of every
+  command.
+- Keep deep dives in their dedicated docs (`docs/CODE_AUDIT.md`,
+  `docs/LATENT_BUG_AUDIT_2026-06-03.md`, etc.) and just link them here.
+
+## How to keep it synced across machines
+
+GitHub is the cross-machine sync (the repo was migrated off Dropbox for exactly
+this reason — see the entry below). So:
+
+1. **Start of session, on any machine:** `git pull`.
+2. During/after the session, the agent appends an entry here.
+3. **End of session:** commit + push so the next machine sees it.
+
+The raw transcripts on the *other* machines stay local to those machines and
+are not retrievable from here. If you ever want one mined into notes, copy that
+machine's `.jsonl` into the repo (or just run the agent there and have it
+append below).
+
+---
+
+## 2026-06-06 — Set up portable session notes
+
+- Established this file as the portable record of agent explanations, after
+  confirming that the automatic transcripts (`~/.claude/projects/.../*.jsonl`)
+  are local-only and path-keyed, so they don't follow the user across machines.
+- Confirmed no `~/.claude` transcripts are synced into Dropbox; **GitHub is the
+  only cross-machine channel**, so portable notes must be committed to the repo.
+
+### Cross-machine layout & state (ported from a machine-local memory note, 2026-06-03)
+
+This was captured during the repo's migration off Dropbox and previously lived
+only in this machine's local agent memory — recording it here so it survives.
+
+- **Canonical repo (program source):** `~/projects/pygm2` on each machine.
+  GitHub is the sync. `git pull` at the start of every session; edit / test /
+  commit here.
+- **Retired repo:** `~/Dropbox/pygm2` — kept as a safe fallback, do **not**
+  edit. Its `.git` rode Dropbox sync, which is the hazard the move fixed. Can be
+  removed once every machine is migrated and any unique work is captured.
+- **Working game projects:** `~/Dropbox/PyGameMaker Projects/` (e.g.
+  `plateforme_3`) stay in Dropbox; only the *repo* moved. Distinct from the
+  in-repo `samples/` copies.
+- **Work that may live ONLY on one machine (not pushed):** a
+  `WIP: multiplayer over network` stash and a `tutorial-dock-and-test-pdfs`
+  branch (`93ca148`) were noted as local-only on the primary machine. Other
+  machines won't get them via clone — push them if they're needed elsewhere.
+  (The earlier "If Condition" editor fix from that note has since landed as
+  commit `d60f41b`.)
