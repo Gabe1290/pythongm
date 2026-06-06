@@ -79,6 +79,24 @@ class ObjectPropertiesPanel(QGroupBox):
         )
         checkbox_layout.addWidget(self.persistent_checkbox)
 
+        # "Stay destroyed" checkbox: once an instance is destroyed it will not
+        # respawn when the room is restarted (or re-entered); a game restart
+        # clears this memory and brings every instance back. Useful for pickups
+        # like bonuses. Distinct from "Persistent", which carries a *living*
+        # instance between rooms.
+        self.remember_destroyed_checkbox = QCheckBox(self.tr("Stay destroyed"))
+        self.remember_destroyed_checkbox.setChecked(False)
+        self.remember_destroyed_checkbox.setToolTip(
+            self.tr("Once destroyed, this object stays gone when the room "
+                    "restarts (resets on a full game restart)")
+        )
+        self.remember_destroyed_checkbox.stateChanged.connect(
+            lambda: self.property_changed.emit(
+                'remember_destroyed', self.remember_destroyed_checkbox.isChecked()
+            )
+        )
+        checkbox_layout.addWidget(self.remember_destroyed_checkbox)
+
         # Solid checkbox
         self.solid_checkbox = QCheckBox(self.tr("Solid"))
         self.solid_checkbox.setChecked(False)
@@ -148,6 +166,7 @@ class ObjectPropertiesPanel(QGroupBox):
         self.parent_combo.blockSignals(True)
         self.visible_checkbox.blockSignals(True)
         self.persistent_checkbox.blockSignals(True)
+        self.remember_destroyed_checkbox.blockSignals(True)
         self.solid_checkbox.blockSignals(True)
 
         # Load sprite
@@ -174,6 +193,7 @@ class ObjectPropertiesPanel(QGroupBox):
 
         self.visible_checkbox.setChecked(data.get('visible', True))
         self.persistent_checkbox.setChecked(data.get('persistent', False))
+        self.remember_destroyed_checkbox.setChecked(data.get('remember_destroyed', False))
         self.solid_checkbox.setChecked(data.get('solid', False))
 
         # Unblock signals after loading
@@ -181,6 +201,7 @@ class ObjectPropertiesPanel(QGroupBox):
         self.parent_combo.blockSignals(False)
         self.visible_checkbox.blockSignals(False)
         self.persistent_checkbox.blockSignals(False)
+        self.remember_destroyed_checkbox.blockSignals(False)
         self.solid_checkbox.blockSignals(False)
 
     def get_properties(self) -> Dict[str, Any]:
@@ -193,5 +214,6 @@ class ObjectPropertiesPanel(QGroupBox):
             'parent': parent_name if parent_name != no_parent else '',
             'visible': self.visible_checkbox.isChecked(),
             'persistent': self.persistent_checkbox.isChecked(),
+            'remember_destroyed': self.remember_destroyed_checkbox.isChecked(),
             'solid': self.solid_checkbox.isChecked(),
         }

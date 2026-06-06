@@ -49,10 +49,12 @@ CAPTION_TRANSLATIONS = {
 }
 
 # Properties that always come from the child's own data, never inherited.
-# 'sprite' / 'visible' / 'solid' / 'persistent' are deliberately child-only:
-# they default to engine values when the child doesn't set them, instead of
-# silently picking up a parent's value.
-_CHILD_ONLY_OBJECT_PROPS = frozenset({'sprite', 'visible', 'solid', 'persistent'})
+# 'sprite' / 'visible' / 'solid' / 'persistent' / 'remember_destroyed' are
+# deliberately child-only: they default to engine values when the child
+# doesn't set them, instead of silently picking up a parent's value.
+_CHILD_ONLY_OBJECT_PROPS = frozenset({
+    'sprite', 'visible', 'solid', 'persistent', 'remember_destroyed',
+})
 
 # Keys that aren't user-facing properties (identity / structure / metadata),
 # plus 'events' which is merged separately with closest-parent-wins semantics.
@@ -69,8 +71,9 @@ def resolve_parent_inheritance(object_data: dict, objects: Dict[str, dict]) -> d
 
     Properties: a child inherits any property its ancestors define that the
     child itself doesn't set (key missing or value is None), with one exception
-    — 'sprite', 'visible', 'solid', and 'persistent' always come from the
-    child's own data (or engine defaults), never from a parent.
+    — 'sprite', 'visible', 'solid', 'persistent', and 'remember_destroyed'
+    always come from the child's own data (or engine defaults), never from a
+    parent.
 
     Walks up to 10 levels of ancestors so grandparents are reached.
     """
@@ -1726,6 +1729,15 @@ class GameRunner:
         # Global variables storage (user-defined variables accessible from any instance)
         self.global_variables: Dict[str, Any] = {}
 
+        # "Stay destroyed" memory: room name -> set of (object_name, xstart,
+        # ystart) identities for instances flagged `remember_destroyed` that
+        # were destroyed during play. Consulted when a room is rebuilt from its
+        # authored layout (room restart / first-room rebuild on game restart)
+        # so those instances are not respawned. Cleared on a full game restart.
+        # Leaving and re-entering a room needs no entry here — change_room
+        # reuses the same room object, so destroyed instances are already gone.
+        self._destroyed_memory: Dict[str, set] = {}
+
         # Cached reference to objects data (set once during project load)
         self._objects_data: Dict[str, dict] = {}
 
@@ -2306,6 +2318,9 @@ class GameRunner:
                     kept = []
                     for inst in room.instances:
                         if inst.to_destroy:
+                            # Remember flagged instances so a later room rebuild
+                            # (restart) doesn't respawn them.
+                            self._remember_destroyed_instance(room, inst)
                             room._remove_from_grid(inst)
                             room._instance_cells.pop(id(inst), None)
                         else:
@@ -3883,6 +3898,45 @@ class GameRunner:
 
         return False
 
+    @staticmethod
+    def _destroyed_identity(inst):
+        """Stable identity for a placed instance across a room rebuild.
+
+        Authored room instances carry no id, but they respawn at the same
+        (object, position), and `xstart`/`ystart` capture that authored
+        position — so this key matches a pre-rebuild instance to its
+        post-rebuild twin. Record and consume sides MUST use this helper so
+        the two halves can never drift apart."""
+        return (inst.object_name, inst.xstart, inst.ystart)
+
+    def _remember_destroyed_instance(self, room, inst):
+        """If `inst` opts into `remember_destroyed`, record its identity so a
+        future rebuild of `room` (a restart) won't respawn it. No-op for
+        instances without the flag."""
+        if inst.object_data and inst.object_data.get('remember_destroyed'):
+            self._destroyed_memory.setdefault(room.name, set()).add(
+                self._destroyed_identity(inst)
+            )
+
+    def _apply_destroyed_memory(self, room):
+        """Drop instances a player already destroyed that are flagged
+        `remember_destroyed`, so rebuilding a room from its layout (restart)
+        doesn't bring them back. Identity is (object_name, xstart, ystart),
+        which is stable across a rebuild because the room is recreated from the
+        same authored instance list. No-op when the room has no remembered
+        kills. Cleared on a full game restart."""
+        remembered = self._destroyed_memory.get(room.name)
+        if not remembered:
+            return
+        kept = [
+            inst for inst in room.instances
+            if self._destroyed_identity(inst) not in remembered
+        ]
+        if len(kept) != len(room.instances):
+            room.instances = kept
+            room.rebuild_spatial_grid()
+            room.invalidate_collision_listened_types()
+
     def restart_current_room(self):
         """Restart the current room"""
         if not self.current_room:
@@ -3922,6 +3976,11 @@ class GameRunner:
             if new_room.background_image_name:
                 new_room.load_background_image()
 
+            # Drop instances that were destroyed earlier and flagged
+            # `remember_destroyed` (e.g. collected bonuses) so they don't
+            # respawn on restart.
+            self._apply_destroyed_memory(new_room)
+
             # Replace the room in our dictionary
             self.rooms[room_name] = new_room
             self.current_room = new_room
@@ -3949,6 +4008,10 @@ class GameRunner:
         self.score = settings.get('starting_score', 0)
         self.lives = settings.get('starting_lives', 3)
         self.health = settings.get('starting_health', 100)
+
+        # Full reset: forget every "stay destroyed" instance so bonuses and the
+        # like reappear on a fresh playthrough.
+        self._destroyed_memory.clear()
 
         logger.debug(f"  📊 Reset: Score={self.score}, Lives={self.lives}, Health={self.health}")
 

@@ -943,6 +943,7 @@ class ObjectEditor(BaseEditor):
             'visible': properties.get('visible', self.current_object_properties.get('visible', True)),
             'solid': properties.get('solid', self.current_object_properties.get('solid', False)),
             'persistent': properties.get('persistent', self.current_object_properties.get('persistent', False)),
+            'remember_destroyed': properties.get('remember_destroyed', self.current_object_properties.get('remember_destroyed', False)),
             'events': events_data,
             'asset_type': 'object',
             'imported': True
@@ -1011,8 +1012,8 @@ class ObjectEditor(BaseEditor):
             self.update_object_property_from_ide('sprite', value)
             return
 
-        # Handle boolean properties (visible, solid, persistent)
-        if property_name in ['visible', 'solid', 'persistent']:
+        # Handle boolean properties (visible, solid, persistent, remember_destroyed)
+        if property_name in ['visible', 'solid', 'persistent', 'remember_destroyed']:
             self.update_object_property_from_ide(property_name, value)
             """Handle property changes """
             logger.debug(f"Property changed: {property_name} = {value}")
