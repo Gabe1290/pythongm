@@ -52,6 +52,29 @@ append below).
 
 ---
 
+## 2026-06-06 — Asset licensing: platform samples (Pingus) done; maze art still TODO
+
+Documented the copyright status of bundled image assets (commit `b4c188b`):
+
+- **Platform samples** (`samples/plateforme_1..5/`, 76 PNGs) — the art comes
+  from **Pingus** (https://pingus.seul.org/, https://github.com/Pingus/), which
+  licenses code *and* artwork under **GPL-3.0-or-later** (verified against
+  upstream `LICENSE.txt`/`AUTHORS`). These files are **GPLv3+, not MIT.** Added
+  `docs/ASSET_LICENSES.md` (registry), a `CREDITS.txt` in each plateforme folder,
+  `licenses/GPL-3.0.txt`, and fixed `samples/README.md`.
+- **Copyleft caveat noted in the doc:** a game *exported* from a platform sample
+  contains GPL art and inherits GPL obligations. If that's unwanted for
+  classroom redistribution, the fix is swapping in permissive/original art — an
+  open decision, not yet acted on.
+
+**Open follow-ups (pick up from `docs/ASSET_LICENSES.md`):**
+
+- **Maze samples** (`samples/maze_1..3/`) — art provenance still undocumented.
+  These were also `.gmk` imports; origin/license TBD. ← do this next.
+- `resources/flags/*.png` (8) and `Tutorials/**/*.png` — provenance unrecorded
+  (stubbed in the registry).
+- Optional: add a one-line pointer from root `LICENSE` to `docs/ASSET_LICENSES.md`.
+
 ## 2026-06-06 — Set up portable session notes
 
 - Established this file as the portable record of agent explanations, after
