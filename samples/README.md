@@ -16,7 +16,19 @@ copy — the bundled folders themselves are never modified.
 | `maze_1/`        | imported from a GameMaker 8.x .gmk  | 2 rooms, 3 objects, 3 sprites                    |
 | `maze_2/`        | imported from a GameMaker 8.x .gmk  | 3 rooms, 9 objects, 7 sprites, 4 sounds          |
 | `maze_3/`        | imported from a GameMaker 8.x .gmk  | 6 rooms, 17 objects, 16 sprites, 8 sounds        |
+| `plateforme_1/`  | imported from a GameMaker 8.x .gmk  | platformer · art from Pingus, GPLv3+ †           |
+| `plateforme_2/`  | imported from a GameMaker 8.x .gmk  | platformer · art from Pingus, GPLv3+ †           |
+| `plateforme_3/`  | imported from a GameMaker 8.x .gmk  | platformer · art from Pingus, GPLv3+ †           |
+| `plateforme_4/`  | imported from a GameMaker 8.x .gmk  | platformer · art from Pingus, GPLv3+ †           |
+| `plateforme_5/`  | imported from a GameMaker 8.x .gmk  | platformer · art from Pingus, GPLv3+ †           |
 | `maze.playground`| Aseba playground (for Thymio tests) | XML file, used by `File → Open Playground`       |
+
+† The `plateforme_*` image assets are taken from [Pingus](https://pingus.seul.org/)
+and are licensed **GPL-3.0-or-later**, *not* the project's MIT license. Each
+folder carries a `CREDITS.txt`; the full terms, scope, and artist credits are in
+[`docs/ASSET_LICENSES.md`](../docs/ASSET_LICENSES.md), and the license text is at
+[`licenses/GPL-3.0.txt`](../licenses/GPL-3.0.txt). Maze-sample art provenance is
+still to be documented.
 
 Two further samples (`treasure/` and `maze_4/`) shipped briefly in
 rc.12 but were dropped after user testing surfaced enough GMK-import
@@ -30,12 +42,16 @@ investigation recipe.
 ## Regenerating from `.gmk` originals
 
 The folders above were produced by running `importers/gmk_importer.py`
-against a set of GameMaker 8.x source files (`maze_1.gmk` etc.). The
-`.gmk` originals are *not* shipped here — they're regeneration sources,
-not runtime artifacts. If the conversion ever needs to be redone:
+against a set of GameMaker 8.x source files (`maze_1.gmk` etc.). Most of
+the `.gmk` sources **are** committed alongside this README
+(`samples/maze_3.gmk` and `samples/plateforme_1..5.gmk`) — the global
+`*.gmk` ignore rule has a `!samples/*.gmk` exception so they stay tracked
+and the import is auditable. The `maze_1.gmk` / `maze_2.gmk` sources are
+not currently committed. If the conversion ever needs to be redone:
 
-1. Place the `.gmk` files next to this README (the global `*.gmk`
-   gitignore rule keeps them out of commits even if you don't move them).
+1. Place any missing `.gmk` files next to this README. Files under
+   `samples/` are exempt from the global `*.gmk` ignore, so they will be
+   tracked once committed.
 2. Run something like:
 
    ```bash
