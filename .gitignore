@@ -59,7 +59,11 @@ docs/code_editor_test_projects.odt
 *.swp
 *.swo
 
+# Ignore all .claude dirs (root + nested), but track the shared root settings.json
 .claude/
+!/.claude/
+/.claude/*
+!/.claude/settings.json
 chm_extracted/
 chm_extracted.zip
 dist/
