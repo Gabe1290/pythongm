@@ -364,3 +364,45 @@ class TestAssetManagerThumbnails:
         with Image.open(thumbnail_path) as thumb:
             assert thumb.width <= 64
             assert thumb.height <= 64
+
+
+class TestRevalidateImportState:
+    """revalidate_asset_import_state heals a stale '(not imported)' badge.
+
+    Load-time validation only ever *flags* a missing file; this method fixes
+    the imported/file_missing flags both ways when an asset's editor rewrites
+    its file (regression: a sprite absent at load stayed badged not-imported
+    even after being drawn and saved)."""
+
+    @pytest.fixture
+    def asset_manager(self, temp_project_dir):
+        with patch('pygame.mixer.init'):
+            from core.asset_manager import AssetManager
+            return AssetManager(project_directory=temp_project_dir)
+
+    def test_heals_when_file_present(self, asset_manager, temp_project_dir):
+        (temp_project_dir / "sprites" / "spr_wall.png").write_bytes(b"\x89PNG\r\n")
+        data = {"file_path": "sprites/spr_wall.png",
+                "imported": False, "file_missing": True}
+
+        asset_manager.revalidate_asset_import_state(data)
+
+        assert data["imported"] is True
+        assert "file_missing" not in data
+
+    def test_flags_when_file_absent(self, asset_manager):
+        data = {"file_path": "sprites/gone.png", "imported": True}
+
+        asset_manager.revalidate_asset_import_state(data)
+
+        assert data["imported"] is False
+        assert data["file_missing"] is True
+
+    def test_no_file_path_treated_as_present(self, asset_manager):
+        # Objects/rooms/scripts are created in-IDE and have no backing file.
+        data = {"imported": False, "file_missing": True}
+
+        asset_manager.revalidate_asset_import_state(data)
+
+        assert data["imported"] is True
+        assert "file_missing" not in data

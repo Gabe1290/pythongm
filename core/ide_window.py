@@ -3509,9 +3509,18 @@ class PyGameMakerIDE(QMainWindow):
             logger.debug(f"💾 Saving: category='{asset_category}', type_field='{asset_type_field}'")
 
             # Ensure required fields with CORRECT singular asset_type
-            asset_data['imported'] = True
             asset_data['name'] = asset_name
             asset_data['asset_type'] = asset_type_field  # SINGULAR form
+
+            # Re-check the asset's file now that its editor has (re)written it.
+            # This heals a stale "(not imported)" / file_missing badge left from
+            # a load when the file was still absent — e.g. a sprite whose art
+            # was being created. Falls back to marking imported when the asset
+            # has no backing file (objects/rooms) or no asset manager is wired.
+            if getattr(self, 'asset_manager', None):
+                self.asset_manager.revalidate_asset_import_state(asset_data)
+            else:
+                asset_data['imported'] = True
 
             # Debug: Print what we're about to save
             if asset_category == 'rooms':
