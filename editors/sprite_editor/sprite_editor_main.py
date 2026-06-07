@@ -1031,6 +1031,11 @@ class SpriteEditor(BaseEditor):
 
         self._saving = True
         try:
+            # Bake any uncommitted floating selection (a moved or pasted region
+            # still held in the select tool) into the current frame before we
+            # composite — otherwise those pixels are lost from the saved image.
+            self._flatten_floating_selection()
+
             # Composite frames into strip
             strip_image = self.frame_timeline.composite_strip()
 
@@ -1076,6 +1081,20 @@ class SpriteEditor(BaseEditor):
             return False
         finally:
             self._saving = False
+
+    def _flatten_floating_selection(self):
+        """Stamp any active floating selection (from the select tool) into the
+        current canvas image and sync it to the frame.
+
+        Belt-and-suspenders for the move fix in SelectTool.on_release: a
+        floating layer can also exist from a paste that was never clicked away.
+        Without flattening it, the floating pixels live only in the tool and are
+        dropped when the frame is composited for save."""
+        tool = self._tools.get("select")
+        if tool is not None and getattr(tool, "has_floating", None) and tool.has_floating():
+            tool.commit(self.canvas.get_image())
+            self.frame_timeline.update_current_frame(self.canvas.get_image())
+            self.canvas.viewport().update()
 
     def _regenerate_thumbnail(self, image_path: Path):
         """Regenerate thumbnail using AssetManager if available."""

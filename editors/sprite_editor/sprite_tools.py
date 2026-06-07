@@ -568,6 +568,23 @@ class SelectTool(BaseTool):
     def on_release(self, image, x, y, color):
         if self._dragging:
             self._dragging = False
+            # Bake the moved pixels into the image at their new location now.
+            # The canvas fires canvas_modified right after this, which syncs
+            # canvas.get_image() into the frame — and lift_selection already
+            # cleared the original region to transparent. If we don't stamp the
+            # floating layer back here, those pixels (held only in the
+            # uncommitted floating layer) are discarded on that sync, blanking
+            # the moved area — e.g. selecting the whole sprite and nudging it
+            # wiped it to 100% transparent. Keep selection_rect so the region
+            # stays selected and can be grabbed/nudged again (re-lifts on the
+            # next on_press).
+            if self._floating and self.selection_rect:
+                from PySide6.QtGui import QPainter
+                painter = QPainter(image)
+                painter.drawImage(self.selection_rect.topLeft(), self._floating)
+                painter.end()
+                self._floating = None
+                self._float_origin = None
             return
 
         if self._start:

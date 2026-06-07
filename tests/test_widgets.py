@@ -338,6 +338,58 @@ class TestSpriteEditorPreciseCheckbox:
         assert editor.get_data()["precise"] is False
 
 
+class TestSpriteEditorSelectMove:
+    """Selecting a region and moving it must not lose pixels. Regression:
+    selecting (especially the whole sprite, which has a transparent
+    background) and nudging it blanked the sprite to 100% transparent —
+    lift_selection cleared the source region but the moved pixels, held only
+    in an uncommitted floating layer, were dropped when the frame synced."""
+
+    @staticmethod
+    def _opaque(img):
+        return sum(((img.pixel(x, y) >> 24) & 0xFF) > 0
+                   for y in range(img.height()) for x in range(img.width()))
+
+    def test_moving_a_selection_preserves_pixels(self, qtbot):
+        try:
+            from editors.sprite_editor.sprite_editor_main import SpriteEditor
+        except ImportError:
+            pytest.skip("SpriteEditor not available")
+        from PySide6.QtGui import QImage, QColor
+
+        ed = SpriteEditor()
+        qtbot.addWidget(ed)
+
+        # Transparent background with a 5x4 = 20px opaque blob in the middle.
+        img = QImage(10, 8, QImage.Format_ARGB32)
+        img.fill(QColor(0, 0, 0, 0))
+        for y in range(2, 6):
+            for x in range(3, 8):
+                img.setPixelColor(x, y, QColor(255, 0, 0, 255))
+        ed.frame_timeline.set_frames([img])
+        ed.canvas.set_image(ed.frame_timeline.get_current_frame())
+        assert self._opaque(ed.frame_timeline.get_frames()[0]) == 20
+
+        sel = ed._tools["select"]
+        ed.canvas.set_tool(sel)
+        color = ed.canvas._current_color
+
+        def stroke(p0, p1):
+            ed.canvas.take_stroke_snapshot()
+            ed.canvas._painting = True
+            sel.on_press(ed.canvas._image, p0[0], p0[1], color)
+            sel.on_move(ed.canvas._image, p1[0], p1[1], color)
+            sel.on_release(ed.canvas._image, p1[0], p1[1], color)
+            ed.canvas._painting = False
+            ed.canvas.canvas_modified.emit()
+
+        stroke((0, 0), (9, 7))   # select the whole sprite
+        stroke((4, 4), (6, 5))   # grab inside the selection and shift it
+
+        after = self._opaque(ed.frame_timeline.get_frames()[0])
+        assert after == 20, f"pixels lost when moving selection: 20 -> {after}"
+
+
 class TestScriptEditor:
     """The minimal script editor (editors/script_editor.py) round-trips
     a script's ``code`` field through load_data / get_data and tags the
