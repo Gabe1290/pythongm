@@ -776,6 +776,36 @@ class ObjectEditor(BaseEditor):
         if self.project_path:
             self.load_project_assets()
 
+    def _ide_project_data(self):
+        """The IDE's live in-memory project data, if reachable by walking up the
+        widget parents (mirrors notify_sprite_change).
+
+        A freshly imported sprite is added here immediately but isn't written to
+        project.json until the project is saved, so prefer this over the on-disk
+        read — otherwise a just-imported sprite is missing from the object
+        editor's sprite combo until the next save. Returns None when unreachable
+        (e.g. some detached windows), so callers fall back to the disk read."""
+        parent = self.parent()
+        while parent is not None:
+            data = getattr(parent, 'current_project_data', None)
+            if data:
+                return data
+            parent = parent.parent()
+        return None
+
+    def apply_available_sprites(self, sprites: Dict[str, Any]):
+        """Set the sprite list from an external in-memory source — the IDE
+        pushing its live sprites (which include a just-imported sprite not yet
+        written to project.json).
+
+        Complements the parent-walk in load_project_assets: a *floated* editor's
+        Qt parent chain may not reach the IDE, so it can't find the live data on
+        its own. The IDE knows every open editor, so it pushes the list here.
+        set_available_sprites preserves the current combo selection."""
+        self.available_sprites = sprites or {}
+        if hasattr(self, 'properties_panel'):
+            self.properties_panel.set_available_sprites(self.available_sprites)
+
     def load_project_assets(self):
         """Load available sprites from project"""
         sprite_count = 0
@@ -783,7 +813,9 @@ class ObjectEditor(BaseEditor):
         # path doesn't NameError when load_project_data raises.
         project_data = None
         try:
-            project_data = self.load_project_data()
+            # Prefer the IDE's live data (includes imported-but-unsaved assets);
+            # fall back to the on-disk project.json when it isn't reachable.
+            project_data = self._ide_project_data() or self.load_project_data()
 
             if project_data:
                 assets = project_data.get('assets', {})
