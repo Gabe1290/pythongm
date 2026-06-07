@@ -218,6 +218,82 @@ class TestObjectEditor:
             # May require additional arguments
             pytest.skip("ObjectEditor requires additional initialization")
 
+    def test_load_project_assets_prefers_ide_in_memory_sprites(self, qtbot):
+        """A just-imported sprite lives in the IDE's in-memory project data
+        before it's written to project.json on save. The object editor must
+        read that live data, not just the on-disk file, or a freshly imported
+        sprite is missing from the sprite combo until the next save.
+        Regression for that bug."""
+        from types import SimpleNamespace
+        try:
+            from editors.object_editor.object_editor_main import ObjectEditor
+        except ImportError:
+            pytest.skip("ObjectEditor not available")
+
+        editor = ObjectEditor()
+        qtbot.addWidget(editor)
+
+        in_memory = {'assets': {'sprites': {
+            'spr_freshly_imported': {'name': 'spr_freshly_imported'},
+        }}}
+        # Stand in for the IDE window in the parent chain.
+        editor.parent = lambda: SimpleNamespace(current_project_data=in_memory)
+
+        editor.load_project_assets()
+
+        assert 'spr_freshly_imported' in editor.available_sprites
+        combo = editor.properties_panel.sprite_combo
+        items = [combo.itemText(i) for i in range(combo.count())]
+        assert 'spr_freshly_imported' in items
+
+    def test_ide_project_data_none_without_ide_parent(self, qtbot):
+        """Falls back to the disk read when no IDE is reachable (e.g. a bare
+        editor), so behaviour is unchanged when there's no live data."""
+        try:
+            from editors.object_editor.object_editor_main import ObjectEditor
+        except ImportError:
+            pytest.skip("ObjectEditor not available")
+        editor = ObjectEditor()
+        qtbot.addWidget(editor)
+        assert editor._ide_project_data() is None
+
+    def test_apply_available_sprites_pushes_into_combo(self, qtbot):
+        """The IDE pushes its live sprite list straight into the editor (used
+        for floated windows that can't reach the IDE via the parent chain)."""
+        try:
+            from editors.object_editor.object_editor_main import ObjectEditor
+        except ImportError:
+            pytest.skip("ObjectEditor not available")
+        editor = ObjectEditor()
+        qtbot.addWidget(editor)
+
+        editor.apply_available_sprites({'spr_pushed': {'name': 'spr_pushed'}})
+
+        assert 'spr_pushed' in editor.available_sprites
+        combo = editor.properties_panel.sprite_combo
+        items = [combo.itemText(i) for i in range(combo.count())]
+        assert 'spr_pushed' in items
+
+    def test_apply_available_sprites_preserves_selection(self, qtbot):
+        """Pushing an updated list keeps the currently selected sprite."""
+        try:
+            from editors.object_editor.object_editor_main import ObjectEditor
+        except ImportError:
+            pytest.skip("ObjectEditor not available")
+        editor = ObjectEditor()
+        qtbot.addWidget(editor)
+
+        editor.apply_available_sprites({'spr_a': {}, 'spr_b': {}})
+        combo = editor.properties_panel.sprite_combo
+        combo.setCurrentText('spr_a')
+
+        # A new sprite arrives (e.g. just imported); selection must survive.
+        editor.apply_available_sprites({'spr_a': {}, 'spr_b': {}, 'spr_c': {}})
+
+        assert combo.currentText() == 'spr_a'
+        items = [combo.itemText(i) for i in range(combo.count())]
+        assert 'spr_c' in items
+
 
 class TestSpriteEditorPreciseCheckbox:
     """Sprite editor exposes a `Precise Collision` checkbox that round-trips

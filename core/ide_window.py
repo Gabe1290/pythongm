@@ -3941,10 +3941,20 @@ class PyGameMakerIDE(QMainWindow):
 
     def refresh_open_object_editors(self):
         """Refresh sprite lists in all open object editors (tabbed + floated)."""
+        # The IDE's live project data already holds a just-imported sprite,
+        # which isn't written to project.json until save. Push it directly so
+        # floated editors — whose parent chain may not reach the IDE, so they
+        # can't find this data themselves — still pick up the new sprite.
+        sprites = None
+        if self.current_project_data:
+            sprites = self.current_project_data.get('assets', {}).get('sprites')
+
         for widget in self._iter_open_editors():
             if hasattr(widget, 'load_project_assets'):
                 widget.load_project_assets()
                 logger.debug(f"🔄 Refreshed sprites in object editor: {getattr(widget, 'asset_name', '?')}")
+            if sprites is not None and hasattr(widget, 'apply_available_sprites'):
+                widget.apply_available_sprites(sprites)
 
     def refresh_object_sprites(self, object_name: str, old_sprite: str, new_sprite: str):
         """Refresh object sprites in room editors when they change.
