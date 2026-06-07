@@ -2,7 +2,7 @@
   "name": "maze_2",
   "version": "1.0.0",
   "created": "2026-05-23T14:34:55.094829",
-  "modified": "2026-05-24T15:32:40.008851",
+  "modified": "2026-06-07T22:50:47.071542",
   "settings": {
     "window_title": "",
     "window_width": 480,
@@ -35,7 +35,7 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-23T14:34:55.094829",
-        "modified": "2026-05-24T15:16:16.759204",
+        "modified": "2026-06-07T22:50:47.069495",
         "thumbnail": "thumbnails/sprite_wall_corner_thumb.png"
       },
       "sprite_goal": {
@@ -126,7 +126,7 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-23T14:34:55.094829",
-        "modified": "2026-05-24T15:16:06.233687",
+        "modified": "2026-06-07T22:33:33.569346",
         "thumbnail": "thumbnails/sprite_wall_horizontal_thumb.png"
       },
       "sprite_wall_vertical": {
@@ -145,7 +145,8 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-23T14:34:55.094829",
-        "modified": "2026-05-23T14:34:55.094829"
+        "modified": "2026-06-07T22:38:21.570477",
+        "thumbnail": "thumbnails/sprite_wall_vertical_thumb.png"
       }
     },
     "sounds": {
