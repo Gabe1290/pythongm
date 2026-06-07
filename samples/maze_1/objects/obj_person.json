@@ -15,6 +15,12 @@
             "directions": "stop",
             "speed": "8"
           }
+        },
+        {
+          "action": "snap_to_grid",
+          "parameters": {
+            "grid_size": "32"
+          }
         }
       ],
       "target_object": "obj_wall"
@@ -114,5 +120,7 @@
   },
   "imported": true,
   "created": "2026-05-23T14:34:54.997955",
-  "modified": "2026-05-23T14:34:54.997955"
+  "modified": "2026-06-07T18:53:50.237537",
+  "parent": "",
+  "remember_destroyed": false
 }
