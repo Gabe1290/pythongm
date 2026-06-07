@@ -18,11 +18,11 @@ From the repo root:
   env-dependent, so treat **any non-zero _failure_ count as a real
   regression** rather than chasing an exact pass number. Recent green
   snapshots: **532 passed, 21 skipped, 0 failed** on this Linux box
-  (Python 3.11.2 + pygame 2.6.1, 2026-06-03); **536 passed, 0 skipped** on
-  Python 3.12 + pygame 2.6.1 + PySide6 6.10.1 (2026-05-22, pre-rc.12 — fewer
-  tests then). The widget tests that skip on 3.11 run on 3.12, which explains
-  the skip-count gap. The old "486 passed, 16 skipped" figure is a stale
-  snapshot.
+  (Python 3.11.2 + pygame 2.6.1, 2026-06-03); **670 passed, 0 skipped** on
+  Python 3.12 + pygame 2.6.1 + PySide6 6.10.1 (2026-06-07, the Windows box —
+  tests have grown since). The widget tests that skip on 3.11 run on 3.12,
+  which explains the skip-count gap. The old "536 passed" / "486 passed"
+  figures are stale snapshots.
 - `pyflakes` is **not** installed; substitute `py_compile` + import sanity for
   static checks.
 - For headless / offscreen Qt: `QT_QPA_PLATFORM=offscreen` (`conftest.py`
@@ -100,3 +100,40 @@ are fixed** (commits `d60f41b`, `67c91e4`) with regression coverage in
 `tests/test_audit_regressions.py`. **14 medium + 9 low remain open** —
 pick up from that doc and flip checkboxes as you fix. Re-running the
 "latent-bug-audit" workflow re-derives findings from current code.
+
+**2026-06-07 — IDE bug-fix batch (sprites, room restart, instance ids).**
+A run of user-reported fixes, each pushed to `main` with regression tests:
+- `84bafd5` "Stay destroyed" opt-in object flag (`remember_destroyed`): a
+  destroyed instance won't respawn on a room *restart* (or re-entry); cleared
+  on a full game restart; child-only inheritance like `persistent`. Engine
+  keeps the set in `GameRunner._destroyed_memory` keyed by
+  `(object_name, xstart, ystart)`. `tests/test_remember_destroyed.py`.
+- `5f09b1d` the `game_start` event is now actually fired (it had *no* trigger
+  anywhere, so authored startup setup — score/lives/window caption — never
+  ran; lives only appeared after the first death because `set_lives`
+  auto-enables the caption). Also: collision processing now stops once a
+  handler queues a room change/restart, so one death can't deduct a life per
+  overlapping monster. `tests/test_event_lifecycle_fixes.py`.
+- `e950e4c` object editor shows imported-but-unsaved sprites — prefers the
+  IDE's live in-memory project data over the on-disk `project.json` read, plus
+  a push model for floated editors. (Imports copy the file + update memory but
+  don't rewrite `project.json` until save.)
+- `c9ca13a` sprite editor: moving a *selection* no longer blanks the sprite —
+  `SelectTool.on_release` now commits the floating layer (it cleared the
+  source region but only re-stamped on the next click, so the frame sync baked
+  a transparent hole); `save()` also flattens any floating selection.
+- `aee596f` the red "(not imported)" badge self-heals on save via
+  `AssetManager.revalidate_asset_import_state` (it's set only at load when the
+  image file is absent, and a guard kept it stuck). `file_missing`/`imported`
+  are display-only — runtime/export ignore them.
+- `5b14c13` + `76209af` + `5e61605` room editor stops baking `id(self)`
+  memory-address `instance_id`s into room JSON (dead metadata — read nowhere;
+  the runtime grid keys off the live `id(instance)`). Swept **all** samples
+  clean (1147 ephemeral ids removed across maze_1/2/3 + plateforme_2). User
+  will re-save maze_2/maze_3 with new sprites later.
+
+Open follow-up (left to the user — game-feel): the platformer samples' player
+`collision_with_obj_monstre` uses a fragile stomp test `vspeed > 0 and
+y < other.y+8`; fast falls overshoot the 8px window and take a life. Suggested
+`vspeed > 0 and y - vspeed < other.y+8` (uses the pre-move position). Sample
+data only; not applied.
