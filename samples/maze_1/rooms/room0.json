@@ -10,7 +10,6 @@
   "instance_count": 131,
   "instances": [
     {
-      "instance_id": 2037251291232,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -20,7 +19,6 @@
       "y": 0
     },
     {
-      "instance_id": 2037251286864,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -30,7 +28,6 @@
       "y": 32
     },
     {
-      "instance_id": 2037251281104,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -40,7 +37,6 @@
       "y": 64
     },
     {
-      "instance_id": 2037251286960,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -50,7 +46,6 @@
       "y": 96
     },
     {
-      "instance_id": 2037251292720,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -60,7 +55,6 @@
       "y": 128
     },
     {
-      "instance_id": 2037251287680,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -70,7 +64,6 @@
       "y": 160
     },
     {
-      "instance_id": 2037251279328,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -80,7 +73,6 @@
       "y": 192
     },
     {
-      "instance_id": 2037251291280,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -90,7 +82,6 @@
       "y": 224
     },
     {
-      "instance_id": 2037251287200,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -100,7 +91,6 @@
       "y": 256
     },
     {
-      "instance_id": 2037251291952,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -110,7 +100,6 @@
       "y": 288
     },
     {
-      "instance_id": 2037251284272,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -120,7 +109,6 @@
       "y": 320
     },
     {
-      "instance_id": 2037099846720,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -130,7 +118,6 @@
       "y": 352
     },
     {
-      "instance_id": 2037099846528,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -140,7 +127,6 @@
       "y": 384
     },
     {
-      "instance_id": 2037099845424,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -150,7 +136,6 @@
       "y": 416
     },
     {
-      "instance_id": 2037250569472,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -160,7 +145,6 @@
       "y": 448
     },
     {
-      "instance_id": 2037250564432,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -170,7 +154,6 @@
       "y": 448
     },
     {
-      "instance_id": 2037250569760,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -180,7 +163,6 @@
       "y": 448
     },
     {
-      "instance_id": 2037250556752,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -190,7 +172,6 @@
       "y": 448
     },
     {
-      "instance_id": 2037250566784,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -200,7 +181,6 @@
       "y": 448
     },
     {
-      "instance_id": 2037250563616,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -210,7 +190,6 @@
       "y": 448
     },
     {
-      "instance_id": 2037250568944,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -220,7 +199,6 @@
       "y": 448
     },
     {
-      "instance_id": 2037250564288,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -230,7 +208,6 @@
       "y": 480
     },
     {
-      "instance_id": 2037250561936,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -240,7 +217,6 @@
       "y": 480
     },
     {
-      "instance_id": 2037250565728,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -250,7 +226,6 @@
       "y": 448
     },
     {
-      "instance_id": 2037250566928,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -260,7 +235,6 @@
       "y": 448
     },
     {
-      "instance_id": 2037250560400,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -270,7 +244,6 @@
       "y": 448
     },
     {
-      "instance_id": 2037250570288,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -280,7 +253,6 @@
       "y": 448
     },
     {
-      "instance_id": 2037250558624,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -290,7 +262,6 @@
       "y": 448
     },
     {
-      "instance_id": 2037250556080,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -300,7 +271,6 @@
       "y": 448
     },
     {
-      "instance_id": 2037250566400,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -310,7 +280,6 @@
       "y": 448
     },
     {
-      "instance_id": 2037250556320,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -320,7 +289,6 @@
       "y": 448
     },
     {
-      "instance_id": 2037250563952,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -330,7 +298,6 @@
       "y": 416
     },
     {
-      "instance_id": 2037250570192,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -340,7 +307,6 @@
       "y": 384
     },
     {
-      "instance_id": 2037250567792,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -350,7 +316,6 @@
       "y": 352
     },
     {
-      "instance_id": 2037250569376,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -360,7 +325,6 @@
       "y": 320
     },
     {
-      "instance_id": 2037250570048,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -370,7 +334,6 @@
       "y": 288
     },
     {
-      "instance_id": 2037250561840,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -380,7 +343,6 @@
       "y": 256
     },
     {
-      "instance_id": 2037222473856,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -390,7 +352,6 @@
       "y": 224
     },
     {
-      "instance_id": 2037222474048,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -400,7 +361,6 @@
       "y": 192
     },
     {
-      "instance_id": 2037222473952,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -410,7 +370,6 @@
       "y": 160
     },
     {
-      "instance_id": 2037222474432,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -420,7 +379,6 @@
       "y": 128
     },
     {
-      "instance_id": 2037222474384,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -430,7 +388,6 @@
       "y": 96
     },
     {
-      "instance_id": 2037222474336,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -440,7 +397,6 @@
       "y": 64
     },
     {
-      "instance_id": 2037222474288,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -450,7 +406,6 @@
       "y": 32
     },
     {
-      "instance_id": 2037222474240,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -460,7 +415,6 @@
       "y": 0
     },
     {
-      "instance_id": 2037222474192,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -470,7 +424,6 @@
       "y": 0
     },
     {
-      "instance_id": 2037222474144,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -480,7 +433,6 @@
       "y": 0
     },
     {
-      "instance_id": 2037222473808,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -490,7 +442,6 @@
       "y": 0
     },
     {
-      "instance_id": 2037222474528,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -500,7 +451,6 @@
       "y": 0
     },
     {
-      "instance_id": 2037222474096,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -510,7 +460,6 @@
       "y": 0
     },
     {
-      "instance_id": 2037222473904,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -520,7 +469,6 @@
       "y": 0
     },
     {
-      "instance_id": 2037222474480,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -530,7 +478,6 @@
       "y": 0
     },
     {
-      "instance_id": 2037222474576,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -540,7 +487,6 @@
       "y": 0
     },
     {
-      "instance_id": 2037222474624,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -550,7 +496,6 @@
       "y": 0
     },
     {
-      "instance_id": 2037222474672,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -560,7 +505,6 @@
       "y": 0
     },
     {
-      "instance_id": 2037222474720,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -570,7 +514,6 @@
       "y": 0
     },
     {
-      "instance_id": 2037222474768,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -580,7 +523,6 @@
       "y": 0
     },
     {
-      "instance_id": 2037222474816,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -590,7 +532,6 @@
       "y": 0
     },
     {
-      "instance_id": 2037222474864,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -600,7 +541,6 @@
       "y": 32
     },
     {
-      "instance_id": 2037222474912,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -610,7 +550,6 @@
       "y": 64
     },
     {
-      "instance_id": 2037222474960,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -620,7 +559,6 @@
       "y": 96
     },
     {
-      "instance_id": 2037222475008,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -630,7 +568,6 @@
       "y": 128
     },
     {
-      "instance_id": 2037222475056,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -640,7 +577,6 @@
       "y": 160
     },
     {
-      "instance_id": 2037222475104,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -650,7 +586,6 @@
       "y": 192
     },
     {
-      "instance_id": 2037222475152,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -660,7 +595,6 @@
       "y": 224
     },
     {
-      "instance_id": 2037222475200,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -670,7 +604,6 @@
       "y": 256
     },
     {
-      "instance_id": 2037222475248,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -680,7 +613,6 @@
       "y": 288
     },
     {
-      "instance_id": 2037222475296,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -690,7 +622,6 @@
       "y": 320
     },
     {
-      "instance_id": 2037222475344,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -700,7 +631,6 @@
       "y": 384
     },
     {
-      "instance_id": 2037222475392,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -710,7 +640,6 @@
       "y": 384
     },
     {
-      "instance_id": 2037222475440,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -720,7 +649,6 @@
       "y": 384
     },
     {
-      "instance_id": 2037222475488,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -730,7 +658,6 @@
       "y": 384
     },
     {
-      "instance_id": 2037222475536,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -740,7 +667,6 @@
       "y": 352
     },
     {
-      "instance_id": 2037222475584,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -750,7 +676,6 @@
       "y": 320
     },
     {
-      "instance_id": 2037222475632,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -760,7 +685,6 @@
       "y": 288
     },
     {
-      "instance_id": 2037222475680,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -770,7 +694,6 @@
       "y": 256
     },
     {
-      "instance_id": 2037222475728,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -780,7 +703,6 @@
       "y": 224
     },
     {
-      "instance_id": 2037222475776,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -790,7 +712,6 @@
       "y": 192
     },
     {
-      "instance_id": 2037222475824,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -800,7 +721,6 @@
       "y": 160
     },
     {
-      "instance_id": 2037222475872,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -810,7 +730,6 @@
       "y": 128
     },
     {
-      "instance_id": 2037222475920,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -820,7 +739,6 @@
       "y": 96
     },
     {
-      "instance_id": 2037222475968,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -830,7 +748,6 @@
       "y": 64
     },
     {
-      "instance_id": 2037222476016,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -840,7 +757,6 @@
       "y": 64
     },
     {
-      "instance_id": 2037222476064,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -850,7 +766,6 @@
       "y": 64
     },
     {
-      "instance_id": 2037222476112,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -860,7 +775,6 @@
       "y": 64
     },
     {
-      "instance_id": 2037222476160,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -870,7 +784,6 @@
       "y": 64
     },
     {
-      "instance_id": 2037222476208,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -880,7 +793,6 @@
       "y": 128
     },
     {
-      "instance_id": 2037222476256,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -890,7 +802,6 @@
       "y": 128
     },
     {
-      "instance_id": 2037222476304,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -900,7 +811,6 @@
       "y": 64
     },
     {
-      "instance_id": 2037222476352,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -910,7 +820,6 @@
       "y": 64
     },
     {
-      "instance_id": 2037222476400,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -920,7 +829,6 @@
       "y": 64
     },
     {
-      "instance_id": 2037222476448,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -930,7 +838,6 @@
       "y": 64
     },
     {
-      "instance_id": 2037222476496,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -940,7 +847,6 @@
       "y": 128
     },
     {
-      "instance_id": 2037222476544,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -950,7 +856,6 @@
       "y": 128
     },
     {
-      "instance_id": 2037222476592,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -960,7 +865,6 @@
       "y": 128
     },
     {
-      "instance_id": 2037222476640,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -970,7 +874,6 @@
       "y": 128
     },
     {
-      "instance_id": 2037222476688,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -980,7 +883,6 @@
       "y": 192
     },
     {
-      "instance_id": 2037222476736,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -990,7 +892,6 @@
       "y": 224
     },
     {
-      "instance_id": 2037222476784,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1000,7 +901,6 @@
       "y": 256
     },
     {
-      "instance_id": 2037222476832,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1010,7 +910,6 @@
       "y": 288
     },
     {
-      "instance_id": 2037222476880,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1020,7 +919,6 @@
       "y": 320
     },
     {
-      "instance_id": 2037222476928,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1030,7 +928,6 @@
       "y": 352
     },
     {
-      "instance_id": 2037222476976,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1040,7 +937,6 @@
       "y": 384
     },
     {
-      "instance_id": 2037222477024,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1050,7 +946,6 @@
       "y": 384
     },
     {
-      "instance_id": 2037222477072,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1060,7 +955,6 @@
       "y": 384
     },
     {
-      "instance_id": 2037222477120,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1070,7 +964,6 @@
       "y": 192
     },
     {
-      "instance_id": 2037222477168,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1080,7 +973,6 @@
       "y": 192
     },
     {
-      "instance_id": 2037222477216,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1090,7 +982,6 @@
       "y": 192
     },
     {
-      "instance_id": 2037222477264,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1100,7 +991,6 @@
       "y": 192
     },
     {
-      "instance_id": 2037222477312,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1110,7 +1000,6 @@
       "y": 256
     },
     {
-      "instance_id": 2037222477360,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1120,7 +1009,6 @@
       "y": 256
     },
     {
-      "instance_id": 2037222477408,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1130,7 +1018,6 @@
       "y": 256
     },
     {
-      "instance_id": 2037222477456,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1140,7 +1027,6 @@
       "y": 224
     },
     {
-      "instance_id": 2037222477504,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1150,7 +1036,6 @@
       "y": 320
     },
     {
-      "instance_id": 2037222477552,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1160,7 +1045,6 @@
       "y": 320
     },
     {
-      "instance_id": 2037222477600,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1170,7 +1054,6 @@
       "y": 320
     },
     {
-      "instance_id": 2037222477648,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1180,7 +1063,6 @@
       "y": 384
     },
     {
-      "instance_id": 2037222477696,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1190,7 +1072,6 @@
       "y": 384
     },
     {
-      "instance_id": 2037222477744,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1200,7 +1081,6 @@
       "y": 96
     },
     {
-      "instance_id": 2037222477792,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1210,7 +1090,6 @@
       "y": 128
     },
     {
-      "instance_id": 2037222477840,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1220,7 +1099,6 @@
       "y": 160
     },
     {
-      "instance_id": 2037222477888,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1230,7 +1108,6 @@
       "y": 192
     },
     {
-      "instance_id": 2037222477936,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1240,7 +1117,6 @@
       "y": 224
     },
     {
-      "instance_id": 2037222477984,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1250,7 +1126,6 @@
       "y": 256
     },
     {
-      "instance_id": 2037222478032,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1260,7 +1135,6 @@
       "y": 288
     },
     {
-      "instance_id": 2037222478080,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1270,7 +1144,6 @@
       "y": 320
     },
     {
-      "instance_id": 2037222478128,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1280,7 +1153,6 @@
       "y": 384
     },
     {
-      "instance_id": 2037222478176,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1290,7 +1162,6 @@
       "y": 384
     },
     {
-      "instance_id": 2037222478224,
       "object_name": "obj_wall",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1300,7 +1171,6 @@
       "y": 320
     },
     {
-      "instance_id": 2037222478272,
       "object_name": "obj_goal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1310,7 +1180,6 @@
       "y": 32
     },
     {
-      "instance_id": 2037222478320,
       "object_name": "obj_person",
       "rotation": 0,
       "scale_x": 1.0,
