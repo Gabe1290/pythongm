@@ -12,7 +12,14 @@ class ObjectInstance:
         self.object_name = object_name
         self.x = x
         self.y = y
-        self.instance_id = instance_id or id(self)
+        # Carry only an explicitly-provided id. This used to fall back to
+        # id(self) — a Python memory address — which got baked into the saved
+        # room JSON as a huge, non-deterministic number, churning the diff on
+        # every re-save. The persisted instance_id is never read for any logic
+        # (the runtime keys its spatial grid off the live id(instance), and
+        # runtime-created instances synthesise their own), so leaving it unset
+        # and omitting it from to_dict is safe and keeps room files clean.
+        self.instance_id = instance_id
         self.rotation = 0
         self.scale_x = 1.0
         self.scale_y = 1.0
@@ -20,16 +27,20 @@ class ObjectInstance:
 
     def to_dict(self):
         """Convert instance to dictionary for saving"""
-        return {
+        data = {
             'object_name': self.object_name,
             'x': self.x,
             'y': self.y,
-            'instance_id': self.instance_id,
-            'rotation': self.rotation,
-            'scale_x': self.scale_x,
-            'scale_y': self.scale_y,
-            'visible': self.visible
         }
+        # Only persist a real, explicitly-provided id — never an auto memory
+        # address. Kept in its historical position (after y) when present.
+        if self.instance_id is not None:
+            data['instance_id'] = self.instance_id
+        data['rotation'] = self.rotation
+        data['scale_x'] = self.scale_x
+        data['scale_y'] = self.scale_y
+        data['visible'] = self.visible
+        return data
 
     @classmethod
     def from_dict(cls, data):
