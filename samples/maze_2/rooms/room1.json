@@ -7,7 +7,7 @@
   "background_image": "background_main",
   "tile_horizontal": false,
   "tile_vertical": false,
-  "instance_count": 130,
+  "instance_count": 134,
   "instances": [
     {
       "object_name": "wall_corner",
