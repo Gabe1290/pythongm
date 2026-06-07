@@ -951,6 +951,36 @@ class AssetManager(QObject):
 
         return asset_data
 
+    def revalidate_asset_import_state(self, asset_data: Dict[str, Any]) -> None:
+        """Re-check an asset's backing file and fix its imported/file_missing
+        flags BOTH ways.
+
+        Load-time validation (_validate_asset_paths) only ever *flags* a missing
+        file; it never clears the flag when the file reappears, and a guard in
+        load_assets_from_project refuses to restore `imported` while
+        `file_missing` is set. So a sprite that was absent at load (e.g. its art
+        was still being created) stays badged "(not imported)" for the whole
+        session even after you draw and save it. Call this when an asset's
+        editor (re)writes its file to heal that stale badge.
+
+        Assets with no file_path (objects/rooms/scripts) are created in-IDE and
+        are always considered present.
+        """
+        file_path = asset_data.get("file_path")
+        if not file_path:
+            asset_data.pop("file_missing", None)
+            asset_data["imported"] = True
+            return
+        if not self.project_directory:
+            return
+        abs_path = self.get_absolute_path(file_path)
+        if self._path_exists(abs_path):
+            asset_data.pop("file_missing", None)
+            asset_data["imported"] = True
+        else:
+            asset_data["imported"] = False
+            asset_data["file_missing"] = True
+
     def _validate_asset_paths(self, asset_data: Dict[str, Any]) -> None:
         """Validate that asset file paths exist and mark missing files"""
         if not self.project_directory:
