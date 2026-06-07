@@ -10,7 +10,6 @@
   "instance_count": 130,
   "instances": [
     {
-      "instance_id": 2025091363520,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -20,7 +19,6 @@
       "y": 0
     },
     {
-      "instance_id": 2025092545616,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -30,7 +28,6 @@
       "y": 384
     },
     {
-      "instance_id": 2025092534912,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -40,7 +37,6 @@
       "y": 448
     },
     {
-      "instance_id": 2027223331472,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -50,7 +46,6 @@
       "y": 448
     },
     {
-      "instance_id": 2027223010624,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -60,7 +55,6 @@
       "y": 0
     },
     {
-      "instance_id": 2025094173600,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -70,7 +64,6 @@
       "y": 0
     },
     {
-      "instance_id": 2025094174320,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -80,7 +73,6 @@
       "y": 320
     },
     {
-      "instance_id": 2025094607360,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -90,7 +82,6 @@
       "y": 384
     },
     {
-      "instance_id": 2025094601936,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -100,7 +91,6 @@
       "y": 128
     },
     {
-      "instance_id": 2025094607120,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -110,7 +100,6 @@
       "y": 64
     },
     {
-      "instance_id": 2025094610384,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -120,7 +109,6 @@
       "y": 64
     },
     {
-      "instance_id": 2025094608560,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -130,7 +118,6 @@
       "y": 128
     },
     {
-      "instance_id": 2025094602560,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -140,7 +127,6 @@
       "y": 192
     },
     {
-      "instance_id": 2025094608992,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -150,7 +136,6 @@
       "y": 384
     },
     {
-      "instance_id": 2025094594976,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -160,7 +145,6 @@
       "y": 192
     },
     {
-      "instance_id": 2025094601120,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -170,7 +154,6 @@
       "y": 256
     },
     {
-      "instance_id": 2025094607168,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -180,7 +163,6 @@
       "y": 256
     },
     {
-      "instance_id": 2025094597616,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -190,7 +172,6 @@
       "y": 320
     },
     {
-      "instance_id": 2025094608128,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -200,7 +181,6 @@
       "y": 320
     },
     {
-      "instance_id": 2025094609856,
       "object_name": "wall_corner",
       "rotation": 0,
       "scale_x": 1.0,
@@ -210,7 +190,6 @@
       "y": 384
     },
     {
-      "instance_id": 2025094604240,
       "object_name": "obj_goal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -220,7 +199,6 @@
       "y": 32
     },
     {
-      "instance_id": 2025094609664,
       "object_name": "obj_person",
       "rotation": 0,
       "scale_x": 1.0,
@@ -230,7 +208,6 @@
       "y": 416
     },
     {
-      "instance_id": 2025094604816,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -240,7 +217,6 @@
       "y": 0
     },
     {
-      "instance_id": 2025094606640,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -250,7 +226,6 @@
       "y": 0
     },
     {
-      "instance_id": 2025094596944,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -260,7 +235,6 @@
       "y": 0
     },
     {
-      "instance_id": 2025094610192,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -270,7 +244,6 @@
       "y": 0
     },
     {
-      "instance_id": 2025094595264,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -280,7 +253,6 @@
       "y": 0
     },
     {
-      "instance_id": 2025094601312,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -290,7 +262,6 @@
       "y": 0
     },
     {
-      "instance_id": 2025094608656,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -300,7 +271,6 @@
       "y": 0
     },
     {
-      "instance_id": 2025094601024,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -310,7 +280,6 @@
       "y": 0
     },
     {
-      "instance_id": 2025094596512,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -320,7 +289,6 @@
       "y": 0
     },
     {
-      "instance_id": 2025094606784,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -330,7 +298,6 @@
       "y": 0
     },
     {
-      "instance_id": 2025094601360,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -340,7 +307,6 @@
       "y": 0
     },
     {
-      "instance_id": 2025094602272,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -350,7 +316,6 @@
       "y": 0
     },
     {
-      "instance_id": 2025094610576,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -360,7 +325,6 @@
       "y": 64
     },
     {
-      "instance_id": 2025094600832,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -370,7 +334,6 @@
       "y": 64
     },
     {
-      "instance_id": 2025094597904,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -380,7 +343,6 @@
       "y": 64
     },
     {
-      "instance_id": 2025094596032,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -390,7 +352,6 @@
       "y": 64
     },
     {
-      "instance_id": 2025094606496,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -400,7 +361,6 @@
       "y": 64
     },
     {
-      "instance_id": 2025094606688,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -410,7 +370,6 @@
       "y": 64
     },
     {
-      "instance_id": 2025094609280,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -420,7 +379,6 @@
       "y": 64
     },
     {
-      "instance_id": 2025094598768,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -430,7 +388,6 @@
       "y": 128
     },
     {
-      "instance_id": 2025094609712,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -440,7 +397,6 @@
       "y": 128
     },
     {
-      "instance_id": 2025094609232,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -450,7 +406,6 @@
       "y": 128
     },
     {
-      "instance_id": 2025094602608,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -460,7 +415,6 @@
       "y": 128
     },
     {
-      "instance_id": 2025094606544,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -470,7 +424,6 @@
       "y": 128
     },
     {
-      "instance_id": 2025094600016,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -480,7 +433,6 @@
       "y": 192
     },
     {
-      "instance_id": 2025094607408,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -490,7 +442,6 @@
       "y": 192
     },
     {
-      "instance_id": 2025094609088,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -500,7 +451,6 @@
       "y": 192
     },
     {
-      "instance_id": 2025094595312,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -510,7 +460,6 @@
       "y": 256
     },
     {
-      "instance_id": 2025094607936,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -520,7 +469,6 @@
       "y": 384
     },
     {
-      "instance_id": 2025094603376,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -530,7 +478,6 @@
       "y": 384
     },
     {
-      "instance_id": 2025094602944,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -540,7 +487,6 @@
       "y": 384
     },
     {
-      "instance_id": 2025094596224,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -550,7 +496,6 @@
       "y": 448
     },
     {
-      "instance_id": 2025094606304,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -560,7 +505,6 @@
       "y": 448
     },
     {
-      "instance_id": 2025094594928,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -570,7 +514,6 @@
       "y": 448
     },
     {
-      "instance_id": 2025094599440,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -580,7 +523,6 @@
       "y": 448
     },
     {
-      "instance_id": 2025094597760,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -590,7 +532,6 @@
       "y": 448
     },
     {
-      "instance_id": 2025094596464,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -600,7 +541,6 @@
       "y": 448
     },
     {
-      "instance_id": 2025094595360,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -610,7 +550,6 @@
       "y": 448
     },
     {
-      "instance_id": 2025094601552,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -620,7 +559,6 @@
       "y": 448
     },
     {
-      "instance_id": 2025094597280,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -630,7 +568,6 @@
       "y": 448
     },
     {
-      "instance_id": 2025094597424,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -640,7 +577,6 @@
       "y": 448
     },
     {
-      "instance_id": 2025094598336,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -650,7 +586,6 @@
       "y": 448
     },
     {
-      "instance_id": 2025094597808,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -660,7 +595,6 @@
       "y": 448
     },
     {
-      "instance_id": 2025094597664,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -670,7 +604,6 @@
       "y": 448
     },
     {
-      "instance_id": 2025094610912,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -680,7 +613,6 @@
       "y": 384
     },
     {
-      "instance_id": 2025094604960,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -690,7 +622,6 @@
       "y": 384
     },
     {
-      "instance_id": 2025094605344,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -700,7 +631,6 @@
       "y": 384
     },
     {
-      "instance_id": 2025094600736,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -710,7 +640,6 @@
       "y": 384
     },
     {
-      "instance_id": 2025094607792,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -720,7 +649,6 @@
       "y": 384
     },
     {
-      "instance_id": 2025094607600,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -730,7 +658,6 @@
       "y": 320
     },
     {
-      "instance_id": 2025094596320,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -740,7 +667,6 @@
       "y": 320
     },
     {
-      "instance_id": 2025094599488,
       "object_name": "wall_horizontal",
       "rotation": 0,
       "scale_x": 1.0,
@@ -750,7 +676,6 @@
       "y": 320
     },
     {
-      "instance_id": 2025094596800,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -760,7 +685,6 @@
       "y": 32
     },
     {
-      "instance_id": 2025094604000,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -770,7 +694,6 @@
       "y": 64
     },
     {
-      "instance_id": 2025094598144,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -780,7 +703,6 @@
       "y": 96
     },
     {
-      "instance_id": 2025094606016,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -790,7 +712,6 @@
       "y": 128
     },
     {
-      "instance_id": 2025094596704,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -800,7 +721,6 @@
       "y": 160
     },
     {
-      "instance_id": 2025094603184,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -810,7 +730,6 @@
       "y": 192
     },
     {
-      "instance_id": 2025094603520,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -820,7 +739,6 @@
       "y": 224
     },
     {
-      "instance_id": 2025094600592,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -830,7 +748,6 @@
       "y": 256
     },
     {
-      "instance_id": 2025094604864,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -840,7 +757,6 @@
       "y": 288
     },
     {
-      "instance_id": 2025094610528,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -850,7 +766,6 @@
       "y": 320
     },
     {
-      "instance_id": 2025094603568,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -860,7 +775,6 @@
       "y": 352
     },
     {
-      "instance_id": 2025094609616,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -870,7 +784,6 @@
       "y": 416
     },
     {
-      "instance_id": 2025094599200,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -880,7 +793,6 @@
       "y": 288
     },
     {
-      "instance_id": 2025094602368,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -890,7 +802,6 @@
       "y": 256
     },
     {
-      "instance_id": 2025094599968,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -900,7 +811,6 @@
       "y": 224
     },
     {
-      "instance_id": 2025094596368,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -910,7 +820,6 @@
       "y": 192
     },
     {
-      "instance_id": 2025094610672,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -920,7 +829,6 @@
       "y": 160
     },
     {
-      "instance_id": 2025094598672,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -930,7 +838,6 @@
       "y": 128
     },
     {
-      "instance_id": 2025094597712,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -940,7 +847,6 @@
       "y": 96
     },
     {
-      "instance_id": 2025094607264,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -950,7 +856,6 @@
       "y": 64
     },
     {
-      "instance_id": 2025094607216,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -960,7 +865,6 @@
       "y": 32
     },
     {
-      "instance_id": 2025094605920,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -970,7 +874,6 @@
       "y": 96
     },
     {
-      "instance_id": 2025094604528,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -980,7 +883,6 @@
       "y": 160
     },
     {
-      "instance_id": 2025094605536,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -990,7 +892,6 @@
       "y": 192
     },
     {
-      "instance_id": 2025094608512,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1000,7 +901,6 @@
       "y": 224
     },
     {
-      "instance_id": 2025094604768,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1010,7 +910,6 @@
       "y": 256
     },
     {
-      "instance_id": 2025094599920,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1020,7 +919,6 @@
       "y": 288
     },
     {
-      "instance_id": 2025094599008,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1030,7 +928,6 @@
       "y": 320
     },
     {
-      "instance_id": 2025094596128,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1040,7 +937,6 @@
       "y": 352
     },
     {
-      "instance_id": 2025094598576,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1050,7 +946,6 @@
       "y": 352
     },
     {
-      "instance_id": 2025094608944,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1060,7 +955,6 @@
       "y": 320
     },
     {
-      "instance_id": 2025094603952,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1070,7 +964,6 @@
       "y": 288
     },
     {
-      "instance_id": 2025094605584,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1080,7 +973,6 @@
       "y": 256
     },
     {
-      "instance_id": 2025094607696,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1090,7 +982,6 @@
       "y": 224
     },
     {
-      "instance_id": 2025094595504,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1100,7 +991,6 @@
       "y": 224
     },
     {
-      "instance_id": 2025094605968,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1110,7 +1000,6 @@
       "y": 96
     },
     {
-      "instance_id": 2025094604432,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1120,7 +1009,6 @@
       "y": 128
     },
     {
-      "instance_id": 2025094608032,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1130,7 +1018,6 @@
       "y": 160
     },
     {
-      "instance_id": 2025094598240,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1140,7 +1027,6 @@
       "y": 192
     },
     {
-      "instance_id": 2025094599824,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1150,7 +1036,6 @@
       "y": 224
     },
     {
-      "instance_id": 2025094600496,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1160,7 +1045,6 @@
       "y": 256
     },
     {
-      "instance_id": 2025094608224,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1170,7 +1054,6 @@
       "y": 288
     },
     {
-      "instance_id": 2025094603760,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1180,7 +1063,6 @@
       "y": 32
     },
     {
-      "instance_id": 2025094600208,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1190,7 +1072,6 @@
       "y": 64
     },
     {
-      "instance_id": 2025094598288,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1200,7 +1081,6 @@
       "y": 96
     },
     {
-      "instance_id": 2025094610864,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1210,7 +1090,6 @@
       "y": 128
     },
     {
-      "instance_id": 2025094603424,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1220,7 +1099,6 @@
       "y": 160
     },
     {
-      "instance_id": 2025094598192,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1230,7 +1108,6 @@
       "y": 192
     },
     {
-      "instance_id": 2025094598384,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1240,7 +1117,6 @@
       "y": 224
     },
     {
-      "instance_id": 2025094608416,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1250,7 +1126,6 @@
       "y": 256
     },
     {
-      "instance_id": 2025094600160,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1260,7 +1135,6 @@
       "y": 288
     },
     {
-      "instance_id": 2025094595216,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1270,7 +1144,6 @@
       "y": 320
     },
     {
-      "instance_id": 2025094605824,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1280,7 +1153,6 @@
       "y": 352
     },
     {
-      "instance_id": 2025094607984,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1290,7 +1162,6 @@
       "y": 384
     },
     {
-      "instance_id": 2025094598624,
       "object_name": "wall_vertical",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1300,7 +1171,6 @@
       "y": 416
     },
     {
-      "instance_id": 2025094606400,
       "object_name": "controller_main",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1310,7 +1180,6 @@
       "y": 480
     },
     {
-      "instance_id": 2025094415808,
       "object_name": "obj_diamond",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1320,7 +1189,6 @@
       "y": 224
     },
     {
-      "instance_id": 2027223331616,
       "object_name": "obj_diamond",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1330,7 +1198,6 @@
       "y": 96
     },
     {
-      "instance_id": 2027223725216,
       "object_name": "obj_diamond",
       "rotation": 0,
       "scale_x": 1.0,
@@ -1340,7 +1207,6 @@
       "y": 96
     },
     {
-      "instance_id": 2027223724064,
       "object_name": "obj_diamond",
       "rotation": 0,
       "scale_x": 1.0,
