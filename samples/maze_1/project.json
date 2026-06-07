@@ -2,7 +2,7 @@
   "name": "maze_1",
   "version": "1.0.0",
   "created": "2026-05-23T14:34:54.961536",
-  "modified": "2026-05-24T10:32:37.809898",
+  "modified": "2026-06-07T18:55:18.792603",
   "settings": {
     "window_title": "",
     "window_width": 480,
@@ -35,7 +35,8 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-23T14:34:54.961536",
-        "modified": "2026-05-23T14:34:54.961536"
+        "modified": "2026-06-07T18:50:54.526962",
+        "thumbnail": "thumbnails/spr_wall_thumb.png"
       },
       "spr_goal": {
         "name": "spr_goal",
@@ -71,7 +72,8 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-23T14:34:54.961536",
-        "modified": "2026-05-23T14:34:54.961536"
+        "modified": "2026-06-07T18:52:32.258111",
+        "thumbnail": "thumbnails\\spr_person_thumb.png"
       }
     },
     "sounds": {},
@@ -191,6 +193,12 @@
                   "directions": "stop",
                   "speed": "8"
                 }
+              },
+              {
+                "action": "snap_to_grid",
+                "parameters": {
+                  "grid_size": "32"
+                }
               }
             ],
             "target_object": "obj_wall"
@@ -290,7 +298,9 @@
         },
         "imported": true,
         "created": "2026-05-23T14:34:54.997955",
-        "modified": "2026-05-23T14:34:54.997955"
+        "modified": "2026-06-07T18:53:50.237537",
+        "parent": "",
+        "remember_destroyed": false
       }
     },
     "rooms": {
@@ -299,15 +309,16 @@
         "asset_type": "room",
         "width": 480,
         "height": 480,
-        "background_color": "#c0c0c0",
+        "background_color": "#e3e3e3",
         "background_image": "",
         "tile_horizontal": false,
         "tile_vertical": false,
         "instance_count": 131,
         "instances": [],
         "created": "2026-05-23T14:34:55.001771",
-        "modified": "2026-05-23T14:34:55.001771",
+        "modified": "2026-06-07T18:54:50.506842",
         "imported": true,
+        "tiles": [],
         "_external_file": "rooms/room0.json"
       },
       "room1": {
@@ -315,15 +326,16 @@
         "asset_type": "room",
         "width": 480,
         "height": 480,
-        "background_color": "#c0c0c0",
+        "background_color": "#e3e3e3",
         "background_image": "",
         "tile_horizontal": false,
         "tile_vertical": false,
         "instance_count": 130,
         "instances": [],
         "created": "2026-05-23T14:34:55.001771",
-        "modified": "2026-05-23T14:34:55.001771",
+        "modified": "2026-06-07T18:55:18.786372",
         "imported": true,
+        "tiles": [],
         "_external_file": "rooms/room1.json"
       }
     },
