@@ -130,7 +130,8 @@ A run of user-reported fixes, each pushed to `main` with regression tests:
   memory-address `instance_id`s into room JSON (dead metadata — read nowhere;
   the runtime grid keys off the live `id(instance)`). Swept **all** samples
   clean (1147 ephemeral ids removed across maze_1/2/3 + plateforme_2). User
-  will re-save maze_2/maze_3 with new sprites later.
+  has since re-saved maze_1 (`01587c9`) and maze_2 (`1567565`) with new sprite
+  art; maze_3 still pending.
 
 Open follow-up (left to the user — game-feel): the platformer samples' player
 `collision_with_obj_monstre` uses a fragile stomp test `vspeed > 0 and
