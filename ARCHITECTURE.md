@@ -141,20 +141,33 @@ asset_tree_widget.py:_reorder_room` and `dropEvent`).
 
 ### `current_project_data` vs `assets_cache`
 
-Two parallel containers hold the same live state, and they share value
-references:
+Two parallel containers hold the live project state. They are
+**independent top-level dicts** — they do *not* share their container
+objects, only the inner per-asset dicts:
 
 - **`ProjectManager.current_project_data`** — the full project dict
   (the thing that gets serialized).
 - **`AssetManager.assets_cache`** — `{<asset_type>: OrderedDict(<asset_name>: <asset_dict>)}`.
-  Same `<asset_dict>` references as `current_project_data['assets'][<asset_type>][<asset_name>]`.
+  `load_assets_from_project_data` (asset_manager.py:718) builds a *fresh*
+  `OrderedDict` per type (line 728), so `assets_cache['rooms']` is **not**
+  the same object as `current_project_data['assets']['rooms']`. The
+  individual `<asset_dict>` values *are* shared references, however.
 
-`save_assets_to_project_data` (asset_manager.py:734) re-syncs the
-`['assets']` sub-tree of `current_project_data` from `assets_cache`
-just before write, so when reorder / edit code mutates *one*, the other
-follows on the next save. Code that mutates one without the other (e.g.
-the original `_reorder_room` that loaded from disk and replaced the
-dict) is a bug — see `bc7725d`.
+Because the top-level containers are independent, they are kept aligned
+**manually**. `save_assets_to_project_data` (asset_manager.py:742)
+rebuilds the `['assets']` sub-tree of `current_project_data` from
+`assets_cache` just before write, so mutating the cache propagates on the
+next save. Any mutation site that changes one container without the other
+must re-sync explicitly: `_reorder_room` mirrors its rebuilt `OrderedDict`
+into *both* containers (asset_tree_widget.py:967-975).
+
+The original `_reorder_room` re-loaded `project.json` from disk and
+assigned those instance-less dicts back into both containers, wiping every
+room's in-memory `instances` (the "⚠️ Preserving N instances" warnings).
+It now rebuilds the order while preserving the same room-data dict
+references, so instances stay attached. Regression coverage for this sync
+invariant lives in `tests/test_state_container_sync.py` (the reorder tests
+fail if a future change reintroduces instance-less rebuilds).
 
 ---
 
