@@ -231,3 +231,42 @@ the pre-composited `_tile_layer_cache`) in `set_project_info` alongside the
 others. Coverage: `tests/test_room_canvas_cache_clear.py` (constructs a real
 offscreen QApplication, no pytest-qt needed, so it runs on 3.11 too). Suite
 677→678 passed, 0 failed.
+
+**2026-06-09 — Runtime-core audit (Batch A): most rejected, room-dimension
+bounds added.** A 9-finding audit of `game_runner.py` / `action_executor.py` /
+`constants.py`. Verified each against code first (the established
+audit-is-a-lead methodology); only finding #6 survived. **Do not re-raise the
+rejected items** — this is the 5th audit in this class:
+- **`eval()` "HIGH" (action_executor.py:2014) — rejected.** Already double-gated:
+  `{"__builtins__": {}}` *and* a regex whitelist
+  `^[\d\s\+\-\*\/\%\(\)\.\,a-zA-Z_]+$`. The audit's PoC
+  `__import__('os').system('rm -rf ~')` contains `'` and `~`, fails the regex,
+  and returns 0 — it cannot run. Swapping in an AST evaluator would also break
+  the intentionally-supported `random()`/`irandom()`/`choose()` calls. (A second
+  eval at :4219 is the GML-expression path, also `__builtins__`-stripped.)
+- **`exec()` "HIGH" (action_executor.py:2882, :2966) — rejected.** This is the
+  deliberate `execute_code`/`execute_script` power-user feature; GMK imports
+  route script calls through it. Clamping `__builtins__` to a safe subset would
+  break legitimate imported scripts. Threat model ("malicious *shared* project")
+  is the same one rejected for `load_project` above — projects are user-authored
+  / samples / self-exported; no untrusted channel, runs as the user.
+- **#3 "infinite slide loop" (game_runner.py:3142) — rejected.** `while moved +
+  1.0 <= remaining` increments `moved` unconditionally each pass; it terminates
+  in `ceil(|speed|)` steps. Not infinite. Its only real edge (a pathological
+  speed) is data, not a loop bug.
+- **#4 "unbounded caches" — rejected**, same reasoning as the 2026-06-09 sprite-
+  cache rejection above (room/project-scoped, bounded by asset/room count).
+- **#5 "dialog speed-restore leak" (game_runner.py:4585) — already correct.** The
+  restore loop already iterates live instances under `if id(instance) in
+  saved_speeds`, exactly the audit's proposed fix.
+- **#7 rate-limiting / #8 div-by-zero — non-issues** (audit itself marks #8 ✅).
+- **#9 "split the 6.5k/8k-line files" — declined** per stability-over-features.
+- **#6 room-dimension validation — ACTED.** A `GameRoom` surface is allocated at
+  `width x height`, so a corrupt/hostile project.json setting 0, negative,
+  non-numeric, or absurd dimensions would crash pygame or exhaust memory at room
+  build. Added module-level `_sane_room_dimension` + `ROOM_MIN_DIMENSION` (64) /
+  `ROOM_MAX_DIMENSION` (16384) in `game_runner.py`; `GameRoom.__init__` routes
+  `width`/`height` through it (coerce to int, fall back to default on
+  `TypeError`/`ValueError`/`OverflowError` incl. NaN/inf, then clamp). Coverage:
+  `tests/test_room_dimension_bounds.py` (12 tests). Suite 678→690 passed, 0
+  failed.
