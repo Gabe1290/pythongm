@@ -2011,7 +2011,7 @@ class ActionExecutor:
                     'gm_choose': gm_choose,
                     'random': random_module,  # Allow Python random module access
                 }
-                result = eval(expr_substituted, {"__builtins__": {}}, safe_namespace)
+                result = eval(expr_substituted, {"__builtins__": {}}, safe_namespace)  # nosec B307 - builtins stripped + regex whitelist (:2006) gates input; literal_eval would break random()/choose()
                 return result
             else:
                 logger.debug(f"⚠️ Unsafe expression: {expr_substituted}")
@@ -2879,7 +2879,7 @@ class ActionExecutor:
 
         try:
             # Execute the code
-            exec(code, exec_globals, exec_locals)
+            exec(code, exec_globals, exec_locals)  # nosec B102 - execute_code power-user feature; runs author-authored project code, no untrusted channel
 
             # Apply any changes to instance variables from locals
             for key, value in exec_locals.items():
@@ -2963,7 +2963,7 @@ class ActionExecutor:
         try:
             logger.debug(f"📜 Executing script: {script_name}")
             # Execute the script code
-            exec(code, exec_globals, exec_locals)
+            exec(code, exec_globals, exec_locals)  # nosec B102 - execute_script power-user feature; runs author-authored project scripts, no untrusted channel
 
             # Apply any changes to instance variables from locals
             for key, value in exec_locals.items():
@@ -4216,7 +4216,7 @@ class ActionExecutor:
                 # Custom instance variables
                 **{k: v for k, v in instance.__dict__.items() if not k.startswith('_')}
             }
-            result = eval(expression, {"__builtins__": {}}, namespace)
+            result = eval(expression, {"__builtins__": {}}, namespace)  # nosec B307 - builtins stripped; GML conditional path over author-authored project data, no untrusted channel
             logger.debug(f"📝 Expression '{expression}' = {result} (bool: {bool(result)})")
             return bool(result)
         except Exception as e:
