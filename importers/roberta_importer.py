@@ -12,7 +12,11 @@ Usage:
 """
 
 import json
-import xml.etree.ElementTree as ET
+# defusedxml hardens ET.parse() below against entity-expansion DoS, since the
+# Roberta XML it ingests is web-sourced (lab.open-roberta.org), i.e. untrusted.
+# API-compatible with xml.etree.ElementTree for parse()/ParseError.
+import defusedxml.ElementTree as ET
+from defusedxml.common import DefusedXmlException
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -105,6 +109,10 @@ def import_roberta_detailed(xml_path: str, output_dir: str) -> RobertaImportResu
         tree = ET.parse(xml_path)
     except ET.ParseError as exc:
         raise RobertaImportError(f"Invalid XML: {exc}") from exc
+    except DefusedXmlException as exc:
+        # defusedxml rejected a malicious construct (entity bomb / external
+        # entity / DTD) in the web-sourced program XML.
+        raise RobertaImportError(f"Unsafe XML rejected: {exc}") from exc
 
     root = tree.getroot()
 

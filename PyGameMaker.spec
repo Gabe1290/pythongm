@@ -86,6 +86,10 @@ hiddenimports = [
     'jinja2',
     'jinja2.ext',
 
+    # Hardened XML parsing (Open Roberta importer)
+    'defusedxml',
+    'defusedxml.ElementTree',
+
     # Standard library modules that may be missed
     'json',
     'pathlib',

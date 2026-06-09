@@ -11,10 +11,10 @@ Usage:
 """
 
 import json
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405 - serializer only; this module never parses external XML
 from pathlib import Path
 from typing import Dict, List, Optional
-from xml.dom import minidom
+from xml.dom import minidom  # nosec B408 - used only to pretty-print our own generated XML
 
 from core.logger import get_logger
 
@@ -175,7 +175,7 @@ class RobertaExporter:
 
         # Pretty-print
         rough = ET.tostring(export_el, encoding="unicode", xml_declaration=False)
-        dom = minidom.parseString(rough)
+        dom = minidom.parseString(rough)  # nosec B318 - re-parses our own ET.tostring output to pretty-print; no external input
         return dom.toprettyxml(indent="  ", encoding=None)
 
     # ------------------------------------------------------------------
