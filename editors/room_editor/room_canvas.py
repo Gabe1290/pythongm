@@ -113,6 +113,14 @@ class RoomCanvas(QWidget):
         self.project_data = project_data
         self.sprite_cache.clear()
         self.origin_cache.clear()
+        # tile_pixmap_cache is keyed by (background_name, ...) — i.e. it holds
+        # the *previous* project's tile crops, which are dead once the project
+        # changes. Its two sibling caches above were cleared here but this one
+        # was missed, so it accumulated across project switches. Drop it (and
+        # the pre-composited tile layer built from it) on project change too.
+        self.tile_pixmap_cache.clear()
+        self._tile_layer_cache = None
+        self._tile_layer_dirty = True
 
     def set_room_properties(self, width, height, bg_color, bg_image='', tile_h=False, tile_v=False,
                             bg_hspeed=0.0, bg_vspeed=0.0, bg_stretch=True, bg_layers=None):

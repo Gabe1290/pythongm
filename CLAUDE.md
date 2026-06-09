@@ -213,3 +213,21 @@ skipped with a warning, legitimate identifiers pass untouched. Coverage:
 `tests/test_asset_name_traversal.py` (9 tests, incl. a load test that plants a
 file at the traversal target and confirms no leak). Suite 668→677 passed, 0
 failed.
+
+**2026-06-09 — "Unbounded sprite cache": audit finding rejected, one real cache
+gap fixed.** An audit called `RoomCanvas.sprite_cache`/`origin_cache`
+"unlimited growth → OOM" and proposed `@lru_cache(maxsize=100)`. **Rejected.**
+Both caches are keyed by asset *name*, so they're bounded by the project's asset
+count (a plateau, not unbounded-over-time), sprites are capped ≤64px, and both
+are already cleared on project change in `set_project_info`. The proposed
+`@lru_cache` on an *instance method* would be actively harmful — it keys on
+`self`, pinning the whole widget in memory (a real leak), needs `self`
+hashable, can't clear per-project, and a cap of 100 below typical project sizes
+forces sprite re-decode every repaint. The **one genuine gap**:
+`tile_pixmap_cache` (keyed by `(background_name, tile_x, tile_y, w, h)`) is
+project-scoped like its two siblings but was the only one never cleared, so it
+accumulated stale tile crops across project switches. Fixed by clearing it (and
+the pre-composited `_tile_layer_cache`) in `set_project_info` alongside the
+others. Coverage: `tests/test_room_canvas_cache_clear.py` (constructs a real
+offscreen QApplication, no pytest-qt needed, so it runs on 3.11 too). Suite
+677→678 passed, 0 failed.
