@@ -17,6 +17,22 @@ class ResourcePackager:
     PACKAGE_VERSION = "1.0.0"
 
     @staticmethod
+    def _safe_join(base_dir: Path, *parts: str) -> Path:
+        """Join ``parts`` under ``base_dir`` and reject path traversal.
+
+        Asset names here come from an untrusted package's ``package.json``
+        (e.g. a sprite named ``../../../x``). ``zipf.open`` does NOT sanitize
+        the member name the way ``extractall`` does, so a constructed
+        destination could otherwise escape the project folder. Raises
+        ``ValueError`` if the resolved path would land outside ``base_dir``.
+        """
+        base = base_dir.resolve()
+        dest = base.joinpath(*parts).resolve()
+        if not dest.is_relative_to(base):
+            raise ValueError(f"Unsafe path traversal in package: {'/'.join(parts)!r}")
+        return dest
+
+    @staticmethod
     def export_object(project_path: Path, object_name: str, output_path: Path) -> bool:
         """
         Export an object with all its sprite dependencies
@@ -230,7 +246,8 @@ class ResourcePackager:
                         # Extract sprite file
                         sprite_file = f'sprites/{sprite_name}.png'
                         if sprite_file in zipf.namelist():
-                            sprite_dest = project_path / 'sprites' / f"{sprite_name}.png"
+                            sprite_dest = ResourcePackager._safe_join(
+                                project_path, 'sprites', f"{sprite_name}.png")
                             sprite_dest.parent.mkdir(exist_ok=True)
 
                             with zipf.open(sprite_file) as src:
@@ -320,7 +337,8 @@ class ResourcePackager:
                         # Extract background file
                         bg_file = f'backgrounds/{bg_name}.png'
                         if bg_file in zipf.namelist():
-                            bg_dest = project_path / 'backgrounds' / f"{bg_name}.png"
+                            bg_dest = ResourcePackager._safe_join(
+                                project_path, 'backgrounds', f"{bg_name}.png")
                             bg_dest.parent.mkdir(exist_ok=True)
 
                             with zipf.open(bg_file) as src:
@@ -344,7 +362,8 @@ class ResourcePackager:
                         # Extract sprite file
                         sprite_file = f'sprites/{sprite_name}.png'
                         if sprite_file in zipf.namelist():
-                            sprite_dest = project_path / 'sprites' / f"{sprite_name}.png"
+                            sprite_dest = ResourcePackager._safe_join(
+                                project_path, 'sprites', f"{sprite_name}.png")
                             sprite_dest.parent.mkdir(exist_ok=True)
 
                             with zipf.open(sprite_file) as src:
