@@ -87,9 +87,27 @@ MIT-licensed IDE code does not:
 
 ## Maze samples — sprites & backgrounds
 
-**Status: TODO.** Origin of the image files under `samples/maze_1/`,
-`samples/maze_2/`, and `samples/maze_3/` is not yet documented. To be completed
-in a follow-up (these were also imported from GameMaker 8.x `.gmk` projects).
+### Original art (CC0-1.0)
+
+**Scope:** these specific files were created by the pygm2 author
+(Gabriel Thullen), not imported:
+
+- `samples/maze_1/sprites/spr_person.png`
+- `samples/maze_1/sprites/spr_wall.png`
+
+**License:** **CC0 1.0 Universal** (Public Domain Dedication), SPDX `CC0-1.0`.
+To the extent possible under law the author has waived all copyright and
+related rights; these files may be reused for any purpose, including
+commercial, without attribution. Full text: [`licenses/CC0-1.0.txt`](../licenses/CC0-1.0.txt).
+`samples/maze_1/CREDITS.txt` carries this notice so it travels with the assets
+when the IDE copies the sample into a user's projects folder.
+
+### Remaining maze assets
+
+**Status: TODO.** Origin of the *other* image files under `samples/maze_1/`
+(e.g. `spr_goal.png`, backgrounds), `samples/maze_2/`, and `samples/maze_3/` is
+not yet documented. To be completed in a follow-up (these were imported from
+GameMaker 8.x `.gmk` projects).
 
 ---
 

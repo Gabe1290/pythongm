@@ -27,8 +27,11 @@ copy — the bundled folders themselves are never modified.
 and are licensed **GPL-3.0-or-later**, *not* the project's MIT license. Each
 folder carries a `CREDITS.txt`; the full terms, scope, and artist credits are in
 [`docs/ASSET_LICENSES.md`](../docs/ASSET_LICENSES.md), and the license text is at
-[`licenses/GPL-3.0.txt`](../licenses/GPL-3.0.txt). Maze-sample art provenance is
-still to be documented.
+[`licenses/GPL-3.0.txt`](../licenses/GPL-3.0.txt). In `maze_1/`, the
+author-created `spr_person.png` and `spr_wall.png` are dedicated to the public
+domain under **CC0-1.0** (see `maze_1/CREDITS.txt` and
+[`licenses/CC0-1.0.txt`](../licenses/CC0-1.0.txt)); the remaining maze-sample
+art provenance is still to be documented.
 
 Two further samples (`treasure/` and `maze_4/`) shipped briefly in
 rc.12 but were dropped after user testing surfaced enough GMK-import
