@@ -428,8 +428,74 @@ class ProjectManager(QObject):
             self.status_changed.emit(f"Failed to save project: {str(e)}")
             return False
 
+    # Top-level paths a folder save mutates. They are snapshotted before the
+    # multi-file write and restored if any write fails, so a partial save
+    # can't leave a previously-good project corrupted on disk. This mirrors
+    # the backup/restore the zip save path already performs (_save_to_zip);
+    # the folder path historically had none — each individual file is written
+    # atomically (tmp + os.replace), but there was no transaction *across*
+    # files, so a failure on file 3 of 10 left files 1–2 committed with no
+    # way back.
+    _SAVE_MANAGED_NAMES = ("rooms", "objects", "sprites", "playgrounds", PROJECT_FILE)
+
+    def _snapshot_for_rollback(self, save_path: Path) -> Optional[Path]:
+        """Copy the save-managed paths to a temp dir so the save can roll back.
+
+        Returns the backup directory, or ``None`` if there is nothing to back
+        up (e.g. a brand-new project with no prior on-disk state — a partial
+        first save destroys no pre-existing good data, so rollback is moot).
+        """
+        import tempfile
+
+        if not save_path.exists():
+            return None
+
+        present = [n for n in self._SAVE_MANAGED_NAMES if (save_path / n).exists()]
+        if not present:
+            return None
+
+        # Sibling temp dir (same filesystem as the project, never inside it so
+        # the save loop and the samples guard don't see it).
+        backup_dir = Path(tempfile.mkdtemp(prefix=f".{save_path.name}.bak-",
+                                           dir=str(save_path.parent)))
+        for name in present:
+            src = save_path / name
+            dst = backup_dir / name
+            if src.is_dir():
+                shutil.copytree(src, dst)
+            else:
+                shutil.copy2(src, dst)
+        return backup_dir
+
+    def _restore_from_snapshot(self, save_path: Path, backup_dir: Path) -> None:
+        """Revert the save-managed paths to the snapshot taken before the save.
+
+        For each managed name: drop whatever the failed save left on disk, then
+        restore the backup if one exists. Names with no backup were created by
+        the failed save and are simply removed, returning the project to its
+        exact pre-save state.
+        """
+        for name in self._SAVE_MANAGED_NAMES:
+            live = save_path / name
+            backup = backup_dir / name
+            try:
+                if live.is_dir():
+                    shutil.rmtree(live, ignore_errors=True)
+                elif live.exists():
+                    live.unlink()
+                if backup.is_dir():
+                    shutil.copytree(backup, live)
+                elif backup.exists():
+                    shutil.copy2(backup, live)
+            except OSError as restore_err:
+                # Best-effort: a restore failure shouldn't mask the original
+                # save error, but it must be loud — the project may now be
+                # inconsistent on disk.
+                logger.error(f"Rollback failed for {live}: {restore_err}")
+
     def _save_to_folder(self, project_path: Optional[Path] = None) -> bool:
         """Save project to folder"""
+        backup_dir: Optional[Path] = None
         try:
             save_path = Path(project_path) if project_path else self.current_project_path
             project_file = save_path / self.PROJECT_FILE
@@ -464,6 +530,11 @@ class ProjectManager(QObject):
             if self.asset_manager:
                 self.asset_manager.save_assets_to_project_data(self.current_project_data)
 
+            # Snapshot the on-disk project before the multi-file write so a
+            # failure partway through can be rolled back instead of leaving a
+            # half-updated project.
+            backup_dir = self._snapshot_for_rollback(save_path)
+
             # Save rooms to separate files
             self._save_rooms_to_files(save_path)
 
@@ -485,6 +556,11 @@ class ProjectManager(QObject):
 
             logger.info(f"💾 Saved project: {project_file}")
 
+            # Every file is on disk — discard the rollback snapshot.
+            if backup_dir is not None:
+                shutil.rmtree(backup_dir, ignore_errors=True)
+                backup_dir = None
+
             # Update state
             self.is_dirty_flag = False
             if project_path:
@@ -500,6 +576,10 @@ class ProjectManager(QObject):
             logger.error(f"Folder save failed: {e}")
             import traceback
             traceback.print_exc()
+            if backup_dir is not None:
+                logger.warning("Rolling back partial save to last good on-disk state")
+                self._restore_from_snapshot(save_path, backup_dir)
+                shutil.rmtree(backup_dir, ignore_errors=True)
             return False
 
     def _save_rooms_to_files(self, project_path: Path) -> None:

@@ -138,3 +138,40 @@ Open follow-up (left to the user — game-feel): the platformer samples' player
 y < other.y+8`; fast falls overshoot the 8px window and take a life. Suggested
 `vspeed > 0 and y - vspeed < other.y+8` (uses the pre-move position). Sample
 data only; not applied.
+
+**2026-06-09 — Audit follow-through (dead code + save rollback).** Acted on a
+re-audit by verifying each claim against code first (several were overstated).
+Two landed:
+- Removed the dead `runtime/collision_system.py` module entirely
+  (`CollisionMixin` plus the unused `get_bounding_box`/`boxes_overlap`) — it
+  was only referenced by `runtime/__init__.py`; `GameRunner` never inherited
+  it and has its own same-named collision methods. Cleaned the `__init__.py`
+  import/`__all__`/docstring and the ARCHITECTURE.md §6 + tree references.
+- Gave the **folder** save the cross-file backup/rollback the **zip** save
+  already had. `_save_to_folder` now snapshots the save-managed paths
+  (`rooms/`, `objects/`, `sprites/`, `playgrounds/`, `project.json`) via
+  `_snapshot_for_rollback` before the multi-file write and restores them on
+  any exception via `_restore_from_snapshot` (discarded on success). Per-file
+  atomicity (`_atomic_write_json`) was already there; this adds the
+  *across-file* transaction so a failure on file N can't leave files 1..N-1
+  committed. Regression coverage: `tests/test_save_rollback.py` (4 tests).
+  Baseline 647→651 passed, 0 failed.
+
+Then closed the two narrow Test-Game subprocess gaps (the audit's "spawn and
+forget" was overstated — there was already a 100ms `QTimer` poll +
+terminate/kill on stop):
+- `run_game` now captures the child's stderr to a temp **file** (not
+  `subprocess.PIPE`, which can deadlock the child when the unread buffer
+  fills — the hazard the old "don't capture output" comment dodged). New
+  `_drain_game_stderr` logs the captured traceback on a non-zero exit (a
+  crashing game no longer fails silently) and always deletes the temp file;
+  called from both `_check_game_process` (normal exit) and `stop_game`.
+- `closeEvent` now calls `stop_game()` (past the cancel paths, so a cancelled
+  close leaves the game running) — previously closing the IDE mid-run orphaned
+  the subprocess. Regression coverage: `tests/test_game_subprocess_supervision.py`
+  (7 tests). Suite 651→658 passed, 0 failed.
+
+Audit claims deliberately **not** acted on: the "7-file action" and
+"manual sync is fragile" items are real but low-churn / already pinned by
+`tests/test_state_container_sync.py`, and reworking them conflicts with the
+stability-over-features stance.

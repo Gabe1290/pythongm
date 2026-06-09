@@ -37,7 +37,6 @@ runtime/                 The pygame-based game runtime (used by Test Game / stan
   game_runner.py           GameSprite, GameInstance, GameRoom, GameRunner
   action_executor.py       ActionExecutor — 130+ execute_X_action methods
   action_handlers/         Modular handler package (newer style)
-  collision_system.py      CollisionMixin (currently dead — see §6)
   run_game.py              Subprocess entry point for Test Game (F5)
 importers/               GameMaker (.gmk) → pygm2 native format
   gmk_importer.py          Top-level orchestration
@@ -123,6 +122,17 @@ deep-copies the live `current_project_data`, replaces each room's
 `instances` array with an empty list, sets `instance_count` for
 reference, and writes that thinned copy to `project.json`. The real
 instance arrays go to `rooms/<room>.json` via `_save_rooms_to_files`.
+
+**Cross-file atomicity / rollback.** Each individual file is written
+atomically (`_atomic_write_json` = tmp + `os.replace`), but a folder save
+touches many files (`rooms/`, `objects/`, `sprites/`, `playgrounds/`,
+`project.json`). To stop a failure on file N from leaving files 1..N-1
+committed against a now-inconsistent project, `_save_to_folder` snapshots
+those managed paths (`_snapshot_for_rollback`) before the first write and
+restores them on any exception (`_restore_from_snapshot`), then discards
+the snapshot on success. This gives the folder path the same all-or-nothing
+guarantee the zip path already had via its `.bak` copy. Regression coverage:
+`tests/test_save_rollback.py`.
 
 **Order is preserved** through the round-trip:
 - Load: `json.load(..., object_pairs_hook=OrderedDict)` keeps JSON key
@@ -312,10 +322,10 @@ Critical invariants (each is comment-tagged in the code):
 
 ## 6. Known dead-or-deferred code paths
 
-- `runtime/collision_system.py:CollisionMixin` is **dead code** —
-  `GameRunner` doesn't inherit from it. Phase 2a (commit `e64ac63`)
-  intended to wire it in but didn't. The live collision code is in
-  `game_runner.py` itself (overridden methods of the same name).
+- `runtime/collision_system.py` (the dead `CollisionMixin` plus the unused
+  `get_bounding_box`/`boxes_overlap` helpers) has been **removed** — it was a
+  stale duplicate `GameRunner` never inherited from. The live collision code
+  is in `game_runner.py` itself (the same-named methods it used to shadow).
 - `runtime/action_executor.py` should eventually split by category
   (movement, drawing, score-lives-health, …). Deferred to post-1.0 with
   rigorous behaviour-preservation methodology — see

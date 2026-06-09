@@ -1900,13 +1900,23 @@ class PyGameMakerIDE(QMainWindow):
             # which is a no-op for Popen on POSIX.
             creationflags = getattr(subprocess, 'CREATE_NO_WINDOW', 0)
 
+            # Capture the game's stderr to a temp *file* (not subprocess.PIPE).
+            # A PIPE nobody drains can deadlock the child once the OS pipe
+            # buffer fills — the exact hazard the old "don't capture output"
+            # comment was avoiding. A file has no such buffer limit, so we get
+            # the crash traceback without risking a hang. Drained + deleted in
+            # _drain_game_stderr when the process exits.
+            import tempfile
+            stderr_fd, stderr_path = tempfile.mkstemp(prefix='pygm2_game_', suffix='.log')
+            self._game_stderr_path = stderr_path
+            self._game_stderr_handle = os.fdopen(stderr_fd, 'w')
+
             process = subprocess.Popen(
                 [sys.executable, str(game_script), str(project_json), language],
                 cwd=str(self.current_project_path),
                 env=env,
-                # Don't capture output to avoid potential deadlocks
                 stdout=None,
-                stderr=None,
+                stderr=self._game_stderr_handle,
                 creationflags=creationflags,
             )
 
@@ -1948,16 +1958,52 @@ class PyGameMakerIDE(QMainWindow):
             if return_code != 0:
                 logger.debug(f"Game exited with code: {return_code}")
 
+            self._drain_game_stderr(return_code)
             self.update_status(self.tr("Game closed"))
+
+    def _drain_game_stderr(self, return_code):
+        """Read, surface, and clean up the game subprocess's captured stderr.
+
+        On a non-zero exit the captured traceback is logged so a crashing game
+        no longer fails silently. The temp file is always removed. Safe to call
+        more than once / when no capture is active.
+        """
+        handle = getattr(self, '_game_stderr_handle', None)
+        path = getattr(self, '_game_stderr_path', None)
+        self._game_stderr_handle = None
+        self._game_stderr_path = None
+
+        if handle is not None:
+            try:
+                handle.close()
+            except OSError:
+                pass
+        if not path:
+            return
+        try:
+            with open(path, 'r', encoding='utf-8', errors='replace') as f:
+                output = f.read().strip()
+            if output and return_code not in (0, None):
+                logger.error(
+                    f"Game subprocess (exit {return_code}) stderr:\n{output}"
+                )
+        except OSError as e:
+            logger.debug(f"Could not read game stderr log: {e}")
+        finally:
+            try:
+                os.remove(path)
+            except OSError:
+                pass
 
     def stop_game(self):
         """Stop the running game subprocess"""
+        return_code = None
         if hasattr(self, '_game_process') and self._game_process is not None:
             try:
                 self._game_process.terminate()
                 # Give it a moment to terminate gracefully
                 try:
-                    self._game_process.wait(timeout=2)
+                    return_code = self._game_process.wait(timeout=2)
                 except subprocess.TimeoutExpired:
                     self._game_process.kill()
                 self._game_process = None
@@ -1966,6 +2012,7 @@ class PyGameMakerIDE(QMainWindow):
                 logger.error(f"Error stopping game: {e}")
         if hasattr(self, '_check_game_timer') and self._check_game_timer:
             self._check_game_timer.stop()
+        self._drain_game_stderr(return_code)
 
     def debug_game(self):
         """Run game in debug mode with additional logging"""
@@ -4108,6 +4155,11 @@ class PyGameMakerIDE(QMainWindow):
         tutorial_win = getattr(self, '_tutorial_detached_window', None)
         if tutorial_win is not None:
             tutorial_win.reattach_on_close = False
+
+        # Don't orphan a running Test Game: the subprocess outlives the IDE
+        # otherwise (closeEvent never touched it). Past the cancel paths above,
+        # so a cancelled close leaves the game running.
+        self.stop_game()
 
         event.accept()
 
