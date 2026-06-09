@@ -192,3 +192,24 @@ destinations from untrusted `package.json` asset names and write via
 correctly *allows* in-bounds normalization (`sprites/../player.png` →
 `base/player.png`); only paths that climb above base are rejected. Coverage:
 `tests/test_zip_slip.py` (10 tests). Suite 658→668 passed, 0 failed.
+
+**2026-06-09 — Project-loading path-traversal: audit finding rejected, real
+analog fixed.** An audit flagged `load_project` as MEDIUM path traversal and
+proposed whitelisting project roots (`VALID_PROJECT_ROOTS = [~/PyGameMaker
+Projects, cwd]`). **Rejected as a false positive** — every path reaching
+`load_project` is user-chosen (`QFileDialog` defaulting to `~`), from the
+user's own recent list, or app-generated (samples/exports); there's no
+untrusted channel and the process runs as the user, so there's no sandbox to
+escape. The whitelist would break the intended "open a project from anywhere"
+feature for zero security gain. (The audit also mis-cited `utils/__init__.py`'s
+`load_project`, a static helper with no non-test callers; the live loader is
+`core/project_manager.py`.) The **real** analog, same class as the
+resource_packager bug: asset *names* (dict keys from a project.json) are used
+directly as filenames — `rooms_dir / f"{name}.json"` etc. — on both load (read)
+and save (write), so a malicious *shared* project with a key like `../../../x`
+could traverse. Added `_safe_asset_path` (module-level in `project_manager.py`)
+and routed all 10 sites through it (4 load, 4 save, 2 migrate); unsafe names are
+skipped with a warning, legitimate identifiers pass untouched. Coverage:
+`tests/test_asset_name_traversal.py` (9 tests, incl. a load test that plants a
+file at the traversal target and confirms no leak). Suite 668→677 passed, 0
+failed.
