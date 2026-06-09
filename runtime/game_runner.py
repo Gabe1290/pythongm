@@ -1107,13 +1107,37 @@ class GameInstance:
                 pass
         return (255, 255, 255)  # Default to white
 
+# Room dimension sanity bounds. A room surface is allocated at width x height,
+# so a corrupt/hostile project that requests 0, a negative, a non-numeric, or an
+# absurdly large size would otherwise crash pygame or exhaust memory at room
+# build time. 16384 is comfortably above any real room and below the point where
+# a single Surface allocation becomes a problem; 64 is the minimum that still
+# renders sensibly.
+ROOM_MIN_DIMENSION = 64
+ROOM_MAX_DIMENSION = 16384
+
+
+def _sane_room_dimension(value, default):
+    """Coerce a room width/height to a positive int within sane bounds.
+
+    Falls back to ``default`` when ``value`` isn't a finite number (None, a
+    string, NaN -> ValueError, inf -> OverflowError), then clamps to
+    [ROOM_MIN_DIMENSION, ROOM_MAX_DIMENSION].
+    """
+    try:
+        n = int(value)
+    except (TypeError, ValueError, OverflowError):
+        n = default
+    return max(ROOM_MIN_DIMENSION, min(n, ROOM_MAX_DIMENSION))
+
+
 class GameRoom:
     """Represents a game room with instances"""
 
     def __init__(self, name: str, room_data: dict, action_executor=None, project_path=None, sprites_data=None):
         self.name = name
-        self.width = room_data.get('width', 1024)
-        self.height = room_data.get('height', 768)
+        self.width = _sane_room_dimension(room_data.get('width', 1024), 1024)
+        self.height = _sane_room_dimension(room_data.get('height', 768), 768)
         self.background_color = self.parse_color(room_data.get('background_color', '#87CEEB'))
         # Legacy single-background (kept for backward compat)
         self.background_image_name = room_data.get('background_image', '')
