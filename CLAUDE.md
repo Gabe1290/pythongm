@@ -175,3 +175,20 @@ Audit claims deliberately **not** acted on: the "7-file action" and
 "manual sync is fragile" items are real but low-churn / already pinned by
 `tests/test_state_container_sync.py`, and reworking them conflicts with the
 stability-over-features stance.
+
+**2026-06-09 — Archive path-traversal (Zip Slip) hardening.** An audit flagged
+`ProjectCompressor.decompress_project`'s `zipf.extractall` as HIGH-severity Zip
+Slip with an "overwrite /etc/passwd" PoC. **Severity was overstated** — modern
+CPython's `extractall` already strips `..` components (verified on 3.11: a
+`../../../tmp/x` member lands at `out/tmp/x`, not `/tmp/x`), so the PoC doesn't
+work on any supported Python (3.10–3.13). Added the explicit per-member
+`is_relative_to(base)` guard anyway as defense-in-depth + to fail loudly
+instead of silently flattening. The **real** (and exploitable) traversal the
+audit missed: `utils/resource_packager.py` `import_object`/`import_room` build
+destinations from untrusted `package.json` asset names and write via
+`zipf.open` (which, unlike `extractall`, does NOT sanitize) — a sprite/bg named
+`../../../x` escaped the project dir. Fixed with a shared
+`ResourcePackager._safe_join` guard at all three write sites. Note the guard
+correctly *allows* in-bounds normalization (`sprites/../player.png` →
+`base/player.png`); only paths that climb above base are rejected. Coverage:
+`tests/test_zip_slip.py` (10 tests). Suite 658→668 passed, 0 failed.

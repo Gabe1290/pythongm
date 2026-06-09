@@ -73,7 +73,19 @@ class ProjectCompressor:
             output_folder.mkdir(parents=True, exist_ok=True)
 
             # Extract zip file
+            base = output_folder.resolve()
             with zipfile.ZipFile(zip_path, 'r') as zipf:
+                # Reject any member that would resolve outside the target dir
+                # (Zip Slip). Modern CPython's extractall already strips ".."
+                # components, but validate explicitly as defense-in-depth and
+                # so a malicious archive fails loudly instead of being silently
+                # flattened.
+                for member in zipf.namelist():
+                    dest = (base / member).resolve()
+                    if not dest.is_relative_to(base):
+                        raise ValueError(
+                            f"Unsafe path in archive (zip slip): {member!r}"
+                        )
                 zipf.extractall(output_folder)
                 print(f"✅ Project extracted to: {output_folder}")
 
