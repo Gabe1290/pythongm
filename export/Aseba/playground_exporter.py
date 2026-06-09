@@ -7,8 +7,8 @@ The .playground format is a ZIP archive containing:
 """
 
 import zipfile
-import xml.etree.ElementTree as ET
-from xml.dom import minidom
+import xml.etree.ElementTree as ET  # nosec B405 - serializer only; this module never parses external XML
+from xml.dom import minidom  # nosec B408 - used only to pretty-print our own generated XML
 from pathlib import Path
 
 from core.logger import get_logger
@@ -97,7 +97,7 @@ class PlaygroundExporter:
 
         # Pretty-print
         rough_string = ET.tostring(root, encoding='unicode')
-        dom = minidom.parseString(rough_string)
+        dom = minidom.parseString(rough_string)  # nosec B318 - re-parses our own ET.tostring output to pretty-print; no external input
         pretty = dom.toprettyxml(indent='    ', encoding=None)
         # Remove the XML declaration line that minidom adds
         lines = pretty.split('\n')
