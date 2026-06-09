@@ -336,12 +336,22 @@ class WSLBridge:
             'EXIT_CODE=$?\n'
             'mkdir -p "{src}/bin"\n'
             'cp "$BUILD_DIR"/bin/*.apk "{src}/bin/" 2>/dev/null || true\n'
+            'rm -f "$0"\n'  # self-delete the run script (unique per build)
             'exit $EXIT_CODE\n'
         ).format(src=wsl_src)
 
         # Write the script to a file inside WSL with Unix line endings.
         # Use binary mode (no text=True) so Python won't convert \n to \r\n.
-        script_path = '/tmp/pygm_buildozer_run.sh'
+        # Generate a unique per-build path *inside WSL* via mktemp so concurrent
+        # builds don't clobber each other and tee can't follow a pre-planted
+        # symlink at a predictable name. The script rm's itself when done.
+        mktemp = subprocess.run(
+            ['wsl', 'mktemp', '/tmp/pygm_buildozer_run.XXXXXX.sh'],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        script_path = mktemp.stdout.strip() or '/tmp/pygm_buildozer_run.sh'  # nosec B108 - fallback only if mktemp fails
         subprocess.run(
             ['wsl', 'tee', script_path],
             input=build_script.encode('utf-8'),

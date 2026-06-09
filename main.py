@@ -68,7 +68,7 @@ def setup_qtwebengine_paths():
     # Also detect by checking if __file__ is in temp directory (onefile extraction)
     current_dir = os.path.dirname(os.path.abspath(__file__))
     temp_dir = os.environ.get('TEMP', '')
-    is_onefile_extracted = current_dir.startswith('/tmp/') or (temp_dir and current_dir.startswith(temp_dir))
+    is_onefile_extracted = current_dir.startswith('/tmp/') or (temp_dir and current_dir.startswith(temp_dir))  # nosec B108 - prefix check on the running dir, not a temp-file write
 
     if is_nuitka or is_onefile_extracted or hasattr(sys, 'frozen'):
         # Disable Chromium sandbox – it blocks file access from PyInstaller
