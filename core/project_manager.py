@@ -63,6 +63,27 @@ def _atomic_write_json(path: Path, data: Any, *, sort_keys: bool = False) -> Non
             pass
         raise
 
+
+def _safe_asset_path(base_dir: Path, name: str, suffix: str = '.json') -> Optional[Path]:
+    """Build ``base_dir/<name><suffix>``, rejecting path traversal.
+
+    Asset *names* are dict keys taken straight from a project.json. If the
+    project was authored/shared by someone else they are untrusted, and used
+    directly as a filename a name like ``../../x`` would read or write outside
+    the project folder. Returns the safe path, or ``None`` (with a warning)
+    when the name would escape ``base_dir`` — callers skip that asset's file
+    I/O. Legitimate asset names (plain identifiers) always pass through.
+    """
+    base = base_dir.resolve()
+    candidate = (base / f"{name}{suffix}").resolve()
+    if not candidate.is_relative_to(base):
+        logger.warning(
+            f"Skipping asset with unsafe name (path traversal blocked): {name!r}"
+        )
+        return None
+    return candidate
+
+
 class ProjectManager(QObject):
     """
     Manages PyGameMaker projects - creation, loading, saving, and metadata
@@ -284,7 +305,9 @@ class ProjectManager(QObject):
         rooms_data = project_data.get('assets', {}).get('rooms', {})
 
         for room_name, room_data in list(rooms_data.items()):
-            room_file = rooms_dir / f"{room_name}.json"
+            room_file = _safe_asset_path(rooms_dir, room_name)
+            if room_file is None:
+                continue
 
             # Handle case where room_data is a string path reference
             if isinstance(room_data, str):
@@ -330,7 +353,9 @@ class ProjectManager(QObject):
         objects_data = project_data.get('assets', {}).get('objects', {})
 
         for object_name, object_data in list(objects_data.items()):
-            object_file = objects_dir / f"{object_name}.json"
+            object_file = _safe_asset_path(objects_dir, object_name)
+            if object_file is None:
+                continue
 
             # Handle case where object_data is a string path reference
             if isinstance(object_data, str):
@@ -370,7 +395,9 @@ class ProjectManager(QObject):
         sprites_data = project_data.get('assets', {}).get('sprites', {})
 
         for sprite_name, sprite_data in sprites_data.items():
-            sprite_file = sprites_dir / f"{sprite_name}.json"
+            sprite_file = _safe_asset_path(sprites_dir, sprite_name)
+            if sprite_file is None:
+                continue
 
             if sprite_file.exists():
                 try:
@@ -594,7 +621,9 @@ class ProjectManager(QObject):
         rooms_data = self.current_project_data.get('assets', {}).get('rooms', {})
 
         for room_name, room_data in rooms_data.items():
-            room_file = rooms_dir / f"{room_name}.json"
+            room_file = _safe_asset_path(rooms_dir, room_name)
+            if room_file is None:
+                continue
 
             # Check if we're about to overwrite a file with good data
             instances_to_save = room_data.get('instances', [])
@@ -644,7 +673,9 @@ class ProjectManager(QObject):
         logger.debug(f"💾 DEBUG _save_objects_to_files: Found {len(objects_data)} objects to save")
 
         for object_name, object_data in objects_data.items():
-            object_file = objects_dir / f"{object_name}.json"
+            object_file = _safe_asset_path(objects_dir, object_name)
+            if object_file is None:
+                continue
 
             # Save full object data including events
             _atomic_write_json(object_file, object_data)
@@ -668,7 +699,9 @@ class ProjectManager(QObject):
         logger.debug(f"💾 DEBUG _save_sprites_to_files: Found {len(sprites_data)} sprites to save")
 
         for sprite_name, sprite_data in sprites_data.items():
-            sprite_file = sprites_dir / f"{sprite_name}.json"
+            sprite_file = _safe_asset_path(sprites_dir, sprite_name)
+            if sprite_file is None:
+                continue
 
             _atomic_write_json(sprite_file, sprite_data)
 
@@ -684,7 +717,9 @@ class ProjectManager(QObject):
         playgrounds_data = project_data.get('assets', {}).get('playgrounds', {})
 
         for pg_name, pg_data in list(playgrounds_data.items()):
-            pg_file = playgrounds_dir / f"{pg_name}.json"
+            pg_file = _safe_asset_path(playgrounds_dir, pg_name)
+            if pg_file is None:
+                continue
 
             if isinstance(pg_data, str):
                 pg_data = {"name": pg_name, "asset_type": "playground"}
@@ -715,7 +750,9 @@ class ProjectManager(QObject):
         playgrounds_dir.mkdir(exist_ok=True)
 
         for pg_name, pg_data in playgrounds_data.items():
-            pg_file = playgrounds_dir / f"{pg_name}.json"
+            pg_file = _safe_asset_path(playgrounds_dir, pg_name)
+            if pg_file is None:
+                continue
             _atomic_write_json(pg_file, pg_data)
             logger.debug(f"Saved playground: {pg_name}")
 
@@ -937,7 +974,9 @@ class ProjectManager(QObject):
             # Save objects to external files
             objects_data = self.current_project_data.get('assets', {}).get('objects', {})
             for object_name, object_data in objects_data.items():
-                object_file = objects_dir / f"{object_name}.json"
+                object_file = _safe_asset_path(objects_dir, object_name)
+                if object_file is None:
+                    continue
                 _atomic_write_json(object_file, object_data)
                 event_count = len(object_data.get('events', {}))
                 logger.info(f"💾 Migrated object: {object_name} ({event_count} events)")
@@ -945,7 +984,9 @@ class ProjectManager(QObject):
             # Save rooms to external files
             rooms_data = self.current_project_data.get('assets', {}).get('rooms', {})
             for room_name, room_data in rooms_data.items():
-                room_file = rooms_dir / f"{room_name}.json"
+                room_file = _safe_asset_path(rooms_dir, room_name)
+                if room_file is None:
+                    continue
                 _atomic_write_json(room_file, room_data)
                 instance_count = len(room_data.get('instances', []))
                 logger.info(f"💾 Migrated room: {room_name} ({instance_count} instances)")
