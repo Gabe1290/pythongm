@@ -810,20 +810,25 @@ class AssetManager(QObject):
 
 
     def get_file_hash(self, file_path: Path) -> str:
-            """Generate MD5 hash of a file
+            """Generate SHA-256 hash of a file
+
+            Used only as non-cryptographic asset-change-detection metadata
+            (stored in ``file_hash``, never compared against an adversary), but
+            SHA-256 is used rather than MD5 so the digest is sound if this
+            field is ever wired into real integrity checking.
 
             Args:
                 file_path: Path to the file to hash
 
             Returns:
-                str: MD5 hash as hex string, or empty string if error
+                str: SHA-256 hash as hex string, or empty string if error
             """
             try:
-                hash_md5 = hashlib.md5()
+                hash_sha256 = hashlib.sha256()
                 with open(file_path, "rb") as f:
                     for chunk in iter(lambda: f.read(4096), b""):
-                        hash_md5.update(chunk)
-                return hash_md5.hexdigest()
+                        hash_sha256.update(chunk)
+                return hash_sha256.hexdigest()
             except FileNotFoundError:
                 logger.warning("Cannot hash file - not found: %s", file_path)
                 return ""
