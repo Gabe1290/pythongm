@@ -232,6 +232,17 @@ others. Coverage: `tests/test_room_canvas_cache_clear.py` (constructs a real
 offscreen QApplication, no pytest-qt needed, so it runs on 3.11 too). Suite
 677→678 passed, 0 failed.
 
+**2026-06-11 — Full-codebase audit (18 finders, adversarially verified):
+111 confirmed findings.** Unlike the earlier single-batch audits, every
+finding here survived adversarial verification against the actual code
+(and highs got 2 extra refutation votes), with the known-rejected list
+baked into the finder prompts. Registry with checkboxes:
+`docs/FULL_AUDIT_2026-06-11.md` — **15 high / 61 medium / 35 low, all
+open**. Work highs first; re-verify each claim before fixing (leads, not
+ground truth) and land each fix with a regression test. This supersedes
+the "14 medium + 9 low remain open" note above — the 2026-06-03 registry
+is fully closed (all 30 checkboxes flipped).
+
 **2026-06-09 — Runtime-core audit (Batch A): most rejected, room-dimension
 bounds added.** A 9-finding audit of `game_runner.py` / `action_executor.py` /
 `constants.py`. Verified each against code first (the established
