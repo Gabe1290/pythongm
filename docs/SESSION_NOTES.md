@@ -52,6 +52,27 @@ append below).
 
 ---
 
+## 2026-06-11 — Full-codebase audit completed (111 confirmed findings)
+
+The 18-finder adversarially-verified audit of the whole source tree finally
+completed after spanning three sessions and **two machine crashes**. Each
+crash was recovered by harvesting completed agents' results from the workflow
+journals under `~/.claude/projects/.../subagents/workflows/` and hand-building
+a continuation script that re-ran only the dead agents (dedup logic replicated
+exactly so verification verdict ids stayed aligned).
+
+**Result: 119 raw → 114 deduped → 111 confirmed (15 high / 61 medium /
+35 low), 3 refuted.** All 15 highs survived 2 extra refutation votes each.
+Registry with file:line, failure scenarios, suggested fixes, and checkboxes:
+`docs/FULL_AUDIT_2026-06-11.md`. Highlights among the highs: Kivy export
+generates syntactically invalid code (`i`/`eli`), mouse events never fire at
+runtime (writer/reader key mismatch), room-file merge permanently destroys
+tiles/backgrounds on save, GMK import has a real path-traversal, asset
+deletion reloads stale disk state discarding unsaved work.
+
+Per the established methodology these are **leads, not ground truth** — each
+fix should re-verify the claim and land with a regression test.
+
 ## 2026-06-06 — Decision: replace ALL sample sprites with clearly-licensed art
 
 **Decided:** every sample sprite will be replaced with images that have clear,
