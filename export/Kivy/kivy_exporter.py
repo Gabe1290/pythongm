@@ -13,6 +13,31 @@ logger = get_logger(__name__)
 
 from export.Kivy.code_generator import ActionCodeGenerator
 
+
+def _bg_color_to_rgb(value) -> tuple:
+    """Normalize a room background color to (r, g, b) floats in 0-1.
+
+    Rooms saved by the IDE store hex strings ("#c0c0c0"), but the
+    Mobile-(Kivy) dialog path goes through project_adapter, which
+    historically rewrote the value to a [r, g, b, a] float list — so both
+    forms must be accepted (audit H9). Falls back to gray on anything else.
+    """
+    if isinstance(value, str):
+        hex_str = value[1:] if value.startswith('#') else value
+        try:
+            return (int(hex_str[0:2], 16) / 255.0,
+                    int(hex_str[2:4], 16) / 255.0,
+                    int(hex_str[4:6], 16) / 255.0)
+        except (ValueError, IndexError):
+            return (0.5, 0.5, 0.5)
+    if isinstance(value, (list, tuple)) and len(value) >= 3:
+        try:
+            return (float(value[0]), float(value[1]), float(value[2]))
+        except (TypeError, ValueError):
+            return (0.5, 0.5, 0.5)
+    return (0.5, 0.5, 0.5)
+
+
 class KivyExporter:
     """Export PyGameMaker projects to Kivy format"""
 
@@ -219,15 +244,7 @@ class KivyExporter:
             rd = rooms.get(rname, {})
             rw = rd.get('width', 640)
             rh = rd.get('height', 480)
-            bgc = rd.get('background_color', '#808080')
-            if bgc.startswith('#'):
-                bgc = bgc[1:]
-            try:
-                br = int(bgc[0:2], 16) / 255.0
-                bg_ = int(bgc[2:4], 16) / 255.0
-                bb = int(bgc[4:6], 16) / 255.0
-            except (ValueError, IndexError):
-                br, bg_, bb = 0.5, 0.5, 0.5
+            br, bg_, bb = _bg_color_to_rgb(rd.get('background_color', '#808080'))
             room_meta_entries.append(
                 f'"{rname}": ({rw}, {rh}, {br:.3f}, {bg_:.3f}, {bb:.3f})')
         room_meta_str = ', '.join(room_meta_entries)
@@ -1102,15 +1119,8 @@ if __name__ == '__main__':
         bg_color = room_data.get('background_color', '#808080')  # Default gray
         bg_image = room_data.get('background', '') or room_data.get('background_image', '')
 
-        # Convert hex color to RGB floats (0-1 range)
-        if bg_color.startswith('#'):
-            bg_color = bg_color[1:]
-        try:
-            r = int(bg_color[0:2], 16) / 255.0
-            g = int(bg_color[2:4], 16) / 255.0
-            b = int(bg_color[4:6], 16) / 255.0
-        except (ValueError, IndexError):
-            r, g, b = 0.5, 0.5, 0.5  # Default gray
+        # Convert hex string or [r, g, b, a] list to RGB floats (0-1 range)
+        r, g, b = _bg_color_to_rgb(bg_color)
 
         # Import ALL project objects (not just room-placed ones) so
         # create_instance can dynamically create any object type (e.g., obj_box_store)

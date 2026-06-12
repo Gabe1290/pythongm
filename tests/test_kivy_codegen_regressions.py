@@ -71,3 +71,75 @@ class TestKeyboardHandlerSyntax:
         exporter = _make_exporter(tmp_path)
         code = exporter._generate_keyboard_handler(self._keyboard_events()[:1])
         _compile_method(code)
+
+
+class TestBackgroundColorAdapter:
+    """H9 — the Mobile (Kivy) adapter rewrote background_color to an RGBA
+    float list while the exporter expected a hex string; every export
+    failed with AttributeError: 'list' object has no attribute 'startswith'.
+    """
+
+    def test_bg_color_helper_accepts_both_forms(self):
+        from export.Kivy.kivy_exporter import _bg_color_to_rgb
+
+        assert _bg_color_to_rgb('#c0c0c0') == pytest.approx(
+            (192 / 255, 192 / 255, 192 / 255))
+        assert _bg_color_to_rgb('c0c0c0') == pytest.approx(
+            (192 / 255, 192 / 255, 192 / 255))
+        assert _bg_color_to_rgb([0.25, 0.5, 0.75, 1.0]) == pytest.approx(
+            (0.25, 0.5, 0.75))
+        assert _bg_color_to_rgb(None) == (0.5, 0.5, 0.5)
+        assert _bg_color_to_rgb('not-a-color') == (0.5, 0.5, 0.5)
+
+    def test_adapter_passes_hex_color_through(self, tmp_path):
+        from types import SimpleNamespace
+        from export.Kivy.project_adapter import adapt_project_for_kivy_export
+
+        pm = SimpleNamespace(
+            current_project_data={
+                'name': 'AdapterGame',
+                'settings': {},
+                'assets': {
+                    'sprites': {}, 'sounds': {}, 'backgrounds': {},
+                    'objects': {},
+                    'rooms': {'room0': {'width': 640, 'height': 480,
+                                        'background_color': '#c0c0c0',
+                                        'instances': []}},
+                },
+            },
+            project_path=str(tmp_path),
+        )
+        adapted = adapt_project_for_kivy_export(pm)
+        room = adapted['assets']['rooms']['room0']
+        assert room['background_color'] == '#c0c0c0'
+
+    def test_export_with_adapter_succeeds(self, tmp_path):
+        """End-to-end: the dialog's Mobile (Kivy) path used to always
+        return False (AttributeError swallowed by export()'s except)."""
+        from types import SimpleNamespace
+        from export.Kivy.project_adapter import export_with_adapter
+
+        project_dir = tmp_path / "project"
+        project_dir.mkdir()
+        output = tmp_path / "out"
+        output.mkdir()
+
+        pm = SimpleNamespace(
+            current_project_data={
+                'name': 'AdapterGame',
+                'settings': {'window_width': 800, 'window_height': 600},
+                'assets': {
+                    'sprites': {}, 'sounds': {}, 'backgrounds': {},
+                    'objects': {},
+                    'rooms': {'room0': {'width': 640, 'height': 480,
+                                        'background_color': '#c0c0c0',
+                                        'instances': []}},
+                },
+            },
+            project_path=str(project_dir),
+        )
+
+        assert export_with_adapter(pm, output) is True
+        main_py = output / "game" / "main.py"
+        assert main_py.exists()
+        compile(main_py.read_text(encoding='utf-8'), str(main_py), 'exec')
