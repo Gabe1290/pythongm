@@ -218,6 +218,13 @@ class ProjectManager(QObject):
             self.current_project_data = project_data
             self.is_dirty_flag = False
 
+            # Every room of a freshly created project exists only in memory,
+            # so the in-memory instance list is authoritative from the start —
+            # without this, emptying a room after the first save would
+            # resurrect its instances from the room file (audit H3).
+            self._rooms_loaded_this_session = set(
+                project_data.get('assets', {}).get('rooms', {}).keys())
+
             # Start auto-save
             if self.auto_save_enabled:
                 self.auto_save_timer.start(self.auto_save_interval)
@@ -664,6 +671,12 @@ class ProjectManager(QObject):
             # Save full room data including instances
             _atomic_write_json(room_file, room_data)
 
+            # The file now mirrors memory, so memory stays authoritative for
+            # the rest of the session — covers rooms whose file first appears
+            # mid-session (new projects, legacy projects with no rooms/ dir
+            # at load) (audit H3).
+            self._rooms_loaded_this_session.add(room_name)
+
             logger.debug(f"💾 Saved room: {room_name} ({len(instances_to_save)} instances)")
 
     def _save_objects_to_files(self, project_path: Path) -> None:
@@ -1062,6 +1075,13 @@ class ProjectManager(QObject):
             if asset_type_plural in plural_to_singular_map:
                 asset_type_singular = plural_to_singular_map[asset_type_plural]
 
+            if asset_type_plural == 'rooms' and 'instances' in asset_data:
+                # The caller (room editor save path) is handing us the
+                # authoritative instance list — register the room so an
+                # emptied room saves through instead of being "preserved"
+                # from the stale file copy (audit H3).
+                self._rooms_loaded_this_session.add(asset_name)
+
             existing_asset = self.asset_manager.get_asset(asset_type_plural, asset_name)
 
             if existing_asset:
@@ -1212,6 +1232,8 @@ class ProjectManager(QObject):
 
             result = self.asset_manager.delete_asset(asset_type, asset_name)
             if result:
+                if asset_type == 'rooms':
+                    self._rooms_loaded_this_session.discard(asset_name)
                 self.mark_dirty()
                 return True
             return False
@@ -1228,6 +1250,9 @@ class ProjectManager(QObject):
 
             result = self.asset_manager.rename_asset(asset_type, old_name, new_name)
             if result:
+                if asset_type == 'rooms' and old_name in self._rooms_loaded_this_session:
+                    self._rooms_loaded_this_session.discard(old_name)
+                    self._rooms_loaded_this_session.add(new_name)
                 self.mark_dirty()
                 # Auto-save to persist the rename and all updated references
                 self.save_project()

@@ -374,6 +374,15 @@ class AssetManager(QObject):
                 if thumbnail_path.exists():
                     thumbnail_path.unlink()
 
+            # Rooms/objects keep their payload in <type>/<name>.json side
+            # files that file_path doesn't reference. Remove them too: a
+            # stale orphan would resurrect the dead asset's data into any
+            # future asset created with the same name (audit H3).
+            if asset_type in ("rooms", "objects"):
+                side_file = self.project_directory / asset_type / f"{asset_name}.json"
+                if side_file.exists():
+                    side_file.unlink()
+
             # If deleting a sprite, clear references from objects that use it
             if asset_type == "sprites":
                 self._clear_sprite_references(asset_name)
@@ -443,6 +452,14 @@ class AssetManager(QObject):
                     new_thumbnail_path = old_thumbnail_path.parent / f"{new_name}_thumb.png"
                     old_thumbnail_path.rename(new_thumbnail_path)
                     asset_data["thumbnail"] = self.get_relative_path(new_thumbnail_path)
+
+            # Carry the rooms/objects <type>/<name>.json side file along so
+            # an orphan under the old name can't resurrect stale data into a
+            # future asset reusing that name (audit H3).
+            if asset_type in ("rooms", "objects"):
+                old_side = self.project_directory / asset_type / f"{old_name}.json"
+                if old_side.exists():
+                    old_side.replace(self.project_directory / asset_type / f"{new_name}.json")
 
             # Update asset data
             asset_data["name"] = new_name
