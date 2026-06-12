@@ -779,6 +779,16 @@ class PythonToActionsParser:
 
     def _try_parse_thymio_conditional(self, stmt: ast.If) -> Optional[Dict[str, Any]]:
         """Try to parse an if statement as a Thymio conditional action"""
+        if stmt.orelse:
+            # An if/else (or elif) cannot be represented by a thymio_if_*
+            # action — its sub_actions hold only the then-branch, so
+            # converting would silently delete the else branch (audit H5).
+            # Returning None routes the whole statement through the
+            # unrecognized-statement path, which preserves it verbatim as
+            # execute_code (the same lossless round-trip non-Thymio if/else
+            # statements already get).
+            return None
+
         test = stmt.test
 
         # Handle: if thymio.read_proximity(n) <comparison> threshold:
