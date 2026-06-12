@@ -2295,7 +2295,7 @@ class {class_name}(GameObject):
             actions = event.get('actions', [])
             key_code = key_map.get(key_name, '0')
 
-            if_keyword = "i" if i == 0 else "eli"
+            if_keyword = "if" if i == 0 else "elif"
             code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")
 
             if actions:
