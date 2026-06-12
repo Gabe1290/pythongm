@@ -38,6 +38,38 @@ ATTRIBUTE_TO_ACTION = {
     ('game', 'health'): ('set_health', 'value'),
 }
 
+# Actions that set several instance attributes at once. Assigning only one
+# half (e.g. `self.x = 100`) must keep the other half at its current value:
+# the missing parameter is filled with the identity expression (the runtime
+# evaluates expressions), otherwise the action teleports the instance
+# (runtime defaults the other axis to 0) and the regeneration template
+# KeyErrors, replacing the user's statement with a comment that the next
+# auto-apply silently drops (audit H4).
+PAIRED_PARAM_IDENTITY = {
+    'jump_to_position': {'x': 'self.x', 'y': 'self.y'},
+    'set_direction_speed': {'direction': 'self.direction', 'speed': 'self.speed'},
+    'set_gravity': {'direction': 'self.gravity_direction', 'gravity': 'self.gravity'},
+}
+
+
+def fill_paired_params(action_name: str, parameters: Dict[str, Any]) -> None:
+    """Fill the missing half of a paired action with its identity value.
+
+    For a relative jump (`self.x += 5`) the additive identity 0 is used
+    instead — the runtime adds the parameter to the current position, so an
+    identity *expression* there would double it.
+    """
+    identities = PAIRED_PARAM_IDENTITY.get(action_name)
+    if not identities:
+        return
+    relative = parameters.get("relative", False)
+    for param_name, identity_expr in identities.items():
+        if param_name not in parameters:
+            if action_name == 'jump_to_position' and relative:
+                parameters[param_name] = 0
+            else:
+                parameters[param_name] = identity_expr
+
 # Mapping from Python method calls to actions
 # Key: (object, method) -> (action_name, parameter_mapping or None)
 METHOD_TO_ACTION = {
@@ -516,9 +548,11 @@ class PythonToActionsParser:
             if key in ATTRIBUTE_TO_ACTION:
                 action_name, param_name = ATTRIBUTE_TO_ACTION[key]
                 param_value = self._eval_value(value)
+                parameters = {param_name: param_value, "relative": False}
+                fill_paired_params(action_name, parameters)
                 return {
                     "action": action_name,
-                    "parameters": {param_name: param_value, "relative": False}
+                    "parameters": parameters
                 }
 
         # Handle self.alarm[n] = value
@@ -555,9 +589,11 @@ class PythonToActionsParser:
                 if isinstance(stmt.op, ast.Sub):
                     param_value = -param_value if isinstance(param_value, (int, float)) else f"-({param_value})"
 
+                parameters = {param_name: param_value, "relative": True}
+                fill_paired_params(action_name, parameters)
                 return {
                     "action": action_name,
-                    "parameters": {param_name: param_value, "relative": True}
+                    "parameters": parameters
                 }
 
         return None
@@ -1127,6 +1163,32 @@ class ActionsToPythonGenerator:
                 else:
                     lines.append(f"    self.{else_action}()")
             return '\n'.join(lines)
+
+        # Paired actions (jump_to_position, set_direction_speed, set_gravity)
+        # are emitted per attribute, skipping identity-valued halves — so
+        # `self.x = 100` parsed to jump_to_position{x:100, y:'self.y'}
+        # regenerates as exactly `self.x = 100` (and a half-filled action from
+        # an older save regenerates its present half instead of degrading to a
+        # '# Missing parameter' comment the next auto-apply would silently
+        # drop) (audit H4).
+        if action_name in PAIRED_PARAM_IDENTITY:
+            relative = params.get('relative', False)
+            lines = []
+            for pname, attr in PAIRED_PARAM_IDENTITY[action_name].items():
+                if pname not in params:
+                    continue
+                val = params[pname]
+                if str(val) == attr:
+                    continue  # identity — attribute unchanged
+                if relative:
+                    if isinstance(val, (int, float)) and val == 0:
+                        continue  # additive identity
+                    lines.append(f"{attr} += {val}")
+                else:
+                    lines.append(f"{attr} = {val}")
+            if lines:
+                return '\n'.join(lines)
+            return f"pass  # {action_name}: no-op"
 
         # Format template with parameters
         try:

@@ -608,6 +608,12 @@ class ActionExecutor:
         direction = parameters.get("direction", 270)
         gravity = parameters.get("gravity", 0.5)
 
+        # Values can be expressions (e.g. the identity 'self.gravity' filled
+        # in when only one half of the pair is assigned in code — audit H4),
+        # matching set_direction_speed.
+        direction = self._parse_value(str(direction), instance)
+        gravity = self._parse_value(str(gravity), instance)
+
         try:
             direction = float(direction)
             gravity = float(gravity)
