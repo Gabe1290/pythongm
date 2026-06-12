@@ -353,6 +353,18 @@ class AssetOperations:
         """Remove asset from project data and save to file"""
         logger.debug(f"Removing {asset_category}/{asset_name} from project data...")
 
+        # Preferred path: operate on the LIVE in-memory model and persist via
+        # the normal save (which syncs cache -> current_project_data -> disk).
+        # The legacy fallback below round-trips the on-disk project.json,
+        # which is stale relative to memory (unsaved imports, drag-reorders)
+        # and silently discarded that work (audit H13).
+        project_manager = getattr(self.tree, 'project_manager', None)
+        if project_manager and getattr(project_manager, 'current_project_data', None):
+            if not project_manager.delete_asset(asset_category, asset_name):
+                logger.error(f"Live-model delete failed for {asset_category}/{asset_name}")
+                return False
+            return project_manager.save_project()
+
         # Find the project.json file
         project_file = Path(self.tree.project_path) / "project.json"
 

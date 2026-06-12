@@ -641,6 +641,13 @@ class AssetTreeWidget(QTreeWidget):
                     animation_type=config['animation_type']
                 )
 
+                # Persist BEFORE refreshing: update_sprite_animation only
+                # mutates the in-memory cache, and the refresh used to
+                # reload from disk — deterministically wiping the
+                # just-configured frames while the success dialog claimed
+                # otherwise (audit H14).
+                self.project_manager.save_project()
+
                 # Refresh the tree
                 self.force_project_refresh()
 
@@ -1071,17 +1078,27 @@ class AssetTreeWidget(QTreeWidget):
         self.current_project = project_path
 
     def force_project_refresh(self):
-        """Force the IDE to refresh from the updated project.json"""
+        """Refresh the tree from the live in-memory project model.
+
+        This must NOT reload the project from disk: disk is stale relative
+        to memory by design (sprite imports and drag-reorders only touch
+        memory until the next save), so the old load_project() here wiped
+        unsaved work, reset the dirty flag, and force-closed every open
+        editor without a save prompt via project_loaded ->
+        on_project_loaded (audit H13/H14).
+        """
         try:
-            # Find project manager and force reload
             parent = self.parent()
             while parent:
                 if hasattr(parent, 'project_manager'):
                     project_manager = parent.project_manager
-                    current_path = project_manager.current_project_path
-                    if current_path:
-                        project_manager.load_project(current_path)
-                        logger.debug("Forced project manager to reload")
+                    data = getattr(project_manager, 'current_project_data', None)
+                    if data:
+                        # Fold the live cache into project data, then redraw.
+                        if getattr(project_manager, 'asset_manager', None):
+                            project_manager.asset_manager.save_assets_to_project_data(data)
+                        self.refresh_from_project(data)
+                        logger.debug("Refreshed asset tree from in-memory project data")
                     break
                 parent = parent.parent()
         except Exception as e:
