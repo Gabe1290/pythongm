@@ -961,18 +961,35 @@ class PyGameMakerIDE(QMainWindow):
 
         # Welcome tab (default)
         self.welcome_tab = WelcomeTab(self)
-        self.editor_tabs.addTab(self.welcome_tab, self.tr("Welcome"))
+        self._add_welcome_tab()
 
         layout.addWidget(self.editor_tabs)
         return center_widget
+
+    def _add_welcome_tab(self):
+        """(Re-)add the welcome tab without a close button.
+
+        The tab title is self.tr("Welcome"), so it must never be identified
+        by its text (translated UIs would mismatch); close_editor_tab guards
+        by widget identity instead.
+        """
+        from PySide6.QtWidgets import QTabBar
+        index = self.editor_tabs.addTab(self.welcome_tab, self.tr("Welcome"))
+        tab_bar = self.editor_tabs.tabBar()
+        tab_bar.setTabButton(index, QTabBar.RightSide, None)
+        tab_bar.setTabButton(index, QTabBar.LeftSide, None)
 
     def close_editor_tab(self, index):
             """Close an editor tab"""
             tab_text = self.editor_tabs.tabText(index).replace('*', '')  # Remove modification indicator
 
-            if tab_text != "Welcome":
+            # Identity check, not title text: the tab is titled with
+            # self.tr("Welcome"), so in a translated UI ("Bienvenue", ...) a
+            # string guard fails and the welcome tab gets deleteLater()'d,
+            # breaking every subsequent project load (audit H1).
+            editor_widget = self.editor_tabs.widget(index)
+            if editor_widget is not self.welcome_tab:
                 # Check if editor has unsaved changes
-                editor_widget = self.editor_tabs.widget(index)
                 if hasattr(editor_widget, 'is_modified') and editor_widget.is_modified:
                     from PySide6.QtWidgets import QMessageBox
                     reply = QMessageBox.question(
@@ -1019,7 +1036,7 @@ class PyGameMakerIDE(QMainWindow):
 
                 # Show welcome tab if no editors left
                 if self.editor_tabs.count() == 0:
-                    self.editor_tabs.addTab(self.welcome_tab, self.tr("Welcome"))
+                    self._add_welcome_tab()
 
     def on_tab_changed(self, index):
         """Handle tab change"""
@@ -3703,7 +3720,7 @@ class PyGameMakerIDE(QMainWindow):
         # If the tab strip is now empty, restore the welcome tab so the
         # center panel doesn't look broken.
         if self.editor_tabs.count() == 0:
-            self.editor_tabs.addTab(self.welcome_tab, self.tr("Welcome"))
+            self._add_welcome_tab()
 
         self.update_status(self.tr("Floated: {0}").format(asset_name))
 
@@ -3844,7 +3861,7 @@ class PyGameMakerIDE(QMainWindow):
         for asset_name in list(self.detached_editor_windows.keys()):
             self._destroy_detached_editor(asset_name)
         self.open_editors.clear()
-        self.editor_tabs.addTab(self.welcome_tab, self.tr("Welcome"))
+        self._add_welcome_tab()
 
         self.current_project_path = project_path
         self.current_project_data = project_data
