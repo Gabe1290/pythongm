@@ -52,6 +52,30 @@ append below).
 
 ---
 
+## 2026-06-12 — All 15 audit highs fixed (Windows box)
+
+Worked through the full high-severity list of `docs/FULL_AUDIT_2026-06-11.md`
+in one session: re-verified each claim against code, fixed, landed with a
+dedicated regression test file, flipped the registry checkbox with the
+commit hash. Commits `120124c`..`94a7ba0` (one per finding; H13+H14 and
+H6+H7 share commits because they share a root cause). Test suite went
+**724 → 808 passed, 0 failed**.
+
+Cross-machine notes:
+
+- **61 medium / 35 low remain open** — next session starts at the top of
+  the registry's Medium section.
+- Two audit fixes were verified against the *shipped samples*
+  (plateforme_2 physics, maze_3 door) — if those samples get re-saved
+  with new art, the sample-driven tests skip gracefully but re-check the
+  paths after big sample changes.
+- This Windows box still uses the Dropbox repo copy
+  (`c:\Users\gthul\Dropbox\pygm2`) — `~/projects/pygm2` does not exist
+  here; the "retired Dropbox copy" note below applies to the Linux box
+  only. Worth migrating this box at some point for consistency.
+- PowerShell 5.1 gotcha: `git commit -m` mangles messages containing
+  double quotes — write the message to a file and `git commit -F` it.
+
 ## 2026-06-11 — Full-codebase audit completed (111 confirmed findings)
 
 The 18-finder adversarially-verified audit of the whole source tree finally
