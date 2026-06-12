@@ -150,6 +150,21 @@ class GmkConverter:
         for subdir in self.ASSET_DIRS:
             (self.output_dir / subdir).mkdir(exist_ok=True)
 
+    def _safe_output_path(self, subdir: str, file_name: str) -> Path:
+        """Join ``file_name`` under ``output_dir/subdir``, rejecting traversal.
+
+        Resource names come verbatim from the untrusted .gmk binary, so a
+        crafted name like ``../../../x`` must not escape the chosen output
+        directory (mirrors ``ResourcePackager._safe_join`` and
+        ``project_manager._safe_asset_path``). Raises ``ValueError`` so the
+        per-asset try/except in each converter loop warns and skips the asset.
+        """
+        base = (self.output_dir / subdir).resolve()
+        dest = (base / file_name).resolve()
+        if not dest.is_relative_to(base):
+            raise ValueError(f"unsafe resource name {file_name!r} (path traversal)")
+        return dest
+
     # ================================================================
     # Settings
     # ================================================================
@@ -234,7 +249,7 @@ class GmkConverter:
             # Single frame: save as one PNG
             w, h, bgra = gmk_spr.subimages[0]
             file_name = f"{name}.png"
-            self._bgra_to_png(bgra, w, h, self.output_dir / "sprites" / file_name)
+            self._bgra_to_png(bgra, w, h, self._safe_output_path("sprites", file_name))
 
             return {
                 "name": name,
@@ -266,7 +281,7 @@ class GmkConverter:
                 strip_img.paste(frame_img, (i * frame_w, 0))
 
             file_name = f"{name}.png"
-            strip_img.save(self.output_dir / "sprites" / file_name, "PNG")
+            strip_img.save(self._safe_output_path("sprites", file_name), "PNG")
 
             return {
                 "name": name,
@@ -323,7 +338,7 @@ class GmkConverter:
             ext = "wav"  # default
 
         file_name = f"{name}.{ext}"
-        out_path = self.output_dir / "sounds" / file_name
+        out_path = self._safe_output_path("sounds", file_name)
 
         # Sound data may be zlib-compressed (GM7/v701 stores it that way)
         data = gmk_snd.data
@@ -364,7 +379,7 @@ class GmkConverter:
                 file_name = f"{name}.png"
                 self._bgra_to_png(
                     gmk_bg.data, gmk_bg.width, gmk_bg.height,
-                    self.output_dir / "backgrounds" / file_name,
+                    self._safe_output_path("backgrounds", file_name),
                 )
                 backgrounds[name] = {
                     "name": name,
@@ -457,9 +472,11 @@ class GmkConverter:
             try:
                 obj_data = self._convert_single_object(gmk_obj, now)
                 if obj_data:
-                    objects[gmk_obj.name] = obj_data
-                    # Write external object file
+                    # Write the external file first: if the name is rejected
+                    # (path traversal) the object must not be registered in
+                    # project data either.
                     self._write_object_file(gmk_obj.name, obj_data)
+                    objects[gmk_obj.name] = obj_data
             except Exception as e:
                 self._warn(f"Failed to convert object '{gmk_obj.name}': {e}")
 
@@ -687,7 +704,7 @@ class GmkConverter:
 
     def _write_object_file(self, name: str, obj_data: dict):
         """Write object data to objects/<name>.json."""
-        path = self.output_dir / "objects" / f"{name}.json"
+        path = self._safe_output_path("objects", f"{name}.json")
         with open(path, "w", encoding="utf-8") as f:
             json.dump(obj_data, f, indent=2, ensure_ascii=False)
 
@@ -825,7 +842,7 @@ class GmkConverter:
             "modified": now,
             "imported": True,
         }
-        room_path = self.output_dir / "rooms" / f"{name}.json"
+        room_path = self._safe_output_path("rooms", f"{name}.json")
         with open(room_path, "w", encoding="utf-8") as f:
             json.dump(room_file_data, f, indent=2, ensure_ascii=False)
 
