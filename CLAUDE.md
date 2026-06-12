@@ -237,11 +237,31 @@ offscreen QApplication, no pytest-qt needed, so it runs on 3.11 too). Suite
 finding here survived adversarial verification against the actual code
 (and highs got 2 extra refutation votes), with the known-rejected list
 baked into the finder prompts. Registry with checkboxes:
-`docs/FULL_AUDIT_2026-06-11.md` — **15 high / 61 medium / 35 low, all
-open**. Work highs first; re-verify each claim before fixing (leads, not
-ground truth) and land each fix with a regression test. This supersedes
-the "14 medium + 9 low remain open" note above — the 2026-06-03 registry
-is fully closed (all 30 checkboxes flipped).
+`docs/FULL_AUDIT_2026-06-11.md` — 15 high / 61 medium / 35 low. Work in
+audit order; re-verify each claim before fixing (leads, not ground truth)
+and land each fix with a regression test. This supersedes the "14 medium
++ 9 low remain open" note above — the 2026-06-03 registry is fully closed
+(all 30 checkboxes flipped).
+
+**2026-06-12 — All 15 highs from the 2026-06-11 audit fixed.** One
+session on the Windows box, one commit per finding (H13+H14 and H6+H7
+share commits — same root cause), each with a dedicated regression test
+file and the registry checkbox flipped with the commit hash. Suite went
+724 → 808 passed, 0 failed. Highlights: the Kivy export generator now
+implements the runtime's GM skip-next conditional scoping and handles
+test_instance_count/test_variable (H6/H7), and the Mobile (Kivy) dialog
+path works at all (H9); mouse events fire from the flat keys writers
+actually emit (H11); zip-backed save state resets on project switch (H2);
+emptied rooms stay empty via `_rooms_loaded_this_session` registration at
+all authoritative-memory points plus orphan side-file cleanup on
+delete/rename (H3); asset delete and sprite-animation config operate on
+the live model and `force_project_refresh` no longer reloads from disk
+(H13/H14); the code editor fills paired-attribute identity values (H4)
+and preserves Thymio if/else verbatim instead of dropping the else (H5).
+**61 medium / 35 low remain open** — pick up from the registry, top of
+the Medium section. Box-specific gotcha: commit messages containing
+double quotes must go through `git commit -F <file>` here (PowerShell 5.1
+mangles inline quoting).
 
 **2026-06-09 — Runtime-core audit (Batch A): most rejected, room-dimension
 bounds added.** A 9-finding audit of `game_runner.py` / `action_executor.py` /
