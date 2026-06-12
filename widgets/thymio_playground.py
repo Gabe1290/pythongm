@@ -640,6 +640,18 @@ class ThymioPlaygroundWindow(QMainWindow):
             display_surface.blit(world_surface, (0, 0))
             return
 
+        if self.zoom_level < 1.0:
+            # Zoomed out: the requested view exceeds the world surface, so a
+            # subsurface would raise ValueError. Scale the whole world down
+            # and letterbox it instead.
+            scaled_w = max(1, int(self.playground_width * self.zoom_level))
+            scaled_h = max(1, int(self.playground_height * self.zoom_level))
+            scaled = pygame.transform.smoothscale(world_surface, (scaled_w, scaled_h))
+            display_surface.fill(COLOR_BACKGROUND)
+            display_surface.blit(scaled, ((self.playground_width - scaled_w) // 2,
+                                          (self.playground_height - scaled_h) // 2))
+            return
+
         # Calculate the visible area in world coordinates
         view_width = self.playground_width / self.zoom_level
         view_height = self.playground_height / self.zoom_level
@@ -681,6 +693,13 @@ class ThymioPlaygroundWindow(QMainWindow):
 
     def screen_to_world(self, screen_x: int, screen_y: int) -> Tuple[int, int]:
         """Convert screen coordinates to world coordinates"""
+        if self.zoom_level < 1.0:
+            # Matches the letterboxed shrink rendering in _apply_zoom_and_pan
+            offset_x = (self.playground_width - self.playground_width * self.zoom_level) / 2
+            offset_y = (self.playground_height - self.playground_height * self.zoom_level) / 2
+            return (int((screen_x - offset_x) / self.zoom_level),
+                    int((screen_y - offset_y) / self.zoom_level))
+
         # Calculate visible area
         view_width = self.playground_width / self.zoom_level
         view_height = self.playground_height / self.zoom_level
@@ -705,6 +724,13 @@ class ThymioPlaygroundWindow(QMainWindow):
 
     def world_to_screen(self, world_x: float, world_y: float) -> Tuple[int, int]:
         """Convert world coordinates to screen coordinates"""
+        if self.zoom_level < 1.0:
+            # Matches the letterboxed shrink rendering in _apply_zoom_and_pan
+            offset_x = (self.playground_width - self.playground_width * self.zoom_level) / 2
+            offset_y = (self.playground_height - self.playground_height * self.zoom_level) / 2
+            return (int(world_x * self.zoom_level + offset_x),
+                    int(world_y * self.zoom_level + offset_y))
+
         # Calculate visible area
         view_width = self.playground_width / self.zoom_level
         view_height = self.playground_height / self.zoom_level
