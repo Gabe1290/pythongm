@@ -18,9 +18,20 @@ side-effect-free functions; each loader keeps its own logging/orchestration.
 """
 
 # Room properties copied from rooms/<name>.json (besides 'instances').
+# The GMK converter (and editor saves) write a room's heavy payload — tile
+# layers, the 8 parallax background layers, views, parallax scroll/stretch and
+# creation code — ONLY to rooms/<name>.json, with a metadata-only project.json
+# entry. Every key the runtime/editor actually reads (see GameRoom.__init__)
+# must be whitelisted here, or it never reaches memory on load AND is erased
+# from the room file on the next save (the merged in-memory dict is what gets
+# rewritten). Keep this in sync with the room_data.get(...) reads in GameRoom.
 _ROOM_FILE_KEYS = (
     'width', 'height', 'background_color', 'background_image',
     'tile_horizontal', 'tile_vertical',
+    'bg_hspeed', 'bg_vspeed', 'bg_stretch',
+    'backgrounds', 'tiles',
+    'views_enabled', 'enable_views', 'views',
+    'persistent', 'creation_code',
 )
 
 # Object properties copied from objects/<name>.json.
