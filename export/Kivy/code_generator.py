@@ -9,6 +9,25 @@ from typing import Dict
 from core.logger import get_logger
 logger = get_logger(__name__)
 
+# GM operation words -> Python comparison operators (mirrors the runtime's
+# execute_test_variable_action / execute_test_instance_count_action).
+_COMPARISON_OPS = {
+    'equal': '==', 'not_equal': '!=',
+    'less': '<', 'greater': '>',
+    'less_equal': '<=', 'greater_equal': '>=',
+}
+
+
+def _literal(value):
+    """Emit a parameter as a Python expression: numbers raw, the rest quoted."""
+    if isinstance(value, (int, float)):
+        return str(value)
+    try:
+        float(value)
+        return str(value)
+    except (TypeError, ValueError):
+        return repr(value)
+
 
 class ActionCodeGenerator:
     """
@@ -29,6 +48,9 @@ class ActionCodeGenerator:
         self.indent_level = 0  # Additional indent beyond base
         self.lines = []
         self.block_stack = []  # Track open blocks for proper nesting
+        # True right after a conditional's guarded unit closed: the next
+        # action may be an else_action attaching to that conditional.
+        self._await_else = False
 
     def add_line(self, code):
         """Add a line with current indentation"""
@@ -57,9 +79,41 @@ class ActionCodeGenerator:
         """Get final generated code"""
         # Auto-close any remaining open blocks
         while self.block_stack:
-            self.block_stack.pop()
-            self.pop_indent()
+            self._pop_block()
         return '\n'.join(self.lines)
+
+    def _push_block(self, label):
+        """Track an open suite together with the line count at open, so an
+        empty suite can be padded with 'pass' when it closes."""
+        self.block_stack.append((label, len(self.lines)))
+
+    def _top_label(self):
+        return self.block_stack[-1][0] if self.block_stack else None
+
+    def _pop_block(self):
+        label, opened_at = self.block_stack.pop()
+        if len(self.lines) == opened_at:
+            self.add_line("pass")  # empty suite — keep the code valid
+        self.pop_indent()
+        return label
+
+    def _open_guard(self, condition_line):
+        """Emit a conditional that guards exactly the next action or
+        start_block..end_block group (GameMaker semantics — what the IDE
+        runtime's skip-next dispatcher implements). The scope is closed by
+        _complete_unit / end_block instead of staying open for the rest of
+        the event (audit H6)."""
+        self.add_line(condition_line)
+        self.push_indent()
+        self._push_block('guard_open')
+
+    def _complete_unit(self):
+        """A complete construct (simple action, self-contained conditional)
+        was just emitted. If a conditional is waiting for its guarded unit,
+        this was it — close the scope and allow a following else_action."""
+        if self._top_label() == 'guard_open':
+            self._pop_block()
+            self._await_else = True
 
     def process_action(self, action: Dict, event_type: str = ''):
         """
@@ -72,85 +126,89 @@ class ActionCodeGenerator:
         action_type = action.get('action_type', action.get('action', ''))
         params = action.get('parameters', {})
 
+        # A conditional's guarded unit just closed: an else_action here
+        # attaches to it; anything else means enclosing pending conditionals
+        # (whose unit was that whole construct) close too (audit H6).
+        if self._await_else:
+            self._await_else = False
+            if action_type in ('else_action', 'else_block'):
+                self.add_line("else:")
+                self.push_indent()
+                self._push_block('guard_open')
+                return
+            while self._top_label() == 'guard_open':
+                self._pop_block()
+
         # BLOCK CONTROL ACTIONS
         if action_type == 'start_block':
-            # Start of a code block - just push indent, no code generated
-            self.push_indent()
-            self.block_stack.append('block')
+            if self._top_label() == 'guard_open':
+                # This block is the conditional's guarded unit — same scope,
+                # the conditional already pushed the indent.
+                self.block_stack[-1] = ('guard_block', self.block_stack[-1][1])
+            else:
+                # Standalone grouping block: emit a no-op opener so the
+                # deeper indentation stays syntactically valid.
+                self.add_line("if True:  # action block")
+                self.push_indent()
+                self._push_block('block')
             return
 
         elif action_type == 'end_block':
-            # End of a code block - pop indent
-            if self.block_stack and self.block_stack[-1] == 'block':
-                self.block_stack.pop()
-            self.pop_indent()
+            top = self._top_label()
+            if top == 'guard_block':
+                self._pop_block()
+                self._await_else = True
+            elif top in ('block', 'guard_open'):
+                self._pop_block()
+            else:
+                self.pop_indent()
             return
 
         elif action_type == 'else_action' or action_type == 'else_block':
-            # Else clause - pop indent, add else, push indent
+            # Legacy/odd data: an else with no just-closed guard. Keep the
+            # historical pop/else/push so old sequences stay shaped.
             self.pop_indent()
             self.add_line("else:")
             self.push_indent()
-            if self.block_stack and self.block_stack[-1] in ['if', 'if_on_grid', 'if_next_room_exists', 'if_previous_room_exists']:
-                self.block_stack[-1] = 'else'
+            if self._top_label() in ['if', 'if_on_grid', 'if_next_room_exists', 'if_previous_room_exists']:
+                self.block_stack[-1] = ('else', self.block_stack[-1][1])
             return
 
         # CONDITIONAL ACTIONS (these start blocks)
         elif action_type == 'if_on_grid':
-            self.add_line("if self.is_on_grid():")
-            self.push_indent()
-            self.block_stack.append('if_on_grid')
-            # Snap to exact grid position when on grid
-            self.add_line("self.snap_to_grid()")
-
-            # Process nested then_actions if present
             then_actions = params.get('then_actions', [])
             if then_actions:
+                self.add_line("if self.is_on_grid():")
+                self.push_indent()
+                # Snap to exact grid position when on grid
+                self.add_line("self.snap_to_grid()")
                 for nested_action in then_actions:
                     if isinstance(nested_action, dict):
                         self.process_action(nested_action, event_type)
                     elif isinstance(nested_action, str) and nested_action.strip():
                         self.add_line(nested_action)
-                # Pop indent after processing nested actions
                 self.pop_indent()
-                if self.block_stack and self.block_stack[-1] == 'if_on_grid':
-                    self.block_stack.pop()
+                self._complete_unit()
+            else:
+                self._open_guard("if self.is_on_grid():")
+                # Snap to exact grid position when on grid
+                self.add_line("self.snap_to_grid()")
             return
 
         elif action_type == 'test_expression':
             expr = params.get('expression', 'False')
-            self.add_line(f"if {expr}:")
-            self.push_indent()
-            self.block_stack.append('if')
+            self._open_guard(f"if {expr}:")
             return
 
-        elif action_type == 'if_collision':
-            obj_name = params.get('object', 'object')
-            x = params.get('x', 'self.x')
-            y = params.get('y', 'self.y')
-            self.add_line(f"if self.check_collision_at({x}, {y}, '{obj_name}'):")
-            self.push_indent()
-            self.block_stack.append('if')
-            return
-
-        elif action_type == 'if_collision_at':
-            # Check for collision at specified position (alias for if_collision)
+        elif action_type in ('if_collision', 'if_collision_at', 'check_collision'):
             obj_name = params.get('object', params.get('target', 'object'))
             x = params.get('x', 'self.x')
             y = params.get('y', 'self.y')
-            self.add_line(f"if self.check_collision_at({x}, {y}, '{obj_name}'):")
-            self.push_indent()
-            self.block_stack.append('if')
-            return
-
-        elif action_type == 'check_collision':
-            # Check for collision - if collision exists, execute then block
-            obj_name = params.get('object', params.get('target', 'object'))
-            x = params.get('x', 'self.x')
-            y = params.get('y', 'self.y')
-            self.add_line(f"if self.check_collision_at({x}, {y}, '{obj_name}'):")
-            self.push_indent()
-            self.block_stack.append('if')
+            cond = f"self.check_collision_at({x}, {y}, '{obj_name}')"
+            # GM stores the NOT checkbox as not_flag (older JSON: negate/not)
+            if params.get('not_flag', params.get('negate', params.get('not', False))):
+                cond = f"not {cond}"
+            self._open_guard(f"if {cond}:")
             return
 
         elif action_type == 'check_empty':
@@ -160,20 +218,43 @@ class ActionCodeGenerator:
             # relative parameter means offset from current position
             relative = params.get('relative', False)
             if relative:
-                self.add_line(f"if not self.check_collision_at(self.x + {x}, self.y + {y}):")
+                self._open_guard(f"if not self.check_collision_at(self.x + {x}, self.y + {y}):")
             else:
-                self.add_line(f"if not self.check_collision_at({x}, {y}):")
-            self.push_indent()
-            self.block_stack.append('if')
+                self._open_guard(f"if not self.check_collision_at({x}, {y}):")
             return
 
         elif action_type == 'if_key_pressed':
             key = params.get('key', 'right')
             key_map = {'right': '275', 'left': '276', 'up': '273', 'down': '274'}
             key_code = key_map.get(key, '275')
-            self.add_line(f"if self.scene.keys_pressed.get({key_code}, False):")
-            self.push_indent()
-            self.block_stack.append('if')
+            self._open_guard(f"if self.scene.keys_pressed.get({key_code}, False):")
+            return
+
+        elif action_type == 'test_instance_count':
+            # Conditional: compare the live count of an object type
+            # (audit H7 — previously fell through to 'pass  # TODO', which
+            # made the following block a SyntaxError and the guarded
+            # actions unconditional).
+            obj_name = params.get('object', '')
+            target = params.get('number', params.get('count', 0))
+            op = _COMPARISON_OPS.get(params.get('operation', 'equal'), '==')
+            self._open_guard(
+                f"if self.scene.count_instances('{obj_name}') {op} {_literal(target)}:")
+            return
+
+        elif action_type == 'test_variable':
+            # Conditional: compare an instance variable (audit H7)
+            var_name = params.get('variable') or params.get('variable_name') or 'temp'
+            value = params.get('value', 0)
+            op = _COMPARISON_OPS.get(params.get('operation', 'equal'), '==')
+            if var_name == 'vspeed':
+                # Kivy's Y axis is inverted relative to GameMaker, and
+                # set_vspeed flips the sign on export — compare the
+                # GameMaker-space value so thresholds keep their meaning.
+                current = "-(self.vspeed)"
+            else:
+                current = f"getattr(self, '{var_name}', 0)"
+            self._open_guard(f"if {current} {op} {_literal(value)}:")
             return
 
         elif action_type == 'if_condition':
@@ -187,13 +268,10 @@ class ActionCodeGenerator:
             else:
                 condition = params.get('condition', params.get('expression', 'True'))
 
-            self.add_line(f"if {condition}:")
-            self.push_indent()
-            self.block_stack.append('if')
-
-            # Process nested then_actions if present
             then_actions = params.get('then_actions', [])
             if then_actions:
+                self.add_line(f"if {condition}:")
+                self.push_indent()
                 for nested_action in then_actions:
                     if isinstance(nested_action, dict):
                         self.process_action(nested_action, event_type)
@@ -208,10 +286,10 @@ class ActionCodeGenerator:
                         if isinstance(nested_action, dict):
                             self.process_action(nested_action, event_type)
                     self.pop_indent()
-
-                if self.block_stack and self.block_stack[-1] == 'if':
-                    self.block_stack.pop()
-            # If no then_actions, leave block open for sequential action handling
+                self._complete_unit()
+            else:
+                # No nested actions: guard the next action / block (H6)
+                self._open_guard(f"if {condition}:")
             return
 
         elif action_type == 'if_can_push':
@@ -266,25 +344,24 @@ class ActionCodeGenerator:
                 else:
                     self.process_action({'action': else_action, 'parameters': {}}, event_type)
                 self.pop_indent()
+            self._complete_unit()
             return
 
-        elif action_type == 'if_next_room_exists':
-            self.add_line("from main import next_room_exists, _room_transition_pending")
+        elif action_type in ('if_next_room_exists', 'if_previous_room_exists'):
+            direction = 'next' if action_type == 'if_next_room_exists' else 'previous'
+            self.add_line(f"from main import {direction}_room_exists, _room_transition_pending")
             self.add_line("if _room_transition_pending:")
             self.push_indent()
             self.add_line("pass  # Room transition already in progress")
             self.pop_indent()
-            self.add_line("elif next_room_exists():")
-            self.push_indent()
-            self.block_stack.append('if_next_room_exists')
 
-            # Process nested then_actions if present (for nested action structure)
             then_actions = params.get('then_actions', [])
             if then_actions:
+                self.add_line(f"elif {direction}_room_exists():")
+                self.push_indent()
                 for nested_action in then_actions:
                     if isinstance(nested_action, dict):
                         self.process_action(nested_action, event_type)
-                # Pop indent after processing then actions
                 self.pop_indent()
 
                 # Process else_actions if present
@@ -296,59 +373,22 @@ class ActionCodeGenerator:
                         if isinstance(nested_action, dict):
                             self.process_action(nested_action, event_type)
                     self.pop_indent()
-
-                if self.block_stack and self.block_stack[-1] == 'if_next_room_exists':
-                    self.block_stack.pop()
-            # If no then_actions, leave block open for sequential action handling
+                self._complete_unit()
+            else:
+                # No nested actions: guard the next action / block (H6)
+                self._open_guard(f"elif {direction}_room_exists():")
             return
 
-        elif action_type == 'if_previous_room_exists':
-            self.add_line("from main import previous_room_exists, _room_transition_pending")
-            self.add_line("if _room_transition_pending:")
-            self.push_indent()
-            self.add_line("pass  # Room transition already in progress")
-            self.pop_indent()
-            self.add_line("elif previous_room_exists():")
-            self.push_indent()
-            self.block_stack.append('if_previous_room_exists')
-
-            # Process nested then_actions if present (for nested action structure)
-            then_actions = params.get('then_actions', [])
-            if then_actions:
-                for nested_action in then_actions:
-                    if isinstance(nested_action, dict):
-                        self.process_action(nested_action, event_type)
-                # Pop indent after processing then actions
-                self.pop_indent()
-
-                # Process else_actions if present
-                else_actions = params.get('else_actions', [])
-                if else_actions:
-                    self.add_line("else:")
-                    self.push_indent()
-                    for nested_action in else_actions:
-                        if isinstance(nested_action, dict):
-                            self.process_action(nested_action, event_type)
-                    self.pop_indent()
-
-                if self.block_stack and self.block_stack[-1] == 'if_previous_room_exists':
-                    self.block_stack.pop()
-            # If no then_actions, leave block open for sequential action handling
-            return
-
-        # LOOP ACTIONS
+        # LOOP ACTIONS (GM repeat guards the next action / block, like a
+        # conditional)
         elif action_type == 'repeat':
             count = params.get('count', 1)
-            self.add_line(f"for _i in range({count}):")
-            self.push_indent()
-            self.block_stack.append('loop')
+            self._open_guard(f"for _i in range({count}):")
             return
 
         elif action_type == 'while':
             condition = params.get('condition', 'False')
-            self.add_line(f"while {condition}:")
-            self.push_indent()
-            self.block_stack.append('loop')
+            self._open_guard(f"while {condition}:")
             return
 
         # SPECIAL CONDITIONAL ACTIONS
@@ -394,6 +434,7 @@ class ActionCodeGenerator:
             self.add_line("self.vspeed = -_spd")
             self.pop_indent()
             self.pop_indent()
+            self._complete_unit()
             return
 
         # SIMPLE ACTIONS - generate code directly
@@ -407,6 +448,9 @@ class ActionCodeGenerator:
                             self.add_line(line.strip())
                 else:
                     self.add_line(code)
+                # A simple action is a complete unit: it closes a pending
+                # conditional's guard scope (audit H6).
+                self._complete_unit()
 
     def _convert_simple_action(self, action_type: str, params: Dict, event_type: str) -> str:
         """Convert a simple (non-block) action to Python code"""
@@ -658,13 +702,10 @@ if dist > 0:
             cond = f"self.scene.object_exists('{object_name}')"
             condition = f"not {cond}" if negate else cond
 
-            self.add_line(f"if {condition}:")
-            self.push_indent()
-            self.block_stack.append('if')
-
-            # Process nested then_actions if present
             then_actions = params.get('then_actions', [])
             if then_actions:
+                self.add_line(f"if {condition}:")
+                self.push_indent()
                 for nested_action in then_actions:
                     if isinstance(nested_action, dict):
                         self.process_action(nested_action, event_type)
@@ -679,10 +720,10 @@ if dist > 0:
                         if isinstance(nested_action, dict):
                             self.process_action(nested_action, event_type)
                     self.pop_indent()
-
-                if self.block_stack and self.block_stack[-1] == 'if':
-                    self.block_stack.pop()
-            # If no then_actions, leave block open for sequential action handling
+                self._complete_unit()
+            else:
+                # No nested actions: guard the next action / block (H6)
+                self._open_guard(f"if {condition}:")
             return
 
         elif action_type == 'set_variable':
@@ -702,6 +743,12 @@ if dist > 0:
                     return f"self.{var_name} = getattr(self, '{var_name}', 0) + {value}"
                 else:
                     return f"self.{var_name} = {value}"
+
+        elif action_type == 'comment':
+            # GM comments are real (no-op) actions: they can be the guarded
+            # unit of a conditional, so emit a statement, not a bare comment.
+            text = str(params.get('text', '')).replace('\n', ' ')
+            return f"pass  # {text}" if text else "pass  # comment"
 
         # DEFAULT
         else:
