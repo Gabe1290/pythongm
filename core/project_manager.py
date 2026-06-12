@@ -205,6 +205,9 @@ class ProjectManager(QObject):
             project_file = project_path / self.PROJECT_FILE
             _atomic_write_json(project_file, project_data)
 
+            # A brand-new project is never zip-backed (audit H2)
+            self._reset_zip_state()
+
             # Update asset manager with new project location
             if self.asset_manager:
                 self.asset_manager.set_project_directory(project_path)
@@ -266,6 +269,14 @@ class ProjectManager(QObject):
             if not self._validate_project_data(project_data):
                 self.status_changed.emit("Invalid project file format")
                 return False
+
+            # Switching to a different project must forget zip-backed save
+            # state (audit H2) — but a reload of the SAME zip-backed project
+            # (force_project_refresh passes the temp extraction dir back in)
+            # keeps it.
+            if (self._temp_extraction_dir
+                    and project_path.resolve() != Path(self._temp_extraction_dir).resolve()):
+                self._reset_zip_state()
 
             # Update asset manager with project location FIRST
             if self.asset_manager:
@@ -819,6 +830,22 @@ class ProjectManager(QObject):
             traceback.print_exc()
             return False
 
+    def _reset_zip_state(self):
+        """Forget zip-backed save state from a previously opened .zip project.
+
+        Without this, save_project() keeps taking the zip branch after the
+        user switches to another project, silently rewriting the OLD zip
+        from its stale temp extraction on every Ctrl+S / auto-save — and
+        reporting THAT result as the save verdict (audit H2). Must run
+        whenever a different project becomes current.
+        """
+        if self._temp_extraction_dir and Path(self._temp_extraction_dir).exists():
+            logger.info(f"🧹 Cleaning up temp extraction: {self._temp_extraction_dir}")
+            shutil.rmtree(self._temp_extraction_dir, ignore_errors=True)
+        self._original_zip_path = None
+        self._temp_extraction_dir = None
+        self._auto_save_as_zip = False
+
     def close_project(self) -> bool:
         """Close the current project"""
         try:
@@ -826,13 +853,7 @@ class ProjectManager(QObject):
             self.auto_save_timer.stop()
 
             # Cleanup temp files from zip extraction
-            if self._temp_extraction_dir and self._temp_extraction_dir.exists():
-                logger.info(f"🧹 Cleaning up temp extraction: {self._temp_extraction_dir}")
-                shutil.rmtree(self._temp_extraction_dir, ignore_errors=True)
-
-            self._original_zip_path = None
-            self._temp_extraction_dir = None
-            self._auto_save_as_zip = False
+            self._reset_zip_state()
 
             # Clear asset manager
             if self.asset_manager:
@@ -913,6 +934,10 @@ class ProjectManager(QObject):
                 # Update asset manager
                 if self.asset_manager:
                     self.asset_manager.set_project_directory(new_path)
+
+                # The project now lives in the new folder; stop rewriting the
+                # original zip on every subsequent save (audit H2).
+                self._reset_zip_state()
 
                 self.status_changed.emit(f"Project saved as: {new_path.name}")
                 return True
@@ -1446,20 +1471,20 @@ class ProjectManager(QObject):
                 logger.error("Failed to extract project")
                 return False
 
-            # Store the original zip path for auto-save
-            self._original_zip_path = zip_path
-            self._temp_extraction_dir = temp_dir
-            self._auto_save_as_zip = True  # Enable auto-save to zip
-
-            # Load the extracted project
+            # Load the extracted project. State is assigned only on success
+            # and only AFTER the load: load_project() resets any previous
+            # project's zip state (audit H2), which would clobber values set
+            # up front.
             success = self.load_project(temp_dir)
 
-            if not success:
+            if success:
+                # Store the original zip path for auto-save
+                self._original_zip_path = zip_path
+                self._temp_extraction_dir = temp_dir
+                self._auto_save_as_zip = True  # Enable auto-save to zip
+            else:
                 # Cleanup on failure
                 shutil.rmtree(temp_dir, ignore_errors=True)
-                self._original_zip_path = None
-                self._temp_extraction_dir = None
-                self._auto_save_as_zip = False
 
             return success
 
