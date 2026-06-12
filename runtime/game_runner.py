@@ -150,6 +150,49 @@ def expand_hash_newlines(text: str) -> str:
 ALARM_KEYS = tuple(f"alarm_{i}" for i in range(12))
 
 
+# Flat top-level mouse event keys (as actually written by the IDE events panel —
+# f"mouse_{button}_{event_type}" — and by the GMK importer's GM_MOUSE_SUBEVENT)
+# mapped onto the runtime button_name the mouse dispatchers expect. The
+# dispatchers historically read ONLY the nested events['mouse'][button_name]
+# form, which no live writer produces, so every authored or GMK-imported mouse
+# event was silently inert (audit H11). 'down'/'button' (held) variants fire on
+# press since the runtime has no per-frame held-mouse loop.
+_FLAT_MOUSE_KEY_ALIASES = {
+    'mouse_left_button': 'left_button',
+    'mouse_left_press': 'left_button',
+    'mouse_left_down': 'left_button',
+    'mouse_right_button': 'right_button',
+    'mouse_right_press': 'right_button',
+    'mouse_right_down': 'right_button',
+    'mouse_middle_button': 'middle_button',
+    'mouse_middle_press': 'middle_button',
+    'mouse_middle_down': 'middle_button',
+    'mouse_left_release': 'left_button_released',
+    'mouse_right_release': 'right_button_released',
+    'mouse_middle_release': 'middle_button_released',
+    'mouse_move': 'mouse_move',
+    'mouse_enter': 'mouse_move',
+}
+
+
+def _mouse_sub_event(events, button_name):
+    """Return the sub-event dict (with 'actions') for a runtime mouse
+    button_name, accepting both the nested events['mouse'][button_name] form
+    and the flat top-level keys writers actually emit (see
+    _FLAT_MOUSE_KEY_ALIASES). Returns None when there's no matching handler."""
+    mouse_event = events.get('mouse')
+    if isinstance(mouse_event, dict):
+        sub = mouse_event.get(button_name)
+        if isinstance(sub, dict) and 'actions' in sub:
+            return sub
+    for flat_key, mapped in _FLAT_MOUSE_KEY_ALIASES.items():
+        if mapped == button_name and flat_key in events:
+            sub = events[flat_key]
+            if isinstance(sub, dict) and 'actions' in sub:
+                return sub
+    return None
+
+
 def _find_key_in_event(event_dict: dict, key: str) -> Optional[str]:
     """Find key in event dict, checking both lowercase and uppercase.
 
@@ -2624,17 +2667,14 @@ class GameRunner:
 
             events = instance.object_data.get('events', {})
 
-            # Check for mouse event
-            if "mouse" in events:
-                mouse_event = events["mouse"]
-                if isinstance(mouse_event, dict) and button_name in mouse_event:
-                    logger.debug(f"  ✅ Executing mouse.{button_name} for {instance.object_name}")
-                    sub_event_data = mouse_event[button_name]
-                    if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
-                        # Add mouse position to instance for actions to use
-                        instance.mouse_x = mouse_x
-                        instance.mouse_y = mouse_y
-                        instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
+            # Check for mouse event (nested or flat key form)
+            sub_event_data = _mouse_sub_event(events, button_name)
+            if sub_event_data is not None:
+                logger.debug(f"  ✅ Executing mouse.{button_name} for {instance.object_name}")
+                # Add mouse position to instance for actions to use
+                instance.mouse_x = mouse_x
+                instance.mouse_y = mouse_y
+                instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
     def _handle_thymio_button_press(self, mouse_button, mouse_x, mouse_y):
         """Hit-test Thymio buttons under the mouse and fire the matching event.
@@ -2692,14 +2732,11 @@ class GameRunner:
 
             events = instance.object_data.get('events', {})
 
-            if "mouse" in events:
-                mouse_event = events["mouse"]
-                if isinstance(mouse_event, dict) and button_name in mouse_event:
-                    sub_event_data = mouse_event[button_name]
-                    if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
-                        instance.mouse_x = mouse_x
-                        instance.mouse_y = mouse_y
-                        instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
+            sub_event_data = _mouse_sub_event(events, button_name)
+            if sub_event_data is not None:
+                instance.mouse_x = mouse_x
+                instance.mouse_y = mouse_y
+                instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
     def handle_mouse_motion(self, pos):
         """Handle mouse movement event"""
@@ -2715,14 +2752,11 @@ class GameRunner:
 
             events = instance.object_data.get('events', {})
 
-            if "mouse" in events:
-                mouse_event = events["mouse"]
-                if isinstance(mouse_event, dict) and "mouse_move" in mouse_event:
-                    sub_event_data = mouse_event["mouse_move"]
-                    if isinstance(sub_event_data, dict) and "actions" in sub_event_data:
-                        instance.mouse_x = mouse_x
-                        instance.mouse_y = mouse_y
-                        instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
+            sub_event_data = _mouse_sub_event(events, "mouse_move")
+            if sub_event_data is not None:
+                instance.mouse_x = mouse_x
+                instance.mouse_y = mouse_y
+                instance.action_executor.execute_action_list(instance, sub_event_data["actions"])
 
     def _room_transition_pending(self) -> bool:
         """True if any instance has queued a room change/restart/game-restart
