@@ -76,7 +76,15 @@ def adapt_project_for_kivy_export(project_manager):
                 rooms_data[room_name] = {
                     'width': room_info.get('width', 640),
                     'height': room_info.get('height', 480),
-                    'background_color': parse_color(room_info.get('background_color', [0.0, 0.0, 0.0, 1.0])),
+                    # Pass through verbatim (hex string in saved projects).
+                    # KivyExporter normalizes via _bg_color_to_rgb; converting
+                    # here to a float list crashed its .startswith() parse
+                    # (audit H9).
+                    'background_color': room_info.get('background_color', '#808080'),
+                    'background_image': (room_info.get('background_image', '')
+                                         or room_info.get('background', '')),
+                    'tile_horizontal': room_info.get('tile_horizontal', False),
+                    'tile_vertical': room_info.get('tile_vertical', False),
                     'instances': room_info.get('instances', [])
                 }
 
