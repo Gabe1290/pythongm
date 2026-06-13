@@ -1433,6 +1433,19 @@ class PyGameMakerIDE(QMainWindow):
         logger.debug(f"load_project: {project_path}")
         project_path = Path(project_path)
 
+        # Switching away from an already-open project tears down its editors
+        # (on_project_loaded deleteLater()s them with no is_modified check), so
+        # flush their live data into the current project and persist it first —
+        # otherwise unsaved in-editor work is silently lost on the switch
+        # (audit M12).
+        if self.current_project_path and getattr(self, 'project_manager', None):
+            try:
+                self._flush_open_editors()
+                if self.project_manager.is_dirty():
+                    self.project_manager.save_project()
+            except Exception as e:
+                logger.debug(f"Pre-switch editor flush failed: {e}")
+
         # If the requested project is under the bundled samples/ folder
         # (clicked from the Welcome dropdown, picked from Recent Projects
         # that retained a pre-rc.12 in-place sample path, or opened by
@@ -3765,6 +3778,18 @@ class PyGameMakerIDE(QMainWindow):
         """Handle close request from editors"""
         self.close_editor_by_name(asset_name)
 
+    def _flush_open_editors(self):
+        """Push every open editor's live data into the project (same sync the
+        Test Game path uses). Run before tearing editors down on project
+        switch / IDE-close 'Save' so unsaved in-editor work isn't silently
+        discarded (audit M12). Covers both tabbed and detached editors."""
+        for widget in self._iter_open_editors():
+            if hasattr(widget, 'get_data') and hasattr(widget, 'asset_name') and widget.asset_name:
+                try:
+                    self.on_editor_save_requested(widget.asset_name, widget.get_data())
+                except Exception as e:
+                    logger.debug(f"Could not flush editor {getattr(widget, 'asset_name', '?')}: {e}")
+
     def on_editor_data_modified(self, asset_name: str):
         """Handle data modification in editors"""
         # Update tab title to show modification
@@ -3773,6 +3798,14 @@ class PyGameMakerIDE(QMainWindow):
                 if not self.editor_tabs.tabText(i).endswith('*'):
                     self.editor_tabs.setTabText(i, asset_name + '*')
                 break
+
+        # Reflect editor-local edits in the project's dirty state so the
+        # IDE-close 'Unsaved Changes' prompt fires for editor-only changes —
+        # previously is_modified was consulted only by close_editor_tab, so
+        # closing the IDE (or switching projects) silently discarded them
+        # (audit M12).
+        if getattr(self, 'project_manager', None):
+            self.project_manager.mark_dirty()
 
         # NOTE: Do NOT refresh the properties panel here.
         # Calling show_asset_properties triggers widget signal changes which
@@ -4275,6 +4308,10 @@ class PyGameMakerIDE(QMainWindow):
             )
 
             if reply == QMessageBox.Save:
+                # Pull any in-editor edits into the project first, otherwise
+                # 'Save' would persist the project without the unsaved editor
+                # work it was meant to preserve (audit M12).
+                self._flush_open_editors()
                 if not self.save_project():
                     event.ignore()
                     return
