@@ -44,6 +44,30 @@ class _ExitEvent(Exception):
     """
 
 
+class _ExecKeyboard:
+    """`keyboard` binding for execute_code/execute_script namespaces.
+
+    The code editor's if_condition(key_pressed) generator emits
+    `keyboard.check("space")`, but no `keyboard` object existed in the exec
+    namespace, so once a structured key condition round-tripped through Edit
+    Custom Code into an execute_code blob it raised NameError every frame and
+    the gated behaviour died (audit M20). check() mirrors the structured
+    key_pressed handler: lowercase pygame key names held in
+    instance.keys_pressed.
+    """
+
+    __slots__ = ('_instance',)
+
+    def __init__(self, instance):
+        self._instance = instance
+
+    def check(self, key) -> bool:
+        return str(key).lower() in getattr(self._instance, 'keys_pressed', set())
+
+    # GameMaker-ish alias
+    check_pressed = check
+
+
 def _hex_to_rgb(hex_str: str, default: Tuple[int, int, int] = (0, 0, 0)) -> Tuple[int, int, int]:
     """Parse ``#RRGGBB`` (or ``RRGGBB``) to an ``(r, g, b)`` 0-255 tuple.
 
@@ -2874,8 +2898,12 @@ class ActionExecutor:
         exec_globals = {
             '__builtins__': __builtins__,
             'sel': instance,
+            'self': instance,  # the code editor generates self.<attr> references
             'game': self.game_runner,
             'instance': instance,  # Alternative name
+            # `keyboard.check("space")` is emitted by the if_condition
+            # key_pressed code generator (audit M20).
+            'keyboard': _ExecKeyboard(instance),
             # Add common modules for convenience
             'math': __import__('math'),
             'random': __import__('random'),
@@ -2950,8 +2978,10 @@ class ActionExecutor:
         exec_globals = {
             '__builtins__': __builtins__,
             'sel': instance,
+            'self': instance,  # the code editor generates self.<attr> references
             'game': self.game_runner,
             'instance': instance,
+            'keyboard': _ExecKeyboard(instance),  # audit M20
             # Add common modules for convenience
             'math': __import__('math'),
             'random': __import__('random'),
