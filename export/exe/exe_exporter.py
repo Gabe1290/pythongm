@@ -81,7 +81,17 @@ class ExeExporter(BaseKivyExporter):
 
             # Step 7: Copy output to final location
             self.progress_update.emit(90, "Copying to output directory...")
-            self._copy_to_output(build_dir)
+            if not self._copy_to_output(build_dir):
+                # The copy failed (e.g. antivirus/Dropbox lock). Do NOT clean
+                # up — dist/ holds the only built copy. Report failure instead
+                # of pretending success with an empty output folder (M39).
+                dist_dir = build_dir / "dist"
+                self.export_complete.emit(
+                    False,
+                    "Export built but could not be copied to:\n"
+                    f"{self.output_path}\n\n"
+                    f"The build is available at:\n{dist_dir}")
+                return False
 
             # Step 8: Cleanup (if not in debug mode)
             if not settings.get('include_debug', False):
@@ -199,9 +209,16 @@ if __name__ == "__main__":
         - All game assets (images, sounds)
         """
         import os
+        import re
         spec_file = build_dir / "game.spec"
 
-        game_name = self.project_data.get('name', 'Game').replace(' ', '_')
+        # Sanitize to a safe filename token. The name is interpolated unescaped
+        # into single-quoted Python literals in the generated spec, so an
+        # apostrophe (ubiquitous in French titles like "L'aventure") would
+        # produce name='L'aventure.exe' — a SyntaxError when PyInstaller execs
+        # the spec. Strip everything but word characters.
+        raw_name = self.project_data.get('name', 'Game')
+        game_name = re.sub(r'[^A-Za-z0-9_]', '_', raw_name) or 'Game'
 
         # Collect ALL files from the game directory recursively
         # This ensures images, sounds, and all assets are included
@@ -389,14 +406,20 @@ exe = EXE(
             traceback.print_exc()
             return False
 
-    def _copy_to_output(self, build_dir: Path):
-        """Copy the built executable to the output directory"""
+    def _copy_to_output(self, build_dir: Path) -> bool:
+        """Copy the built executable to the output directory.
+
+        Returns True if every item copied, False if any item ultimately failed
+        (after retries). The caller must NOT delete the build dir on False —
+        dist/ holds the only copy of the build (M39).
+        """
         import time
         dist_dir = build_dir / "dist"
 
         # Create output directory
         self.output_path.mkdir(parents=True, exist_ok=True)
 
+        all_copied = True
         # Copy all files from dist to output with retry for locked files
         if dist_dir.exists():
             for item in dist_dir.iterdir():
@@ -414,6 +437,8 @@ exe = EXE(
                         else:
                             logger.warning(f"Could not copy {item.name}: {e}")
                             logger.info(f"The EXE is available at: {dist_dir / item.name}")
+                            all_copied = False
+        return all_copied
 
     def _cleanup(self, build_dir: Path):
         """Clean up temporary build files"""

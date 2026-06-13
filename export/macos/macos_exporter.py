@@ -219,9 +219,13 @@ class MacOSExporter(BaseKivyExporter):
         This script handles PyInstaller frozen executable paths and
         launches the Kivy game.
         """
+        import re
         launcher_script = build_dir / "game_launcher.py"
 
         game_name = self.project_data.get('name', 'Game')
+        # Crash-log filename is interpolated into single-quoted literals in the
+        # generated launcher; sanitize so an apostrophe can't break it (M38).
+        safe_name = re.sub(r'[^A-Za-z0-9_]', '_', game_name) or 'Game'
 
         script_content = f'''#!/usr/bin/env python3
 """
@@ -242,14 +246,14 @@ def _get_log_path():
         exe_dir = os.path.dirname(sys.executable)
         # Go up from Contents/MacOS to the folder containing the .app
         app_parent = os.path.dirname(os.path.dirname(os.path.dirname(exe_dir)))
-        log_path = os.path.join(app_parent, '{game_name}_crash.log')
+        log_path = os.path.join(app_parent, '{safe_name}_crash.log')
         # If that's not writable, fall back to user's Desktop
         try:
             with open(log_path, 'a'):
                 pass
             return log_path
         except OSError:
-            return os.path.expanduser('~/Desktop/{game_name}_crash.log')
+            return os.path.expanduser('~/Desktop/{safe_name}_crash.log')
     return None
 
 def _log_error(msg):
@@ -321,9 +325,12 @@ if __name__ == "__main__":
         - A BUNDLE target to create a proper .app bundle
         """
         import os
+        import re
         spec_file = build_dir / "game.spec"
 
-        game_name = self.project_data.get('name', 'Game').replace(' ', '_')
+        # Sanitize to a safe token for the unescaped single-quoted spec
+        # literals (name=, CFBundleName); free text uses repr below (M38).
+        game_name = re.sub(r'[^A-Za-z0-9_]', '_', self.project_data.get('name', 'Game')) or 'Game'
 
         # Collect ALL files from the game directory recursively
         # This ensures images, sounds, and all assets are included
@@ -393,7 +400,9 @@ if __name__ == "__main__":
             icon_line = "'{}'".format(self.export_settings['icon_path'])
 
         is_debug = self.export_settings.get('include_debug', False)
-        display_name = self.project_data.get('name', 'Game')
+        # Embed the human-readable name as a repr() literal so apostrophes in
+        # the display name survive in CFBundleDisplayName (M38).
+        display_name = repr(self.project_data.get('name', 'Game'))
         bundle_id = 'com.pygamemaker.{}'.format(game_name.lower())
 
         # Create spec content (macOS-specific with BUNDLE for .app)
@@ -469,7 +478,7 @@ app = BUNDLE(
     bundle_identifier='{bundle_id}',
     info_plist={{
         'CFBundleName': '{game_name}',
-        'CFBundleDisplayName': '{display_name}',
+        'CFBundleDisplayName': {display_name},
         'CFBundleVersion': '1.0.0',
         'CFBundleShortVersionString': '1.0.0',
         'NSHighResolutionCapable': False,

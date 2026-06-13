@@ -183,9 +183,13 @@ if __name__ == "__main__":
         - All game assets (images, sounds)
         """
         import os
+        import re
         spec_file = build_dir / "game.spec"
 
-        game_name = self.project_data.get('name', 'Game').replace(' ', '_')
+        # Sanitize to a safe token: the name is interpolated unescaped into a
+        # single-quoted Python literal in the spec, so an apostrophe would be a
+        # SyntaxError when PyInstaller execs it (M38).
+        game_name = re.sub(r'[^A-Za-z0-9_]', '_', self.project_data.get('name', 'Game')) or 'Game'
 
         # Collect ALL files from the game directory recursively
         # This ensures images, sounds, and all assets are included
