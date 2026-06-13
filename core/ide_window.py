@@ -1874,9 +1874,12 @@ class PyGameMakerIDE(QMainWindow):
             )
             return
 
-        # Sync all open editors' data to the project before testing
-        for i in range(self.editor_tabs.count()):
-            widget = self.editor_tabs.widget(i)
+        # Sync all open editors' data to the project before testing. Use
+        # _iter_open_editors so editors floated out of the tab strip (the
+        # toolbar 'Floating' mode / per-editor float button) are synced too —
+        # the old tab-only loop ran F5 with stale data for detached editors
+        # (audit M8).
+        for widget in self._iter_open_editors():
             if hasattr(widget, 'get_data') and hasattr(widget, 'asset_name') and widget.asset_name:
                 try:
                     data = widget.get_data()
