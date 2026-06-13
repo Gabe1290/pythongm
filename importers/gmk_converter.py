@@ -39,6 +39,26 @@ from importers.gmk_parser import (
 
 logger = logging.getLogger(__name__)
 
+# Upper bound on any single decoded image dimension from an imported .gmk.
+# The width/height are parsed as int32 with no upper bound, so a malicious or
+# corrupt file declaring e.g. 40000x40000 with a few bytes of pixel data would
+# force a multi-GB allocation (width*height*4, twice) in _bgra_to_image and
+# OOM the IDE. Real GameMaker sprites/backgrounds are far smaller; 8192 is a
+# generous ceiling that still caps a single image at ~268 MB.
+MAX_IMAGE_DIMENSION = 8192
+
+
+def _check_image_dimensions(width: int, height: int) -> None:
+    """Raise ValueError if image dimensions are non-positive or oversized."""
+    if not isinstance(width, int) or not isinstance(height, int):
+        raise ValueError(f"non-integer image dimensions: {width}x{height}")
+    if width <= 0 or height <= 0:
+        raise ValueError(f"non-positive image dimensions: {width}x{height}")
+    if width > MAX_IMAGE_DIMENSION or height > MAX_IMAGE_DIMENSION:
+        raise ValueError(
+            f"image dimensions {width}x{height} exceed the maximum "
+            f"{MAX_IMAGE_DIMENSION}px (likely corrupt or hostile .gmk)")
+
 
 class GmkConverter:
     """
@@ -273,6 +293,10 @@ class GmkConverter:
         else:
             # Multiple frames: save as horizontal strip
             frame_w, frame_h = gmk_spr.subimages[0][0], gmk_spr.subimages[0][1]
+            # Validate the per-frame size before allocating the strip surface
+            # (frame_h x frame_w*num_frames) so a hostile dimension can't OOM
+            # here ahead of the per-frame _bgra_to_image check (M40).
+            _check_image_dimensions(frame_w, frame_h)
             strip_width = frame_w * num_frames
             strip_img = Image.new("RGBA", (strip_width, frame_h), (0, 0, 0, 0))
 
@@ -870,6 +894,8 @@ class GmkConverter:
 
     def _bgra_to_image(self, bgra_data: bytes, width: int, height: int) -> Image.Image:
         """Convert BGRA pixel data to a PIL RGBA Image."""
+        # Reject absurd dimensions before allocating width*height*4 bytes (M40).
+        _check_image_dimensions(width, height)
         expected = width * height * 4
         if len(bgra_data) < expected:
             # Pad with transparent pixels if data is short
