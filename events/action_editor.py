@@ -294,17 +294,38 @@ class ActionConfigDialog(QDialog):
                 widget = QComboBox()
                 widget.setEditable(False)
 
-                # Get available sprites from project
-                available_sprites = self.get_available_sprites()
+                available_sprites = list(self.get_available_sprites() or [])
+
+                # The value to display (saved value, else the default).
+                if param.name in self.current_params:
+                    current = str(self.current_params[param.name])
+                else:
+                    current = "" if param.default_value is None else str(param.default_value)
+
+                # Prepend sentinel/empty entries that are not real project
+                # sprites so they stay selectable and round-trip through
+                # currentText. A non-editable combo silently ignores
+                # setCurrentText for a value it has no item for, which
+                # previously re-pointed every edited set_sprite action (default
+                # "<self>") to the project's first sprite, and made draw_lives'
+                # empty "no icon" value unreachable.
+                sentinels = []
+                if not param.required:
+                    sentinels.append("")  # explicit "(no sprite)" option
+                if isinstance(param.default_value, str) and param.default_value.startswith("<"):
+                    if param.default_value not in sentinels:
+                        sentinels.append(param.default_value)
+                if current and current not in available_sprites and current not in sentinels:
+                    sentinels.append(current)
+
+                for s in sentinels:
+                    widget.addItem(s)
                 if available_sprites:
                     widget.addItems(available_sprites)
-                else:
+                elif not sentinels:
                     widget.addItems([self.tr("(No sprites available)")])
 
-                if param.name in self.current_params:
-                    widget.setCurrentText(str(self.current_params[param.name]))
-                else:
-                    widget.setCurrentText(str(param.default_value))
+                widget.setCurrentText(current)
 
             # Sound selector
             elif param.param_type == "sound":
