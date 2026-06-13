@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
+import os
 import shutil
+import tempfile
 import hashlib
 from pathlib import Path
 from datetime import datetime
@@ -198,15 +200,40 @@ class AssetManager(QObject):
             return None
 
         try:
-            # Delete old image file if it exists
-            old_file_path = existing_sprite.get("file_path")
-            if old_file_path:
-                old_abs_path = self.get_absolute_path(old_file_path)
-                if old_abs_path.exists():
-                    old_abs_path.unlink()
-                    logger.debug(f"🗑️ Deleted old sprite file: {old_abs_path}")
+            relative_path = f"sprites/{sprite_name}{file_path.suffix}"
+            dest_path = self.get_absolute_path(relative_path)
 
-            # Delete old thumbnail if it exists
+            # Copy and validate the NEW image into a temp file FIRST, before
+            # touching the existing art. The old delete-then-copy order meant
+            # a failed/unreadable copy (removed USB media, permission error,
+            # disk full) destroyed the project's only copy of the sprite
+            # (audit M2). On any failure here the originals are untouched.
+            fd, tmp_name = tempfile.mkstemp(suffix=file_path.suffix,
+                                            dir=str(dest_path.parent))
+            os.close(fd)
+            tmp_path = Path(tmp_name)
+            try:
+                shutil.copy2(file_path, tmp_path)
+                with Image.open(tmp_path) as img:
+                    new_width, new_height = img.width, img.height
+            except Exception:
+                tmp_path.unlink(missing_ok=True)
+                raise
+
+            # The new image is safely in hand — now retire the old files.
+            old_file_path = existing_sprite.get("file_path")
+            old_abs_path = self.get_absolute_path(old_file_path) if old_file_path else None
+
+            # Atomically move the validated image into place. When the new
+            # suffix matches the old, dest_path IS the old file and this
+            # overwrites it; when it differs, the old file is removed below.
+            os.replace(tmp_path, dest_path)
+            logger.debug(f"📁 Replaced image: {dest_path}")
+
+            if old_abs_path and old_abs_path != dest_path and old_abs_path.exists():
+                old_abs_path.unlink()
+                logger.debug(f"🗑️ Deleted old sprite file: {old_abs_path}")
+
             old_thumbnail = existing_sprite.get("thumbnail")
             if old_thumbnail:
                 old_thumb_path = self.get_absolute_path(old_thumbnail)
@@ -214,20 +241,11 @@ class AssetManager(QObject):
                     old_thumb_path.unlink()
                     logger.debug(f"🗑️ Deleted old thumbnail: {old_thumb_path}")
 
-            # Copy new image to project directory
-            relative_path = f"sprites/{sprite_name}{file_path.suffix}"
-            dest_path = self.get_absolute_path(relative_path)
-            shutil.copy2(file_path, dest_path)
-            logger.debug(f"📁 Copied new image: {dest_path}")
-
             # Update sprite data
             existing_sprite["file_path"] = relative_path
             existing_sprite["modified"] = datetime.now().isoformat()
-
-            # Get image dimensions
-            with Image.open(dest_path) as img:
-                existing_sprite["width"] = img.width
-                existing_sprite["height"] = img.height
+            existing_sprite["width"] = new_width
+            existing_sprite["height"] = new_height
 
             # Generate new thumbnail
             thumbnail_path = self.generate_thumbnail(dest_path, sprite_name)
