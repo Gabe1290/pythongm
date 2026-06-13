@@ -81,8 +81,9 @@ class IDEExporters:
     def export_kivy(self):
         """Quick export to Kivy - opens export dialog with Kivy pre-selected"""
         dialog = ExportProjectDialog(self.ide, self.ide.current_project_data)
-        # Pre-select Kivy platform
-        kivy_index = dialog.export_platform.findText("Mobile (Kivy)")
+        # Pre-select Kivy by its locale-independent id, not the translated
+        # display text (findText would miss in a non-English IDE) (audit M13).
+        kivy_index = dialog.export_platform.findData("kivy")
         if kivy_index >= 0:
             dialog.export_platform.setCurrentIndex(kivy_index)
 
