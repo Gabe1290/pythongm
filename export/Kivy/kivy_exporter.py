@@ -1872,6 +1872,42 @@ class GameObject(Widget):
             self.y + self.size[1] > other.y
         )
 
+    def check_collision_at(self, x, y, object_name=None):
+        """Return True if this object would collide at absolute (x, y).
+
+        Mirrors the pygame runtime's if_collision check: callers pass an
+        absolute target position (self.x + offset). object_name may be
+        None/'any' (any object), 'solid' (solid objects only), or a specific
+        object type name.
+        """
+        if not self.scene:
+            return False
+        if object_name and '_' in object_name:
+            pascal = ''.join(p.capitalize() for p in object_name.split('_'))
+        else:
+            pascal = object_name
+        old_x, old_y = self.x, self.y
+        self.x, self.y = x, y
+        hit = False
+        try:
+            for other in self.scene.instances:
+                if other is self or getattr(other, '_destroyed', False):
+                    continue
+                if object_name in (None, '', 'any'):
+                    match = True
+                elif object_name == 'solid':
+                    match = getattr(other, 'solid', False)
+                else:
+                    match = (other.__class__.__name__ == object_name or
+                             other.__class__.__name__ == pascal or
+                             getattr(other, 'object_name', '') == object_name)
+                if match and self.check_collision(other):
+                    hit = True
+                    break
+        finally:
+            self.x, self.y = old_x, old_y
+        return hit
+
     def destroy(self):
         """Destroy this instance"""
         if hasattr(self, 'on_destroy'):
