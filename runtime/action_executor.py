@@ -5449,6 +5449,24 @@ class ActionExecutor:
             logger.debug("⚠️ goto_room: No game_runner reference")
             return
 
+        # The action editor offers "→ Next Room" / "← Previous Room" /
+        # "↺ Restart Current Room" as the most prominent dropdown entries and
+        # saves them as these sentinels. Map them onto the existing navigation
+        # flags the game loop already processes, instead of treating them as
+        # unknown room names (which silently did nothing).
+        if room_name == "__next__":
+            instance.next_room_flag = True
+            logger.debug("🚪 goto_room: next room requested")
+            return
+        if room_name == "__prev__":
+            instance.previous_room_flag = True
+            logger.debug("🚪 goto_room: previous room requested")
+            return
+        if room_name == "__current__":
+            instance.restart_room_flag = True
+            logger.debug("🚪 goto_room: restart current room requested")
+            return
+
         # Check if room exists
         room_list = self.game_runner.get_room_list()
         if room_name not in room_list:
@@ -5465,6 +5483,28 @@ class ActionExecutor:
     def execute_room_goto_action(self, instance, parameters: Dict[str, Any]):
         """Alias for goto_room (GameMaker naming convention)"""
         return self.execute_goto_room_action(instance, parameters)
+
+    def _resolve_room_sentinel(self, sentinel: str) -> str:
+        """Map a navigation sentinel to a concrete room name for check_room.
+
+        Returns the current room for '__current__', the adjacent room for
+        '__next__'/'__prev__' (or a value that cannot match at the list ends),
+        and the sentinel unchanged if the room list is unavailable.
+        """
+        if not self.game_runner or not self.game_runner.current_room:
+            return sentinel
+        if sentinel == "__current__":
+            return self.game_runner.current_room.name
+        room_list = self.game_runner.get_room_list()
+        try:
+            idx = room_list.index(self.game_runner.current_room.name)
+        except (ValueError, AttributeError):
+            return sentinel
+        if sentinel == "__next__":
+            return room_list[idx + 1] if idx + 1 < len(room_list) else sentinel
+        if sentinel == "__prev__":
+            return room_list[idx - 1] if idx > 0 else sentinel
+        return sentinel
 
     def execute_check_room_action(self, instance, parameters: Dict[str, Any]):
         """Check if currently in a specific room
@@ -5489,6 +5529,13 @@ class ActionExecutor:
         if not self.game_runner or not self.game_runner.current_room:
             logger.debug("⚠️ check_room: No game_runner or current_room")
             return not not_flag
+
+        # Resolve the navigation sentinels the action editor may save against
+        # the room list so the comparison is meaningful instead of always
+        # false. "__current__" always matches the current room; "__next__" /
+        # "__prev__" resolve to the adjacent room name (or no match at an end).
+        if room_name in ("__next__", "__prev__", "__current__"):
+            room_name = self._resolve_room_sentinel(room_name)
 
         is_in_room = (self.game_runner.current_room.name == room_name)
         result = is_in_room if not not_flag else not is_in_room
