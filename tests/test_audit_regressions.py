@@ -201,14 +201,29 @@ class TestConditionalEditorCanonicalValues:
 
     def test_key_pressed_subfields_are_canonical(self, qtbot):
         from events.conditional_editor import ConditionalActionEditor
-        src = {"condition_type": "key_pressed", "key": "Space", "state": "Held",
+        # Canonical key values are now the lowercase runtime key names (M30):
+        # the editor stores 'space', not 'Space'. The legacy 'Space' label still
+        # loads (via display-text match) and round-trips to the canonical id.
+        src = {"condition_type": "key_pressed", "key": "Space",
                "then_actions": [], "else_actions": []}
         dialog = ConditionalActionEditor(src)
         qtbot.addWidget(dialog)
         out = dialog.get_parameter_values()
         assert out["condition_type"] == "key_pressed"
-        assert out["key"] == "Space"
-        assert out["state"] == "Held"
+        assert out["key"] == "space"
+        # Only the supported held/down state is offered now.
+        assert out["state"] == "pressed"
+
+    def test_key_pressed_arrow_is_runtime_name(self, qtbot):
+        from events.conditional_editor import ConditionalActionEditor
+        # The legacy 'Left Arrow' label loads and round-trips to 'left', the
+        # name the runtime actually compares against.
+        src = {"condition_type": "key_pressed", "key": "Left Arrow",
+               "then_actions": [], "else_actions": []}
+        dialog = ConditionalActionEditor(src)
+        qtbot.addWidget(dialog)
+        out = dialog.get_parameter_values()
+        assert out["key"] == "left"
 
     def test_combo_stores_english_as_userdata(self, qtbot):
         from events.conditional_editor import ConditionalActionEditor
