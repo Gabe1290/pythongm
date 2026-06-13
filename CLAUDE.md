@@ -263,6 +263,32 @@ the Medium section. Box-specific gotcha: commit messages containing
 double quotes must go through `git commit -F <file>` here (PowerShell 5.1
 mangles inline quoting).
 
+**2026-06-13 — First 20 mediums (M1–M20) from the 2026-06-11 audit fixed.**
+One Windows-box session, one commit per finding (M3/M4/M5 share a commit —
+same rename path; M9/M10 share one — duplicate findings; M17 was already
+resolved by H11), each with a regression test and the registry checkbox
+flipped (`77974b2`..`5c9418b`). Suite 808 → 890 passed, 0 failed.
+Highlights: Thymio choice params recover their index from the saved
+label so sensors/sounds aren't all 0 (M1); replace_sprite_image copies +
+validates before deleting the old art (M2); asset rename keeps room order
+and updates references inside then/else branches and 8-layer backgrounds
+(M3/M4/M5); Auto-Save settings persist to the editor config startup reads
+(M6); zip projects reopen from Recent (M7); Test Game and project-switch/
+close now sync detached + modified editors (M8/M12); the export progress
+dialog can't be Esc-dismissed into a GUI-thread freeze (M9/M10);
+re-opening a dirty asset focuses its editor instead of duplicating it
+(M11); export targets route by stable id not translated text (M13);
+ThymioConfigDialog marks the config custom so restrictions stick (M14);
+editor Ctrl+S/F5 no longer collide with the IDE menu (M15); Blockly
+workspace XML is cached so the layout saves (M16); plain assignments
+aren't misclassified as Thymio variables and the handler preserves value
+types (M18); conditionals always render a body — no bodiless if/for (M19);
+execute_code binds `self` and a `keyboard.check()` shim (M20).
+**M21–M61 medium + 35 low remain open** — pick up at M21. Reminder: do
+NOT round-trip docs/FULL_AUDIT through PowerShell Get-Content/Set-Content
+(it mangles the em-dashes to mojibake) — edit the registry only with the
+Edit tool.
+
 **2026-06-09 — Runtime-core audit (Batch A): most rejected, room-dimension
 bounds added.** A 9-finding audit of `game_runner.py` / `action_executor.py` /
 `constants.py`. Verified each against code first (the established
