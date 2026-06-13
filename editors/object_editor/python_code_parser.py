@@ -1101,7 +1101,15 @@ class ActionsToPythonGenerator:
         else_actions = params.get('else_actions', [])
         actions_list = params.get('actions', [])  # for repeat
 
-        if is_conditional and (sub_actions or then_actions or else_actions or actions_list):
+        # Route ALL conditionals through _generate_conditional, even with no
+        # nested actions: it emits an indented 'pass' body, whereas the bare
+        # template path below produced a bodiless 'if ...:' / 'for ...:' —
+        # invalid Python that broke View Generated Code and permanently
+        # blocked Edit Custom Code for the object (audit M19). This is exactly
+        # the shape a GMK import (test_* gating the next sibling via
+        # start_block/end_block) or an if_condition with no then-actions yet
+        # produces.
+        if is_conditional:
             return self._generate_conditional(action_name, params, sub_actions,
                                               then_actions, else_actions, actions_list, template)
 
@@ -1268,7 +1276,9 @@ class ActionsToPythonGenerator:
                 condition_line = template.format(**params)
                 lines.append(condition_line)
             except KeyError as e:
-                return f"# Missing parameter {e} for {action_name}"
+                # Emit a 'pass' so the comment isn't the sole method body
+                # (a comment-only suite is a SyntaxError) — audit M19.
+                return f"pass  # Missing parameter {e} for {action_name}"
 
         # Determine the "then" body actions
         body_actions = sub_actions or then_actions or actions_list
