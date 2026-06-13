@@ -361,9 +361,14 @@ class RoomCanvas(QWidget):
             self.update()
 
     def clear_instances(self):
-        """Clear all instances"""
-        self.instances.clear()
-        self.selected_instances.clear()
+        """Clear all instances (undoable)."""
+        if not self.instances:
+            return
+        # Route through the undo stack so Ctrl+Z reverts Clear All and the
+        # stack can't replay stale Add/Remove history into the cleared room.
+        command = BatchRemoveInstancesCommand(self, list(self.instances),
+                                              description="Clear All Instances")
+        self.undo_stack.push(command)
         self.update()
 
     def get_instances(self):
@@ -417,12 +422,15 @@ class RoomCanvas(QWidget):
         return found_instances
 
     def shift_all_instances(self, dx, dy):
-        """Shift all instances by the given x/y offset"""
+        """Shift all instances by the given x/y offset (undoable)."""
         if not self.instances:
             return
-        for instance in self.instances:
-            instance.x += dx
-            instance.y += dy
+        from editors.room_undo_commands import BatchMoveInstancesCommand
+        moved = [(inst, inst.x, inst.y, inst.x + dx, inst.y + dy)
+                 for inst in self.instances]
+        command = BatchMoveInstancesCommand(self, moved,
+                                            description="Shift All Instances")
+        self.undo_stack.push(command)
         self.update()
 
 
