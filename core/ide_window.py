@@ -54,6 +54,51 @@ class ExportThread(QThread):
         )
 
 
+class _ExportProgressDialog(QDialog):
+    """Modal progress dialog that refuses to close while the export thread
+    is still running.
+
+    A plain QDialog can be dismissed with Esc or the window-close button
+    (default reject), which returned from exec() while the export thread
+    was still building — the old code then called export_thread.wait() on
+    the GUI thread with no event loop, hard-freezing the whole IDE for the
+    multi-minute PyInstaller/buildozer run (audit M9/M10). Here Esc and
+    close are suppressed until ``allow_close`` is set (when the export
+    actually finishes); an optional ``on_escape`` callback lets a
+    cancel-enabled target route Esc to its cooperative cancel.
+    """
+
+    def __init__(self, parent=None, on_escape=None):
+        super().__init__(parent)
+        self.allow_close = False
+        self._on_escape = on_escape
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape and not self.allow_close:
+            if self._on_escape is not None:
+                self._on_escape()
+            event.ignore()
+            return
+        super().keyPressEvent(event)
+
+    def closeEvent(self, event):
+        if not self.allow_close:
+            if self._on_escape is not None:
+                self._on_escape()
+            event.ignore()
+            return
+        super().closeEvent(event)
+
+    def reject(self):
+        # Esc / window-close funnel through reject(); swallow it until the
+        # export has finished so exec() can't return with the thread alive.
+        if not self.allow_close:
+            if self._on_escape is not None:
+                self._on_escape()
+            return
+        super().reject()
+
+
 class PyGameMakerIDE(QMainWindow):
 
     def __init__(self):
@@ -2541,7 +2586,13 @@ class PyGameMakerIDE(QMainWindow):
         the order because keyword arguments are evaluated before the
         call.
         """
-        progress_dialog = QDialog(self)
+        # cancel_export is defined below; route Esc/close to it for
+        # cancel-enabled targets so the dialog can't be dismissed in a way
+        # that strands the running thread (audit M9/M10).
+        _on_escape_ref = {"fn": None}
+        progress_dialog = _ExportProgressDialog(
+            self, on_escape=lambda: _on_escape_ref["fn"] and _on_escape_ref["fn"]()
+        )
         progress_dialog.setWindowTitle(dialog_title)
         progress_dialog.setModal(True)
         progress_dialog.resize(*dialog_size)
@@ -2573,6 +2624,8 @@ class PyGameMakerIDE(QMainWindow):
             status_label.setText(message)
 
         def export_finished(success, message):
+            # The thread has signalled completion — now the dialog may close.
+            progress_dialog.allow_close = True
             progress_dialog.accept()
             if show_cancel and _export_cancelled:
                 self.update_status(cancel_status_message)
@@ -2598,10 +2651,19 @@ class PyGameMakerIDE(QMainWindow):
 
         def cancel_export():
             nonlocal _export_cancelled
+            if _export_cancelled:
+                return
             _export_cancelled = True
-            cancel_btn.setEnabled(False)
+            if cancel_btn is not None:
+                cancel_btn.setEnabled(False)
             status_label.setText(self.tr("Cancelling..."))
             exporter.cancel_requested = True
+
+        # Only cancel-enabled targets route Esc to a cooperative cancel; for
+        # targets without a Cancel button Esc is simply swallowed (the build
+        # keeps running behind the still-open, still-painting dialog).
+        if show_cancel:
+            _on_escape_ref["fn"] = cancel_export
 
         exporter.progress_update.connect(update_progress)
         exporter.export_complete.connect(export_finished)
@@ -2615,8 +2677,21 @@ class PyGameMakerIDE(QMainWindow):
             export_settings
         )
 
+        # Safety net: if the thread ends without export_complete ever firing
+        # (e.g. the exporter raised), still release the dialog so exec() can
+        # return — otherwise the modal would stay open forever.
+        def _on_thread_finished():
+            if not progress_dialog.allow_close:
+                progress_dialog.allow_close = True
+                progress_dialog.accept()
+        export_thread.finished.connect(_on_thread_finished)
+
         export_thread.start()
         progress_dialog.exec()
+        # exec() only returns once the export has finished (Esc/close are
+        # suppressed until allow_close), so this wait() is now effectively
+        # instant rather than the multi-minute GUI-thread freeze of the old
+        # early-dismiss path (audit M9/M10). It also joins the thread cleanly.
         export_thread.wait()
 
     def _active_editor(self):
