@@ -1491,6 +1491,10 @@ class PyGameMakerIDE(QMainWindow):
                 bool: True if save was successful, False otherwise
             """
             if self.current_project_path:
+                # Ctrl+S (now owned by the IDE menu, not the editor — audit
+                # M15) must capture the active editor's unsaved edits, so pull
+                # every open editor's live data into the project first.
+                self._flush_open_editors()
                 if self.project_manager.save_project():
                     self.update_status(self.tr("Project saved"))
                     return True
