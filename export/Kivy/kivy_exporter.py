@@ -2131,6 +2131,21 @@ class GameObject(Widget):
                                     }
                                     events_list.append(key_event)
                                     logger.debug(f"        Added keyboard_press sub-event for '{key_name}' -> '{normalized_key}' with {len(actions)} actions")
+                    elif event_key == 'keyboard_release':
+                        # keyboard_release events fire once when a key is let go.
+                        # Keys may be named release_left etc. or plain left.
+                        for key_name, key_data in event_data.items():
+                            if isinstance(key_data, dict) and 'actions' in key_data:
+                                actions = key_data.get('actions', [])
+                                if actions:
+                                    normalized_key = key_name.replace('release_', '') if key_name.startswith('release_') else key_name
+                                    key_event = {
+                                        'event_type': 'keyboard_release',
+                                        'key_name': normalized_key,
+                                        'actions': actions,
+                                    }
+                                    events_list.append(key_event)
+                                    logger.debug(f"        Added keyboard_release sub-event for '{key_name}' -> '{normalized_key}' with {len(actions)} actions")
                     else:
                         # Regular event - add the event type if not present
                         if 'event_type' not in event_data:
@@ -2235,8 +2250,9 @@ class {class_name}(GameObject):
         # Group keyboard events together (but NOT nokey - that's handled separately)
         keyboard_events = [e for e in events if e.get('event_type') == 'keyboard' and e.get('key_name') and e.get('key_name') != 'nokey']
         keyboard_press_events = [e for e in events if e.get('event_type') == 'keyboard_press' and e.get('key_name')]
+        keyboard_release_events = [e for e in events if e.get('event_type') == 'keyboard_release' and e.get('key_name')]
         nokey_events = [e for e in events if e.get('event_type') == 'keyboard' and e.get('key_name') == 'nokey']
-        other_events = [e for e in events if not (e.get('event_type') in ['keyboard', 'keyboard_press'] and e.get('key_name'))]
+        other_events = [e for e in events if not (e.get('event_type') in ['keyboard', 'keyboard_press', 'keyboard_release'] and e.get('key_name'))]
 
         # Generate consolidated keyboard handler if there are keyboard events (continuous checking)
         if keyboard_events:
@@ -2249,6 +2265,15 @@ class {class_name}(GameObject):
             logger.debug(f"      Generating keyboard_press handler for {len(keyboard_press_events)} key(s)")
             keyboard_press_method = self._generate_keyboard_press_handler(keyboard_press_events)
             methods.append(keyboard_press_method)
+
+        # Generate keyboard_release handler -> on_keyboard_up (the scene
+        # dispatches on_key_up to instance.on_keyboard_up). Without this the
+        # release actions (e.g. stop_movement on key-up in the platformer
+        # samples) were silently dropped (M35).
+        if keyboard_release_events:
+            logger.debug(f"      Generating keyboard_release handler for {len(keyboard_release_events)} key(s)")
+            keyboard_release_method = self._generate_keyboard_release_handler(keyboard_release_events)
+            methods.append(keyboard_release_method)
 
         # Generate on_nokey method for nokey events
         if nokey_events:
@@ -2299,22 +2324,92 @@ class {class_name}(GameObject):
 '''.format(method_name=method_name, params=params, event_type=event_type, action_code=action_code)
             methods.append(method)
 
+        # Two generators can target the same method name (e.g. the grid
+        # keyboard handler and a step event both emit on_update; keyboard and
+        # keyboard_press both emit on_keyboard). Python keeps only the LAST
+        # def, silently shadowing the earlier one. Merge same-named methods
+        # into one so neither body is lost (M37).
+        methods = self._merge_duplicate_methods(methods)
+
         return '\n'.join(methods) if methods else "    pass\n"
+
+    def _merge_duplicate_methods(self, methods: List[str]) -> List[str]:
+        """Merge generated method bodies that share a def name.
+
+        Same-named event methods always share a signature here (on_update ->
+        self, dt; on_keyboard -> the press signature), so the bodies can be
+        concatenated under a single def without argument conflicts.
+        """
+        import re
+
+        order = []          # preserves first-seen order: ('method', name) | ('raw', text)
+        grouped = {}        # name -> [method_text, ...]
+        for m in methods:
+            match = re.search(r'def\s+(\w+)\s*\(', m)
+            if not match:
+                order.append(('raw', m))
+                continue
+            name = match.group(1)
+            if name not in grouped:
+                grouped[name] = []
+                order.append(('method', name))
+            grouped[name].append(m)
+
+        result = []
+        for kind, key in order:
+            if kind == 'raw':
+                result.append(key)
+            elif len(grouped[key]) == 1:
+                result.append(grouped[key][0])
+            else:
+                result.append(self._merge_method_bodies(grouped[key]))
+        return result
+
+    @staticmethod
+    def _merge_method_bodies(texts: List[str]) -> str:
+        """Combine several same-named method texts into one def."""
+        first_lines = texts[0].rstrip('\n').split('\n')
+        header = [first_lines[0]]  # the def line
+        body_start = 1
+        if body_start < len(first_lines) and first_lines[body_start].strip().startswith('"""'):
+            header.append(first_lines[body_start])  # keep the first docstring
+            body_start = 1  # docstrings are dropped per-body below
+
+        bodies = []
+        for text in texts:
+            lines = text.rstrip('\n').split('\n')
+            j = 1
+            if j < len(lines) and lines[j].strip().startswith('"""'):
+                j += 1
+            body = lines[j:]
+            non_empty = [ln for ln in body if ln.strip()]
+            # Skip a body that is just 'pass' when other bodies have content.
+            if len(non_empty) == 1 and non_empty[0].strip() == 'pass':
+                continue
+            bodies.extend(body)
+
+        if not any(ln.strip() for ln in bodies):
+            bodies = ['        pass']
+        return '\n'.join(header + bodies) + '\n'
 
     def _generate_keyboard_handler(self, keyboard_events: List[Dict]) -> str:
         """Generate a consolidated keyboard handler for all key-specific events"""
         # For grid-based movement games, keyboard input should be handled in the step event
         # NOT in keyboard handlers, to avoid conflicts and wall-phasing issues
 
-        # Check if ANY keyboard event uses grid-based movement
+        # Check if ANY keyboard event uses grid-based movement. The marker is
+        # if_on_grid specifically — keying off plain set_hspeed/set_vspeed
+        # (M36) misfired on platformers, replacing free motion with grid
+        # snapping and discarding every non-speed action (jump, sprite flip,
+        # collision checks). Plain speed-setting keyboard events now generate
+        # the normal handler, which keeps all their actions.
         uses_grid_movement = False
         for event in keyboard_events:
             actions = event.get('actions', [])
             for action in actions:
                 if isinstance(action, dict):
                     action_type = action.get('action_type', action.get('action', ''))
-                    # Check for if_on_grid or movement actions
-                    if action_type == 'if_on_grid' or action_type in ['set_hspeed', 'set_vspeed']:
+                    if action_type == 'if_on_grid':
                         uses_grid_movement = True
                         break
             if uses_grid_movement:
@@ -2539,6 +2634,49 @@ class {class_name}(GameObject):
                 for action in actions:
                     if isinstance(action, dict):
                         generator.process_action(action, 'keyboard_press')
+                    elif isinstance(action, str) and action.strip():
+                        generator.add_line(action)
+
+                action_code = generator.get_code()
+                if action_code.strip():
+                    code_lines.append(action_code)
+                else:
+                    code_lines.append("            pass")
+            else:
+                code_lines.append("            pass")
+
+        return '\n'.join(code_lines)
+
+    def _generate_keyboard_release_handler(self, keyboard_release_events: List[Dict]) -> str:
+        """Generate an on_keyboard_up handler for keyboard_release events.
+
+        The scene binds Window on_key_up -> on_keyboard_up(key, scancode) and
+        dispatches it to each instance, so release actions land here.
+        """
+        key_map = {
+            'right': '275',
+            'left': '276',
+            'up': '273',
+            'down': '274',
+        }
+
+        code_lines = []
+        code_lines.append("    def on_keyboard_up(self, key, scancode):")
+        code_lines.append('        """Handle keyboard release events"""')
+
+        for i, event in enumerate(keyboard_release_events):
+            key_name = event.get('key_name', '')
+            actions = event.get('actions', [])
+            key_code = key_map.get(key_name, '0')
+
+            if_keyword = "if" if i == 0 else "elif"
+            code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")
+
+            if actions:
+                generator = ActionCodeGenerator(base_indent=3)
+                for action in actions:
+                    if isinstance(action, dict):
+                        generator.process_action(action, 'keyboard_release')
                     elif isinstance(action, str) and action.strip():
                         generator.add_line(action)
 
