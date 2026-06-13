@@ -317,11 +317,17 @@ class PythonToActionsParser:
     def __init__(self):
         self.errors = []
         self.warnings = []
+        # Whether the code being parsed references the Thymio robot API at
+        # all. Used to gate the plain `name = constant` -> thymio_set_variable
+        # heuristic so ordinary variables in non-robot games aren't
+        # misclassified as Thymio actions (audit M18).
+        self._code_uses_thymio = False
 
     def parse_event_code(self, code: str, event_name: str) -> Dict[str, Any]:
         """Parse Python code for a single event, return event data with actions"""
         self.errors = []
         self.warnings = []
+        self._code_uses_thymio = 'thymio' in code
 
         try:
             tree = ast.parse(code)
@@ -339,6 +345,7 @@ class PythonToActionsParser:
         """Parse a full class definition with multiple event methods"""
         self.errors = []
         self.warnings = []
+        self._code_uses_thymio = 'thymio' in code
         events = {}
 
         try:
@@ -737,8 +744,16 @@ class PythonToActionsParser:
                         }
                     }
 
-        # Handle simple variable = value assignments (thymio_set_variable)
-        if isinstance(target, ast.Name) and isinstance(value, (ast.Constant, ast.Num)):
+        # Handle simple variable = value assignments (thymio_set_variable).
+        # Only when the code actually uses the Thymio API — otherwise an
+        # ordinary `points = 0` in a desktop game was misclassified as a
+        # robot action whose runtime handler int()-coerced the value, so
+        # `speed_mult = 1.5` stored 1 and `name = "Bob"` stored 0. Without a
+        # Thymio context it falls through to the execute_code fallback, which
+        # preserves the exact value (audit M18).
+        if (self._code_uses_thymio
+                and isinstance(target, ast.Name)
+                and isinstance(value, (ast.Constant, ast.Num))):
             var_name = target.id
             # Only treat as Thymio variable if it looks like a user variable (not Python builtins)
             if not var_name.startswith('_') and var_name not in ('self', 'game', 'thymio'):
