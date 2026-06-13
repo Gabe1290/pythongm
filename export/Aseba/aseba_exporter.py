@@ -404,31 +404,37 @@ class AsebaExporter:
         duration = params.get('duration', '60')
         return f"call sound.freq({freq}, {duration})"
 
+    @staticmethod
+    def _choice_index(value):
+        """Choice params persist as their full label ("2 - Front Center").
+        Recover the leading numeric index so emitted Aseba is valid (audit
+        M1); pass plain numbers through unchanged."""
+        if isinstance(value, str) and ' - ' in value:
+            return value.split(' - ')[0].strip()
+        return value
+
     def _translate_play_system_sound(self, params: Dict) -> str:
-        sound_id = params.get('sound_id', '0')
-        # Parse sound_id if it's a string like "0 - Startup"
-        if isinstance(sound_id, str) and ' - ' in sound_id:
-            sound_id = sound_id.split(' - ')[0].strip()
+        sound_id = self._choice_index(params.get('sound_id', '0'))
         return f"call sound.system({sound_id})"
 
     def _translate_stop_sound(self, params: Dict) -> str:
         return "call sound.freq(0, -1)"
 
     def _translate_if_proximity(self, params: Dict) -> str:
-        sensor = params.get('sensor_index', '2')
+        sensor = self._choice_index(params.get('sensor_index', '2'))
         threshold = params.get('threshold', '2000')
         comparison = params.get('comparison', '>')
         self.indent_level += 1
         return f"if prox.horizontal[{sensor}] {comparison} {threshold} then"
 
     def _translate_if_ground_dark(self, params: Dict) -> str:
-        sensor = params.get('sensor_index', '0')
+        sensor = self._choice_index(params.get('sensor_index', '0'))
         threshold = params.get('threshold', '300')
         self.indent_level += 1
         return f"if prox.ground.delta[{sensor}] < {threshold} then"
 
     def _translate_if_ground_light(self, params: Dict) -> str:
-        sensor = params.get('sensor_index', '0')
+        sensor = self._choice_index(params.get('sensor_index', '0'))
         threshold = params.get('threshold', '300')
         self.indent_level += 1
         return f"if prox.ground.delta[{sensor}] >= {threshold} then"
