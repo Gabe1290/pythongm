@@ -126,10 +126,25 @@ class ThymioConfigDialog(BaseBlockConfigDialog):
 
         self.load_config_to_ui()
 
+    # The Thymio dialog applies its own block selections (not one of the
+    # global PRESETS), so any change must mark the config 'custom'. Otherwise
+    # save_config persists under the stale default preset_name 'full', and
+    # load_config's 'full' migration re-adds every block the user disabled —
+    # and a project's blockly_preset gets the stale name, so refresh applies
+    # the pristine preset over the customization (audit M14). Mirrors
+    # BlocklyConfigDialog._on_revert_to_custom.
+    def _mark_custom(self):
+        self.config.preset_name = "custom"
+
+    def _on_revert_to_custom(self):
+        # Fired by the base dialog when the user manually toggles a checkbox.
+        self._mark_custom()
+
     def _apply_thymio_full(self):
         """Enable all Thymio blocks"""
         for category in THYMIO_CATEGORIES:
             self.config.enable_category(category)
+        self._mark_custom()
 
     def _apply_thymio_basic(self):
         """Enable only basic Thymio blocks (buttons + motors)"""
@@ -138,6 +153,7 @@ class ThymioConfigDialog(BaseBlockConfigDialog):
                 self.config.enable_category(category)
             else:
                 self.config.disable_category(category)
+        self._mark_custom()
 
     def _apply_thymio_sensors(self):
         """Enable Thymio sensor-focused blocks"""
@@ -146,6 +162,7 @@ class ThymioConfigDialog(BaseBlockConfigDialog):
                 self.config.enable_category(category)
             else:
                 self.config.disable_category(category)
+        self._mark_custom()
 
     def _get_missing_dependencies(self) -> dict:
         """Compute missing dependencies, filtered to Thymio blocks only"""
@@ -191,4 +208,5 @@ class ThymioConfigDialog(BaseBlockConfigDialog):
         """Deselect all Thymio blocks"""
         for category in THYMIO_CATEGORIES:
             self.config.disable_category(category)
+        self._mark_custom()
         self.load_config_to_ui()
