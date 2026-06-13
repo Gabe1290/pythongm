@@ -117,9 +117,12 @@ class BaseEditor(FloatableEditorMixin, QWidget):
 
     def setup_toolbar_actions(self):
         """Setup common toolbar actions"""
-        # Save action
+        # Save action — no keyboard shortcut: the IDE menu owns Ctrl+S and
+        # delegates to the active editor (same pattern as Undo/Redo below).
+        # A second window-context Ctrl+S here collided with the menubar's,
+        # making the shortcut ambiguous so NOTHING fired (audit M15). The
+        # toolbar button still saves on click.
         self.save_action = self.toolbar.addAction(self.tr("💾 Save"), self.save)
-        self.save_action.setShortcut(QKeySequence.Save)
         self.save_action.setEnabled(False)
 
         # Auto-save toggle - IMPROVED VERSION
@@ -171,15 +174,19 @@ class BaseEditor(FloatableEditorMixin, QWidget):
         self.update_auto_save_button_text()
 
     def setup_shortcuts(self):
-        """Setup keyboard shortcuts"""
-        # Save shortcut
-        QShortcut(QKeySequence.Save, self, self.save)
+        """Setup keyboard shortcuts.
 
-        # Close shortcut
+        Ctrl+S and F5 are deliberately NOT registered here: editors are
+        main-window tabs, so a window-context editor shortcut collided with
+        the IDE menubar's Save Project (Ctrl+S) and Test Game (F5),
+        producing an 'Ambiguous shortcut overload' that fired NEITHER
+        handler (audit M15). The IDE menu owns both — Ctrl+S delegates to
+        the active editor via the project save (which flushes open editors),
+        F5 runs Test Game (which also syncs editors first). This mirrors the
+        Undo/Redo handling, which the team had already moved to the menu.
+        """
+        # Close shortcut — editor-specific, no menubar collision.
         QShortcut(QKeySequence("Ctrl+W"), self, self.request_close)
-
-        # Refresh shortcut
-        QShortcut(QKeySequence("F5"), self, self.refresh)
 
     # _on_float_clicked / set_floating_state provided by FloatableEditorMixin
 
