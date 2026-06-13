@@ -362,19 +362,27 @@ class ConditionalActionEditor(QDialog):
         key_layout = QHBoxLayout()
         key_layout.addWidget(QLabel(self.tr("Key:")))
         self.key_check = QComboBox()
+        # Canonical values are the lowercase pygame key names the runtime
+        # actually compares against (instance.keys_pressed, key.lower()). The
+        # arrow keys in particular MUST be "left"/"right"/"up"/"down" — the old
+        # "Left Arrow" values lowercased to "left arrow" and never matched, so
+        # arrow conditions were permanently false.
         _add_canonical_items(self.key_check, [
-            ("Space", self.tr("Space")), ("Enter", self.tr("Enter")), ("Escape", self.tr("Escape")),
-            ("Left Arrow", self.tr("Left Arrow")), ("Right Arrow", self.tr("Right Arrow")),
-            ("Up Arrow", self.tr("Up Arrow")), ("Down Arrow", self.tr("Down Arrow")),
-            ("A", "A"), ("W", "W"), ("S", "S"), ("D", "D"),
-            ("Shift", self.tr("Shift")), ("Control", self.tr("Control")), ("Alt", self.tr("Alt")),
+            ("space", self.tr("Space")), ("enter", self.tr("Enter")), ("escape", self.tr("Escape")),
+            ("left", self.tr("Left Arrow")), ("right", self.tr("Right Arrow")),
+            ("up", self.tr("Up Arrow")), ("down", self.tr("Down Arrow")),
+            ("a", "A"), ("w", "W"), ("s", "S"), ("d", "D"),
+            ("shift", self.tr("Shift")), ("control", self.tr("Control")), ("alt", self.tr("Alt")),
         ])
         key_layout.addWidget(self.key_check)
 
         key_layout.addWidget(QLabel(self.tr("Is:")))
         self.key_state = QComboBox()
+        # The runtime only knows whether a key is currently down, so only the
+        # held/down state is offered. "Released" was actively misleading — it
+        # behaved identically to "held", the opposite of its label.
         _add_canonical_items(self.key_state, [
-            ("Pressed", self.tr("Pressed")), ("Held", self.tr("Held")), ("Released", self.tr("Released")),
+            ("pressed", self.tr("Pressed (held down)")),
         ])
         key_layout.addWidget(self.key_state)
         key_layout.addStretch()
