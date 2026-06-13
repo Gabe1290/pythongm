@@ -202,9 +202,12 @@ class ActionCodeGenerator:
 
         elif action_type in ('if_collision', 'if_collision_at', 'check_collision'):
             obj_name = params.get('object', params.get('target', 'object'))
-            x = params.get('x', 'self.x')
-            y = params.get('y', 'self.y')
-            cond = f"self.check_collision_at({x}, {y}, '{obj_name}')"
+            # The pygame runtime treats x/y as OFFSETS from the instance
+            # (check_x = instance.x + x_offset), defaulting to 0 — match that
+            # here instead of passing them as absolute coordinates.
+            x = params.get('x', 0)
+            y = params.get('y', 0)
+            cond = f"self.check_collision_at(self.x + ({x}), self.y + ({y}), '{obj_name}')"
             # GM stores the NOT checkbox as not_flag (older JSON: negate/not)
             if params.get('not_flag', params.get('negate', params.get('not', False))):
                 cond = f"not {cond}"
