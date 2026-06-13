@@ -118,9 +118,11 @@ class PyGameMakerIDE(QMainWindow):
         try:
             self.create_menu_bar()
 
-            # Set initial auto-save checkbox state from config
+            # Set initial auto-save checkbox state from the SAME store that
+            # wires the timer (editor config), so the menu checkbox can't
+            # desynchronize from the actual auto-save state (audit M6).
             from utils.config import Config
-            auto_save_enabled = Config.get('auto_save_enabled', True)
+            auto_save_enabled = Config.get_editor_config().get('auto_save_enabled', True)
             if hasattr(self, 'auto_save_action'):
                 self.auto_save_action.setChecked(auto_save_enabled)
 
@@ -548,6 +550,12 @@ class PyGameMakerIDE(QMainWindow):
             current_interval = getattr(self.project_manager, 'auto_save_interval', 30000)
             self.project_manager.set_auto_save(enabled, current_interval)
 
+            # Persist to the editor config that startup reads, so the menu
+            # toggle survives a restart and stays in sync with the dialog and
+            # the checkbox init (audit M6).
+            from utils.config import Config
+            Config.set_editor_config(auto_save_enabled=enabled)
+
             if enabled:
                 self.update_status(self.tr("Auto-save enabled"))
                 QMessageBox.information(
@@ -587,10 +595,19 @@ class PyGameMakerIDE(QMainWindow):
                 # Update menu checkbox
                 self.auto_save_action.setChecked(enabled)
 
-                # Save to config
+                # Persist to the SAME store startup reads (editor config, in
+                # minutes). The old top-level 'auto_save_interval' (seconds)
+                # key was never read by anyone and 'auto_save_enabled' drove
+                # only the menu checkbox, so the dialog's choice evaporated on
+                # restart while the timer re-armed from editor config (audit
+                # M6). Sub-minute intervals clamp to 1 minute on persistence
+                # (editor-config granularity); the live session still uses the
+                # exact seconds via set_auto_save above.
                 from utils.config import Config
-                Config.set('auto_save_enabled', enabled)
-                Config.set('auto_save_interval', interval_seconds)
+                Config.set_editor_config(
+                    auto_save_enabled=enabled,
+                    auto_save_interval=max(1, round(interval_seconds / 60)),
+                )
 
                 self.update_status(self.tr("Auto-save settings updated"))
 
