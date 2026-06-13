@@ -52,6 +52,27 @@ append below).
 
 ---
 
+## 2026-06-13 — First 20 audit mediums (M1–M20) fixed (Windows box)
+
+Continued through the medium list of `docs/FULL_AUDIT_2026-06-11.md`:
+re-verified each claim, fixed, landed a regression test, flipped the
+checkbox with the commit hash. Commits `77974b2`..`5c9418b` (one per
+finding; M3/M4/M5 and M9/M10 grouped; M17 was already resolved by H11).
+Suite **808 → 890 passed, 0 failed**.
+
+Cross-machine notes:
+- **M21–M61 medium + all 35 low remain open** — next session starts at M21.
+- **Process gotcha (cost me a recovery):** never edit
+  `docs/FULL_AUDIT_2026-06-11.md` (or any UTF-8 doc with em-dashes) via
+  PowerShell `(Get-Content -Raw) ... | Set-Content -Encoding utf8` — the
+  round-trip read the UTF-8 em-dashes as cp1252 and rewrote them as
+  mojibake (`â€"`). Recovered with `git checkout HEAD -- <file>` then
+  re-applied the flips with the Edit tool. Use the Edit tool for the
+  registry, always.
+- Commit messages with double quotes still need `git commit -F <file>`
+  on this box (PowerShell 5.1 mangles inline quoting) — used a temp file
+  under `.git/` for each.
+
 ## 2026-06-12 — All 15 audit highs fixed (Windows box)
 
 Worked through the full high-severity list of `docs/FULL_AUDIT_2026-06-11.md`
