@@ -4459,8 +4459,13 @@ class ActionExecutor:
             # Held keys are tracked per-instance (instance.keys_pressed), not on
             # game_runner — which has no `pressed_keys` attribute at all, so the
             # old getattr default made this condition always false. Stored names
-            # are lowercase pygame key names (e.g. "space", "right").
-            return key.lower() in getattr(instance, 'keys_pressed', set())
+            # are lowercase pygame key names (e.g. "space", "right"). Heal the
+            # legacy editor spelling ("Left Arrow" -> "left arrow") so projects
+            # saved before M30 still match.
+            key = key.lower()
+            if key.endswith(" arrow"):
+                key = key[: -len(" arrow")]
+            return key in getattr(instance, 'keys_pressed', set())
 
         elif condition_type == "collision_check":
             obj = parameters.get("object", "")
@@ -4494,7 +4499,29 @@ class ActionExecutor:
             return self._compare(current, operator, value)
 
         elif condition_type == "mouse_check":
-            # Simplified mouse check
+            check = parameters.get("check", "")
+            try:
+                import pygame
+            except ImportError:
+                return False
+            if not pygame.get_init():
+                return False
+
+            buttons = pygame.mouse.get_pressed(num_buttons=3)
+            if check == "Left button pressed":
+                return bool(buttons[0])
+            if check == "Middle button pressed":
+                return bool(buttons[1])
+            if check == "Right button pressed":
+                return bool(buttons[2])
+            if check == "Over object":
+                mx, my = pygame.mouse.get_pos()
+                width = getattr(instance, '_cached_width', 32)
+                height = getattr(instance, '_cached_height', 32)
+                return (instance.x <= mx < instance.x + width and
+                        instance.y <= my < instance.y + height)
+            # "In region" has no region parameters in the editor, so it is not
+            # evaluable; fall through to False.
             return False
 
         return False
