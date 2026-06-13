@@ -102,6 +102,13 @@ class SpriteCanvas(QAbstractScrollArea):
         if self._current_tool:
             self._current_tool.reset()
         self._current_tool = tool
+        # End any active gesture when the tool changes mid-stroke. The color
+        # picker auto-switches to Pencil from inside mousePressEvent; without
+        # this, a click-and-slight-drag would keep _painting True and the
+        # subsequent mouseMoveEvents would draw Bresenham lines with the new
+        # Pencil (and the release would mark the sprite modified on a clean
+        # pick). Clearing the flag makes the swap-on-pick gesture inert.
+        self._painting = False
 
     def set_color(self, color: QColor):
         """Set the current drawing color."""

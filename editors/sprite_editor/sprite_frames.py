@@ -99,6 +99,10 @@ class FrameTimeline(QWidget):
         self._current_index = 0
         self._thumbnails = []     # list of FrameThumbnail widgets
         self._fps = 10.0
+        # Optional callback (old_frames, old_index, new_frames, new_index,
+        # description) the editor sets so frame add/duplicate/delete become
+        # undoable. When None (standalone / tests) the ops mutate directly.
+        self._undo_hook = None
 
         # Animation playback
         self._anim_timer = QTimer(self)
@@ -225,8 +229,17 @@ class FrameTimeline(QWidget):
     # Frame operations
     # ------------------------------------------------------------------
 
+    def _record_undo(self, old_frames, old_index, description):
+        """Hand the editor before/after snapshots so the op is undoable."""
+        if self._undo_hook is not None:
+            self._undo_hook(old_frames, old_index,
+                            self.get_frames(), self._current_index,
+                            description)
+
     def add_frame(self):
         """Add a new blank frame after the current one."""
+        old_frames = self.get_frames()
+        old_index = self._current_index
         w, h = self.get_frame_size()
         blank = QImage(w, h, QImage.Format_ARGB32)
         blank.fill(QColor(0, 0, 0, 0))
@@ -234,29 +247,36 @@ class FrameTimeline(QWidget):
         self._frames.insert(insert_at, blank)
         self._rebuild_thumbnails()
         self.set_current_index(insert_at)
+        self._record_undo(old_frames, old_index, "Add Frame")
         self.frames_changed.emit()
 
     def duplicate_frame(self):
         """Duplicate the current frame."""
         if not self._frames:
             return
+        old_frames = self.get_frames()
+        old_index = self._current_index
         copy = self._frames[self._current_index].copy()
         insert_at = self._current_index + 1
         self._frames.insert(insert_at, copy)
         self._rebuild_thumbnails()
         self.set_current_index(insert_at)
+        self._record_undo(old_frames, old_index, "Duplicate Frame")
         self.frames_changed.emit()
 
     def delete_frame(self):
         """Delete the current frame (keep at least one)."""
         if len(self._frames) <= 1:
             return
+        old_frames = self.get_frames()
+        old_index = self._current_index
         del self._frames[self._current_index]
         if self._current_index >= len(self._frames):
             self._current_index = len(self._frames) - 1
         self._rebuild_thumbnails()
         self._update_selection()
         self.frame_selected.emit(self._current_index)
+        self._record_undo(old_frames, old_index, "Delete Frame")
         self.frames_changed.emit()
 
     # ------------------------------------------------------------------

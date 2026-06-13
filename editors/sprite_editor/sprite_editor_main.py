@@ -257,6 +257,10 @@ class SpriteEditor(BaseEditor):
         self.frame_timeline = FrameTimeline()
         self.frame_timeline.frame_selected.connect(self._on_frame_selected)
         self.frame_timeline.frames_changed.connect(self._on_frames_changed)
+        # Make frame add/duplicate/delete undoable: the timeline already
+        # mutated to the new state, so the pushed command's immediate redo()
+        # is idempotent and a later Undo restores the deleted frame.
+        self.frame_timeline._undo_hook = self._record_frame_undo
         vsplitter.addWidget(self.frame_timeline)
 
         # Give most space to the canvas area, minimal to the timeline
@@ -723,6 +727,21 @@ class SpriteEditor(BaseEditor):
         mirrored = mirror_vertical(img)
         self.canvas.set_image(mirrored)
         self._on_canvas_modified()
+
+    def _record_frame_undo(self, old_frames, old_index, new_frames, new_index,
+                           description):
+        """Push a FrameEditCommand for an add/duplicate/delete frame op.
+
+        The timeline performs the mutation itself and then calls this hook, so
+        the command's push-triggered redo() re-applies the (already-current)
+        new state idempotently while undo() restores the prior frame list —
+        which is what makes frame deletion reversible.
+        """
+        cmd = FrameEditCommand(
+            self, old_frames, new_frames, old_index, new_index, description
+        )
+        self.undo_stack.push(cmd)
+        self.data_modified.emit(self.asset_name)
 
     def _resize_canvas(self):
         """Open resize dialog and scale or resize all frames."""
