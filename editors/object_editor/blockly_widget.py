@@ -102,6 +102,12 @@ class BlocklyWidget(QWidget):
         self._loading = False
         self._page_ready = False
         self._pending_events_data = None
+        # Most recent workspace XML, refreshed asynchronously whenever the
+        # blocks change or a workspace is loaded. get_workspace_xml returns
+        # this cached value synchronously — the runJavaScript result callback
+        # fires on a later event-loop turn, so reading it inline always
+        # returned "" and the Blockly layout was never saved (audit M16).
+        self._last_xml = ""
 
         # Debounce timer for auto-apply: dragging a block fires many BLOCK_MOVE
         # events; coalesce them into a single events-panel update once the user
@@ -319,6 +325,8 @@ class BlocklyWidget(QWidget):
             logger.debug(f"[Blockly→Python] on_blocks_changed: received {len(self.events_data)} events: {event_keys}")
             self.blocks_modified.emit()
             self._auto_apply_timer.start()
+            # Keep the saved-XML cache current with the user's edits (audit M16)
+            self._refresh_cached_xml()
             self.update_status(self.tr("Blocks updated - {0} events").format(len(self.events_data)))
         except json.JSONDecodeError as e:
             # Keep self.events_data at the last successful parse so a transient
@@ -346,20 +354,39 @@ class BlocklyWidget(QWidget):
             self._auto_apply_timer.stop()
             self._do_auto_apply()
 
+    def _refresh_cached_xml(self):
+        """Asynchronously pull the current workspace XML into self._last_xml.
+
+        runJavaScript's result callback fires on a later event-loop turn, so
+        this keeps the cache one change behind the live workspace — which is
+        why it's refreshed on every block change and after every load, so by
+        save time the cache reflects the user's latest edit (audit M16)."""
+        if not self._page_ready:
+            return
+
+        def _store(xml):
+            if xml:
+                self._last_xml = xml
+
+        try:
+            self.web_view.page().runJavaScript(
+                "window.blocklyApi.getXml()",
+                _store,
+            )
+        except Exception as e:
+            logger.debug(f"_refresh_cached_xml failed: {e}")
+
     def get_workspace_xml(self) -> str:
-        """Get the current workspace as XML (for saving)"""
-        # This is async, so we use a callback pattern
-        result = {"xml": ""}
+        """Return the most recently cached workspace XML (for saving).
 
-        def callback(xml):
-            result["xml"] = xml
-
-        self.web_view.page().runJavaScript(
-            "window.blocklyApi.getXml()",
-            callback
-        )
-
-        return result["xml"]
+        Synchronous by necessity (the save path can't await): returns the
+        value last fetched by _refresh_cached_xml, and kicks off another
+        refresh so the next read is current. Before audit M16 this read the
+        runJavaScript result inline and always returned "", so the Blockly
+        layout was discarded on every save."""
+        cached = self._last_xml
+        self._refresh_cached_xml()
+        return cached
 
     def load_workspace_xml(self, xml: str):
         """Load workspace from XML"""
@@ -376,6 +403,10 @@ class BlocklyWidget(QWidget):
         # Mirrors load_events_data's on_load_complete.
         def _on_loaded(_result):
             self._loading = False
+            # The loaded workspace IS the current state; seed the cache so a
+            # save before any further edit still persists it (audit M16).
+            self._last_xml = xml
+            self._refresh_cached_xml()
 
         self.web_view.page().runJavaScript(
             f"window.blocklyApi.loadXml('{escaped_xml}')",
