@@ -1400,6 +1400,24 @@ class PyGameMakerIDE(QMainWindow):
                 return  # copy failed; promotion code emitted its own QMessageBox
             project_path = promoted
 
+        # Recent Projects records the .zip path for zip-opened projects, but
+        # the folder loader looks for <zip>/project.json and always fails —
+        # so every zip entry was a permanently dead Recent item. Route .zip
+        # paths through the same zip loader open_project uses (audit M7).
+        if project_path.suffix == '.zip':
+            from utils.project_compression import ProjectCompressor
+            if ProjectCompressor.is_project_zip(project_path):
+                if self.project_manager.load_project_from_zip(project_path):
+                    self.asset_tree.project_manager = self.project_manager
+                    Config.set("last_project_directory", str(project_path.parent))
+                    self.add_to_recent_projects(str(project_path))
+                else:
+                    QMessageBox.warning(self, self.tr("Error"), self.tr("Failed to load project from zip"))
+            else:
+                QMessageBox.warning(self, self.tr("Invalid Zip"),
+                                    self.tr("This zip file does not contain a valid PyGameMaker project"))
+            return
+
         if self.project_manager.load_project(project_path):
             self.asset_tree.project_manager = self.project_manager
             Config.set("last_project_directory", str(project_path.parent))
