@@ -483,22 +483,29 @@ class AssetManager(QObject):
             asset_data["name"] = new_name
             asset_data["modified"] = datetime.now().isoformat()
 
-            # CRITICAL: Update cache - DELETE old, ADD new
+            # CRITICAL: Update cache - replace the key IN PLACE, preserving
+            # position. A del-old + append-new moved the renamed asset to the
+            # end of the dict; for rooms, dict order IS the room order (no code
+            # writes 'room_order'; the runtime falls back to key order for the
+            # start room and next-room navigation), so renaming room0 silently
+            # changed which room the game starts in (audit M3). Rebuilding the
+            # SAME bucket object (clear + reinsert) keeps any cache /
+            # current_project_data aliasing intact.
             if asset_type in self.assets_cache:
-                # Save the data first
                 updated_data = asset_data.copy()
-
-                # Remove old key
-                if old_name in self.assets_cache[asset_type]:
-                    del self.assets_cache[asset_type][old_name]
-                    logger.debug(f"✅ Removed old key from cache: {old_name}")
-
-                # Add new key
-                self.assets_cache[asset_type][new_name] = updated_data
-                logger.debug(f"✅ Added new key to cache: {new_name}")
-
-                # Verify the update
-                logger.debug(f"  Cache after: {list(self.assets_cache.get(asset_type, {}).keys())}")
+                bucket = self.assets_cache[asset_type]
+                items = list(bucket.items())
+                bucket.clear()
+                renamed = False
+                for k, v in items:
+                    if k == old_name:
+                        bucket[new_name] = updated_data
+                        renamed = True
+                    else:
+                        bucket[k] = v
+                if not renamed:
+                    bucket[new_name] = updated_data
+                logger.debug(f"  Cache after: {list(bucket.keys())}")
 
             # Update references in other assets (e.g., objects using this sprite)
             self._update_asset_references(asset_type, old_name, new_name)
@@ -606,8 +613,20 @@ class AssetManager(QObject):
                 # Update background references in rooms
                 rooms = self.assets_cache.get("rooms", {})
                 for room_name, room_data in rooms.items():
+                    room_modified = False
+                    # Legacy single-background field
                     if room_data.get("background_image") == old_name:
                         room_data["background_image"] = new_name
+                        room_modified = True
+                    # 8-layer 'backgrounds' list written by the properties
+                    # panel's Background Layers dialog and rendered by the
+                    # runtime — the legacy field alone left these dangling
+                    # (audit M4).
+                    for layer in room_data.get("backgrounds", []):
+                        if isinstance(layer, dict) and layer.get("background_image") == old_name:
+                            layer["background_image"] = new_name
+                            room_modified = True
+                    if room_modified:
                         room_data["modified"] = datetime.now().isoformat()
                         logger.debug(f"  📝 Updated background reference in room '{room_name}': {old_name} → {new_name}")
 
@@ -620,6 +639,24 @@ class AssetManager(QObject):
         Used when renaming sprites, sounds, or rooms to update references
         like set_sprite(sprite=old_name), sound_play(sound=old_name), etc.
         """
+        def update_action_list(actions):
+            """Update param_key across an action list, recursing into nested
+            then_actions/else_actions (a fully supported structure that the
+            old single-level walk left with stale names — audit M5)."""
+            changed = False
+            for action in actions or []:
+                if not isinstance(action, dict):
+                    continue
+                params = action.get("parameters", {})
+                if params.get(param_key) == old_name:
+                    params[param_key] = new_name
+                    changed = True
+                for nested_key in ("then_actions", "else_actions"):
+                    nested = params.get(nested_key)
+                    if isinstance(nested, list):
+                        changed |= update_action_list(nested)
+            return changed
+
         objects = self.assets_cache.get("objects", {})
         for obj_name, obj_data in objects.items():
             events = obj_data.get("events", {})
@@ -630,20 +667,12 @@ class AssetManager(QObject):
                 if not isinstance(event_data, dict):
                     continue
                 # Top-level actions
-                for action in event_data.get("actions", []):
-                    params = action.get("parameters", {})
-                    if params.get(param_key) == old_name:
-                        params[param_key] = new_name
-                        obj_modified = True
+                obj_modified |= update_action_list(event_data.get("actions", []))
                 # Sub-event actions (keyboard sub-keys, etc.)
                 for key, sub_data in event_data.items():
                     if key == "actions" or not isinstance(sub_data, dict):
                         continue
-                    for action in sub_data.get("actions", []):
-                        params = action.get("parameters", {})
-                        if params.get(param_key) == old_name:
-                            params[param_key] = new_name
-                            obj_modified = True
+                    obj_modified |= update_action_list(sub_data.get("actions", []))
             if obj_modified:
                 obj_data["modified"] = datetime.now().isoformat()
                 logger.debug(f"  📝 Updated '{param_key}' references in object '{obj_name}': {old_name} → {new_name}")
@@ -662,12 +691,22 @@ class AssetManager(QObject):
 
         def update_action_params(action):
             nonlocal modified
+            if not isinstance(action, dict):
+                return
             params = action.get("parameters", {})
             for key in OBJ_PARAM_KEYS:
                 if params.get(key) == old_name:
                     params[key] = new_name
                     logger.debug(f"  📝 Updated action param in '{obj_name}'.{event_name}: {key}={old_name} → {new_name}")
                     modified = True
+            # Recurse into nested conditional branches — object references
+            # inside then_actions/else_actions were previously left stale
+            # (audit M5).
+            for nested_key in ("then_actions", "else_actions"):
+                nested = params.get(nested_key)
+                if isinstance(nested, list):
+                    for nested_action in nested:
+                        update_action_params(nested_action)
 
         # Top-level actions list
         for action in event_data.get("actions", []):
