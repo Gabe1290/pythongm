@@ -170,7 +170,11 @@ class PlaygroundCanvas(QWidget):
             robot = PlaygroundRobot.from_dict(robot_data)
         else:
             robot = PlaygroundRobot(port=self._next_port)
-            self._next_port += 1
+        # Keep _next_port ahead of every placed robot regardless of which
+        # branch built it. The live ROBOT-tool path constructs the robot with
+        # the current _next_port and then calls add_robot(robot.to_dict()),
+        # so without this the data path would hand out 33333 to every robot.
+        self._next_port = max(self._next_port, robot.port + 1)
         if use_undo:
             cmd = AddElementCommand(self, robot, "Add Robot")
             self.robots.append(robot)
