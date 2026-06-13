@@ -284,10 +284,30 @@ workspace XML is cached so the layout saves (M16); plain assignments
 aren't misclassified as Thymio variables and the handler preserves value
 types (M18); conditionals always render a body — no bodiless if/for (M19);
 execute_code binds `self` and a `keyboard.check()` shim (M20).
-**M21–M61 medium + 35 low remain open** — pick up at M21. Reminder: do
-NOT round-trip docs/FULL_AUDIT through PowerShell Get-Content/Set-Content
-(it mangles the em-dashes to mojibake) — edit the registry only with the
-Edit tool.
+Reminder: do NOT round-trip docs/FULL_AUDIT through PowerShell
+Get-Content/Set-Content (it mangles the em-dashes to mojibake) — edit the
+registry only with the Edit tool.
+
+**2026-06-14 — Mediums M21–M40 from the 2026-06-11 audit fixed.** One
+Windows-box session, commits grouped by shared file/root-cause (`17dcec2`
+M21+M22 playground ports/redo; `ac49bfd` M23+M24 room Clear/Shift-All undo
++ already_added redo; `67d39e0` M25+M26 eyedropper drag + frame undo;
+`e2f7482` M27 set_sprite `<self>`; `7b008ee` M28 room nav sentinels in
+goto/check_room; `547d024` M29 test_health operators; `e9f4897` M30+M31
+key_pressed arrow names + mouse_check; `c3650ca` M32+M33 aseba .aesl XML
+envelope + stray `end`; `097c7b1` M34 Kivy check_collision_at;
+`98ba8b2` M35+M36+M37 Kivy keyboard_release / grid heuristic / dup-method
+merge; `7891d7c` M38+M39 desktop export name-sanitize + copy-failure
+reporting; `2002957` M40 GMK image-dimension clamp). Each finding has a
+dedicated regression test file and the registry checkbox flipped. Suite
+890 → 958 passed, 0 failed. Notes worth carrying forward: the M30 fix
+changed the key_pressed canonical values to lowercase runtime names and
+dropped the misleading Held/Released states (updated
+`tests/test_audit_regressions.py` accordingly); the M34 fix changed the
+Kivy collision codegen to offset-from-self (updated `tests/test_exporters.py`).
+The Kivy GameObject/Scene templates are `.format()` strings — literal `{`/`}`
+must be doubled; the base-object template ends with `code.format(grid_size=…)`.
+**M41–M61 medium + 35 low remain open** — pick up at M41.
 
 **2026-06-09 — Runtime-core audit (Batch A): most rejected, room-dimension
 bounds added.** A 9-finding audit of `game_runner.py` / `action_executor.py` /
