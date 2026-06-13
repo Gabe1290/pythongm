@@ -76,10 +76,12 @@ class AsebaExporter:
             # Generate AESL code
             aesl_code = self.generate_aesl(obj_name, obj_data, project_data)
 
-            # Write to file
+            # Write to file wrapped in the aesl-source XML envelope that Aseba
+            # Studio's File -> Open expects; the bare source text could not be
+            # opened (it parsed the file as XML and rejected plain text).
             output_file = output_path / f"{obj_name}.aesl"
             with open(output_file, 'w', encoding='utf-8') as f:
-                f.write(aesl_code)
+                f.write(self._wrap_aesl_xml(aesl_code))
 
             logger.info(f"   Exported to: {output_file}")
             success_count += 1
@@ -135,6 +137,25 @@ class AsebaExporter:
             lines.append(event_section)
 
         return '\n'.join(lines)
+
+    def _wrap_aesl_xml(self, code: str) -> str:
+        """Wrap generated Aseba source in the aesl-source XML document.
+
+        Aseba Studio's File -> Open parses .aesl as XML (<!DOCTYPE aesl-source>
+        <network><node ...>code</node></network>). Writing the bare source
+        text made every export un-openable. The code goes in a CDATA section so
+        '<', '>' and '&' in expressions survive without escaping.
+        """
+        # Guard against an accidental "]]>" terminating the CDATA early.
+        safe_code = code.replace("]]>", "]]]]><![CDATA[>")
+        return (
+            '<!DOCTYPE aesl-source>\n'
+            '<network>\n'
+            '<node nodeId="1" name="thymio-II"><![CDATA[\n'
+            f'{safe_code}\n'
+            ']]></node>\n'
+            '</network>\n'
+        )
 
     def _generate_header(self, obj_name: str, project_data: Dict) -> str:
         """Generate file header comment"""
@@ -261,7 +282,10 @@ class AsebaExporter:
             if code:
                 lines.append(code)
 
-        lines.append("end")
+        # NB: no trailing "end" here. In AESL, "end" only closes
+        # if/when/while/for blocks; onevent handlers terminate implicitly at
+        # the next onevent/sub or EOF, so a stray "end" is a syntax error that
+        # failed compilation for every exported handler.
 
         self.indent_level = 0
 
