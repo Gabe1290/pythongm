@@ -320,11 +320,29 @@ def register_thymio_actions(action_executor: Any) -> None:
     # ========================================================================
 
     def execute_thymio_set_variable_action(instance, parameters):
-        """Set a variable value"""
-        variable = parameters.get('variable', 'state')
-        value = _parse_value(parameters.get('value', 0), instance)
+        """Set a variable value, preserving the value's type.
 
-        setattr(instance, variable, int(value))
+        The old `int(_parse_value(...))` truncated floats (1.5 -> 1) and
+        turned non-numeric strings into 0 (audit M18). Now a float stays a
+        float, a numeric string is parsed to its number, a variable name
+        resolves to the referenced attribute, and any other string is kept
+        verbatim."""
+        variable = parameters.get('variable', 'state')
+        raw = parameters.get('value', 0)
+
+        if isinstance(raw, bool) or isinstance(raw, (int, float)):
+            value = raw
+        elif isinstance(raw, str):
+            stripped = raw.strip()
+            try:
+                value = float(stripped) if '.' in stripped else int(stripped)
+            except ValueError:
+                # Variable reference -> its current value; else a string literal.
+                value = getattr(instance, raw, raw)
+        else:
+            value = _parse_value(raw, instance)
+
+        setattr(instance, variable, value)
 
     def execute_thymio_increase_variable_action(instance, parameters):
         """Increase a variable"""
