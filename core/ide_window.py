@@ -3379,7 +3379,10 @@ class PyGameMakerIDE(QMainWindow):
             if self._focus_detached_editor(room_name):
                 return
             for i in range(self.editor_tabs.count()):
-                if self.editor_tabs.tabText(i) == room_name:
+                # Compare by widget identity, not tab text: a modified editor's
+                # tab reads 'name*', so a text match failed exactly when dirty
+                # and a duplicate editor was constructed (audit M11).
+                if self.editor_tabs.widget(i) is self.open_editors[room_name]:
                     self.editor_tabs.setCurrentIndex(i)
                     return
 
@@ -3428,7 +3431,8 @@ class PyGameMakerIDE(QMainWindow):
             if self._focus_detached_editor(playground_name):
                 return
             for i in range(self.editor_tabs.count()):
-                if self.editor_tabs.tabText(i) == playground_name:
+                # Identity, not tab text (a dirty tab reads 'name*') — audit M11.
+                if self.editor_tabs.widget(i) is self.open_editors[playground_name]:
                     self.editor_tabs.setCurrentIndex(i)
                     return
 
@@ -3476,7 +3480,8 @@ class PyGameMakerIDE(QMainWindow):
             if self._focus_detached_editor(object_name):
                 return
             for i in range(self.editor_tabs.count()):
-                if self.editor_tabs.tabText(i) == object_name:
+                # Identity, not tab text (a dirty tab reads 'name*') — audit M11.
+                if self.editor_tabs.widget(i) is self.open_editors[object_name]:
                     self.editor_tabs.setCurrentIndex(i)
                     return
 
@@ -3541,7 +3546,8 @@ class PyGameMakerIDE(QMainWindow):
             if self._focus_detached_editor(sprite_name):
                 return
             for i in range(self.editor_tabs.count()):
-                if self.editor_tabs.tabText(i) == sprite_name:
+                # Identity, not tab text (a dirty tab reads 'name*') — audit M11.
+                if self.editor_tabs.widget(i) is self.open_editors[sprite_name]:
                     self.editor_tabs.setCurrentIndex(i)
                     return
 
@@ -3589,7 +3595,8 @@ class PyGameMakerIDE(QMainWindow):
             if self._focus_detached_editor(script_name):
                 return
             for i in range(self.editor_tabs.count()):
-                if self.editor_tabs.tabText(i) == script_name:
+                # Identity, not tab text (a dirty tab reads 'name*') — audit M11.
+                if self.editor_tabs.widget(i) is self.open_editors[script_name]:
                     self.editor_tabs.setCurrentIndex(i)
                     return
 
