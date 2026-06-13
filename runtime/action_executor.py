@@ -2474,6 +2474,12 @@ class ActionExecutor:
 
         value = float(parameters.get("value", 0))
         operation = parameters.get("operation", "equal")
+        # Heal the legacy *_or_equal spellings the editor used to save so
+        # already-authored projects keep working (M29).
+        if operation == "less_or_equal":
+            operation = "less_equal"
+        elif operation == "greater_or_equal":
+            operation = "greater_equal"
 
         current_health = self.game_runner.health
 

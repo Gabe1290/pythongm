@@ -1285,7 +1285,7 @@ ACTION_TYPES = {
                 name="operation", display_name="Operation",
                 param_type="choice", default_value="equal",
                 description="Comparison operator",
-                choices=["equal", "less", "greater", "less_or_equal", "greater_or_equal", "not_equal"],
+                choices=["equal", "less", "greater", "less_equal", "greater_equal", "not_equal"],
             ),
             ActionParameter(
                 name="value", display_name="Value",
