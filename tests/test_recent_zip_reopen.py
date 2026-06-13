@@ -32,6 +32,8 @@ def _stub():
         project_manager=MagicMock(),
         asset_tree=SimpleNamespace(project_manager=None),
         add_to_recent_projects=lambda p: recents.append(p),
+        current_project_path=None,  # fresh IDE: no pre-switch editor flush
+        _flush_open_editors=lambda: None,
         tr=lambda s: s,
         _recents=recents,
     )
