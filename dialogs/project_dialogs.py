@@ -319,13 +319,16 @@ class ExportProjectDialog(QDialog):
         target_layout = QFormLayout(target_group)
 
         self.export_platform = QComboBox()
-        self.export_platform.addItems([
-            self.tr("Desktop Executable (.exe/.app)"),
-            self.tr("Web (HTML5)"),
-            self.tr("Mobile (Kivy)"),
-            self.tr("Mobile (APK)"),
-            self.tr("Source Code (.zip)")
-        ])
+        # Store a locale-independent id as userData and route on currentData():
+        # accept_export used to compare the (translated) display text against
+        # English literals, so 'Desktop Executable' and 'Source Code' exports
+        # silently no-op'd in French/etc. with a false success message
+        # (audit M13).
+        self.export_platform.addItem(self.tr("Desktop Executable (.exe/.app)"), "exe")
+        self.export_platform.addItem(self.tr("Web (HTML5)"), "html5")
+        self.export_platform.addItem(self.tr("Mobile (Kivy)"), "kivy")
+        self.export_platform.addItem(self.tr("Mobile (APK)"), "apk")
+        self.export_platform.addItem(self.tr("Source Code (.zip)"), "zip")
         target_layout.addRow(self.tr("Target Platform:"), self.export_platform)
 
         # Output path
@@ -412,29 +415,34 @@ class ExportProjectDialog(QDialog):
             QMessageBox.warning(self, self.tr("Invalid Output"), self.tr("Please choose an export location."))
             return
 
-        # Store export settings
+        # Route on the locale-independent userData id, not the display text
+        # (audit M13).
+        platform = self.export_platform.currentData()
+
+        # Store export settings (id is stable across locales)
         self.export_settings = {
-            "platform": self.export_platform.currentText(),
+            "platform": platform,
             "output_path": output_path,
             "include_assets": self.include_assets_check.isChecked(),
             "optimize": self.optimize_check.isChecked(),
             "include_debug": self.include_debug_check.isChecked()
         }
 
-        # Route to appropriate exporter based on platform
-        platform = self.export_platform.currentText()
-
-        if platform == "Web (HTML5)":
+        if platform == "html5":
             self._export_html5()
-        elif platform == "Mobile (Kivy)" or platform == "Mobile (APK)":
+        elif platform in ("kivy", "apk"):
             self._export_kivy()
-        elif platform == "Source Code (.zip)":
+        elif platform == "zip":
             self._export_zip()
-        elif platform == "Desktop Executable (.exe/.app)":
+        elif platform == "exe":
             self._export_executable()
         else:
-            # Unknown platform - just accept
-            self.accept()
+            # Unknown platform — surface it instead of a silent false success.
+            QMessageBox.warning(
+                self, self.tr("Export Failed"),
+                self.tr("Unknown export target: {0}").format(
+                    self.export_platform.currentText())
+            )
 
     def _export_kivy(self):
         """Export project using Kivy exporter with project adapter"""
