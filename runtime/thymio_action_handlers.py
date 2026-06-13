@@ -7,6 +7,7 @@ These handlers control the Thymio robot simulator including motors,
 LEDs, sounds, and sensor readings.
 """
 
+import re
 from typing import Any, Dict, Union
 
 from core.logger import get_logger
@@ -16,6 +17,13 @@ logger = get_logger(__name__)
 # Type aliases for clarity
 Instance = Any  # Game instance with thymio_simulator attribute
 Parameters = Dict[str, Any]
+
+# Choice params (sensor_index, sound_id) are persisted as their full label
+# string, e.g. "2 - Front Center" / "0 - Startup" — the GM80 action dialog
+# saves widget.currentText(). Match a leading integer index followed by a
+# " - <letter...>" label so the index can be recovered (audit M1). A plain
+# number ("440") or a variable name never matches this shape.
+_CHOICE_LABEL_RE = re.compile(r'^\s*(\d+)\s*-\s*[A-Za-z]')
 
 
 def register_thymio_actions(action_executor: Any) -> None:
@@ -415,6 +423,13 @@ def _parse_value(value: Any, instance: Instance) -> Union[int, float]:
         return value
 
     if isinstance(value, str):
+        # Choice params arrive as their full label ("2 - Front Center"); pull
+        # the leading index so the selection isn't silently collapsed to 0
+        # (audit M1).
+        choice = _CHOICE_LABEL_RE.match(value)
+        if choice:
+            return int(choice.group(1))
+
         # Try to parse as number
         try:
             if '.' in value:
