@@ -67,8 +67,10 @@ class AssetTreeItem(QTreeWidgetItem):
                 asset_imported = self.asset_data.get('imported', False)
 
                 if asset_imported:
-                    # Show imported asset normally with type icons
-                    self.setForeground(0, Qt.GlobalColor.black)
+                    # Show imported asset normally with type icons. Leave the
+                    # foreground on the palette's text role — hardcoding black
+                    # made imported assets unreadable (black-on-dark) under the
+                    # dark theme (L33).
 
                     # Add type-specific icon or thumbnail
                     if self.asset_type == "sprites":

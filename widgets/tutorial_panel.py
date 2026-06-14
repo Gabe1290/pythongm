@@ -109,6 +109,11 @@ class TutorialPanel(QWidget):
         # HTML content browser
         self.content_browser = QTextBrowser()
         self.content_browser.setOpenExternalLinks(False)
+        # Also disable openLinks so QTextBrowser doesn't call setSource() itself
+        # after emitting anchorClicked — for an http(s) link that internal
+        # setSource blanked the tutorial page (on_link_clicked is the single
+        # navigation authority) (L35).
+        self.content_browser.setOpenLinks(False)
         self.content_browser.anchorClicked.connect(self.on_link_clicked)
         content_layout.addWidget(self.content_browser)
 
