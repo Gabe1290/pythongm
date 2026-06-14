@@ -431,14 +431,150 @@ references the commit it shipped in so a regression is easy to bisect.
 
 ---
 
+## 15. Audit-fix validation (2026-06-11 full audit: 15 high / 61 medium / 35 low)
+
+Re-run on **each** desktop OS to confirm the audit fixes hold. Every line has a
+per-platform tri-box — tick **L**inux / **W**indows / **m**acOS as you verify
+it. Each item is tagged with the audit ID(s) it validates; full descriptions
+live in `docs/FULL_AUDIT_2026-06-11.md`. The bulk of the fixes ship with
+automated regression tests (15.0), so on a given OS you can run the suite first
+and then spot-check the platform-sensitive items below.
+
+### 15.0 Automated regression suite (the primary validator)
+
+- [ ] L · [ ] W · [ ] m — `pytest tests/ -q` reports **0 failures**
+      (Windows: `py -3.12 -m pytest tests/ -q`; Linux/macOS: `python3 -m pytest tests/ -q`).
+      Expected ~1080 passed on the Windows box; pass count grows as tests are
+      added, skip count is env-dependent — treat any non-zero **failure** as a
+      regression (per CLAUDE.md).
+- [ ] L · [ ] W · [ ] m — `python tools/smoke_run_samples.py` — all bundled
+      samples boot and run their loop with no fatal crash (headless, SDL dummy).
+- [ ] L · [ ] W · [ ] m — `python tools/smoke_room_lifecycle.py` — room
+      restart / change / restart_game and create-once hold on real sample data
+      (validates M48/M51/M52/M53).
+
+### 15.1 Runtime / gameplay (Test Game on the bundled samples)
+
+- [ ] L · [ ] W · [ ] m — Imported maze/platformer samples run at the authored
+      speed, not double-speed (GMK `room_speed` honored) (M48)
+- [ ] L · [ ] W · [ ] m — A spawner that creates instances each step no longer
+      hard-hangs the frame; spawned instances appear next frame (M49, M46)
+- [ ] L · [ ] W · [ ] m — Bullets/enemies spawned via Create Moving/Random
+      Instance are **visible** and inherit parent events/collisions (M46, M47)
+- [ ] L · [ ] W · [ ] m — `exit_event` inside an if/else branch or a repeat
+      block aborts the whole event; an `if_condition` then-branch runs **once**
+      (M43)
+- [ ] L · [ ] W · [ ] m — Pushing a sprite with a transparent margin / nonzero
+      origin lands flush against a wall (no jitter / off-grid) (M50)
+- [ ] L · [ ] W · [ ] m — A persistent player survives `restart_room`; after
+      `restart_game` rooms 2..N are fresh; re-entering a room doesn't re-run
+      its create events (M51, M52, M53)
+- [ ] L · [ ] W · [ ] m — Releasing a movement key while a message dialog is
+      open does NOT leave the character moving after it closes (M54)
+- [ ] L · [ ] W · [ ] m — `key_pressed` arrow conditions and `mouse_check`
+      button/over-object conditions actually fire; numpad/punctuation keys work
+      (M30, M31, L25)
+- [ ] L · [ ] W · [ ] m — Test Health `<= 0` / `>= N` death checks trigger
+      (M29); Next/Previous/Restart-Room dropdown options navigate (M28)
+- [ ] L · [ ] W · [ ] m — `outside_room` fires when the sprite is fully
+      off-screen for nonzero-origin sprites (L30)
+- [ ] L · [ ] W · [ ] m — Custom `self.<var>` code in an event runs (no silent
+      NameError); collision-spawned instances' create events read their **own**
+      speed, not the colliding pair's (L28, L29, M45)
+
+### 15.2 Thymio playground / simulator
+
+- [ ] L · [ ] W · [ ] m — Ground sensors read the surface **in front** of the
+      robot (line-following works); "Turn Left" rotates left on screen (M55, M56)
+- [ ] L · [ ] W · [ ] m — Opening then closing the Thymio Playground / Run
+      window repeatedly doesn't accumulate windows or memory (WA_DeleteOnClose) (L4)
+- [ ] L · [ ] W · [ ] m — Blockly Thymio `if`-blocks execute their nested
+      actions and don't skip the following sibling action (M44)
+
+### 15.3 Editors (sprite / room / playground / object / script)
+
+- [ ] L · [ ] W · [ ] m — Sprite editor: eyedropper drag doesn't paint; frame
+      add/duplicate/**delete** are undoable; drawing during playback doesn't
+      lose strokes; margin clicks don't paint edge pixels; selection marquees
+      don't dirty the sprite (M25, M26, L15, L16, L17)
+- [ ] L · [ ] W · [ ] m — Room editor: Clear All / Shift All are undoable;
+      paste/duplicate/paint **redo** works; scaled instances are clickable over
+      their whole footprint; Ctrl+D doesn't clobber the copy clipboard
+      (M23, M24, L12, L13)
+- [ ] L · [ ] W · [ ] m — Playground editor: robots get unique ports; Add
+      Wall/Robot redo works; properties panel refreshes after undo/redo
+      (M21, M22, L11)
+- [ ] L · [ ] W · [ ] m — Script editor: toolbar Undo/Redo and Edit ▸ Undo work
+      (not just Ctrl+Z) (L14)
+- [ ] L · [ ] W · [ ] m — A room and an object that share a name can both be
+      open; deleting one doesn't close the other (L5)
+
+### 15.4 Events / actions config dialogs
+
+- [ ] L · [ ] W · [ ] m — Editing a `set_sprite` action keeps `<self>` (doesn't
+      silently re-point to the first sprite); `draw_lives` empty sprite is
+      reachable (M27)
+- [ ] L · [ ] W · [ ] m — `check_empty` dropdown shows only solid/all (no bogus
+      object names); unknown/Blockly-only actions still appear as a row so
+      Remove/Move hit the right action (L18, L19)
+
+### 15.5 Importers (GMK / Roberta)
+
+- [ ] L · [ ] W · [ ] m — Importing a normal `.gmk` works; a hostile/corrupt one
+      (huge declared image/zlib sizes) is rejected with a warning, not an OOM
+      hang (M40, M41, L26)
+- [ ] L · [ ] W · [ ] m — Roberta import: LED colours apply (red/green/blue);
+      a variable-driven LED colour doesn't crash the import (M42, L27)
+
+### 15.6 Exporters (platform-sensitive — run the native target per OS)
+
+- [ ] L · [ ] W · [ ] m — Desktop export of a project named with an apostrophe
+      (e.g. "L'aventure") builds; a locked output folder reports failure and
+      keeps the build instead of reporting fake success (M38, M39)
+- [ ] L · [ ] W · [ ] m — Aseba `.aesl` export opens via Aseba Studio
+      File ▸ Open (valid XML, no stray `end`) (M32, M33)
+- [ ] L · [ ] W · [ ] m — Kivy/desktop export: collision actions, jump,
+      keyboard-release and non-PNG backgrounds work; a quoted/newline message
+      doesn't break the build (M34, M35, M36, M37, L21, L22)
+- [ ] L · [ ] m — Android export (Linux/macOS native; Windows via WSL): an
+      accented project name builds; a failed/cancelled build cleans its temp
+      dir and doesn't double-report (L20, L23, L24)
+- [ ] L · [ ] W · [ ] m — Object/Room **package** export+import round-trips
+      non-PNG sprite/background assets (M58)
+
+### 15.7 Assets / project / widgets / IDE lifecycle
+
+- [ ] L · [ ] W · [ ] m — Deleting/renaming a room, object **or playground**
+      removes/moves its `<type>/<name>.json` side file (no resurrection on reuse)
+      (H3, M59)
+- [ ] L · [ ] W · [ ] m — Editing object properties in the right panel with no
+      editor open writes through and marks dirty; a drag-reorder isn't discarded
+      by a later asset delete (M61, M60)
+- [ ] L · [ ] W · [ ] m — Importing an object/room package after unsaved edits
+      doesn't silently discard them (L2)
+- [ ] L · [ ] W · [ ] m — Imported assets are readable under the **dark** theme
+      (not black-on-dark) (L33)
+- [ ] L · [ ] W · [ ] m — New Project description persists into Project Settings;
+      Export Options checkboxes (Debug/Optimize) take effect (L8, L9)
+- [ ] L · [ ] W · [ ] m — Opening a `.zip` project then quitting/switching
+      doesn't leave a temp extraction behind in TEMP (L7)
+- [ ] L · [ ] W · [ ] m — A tutorial with an external link doesn't blank the
+      page; the committee edition shows a placeholder, not an empty list, under
+      a non-en/fr language (L35, L1)
+- [ ] L · [ ] W · [ ] m — `project.json` survives a simulated mid-save failure
+      (atomic write); folder save rolls back across files on error (L34)
+
+---
+
 ## Test Environment Notes
 
-**Date Tested:** _______________
+Track each OS pass separately so a platform-specific regression is obvious.
 
-**Version:** _______________
-
-**OS:** _______________
-
-**Tester:** _______________
-
-**Notes:**
+| Field | Linux | Windows | macOS |
+|---|---|---|---|
+| Date tested | | | |
+| OS version | | | |
+| Python / PySide6 | | | |
+| `pytest` result (passed/failed) | | | |
+| Tester | | | |
+| Notes | | | |
