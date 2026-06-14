@@ -33,6 +33,20 @@ class ResourcePackager:
         return dest
 
     @staticmethod
+    def _asset_archive_path(asset_data: dict, asset_type: str, asset_name: str) -> str:
+        """Archive-relative path for an asset's image file.
+
+        Prefers the asset's own ``file_path`` (which carries the real extension —
+        sprites/backgrounds can be .jpg/.bmp/.gif/.tga/.webp, not just .png) and
+        falls back to ``<asset_type>/<name>.png`` for legacy data. Hardcoding
+        .png silently dropped every non-PNG dependency from packages (M58).
+        """
+        file_path = (asset_data or {}).get('file_path')
+        if file_path:
+            return str(file_path).replace('\\', '/')
+        return f"{asset_type}/{asset_name}.png"
+
+    @staticmethod
     def export_object(project_path: Path, object_name: str, output_path: Path) -> bool:
         """
         Export an object with all its sprite dependencies
@@ -85,10 +99,12 @@ class ResourcePackager:
                 # Add sprite files if they exist
                 sprite_name = object_data.get('sprite', '')
                 if sprite_name and sprite_name in dependencies.get('sprites', {}):
-                    sprite_path = project_path / 'sprites' / f"{sprite_name}.png"
+                    rel = ResourcePackager._asset_archive_path(
+                        dependencies['sprites'][sprite_name], 'sprites', sprite_name)
+                    sprite_path = project_path / rel
                     if sprite_path.exists():
-                        zipf.write(sprite_path, f'sprites/{sprite_name}.png')
-                        print(f"  Added sprite: {sprite_name}.png")
+                        zipf.write(sprite_path, rel)
+                        print(f"  Added sprite: {rel}")
 
             print(f"✅ Object exported to: {output_path}")
             return True
@@ -165,17 +181,21 @@ class ResourcePackager:
                 # Add background if it exists
                 background = room_data.get('background_image', '')
                 if background and background in dependencies.get('backgrounds', {}):
-                    bg_path = project_path / 'backgrounds' / f"{background}.png"
+                    rel = ResourcePackager._asset_archive_path(
+                        dependencies['backgrounds'][background], 'backgrounds', background)
+                    bg_path = project_path / rel
                     if bg_path.exists():
-                        zipf.write(bg_path, f'backgrounds/{background}.png')
-                        print(f"  Added background: {background}.png")
+                        zipf.write(bg_path, rel)
+                        print(f"  Added background: {rel}")
 
                 # Add sprites for all objects
-                for sprite_name in dependencies.get('sprites', {}).keys():
-                    sprite_path = project_path / 'sprites' / f"{sprite_name}.png"
+                for sprite_name, sprite_data in dependencies.get('sprites', {}).items():
+                    rel = ResourcePackager._asset_archive_path(
+                        sprite_data, 'sprites', sprite_name)
+                    sprite_path = project_path / rel
                     if sprite_path.exists():
-                        zipf.write(sprite_path, f'sprites/{sprite_name}.png')
-                        print(f"  Added sprite: {sprite_name}.png")
+                        zipf.write(sprite_path, rel)
+                        print(f"  Added sprite: {rel}")
 
             print(f"✅ Room exported to: {output_path}")
             return True
@@ -243,12 +263,13 @@ class ResourcePackager:
                     # Check if sprite already exists
                     sprites = project_data.get('assets', {}).get('sprites', {})
                     if sprite_name not in sprites:
-                        # Extract sprite file
-                        sprite_file = f'sprites/{sprite_name}.png'
+                        # Extract sprite file (honor its real extension, M58)
+                        sprite_file = ResourcePackager._asset_archive_path(
+                            sprite_data, 'sprites', sprite_name)
                         if sprite_file in zipf.namelist():
                             sprite_dest = ResourcePackager._safe_join(
-                                project_path, 'sprites', f"{sprite_name}.png")
-                            sprite_dest.parent.mkdir(exist_ok=True)
+                                project_path, sprite_file)
+                            sprite_dest.parent.mkdir(parents=True, exist_ok=True)
 
                             with zipf.open(sprite_file) as src:
                                 with open(sprite_dest, 'wb') as dst:
@@ -334,12 +355,13 @@ class ResourcePackager:
                 for bg_name, bg_data in dependencies.get('backgrounds', {}).items():
                     backgrounds = project_data.get('assets', {}).get('backgrounds', {})
                     if bg_name not in backgrounds:
-                        # Extract background file
-                        bg_file = f'backgrounds/{bg_name}.png'
+                        # Extract background file (honor its real extension, M58)
+                        bg_file = ResourcePackager._asset_archive_path(
+                            bg_data, 'backgrounds', bg_name)
                         if bg_file in zipf.namelist():
                             bg_dest = ResourcePackager._safe_join(
-                                project_path, 'backgrounds', f"{bg_name}.png")
-                            bg_dest.parent.mkdir(exist_ok=True)
+                                project_path, bg_file)
+                            bg_dest.parent.mkdir(parents=True, exist_ok=True)
 
                             with zipf.open(bg_file) as src:
                                 with open(bg_dest, 'wb') as dst:
@@ -359,12 +381,13 @@ class ResourcePackager:
                 for sprite_name, sprite_data in dependencies.get('sprites', {}).items():
                     sprites = project_data.get('assets', {}).get('sprites', {})
                     if sprite_name not in sprites:
-                        # Extract sprite file
-                        sprite_file = f'sprites/{sprite_name}.png'
+                        # Extract sprite file (honor its real extension, M58)
+                        sprite_file = ResourcePackager._asset_archive_path(
+                            sprite_data, 'sprites', sprite_name)
                         if sprite_file in zipf.namelist():
                             sprite_dest = ResourcePackager._safe_join(
-                                project_path, 'sprites', f"{sprite_name}.png")
-                            sprite_dest.parent.mkdir(exist_ok=True)
+                                project_path, sprite_file)
+                            sprite_dest.parent.mkdir(parents=True, exist_ok=True)
 
                             with zipf.open(sprite_file) as src:
                                 with open(sprite_dest, 'wb') as dst:
