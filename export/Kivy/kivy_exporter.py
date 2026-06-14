@@ -1119,6 +1119,16 @@ if __name__ == '__main__':
         bg_color = room_data.get('background_color', '#808080')  # Default gray
         bg_image = room_data.get('background', '') or room_data.get('background_image', '')
 
+        # Resolve the background's actual exported filename. _export_background
+        # copies the file under its original name/extension, so hardcoding
+        # "<asset>.png" missed any non-PNG or renamed background and the room
+        # rendered without it (L22). Fall back to "<name>.png" for legacy data.
+        bg_filename = ''
+        if bg_image:
+            bg_meta = self.project_data.get('assets', {}).get('backgrounds', {}).get(bg_image, {})
+            bg_fp = bg_meta.get('file_path', '')
+            bg_filename = Path(bg_fp).name if bg_fp else f"{bg_image}.png"
+
         # Convert hex string or [r, g, b, a] list to RGB floats (0-1 range)
         r, g, b = _bg_color_to_rgb(bg_color)
 
@@ -1196,7 +1206,7 @@ if __name__ == '__main__':
                 bg_image_code = f'''
             # Load and draw tiled background image
             Color(1, 1, 1, 1)  # Reset color to white for untinted textures
-            bg_img = load_image('assets/images/{bg_image}.png')
+            bg_img = load_image('assets/images/{bg_filename}')
             if bg_img:
                 # Tile the background
                 tex = bg_img.texture
@@ -1221,7 +1231,7 @@ if __name__ == '__main__':
                 bg_image_code = f'''
             # Load and draw background image (stretched to fit)
             Color(1, 1, 1, 1)  # Reset color to white for untinted textures
-            bg_img = load_image('assets/images/{bg_image}.png')
+            bg_img = load_image('assets/images/{bg_filename}')
             if bg_img:
                 Rectangle(texture=bg_img.texture, pos=(0, 0), size=(self.room_width, self.room_height))'''
         else:
