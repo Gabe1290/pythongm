@@ -333,10 +333,35 @@ delete/rename — rooms/objects already done by H3); `6667fc6` M60+M61
 object edits write through to the live model when no editor is open). Suite
 958 → 1015 passed, 0 failed. Re-verification caught three findings already
 resolved by prior work (M45, M60, and M59-for-rooms) — confirming the
-audit-is-a-lead discipline. **All 61 mediums closed; 35 lows remain open.**
+audit-is-a-lead discipline. **All 61 mediums closed.**
 Box gotcha: the Edit tool's atomic write leaves `*.tmp.<pid>.<hash>` artifacts
 on the Dropbox folder that `git add -A` will grab — committed two by accident
 this session, then added `*.tmp.*` to `.gitignore`; prefer targeted `git add`.
+
+**2026-06-15 — Lows L1–L35 fixed; the entire 2026-06-11 audit is now closed.**
+One session, commits grouped by area: `413e39f` L25/L26/L27 (keymap numpad/
+punctuation, BMP dim cap, Roberta RGB guard); `723c748` L20/L21/L22 (kivy ASCII
+package name, show_message repr, bg filename); `26c8c71` L10 (code-parser string
+escaping); `c141572` L15/L16/L17 (sprite floor-pixel, no-op gesture, pause
+playback); `b9f3505` L12/L13 (room scaled hit-test, duplicate clipboard);
+`b637c4d` L18/L19 (check_empty dropdown, render unknown actions); `8358738`
+L28/L29/L30/L31 (inherited create lookup, collision-context clear, outside_room
+origin, thymio sim-None guard); `c17f8c1` L8/L9 (new-project description,
+export-option checkboxes); `986ed06` L23/L24 (android cleanup-on-failure, cancel
+sentinel); `e053d2b` L14 (script editor undo→document); `7125c7a` L11 (playground
+props refresh on undo); `0f4824b` L32 (sprite-delete ref cleanup — guard test;
+resolved by live delete path + M60); `9b563fe` L6 (single-sourced sprite-file
+merge whitelist); `f389035` L2/L3/L4/L7 (import save-flush, test_game stderr
+leak, playground-window WA_DeleteOnClose, zip temp cleanup on quit); `8b20517`
+L33/L34/L35 (theme foreground, atomic project.json save, tutorial setOpenLinks);
+`2a74aa4` L1 (tutorial empty-index placeholder); `03453c2` L5 (open_editors
+keyed by composite "<category>:<name>"). Re-verification found several already
+resolved by earlier high/medium work (L32, L7-project-switch, L29-adjacent). The
+L5 fix touched core editor lifecycle (open/close/float/reattach/rename/delete);
+editors now carry `_open_editor_key` and `_canonical_category` normalizes the
+singular/plural asset-type vocabulary that differs between the rename and delete
+signals. Suite 1015 → 1080 passed, 0 failed. **All 111 audit findings (15 high /
+61 medium / 35 low) are closed.**
 
 **2026-06-09 — Runtime-core audit (Batch A): most rejected, room-dimension
 bounds added.** A 9-finding audit of `game_runner.py` / `action_executor.py` /
