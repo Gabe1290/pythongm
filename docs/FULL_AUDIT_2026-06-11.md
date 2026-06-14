@@ -630,7 +630,16 @@ remain open.**
   - **Verifier:** Traced fully: tree single-click → on_item_clicked emits asset dict → set_asset → show_asset_properties → show_object_properties builds live-editable sprite combo + Visible/Solid/Persistent checkboxes wired to on_object_property_changed (enhanced_properties_panel.py:728-738, 766-772). That handler (lines 908-932) updates the preview from a local copy for sprite changes, then forwards ONLY to self.current_object_editor — which is None unless set_object_editor_context ran (i.e., an object editor tab is open). No fallback write to cache/project data exists, so the edit is silently dropped while the preview confirms it.
 
 
-## Low (35)
+## Low (35) — ALL FIXED (2026-06-15)
+
+All 35 low-severity findings were re-verified against current code and fixed
+with regression tests, grouped into commits by area (importers/runtime keymap;
+kivy export; sprite/room/playground/script editors; events; android export;
+dialogs; widgets; ide editor lifecycle). Several were already resolved by
+prior medium/high work and got guard tests instead (L32 by the live delete
+path + M60; the L7 project-switch case by H2). Suite 1015 → 1080 passed,
+0 failed. **The entire 2026-06-11 audit (15 high / 61 medium / 35 low) is now
+closed.**
 
 - [x] **L1 — `config/editions.py:12` — Committee edition shows a completely empty tutorial list (no placeholder) in every IDE language except English and French** — FIXED (both tutorial widgets add the 'No tutorials available' placeholder when the edition-filtered index is empty; tests/test_tutorial_empty_placeholder.py)
   - *Found by:* widgets-misc-config-main; *category:* correctness
