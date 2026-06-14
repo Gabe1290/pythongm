@@ -39,10 +39,14 @@ PROXIMITY_SENSOR_ANGLES = [
     -165, # 6: Back Right
 ]
 
-# Ground sensor positions relative to center
+# Ground sensor positions relative to center, as (forward, lateral) offsets.
+# update_ground_sensors rotates these with local +x = the robot's forward axis,
+# so the FORWARD component must come first. They were transposed (lateral first),
+# which sampled 40px to the robot's side instead of under its front, disagreeing
+# with the front-mounted rendered indicators and breaking line following (M55).
 GROUND_SENSOR_POSITIONS = [
-    (-20, GROUND_SENSOR_OFFSET),  # 0: Left sensor
-    (20, GROUND_SENSOR_OFFSET),   # 1: Right sensor
+    (GROUND_SENSOR_OFFSET, -20),  # 0: Left sensor  (front, lateral -)
+    (GROUND_SENSOR_OFFSET, 20),   # 1: Right sensor (front, lateral +)
 ]
 
 # LED positions (for visualization)
@@ -243,9 +247,11 @@ class ThymioSimulator:
         # Linear velocity (forward/backward)
         linear_velocity = (left_velocity + right_velocity) / 2.0
 
-        # Angular velocity (rotation)
-        # Positive = clockwise rotation in screen coordinates
-        angular_velocity_rad = (right_velocity - left_velocity) / THYMIO_WHEEL_BASE
+        # Angular velocity (rotation). The simulator works in screen
+        # coordinates (y down), so the y-up "(right - left)" convention has the
+        # wrong sign: it made "Turn Left" (right wheel only) rotate the robot
+        # right on screen. Use (left - right) for the y-down frame (M56).
+        angular_velocity_rad = (left_velocity - right_velocity) / THYMIO_WHEEL_BASE
 
         # Update angle (convert to degrees)
         self.angle += math.degrees(angular_velocity_rad)
