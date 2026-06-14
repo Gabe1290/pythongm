@@ -263,46 +263,53 @@ class AndroidExporter(BaseKivyExporter):
             self.progress_update.emit(15, "Creating build directory...")
             build_dir = self._create_build_directory()
 
-            # Step 4: Generate Kivy game using KivyExporter
-            self.progress_update.emit(20, "Generating Kivy game...")
-            if not self._generate_kivy_game(build_dir):
-                self.export_complete.emit(False, "Failed to generate Kivy game")
-                return False
+            # Clean the build dir on EVERY exit path (failure included) unless
+            # debug is requested. Previously cleanup ran only on full success,
+            # so every failed/cancelled export leaked a multi-hundred-MB
+            # pygm_android_* dir (L23). Buildozer failures are the common case.
+            try:
+                # Step 4: Generate Kivy game using KivyExporter
+                self.progress_update.emit(20, "Generating Kivy game...")
+                if not self._generate_kivy_game(build_dir):
+                    self.export_complete.emit(False, "Failed to generate Kivy game")
+                    return False
 
-            # Step 5: Generate buildozer.spec
-            self.progress_update.emit(35, "Generating buildozer.spec...")
-            if not self._generate_buildozer_spec(build_dir):
-                self.export_complete.emit(False, "Failed to generate buildozer.spec")
-                return False
+                # Step 5: Generate buildozer.spec
+                self.progress_update.emit(35, "Generating buildozer.spec...")
+                if not self._generate_buildozer_spec(build_dir):
+                    self.export_complete.emit(False, "Failed to generate buildozer.spec")
+                    return False
 
-            # Step 6: Run Buildozer to build the APK
-            self.progress_update.emit(40, "Building APK (this may take a long time on first run)...")
-            result = self._run_buildozer(build_dir)
-            if result is not True:
-                self.export_complete.emit(False, "Buildozer build failed:\n\n{}".format(result))
-                return False
+                # Step 6: Run Buildozer to build the APK
+                self.progress_update.emit(40, "Building APK (this may take a long time on first run)...")
+                result = self._run_buildozer(build_dir)
+                if result is not True:
+                    # A cancel returns the None sentinel; the IDE already showed
+                    # the 'cancelled' message, so don't emit a bogus failure (L24).
+                    if result is not None:
+                        self.export_complete.emit(False, "Buildozer build failed:\n\n{}".format(result))
+                    return False
 
-            # Step 7: Copy APK to output directory
-            self.progress_update.emit(90, "Copying APK to output directory...")
-            if not self._copy_to_output(build_dir):
+                # Step 7: Copy APK to output directory
+                self.progress_update.emit(90, "Copying APK to output directory...")
+                if not self._copy_to_output(build_dir):
+                    self.export_complete.emit(
+                        False,
+                        "Build completed but no APK file was found.\n\n"
+                        "Check the build output for errors."
+                    )
+                    return False
+
+                self.progress_update.emit(100, "Export complete!")
                 self.export_complete.emit(
-                    False,
-                    "Build completed but no APK file was found.\n\n"
-                    "Check the build output for errors."
+                    True,
+                    "Game exported successfully to:\n{}".format(self.output_path)
                 )
-                return False
-
-            # Step 8: Cleanup (if not in debug mode)
-            if not settings.get('include_debug', False):
-                self.progress_update.emit(95, "Cleaning up temporary files...")
-                self._cleanup(build_dir)
-
-            self.progress_update.emit(100, "Export complete!")
-            self.export_complete.emit(
-                True,
-                "Game exported successfully to:\n{}".format(self.output_path)
-            )
-            return True
+                return True
+            finally:
+                if not settings.get('include_debug', False):
+                    self.progress_update.emit(95, "Cleaning up temporary files...")
+                    self._cleanup(build_dir)
 
         except Exception as e:
             error_msg = "Export failed: {}".format(str(e))
@@ -548,7 +555,9 @@ class AndroidExporter(BaseKivyExporter):
                 if self.cancel_requested:
                     process.kill()
                     self.export_complete.emit(False, "Export cancelled by user.")
-                    return False
+                    # Return the None sentinel so export_project doesn't also
+                    # emit a bogus 'Buildozer build failed: False' (L24).
+                    return None
 
                 stripped = line.rstrip()
                 if not stripped:
