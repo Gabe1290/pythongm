@@ -576,6 +576,14 @@ class ExportProjectDialog(QDialog):
             QMessageBox.critical(self, self.tr("Export Error"),
                                 self.tr("Error during ZIP export:\n{0}\n\n{1}").format(str(e), error_details))
 
+    def _collect_export_settings(self) -> dict:
+        """Read the Export Options checkboxes into a settings dict (L9)."""
+        return {
+            'include_assets': self.include_assets_check.isChecked(),
+            'include_debug': self.include_debug_check.isChecked(),
+            'optimize': self.optimize_check.isChecked(),
+        }
+
     def _export_executable(self):
         """Export project as executable (.exe/.app)"""
         try:
@@ -599,12 +607,10 @@ class ExportProjectDialog(QDialog):
             # Get output directory
             output_dir = Path(self.output_path_edit.text())
 
-            # Export settings
-            export_settings = {
-                'include_assets': True,
-                'include_debug': False,  # No console window by default
-                'optimize': True         # Use UPX compression
-            }
+            # Export settings — honor the dialog's Export Options checkboxes
+            # instead of hardcoding them (L9). ExeExporter consumes
+            # include_debug (console/debug build) and optimize (UPX).
+            export_settings = self._collect_export_settings()
 
             # Create progress dialog
             progress = QProgressDialog(

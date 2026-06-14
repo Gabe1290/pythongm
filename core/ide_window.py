@@ -1314,6 +1314,13 @@ class PyGameMakerIDE(QMainWindow):
                 logger.debug(f"DEBUG new_project: project_path = {project_path}")
                 logger.debug(f"DEBUG new_project: project_data keys = {list(project_data.keys()) if project_data else None}")
 
+                # Persist the dialog's Description — create_project doesn't take
+                # it, so it was silently dropped (L8). Project Settings reads it.
+                description = project_info.get("description", "")
+                if description and project_data is not None:
+                    project_data["description"] = description
+                    self.project_manager.save_project()
+
                 # Call on_project_loaded to properly initialize the IDE
                 self.on_project_loaded(project_path, project_data)
                 logger.debug("DEBUG new_project: on_project_loaded called")
