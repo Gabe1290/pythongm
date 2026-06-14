@@ -74,4 +74,62 @@ def pygame_key_name(key):
         pygame.K_LALT: "alt",
         pygame.K_RALT: "alt",
     }
-    return special_keys.get(key)
+    name = special_keys.get(key)
+    if name is not None:
+        return name
+    return _extended_keys().get(key)
+
+
+_EXTENDED_KEYS_CACHE = None
+
+
+def _extended_keys():
+    """Map numpad / punctuation / lock keys to the names the GMK importer
+    emits (importers/gmk_mappings.py). Without these, imported keyboard events
+    bound to e.g. the numpad or ';' could never fire (L25). pygame renamed some
+    constants across versions, so each is resolved defensively via getattr.
+    """
+    global _EXTENDED_KEYS_CACHE
+    if _EXTENDED_KEYS_CACHE is not None:
+        return _EXTENDED_KEYS_CACHE
+
+    mapping = {}
+
+    def add(name, *attr_candidates):
+        for attr in attr_candidates:
+            code = getattr(pygame, attr, None)
+            if code is not None:
+                mapping[code] = name
+                return
+
+    # Numpad digits (K_KP0.. in older pygame, K_KP_0.. in newer)
+    for d in range(10):
+        add(f"numpad_{d}", f"K_KP{d}", f"K_KP_{d}")
+    add("numpad_multiply", "K_KP_MULTIPLY", "K_KP_MULTIPLY")
+    add("numpad_plus", "K_KP_PLUS")
+    add("numpad_minus", "K_KP_MINUS")
+    add("numpad_period", "K_KP_PERIOD")
+    add("numpad_divide", "K_KP_DIVIDE")
+
+    # Lock / system keys
+    add("pause", "K_PAUSE")
+    add("capslock", "K_CAPSLOCK")
+    add("print", "K_PRINTSCREEN", "K_PRINT", "K_SYSREQ")
+    add("numlock", "K_NUMLOCKCLEAR", "K_NUMLOCK")
+    add("scrolllock", "K_SCROLLLOCK", "K_SCROLLOCK")
+
+    # Punctuation (VK_OEM analogues)
+    add("semicolon", "K_SEMICOLON")
+    add("equals", "K_EQUALS")
+    add("comma", "K_COMMA")
+    add("minus", "K_MINUS")
+    add("period", "K_PERIOD")
+    add("slash", "K_SLASH")
+    add("backquote", "K_BACKQUOTE")
+    add("leftbracket", "K_LEFTBRACKET")
+    add("backslash", "K_BACKSLASH")
+    add("rightbracket", "K_RIGHTBRACKET")
+    add("quote", "K_QUOTE")
+
+    _EXTENDED_KEYS_CACHE = mapping
+    return mapping
