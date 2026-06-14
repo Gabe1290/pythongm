@@ -170,6 +170,10 @@ class ThymioPlaygroundWindow(QMainWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        # Free the window (pygame surfaces, simulator, undo stack) when closed.
+        # Without this, being parented to the long-lived IDE kept every closed
+        # instance alive until IDE exit (closeEvent already stops the timer) (L4).
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowTitle(self.tr("Thymio Playground"))
         self.setMinimumSize(900, 700)
 

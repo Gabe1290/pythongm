@@ -138,6 +138,9 @@ class PlaygroundRunnerWindow(QMainWindow):
 
     def __init__(self, playground_data: dict, project_data: dict, parent=None):
         super().__init__(parent)
+        # Free this window when closed instead of leaking it (parented to the
+        # IDE) on every Run click; closeEvent already stops the 60 FPS timer (L4).
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowTitle(self.tr("Playground - Running"))
 
         self.playground_data = playground_data
