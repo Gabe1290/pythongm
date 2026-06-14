@@ -2596,6 +2596,22 @@ class GameRunner:
             if isinstance(anykey_data, dict) and "actions" in anykey_data:
                 instance.action_executor.execute_action_list(instance, anykey_data["actions"])
 
+    def _release_held_key_silent(self, key):
+        """Drop a released key from every instance's keys_pressed WITHOUT firing
+        keyboard_release events. Used by modal dialogs, which run their own event
+        loop while the game is paused: a KEYUP consumed there would otherwise
+        leave the key stuck in keys_pressed, so _process_held_keys keeps firing
+        the held-key event forever after the dialog closes (M54)."""
+        if not self.current_room:
+            return
+        sub_key = self._get_key_name(key)
+        if not sub_key:
+            return
+        for instance in self.current_room.instances:
+            keys = getattr(instance, 'keys_pressed', None)
+            if keys is not None:
+                keys.discard(sub_key)
+
     def handle_keyboard_release(self, key):
         """Handle keyboard release event - trigger user-defined keyboard_release events"""
         if not self.current_room:
@@ -4686,6 +4702,10 @@ class GameRunner:
                 elif event.type == pygame.KEYDOWN:
                     if event.key in (pygame.K_RETURN, pygame.K_SPACE, pygame.K_ESCAPE):
                         waiting = False
+                elif event.type == pygame.KEYUP:
+                    # Don't let a key released while the dialog is open stay
+                    # stuck in keys_pressed (M54).
+                    self._release_held_key_silent(event.key)
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # Check if OK button was clicked
                     mx, my = event.pos
@@ -4896,6 +4916,8 @@ class GameRunner:
                 elif event.type == pygame.KEYDOWN:
                     if event.key in (pygame.K_RETURN, pygame.K_SPACE, pygame.K_ESCAPE):
                         waiting = False
+                elif event.type == pygame.KEYUP:
+                    self._release_held_key_silent(event.key)  # M54
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mx, my = event.pos
                     if (button_x <= mx <= button_x + button_width and
@@ -5116,6 +5138,8 @@ class GameRunner:
                         # Only allow printable characters
                         if event.unicode.isprintable():
                             player_name += event.unicode
+                elif event.type == pygame.KEYUP:
+                    self._release_held_key_silent(event.key)  # M54
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mx, my = event.pos
                     # OK button
