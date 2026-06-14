@@ -36,6 +36,9 @@ class SpriteCanvas(QAbstractScrollArea):
 
     # Emitted after any drawing operation modifies the image
     canvas_modified = Signal()
+    # Emitted when a drawing gesture starts (used to stop animation playback so
+    # the canvas image isn't swapped mid-stroke, L17)
+    stroke_started = Signal()
     # Emitted when the color picker picks a color
     color_picked = Signal(QColor)
     # Emitted when zoom changes (new zoom value)
@@ -203,8 +206,11 @@ class SpriteCanvas(QAbstractScrollArea):
     def _screen_to_pixel(self, screen_pos: QPoint) -> tuple[int, int]:
         """Convert viewport coordinates to image pixel coordinates."""
         ox, oy = self._origin()
-        x = int((screen_pos.x() - ox) / self._zoom)
-        y = int((screen_pos.y() - oy) / self._zoom)
+        # Floor (not int()/truncate-toward-zero) so a position up to one zoomed
+        # pixel left of / above the image maps to -1, not 0 — otherwise clicks
+        # in the margin just outside the image painted the edge column/row (L15).
+        x = (screen_pos.x() - ox) // self._zoom
+        y = (screen_pos.y() - oy) // self._zoom
         return x, y
 
     # ------------------------------------------------------------------
@@ -383,6 +389,9 @@ class SpriteCanvas(QAbstractScrollArea):
     def mousePressEvent(self, event: QMouseEvent):
         if event.button() == Qt.LeftButton and self._current_tool:
             px, py = self._screen_to_pixel(event.pos())
+            # Stop animation playback before drawing so a timer-driven frame
+            # switch can't swap the canvas image mid-stroke (L17).
+            self.stroke_started.emit()
             self.take_stroke_snapshot()
             self._painting = True
 

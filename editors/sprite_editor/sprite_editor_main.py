@@ -261,6 +261,9 @@ class SpriteEditor(BaseEditor):
         # mutated to the new state, so the pushed command's immediate redo()
         # is idempotent and a later Undo restores the deleted frame.
         self.frame_timeline._undo_hook = self._record_frame_undo
+        # Stop playback when a stroke begins so a timer-driven frame switch
+        # can't swap the canvas image mid-stroke (L17).
+        self.canvas.stroke_started.connect(self.frame_timeline.stop_playback)
         vsplitter.addWidget(self.frame_timeline)
 
         # Give most space to the canvas area, minimal to the timeline
@@ -604,16 +607,21 @@ class SpriteEditor(BaseEditor):
     def _on_canvas_modified(self):
         """Called when a stroke finishes."""
         snapshot = self.canvas.get_stroke_snapshot()
-        if snapshot:
-            cmd = SpriteEditCommand(
-                self, snapshot, self.canvas.get_image(),
-                self.tr("Draw")
-            )
-            self.undo_stack.push(cmd)
+        current = self.canvas.get_image()
+        # Only treat this as a real edit if pixels actually changed. Selection
+        # marquees and color-picker clicks also fire canvas_modified, and
+        # pushing an inert SpriteEditCommand for them made undo appear dead for
+        # several presses and falsely marked the sprite unsaved (L16).
+        if snapshot is None or snapshot == current:
             self.canvas.clear_stroke_snapshot()
+            return
+
+        cmd = SpriteEditCommand(self, snapshot, current, self.tr("Draw"))
+        self.undo_stack.push(cmd)
+        self.canvas.clear_stroke_snapshot()
 
         # Sync canvas image back to frame timeline
-        self.frame_timeline.update_current_frame(self.canvas.get_image())
+        self.frame_timeline.update_current_frame(current)
         self.data_modified.emit(self.asset_name)
 
     def _on_frame_selected(self, index: int):
