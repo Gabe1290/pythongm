@@ -97,6 +97,35 @@ class ScriptEditor(BaseEditor):
 
         layout.addWidget(self.code_edit)
 
+        self._wire_document_undo()
+
+    def undo(self):
+        """Undo via the QPlainTextEdit document (the IDE Edit > Undo delegates
+        here; BaseEditor.undo would no-op on the empty undo_stack) (L14)."""
+        self.code_edit.undo()
+
+    def redo(self):
+        """Redo via the QPlainTextEdit document (L14)."""
+        self.code_edit.redo()
+
+    def _wire_document_undo(self):
+        # Editing happens in the QPlainTextEdit's own QTextDocument, not the
+        # BaseEditor undo_stack (which stays empty here), so the toolbar
+        # Undo/Redo buttons and the IDE Edit menu were permanently dead even
+        # though typing was undoable via Ctrl+Z. Wire both to the document's
+        # undo history and reflect its availability (L14).
+        if getattr(self, 'undo_action', None) is not None:
+            try:
+                self.undo_action.triggered.disconnect()
+                self.redo_action.triggered.disconnect()
+            except (RuntimeError, TypeError):
+                pass
+            self.undo_action.triggered.connect(self.code_edit.undo)
+            self.redo_action.triggered.connect(self.code_edit.redo)
+            doc = self.code_edit.document()
+            doc.undoAvailable.connect(self.undo_action.setEnabled)
+            doc.redoAvailable.connect(self.redo_action.setEnabled)
+
     # ------------------------------------------------------------------
     # BaseEditor contract
     # ------------------------------------------------------------------
