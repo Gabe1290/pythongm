@@ -456,7 +456,14 @@ class ActionExecutor:
             # nested action lists, execute the appropriate branch and return None
             # so the outer flow control is not affected.
             if result is not None and isinstance(result, bool):
-                then_actions = parameters.get("then_actions", [])
+                # Blockly serialises Thymio condition blocks' DO-slot children
+                # under "sub_actions" (on the action dict or in parameters)
+                # rather than then_actions; honor it so those nested children
+                # actually run and a false condition does not skip the unrelated
+                # next action (M44).
+                sub_actions = (action_data.get("sub_actions")
+                               or parameters.get("sub_actions") or [])
+                then_actions = parameters.get("then_actions", []) or sub_actions
                 else_actions = parameters.get("else_actions", [])
                 if then_actions or else_actions:
                     actions_to_run = then_actions if result else else_actions
@@ -2913,6 +2920,9 @@ class ActionExecutor:
             'self': instance,  # the code editor generates self.<attr> references
             'game': self.game_runner,
             'instance': instance,  # Alternative name
+            # In a collision event, custom code may reference `other` (the eval
+            # expression path already binds it); None outside collisions (M45).
+            'other': getattr(self, '_collision_other', None),
             # `keyboard.check("space")` is emitted by the if_condition
             # key_pressed code generator (audit M20).
             'keyboard': _ExecKeyboard(instance),
@@ -2993,6 +3003,7 @@ class ActionExecutor:
             'self': instance,  # the code editor generates self.<attr> references
             'game': self.game_runner,
             'instance': instance,
+            'other': getattr(self, '_collision_other', None),  # M45
             'keyboard': _ExecKeyboard(instance),  # audit M20
             # Add common modules for convenience
             'math': __import__('math'),
