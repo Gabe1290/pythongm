@@ -352,7 +352,10 @@ class ActionExecutor:
 
             logger.debug(f"🔁 Repeat block {times} times ({len(block_actions)} actions)")
             for iteration in range(times):
-                self.execute_action_list(instance, block_actions)
+                # Use the non-catching workhorse so an exit_event inside the
+                # block unwinds the whole event (and stops the remaining
+                # iterations) instead of being swallowed per-iteration (M43).
+                self._execute_action_list_inner(instance, block_actions)
 
             return end_block_index + 1
         else:
@@ -457,7 +460,10 @@ class ActionExecutor:
                 else_actions = parameters.get("else_actions", [])
                 if then_actions or else_actions:
                     actions_to_run = then_actions if result else else_actions
-                    self.execute_action_list(instance, actions_to_run)
+                    # Non-catching workhorse: an exit_event inside the branch
+                    # must abort the whole event, not just this nested list, so
+                    # it propagates to the single top-level catch (M43).
+                    self._execute_action_list_inner(instance, actions_to_run)
                     return None
 
             return result  # Return result for conditional flow
@@ -4379,21 +4385,14 @@ class ActionExecutor:
             (plus condition-specific parameters)
         """
         condition_type = parameters.get("condition_type", "instance_count")
-        then_actions = parameters.get("then_actions", [])
-        else_actions = parameters.get("else_actions", [])
 
-        # Evaluate the condition
+        # Evaluate the condition and return the boolean. The generic
+        # nested-conditional branch in execute_action runs the appropriate
+        # then_actions / else_actions list exactly once — running them here too
+        # double-executed every branch (M43 cleanup; verified count went 2→1).
         result = self._evaluate_if_condition(instance, condition_type, parameters)
 
         logger.info(f"❓ if_condition ({condition_type}): result={result}")
-
-        # Execute appropriate action list
-        if result:
-            if then_actions:
-                self.execute_action_list(instance, then_actions)
-        else:
-            if else_actions:
-                self.execute_action_list(instance, else_actions)
 
         return result
 
