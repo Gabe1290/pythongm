@@ -3527,16 +3527,22 @@ class GameRunner:
             w = instance._cached_width
             h = instance._cached_height
 
+            # The sprite's actual screen extent is x-origin_x .. x-origin_x+w
+            # (rendering uses x - origin_x). Account for the origin so the event
+            # fires exactly when the sprite is fully off-screen, not origin_x px
+            # late/early for nonzero-origin sprites (L30).
+            sprite = getattr(instance, 'sprite', None)
+            origin_x = getattr(sprite, 'origin_x', 0) if sprite else 0
+            origin_y = getattr(sprite, 'origin_y', 0) if sprite else 0
+            left = instance.x - origin_x
+            top = instance.y - origin_y
+
             # Check if completely outside room (not just partially)
-            # Right edge is to the left of room left edge (x + w < 0)
-            # Left edge is to the right of room right edge (x > room_width)
-            # Bottom edge is above room top (y + h < 0)
-            # Top edge is below room bottom (y > room_height)
             outside = (
-                instance.x + w < 0 or          # Completely off left
-                instance.x > room_width or     # Completely off right
-                instance.y + h < 0 or          # Completely off top
-                instance.y > room_height       # Completely off bottom
+                left + w < 0 or          # Completely off left
+                left > room_width or     # Completely off right
+                top + h < 0 or           # Completely off top
+                top > room_height        # Completely off bottom
             )
 
             if outside:
