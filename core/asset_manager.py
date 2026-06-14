@@ -392,11 +392,12 @@ class AssetManager(QObject):
                 if thumbnail_path.exists():
                     thumbnail_path.unlink()
 
-            # Rooms/objects keep their payload in <type>/<name>.json side
-            # files that file_path doesn't reference. Remove them too: a
+            # Rooms/objects/playgrounds keep their payload in <type>/<name>.json
+            # side files that file_path doesn't reference. Remove them too: a
             # stale orphan would resurrect the dead asset's data into any
-            # future asset created with the same name (audit H3).
-            if asset_type in ("rooms", "objects"):
+            # future asset created with the same name (audit H3; playgrounds
+            # added for M59).
+            if asset_type in ("rooms", "objects", "playgrounds"):
                 side_file = self.project_directory / asset_type / f"{asset_name}.json"
                 if side_file.exists():
                     side_file.unlink()
@@ -471,10 +472,11 @@ class AssetManager(QObject):
                     old_thumbnail_path.rename(new_thumbnail_path)
                     asset_data["thumbnail"] = self.get_relative_path(new_thumbnail_path)
 
-            # Carry the rooms/objects <type>/<name>.json side file along so
-            # an orphan under the old name can't resurrect stale data into a
-            # future asset reusing that name (audit H3).
-            if asset_type in ("rooms", "objects"):
+            # Carry the rooms/objects/playgrounds <type>/<name>.json side file
+            # along so an orphan under the old name can't resurrect stale data
+            # into a future asset reusing that name (audit H3; playgrounds for
+            # M59).
+            if asset_type in ("rooms", "objects", "playgrounds"):
                 old_side = self.project_directory / asset_type / f"{old_name}.json"
                 if old_side.exists():
                     old_side.replace(self.project_directory / asset_type / f"{new_name}.json")
