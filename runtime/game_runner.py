@@ -2019,7 +2019,19 @@ class GameRunner:
         self.show_score_in_caption = settings.get('show_score_in_caption', False)
         self.show_health_in_caption = settings.get('show_health_in_caption', False)
 
-        logger.debug(f"⚙️ Settings: lives={self.lives}, score={self.score}, health={self.health}")
+        # Honor the authored room/game speed (the GMK importer persists the
+        # source game's speed — GM8 defaults to 30 — and templates set it too).
+        # Previously this was ignored and fps was hardcoded 60, so imported
+        # games ran at double speed (M48). Clamp like execute_set_room_speed.
+        room_speed = settings.get('room_speed')
+        if room_speed is not None:
+            try:
+                self.fps = max(1, min(240, int(room_speed)))
+            except (ValueError, TypeError):
+                pass  # keep the default fps
+
+        logger.debug(f"⚙️ Settings: lives={self.lives}, score={self.score}, "
+                     f"health={self.health}, fps={self.fps}")
 
     def load_sprites(self):
         """Load all sprites from the project (called after pygame.display is initialized)"""
@@ -2284,8 +2296,12 @@ class GameRunner:
             while self.running:
                 # ========== GameMaker 7.0 Event Execution Order ==========
                 # Merged loop: begin_step -> alarms -> step (per instance)
-                # This reduces 3 separate instance iterations to 1
-                for instance in self.current_room.instances:
+                # This reduces 3 separate instance iterations to 1.
+                # Iterate a snapshot so instances created mid-frame (e.g. a
+                # step event that create_instances) are processed starting next
+                # frame — matching GameMaker and preventing a spawn cycle from
+                # hanging the whole frame in an unbounded loop (M49).
+                for instance in list(self.current_room.instances):
                     obj_data = instance.object_data
                     if obj_data:
                         events = obj_data.get("events")
@@ -2359,7 +2375,7 @@ class GameRunner:
 
                 # 7. END STEP and DESTROY events (merged loop)
                 has_destroyed = False
-                for instance in self.current_room.instances:
+                for instance in list(self.current_room.instances):  # snapshot (M49)
                     obj_data = instance.object_data
                     if obj_data:
                         events = obj_data.get("events")
@@ -2466,8 +2482,9 @@ class GameRunner:
 
         events_found = False
 
-        # Track which keys are pressed
-        for instance in self.current_room.instances:
+        # Track which keys are pressed. Snapshot so a key-press spawner cycle
+        # can't hang the frame (M49).
+        for instance in list(self.current_room.instances):
             # Skip orphan instances (object_name not in the project's objects dict,
             # e.g. a renamed/deleted object), matching every other input handler.
             # Done before keys_pressed.add so they also stay out of _process_held_keys.
@@ -2591,8 +2608,8 @@ class GameRunner:
 
         logger.debug(f"\n⌨️  Keyboard released: {sub_key}")
 
-        # Execute keyboard_release events for all instances
-        for instance in self.current_room.instances:
+        # Execute keyboard_release events for all instances (snapshot, M49)
+        for instance in list(self.current_room.instances):
             if not instance.object_data:
                 continue
 
@@ -2660,8 +2677,8 @@ class GameRunner:
         if button == 1 and self._handle_thymio_button_press(button, mouse_x, mouse_y):
             return
 
-        # Execute mouse events for all instances
-        for instance in self.current_room.instances:
+        # Execute mouse events for all instances (snapshot, M49)
+        for instance in list(self.current_room.instances):
             if not instance.object_data:
                 continue
 
@@ -2725,8 +2742,8 @@ class GameRunner:
 
         mouse_x, mouse_y = pos
 
-        # Execute mouse release events
-        for instance in self.current_room.instances:
+        # Execute mouse release events (snapshot, M49)
+        for instance in list(self.current_room.instances):
             if not instance.object_data:
                 continue
 
@@ -2745,8 +2762,8 @@ class GameRunner:
 
         mouse_x, mouse_y = pos
 
-        # Execute mouse motion events
-        for instance in self.current_room.instances:
+        # Execute mouse motion events (snapshot, M49)
+        for instance in list(self.current_room.instances):
             if not instance.object_data:
                 continue
 
