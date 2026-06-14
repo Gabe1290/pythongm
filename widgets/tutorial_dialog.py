@@ -137,6 +137,9 @@ class TutorialDialog(QDialog):
                     item = QListWidgetItem(title)
                     item.setData(Qt.UserRole, tutorial)
                     self.tutorial_list.addItem(item)
+                # Placeholder when the edition-filtered index is empty (L1).
+                if self.tutorial_list.count() == 0:
+                    self.tutorial_list.addItem(self.tr("No tutorials available"))
                 return
             except Exception as e:
                 logger.error(f"Error loading tutorials index: {e}")
