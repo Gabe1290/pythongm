@@ -396,27 +396,34 @@ class RoomCanvas(QWidget):
     def find_instance_at(self, pos):
         """Find instance at given position"""
         for instance in reversed(self.instances):
-            width = getattr(instance, '_sprite_width', 32)
-            height = getattr(instance, '_sprite_height', 32)
-            ox = getattr(instance, '_origin_x', 0)
-            oy = getattr(instance, '_origin_y', 0)
-            instance_rect = QRect(instance.x - ox, instance.y - oy, width, height)
-            if instance_rect.contains(pos):
+            if self._instance_footprint(instance).contains(pos):
                 return instance
         return None
+
+    def _instance_footprint(self, instance):
+        """The instance's drawn footprint as a QRect, accounting for scale.
+
+        draw_instance scales the sprite about its center, so the visible
+        footprint spans width*scale_x x height*scale_y from (x-origin, y-origin).
+        Hit-testing/selection previously used the unscaled size, leaving scaled
+        instances clickable only over their top-left quarter (L12). Rotation is
+        still approximated by the axis-aligned box.
+        """
+        width = getattr(instance, '_sprite_width', 32)
+        height = getattr(instance, '_sprite_height', 32)
+        ox = getattr(instance, '_origin_x', 0)
+        oy = getattr(instance, '_origin_y', 0)
+        scale_x = getattr(instance, 'scale_x', 1.0) or 1.0
+        scale_y = getattr(instance, 'scale_y', 1.0) or 1.0
+        return QRect(instance.x - ox, instance.y - oy,
+                     round(width * scale_x), round(height * scale_y))
 
     def find_instances_in_rect(self, rect):
         """Find all instances within a rectangle"""
         found_instances = []
         for instance in self.instances:
-            width = getattr(instance, '_sprite_width', 32)
-            height = getattr(instance, '_sprite_height', 32)
-            ox = getattr(instance, '_origin_x', 0)
-            oy = getattr(instance, '_origin_y', 0)
-            instance_rect = QRect(instance.x - ox, instance.y - oy, width, height)
-
             # Check if rectangles intersect
-            if rect.intersects(instance_rect):
+            if rect.intersects(self._instance_footprint(instance)):
                 found_instances.append(instance)
 
         return found_instances
@@ -524,12 +531,14 @@ class RoomCanvas(QWidget):
             logger.debug("No instances selected to duplicate")
             return False
 
-        self.clipboard_instances = [inst.to_dict() for inst in self.selected_instances]
+        # Use a local buffer, NOT self.clipboard_instances — Duplicate must not
+        # clobber whatever the user previously copied with Ctrl+C/Ctrl+X (L13).
+        source_instances = [inst.to_dict() for inst in self.selected_instances]
         offset_x = self.grid_size
         offset_y = self.grid_size
 
         duplicated_instances = []
-        for instance_data in self.clipboard_instances:
+        for instance_data in source_instances:
             new_instance = ObjectInstance(
                 instance_data['object_name'],
                 instance_data['x'] + offset_x,
@@ -744,12 +753,11 @@ class RoomCanvas(QWidget):
 
     def draw_selection(self, painter, instance):
         """Draw selection highlight around instance"""
-        width = getattr(instance, '_sprite_width', 32)
-        height = getattr(instance, '_sprite_height', 32)
-        ox = getattr(instance, '_origin_x', 0)
-        oy = getattr(instance, '_origin_y', 0)
-        draw_x = instance.x - ox
-        draw_y = instance.y - oy
+        # Outline the scaled footprint so the highlight matches the drawn
+        # sprite for scaled instances (L12).
+        fp = self._instance_footprint(instance)
+        draw_x, draw_y = fp.x(), fp.y()
+        width, height = fp.width(), fp.height()
 
         painter.setPen(QPen(QColor("#FF0000"), 2))
         painter.drawRect(draw_x - 2, draw_y - 2, width + 4, height + 4)
