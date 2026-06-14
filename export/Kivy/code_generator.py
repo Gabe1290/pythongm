@@ -648,9 +648,10 @@ if dist > 0:
         # MESSAGE ACTIONS
         elif action_type == 'show_message' or action_type == 'display_message':
             message = params.get('message', '')
-            # Escape quotes in message
-            escaped_message = message.replace("'", "\\'")
-            return f"from main import show_message; show_message('{escaped_message}')"
+            # Embed via repr() so newlines, quotes and trailing backslashes
+            # can't break the generated literal (L21); manual single-quote
+            # escaping left those cases as a SyntaxError in the exported module.
+            return f"from main import show_message; show_message({message!r})"
 
         # SCORE/LIVES/HEALTH ACTIONS (use lazy import to avoid circular imports)
         elif action_type == 'set_score':
