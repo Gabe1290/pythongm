@@ -3437,11 +3437,6 @@ class GameRunner:
                 iy = instance.y - s1.origin_y + s1.bbox_top
                 ox = other_instance.x - s2.origin_x + s2.bbox_left
                 oy = other_instance.y - s2.origin_y + s2.bbox_top
-                # Need w1/h1/w2/h2 names for the push_back_instance call below
-                w1 = bw1
-                h1 = bh1
-                w2 = bw2
-                h2 = bh2
 
                 if self.rectangles_overlap(ix, iy, bw1, bh1, ox, oy, bw2, bh2):
                     # They're overlapping - push the moving instance back
@@ -3449,34 +3444,47 @@ class GameRunner:
                     inst_moving = instance.hspeed != 0 or instance.vspeed != 0
                     other_moving = other_instance.hspeed != 0 or other_instance.vspeed != 0
 
+                    # Pass bbox-world rects so separation is computed in the same
+                    # coordinate space the overlap was detected in (M50). Mixing
+                    # raw instance coords with bbox dims shifted the landing
+                    # position by the sprite origin / bbox offsets.
                     if inst_moving and not other_moving:
-                        # Push instance back to non-overlapping position
-                        self.push_back_instance(instance, other_instance, w1, h1, w2, h2)
+                        self.push_back_instance(instance, ix, iy, bw1, bh1,
+                                                ox, oy, bw2, bh2)
                     elif other_moving and not inst_moving:
-                        # Push other_instance back
-                        self.push_back_instance(other_instance, instance, w2, h2, w1, h1)
+                        self.push_back_instance(other_instance, ox, oy, bw2, bh2,
+                                                ix, iy, bw1, bh1)
 
                     processed_pairs.add(pair_key)
 
-    def push_back_instance(self, moving_inst, static_inst, w1, h1, w2, h2):
-        """Push moving instance back so it no longer overlaps with static instance."""
-        # Calculate overlap amounts
-        overlap_left = (moving_inst.x + w1) - static_inst.x
-        overlap_right = (static_inst.x + w2) - moving_inst.x
-        overlap_top = (moving_inst.y + h1) - static_inst.y
-        overlap_bottom = (static_inst.y + h2) - moving_inst.y
+    def push_back_instance(self, moving_inst, mbx, mby, mbw, mbh,
+                           sbx, sby, sbw, sbh):
+        """Push moving instance out of overlap with a static one.
 
-        # Find minimum overlap to resolve
+        All rects are bbox-world coordinates (top-left + size). The instance's
+        raw position is recovered by adding back its bbox-to-origin offset, so
+        sprites with nonzero origin or auto-bbox margins land flush instead of
+        a few pixels off (which broke grid alignment / re-triggered every frame).
+        """
+        # Offset from the moving instance's bbox-world top-left to its raw x/y.
+        off_x = moving_inst.x - mbx
+        off_y = moving_inst.y - mby
+
+        overlap_left = (mbx + mbw) - sbx
+        overlap_right = (sbx + sbw) - mbx
+        overlap_top = (mby + mbh) - sby
+        overlap_bottom = (sby + sbh) - mby
+
         min_overlap = min(overlap_left, overlap_right, overlap_top, overlap_bottom)
 
         if min_overlap == overlap_left and overlap_left > 0:
-            moving_inst.x = static_inst.x - w1
+            moving_inst.x = (sbx - mbw) + off_x
         elif min_overlap == overlap_right and overlap_right > 0:
-            moving_inst.x = static_inst.x + w2
+            moving_inst.x = (sbx + sbw) + off_x
         elif min_overlap == overlap_top and overlap_top > 0:
-            moving_inst.y = static_inst.y - h1
+            moving_inst.y = (sby - mbh) + off_y
         elif min_overlap == overlap_bottom and overlap_bottom > 0:
-            moving_inst.y = static_inst.y + h2
+            moving_inst.y = (sby + sbh) + off_y
 
     def check_outside_room_events(self):
         """Check for instances that have moved outside the room boundaries.
