@@ -11,6 +11,14 @@ Supports the v701 byte-level encryption (swap table cipher).
 import struct
 import zlib
 
+# Upper bound on the decompressed size of a single zlib block in an imported
+# .gmk. The format is explicitly untrusted (teachers import downloaded/student
+# files), and zlib readily achieves >1000:1 ratios, so a small compressed block
+# could inflate to many gigabytes and OOM the IDE. 512 MB is far larger than any
+# real GMK block (whole games are tens of MB) while bounding a decompression
+# bomb.
+MAX_ZLIB_DECOMPRESSED = 512 * 1024 * 1024
+
 
 class GmkReadError(Exception):
     """Error reading from a GMK binary stream."""
@@ -184,7 +192,22 @@ class GmkStream:
             return b""
         compressed = self.read_bytes(comp_length)
         try:
-            return zlib.decompress(compressed)
+            # Bounded decompression: cap the output so a decompression bomb
+            # (tiny compressed block inflating to gigabytes) can't OOM the IDE
+            # mid-import. max_length stops decompress at the cap, leaving the
+            # rest in unconsumed_tail — if any remains, the block exceeded the
+            # cap and we reject it instead of allocating unbounded memory.
+            decompressor = zlib.decompressobj()
+            result = decompressor.decompress(compressed, MAX_ZLIB_DECOMPRESSED)
+            if decompressor.unconsumed_tail:
+                raise GmkReadError(
+                    "Zlib block exceeds the maximum decompressed size "
+                    f"({MAX_ZLIB_DECOMPRESSED} bytes) — likely a corrupt or "
+                    "hostile .gmk",
+                    self._pos,
+                )
+            result += decompressor.flush()
+            return result
         except zlib.error as e:
             raise GmkReadError(f"Zlib decompression failed: {e}", self._pos) from e
 

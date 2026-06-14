@@ -379,14 +379,17 @@ def _convert_block(block, result: RobertaImportResult) -> List[Dict]:
         r, g, b = _extract_color(block)
         led = _field(block, "LED") or "TOP"
         result.actions_imported += 1
+        # Use the canonical red/green/blue parameter names that the runtime,
+        # action editor and Aseba exporter all read. r/g/b were silently lost
+        # (every consumer defaulted to 0), so imported LEDs stayed off (M42).
         if led in ("BOTTOM_LEFT", "BOTTOMLEFT"):
             return [_action("thymio_set_led_bottom_left",
-                            r=str(r), g=str(g), b=str(b))]
+                            red=str(r), green=str(g), blue=str(b))]
         if led in ("BOTTOM_RIGHT", "BOTTOMRIGHT"):
             return [_action("thymio_set_led_bottom_right",
-                            r=str(r), g=str(g), b=str(b))]
+                            red=str(r), green=str(g), blue=str(b))]
         return [_action("thymio_set_led_top",
-                        r=str(r), g=str(g), b=str(b))]
+                        red=str(r), green=str(g), blue=str(b))]
 
     if btype == "mbedActions_leds_off":
         result.actions_imported += 1
