@@ -128,6 +128,20 @@ THYMIO_METHOD_TO_ACTION = {
     # because they return values and are typically used in assignments or conditions
 }
 
+def _escape_double_quoted(value: str) -> str:
+    """Escape a string for safe embedding inside a double-quoted Python literal.
+
+    The action templates interpolate string parameters into "..." literals, so a
+    raw double quote, backslash, or newline would otherwise produce invalid
+    generated code (L10).
+    """
+    return (value.replace('\\', '\\\\')
+                 .replace('"', '\\"')
+                 .replace('\n', '\\n')
+                 .replace('\r', '\\r')
+                 .replace('\t', '\\t'))
+
+
 # Mapping from action names to Python code templates
 ACTION_TO_PYTHON = {
     # Movement
@@ -1075,9 +1089,20 @@ class ActionsToPythonGenerator:
         if action_name in ('set_variable', 'test_variable') and 'variable' not in params and 'variable_name' in params:
             params['variable'] = params['variable_name']
 
-        # Handle execute_code specially
+        # Handle execute_code specially (raw user code — never escape)
         if action_name == "execute_code":
             return params.get("code", "pass")
+
+        # Escape string parameter values so a quote/backslash/newline in a
+        # message/sound/sprite/room/object name can't produce syntactically
+        # invalid generated code — the templates embed these inside double-quoted
+        # literals (e.g. game.show_message("{message}")) (L10). A no-op for
+        # numbers, identifiers and plain expressions. Nested action lists (then/
+        # else/actions/sub) are left untouched.
+        params = {
+            k: (_escape_double_quoted(v) if isinstance(v, str) else v)
+            for k, v in params.items()
+        }
 
         template = ACTION_TO_PYTHON.get(action_name)
         if not template and template != '':
