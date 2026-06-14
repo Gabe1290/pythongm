@@ -597,10 +597,21 @@ def _extract_color(block) -> Tuple[int, int, int]:
 
     # robColour_rgb uses RED, GREEN, BLUE value sub-blocks
     if btype == "robColour_rgb":
-        r = int(float(_value_str(color_block, "RED", "0")))
-        g = int(float(_value_str(color_block, "GREEN", "0")))
-        b = int(float(_value_str(color_block, "BLUE", "0")))
-        return (_scale_color(r), _scale_color(g), _scale_color(b))
+        def _channel(name):
+            # _value_str can return a variable name or an arithmetic
+            # expression like "(0 + 0)" when the channel is driven by another
+            # block; float() on those raises ValueError. Fall back to 0 with a
+            # warning instead of aborting the whole import (L27), mirroring the
+            # robColour_picker branch.
+            try:
+                return int(float(_value_str(color_block, name, "0")))
+            except (ValueError, TypeError):
+                logger.warning(
+                    f"Roberta import: non-literal LED {name} colour ignored")
+                return 0
+        return (_scale_color(_channel("RED")),
+                _scale_color(_channel("GREEN")),
+                _scale_color(_channel("BLUE")))
 
     return (0, 0, 0)
 

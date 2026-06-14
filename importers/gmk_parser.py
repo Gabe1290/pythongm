@@ -284,6 +284,19 @@ def _bmp_to_bgra(bmp_data: bytes, transparent: bool = True) -> Tuple[int, int, b
     if bpp not in (24, 32):
         raise ValueError(f"Unsupported BMP bit depth: {bpp}")
 
+    # The width/height come straight from an untrusted (zlib-decompressed) BMP
+    # header. Cap them before the bytearray allocation + per-pixel Python loop
+    # so a crafted header (e.g. 46340x46340 with minimal data) can't trigger a
+    # multi-GB allocation / multi-billion-iteration hang (L26). 8192 matches the
+    # converter's MAX_IMAGE_DIMENSION and is far above any real GM sprite.
+    _MAX_BMP_DIMENSION = 8192
+    if width <= 0 or abs(height) <= 0:
+        raise ValueError(f"Invalid BMP dimensions: {width}x{height}")
+    if width > _MAX_BMP_DIMENSION or abs(height) > _MAX_BMP_DIMENSION:
+        raise ValueError(
+            f"BMP dimensions {width}x{abs(height)} exceed the maximum "
+            f"{_MAX_BMP_DIMENSION}px (likely corrupt or hostile .gmk)")
+
     abs_height = abs(height)
     bottom_up = height > 0
     channels = bpp // 8
