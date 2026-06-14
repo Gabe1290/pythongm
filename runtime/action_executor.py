@@ -4893,6 +4893,10 @@ class ActionExecutor:
         if self.game_runner.current_room:
             self.game_runner.current_room.instances.append(new_instance)
             self.game_runner.current_room._add_to_grid(new_instance)
+            # Invalidate the depth-sort cache so the new instance is rendered;
+            # _add_to_grid does not set this and render() draws only the cached
+            # _sorted_instances (M46).
+            self.game_runner.current_room._depth_dirty = True
             self.game_runner.current_room.invalidate_collision_listened_types()
 
             # Defer create event to run after current event completes
@@ -4975,8 +4979,13 @@ class ActionExecutor:
             action_executor=self
         )
 
-        # Set up the new instance with object data and sprite
-        new_instance.set_object_data(object_data)
+        # Set up the new instance with object data and sprite, resolving the
+        # parent chain so a child object keeps its inherited events/properties
+        # (collision, outside_room, etc.) — matching the other two creators and
+        # room-built instances (M47).
+        from runtime.game_runner import resolve_parent_inheritance
+        merged_data = resolve_parent_inheritance(object_data, self.game_runner._objects_data)
+        new_instance.set_object_data(merged_data)
 
         # Set initial motion (convert direction to hspeed/vspeed)
         # GameMaker uses degrees where 0 = right, 90 = up
@@ -4997,10 +5006,12 @@ class ActionExecutor:
         if self.game_runner.current_room:
             self.game_runner.current_room.instances.append(new_instance)
             self.game_runner.current_room._add_to_grid(new_instance)
+            # Invalidate the depth-sort cache so the new instance renders (M46).
+            self.game_runner.current_room._depth_dirty = True
             self.game_runner.current_room.invalidate_collision_listened_types()
 
             # Defer create event to run after current event completes
-            events = object_data.get('events', {})
+            events = merged_data.get('events', {})
             if 'create' in events:
                 if self._event_depth > 0:
                     self._deferred_create_events.append((new_instance, events))
