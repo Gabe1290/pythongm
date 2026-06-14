@@ -38,7 +38,32 @@ _ROOM_FILE_KEYS = (
 _OBJECT_FILE_KEYS = (
     'events', 'sprite', 'visible', 'solid', 'persistent',
     'depth', 'parent', 'mask', 'imported', 'created', 'modified',
+    # 'remember_destroyed' is a child-only opt-in flag every object file may
+    # carry; omitting it dropped the flag on load and reverted it on save (L6).
+    'remember_destroyed',
 )
+
+# Sprite properties copied from sprites/<name>.json. Must include every key a
+# sprite file actually carries, or a hand/external edit to the file is ignored
+# at load and reverted on the next save (the merged in-memory copy is rewritten)
+# — 'precise', 'frame_width', 'frame_height', 'animation_type' and 'speed' were
+# missing (L6).
+_SPRITE_FILE_KEYS = (
+    'frames', 'width', 'height', 'origin_x', 'origin_y', 'collision_mask',
+    'bbox_left', 'bbox_right', 'bbox_top', 'bbox_bottom',
+    'precise', 'frame_width', 'frame_height', 'animation_type', 'speed',
+    'imported', 'created', 'modified', 'file_path',
+)
+
+
+def merge_sprite_file(sprite_data: dict, file_sprite_data: dict) -> None:
+    """Merge a sprites/<name>.json payload into ``sprite_data`` in place.
+
+    File properties take precedence, mirroring the room/object kernels.
+    """
+    for key in _SPRITE_FILE_KEYS:
+        if key in file_sprite_data:
+            sprite_data[key] = file_sprite_data[key]
 
 
 def merge_room_file(room_data: dict, file_room_data: dict):

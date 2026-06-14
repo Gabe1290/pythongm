@@ -1995,12 +1995,10 @@ class GameRunner:
                     with open(sprite_file, 'r', encoding='utf-8') as f:
                         file_sprite_data = json.load(f)
 
-                    # Merge file data into sprite data (file takes precedence)
-                    for key in ['frames', 'width', 'height', 'origin_x', 'origin_y',
-                               'collision_mask', 'bbox_left', 'bbox_right', 'bbox_top',
-                               'bbox_bottom', 'imported', 'created', 'modified', 'file_path']:
-                        if key in file_sprite_data:
-                            sprite_data[key] = file_sprite_data[key]
+                    # Merge file data into sprite data (file takes precedence).
+                    # Single-sourced whitelist so all loaders stay in sync (L6).
+                    from utils.project_file_merge import merge_sprite_file
+                    merge_sprite_file(sprite_data, file_sprite_data)
 
                 except Exception as e:
                     logger.error(f"⚠️ Failed to load sprite file {sprite_file}: {e}")
