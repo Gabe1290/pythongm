@@ -490,11 +490,20 @@ class PlaygroundEditor(FloatableEditorMixin, QWidget):
         if self.canvas.undo_stack.canUndo():
             self.canvas.undo_stack.undo()
             self.mark_modified()
+            self._resync_properties_panel()
 
     def redo(self):
         if self.canvas.undo_stack.canRedo():
             self.canvas.undo_stack.redo()
             self.mark_modified()
+            self._resync_properties_panel()
+
+    def _resync_properties_panel(self):
+        """Refresh the properties panel from the selected element after an
+        undo/redo so its spinboxes don't show stale pre-undo values (and the
+        next spinbox step doesn't jump the element from a stale base) (L11)."""
+        selected = self.canvas.selected_elements
+        self.element_properties.set_element(selected[0] if selected else None)
 
     # ─── Arena settings dialog ──────────────────────────────────
 
