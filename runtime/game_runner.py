@@ -4047,6 +4047,49 @@ class GameRunner:
             room.rebuild_spatial_grid()
             room.invalidate_collision_listened_types()
 
+    def _build_room_from_data(self, room_name, room_data):
+        """Construct a fresh GameRoom from authored data (sprites, backgrounds,
+        remembered-destroyed pruning applied). Shared by the restart paths."""
+        assets = self.project_data.get('assets', {})
+        objects_data = assets.get('objects', {})
+        room = GameRoom(
+            room_name, room_data,
+            action_executor=self.action_executor,
+            project_path=self.project_path,
+            sprites_data=assets,
+        )
+        room.set_sprites_for_instances(self.sprites, objects_data)
+        room.set_backgrounds_ref(self.backgrounds)
+        if room.background_image_name:
+            room.load_background_image()
+        self._apply_destroyed_memory(room)
+        return room
+
+    def _readd_persistent_instances(self, room, persistent_instances):
+        """Re-add carried persistent instances to a freshly built room.
+
+        Replaces any authored non-persistent instance of the same object,
+        refreshes object_data from the project, and resets velocity — the same
+        contract change_room uses, shared so restart_current_room matches it.
+        """
+        if not persistent_instances:
+            return
+        objects_data = self._objects_data
+        for persistent_inst in persistent_instances:
+            room.instances = [
+                inst for inst in room.instances
+                if not (inst.object_name == persistent_inst.object_name and
+                        not inst.object_data.get('persistent', False))
+            ]
+            if persistent_inst.object_name in objects_data:
+                merged = resolve_parent_inheritance(
+                    objects_data[persistent_inst.object_name], objects_data)
+                persistent_inst.set_object_data(merged)
+            persistent_inst.hspeed = 0
+            persistent_inst.vspeed = 0
+            if persistent_inst not in room.instances:
+                room.instances.append(persistent_inst)
+
     def restart_current_room(self):
         """Restart the current room"""
         if not self.current_room:
@@ -4054,6 +4097,15 @@ class GameRunner:
 
         room_name = self.current_room.name
         logger.info(f"🔄 Restarting room: {room_name}")
+
+        # Collect persistent instances before discarding the old room — they
+        # must survive a room restart (GameMaker semantics). Without this a
+        # persistent player carried in from another room (and absent from this
+        # room's authored layout) ceased to exist after restart_room (M51).
+        persistent_instances = [
+            inst for inst in self.current_room.instances
+            if inst.object_data and inst.object_data.get('persistent', False)
+        ]
 
         # Reload room from project data to reset all instances
         room_data = self.project_data.get('assets', {}).get('rooms', {}).get(room_name)
@@ -4095,8 +4147,16 @@ class GameRunner:
             self.rooms[room_name] = new_room
             self.current_room = new_room
 
-            # Execute create events for all instances
+            # Re-add carried persistent instances, replacing any authored
+            # non-persistent instance of the same object (mirrors change_room).
+            self._readd_persistent_instances(new_room, persistent_instances)
+
+            # Execute create events for the freshly-built instances only;
+            # persistent instances already fired create (and the execute_event
+            # guard would skip them anyway).
             for instance in self.current_room.instances:
+                if instance in persistent_instances:
+                    continue
                 if instance.object_data and "events" in instance.object_data:
                     instance.action_executor.execute_event(instance, "create", instance.object_data["events"])
 
@@ -4176,6 +4236,19 @@ class GameRunner:
             # Replace the room in our dictionary
             self.rooms[first_room_name] = new_room
             self.current_room = new_room
+
+            # Rebuild every OTHER already-visited room so rooms 2..N don't keep
+            # the previous playthrough's mutated state (destroyed/moved/changed
+            # instances). Without this, clearing _destroyed_memory only gave a
+            # fresh start in room 1 (M52). Create events fire on entry (the
+            # instances are fresh, so the create guard lets them run).
+            rooms_data = self.project_data.get('assets', {}).get('rooms', {})
+            for rname in list(self.rooms.keys()):
+                if rname == first_room_name:
+                    continue
+                rdata = rooms_data.get(rname)
+                if rdata:
+                    self.rooms[rname] = self._build_room_from_data(rname, rdata)
 
             # Execute create events for all instances
             for instance in self.current_room.instances:

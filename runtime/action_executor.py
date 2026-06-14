@@ -174,6 +174,16 @@ class ActionExecutor:
         if event_name not in events_data:
             return
 
+        # The create event fires at most once per instance lifetime. Re-entering
+        # a previously visited room reuses the same (state-preserved) instances,
+        # so without this guard create would re-run on every visit, accumulating
+        # side effects (duplicate spawns, re-armed alarms, reset variables) — M53.
+        # Room rebuilds (restart) produce fresh instances with the flag unset.
+        if event_name == "create":
+            if getattr(instance, "_create_fired", False):
+                return
+            instance._create_fired = True
+
         event_data = events_data[event_name]
         actions = event_data.get("actions", [])
 
