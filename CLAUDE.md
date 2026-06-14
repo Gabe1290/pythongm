@@ -307,7 +307,36 @@ dropped the misleading Held/Released states (updated
 Kivy collision codegen to offset-from-self (updated `tests/test_exporters.py`).
 The Kivy GameObject/Scene templates are `.format()` strings — literal `{`/`}`
 must be doubled; the base-object template ends with `code.format(grid_size=…)`.
-**M41–M61 medium + 35 low remain open** — pick up at M41.
+
+**2026-06-14 — Mediums M41–M61 fixed; the entire Medium section (M1–M61) is
+now closed.** One Windows-box session, commits grouped by file/root-cause:
+`c3ea583` M41+M42 (gmk zlib-bomb cap, Roberta LED red/green/blue keys);
+`900050f` M43 (exit_event propagates through nested lists via
+`_execute_action_list_inner` — also fixed a discovered if_condition
+then/else **double-run**); `ad0eb54` M44+M45 (Blockly `sub_actions` honored in
+the generic conditional dispatch; `other` bound in execute_code/script — M45's
+`self` was already done in `82f9b04`); `f267939` M46+M47 (create_random/moving
+set `_depth_dirty`; create_moving resolves parent inheritance); `6d090e4`
+M48+M49 (room_speed→fps; per-frame loops iterate `list()` snapshots);
+`2eff238` M50 (push_back_instance works in bbox-world coords); `a469669`
+M51+M52+M53 (restart_room carries persistent instances; restart_game rebuilds
+every visited room; **create event guarded once-per-instance via
+`_create_fired` inside `execute_event`** — this is the single chokepoint, don't
+re-add per-call guards); `aa8ae31` M54 (modal dialogs clear held keys on KEYUP
+via `_release_held_key_silent`); `aa15976` M55+M56 (Thymio ground sensors
+sample forward; differential-drive rotation sign flipped for the y-down frame);
+`51a9884` M57 (`compile_translations.should_compile` skips split .ts without a
+split set); `7276a09` M58 (resource_packager honors real file extensions via
+`_asset_archive_path`); `96264ed` M59 (playground side-file cleanup on
+delete/rename — rooms/objects already done by H3); `6667fc6` M60+M61
+(force_project_refresh already fixed by H13/H14 + guard test; properties-panel
+object edits write through to the live model when no editor is open). Suite
+958 → 1015 passed, 0 failed. Re-verification caught three findings already
+resolved by prior work (M45, M60, and M59-for-rooms) — confirming the
+audit-is-a-lead discipline. **All 61 mediums closed; 35 lows remain open.**
+Box gotcha: the Edit tool's atomic write leaves `*.tmp.<pid>.<hash>` artifacts
+on the Dropbox folder that `git add -A` will grab — committed two by accident
+this session, then added `*.tmp.*` to `.gitignore`; prefer targeted `git add`.
 
 **2026-06-09 — Runtime-core audit (Batch A): most rejected, room-dimension
 bounds added.** A 9-finding audit of `game_runner.py` / `action_executor.py` /

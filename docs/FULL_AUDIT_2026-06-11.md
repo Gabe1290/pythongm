@@ -180,7 +180,7 @@ I confirmed the mechanics: `Path('/tmp/projtest') / 'objects' / '../../../../tmp
   - **Vote:** confirmed: Reproduced against the real code: calling ThymioPlaygroundWindow._apply_zoom_and_pan (widgets/thymio_playground.py:636-668) with zoom_level=0.9 on an 800x600 world surface raises "ValueError: subsurface rectangle outside surface area" at line 664, exactly as claimed. For zoom < 1.0, view_width/view_height (playground / zoom) exceed the world surface; the clamp at lines 656-657 takes max(0, negative) = 0, yielding src_rect (0, 0, 888, 666) larger than the surface, and pygame.Surface.subsurface rejects it. No existing guard anywhere: zoom_min is 0.25 (line 217) and the slider range is (25, 400) (line 345), so sub-100% zoom is fully reachable via the '-' shortcut/toolbar zoom_out (one press from 100% gives 0.9) or the slider; set_zoom only clamps to [0.25, 4.0]; the world surface is allocated at exactly playground size (lines 213, 1047); the 60 FPS QTimer connects directly to update_simulation (lines 232-233) with no try/except on the path, so the exception recurs every tick and the display/status updates after line 628 never run. No tests cover thymio zoom and no commits since 'Layer 1 audit fixes' touch this file. This is first-party IDE code, so the trusted-input lens does not apply — it is a plain UI crash bug triggered by normal user interaction.
 
 
-## Medium (61) — M1–M40 FIXED (M1–M20 2026-06-13, M21–M40 2026-06-14)
+## Medium (61) — ALL FIXED (M1–M20 2026-06-13, M21–M40 2026-06-14, M41–M61 2026-06-14)
 
 The first 20 medium findings were re-verified and fixed with regression
 tests across commits `77974b2`..`5c9418b` (one commit per finding;
@@ -191,8 +191,16 @@ M21–M40 were then re-verified and fixed (2026-06-14), grouped into commits
 by shared file/root-cause (M21+M22 playground, M23+M24 room undo, M25+M26
 sprite editor, M30+M31 input conditions, M32+M33 aseba, M35+M36+M37 kivy
 keyboard, M38+M39 desktop export). Each finding has a dedicated regression
-test file. Suite 890 → 958 passed, 0 failed. **M41–M61 remain open** —
-pick up from M41 below.
+test file. Suite 890 → 958 passed, 0 failed.
+
+M41–M61 were then re-verified and fixed (2026-06-14). Notable re-verification
+outcomes: M45 (execute_code 'self') and M60 (force_project_refresh disk
+reload) were already resolved by earlier commits (82f9b04, H13/H14) — only
+small follow-ons + guard tests added; M59 was largely closed by H3 for
+rooms/objects, extended to playgrounds. M43 additionally fixed a discovered
+if_condition double-run. Each finding has a dedicated regression test file.
+Suite 958 → 1015 passed, 0 failed. **All 61 mediums are now closed; 35 lows
+remain open.**
 
 - [x] **M1 — `actions/thymio_actions.py:407` — Thymio sensor/sound choice options are stored as full label strings ('2 - Front Center'); the simulator parses them to 0, so every non-default sensor choice silently uses sensor 0 (and Aseba export emits invalid code)** *(fixed `77974b2`, tests/test_thymio_choice_labels.py)*
   - *Found by:* events-actions-plugins; *category:* correctness
