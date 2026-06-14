@@ -104,3 +104,6 @@ build_out/
 debug_tests/
 .pytest_cache/
 .audit-rc8/
+
+# Editor atomic-write temp artifacts (Dropbox-delayed cleanup)
+*.tmp.*
