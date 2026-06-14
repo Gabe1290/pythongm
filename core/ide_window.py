@@ -1024,9 +1024,11 @@ class PyGameMakerIDE(QMainWindow):
         self.editor_tabs.tabCloseRequested.connect(self.close_editor_tab)
         self.editor_tabs.currentChanged.connect(self.on_tab_changed)
 
-        # Store reference to open editors
-        self.open_editors = {}  # name -> editor_widget
-        # Asset name -> DetachedEditorWindow for editors floated out of the
+        # Store reference to open editors, keyed by a composite
+        # "<category>:<name>" so a room and an object that legally share a name
+        # don't collide (L5).
+        self.open_editors = {}  # "<category>:<name>" -> editor_widget
+        # Composite key -> DetachedEditorWindow for editors floated out of the
         # tab strip. Editors in this dict still appear in self.open_editors
         # but are NOT in self.editor_tabs.
         self.detached_editor_windows = {}
@@ -1097,9 +1099,10 @@ class PyGameMakerIDE(QMainWindow):
                     if hasattr(editor_widget, 'object_editor_activated'):
                         self.safe_disconnect_signal(editor_widget.object_editor_activated, self.on_object_editor_activated)
 
-                # Remove from open editors dict if it exists
-                if tab_text in self.open_editors:
-                    del self.open_editors[tab_text]
+                # Remove from open editors dict by widget identity (the dict is
+                # keyed by a composite "<category>:<name>", not the tab text).
+                if editor_widget is not None:
+                    self._forget_open_editor(editor_widget)
 
                 # Remove tab and schedule widget for deletion to free memory
                 self.editor_tabs.removeTab(index)
@@ -1659,14 +1662,17 @@ class PyGameMakerIDE(QMainWindow):
                 # If the renamed asset itself is open as an editor, update
                 # its asset_name and propagate to dicts / tab text / window
                 # title so the IDE doesn't keep stale references.
-                if old_name in self.open_editors:
-                    editor = self.open_editors.pop(old_name)
-                    self.open_editors[new_name] = editor
+                old_key = self._editor_key(asset_type, old_name)
+                if old_key in self.open_editors:
+                    new_key = self._editor_key(asset_type, new_name)
+                    editor = self.open_editors.pop(old_key)
+                    editor._open_editor_key = new_key
+                    self.open_editors[new_key] = editor
                     if hasattr(editor, 'asset_name'):
                         editor.asset_name = new_name
                     # If currently floated, move the window registration too.
-                    if old_name in self.detached_editor_windows:
-                        self.detached_editor_windows[new_name] = self.detached_editor_windows.pop(old_name)
+                    if old_key in self.detached_editor_windows:
+                        self.detached_editor_windows[new_key] = self.detached_editor_windows.pop(old_key)
                     # Refresh window title if the editor knows how.
                     if hasattr(editor, 'update_window_title'):
                         try:
@@ -1770,10 +1776,13 @@ class PyGameMakerIDE(QMainWindow):
                                     editor.properties_panel.load_properties(editor.current_object_properties)
                                 logger.debug(f"🔄 Cleared sprite reference in object: {editor_name}")
 
-            # If an object was deleted and it's open, close its editor
+            # If an object was deleted and it's open, close its editor. Use the
+            # composite key so deleting object 'X' can't close a same-named room
+            # editor (L5).
             elif asset_type == "objects":
-                if asset_name in self.open_editors:
-                    self.close_editor_by_name(asset_name)
+                key = self._editor_key('objects', asset_name)
+                if key in self.open_editors:
+                    self.close_editor_by_name(key)
                     logger.debug(f"🔄 Closed deleted object's editor: {asset_name}")
 
             # Refresh asset dropdowns in any open Blockly tab so the deleted
@@ -3412,18 +3421,43 @@ class PyGameMakerIDE(QMainWindow):
         else:
             logger.warning(f"No editor registered for asset type '{asset_type}' (asset: {asset_name})")
 
+    @staticmethod
+    def _canonical_category(category: str) -> str:
+        """Normalize singular/plural asset-type vocabulary (the rename signal
+        uses 'object', delete uses 'objects') so composite editor keys agree."""
+        return {
+            'object': 'objects', 'room': 'rooms', 'sprite': 'sprites',
+            'script': 'scripts', 'playground': 'playgrounds',
+        }.get(category, category)
+
+    def _editor_key(self, category: str, name: str) -> str:
+        """Composite open-editor key: "<category>:<name>" (L5)."""
+        return f"{self._canonical_category(category)}:{name}"
+
+    def _open_key(self, editor) -> str:
+        """The composite key an editor was registered under (falls back to the
+        bare asset_name for any editor opened via an unmigrated path)."""
+        return getattr(editor, '_open_editor_key', None) or getattr(editor, 'asset_name', None)
+
+    def _forget_open_editor(self, editor) -> None:
+        """Remove an editor from open_editors by identity (key-scheme agnostic)."""
+        for k, v in list(self.open_editors.items()):
+            if v is editor:
+                del self.open_editors[k]
+
     def open_room_editor(self, room_name: str, room_data: dict):
         """Open a room in the room editor"""
 
         # Check if room is already open — focus tab or detached window.
-        if room_name in self.open_editors:
-            if self._focus_detached_editor(room_name):
+        key = self._editor_key('rooms', room_name)
+        if key in self.open_editors:
+            if self._focus_detached_editor(key):
                 return
             for i in range(self.editor_tabs.count()):
                 # Compare by widget identity, not tab text: a modified editor's
                 # tab reads 'name*', so a text match failed exactly when dirty
                 # and a duplicate editor was constructed (audit M11).
-                if self.editor_tabs.widget(i) is self.open_editors[room_name]:
+                if self.editor_tabs.widget(i) is self.open_editors[key]:
                     self.editor_tabs.setCurrentIndex(i)
                     return
 
@@ -3449,7 +3483,8 @@ class PyGameMakerIDE(QMainWindow):
             self.editor_tabs.setCurrentIndex(tab_index)
 
             # Track the editor
-            self.open_editors[room_name] = room_editor
+            room_editor._open_editor_key = key
+            self.open_editors[key] = room_editor
 
             self.update_status(self.tr("Opened room: {0}").format(room_name))
 
@@ -3468,12 +3503,13 @@ class PyGameMakerIDE(QMainWindow):
         """Open a playground in the playground editor"""
 
         # Check if already open — focus tab or detached window
-        if playground_name in self.open_editors:
-            if self._focus_detached_editor(playground_name):
+        key = self._editor_key('playgrounds', playground_name)
+        if key in self.open_editors:
+            if self._focus_detached_editor(key):
                 return
             for i in range(self.editor_tabs.count()):
                 # Identity, not tab text (a dirty tab reads 'name*') — audit M11.
-                if self.editor_tabs.widget(i) is self.open_editors[playground_name]:
+                if self.editor_tabs.widget(i) is self.open_editors[key]:
                     self.editor_tabs.setCurrentIndex(i)
                     return
 
@@ -3498,7 +3534,8 @@ class PyGameMakerIDE(QMainWindow):
             # Add to tabs
             tab_index = self.editor_tabs.addTab(editor, playground_name)
             self.editor_tabs.setCurrentIndex(tab_index)
-            self.open_editors[playground_name] = editor
+            editor._open_editor_key = key
+            self.open_editors[key] = editor
 
             self.update_status(self.tr("Opened playground: {0}").format(playground_name))
 
@@ -3517,12 +3554,13 @@ class PyGameMakerIDE(QMainWindow):
         """Open an object in the object editor"""
 
         # Check if object is already open — focus its tab or its detached window
-        if object_name in self.open_editors:
-            if self._focus_detached_editor(object_name):
+        key = self._editor_key('objects', object_name)
+        if key in self.open_editors:
+            if self._focus_detached_editor(key):
                 return
             for i in range(self.editor_tabs.count()):
                 # Identity, not tab text (a dirty tab reads 'name*') — audit M11.
-                if self.editor_tabs.widget(i) is self.open_editors[object_name]:
+                if self.editor_tabs.widget(i) is self.open_editors[key]:
                     self.editor_tabs.setCurrentIndex(i)
                     return
 
@@ -3548,7 +3586,8 @@ class PyGameMakerIDE(QMainWindow):
             self.editor_tabs.setCurrentIndex(tab_index)
 
             # Track the editor
-            self.open_editors[object_name] = object_editor
+            object_editor._open_editor_key = key
+            self.open_editors[key] = object_editor
 
             # Collapse right panel when object editor is active
             # (Object editor has its own internal properties)
@@ -3583,12 +3622,13 @@ class PyGameMakerIDE(QMainWindow):
         """Open a sprite in the sprite editor"""
 
         # Check if sprite is already open — focus its tab or its detached window
-        if sprite_name in self.open_editors:
-            if self._focus_detached_editor(sprite_name):
+        key = self._editor_key('sprites', sprite_name)
+        if key in self.open_editors:
+            if self._focus_detached_editor(key):
                 return
             for i in range(self.editor_tabs.count()):
                 # Identity, not tab text (a dirty tab reads 'name*') — audit M11.
-                if self.editor_tabs.widget(i) is self.open_editors[sprite_name]:
+                if self.editor_tabs.widget(i) is self.open_editors[key]:
                     self.editor_tabs.setCurrentIndex(i)
                     return
 
@@ -3605,7 +3645,8 @@ class PyGameMakerIDE(QMainWindow):
             tab_index = self.editor_tabs.addTab(sprite_editor, sprite_name)
             self.editor_tabs.setCurrentIndex(tab_index)
 
-            self.open_editors[sprite_name] = sprite_editor
+            sprite_editor._open_editor_key = key
+            self.open_editors[key] = sprite_editor
 
             self.update_status(self.tr("Opened sprite: {0}").format(sprite_name))
 
@@ -3632,12 +3673,13 @@ class PyGameMakerIDE(QMainWindow):
         """
         from editors.script_editor import ScriptEditor
 
-        if script_name in self.open_editors:
-            if self._focus_detached_editor(script_name):
+        key = self._editor_key('scripts', script_name)
+        if key in self.open_editors:
+            if self._focus_detached_editor(key):
                 return
             for i in range(self.editor_tabs.count()):
                 # Identity, not tab text (a dirty tab reads 'name*') — audit M11.
-                if self.editor_tabs.widget(i) is self.open_editors[script_name]:
+                if self.editor_tabs.widget(i) is self.open_editors[key]:
                     self.editor_tabs.setCurrentIndex(i)
                     return
 
@@ -3654,7 +3696,8 @@ class PyGameMakerIDE(QMainWindow):
             tab_index = self.editor_tabs.addTab(script_editor, script_name)
             self.editor_tabs.setCurrentIndex(tab_index)
 
-            self.open_editors[script_name] = script_editor
+            script_editor._open_editor_key = key
+            self.open_editors[key] = script_editor
 
             self.update_status(self.tr("Opened script: {0}").format(script_name))
 
@@ -3841,16 +3884,20 @@ class PyGameMakerIDE(QMainWindow):
         # creating an infinite auto-save loop.  The properties panel is already
         # populated when the editor tab is selected.
 
-    def close_editor_by_name(self, asset_name: str):
-        """Close editor by asset name (handles tabbed and detached editors)."""
+    def close_editor_by_name(self, key: str):
+        """Close an editor by its composite open-editor key (handles tabbed and
+        detached editors)."""
         # Detached path: tear down the floating window and drop the editor.
-        if asset_name in self.detached_editor_windows:
-            self._destroy_detached_editor(asset_name)
+        if key in self.detached_editor_windows:
+            self._destroy_detached_editor(key)
+            return
+        editor = self.open_editors.get(key)
+        if editor is None:
             return
         for i in range(self.editor_tabs.count()):
-            if self.editor_tabs.tabText(i).replace('*', '') == asset_name:
+            if self.editor_tabs.widget(i) is editor:
                 self.close_editor_tab(i)
-                break
+                return
 
     def _focus_detached_editor(self, asset_name: str) -> bool:
         """If the editor is currently floated, raise its window. Returns True
@@ -3871,8 +3918,9 @@ class PyGameMakerIDE(QMainWindow):
         if not asset_name:
             logger.warning("float_editor called on editor with no asset_name")
             return
-        if asset_name in self.detached_editor_windows:
-            self._focus_detached_editor(asset_name)
+        key = self._open_key(editor)
+        if key in self.detached_editor_windows:
+            self._focus_detached_editor(key)
             return
 
         # Find and remove the tab without going through close_editor_tab
@@ -3889,7 +3937,7 @@ class PyGameMakerIDE(QMainWindow):
         # window inherits stylesheet/icons but stays independently movable.
         window = DetachedEditorWindow(editor, parent=self)
         window.reattach_requested.connect(self._on_detached_reattach_requested)
-        self.detached_editor_windows[asset_name] = window
+        self.detached_editor_windows[key] = window
 
         if hasattr(editor, "set_floating_state"):
             editor.set_floating_state(True)
@@ -3907,10 +3955,10 @@ class PyGameMakerIDE(QMainWindow):
 
     def reattach_editor(self, editor):
         """Move a floated editor back into the tab strip."""
-        asset_name = getattr(editor, "asset_name", None)
-        if not asset_name:
+        key = self._open_key(editor)
+        if not key:
             return
-        window = self.detached_editor_windows.get(asset_name)
+        window = self.detached_editor_windows.get(key)
         if window is None:
             return
         # Closing the window triggers _on_detached_reattach_requested below.
@@ -3918,16 +3966,19 @@ class PyGameMakerIDE(QMainWindow):
 
     def _on_detached_reattach_requested(self, editor):
         """The detached window is closing — pull the editor back into a tab."""
-        asset_name = getattr(editor, "asset_name", None)
-        if not asset_name:
+        key = self._open_key(editor)
+        if not key:
             return
 
-        window = self.detached_editor_windows.pop(asset_name, None)
+        window = self.detached_editor_windows.pop(key, None)
         if window is not None:
             taken = window.take_editor()
             if taken is not None:
                 editor = taken
             window.deleteLater()
+
+        # Tab label uses the bare asset name, not the composite key.
+        asset_name = getattr(editor, "asset_name", key)
 
         # Drop the welcome tab if it's the only thing showing — we're about
         # to replace it with the real editor.
