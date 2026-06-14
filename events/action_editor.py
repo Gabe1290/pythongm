@@ -130,8 +130,14 @@ class ActionConfigDialog(QDialog):
                 else:
                     widget.setCurrentText(str(param.default_value))
 
-            # Special handling for object selection parameters (object_name)
-            elif param.name == "object_name" or "object" in param.name.lower():
+            # Special handling for object selection parameters (object_name).
+            # Exclude pure choice params: check_empty's param is named 'objects'
+            # but is a choice of ['solid','all'] the runtime collapses anything
+            # else to 'all' — appending every project object name there offered
+            # selections that silently behaved as 'all' (L18). Those fall
+            # through to the choice branch below.
+            elif (param.param_type != "choice"
+                  and (param.name == "object_name" or "object" in param.name.lower())):
                 widget = QComboBox()
                 widget.setEditable(True)
 
@@ -805,18 +811,23 @@ class MultiActionEditor(QDialog):
             action_name = action_data.get("action", "")
             action_type = get_action_type(action_name)
 
+            # Render EVERY action, including unknown types, so the visible row
+            # index always equals the data index. Skipping unknowns (e.g.
+            # Blockly-only 'check_keys_and_move' or a plugin action) shifted the
+            # rows, so Remove/Move operated on the wrong action (L19).
+            item = QTreeWidgetItem()
             if action_type:
-                item = QTreeWidgetItem()
                 item.setText(0, f"{action_type.icon} {self.tr(action_type.display_name)}")
+            else:
+                item.setText(0, f"❓ {self.tr('unknown')}: {action_name}")
 
-                # Show parameter summary
-                params = action_data.get("parameters", {})
-                if params:
-                    param_summary = ", ".join([f"{k}={v}" for k, v in params.items()])
-                    item.setText(1, param_summary[:50] + ("..." if len(param_summary) > 50 else ""))
+            params = action_data.get("parameters", {})
+            if params:
+                param_summary = ", ".join([f"{k}={v}" for k, v in params.items()])
+                item.setText(1, param_summary[:50] + ("..." if len(param_summary) > 50 else ""))
 
-                item.setData(0, Qt.ItemDataRole.UserRole, action_data)
-                self.action_tree.addTopLevelItem(item)
+            item.setData(0, Qt.ItemDataRole.UserRole, action_data)
+            self.action_tree.addTopLevelItem(item)
 
     def add_action(self):
         """Show menu to add a new action"""
