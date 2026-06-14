@@ -47,6 +47,11 @@ def _make_stub(qapp):
         def safe_disconnect_signal(self, *args):
             pass
 
+        def _forget_open_editor(self, editor):
+            for k, v in list(self.open_editors.items()):
+                if v is editor:
+                    del self.open_editors[k]
+
     return _IDEStub()
 
 
