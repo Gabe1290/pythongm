@@ -543,33 +543,35 @@ class ConditionalActionEditor(QDialog):
 
         self.refresh_action_lists()
 
+    def _action_display_text(self, action_data):
+        """Build a display label for an action, including unknown types so the
+        list row index always equals the data index (L19)."""
+        action_type = get_action_type(action_data.get("action", ""))
+        if action_type:
+            display_text = f"{action_type.icon} {self.tr(action_type.display_name)}"
+        else:
+            display_text = f"❓ {self.tr('unknown')}: {action_data.get('action', '')}"
+        params = action_data.get("parameters", {})
+        if params:
+            param_summary = ", ".join(
+                f"{k}={v}" for k, v in params.items()
+                if k not in ["then_actions", "else_actions"])
+            if param_summary:
+                display_text += (f" ({param_summary[:40]}...)"
+                                 if len(param_summary) > 40 else f" ({param_summary})")
+        return display_text
+
     def refresh_action_lists(self):
-        """Refresh both action list displays"""
-        # Then actions
+        """Refresh both action list displays. Every action is rendered
+        (including unknown types) so Remove/Move by row index stays aligned
+        with then_actions/else_actions (L19)."""
         self.then_list.clear()
         for action_data in self.then_actions:
-            action_type = get_action_type(action_data["action"])
-            if action_type:
-                display_text = f"{action_type.icon} {self.tr(action_type.display_name)}"
-                params = action_data.get("parameters", {})
-                if params:
-                    param_summary = ", ".join([f"{k}={v}" for k, v in params.items() if k not in ["then_actions", "else_actions"]])
-                    if param_summary:
-                        display_text += f" ({param_summary[:40]}...)" if len(param_summary) > 40 else f" ({param_summary})"
-                self.then_list.addItem(display_text)
+            self.then_list.addItem(self._action_display_text(action_data))
 
-        # Else actions
         self.else_list.clear()
         for action_data in self.else_actions:
-            action_type = get_action_type(action_data["action"])
-            if action_type:
-                display_text = f"{action_type.icon} {self.tr(action_type.display_name)}"
-                params = action_data.get("parameters", {})
-                if params:
-                    param_summary = ", ".join([f"{k}={v}" for k, v in params.items() if k not in ["then_actions", "else_actions"]])
-                    if param_summary:
-                        display_text += f" ({param_summary[:40]}...)" if len(param_summary) > 40 else f" ({param_summary})"
-                self.else_list.addItem(display_text)
+            self.else_list.addItem(self._action_display_text(action_data))
 
     def add_action_to_list(self, list_type: str):
         """Show menu to add an action to then or else list"""
