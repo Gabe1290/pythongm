@@ -674,6 +674,12 @@ class PyGameMakerIDE(QMainWindow):
 
             self.update_status(self.tr("Importing object..."))
 
+            # Flush unsaved in-memory changes first: the importer read-modify-
+            # writes the on-disk project.json and we reload from disk after, so
+            # without this any edits since the last save are silently lost (L2).
+            if getattr(self.project_manager, 'is_dirty_flag', False):
+                self.project_manager.save_project()
+
             object_name = ResourcePackager.import_object(
                 Path(file_path),
                 self.current_project_path
@@ -714,6 +720,10 @@ class PyGameMakerIDE(QMainWindow):
             from utils.resource_packager import ResourcePackager
 
             self.update_status(self.tr("Importing room..."))
+
+            # Flush unsaved changes first (see import object package, L2).
+            if getattr(self.project_manager, 'is_dirty_flag', False):
+                self.project_manager.save_project()
 
             room_name = ResourcePackager.import_room(
                 Path(file_path),
@@ -2035,14 +2045,21 @@ class PyGameMakerIDE(QMainWindow):
             self._game_stderr_path = stderr_path
             self._game_stderr_handle = os.fdopen(stderr_fd, 'w')
 
-            process = subprocess.Popen(
-                [sys.executable, str(game_script), str(project_json), language],
-                cwd=str(self.current_project_path),
-                env=env,
-                stdout=None,
-                stderr=self._game_stderr_handle,
-                creationflags=creationflags,
-            )
+            try:
+                process = subprocess.Popen(
+                    [sys.executable, str(game_script), str(project_json), language],
+                    cwd=str(self.current_project_path),
+                    env=env,
+                    stdout=None,
+                    stderr=self._game_stderr_handle,
+                    creationflags=creationflags,
+                )
+            except Exception:
+                # Popen failed (e.g. missing interpreter/runtime): close the
+                # stderr handle and delete the temp file so each failed F5
+                # doesn't leak an fd + an orphan pygm2_game_*.log (L3).
+                self._drain_game_stderr(None)
+                raise
 
             # Store reference to allow stopping the game
             self._game_process = process
@@ -4345,6 +4362,15 @@ class PyGameMakerIDE(QMainWindow):
         # otherwise (closeEvent never touched it). Past the cancel paths above,
         # so a cancelled close leaves the game running.
         self.stop_game()
+
+        # Remove the temp extraction dir of an open .zip project so it isn't
+        # left behind in TEMP for the session (close_project is never called;
+        # _reset_zip_state rmtrees it without the side effects of a full
+        # close_project during teardown) (L7).
+        try:
+            self.project_manager._reset_zip_state()
+        except Exception:
+            pass
 
         event.accept()
 
