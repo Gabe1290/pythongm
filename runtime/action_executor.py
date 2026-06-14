@@ -3167,8 +3167,9 @@ class ActionExecutor:
 
             # Defer create event to run after current event completes
             # This ensures conditions like instance_count are accurate
-            # (e.g., the box is destroyed before checking if count is 0)
-            events = object_data.get('events', {})
+            # (e.g., the box is destroyed before checking if count is 0).
+            # Read from merged_data so an inherited-only create event fires (L28).
+            events = merged_data.get('events', {})
             if 'create' in events:
                 if self._event_depth > 0:
                     # We're inside an event - defer the create event
@@ -3297,9 +3298,10 @@ class ActionExecutor:
         # Clear any pending grid movement
         target_instance._has_intended_move = False
 
-        # Execute create event for new object type if requested
+        # Execute create event for new object type if requested. Read from the
+        # parent-merged data so an inherited-only create event fires (L28).
         if perform_events:
-            events = new_object_data.get('events', {})
+            events = merged_data.get('events', {})
             if 'create' in events:
                 if self._event_depth > 0:
                     # Defer create event until current event completes
@@ -4698,14 +4700,19 @@ class ActionExecutor:
         finally:
             self._event_depth -= 1
 
+            # Clear the collision context BEFORE processing deferred create
+            # events. Otherwise a deferred create event runs with the stale
+            # collision context still installed, so _parse_value resolves the
+            # new instance's self.hspeed/vspeed/direction to the colliding
+            # pair's captured speeds (L29). In the finally so an escaping
+            # exception can't leave stale context shadowing every later event.
+            self._collision_other = None
+            self._collision_speeds = {}
+
             # Process deferred create events when we return to top level
             # This ensures instance counts are accurate after all collision actions complete
             if self._event_depth == 0 and self._deferred_create_events:
                 self._process_deferred_create_events()
-
-        # Clean up
-        self._collision_other = None
-        self._collision_speeds = {}
 
     def execute_collision_action_list(self, instance, actions: list, other_instance):
         """Execute collision actions with conditional flow support.
