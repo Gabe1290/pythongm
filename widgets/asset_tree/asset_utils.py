@@ -5,6 +5,8 @@ Pure utility functions for asset management - no UI dependencies
 """
 
 import json
+import os
+import tempfile
 from pathlib import Path
 from typing import Dict, Optional, Tuple, List
 
@@ -134,8 +136,25 @@ def save_project_data(project_file: Path, project_data: Dict) -> bool:
         # Ensure parent directory exists
         project_file.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(project_file, 'w', encoding='utf-8') as f:
-            json.dump(project_data, f, indent=2, ensure_ascii=False)
+        # Atomic write: serialize to a temp file in the same directory, then
+        # os.replace() over the target. A crash/power-loss/disk-full mid-write
+        # then leaves the original project.json intact instead of a truncated
+        # file (the rest of the codebase uses this pattern; L34).
+        fd, tmp_path = tempfile.mkstemp(
+            dir=str(project_file.parent),
+            prefix=f".{project_file.name}.", suffix=".tmp")
+        try:
+            with os.fdopen(fd, 'w', encoding='utf-8') as f:
+                json.dump(project_data, f, indent=2, ensure_ascii=False)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(tmp_path, project_file)
+        except Exception:
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
+            raise
 
         return True
     except Exception as e:
