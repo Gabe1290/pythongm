@@ -69,6 +69,47 @@ class EnhancedPropertiesPanel(QWidget):
             parent = parent.parent()
         return None
 
+    def _find_project_manager(self):
+        """Walk the parent chain for the IDE's project_manager, or None."""
+        parent = self.parent()
+        while parent:
+            pm = getattr(parent, 'project_manager', None)
+            if pm:
+                return pm
+            parent = parent.parent()
+        return None
+
+    def _write_object_property(self, object_name: str, property_name: str, value) -> bool:
+        """Persist an object property edit to the live project model (M61).
+
+        Used when no object editor tab is open: the properties panel still shows
+        editable controls, so the edit must be written through to the asset
+        cache / project data and the project marked dirty, rather than silently
+        discarded while the preview confirms it.
+        """
+        pm = self._find_project_manager()
+        if not pm:
+            return False
+        written = False
+        am = getattr(pm, 'asset_manager', None)
+        if am is not None:
+            try:
+                obj = am.get_asset('objects', object_name)
+            except Exception:
+                obj = None
+            if obj is not None:
+                obj[property_name] = value
+                written = True
+        data = getattr(pm, 'current_project_data', None)
+        if data:
+            objs = data.get('assets', {}).get('objects', {})
+            if object_name in objs:
+                objs[object_name][property_name] = value
+                written = True
+        if written and hasattr(pm, 'mark_dirty'):
+            pm.mark_dirty()
+        return written
+
     def setup_ui(self):
         layout = QVBoxLayout(self)
 
@@ -922,14 +963,24 @@ class EnhancedPropertiesPanel(QWidget):
                 object_data[property_name] = value
                 self.show_object_preview(object_data)
 
-        # Send the property change ONLY to the current object editor
+        # Send the property change to the current object editor if one is open;
+        # otherwise write it through to the live project model so the edit isn't
+        # silently dropped while the preview shows it applied (M61).
         if hasattr(self, 'current_object_editor') and self.current_object_editor:
             try:
                 # Call the method directly instead of using signals
                 self.current_object_editor.update_object_property_from_ide(property_name, value)
+                return
             except RuntimeError:
                 # Object editor has been deleted
                 self.current_object_editor = None
+
+        if (hasattr(self, 'current_asset') and self.current_asset
+                and self.current_asset[0] == 'object_editor'):
+            object_name = self.current_asset[1]
+            if not self._write_object_property(object_name, property_name, value):
+                logger.debug(f"Could not persist {property_name} for {object_name} "
+                             "(no project manager)")
 
     def clear_object_context(self):
         """Clear object editor context"""
