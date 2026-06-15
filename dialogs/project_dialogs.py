@@ -599,11 +599,15 @@ class ExportProjectDialog(QDialog):
             # Get output directory
             output_dir = Path(self.output_path_edit.text())
 
-            # Export settings
+            # Export settings — honor the user's Export Options checkboxes
+            # (Include Assets / Optimize for Release / Include Debug Info)
+            # captured in accept_export(). ExeExporter consumes include_debug
+            # (PyInstaller console=/debug=) and optimize (upx=); previously
+            # these were hardcoded so the checkboxes had no effect (audit L9).
             export_settings = {
-                'include_assets': True,
-                'include_debug': False,  # No console window by default
-                'optimize': True         # Use UPX compression
+                'include_assets': self.include_assets_check.isChecked(),
+                'include_debug': self.include_debug_check.isChecked(),
+                'optimize': self.optimize_check.isChecked(),
             }
 
             # Create progress dialog
