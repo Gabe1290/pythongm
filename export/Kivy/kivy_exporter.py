@@ -1637,6 +1637,10 @@ class GameObject(Widget):
         self.solid = False
         self.pushable = False
 
+        # The authored object name, used by check_collision_at() to match a
+        # named target. Subclasses overwrite this in their __init__.
+        self.object_name = None
+
         # Sprite properties
         self.sprite_name = None
         self.image = None
@@ -1939,6 +1943,39 @@ class GameObject(Widget):
 
         return collision
 
+    def check_collision_at(self, x, y, object_name=None):
+        """Return True if this object, placed at absolute (x, y), would overlap
+        a matching instance.
+
+        object_name selects the targets:
+          - None / "" / "any" / "all": any instance with a collision mask
+          - "solid": any solid instance
+          - otherwise: instances whose authored object_name matches
+        Mirrors the GameMaker if_collision / check_empty semantics the action
+        code generator emits (it passes absolute coords, defaulting to
+        self.x/self.y). The position is probed without permanently moving self.
+        """
+        if not self.scene:
+            return False
+        old_x, old_y = self.x, self.y
+        self.x, self.y = x, y
+        try:
+            key = (object_name or "any")
+            for other in self.scene.instances:
+                if other is self:
+                    continue
+                if key == "solid":
+                    if not other.solid:
+                        continue
+                elif key not in ("any", "all"):
+                    if getattr(other, "object_name", None) != object_name:
+                        continue
+                if self.check_collision(other):
+                    return True
+            return False
+        finally:
+            self.x, self.y = old_x, old_y
+
     def stop_movement(self):
         """Stop all movement"""
         self.hspeed = 0
@@ -2186,6 +2223,7 @@ class {class_name}(GameObject):
     def __init__(self, scene, x=0, y=0, **kwargs):
         super().__init__(scene, x, y, **kwargs)
 
+        self.object_name = "{obj_name}"
         self.solid = {solid}
         self.visible = {visible}
         self.persistent = {persistent}
