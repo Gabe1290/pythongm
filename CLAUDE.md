@@ -20,9 +20,17 @@ From the repo root:
   snapshots: **532 passed, 21 skipped, 0 failed** on this Linux box
   (Python 3.11.2 + pygame 2.6.1, 2026-06-03); **670 passed, 0 skipped** on
   Python 3.12 + pygame 2.6.1 + PySide6 6.10.1 (2026-06-07, the Windows box —
-  tests have grown since). The widget tests that skip on 3.11 run on 3.12,
-  which explains the skip-count gap. The old "536 passed" / "486 passed"
-  figures are stale snapshots.
+  tests have grown since). The old "536 passed" / "486 passed" figures are
+  stale snapshots.
+- **`pytest-qt` is required to RUN the widget tests, and CI runs them.** Without
+  it (the default on the Linux box) ~41 tests that use the `qapp` fixture
+  **error** (not skip) and are effectively *not run locally* — so a regression
+  in a GUI path passes locally and only fails in CI. Install it
+  (`pip install pytest-qt`) and run `QT_QPA_PLATFORM=offscreen python3 -m pytest
+  tests/ -q` to reproduce CI exactly. CI-equivalent green snapshot: **1162
+  passed, 0 failed, 0 skipped** (2026-06-15, Linux 3.11 + pytest-qt). Audit
+  regression tests deliberately use a hand-rolled offscreen QApplication
+  (no `qapp` fixture) so they run even without pytest-qt.
 - `pyflakes` is **not** installed; substitute `py_compile` + import sanity for
   static checks.
 - For headless / offscreen Qt: `QT_QPA_PLATFORM=offscreen` (`conftest.py`
