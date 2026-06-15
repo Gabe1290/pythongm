@@ -309,6 +309,73 @@ class ProjectManager(QObject):
             self.status_changed.emit(f"Failed to open project: {str(e)}")
             return False
 
+    def merge_imported_assets_from_disk(self) -> list:
+        """Fold newly-imported assets from the on-disk project.json into the
+        live in-memory model.
+
+        ``ResourcePackager.import_object`` / ``import_room`` write the imported
+        asset (and any dependency backgrounds/objects/sprites) straight into
+        project.json on disk; they never touch this in-memory model. A full
+        ``load_project`` would surface them but also tears down open editors and
+        discards unsaved in-memory edits — the very reason
+        ``AssetTreeWidget.force_project_refresh`` deliberately avoids hitting
+        disk (audit H13/H14). So instead we ADD only the asset keys present on
+        disk but missing from memory, leaving every existing entry (and its
+        unsaved edits) untouched.
+
+        Both the in-memory ``current_project_data`` and the asset manager's
+        ``assets_cache`` are updated, because ``force_project_refresh`` rebuilds
+        ``current_project_data["assets"]`` from the cache
+        (``save_assets_to_project_data``) — a cache that still lacked the import
+        would otherwise wipe the freshly-added entry straight back out.
+
+        Returns the list of ``(asset_type, name)`` pairs added.
+        """
+        from collections import OrderedDict
+
+        added: list = []
+        if not self.current_project_path or not self.current_project_data:
+            return added
+
+        project_file = self.current_project_path / self.PROJECT_FILE
+        if not project_file.exists():
+            return added
+
+        try:
+            with open(project_file, 'r', encoding='utf-8') as f:
+                disk_data = json.load(f, object_pairs_hook=OrderedDict)
+        except (OSError, ValueError) as e:
+            logger.warning(f"merge_imported_assets_from_disk: could not read {project_file}: {e}")
+            return added
+
+        disk_assets = disk_data.get('assets', {})
+        if not isinstance(disk_assets, dict):
+            return added
+
+        mem_assets = self.current_project_data.setdefault('assets', {})
+        cache = self.asset_manager.assets_cache if self.asset_manager else None
+
+        for asset_type, disk_entries in disk_assets.items():
+            if not isinstance(disk_entries, dict):
+                continue
+            mem_entries = mem_assets.setdefault(asset_type, {})
+            cache_entries = None
+            if cache is not None:
+                cache_entries = cache.setdefault(asset_type, OrderedDict())
+            for name, entry in disk_entries.items():
+                in_memory = name in mem_entries
+                in_cache = cache_entries is not None and name in cache_entries
+                if in_memory or in_cache:
+                    continue
+                mem_entries[name] = entry
+                if cache_entries is not None:
+                    cache_entries[name] = entry
+                added.append((asset_type, name))
+
+        if added:
+            logger.debug(f"Merged {len(added)} imported asset(s) from disk: {added}")
+        return added
+
     def _load_rooms_from_files(self, project_path: Path, project_data: dict) -> None:
         """Load room instance data from separate files in rooms/ directory"""
         rooms_dir = project_path / "rooms"
