@@ -570,6 +570,12 @@ class GameInstance:
 
         self.sprite = None
         self.object_data = None
+        # Whether this instance's create event has already been delivered.
+        # change_room re-uses stored room objects, so re-entering a visited
+        # room must NOT re-fire create on instances that already initialized
+        # (it would duplicate create_instance spawns, re-apply relative var
+        # changes and re-arm alarms). Set True at every create-delivery site.
+        self._create_fired = False
         self._cached_object_data = None  # Cached reference to object data
         self._collision_targets = {}  # Pre-parsed collision events: {target_object_name: event_data}
         self.to_destroy = False
@@ -2019,7 +2025,22 @@ class GameRunner:
         self.show_score_in_caption = settings.get('show_score_in_caption', False)
         self.show_health_in_caption = settings.get('show_health_in_caption', False)
 
-        logger.debug(f"⚙️ Settings: lives={self.lives}, score={self.score}, health={self.health}")
+        # Load room speed (frames per second). The GMK importer persists the
+        # source game's speed into settings['room_speed'] (GM8 default 30); if
+        # the runtime never reads it, an imported 30-step/s game runs at the
+        # hardcoded 60 FPS — exactly double speed for movement, gravity and
+        # alarms. Clamp identically to the authored set_room_speed action.
+        try:
+            fps = int(settings.get('room_speed', 60))
+            if fps < 1:
+                fps = 1
+            elif fps > 240:
+                fps = 240
+            self.fps = fps
+        except (ValueError, TypeError):
+            self.fps = 60
+
+        logger.debug(f"⚙️ Settings: lives={self.lives}, score={self.score}, health={self.health}, fps={self.fps}")
 
     def load_sprites(self):
         """Load all sprites from the project (called after pygame.display is initialized)"""
@@ -2266,6 +2287,7 @@ class GameRunner:
             # IMPORTANT: Execute create events for starting room instances
             logger.info(f"\n🎬 Triggering create events for starting room: {self.current_room.name}")
             for instance in self.current_room.instances:
+                instance._create_fired = True
                 if instance.object_data and "events" in instance.object_data:
                     self.action_executor.execute_event(instance, "create", instance.object_data["events"])
 
@@ -2285,7 +2307,13 @@ class GameRunner:
                 # ========== GameMaker 7.0 Event Execution Order ==========
                 # Merged loop: begin_step -> alarms -> step (per instance)
                 # This reduces 3 separate instance iterations to 1
-                for instance in self.current_room.instances:
+                # Iterate a snapshot: instances created mid-frame (create_instance
+                # from a step/alarm) append to the live list, and iterating it
+                # directly would process them in the SAME frame — a self-spawner
+                # (obj step -> create obj) would never exit this loop, hanging the
+                # game on the first frame. Snapshotting defers new instances to
+                # the next frame, matching GameMaker semantics.
+                for instance in list(self.current_room.instances):
                     obj_data = instance.object_data
                     if obj_data:
                         events = obj_data.get("events")
@@ -2359,7 +2387,7 @@ class GameRunner:
 
                 # 7. END STEP and DESTROY events (merged loop)
                 has_destroyed = False
-                for instance in self.current_room.instances:
+                for instance in list(self.current_room.instances):
                     obj_data = instance.object_data
                     if obj_data:
                         events = obj_data.get("events")
@@ -2466,8 +2494,12 @@ class GameRunner:
 
         events_found = False
 
-        # Track which keys are pressed
-        for instance in self.current_room.instances:
+        # Track which keys are pressed. Snapshot the list: a keyboard_press
+        # handler can create_instance (appending to the live list), and
+        # iterating it directly would add the new key to and re-fire the
+        # event on the freshly created instance in the same keypress — a
+        # spawn cycle would hang here exactly as in the step loop.
+        for instance in list(self.current_room.instances):
             # Skip orphan instances (object_name not in the project's objects dict,
             # e.g. a renamed/deleted object), matching every other input handler.
             # Done before keys_pressed.add so they also stay out of _process_held_keys.
@@ -2591,8 +2623,10 @@ class GameRunner:
 
         logger.debug(f"\n⌨️  Keyboard released: {sub_key}")
 
-        # Execute keyboard_release events for all instances
-        for instance in self.current_room.instances:
+        # Execute keyboard_release events for all instances (snapshot: a
+        # release handler may create_instance, and the new instance must not
+        # be processed in this same keyup).
+        for instance in list(self.current_room.instances):
             if not instance.object_data:
                 continue
 
@@ -2660,8 +2694,9 @@ class GameRunner:
         if button == 1 and self._handle_thymio_button_press(button, mouse_x, mouse_y):
             return
 
-        # Execute mouse events for all instances
-        for instance in self.current_room.instances:
+        # Execute mouse events for all instances (snapshot: a mouse handler
+        # may create_instance, which must not be processed in this same click).
+        for instance in list(self.current_room.instances):
             if not instance.object_data:
                 continue
 
@@ -2725,8 +2760,8 @@ class GameRunner:
 
         mouse_x, mouse_y = pos
 
-        # Execute mouse release events
-        for instance in self.current_room.instances:
+        # Execute mouse release events (snapshot for spawn safety)
+        for instance in list(self.current_room.instances):
             if not instance.object_data:
                 continue
 
@@ -2745,8 +2780,8 @@ class GameRunner:
 
         mouse_x, mouse_y = pos
 
-        # Execute mouse motion events
-        for instance in self.current_room.instances:
+        # Execute mouse motion events (snapshot for spawn safety)
+        for instance in list(self.current_room.instances):
             if not instance.object_data:
                 continue
 
@@ -3420,11 +3455,14 @@ class GameRunner:
                 iy = instance.y - s1.origin_y + s1.bbox_top
                 ox = other_instance.x - s2.origin_x + s2.bbox_left
                 oy = other_instance.y - s2.origin_y + s2.bbox_top
-                # Need w1/h1/w2/h2 names for the push_back_instance call below
-                w1 = bw1
-                h1 = bh1
-                w2 = bw2
-                h2 = bh2
+                # Offsets to convert a resolved bbox-world top-left back to an
+                # instance coordinate: instance.x = bbox_x + offx (offx =
+                # origin_x - bbox_left). Without this the separation lands at
+                # the wrong spot whenever origin/bbox offsets are nonzero.
+                offx1 = s1.origin_x - s1.bbox_left
+                offy1 = s1.origin_y - s1.bbox_top
+                offx2 = s2.origin_x - s2.bbox_left
+                offy2 = s2.origin_y - s2.bbox_top
 
                 if self.rectangles_overlap(ix, iy, bw1, bh1, ox, oy, bw2, bh2):
                     # They're overlapping - push the moving instance back
@@ -3434,32 +3472,43 @@ class GameRunner:
 
                     if inst_moving and not other_moving:
                         # Push instance back to non-overlapping position
-                        self.push_back_instance(instance, other_instance, w1, h1, w2, h2)
+                        self.push_back_instance(instance, ix, iy, bw1, bh1, offx1, offy1,
+                                                ox, oy, bw2, bh2)
                     elif other_moving and not inst_moving:
                         # Push other_instance back
-                        self.push_back_instance(other_instance, instance, w2, h2, w1, h1)
+                        self.push_back_instance(other_instance, ox, oy, bw2, bh2, offx2, offy2,
+                                                ix, iy, bw1, bh1)
 
                     processed_pairs.add(pair_key)
 
-    def push_back_instance(self, moving_inst, static_inst, w1, h1, w2, h2):
-        """Push moving instance back so it no longer overlaps with static instance."""
-        # Calculate overlap amounts
-        overlap_left = (moving_inst.x + w1) - static_inst.x
-        overlap_right = (static_inst.x + w2) - moving_inst.x
-        overlap_top = (moving_inst.y + h1) - static_inst.y
-        overlap_bottom = (static_inst.y + h2) - moving_inst.y
+    def push_back_instance(self, moving_inst, mx, my, w1, h1, offx, offy,
+                           sx, sy, w2, h2):
+        """Push moving instance back so its collision bbox no longer overlaps.
+
+        All coordinates are bbox world top-left positions (mx/my for the moving
+        instance's bbox, sx/sy for the static one) with bbox widths/heights —
+        NOT raw instance coordinates. offx/offy convert the resolved bbox
+        position back to an instance coordinate (instance.x = bbox_x + offx,
+        where offx = sprite.origin_x - sprite.bbox_left), so separation lands
+        flush even when the sprite has a nonzero origin or auto-bbox margin.
+        """
+        # Calculate overlap amounts in bbox-world space
+        overlap_left = (mx + w1) - sx
+        overlap_right = (sx + w2) - mx
+        overlap_top = (my + h1) - sy
+        overlap_bottom = (sy + h2) - my
 
         # Find minimum overlap to resolve
         min_overlap = min(overlap_left, overlap_right, overlap_top, overlap_bottom)
 
         if min_overlap == overlap_left and overlap_left > 0:
-            moving_inst.x = static_inst.x - w1
+            moving_inst.x = (sx - w1) + offx
         elif min_overlap == overlap_right and overlap_right > 0:
-            moving_inst.x = static_inst.x + w2
+            moving_inst.x = (sx + w2) + offx
         elif min_overlap == overlap_top and overlap_top > 0:
-            moving_inst.y = static_inst.y - h1
+            moving_inst.y = (sy - h1) + offy
         elif min_overlap == overlap_bottom and overlap_bottom > 0:
-            moving_inst.y = static_inst.y + h2
+            moving_inst.y = (sy + h2) + offy
 
     def check_outside_room_events(self):
         """Check for instances that have moved outside the room boundaries.
@@ -3486,16 +3535,27 @@ class GameRunner:
             w = instance._cached_width
             h = instance._cached_height
 
+            # The sprite's top-left in world space is offset from instance.(x,y)
+            # by the sprite origin (instance.x is the origin point, not the
+            # top-left corner). Ignoring it makes outside_room fire early/late
+            # by the origin amount — visible on GMK sprites with a centered or
+            # nonzero origin.
+            left = instance.x
+            top = instance.y
+            if instance.sprite is not None:
+                left -= instance.sprite.origin_x
+                top -= instance.sprite.origin_y
+
             # Check if completely outside room (not just partially)
-            # Right edge is to the left of room left edge (x + w < 0)
-            # Left edge is to the right of room right edge (x > room_width)
-            # Bottom edge is above room top (y + h < 0)
-            # Top edge is below room bottom (y > room_height)
+            # Right edge is to the left of room left edge (left + w < 0)
+            # Left edge is to the right of room right edge (left > room_width)
+            # Bottom edge is above room top (top + h < 0)
+            # Top edge is below room bottom (top > room_height)
             outside = (
-                instance.x + w < 0 or          # Completely off left
-                instance.x > room_width or     # Completely off right
-                instance.y + h < 0 or          # Completely off top
-                instance.y > room_height       # Completely off bottom
+                left + w < 0 or          # Completely off left
+                left > room_width or     # Completely off right
+                top + h < 0 or           # Completely off top
+                top > room_height        # Completely off bottom
             )
 
             if outside:
@@ -4030,6 +4090,16 @@ class GameRunner:
         room_name = self.current_room.name
         logger.info(f"🔄 Restarting room: {room_name}")
 
+        # Collect persistent instances from the current room before discarding
+        # it. GameMaker keeps persistent instances alive across a room restart;
+        # without this they die with the room — and a persistent player placed
+        # only in room 1 and carried forward simply ceases to exist on a
+        # restart_room death in room 2 (a silent soft-lock).
+        persistent_instances = []
+        for instance in self.current_room.instances:
+            if instance.object_data and instance.object_data.get('persistent', False):
+                persistent_instances.append(instance)
+
         # Reload room from project data to reset all instances
         room_data = self.project_data.get('assets', {}).get('rooms', {}).get(room_name)
         if room_data:
@@ -4066,12 +4136,31 @@ class GameRunner:
             # respawn on restart.
             self._apply_destroyed_memory(new_room)
 
+            # Re-add the carried-over persistent instances, replacing any
+            # authored non-persistent instance of the same object in the fresh
+            # layout (mirror of change_room). Their create event is NOT re-fired.
+            for persistent_inst in persistent_instances:
+                new_room.instances = [
+                    inst for inst in new_room.instances
+                    if not (inst.object_name == persistent_inst.object_name and
+                            not (inst.object_data and inst.object_data.get('persistent', False)))
+                ]
+                if persistent_inst not in new_room.instances:
+                    new_room.instances.append(persistent_inst)
+            if persistent_instances:
+                new_room.rebuild_spatial_grid()
+                new_room.invalidate_collision_listened_types()
+
             # Replace the room in our dictionary
             self.rooms[room_name] = new_room
             self.current_room = new_room
 
-            # Execute create events for all instances
+            # Execute create events for all instances (except carried-over
+            # persistent ones, which keep their existing state per GM semantics)
             for instance in self.current_room.instances:
+                if instance in persistent_instances:
+                    continue
+                instance._create_fired = True
                 if instance.object_data and "events" in instance.object_data:
                     instance.action_executor.execute_event(instance, "create", instance.object_data["events"])
 
@@ -4108,6 +4197,37 @@ class GameRunner:
 
         first_room_name = room_list[0]
         logger.debug(f"  ➡️ Going to first room: {first_room_name}")
+
+        # Rebuild EVERY non-first room from its authored layout too. change_room
+        # reuses the stored GameRoom objects, so rooms the player already visited
+        # last run keep that run's mutated state (instances destroyed/moved/
+        # change_instance'd). Without rebuilding them, a fresh playthrough only
+        # exists in room 1 — rooms 2..N stay drained of bonuses/monsters. Create
+        # events are NOT fired here; they fire on entry via change_room.
+        assets = self.project_data.get('assets', {})
+        rooms_data = assets.get('rooms', {})
+        objects_data = assets.get('objects', {})
+        for other_name in room_list:
+            if other_name == first_room_name:
+                continue
+            other_data = rooms_data.get(other_name)
+            if not other_data:
+                continue
+            try:
+                rebuilt = GameRoom(
+                    other_name,
+                    other_data,
+                    action_executor=self.action_executor,
+                    project_path=self.project_path,
+                    sprites_data=assets
+                )
+                rebuilt.set_sprites_for_instances(self.sprites, objects_data)
+                rebuilt.set_backgrounds_ref(self.backgrounds)
+                if rebuilt.background_image_name:
+                    rebuilt.load_background_image()
+                self.rooms[other_name] = rebuilt
+            except Exception as e:
+                logger.error(f"  ⚠️ Could not rebuild room '{other_name}' on game restart: {e}")
 
         # Recreate the first room from scratch (like restart_current_room does)
         room_data = self.project_data.get('assets', {}).get('rooms', {}).get(first_room_name)
@@ -4154,6 +4274,7 @@ class GameRunner:
 
             # Execute create events for all instances
             for instance in self.current_room.instances:
+                instance._create_fired = True
                 if instance.object_data and "events" in instance.object_data:
                     instance.action_executor.execute_event(instance, "create", instance.object_data["events"])
 
@@ -4331,11 +4452,21 @@ class GameRunner:
                     self.window_height = room_height
                     logger.debug(f"✅ Window resized to {room_width}x{room_height}")
 
-            # Execute create events for NEW instances only (not persistent ones that carried over)
+            # Execute create events for NEW instances only — those that have
+            # never had create delivered. change_room reuses the stored room
+            # object, so re-entering a previously visited room must NOT re-fire
+            # create on its already-initialized instances (that duplicated
+            # create_instance spawns, re-applied relative var changes and
+            # re-armed alarms each visit). Persistent carried-over instances are
+            # likewise skipped (they already fired create in their origin room).
             for instance in self.current_room.instances:
-                if instance not in persistent_instances:
-                    if instance.object_data and "events" in instance.object_data:
-                        instance.action_executor.execute_event(instance, "create", instance.object_data["events"])
+                if instance in persistent_instances:
+                    continue
+                if instance._create_fired:
+                    continue
+                instance._create_fired = True
+                if instance.object_data and "events" in instance.object_data:
+                    instance.action_executor.execute_event(instance, "create", instance.object_data["events"])
 
             # Execute room_start event for all instances (after create events)
             self.trigger_room_start_event()
@@ -4588,6 +4719,13 @@ class GameRunner:
                 elif event.type == pygame.KEYDOWN:
                     if event.key in (pygame.K_RETURN, pygame.K_SPACE, pygame.K_ESCAPE):
                         waiting = False
+                elif event.type == pygame.KEYUP:
+                    # Forward key releases so instance.keys_pressed stays in
+                    # sync. Otherwise a movement key released while the dialog
+                    # is open is swallowed here, the key stays in keys_pressed
+                    # forever, and _process_held_keys keeps moving the player
+                    # after the dialog closes ("haunted" character).
+                    self.handle_keyboard_release(event.key)
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # Check if OK button was clicked
                     mx, my = event.pos
@@ -4798,6 +4936,9 @@ class GameRunner:
                 elif event.type == pygame.KEYDOWN:
                     if event.key in (pygame.K_RETURN, pygame.K_SPACE, pygame.K_ESCAPE):
                         waiting = False
+                elif event.type == pygame.KEYUP:
+                    # Keep instance.keys_pressed in sync (see show_message_dialog).
+                    self.handle_keyboard_release(event.key)
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mx, my = event.pos
                     if (button_x <= mx <= button_x + button_width and
@@ -5018,6 +5159,9 @@ class GameRunner:
                         # Only allow printable characters
                         if event.unicode.isprintable():
                             player_name += event.unicode
+                elif event.type == pygame.KEYUP:
+                    # Keep instance.keys_pressed in sync (see show_message_dialog).
+                    self.handle_keyboard_release(event.key)
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mx, my = event.pos
                     # OK button
