@@ -124,8 +124,15 @@ class AssetOperations:
             parent = parent.parent()
 
         if parent and hasattr(parent, 'open_editors'):
-            if asset_name in parent.open_editors:
-                # Close the editor first
+            # Close the editor for THIS asset's category only (open_editors is
+            # keyed by a composite "<category>:<name>" so a same-named asset of
+            # another type isn't closed too — audit L5).
+            if hasattr(parent, '_editor_key'):
+                key = parent._editor_key(asset_category, asset_name)
+                if key in parent.open_editors:
+                    logger.debug("Asset is open in editor, closing it first...")
+                    parent.close_editor_by_name(asset_name, asset_category)
+            elif asset_name in parent.open_editors:
                 logger.debug("Asset is open in editor, closing it first...")
                 parent.close_editor_by_name(asset_name)
 
