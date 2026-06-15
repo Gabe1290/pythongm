@@ -12,7 +12,7 @@ cas de régression.
 
 ### Onglet d'accueil (commits e42d4b6 / 7e86274 / 37d7186)
 - L [ ] M [ ] W [ ] L'onglet d'accueil est l'onglet par défaut au premier lancement sans projet
-- L [ ] M [ ] W [ ] Le titre « Welcome to PyGameMaker IDE » + l'étiquette de version « v1.0.0-rc.12 » sont visibles
+- L [ ] M [ ] W [ ] Le titre « Welcome to PyGameMaker IDE » + l'étiquette de version « v1.0.0-rc.13 » sont visibles
 - L [ ] M [ ] W [ ] La colonne **Get started** affiche New Project, Open Project, et le menu déroulant **More options**
 - L [ ] M [ ] W [ ] Le menu déroulant « More options » ouvre un menu avec les entrées Open ZIP / Import GMK / Import Roberta
 - L [ ] M [ ] W [ ] La liste **Continue where you left off** affiche les projets récents avec des horodatages « N days ago »
