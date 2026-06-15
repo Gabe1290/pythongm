@@ -1314,7 +1314,8 @@ class PyGameMakerIDE(QMainWindow):
             if self.project_manager.create_project(
                 project_info["name"],
                 project_info["path"],
-                project_info["template"]
+                project_info["template"],
+                project_info.get("description", "")
             ):
                 # Update IDE state with newly created project
                 project_path = self.project_manager.current_project_path

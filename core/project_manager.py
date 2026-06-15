@@ -152,7 +152,8 @@ class ProjectManager(QObject):
         self.auto_save_enabled = True
         self.auto_save_interval = 30000  # 30 seconds
 
-    def create_project(self, project_name: str, location: str, template: str = "empty") -> bool:
+    def create_project(self, project_name: str, location: str, template: str = "empty",
+                       description: str = "") -> bool:
         """
         Create a new project (compatibility wrapper for IDE)
 
@@ -160,12 +161,13 @@ class ProjectManager(QObject):
             project_name: Name of the project
             location: Parent directory where project folder will be created
             template: Project template id ("empty", "gameover", ...) or display name
+            description: Optional project description, persisted into project.json
 
         Returns:
             bool: True if successful, False otherwise
         """
         location_path = Path(location)
-        return self.create_new_project(project_name, location_path, template)
+        return self.create_new_project(project_name, location_path, template, description)
 
     def set_asset_manager(self, asset_manager):
         """Set or update the asset manager reference"""
@@ -190,7 +192,8 @@ class ProjectManager(QObject):
             if self.current_project_path:
                 self.asset_manager.set_project_directory(self.current_project_path)
 
-    def create_new_project(self, project_name: str, location: Path, template: str = "empty") -> bool:
+    def create_new_project(self, project_name: str, location: Path, template: str = "empty",
+                           description: str = "") -> bool:
         """Create a new project at the specified location"""
         try:
             project_path = Path(location) / project_name
@@ -209,6 +212,8 @@ class ProjectManager(QObject):
             # Create default project data
             project_data = self._create_default_project_data(project_name)
             self._apply_project_template(project_data, template)
+            if description:
+                project_data["description"] = description
 
             # Save project file
             project_file = project_path / self.PROJECT_FILE
