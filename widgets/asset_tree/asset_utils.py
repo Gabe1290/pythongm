@@ -132,6 +132,8 @@ def save_project_data(project_file: Path, project_data: Dict) -> bool:
     Save project data to JSON file
     Returns True if successful, False otherwise
     """
+    # Callers may pass a str path; coerce to Path so .parent/.name work.
+    project_file = Path(project_file)
     try:
         # Ensure parent directory exists
         project_file.parent.mkdir(parents=True, exist_ok=True)

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import atexit
 import json
 import os
 import shutil
@@ -132,6 +133,13 @@ class ProjectManager(QObject):
         self._original_zip_path = None
         self._temp_extraction_dir = None
         self._auto_save_as_zip = False  # NEW: Auto-save as zip preference
+        # Opening a .zip project extracts a full copy to a tempfile.mkdtemp dir.
+        # Switching/creating/closing a project rmtrees the previous one (see
+        # _reset_zip_state) and the IDE closeEvent sweeps it too, but quitting
+        # without going through closeEvent (Ctrl+C, crash, headless) would leak
+        # the currently-open zip's extraction. Register a process-exit sweep so
+        # whatever _temp_extraction_dir holds at quit time is removed (L7).
+        atexit.register(self._cleanup_temp_extraction_atexit)
         # Rooms whose instances were materialized into memory this session.
         # For these, an empty in-memory instance list is authoritative (the user
         # emptied the room) and must NOT be overwritten with the stale file copy.
@@ -143,7 +151,8 @@ class ProjectManager(QObject):
         self.auto_save_enabled = True
         self.auto_save_interval = 30000  # 30 seconds
 
-    def create_project(self, project_name: str, location: str, template: str = "empty") -> bool:
+    def create_project(self, project_name: str, location: str, template: str = "empty",
+                       description: str = "") -> bool:
         """
         Create a new project (compatibility wrapper for IDE)
 
@@ -151,12 +160,13 @@ class ProjectManager(QObject):
             project_name: Name of the project
             location: Parent directory where project folder will be created
             template: Project template id ("empty", "gameover", ...) or display name
+            description: Optional project description, persisted into project.json (L8)
 
         Returns:
             bool: True if successful, False otherwise
         """
         location_path = Path(location)
-        return self.create_new_project(project_name, location_path, template)
+        return self.create_new_project(project_name, location_path, template, description)
 
     def set_asset_manager(self, asset_manager):
         """Set or update the asset manager reference"""
@@ -181,7 +191,8 @@ class ProjectManager(QObject):
             if self.current_project_path:
                 self.asset_manager.set_project_directory(self.current_project_path)
 
-    def create_new_project(self, project_name: str, location: Path, template: str = "empty") -> bool:
+    def create_new_project(self, project_name: str, location: Path, template: str = "empty",
+                           description: str = "") -> bool:
         """Create a new project at the specified location"""
         try:
             project_path = Path(location) / project_name
@@ -200,6 +211,10 @@ class ProjectManager(QObject):
             # Create default project data
             project_data = self._create_default_project_data(project_name)
             self._apply_project_template(project_data, template)
+            # Persist the New Project description, if any (L8). Omit the key
+            # entirely when empty so blank descriptions don't litter project.json.
+            if description:
+                project_data["description"] = description
 
             # Save project file
             project_file = project_path / self.PROJECT_FILE
@@ -923,6 +938,21 @@ class ProjectManager(QObject):
         self._original_zip_path = None
         self._temp_extraction_dir = None
         self._auto_save_as_zip = False
+
+    def _cleanup_temp_extraction_atexit(self) -> None:
+        """Remove a leftover zip-extraction temp dir at process exit.
+
+        Registered via ``atexit`` in ``__init__`` so the temp copy of the
+        currently-open .zip project is swept even when the IDE quits without
+        ever calling ``close_project`` (the normal closeEvent path). Best
+        effort — never raises (interpreter shutdown is in progress).
+        """
+        try:
+            temp_dir = getattr(self, '_temp_extraction_dir', None)
+            if temp_dir and Path(temp_dir).exists():
+                shutil.rmtree(temp_dir, ignore_errors=True)
+        except Exception:
+            pass
 
     def close_project(self) -> bool:
         """Close the current project"""

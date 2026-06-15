@@ -1150,16 +1150,16 @@ class ActionsToPythonGenerator:
         if action_name == "execute_code":
             return params.get("code", "pass")
 
-        # Escape string parameter values so a quote/backslash/newline in a
-        # message/sound/sprite/room/object name can't produce syntactically
-        # invalid generated code — the templates embed these inside double-quoted
-        # literals (e.g. game.show_message("{message}")) (L10). A no-op for
-        # numbers, identifiers and plain expressions. Nested action lists (then/
-        # else/actions/sub) are left untouched.
-        params = {
-            k: (_escape_double_quoted(v) if isinstance(v, str) else v)
-            for k, v in params.items()
-        }
+        # String params that get interpolated inside a double-quoted literal
+        # (e.g. game.show_message("{message}")) are escaped — but ONLY once, at
+        # the interpolation site, via _escape_quoted_params / the inline
+        # _escape_for_double_quoted calls below (L10). A previous blanket
+        # pre-escape pass over every string param here escaped those same
+        # values a SECOND time, so a message like Press "SPACE" to jump round-
+        # tripped to the over-escaped Press \"SPACE\" to jump (events -> python
+        # -> events). Escaping is therefore left to the per-site helpers so the
+        # round-trip is exact. Numbers, identifiers and bare expressions are
+        # never quoted, so they need no escaping anyway.
 
         template = ACTION_TO_PYTHON.get(action_name)
         if not template and template != '':

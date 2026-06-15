@@ -94,17 +94,23 @@ class TestRoomSpeed:
 # M50 — push_back_instance resolves in bbox-world coords with offsets
 # ---------------------------------------------------------------------------
 class TestPushBack:
+    # RETARGETED to our M50 signature. Our push_back_instance takes 9 rect
+    # args (no explicit offx/offy): it DERIVES the bbox->origin offset from
+    # moving_inst.x/y minus the moving bbox top-left. The remote's discarded
+    # version passed offx/offy as two extra positionals; same intended
+    # behavior (flush landing in bbox-world coords), different call shape. To
+    # reproduce off_x=4 we seed moving.x = mbx + 4 instead of passing 4.
     def test_flush_with_nonzero_offset(self):
         runner = _make_runner()
-        moving = SimpleNamespace(x=0.0, y=0.0)
-        # Moving instance bbox at world (100,0), 16x16; offx=4 (origin 4 left of
-        # bbox). Static bbox at world (110,0), 16x16. They overlap on x by 6;
-        # the minimum-overlap resolution pushes the moving bbox to the left of
-        # the static one: bbox_x = 110 - 16 = 94, instance.x = 94 + 4 = 98.
+        # off_x = 4 -> moving.x = mbx(100) + 4 = 104.
+        moving = SimpleNamespace(x=104.0, y=0.0)
+        # Moving bbox at world (100,0), 16x16; static bbox at (110,0), 16x16.
+        # Overlap on x by 6; min-overlap resolution pushes the moving bbox left
+        # of the static one: bbox_x = 110 - 16 = 94, instance.x = 94 + 4 = 98.
         runner.push_back_instance(
             moving,
-            100.0, 0.0, 16.0, 16.0, 4.0, 0.0,   # moving bbox + offsets
-            110.0, 0.0, 16.0, 16.0,             # static bbox
+            100.0, 0.0, 16.0, 16.0,   # moving bbox
+            110.0, 0.0, 16.0, 16.0,   # static bbox
         )
         assert moving.x == 98.0
         # And the resulting bbox (instance.x - offx) is flush against static.
@@ -112,22 +118,24 @@ class TestPushBack:
 
     def test_zero_offset_matches_legacy(self):
         runner = _make_runner()
-        moving = SimpleNamespace(x=0.0, y=0.0)
+        # off_x = 0 -> moving.x == mbx.
+        moving = SimpleNamespace(x=100.0, y=0.0)
         runner.push_back_instance(
             moving,
-            100.0, 0.0, 16.0, 16.0, 0.0, 0.0,
+            100.0, 0.0, 16.0, 16.0,
             110.0, 0.0, 16.0, 16.0,
         )
         assert moving.x == 94.0  # 110 - 16, no offset
 
     def test_vertical_separation_with_offset(self):
         runner = _make_runner()
-        moving = SimpleNamespace(x=0.0, y=0.0)
+        # off_y = 3 -> moving.y = mby(100) + 3 = 103.
+        moving = SimpleNamespace(x=0.0, y=103.0)
         # Pure vertical overlap: moving bbox at (0,100) 16x16, static at (0,108).
         # min overlap is on y (8), push up: bbox_y = 108-16 = 92, +offy(3) = 95.
         runner.push_back_instance(
             moving,
-            0.0, 100.0, 16.0, 16.0, 0.0, 3.0,
+            0.0, 100.0, 16.0, 16.0,
             0.0, 108.0, 16.0, 16.0,
         )
         assert moving.y == 95.0
@@ -262,6 +270,16 @@ class TestRestartGameRebuildsAll:
 # ---------------------------------------------------------------------------
 class TestChangeRoomCreateOnce:
     def test_create_fires_once_per_instance_across_reentry(self):
+        # RETARGETED to our M53 implementation: the create-once-per-instance
+        # guard lives in ActionExecutor.execute_event (the single chokepoint),
+        # not in change_room. change_room calls execute_event(..., "create")
+        # on every entry and the guard makes the second call a no-op. The
+        # remote's discarded design guarded in change_room itself; that is why
+        # the original orphaned test mocked execute_event with a guard-less
+        # side_effect (which counted 2). We use a REAL ActionExecutor with a
+        # counting create handler so our actual guard is exercised.
+        from runtime.action_executor import ActionExecutor
+
         runner = _make_runner()
         runner.project_data = _PROJECT
         runner._objects_data = _PROJECT['assets']['objects']
@@ -269,24 +287,24 @@ class TestChangeRoomCreateOnce:
         from runtime.game_runner import GameInstance
         # r1 with a non-persistent monster whose create we count.
         room1 = _make_room('r1', [])
-        monster = GameInstance('monster', 100, 100, {})
-        monster.action_executor = MagicMock()
-        monster.set_object_data({'name': 'monster',
-                                 'events': {'create': {'actions': []}}})
+        ex = ActionExecutor(game_runner=runner)
+        creates = []
+        ex.action_handlers['__count_create'] = (
+            lambda inst, p: creates.append(1))
+
+        monster = GameInstance('monster', 100, 100, {},
+                               action_executor=ex)
+        monster.set_object_data({
+            'name': 'monster',
+            'events': {'create': {'actions': [
+                {'action': '__count_create', 'parameters': {}}]}},
+        })
         room1.instances.append(monster)
 
         room2 = _make_room('r2', [])
 
         runner.rooms = {'r1': room1, 'r2': room2}
         runner.current_room = room2  # start "elsewhere"
-
-        # Patch execute_event to count create deliveries on our monster.
-        creates = []
-
-        def fake_execute_event(inst, event_name, events):
-            if event_name == 'create' and inst is monster:
-                creates.append(1)
-        monster.action_executor.execute_event.side_effect = fake_execute_event
 
         runner.change_room('r1')  # first entry -> create fires
         runner.change_room('r2')
@@ -300,11 +318,15 @@ class TestChangeRoomCreateOnce:
 # ---------------------------------------------------------------------------
 class TestDialogKeyup:
     def test_message_dialog_forwards_keyup(self):
-        """A KEYUP arriving while show_message_dialog is open is forwarded to
-        handle_keyboard_release so held-key state does not go stale."""
+        """A KEYUP arriving while show_message_dialog is open clears the held-key
+        state SILENTLY (M54): our design calls _release_held_key_silent so the
+        key isn't stuck as held after the dialog closes, WITHOUT firing the
+        game's keyboard_release event handler while the game is paused behind
+        the modal dialog."""
         import runtime.game_runner as gr
 
         runner = _make_runner()
+        runner._release_held_key_silent = MagicMock()
         runner.handle_keyboard_release = MagicMock()
 
         # A fake pygame whose event.get() yields one KEYUP then signals the
@@ -345,7 +367,10 @@ class TestDialogKeyup:
             with patch.object(gr, 'expand_hash_newlines', lambda m: m):
                 runner.show_message_dialog("hi")
 
-        runner.handle_keyboard_release.assert_called_once_with(100)
+        # Held state is released silently; the game's release handler must NOT
+        # fire while the modal dialog is up.
+        runner._release_held_key_silent.assert_called_once_with(100)
+        runner.handle_keyboard_release.assert_not_called()
 
 
 # ---------------------------------------------------------------------------

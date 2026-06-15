@@ -161,26 +161,33 @@ def test_legacy_png_export_for_asset_without_file_path(tmp_path):
         assert "sprites/player.png" in zf.namelist()
 
 
-def test_traversal_name_in_non_png_dependency_is_rejected(tmp_path):
-    """The suffix-derivation must not weaken the _safe_join traversal guard:
-    a malicious dependency key like '../../evil' must still be blocked on
-    import, even with a non-.png suffix."""
+def test_traversal_in_non_png_dependency_is_rejected(tmp_path):
+    """The suffix-derivation must not weaken the _safe_join traversal guard.
+
+    OUR _asset_archive_path resolves the dependency's real ``file_path`` (the
+    value that carries the non-PNG extension), so that is the path routed
+    through _safe_join on extraction. A malicious traversal file_path — even
+    with a non-.png suffix — must therefore be blocked: _safe_join raises
+    ValueError, import_object swallows it and returns None, and nothing is
+    written above the project dir."""
     out = tmp_path / "evil.gmobj"
-    evil = "../../evil"
+    evil_path = "../../evil.jpg"
     package_data = {
         "version": "1.0.0",
         "type": "object",
-        "object": {"name": "hero", "sprite": evil},
+        "object": {"name": "hero", "sprite": "player"},
         "dependencies": {
-            "sprites": {evil: {"name": evil, "file_path": "sprites/x.jpg"}},
+            # The traversal lives in the file_path our packager actually uses.
+            "sprites": {"player": {"name": "player", "file_path": evil_path}},
         },
     }
     with zipfile.ZipFile(out, "w") as zf:
         zf.writestr("package.json", json.dumps(package_data))
-        zf.writestr(f"sprites/{evil}.jpg", b"PWN")
+        zf.writestr(evil_path, b"PWN")
 
     dst = _write_project(tmp_path / "dst", {"objects": {}, "sprites": {}})
-    # import_object swallows the ValueError from _safe_join and returns None.
+    # _safe_join raises ValueError on the traversal; import_object swallows it
+    # and returns None.
     result = ResourcePackager.import_object(out, dst)
     assert result is None
     # Nothing escaped above the project dir.

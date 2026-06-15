@@ -84,16 +84,18 @@ GM_VK_TO_KEY_NAME = {
 
 # Key names the runtime keymap (runtime/_keymap.pygame_key_name) can actually
 # produce, and therefore the set of keyboard sub-keys the engine can dispatch
-# at runtime. GM_VK_TO_KEY_NAME above emits a wider vocabulary (numpad,
-# punctuation, lock keys, pause, ...); a keyboard/keyboard_press/keyboard_release
-# event resolved to a name OUTSIDE this set is stored in the project JSON and
-# shown in the editor but can never fire, because handle_keyboard_press/release
-# early-return when pygame_key_name() returns None. resolve_event() logs a
-# warning for such bindings so the import is no longer silent.
+# at runtime. A keyboard/keyboard_press/keyboard_release event resolved to a
+# name OUTSIDE this set is stored in the project JSON and shown in the editor
+# but can never fire, because handle_keyboard_press/release early-return when
+# pygame_key_name() returns None. resolve_event() logs a warning for such
+# bindings so the import is no longer silent.
 #
-# Keep this set in sync with runtime/_keymap.pygame_key_name. The two pseudo-keys
-# "nokey"/"anykey" are GM event markers (VK 0/1), not real keys, so they are
-# excluded here intentionally.
+# Keep this set in sync with runtime/_keymap.pygame_key_name. As of L25 the
+# runtime keymap was extended (runtime/_keymap._extended_keys) to dispatch the
+# numpad / punctuation / lock keys that GM_VK_TO_KEY_NAME emits, so those names
+# are now genuinely dispatchable and belong here too. The only GM_VK_TO_KEY_NAME
+# entries that remain undispatchable are the two pseudo-keys "nokey"/"anykey"
+# (VK 0/1 — GM event markers, not real keys), which are excluded intentionally.
 RUNTIME_SUPPORTED_KEY_NAMES = (
     {"left", "right", "up", "down"}
     | {str(d) for d in range(10)}                       # "0".."9"
@@ -104,6 +106,19 @@ RUNTIME_SUPPORTED_KEY_NAMES = (
         "shift", "control", "alt",
     }
     | {f"f{n}" for n in range(1, 13)}                    # "f1".."f12"
+    # Numpad keys (runtime/_keymap._extended_keys, L25)
+    | {f"numpad_{d}" for d in range(10)}                 # "numpad_0".."numpad_9"
+    | {
+        "numpad_multiply", "numpad_plus", "numpad_minus",
+        "numpad_period", "numpad_divide",
+    }
+    # Lock / system keys (runtime/_keymap._extended_keys, L25)
+    | {"pause", "capslock", "print", "numlock", "scrolllock"}
+    # Punctuation keys (runtime/_keymap._extended_keys, L25)
+    | {
+        "semicolon", "equals", "comma", "minus", "period", "slash",
+        "backquote", "leftbracket", "backslash", "rightbracket", "quote",
+    }
 )
 
 

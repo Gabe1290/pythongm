@@ -25,11 +25,13 @@ def _load_module():
     return mod
 
 
+# Our should_compile takes the translations dir explicitly as a second arg
+# (rather than deriving it from ts_path.parent); pass it at every call site.
 def test_monolithic_ts_always_compiles(tmp_path):
     mod = _load_module()
     # pygm2_<lang>.ts has exactly two underscore-split parts -> always safe.
-    assert mod.should_compile(tmp_path / "pygm2_fr.ts") is True
-    assert mod.should_compile(tmp_path / "pygm2_de.ts") is True
+    assert mod.should_compile(tmp_path / "pygm2_fr.ts", tmp_path) is True
+    assert mod.should_compile(tmp_path / "pygm2_de.ts", tmp_path) is True
 
 
 def test_split_ts_skipped_when_no_split_set(tmp_path):
@@ -40,7 +42,7 @@ def test_split_ts_skipped_when_no_split_set(tmp_path):
     # Only the monolithic fr .qm exists (the complete hand translation).
     (tmp_path / "pygm2_fr.qm").write_bytes(b"")
     for group in ("actions", "blockly", "core", "dialogs", "editors", "misc"):
-        assert mod.should_compile(tmp_path / f"pygm2_fr_{group}.ts") is False, group
+        assert mod.should_compile(tmp_path / f"pygm2_fr_{group}.ts", tmp_path) is False, group
 
 
 def test_split_ts_compiles_when_split_set_exists(tmp_path):
@@ -49,7 +51,7 @@ def test_split_ts_compiles_when_split_set_exists(tmp_path):
     (tmp_path / "pygm2_de_core.qm").write_bytes(b"")
     for group in ("actions", "blockly", "core", "dialogs", "editors", "misc"):
         (tmp_path / f"pygm2_de_{group}.ts").write_text("<TS></TS>", encoding="utf-8")
-        assert mod.should_compile(tmp_path / f"pygm2_de_{group}.ts") is True, group
+        assert mod.should_compile(tmp_path / f"pygm2_de_{group}.ts", tmp_path) is True, group
 
 
 def test_real_repo_state_french_is_guarded():
@@ -63,9 +65,9 @@ def test_real_repo_state_french_is_guarded():
     if fr_core_qm.exists():
         # If a split set was intentionally introduced for fr, the guard
         # correctly allows compilation; the hazard no longer applies.
-        assert mod.should_compile(fr_actions_ts) is True
+        assert mod.should_compile(fr_actions_ts, trans) is True
     else:
         # Current repo state: fr has no split .qm -> guard must skip.
-        assert mod.should_compile(fr_actions_ts) is False
+        assert mod.should_compile(fr_actions_ts, trans) is False
         # Monolithic fr stays compilable.
-        assert mod.should_compile(trans / "pygm2_fr.ts") is True
+        assert mod.should_compile(trans / "pygm2_fr.ts", trans) is True

@@ -12,6 +12,7 @@ Covers two audit findings (docs/FULL_AUDIT_2026-06-11.md):
 Pure-logic tests (XML element fixtures), no Qt needed.
 """
 
+import logging
 import xml.etree.ElementTree as ET
 
 from importers.roberta_importer import (
@@ -124,18 +125,46 @@ def test_no_legacy_rgb_keys_emitted():
 # L27 — non-literal RGB channels must not crash
 # --------------------------------------------------------------------------
 
-def test_rgb_variable_channel_does_not_crash():
+class _capture_roberta_warnings:
+    """caplog only sees records that reach the root logger, but the project's
+    ``pygm`` logger tree is configured with ``propagate = False``
+    (core/logger.py), so the importer's warnings never bubble up to where the
+    caplog handler lives. Attach caplog's capture handler directly to the
+    importer logger for the duration of the block."""
+
+    def __init__(self, caplog):
+        self._caplog = caplog
+        self._logger = logging.getLogger("pygm.importers.roberta_importer")
+        self._prev_level = None
+
+    def __enter__(self):
+        self._prev_level = self._logger.level
+        self._logger.setLevel(logging.WARNING)
+        self._logger.addHandler(self._caplog.handler)
+        return self._caplog
+
+    def __exit__(self, *exc):
+        self._logger.removeHandler(self._caplog.handler)
+        self._logger.setLevel(self._prev_level)
+        return False
+
+
+def test_rgb_variable_channel_does_not_crash(caplog):
     # variables_get resolves to the variable name (non-numeric string).
+    # RETARGETED: our HEAD _extract_color takes only `block` and surfaces the
+    # fallback via a logger warning (not result.warnings). The L27 intent — no
+    # crash, fall back to 0, and a diagnostic naming the bad channel — is the
+    # same; we assert it through caplog instead.
     var = '<block type="variables_get"><field name="VAR">myColor</field></block>'
     block = _color_carrier(_rgb_color(var, _num(0), _num(0)))
-    result = RobertaImportResult()
-    # Must not raise ValueError.
-    rgb = _extract_color(block, result)
+    with _capture_roberta_warnings(caplog):
+        # Must not raise ValueError.
+        rgb = _extract_color(block)
     assert rgb == (0, 0, 0)
-    assert any("RED" in w for w in result.warnings)
+    assert any("RED" in r.getMessage() for r in caplog.records)
 
 
-def test_rgb_arithmetic_channel_does_not_crash():
+def test_rgb_arithmetic_channel_does_not_crash(caplog):
     # math_arithmetic resolves to "(a + b)" — float() would raise.
     arith = (
         '<block type="math_arithmetic">'
@@ -145,12 +174,16 @@ def test_rgb_arithmetic_channel_does_not_crash():
         "</block>"
     )
     block = _color_carrier(_rgb_color(arith, _num(255), arith))
-    result = RobertaImportResult()
-    rgb = _extract_color(block, result)
+    with _capture_roberta_warnings(caplog):
+        rgb = _extract_color(block)
     # GREEN is a literal 255 → 32; RED/BLUE expressions fall back to 0.
     assert rgb == (0, 32, 0)
-    # One warning per bad channel.
-    assert sum("expression" in w for w in result.warnings) == 2
+    # RETARGETED: our HEAD logs "non-literal LED <channel> colour ignored" once
+    # per bad channel (RED + BLUE here) — two warnings, same intent as the
+    # remote's "expression" wording.
+    bad = [r.getMessage() for r in caplog.records
+           if "non-literal LED" in r.getMessage()]
+    assert len(bad) == 2
 
 
 def test_rgb_full_import_path_with_expression_does_not_crash():

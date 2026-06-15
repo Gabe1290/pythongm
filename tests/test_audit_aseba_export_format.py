@@ -71,7 +71,9 @@ def test_handler_with_no_actions_has_no_end():
 def test_wrap_produces_parseable_xml_with_doctype():
     exp = _make_exporter()
     code = "onevent button.forward\n\tmotor.left.target = 200"
-    doc = exp._wrap_aesl_document(code)
+    # Our M32 implementation names the wrapper _wrap_aesl_xml; the emitted
+    # aesl-source XML envelope is identical to the finding's intended shape.
+    doc = exp._wrap_aesl_xml(code)
 
     assert doc.startswith("<!DOCTYPE aesl-source>")
     # Strip the DOCTYPE (ElementTree doesn't parse DOCTYPE-prefixed docs) and
@@ -92,7 +94,7 @@ def test_wrap_preserves_xml_special_chars_in_code():
     """AESL comparisons use '<', '>', '&'; CDATA must keep them literal."""
     exp = _make_exporter()
     code = "if prox.horizontal[2] > 2000 then\n\tx = a < b\nend"
-    doc = exp._wrap_aesl_document(code)
+    doc = exp._wrap_aesl_xml(code)
     body = doc.split("\n", 1)[1]
     node = ET.fromstring(body).find("node")
     assert "prox.horizontal[2] > 2000" in node.text
@@ -102,7 +104,7 @@ def test_wrap_preserves_xml_special_chars_in_code():
 def test_wrap_handles_cdata_terminator_defensively():
     exp = _make_exporter()
     code = "weird ]]> sequence"
-    doc = exp._wrap_aesl_document(code)
+    doc = exp._wrap_aesl_xml(code)
     body = doc.split("\n", 1)[1]
     # Still well-formed despite the ']]>' in the source.
     node = ET.fromstring(body).find("node")

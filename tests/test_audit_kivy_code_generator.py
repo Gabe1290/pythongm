@@ -6,12 +6,14 @@ a quote-replace, so a trailing backslash escaped the closing quote and an
 embedded newline split the generated source — both SyntaxError. repr() emits a
 valid Python literal in every case.
 
-The collision tests below pin the call-site CONTRACT for if_collision: x/y are
-absolute coordinate expressions defaulting to the instance position (matching
-the check_empty sibling and the existing tests in test_exporters.py). M34's
-actual defect — check_collision_at being undefined in the generated runtime —
-is fixed by defining the method in kivy_exporter.py, not by changing these
-coordinate semantics here.
+The collision tests below pin the call-site CONTRACT for if_collision. OUR
+authoritative implementation (audit M34) emits the probe as an OFFSET from the
+instance position — self.check_collision_at(self.x + (x), self.y + (y), obj) —
+matching the pygame runtime's if_collision semantics (check_x = instance.x +
+x_offset) and locked in by tests/test_exporters.py. These tests are retargeted
+to that offset form. M34's actual runtime defect — check_collision_at being
+undefined in the generated GameObject — is fixed by defining the method in
+kivy_exporter.py, not by changing these coordinate semantics here.
 
 Pure-logic tests: the generator is a plain class, no Qt needed.
 """
@@ -32,7 +34,7 @@ def _gen(actions, event_type="step"):
     return g.get_code()
 
 
-# ---- if_collision call-site contract (absolute coords) --------------------
+# ---- if_collision call-site contract (offset-from-self coords) ------------
 
 def test_if_collision_uses_explicit_coords():
     code = _gen([
@@ -40,15 +42,16 @@ def test_if_collision_uses_explicit_coords():
          "parameters": {"x": "50", "y": "50", "object": "solid"}},
         {"action": "set_vspeed", "parameters": {"speed": "-10"}},
     ])
-    assert "self.check_collision_at(50, 50, 'solid')" in code
+    # OUR M34 semantics: x/y are offsets from the instance position.
+    assert "self.check_collision_at(self.x + (50), self.y + (50), 'solid')" in code
 
 
 def test_if_collision_defaults_to_self_position():
-    # No x/y given -> probe the instance's own position (self.x/self.y).
+    # No x/y given -> zero offset, i.e. probe the instance's own position.
     code = _gen([
         {"action": "check_collision", "parameters": {"object": "wall"}},
     ])
-    assert "self.check_collision_at(self.x, self.y, 'wall')" in code
+    assert "self.check_collision_at(self.x + (0), self.y + (0), 'wall')" in code
 
 
 def test_if_collision_not_flag_inverts():
@@ -57,7 +60,7 @@ def test_if_collision_not_flag_inverts():
          "parameters": {"x": "50", "y": "50", "object": "solid",
                         "not_flag": True}},
     ])
-    assert "if not self.check_collision_at(50, 50, 'solid'):" in code
+    assert "if not self.check_collision_at(self.x + (50), self.y + (50), 'solid'):" in code
 
 
 def test_generated_collision_block_is_valid_python():

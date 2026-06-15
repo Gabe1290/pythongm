@@ -1327,20 +1327,16 @@ class PyGameMakerIDE(QMainWindow):
             if self.project_manager.create_project(
                 project_info["name"],
                 project_info["path"],
-                project_info["template"]
+                project_info["template"],
+                # Persist the dialog's Description; create_project writes it
+                # straight into project.json (L8) so it's not silently dropped.
+                project_info.get("description", "")
             ):
                 # Update IDE state with newly created project
                 project_path = self.project_manager.current_project_path
                 project_data = self.project_manager.current_project_data
                 logger.debug(f"DEBUG new_project: project_path = {project_path}")
                 logger.debug(f"DEBUG new_project: project_data keys = {list(project_data.keys()) if project_data else None}")
-
-                # Persist the dialog's Description — create_project doesn't take
-                # it, so it was silently dropped (L8). Project Settings reads it.
-                description = project_info.get("description", "")
-                if description and project_data is not None:
-                    project_data["description"] = description
-                    self.project_manager.save_project()
 
                 # Call on_project_loaded to properly initialize the IDE
                 self.on_project_loaded(project_path, project_data)
@@ -3008,11 +3004,27 @@ class PyGameMakerIDE(QMainWindow):
         logger.info(f"Thymio tab visibility: {'shown' if show_thymio else 'hidden'}")
 
     def show_thymio_playground(self):
-        """Open the Thymio Playground simulator window"""
-        from widgets.thymio_playground import ThymioPlaygroundWindow
+        """Open the Thymio Playground simulator window.
 
-        # Create and show the playground window
+        Reuse a still-live window instead of leaking a new one on every open,
+        and mark it WA_DeleteOnClose so closing it frees the C++ object rather
+        than keeping a dangling handle around.
+        """
+        from widgets.thymio_playground import ThymioPlaygroundWindow
+        import shiboken6
+
+        existing = getattr(self, "thymio_playground", None)
+        if existing is not None and shiboken6.isValid(existing):
+            # Already open and live — raise it instead of spawning another.
+            existing.showNormal()
+            existing.raise_()
+            existing.activateWindow()
+            logger.info("Raised existing Thymio Playground window")
+            return
+
+        from PySide6.QtCore import Qt
         self.thymio_playground = ThymioPlaygroundWindow(self)
+        self.thymio_playground.setAttribute(Qt.WA_DeleteOnClose)
         self.thymio_playground.show()
         logger.info("Opened Thymio Playground window")
 

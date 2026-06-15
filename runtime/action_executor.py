@@ -4537,6 +4537,13 @@ class ActionExecutor:
             if check == "Right button pressed":
                 return bool(buttons[2])
             if check == "Over object":
+                # A spriteless instance has no visual footprint, so the mouse
+                # can never be "over" it. (Only treat an *explicit* sprite=None
+                # as footprint-less; an instance with no sprite attribute at all
+                # falls back to the cached-size box.)
+                _missing = object()
+                if getattr(instance, 'sprite', _missing) is None:
+                    return False
                 mx, my = pygame.mouse.get_pos()
                 width = getattr(instance, '_cached_width', 32)
                 height = getattr(instance, '_cached_height', 32)

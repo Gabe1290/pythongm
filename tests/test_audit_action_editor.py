@@ -133,10 +133,13 @@ def test_set_sprite_concrete_sprite_still_works(_qapp):
 
 
 # ---------------------------------------------------------------------------
-# M28 — room dropdown offers only real rooms (no dead navigation sentinels)
+# M28 — room dropdown offers working navigation options (Next/Prev/Restart)
+# that the runtime now honors via sentinel values, alongside real rooms.
+# (We fixed M28 by making the runtime honor the sentinels — see
+# tests/test_room_navigation_sentinels.py — rather than removing them.)
 # ---------------------------------------------------------------------------
 
-def test_room_dropdown_has_no_navigation_sentinels(_qapp):
+def test_room_dropdown_offers_working_navigation_sentinels(_qapp):
     from events.action_editor import ActionConfigDialog
     from events.action_types import get_action_type
 
@@ -148,18 +151,29 @@ def test_room_dropdown_has_no_navigation_sentinels(_qapp):
     combo = dlg.param_widgets["room"]
     items = [combo.itemText(i) for i in range(combo.count())]
 
-    # No navigation labels, and selecting any option can never produce a dead
-    # sentinel that the runtime ignores.
-    assert "→ Next Room" not in items
-    assert "← Previous Room" not in items
-    assert "↺ Restart Current Room" not in items
+    # The navigation options are offered AND the real rooms are listed.
+    assert "→ Next Room" in items
+    assert "← Previous Room" in items
+    assert "↺ Restart Current Room" in items
     assert "room_intro" in items and "room_level1" in items
 
-    # Walk every selectable room and confirm none save a sentinel.
+    # Each navigation label saves the matching honored sentinel; a concrete
+    # room saves its own name (never a stray/dead value).
+    label_to_sentinel = {
+        "→ Next Room": "__next__",
+        "← Previous Room": "__prev__",
+        "↺ Restart Current Room": "__current__",
+    }
     for i in range(combo.count()):
+        text = combo.itemText(i)
+        if not text:
+            continue
         combo.setCurrentIndex(i)
         saved = dlg.get_parameter_values()["room"]
-        assert saved not in ("__next__", "__prev__", "__current__")
+        if text in label_to_sentinel:
+            assert saved == label_to_sentinel[text], text
+        else:
+            assert saved == text, text
 
     parent.deleteLater()
 

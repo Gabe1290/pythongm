@@ -9,9 +9,14 @@ the freshly-reset PencilTool, scribbling Bresenham lines in the picked colour
 along the drag path. A clean pick also pushed a SpriteEditCommand and emitted
 data_modified, marking the sprite dirty and polluting the undo stack.
 
-The fix defers the tool switch until the gesture ends (mouse release ->
-canvas_modified -> _on_canvas_modified) and suppresses the no-op undo
-command / dirty signal for a pure pick.
+Our authoritative (HEAD) fix neutralizes the gesture rather than deferring the
+switch: _on_color_picked still switches to pencil immediately, but
+SpriteCanvas.set_tool sets self._painting = False, so the in-flight gesture
+goes inert — subsequent mouseMoveEvents do not draw and mouseReleaseEvent does
+not emit canvas_modified. A pure pick therefore leaves the image untouched and
+pushes no undo command / fires no data_modified (the L16 no-op guard in
+_on_canvas_modified also drops inert commands). These tests assert that
+equivalent-correct behaviour against our implementation.
 
 These tests construct a real offscreen QApplication (no pytest-qt) so they run
 on Python 3.11 too.
@@ -91,36 +96,45 @@ class TestEyedropperDoesNotDraw:
             editor, [(2, 2), (3, 3), (4, 4), (5, 5)], monkeypatch
         )
 
-        # The eyedropper must not have painted anything along the drag path.
+        # The eyedropper must not have painted anything along the drag path —
+        # the point of the fix. Our implementation switches to pencil and
+        # neutralizes the gesture on the press-time pick, so the drag is inert.
         assert editor.canvas.get_image() == before
-        # The picker still samples (foreground tracks the cursor); the colour
-        # of the last hovered pixel (5,5) is the background, which is fine —
-        # the point of the fix is that no drawing happened.
-        assert editor.color_palette.get_foreground() == QColor(10, 20, 30, 255)
+        # The press at (2,2) sampled that pixel's colour into the foreground;
+        # the subsequent (inert) drag does not re-pick.
+        assert editor.color_palette.get_foreground() == QColor(200, 100, 50, 255)
 
-    def test_tool_switch_is_deferred_until_release(self, qapp, monkeypatch):
+    def test_pick_neutralizes_gesture_and_switches(self, qapp, monkeypatch):
+        # Our implementation switches to pencil immediately on the pick, but
+        # SpriteCanvas.set_tool clears _painting so the in-flight gesture goes
+        # inert: a subsequent move cannot draw and the release is a no-op.
         editor = _make_editor(qapp)
         editor._select_tool("color_picker")
 
-        from PySide6.QtCore import QPoint, Qt, QPointF, QEvent
+        from PySide6.QtCore import Qt, QPointF, QEvent
         from PySide6.QtGui import QMouseEvent
 
         canvas = editor.canvas
         monkeypatch.setattr(canvas, "_screen_to_pixel", lambda _p: (2, 2))
+        before = canvas.get_image().copy()
 
         def evt(etype, button):
             return QMouseEvent(etype, QPointF(1.0, 1.0), button, button, Qt.NoModifier)
 
-        # On press the color is picked but the tool must still be the picker
-        # (switch deferred), so a subsequent move cannot draw.
+        # On press the color is picked and the tool switches to pencil, but the
+        # active gesture is neutralized (set_tool cleared _painting).
         canvas.mousePressEvent(evt(QEvent.MouseButtonPress, Qt.LeftButton))
-        assert editor._active_tool_name == "color_picker"
-        assert editor._pending_tool == "pencil"
+        assert editor._active_tool_name == "pencil"
+        assert canvas._painting is False
 
-        # Release ends the gesture and applies the deferred switch.
+        # A move during the (now inert) gesture must not draw.
+        canvas.mouseMoveEvent(evt(QEvent.MouseMove, Qt.NoButton))
+        assert canvas.get_image() == before
+
+        # Release ends the gesture without emitting a modification.
         canvas.mouseReleaseEvent(evt(QEvent.MouseButtonRelease, Qt.LeftButton))
         assert editor._active_tool_name == "pencil"
-        assert editor._pending_tool is None
+        assert canvas.get_image() == before
 
     def test_clean_pick_does_not_dirty_or_push_undo(self, qapp, monkeypatch):
         editor = _make_editor(qapp)
@@ -136,9 +150,8 @@ class TestEyedropperDoesNotDraw:
         assert editor.undo_stack.count() == undo_count_before
         assert dirtied == []
 
-    def test_immediate_switch_when_not_mid_gesture(self, qapp):
-        # _on_color_picked called outside a gesture (canvas not painting) must
-        # switch right away, preserving the original auto-switch behaviour.
+    def test_switch_to_pencil_on_pick(self, qapp):
+        # _on_color_picked auto-switches back to pencil after picking a color.
         from PySide6.QtGui import QColor
 
         editor = _make_editor(qapp)
@@ -147,7 +160,6 @@ class TestEyedropperDoesNotDraw:
 
         editor._on_color_picked(QColor(1, 2, 3, 255))
         assert editor._active_tool_name == "pencil"
-        assert editor._pending_tool is None
 
     def test_pencil_drag_still_draws(self, qapp, monkeypatch):
         # Behaviour preservation: a normal pencil drag must still paint.
