@@ -135,28 +135,37 @@ widget-test files, untouched by this work); they run on the 3.12 Windows box.
 Landed as 11 per-subsystem commits (`b6b27da`..`4d76181`) plus the H12/M21
 fixes. Registry `docs/FULL_AUDIT_2026-06-11.md`: **107/111 fixed**.
 
-**4 still OPEN — each needs a coordinated edit in a second file** (an agent was
-scoped to one file and correctly refused to touch another that a parallel
-agent might be editing):
-- **M31** (`events/conditional_editor.py` ✓ editor side correct) — runtime
-  `if_condition` `mouse_check` arm in `runtime/action_executor.py` (~:4490) is a
-  `return False` stub; needs a real read of `pygame.mouse.get_pressed()` /
-  tracked mouse pos for the saved 'check' value.
-- **M34** (`export/Kivy/code_generator.py` ✓ call site correct) — must DEFINE
-  `check_collision_at(self, x, y, object_name)` (absolute coords) on the
-  generated GameObject base in `export/Kivy/kivy_exporter.py` + the
-  `game_object.py.template`.
-- **L5** (`core/ide_window.py`) — `open_editors`/`detached_editor_windows`
-  keyed by bare asset name; a same-named room+object collide. Needs composite
-  (category, name) keys coordinated with `widgets/asset_tree/asset_operations.py`
-  (`close_editor_by_name`).
-- **L8** (`dialogs/project_dialogs.py` ✓ exposes description) — `new_project()`
-  in `core/ide_window.py` (~:1308) must write `project_info['description']`
-  into the created project (`create_project` takes no description today).
+The 4 deferred-cross-file items were then ALL closed in this same session,
+each with its coordinated second-file edit + regression test (commits
+`60e86c6`, `c2ff26f`, `6b6a492`, and the L5 commit):
+- **M34** — defined `check_collision_at(self, x, y, object_name=None)` on the
+  generated GameObject base in `kivy_exporter.py` (absolute coords; stores
+  `object_name` per subclass for named-target matching). The
+  `game_object.py.template` is unused (not referenced by the exporter), so it
+  was left as-is. Test `test_audit_kivy_check_collision_at.py`.
+- **M31** — implemented the runtime `mouse_check` arm in `action_executor.py`:
+  button checks via `pygame.mouse.get_pressed()`, "Over object" via a half-open
+  AABB test of `get_pos()` against the instance world bbox; "In region" stays
+  false (no region coords from the editor). Test
+  `test_audit_mouse_check_condition.py`.
+- **L8** — threaded an optional `description` through `create_project`/
+  `create_new_project` (persisted into project.json); `new_project()` passes
+  `project_info["description"]`. Tests in `test_project_manager.py`.
+- **L5** — `open_editors`/`detached_editor_windows` now keyed by a composite
+  `"<category>:<name>"` (`_editor_key`, normalizing singular/plural asset_type);
+  `close_editor_tab` removes by widget identity; `close_editor_by_name` takes an
+  optional category; `asset_operations.delete_asset` threads its category. A
+  same-named room and object now coexist and close independently. Verified by
+  driving the real IDE window headless (offscreen QApplication). Test
+  `test_audit_editor_key_collision.py`.
 
-Minor remainders noted by agents (primary finding fixed): **L4** also wants
-`WA_DeleteOnClose` on `PlaygroundRunnerWindow`; **M30** has a belt-and-braces
-runtime alias / 'state' field aspect in `action_executor.py`.
+**Registry: 111/111 — the full 2026-06-11 audit is fully closed.** Full suite
+1091 passed, 0 failed (41 pre-existing pytest-qt `qapp` errors on 3.11).
+
+Minor remainders noted by agents (primary finding fixed, tracked for later, not
+audit-registry items): **L4** also wants `WA_DeleteOnClose` on
+`PlaygroundRunnerWindow`; **M30** has a belt-and-braces runtime alias / 'state'
+field aspect in `action_executor.py`.
 
 ## 2026-06-11 — Full-codebase audit completed (111 confirmed findings)
 

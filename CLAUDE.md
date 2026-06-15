@@ -242,11 +242,12 @@ that caught two cross-fix regressions (eyedropper M25 vs canvas-no-op L16,
 reconciled with a new `SpriteCanvas.gesture_finished` signal; Kivy M34
 call-site over-reach, reverted to absolute coords). Suite **1076 passed,
 0 failed** (41 pre-existing pytest-qt `qapp` errors on 3.11). 11
-per-subsystem commits `b6b27da`..`4d76181`. **4 remain OPEN — each needs a
-coordinated second-file edit** (see SESSION_NOTES 2026-06-15): M31 (runtime
-mouse_check stub in action_executor.py), M34 (define check_collision_at in
-kivy_exporter.py), L5 (composite editor keys across ide_window.py +
-asset_operations.py), L8 (wire description in ide_window.new_project).
+per-subsystem commits `b6b27da`..`4d76181`. The 4 deferred-cross-file items
+(M31, M34, L5, L8) were then ALL closed in the same session with their
+coordinated second-file edits + tests. **The full 2026-06-11 audit is now
+111/111 closed** (suite 1091 passed, 0 failed). Untracked tracked-for-later
+remainders (not registry items): L4 WA_DeleteOnClose on PlaygroundRunnerWindow;
+M30 belt-and-braces runtime alias/'state' field in action_executor.py.
 
 **2026-06-11 — Full-codebase audit (18 finders, adversarially verified):
 111 confirmed findings.** Unlike the earlier single-batch audits, every
