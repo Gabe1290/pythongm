@@ -11,7 +11,7 @@ references the commit it shipped in so a regression is easy to bisect.
 
 ### Welcome tab (commits e42d4b6 / 7e86274 / 37d7186)
 - L [ ] M [ ] W [ ] Welcome tab is the default tab on first launch with no project
-- L [ ] M [ ] W [ ] Title "Welcome to PyGameMaker IDE" + version label "v1.0.0-rc.12" visible
+- L [ ] M [ ] W [ ] Title "Welcome to PyGameMaker IDE" + version label "v1.0.0-rc.13" visible
 - L [ ] M [ ] W [ ] **Get started** column shows New Project, Open Project, **More options** dropdown
 - L [ ] M [ ] W [ ] "More options" dropdown opens a menu with Open ZIP / Import GMK / Import Roberta entries
 - L [ ] M [ ] W [ ] **Continue where you left off** list shows recent projects with "N days ago" timestamps

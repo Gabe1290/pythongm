@@ -34,12 +34,12 @@ def phase(title, time, items, note=None):
 
 # --- Phase 0 ---
 phase("Phase 0 — Setup", "5 min", [
-    (1, "Pull a fresh build from the rc.9 release page. Run on a clean machine where possible (no leftover .config/pygamemaker etc. — student install scenario).", {
-        "Windows": "Pull a fresh build from the rc.9 release page. Run the .exe directly without admin elevation on a clean machine (no leftover config — student install scenario).",
-        "macOS": "Pull a fresh build from the rc.9 release page. Run on a clean machine where possible (no leftover ~/.config/pygamemaker etc. — student install scenario).",
-        "Linux": "Pull a fresh build from the rc.9 release page. Run on a clean machine where possible (no leftover ~/.config/pygamemaker etc. — student install scenario).",
+    (1, "Pull a fresh build from the rc.13 release page. Run on a clean machine where possible (no leftover .config/pygamemaker etc. — student install scenario).", {
+        "Windows": "Pull a fresh build from the rc.13 release page. Run the .exe directly without admin elevation on a clean machine (no leftover config — student install scenario).",
+        "macOS": "Pull a fresh build from the rc.13 release page. Run on a clean machine where possible (no leftover ~/.config/pygamemaker etc. — student install scenario).",
+        "Linux": "Pull a fresh build from the rc.13 release page. Run on a clean machine where possible (no leftover ~/.config/pygamemaker etc. — student install scenario).",
     }),
-    (2, "Verify the About dialog reports Version 1.0.0-rc.9.", {}),
+    (2, "Verify the About dialog reports Version 1.0.0-rc.13.", {}),
     (3, "Confirm the binary launches correctly on this platform.", {
         "Windows": "Confirm SmartScreen doesn't block the .exe. If a SmartScreen prompt appears, 'Run anyway' should work.",
         "macOS": "Confirm the binary is executable. You may need to right-click → Open the first time to bypass Gatekeeper.",
@@ -264,20 +264,20 @@ phase("Phase 17 — Stress / classroom edge cases", "15 min", [
 
 # --- Phase 18 ---
 phase("Phase 18 — Build artifacts (the actual release)", "10 min", [
-    (102, "From the rc.9 GitHub Release page, download each platform's artifact.", {
-        "Windows": "From the rc.9 GitHub Release page, download the Windows artifact (.exe / .msi).",
-        "macOS": "From the rc.9 GitHub Release page, download the macOS artifact (.dmg / .app).",
-        "Linux": "From the rc.9 GitHub Release page, download the Linux artifact (.AppImage / .deb / tarball).",
+    (102, "From the rc.13 GitHub Release page, download each platform's artifact.", {
+        "Windows": "From the rc.13 GitHub Release page, download the Windows artifact (.exe / .msi).",
+        "macOS": "From the rc.13 GitHub Release page, download the macOS artifact (.dmg / .app).",
+        "Linux": "From the rc.13 GitHub Release page, download the Linux artifact (.AppImage / .deb / tarball).",
     }),
     (103, 'Run on a clean target (VM or fresh user account). Confirm it launches without "missing DLL" / "missing Qt plugin" errors.', {
         "Windows": 'Run on a clean Windows VM or fresh user account. Confirm it launches without "missing DLL" / "missing Qt plugin" errors.',
         "macOS": "Run on a clean macOS VM or fresh user account. Confirm it launches without missing framework / Qt plugin errors.",
         "Linux": 'Run on a clean Linux VM or fresh user account. Confirm it launches without "missing .so" / "missing Qt plugin" errors. Test on both Ubuntu and Fedora if possible.',
     }),
-    (104, "Verify the executable's version metadata shows 1.0.0-rc.9.", {
-        "Windows": "Verify the executable's File Properties shows version 1.0.0-rc.9 (the version_info.txt change should propagate to PE metadata).",
-        "macOS": "Verify the .app bundle's Info.plist shows version 1.0.0-rc.9.",
-        "Linux": "Verify the --version flag or About dialog shows version 1.0.0-rc.9.",
+    (104, "Verify the executable's version metadata shows 1.0.0-rc.13.", {
+        "Windows": "Verify the executable's File Properties shows version 1.0.0-rc.13 (the version_info.txt change should propagate to PE metadata).",
+        "macOS": "Verify the .app bundle's Info.plist shows version 1.0.0-rc.13.",
+        "Linux": "Verify the --version flag or About dialog shows version 1.0.0-rc.13.",
     }),
     (105, "Confirm pip-install of the Python sdist works in a venv: pip install pygamemaker-1.0.0rc9.tar.gz, then python -m pygamemaker launches.", {}),
 ], note="Pass criteria: all advertised platforms produce a working binary out of the box.")
@@ -306,7 +306,7 @@ class TestPDF(FPDF):
     def header(self):
         self.set_font(FONT_FAMILY, "B", 11)
         self.set_text_color(100, 100, 100)
-        self.cell(0, 8, f"PyGameMaker 1.0.0-rc.9 \u2014 {self.platform} Testing Checklist", align="R", new_x="LMARGIN", new_y="NEXT")
+        self.cell(0, 8, f"PyGameMaker 1.0.0-rc.13 \u2014 {self.platform} Testing Checklist", align="R", new_x="LMARGIN", new_y="NEXT")
         self.set_draw_color(200, 200, 200)
         self.line(10, self.get_y(), 200, self.get_y())
         self.ln(4)
@@ -398,7 +398,7 @@ def generate_pdf(platform):
     pdf.ln(10)
     pdf.cell(0, 12, "PyGameMaker", align="C", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font(FONT_FAMILY, "", 14)
-    pdf.cell(0, 8, "IDE Testing Checklist — v1.0.0-rc.9", align="C", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 8, "IDE Testing Checklist — v1.0.0-rc.13", align="C", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(6)
     pdf.set_font(FONT_FAMILY, "B", 16)
     pdf.set_text_color(0, 80, 160)
@@ -408,7 +408,7 @@ def generate_pdf(platform):
     # Legend
     pdf.set_text_color(60, 60, 60)
     pdf.set_font(FONT_FAMILY, "", 10)
-    pdf.cell(0, 6, f"Date: _______________    Tester: _______________    Build: rc.9", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 6, f"Date: _______________    Tester: _______________    Build: rc.13", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
     pdf.cell(0, 6, f"{STAR} = audit-critical item (must pass for 1.0 release)", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
@@ -443,7 +443,7 @@ def generate_pdf(platform):
     tips = [
         "Use a separate user account for testing to avoid polluting your dev environment.",
         "Keep the console visible while testing — many bugs log tracebacks without user-visible errors.",
-        "Save the rc.9 builds for bisecting if a regression surfaces after promoting to 1.0.",
+        "Save the rc.13 builds for bisecting if a regression surfaces after promoting to 1.0.",
     ]
     for t in tips:
         pdf.set_x(15)

@@ -1,6 +1,6 @@
 # PyGameMaker IDE Uporabniški priročnik
 
-**Različica 1.0.0-rc.9**
+**Različica 1.0.0-rc.13**
 **Razvojno okolje za vizualno ustvarjanje 2D iger s Pythonom, navdahnjeno z GameMakerjem**
 
 ---
@@ -1247,7 +1247,7 @@ Vadnice so na voljo v več jezikih (angleščina, nemščina, španščina, fran
 
 ---
 
-**PyGameMaker IDE** - Različica 1.0.0-rc.9
+**PyGameMaker IDE** - Različica 1.0.0-rc.13
 Gabriel Thullen, 2025-2026
 Programska oprema: licenca MIT. Dokumentacija: CC BY 4.0.
 GitHub: https://github.com/Gabe1290/pythongm
