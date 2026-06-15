@@ -63,6 +63,29 @@ def find_lrelease() -> str:
     return None
 
 
+def should_compile(ts_file: Path) -> bool:
+    """Only compile a .ts whose .qm the language manager will actually load.
+
+    core/language_manager.py prefers split files (pygm2_<lang>_<group>.qm)
+    over the monolithic pygm2_<lang>.qm, but ONLY if a split set already
+    exists; otherwise it uses the monolithic file. Compiling a split
+    _<group>.ts for a language that has no split set (e.g. fr, which ships
+    split .ts files but deliberately only the hand-translated monolithic
+    pygm2_fr.qm) would create a brand-new split .qm that hijacks the loader
+    and drops the full monolithic translation. Guard against that: a split
+    *_<group>.ts is compiled only when that language already uses split
+    files (pygm2_<lang>_core.qm exists). Monolithic pygm2_<lang>.ts is
+    always safe.
+    """
+    parts = ts_file.stem.split('_')
+    if len(parts) <= 2:
+        return True  # monolithic pygm2_<lang>.ts — always safe
+    lang = parts[1]
+    if (ts_file.parent / f"pygm2_{lang}_core.qm").exists():
+        return True
+    return False
+
+
 def compile_ts_file(ts_file: Path, lrelease_cmd: str) -> bool:
     """Compile a single .ts file to .qm format."""
     qm_file = ts_file.with_suffix('.qm')
@@ -122,8 +145,15 @@ def main():
 
     success_count = 0
     fail_count = 0
+    skip_count = 0
 
     for ts_file in sorted(ts_files):
+        if not should_compile(ts_file):
+            print(f"Skipping {ts_file.name} "
+                  f"(language uses the monolithic .qm, no split set)")
+            skip_count += 1
+            continue
+
         print(f"Compiling {ts_file.name}...", end=' ')
 
         if compile_ts_file(ts_file, lrelease_cmd):
@@ -135,6 +165,8 @@ def main():
     print()
     print("=" * 60)
     print(f"✓ Compiled: {success_count}")
+    if skip_count > 0:
+        print(f"⏭ Skipped (monolithic-only language): {skip_count}")
     if fail_count > 0:
         print(f"✗ Failed: {fail_count}")
     print("=" * 60)
