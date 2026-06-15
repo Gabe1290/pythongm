@@ -97,6 +97,67 @@ Cross-machine notes:
 - PowerShell 5.1 gotcha: `git commit -m` mangles messages containing
   double quotes — write the message to a file and `git commit -F` it.
 
+## 2026-06-15 — Audit fixes landed in bulk: 107/111 closed (4 deferred)
+
+Drove the open audit findings down hard. Start state was a misleading "77
+open": the H12 data-loss high was actually already fixed (commit `3d60e14`,
+shared with H10) but its checkbox was never flipped — corrected first. M21
+(playground robot ports all 33333) fixed by hand with a test.
+
+The remaining 75 were fixed via a **parallel worktree fix-workflow**: one
+agent per file (40 files), each in an isolated git worktree, re-verifying its
+findings against current code, fixing behaviour-preservingly, and adding a
+3.11-compatible offscreen-QApplication regression test. Returned 69 fixed,
+3 already-fixed (stale checkboxes), 0 refuted, 5 deferred-cross-file.
+
+I landed by pulling each worktree's real diff (4 agents had inlined a
+placeholder for their new test file instead of the content — the worktrees
+still held the real files), confirming no two agents touched the same source
+file, applying all 40, and running the **full suite**. That gate caught two
+real regressions an agent's isolated test run missed:
+
+- **Eyedropper (M25) vs. canvas no-op (L16) conflict.** M25 routed its
+  deferred tool-switch-back-to-pencil through `canvas_modified`; the L16 fix
+  stopped emitting `canvas_modified` for no-op gestures (picker clicks) — so
+  the switch never applied. Reconciled by adding a dedicated
+  `SpriteCanvas.gesture_finished` signal (fires on every release) for the
+  switch, keeping `canvas_modified` change-only. Both findings' tests pass.
+- **Kivy collision (M34) over-reach.** The agent changed the
+  `check_collision_at` call site from absolute coords to `self.x + (offset)`,
+  contradicting the `check_empty` sibling and the existing `test_exporters.py`
+  contract. Reverted the call-site to absolute; M34's real defect (the method
+  is undefined in the generated runtime) is deferred to `kivy_exporter.py`.
+
+Final suite: **1076 passed, 0 failed, 30 skipped, 41 errors** — the 41 errors
+are all the pre-existing pytest-qt `qapp`-fixture absence on this 3.11 box (6
+widget-test files, untouched by this work); they run on the 3.12 Windows box.
+
+Landed as 11 per-subsystem commits (`b6b27da`..`4d76181`) plus the H12/M21
+fixes. Registry `docs/FULL_AUDIT_2026-06-11.md`: **107/111 fixed**.
+
+**4 still OPEN — each needs a coordinated edit in a second file** (an agent was
+scoped to one file and correctly refused to touch another that a parallel
+agent might be editing):
+- **M31** (`events/conditional_editor.py` ✓ editor side correct) — runtime
+  `if_condition` `mouse_check` arm in `runtime/action_executor.py` (~:4490) is a
+  `return False` stub; needs a real read of `pygame.mouse.get_pressed()` /
+  tracked mouse pos for the saved 'check' value.
+- **M34** (`export/Kivy/code_generator.py` ✓ call site correct) — must DEFINE
+  `check_collision_at(self, x, y, object_name)` (absolute coords) on the
+  generated GameObject base in `export/Kivy/kivy_exporter.py` + the
+  `game_object.py.template`.
+- **L5** (`core/ide_window.py`) — `open_editors`/`detached_editor_windows`
+  keyed by bare asset name; a same-named room+object collide. Needs composite
+  (category, name) keys coordinated with `widgets/asset_tree/asset_operations.py`
+  (`close_editor_by_name`).
+- **L8** (`dialogs/project_dialogs.py` ✓ exposes description) — `new_project()`
+  in `core/ide_window.py` (~:1308) must write `project_info['description']`
+  into the created project (`create_project` takes no description today).
+
+Minor remainders noted by agents (primary finding fixed): **L4** also wants
+`WA_DeleteOnClose` on `PlaygroundRunnerWindow`; **M30** has a belt-and-braces
+runtime alias / 'state' field aspect in `action_executor.py`.
+
 ## 2026-06-11 — Full-codebase audit completed (111 confirmed findings)
 
 The 18-finder adversarially-verified audit of the whole source tree finally

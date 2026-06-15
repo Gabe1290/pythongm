@@ -232,6 +232,22 @@ others. Coverage: `tests/test_room_canvas_cache_clear.py` (constructs a real
 offscreen QApplication, no pytest-qt needed, so it runs on 3.11 too). Suite
 677→678 passed, 0 failed.
 
+**2026-06-15 — Audit fixes landed in bulk: 107/111 closed.** Drove the
+open findings down via a parallel worktree fix-workflow (one agent per
+file, re-verify + behaviour-preserving fix + offscreen-QApplication
+regression test). H12 was already fixed (stale checkbox; shared `3d60e14`
+with H10) — corrected. 75 open → 69 fixed + 3 already-fixed + 0 refuted +
+5 deferred-cross-file. Landed from worktree diffs after a full-suite gate
+that caught two cross-fix regressions (eyedropper M25 vs canvas-no-op L16,
+reconciled with a new `SpriteCanvas.gesture_finished` signal; Kivy M34
+call-site over-reach, reverted to absolute coords). Suite **1076 passed,
+0 failed** (41 pre-existing pytest-qt `qapp` errors on 3.11). 11
+per-subsystem commits `b6b27da`..`4d76181`. **4 remain OPEN — each needs a
+coordinated second-file edit** (see SESSION_NOTES 2026-06-15): M31 (runtime
+mouse_check stub in action_executor.py), M34 (define check_collision_at in
+kivy_exporter.py), L5 (composite editor keys across ide_window.py +
+asset_operations.py), L8 (wire description in ide_window.new_project).
+
 **2026-06-11 — Full-codebase audit (18 finders, adversarially verified):
 111 confirmed findings.** Unlike the earlier single-batch audits, every
 finding here survived adversarial verification against the actual code
