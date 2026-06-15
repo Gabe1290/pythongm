@@ -4511,7 +4511,39 @@ class ActionExecutor:
             return self._compare(current, operator, value)
 
         elif condition_type == "mouse_check":
-            # Simplified mouse check
+            # The editor saves the chosen check under 'check' as one of the
+            # canonical labels below. Read live mouse state from pygame.
+            check = parameters.get("check", "")
+            import pygame
+            if not pygame.get_init():
+                return False
+            try:
+                buttons = pygame.mouse.get_pressed()
+            except pygame.error:
+                return False
+
+            if check == "Left button pressed":
+                return bool(buttons[0])
+            if check == "Middle button pressed":
+                return bool(buttons[1])
+            if check == "Right button pressed":
+                return bool(buttons[2])
+            if check == "Over object":
+                sprite = getattr(instance, "sprite", None)
+                if sprite is None:
+                    return False
+                try:
+                    mx, my = pygame.mouse.get_pos()
+                except pygame.error:
+                    return False
+                base_x = instance.x - sprite.origin_x
+                base_y = instance.y - sprite.origin_y
+                # Half-open AABB, matching the collision convention
+                # (bbox_right/bottom are exclusive).
+                return (base_x + sprite.bbox_left <= mx < base_x + sprite.bbox_right
+                        and base_y + sprite.bbox_top <= my < base_y + sprite.bbox_bottom)
+            # "In region" carries no region coordinates from the editor, so it
+            # can't be evaluated; treat as false rather than guessing.
             return False
 
         return False
