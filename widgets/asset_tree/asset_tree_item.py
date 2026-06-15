@@ -67,8 +67,16 @@ class AssetTreeItem(QTreeWidgetItem):
                 asset_imported = self.asset_data.get('imported', False)
 
                 if asset_imported:
-                    # Show imported asset normally with type icons
-                    self.setForeground(0, Qt.GlobalColor.black)
+                    # Show imported asset normally with type icons.
+                    # Use the application palette's Text role rather than a
+                    # hardcoded black so the label stays readable under dark
+                    # themes (a hardcoded ForegroundRole overrides the theme
+                    # palette, producing black-on-dark labels).
+                    from PySide6.QtWidgets import QApplication
+                    from PySide6.QtGui import QPalette
+                    self.setForeground(
+                        0, QApplication.palette().color(QPalette.Text)
+                    )
 
                     # Add type-specific icon or thumbnail
                     if self.asset_type == "sprites":

@@ -109,6 +109,11 @@ class TutorialPanel(QWidget):
         # HTML content browser
         self.content_browser = QTextBrowser()
         self.content_browser.setOpenExternalLinks(False)
+        # Stop QTextBrowser from auto-navigating (setSource) on a click. Its
+        # default openLinks=True makes it try to load the clicked anchor as a
+        # new source, which blanks the tutorial page for an external/unknown
+        # URL. We do all navigation ourselves in on_link_clicked.
+        self.content_browser.setOpenLinks(False)
         self.content_browser.anchorClicked.connect(self.on_link_clicked)
         content_layout.addWidget(self.content_browser)
 

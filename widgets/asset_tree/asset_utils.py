@@ -5,6 +5,7 @@ Pure utility functions for asset management - no UI dependencies
 """
 
 import json
+import os
 from pathlib import Path
 from typing import Dict, Optional, Tuple, List
 
@@ -129,17 +130,35 @@ def save_project_data(project_file: Path, project_data: Dict) -> bool:
     """
     Save project data to JSON file
     Returns True if successful, False otherwise
+
+    The write is atomic: data is written to a sibling ``<file>.tmp`` (flushed
+    and fsync'd) and then ``os.replace``'d into place, so a crash, power loss,
+    or disk-full error mid-write leaves the previous project.json intact rather
+    than a truncated/corrupt file. This mirrors ``_atomic_write_json`` in
+    ``core.project_manager`` (replicated locally to keep this module free of UI
+    / heavy dependencies).
     """
+    project_file = Path(project_file)
+    tmp_path = project_file.with_name(project_file.name + '.tmp')
     try:
         # Ensure parent directory exists
         project_file.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(project_file, 'w', encoding='utf-8') as f:
+        with open(tmp_path, 'w', encoding='utf-8') as f:
             json.dump(project_data, f, indent=2, ensure_ascii=False)
+            f.flush()
+            os.fsync(f.fileno())
 
+        os.replace(tmp_path, project_file)
         return True
     except Exception as e:
         logger.error(f"Error saving project file {project_file}: {e}")
+        # Clean up a stale temp file so a failed save can't leave debris behind.
+        try:
+            if tmp_path.exists():
+                tmp_path.unlink()
+        except Exception:
+            pass
         return False
 
 
