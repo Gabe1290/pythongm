@@ -754,8 +754,10 @@ class AssetTreeWidget(QTreeWidget):
                 result = ResourcePackager.import_room(package_path, project_path)
 
             if result:
-                # Refresh the asset tree
-                self.force_project_refresh()
+                # The import only wrote the new asset to project.json on disk;
+                # fold it into the live in-memory model so the tree shows it now
+                # rather than only after a restart.
+                self.force_project_refresh(merge_from_disk=True)
 
                 QMessageBox.information(
                     self,
@@ -1077,7 +1079,7 @@ class AssetTreeWidget(QTreeWidget):
         """Set current project"""
         self.current_project = project_path
 
-    def force_project_refresh(self):
+    def force_project_refresh(self, merge_from_disk: bool = False):
         """Refresh the tree from the live in-memory project model.
 
         This must NOT reload the project from disk: disk is stale relative
@@ -1086,12 +1088,22 @@ class AssetTreeWidget(QTreeWidget):
         unsaved work, reset the dirty flag, and force-closed every open
         editor without a save prompt via project_loaded ->
         on_project_loaded (audit H13/H14).
+
+        ``merge_from_disk`` is the one exception: package imports
+        (``ResourcePackager.import_room`` / ``import_object``) write the new
+        asset straight to project.json on disk and never touch memory, so the
+        import would stay invisible until the next full reload. When set, the
+        newly-written asset keys are folded in from disk first (additive only —
+        see ``ProjectManager.merge_imported_assets_from_disk``) so the import
+        appears immediately without discarding any unsaved in-memory edits.
         """
         try:
             parent = self.parent()
             while parent:
                 if hasattr(parent, 'project_manager'):
                     project_manager = parent.project_manager
+                    if merge_from_disk and hasattr(project_manager, 'merge_imported_assets_from_disk'):
+                        project_manager.merge_imported_assets_from_disk()
                     data = getattr(project_manager, 'current_project_data', None)
                     if data:
                         # Fold the live cache into project data, then redraw.

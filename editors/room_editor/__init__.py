@@ -243,7 +243,19 @@ class RoomEditor(FloatableEditorMixin, QWidget):
             )
 
             if reply == QMessageBox.Yes:
-                self.room_canvas.clear_instances()
+                # Route through the undo stack so Clear All is reversible and
+                # the stack stays consistent. clear_instances() empties the
+                # list directly, which (a) made Clear All the only destructive
+                # room op Ctrl+Z couldn't revert and (b) left stale
+                # RemoveInstanceCommands able to resurrect removed instances
+                # into the cleared room on a later Ctrl+Z.
+                from editors.room_undo_commands import BatchRemoveInstancesCommand
+                command = BatchRemoveInstancesCommand(
+                    self.room_canvas,
+                    list(self.room_canvas.instances),
+                    description=self.tr("Clear All Instances"),
+                )
+                self.room_canvas.undo_stack.push(command)
                 self.instance_properties.set_instance(None)
                 self.mark_modified()
                 self.update_status(self.tr("All instances cleared"))
@@ -279,7 +291,21 @@ class RoomEditor(FloatableEditorMixin, QWidget):
             dx = x_spin.value()
             dy = y_spin.value()
             if dx != 0 or dy != 0:
-                self.room_canvas.shift_all_instances(dx, dy)
+                # Route through the undo stack as a batch move so Shift All is
+                # reversible and the stack stays consistent (shifting x/y
+                # directly left the undo history pointing at stale absolute
+                # coordinates).
+                from editors.room_undo_commands import BatchMoveInstancesCommand
+                moved_data = [
+                    (inst, inst.x, inst.y, inst.x + dx, inst.y + dy)
+                    for inst in self.room_canvas.instances
+                ]
+                command = BatchMoveInstancesCommand(
+                    self.room_canvas,
+                    moved_data,
+                    description=self.tr("Shift All Instances"),
+                )
+                self.room_canvas.undo_stack.push(command)
                 self.mark_modified()
                 self.update_status(self.tr("Shifted all instances by ({0}, {1})").format(dx, dy))
 
