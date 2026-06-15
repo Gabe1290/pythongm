@@ -207,7 +207,11 @@ class TestConditionalEditorCanonicalValues:
         qtbot.addWidget(dialog)
         out = dialog.get_parameter_values()
         assert out["condition_type"] == "key_pressed"
-        assert out["key"] == "Space"
+        # The canonical key value is the lowercase pygame key name the runtime
+        # matches against (str(key).lower() in keys_pressed) — audit M30 fixed
+        # the editor to store "space"/"left"/… instead of the display labels
+        # "Space"/"Left Arrow" that never matched. Lowercase is the canonical id.
+        assert out["key"] == "space"
         assert out["state"] == "Held"
 
     def test_combo_stores_english_as_userdata(self, qtbot):
