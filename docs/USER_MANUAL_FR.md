@@ -1,6 +1,6 @@
 # Manuel d'utilisation de PyGameMaker IDE
 
-**Version 1.0.0-rc.9**
+**Version 1.0.0-rc.13**
 **Un IDE de developpement de jeux visuels inspire de GameMaker pour creer des jeux 2D avec Python**
 
 ---
@@ -1248,7 +1248,7 @@ Les tutoriels sont disponibles en plusieurs langues (anglais, allemand, espagnol
 
 ---
 
-**PyGameMaker IDE** - Version 1.0.0-rc.9
+**PyGameMaker IDE** - Version 1.0.0-rc.13
 Gabriel Thullen, 2025-2026
 Logiciel : Licence MIT. Documentation : CC BY 4.0.
 GitHub : https://github.com/Gabe1290/pythongm
