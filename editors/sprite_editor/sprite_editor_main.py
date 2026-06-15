@@ -180,6 +180,10 @@ class SpriteEditor(BaseEditor):
         # Instance attributes used before super().__init__ calls setup_base_ui
         self._tools = {}
         self._active_tool_name = "pencil"
+        # Tool switch deferred until the active mouse gesture ends (e.g. the
+        # eyedropper auto-switches to pencil, but doing so mid-press would let
+        # a slight drag paint onto the canvas with the freshly-set pencil).
+        self._pending_tool = None
 
         super().__init__(project_path, parent)
 
@@ -247,6 +251,7 @@ class SpriteEditor(BaseEditor):
         # Center — square canvas (enforces width=height internally)
         self.canvas = SpriteCanvas()
         self.canvas.canvas_modified.connect(self._on_canvas_modified)
+        self.canvas.gesture_finished.connect(self._on_gesture_finished)
         self.canvas.color_picked.connect(self._on_color_picked)
         self.canvas.zoom_changed.connect(self._on_zoom_changed)
         top_layout.addWidget(self.canvas, 1)
@@ -594,19 +599,49 @@ class SpriteEditor(BaseEditor):
     def _on_color_picked(self, color: QColor):
         self.color_palette.set_foreground(color)
         self.canvas.set_color(color)
-        # Auto-switch back to pencil after picking
-        self._select_tool("pencil")
+        # Auto-switch back to pencil after picking. color_picked is emitted
+        # synchronously from inside the canvas's mousePressEvent (and on drag
+        # via mouseMoveEvent) while a gesture is active; swapping the tool now
+        # would hand the live drag to the pencil and scribble in the picked
+        # colour. Defer the switch until the gesture ends (canvas_modified ->
+        # _on_canvas_modified, which fires on mouse release).
+        if getattr(self.canvas, "_painting", False):
+            self._pending_tool = "pencil"
+        else:
+            self._select_tool("pencil")
+
+    def _on_gesture_finished(self):
+        """Called on every mouse-gesture release, change or no-op.
+
+        Applies a tool switch that was deferred while a gesture was live (the
+        eyedropper defers its switch back to pencil so the active drag isn't
+        handed to the pencil mid-stroke). Decoupled from _on_canvas_modified,
+        which fires only on a real pixel change, so the switch still applies
+        after a no-op pick.
+        """
+        if self._pending_tool is not None:
+            pending, self._pending_tool = self._pending_tool, None
+            self._select_tool(pending)
 
     def _on_canvas_modified(self):
-        """Called when a stroke finishes."""
+        """Called when a gesture actually changed pixels."""
+        # Only a real change reaches here (the canvas suppresses canvas_modified
+        # for no-op gestures). Guard the undo push on the snapshot anyway for
+        # the direct (non-mouse) callers below.
         snapshot = self.canvas.get_stroke_snapshot()
-        if snapshot:
+        changed = snapshot is not None and snapshot != self.canvas.get_image()
+
+        if changed:
             cmd = SpriteEditCommand(
                 self, snapshot, self.canvas.get_image(),
                 self.tr("Draw")
             )
             self.undo_stack.push(cmd)
+        if snapshot:
             self.canvas.clear_stroke_snapshot()
+
+        if not changed:
+            return
 
         # Sync canvas image back to frame timeline
         self.frame_timeline.update_current_frame(self.canvas.get_image())

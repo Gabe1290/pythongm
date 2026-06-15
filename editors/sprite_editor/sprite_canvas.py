@@ -36,6 +36,11 @@ class SpriteCanvas(QAbstractScrollArea):
 
     # Emitted after any drawing operation modifies the image
     canvas_modified = Signal()
+    # Emitted when a mouse gesture ends, whether or not it changed pixels.
+    # Used to apply tool switches deferred during a live gesture (e.g. the
+    # eyedropper's auto-switch back to pencil) without coupling that to
+    # canvas_modified, which fires only on a real pixel change.
+    gesture_finished = Signal()
     # Emitted when the color picker picks a color
     color_picked = Signal(QColor)
     # Emitted when zoom changes (new zoom value)
@@ -196,8 +201,12 @@ class SpriteCanvas(QAbstractScrollArea):
     def _screen_to_pixel(self, screen_pos: QPoint) -> tuple[int, int]:
         """Convert viewport coordinates to image pixel coordinates."""
         ox, oy = self._origin()
-        x = int((screen_pos.x() - ox) / self._zoom)
-        y = int((screen_pos.y() - oy) / self._zoom)
+        # Floor division (not int(), which truncates toward zero) so a screen
+        # position up to one zoomed pixel left of / above the image maps to a
+        # negative coordinate that the bounds checks reject, instead of
+        # snapping to column/row 0 and painting the edge pixel.
+        x = (screen_pos.x() - ox) // self._zoom
+        y = (screen_pos.y() - oy) // self._zoom
         return x, y
 
     # ------------------------------------------------------------------
@@ -406,7 +415,22 @@ class SpriteCanvas(QAbstractScrollArea):
             px, py = self._screen_to_pixel(event.pos())
             self._current_tool.on_release(self._image, px, py, self._current_color)
             self._painting = False
-            self.canvas_modified.emit()
+            # Only report a modification (push an undo command / dirty the
+            # asset) when the gesture actually changed pixels.  Selection
+            # marquees and color-picker clicks leave the image untouched, so
+            # emitting here would queue an inert "Draw" undo entry and falsely
+            # mark the sprite unsaved.  When nothing changed, drop the snapshot
+            # so a later gesture can't pick it up as a stale baseline.
+            snapshot = self._stroke_snapshot
+            if snapshot is not None and snapshot == self._image:
+                self.clear_stroke_snapshot()
+            else:
+                self.canvas_modified.emit()
+            # Always signal that the gesture ended so the editor can apply a
+            # deferred tool switch (the eyedropper switches back to pencil on
+            # release). This fires even for no-op gestures that emit no
+            # canvas_modified, so the switch can't get stuck.
+            self.gesture_finished.emit()
             self.viewport().update()
 
     def leaveEvent(self, event):
