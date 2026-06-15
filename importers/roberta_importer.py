@@ -376,17 +376,17 @@ def _convert_block(block, result: RobertaImportResult) -> List[Dict]:
 
     # ---- LEDs ----
     if btype == "mbedActions_leds_on":
-        r, g, b = _extract_color(block)
+        r, g, b = _extract_color(block, result)
         led = _field(block, "LED") or "TOP"
         result.actions_imported += 1
         if led in ("BOTTOM_LEFT", "BOTTOMLEFT"):
             return [_action("thymio_set_led_bottom_left",
-                            r=str(r), g=str(g), b=str(b))]
+                            red=str(r), green=str(g), blue=str(b))]
         if led in ("BOTTOM_RIGHT", "BOTTOMRIGHT"):
             return [_action("thymio_set_led_bottom_right",
-                            r=str(r), g=str(g), b=str(b))]
+                            red=str(r), green=str(g), blue=str(b))]
         return [_action("thymio_set_led_top",
-                        r=str(r), g=str(g), b=str(b))]
+                        red=str(r), green=str(g), blue=str(b))]
 
     if btype == "mbedActions_leds_off":
         result.actions_imported += 1
@@ -572,7 +572,7 @@ def _field_or_value_float(block, name: str, default: float) -> float:
         return default
 
 
-def _extract_color(block) -> Tuple[int, int, int]:
+def _extract_color(block, result=None) -> Tuple[int, int, int]:
     """Extract RGB from a Roberta colour block, scaled to Thymio 0-32 range."""
     color_block = _value_element(block, "COLOR")
     if color_block is None:
@@ -594,9 +594,20 @@ def _extract_color(block) -> Tuple[int, int, int]:
 
     # robColour_rgb uses RED, GREEN, BLUE value sub-blocks
     if btype == "robColour_rgb":
-        r = int(float(_value_str(color_block, "RED", "0")))
-        g = int(float(_value_str(color_block, "GREEN", "0")))
-        b = int(float(_value_str(color_block, "BLUE", "0")))
+        rgb = []
+        for channel in ("RED", "GREEN", "BLUE"):
+            raw = _value_str(color_block, channel, "0")
+            try:
+                rgb.append(int(float(raw)))
+            except (ValueError, TypeError):
+                # A variable reference or arithmetic expression (e.g. "(0 + 0)")
+                # is not a literal — fall back to 0 instead of crashing.
+                if result is not None:
+                    result.warnings.append(
+                        f"LED colour {channel} channel is expression "
+                        f"'{raw}', using 0")
+                rgb.append(0)
+        r, g, b = rgb
         return (_scale_color(r), _scale_color(g), _scale_color(b))
 
     return (0, 0, 0)

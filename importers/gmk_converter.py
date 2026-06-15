@@ -39,6 +39,16 @@ from importers.gmk_parser import (
 
 logger = logging.getLogger(__name__)
 
+# .gmk is an untrusted foreign format. A sprite/background frame stores its
+# width/height as plain int32s (gmk_parser only guards width>0 / height>0),
+# while the pixel-data length is a separate field, so a malicious or corrupt
+# file can declare enormous dimensions backed by only a handful of bytes. The
+# converter would then try to allocate width*height*4 bytes (twice) and run a
+# width*height-iteration channel-swap loop, OOM-killing the IDE. Clamp both to
+# a sane maximum and reject frames whose declared size grossly outruns the
+# pixel data actually present.
+MAX_IMAGE_DIMENSION = 8192  # px per side — comfortably above any real sprite
+
 
 class GmkConverter:
     """
@@ -273,6 +283,11 @@ class GmkConverter:
         else:
             # Multiple frames: save as horizontal strip
             frame_w, frame_h = gmk_spr.subimages[0][0], gmk_spr.subimages[0][1]
+            # Validate the per-frame dimensions before allocating the strip
+            # surface: strip_width = frame_w * num_frames is allocated up
+            # front (Image.new), so a hostile frame_w would OOM here before
+            # any _bgra_to_image guard could fire.
+            self._validate_image_dimensions(frame_w, frame_h)
             strip_width = frame_w * num_frames
             strip_img = Image.new("RGBA", (strip_width, frame_h), (0, 0, 0, 0))
 
@@ -868,9 +883,46 @@ class GmkConverter:
     # Image conversion helpers
     # ================================================================
 
+    @staticmethod
+    def _validate_image_dimensions(width: int, height: int) -> None:
+        """Reject image dimensions that are non-positive, non-integer, or
+        larger than ``MAX_IMAGE_DIMENSION`` per side. .gmk frame dimensions are
+        bare int32s from an untrusted file; without this an absurd
+        width/height would force a multi-GB allocation and OOM the IDE."""
+        if not isinstance(width, int) or not isinstance(height, int):
+            raise ValueError(f"non-integer image dimensions {width!r}x{height!r}")
+        if width <= 0 or height <= 0:
+            raise ValueError(f"non-positive image dimensions {width}x{height}")
+        if width > MAX_IMAGE_DIMENSION or height > MAX_IMAGE_DIMENSION:
+            raise ValueError(
+                f"image dimensions {width}x{height} exceed the "
+                f"{MAX_IMAGE_DIMENSION}px limit"
+            )
+
     def _bgra_to_image(self, bgra_data: bytes, width: int, height: int) -> Image.Image:
-        """Convert BGRA pixel data to a PIL RGBA Image."""
+        """Convert BGRA pixel data to a PIL RGBA Image.
+
+        Validates the declared dimensions before allocating anything: an
+        untrusted .gmk can declare huge width/height (read as bare int32s by
+        the parser) backed by a few bytes of pixel data, which would otherwise
+        force a multi-GB allocation + channel-swap loop and OOM the IDE. The
+        per-asset try/except in the converter loops turns the ValueError into
+        a warn-and-skip.
+        """
+        self._validate_image_dimensions(width, height)
+
         expected = width * height * 4
+        # Reject frames whose declared size grossly outruns the actual pixel
+        # data: legitimate frames carry their full BGRA payload, so a buffer
+        # that's missing more than half the declared bytes is a corrupt /
+        # hostile descriptor, not a frame worth padding into gigabytes.
+        if bgra_data is None:
+            bgra_data = b""
+        if len(bgra_data) * 2 < expected:
+            raise ValueError(
+                f"image {width}x{height} declares {expected} bytes but only "
+                f"{len(bgra_data)} are present"
+            )
         if len(bgra_data) < expected:
             # Pad with transparent pixels if data is short
             bgra_data = bgra_data + b"\x00" * (expected - len(bgra_data))

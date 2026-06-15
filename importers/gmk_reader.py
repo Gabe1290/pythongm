@@ -12,6 +12,16 @@ import struct
 import zlib
 
 
+# Upper bound on the decompressed size of a single zlib block in a .gmk.
+# .gmk files are an untrusted foreign format (a teacher may import a
+# downloaded/student file), and zlib readily achieves >1000:1 ratios, so a
+# small compressed block could otherwise inflate to many gigabytes and
+# OOM-kill the IDE during import. 512 MB is far larger than any legitimate
+# GMK block (the largest are embedded BMP sprite/background sheets) yet
+# finite, so a decompression bomb is rejected instead of allocated.
+MAX_ZLIB_DECOMPRESSED = 512 * 1024 * 1024
+
+
 class GmkReadError(Exception):
     """Error reading from a GMK binary stream."""
 
@@ -184,9 +194,22 @@ class GmkStream:
             return b""
         compressed = self.read_bytes(comp_length)
         try:
-            return zlib.decompress(compressed)
+            decomp = zlib.decompressobj()
+            # Cap the output to guard against a decompression bomb: a small
+            # untrusted block must not be allowed to inflate without bound.
+            result = decomp.decompress(compressed, MAX_ZLIB_DECOMPRESSED)
+            if decomp.unconsumed_tail:
+                # More output remained than the cap allowed: refuse rather
+                # than keep allocating toward an OOM.
+                raise GmkReadError(
+                    "Zlib block exceeds the maximum decompressed size of "
+                    f"{MAX_ZLIB_DECOMPRESSED} bytes (possible decompression bomb)",
+                    self._pos,
+                )
+            result += decomp.flush()
         except zlib.error as e:
             raise GmkReadError(f"Zlib decompression failed: {e}", self._pos) from e
+        return result
 
     def read_zlib_stream(self) -> "GmkStream":
         """
