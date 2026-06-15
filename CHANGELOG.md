@@ -9,6 +9,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 (No entries yet.)
 
+## [1.0.0-rc.13] - 2026-06-15
+
+Stabilization release. Closes the complete, adversarially-verified
+full-codebase audit (`docs/FULL_AUDIT_2026-06-11.md`): **111 findings
+(15 high / 61 medium / 35 low), every one fixed with a regression test.**
+No new features — correctness, data-integrity and robustness only.
+
+### Fixed
+
+Highlights across subsystems (see the audit registry for the full per-finding
+list, all checkboxes closed, and the `tests/test_audit_*` regression tests):
+
+- **Runtime / game loop.** GMK-imported games no longer run at double speed
+  (`settings['room_speed']` is honoured); instances created during an event are
+  no longer processed the same frame; persistent instances survive a room
+  restart; re-entering a visited room no longer re-fires `create` events;
+  collision push-back lands flush with nonzero sprite origins; the
+  `if_condition` `mouse_check` (button / over-object) actually evaluates.
+- **Editors.** Sprite-editor frame add/duplicate/delete and room-editor
+  Clear All / Shift All are now undoable; the eyedropper no longer paints when
+  dragged; a same-named asset of a different type no longer collides on one
+  editor slot; playground robots each get a distinct port.
+- **Export.** Kivy/Android code generation emits valid Python (conditional
+  scoping, keyboard handlers, a defined `check_collision_at`, message
+  escaping); Aseba `.aesl` output fixes; EXE export reports real
+  success/failure; project names containing quotes no longer break the build.
+- **Importers.** GMK and Roberta import hardened against malformed / oversized
+  input; GMK resource names guarded against path traversal.
+- **IDE / project.** New Project description is persisted; asset rename keeps
+  room order and updates nested references; zip projects reopen from Recent;
+  Auto-Save settings persist; asset delete / refresh no longer discard unsaved
+  in-memory work.
+
+### Changed
+
+- Version bumped to **1.0.0-rc.13** across all `__version__` declarations,
+  `pyproject.toml`, the Windows exe metadata (`version_info.txt`), the README
+  badge, and the user manuals / flyers (which were still labelled rc.9).
+
 ## [1.0.0-rc.12] - 2026-05-23
 
 Bundles three tracks of work on top of rc.11. First, the Phase 2 features
