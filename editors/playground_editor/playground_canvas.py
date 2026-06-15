@@ -170,7 +170,11 @@ class PlaygroundCanvas(QWidget):
             robot = PlaygroundRobot.from_dict(robot_data)
         else:
             robot = PlaygroundRobot(port=self._next_port)
-            self._next_port += 1
+        # Keep the next auto-port ahead of every placed robot, whether it was
+        # built here (else branch) or pre-built by the caller (the Robot tool
+        # passes robot_data with port=_next_port). Bumping only in the else
+        # branch left every tool-placed robot on the same port (33333).
+        self._next_port = max(self._next_port, robot.port + 1)
         if use_undo:
             cmd = AddElementCommand(self, robot, "Add Robot")
             self.robots.append(robot)
