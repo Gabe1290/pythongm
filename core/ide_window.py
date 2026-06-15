@@ -2036,14 +2036,23 @@ class PyGameMakerIDE(QMainWindow):
             self._game_stderr_path = stderr_path
             self._game_stderr_handle = os.fdopen(stderr_fd, 'w')
 
-            process = subprocess.Popen(
-                [sys.executable, str(game_script), str(project_json), language],
-                cwd=str(self.current_project_path),
-                env=env,
-                stdout=None,
-                stderr=self._game_stderr_handle,
-                creationflags=creationflags,
-            )
+            try:
+                process = subprocess.Popen(
+                    [sys.executable, str(game_script), str(project_json), language],
+                    cwd=str(self.current_project_path),
+                    env=env,
+                    stdout=None,
+                    stderr=self._game_stderr_handle,
+                    creationflags=creationflags,
+                )
+            except Exception:
+                # Popen failed (e.g. interpreter/run_game.py missing, cwd
+                # deleted, PermissionError). Close the handle and unlink the
+                # temp log so each failed F5 doesn't orphan an fd + a stale
+                # /tmp/pygm2_game_*.log (audit L3); re-raise into the outer
+                # handler that surfaces the error dialog.
+                self._drain_game_stderr(None)
+                raise
 
             # Store reference to allow stopping the game
             self._game_process = process
@@ -2978,8 +2987,26 @@ class PyGameMakerIDE(QMainWindow):
         """Open the Thymio Playground simulator window"""
         from widgets.thymio_playground import ThymioPlaygroundWindow
 
-        # Create and show the playground window
+        # Reuse a live window instead of constructing a fresh one each open:
+        # without WA_DeleteOnClose a closed window only hides (and its pygame
+        # surfaces / 60 FPS simulator stay retained, parented to the long-lived
+        # IDE), while overwriting the sole reference leaked the previous one and
+        # opening twice ran two simulations at once (audit L4). Mirror the
+        # _focus_detached_editor pattern: raise the existing live window.
+        from shiboken6 import isValid
+        existing = getattr(self, 'thymio_playground', None)
+        if existing is not None and isValid(existing):
+            existing.showNormal()
+            existing.raise_()
+            existing.activateWindow()
+            logger.info("Raised existing Thymio Playground window")
+            return
+
+        # Create and show the playground window. WA_DeleteOnClose drops the C++
+        # object (and its surfaces) on close — its closeEvent already stops the
+        # timer — so the dangling Python attribute is replaced on the next open.
         self.thymio_playground = ThymioPlaygroundWindow(self)
+        self.thymio_playground.setAttribute(Qt.WA_DeleteOnClose)
         self.thymio_playground.show()
         logger.info("Opened Thymio Playground window")
 
