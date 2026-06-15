@@ -20,6 +20,11 @@ logger = get_logger(__name__)
 class AndroidExporter(BaseKivyExporter):
     """Handles exporting games as Android APK packages using Kivy + Buildozer"""
 
+    # Sentinel returned by _run_buildozer when the user cancels the build.
+    # Distinct from True (success) and an error-message str (failure) so the
+    # caller can suppress the failure dialog/emit for a cancellation.
+    _CANCELLED = object()
+
     def __init__(self):
         super().__init__()
         self.project_path = None
@@ -263,46 +268,60 @@ class AndroidExporter(BaseKivyExporter):
             self.progress_update.emit(15, "Creating build directory...")
             build_dir = self._create_build_directory()
 
-            # Step 4: Generate Kivy game using KivyExporter
-            self.progress_update.emit(20, "Generating Kivy game...")
-            if not self._generate_kivy_game(build_dir):
-                self.export_complete.emit(False, "Failed to generate Kivy game")
-                return False
+            # Steps 4-8 run under a finally that always removes the temp build
+            # tree, so a failed/cancelled export can't leak a multi-hundred-MB
+            # pygm_android_* directory (buildozer failures are the common case
+            # on an under-configured toolchain).  Debug mode keeps the tree on
+            # purpose; that intent is preserved below.
+            try:
+                # Step 4: Generate Kivy game using KivyExporter
+                self.progress_update.emit(20, "Generating Kivy game...")
+                if not self._generate_kivy_game(build_dir):
+                    self.export_complete.emit(False, "Failed to generate Kivy game")
+                    return False
 
-            # Step 5: Generate buildozer.spec
-            self.progress_update.emit(35, "Generating buildozer.spec...")
-            if not self._generate_buildozer_spec(build_dir):
-                self.export_complete.emit(False, "Failed to generate buildozer.spec")
-                return False
+                # Step 5: Generate buildozer.spec
+                self.progress_update.emit(35, "Generating buildozer.spec...")
+                if not self._generate_buildozer_spec(build_dir):
+                    self.export_complete.emit(False, "Failed to generate buildozer.spec")
+                    return False
 
-            # Step 6: Run Buildozer to build the APK
-            self.progress_update.emit(40, "Building APK (this may take a long time on first run)...")
-            result = self._run_buildozer(build_dir)
-            if result is not True:
-                self.export_complete.emit(False, "Buildozer build failed:\n\n{}".format(result))
-                return False
+                # Step 6: Run Buildozer to build the APK
+                self.progress_update.emit(40, "Building APK (this may take a long time on first run)...")
+                result = self._run_buildozer(build_dir)
+                if result is self._CANCELLED:
+                    # User cancelled: emit a single, accurate completion signal
+                    # (the build dialog distinguishes cancel from failure).
+                    self.export_complete.emit(False, "Export cancelled by user.")
+                    return False
+                if result is not True:
+                    self.export_complete.emit(False, "Buildozer build failed:\n\n{}".format(result))
+                    return False
 
-            # Step 7: Copy APK to output directory
-            self.progress_update.emit(90, "Copying APK to output directory...")
-            if not self._copy_to_output(build_dir):
+                # Step 7: Copy APK to output directory
+                self.progress_update.emit(90, "Copying APK to output directory...")
+                if not self._copy_to_output(build_dir):
+                    self.export_complete.emit(
+                        False,
+                        "Build completed but no APK file was found.\n\n"
+                        "Check the build output for errors."
+                    )
+                    return False
+
+                self.progress_update.emit(100, "Export complete!")
                 self.export_complete.emit(
-                    False,
-                    "Build completed but no APK file was found.\n\n"
-                    "Check the build output for errors."
+                    True,
+                    "Game exported successfully to:\n{}".format(self.output_path)
                 )
-                return False
-
-            # Step 8: Cleanup (if not in debug mode)
-            if not settings.get('include_debug', False):
-                self.progress_update.emit(95, "Cleaning up temporary files...")
-                self._cleanup(build_dir)
-
-            self.progress_update.emit(100, "Export complete!")
-            self.export_complete.emit(
-                True,
-                "Game exported successfully to:\n{}".format(self.output_path)
-            )
-            return True
+                return True
+            finally:
+                # Cleanup (unless debug mode, where the tree is kept for
+                # inspection).  Runs on every exit path — success, each early
+                # failure return, cancellation, and the outer except — so the
+                # temp directory never leaks.
+                if not settings.get('include_debug', False):
+                    self.progress_update.emit(95, "Cleaning up temporary files...")
+                    self._cleanup(build_dir)
 
         except Exception as e:
             error_msg = "Export failed: {}".format(str(e))
@@ -512,9 +531,32 @@ class AndroidExporter(BaseKivyExporter):
             # main thread's event loop (which would freeze the UI).
             import time as _time
             import collections as _collections
+            import queue as _queue
+            import threading as _threading
             output_lines = _collections.deque(maxlen=2000)
             _last_signal_time = 0.0
             _SIGNAL_INTERVAL = 0.25  # seconds between progress updates
+
+            # Read stdout on a helper thread feeding a queue so the main loop
+            # can poll for cancellation and the build deadline even when
+            # buildozer/gradle goes silent for long stretches.  A blocking
+            # `for line in process.stdout` only notices a cancel request (and
+            # only lets process.wait(timeout=) fire) when a new line arrives,
+            # so a silent hang would wedge the export thread with Cancel inert.
+            _line_queue: _queue.Queue = _queue.Queue()
+
+            def _pump_stdout(stream, q):
+                try:
+                    for raw in iter(stream.readline, ''):
+                        q.put(raw)
+                finally:
+                    q.put(None)  # sentinel: stream closed (process exiting)
+
+            _reader = _threading.Thread(
+                target=_pump_stdout, args=(process.stdout, _line_queue),
+                daemon=True)
+            _reader.start()
+            _deadline = _time.monotonic() + timeout
 
             # Estimate progress (40-88%) by detecting buildozer phases.
             # Each phase keyword maps to a progress percentage.
@@ -543,12 +585,32 @@ class AndroidExporter(BaseKivyExporter):
                 ('.apk',                          88),
             ]
 
-            for line in process.stdout:
-                # Check for cancellation
+            while True:
+                # Check for cooperative cancellation even while output is
+                # silent (the queue.get below wakes at least every 0.5s).
                 if self.cancel_requested:
                     process.kill()
-                    self.export_complete.emit(False, "Export cancelled by user.")
-                    return False
+                    # Return a dedicated sentinel rather than emitting
+                    # export_complete here: export_project owns the single
+                    # completion emit, so emitting from both would deliver two
+                    # signals (the second a bogus "build failed: False").
+                    return self._CANCELLED
+
+                # Enforce the build deadline even if buildozer/gradle hangs
+                # without producing any output (the blocking-read version
+                # could never reach process.wait(timeout=) on a silent hang).
+                if _time.monotonic() > _deadline:
+                    raise subprocess.TimeoutExpired(
+                        cmd='buildozer', timeout=timeout)
+
+                try:
+                    line = _line_queue.get(timeout=0.5)
+                except _queue.Empty:
+                    continue
+
+                if line is None:
+                    # stdout closed — the process has exited (or is about to).
+                    break
 
                 stripped = line.rstrip()
                 if not stripped:
@@ -580,8 +642,11 @@ class AndroidExporter(BaseKivyExporter):
                     self.progress_update.emit(_build_pct, display)
                     _last_signal_time = now
 
-            # Wait for completion
-            process.wait(timeout=timeout)
+            # Wait for completion.  stdout has closed, so this returns
+            # promptly; the remaining budget still bounds the wait in case the
+            # process lingers after closing its pipe.
+            _remaining = max(1, int(_deadline - _time.monotonic()))
+            process.wait(timeout=_remaining)
 
             if process.returncode != 0:
                 logger.error("Buildozer failed with return code: {}".format(process.returncode))

@@ -202,6 +202,12 @@ class ActionCodeGenerator:
 
         elif action_type in ('if_collision', 'if_collision_at', 'check_collision'):
             obj_name = params.get('object', params.get('target', 'object'))
+            # x/y are absolute coordinate expressions, defaulting to the
+            # instance's own position (matching the check_empty sibling and the
+            # exporter's tested contract). M34's real defect is that
+            # check_collision_at is undefined in the generated runtime; that is
+            # fixed by defining the method in kivy_exporter.py, not by changing
+            # this call's coordinate semantics.
             x = params.get('x', 'self.x')
             y = params.get('y', 'self.y')
             cond = f"self.check_collision_at({x}, {y}, '{obj_name}')"
@@ -645,9 +651,12 @@ if dist > 0:
         # MESSAGE ACTIONS
         elif action_type == 'show_message' or action_type == 'display_message':
             message = params.get('message', '')
-            # Escape quotes in message
-            escaped_message = message.replace("'", "\\'")
-            return f"from main import show_message; show_message('{escaped_message}')"
+            # Embed via repr() so newlines, backslashes and either quote are
+            # escaped to a valid Python string literal. Manual quote-replacement
+            # broke the generated module on a trailing backslash (escaped the
+            # closing quote) or an embedded newline (add_line splits on '\n',
+            # leaving an unterminated literal) — audit L21.
+            return f"from main import show_message; show_message({message!r})"
 
         # SCORE/LIVES/HEALTH ACTIONS (use lazy import to avoid circular imports)
         elif action_type == 'set_score':

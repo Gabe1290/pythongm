@@ -4,6 +4,7 @@ Windows EXE Exporter for PyGameMaker
 Uses Kivy runtime (80% GameMaker 7.0 compatible) bundled with PyInstaller
 """
 
+import re
 import subprocess
 import shutil
 import platform
@@ -81,7 +82,24 @@ class ExeExporter(BaseKivyExporter):
 
             # Step 7: Copy output to final location
             self.progress_update.emit(90, "Copying to output directory...")
-            self._copy_to_output(build_dir)
+            if not self._copy_to_output(build_dir):
+                # Build succeeded but copying to the output folder failed
+                # (e.g. the freshly built .exe is locked by antivirus or
+                # Dropbox — the exact scenario the retry loop guards against).
+                # Skip cleanup so the surviving build under dist/ isn't
+                # deleted, and report failure pointing the user to it.
+                dist_dir = build_dir / "dist"
+                self.export_complete.emit(
+                    False,
+                    "Build succeeded but copying to the output folder failed.\n\n"
+                    "This usually happens when the output file is locked by "
+                    "antivirus or a sync client (Dropbox, OneDrive).\n\n"
+                    "Your built game is still available at:\n"
+                    f"{dist_dir}\n\n"
+                    "Close any program that may be using the file, or export "
+                    "to a different folder, then try again."
+                )
+                return False
 
             # Step 8: Cleanup (if not in debug mode)
             if not settings.get('include_debug', False):
@@ -188,6 +206,23 @@ if __name__ == "__main__":
 
         return launcher_script
 
+    @staticmethod
+    def _sanitize_exe_name(name: str) -> str:
+        """Reduce a project name to a safe token for the generated EXE name.
+
+        The result is embedded into single-quoted Python string literals in
+        the PyInstaller spec, so it must contain no quotes/apostrophes (which
+        would break the literal) and no path separators. Any character that
+        isn't alphanumeric, '_', '-' or '.' is replaced with '_'. Falls back
+        to 'Game' if nothing usable remains.
+        """
+        if not name:
+            return 'Game'
+        sanitized = re.sub(r'[^A-Za-z0-9_.\-]', '_', str(name))
+        # Strip leading/trailing dots/dashes that could confuse the filename.
+        sanitized = sanitized.strip('._-')
+        return sanitized or 'Game'
+
     def _create_spec_file(self, build_dir: Path, launcher_script: Path) -> Path:
         """
         Create PyInstaller spec file for bundling Kivy game
@@ -201,7 +236,12 @@ if __name__ == "__main__":
         import os
         spec_file = build_dir / "game.spec"
 
-        game_name = self.project_data.get('name', 'Game').replace(' ', '_')
+        # The name is interpolated into single-quoted Python string literals
+        # in the generated PyInstaller spec (e.g. name='{game_name}.exe'), so
+        # any apostrophe/quote in the project name (ubiquitous in French
+        # titles like "L'aventure") would produce a SyntaxError when
+        # PyInstaller execs the spec. Reduce to a safe identifier-like token.
+        game_name = self._sanitize_exe_name(self.project_data.get('name', 'Game'))
 
         # Collect ALL files from the game directory recursively
         # This ensures images, sounds, and all assets are included
@@ -389,13 +429,21 @@ exe = EXE(
             traceback.print_exc()
             return False
 
-    def _copy_to_output(self, build_dir: Path):
-        """Copy the built executable to the output directory"""
+    def _copy_to_output(self, build_dir: Path) -> bool:
+        """Copy the built executable to the output directory.
+
+        Returns True if every item copied successfully, False if any item
+        could not be copied after all retries. The caller must check the
+        result: on failure the build still lives under ``build_dir/dist`` and
+        cleanup must be skipped so that copy is not deleted.
+        """
         import time
         dist_dir = build_dir / "dist"
 
         # Create output directory
         self.output_path.mkdir(parents=True, exist_ok=True)
+
+        all_copied = True
 
         # Copy all files from dist to output with retry for locked files
         if dist_dir.exists():
@@ -414,6 +462,9 @@ exe = EXE(
                         else:
                             logger.warning(f"Could not copy {item.name}: {e}")
                             logger.info(f"The EXE is available at: {dist_dir / item.name}")
+                            all_copied = False
+
+        return all_copied
 
     def _cleanup(self, build_dir: Path):
         """Clean up temporary build files"""
