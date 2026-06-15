@@ -4,6 +4,7 @@ Asset Operations for PyGameMaker IDE
 Handles all asset file operations: import, delete, rename, and project file management
 """
 
+import json
 import shutil
 from pathlib import Path
 from typing import List, Dict, Optional
@@ -123,8 +124,15 @@ class AssetOperations:
             parent = parent.parent()
 
         if parent and hasattr(parent, 'open_editors'):
-            if asset_name in parent.open_editors:
-                # Close the editor first
+            # Close the editor for THIS asset's category only (open_editors is
+            # keyed by a composite "<category>:<name>" so a same-named asset of
+            # another type isn't closed too — audit L5).
+            if hasattr(parent, '_editor_key'):
+                key = parent._editor_key(asset_category, asset_name)
+                if key in parent.open_editors:
+                    logger.debug("Asset is open in editor, closing it first...")
+                    parent.close_editor_by_name(asset_name, asset_category)
+            elif asset_name in parent.open_editors:
                 logger.debug("Asset is open in editor, closing it first...")
                 parent.close_editor_by_name(asset_name)
 
@@ -412,6 +420,19 @@ class AssetOperations:
                     thumb_file.unlink()
                     logger.debug(f"Deleted thumbnail: {thumb_file}")
 
+            # Rooms/objects keep their payload in <type>/<name>.json side files
+            # that file_path/project_path never reference, so the unlink above
+            # left them behind. A stale orphan resurrects the dead asset's data
+            # into any future asset created with the same name (the room save's
+            # preserve-instances branch and the object/room file-precedence
+            # merge both read it back). Remove it alongside the project.json
+            # entry (audit M59).
+            if asset_category in ("rooms", "objects"):
+                side_file = Path(self.tree.project_path) / asset_category / f"{asset_name}.json"
+                if side_file.exists():
+                    side_file.unlink()
+                    logger.debug(f"Deleted side file: {side_file}")
+
             # Remove from project data
             del assets[asset_category][asset_name]
             logger.debug(f"Removed {asset_name} from project data")
@@ -426,6 +447,29 @@ class AssetOperations:
                         updated_objects.append(obj_name)
                 if updated_objects:
                     logger.debug(f"Cleared sprite reference from objects: {', '.join(updated_objects)}")
+                    # The reference also lives in each objects/<obj>.json side
+                    # file (every project with an objects/ dir). The forced
+                    # reload after delete merges those files with file
+                    # precedence ('sprite' is a merged key), which would restore
+                    # the now-deleted sprite name over this cleanup. Rewrite the
+                    # affected side files so the cleared reference actually
+                    # sticks (audit L32).
+                    objects_dir = Path(self.tree.project_path) / "objects"
+                    if objects_dir.exists():
+                        for obj_name in updated_objects:
+                            obj_file = objects_dir / f"{obj_name}.json"
+                            if not obj_file.exists():
+                                continue
+                            try:
+                                with open(obj_file, 'r', encoding='utf-8') as f:
+                                    file_obj_data = json.load(f)
+                                if file_obj_data.get("sprite") == asset_name:
+                                    file_obj_data["sprite"] = ""
+                                    with open(obj_file, 'w', encoding='utf-8') as f:
+                                        json.dump(file_obj_data, f, indent=2)
+                                    logger.debug(f"Cleared sprite reference in side file: {obj_file}")
+                            except (OSError, ValueError) as e:
+                                logger.warning(f"Could not update object side file {obj_file}: {e}")
 
             # CRITICAL: Also remove from AssetManager cache
             parent = self.tree.parent()

@@ -232,6 +232,23 @@ others. Coverage: `tests/test_room_canvas_cache_clear.py` (constructs a real
 offscreen QApplication, no pytest-qt needed, so it runs on 3.11 too). Suite
 677→678 passed, 0 failed.
 
+**2026-06-15 — Audit fixes landed in bulk: 107/111 closed.** Drove the
+open findings down via a parallel worktree fix-workflow (one agent per
+file, re-verify + behaviour-preserving fix + offscreen-QApplication
+regression test). H12 was already fixed (stale checkbox; shared `3d60e14`
+with H10) — corrected. 75 open → 69 fixed + 3 already-fixed + 0 refuted +
+5 deferred-cross-file. Landed from worktree diffs after a full-suite gate
+that caught two cross-fix regressions (eyedropper M25 vs canvas-no-op L16,
+reconciled with a new `SpriteCanvas.gesture_finished` signal; Kivy M34
+call-site over-reach, reverted to absolute coords). Suite **1076 passed,
+0 failed** (41 pre-existing pytest-qt `qapp` errors on 3.11). 11
+per-subsystem commits `b6b27da`..`4d76181`. The 4 deferred-cross-file items
+(M31, M34, L5, L8) were then ALL closed in the same session with their
+coordinated second-file edits + tests. **The full 2026-06-11 audit is now
+111/111 closed** (suite 1091 passed, 0 failed). Untracked tracked-for-later
+remainders (not registry items): L4 WA_DeleteOnClose on PlaygroundRunnerWindow;
+M30 belt-and-braces runtime alias/'state' field in action_executor.py.
+
 **2026-06-11 — Full-codebase audit (18 finders, adversarially verified):
 111 confirmed findings.** Unlike the earlier single-batch audits, every
 finding here survived adversarial verification against the actual code

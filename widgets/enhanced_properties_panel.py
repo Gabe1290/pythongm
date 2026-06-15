@@ -731,10 +731,23 @@ class EnhancedPropertiesPanel(QWidget):
         self.show_object_properties(object_properties)
 
     def show_object_properties(self, object_data: Dict[str, Any]):
-        """Show object properties with live editing"""
+        """Show object properties.
+
+        With an object editor open (set_object_editor_context), the controls are
+        live-editable and forward to that editor. With no editor open (a single
+        click in the asset tree), there is no write path back to project data,
+        so render the same read-only rows used for rooms/sprites instead of
+        presenting editable controls whose changes would be silently discarded.
+        """
 
         # Prevent recursion during property setup
         if getattr(self, '_updating_properties', False):
+            return
+
+        # No object editor context -> no write path; show read-only rows so the
+        # panel doesn't present dead controls that drop the user's edits.
+        if not getattr(self, 'current_object_editor', None):
+            self.show_object_properties_readonly(object_data)
             return
 
         self._updating_properties = True
@@ -803,6 +816,59 @@ class EnhancedPropertiesPanel(QWidget):
         finally:
             # Clear the flag after a delay to allow UI to settle
             QTimer.singleShot(200, self._finish_property_setup)
+
+    def show_object_properties_readonly(self, object_data: Dict[str, Any]):
+        """Show object properties as read-only rows (no editor context).
+
+        Mirrors the read-only style used for rooms/sprites in
+        show_asset_properties. Used when an object is selected in the asset tree
+        without an object editor open: there is no write path, so editable
+        controls would silently drop the user's changes.
+        """
+        # Drop the live-edit widget reference so refresh_sprite_combo (which
+        # only touches a live combo) skips this read-only view.
+        if hasattr(self, 'sprite_combo'):
+            self.sprite_combo = None
+
+        # Clear previous properties
+        while self.properties_layout.count():
+            child = self.properties_layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+
+        rv = self._readonly_value  # shorthand
+
+        sprite_name = object_data.get('sprite', '')
+        self.properties_layout.addRow(
+            self.tr("Sprite:"), rv(sprite_name if sprite_name else self.tr("None"))
+        )
+
+        # Show sprite dimensions if a sprite is assigned
+        available_sprites = self.get_available_sprites()
+        if sprite_name and sprite_name in available_sprites:
+            sprite_data = available_sprites[sprite_name]
+            sprite_width = sprite_data.get('width', '?')
+            sprite_height = sprite_data.get('height', '?')
+            self.properties_layout.addRow(
+                self.tr("Sprite Size:"),
+                rv(self.tr("{0} x {1}").format(sprite_width, sprite_height)),
+            )
+
+        self.properties_layout.addRow(
+            self.tr("Visible:"), rv(self.tr("Yes") if object_data.get('visible', True) else self.tr("No"))
+        )
+        self.properties_layout.addRow(
+            self.tr("Solid:"), rv(self.tr("Yes") if object_data.get('solid', False) else self.tr("No"))
+        )
+        self.properties_layout.addRow(
+            self.tr("Persistent:"), rv(self.tr("Yes") if object_data.get('persistent', False) else self.tr("No"))
+        )
+
+        event_count = len(object_data.get('events', {}))
+        self.properties_layout.addRow(self.tr("Events:"), rv(str(event_count)))
+
+        # Update preview with sprite
+        self.show_object_preview(object_data)
 
     def _on_sprite_changed(self, sprite_name: str):
             """Handle sprite combo changes"""

@@ -6,6 +6,7 @@ between the Code Editor, Blockly, and Events Panel.
 """
 
 import ast
+import json
 from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass
 
@@ -281,6 +282,62 @@ ACTION_TO_PYTHON = {
     'thymio_if_button_released': 'if not thymio.read_button("{button}"):',
     'thymio_if_variable': 'if {variable} {comparison} {value}:',
 }
+
+# Parameters that the templates above interpolate *inside* a double-quoted
+# string literal (e.g. game.show_message("{message}")). Their values are
+# user-authored asset/room/message names that may contain a double quote,
+# backslash, or newline, which would otherwise produce syntactically invalid
+# generated code (audit L10). Values for these params are escaped via
+# _escape_for_double_quoted before .format so they stay a valid literal.
+QUOTED_STRING_PARAMS = {
+    'move_grid': ('direction',),
+    'create_instance': ('object',),
+    'goto_room': ('room',),
+    'room_goto': ('room',),
+    'draw_score': ('caption',),
+    'set_sprite': ('sprite',),
+    'play_sound': ('sound',),
+    'display_message': ('message',),
+    'show_message': ('message',),
+    'if_can_push': ('object_type', 'direction'),
+    'if_collision_at': ('object_type',),
+    'thymio_read_button': ('button',),
+    'thymio_if_button_pressed': ('button',),
+    'thymio_if_button_released': ('button',),
+}
+
+
+def _escape_for_double_quoted(value: Any) -> Any:
+    """Escape a string so it stays a valid Python literal inside `"..."`.
+
+    Only string values are touched (non-string params — numbers,
+    expressions interpolated bare — are returned unchanged). Returns the
+    inner content of a JSON/Python double-quoted literal (quote, backslash,
+    newline and control chars escaped); the templates already supply the
+    surrounding quotes.
+    """
+    if isinstance(value, str):
+        # json.dumps yields a double-quoted literal; strip the outer quotes
+        # to get just the escaped inner content for the template's "{...}".
+        return json.dumps(value)[1:-1]
+    return value
+
+
+def _escape_quoted_params(action_name: str, params: Dict[str, Any]) -> Dict[str, Any]:
+    """Return a copy of params with quote-wrapped string params escaped.
+
+    No-op (returns params unchanged) for actions without quoted string
+    params, so the common path is untouched.
+    """
+    names = QUOTED_STRING_PARAMS.get(action_name)
+    if not names:
+        return params
+    result = dict(params)
+    for name in names:
+        if name in result:
+            result[name] = _escape_for_double_quoted(result[name])
+    return result
+
 
 # Event name mappings
 EVENT_METHOD_NAMES = {
@@ -1177,7 +1234,7 @@ class ActionsToPythonGenerator:
         if action_name == 'if_condition':
             condition_type = params.get('condition_type', 'expression')
             if condition_type == 'instance_count':
-                obj = params.get('object_name', '')
+                obj = _escape_for_double_quoted(params.get('object_name', ''))
                 op = params.get('operator', '==')
                 val = params.get('value', 0)
                 return f'if game.instance_count("{obj}") {op} {val}:'
@@ -1193,7 +1250,7 @@ class ActionsToPythonGenerator:
                 chance = params.get('chance', 50)
                 return f'if random.randint(1, 100) <= {chance}:'
             elif condition_type == 'key_pressed':
-                key = params.get('key', '')
+                key = _escape_for_double_quoted(params.get('key', ''))
                 return f'if keyboard.check("{key}"):'
             else:
                 return f'if {condition_type}:'
@@ -1204,7 +1261,7 @@ class ActionsToPythonGenerator:
             else_action = params.get('else_action', 'stop_movement')
             lines = []
             try:
-                lines.append(template.format(**params))
+                lines.append(template.format(**_escape_quoted_params(action_name, params)))
             except KeyError as e:
                 return f"# Missing parameter {e} for {action_name}"
             if then_action == 'push_and_move':
@@ -1248,9 +1305,10 @@ class ActionsToPythonGenerator:
                 return '\n'.join(lines)
             return f"pass  # {action_name}: no-op"
 
-        # Format template with parameters
+        # Format template with parameters (escape quote-wrapped string
+        # params so a quote/backslash/newline in a name stays valid — L10)
         try:
-            return template.format(**params)
+            return template.format(**_escape_quoted_params(action_name, params))
         except KeyError as e:
             return f"# Missing parameter {e} for {action_name}"
 
@@ -1274,7 +1332,7 @@ class ActionsToPythonGenerator:
         if action_name == 'if_condition':
             condition_type = params.get('condition_type', 'expression')
             if condition_type == 'instance_count':
-                obj = params.get('object_name', '')
+                obj = _escape_for_double_quoted(params.get('object_name', ''))
                 op = params.get('operator', '==')
                 val = params.get('value', 0)
                 condition_line = f'if game.instance_count("{obj}") {op} {val}:'
@@ -1290,7 +1348,7 @@ class ActionsToPythonGenerator:
                 chance = params.get('chance', 50)
                 condition_line = f'if random.randint(1, 100) <= {chance}:'
             elif condition_type == 'key_pressed':
-                key = params.get('key', '')
+                key = _escape_for_double_quoted(params.get('key', ''))
                 condition_line = f'if keyboard.check("{key}"):'
             else:
                 condition_line = f'if {condition_type}:'
@@ -1298,7 +1356,7 @@ class ActionsToPythonGenerator:
         else:
             # Generate the condition/loop line from template
             try:
-                condition_line = template.format(**params)
+                condition_line = template.format(**_escape_quoted_params(action_name, params))
                 lines.append(condition_line)
             except KeyError as e:
                 # Emit a 'pass' so the comment isn't the sole method body

@@ -79,6 +79,23 @@ class TestProjectManagerCreation:
 
         assert result is False
 
+    def test_create_project_persists_description(self, project_manager, temp_dir):
+        """Audit L8: the New Project description must be written to project.json
+        (it was collected by the dialog but dropped by the consumer)."""
+        project_manager.create_project(
+            "DescGame", str(temp_dir), "empty", "A teaching demo about gravity"
+        )
+        with open(temp_dir / "DescGame" / "project.json", encoding="utf-8") as f:
+            data = json.load(f)
+        assert data.get("description") == "A teaching demo about gravity"
+
+    def test_create_project_without_description_omits_key(self, project_manager, temp_dir):
+        """No description -> no empty key forced into the project data."""
+        project_manager.create_new_project("PlainGame", temp_dir)
+        with open(temp_dir / "PlainGame" / "project.json", encoding="utf-8") as f:
+            data = json.load(f)
+        assert not data.get("description")
+
     def test_create_new_project_updates_current_project(self, project_manager, temp_dir):
         """create_new_project should update current project state"""
         project_manager.create_new_project("TestGame", temp_dir)

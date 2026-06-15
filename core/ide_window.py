@@ -686,8 +686,12 @@ class PyGameMakerIDE(QMainWindow):
             )
 
             if object_name:
-                # Reload project to show new object
-                self.load_project(self.current_project_path)
+                # import_object wrote the new object to project.json on disk
+                # only. Fold it into the live model and redraw the tree, rather
+                # than a full load_project() reload (which tears down open
+                # editors and, if the project is dirty, would first save the
+                # stale in-memory data back over the freshly-imported file).
+                self.asset_tree.force_project_refresh(merge_from_disk=True)
 
                 QMessageBox.information(
                     self,
@@ -731,8 +735,12 @@ class PyGameMakerIDE(QMainWindow):
             )
 
             if room_name:
-                # Reload project to show new room
-                self.load_project(self.current_project_path)
+                # import_room wrote the new room to project.json on disk only.
+                # Fold it into the live model and redraw the tree, rather than a
+                # full load_project() reload (which tears down open editors and,
+                # if the project is dirty, would first save the stale in-memory
+                # data back over the freshly-imported file).
+                self.asset_tree.force_project_refresh(merge_from_disk=True)
 
                 QMessageBox.information(
                     self,
