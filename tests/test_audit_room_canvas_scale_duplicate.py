@@ -49,7 +49,7 @@ def test_footprint_rect_accounts_for_scale():
     _app()
     canvas = RoomCanvas()
     inst = _make_instance(100, 100, scale_x=2.0, scale_y=2.0, w=32, h=32)
-    rect = canvas._instance_footprint_rect(inst)
+    rect = canvas._instance_footprint(inst)
     # 32 * 2.0 = 64 in each dimension, top-left unchanged.
     assert rect == QRect(100, 100, 64, 64)
 
@@ -62,7 +62,7 @@ def test_hit_test_covers_scaled_right_half():
     # A point in the lower-right quarter of the drawn (scaled) sprite that
     # lies OUTSIDE the unscaled 32x32 rect but inside the 64x64 footprint.
     pt = QPoint(150, 150)
-    assert canvas._instance_footprint_rect(inst).contains(pt)
+    assert canvas._instance_footprint(inst).contains(pt)
     assert canvas.find_instance_at(pt) is inst
 
 
@@ -81,7 +81,7 @@ def test_negative_scale_produces_positive_rect():
     _app()
     canvas = RoomCanvas()
     inst = _make_instance(100, 100, scale_x=-2.0, scale_y=1.0, w=32, h=32)
-    rect = canvas._instance_footprint_rect(inst)
+    rect = canvas._instance_footprint(inst)
     assert rect.width() == 64
     assert rect.height() == 32
 
@@ -90,7 +90,7 @@ def test_unit_scale_unchanged():
     _app()
     canvas = RoomCanvas()
     inst = _make_instance(50, 60, scale_x=1.0, scale_y=1.0, w=32, h=48)
-    rect = canvas._instance_footprint_rect(inst)
+    rect = canvas._instance_footprint(inst)
     assert rect == QRect(50, 60, 32, 48)
 
 

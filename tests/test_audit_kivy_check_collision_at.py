@@ -7,8 +7,9 @@ class — so every exported game raised AttributeError the first time an
 if_collision / check_empty action ran. This pins:
 
   1. the GameObject base source DEFINES check_collision_at, and
-  2. each generated object subclass sets self.object_name (so a named-target
-     collision check can match), and
+  2. a named-target collision check can match the generated subclass — OUR
+     implementation resolves the target by the generated PascalCase class name
+     (obj_wall -> ObjWall), which check_collision_at compares against, and
   3. the generated base parses as valid Python and the method is real.
 
 Pure source-level checks: building the generated runtime needs Kivy (Widget),
@@ -60,15 +61,26 @@ def test_base_object_defines_check_collision_at(exporter):
     assert "check_collision_at" in methods
 
 
-def test_object_subclass_sets_object_name(exporter):
+def test_object_subclass_resolves_named_collision_target(exporter):
+    """OUR check_collision_at matches a named target by the generated subclass
+    class name (PascalCase of the object name). Pin that the subclass is emitted
+    with the class name the base will compare against, so a collision check for
+    'obj_wall' resolves to the generated ObjWall."""
     exporter._generate_object("obj_wall", {"solid": True})
-    # Find the written subclass file (named after the class).
+    # Find the written subclass file (named after the object).
     srcs = [p.read_text() for p in _objects_dir(exporter).glob("*.py")
             if p.name != "base_object.py"]
     joined = "\n".join(srcs)
-    assert 'self.object_name = "obj_wall"' in joined
+    # The subclass carries the PascalCase class name check_collision_at matches.
+    assert "class ObjWall(GameObject):" in joined
     for s in srcs:
         ast.parse(s)
+
+    # And the base's matcher compares against exactly that class name / pascal.
+    exporter._generate_base_object()
+    base = (_objects_dir(exporter) / "base_object.py").read_text()
+    assert "other.__class__.__name__ == object_name" in base
+    assert "other.__class__.__name__ == pascal" in base
 
 
 def test_generated_call_target_is_defined(exporter):

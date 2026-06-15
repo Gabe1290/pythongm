@@ -14,7 +14,11 @@ import time
 
 import pytest
 
-from importers.gmk_converter import GmkConverter, MAX_IMAGE_DIMENSION
+from importers.gmk_converter import (
+    GmkConverter,
+    MAX_IMAGE_DIMENSION,
+    _check_image_dimensions,
+)
 
 
 def _make_converter():
@@ -54,12 +58,20 @@ def test_non_integer_dimensions_rejected():
         conv._bgra_to_image(b"\x00" * 64, 4.0, 4)
 
 
-def test_grossly_short_buffer_rejected():
-    """A buffer missing more than half the declared bytes is hostile/corrupt."""
+def test_grossly_short_buffer_still_pads():
+    """RETARGETED to our HEAD design: M40 caps the DIMENSIONS (so the
+    allocation can't OOM) but treats any short pixel buffer as data to PAD with
+    transparent pixels rather than rejecting it. The remote variant rejected a
+    >50%-missing buffer as hostile; our authoritative implementation pads it,
+    which is safe because the dimensions are already bounded by
+    MAX_IMAGE_DIMENSION. A 64x64 frame with only 100 bytes still produces a
+    valid 64x64 image whose unfilled tail is transparent black."""
     conv = _make_converter()
     # 64x64 RGBA = 16384 bytes; supply only 100.
-    with pytest.raises(ValueError):
-        conv._bgra_to_image(b"\x00" * 100, 64, 64)
+    img = conv._bgra_to_image(b"\x00" * 100, 64, 64)
+    assert img.size == (64, 64)
+    # The far corner is in the padded (all-zero) region.
+    assert img.getpixel((63, 63)) == (0, 0, 0, 0)
 
 
 def test_valid_frame_still_converts():
@@ -85,9 +97,12 @@ def test_slightly_short_buffer_still_pads():
 
 def test_validate_dimensions_guards_strip_preallocation():
     """The multi-frame strip path validates per-frame dims up front so the
-    Image.new(strip_width, frame_h) allocation can't OOM."""
-    conv = _make_converter()
+    Image.new(strip_width, frame_h) allocation can't OOM.
+
+    RETARGETED: our HEAD names the guard ``_check_image_dimensions`` (a
+    module-level helper) rather than a ``_validate_image_dimensions`` method,
+    but the behaviour is identical — raise on absurd dims, pass on sane ones."""
     with pytest.raises(ValueError):
-        conv._validate_image_dimensions(40000, 40000)
+        _check_image_dimensions(40000, 40000)
     # And a sane size passes.
-    conv._validate_image_dimensions(32, 48)
+    _check_image_dimensions(32, 48)

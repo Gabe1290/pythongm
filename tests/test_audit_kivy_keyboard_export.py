@@ -42,19 +42,21 @@ def _method_names(class_body_src):
 # --------------------------------------------------------------------------
 
 def test_m35_keyboard_release_emits_on_keyboard_up(tmp_path):
+    # OUR implementation keys release sub-events by the (lowercase) direction
+    # name, mapping it to the real pygame key code in _generate_keyboard_release_handler
+    # (left->276, right->275). The finding intent — release events emit an
+    # on_keyboard_up handler keyed by the real key codes — is preserved.
     events = {
         "keyboard_release": {
-            "LEFT": {
+            "left": {
                 "actions": [
                     {"action": "stop_movement", "parameters": {}},
                 ],
-                "key_code": 276,
             },
-            "RIGHT": {
+            "right": {
                 "actions": [
                     {"action": "stop_movement", "parameters": {}},
                 ],
-                "key_code": 275,
             },
         }
     }
@@ -196,12 +198,14 @@ def test_m37_step_does_not_shadow_grid_on_update(tmp_path):
     ast.parse("class C:\n" + body)
 
 
-def test_m37_merge_helper_combines_bodies():
+def test_m37_merge_helper_combines_bodies(tmp_path):
     blocks = [
         '    def on_update(self, dt):\n        """Step event"""\n        self.a = 1\n',
         '    def on_update(self, dt):\n        """Step event"""\n        self.b = 2\n',
     ]
-    merged = KivyExporter._merge_duplicate_methods(blocks)
+    # OUR _merge_duplicate_methods is an instance method; call it via an instance.
+    exp = _make_exporter({"name": "P", "assets": {}}, tmp_path)
+    merged = exp._merge_duplicate_methods(blocks)
     assert len(merged) == 1
     combined = merged[0]
     assert combined.count("def on_update") == 1

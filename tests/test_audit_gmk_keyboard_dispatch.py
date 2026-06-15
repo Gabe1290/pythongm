@@ -34,29 +34,45 @@ def test_supported_set_contains_expected_basics():
         assert name in RUNTIME_SUPPORTED_KEY_NAMES
 
 
-def test_numpad_and_punctuation_not_in_supported_set():
-    # These are the names that silently never fired before the fix.
+def test_numpad_and_punctuation_now_dispatchable():
+    # RETARGETED to our HEAD design: L25 extended runtime/_keymap (via
+    # _extended_keys) to actually DISPATCH numpad / punctuation / lock keys, so
+    # these names ARE now in RUNTIME_SUPPORTED_KEY_NAMES (they fire at runtime).
+    # The remote variant of this test asserted the opposite (never dispatchable);
+    # our authoritative implementation makes them dispatchable instead.
     for name in ("numpad_0", "numpad_9", "numpad_plus", "numpad_period",
                  "semicolon", "comma", "period", "slash", "quote",
                  "pause", "capslock", "numlock", "scrolllock", "print"):
+        assert name in GM_VK_TO_KEY_NAME.values()
+        assert name in RUNTIME_SUPPORTED_KEY_NAMES
+
+
+def test_pseudo_keys_remain_undispatchable():
+    # The only GM_VK_TO_KEY_NAME entries the runtime cannot dispatch are the two
+    # pseudo-keys (VK 0/1 — GM event markers, not real keys).
+    for name in ("nokey", "anykey"):
         assert name in GM_VK_TO_KEY_NAME.values()
         assert name not in RUNTIME_SUPPORTED_KEY_NAMES
 
 
 def test_resolve_event_warns_for_undispatchable_keyboard_key(caplog):
-    # VK 96 = numpad_0; held keyboard event (type 5).
+    # RETARGETED: under our HEAD numpad_0 is dispatchable (L25 extended the
+    # runtime keymap), so it no longer warns. The genuinely-undispatchable case
+    # is an unknown VK, which resolves to a "key_<n>" name the runtime can't
+    # produce. VK 8000 is outside GM_VK_TO_KEY_NAME; held keyboard event (5).
     with caplog.at_level(logging.WARNING):
-        event_key, sub_key, _ = resolve_event(5, 96, [])
+        event_key, sub_key, _ = resolve_event(5, 8000, [])
     assert event_key == "keyboard"
-    assert sub_key == "numpad_0"
+    assert sub_key == "key_8000"
     assert any("never fire" in r.getMessage() for r in caplog.records)
 
 
 def test_resolve_event_warns_for_press_and_release(caplog):
-    # VK 188 = comma; press (9) and release (10).
+    # RETARGETED: comma (VK 188) is now dispatchable; use an unknown VK (8000)
+    # which stays undispatchable. press (9) and release (10).
     with caplog.at_level(logging.WARNING):
-        resolve_event(9, 188, [])
-        resolve_event(10, 188, [])
+        resolve_event(9, 8000, [])
+        resolve_event(10, 8000, [])
     warnings = [r.getMessage() for r in caplog.records if "never fire" in r.getMessage()]
     assert len(warnings) == 2
     assert any("keyboard_press" in w for w in warnings)

@@ -81,7 +81,12 @@ def test_save_is_atomic_via_replace(tmp_path):
     with mock.patch("widgets.asset_tree.asset_utils.os.replace", side_effect=tracking_replace):
         assert save_project_data(project_file, {"v": 2}) is True
 
-    assert seen["src"].endswith("project.json.tmp")
+    # Our implementation uses tempfile.mkstemp, so the temp sibling is named
+    # ".project.json.<random>.tmp" (a unique suffix avoids racing saves
+    # clobbering a fixed-name temp). Assert it is a .tmp sibling of the target
+    # rather than coupling to an exact "project.json.tmp" name.
+    assert seen["src"].endswith(".tmp")
+    assert "project.json" in seen["src"]
     assert seen["dst"].endswith("project.json")
     assert load_project_data(project_file) == {"v": 2}
 

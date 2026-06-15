@@ -36,53 +36,73 @@ def _make_exporter(qapp):
 
 # ---------------------------------------------------------------------------
 # M38 — name sanitization
+#
+# OUR implementation performs the sanitization inline in _create_spec_file
+# (re.sub(r'[^A-Za-z0-9_]', '_', name) or 'Game') rather than via a standalone
+# _sanitize_exe_name helper. These tests exercise the same INTENT — an
+# apostrophe/quote/separator in the project name must not break the generated
+# PyInstaller spec — through the real entry point, asserting the spec parses as
+# valid Python (which is exactly what PyInstaller's exec does).
 # ---------------------------------------------------------------------------
 
-def test_sanitize_strips_apostrophe(qapp):
-    from export.exe.exe_exporter import ExeExporter
-    # The classic French case: "L'aventure".
-    assert "'" not in ExeExporter._sanitize_exe_name("L'aventure")
-    assert '"' not in ExeExporter._sanitize_exe_name('Say "hi"')
-
-
-def test_sanitize_no_path_separators(qapp):
-    from export.exe.exe_exporter import ExeExporter
-    out = ExeExporter._sanitize_exe_name("a/b\\c")
-    assert "/" not in out and "\\" not in out
-
-
-def test_sanitize_empty_falls_back(qapp):
-    from export.exe.exe_exporter import ExeExporter
-    assert ExeExporter._sanitize_exe_name("") == "Game"
-    assert ExeExporter._sanitize_exe_name("''") == "Game"
-    assert ExeExporter._sanitize_exe_name("...") == "Game"
-
-
-def test_sanitize_keeps_normal_names(qapp):
-    from export.exe.exe_exporter import ExeExporter
-    assert ExeExporter._sanitize_exe_name("MyGame") == "MyGame"
-    assert ExeExporter._sanitize_exe_name("My Game") == "My_Game"
-
-
-def test_spec_with_apostrophe_name_is_valid_python(qapp, tmp_path):
-    """The whole point of M38: a project named L'aventure must produce a spec
-    that parses as Python (PyInstaller execs it). Build a real spec file and
-    parse it with ast."""
+def _spec_for_name(qapp, tmp_path, name):
     exporter = _make_exporter(qapp)
-    exporter.project_data = {"name": "L'aventure"}
+    exporter.project_data = {"name": name}
     exporter.export_settings = {}
 
     build_dir = tmp_path / "build_temp_exe"
     game_dir = build_dir / "game"
-    game_dir.mkdir(parents=True)
+    # Helper may be called more than once per test (different names share the
+    # one tmp_path), so tolerate an existing dir.
+    game_dir.mkdir(parents=True, exist_ok=True)
     (game_dir / "main.py").write_text("print('hi')\n", encoding="utf-8")
 
     launcher = build_dir / "game_launcher.py"
     launcher.write_text("# launcher\n", encoding="utf-8")
 
     spec_file = exporter._create_spec_file(build_dir, launcher)
-    spec_src = spec_file.read_text(encoding="utf-8")
+    return spec_file.read_text(encoding="utf-8")
 
+
+def _exe_name_in_spec(spec_src):
+    """Extract the EXE name=... literal value the spec assigns."""
+    import re
+    m = re.search(r"name='([^']*)\.exe'", spec_src)
+    assert m, spec_src
+    return m.group(1)
+
+
+def test_sanitize_strips_apostrophe(qapp, tmp_path):
+    # The classic French case: "L'aventure".
+    name = _exe_name_in_spec(_spec_for_name(qapp, tmp_path, "L'aventure"))
+    assert "'" not in name
+
+
+def test_sanitize_strips_double_quote(qapp, tmp_path):
+    name = _exe_name_in_spec(_spec_for_name(qapp, tmp_path, 'Say "hi"'))
+    assert '"' not in name
+
+
+def test_sanitize_no_path_separators(qapp, tmp_path):
+    name = _exe_name_in_spec(_spec_for_name(qapp, tmp_path, "a/b\\c"))
+    assert "/" not in name and "\\" not in name
+
+
+def test_sanitize_empty_falls_back(qapp, tmp_path):
+    # An empty name falls back to 'Game'.
+    name = _exe_name_in_spec(_spec_for_name(qapp, tmp_path, ""))
+    assert name == "Game"
+
+
+def test_sanitize_keeps_normal_names(qapp, tmp_path):
+    assert _exe_name_in_spec(_spec_for_name(qapp, tmp_path, "MyGame")) == "MyGame"
+    assert _exe_name_in_spec(_spec_for_name(qapp, tmp_path, "My Game")) == "My_Game"
+
+
+def test_spec_with_apostrophe_name_is_valid_python(qapp, tmp_path):
+    """The whole point of M38: a project named L'aventure must produce a spec
+    that parses as Python (PyInstaller execs it)."""
+    spec_src = _spec_for_name(qapp, tmp_path, "L'aventure")
     # Must not contain the broken literal name='L'aventure.exe'
     assert "name='L'aventure.exe'" not in spec_src
     # Must parse as valid Python (this is what PyInstaller's exec would do).

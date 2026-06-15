@@ -49,6 +49,21 @@ def _canonical_value(combo: QComboBox) -> str:
     return data if data is not None else combo.currentText()
 
 
+_LEGACY_KEY_ALIASES = {
+    "left arrow": "left",
+    "right arrow": "right",
+    "up arrow": "up",
+    "down arrow": "down",
+}
+
+
+def _normalize_legacy_key(value: str) -> str:
+    """Translate a legacy key label to its canonical runtime name (idempotent)."""
+    if not isinstance(value, str):
+        return value
+    return _LEGACY_KEY_ALIASES.get(value.lower(), value)
+
+
 def _select_canonical(combo: QComboBox, value: str):
     """Select the item whose canonical userData (or, for legacy data, text) matches."""
     idx = combo.findData(value)
@@ -527,7 +542,7 @@ class ConditionalActionEditor(QDialog):
 
         # key_pressed
         if p.get("key"):
-            _select_canonical(self.key_check, p.get("key"))
+            _select_canonical(self.key_check, _normalize_legacy_key(p.get("key")))
         if p.get("state"):
             _select_canonical(self.key_state, p.get("state"))
 

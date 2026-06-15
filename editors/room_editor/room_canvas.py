@@ -415,8 +415,12 @@ class RoomCanvas(QWidget):
         oy = getattr(instance, '_origin_y', 0)
         scale_x = getattr(instance, 'scale_x', 1.0) or 1.0
         scale_y = getattr(instance, 'scale_y', 1.0) or 1.0
+        # abs() so a negative scale (horizontal/vertical flip) yields a
+        # normalized positive-extent rect; a negative-width QRect breaks
+        # contains()/intersects() and the selection highlight, leaving flipped
+        # instances unclickable (L12).
         return QRect(instance.x - ox, instance.y - oy,
-                     round(width * scale_x), round(height * scale_y))
+                     round(width * abs(scale_x)), round(height * abs(scale_y)))
 
     def find_instances_in_rect(self, rect):
         """Find all instances within a rectangle"""

@@ -25,9 +25,16 @@ def _app():
     return app
 
 
-def test_imported_asset_follows_palette_text_color_dark_theme():
+def test_imported_asset_does_not_hardcode_foreground():
+    """L33: imported items must not bake in a foreground brush at all.
+
+    Our fix leaves the item's foreground unset (NoBrush) so the view delegate
+    paints with the live application palette Text color — which tracks theme
+    switches at paint time, unlike a color baked onto the item at construction.
+    (The remote variant set the palette color explicitly; we deliberately do
+    not, so assert the brush is unset rather than a specific color.)
+    """
     app = _app()
-    # Simulate a dark theme: light text on a dark window/base.
     pal = app.palette()
     pal.setColor(QPalette.Text, QColor("#e0e0e0"))
     pal.setColor(QPalette.WindowText, QColor("#e0e0e0"))
@@ -39,11 +46,8 @@ def test_imported_asset_follows_palette_text_color_dark_theme():
             asset_name="beep",
             asset_data={"imported": True},
         )
-        fg = item.foreground(0).color()
-        # Must NOT be the old hardcoded black.
-        assert fg != QColor(Qt.GlobalColor.black)
-        # Must track the palette's Text role (the light dark-theme color).
-        assert fg == QColor("#e0e0e0")
+        # No explicit foreground override -> NoBrush -> palette Text applies.
+        assert item.foreground(0).style() == Qt.BrushStyle.NoBrush
     finally:
         app.setPalette(QApplication.style().standardPalette())
 

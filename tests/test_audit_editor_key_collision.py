@@ -59,7 +59,8 @@ def test_closing_one_leaves_the_same_named_other(ide):
     ide.open_object_editor("dup", {"name": "dup", "asset_type": "object", "events": {}})
     ide.open_sprite_editor("dup", {"name": "dup", "asset_type": "sprite", "frames": []})
 
-    ide.close_editor_by_name("dup", "objects")
+    # Our close_editor_by_name takes the composite key directly.
+    ide.close_editor_by_name(ide._editor_key("objects", "dup"))
     assert set(ide.open_editors) == {"sprites:dup"}
 
     # The surviving sprite editor's tab is still present.
