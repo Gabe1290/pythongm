@@ -76,10 +76,15 @@ class AsebaExporter:
             # Generate AESL code
             aesl_code = self.generate_aesl(obj_name, obj_data, project_data)
 
+            # Wrap the source in the aesl-source XML envelope so Aseba Studio's
+            # File -> Open can parse it (a bare .aesl of raw source text is
+            # rejected as an invalid document; audit M32).
+            aesl_document = self._wrap_aesl_document(aesl_code)
+
             # Write to file
             output_file = output_path / f"{obj_name}.aesl"
             with open(output_file, 'w', encoding='utf-8') as f:
-                f.write(aesl_code)
+                f.write(aesl_document)
 
             logger.info(f"   Exported to: {output_file}")
             success_count += 1
@@ -135,6 +140,33 @@ class AsebaExporter:
             lines.append(event_section)
 
         return '\n'.join(lines)
+
+    @staticmethod
+    def _wrap_aesl_document(aesl_code: str) -> str:
+        """Wrap raw Aseba source in the aesl-source XML envelope.
+
+        Aseba Studio's File -> Open expects an XML document of the form::
+
+            <!DOCTYPE aesl-source>
+            <network>
+            <node nodeId="1" name="thymio-II"><![CDATA[ ...code... ]]></node>
+            </network>
+
+        not bare source text (audit M32). The code is emitted inside a CDATA
+        section so '<', '>' and '&' in expressions survive verbatim; the only
+        sequence CDATA cannot contain literally is ']]>', which we split across
+        two CDATA sections defensively (it never occurs in generated code, but
+        guards against future translators / hand-edited input).
+        """
+        safe_code = aesl_code.replace(']]>', ']]]]><![CDATA[>')
+        return (
+            '<!DOCTYPE aesl-source>\n'
+            '<network>\n'
+            '<node nodeId="1" name="thymio-II"><![CDATA[\n'
+            f'{safe_code}\n'
+            ']]></node>\n'
+            '</network>\n'
+        )
 
     def _generate_header(self, obj_name: str, project_data: Dict) -> str:
         """Generate file header comment"""
@@ -261,7 +293,12 @@ class AsebaExporter:
             if code:
                 lines.append(code)
 
-        lines.append("end")
+        # NOTE: 'onevent' handlers are NOT terminated with 'end' in AESL.
+        # 'end' only closes if/when/while/for blocks (emitted by
+        # _translate_end_block); an onevent handler terminates implicitly at
+        # the next onevent/sub or EOF. Appending 'end' here produced an
+        # 'end without matching block' syntax error that broke compilation of
+        # every export (audit M33).
 
         self.indent_level = 0
 
