@@ -91,11 +91,32 @@ class ScriptEditor(BaseEditor):
         self.code_edit.setLineWrapMode(QPlainTextEdit.NoWrap)
 
         # textChanged fires on any edit; route through the standard
-        # BaseEditor data_modified signal so dirty-state, auto-save,
-        # and undo all work for free.
+        # BaseEditor data_modified signal so dirty-state and auto-save
+        # work for free.
         self.code_edit.textChanged.connect(self._on_text_changed)
 
         layout.addWidget(self.code_edit)
+
+        # Undo/Redo wiring. ScriptEditor edits live entirely inside the
+        # QPlainTextEdit's own QTextDocument undo history and never pushes
+        # to BaseEditor.undo_stack, so the inherited toolbar actions (wired
+        # to undo_stack.undo/redo) and the IDE Edit-menu undo()/redo() (which
+        # gate on undo_stack.canUndo) would be permanently dead even though
+        # the edits are undoable via Ctrl+Z (audit L14). Re-point the toolbar
+        # actions at the document's undo/redo and drive their enabled state
+        # from the document's undoAvailable/redoAvailable signals.
+        if hasattr(self, 'undo_action'):
+            self.undo_action.triggered.disconnect()
+            self.undo_action.triggered.connect(self.undo)
+            self.undo_action.setEnabled(self.code_edit.document().isUndoAvailable())
+        if hasattr(self, 'redo_action'):
+            self.redo_action.triggered.disconnect()
+            self.redo_action.triggered.connect(self.redo)
+            self.redo_action.setEnabled(self.code_edit.document().isRedoAvailable())
+
+        doc = self.code_edit.document()
+        doc.undoAvailable.connect(self._on_undo_available)
+        doc.redoAvailable.connect(self._on_redo_available)
 
     # ------------------------------------------------------------------
     # BaseEditor contract
@@ -134,6 +155,30 @@ class ScriptEditor(BaseEditor):
         runtime surfaces actual syntax errors when the script executes.
         """
         return True, ""
+
+    # ------------------------------------------------------------------
+    # Undo / Redo (overrides BaseEditor's QUndoStack-based plumbing)
+    # ------------------------------------------------------------------
+
+    def undo(self):
+        """Undo the last edit (called by IDE Edit menu and toolbar).
+
+        Edits live in the QPlainTextEdit's QTextDocument, not in
+        BaseEditor.undo_stack, so delegate to the document.
+        """
+        self.code_edit.undo()
+
+    def redo(self):
+        """Redo the last undone edit (called by IDE Edit menu and toolbar)."""
+        self.code_edit.redo()
+
+    def _on_undo_available(self, available: bool):
+        if hasattr(self, 'undo_action'):
+            self.undo_action.setEnabled(available)
+
+    def _on_redo_available(self, available: bool):
+        if hasattr(self, 'redo_action'):
+            self.redo_action.setEnabled(available)
 
     # ------------------------------------------------------------------
     # Internal

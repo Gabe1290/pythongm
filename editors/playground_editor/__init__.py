@@ -489,12 +489,27 @@ class PlaygroundEditor(FloatableEditorMixin, QWidget):
     def undo(self):
         if self.canvas.undo_stack.canUndo():
             self.canvas.undo_stack.undo()
+            self._sync_properties_panel()
             self.mark_modified()
 
     def redo(self):
         if self.canvas.undo_stack.canRedo():
             self.canvas.undo_stack.redo()
+            self._sync_properties_panel()
             self.mark_modified()
+
+    def _sync_properties_panel(self):
+        """Re-sync the properties panel to the selected element after an
+        undo/redo. MoveElementCommand/ModifyElementCommand only refresh the
+        canvas, so without this the panel keeps the pre-undo values and the
+        next spinbox tick would push a command stepping from the stale value
+        (e.g. nudging X up after undoing a 100->200 change would jump to
+        200.1 instead of 101)."""
+        if self.canvas.selected_elements:
+            self.element_properties.set_element(
+                self.canvas.selected_elements[0])
+        else:
+            self.element_properties.set_element(None)
 
     # ─── Arena settings dialog ──────────────────────────────────
 

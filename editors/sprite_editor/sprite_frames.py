@@ -10,13 +10,43 @@ from PySide6.QtWidgets import (
     QScrollArea, QSizePolicy
 )
 from PySide6.QtCore import Qt, Signal, QTimer, QRect
-from PySide6.QtGui import QImage, QPainter, QColor, QPen
+from PySide6.QtGui import QImage, QPainter, QColor, QPen, QUndoCommand
 
 
 _THUMB_SIZE = 64
 _CHECKER_SIZE = 4
 _CHECKER_LIGHT = QColor(204, 204, 204)
 _CHECKER_DARK = QColor(170, 170, 170)
+
+
+class _FrameStructureCommand(QUndoCommand):
+    """Undo command for add/duplicate/delete frame operations.
+
+    Snapshots the whole frame list before and after a structural edit so the
+    operation is reversible (a mis-clicked '-' no longer destroys artwork
+    irrecoverably) and so undo/redo restore a consistent list rather than
+    stamping pixels onto a shifted index. Operates only on the FrameTimeline;
+    switching the current index emits ``frame_selected``, which the editor
+    already routes to the canvas, so the canvas follows automatically.
+    """
+
+    def __init__(self, timeline, old_frames, new_frames,
+                 old_index, new_index, description):
+        super().__init__(description)
+        self._timeline = timeline
+        self._old_frames = [f.copy() for f in old_frames]
+        self._new_frames = [f.copy() for f in new_frames]
+        self._old_index = old_index
+        self._new_index = new_index
+
+    def _apply(self, frames, index):
+        self._timeline._apply_frame_state(frames, index)
+
+    def undo(self):
+        self._apply(self._old_frames, self._old_index)
+
+    def redo(self):
+        self._apply(self._new_frames, self._new_index)
 
 
 class FrameThumbnail(QWidget):
@@ -100,6 +130,15 @@ class FrameTimeline(QWidget):
         self._thumbnails = []     # list of FrameThumbnail widgets
         self._fps = 10.0
 
+        # Optional undo stack — when set (by the editor), structural frame
+        # operations (add/duplicate/delete) are routed through it so they can
+        # be undone. Defaults to None for backwards-compatible direct mutation.
+        self._undo_stack = None
+        # Optional predicate returning True while the canvas is mid-stroke;
+        # playback skips advancing then so it cannot swap the image out from
+        # under an in-progress drawing.
+        self._busy_check = None
+
         # Animation playback
         self._anim_timer = QTimer(self)
         self._anim_timer.timeout.connect(self._anim_next_frame)
@@ -170,6 +209,23 @@ class FrameTimeline(QWidget):
     # Public API
     # ------------------------------------------------------------------
 
+    def set_undo_stack(self, undo_stack):
+        """Wire structural frame operations through an editor undo stack.
+
+        When set, add/duplicate/delete push a reversible command instead of
+        mutating the frame list in place. Pass ``None`` to restore the legacy
+        direct-mutation behaviour.
+        """
+        self._undo_stack = undo_stack
+
+    def set_busy_check(self, predicate):
+        """Register a no-arg predicate that returns True while drawing.
+
+        While it returns True, animation playback skips advancing the frame so
+        an in-progress stroke is never swapped out from under the user.
+        """
+        self._busy_check = predicate
+
     def set_frames(self, frames: list):
         """Set the frame list (list of QImage)."""
         self._frames = list(frames) if frames else []
@@ -231,10 +287,9 @@ class FrameTimeline(QWidget):
         blank = QImage(w, h, QImage.Format_ARGB32)
         blank.fill(QColor(0, 0, 0, 0))
         insert_at = self._current_index + 1
-        self._frames.insert(insert_at, blank)
-        self._rebuild_thumbnails()
-        self.set_current_index(insert_at)
-        self.frames_changed.emit()
+        new_frames = list(self._frames)
+        new_frames.insert(insert_at, blank)
+        self._commit_structure(new_frames, insert_at, self.tr("Add Frame"))
 
     def duplicate_frame(self):
         """Duplicate the current frame."""
@@ -242,18 +297,46 @@ class FrameTimeline(QWidget):
             return
         copy = self._frames[self._current_index].copy()
         insert_at = self._current_index + 1
-        self._frames.insert(insert_at, copy)
-        self._rebuild_thumbnails()
-        self.set_current_index(insert_at)
-        self.frames_changed.emit()
+        new_frames = list(self._frames)
+        new_frames.insert(insert_at, copy)
+        self._commit_structure(new_frames, insert_at, self.tr("Duplicate Frame"))
 
     def delete_frame(self):
         """Delete the current frame (keep at least one)."""
         if len(self._frames) <= 1:
             return
-        del self._frames[self._current_index]
-        if self._current_index >= len(self._frames):
-            self._current_index = len(self._frames) - 1
+        new_frames = list(self._frames)
+        del new_frames[self._current_index]
+        new_index = self._current_index
+        if new_index >= len(new_frames):
+            new_index = len(new_frames) - 1
+        self._commit_structure(new_frames, new_index, self.tr("Delete Frame"))
+
+    def _commit_structure(self, new_frames: list, new_index: int, description: str):
+        """Apply a structural frame change, via the undo stack if available."""
+        if self._undo_stack is not None:
+            cmd = _FrameStructureCommand(
+                self, self._frames, new_frames,
+                self._current_index, new_index, description
+            )
+            self._undo_stack.push(cmd)
+        else:
+            # Legacy direct mutation (no undo stack wired).
+            self._apply_frame_state(new_frames, new_index)
+
+    def _apply_frame_state(self, frames: list, index: int):
+        """Replace the frame list and selection, refreshing thumbnails/canvas.
+
+        Emits ``frame_selected`` (so the editor reloads the canvas) and
+        ``frames_changed`` (so the asset is marked dirty). Used directly for
+        legacy mutation and by the undo command's undo/redo.
+        """
+        self._frames = [f for f in frames]
+        if not self._frames:
+            blank = QImage(32, 32, QImage.Format_ARGB32)
+            blank.fill(QColor(0, 0, 0, 0))
+            self._frames.append(blank)
+        self._current_index = max(0, min(index, len(self._frames) - 1))
         self._rebuild_thumbnails()
         self._update_selection()
         self.frame_selected.emit(self._current_index)
@@ -303,6 +386,11 @@ class FrameTimeline(QWidget):
         self._anim_timer.stop()
 
     def _anim_next_frame(self):
+        # Don't swap the canvas image while the user is mid-stroke — doing so
+        # would discard the partial stroke and make the release build an undo
+        # command against the wrong frame.
+        if self._busy_check is not None and self._busy_check():
+            return
         next_idx = (self._current_index + 1) % len(self._frames)
         self.set_current_index(next_idx)
 

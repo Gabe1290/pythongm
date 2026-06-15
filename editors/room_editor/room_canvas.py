@@ -388,15 +388,29 @@ class RoomCanvas(QWidget):
             return QPoint(x, y)
         return pos
 
+    def _instance_footprint_rect(self, instance):
+        """Return the on-screen footprint QRect of an instance, accounting for
+        scale so hit-testing/selection match what draw_instance() paints.
+
+        draw_instance() applies painter.scale(), so the drawn sprite spans
+        width*scale_x by height*scale_y from its (instance.x-ox, instance.y-oy)
+        top-left. Use abs() so flipped (negative) scales still produce a
+        positive-extent rect. Rotation is not modelled here (the axis-aligned
+        footprint is used as an approximation, as it was before)."""
+        width = getattr(instance, '_sprite_width', 32)
+        height = getattr(instance, '_sprite_height', 32)
+        ox = getattr(instance, '_origin_x', 0)
+        oy = getattr(instance, '_origin_y', 0)
+        scale_x = getattr(instance, 'scale_x', 1.0)
+        scale_y = getattr(instance, 'scale_y', 1.0)
+        w = max(1, round(width * abs(scale_x)))
+        h = max(1, round(height * abs(scale_y)))
+        return QRect(instance.x - ox, instance.y - oy, w, h)
+
     def find_instance_at(self, pos):
         """Find instance at given position"""
         for instance in reversed(self.instances):
-            width = getattr(instance, '_sprite_width', 32)
-            height = getattr(instance, '_sprite_height', 32)
-            ox = getattr(instance, '_origin_x', 0)
-            oy = getattr(instance, '_origin_y', 0)
-            instance_rect = QRect(instance.x - ox, instance.y - oy, width, height)
-            if instance_rect.contains(pos):
+            if self._instance_footprint_rect(instance).contains(pos):
                 return instance
         return None
 
@@ -404,14 +418,8 @@ class RoomCanvas(QWidget):
         """Find all instances within a rectangle"""
         found_instances = []
         for instance in self.instances:
-            width = getattr(instance, '_sprite_width', 32)
-            height = getattr(instance, '_sprite_height', 32)
-            ox = getattr(instance, '_origin_x', 0)
-            oy = getattr(instance, '_origin_y', 0)
-            instance_rect = QRect(instance.x - ox, instance.y - oy, width, height)
-
             # Check if rectangles intersect
-            if rect.intersects(instance_rect):
+            if rect.intersects(self._instance_footprint_rect(instance)):
                 found_instances.append(instance)
 
         return found_instances
@@ -516,12 +524,15 @@ class RoomCanvas(QWidget):
             logger.debug("No instances selected to duplicate")
             return False
 
-        self.clipboard_instances = [inst.to_dict() for inst in self.selected_instances]
+        # Duplicate is self-contained; use a local buffer so it does NOT clobber
+        # the copy/paste clipboard (clipboard_instances) the user filled with
+        # Ctrl+C/Ctrl+X.
+        source_instances = [inst.to_dict() for inst in self.selected_instances]
         offset_x = self.grid_size
         offset_y = self.grid_size
 
         duplicated_instances = []
-        for instance_data in self.clipboard_instances:
+        for instance_data in source_instances:
             new_instance = ObjectInstance(
                 instance_data['object_name'],
                 instance_data['x'] + offset_x,
@@ -736,12 +747,13 @@ class RoomCanvas(QWidget):
 
     def draw_selection(self, painter, instance):
         """Draw selection highlight around instance"""
-        width = getattr(instance, '_sprite_width', 32)
-        height = getattr(instance, '_sprite_height', 32)
-        ox = getattr(instance, '_origin_x', 0)
-        oy = getattr(instance, '_origin_y', 0)
-        draw_x = instance.x - ox
-        draw_y = instance.y - oy
+        # Use the scaled footprint so the highlight matches the drawn sprite
+        # (draw_instance applies painter.scale()), consistent with hit-testing.
+        footprint = self._instance_footprint_rect(instance)
+        draw_x = footprint.x()
+        draw_y = footprint.y()
+        width = footprint.width()
+        height = footprint.height()
 
         painter.setPen(QPen(QColor("#FF0000"), 2))
         painter.drawRect(draw_x - 2, draw_y - 2, width + 4, height + 4)

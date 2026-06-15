@@ -37,10 +37,14 @@ class AddInstanceCommand(QUndoCommand):
     def redo(self):
         """Re-add the instance"""
         try:
-            if not self.already_added:
-                if self.instance not in self.canvas.instances:
-                    self.canvas.instances.append(self.instance)
-                    self.canvas.instance_added.emit(self.instance)
+            # The first redo() is the push-time call; the canvas already
+            # appended the instance, so skip re-adding once and then clear the
+            # flag so subsequent Ctrl+Y actually re-add it (M24).
+            if self.already_added:
+                self.already_added = False
+            elif self.instance not in self.canvas.instances:
+                self.canvas.instances.append(self.instance)
+                self.canvas.instance_added.emit(self.instance)
 
             # Safely update canvas after a delay
             QTimer.singleShot(0, self.canvas.update)
@@ -162,10 +166,16 @@ class BatchAddInstancesCommand(QUndoCommand):
     def redo(self):
         """Re-add all instances"""
         try:
-            for instance in self.instances:
-                if not self.already_added and instance not in self.canvas.instances:
-                    self.canvas.instances.append(instance)
-                    self.canvas.instance_added.emit(instance)
+            # The first redo() is the push-time call; the canvas already
+            # appended the instances, so skip re-adding once and then clear the
+            # flag so subsequent Ctrl+Y actually re-add them (M24).
+            if self.already_added:
+                self.already_added = False
+            else:
+                for instance in self.instances:
+                    if instance not in self.canvas.instances:
+                        self.canvas.instances.append(instance)
+                        self.canvas.instance_added.emit(instance)
 
             QTimer.singleShot(0, self.canvas.update)
         except (RuntimeError, AttributeError) as e:
@@ -284,7 +294,12 @@ class AddTileCommand(QUndoCommand):
 
     def redo(self):
         try:
-            if not self.already_added:
+            # The first redo() is the push-time call; the canvas already
+            # appended the tile, so skip re-adding once and then clear the flag
+            # so subsequent Ctrl+Y actually re-add it (M24).
+            if self.already_added:
+                self.already_added = False
+            elif self.tile_data not in self.canvas.tiles:
                 self.canvas.tiles.append(self.tile_data)
             self.canvas._tile_layer_dirty = True
             QTimer.singleShot(0, self.canvas.update)
@@ -313,7 +328,12 @@ class BatchAddTilesCommand(QUndoCommand):
 
     def redo(self):
         try:
-            if not self.already_added:
+            # The first redo() is the push-time call; the canvas already
+            # appended the tiles, so skip re-adding once and then clear the flag
+            # so subsequent Ctrl+Y actually re-add them (M24).
+            if self.already_added:
+                self.already_added = False
+            else:
                 for tile in self.tiles:
                     if tile not in self.canvas.tiles:
                         self.canvas.tiles.append(tile)

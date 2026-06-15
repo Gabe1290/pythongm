@@ -40,7 +40,13 @@ class AddElementCommand(QUndoCommand):
 
     def redo(self):
         try:
-            if not self.already_added:
+            # The canvas appends the element before pushing the command (push()
+            # triggers an immediate redo()), so the first redo must be a no-op.
+            # Consume the flag here so every *subsequent* redo (after an undo)
+            # actually restores the element instead of silently no-op'ing.
+            if self.already_added:
+                self.already_added = False
+            else:
                 elements = self._get_list()
                 if self.element not in elements:
                     elements.append(self.element)
