@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import atexit
 import json
 import os
 import shutil
@@ -132,6 +133,14 @@ class ProjectManager(QObject):
         self._original_zip_path = None
         self._temp_extraction_dir = None
         self._auto_save_as_zip = False  # NEW: Auto-save as zip preference
+        # Opening a .zip project extracts a full copy of it to a tempfile.mkdtemp
+        # directory (load_project_from_zip). Switching/creating/closing a project
+        # rmtrees the previous one (see _reset_zip_state), but quitting the IDE
+        # never calls close_project, so the CURRENTLY-open zip's extraction would
+        # leak on exit — a teacher opening student .zip submissions all year would
+        # accumulate full project copies under %TEMP%. Register a process-exit
+        # sweep so whatever _temp_extraction_dir holds at quit time is removed.
+        atexit.register(self._cleanup_temp_extraction_atexit)
         # Rooms whose instances were materialized into memory this session.
         # For these, an empty in-memory instance list is authoritative (the user
         # emptied the room) and must NOT be overwritten with the stale file copy.
@@ -490,10 +499,18 @@ class ProjectManager(QObject):
                         from collections import OrderedDict
                         file_sprite_data = json.load(f, object_pairs_hook=OrderedDict)
 
-                    # Merge file data into sprite data (file takes precedence)
+                    # Merge file data into sprite data (file takes precedence).
+                    # Every key a sprite file actually carries must appear here,
+                    # or a hand edit to sprites/<name>.json is ignored at load
+                    # AND erased from disk on the next save (_save_sprites_to_files
+                    # rewrites the file from this merged in-memory dict). 'precise',
+                    # 'frame_width', 'frame_height', 'animation_type' and 'speed'
+                    # were missing, so edits to those five were silently reverted.
                     for key in ['frames', 'width', 'height', 'origin_x', 'origin_y',
                                'collision_mask', 'bbox_left', 'bbox_right', 'bbox_top',
-                               'bbox_bottom', 'imported', 'created', 'modified', 'file_path']:
+                               'bbox_bottom', 'imported', 'created', 'modified', 'file_path',
+                               'precise', 'frame_width', 'frame_height',
+                               'animation_type', 'speed']:
                         if key in file_sprite_data:
                             sprite_data[key] = file_sprite_data[key]
 
@@ -925,6 +942,21 @@ class ProjectManager(QObject):
         self._original_zip_path = None
         self._temp_extraction_dir = None
         self._auto_save_as_zip = False
+
+    def _cleanup_temp_extraction_atexit(self) -> None:
+        """Remove a leftover zip-extraction temp dir at process exit.
+
+        Registered via ``atexit`` in ``__init__`` so the temp copy of the
+        currently-open .zip project is swept even when the IDE quits without
+        ever calling ``close_project`` (the normal closeEvent path). Best
+        effort — never raises (interpreter shutdown is in progress).
+        """
+        try:
+            temp_dir = getattr(self, '_temp_extraction_dir', None)
+            if temp_dir and Path(temp_dir).exists():
+                shutil.rmtree(temp_dir, ignore_errors=True)
+        except Exception:
+            pass
 
     def close_project(self) -> bool:
         """Close the current project"""
