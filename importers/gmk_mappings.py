@@ -7,6 +7,10 @@ Covers: virtual key codes, event types, mouse sub-events,
 other sub-events, step sub-events, and standard action library mappings.
 """
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 # ============================================================================
 # VIRTUAL KEY CODE → pygm2 key name (lowercase)
 # ============================================================================
@@ -76,6 +80,48 @@ GM_VK_TO_KEY_NAME = {
     221: "rightbracket",
     222: "quote",
 }
+
+
+# Key names the runtime keymap (runtime/_keymap.pygame_key_name) can actually
+# produce, and therefore the set of keyboard sub-keys the engine can dispatch
+# at runtime. GM_VK_TO_KEY_NAME above emits a wider vocabulary (numpad,
+# punctuation, lock keys, pause, ...); a keyboard/keyboard_press/keyboard_release
+# event resolved to a name OUTSIDE this set is stored in the project JSON and
+# shown in the editor but can never fire, because handle_keyboard_press/release
+# early-return when pygame_key_name() returns None. resolve_event() logs a
+# warning for such bindings so the import is no longer silent.
+#
+# Keep this set in sync with runtime/_keymap.pygame_key_name. The two pseudo-keys
+# "nokey"/"anykey" are GM event markers (VK 0/1), not real keys, so they are
+# excluded here intentionally.
+RUNTIME_SUPPORTED_KEY_NAMES = (
+    {"left", "right", "up", "down"}
+    | {str(d) for d in range(10)}                       # "0".."9"
+    | {chr(c) for c in range(ord("a"), ord("z") + 1)}   # "a".."z"
+    | {
+        "space", "enter", "escape", "tab", "backspace",
+        "delete", "insert", "home", "end", "pageup", "pagedown",
+        "shift", "control", "alt",
+    }
+    | {f"f{n}" for n in range(1, 13)}                    # "f1".."f12"
+)
+
+
+def _warn_unsupported_key(event_label: str, key: str) -> None:
+    """Warn (once-ish, via logging) if a keyboard binding can never fire.
+
+    `key` is the resolved pygm2 key name; `event_label` identifies the GM
+    event kind for the message. Names the runtime cannot dispatch (numpad,
+    punctuation, lock keys, etc.) are flagged so a teacher importing an old
+    GM8 game that uses such keys gets a diagnostic instead of a silently dead
+    event.
+    """
+    if key not in RUNTIME_SUPPORTED_KEY_NAMES:
+        logger.warning(
+            "GMK import: %s event bound to key '%s', which the runtime "
+            "cannot dispatch; this event will never fire at runtime.",
+            event_label, key,
+        )
 
 
 # ============================================================================
@@ -165,6 +211,7 @@ def resolve_event(event_type: int, event_number: int, object_names: list):
         return (f"collision_with_{obj_name}", None, {"target_object": obj_name})
     elif event_type == 5:  # Keyboard (held)
         key = GM_VK_TO_KEY_NAME.get(event_number, f"key_{event_number}")
+        _warn_unsupported_key("keyboard", key)
         return ("keyboard", key, {})
     elif event_type == 6:  # Mouse
         name = GM_MOUSE_SUBEVENT.get(event_number, f"mouse_event_{event_number}")
@@ -176,9 +223,11 @@ def resolve_event(event_type: int, event_number: int, object_names: list):
         return ("draw", None, {})
     elif event_type == 9:  # Key Press
         key = GM_VK_TO_KEY_NAME.get(event_number, f"key_{event_number}")
+        _warn_unsupported_key("keyboard_press", key)
         return ("keyboard_press", key, {})
     elif event_type == 10:  # Key Release
         key = GM_VK_TO_KEY_NAME.get(event_number, f"key_{event_number}")
+        _warn_unsupported_key("keyboard_release", key)
         return ("keyboard_release", key, {})
     elif event_type == 11:  # Trigger
         return (f"trigger_{event_number}", None, {})

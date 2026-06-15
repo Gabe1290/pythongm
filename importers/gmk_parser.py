@@ -265,6 +265,19 @@ class GmkProject:
 # BMP PARSING HELPER
 # ============================================================================
 
+# Upper bound on a single BMP subimage edge. The .gmk format is a foreign,
+# untrusted input; a header (read out of a zlib-decompressed block) declaring
+# an absurd width/height would otherwise size a multi-gigabyte bytearray and
+# run a multi-billion-iteration per-pixel loop. 16384px is well above any
+# real sprite/background subimage GameMaker produced.
+_BMP_MAX_DIMENSION = 16384
+# How much larger the declared pixel area may be than the actual decompressed
+# pixel data before we reject the header as bogus. A small slack tolerates
+# legitimate row padding / trailing bytes; a header claiming far more data than
+# is present has lied about its dimensions.
+_BMP_MAX_AREA_SLACK = 2
+
+
 def _bmp_to_bgra(bmp_data: bytes, transparent: bool = True) -> Tuple[int, int, bytes]:
     """
     Parse a BMP image and return (width, height, bgra_pixel_data).
@@ -287,11 +300,36 @@ def _bmp_to_bgra(bmp_data: bytes, transparent: bool = True) -> Tuple[int, int, b
     abs_height = abs(height)
     bottom_up = height > 0
     channels = bpp // 8
+
+    # The width/height come from a header inside an untrusted (zlib-decompressed)
+    # block in foreign .gmk files. Reject absurd dimensions before allocating the
+    # output buffer / running the per-pixel loop: a header claiming e.g.
+    # 46340x46340 would otherwise allocate ~8.6 GB and run ~2.1B iterations,
+    # hanging or OOMing the IDE for a few bytes of crafted input.
+    if width <= 0 or abs_height <= 0:
+        raise ValueError(f"Invalid BMP dimensions: {width}x{height}")
+    if width > _BMP_MAX_DIMENSION or abs_height > _BMP_MAX_DIMENSION:
+        raise ValueError(
+            f"BMP dimensions {width}x{abs_height} exceed maximum "
+            f"{_BMP_MAX_DIMENSION}"
+        )
+
     # BMP scanlines are padded to 4-byte boundaries
     row_size = (width * channels + 3) & ~3
 
     # Read pixel data
     pixels = bmp_data[data_offset:]
+
+    # Reject headers whose declared pixel area is far larger than the actual
+    # decompressed pixel data: such a mismatch means the dimensions are bogus
+    # (the per-pixel bounds check below would otherwise just skip the missing
+    # pixels after a full multi-billion-iteration loop over phantom rows).
+    declared_data = row_size * abs_height
+    if declared_data > len(pixels) * _BMP_MAX_AREA_SLACK:
+        raise ValueError(
+            f"BMP declares {declared_data} bytes of pixel data but only "
+            f"{len(pixels)} are present"
+        )
 
     # Build BGRA output (top-down, no padding)
     bgra = bytearray(width * abs_height * 4)
