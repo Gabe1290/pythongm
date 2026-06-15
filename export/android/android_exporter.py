@@ -16,6 +16,13 @@ from export.base_exporter import BaseKivyExporter
 
 logger = get_logger(__name__)
 
+# Wall-clock ceilings for a single buildozer run, in seconds. The first build
+# downloads the Android SDK/NDK (~2GB) and can legitimately take a long time;
+# WSL filesystem I/O is slower so it gets a larger budget. Module-level so the
+# silent-build cancel/timeout regression tests can shrink them.
+BUILDOZER_TIMEOUT_NATIVE = 1200  # 20 min
+BUILDOZER_TIMEOUT_WSL = 2400     # 40 min — WSL filesystem I/O is slower
+
 
 class AndroidExporter(BaseKivyExporter):
     """Handles exporting games as Android APK packages using Kivy + Buildozer"""
@@ -483,7 +490,7 @@ class AndroidExporter(BaseKivyExporter):
                 # Run buildozer inside WSL
                 logger.info("Using WSL to run buildozer")
                 process = self._wsl_bridge.run_buildozer(str(build_dir))
-                timeout = 2400  # 40 min — WSL filesystem I/O is slower
+                timeout = BUILDOZER_TIMEOUT_WSL
             else:
                 # Native Linux/macOS execution
                 import sys
@@ -511,7 +518,7 @@ class AndroidExporter(BaseKivyExporter):
                     bufsize=1,
                     env=env
                 )
-                timeout = 1200  # 20 min
+                timeout = BUILDOZER_TIMEOUT_NATIVE
 
             # Capture output for error reporting and show progress.
             # Keep only the last 2000 lines to limit memory usage during
@@ -519,6 +526,8 @@ class AndroidExporter(BaseKivyExporter):
             # main thread's event loop (which would freeze the UI).
             import time as _time
             import collections as _collections
+            import threading as _threading
+            import queue as _queue
             output_lines = _collections.deque(maxlen=2000)
             _last_signal_time = 0.0
             _SIGNAL_INTERVAL = 0.25  # seconds between progress updates
@@ -550,14 +559,49 @@ class AndroidExporter(BaseKivyExporter):
                 ('.apk',                          88),
             ]
 
-            for line in process.stdout:
-                # Check for cancellation
+            # Pump stdout on a daemon reader thread so a long SILENT stretch
+            # (a stalled SDK/NDK download, a wedged gradle step) can't block
+            # the cancel / timeout checks: the blocking read lives in the
+            # thread while this loop polls a queue and re-checks the cancel
+            # flag and a wall-clock deadline between reads. select() can't
+            # watch a pipe on Windows, so a reader thread is the portable way.
+            _line_q: "_queue.Queue" = _queue.Queue()
+            _EOF = object()
+
+            def _pump(stream, q):
+                try:
+                    for ln in stream:
+                        q.put(ln)
+                finally:
+                    q.put(_EOF)
+
+            _reader = _threading.Thread(
+                target=_pump, args=(process.stdout, _line_q), daemon=True)
+            _reader.start()
+
+            _deadline = _time.monotonic() + timeout
+            _POLL = 0.2  # seconds between cancel/deadline checks during silence
+
+            while True:
+                # Check for cancellation even while buildozer is silent.
                 if self.cancel_requested:
                     process.kill()
                     self.export_complete.emit(False, "Export cancelled by user.")
                     # Return the None sentinel so export_project doesn't also
                     # emit a bogus 'Buildozer build failed: False' (L24).
                     return None
+
+                # Enforce the wall-clock ceiling during silence too (the old
+                # code only checked it at process.wait(), after stdout EOF).
+                if _time.monotonic() > _deadline:
+                    raise subprocess.TimeoutExpired(cmd='buildozer', timeout=timeout)
+
+                try:
+                    line = _line_q.get(timeout=_POLL)
+                except _queue.Empty:
+                    continue
+                if line is _EOF:
+                    break
 
                 stripped = line.rstrip()
                 if not stripped:

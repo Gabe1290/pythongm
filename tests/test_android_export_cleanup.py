@@ -1,5 +1,8 @@
 """Regression tests for Android export L23 (cleanup on failure) and L24
-(cancel returns sentinel, no bogus failure emit)."""
+(cancel returns sentinel, no bogus failure emit), plus the silent-build
+cancel/timeout follow-up (a stalled buildozer that produces no stdout must
+still honor Cancel and the wall-clock ceiling — the read loop is fed by a
+daemon thread so it can't block on a silent pipe)."""
 
 import os
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
@@ -77,3 +80,102 @@ def test_cancel_emits_once(_qapp, tmp_path, monkeypatch):
     assert result is False
     # No 'Buildozer build failed' emit for the cancel sentinel.
     assert not any("Buildozer build failed" in msg for _, msg in emits)
+
+
+def _silent_process_class():
+    """A fake Popen whose stdout never yields a line (simulates a buildozer
+    that is silent for a long stretch) and only reaches EOF once killed."""
+    import threading
+
+    class _BlockingStdout:
+        def __init__(self):
+            self._stop = threading.Event()
+
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            self._stop.wait()      # block (no lines) until the process is killed
+            raise StopIteration
+
+    class _FakeSilentProcess:
+        def __init__(self, *args, **kwargs):
+            self.stdout = _BlockingStdout()
+            self.returncode = None
+            self.killed = False
+
+        def kill(self):
+            self.killed = True
+            self.returncode = -9
+            self.stdout._stop.set()
+
+        def wait(self, timeout=None):
+            if self.returncode is None:
+                self.returncode = 0
+            return self.returncode
+
+    return _FakeSilentProcess
+
+
+def test_cancel_during_silent_build_is_noticed(_qapp, tmp_path, monkeypatch):
+    """Cancel pressed while buildozer is silent must return the None sentinel
+    promptly and kill the process — not hang on a blocking stdout read."""
+    import export.android.android_exporter as mod
+    import threading
+    import time
+
+    ex = mod.AndroidExporter()
+    ex._use_wsl = False
+
+    Fake = _silent_process_class()
+    created = {}
+
+    def _popen(*a, **k):
+        created["p"] = Fake(*a, **k)
+        return created["p"]
+
+    monkeypatch.setattr(mod.subprocess, "Popen", _popen)
+
+    # Cancel arrives mid-silence (no stdout lines are ever produced).
+    def _cancel_soon():
+        time.sleep(0.15)
+        ex.cancel_requested = True
+
+    threading.Thread(target=_cancel_soon, daemon=True).start()
+
+    start = time.monotonic()
+    result = ex._run_buildozer(tmp_path)
+    elapsed = time.monotonic() - start
+
+    assert result is None                  # cancel sentinel (L24)
+    assert created["p"].killed is True     # the process was killed
+    assert elapsed < 5                     # returned promptly; did not block on the silent pipe
+
+
+def test_timeout_fires_during_silent_build(_qapp, tmp_path, monkeypatch):
+    """The wall-clock ceiling must fire even when buildozer emits no output."""
+    import export.android.android_exporter as mod
+    import time
+
+    ex = mod.AndroidExporter()
+    ex._use_wsl = False
+
+    Fake = _silent_process_class()
+    created = {}
+
+    def _popen(*a, **k):
+        created["p"] = Fake(*a, **k)
+        return created["p"]
+
+    monkeypatch.setattr(mod.subprocess, "Popen", _popen)
+    # Shrink the ceiling so the deadline trips quickly.
+    monkeypatch.setattr(mod, "BUILDOZER_TIMEOUT_NATIVE", 0.3)
+
+    start = time.monotonic()
+    result = ex._run_buildozer(tmp_path)
+    elapsed = time.monotonic() - start
+
+    assert isinstance(result, str)
+    assert "timed out" in result.lower()   # timeout message returned, not a hang
+    assert created["p"].killed is True      # the handler killed the process
+    assert elapsed < 5
