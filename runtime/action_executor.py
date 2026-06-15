@@ -352,7 +352,12 @@ class ActionExecutor:
 
             logger.debug(f"🔁 Repeat block {times} times ({len(block_actions)} actions)")
             for iteration in range(times):
-                self.execute_action_list(instance, block_actions)
+                # Use the non-catching workhorse so an exit_event inside the
+                # repeated block aborts the *whole* event (and the remaining
+                # iterations), not just one pass. The top-level
+                # execute_action_list / execute_collision_action_list wrappers
+                # own the single _ExitEvent catch.
+                self._execute_action_list_inner(instance, block_actions)
 
             return end_block_index + 1
         else:
@@ -453,11 +458,22 @@ class ActionExecutor:
             # nested action lists, execute the appropriate branch and return None
             # so the outer flow control is not affected.
             if result is not None and isinstance(result, bool):
-                then_actions = parameters.get("then_actions", [])
+                # Blockly's Thymio condition blocks (thymio_if_proximity etc.)
+                # serialize their DO-slot children under a top-level
+                # `sub_actions` key (no else slot), so honor that shape as the
+                # then-branch in addition to the standard then/else_actions
+                # (audit M44). Without this the nested children never run and a
+                # false condition would fall through to GM80 skip_next and drop
+                # the unrelated sibling action after the if-block.
+                then_actions = (parameters.get("then_actions")
+                                or action_data.get("sub_actions")
+                                or parameters.get("sub_actions", []))
                 else_actions = parameters.get("else_actions", [])
                 if then_actions or else_actions:
                     actions_to_run = then_actions if result else else_actions
-                    self.execute_action_list(instance, actions_to_run)
+                    # Non-catching: an exit_event in a nested branch must
+                    # abort the whole event, not just this branch.
+                    self._execute_action_list_inner(instance, actions_to_run)
                     return None
 
             return result  # Return result for conditional flow
@@ -3134,8 +3150,10 @@ class ActionExecutor:
 
             # Defer create event to run after current event completes
             # This ensures conditions like instance_count are accurate
-            # (e.g., the box is destroyed before checking if count is 0)
-            events = object_data.get('events', {})
+            # (e.g., the box is destroyed before checking if count is 0).
+            # Read from merged_data so an inherited (parent-only) create event
+            # still fires — set_object_data already used merged_data (audit L28).
+            events = merged_data.get('events', {})
             if 'create' in events:
                 if self._event_depth > 0:
                     # We're inside an event - defer the create event
@@ -3264,9 +3282,11 @@ class ActionExecutor:
         # Clear any pending grid movement
         target_instance._has_intended_move = False
 
-        # Execute create event for new object type if requested
+        # Execute create event for new object type if requested.
+        # Read from merged_data so an inherited (parent-only) create event still
+        # fires — set_object_data already used merged_data (audit L28).
         if perform_events:
-            events = new_object_data.get('events', {})
+            events = merged_data.get('events', {})
             if 'create' in events:
                 if self._event_depth > 0:
                     # Defer create event until current event completes
@@ -4381,13 +4401,16 @@ class ActionExecutor:
 
         logger.info(f"❓ if_condition ({condition_type}): result={result}")
 
-        # Execute appropriate action list
+        # Execute appropriate action list. Use the non-catching workhorse so
+        # an exit_event inside a then/else branch aborts the whole event (it is
+        # caught only at the top-level execute_action_list /
+        # execute_collision_action_list boundary).
         if result:
             if then_actions:
-                self.execute_action_list(instance, then_actions)
+                self._execute_action_list_inner(instance, then_actions)
         else:
             if else_actions:
-                self.execute_action_list(instance, else_actions)
+                self._execute_action_list_inner(instance, else_actions)
 
         return result
 
@@ -4645,14 +4668,20 @@ class ActionExecutor:
         finally:
             self._event_depth -= 1
 
+            # Clear the collision context BEFORE running any deferred create
+            # events (audit L29). Those create events belong to instances
+            # spawned mid-collision and were never part of this collision pair,
+            # so a stale _collision_speeds/_collision_other would shadow the new
+            # instance's own hspeed/vspeed/direction in _parse_value. Doing this
+            # in the finally also keeps it exception-safe — an escaping error
+            # can't leave stale context shadowing speeds for the rest of the frame.
+            self._collision_other = None
+            self._collision_speeds = {}
+
             # Process deferred create events when we return to top level
             # This ensures instance counts are accurate after all collision actions complete
             if self._event_depth == 0 and self._deferred_create_events:
                 self._process_deferred_create_events()
-
-        # Clean up
-        self._collision_other = None
-        self._collision_speeds = {}
 
     def execute_collision_action_list(self, instance, actions: list, other_instance):
         """Execute collision actions with conditional flow support.
@@ -4850,6 +4879,7 @@ class ActionExecutor:
         if self.game_runner.current_room:
             self.game_runner.current_room.instances.append(new_instance)
             self.game_runner.current_room._add_to_grid(new_instance)
+            self.game_runner.current_room._depth_dirty = True  # Mark for re-sort (audit M46)
             self.game_runner.current_room.invalidate_collision_listened_types()
 
             # Defer create event to run after current event completes
@@ -4932,8 +4962,13 @@ class ActionExecutor:
             action_executor=self
         )
 
-        # Set up the new instance with object data and sprite
-        new_instance.set_object_data(object_data)
+        # Set up the new instance with object data (with parent inheritance,
+        # matching create_instance / create_random_instance — audit M47).
+        # Without this, a child object spawned here loses every event and
+        # property defined on its parent chain (collision/step/outside_room).
+        from runtime.game_runner import resolve_parent_inheritance
+        merged_data = resolve_parent_inheritance(object_data, self.game_runner._objects_data)
+        new_instance.set_object_data(merged_data)
 
         # Set initial motion (convert direction to hspeed/vspeed)
         # GameMaker uses degrees where 0 = right, 90 = up
@@ -4954,10 +4989,11 @@ class ActionExecutor:
         if self.game_runner.current_room:
             self.game_runner.current_room.instances.append(new_instance)
             self.game_runner.current_room._add_to_grid(new_instance)
+            self.game_runner.current_room._depth_dirty = True  # Mark for re-sort (audit M46)
             self.game_runner.current_room.invalidate_collision_listened_types()
 
             # Defer create event to run after current event completes
-            events = object_data.get('events', {})
+            events = merged_data.get('events', {})
             if 'create' in events:
                 if self._event_depth > 0:
                     self._deferred_create_events.append((new_instance, events))

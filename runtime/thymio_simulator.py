@@ -39,10 +39,14 @@ PROXIMITY_SENSOR_ANGLES = [
     -165, # 6: Back Right
 ]
 
-# Ground sensor positions relative to center
+# Ground sensor positions relative to center.
+# Encoded as (forward_offset, lateral_offset) to match the rotation formula
+# used in update_ground_sensors (local +x is the robot's forward axis):
+# real Thymio ground sensors sit at the front edge, lateral -/+ = left/right
+# (same negative-is-left convention as the proximity sensors).
 GROUND_SENSOR_POSITIONS = [
-    (-20, GROUND_SENSOR_OFFSET),  # 0: Left sensor
-    (20, GROUND_SENSOR_OFFSET),   # 1: Right sensor
+    (GROUND_SENSOR_OFFSET, -20),  # 0: Left sensor (front, lateral left)
+    (GROUND_SENSOR_OFFSET, 20),   # 1: Right sensor (front, lateral right)
 ]
 
 # LED positions (for visualization)
@@ -244,8 +248,13 @@ class ThymioSimulator:
         linear_velocity = (left_velocity + right_velocity) / 2.0
 
         # Angular velocity (rotation)
-        # Positive = clockwise rotation in screen coordinates
-        angular_velocity_rad = (right_velocity - left_velocity) / THYMIO_WHEEL_BASE
+        # Screen coordinates are y-down (angle 0 = right, 90 = down), and the
+        # renderer draws the left wheel on the -y side when facing +x, so a
+        # running right wheel (left stopped) must pivot the nose toward -y
+        # (the robot's left). That requires the y-down sign: driving the right
+        # wheel harder should *decrease* the angle. (right - left) is the y-up
+        # math convention and turns the robot the wrong way on screen.
+        angular_velocity_rad = (left_velocity - right_velocity) / THYMIO_WHEEL_BASE
 
         # Update angle (convert to degrees)
         self.angle += math.degrees(angular_velocity_rad)
