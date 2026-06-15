@@ -130,8 +130,15 @@ class ActionConfigDialog(QDialog):
                 else:
                     widget.setCurrentText(str(param.default_value))
 
-            # Special handling for object selection parameters (object_name)
-            elif param.name == "object_name" or "object" in param.name.lower():
+            # Special handling for object selection parameters (object_name).
+            # Excludes pure `choice` params (e.g. check_empty's "objects", whose
+            # only meaningful values are "solid"/"all" — the runtime collapses
+            # anything that isn't "solid" to "all"). Those fall through to the
+            # generic choice branch below so the dropdown offers ONLY the valid
+            # choices instead of every project object name (which all behaved
+            # identically to "all").
+            elif (param.name == "object_name"
+                  or "object" in param.name.lower()) and param.param_type != "choice":
                 widget = QComboBox()
                 widget.setEditable(True)
 
@@ -170,15 +177,7 @@ class ActionConfigDialog(QDialog):
                         widget.addItem(room)
 
                 if param.name in self.current_params:
-                    current_value = str(self.current_params[param.name])
-                    if current_value == "__next__":
-                        widget.setCurrentText(self.tr("→ Next Room"))
-                    elif current_value == "__prev__":
-                        widget.setCurrentText(self.tr("← Previous Room"))
-                    elif current_value == "__current__":
-                        widget.setCurrentText(self.tr("↺ Restart Current Room"))
-                    else:
-                        widget.setCurrentText(current_value)
+                    widget.setCurrentText(str(self.current_params[param.name]))
                 else:
                     widget.setCurrentText(str(param.default_value))
 
@@ -294,17 +293,41 @@ class ActionConfigDialog(QDialog):
                 widget = QComboBox()
                 widget.setEditable(False)
 
+                # Prepend sentinel entries so saved non-sprite values round-trip
+                # and stay selectable. set_sprite defaults to "<self>" (keep the
+                # current sprite, change only frame/speed — the GMK
+                # animation-restart form); optional sprite params (e.g.
+                # draw_lives) default to "" / are not required, meaning "no
+                # sprite". A non-editable combo with no matching item silently
+                # snaps to item 0, so without these the sentinel would be
+                # rewritten to the first project sprite on OK.
+                default_str = "" if param.default_value is None else str(param.default_value)
+                self._sprite_none_label = self.tr("(none)")
+                sentinel_values = []
+                if default_str == "<self>":
+                    sentinel_values.append("<self>")
+                if not param.required or default_str == "":
+                    # Optional sprite — offer an explicit "no sprite" entry.
+                    # get_parameter_values maps this label back to "".
+                    sentinel_values.append(self._sprite_none_label)
+                for sentinel in sentinel_values:
+                    widget.addItem(sentinel)
+
                 # Get available sprites from project
                 available_sprites = self.get_available_sprites()
                 if available_sprites:
                     widget.addItems(available_sprites)
-                else:
+                elif not sentinel_values:
                     widget.addItems([self.tr("(No sprites available)")])
 
                 if param.name in self.current_params:
-                    widget.setCurrentText(str(self.current_params[param.name]))
+                    current_value = str(self.current_params[param.name])
                 else:
-                    widget.setCurrentText(str(param.default_value))
+                    current_value = default_str
+                if current_value == "" and self._sprite_none_label in sentinel_values:
+                    widget.setCurrentText(self._sprite_none_label)
+                else:
+                    widget.setCurrentText(current_value)
 
             # Sound selector
             elif param.param_type == "sound":
@@ -504,16 +527,17 @@ class ActionConfigDialog(QDialog):
         return []
 
     def get_available_rooms(self):
-        """Get list of available rooms from the project, including navigation options"""
-        room_list = []
+        """Get list of available rooms from the project.
 
-        # Add special navigation options first
-        room_list.extend([
-            self.tr("→ Next Room"),
-            self.tr("← Previous Room"),
-            self.tr("↺ Restart Current Room"),
-            "---"
-        ])
+        Note: the room dropdown intentionally offers ONLY real room names. The
+        old "→ Next Room" / "← Previous Room" / "↺ Restart Current Room"
+        navigation entries saved sentinels ('__next__'/'__prev__'/'__current__')
+        that the pygame runtime never consumed (goto_room/check_room treated
+        them as missing room names — silent no-ops). Authors who want
+        navigation use the dedicated next_room / previous_room / restart_room
+        actions, which work via instance flags.
+        """
+        room_list = []
 
         # Walk up parent hierarchy to find project data
         parent = self.parent()
@@ -527,7 +551,7 @@ class ActionConfigDialog(QDialog):
             parent = parent.parent()
 
         # If no rooms found, add some defaults
-        if len(room_list) == 4:
+        if not room_list:
             room_list.extend(["Room01", "Room02", "Room03"])
 
         return room_list
@@ -621,14 +645,11 @@ class ActionConfigDialog(QDialog):
             elif isinstance(widget, QComboBox):
                 value = widget.currentText()
 
-                # Map navigation options
-                if param_name == "room_name" or "room" in param_name.lower():
-                    if value == self.tr("→ Next Room"):
-                        value = "__next__"
-                    elif value == self.tr("← Previous Room"):
-                        value = "__prev__"
-                    elif value == self.tr("↺ Restart Current Room"):
-                        value = "__current__"
+                # Map the sentinel "no sprite" / "no sprites available" labels
+                # back to the empty string the runtime/exporters expect, so an
+                # optional sprite param round-trips as "" rather than a UI label.
+                if value in (self.tr("(none)"), self.tr("(No sprites available)")):
+                    value = ""
 
                 values[param_name] = value
             elif isinstance(widget, QCheckBox):
@@ -780,22 +801,31 @@ class MultiActionEditor(QDialog):
 
         self.action_tree.clear()
 
+        # IMPORTANT: render exactly one tree row per entry in self.action_list,
+        # including unknown/unregistered action types. remove_action / move_up /
+        # move_down index into self.action_list via indexOfTopLevelItem, so any
+        # skipped row would misalign the indices and operate on the wrong action.
         for action_data in self.action_list:
             action_name = action_data.get("action", "")
             action_type = get_action_type(action_name)
 
+            item = QTreeWidgetItem()
             if action_type:
-                item = QTreeWidgetItem()
                 item.setText(0, f"{action_type.icon} {self.tr(action_type.display_name)}")
+            else:
+                # Unknown action (e.g. a type from a newer/older project) — keep
+                # it visible and selectable so it can be removed/reordered, and
+                # so it round-trips untouched on OK rather than vanishing.
+                item.setText(0, f"⚠️ {action_name or self.tr('(unknown action)')}")
 
-                # Show parameter summary
-                params = action_data.get("parameters", {})
-                if params:
-                    param_summary = ", ".join([f"{k}={v}" for k, v in params.items()])
-                    item.setText(1, param_summary[:50] + ("..." if len(param_summary) > 50 else ""))
+            # Show parameter summary
+            params = action_data.get("parameters", {})
+            if params:
+                param_summary = ", ".join([f"{k}={v}" for k, v in params.items()])
+                item.setText(1, param_summary[:50] + ("..." if len(param_summary) > 50 else ""))
 
-                item.setData(0, Qt.ItemDataRole.UserRole, action_data)
-                self.action_tree.addTopLevelItem(item)
+            item.setData(0, Qt.ItemDataRole.UserRole, action_data)
+            self.action_tree.addTopLevelItem(item)
 
     def add_action(self):
         """Show menu to add a new action"""

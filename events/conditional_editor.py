@@ -58,6 +58,27 @@ def _select_canonical(combo: QComboBox, value: str):
         combo.setCurrentIndex(idx)
 
 
+# Legacy key_pressed values: projects saved before the key combo stored the
+# canonical lowercase pygame key name held human-readable labels like
+# "Left Arrow". Map those to the runtime name so loading + re-saving heals them
+# (and the selection lands on the right item even under a loaded translation,
+# where findText on the display label would miss). New saves never produce
+# these — this only rescues already-on-disk data.
+_LEGACY_KEY_ALIASES = {
+    "left arrow": "left",
+    "right arrow": "right",
+    "up arrow": "up",
+    "down arrow": "down",
+}
+
+
+def _normalize_legacy_key(value: str) -> str:
+    """Translate a legacy key label to its canonical runtime name (idempotent)."""
+    if not isinstance(value, str):
+        return value
+    return _LEGACY_KEY_ALIASES.get(value.lower(), value)
+
+
 class ConditionalActionEditor(QDialog):
     """Editor for if/else conditional actions with nested action lists"""
 
@@ -362,12 +383,20 @@ class ConditionalActionEditor(QDialog):
         key_layout = QHBoxLayout()
         key_layout.addWidget(QLabel(self.tr("Key:")))
         self.key_check = QComboBox()
+        # The canonical (stored) value MUST be the lowercase pygame key name the
+        # runtime populates instance.keys_pressed with (see runtime/_keymap.py:
+        # arrows are "left"/"right"/"up"/"down", Return is "enter", Shift is
+        # "shift", etc.). The runtime evaluates `key.lower() in keys_pressed`
+        # (action_executor.py key_pressed branch), so storing a display label like
+        # "Left Arrow" — which lower-cases to "left arrow" — never matches and the
+        # condition is permanently false. Display text stays human-readable; only
+        # the saved userData is canonicalised to the runtime name.
         _add_canonical_items(self.key_check, [
-            ("Space", self.tr("Space")), ("Enter", self.tr("Enter")), ("Escape", self.tr("Escape")),
-            ("Left Arrow", self.tr("Left Arrow")), ("Right Arrow", self.tr("Right Arrow")),
-            ("Up Arrow", self.tr("Up Arrow")), ("Down Arrow", self.tr("Down Arrow")),
-            ("A", "A"), ("W", "W"), ("S", "S"), ("D", "D"),
-            ("Shift", self.tr("Shift")), ("Control", self.tr("Control")), ("Alt", self.tr("Alt")),
+            ("space", self.tr("Space")), ("enter", self.tr("Enter")), ("escape", self.tr("Escape")),
+            ("left", self.tr("Left Arrow")), ("right", self.tr("Right Arrow")),
+            ("up", self.tr("Up Arrow")), ("down", self.tr("Down Arrow")),
+            ("a", "A"), ("w", "W"), ("s", "S"), ("d", "D"),
+            ("shift", self.tr("Shift")), ("control", self.tr("Control")), ("alt", self.tr("Alt")),
         ])
         key_layout.addWidget(self.key_check)
 
@@ -519,7 +548,7 @@ class ConditionalActionEditor(QDialog):
 
         # key_pressed
         if p.get("key"):
-            _select_canonical(self.key_check, p.get("key"))
+            _select_canonical(self.key_check, _normalize_legacy_key(p.get("key")))
         if p.get("state"):
             _select_canonical(self.key_state, p.get("state"))
 
