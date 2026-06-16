@@ -136,16 +136,26 @@ class _capture_roberta_warnings:
         self._caplog = caplog
         self._logger = logging.getLogger("pygm.importers.roberta_importer")
         self._prev_level = None
+        self._prev_propagate = None
 
     def __enter__(self):
         self._prev_level = self._logger.level
+        self._prev_propagate = self._logger.propagate
         self._logger.setLevel(logging.WARNING)
+        # Pin propagate off for the capture window. We attach caplog's handler
+        # directly here, so propagation isn't needed — and if the ambient
+        # `pygm` tree is left propagating to the root (test-ordering dependent
+        # in CI), the same caplog handler also lives on root and each record
+        # would be captured twice, doubling the count. Blocking propagation
+        # makes the capture deterministic regardless of suite order.
+        self._logger.propagate = False
         self._logger.addHandler(self._caplog.handler)
         return self._caplog
 
     def __exit__(self, *exc):
         self._logger.removeHandler(self._caplog.handler)
         self._logger.setLevel(self._prev_level)
+        self._logger.propagate = self._prev_propagate
         return False
 
 
