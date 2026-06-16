@@ -1,7 +1,7 @@
 {
   "name": "obj_diamond",
   "asset_type": "object",
-  "sprite": "sprite_diamond",
+  "sprite": "sprite_bonbon",
   "visible": true,
   "solid": false,
   "persistent": false,
@@ -32,6 +32,6 @@
   },
   "imported": true,
   "created": "2026-05-23T14:34:55.271791",
-  "modified": "2026-05-24T13:13:12.403720",
+  "modified": "2026-06-16T11:36:52.321663",
   "parent": ""
 }
