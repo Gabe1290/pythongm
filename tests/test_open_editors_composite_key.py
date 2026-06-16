@@ -80,3 +80,53 @@ def test_same_named_room_and_object_both_open(qapp):
     assert "rooms:niveau1" in stub.open_editors
     assert "objects:niveau1" in stub.open_editors
     assert stub.open_editors["rooms:niveau1"] is room_editor
+
+
+def test_close_request_resolves_composite_key():
+    """An editor's close_requested carries the bare asset_name, but
+    open_editors is composite-keyed. on_editor_close_requested must resolve the
+    emitting editor's real "<category>:<name>" key (via sender()/_open_key) and
+    must disambiguate two same-named editors of different categories. Passing
+    the bare name (the old behaviour) silently missed the registry and left the
+    editor open.
+    """
+    from PySide6.QtWidgets import QApplication, QWidget
+    from PySide6.QtCore import QObject, Signal
+
+    QApplication.instance() or QApplication([])
+    ide_cls = _ide_cls()
+
+    class _Editor(QObject):
+        close_requested = Signal(str)
+
+        def __init__(self, name, key):
+            super().__init__()
+            self.asset_name = name
+            self._open_editor_key = key
+
+    class _StubIDE(QWidget):
+        _editor_key = ide_cls._editor_key
+        _canonical_category = ide_cls._canonical_category
+        _open_key = ide_cls._open_key
+        on_editor_close_requested = ide_cls.on_editor_close_requested
+
+        def __init__(self):
+            super().__init__()
+            self.open_editors = {}
+            self.detached_editor_windows = {}
+            self.closed = []
+
+        def close_editor_by_name(self, key):
+            self.closed.append(key)
+
+    ide = _StubIDE()
+    sprite_ed = _Editor("player", "sprites:player")
+    object_ed = _Editor("player", "objects:player")
+    ide.open_editors = {"sprites:player": sprite_ed, "objects:player": object_ed}
+    sprite_ed.close_requested.connect(ide.on_editor_close_requested)
+    object_ed.close_requested.connect(ide.on_editor_close_requested)
+
+    sprite_ed.close_requested.emit(sprite_ed.asset_name)
+    object_ed.close_requested.emit(object_ed.asset_name)
+
+    assert ide.closed == ["sprites:player", "objects:player"]

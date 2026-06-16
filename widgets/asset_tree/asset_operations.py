@@ -131,7 +131,7 @@ class AssetOperations:
                 key = parent._editor_key(asset_category, asset_name)
                 if key in parent.open_editors:
                     logger.debug("Asset is open in editor, closing it first...")
-                    parent.close_editor_by_name(asset_name, asset_category)
+                    parent.close_editor_by_name(key)
             elif asset_name in parent.open_editors:
                 logger.debug("Asset is open in editor, closing it first...")
                 parent.close_editor_by_name(asset_name)
@@ -686,33 +686,30 @@ class AssetOperations:
                 if asset_type in ["sprite", "background", "sprites", "backgrounds"]:
                     logger.debug("Asset type matches sprite/background check")
 
-                    # Build the new file path using the new name
+                    # Build candidate paths for the thumbnail. Prefer the
+                    # recorded file_path, but ALWAYS also try the conventional
+                    # <folder>/<new_name>.<ext> location: after a rename the
+                    # recorded file_path may be empty or still point at the
+                    # pre-rename name, in which case the old fallback (a bogus
+                    # "assets/<folder>" path that never exists in this layout)
+                    # left the sprite with a blank thumbnail.
                     project_root = Path(self.tree.project_path)
-
-                    # Try multiple path construction methods
+                    asset_folder = "sprites" if asset_type in ["sprite", "sprites"] else "backgrounds"
                     file_path = asset_data.get('file_path')
 
+                    candidates = []
                     if file_path:
-                        # Method 1: Use the file_path from asset_data
-                        if Path(file_path).is_absolute():
-                            new_file_path = Path(file_path)
-                        else:
-                            new_file_path = project_root / file_path
-                        logger.debug(f"Method 1 (from asset_data): {new_file_path}")
-                    else:
-                        # Method 2: Construct from scratch
-                        if asset_type in ["sprite", "sprites"]:
-                            asset_folder = "sprites"
-                        else:
-                            asset_folder = "backgrounds"
+                        recorded = Path(file_path)
+                        candidates.append(recorded if recorded.is_absolute()
+                                          else project_root / recorded)
+                    suffix = Path(file_path).suffix if file_path else ""
+                    for ext in ([suffix] if suffix else []) + [".png", ".jpg", ".jpeg", ".gif", ".bmp"]:
+                        candidates.append(project_root / asset_folder / f"{new_name}{ext}")
 
-                        new_file_path = project_root / "assets" / asset_folder / f"{new_name}.png"
-                        logger.debug(f"Method 2 (constructed): {new_file_path}")
+                    new_file_path = next((c for c in candidates if c.exists()), None)
+                    logger.debug(f"Thumbnail candidates: {candidates}; resolved: {new_file_path}")
 
-                    logger.debug(f"Final path to check: {new_file_path}")
-                    logger.debug(f"Path exists: {new_file_path.exists()}")
-
-                    if new_file_path.exists():
+                    if new_file_path is not None:
                         try:
                             # Clear any existing icon first
                             item.setIcon(0, QIcon())
@@ -740,6 +737,13 @@ class AssetOperations:
                                 item.setIcon(0, QIcon(scaled_pixmap))
                                 # Set text without emoji since we have thumbnail
                                 item.setText(0, new_name)
+                                # Heal a stale/empty file_path so a later repaint
+                                # (setup_item) doesn't re-blank the thumbnail.
+                                try:
+                                    rel = new_file_path.relative_to(project_root).as_posix()
+                                    asset_data['file_path'] = rel
+                                except ValueError:
+                                    asset_data['file_path'] = str(new_file_path)
                                 logger.debug("Thumbnail icon set successfully")
                             else:
                                 logger.debug("Pixmap is null after loading")
