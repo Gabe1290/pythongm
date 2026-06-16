@@ -3866,7 +3866,25 @@ class PyGameMakerIDE(QMainWindow):
                               self.tr("Failed to save {0}: {1}").format(asset_name, e))
 
     def on_editor_close_requested(self, asset_name: str):
-        """Handle close request from editors"""
+        """Handle close request from editors.
+
+        ``close_requested`` carries the bare asset_name, but ``open_editors``
+        (and ``detached_editor_windows``) are keyed by the L5 composite
+        "<category>:<name>" key. Resolve the emitting editor's real key via
+        ``_open_key`` instead of passing the bare name, which silently missed
+        the composite-keyed registries and left the editor open.
+        """
+        editor = self.sender()
+        if editor is not None and (getattr(editor, '_open_editor_key', None)
+                                   or getattr(editor, 'asset_name', None)):
+            self.close_editor_by_name(self._open_key(editor))
+            return
+        # Defensive fallback (e.g. a direct, non-signal call where sender() is
+        # unavailable): match an open editor by its asset_name.
+        for key, open_editor in self.open_editors.items():
+            if getattr(open_editor, 'asset_name', None) == asset_name:
+                self.close_editor_by_name(key)
+                return
         self.close_editor_by_name(asset_name)
 
     def _flush_open_editors(self):

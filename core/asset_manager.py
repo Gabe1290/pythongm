@@ -455,14 +455,30 @@ class AssetManager(QObject):
 
             logger.debug(f"✅ Found asset data for {old_name}")
 
-            # Rename main file
-            if asset_data.get("file_path"):
-                old_file_path = self.get_absolute_path(asset_data["file_path"])
-                if old_file_path.exists():
-                    new_file_path = old_file_path.parent / f"{new_name}{old_file_path.suffix}"
-                    old_file_path.rename(new_file_path)
-                    asset_data["file_path"] = self.get_relative_path(new_file_path)
-                    logger.debug(f"✅ Renamed file: {old_file_path.name} → {new_file_path.name}")
+            # Rename main file. Prefer the recorded file_path, but fall back to
+            # locating the file on disk by the conventional <type>/<old_name>.*
+            # layout. A sprite created/imported this session can carry an empty
+            # or stale file_path in the cache while its PNG actually sits at
+            # sprites/<old_name>.png; without this fallback the rename left the
+            # asset with no renamed file and a blank tree thumbnail.
+            old_file_path = None
+            recorded = asset_data.get("file_path")
+            if recorded:
+                candidate = self.get_absolute_path(recorded)
+                if candidate.exists():
+                    old_file_path = candidate
+            if old_file_path is None and self.project_directory:
+                type_dir = self.project_directory / asset_type
+                if type_dir.is_dir():
+                    for candidate in type_dir.iterdir():
+                        if candidate.is_file() and candidate.stem == old_name:
+                            old_file_path = candidate
+                            break
+            if old_file_path is not None:
+                new_file_path = old_file_path.parent / f"{new_name}{old_file_path.suffix}"
+                old_file_path.rename(new_file_path)
+                asset_data["file_path"] = self.get_relative_path(new_file_path)
+                logger.debug(f"✅ Renamed file: {old_file_path.name} → {new_file_path.name}")
 
             # Rename thumbnail
             if asset_data.get("thumbnail"):
