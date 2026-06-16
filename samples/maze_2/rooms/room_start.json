@@ -10,12 +10,115 @@
   "instance_count": 1,
   "instances": [
     {
-      "object": "controller_start",
+      "object_name": "controller_start",
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true,
       "x": 0,
       "y": 0
     }
   ],
   "created": "2026-05-23T14:34:55.284416",
-  "modified": "2026-05-23T14:34:55.284416",
-  "imported": true
+  "modified": "2026-06-16T15:06:02.190745",
+  "imported": true,
+  "tiles": [],
+  "backgrounds": [
+    {
+      "background_image": "background_tiles",
+      "foreground": false,
+      "hspeed": 0.0,
+      "stretch": false,
+      "tile_h": true,
+      "tile_v": true,
+      "visible": true,
+      "vspeed": 0.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "background_image": "background_start",
+      "foreground": false,
+      "hspeed": 0.0,
+      "stretch": false,
+      "tile_h": false,
+      "tile_v": false,
+      "visible": true,
+      "vspeed": 0.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "background_image": "",
+      "foreground": false,
+      "hspeed": 0.0,
+      "stretch": false,
+      "tile_h": false,
+      "tile_v": false,
+      "visible": false,
+      "vspeed": 0.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "background_image": "",
+      "foreground": false,
+      "hspeed": 0.0,
+      "stretch": false,
+      "tile_h": false,
+      "tile_v": false,
+      "visible": false,
+      "vspeed": 0.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "background_image": "",
+      "foreground": false,
+      "hspeed": 0.0,
+      "stretch": false,
+      "tile_h": false,
+      "tile_v": false,
+      "visible": false,
+      "vspeed": 0.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "background_image": "",
+      "foreground": false,
+      "hspeed": 0.0,
+      "stretch": false,
+      "tile_h": false,
+      "tile_v": false,
+      "visible": false,
+      "vspeed": 0.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "background_image": "",
+      "foreground": false,
+      "hspeed": 0.0,
+      "stretch": false,
+      "tile_h": false,
+      "tile_v": false,
+      "visible": false,
+      "vspeed": 0.0,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "background_image": "",
+      "foreground": false,
+      "hspeed": 0.0,
+      "stretch": false,
+      "tile_h": false,
+      "tile_v": false,
+      "visible": false,
+      "vspeed": 0.0,
+      "x": 0,
+      "y": 0
+    }
+  ]
 }

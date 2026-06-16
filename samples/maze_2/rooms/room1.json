@@ -1217,14 +1217,14 @@
     }
   ],
   "created": "2026-05-23T14:34:55.284416",
-  "modified": "2026-05-24T15:32:40.006845",
+  "modified": "2026-06-16T15:05:57.937696",
   "imported": true,
   "backgrounds": [
     {
-      "background_image": "background_main",
+      "background_image": "background_tiles",
       "foreground": false,
       "hspeed": 0.0,
-      "stretch": true,
+      "stretch": false,
       "tile_h": true,
       "tile_v": true,
       "visible": true,

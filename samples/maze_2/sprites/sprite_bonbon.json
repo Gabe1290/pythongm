@@ -1,7 +1,7 @@
 {
-  "name": "sprite_diamond",
+  "name": "sprite_bonbon",
   "asset_type": "sprite",
-  "file_path": "sprites/sprite_diamond.png",
+  "file_path": "sprites/sprite_bonbon.png",
   "width": 32,
   "height": 32,
   "origin_x": 0,
@@ -14,5 +14,6 @@
   "speed": 10.0,
   "imported": true,
   "created": "2026-05-23T14:34:55.094829",
-  "modified": "2026-05-23T14:34:55.094829"
+  "modified": "2026-06-16T12:03:15.102092",
+  "thumbnail": "thumbnails/sprite_bonbon_thumb.png"
 }
