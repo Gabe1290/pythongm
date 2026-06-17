@@ -5,12 +5,6 @@ Controls which tutorials are shown and the default blockly preset for new projec
 """
 
 EDITIONS = {
-    "committee": {
-        "name": "Committee Demo",
-        "description": "Stripped-down demo edition for committee approval — minimal toolbox, single curated tutorial",
-        "default_blockly_preset": "minimal",
-        "tutorial_folders": ["09_catch_the_coins"],
-    },
     "beginner": {
         "name": "Beginner",
         "description": "Simplified interface with introductory tutorials",
@@ -56,10 +50,10 @@ def filter_tutorials_for_edition(tutorials_list, base_tutorials_path=None):
         base_tutorials_path: optional path to the base (English) Tutorials
             folder. When the edition gates tutorials to a fixed set of folders
             and *none* of them appear in ``tutorials_list`` (e.g. a localized
-            index that omits a curated tutorial such as the committee edition's
-            ``09_catch_the_coins``), the filter falls back to the base English
-            ``index.json`` so the curated tutorial is still reachable instead
-            of the user getting an empty list.
+            index that omits a curated tutorial the edition whitelists), the
+            filter falls back to the base English ``index.json`` so the curated
+            tutorial is still reachable instead of the user getting an empty
+            list.
     Returns:
         filtered list
     """

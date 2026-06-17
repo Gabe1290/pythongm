@@ -561,8 +561,8 @@ and then spot-check the platform-sensitive items below.
 - [ ] L · [ ] W · [ ] m — Opening a `.zip` project then quitting/switching
       doesn't leave a temp extraction behind in TEMP (L7)
 - [ ] L · [ ] W · [ ] m — A tutorial with an external link doesn't blank the
-      page; the committee edition shows a placeholder, not an empty list, under
-      a non-en/fr language (L35, L1)
+      page; a tutorial-gating edition shows a placeholder, not an empty list,
+      when its curated tutorial is missing under a non-en/fr language (L35, L1)
 - [ ] L · [ ] W · [ ] m — `project.json` survives a simulated mid-save failure
       (atomic write); folder save rolls back across files on error (L34)
 

@@ -297,62 +297,6 @@ class BlocklyConfig:
         return config
 
     @classmethod
-    def get_minimal(cls) -> 'BlocklyConfig':
-        """Minimal preset — committee/demo edition.
-
-        Designed around one playable game ("Catch the Coins"): keyboard player,
-        falling pickups, win-by-clearing via if_condition + instance_count, lose
-        on enemy collision via room_goto to a Game Over screen.
-        Toolbox is roughly 30% smaller than `beginner`. No timing/alarms, no
-        lives/health, no instance spawning, no sound, no debug output.
-        """
-        config = cls(preset_name="minimal")
-
-        # Events — the WHEN
-        config.enable_block("event_create")
-        config.enable_block("event_step")
-        config.enable_block("event_draw")
-        config.enable_block("event_keyboard_held")
-        config.enable_block("event_keyboard_nokey")
-        config.enable_block("event_keyboard_press")
-        config.enable_block("event_collision")
-        config.enable_block("event_mouse")
-
-        # Control — conditional flow (used for win check via instance_count)
-        config.enable_block("if_condition")
-
-        # Movement
-        config.enable_block("move_set_hspeed")
-        config.enable_block("move_set_vspeed")
-        config.enable_block("move_stop")
-
-        # Drawing
-        config.enable_block("draw_text")
-
-        # Score
-        config.enable_block("score_set")
-        config.enable_block("score_add")
-        config.enable_block("draw_score")  # canned "Score: X" display, no concat needed
-
-        # Instance lifecycle (no spawning — pre-place objects in the room editor)
-        config.enable_block("instance_destroy")
-        config.enable_block("instance_destroy_other")
-
-        # Room transitions (goto needed for the Game Over template flow)
-        config.enable_block("room_goto")
-        config.enable_block("room_restart")
-
-        # Game control
-        config.enable_block("game_restart")
-
-        config.enabled_categories = {
-            "Events", "Control", "Movement", "Drawing",
-            "Score/Lives/Health", "Instance", "Room", "Game",
-        }
-
-        return config
-
-    @classmethod
     def get_beginner(cls) -> 'BlocklyConfig':
         """Beginner preset — covers Getting Started, First Game, Pong, Breakout tutorials"""
         config = cls(preset_name="beginner")
@@ -1088,7 +1032,6 @@ class BlocklyConfig:
 
 PRESETS: Dict[str, BlocklyConfig] = {
     "full": BlocklyConfig.get_full(),
-    "minimal": BlocklyConfig.get_minimal(),
     "beginner": BlocklyConfig.get_beginner(),
     "intermediate": BlocklyConfig.get_intermediate(),
     "platformer": BlocklyConfig.get_platformer(),

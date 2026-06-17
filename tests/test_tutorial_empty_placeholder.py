@@ -1,8 +1,8 @@
 """Regression test for empty tutorial index placeholder (audit L1).
 
-When the edition filter yields zero tutorials from an index.json (e.g. the
-committee edition under a localized index missing the gated tutorial), both
-tutorial widgets returned immediately after the index loop, so the
+When the edition filter yields zero tutorials from an index.json (e.g. a
+tutorial-gating edition under a localized index missing its gated tutorial),
+both tutorial widgets returned immediately after the index loop, so the
 'No tutorials available' placeholder (only on the folder-scan fallback) never
 showed — a wordless blank list. The placeholder now also covers the index path.
 """

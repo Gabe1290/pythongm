@@ -171,8 +171,7 @@ phase("Phase 10 — Save / dirty state / auto-save", "10 min", [
 phase("Phase 11 — Editions and Blockly presets", "10 min", [
     (63, "Tools → Edition → Beginner. Object editor's Blockly toolbox shrinks to beginner blocks; events panel filters accordingly.", {}),
     (64, "Tools → Edition → Advanced — full block set returns.", {}),
-    (65, "Tools → Edition → Committee Demo — committee-approved minimal toolbox. Save the edition with the project. Reopen — preset persists.", {}),
-    (66, "Tools → Configure Action Blocks... — toolbox configuration dialog. Save a custom preset, apply.", {}),
+    (65, "Tools → Configure Action Blocks... — toolbox configuration dialog. Save a custom preset, apply.", {}),
 ], note="Pass criteria: edition gating actually hides what it claims to hide; preset persists in project.json.")
 
 
