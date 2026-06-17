@@ -177,9 +177,9 @@ class TutorialPanel(QWidget):
                     item.setData(Qt.UserRole, tutorial)
                     self.tutorial_list.addItem(item)
                 # Show a placeholder when the (edition-filtered) index is empty,
-                # e.g. the committee edition under a localized index that lacks
-                # the gated tutorial — otherwise the list was wordlessly blank
-                # with a disabled Open button (L1).
+                # e.g. a tutorial-gating edition under a localized index that
+                # lacks a gated tutorial — otherwise the list was wordlessly
+                # blank with a disabled Open button (L1).
                 if self.tutorial_list.count() == 0:
                     self.tutorial_list.addItem(self.tr("No tutorials available"))
                 return

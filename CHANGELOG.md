@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-(No entries yet.)
+### Removed
+- **Committee Demo edition** and its dedicated `minimal` Blockly preset. The
+  edition existed only to gate the IDE down to a curated demo for committee
+  approval; with the project accepted it's no longer needed. The
+  `09_catch_the_coins` tutorial it showcased is kept as standalone content.
+  Projects previously saved under the `minimal` preset load fine — an unknown
+  preset name falls back to the saved/global toolbox config.
 
 ## [1.0.0-rc.13] - 2026-06-15
 
