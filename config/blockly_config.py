@@ -376,6 +376,7 @@ class BlocklyConfig:
         config.enable_block("bounce")              # Pong (ball bouncing)
         config.enable_block("reverse_horizontal")  # Breakout (ball direction)
         config.enable_block("reverse_vertical")    # Breakout (ball direction)
+        config.enable_block("set_gravity")         # beginner sample game (falling/physics)
 
         # Timing
         config.enable_block("set_alarm")           # First Game (star spawn interval)
@@ -395,6 +396,7 @@ class BlocklyConfig:
         config.enable_block("instance_destroy")       # First Game, Breakout
         config.enable_block("instance_destroy_other") # First Game (star), Breakout (bricks)
         config.enable_block("instance_create")        # First Game (star spawning)
+        config.enable_block("instance_change")         # beginner sample game (transform object type)
 
         # Room
         config.enable_block("room_restart")        # Breakout (game over)
@@ -414,9 +416,10 @@ class BlocklyConfig:
 
         # Control flow — exit_event lets beginners write GameMaker-style
         # "try a direction, commit if it fits, otherwise try the next"
-        # patterns (e.g. maze_3's monster bounce on wall collision). The
-        # other Control blocks (if_condition / set_variable /
-        # test_variable) stay out of beginner to keep the picker simple.
+        # patterns (e.g. maze_3's monster bounce on wall collision).
+        # test_variable is enabled so a beginner sample game can branch on
+        # a variable's value. The remaining Control blocks (if_condition /
+        # set_variable) stay out of beginner to keep the picker simple.
         # start_block/end_block pair with else_action when a branch needs
         # more than one action (e.g. platformer step: on ground →
         # zero gravity AND snap to contact).
@@ -424,6 +427,7 @@ class BlocklyConfig:
         config.enable_block("else_action")
         config.enable_block("start_block")
         config.enable_block("end_block")
+        config.enable_block("test_variable")
 
         # Output
         config.enable_block("output_message")      # Game over messages
