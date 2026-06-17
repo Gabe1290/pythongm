@@ -110,6 +110,79 @@ class TestFolderSaveRollback:
         assert before == after
 
 
+class TestOrphanSnapshotCleanup:
+    """Snapshots must not accumulate as .<name>.bak-* siblings (the leak that
+    left 49 .plateforme_3.bak-* dirs in a user's Projects folder)."""
+
+    def test_snapshot_self_cleans_when_copy_fails(self, project_manager_dir):
+        """If the snapshot copy raises, the half-built temp dir is removed
+        rather than orphaned (the caller never sees the dir to clean it)."""
+        pm = _make_pm()
+        pm.load_project(project_manager_dir)
+        _seed_room(pm, [{'object': 'obj_a', 'x': 1, 'y': 1}])
+        pm.save_project()  # establish on-disk managed dirs to snapshot
+
+        with patch('shutil.copytree', side_effect=OSError("locked by Dropbox")):
+            with pytest.raises(OSError):
+                pm._snapshot_for_rollback(project_manager_dir)
+
+        leftover = list(project_manager_dir.parent.glob('.*bak-*'))
+        assert leftover == [], f"half-built snapshot orphaned: {leftover}"
+
+    def test_snapshot_discarded_even_on_systemexit(self, project_manager_dir):
+        """A BaseException mid-save (e.g. the IDE closing -> SystemExit) still
+        discards the snapshot via the finally block."""
+        pm = _make_pm()
+        pm.load_project(project_manager_dir)
+        _seed_room(pm, [{'object': 'obj_a', 'x': 1, 'y': 1}])
+        pm.save_project()
+
+        # SystemExit is NOT an Exception, so it bypasses the except branch and
+        # propagates — the finally must still run.
+        _seed_room(pm, [{'object': 'obj_b', 'x': 2, 'y': 2}])
+        with patch.object(pm, '_prepare_project_data_for_save',
+                          side_effect=SystemExit("window closed")):
+            with pytest.raises(SystemExit):
+                pm.save_project()
+
+        leftover = list(project_manager_dir.parent.glob('.*bak-*'))
+        assert leftover == [], f"snapshot orphaned on SystemExit: {leftover}"
+
+    def test_load_sweeps_orphaned_snapshots(self, project_manager_dir):
+        """Loading a project reclaims stale .<name>.bak-* siblings left behind
+        by a previous hard kill / power loss."""
+        parent = project_manager_dir.parent
+        name = project_manager_dir.name
+        # Simulate orphans from prior crashed sessions.
+        orphans = []
+        for suffix in ("sq0yde7k", "1ev6owu8", "zj1k8qp3"):
+            d = parent / f".{name}.bak-{suffix}"
+            (d / "rooms").mkdir(parents=True)
+            (d / "project.json").write_text("{}", encoding="utf-8")
+            orphans.append(d)
+        # An unrelated project's snapshot must NOT be swept.
+        other = parent / ".some_other_project.bak-keepme"
+        other.mkdir()
+
+        assert all(d.exists() for d in orphans)
+
+        pm = _make_pm()
+        assert pm.load_project(project_manager_dir) is True
+
+        for d in orphans:
+            assert not d.exists(), f"orphan not swept: {d.name}"
+        assert other.exists(), "sweep wrongly removed another project's snapshot"
+
+    def test_sweep_is_noop_when_nothing_orphaned(self, project_manager_dir):
+        """The common case (no orphans) leaves the folder untouched and the
+        load still succeeds."""
+        pm = _make_pm()
+        before = sorted(p.name for p in project_manager_dir.parent.iterdir())
+        assert pm.load_project(project_manager_dir) is True
+        after = sorted(p.name for p in project_manager_dir.parent.iterdir())
+        assert before == after
+
+
 @pytest.fixture
 def project_manager_dir(temp_project_dir):
     """Alias to the shared project-dir fixture for readability."""

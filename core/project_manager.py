@@ -310,6 +310,10 @@ class ProjectManager(QObject):
             self.current_project_data = project_data
             self.is_dirty_flag = False
 
+            # Reclaim any rollback snapshots orphaned by a prior crashed/killed
+            # save of this project (they accumulate as .<name>.bak-* siblings).
+            self._sweep_orphan_snapshots(project_path)
+
             # Start auto-save
             if self.auto_save_enabled:
                 self.auto_save_timer.start(self.auto_save_interval)
@@ -583,13 +587,23 @@ class ProjectManager(QObject):
         # the save loop and the samples guard don't see it).
         backup_dir = Path(tempfile.mkdtemp(prefix=f".{save_path.name}.bak-",
                                            dir=str(save_path.parent)))
-        for name in present:
-            src = save_path / name
-            dst = backup_dir / name
-            if src.is_dir():
-                shutil.copytree(src, dst)
-            else:
-                shutil.copy2(src, dst)
+        try:
+            for name in present:
+                src = save_path / name
+                dst = backup_dir / name
+                if src.is_dir():
+                    shutil.copytree(src, dst)
+                else:
+                    shutil.copy2(src, dst)
+        except Exception:
+            # mkdtemp created the dir before the copy ran; if the copy fails
+            # partway (e.g. a file locked by Dropbox/AV on a synced folder) the
+            # method raises before returning, so the caller never learns about
+            # the dir. Remove the half-built snapshot here so it can't orphan as
+            # a visible .<name>.bak-* sibling, then re-raise for the save to
+            # handle.
+            shutil.rmtree(backup_dir, ignore_errors=True)
+            raise
         return backup_dir
 
     def _restore_from_snapshot(self, save_path: Path, backup_dir: Path) -> None:
@@ -618,9 +632,34 @@ class ProjectManager(QObject):
                 # inconsistent on disk.
                 logger.error(f"Rollback failed for {live}: {restore_err}")
 
+    def _sweep_orphan_snapshots(self, save_path: Path) -> None:
+        """Delete stale rollback snapshots left by a crashed/killed save.
+
+        A save's snapshot lives only for the duration of that save (it's
+        discarded in _save_to_folder's finally), so any ``.<name>.bak-*``
+        sibling still present when the project is (re)loaded is an orphan — from
+        a hard process kill, power loss, or a synced-folder lock that defeated
+        the in-save cleanup. This is the one cause the save path can't prevent,
+        so we reclaim it on load instead.
+
+        Safe against a live save: this is a single-process desktop app, so load
+        and save share the GUI thread and can't overlap. iterdir + prefix match
+        (not glob) so a project name containing glob metacharacters can't widen
+        or break the match.
+        """
+        try:
+            prefix = f".{save_path.name}.bak-"
+            for entry in save_path.parent.iterdir():
+                if entry.name.startswith(prefix) and entry.is_dir():
+                    shutil.rmtree(entry, ignore_errors=True)
+                    logger.debug(f"Swept orphan save snapshot: {entry.name}")
+        except OSError as e:
+            logger.debug(f"Orphan-snapshot sweep skipped for {save_path}: {e}")
+
     def _save_to_folder(self, project_path: Optional[Path] = None) -> bool:
         """Save project to folder"""
         backup_dir: Optional[Path] = None
+        save_path: Optional[Path] = None
         try:
             save_path = Path(project_path) if project_path else self.current_project_path
             project_file = save_path / self.PROJECT_FILE
@@ -681,11 +720,6 @@ class ProjectManager(QObject):
 
             logger.info(f"💾 Saved project: {project_file}")
 
-            # Every file is on disk — discard the rollback snapshot.
-            if backup_dir is not None:
-                shutil.rmtree(backup_dir, ignore_errors=True)
-                backup_dir = None
-
             # Update state
             self.is_dirty_flag = False
             if project_path:
@@ -701,11 +735,19 @@ class ProjectManager(QObject):
             logger.error(f"Folder save failed: {e}")
             import traceback
             traceback.print_exc()
-            if backup_dir is not None:
+            if backup_dir is not None and save_path is not None:
                 logger.warning("Rolling back partial save to last good on-disk state")
                 self._restore_from_snapshot(save_path, backup_dir)
-                shutil.rmtree(backup_dir, ignore_errors=True)
             return False
+
+        finally:
+            # Always discard the snapshot — on success, on a caught failure
+            # (after the except restored from it), and on a propagating
+            # SystemExit/KeyboardInterrupt (e.g. the IDE closed mid-save). That
+            # last case skipped both the success and except branches before, and
+            # is what orphaned .<name>.bak-* dirs into the Projects folder.
+            if backup_dir is not None:
+                shutil.rmtree(backup_dir, ignore_errors=True)
 
     def _save_rooms_to_files(self, project_path: Path) -> None:
         """Save each room's instance data to a separate file in rooms/ directory
