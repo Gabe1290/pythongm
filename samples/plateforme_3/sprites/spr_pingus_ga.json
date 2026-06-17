@@ -1,0 +1,22 @@
+{
+  "name": "spr_pingus_ga",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_pingus_ga.png",
+  "width": 256,
+  "height": 32,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": false,
+  "bbox_left": 4,
+  "bbox_right": 26,
+  "bbox_top": 1,
+  "bbox_bottom": 30,
+  "frames": 8,
+  "frame_width": 32,
+  "frame_height": 32,
+  "animation_type": "strip_h",
+  "speed": 10.0,
+  "imported": true,
+  "created": "2026-05-26T11:59:41.892588",
+  "modified": "2026-05-26T11:59:41.892588"
+}

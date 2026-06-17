@@ -16,20 +16,6 @@
             "subimage": "0",
             "speed": "0"
           }
-        },
-        {
-          "action": "set_variable",
-          "parameters": {
-            "variable": "image_speed",
-            "value": "0"
-          }
-        },
-        {
-          "action": "set_variable",
-          "parameters": {
-            "variable": "power",
-            "value": "false"
-          }
         }
       ]
     },
@@ -42,12 +28,12 @@
           }
         },
         {
-          "action": "check_empty",
+          "action": "if_collision",
           "parameters": {
             "x": "0",
             "y": "1",
-            "objects": "solid",
-            "relative": true
+            "object": "solid",
+            "not_flag": true
           }
         },
         {
@@ -62,27 +48,11 @@
           "parameters": {}
         },
         {
-          "action": "start_block",
-          "parameters": {}
-        },
-        {
           "action": "set_gravity",
           "parameters": {
             "direction": "270",
             "gravity": "0"
           }
-        },
-        {
-          "action": "move_to_contact",
-          "parameters": {
-            "direction": "270",
-            "max_distance": "12",
-            "object": "solid"
-          }
-        },
-        {
-          "action": "end_block",
-          "parameters": {}
         },
         {
           "action": "comment",
@@ -95,17 +65,43 @@
           "parameters": {
             "variable": "vspeed",
             "value": "24",
-            "operation": "greater"
+            "scope": "self",
+            "operation": "greater_equal"
           }
         },
         {
-          "action": "set_variable",
+          "action": "set_vspeed",
           "parameters": {
-            "variable": "vspeed",
-            "value": "24"
+            "speed": "24"
           }
         }
       ]
+    },
+    "collision_with_obj_power": {
+      "actions": [
+        {
+          "action": "play_sound",
+          "parameters": {
+            "sound": "son_bonus",
+            "volume": "1.0"
+          }
+        },
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "20",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_instance",
+          "parameters": {
+            "target": "other",
+            "target_object": ""
+          }
+        }
+      ],
+      "target_object": "obj_power"
     },
     "collision_with_obj_sortie": {
       "actions": [
@@ -113,14 +109,13 @@
           "action": "play_sound",
           "parameters": {
             "sound": "son_niveaufini",
-            "loop": "0"
+            "volume": "1.0"
           }
         },
         {
-          "action": "if_object_exists",
+          "action": "sleep",
           "parameters": {
-            "object": "1000",
-            "count": "1"
+            "milliseconds": "1000"
           }
         },
         {
@@ -170,14 +165,7 @@
           "action": "play_sound",
           "parameters": {
             "sound": "son_personnage_mort",
-            "loop": "0"
-          }
-        },
-        {
-          "action": "if_object_exists",
-          "parameters": {
-            "object": "1000",
-            "count": "1"
+            "volume": "1.0"
           }
         },
         {
@@ -202,19 +190,22 @@
           "action": "play_sound",
           "parameters": {
             "sound": "son_bonus",
-            "loop": "0"
+            "volume": "1.0"
           }
         },
         {
           "action": "set_score",
           "parameters": {
-            "value": "10",
+            "value": "5",
             "relative": true
           }
         },
         {
           "action": "destroy_instance",
-          "parameters": {}
+          "parameters": {
+            "target": "other",
+            "target_object": ""
+          }
         }
       ],
       "target_object": "obj_bonus"
@@ -222,11 +213,10 @@
     "collision_with_obj_monstre_volant": {
       "actions": [
         {
-          "action": "test_variable",
+          "action": "if_object_exists",
           "parameters": {
-            "variable": "power",
-            "value": "true",
-            "operation": "equal"
+            "object": "obj_power",
+            "not_flag": true
           }
         },
         {
@@ -236,50 +226,68 @@
         {
           "action": "test_expression",
           "parameters": {
-            "expression": "vspeed > 0 and y < other.y+8"
+            "expression": "vspeed > 0 and y < other.y+8",
+            "then_actions": [
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Pingus vient d'en haut - monstre tué"
+                }
+              },
+              {
+                "action": "play_sound",
+                "parameters": {
+                  "sound": "son_monstre_mort",
+                  "volume": "1.0"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "50",
+                  "relative": true
+                }
+              },
+              {
+                "action": "change_instance",
+                "parameters": {
+                  "target": "other",
+                  "target_object": "",
+                  "object": "obj_monstre_mort",
+                  "perform_events": true
+                }
+              }
+            ],
+            "else_actions": [
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Pingus vient de côté ou d'en bas - Pingus mort"
+                }
+              },
+              {
+                "action": "stop_movement",
+                "parameters": {}
+              },
+              {
+                "action": "sleep",
+                "parameters": {
+                  "milliseconds": "1000"
+                }
+              },
+              {
+                "action": "set_lives",
+                "parameters": {
+                  "value": "-1",
+                  "relative": true
+                }
+              },
+              {
+                "action": "restart_room",
+                "parameters": {}
+              }
+            ]
           }
-        },
-        {
-          "action": "start_block",
-          "parameters": {}
-        },
-        {
-          "action": "comment",
-          "parameters": {
-            "text": "Pingus vient d'en haut - monstre détruit"
-          }
-        },
-        {
-          "action": "play_sound",
-          "parameters": {
-            "sound": "son_monstre_mort",
-            "loop": "0"
-          }
-        },
-        {
-          "action": "set_score",
-          "parameters": {
-            "value": "50",
-            "relative": true
-          }
-        },
-        {
-          "action": "start_moving_direction",
-          "parameters": {
-            "directions": "stop",
-            "speed": "0"
-          }
-        },
-        {
-          "action": "change_instance",
-          "parameters": {
-            "object": "obj_monstre_volant_mort",
-            "perform_events": "1"
-          }
-        },
-        {
-          "action": "end_block",
-          "parameters": {}
         },
         {
           "action": "end_block",
@@ -300,17 +308,13 @@
           }
         },
         {
-          "action": "play_sound",
-          "parameters": {
-            "sound": "son_personnage_mort",
-            "loop": "0"
-          }
+          "action": "stop_movement",
+          "parameters": {}
         },
         {
-          "action": "if_object_exists",
+          "action": "sleep",
           "parameters": {
-            "object": "1000",
-            "count": "1"
+            "milliseconds": "1000"
           }
         },
         {
@@ -349,7 +353,88 @@
         {
           "action": "test_expression",
           "parameters": {
-            "expression": "vspeed > 0 and y < other.y+8"
+            "expression": "vspeed > 0 and y < other.y+8",
+            "then_actions": [
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Pingus vient d'en haut - monstre tué"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "50",
+                  "relative": true
+                }
+              },
+              {
+                "action": "play_sound",
+                "parameters": {
+                  "sound": "son_monstre_mort",
+                  "volume": "1.0"
+                }
+              },
+              {
+                "action": "change_instance",
+                "parameters": {
+                  "target": "other",
+                  "target_object": "",
+                  "object": "obj_monstre_mort",
+                  "perform_events": true
+                }
+              }
+            ],
+            "else_actions": [
+              {
+                "action": "comment",
+                "parameters": {
+                  "text": "Pingus - mort"
+                }
+              },
+              {
+                "action": "stop_movement",
+                "parameters": {}
+              },
+              {
+                "action": "play_sound",
+                "parameters": {
+                  "sound": "son_personnage_mort",
+                  "volume": "1.0"
+                }
+              },
+              {
+                "action": "sleep",
+                "parameters": {
+                  "milliseconds": "1000"
+                }
+              },
+              {
+                "action": "set_lives",
+                "parameters": {
+                  "value": "-1",
+                  "relative": true
+                }
+              },
+              {
+                "action": "restart_room",
+                "parameters": {}
+              }
+            ]
+          }
+        }
+      ],
+      "target_object": "obj_monstre"
+    },
+    "collision_with_obj_brique": {
+      "actions": [
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "vspeed",
+            "value": "15",
+            "scope": "self",
+            "operation": "greater_equal"
           }
         },
         {
@@ -357,37 +442,26 @@
           "parameters": {}
         },
         {
-          "action": "comment",
+          "action": "move_to_contact",
           "parameters": {
-            "text": "Pingus vient d'en haut - monstre détruit"
+            "direction": "direction",
+            "max_distance": "12",
+            "object": "all"
           }
         },
         {
-          "action": "play_sound",
+          "action": "set_vspeed",
           "parameters": {
-            "sound": "son_monstre_mort",
-            "loop": "0"
-          }
-        },
-        {
-          "action": "set_score",
-          "parameters": {
-            "value": "50",
-            "relative": true
-          }
-        },
-        {
-          "action": "start_moving_direction",
-          "parameters": {
-            "directions": "stop",
             "speed": "0"
           }
         },
         {
           "action": "change_instance",
           "parameters": {
-            "object": "obj_monstre_mort",
-            "perform_events": "1"
+            "target": "self",
+            "target_object": "",
+            "object": "obj_splat",
+            "perform_events": true
           }
         },
         {
@@ -403,60 +477,19 @@
           "parameters": {}
         },
         {
-          "action": "comment",
+          "action": "move_to_contact",
           "parameters": {
-            "text": "Pingus - mort"
+            "direction": "direction",
+            "max_distance": "12"
           }
         },
         {
-          "action": "play_sound",
-          "parameters": {
-            "sound": "son_personnage_mort",
-            "loop": "0"
-          }
-        },
-        {
-          "action": "if_object_exists",
-          "parameters": {
-            "object": "1000",
-            "count": "1"
-          }
-        },
-        {
-          "action": "set_lives",
-          "parameters": {
-            "value": "-1",
-            "relative": true
-          }
-        },
-        {
-          "action": "restart_room",
-          "parameters": {
-            "transition": "0"
-          }
+          "action": "stop_movement",
+          "parameters": {}
         },
         {
           "action": "end_block",
           "parameters": {}
-        }
-      ],
-      "target_object": "obj_monstre"
-    },
-    "collision_with_obj_brique": {
-      "actions": [
-        {
-          "action": "move_to_contact",
-          "parameters": {
-            "direction": "direction",
-            "max_distance": "12",
-            "object": "solid"
-          }
-        },
-        {
-          "action": "set_vspeed",
-          "parameters": {
-            "vspeed": "0"
-          }
         }
       ],
       "target_object": "obj_brique"
@@ -464,13 +497,6 @@
     "keyboard": {
       "right": {
         "actions": [
-          {
-            "action": "set_variable",
-            "parameters": {
-              "variable": "image_speed",
-              "value": "0.5"
-            }
-          },
           {
             "action": "set_sprite",
             "parameters": {
@@ -480,20 +506,18 @@
             }
           },
           {
-            "action": "check_empty",
+            "action": "if_collision",
             "parameters": {
               "x": "4",
               "y": "0",
-              "objects": "solid",
-              "relative": true
+              "object": "any",
+              "not_flag": true
             }
           },
           {
-            "action": "jump_to_position",
+            "action": "set_hspeed",
             "parameters": {
-              "x": "4",
-              "y": "0",
-              "relative": true
+              "speed": "4"
             }
           }
         ]
@@ -505,27 +529,20 @@
             "parameters": {
               "x": "0",
               "y": "1",
-              "object": "solid",
-              "relative": true
+              "object": "any",
+              "not_flag": false
             }
           },
           {
             "action": "set_vspeed",
             "parameters": {
-              "vspeed": "-10"
+              "speed": "-10"
             }
           }
         ]
       },
       "left": {
         "actions": [
-          {
-            "action": "set_variable",
-            "parameters": {
-              "variable": "image_speed",
-              "value": "0.5"
-            }
-          },
           {
             "action": "set_sprite",
             "parameters": {
@@ -535,20 +552,18 @@
             }
           },
           {
-            "action": "check_empty",
+            "action": "if_collision",
             "parameters": {
               "x": "-4",
               "y": "0",
-              "objects": "solid",
-              "relative": true
+              "object": "any",
+              "not_flag": true
             }
           },
           {
-            "action": "jump_to_position",
+            "action": "set_hspeed",
             "parameters": {
-              "x": "-4",
-              "y": "0",
-              "relative": true
+              "speed": "-4"
             }
           }
         ]
@@ -569,12 +584,6 @@
     "game_start": {
       "actions": [
         {
-          "action": "set_score",
-          "parameters": {
-            "value": "0"
-          }
-        },
-        {
           "action": "set_lives",
           "parameters": {
             "value": "3"
@@ -584,11 +593,8 @@
           "action": "set_window_caption",
           "parameters": {
             "score": "1",
-            "score_caption": "score: ",
-            "lives": "1",
-            "lives_caption": "lives: ",
-            "health": "0",
-            "health_caption": "health: "
+            "lives": "score: ",
+            "health": "1"
           }
         }
       ]
@@ -597,10 +603,9 @@
       "anykey": {
         "actions": [
           {
-            "action": "set_variable",
+            "action": "set_hspeed",
             "parameters": {
-              "variable": "image_speed",
-              "value": "0"
+              "speed": "0"
             }
           }
         ]
@@ -609,5 +614,7 @@
   },
   "imported": true,
   "created": "2026-05-26T11:59:41.942278",
-  "modified": "2026-06-02T15:41:01.137610"
+  "modified": "2026-06-17T19:25:48.197510",
+  "parent": "",
+  "remember_destroyed": false
 }

@@ -1,0 +1,19 @@
+{
+  "name": "spr_16x16",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_16x16.png",
+  "width": 16,
+  "height": 16,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": false,
+  "frames": 1,
+  "frame_width": 16,
+  "frame_height": 16,
+  "animation_type": "single",
+  "speed": 10.0,
+  "imported": true,
+  "created": "2026-05-26T11:59:41.892588",
+  "modified": "2026-05-29T11:55:00.934017",
+  "thumbnail": "thumbnails/spr_16x16_thumb.png"
+}
