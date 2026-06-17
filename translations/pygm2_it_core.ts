@@ -2387,6 +2387,31 @@ Controlla la console per i dettagli dell&apos;errore.</translation>
 </context>
 <context>
     <name>WelcomeTab</name>
+        <message>
+            <source>Maze — Level 1</source>
+            <translation>Labirinto — Livello 1</translation>
+        </message>
+        <message>
+            <source>Maze — Level 2</source>
+            <translation>Labirinto — Livello 2</translation>
+        </message>
+        <message>
+            <source>Maze — Level 3</source>
+            <translation>Labirinto — Livello 3</translation>
+        </message>
+        <message>
+            <source>Platform — Level 1</source>
+            <translation>Piattaforma — Livello 1</translation>
+        </message>
+        <message>
+            <source>Platform — Level 2</source>
+            <translation>Piattaforma — Livello 2</translation>
+        </message>
+        <message>
+            <source>Platform — Level 3</source>
+            <translation>Piattaforma — Livello 3</translation>
+        </message>
+
     <message>
         <location filename="../widgets/welcome_tab.py" line="86"/>
         <source>Welcome to PyGameMaker IDE</source>

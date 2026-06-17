@@ -8255,6 +8255,31 @@ Do you want to save anyway?</source>
 </context>
 <context>
     <name>WelcomeTab</name>
+        <message>
+            <source>Maze — Level 1</source>
+            <translation>Лабіринт — Рівень 1</translation>
+        </message>
+        <message>
+            <source>Maze — Level 2</source>
+            <translation>Лабіринт — Рівень 2</translation>
+        </message>
+        <message>
+            <source>Maze — Level 3</source>
+            <translation>Лабіринт — Рівень 3</translation>
+        </message>
+        <message>
+            <source>Platform — Level 1</source>
+            <translation>Платформа — Рівень 1</translation>
+        </message>
+        <message>
+            <source>Platform — Level 2</source>
+            <translation>Платформа — Рівень 2</translation>
+        </message>
+        <message>
+            <source>Platform — Level 3</source>
+            <translation>Платформа — Рівень 3</translation>
+        </message>
+
     <message>
         <location filename="../widgets/welcome_tab.py" line="86"/>
         <source>Welcome to PyGameMaker IDE</source>

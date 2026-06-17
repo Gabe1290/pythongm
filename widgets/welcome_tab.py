@@ -42,6 +42,7 @@ SAMPLE_PROJECTS: List[Tuple[str, str]] = [
     ("samples/maze_3", "Maze — Level 3"),
     ("samples/plateforme_1", "Platform — Level 1"),
     ("samples/plateforme_2", "Platform — Level 2"),
+    ("samples/plateforme_3", "Platform — Level 3"),
     # `treasure` and `maze_4` were dropped from the bundled set after
     # rc.12 user testing surfaced enough GMK-import edge cases (bad
     # action parameters, sprite issues, half-converted events) that
@@ -170,7 +171,11 @@ class WelcomeTab(QWidget):
             if not (sample.is_dir() and (sample / 'project.json').exists()):
                 continue  # missing or incomplete in this checkout — skip silently
             sample_items.append((
-                self.tr("🎮  {0}").format(label),
+                # The label is a data-defined string (from SAMPLE_PROJECTS), so
+                # it's translated here at the call site rather than via lupdate
+                # extraction. Source strings live under the WelcomeTab context
+                # in the .ts files (see scripts/add_sample_name_translations.py).
+                self.tr("🎮  {0}").format(self.tr(label)),
                 lambda _checked=False, p=sample: self._on_open_sample(p),
             ))
 
