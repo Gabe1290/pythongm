@@ -1978,7 +1978,7 @@ ACTION_TYPES = {
         name="check_sound",
         display_name="Check Sound Playing",
         description="Conditional: true if the given sound is currently playing",
-        category="Sound",
+        category="Audio",
         icon="❓🔊",
         parameters=[
             ActionParameter(name="sound", display_name="Sound", param_type="sound", default_value="", description="Sound to check"),
@@ -2006,7 +2006,7 @@ ACTION_TYPES = {
         name="stop_sound",
         display_name="Stop Sound",
         description="Stop a playing sound",
-        category="Sound",
+        category="Audio",
         icon="🔇",
         parameters=[
             ActionParameter(name="sound", display_name="Sound", param_type="sound", default_value="", description="Sound to stop"),
