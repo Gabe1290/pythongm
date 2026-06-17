@@ -799,6 +799,28 @@ ACTION_TYPES = {
         ]
     ),
 
+    # Runtime: execute_sleep_action
+    "sleep": ActionType(
+        name="sleep",
+        display_name="Sleep",
+        description="Pause the game for a number of milliseconds, then continue. "
+                    "Sounds keep playing during the pause (e.g. let a sound finish "
+                    "before changing rooms). Note: rendering and input are frozen "
+                    "while sleeping, so keep durations short.",
+        category="Timing",
+        icon="💤",
+        parameters=[
+            ActionParameter(
+                name="milliseconds",
+                display_name="Milliseconds",
+                param_type="number",
+                default_value=1000,
+                description="How long to pause, in milliseconds (1000 = 1 second)",
+                min_value=0
+            )
+        ]
+    ),
+
     # SCORE/LIVES/HEALTH ACTIONS
     "set_score": ActionType(
         name="set_score",

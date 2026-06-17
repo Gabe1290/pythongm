@@ -2291,6 +2291,48 @@ class ActionExecutor:
         else:
             logger.debug(f"⏰ Alarm {alarm_number} set to {steps} steps for {instance.object_name}")
 
+    # Maximum blocking sleep, in milliseconds. A blocking sleep freezes
+    # rendering and input, so an absurd value (typo / hostile project) would
+    # hang the game; the common use case (let a sound finish) is well under this.
+    SLEEP_MAX_MS = 10000
+
+    def execute_sleep_action(self, instance, parameters: Dict[str, Any]):
+        """Pause the game for a number of milliseconds, then continue.
+
+        This is a *blocking* pause (pygame.time.delay): rendering and input are
+        frozen for the duration. Sounds play on independent mixer channels, so
+        they keep playing through the sleep — the intended use is letting a sound
+        finish before the next action (e.g. a room change) cuts it off.
+
+        Parameters:
+            milliseconds (or ms / duration): how long to pause; clamped to
+                [0, SLEEP_MAX_MS]. Accepts a number, variable, or expression.
+        """
+        ms_param = parameters.get(
+            "milliseconds", parameters.get("ms", parameters.get("duration", 1000))
+        )
+
+        ms = self._parse_value(str(ms_param), instance)
+        if not isinstance(ms, (int, float)):
+            logger.warning(f"⚠️ sleep: Invalid milliseconds value '{ms_param}', defaulting to 1000")
+            ms = 1000
+        ms = int(ms)
+
+        if ms <= 0:
+            return
+
+        if ms > self.SLEEP_MAX_MS:
+            logger.warning(
+                f"⚠️ sleep: {ms}ms exceeds the {self.SLEEP_MAX_MS}ms cap; clamping"
+            )
+            ms = self.SLEEP_MAX_MS
+
+        try:
+            import pygame
+            pygame.time.delay(ms)
+        except Exception as e:
+            logger.warning(f"⚠️ sleep: could not delay ({e})")
+
     # ==================== SCORE/LIVES/HEALTH ACTIONS ====================
 
     def execute_set_score_action(self, instance, parameters: Dict[str, Any]):
