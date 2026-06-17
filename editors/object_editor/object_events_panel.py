@@ -4,11 +4,12 @@ Object Events Panel
 Manages object events and their actions
 """
 
+import copy
 from typing import Dict, Any
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel,
-    QTreeWidget, QTreeWidgetItem, QMenu, QMessageBox, QDialog, QDialogButtonBox,
-    QCheckBox
+    QTreeWidget, QTreeWidgetItem, QTreeWidgetItemIterator, QMenu, QMessageBox,
+    QDialog, QDialogButtonBox, QCheckBox
 )
 from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QFont, QColor, QBrush
@@ -61,6 +62,12 @@ class ObjectEventsPanel(QWidget):
 
     events_modified = Signal()
     event_selected = Signal(str)  # event_name
+
+    # Shared across all object-editor event panels so actions copied in one
+    # object's editor can be pasted into another. Holds a list of deep-copied
+    # action dicts ([{"action": ..., "parameters": {...}}, ...]) in paste order,
+    # or None when empty.
+    _action_clipboard = None
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -134,7 +141,11 @@ class ObjectEventsPanel(QWidget):
         self.events_tree.setAcceptDrops(True)
         self.events_tree.setDropIndicatorShown(True)
         self.events_tree.setDragDropMode(QTreeWidget.InternalMove)
-        self.events_tree.setSelectionMode(QTreeWidget.SingleSelection)
+        # Extended selection so several actions can be copied at once
+        # (Ctrl/Shift-click). Single-item operations still use currentItem(),
+        # and the overridden dropEvent rebuilds from the data model, so this
+        # can't corrupt reordering.
+        self.events_tree.setSelectionMode(QTreeWidget.ExtendedSelection)
 
         # Override drag/drop events
         self.events_tree.dragEnterEvent = self.tree_drag_enter_event
@@ -181,8 +192,35 @@ class ObjectEventsPanel(QWidget):
 
             self.move_down_shortcut = QShortcut(QKeySequence(self.tr("Ctrl+Down")), self)
             self.move_down_shortcut.activated.connect(self.move_action_down)
+
+            self.copy_action_shortcut = QShortcut(QKeySequence.StandardKey.Copy, self)
+            self.copy_action_shortcut.activated.connect(self.copy_selected_action)
+
+            self.paste_action_shortcut = QShortcut(QKeySequence.StandardKey.Paste, self)
+            self.paste_action_shortcut.activated.connect(self.paste_selected_action)
         except Exception as e:
             logger.warning(f"Could not setup shortcuts: {e}")
+
+    def copy_selected_action(self):
+        """Ctrl+C: copy all currently selected actions (if any are selected)."""
+        self._store_clipboard(self._selected_action_items())
+
+    def paste_selected_action(self):
+        """Ctrl+V: paste the clipboard action relative to the current selection.
+
+        On an action -> insert after it; on an event / keyboard sub-event node
+        -> append to that event. paste_action_append no-ops on nodes that can't
+        hold actions (e.g. keyboard/alarm containers), so this is safe to call
+        for any selection.
+        """
+        current_item = self.events_tree.currentItem()
+        if not current_item:
+            return
+        action_data = current_item.data(0, Qt.UserRole)
+        if isinstance(action_data, dict) and "action" in action_data:
+            self.paste_action_after(current_item)
+        else:
+            self.paste_action_append(current_item)
 
     def add_event(self, event_name: str):
         """Add a regular event (not a sub-event)"""
@@ -574,6 +612,41 @@ class ObjectEventsPanel(QWidget):
                 self.refresh_events_display()
                 self.events_modified.emit()
 
+    def _paste_menu_label(self):
+        """'Paste Action' or 'Paste N Actions' to reflect the clipboard size."""
+        clip = self._clipboard_actions()
+        count = len(clip) if clip else 0
+        if count > 1:
+            return self.tr("Paste {0} Actions").format(count)
+        return self.tr("Paste Action")
+
+    def _add_action_clipboard_menu(self, menu, action_item):
+        """Append Copy/Paste entries to an action item's context menu.
+        Copy reflects how many actions are selected; Paste (insert-after) is
+        only offered when the clipboard holds at least one action.
+        """
+        selected = self._selected_action_items()
+        copy_count = len(selected) if action_item in selected else 1
+        copy_label = (self.tr("Copy {0} Actions").format(copy_count)
+                      if copy_count > 1 else self.tr("Copy Action"))
+        copy_item = menu.addAction(copy_label)
+        copy_item.triggered.connect(lambda: self.copy_action(action_item))
+
+        if self._clipboard_actions() is not None:
+            paste_item = menu.addAction(self._paste_menu_label())
+            paste_item.triggered.connect(lambda: self.paste_action_after(action_item))
+
+    def _add_event_paste_menu(self, menu, event_item):
+        """Append a Paste-Action (append-to-end) entry to an event node's menu
+        when the clipboard holds actions and the node accepts actions.
+        """
+        if self._clipboard_actions() is None:
+            return
+        if self._event_actions_list(event_item) is None:
+            return
+        paste_item = menu.addAction(self._paste_menu_label())
+        paste_item.triggered.connect(lambda: self.paste_action_append(event_item))
+
     def show_context_menu(self, position):
         """Show context menu for events tree"""
         item = self.events_tree.itemAt(position)
@@ -610,6 +683,7 @@ class ObjectEventsPanel(QWidget):
                     thymio_action = add_action_menu.addAction(self.tr("🤖 Thymio Action..."))
                     thymio_action.triggered.connect(lambda checked, e=event_name: self.add_thymio_action_with_selector(e))
 
+                self._add_event_paste_menu(menu, item)
                 menu.addSeparator()
                 remove_action = menu.addAction(self.tr("Remove Collision Event"))
                 remove_action.triggered.connect(lambda: self.remove_collision_event(event_name))
@@ -634,6 +708,7 @@ class ObjectEventsPanel(QWidget):
                     thymio_action = add_action_menu.addAction(self.tr("🤖 Thymio Action..."))
                     thymio_action.triggered.connect(lambda checked, e=event_name: self.add_thymio_action_with_selector(e))
 
+                self._add_event_paste_menu(menu, item)
                 menu.addSeparator()
                 remove_action = menu.addAction(self.tr("Remove Mouse Event"))
                 remove_action.triggered.connect(lambda: self.remove_mouse_event(event_name))
@@ -682,6 +757,7 @@ class ObjectEventsPanel(QWidget):
                     thymio_action = add_action_menu.addAction(self.tr("🤖 Thymio Action..."))
                     thymio_action.triggered.connect(lambda checked, e=event_name: self.add_thymio_action_with_selector(e))
 
+                self._add_event_paste_menu(menu, item)
                 menu.addSeparator()
                 remove_action = menu.addAction(self.tr("Remove Event"))
                 remove_action.triggered.connect(self.remove_selected_event)
@@ -722,6 +798,7 @@ class ObjectEventsPanel(QWidget):
                             lambda checked, e=event_name, k=sub_event_key: self.add_thymio_action_to_sub_event(e, k)
                         )
 
+                    self._add_event_paste_menu(menu, item)
                     menu.addSeparator()
                     remove_action = menu.addAction(self.tr("Remove {0} Event").format(sub_event_key.title()))
                     remove_action.triggered.connect(lambda: self.remove_sub_event(parent_item, item))
@@ -730,6 +807,8 @@ class ObjectEventsPanel(QWidget):
                 # This is an action under a regular event (Create, Step, Collision, etc.)
                 edit_action = menu.addAction(self.tr("Edit Action"))
                 edit_action.triggered.connect(lambda: self.edit_action(item))
+
+                self._add_action_clipboard_menu(menu, item)
 
                 remove_action = menu.addAction(self.tr("Remove Action"))
                 remove_action.triggered.connect(lambda: self.remove_action(item))
@@ -740,6 +819,8 @@ class ObjectEventsPanel(QWidget):
             if action_data and isinstance(action_data, dict):
                 edit_action = menu.addAction(self.tr("Edit Action"))
                 edit_action.triggered.connect(lambda: self.edit_action(item))
+
+                self._add_action_clipboard_menu(menu, item)
 
                 remove_action = menu.addAction(self.tr("Remove Action"))
                 remove_action.triggered.connect(lambda: self.remove_action(item))
@@ -1010,6 +1091,146 @@ class ObjectEventsPanel(QWidget):
                     self.current_events_data[event_name]["actions"].pop(action_index)
                     self.refresh_events_display()
                     self.events_modified.emit()
+
+    def _locate_action_list(self, action_item: QTreeWidgetItem):
+        """Resolve an action tree item to its backing (list, index) in
+        self.current_events_data, or (None, None) if it can't be located.
+
+        Mirrors remove_action's navigation so copy/paste land on exactly the
+        list the rest of the panel mutates (regular/collision/mouse events and
+        keyboard sub-events alike).
+        """
+        parent_item = action_item.parent()
+        if not parent_item:
+            return None, None
+
+        grandparent_item = parent_item.parent()
+        action_index = parent_item.indexOfChild(action_item)
+
+        if grandparent_item is not None:
+            # Keyboard sub-event action: Container -> Sub-key -> Action
+            main_event_name = grandparent_item.data(0, Qt.UserRole)
+            sub_event_data = parent_item.data(0, Qt.UserRole)
+            if (isinstance(sub_event_data, str) and isinstance(main_event_name, str)
+                    and sub_event_data.startswith(main_event_name + "_")):
+                sub_event_key = sub_event_data[len(main_event_name) + 1:]
+                container = self.current_events_data.get(main_event_name, {})
+                if (isinstance(container, dict) and sub_event_key in container
+                        and "actions" in container[sub_event_key]):
+                    actions = container[sub_event_key]["actions"]
+                    if 0 <= action_index < len(actions):
+                        return actions, action_index
+            return None, None
+
+        # Direct event action: Event -> Action
+        event_name = parent_item.data(0, Qt.UserRole)
+        event_data = self.current_events_data.get(event_name)
+        if (isinstance(event_data, dict) and "actions" in event_data
+                and 0 <= action_index < len(event_data["actions"])):
+            return event_data["actions"], action_index
+        return None, None
+
+    def _event_actions_list(self, event_item: QTreeWidgetItem):
+        """Return the actions list for a leaf event node or keyboard sub-event
+        node (so paste-append knows where to drop a copied action), or None
+        when the node can't accept actions directly (e.g. keyboard/alarm
+        containers).
+        """
+        parent = event_item.parent()
+        if parent is None:
+            event_name = event_item.data(0, Qt.UserRole)
+            event_data = self.current_events_data.get(event_name)
+            if isinstance(event_data, dict) and "actions" in event_data:
+                return event_data["actions"]
+            return None
+
+        # Keyboard sub-event node: parent is the container event
+        if parent.parent() is not None:
+            return None
+        main_event_name = parent.data(0, Qt.UserRole)
+        sub_event_data = event_item.data(0, Qt.UserRole)
+        if (isinstance(sub_event_data, str) and isinstance(main_event_name, str)
+                and sub_event_data.startswith(main_event_name + "_")):
+            sub_event_key = sub_event_data[len(main_event_name) + 1:]
+            container = self.current_events_data.get(main_event_name, {})
+            if (isinstance(container, dict) and sub_event_key in container
+                    and "actions" in container[sub_event_key]):
+                return container[sub_event_key]["actions"]
+        return None
+
+    def _selected_action_items(self):
+        """Return every selected action item in top-to-bottom tree order.
+
+        Qt's selectedItems() order is undefined, so walk the tree to make paste
+        order match what the user sees.
+        """
+        selected = set(self.events_tree.selectedItems())
+        if not selected:
+            return []
+        ordered = []
+        iterator = QTreeWidgetItemIterator(self.events_tree)
+        while iterator.value():
+            item = iterator.value()
+            if item in selected:
+                data = item.data(0, Qt.UserRole)
+                if isinstance(data, dict) and "action" in data:
+                    ordered.append(item)
+            iterator += 1
+        return ordered
+
+    def _store_clipboard(self, action_items):
+        """Deep-copy the given action items onto the shared clipboard."""
+        actions = []
+        for item in action_items:
+            data = item.data(0, Qt.UserRole)
+            if isinstance(data, dict) and "action" in data:
+                actions.append(copy.deepcopy(data))
+        if actions:
+            ObjectEventsPanel._action_clipboard = actions
+            logger.debug(f"Copied {len(actions)} action(s) to clipboard")
+
+    def copy_action(self, action_item: QTreeWidgetItem):
+        """Copy actions to the shared clipboard (context-menu entry).
+
+        Copies the whole selection when the right-clicked action is part of it,
+        otherwise just the right-clicked action.
+        """
+        selected = self._selected_action_items()
+        items = selected if action_item in selected else [action_item]
+        self._store_clipboard(items)
+
+    def _clipboard_actions(self):
+        """Return the clipboard's action list, or None when empty."""
+        clip = ObjectEventsPanel._action_clipboard
+        if isinstance(clip, list) and clip:
+            return clip
+        return None
+
+    def paste_action_after(self, action_item: QTreeWidgetItem):
+        """Paste the clipboard actions immediately after the given action."""
+        clip = self._clipboard_actions()
+        if clip is None:
+            return
+        actions, index = self._locate_action_list(action_item)
+        if actions is None:
+            return
+        for offset, action in enumerate(clip, start=1):
+            actions.insert(index + offset, copy.deepcopy(action))
+        self.refresh_events_display()
+        self.events_modified.emit()
+
+    def paste_action_append(self, event_item: QTreeWidgetItem):
+        """Paste the clipboard actions at the end of an event's action list."""
+        clip = self._clipboard_actions()
+        if clip is None:
+            return
+        actions = self._event_actions_list(event_item)
+        if actions is None:
+            return
+        for action in clip:
+            actions.append(copy.deepcopy(action))
+        self.refresh_events_display()
+        self.events_modified.emit()
 
     def _set_action_item_text(self, action_item, action_data, indent=""):
         """Populate a QTreeWidgetItem from an action dict.
