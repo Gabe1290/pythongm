@@ -1050,8 +1050,47 @@ class ObjectEventsPanel(QWidget):
 
         action_item.setData(0, Qt.UserRole, action_data)
 
+    def _collect_expanded_keys(self):
+        """Return the set of Qt.UserRole keys for currently-expanded tree items.
+
+        Used to preserve which event / sub-event nodes are open across a
+        rebuild, so adding or editing an action doesn't collapse the list the
+        user is working in.
+        """
+        expanded = set()
+
+        def walk(item):
+            if item.isExpanded():
+                key = item.data(0, Qt.UserRole)
+                # Only event / sub-event nodes carry string keys; action leaves
+                # store an (unhashable) action dict, which we skip.
+                if isinstance(key, str):
+                    expanded.add(key)
+            for i in range(item.childCount()):
+                walk(item.child(i))
+
+        for i in range(self.events_tree.topLevelItemCount()):
+            walk(self.events_tree.topLevelItem(i))
+        return expanded
+
+    def _restore_expanded_keys(self, expanded_keys):
+        """Re-expand tree items whose Qt.UserRole key was previously expanded."""
+        if not expanded_keys:
+            return
+
+        def walk(item):
+            key = item.data(0, Qt.UserRole)
+            if isinstance(key, str) and key in expanded_keys:
+                item.setExpanded(True)
+            for i in range(item.childCount()):
+                walk(item.child(i))
+
+        for i in range(self.events_tree.topLevelItemCount()):
+            walk(self.events_tree.topLevelItem(i))
+
     def refresh_events_display(self):
         """Refresh the events tree display"""
+        expanded_keys = self._collect_expanded_keys()
         self.events_tree.clear()
 
         for event_name, event_data in self.current_events_data.items():
@@ -1195,6 +1234,7 @@ class ObjectEventsPanel(QWidget):
                     self._set_action_item_text(action_item, action_data)
 
         self.events_tree.collapseAll()
+        self._restore_expanded_keys(expanded_keys)
 
     def on_event_selected(self, item: QTreeWidgetItem):
         """Handle event selection"""
