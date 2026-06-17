@@ -584,6 +584,15 @@ if dist > 0:
             steps = params.get('steps', 30)
             return f"self.alarms[{alarm_num}] = {steps}"
 
+        elif action_type == 'sleep':
+            # Blocking pause (matches the desktop runtime); ms clamped to [0, 10000].
+            ms = params.get('milliseconds', params.get('ms', params.get('duration', 1000)))
+            try:
+                ms = max(0, min(10000, int(ms)))
+            except (ValueError, TypeError):
+                ms = 1000
+            return f"import time; time.sleep({ms / 1000.0})"
+
         # ROOM ACTIONS
         elif action_type == 'next_room' or action_type == 'room_goto_next':
             return "from main import goto_next_room; goto_next_room()"

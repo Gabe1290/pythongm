@@ -831,6 +831,21 @@ class TestActionCodeGeneration:
         code = action_gen._convert_simple_action('set_alarm', {'alarm_number': 0, 'steps': 60}, 'step')
         assert 'self.alarms[0] = 60' in code
 
+    def test_convert_sleep(self, action_gen):
+        """_convert_simple_action should handle sleep (blocking, ms -> seconds)"""
+        code = action_gen._convert_simple_action('sleep', {'milliseconds': 1000}, 'step')
+        assert 'time.sleep(1.0)' in code
+
+    def test_convert_sleep_clamped(self, action_gen):
+        """sleep clamps an out-of-range duration to 10 seconds"""
+        code = action_gen._convert_simple_action('sleep', {'milliseconds': 999999}, 'step')
+        assert 'time.sleep(10.0)' in code
+
+    def test_convert_sleep_invalid_defaults(self, action_gen):
+        """sleep falls back to 1000ms on a non-numeric duration"""
+        code = action_gen._convert_simple_action('sleep', {'milliseconds': 'oops'}, 'step')
+        assert 'time.sleep(1.0)' in code
+
     def test_convert_set_score(self, action_gen):
         """_convert_simple_action should handle set_score"""
         code = action_gen._convert_simple_action('set_score', {'value': 100, 'relative': False}, 'step')
