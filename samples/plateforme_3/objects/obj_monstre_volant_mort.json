@@ -7,102 +7,11 @@
   "persistent": false,
   "depth": 0,
   "events": {
-    "create": {
-      "actions": [
-        {
-          "action": "comment",
-          "parameters": {
-            "text": "Vérifie si en l'air"
-          }
-        },
-        {
-          "action": "check_empty",
-          "parameters": {
-            "x": "0",
-            "y": "1",
-            "objects": "solid",
-            "relative": true
-          }
-        },
-        {
-          "action": "set_gravity",
-          "parameters": {
-            "direction": "270",
-            "gravity": "0.5"
-          }
-        },
-        {
-          "action": "else_action",
-          "parameters": {}
-        },
-        {
-          "action": "set_gravity",
-          "parameters": {
-            "direction": "270",
-            "gravity": "0"
-          }
-        },
-        {
-          "action": "comment",
-          "parameters": {
-            "text": "Vitesse verticale limitée"
-          }
-        },
-        {
-          "action": "test_variable",
-          "parameters": {
-            "variable": "vspeed",
-            "value": "24",
-            "operation": "greater"
-          }
-        },
-        {
-          "action": "set_variable",
-          "parameters": {
-            "variable": "vspeed",
-            "value": "24"
-          }
-        }
-      ]
-    },
     "step": {
       "actions": [
         {
           "action": "comment",
           "parameters": {
-            "text": "Vérifie si en l'air"
-          }
-        },
-        {
-          "action": "check_empty",
-          "parameters": {
-            "x": "0",
-            "y": "1",
-            "objects": "solid",
-            "relative": true
-          }
-        },
-        {
-          "action": "set_gravity",
-          "parameters": {
-            "direction": "270",
-            "gravity": "0.5"
-          }
-        },
-        {
-          "action": "else_action",
-          "parameters": {}
-        },
-        {
-          "action": "set_gravity",
-          "parameters": {
-            "direction": "270",
-            "gravity": "0"
-          }
-        },
-        {
-          "action": "comment",
-          "parameters": {
             "text": "Vitesse verticale limitée"
           }
         },
@@ -111,14 +20,13 @@
           "parameters": {
             "variable": "vspeed",
             "value": "24",
-            "operation": "greater"
+            "operation": "2"
           }
         },
         {
-          "action": "set_variable",
+          "action": "set_vspeed",
           "parameters": {
-            "variable": "vspeed",
-            "value": "24"
+            "speed": "24"
           }
         }
       ]
@@ -141,14 +49,12 @@
           "parameters": {
             "direction": "direction",
             "max_distance": "12",
-            "against": "0"
+            "object": "all"
           }
         },
         {
-          "action": "set_vspeed",
-          "parameters": {
-            "vspeed": "0"
-          }
+          "action": "stop_movement",
+          "parameters": {}
         }
       ],
       "target_object": "obj_brique"
@@ -156,5 +62,7 @@
   },
   "imported": true,
   "created": "2026-05-26T11:59:41.942278",
-  "modified": "2026-06-02T11:08:29.924701"
+  "modified": "2026-06-17T19:25:48.828370",
+  "parent": "",
+  "remember_destroyed": false
 }

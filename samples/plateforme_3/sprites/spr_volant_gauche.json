@@ -1,0 +1,22 @@
+{
+  "name": "spr_volant_gauche",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_volant_gauche.png",
+  "width": 160,
+  "height": 32,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": false,
+  "bbox_left": 0,
+  "bbox_right": 40,
+  "bbox_top": 0,
+  "bbox_bottom": 32,
+  "frames": 4,
+  "frame_width": 40,
+  "frame_height": 32,
+  "animation_type": "strip_h",
+  "speed": 10.0,
+  "imported": true,
+  "created": "2026-05-26T11:59:41.892588",
+  "modified": "2026-05-26T11:59:41.892588"
+}

@@ -24,6 +24,7 @@
           "parameters": {
             "variable": "hspeed",
             "value": "0",
+            "scope": "self",
             "operation": "greater"
           }
         },
@@ -60,6 +61,7 @@
           "parameters": {
             "variable": "hspeed",
             "value": "0",
+            "scope": "self",
             "operation": "greater"
           }
         },
@@ -89,5 +91,7 @@
   },
   "imported": true,
   "created": "2026-05-26T11:59:41.942278",
-  "modified": "2026-06-02T11:08:29.924701"
+  "modified": "2026-06-17T17:47:31.619870",
+  "parent": "",
+  "remember_destroyed": false
 }

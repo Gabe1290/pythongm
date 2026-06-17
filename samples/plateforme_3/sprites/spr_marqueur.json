@@ -1,0 +1,19 @@
+{
+  "name": "spr_marqueur",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_marqueur.png",
+  "width": 8,
+  "height": 8,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": true,
+  "frames": 1,
+  "frame_width": 8,
+  "frame_height": 8,
+  "animation_type": "single",
+  "speed": 10.0,
+  "imported": true,
+  "created": "2026-05-26T11:59:41.892588",
+  "modified": "2026-05-29T11:55:24.224371",
+  "thumbnail": "thumbnails/spr_marqueur_thumb.png"
+}

@@ -1,0 +1,22 @@
+{
+  "name": "spr_sortie",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_sortie.png",
+  "width": 64,
+  "height": 64,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": true,
+  "bbox_left": 24,
+  "bbox_right": 36,
+  "bbox_top": 43,
+  "bbox_bottom": 63,
+  "frames": 1,
+  "frame_width": 64,
+  "frame_height": 64,
+  "animation_type": "single",
+  "speed": 10.0,
+  "imported": true,
+  "created": "2026-05-26T11:59:41.892588",
+  "modified": "2026-05-26T11:59:41.892588"
+}

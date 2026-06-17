@@ -1,0 +1,19 @@
+{
+  "name": "spr_mortel",
+  "asset_type": "sprite",
+  "file_path": "sprites/spr_mortel.png",
+  "width": 16,
+  "height": 8,
+  "origin_x": 0,
+  "origin_y": 0,
+  "precise": false,
+  "frames": 1,
+  "frame_width": 16,
+  "frame_height": 8,
+  "animation_type": "single",
+  "speed": 10.0,
+  "imported": true,
+  "created": "2026-05-26T11:59:41.892588",
+  "modified": "2026-05-29T11:54:12.630432",
+  "thumbnail": "thumbnails/spr_mortel_thumb.png"
+}

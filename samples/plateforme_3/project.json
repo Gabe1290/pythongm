@@ -2,7 +2,7 @@
   "name": "plateforme_3_refresh2",
   "version": "1.0.0",
   "created": "2026-05-26T11:59:41.892588",
-  "modified": "2026-06-02T15:41:01.137610",
+  "modified": "2026-06-17T19:25:48.990120",
   "settings": {
     "window_title": "",
     "window_width": 800,
@@ -15,7 +15,7 @@
     "show_score_in_caption": false,
     "starting_health": 100,
     "show_health_in_caption": false,
-    "blockly_preset": "full"
+    "blockly_preset": "beginner"
   },
   "assets": {
     "sprites": {
@@ -35,7 +35,8 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-26T11:59:41.892588",
-        "modified": "2026-05-26T11:59:41.892588"
+        "modified": "2026-05-29T11:53:37.141054",
+        "thumbnail": "thumbnails/spr_32x32_noir_thumb.png"
       },
       "spr_32x16_noir": {
         "name": "spr_32x16_noir",
@@ -53,7 +54,8 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-26T11:59:41.892588",
-        "modified": "2026-05-26T11:59:41.892588"
+        "modified": "2026-05-29T11:53:45.987954",
+        "thumbnail": "thumbnails/spr_32x16_noir_thumb.png"
       },
       "spr_16x32_noir": {
         "name": "spr_16x32_noir",
@@ -71,7 +73,8 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-26T11:59:41.892588",
-        "modified": "2026-05-26T11:59:41.892588"
+        "modified": "2026-05-29T11:53:53.242785",
+        "thumbnail": "thumbnails/spr_16x32_noir_thumb.png"
       },
       "spr_pingus_ga": {
         "name": "spr_pingus_ga",
@@ -82,10 +85,10 @@
         "origin_x": 0,
         "origin_y": 0,
         "precise": false,
-        "bbox_left": 0,
-        "bbox_right": 32,
-        "bbox_top": 0,
-        "bbox_bottom": 32,
+        "bbox_left": 4,
+        "bbox_right": 26,
+        "bbox_top": 1,
+        "bbox_bottom": 30,
         "frames": 8,
         "frame_width": 32,
         "frame_height": 32,
@@ -93,7 +96,7 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-26T11:59:41.892588",
-        "modified": "2026-06-02T11:29:46.485069"
+        "modified": "2026-05-26T11:59:41.892588"
       },
       "spr_pingus_dr": {
         "name": "spr_pingus_dr",
@@ -104,10 +107,10 @@
         "origin_x": 0,
         "origin_y": 0,
         "precise": false,
-        "bbox_left": 0,
-        "bbox_right": 32,
-        "bbox_top": 0,
-        "bbox_bottom": 32,
+        "bbox_left": 4,
+        "bbox_right": 26,
+        "bbox_top": 1,
+        "bbox_bottom": 30,
         "frames": 8,
         "frame_width": 32,
         "frame_height": 32,
@@ -115,7 +118,7 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-26T11:59:41.892588",
-        "modified": "2026-06-02T11:29:46.485069"
+        "modified": "2026-05-26T11:59:41.892588"
       },
       "spr_pingus_splat": {
         "name": "spr_pingus_splat",
@@ -199,7 +202,8 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-26T11:59:41.892588",
-        "modified": "2026-05-26T11:59:41.892588"
+        "modified": "2026-05-29T11:55:24.224371",
+        "thumbnail": "thumbnails/spr_marqueur_thumb.png"
       },
       "spr_monstre_mort": {
         "name": "spr_monstre_mort",
@@ -301,7 +305,8 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-26T11:59:41.892588",
-        "modified": "2026-05-26T11:59:41.892588"
+        "modified": "2026-05-29T11:54:12.630432",
+        "thumbnail": "thumbnails/spr_mortel_thumb.png"
       },
       "spr_sortie": {
         "name": "spr_sortie",
@@ -341,7 +346,8 @@
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-26T11:59:41.892588",
-        "modified": "2026-05-26T11:59:41.892588"
+        "modified": "2026-05-29T11:55:00.934017",
+        "thumbnail": "thumbnails/spr_16x16_thumb.png"
       },
       "spr_volant_mort": {
         "name": "spr_volant_mort",
@@ -356,6 +362,24 @@
         "frame_width": 40,
         "frame_height": 32,
         "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-05-26T11:59:41.892588",
+        "modified": "2026-05-26T11:59:41.892588"
+      },
+      "spr_power": {
+        "name": "spr_power",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_power.png",
+        "width": 384,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 12,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
         "speed": 10.0,
         "imported": true,
         "created": "2026-05-26T11:59:41.892588",
@@ -413,7 +437,7 @@
         "height": 198,
         "tile_horizontal": false,
         "tile_vertical": false,
-        "use_as_tileset": true,
+        "use_as_tileset": false,
         "tile_width": 32,
         "tile_height": 32,
         "h_offset": 0,
@@ -422,7 +446,7 @@
         "v_sep": 1,
         "imported": true,
         "created": "2026-05-26T11:59:41.925969",
-        "modified": "2026-06-02T11:00:32.877452"
+        "modified": "2026-05-29T12:19:35.644660"
       },
       "fond_degrade": {
         "name": "fond_degrade",
@@ -463,20 +487,6 @@
                   "subimage": "0",
                   "speed": "0"
                 }
-              },
-              {
-                "action": "set_variable",
-                "parameters": {
-                  "variable": "image_speed",
-                  "value": "0"
-                }
-              },
-              {
-                "action": "set_variable",
-                "parameters": {
-                  "variable": "power",
-                  "value": "false"
-                }
               }
             ]
           },
@@ -489,12 +499,12 @@
                 }
               },
               {
-                "action": "check_empty",
+                "action": "if_collision",
                 "parameters": {
                   "x": "0",
                   "y": "1",
-                  "objects": "solid",
-                  "relative": true
+                  "object": "solid",
+                  "not_flag": true
                 }
               },
               {
@@ -509,27 +519,11 @@
                 "parameters": {}
               },
               {
-                "action": "start_block",
-                "parameters": {}
-              },
-              {
                 "action": "set_gravity",
                 "parameters": {
                   "direction": "270",
                   "gravity": "0"
                 }
-              },
-              {
-                "action": "move_to_contact",
-                "parameters": {
-                  "direction": "270",
-                  "max_distance": "12",
-                  "object": "solid"
-                }
-              },
-              {
-                "action": "end_block",
-                "parameters": {}
               },
               {
                 "action": "comment",
@@ -542,17 +536,43 @@
                 "parameters": {
                   "variable": "vspeed",
                   "value": "24",
-                  "operation": "greater"
+                  "scope": "self",
+                  "operation": "greater_equal"
                 }
               },
               {
-                "action": "set_variable",
+                "action": "set_vspeed",
                 "parameters": {
-                  "variable": "vspeed",
-                  "value": "24"
+                  "speed": "24"
                 }
               }
             ]
+          },
+          "collision_with_obj_power": {
+            "actions": [
+              {
+                "action": "play_sound",
+                "parameters": {
+                  "sound": "son_bonus",
+                  "volume": "1.0"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "20",
+                  "relative": true
+                }
+              },
+              {
+                "action": "destroy_instance",
+                "parameters": {
+                  "target": "other",
+                  "target_object": ""
+                }
+              }
+            ],
+            "target_object": "obj_power"
           },
           "collision_with_obj_sortie": {
             "actions": [
@@ -560,14 +580,13 @@
                 "action": "play_sound",
                 "parameters": {
                   "sound": "son_niveaufini",
-                  "loop": "0"
+                  "volume": "1.0"
                 }
               },
               {
-                "action": "if_object_exists",
+                "action": "sleep",
                 "parameters": {
-                  "object": "1000",
-                  "count": "1"
+                  "milliseconds": "1000"
                 }
               },
               {
@@ -617,14 +636,7 @@
                 "action": "play_sound",
                 "parameters": {
                   "sound": "son_personnage_mort",
-                  "loop": "0"
-                }
-              },
-              {
-                "action": "if_object_exists",
-                "parameters": {
-                  "object": "1000",
-                  "count": "1"
+                  "volume": "1.0"
                 }
               },
               {
@@ -649,19 +661,22 @@
                 "action": "play_sound",
                 "parameters": {
                   "sound": "son_bonus",
-                  "loop": "0"
+                  "volume": "1.0"
                 }
               },
               {
                 "action": "set_score",
                 "parameters": {
-                  "value": "10",
+                  "value": "5",
                   "relative": true
                 }
               },
               {
                 "action": "destroy_instance",
-                "parameters": {}
+                "parameters": {
+                  "target": "other",
+                  "target_object": ""
+                }
               }
             ],
             "target_object": "obj_bonus"
@@ -669,11 +684,10 @@
           "collision_with_obj_monstre_volant": {
             "actions": [
               {
-                "action": "test_variable",
+                "action": "if_object_exists",
                 "parameters": {
-                  "variable": "power",
-                  "value": "true",
-                  "operation": "equal"
+                  "object": "obj_power",
+                  "not_flag": true
                 }
               },
               {
@@ -683,50 +697,68 @@
               {
                 "action": "test_expression",
                 "parameters": {
-                  "expression": "vspeed > 0 and y < other.y+8"
+                  "expression": "vspeed > 0 and y < other.y+8",
+                  "then_actions": [
+                    {
+                      "action": "comment",
+                      "parameters": {
+                        "text": "Pingus vient d'en haut - monstre tué"
+                      }
+                    },
+                    {
+                      "action": "play_sound",
+                      "parameters": {
+                        "sound": "son_monstre_mort",
+                        "volume": "1.0"
+                      }
+                    },
+                    {
+                      "action": "set_score",
+                      "parameters": {
+                        "value": "50",
+                        "relative": true
+                      }
+                    },
+                    {
+                      "action": "change_instance",
+                      "parameters": {
+                        "target": "other",
+                        "target_object": "",
+                        "object": "obj_monstre_mort",
+                        "perform_events": true
+                      }
+                    }
+                  ],
+                  "else_actions": [
+                    {
+                      "action": "comment",
+                      "parameters": {
+                        "text": "Pingus vient de côté ou d'en bas - Pingus mort"
+                      }
+                    },
+                    {
+                      "action": "stop_movement",
+                      "parameters": {}
+                    },
+                    {
+                      "action": "sleep",
+                      "parameters": {
+                        "milliseconds": "1000"
+                      }
+                    },
+                    {
+                      "action": "set_lives",
+                      "parameters": {
+                        "value": "-1",
+                        "relative": true
+                      }
+                    },
+                    {
+                      "action": "restart_room",
+                      "parameters": {}
+                    }
+                  ]
                 }
-              },
-              {
-                "action": "start_block",
-                "parameters": {}
-              },
-              {
-                "action": "comment",
-                "parameters": {
-                  "text": "Pingus vient d'en haut - monstre détruit"
-                }
-              },
-              {
-                "action": "play_sound",
-                "parameters": {
-                  "sound": "son_monstre_mort",
-                  "loop": "0"
-                }
-              },
-              {
-                "action": "set_score",
-                "parameters": {
-                  "value": "50",
-                  "relative": true
-                }
-              },
-              {
-                "action": "start_moving_direction",
-                "parameters": {
-                  "directions": "stop",
-                  "speed": "0"
-                }
-              },
-              {
-                "action": "change_instance",
-                "parameters": {
-                  "object": "obj_monstre_volant_mort",
-                  "perform_events": "1"
-                }
-              },
-              {
-                "action": "end_block",
-                "parameters": {}
               },
               {
                 "action": "end_block",
@@ -747,17 +779,13 @@
                 }
               },
               {
-                "action": "play_sound",
-                "parameters": {
-                  "sound": "son_personnage_mort",
-                  "loop": "0"
-                }
+                "action": "stop_movement",
+                "parameters": {}
               },
               {
-                "action": "if_object_exists",
+                "action": "sleep",
                 "parameters": {
-                  "object": "1000",
-                  "count": "1"
+                  "milliseconds": "1000"
                 }
               },
               {
@@ -796,7 +824,88 @@
               {
                 "action": "test_expression",
                 "parameters": {
-                  "expression": "vspeed > 0 and y < other.y+8"
+                  "expression": "vspeed > 0 and y < other.y+8",
+                  "then_actions": [
+                    {
+                      "action": "comment",
+                      "parameters": {
+                        "text": "Pingus vient d'en haut - monstre tué"
+                      }
+                    },
+                    {
+                      "action": "set_score",
+                      "parameters": {
+                        "value": "50",
+                        "relative": true
+                      }
+                    },
+                    {
+                      "action": "play_sound",
+                      "parameters": {
+                        "sound": "son_monstre_mort",
+                        "volume": "1.0"
+                      }
+                    },
+                    {
+                      "action": "change_instance",
+                      "parameters": {
+                        "target": "other",
+                        "target_object": "",
+                        "object": "obj_monstre_mort",
+                        "perform_events": true
+                      }
+                    }
+                  ],
+                  "else_actions": [
+                    {
+                      "action": "comment",
+                      "parameters": {
+                        "text": "Pingus - mort"
+                      }
+                    },
+                    {
+                      "action": "stop_movement",
+                      "parameters": {}
+                    },
+                    {
+                      "action": "play_sound",
+                      "parameters": {
+                        "sound": "son_personnage_mort",
+                        "volume": "1.0"
+                      }
+                    },
+                    {
+                      "action": "sleep",
+                      "parameters": {
+                        "milliseconds": "1000"
+                      }
+                    },
+                    {
+                      "action": "set_lives",
+                      "parameters": {
+                        "value": "-1",
+                        "relative": true
+                      }
+                    },
+                    {
+                      "action": "restart_room",
+                      "parameters": {}
+                    }
+                  ]
+                }
+              }
+            ],
+            "target_object": "obj_monstre"
+          },
+          "collision_with_obj_brique": {
+            "actions": [
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "vspeed",
+                  "value": "15",
+                  "scope": "self",
+                  "operation": "greater_equal"
                 }
               },
               {
@@ -804,37 +913,26 @@
                 "parameters": {}
               },
               {
-                "action": "comment",
+                "action": "move_to_contact",
                 "parameters": {
-                  "text": "Pingus vient d'en haut - monstre détruit"
+                  "direction": "direction",
+                  "max_distance": "12",
+                  "object": "all"
                 }
               },
               {
-                "action": "play_sound",
+                "action": "set_vspeed",
                 "parameters": {
-                  "sound": "son_monstre_mort",
-                  "loop": "0"
-                }
-              },
-              {
-                "action": "set_score",
-                "parameters": {
-                  "value": "50",
-                  "relative": true
-                }
-              },
-              {
-                "action": "start_moving_direction",
-                "parameters": {
-                  "directions": "stop",
                   "speed": "0"
                 }
               },
               {
                 "action": "change_instance",
                 "parameters": {
-                  "object": "obj_monstre_mort",
-                  "perform_events": "1"
+                  "target": "self",
+                  "target_object": "",
+                  "object": "obj_splat",
+                  "perform_events": true
                 }
               },
               {
@@ -850,60 +948,19 @@
                 "parameters": {}
               },
               {
-                "action": "comment",
+                "action": "move_to_contact",
                 "parameters": {
-                  "text": "Pingus - mort"
+                  "direction": "direction",
+                  "max_distance": "12"
                 }
               },
               {
-                "action": "play_sound",
-                "parameters": {
-                  "sound": "son_personnage_mort",
-                  "loop": "0"
-                }
-              },
-              {
-                "action": "if_object_exists",
-                "parameters": {
-                  "object": "1000",
-                  "count": "1"
-                }
-              },
-              {
-                "action": "set_lives",
-                "parameters": {
-                  "value": "-1",
-                  "relative": true
-                }
-              },
-              {
-                "action": "restart_room",
-                "parameters": {
-                  "transition": "0"
-                }
+                "action": "stop_movement",
+                "parameters": {}
               },
               {
                 "action": "end_block",
                 "parameters": {}
-              }
-            ],
-            "target_object": "obj_monstre"
-          },
-          "collision_with_obj_brique": {
-            "actions": [
-              {
-                "action": "move_to_contact",
-                "parameters": {
-                  "direction": "direction",
-                  "max_distance": "12",
-                  "object": "solid"
-                }
-              },
-              {
-                "action": "set_vspeed",
-                "parameters": {
-                  "vspeed": "0"
-                }
               }
             ],
             "target_object": "obj_brique"
@@ -911,13 +968,6 @@
           "keyboard": {
             "right": {
               "actions": [
-                {
-                  "action": "set_variable",
-                  "parameters": {
-                    "variable": "image_speed",
-                    "value": "0.5"
-                  }
-                },
                 {
                   "action": "set_sprite",
                   "parameters": {
@@ -927,20 +977,18 @@
                   }
                 },
                 {
-                  "action": "check_empty",
+                  "action": "if_collision",
                   "parameters": {
                     "x": "4",
                     "y": "0",
-                    "objects": "solid",
-                    "relative": true
+                    "object": "any",
+                    "not_flag": true
                   }
                 },
                 {
-                  "action": "jump_to_position",
+                  "action": "set_hspeed",
                   "parameters": {
-                    "x": "4",
-                    "y": "0",
-                    "relative": true
+                    "speed": "4"
                   }
                 }
               ]
@@ -952,27 +1000,20 @@
                   "parameters": {
                     "x": "0",
                     "y": "1",
-                    "object": "solid",
-                    "relative": true
+                    "object": "any",
+                    "not_flag": false
                   }
                 },
                 {
                   "action": "set_vspeed",
                   "parameters": {
-                    "vspeed": "-10"
+                    "speed": "-10"
                   }
                 }
               ]
             },
             "left": {
               "actions": [
-                {
-                  "action": "set_variable",
-                  "parameters": {
-                    "variable": "image_speed",
-                    "value": "0.5"
-                  }
-                },
                 {
                   "action": "set_sprite",
                   "parameters": {
@@ -982,20 +1023,18 @@
                   }
                 },
                 {
-                  "action": "check_empty",
+                  "action": "if_collision",
                   "parameters": {
                     "x": "-4",
                     "y": "0",
-                    "objects": "solid",
-                    "relative": true
+                    "object": "any",
+                    "not_flag": true
                   }
                 },
                 {
-                  "action": "jump_to_position",
+                  "action": "set_hspeed",
                   "parameters": {
-                    "x": "-4",
-                    "y": "0",
-                    "relative": true
+                    "speed": "-4"
                   }
                 }
               ]
@@ -1016,12 +1055,6 @@
           "game_start": {
             "actions": [
               {
-                "action": "set_score",
-                "parameters": {
-                  "value": "0"
-                }
-              },
-              {
                 "action": "set_lives",
                 "parameters": {
                   "value": "3"
@@ -1031,11 +1064,8 @@
                 "action": "set_window_caption",
                 "parameters": {
                   "score": "1",
-                  "score_caption": "score: ",
-                  "lives": "1",
-                  "lives_caption": "lives: ",
-                  "health": "0",
-                  "health_caption": "health: "
+                  "lives": "score: ",
+                  "health": "1"
                 }
               }
             ]
@@ -1044,10 +1074,9 @@
             "anykey": {
               "actions": [
                 {
-                  "action": "set_variable",
+                  "action": "set_hspeed",
                   "parameters": {
-                    "variable": "image_speed",
-                    "value": "0"
+                    "speed": "0"
                   }
                 }
               ]
@@ -1056,7 +1085,9 @@
         },
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-06-02T14:34:32.992309"
+        "modified": "2026-06-17T19:25:48.197510",
+        "parent": "",
+        "remember_destroyed": false
       },
       "obj_brique": {
         "name": "obj_brique",
@@ -1069,7 +1100,7 @@
         "events": {},
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-06-02T11:00:32.877452"
+        "modified": "2026-05-26T11:59:41.942278"
       },
       "obj_brique_h": {
         "name": "obj_brique_h",
@@ -1082,7 +1113,7 @@
         "events": {},
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-06-02T11:00:32.877452",
+        "modified": "2026-05-26T11:59:41.942278",
         "parent": "obj_brique"
       },
       "obj_brique_v": {
@@ -1096,8 +1127,72 @@
         "events": {},
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-06-02T11:00:32.877452",
+        "modified": "2026-05-26T11:59:41.942278",
         "parent": "obj_brique"
+      },
+      "obj_splat": {
+        "name": "obj_splat",
+        "asset_type": "object",
+        "sprite": "spr_pingus_splat",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "reverse_horizontal",
+                "parameters": {}
+              },
+              {
+                "action": "start_moving_direction",
+                "parameters": {
+                  "directions": "stop",
+                  "speed": "0"
+                }
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "spr_pingus_splat",
+                  "subimage": "0",
+                  "speed": "0.4"
+                }
+              }
+            ]
+          },
+          "animation_end": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "spr_pingus_splat",
+                  "subimage": "12",
+                  "speed": "0"
+                }
+              },
+              {
+                "action": "if_object_exists",
+                "parameters": {
+                  "object": "1000",
+                  "count": "1"
+                }
+              },
+              {
+                "action": "restart_room",
+                "parameters": {
+                  "transition": "5"
+                }
+              }
+            ]
+          }
+        },
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-06-17T19:25:48.367365",
+        "parent": "",
+        "remember_destroyed": false
       },
       "obj_monstre": {
         "name": "obj_monstre",
@@ -1125,6 +1220,7 @@
                 "parameters": {
                   "variable": "hspeed",
                   "value": "0",
+                  "scope": "self",
                   "operation": "greater"
                 }
               },
@@ -1161,6 +1257,7 @@
                 "parameters": {
                   "variable": "hspeed",
                   "value": "0",
+                  "scope": "self",
                   "operation": "greater"
                 }
               },
@@ -1190,7 +1287,9 @@
         },
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-06-02T11:00:32.877452"
+        "modified": "2026-06-17T17:47:31.619870",
+        "parent": "",
+        "remember_destroyed": false
       },
       "obj_marqueur": {
         "name": "obj_marqueur",
@@ -1203,7 +1302,7 @@
         "events": {},
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-06-02T11:00:32.877452",
+        "modified": "2026-05-26T11:59:41.942278",
         "parent": "obj_brique"
       },
       "obj_monstre_mort": {
@@ -1230,8 +1329,9 @@
         },
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-06-02T11:00:32.877452",
-        "parent": "obj_brique"
+        "modified": "2026-06-17T11:45:30.643193",
+        "parent": "obj_brique",
+        "remember_destroyed": false
       },
       "obj_monstre_volant": {
         "name": "obj_monstre_volant",
@@ -1256,6 +1356,7 @@
                 "parameters": {
                   "variable": "hspeed",
                   "value": "0",
+                  "scope": "self",
                   "operation": "greater"
                 }
               },
@@ -1292,6 +1393,7 @@
                 "parameters": {
                   "variable": "hspeed",
                   "value": "0",
+                  "scope": "self",
                   "operation": "greater"
                 }
               },
@@ -1321,7 +1423,9 @@
         },
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-06-02T11:00:32.877452"
+        "modified": "2026-06-17T11:45:33.097247",
+        "parent": "",
+        "remember_destroyed": false
       },
       "obj_bonus": {
         "name": "obj_bonus",
@@ -1347,7 +1451,7 @@
         },
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-06-02T11:00:32.877452"
+        "modified": "2026-05-26T11:59:41.942278"
       },
       "obj_mortel": {
         "name": "obj_mortel",
@@ -1360,7 +1464,7 @@
         "events": {},
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-06-02T11:00:32.877452"
+        "modified": "2026-05-26T11:59:41.942278"
       },
       "obj_sortie": {
         "name": "obj_sortie",
@@ -1373,7 +1477,9 @@
         "events": {},
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-06-02T11:00:32.877452"
+        "modified": "2026-06-17T19:25:48.526244",
+        "parent": "",
+        "remember_destroyed": false
       },
       "obj_brique_c": {
         "name": "obj_brique_c",
@@ -1386,7 +1492,7 @@
         "events": {},
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-06-02T11:00:32.877452",
+        "modified": "2026-05-26T11:59:41.942278",
         "parent": "obj_brique"
       },
       "obj_monstre_volant_mort": {
@@ -1398,102 +1504,11 @@
         "persistent": false,
         "depth": 0,
         "events": {
-          "create": {
-            "actions": [
-              {
-                "action": "comment",
-                "parameters": {
-                  "text": "Vérifie si en l'air"
-                }
-              },
-              {
-                "action": "check_empty",
-                "parameters": {
-                  "x": "0",
-                  "y": "1",
-                  "objects": "solid",
-                  "relative": true
-                }
-              },
-              {
-                "action": "set_gravity",
-                "parameters": {
-                  "direction": "270",
-                  "gravity": "0.5"
-                }
-              },
-              {
-                "action": "else_action",
-                "parameters": {}
-              },
-              {
-                "action": "set_gravity",
-                "parameters": {
-                  "direction": "270",
-                  "gravity": "0"
-                }
-              },
-              {
-                "action": "comment",
-                "parameters": {
-                  "text": "Vitesse verticale limitée"
-                }
-              },
-              {
-                "action": "test_variable",
-                "parameters": {
-                  "variable": "vspeed",
-                  "value": "24",
-                  "operation": "greater"
-                }
-              },
-              {
-                "action": "set_variable",
-                "parameters": {
-                  "variable": "vspeed",
-                  "value": "24"
-                }
-              }
-            ]
-          },
           "step": {
             "actions": [
               {
                 "action": "comment",
                 "parameters": {
-                  "text": "Vérifie si en l'air"
-                }
-              },
-              {
-                "action": "check_empty",
-                "parameters": {
-                  "x": "0",
-                  "y": "1",
-                  "objects": "solid",
-                  "relative": true
-                }
-              },
-              {
-                "action": "set_gravity",
-                "parameters": {
-                  "direction": "270",
-                  "gravity": "0.5"
-                }
-              },
-              {
-                "action": "else_action",
-                "parameters": {}
-              },
-              {
-                "action": "set_gravity",
-                "parameters": {
-                  "direction": "270",
-                  "gravity": "0"
-                }
-              },
-              {
-                "action": "comment",
-                "parameters": {
                   "text": "Vitesse verticale limitée"
                 }
               },
@@ -1502,14 +1517,13 @@
                 "parameters": {
                   "variable": "vspeed",
                   "value": "24",
-                  "operation": "greater"
+                  "operation": "2"
                 }
               },
               {
-                "action": "set_variable",
+                "action": "set_vspeed",
                 "parameters": {
-                  "variable": "vspeed",
-                  "value": "24"
+                  "speed": "24"
                 }
               }
             ]
@@ -1532,14 +1546,12 @@
                 "parameters": {
                   "direction": "direction",
                   "max_distance": "12",
-                  "against": "0"
+                  "object": "all"
                 }
               },
               {
-                "action": "set_vspeed",
-                "parameters": {
-                  "vspeed": "0"
-                }
+                "action": "stop_movement",
+                "parameters": {}
               }
             ],
             "target_object": "obj_brique"
@@ -1547,7 +1559,24 @@
         },
         "imported": true,
         "created": "2026-05-26T11:59:41.942278",
-        "modified": "2026-06-02T11:00:32.877452"
+        "modified": "2026-06-17T19:25:48.828370",
+        "parent": "",
+        "remember_destroyed": false
+      },
+      "obj_power": {
+        "name": "obj_power",
+        "asset_type": "object",
+        "sprite": "spr_power",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-05-26T11:59:41.942278",
+        "modified": "2026-06-17T19:25:48.676647",
+        "parent": "",
+        "remember_destroyed": false
       }
     },
     "rooms": {
@@ -1560,12 +1589,1389 @@
         "background_image": "fond_degrade",
         "tile_horizontal": false,
         "tile_vertical": false,
-        "instance_count": 195,
+        "instance_count": 194,
         "instances": [],
-        "_external_file": "rooms/niveau_01.json",
         "created": "2026-05-26T11:59:41.956046",
-        "modified": "2026-05-26T11:59:41.956046",
-        "imported": true
+        "modified": "2026-06-17T11:45:35.280311",
+        "imported": true,
+        "tiles": [
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 0,
+            "y": 0
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 0,
+            "y": 64
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 0,
+            "y": 192
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 0,
+            "y": 256
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 768,
+            "y": 0
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 768,
+            "y": 64
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 768,
+            "y": 128
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 768,
+            "y": 256
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 768,
+            "y": 320
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 0,
+            "y": 384
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 0,
+            "y": 544
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 544,
+            "y": 352
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 544,
+            "y": 416
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 99,
+            "width": 32,
+            "x": 0,
+            "y": 32
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 99,
+            "width": 32,
+            "x": 0,
+            "y": 224
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 99,
+            "width": 32,
+            "x": 0,
+            "y": 288
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 99,
+            "width": 32,
+            "x": 0,
+            "y": 416
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 99,
+            "width": 32,
+            "x": 0,
+            "y": 576
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 99,
+            "width": 32,
+            "x": 768,
+            "y": 32
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 99,
+            "width": 32,
+            "x": 768,
+            "y": 96
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 99,
+            "width": 32,
+            "x": 768,
+            "y": 160
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 99,
+            "width": 32,
+            "x": 768,
+            "y": 288
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 99,
+            "width": 32,
+            "x": 768,
+            "y": 352
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 99,
+            "width": 32,
+            "x": 768,
+            "y": 576
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 132,
+            "tile_y": 0,
+            "width": 32,
+            "x": 736,
+            "y": 192
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 0,
+            "width": 32,
+            "x": 768,
+            "y": 192
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 132,
+            "tile_y": 33,
+            "width": 32,
+            "x": 736,
+            "y": 224
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 33,
+            "width": 32,
+            "x": 768,
+            "y": 224
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 132,
+            "tile_y": 0,
+            "width": 32,
+            "x": 320,
+            "y": 448
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 132,
+            "tile_y": 0,
+            "width": 32,
+            "x": 320,
+            "y": 576
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 0,
+            "width": 32,
+            "x": 352,
+            "y": 448
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 0,
+            "width": 32,
+            "x": 352,
+            "y": 576
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 132,
+            "tile_y": 33,
+            "width": 32,
+            "x": 320,
+            "y": 480
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 132,
+            "tile_y": 33,
+            "width": 32,
+            "x": 320,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 33,
+            "width": 32,
+            "x": 352,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 33,
+            "width": 32,
+            "x": 352,
+            "y": 480
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 736,
+            "y": 384
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 704,
+            "y": 192
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 640,
+            "y": 192
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 608,
+            "y": 192
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 672,
+            "y": 192
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 768,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 704,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 640,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 704,
+            "y": 576
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 736,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 672,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 608,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 736,
+            "y": 576
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 99,
+            "width": 32,
+            "x": 0,
+            "y": 96
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 132,
+            "tile_y": 0,
+            "width": 32,
+            "x": 0,
+            "y": 128
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 0,
+            "width": 32,
+            "x": 32,
+            "y": 128
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 132,
+            "tile_y": 33,
+            "width": 32,
+            "x": 0,
+            "y": 160
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 33,
+            "width": 32,
+            "x": 32,
+            "y": 160
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 64,
+            "y": 160
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 128,
+            "y": 160
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 160,
+            "y": 160
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 96,
+            "y": 160
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 66,
+            "width": 32,
+            "x": 0,
+            "y": 320
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 99,
+            "width": 32,
+            "x": 0,
+            "y": 352
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 132,
+            "tile_y": 66,
+            "width": 32,
+            "x": 320,
+            "y": 512
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 132,
+            "tile_y": 99,
+            "width": 32,
+            "x": 320,
+            "y": 544
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 99,
+            "width": 32,
+            "x": 352,
+            "y": 544
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 66,
+            "width": 32,
+            "x": 352,
+            "y": 512
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 132,
+            "tile_y": 0,
+            "width": 32,
+            "x": 0,
+            "y": 480
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 0,
+            "width": 32,
+            "x": 32,
+            "y": 480
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 132,
+            "tile_y": 33,
+            "width": 32,
+            "x": 0,
+            "y": 512
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 33,
+            "width": 32,
+            "x": 32,
+            "y": 512
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 0,
+            "y": 448
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 64,
+            "y": 512
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 128,
+            "y": 512
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 32,
+            "y": 448
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 96,
+            "y": 512
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 288,
+            "y": 480
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 256,
+            "y": 480
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 480,
+            "y": 480
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 544,
+            "y": 480
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 608,
+            "y": 480
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 512,
+            "y": 352
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 608,
+            "y": 352
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 640,
+            "y": 480
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 576,
+            "y": 480
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 512,
+            "y": 480
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 480,
+            "y": 352
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 99,
+            "width": 32,
+            "x": 544,
+            "y": 384
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 99,
+            "width": 32,
+            "x": 544,
+            "y": 448
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 576,
+            "y": 352
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 0,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 64,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 128,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 192,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 256,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 384,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 66,
+            "width": 32,
+            "x": 448,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 480,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 416,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 288,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 224,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 160,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 96,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 32,
+            "y": 608
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 66,
+            "width": 32,
+            "x": 768,
+            "y": 384
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 768,
+            "y": 416
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 768,
+            "y": 480
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 768,
+            "y": 544
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 99,
+            "width": 32,
+            "x": 768,
+            "y": 512
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 99,
+            "width": 32,
+            "x": 768,
+            "y": 448
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 66,
+            "width": 32,
+            "x": 672,
+            "y": 576
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 0,
+            "tile_y": 99,
+            "width": 32,
+            "x": 288,
+            "y": 96
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 0,
+            "tile_y": 99,
+            "width": 32,
+            "x": 256,
+            "y": 256
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 132,
+            "width": 32,
+            "x": 480,
+            "y": 96
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 132,
+            "width": 32,
+            "x": 416,
+            "y": 256
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 165,
+            "tile_y": 132,
+            "width": 32,
+            "x": 128,
+            "y": 352
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 99,
+            "width": 32,
+            "x": 320,
+            "y": 96
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 99,
+            "width": 32,
+            "x": 288,
+            "y": 256
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 99,
+            "width": 32,
+            "x": 320,
+            "y": 256
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 132,
+            "width": 32,
+            "x": 352,
+            "y": 256
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 132,
+            "tile_y": 132,
+            "width": 32,
+            "x": 384,
+            "y": 256
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 132,
+            "tile_y": 132,
+            "width": 32,
+            "x": 448,
+            "y": 96
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 132,
+            "width": 32,
+            "x": 416,
+            "y": 96
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 132,
+            "width": 32,
+            "x": 384,
+            "y": 96
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 33,
+            "tile_y": 132,
+            "width": 32,
+            "x": 352,
+            "y": 96
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 132,
+            "tile_y": 132,
+            "width": 32,
+            "x": 96,
+            "y": 352
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 99,
+            "tile_y": 132,
+            "width": 32,
+            "x": 64,
+            "y": 352
+          },
+          {
+            "background_name": "tuiles_neige",
+            "depth": 1000000,
+            "height": 32,
+            "layer": 0,
+            "tile_x": 66,
+            "tile_y": 132,
+            "width": 32,
+            "x": 32,
+            "y": 352
+          }
+        ],
+        "_external_file": "rooms/niveau_01.json"
       }
     },
     "scripts": {},
