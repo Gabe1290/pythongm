@@ -79,8 +79,10 @@ def test_export_executable_honors_checkbox_options(_qapp, tmp_path, monkeypatch)
             self.export_complete.emit(True, "ok")
             return True
 
-    # _export_executable does `from export.exe import ExeExporter`, so patch
-    # the attribute on that module.
+    # _export_executable routes by host OS (PyInstaller can't cross-compile);
+    # pin the host to Windows so the patched ExeExporter is the one selected.
+    import platform as _platform
+    monkeypatch.setattr(_platform, "system", lambda: "Windows")
     import export.exe as exe_pkg
     monkeypatch.setattr(exe_pkg, "ExeExporter", FakeExeExporter, raising=False)
 
@@ -141,6 +143,9 @@ def test_export_executable_default_checkbox_states(_qapp, tmp_path, monkeypatch)
             self.export_complete.emit(True, "ok")
             return True
 
+    # Pin the host to Windows so the routing selects the patched ExeExporter.
+    import platform as _platform
+    monkeypatch.setattr(_platform, "system", lambda: "Windows")
     import export.exe as exe_pkg
     monkeypatch.setattr(exe_pkg, "ExeExporter", FakeExeExporter, raising=False)
     monkeypatch.setattr(
