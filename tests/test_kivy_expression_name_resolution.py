@@ -67,10 +67,19 @@ def test_runtime_callables_preserved():
     assert _equiv(_R("abs(hspeed) > 4"), "abs(self.hspeed) > 4")
 
 
-def test_game_globals_left_bare():
-    # Export has no instance-level score/lives/health — don't emit self.score.
-    assert _equiv(_R("lives <= 0"), "lives <= 0")
-    assert _equiv(_R("score > 100"), "score > 100")
+def test_game_globals_map_to_export_equivalents():
+    # score/lives/health route through main's getters (lazy import); room
+    # dimensions read the scene widget's size. NOT a bare self.score.
+    assert _equiv(_R("score > 100"), "__import__('main').get_score() > 100")
+    assert _equiv(_R("lives <= 0"), "__import__('main').get_lives() <= 0")
+    assert _equiv(_R("health < 25"), "__import__('main').get_health() < 25")
+    assert _equiv(_R("room_width - 32"), "self.scene.width - 32")
+    assert _equiv(_R("room_height"), "self.scene.height")
+
+
+def test_globals_and_instance_vars_mix():
+    # A condition can reference both an instance var and a game global.
+    assert _equiv(_R("x > room_width"), "self.x > self.scene.width")
 
 
 def test_malformed_expression_returned_unchanged():
