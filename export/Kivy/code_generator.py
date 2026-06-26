@@ -948,7 +948,14 @@ if dist > 0:
             return f"pass  # play_sound: sound '{sound}' not found in export"
 
         elif action_type == 'show_highscore':
-            return "pass  # show_highscore: not yet supported in Kivy export"
+            # Show the high-score table (highscore.py module), prompting for a
+            # name when the current score qualifies unless disabled.
+            allow = params.get('allow_new_entry', True)
+            return ("from highscore import show_highscore; "
+                    f"show_highscore(allow_new_entry={bool(allow)})")
+
+        elif action_type == 'clear_highscore':
+            return "from highscore import clear_highscore; clear_highscore()"
 
         # DEFAULT
         else:

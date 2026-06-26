@@ -122,6 +122,10 @@ class KivyExporter:
             self._generate_utils()
             logger.info("Game logic utilities generated")
 
+            # Generate the high-score table module
+            self._generate_highscore_module()
+            logger.info("High-score module generated")
+
             # Generate build configuration
             self._generate_buildozer_spec()
             logger.info("Buildozer spec generated")
@@ -1623,6 +1627,139 @@ class {class_name}(Widget):
 
         if failed_objects:
             raise RuntimeError(f"Failed to generate {len(failed_objects)} object(s): {', '.join(failed_objects)}")
+
+    def _generate_highscore_module(self):
+        """Write game/highscore.py — a standalone high-score table module.
+
+        Written verbatim (NOT through str.format), so its many literal braces
+        need no escaping — unlike the main.py template. main.py and the object
+        modules reach it lazily via `from highscore import show_highscore`.
+        """
+        code = r'''#!/usr/bin/env python3
+"""High-score table for the exported game.
+
+Persists the top scores to highscores.json next to the game (or under
+ANDROID_APP_PATH on Android), and shows a Kivy popup table. show_highscore()
+optionally prompts for a name when the current score qualifies, mirroring the
+IDE runtime's show_highscore action.
+"""
+
+import os
+import json
+
+_MAX_ENTRIES = 10
+_FILE = os.path.join(os.environ.get('ANDROID_APP_PATH', '.'), 'highscores.json')
+
+
+def _load():
+    try:
+        with open(_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return [(str(e['name']), int(e['score'])) for e in data]
+    except Exception:
+        return []
+
+
+def _save(entries):
+    try:
+        with open(_FILE, 'w', encoding='utf-8') as f:
+            json.dump([{'name': n, 'score': s} for n, s in entries], f)
+    except Exception as e:
+        print('highscore save failed:', e)
+
+
+def _qualifies(score, entries):
+    if len(entries) < _MAX_ENTRIES:
+        return True
+    return bool(entries) and score > min(s for _, s in entries)
+
+
+def _add(name, score):
+    entries = _load()
+    entries.append((name, int(score)))
+    entries.sort(key=lambda e: e[1], reverse=True)
+    entries = entries[:_MAX_ENTRIES]
+    _save(entries)
+    return entries
+
+
+def clear_highscore():
+    """Erase the high-score table."""
+    _save([])
+
+
+def _current_score():
+    try:
+        from main import get_score
+        return int(get_score())
+    except Exception:
+        return 0
+
+
+def _show_table(entries, new_index=-1):
+    from kivy.uix.boxlayout import BoxLayout
+    from kivy.uix.label import Label
+    from kivy.uix.button import Button
+    from kivy.uix.popup import Popup
+
+    root = BoxLayout(orientation='vertical', padding=12, spacing=6)
+    root.add_widget(Label(text='[b]High Scores[/b]', markup=True,
+                          size_hint_y=None, height=40))
+    if entries:
+        for i, (name, score) in enumerate(entries):
+            color = (0.40, 0.80, 0.40, 1) if i == new_index else (0.90, 0.90, 0.90, 1)
+            root.add_widget(Label(text='%d.  %s  -  %d' % (i + 1, name, score),
+                                  color=color))
+    else:
+        root.add_widget(Label(text='(no scores yet)'))
+    close_btn = Button(text='Close', size_hint_y=None, height=44)
+    root.add_widget(close_btn)
+    popup = Popup(title='', content=root, size_hint=(0.7, 0.85), auto_dismiss=True)
+    close_btn.bind(on_release=popup.dismiss)
+    popup.open()
+
+
+def show_highscore(allow_new_entry=True):
+    """Show the high-score table; prompt for a name first if the current
+    score qualifies and allow_new_entry is True."""
+    score = _current_score()
+    entries = _load()
+    if allow_new_entry and score > 0 and _qualifies(score, entries):
+        from kivy.uix.boxlayout import BoxLayout
+        from kivy.uix.label import Label
+        from kivy.uix.button import Button
+        from kivy.uix.textinput import TextInput
+        from kivy.uix.popup import Popup
+
+        box = BoxLayout(orientation='vertical', padding=12, spacing=6)
+        box.add_widget(Label(text='New high score: %d!\nEnter your name:' % score,
+                             size_hint_y=None, height=60))
+        field = TextInput(text='Player', multiline=False,
+                          size_hint_y=None, height=40)
+        box.add_widget(field)
+        ok_btn = Button(text='OK', size_hint_y=None, height=44)
+        box.add_widget(ok_btn)
+        name_popup = Popup(title='', content=box, size_hint=(0.7, 0.55),
+                           auto_dismiss=False)
+
+        def _confirm(*_args):
+            name = (field.text or 'Player').strip()[:20] or 'Player'
+            updated = _add(name, score)
+            new_index = -1
+            for i, (n, s) in enumerate(updated):
+                if n == name and s == int(score):
+                    new_index = i
+                    break
+            name_popup.dismiss()
+            _show_table(updated, new_index)
+
+        ok_btn.bind(on_release=_confirm)
+        name_popup.open()
+    else:
+        _show_table(entries)
+'''
+        output_file = self.output_path / "game" / "highscore.py"
+        output_file.write_text(code)
 
     def _generate_base_object(self):
         """Generate the base GameObject class"""

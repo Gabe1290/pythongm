@@ -125,10 +125,24 @@ def test_move_to_contact_all_maps_to_any():
     assert _valid(out)
 
 
-def test_show_highscore_still_honest_noop():
+def test_show_highscore_calls_module():
     out = _gen("show_highscore", {})
-    assert "TODO" not in out
-    assert "not yet supported" in out or "not supported" in out
+    assert "from highscore import show_highscore" in out
+    assert "show_highscore(allow_new_entry=True)" in out
+    assert _valid(out)
+
+
+def test_show_highscore_respects_allow_new_entry_flag():
+    out = _gen("show_highscore", {"allow_new_entry": False})
+    assert "show_highscore(allow_new_entry=False)" in out
+    assert _valid(out)
+
+
+def test_clear_highscore_calls_module():
+    out = _gen("clear_highscore", {})
+    assert "from highscore import clear_highscore" in out
+    assert "clear_highscore()" in out
+    assert _valid(out)
     assert _valid(out)
 
 
