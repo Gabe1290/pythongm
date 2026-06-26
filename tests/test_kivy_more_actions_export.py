@@ -125,6 +125,28 @@ def test_move_to_contact_all_maps_to_any():
     assert _valid(out)
 
 
+def test_move_to_contact_direction_expression_resolves():
+    # The 'direction' param is often the bare word "direction" (the instance's
+    # current heading); it must bind to self.direction, not stay a NameError.
+    out = _gen("move_to_contact",
+               {"direction": "direction", "max_distance": 32, "object": "obj_brique"})
+    assert "math.radians(self.direction)" in out
+    assert "math.radians(direction)" not in out  # the reported crash
+    assert _valid(out)
+
+
+def test_move_to_contact_numeric_direction_unchanged():
+    out = _gen("move_to_contact", {"direction": 270})
+    assert "math.radians(270)" in out
+    assert _valid(out)
+
+
+def test_move_to_contact_max_distance_expression_resolves():
+    out = _gen("move_to_contact", {"direction": 0, "max_distance": "speed * 2"})
+    assert "range(int(self.speed * 2))" in out
+    assert _valid(out)
+
+
 def test_show_highscore_calls_module():
     out = _gen("show_highscore", {})
     assert "from highscore import show_highscore" in out

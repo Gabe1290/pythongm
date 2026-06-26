@@ -549,8 +549,13 @@ class ActionCodeGenerator:
             # with the target object type, or until max_distance. Mirrors the
             # runtime's execute_move_to_contact_action; Kivy Y is up so the
             # vertical step is +sin (the runtime negates it for screen coords).
-            direction = params.get('direction', 0)
-            max_distance = params.get('max_distance', 1000)
+            # direction / max_distance may be expressions that reference the
+            # instance's own variables (e.g. the bare word "direction" meaning
+            # the current heading) — the runtime resolves these against the
+            # instance, so bind bare names to self.<name> the same way
+            # conditions do, or they NameError in the export.
+            direction = _resolve_instance_names(params.get('direction', 0))
+            max_distance = _resolve_instance_names(params.get('max_distance', 1000))
             object_type = params.get('object', 'all')
             obj_arg = 'any' if object_type in ('all', '', None) else object_type
             self.add_line('import math')
