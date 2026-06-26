@@ -54,6 +54,13 @@ class KivyExporter:
             for name, data in project_data.get('assets', {}).get('sprites', {}).items()
             if data.get('file_path')
         }
+        # sound_name -> exported asset path, for the play_sound action.
+        # Sounds are copied to assets/sounds/<file> by _export_sound.
+        self.sound_path_map = {
+            name: f"assets/sounds/{Path(data.get('file_path', '')).name}"
+            for name, data in project_data.get('assets', {}).get('sounds', {}).items()
+            if data.get('file_path')
+        }
 
     def export(self) -> bool:
         """Export project to Kivy format"""
@@ -392,6 +399,25 @@ _log("=== App starting ===")
 def get_game_app():
     """Get the global game app instance"""
     return _game_app
+
+
+# Sound playback — SoundLoader-backed, cached by exported asset path so a
+# repeated sound effect loads once. Failures are logged, never fatal.
+_sound_cache = {{}}
+
+def play_sound(path, volume=1.0):
+    """Play a sound effect by its exported asset path (e.g. assets/sounds/x.wav)."""
+    try:
+        from kivy.core.audio import SoundLoader
+        snd = _sound_cache.get(path)
+        if snd is None:
+            snd = SoundLoader.load(path)
+            _sound_cache[path] = snd
+        if snd:
+            snd.volume = float(volume)
+            snd.play()
+    except Exception as _e:
+        _log(f"play_sound failed for {{path}}: {{_e}}")
 
 
 _room_transition_pending = False
@@ -2458,7 +2484,7 @@ class {class_name}(GameObject):
             code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")
 
             if actions:
-                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map)
+                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map)
                 for action in actions:
                     if isinstance(action, dict):
                         generator.process_action(action, 'keyboard')
@@ -2648,7 +2674,7 @@ class {class_name}(GameObject):
 
             if actions:
                 # Generate action code for this key press
-                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map)
+                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map)
                 for action in actions:
                     if isinstance(action, dict):
                         generator.process_action(action, 'keyboard_press')
@@ -2691,7 +2717,7 @@ class {class_name}(GameObject):
             code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")
 
             if actions:
-                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map)
+                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map)
                 for action in actions:
                     if isinstance(action, dict):
                         generator.process_action(action, 'keyboard_release')
@@ -2764,7 +2790,7 @@ class {class_name}(GameObject):
         logger.debug(f"        _generate_action_code: {len(actions)} actions for event {event_type}")
 
         # Use the new ActionCodeGenerator for proper block/indentation handling
-        generator = ActionCodeGenerator(base_indent=2, sprite_paths=self.sprite_path_map)
+        generator = ActionCodeGenerator(base_indent=2, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map)
 
         for i, action in enumerate(actions):
             logger.debug(f"          Action {i}: {type(action).__name__}")

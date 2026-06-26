@@ -108,7 +108,7 @@ class ActionCodeGenerator:
     start_block, and else_action need to properly indent subsequent actions.
     """
 
-    def __init__(self, base_indent=2, sprite_paths=None):
+    def __init__(self, base_indent=2, sprite_paths=None, sound_paths=None):
         """
         Initialize the code generator.
 
@@ -118,9 +118,12 @@ class ActionCodeGenerator:
                 the set_sprite action can resolve a sprite name to its exported
                 asset path. Empty when not supplied (set_sprite then emits a
                 no-op comment rather than a broken path).
+            sound_paths: Optional {sound_name: 'assets/sounds/<file>'} map so the
+                play_sound action can resolve a sound name to its exported path.
         """
         self.base_indent = base_indent
         self.sprite_paths = sprite_paths or {}
+        self.sound_paths = sound_paths or {}
         self.indent_level = 0  # Additional indent beyond base
         self.lines = []
         self.block_stack = []  # Track open blocks for proper nesting
@@ -541,6 +544,30 @@ class ActionCodeGenerator:
             self._complete_unit()
             return
 
+        elif action_type == 'move_to_contact':
+            # Step pixel-by-pixel along `direction` (degrees) until colliding
+            # with the target object type, or until max_distance. Mirrors the
+            # runtime's execute_move_to_contact_action; Kivy Y is up so the
+            # vertical step is +sin (the runtime negates it for screen coords).
+            direction = params.get('direction', 0)
+            max_distance = params.get('max_distance', 1000)
+            object_type = params.get('object', 'all')
+            obj_arg = 'any' if object_type in ('all', '', None) else object_type
+            self.add_line('import math')
+            self.add_line(f'_ang = math.radians({direction})')
+            self.add_line('_sx = math.cos(_ang); _sy = math.sin(_ang)')
+            self.add_line(f'for _ in range(int({max_distance})):')
+            self.push_indent()
+            self.add_line(
+                f"if self.check_collision_at(self.x + _sx, self.y + _sy, '{obj_arg}'):")
+            self.push_indent()
+            self.add_line('break')
+            self.pop_indent()
+            self.add_line('self.x += _sx; self.y += _sy')
+            self.pop_indent()
+            self._complete_unit()
+            return
+
         # SIMPLE ACTIONS - generate code directly
         else:
             code = self._convert_simple_action(action_type, params, event_type)
@@ -906,17 +933,19 @@ if dist > 0:
                     "(_app._switch_to_room(0) if _app else None)")
 
         elif action_type == 'play_sound':
-            # Audio playback isn't wired into the Kivy export yet (sounds are
-            # copied to assets/sounds/ but there's no player). Emit an honest
-            # no-op instead of silently dropping the action. TODO: add a
-            # SoundLoader-backed play_sound() helper to the generated main.py.
+            # Resolve the sound name to its exported path and call the
+            # SoundLoader-backed play_sound() helper in the generated main.py.
             sound = params.get('sound', params.get('sound_name', ''))
-            return f"pass  # play_sound('{sound}'): audio not yet supported in Kivy export"
-
-        elif action_type == 'move_to_contact':
-            # Sweep-until-collision; not yet modelled in the export's movement
-            # integration. Honest no-op rather than a silent drop.
-            return "pass  # move_to_contact: not yet supported in Kivy export"
+            volume = params.get('volume', 1.0)
+            try:
+                volume = float(volume)
+            except (ValueError, TypeError):
+                volume = 1.0
+            path = self.sound_paths.get(sound)
+            if path:
+                return (f"from main import play_sound; "
+                        f"play_sound('{path}', {volume})")
+            return f"pass  # play_sound: sound '{sound}' not found in export"
 
         elif action_type == 'show_highscore':
             return "pass  # show_highscore: not yet supported in Kivy export"
