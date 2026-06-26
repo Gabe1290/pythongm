@@ -46,6 +46,14 @@ class KivyExporter:
         self.project_path = Path(project_path)
         self.output_path = Path(output_path)
         self.grid_size = 32  # Default grid size for snapping
+        # sprite_name -> exported asset path, so the set_sprite action can
+        # resolve a sprite by name (sprites are copied to assets/images/<file>
+        # by _export_sprite, matching _generate_object's initial-sprite path).
+        self.sprite_path_map = {
+            name: f"assets/images/{Path(data.get('file_path', '')).name}"
+            for name, data in project_data.get('assets', {}).get('sprites', {}).items()
+            if data.get('file_path')
+        }
 
     def export(self) -> bool:
         """Export project to Kivy format"""
@@ -2450,7 +2458,7 @@ class {class_name}(GameObject):
             code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")
 
             if actions:
-                generator = ActionCodeGenerator(base_indent=3)
+                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map)
                 for action in actions:
                     if isinstance(action, dict):
                         generator.process_action(action, 'keyboard')
@@ -2640,7 +2648,7 @@ class {class_name}(GameObject):
 
             if actions:
                 # Generate action code for this key press
-                generator = ActionCodeGenerator(base_indent=3)
+                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map)
                 for action in actions:
                     if isinstance(action, dict):
                         generator.process_action(action, 'keyboard_press')
@@ -2683,7 +2691,7 @@ class {class_name}(GameObject):
             code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")
 
             if actions:
-                generator = ActionCodeGenerator(base_indent=3)
+                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map)
                 for action in actions:
                     if isinstance(action, dict):
                         generator.process_action(action, 'keyboard_release')
@@ -2756,7 +2764,7 @@ class {class_name}(GameObject):
         logger.debug(f"        _generate_action_code: {len(actions)} actions for event {event_type}")
 
         # Use the new ActionCodeGenerator for proper block/indentation handling
-        generator = ActionCodeGenerator(base_indent=2)
+        generator = ActionCodeGenerator(base_indent=2, sprite_paths=self.sprite_path_map)
 
         for i, action in enumerate(actions):
             logger.debug(f"          Action {i}: {type(action).__name__}")
