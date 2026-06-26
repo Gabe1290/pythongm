@@ -27,6 +27,37 @@ from utils.project_file_merge import merge_room_file, merge_object_file
 logger = get_logger(__name__)
 
 
+def _missing_dependency_message(dependency: str, pip_name: str, platform_label: str, *, note: str = "") -> str:
+    """Build a user-facing 'dependency missing' message for the desktop/mobile
+    exporters.
+
+    These exports bundle a Kivy runtime via PyInstaller, so the packages must
+    live in the *same* Python that runs the IDE. The message stresses that no
+    admin rights are needed (per-user / virtualenv installs go into the user's
+    own home directory), gives both the venv and the ``--user`` command, and
+    points users at the zero-install HTML5 export as an escape hatch — the
+    lowest-friction path on locked-down machines (e.g. school computers).
+    """
+    extra = f"{note}\n\n" if note else ""
+    return (
+        f"{dependency} not found.\n\n"
+        f"The {platform_label} requires {dependency}, installed in the same\n"
+        f"Python that runs this IDE.\n\n"
+        f"{extra}"
+        "You do NOT need administrator rights — install it into your own\n"
+        "user account:\n\n"
+        "  • If the IDE runs from a virtual environment, activate it and run:\n"
+        f"        pip install {pip_name}\n"
+        "  • Otherwise install into your user account (no admin needed):\n"
+        f"        pip install --user {pip_name}\n\n"
+        "Or install everything at once:  pip install -r requirements.txt\n\n"
+        "Prefer no setup at all? Use the Web (HTML5) export instead — it needs\n"
+        "nothing installed and runs in any browser. (A finished .exe/.app also\n"
+        "needs nothing installed on the machine that just runs it — only the\n"
+        "machine building the export needs these packages.)"
+    )
+
+
 class BaseKivyExporter(QObject):
     """Common functionality shared by the Kivy-runtime platform exporters."""
 
@@ -188,33 +219,24 @@ class BaseKivyExporter(QObject):
         if not self._check_pyinstaller():
             self.export_complete.emit(
                 False,
-                "PyInstaller not found.\n\n"
-                "Please install it in your virtual environment:\n"
-                "pip install pyinstaller"
+                _missing_dependency_message("PyInstaller", "pyinstaller", platform_label),
             )
             return False
 
         if not self._check_kivy():
             self.export_complete.emit(
                 False,
-                "Kivy not found.\n\n"
-                f"The {platform_label} requires Kivy to be installed.\n"
-                "Please install it in your virtual environment:\n\n"
-                "pip install kivy\n\n"
-                "Or install all dependencies:\n"
-                "pip install -r requirements.txt"
+                _missing_dependency_message("Kivy", "kivy", platform_label),
             )
             return False
 
         if not self._check_pillow():
             self.export_complete.emit(
                 False,
-                "Pillow (PIL) not found.\n\n"
-                f"The {platform_label} requires Pillow for image handling.\n"
-                "Please install it in your virtual environment:\n\n"
-                "pip install pillow\n\n"
-                "Or install all dependencies:\n"
-                "pip install -r requirements.txt"
+                _missing_dependency_message(
+                    "Pillow (PIL)", "pillow", platform_label,
+                    note="Pillow handles the game's image assets.",
+                ),
             )
             return False
 
