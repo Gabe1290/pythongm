@@ -4,10 +4,69 @@ Kivy Exporter for PyGameMaker IDE
 Exports projects to Kivy format for mobile deployment
 """
 
+import ast
 from typing import Dict
 
 from core.logger import get_logger
 logger = get_logger(__name__)
+
+
+# Names the runtime's _eval_bool_expression resolves WITHOUT an instance
+# prefix that we must NOT rewrite to self.<name>: the binding (self/other),
+# Python constants, the four callables the runtime exposes, and the
+# game-global names the Kivy export has no instance-level attribute for
+# (score/lives/health/room_*). Leaving the game-globals bare keeps us from
+# emitting a misleading self.score; supporting them is a separate gap.
+_EXPR_LEAVE_BARE = frozenset({
+    'self', 'other', 'True', 'False', 'None',
+    'abs', 'min', 'max', 'round',
+    'score', 'lives', 'health', 'room_width', 'room_height',
+})
+
+
+class _SelfNameResolver(ast.NodeTransformer):
+    """Rewrite bare instance/custom variable names in an author expression to
+    self.<name>, so exported conditions resolve them the way the IDE runtime's
+    _eval_bool_expression does (it evaluates against a namespace seeded with
+    the instance's attributes). Without this, a condition such as
+    ``vspeed > 0 and y < other.y+8`` exports as a literal ``if`` whose bare
+    ``vspeed`` / ``y`` raise NameError at runtime."""
+
+    def visit_Name(self, node):
+        if not isinstance(node.ctx, ast.Load) or node.id in _EXPR_LEAVE_BARE:
+            return node
+        if node.id == 'vspeed':
+            # The export stores vspeed in Kivy's (sign-flipped) Y space, so
+            # compare the GameMaker-space value — same convention the
+            # test_variable conditional uses (-(self.vspeed)).
+            new = ast.parse('-(self.vspeed)', mode='eval').body
+        else:
+            new = ast.Attribute(
+                value=ast.Name(id='self', ctx=ast.Load()),
+                attr=node.id, ctx=ast.Load(),
+            )
+        return ast.copy_location(new, node)
+
+
+def _resolve_instance_names(expr) -> str:
+    """Bind bare instance/custom variable names in ``expr`` to self.<name>.
+
+    Already-qualified names (self.x, other.y) are left untouched, as are the
+    game-global names the export can't map. Malformed or non-string
+    expressions are returned unchanged so codegen never crashes on bad input.
+    """
+    if not isinstance(expr, str) or not expr.strip():
+        return expr
+    try:
+        tree = ast.parse(expr, mode='eval')
+    except SyntaxError:
+        return expr
+    _SelfNameResolver().visit(tree)
+    ast.fix_missing_locations(tree)
+    try:
+        return ast.unparse(tree)
+    except Exception:
+        return expr
 
 # GM operation words -> Python comparison operators (mirrors the runtime's
 # execute_test_variable_action / execute_test_instance_count_action).
@@ -196,7 +255,7 @@ class ActionCodeGenerator:
             return
 
         elif action_type == 'test_expression':
-            expr = params.get('expression', 'False')
+            expr = _resolve_instance_names(params.get('expression', 'False'))
             self._open_guard(f"if {expr}:")
             return
 
@@ -269,7 +328,8 @@ class ActionCodeGenerator:
                 value = params.get('value', 0)
                 condition = f"self.scene.count_instances('{obj_name}') {operator} {value}"
             else:
-                condition = params.get('condition', params.get('expression', 'True'))
+                condition = _resolve_instance_names(
+                    params.get('condition', params.get('expression', 'True')))
 
             then_actions = params.get('then_actions', [])
             if then_actions:
@@ -390,7 +450,7 @@ class ActionCodeGenerator:
             return
 
         elif action_type == 'while':
-            condition = params.get('condition', 'False')
+            condition = _resolve_instance_names(params.get('condition', 'False'))
             self._open_guard(f"while {condition}:")
             return
 
