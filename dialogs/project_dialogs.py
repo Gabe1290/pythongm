@@ -15,6 +15,27 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QFormLayout,
 from utils import desktop_dir, documents_dir
 
 
+def _desktop_exporter_for_host(host_os):
+    """Return the PyInstaller-based exporter class that builds a native
+    desktop artifact for ``host_os`` (a ``platform.system()`` value): a
+    Windows ``.exe``, a macOS ``.app``, or a Linux ELF binary.
+
+    PyInstaller cannot cross-compile — it always builds for the platform it
+    runs on — so the host OS, not a user choice, determines the target. This
+    is why the Export dialog offers a single "Desktop Executable (.exe/.app)"
+    option rather than three platform buttons. Anything that isn't macOS or
+    Windows (Linux and other Unixes) gets the Linux exporter.
+    """
+    if host_os == 'Darwin':
+        from export.macos import MacOSExporter
+        return MacOSExporter
+    if host_os == 'Windows':
+        from export.exe import ExeExporter
+        return ExeExporter
+    from export.linux import LinuxExporter
+    return LinuxExporter
+
+
 class NewProjectDialog(QDialog):
     """FIXED New Project Dialog"""
 
@@ -585,12 +606,23 @@ class ExportProjectDialog(QDialog):
         }
 
     def _export_executable(self):
-        """Export project as executable (.exe/.app)"""
+        """Export project as a native desktop executable for the host OS.
+
+        The single "Desktop Executable (.exe/.app)" target builds for the
+        machine the IDE is running on — PyInstaller cannot cross-compile, so
+        a Windows .exe must be built on Windows, a Linux ELF on Linux, and a
+        macOS .app on macOS. Previously this always used the Windows-only
+        ExeExporter, so on macOS/Linux it failed with "Windows EXE export
+        must be run on a Windows system" and never reached the matching
+        Linux/macOS exporters.
+        """
         try:
-            from export.exe import ExeExporter
+            import platform as _host_platform
             from pathlib import Path
             from PySide6.QtWidgets import QProgressDialog
             from PySide6.QtCore import Qt
+
+            _DesktopExporter = _desktop_exporter_for_host(_host_platform.system())
 
             # Get project path (directory containing project.json)
             project_dir = Path(self.parent_ide.current_project_path)
@@ -624,8 +656,8 @@ class ExportProjectDialog(QDialog):
             progress.setMinimumDuration(0)
             progress.setValue(0)
 
-            # Create exporter
-            exporter = ExeExporter()
+            # Create the host-appropriate exporter (selected above).
+            exporter = _DesktopExporter()
 
             # Connect signals
             def update_progress(value, message):
