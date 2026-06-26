@@ -108,14 +108,19 @@ class ActionCodeGenerator:
     start_block, and else_action need to properly indent subsequent actions.
     """
 
-    def __init__(self, base_indent=2):
+    def __init__(self, base_indent=2, sprite_paths=None):
         """
         Initialize the code generator.
 
         Args:
             base_indent: Base indentation level (2 = inside a method definition)
+            sprite_paths: Optional {sprite_name: 'assets/images/<file>'} map so
+                the set_sprite action can resolve a sprite name to its exported
+                asset path. Empty when not supplied (set_sprite then emits a
+                no-op comment rather than a broken path).
         """
         self.base_indent = base_indent
+        self.sprite_paths = sprite_paths or {}
         self.indent_level = 0  # Additional indent beyond base
         self.lines = []
         self.block_stack = []  # Track open blocks for proper nesting
@@ -573,7 +578,11 @@ class ActionCodeGenerator:
         elif action_type == 'set_direction':
             return f"self.direction = {params.get('direction', params.get('value', 0))}"
 
-        elif action_type == 'move_fixed':
+        elif action_type in ('move_fixed', 'start_moving_direction'):
+            # start_moving_direction shares move_fixed's semantics (a set of
+            # named directions + a speed; one is chosen at random, 'stop'
+            # halts). Numeric-angle / expression directions aren't covered
+            # here — the named-direction case is what the events panel emits.
             directions = params.get('directions', ['right'])
             speed = params.get('speed', 4)
             dir_map = {
@@ -858,6 +867,59 @@ if dist > 0:
             # unit of a conditional, so emit a statement, not a bare comment.
             text = str(params.get('text', '')).replace('\n', ' ')
             return f"pass  # {text}" if text else "pass  # comment"
+
+        elif action_type == 'set_sprite':
+            # Swap the instance's sprite and/or set the current frame
+            # (subimage) / animation speed. sprite='<self>' (or empty) keeps
+            # the current sprite and only touches frame/speed, matching the
+            # runtime's execute_set_sprite_action.
+            sprite_name = params.get('sprite', '<self>')
+            parts = []
+            if sprite_name and sprite_name != '<self>':
+                path = self.sprite_paths.get(sprite_name)
+                if path:
+                    parts.append(f"self.set_sprite('{path}')")
+                else:
+                    parts.append(f"pass  # set_sprite: '{sprite_name}' not found in export")
+            # subimage / speed default to -1 ("don't change"); only emit when
+            # the author set a real value. Non-numeric (expression) values are
+            # skipped rather than emitted verbatim.
+            try:
+                subimage = int(params.get('subimage', -1))
+                if subimage >= 0:
+                    parts.append(f"self.image_index = {subimage}")
+            except (ValueError, TypeError):
+                pass
+            try:
+                anim_speed = float(params.get('speed', -1))
+                if anim_speed >= 0:
+                    parts.append(f"self.image_speed = {anim_speed}")
+            except (ValueError, TypeError):
+                pass
+            return "; ".join(parts) if parts else "pass  # set_sprite: no change"
+
+        elif action_type == 'restart_game':
+            # Restart from the first room. Reuses the app's room-switch path
+            # (index 0) rather than adding new infra — mirrors the runtime's
+            # "recreate the room with fresh instances" restart.
+            return ("from main import get_game_app; _app = get_game_app(); "
+                    "(_app._switch_to_room(0) if _app else None)")
+
+        elif action_type == 'play_sound':
+            # Audio playback isn't wired into the Kivy export yet (sounds are
+            # copied to assets/sounds/ but there's no player). Emit an honest
+            # no-op instead of silently dropping the action. TODO: add a
+            # SoundLoader-backed play_sound() helper to the generated main.py.
+            sound = params.get('sound', params.get('sound_name', ''))
+            return f"pass  # play_sound('{sound}'): audio not yet supported in Kivy export"
+
+        elif action_type == 'move_to_contact':
+            # Sweep-until-collision; not yet modelled in the export's movement
+            # integration. Honest no-op rather than a silent drop.
+            return "pass  # move_to_contact: not yet supported in Kivy export"
+
+        elif action_type == 'show_highscore':
+            return "pass  # show_highscore: not yet supported in Kivy export"
 
         # DEFAULT
         else:
