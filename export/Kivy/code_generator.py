@@ -13,15 +13,25 @@ logger = get_logger(__name__)
 
 # Names the runtime's _eval_bool_expression resolves WITHOUT an instance
 # prefix that we must NOT rewrite to self.<name>: the binding (self/other),
-# Python constants, the four callables the runtime exposes, and the
-# game-global names the Kivy export has no instance-level attribute for
-# (score/lives/health/room_*). Leaving the game-globals bare keeps us from
-# emitting a misleading self.score; supporting them is a separate gap.
+# Python constants, and the four callables the runtime exposes.
 _EXPR_LEAVE_BARE = frozenset({
     'self', 'other', 'True', 'False', 'None',
     'abs', 'min', 'max', 'round',
-    'score', 'lives', 'health', 'room_width', 'room_height',
 })
+
+# Game-global names the runtime resolves from the GameRunner / current room,
+# mapped to their Kivy-export equivalents. score/lives/health go through the
+# main module's getters, imported lazily via __import__('main') — the same
+# circular-import-safe, call-time pattern the set_score/goto_room actions use
+# (a plain `from main import` at object-module top can deadlock the import
+# graph). room_width/height read the scene widget's size.
+_EXPR_GLOBAL_MAP = {
+    'score': "__import__('main').get_score()",
+    'lives': "__import__('main').get_lives()",
+    'health': "__import__('main').get_health()",
+    'room_width': 'self.scene.width',
+    'room_height': 'self.scene.height',
+}
 
 
 class _SelfNameResolver(ast.NodeTransformer):
@@ -35,7 +45,9 @@ class _SelfNameResolver(ast.NodeTransformer):
     def visit_Name(self, node):
         if not isinstance(node.ctx, ast.Load) or node.id in _EXPR_LEAVE_BARE:
             return node
-        if node.id == 'vspeed':
+        if node.id in _EXPR_GLOBAL_MAP:
+            new = ast.parse(_EXPR_GLOBAL_MAP[node.id], mode='eval').body
+        elif node.id == 'vspeed':
             # The export stores vspeed in Kivy's (sign-flipped) Y space, so
             # compare the GameMaker-space value — same convention the
             # test_variable conditional uses (-(self.vspeed)).
@@ -497,6 +509,30 @@ class ActionCodeGenerator:
             self.add_line("self.vspeed = -_spd")
             self.pop_indent()
             self.pop_indent()
+            self._complete_unit()
+            return
+
+        elif action_type in ('execute_code', 'code'):
+            # Inline Python authored in the IDE's code editor. Emitted verbatim
+            # (NOT through _convert_simple_action, which strips each line and
+            # would flatten any nested if/for indentation); add_line preserves
+            # the block's own relative indentation. Like the runtime's
+            # execute_code, the code is expected to use self.<attr> / other.<attr>;
+            # we additionally make math/random importable so `math.`/`random.`
+            # calls resolve the way they do in the IDE's exec namespace.
+            user_code = params.get('code', '')
+            if not isinstance(user_code, str) or not user_code.strip():
+                # Empty body must still close a pending guard with valid syntax.
+                self.add_line('pass')
+                self._complete_unit()
+                return
+            # `\bmath\b` / `\brandom\b` heuristic — a spurious unused import is
+            # harmless; a missing one would NameError.
+            if 'math' in user_code:
+                self.add_line('import math')
+            if 'random' in user_code:
+                self.add_line('import random')
+            self.add_line(user_code)
             self._complete_unit()
             return
 
