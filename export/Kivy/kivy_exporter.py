@@ -61,6 +61,24 @@ class KivyExporter:
             for name, data in project_data.get('assets', {}).get('sounds', {}).items()
             if data.get('file_path')
         }
+        # exported sprite path -> frame metadata, so the runtime draws a single
+        # frame of a multi-frame strip (and animates it) instead of blitting the
+        # whole sheet. frame_width/height are per-frame; 'width' is the full
+        # strip width, so it is NOT a frame-width fallback for multi-frame art.
+        self.sprite_meta_map = {}
+        for _name, _data in project_data.get('assets', {}).get('sprites', {}).items():
+            _fp = _data.get('file_path')
+            if not _fp:
+                continue
+            _frames = max(1, int(_data.get('frames', 1) or 1))
+            _fw = int(_data.get('frame_width') or (_data.get('width') if _frames == 1 else 0) or 0)
+            _fh = int(_data.get('frame_height') or _data.get('height') or 0)
+            self.sprite_meta_map[f"assets/images/{Path(_fp).name}"] = {
+                'frames': _frames,
+                'frame_width': _fw,
+                'frame_height': _fh,
+                'speed': float(_data.get('speed', 1.0) or 1.0),
+            }
 
     def export(self) -> bool:
         """Export project to Kivy format"""
@@ -125,6 +143,10 @@ class KivyExporter:
             # Generate the high-score table module
             self._generate_highscore_module()
             logger.info("High-score module generated")
+
+            # Generate the sprite frame-metadata module
+            self._generate_sprite_meta_module()
+            logger.info("Sprite metadata module generated")
 
             # Generate build configuration
             self._generate_buildozer_spec()
@@ -1628,6 +1650,22 @@ class {class_name}(Widget):
         if failed_objects:
             raise RuntimeError(f"Failed to generate {len(failed_objects)} object(s): {', '.join(failed_objects)}")
 
+    def _generate_sprite_meta_module(self):
+        """Write game/sprite_meta.py — frame metadata keyed by exported sprite
+        path. base_object.set_sprite reads it to slice a single frame from a
+        multi-frame strip (and to animate it). Written verbatim as a JSON-ish
+        dict literal, so no str.format brace escaping is involved.
+        """
+        import json as _json
+        body = _json.dumps(self.sprite_meta_map, indent=4, sort_keys=True)
+        code = (
+            '#!/usr/bin/env python3\n'
+            '"""Sprite frame metadata (frames / per-frame size / anim speed),\n'
+            'keyed by exported asset path. Generated from the project sprites."""\n\n'
+            'SPRITE_META = ' + body + '\n'
+        )
+        (self.output_path / "game" / "sprite_meta.py").write_text(code)
+
     def _generate_highscore_module(self):
         """Write game/highscore.py — a standalone high-score table module.
 
@@ -1775,6 +1813,11 @@ from kivy.core.image import Image as CoreImage
 import math
 from utils import load_image
 
+try:
+    from sprite_meta import SPRITE_META
+except Exception:
+    SPRITE_META = {{}}
+
 
 class GameObject(Widget):
     """Base class for all game objects - GAMEMAKER 7.0 COMPATIBLE"""
@@ -1823,6 +1866,16 @@ class GameObject(Widget):
 
         # Has sprite - objects without sprites have no collision mask
         self.has_sprite = False
+
+        # Animation state — image_index is the current frame (float so
+        # image_speed can be fractional); a single-frame sprite never animates.
+        self.image_index = 0.0
+        self.image_speed = 1.0
+        self._sprite_frames = 1
+        self._frame_w = 0
+        self._frame_h = 0
+        self._sprite_texture = None
+        self._last_frame_drawn = -1
 
         # Don't draw anything here - wait for set_sprite
         self.rect = None
@@ -1923,27 +1976,66 @@ class GameObject(Widget):
             self._vspeed = 0
 
     def set_sprite(self, sprite_path):
-        """Set the object's sprite - enables collision detection"""
+        """Set the object's sprite - enables collision detection.
+
+        Multi-frame strips (an N-frame animation packed as one wide PNG) are
+        sliced to a single frame via the texture region; a single frame is
+        drawn from the current image_index and animated by _advance_animation.
+        Without this the whole sheet blitted at once (all frames visible).
+        """
         self.sprite_name = sprite_path
         img = load_image(sprite_path)
 
         if img:
             self.image = img
-            self.image_width = img.width
-            self.image_height = img.height
-            self.size = (img.width, img.height)
+            meta = SPRITE_META.get(sprite_path, {{}})
+            frames = max(1, int(meta.get('frames', 1) or 1))
+            fw = int(meta.get('frame_width') or 0) or img.width
+            fh = int(meta.get('frame_height') or 0) or img.height
+            self._sprite_frames = frames
+            self._frame_w = fw
+            self._frame_h = fh
+            self._sprite_texture = img.texture
+            self.image_speed = float(meta.get('speed', 1.0) or 1.0)
+            self.image_width = fw
+            self.image_height = fh
+            self.size = (fw, fh)
             self.has_sprite = True  # Object has a sprite, can collide
+            if self.image_index >= frames:
+                self.image_index = 0.0
 
             # Only draw if visible (invisible objects can still collide)
             if self.visible:
-                self.canvas.clear()
-                with self.canvas:
-                    Color(1, 1, 1, 1)
-                    self.rect = Rectangle(texture=img.texture, pos=self.pos, size=self.size)
+                self._redraw_frame(int(self.image_index) % frames)
             else:
                 # Invisible but still has collision - don't draw anything
                 self.canvas.clear()
                 self.rect = None
+
+    def _redraw_frame(self, frame):
+        """(Re)build the draw rectangle for frame index ``frame``."""
+        if not self._sprite_texture:
+            return
+        if self._sprite_frames > 1:
+            texture = self._sprite_texture.get_region(
+                frame * self._frame_w, 0, self._frame_w, self._frame_h)
+        else:
+            texture = self._sprite_texture
+        self.canvas.clear()
+        with self.canvas:
+            Color(1, 1, 1, 1)
+            self.rect = Rectangle(texture=texture, pos=self.pos, size=self.size)
+        self._last_frame_drawn = frame
+
+    def _advance_animation(self, dt):
+        """Advance the sprite animation; redraw only when the frame changes."""
+        if self._sprite_frames <= 1 or not self.visible:
+            return
+        if self.image_speed:
+            self.image_index += self.image_speed * dt
+        frame = int(self.image_index) % self._sprite_frames
+        if frame != self._last_frame_drawn:
+            self._redraw_frame(frame)
 
     def _process_alarms(self):
         """Process alarm clocks (GAMEMAKER 7.0 feature)"""
@@ -1962,6 +2054,10 @@ class GameObject(Widget):
         # FIXED: Now uses dt for frame-independent movement
         # speeds are in pixels per frame at 60 FPS, scaled by dt
         # This ensures consistent speed regardless of actual frame rate
+
+        # Advance sprite animation (no-op for single-frame sprites). Runs each
+        # frame for every live instance via the scene's per-instance call.
+        self._advance_animation(dt)
 
         # NOTE: speed/direction are now auto-synced with hspeed/vspeed via properties
         # No manual sync needed!
