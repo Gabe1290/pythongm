@@ -91,10 +91,43 @@ def test_restart_game_switches_to_first_room():
     assert _valid(out)
 
 
-@pytest.mark.parametrize("action_type", ["play_sound", "move_to_contact", "show_highscore"])
-def test_unsupported_actions_emit_honest_noop_not_silent_drop(action_type):
-    out = _gen(action_type, {"sound": "snd_x"})
-    assert "TODO" not in out, "should be an explicit branch, not the unknown default"
+def test_play_sound_resolves_and_calls_helper():
+    from export.Kivy.code_generator import ActionCodeGenerator
+    g = ActionCodeGenerator(base_indent=2, sound_paths={"snd_jump": "assets/sounds/jump.wav"})
+    g.process_action({"action_type": "play_sound",
+                      "parameters": {"sound": "snd_jump", "volume": 0.8}}, "step")
+    out = g.get_code()
+    assert "from main import play_sound" in out
+    assert "play_sound('assets/sounds/jump.wav', 0.8)" in out
+    assert _valid(out)
+
+
+def test_play_sound_unknown_is_honest_noop():
+    out = _gen("play_sound", {"sound": "snd_missing"})  # no map entry
+    assert "play_sound(" not in out or "from main import" not in out
+    assert "not found" in out
+    assert _valid(out)
+
+
+def test_move_to_contact_emits_step_loop():
+    out = _gen("move_to_contact",
+               {"direction": 270, "max_distance": 64, "object": "solid"})
+    assert "math.radians(270)" in out
+    assert "for _ in range(int(64)):" in out
+    assert "check_collision_at(self.x + _sx, self.y + _sy, 'solid')" in out
+    assert "break" in out
+    assert _valid(out)
+
+
+def test_move_to_contact_all_maps_to_any():
+    out = _gen("move_to_contact", {"object": "all"})
+    assert "'any'" in out
+    assert _valid(out)
+
+
+def test_show_highscore_still_honest_noop():
+    out = _gen("show_highscore", {})
+    assert "TODO" not in out
     assert "not yet supported" in out or "not supported" in out
     assert _valid(out)
 
