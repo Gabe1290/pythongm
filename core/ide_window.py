@@ -32,6 +32,62 @@ from core.logger import get_logger
 logger = get_logger(__name__)
 
 
+def _green_play_icon():
+    """A filled green play-triangle for the toolbar 'Test Game' action.
+
+    Drawn rather than taken from the style: the standard SP_MediaPlay is a
+    monochrome, theme-tinted glyph, so 'Test Game' reads as the unambiguous
+    green Run action on every platform/theme only if we paint it ourselves.
+    """
+    from PySide6.QtGui import QPixmap, QPainter, QColor, QPolygonF, QIcon
+    from PySide6.QtCore import QPointF
+    pm = QPixmap(16, 16)
+    pm.fill(Qt.transparent)
+    p = QPainter(pm)
+    p.setRenderHint(QPainter.RenderHint.Antialiasing, True)
+    p.setPen(Qt.NoPen)
+    p.setBrush(QColor(46, 158, 68))  # a clear, mid "go" green
+    p.drawPolygon(QPolygonF([QPointF(4, 3), QPointF(13, 8), QPointF(4, 13)]))
+    p.end()
+    return QIcon(pm)
+
+
+def _contrasting_icon_color(palette):
+    """Pick an icon foreground (light or dark) that contrasts with the
+    toolbar button background, so tinted icons stay legible on both light
+    and dark themes."""
+    from PySide6.QtGui import QColor, QPalette
+    btn = palette.color(QPalette.ColorRole.Button)
+    lum = 0.299 * btn.red() + 0.587 * btn.green() + 0.114 * btn.blue()
+    return QColor(235, 235, 235) if lum < 128 else QColor(60, 60, 60)
+
+
+def _tinted_standard_icon(style, icon_name, color):
+    """Recolour a standard pixmap to ``color`` (preserving its alpha
+    silhouette). The style's SP_MediaVolume speaker is near-black and
+    vanishes on a dark toolbar (Windows dark theme); tinting it to a
+    palette-contrasting colour keeps it visible on any theme. Returns None
+    if the named standard pixmap is unavailable."""
+    from PySide6.QtGui import QPixmap, QPainter, QIcon
+    pixmap_enum = getattr(QStyle.StandardPixmap, icon_name, None)
+    if pixmap_enum is None:
+        return None
+    base = style.standardIcon(pixmap_enum)
+    if base.isNull():
+        return None
+    pm = base.pixmap(16, 16)
+    if pm.isNull():
+        return None
+    out = QPixmap(pm.size())
+    out.fill(Qt.transparent)
+    p = QPainter(out)
+    p.drawPixmap(0, 0, pm)
+    p.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceIn)
+    p.fillRect(out.rect(), color)
+    p.end()
+    return QIcon(out)
+
+
 class ExportThread(QThread):
     """Run an exporter's ``export_project`` on a background thread.
 
@@ -219,6 +275,11 @@ class PyGameMakerIDE(QMainWindow):
         file_menu.addSeparator()
         file_menu.addAction(self.save_project_action)
         file_menu.addAction(self.save_project_as_action)
+        # Close the current project (back to the Welcome tab) without quitting
+        # the IDE. No accelerator: Ctrl+W is already the per-editor close
+        # (BaseEditor), so binding it here would be ambiguous.
+        self.close_project_action = self.create_action(self.tr("&Close Project"), None, self.close_project)
+        file_menu.addAction(self.close_project_action)
         file_menu.addSeparator()
 
         self.recent_projects_menu = file_menu.addMenu(self.tr("Recent Projects"))
@@ -906,19 +967,27 @@ class PyGameMakerIDE(QMainWindow):
                 pass
             return None
 
-        def _attach(action, icon_name, tooltip):
+        def _attach(action, icon_name, tooltip, icon=None):
             """Set the toolbar icon + tooltip on a shared menu action.
 
             ``tooltip`` is the descriptive hover text the user sees on the
             toolbar (e.g., "New Project (Ctrl+N)"). Setting it via
             setToolTip on the QAction also improves the menu hover tooltip,
             which is fine — descriptive tooltips help in both contexts.
+
+            Pass an explicit ``icon`` (QIcon) to override the standard-pixmap
+            lookup — used for the painted/tinted toolbar icons below.
             """
-            icon = _icon(icon_name)
+            if icon is None:
+                icon = _icon(icon_name)
             if icon is not None:
                 action.setIcon(icon)
             action.setToolTip(tooltip)
             toolbar.addAction(action)
+
+        # Icon foreground that contrasts with the toolbar background, so
+        # tinted icons stay legible on both light and dark themes.
+        _icon_fg = _contrasting_icon_color(toolbar.palette())
 
         # Project group ------------------------------------------------
         _attach(self.new_project_action,  "SP_FileIcon",        self.tr("New Project (Ctrl+N)"))
@@ -928,7 +997,7 @@ class PyGameMakerIDE(QMainWindow):
         toolbar.addSeparator()
 
         # Build group --------------------------------------------------
-        _attach(self.test_game_action,   "SP_MediaPlay",         self.tr("Test Game (F5)"))
+        _attach(self.test_game_action,   "SP_MediaPlay",         self.tr("Test Game (F5)"), icon=_green_play_icon())
         _attach(self.debug_game_action,  "SP_ComputerIcon",      self.tr("Debug Game (F6)"))
         _attach(self.export_game_action, "SP_DialogApplyButton", self.tr("Export Game…"))
 
@@ -936,7 +1005,7 @@ class PyGameMakerIDE(QMainWindow):
 
         # Asset import group -------------------------------------------
         _attach(self.import_sprite_action, "SP_FileIcon",     self.tr("Import Sprite…"))
-        _attach(self.import_sound_action,  "SP_MediaVolume",  self.tr("Import Sound…"))
+        _attach(self.import_sound_action,  "SP_MediaVolume",  self.tr("Import Sound…"), icon=_tinted_standard_icon(style, "SP_MediaVolume", _icon_fg))
 
         toolbar.addSeparator()
 
@@ -4118,6 +4187,70 @@ class PyGameMakerIDE(QMainWindow):
                 )
             editor.deleteLater()
 
+    def close_project(self):
+        """Close the open project and return the IDE to its no-project state.
+
+        Prompts to save unsaved work (with a cancel path), stops a running
+        Test Game, tears down editors (tabbed + floated) exactly as a project
+        switch does, clears model/runtime/asset-tree state, and re-shows the
+        Welcome tab. No-op (status note only) when nothing is open.
+
+        Returns True if the project was closed, False if there was nothing to
+        close or the user cancelled at the save prompt.
+        """
+        if self.current_project_path is None:
+            self.update_status(self.tr("No project is open."))
+            return False
+
+        # Offer to save unsaved work first (mirrors closeEvent), honouring a
+        # Cancel as "abort the close".
+        if self.project_manager.is_dirty():
+            reply = QMessageBox.question(
+                self, self.tr("Unsaved Changes"),
+                self.tr("You have unsaved changes. Do you want to save before closing the project?"),
+                QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel
+            )
+            if reply == QMessageBox.Save:
+                # Pull in-editor edits into the project before saving (audit M12).
+                self._flush_open_editors()
+                if not self.save_project():
+                    return False
+            elif reply == QMessageBox.Cancel:
+                return False
+
+        # Don't orphan a running Test Game subprocess.
+        self.stop_game()
+
+        # Tear down editors (tabs + floated) — same sequence as on_project_loaded.
+        while self.editor_tabs.count() > 0:
+            widget = self.editor_tabs.widget(0)
+            self.editor_tabs.removeTab(0)
+            if widget and widget is not self.welcome_tab:
+                widget.deleteLater()
+        for asset_name in list(self.detached_editor_windows.keys()):
+            self._destroy_detached_editor(asset_name)
+        self.open_editors.clear()
+
+        # Clear model + runtime state (also cleans up any zip temp dir).
+        self.project_manager.close_project()
+        self.current_project_path = None
+        self.current_project_data = None
+        self.game_runner = None
+
+        # Reset the asset tree + properties panel to their empty state.
+        self.asset_tree.clear_assets()
+        if hasattr(self.properties_panel, 'set_project_loaded'):
+            self.properties_panel.set_project_loaded(False)
+
+        # Back to the Welcome tab and refresh chrome.
+        self._add_welcome_tab()
+        self.update_window_title()
+        self.update_ui_state()
+        if hasattr(self, 'welcome_tab') and hasattr(self.welcome_tab, 'refresh_recent_projects'):
+            self.welcome_tab.refresh_recent_projects()
+        self.update_status(self.tr("Project closed."))
+        return True
+
     def on_project_loaded(self, project_path, project_data):
         logger.debug(f"DEBUG on_project_loaded: START - path={project_path}, data_keys={list(project_data.keys()) if project_data else None}")
 
@@ -4216,6 +4349,13 @@ class PyGameMakerIDE(QMainWindow):
             if action in always_enabled_imports:
                 action.setEnabled(True)
                 continue
+            # Actions marked exempt (e.g. the Welcome tab's "More options"
+            # entry points) must stay usable with no project loaded; the
+            # findChildren sweep would otherwise grey them via the Import/
+            # Create substring match below. See WelcomeTab._dropdown_button.
+            if action.property("pygm_always_enabled"):
+                action.setEnabled(True)
+                continue
             if action.text() in [self.tr("Save Project"), self.tr("Save Project As..."), self.tr("Project Settings...")]:
                 action.setEnabled(has_project)
             elif self.tr("Import") in action.text() or self.tr("Create") in action.text():
@@ -4255,6 +4395,8 @@ class PyGameMakerIDE(QMainWindow):
             self.save_project_action.setEnabled(has_project)
         if hasattr(self, 'save_project_as_action'):
             self.save_project_as_action.setEnabled(has_project)
+        if hasattr(self, 'close_project_action'):
+            self.close_project_action.setEnabled(has_project)
         # Toolbar quick-add for Thymio events — same constraint as the
         # submenu Add Event/Action (needs an object editor, which needs
         # a project as the minimum precondition).

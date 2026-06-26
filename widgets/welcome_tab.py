@@ -358,6 +358,14 @@ class WelcomeTab(QWidget):
         for item_label, slot in items:
             action = menu.addAction(item_label)
             action.triggered.connect(slot)
+            # These entry-point actions (Open/Import/sample) must stay usable
+            # precisely when no project is loaded — which is exactly when the
+            # Welcome tab is shown. The IDE's update_ui_state() sweeps every
+            # descendant QAction (findChildren) and greys anything whose text
+            # contains "Import"/"Create" while has_project is False; that
+            # recursion reaches into this menu. Mark them exempt so the sweep
+            # skips them. (See IDEWindow.update_ui_state.)
+            action.setProperty("pygm_always_enabled", True)
         btn.setMenu(menu)
         return btn
 

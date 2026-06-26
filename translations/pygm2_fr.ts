@@ -4635,6 +4635,22 @@ Certains changements peuvent nécessiter de redémarrer l&apos;IDE pour prendre 
         <translation>Enregistrer le projet &amp;sous...</translation>
     </message>
     <message>
+        <source>&amp;Close Project</source>
+        <translation>&amp;Fermer le projet</translation>
+    </message>
+    <message>
+        <source>You have unsaved changes. Do you want to save before closing the project?</source>
+        <translation>Vous avez des modifications non enregistrées. Voulez-vous les enregistrer avant de fermer le projet ?</translation>
+    </message>
+    <message>
+        <source>No project is open.</source>
+        <translation>Aucun projet n'est ouvert.</translation>
+    </message>
+    <message>
+        <source>Project closed.</source>
+        <translation>Projet fermé.</translation>
+    </message>
+    <message>
         <location filename="../core/ide_window.py" line="168"/>
         <source>Recent Projects</source>
         <translation>Projets récents</translation>
