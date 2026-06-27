@@ -7,13 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-rc.14] - 2026-06-27
+
+Release-candidate ahead of the 1.0 stable cut. Hides the Thymio robot and
+Open Roberta entry points from the UI so 1.0 ships a focused, game-only
+IDE; the underlying code is retained for a planned post-1.0 Thymio
+extension (see `docs/POST_1_0_REFACTOR.md`).
+
 ### Removed
+- **Thymio robot menu entries.** The `🤖 Thymio Programming` submenu (Tools),
+  `Configure Thymio Blocks...` (Tools), `Export Aseba (Thymio) code...`
+  (File), and the `Thymio` toolbar quick-add button are commented out in
+  `core/ide_window.py`. All underlying methods (`show_thymio_playground`,
+  `show_thymio_event_selector`, `configure_thymio`, `export_aseba_code`,
+  etc.) and the `runtime/` / `export/Aseba/` / `dialogs/` Thymio code are
+  left intact for the future extension. Object-editor context-menu Thymio
+  entries were already gated behind `project_has_playgrounds()` and stay
+  hidden for normal projects.
+- **Open Roberta menu entries.** `Import Open Roberta XML...` (both the File
+  menu copy and the Thymio-submenu copy) is hidden; `import_roberta_xml` and
+  `importers/roberta_importer.py` are retained for the extension.
 - **Committee Demo edition** and its dedicated `minimal` Blockly preset. The
   edition existed only to gate the IDE down to a curated demo for committee
   approval; with the project accepted it's no longer needed. The
   `09_catch_the_coins` tutorial it showcased is kept as standalone content.
   Projects previously saved under the `minimal` preset load fine — an unknown
   preset name falls back to the saved/global toolbox config.
+
+### Changed
+- Version bumped to **1.0.0-rc.14** across `__init__.py`, `pyproject.toml`,
+  the Windows exe metadata (`version_info.txt`), and the README badge.
 
 ## [1.0.0-rc.13] - 2026-06-15
 
