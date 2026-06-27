@@ -2,7 +2,32 @@
 
 A comprehensive checklist for testing all features of PyGameMaker IDE.
 
+**Target build: 1.0.0-rc.14**
+
 > Each item has three checkboxes: **L** = Linux, **M** = macOS, **W** = Windows. Tick the box for every platform you tested it on.
+
+## 0. New in 1.0.0-rc.14 (Thymio / Open Roberta hidden; Kivy UTF-8 export fix)
+
+rc.14 hides the Thymio robot and Open Roberta entry points from the UI so 1.0
+ships a focused, game-only IDE. The underlying code is retained for a planned
+post-1.0 extension (see `docs/POST_1_0_REFACTOR.md`).
+
+### Menu / toolbar cleanup — verify these entry points are GONE
+- L [ ] M [ ] W [ ] Tools menu has **no** "Thymio Programming" submenu and **no** "Configure Thymio Blocks…"
+- L [ ] M [ ] W [ ] File menu has **no** "Export Aseba (Thymio) code…" and **no** "Import Open Roberta XML…"
+- L [ ] M [ ] W [ ] Main toolbar has **no** "Thymio" quick-add button
+- L [ ] M [ ] W [ ] Welcome tab → "More options" dropdown lists only Open ZIP / Import GMK (no "Import Open Roberta XML…")
+- L [ ] M [ ] W [ ] Object editor on a normal (no-playground) project offers no Thymio events/actions; the "Show Thymio Tab" toggle is no longer reachable (its menu was removed)
+
+### Retained but hidden — make sure nothing broke when the menus were removed
+- L [ ] M [ ] W [ ] App launches with no error from the removed actions (the `update_ui_state` hasattr guards hold)
+- L [ ] M [ ] W [ ] All non-Thymio File/Tools items still present and functional: Export HTML5 / Zip / Kivy / Project, Import GMK, Validate / Migrate, Preferences, Configure Action Blocks, Language
+
+### Kivy / Android export UTF-8 fix (commit 7d50da3)
+- L [ ] M [ ] W [ ] Export to Kivy of a project containing non-ASCII text (an em-dash "—" or accented letters in an object/room name or a draw_text string) produces **valid UTF-8** `game/*.py` files (open `game/main.py` and `game/objects/base_object.py` — no mojibake)
+- L [ ] M [ ] W [ ] The generated files byte-compile under UTF-8: `python -c "import pathlib; compile(pathlib.Path('game/main.py').read_text(encoding='utf-8'),'main.py','exec')"` (before rc.14 these were written in the Windows cp1252 codepage and failed on UTF-8 systems)
+
+---
 
 ## 0. New in 1.0.0-rc.12 (audit + visual phase)
 
@@ -11,9 +36,9 @@ references the commit it shipped in so a regression is easy to bisect.
 
 ### Welcome tab (commits e42d4b6 / 7e86274 / 37d7186)
 - L [ ] M [ ] W [ ] Welcome tab is the default tab on first launch with no project
-- L [ ] M [ ] W [ ] Title "Welcome to PyGameMaker IDE" + version label "v1.0.0-rc.13" visible
+- L [ ] M [ ] W [ ] Title "Welcome to PyGameMaker IDE" + version label "v1.0.0-rc.14" visible
 - L [ ] M [ ] W [ ] **Get started** column shows New Project, Open Project, **More options** dropdown
-- L [ ] M [ ] W [ ] "More options" dropdown opens a menu with Open ZIP / Import GMK / Import Roberta entries
+- L [ ] M [ ] W [ ] "More options" dropdown opens a menu with Open ZIP / Import GMK entries (Import Open Roberta XML removed in rc.14)
 - L [ ] M [ ] W [ ] **Continue where you left off** list shows recent projects with "N days ago" timestamps
 - L [ ] M [ ] W [ ] Clicking a recent-project row opens that project
 - L [ ] M [ ] W [ ] Recent-project list is wrapped in a visible rectangle (themed frame)
@@ -43,13 +68,11 @@ references the commit it shipped in so a regression is easy to bisect.
 - L [ ] M [ ] W [ ] Same icons enable correctly once a project is loaded
 - L [ ] M [ ] W [ ] New / Open icons stay enabled in both states
 
-### Tools menu graying (commit 78e190d)
-- L [ ] M [ ] W [ ] No project loaded: "Validate Project", "Migrate to Modular Structure",
-      and Thymio → Add Event / Add Action are greyed out
-- L [ ] M [ ] W [ ] No project loaded: Preferences, Configure Action Blocks, Configure
-      Thymio Blocks, Language, Open Playground, Import Open Roberta XML
-      stay enabled
+### Tools menu graying (commit 78e190d; Thymio/Roberta items removed in rc.14)
+- L [ ] M [ ] W [ ] No project loaded: "Validate Project" and "Migrate to Modular Structure" are greyed out
+- L [ ] M [ ] W [ ] No project loaded: Preferences, Configure Action Blocks and Language stay enabled
 - L [ ] M [ ] W [ ] Project loaded: every Tools item becomes enabled
+- L [ ] M [ ] W [ ] The Thymio submenu, "Configure Thymio Blocks", "Open Playground" and "Import Open Roberta XML" are no longer present (removed in rc.14)
 
 ### Asset tree empty-state hint (commit 00911b3)
 - L [ ] M [ ] W [ ] No project loaded: italic hint visible below the category list
@@ -63,16 +86,10 @@ references the commit it shipped in so a regression is easy to bisect.
 - L [ ] M [ ] W [ ] Message appears in both light and dark themes
 - L [ ] M [ ] W [ ] Project loaded: the three group boxes reappear; placeholder is hidden
 
-### Aseba code export (commit 71e19f3)
-- L [ ] M [ ] W [ ] File → Export menu contains "Export Aseba (Thymio) code…"
-- L [ ] M [ ] W [ ] Item is greyed out when no project is open, enabled when one is
-- L [ ] M [ ] W [ ] Clicking it prompts for an output directory
-- L [ ] M [ ] W [ ] On a project with Thymio objects: writes one `.aesl` per object + a
-      `README.md` to the chosen directory
-- L [ ] M [ ] W [ ] On a project without Thymio objects: shows the "No Thymio objects
-      found" warning instead of the generic failure dialog
-- L [ ] M [ ] W [ ] Success dialog offers to open the output folder; works on
-      Windows / macOS / Linux
+### Aseba code export (commit 71e19f3 — DEFERRED in rc.14)
+- L [ ] M [ ] W [ ] File → Export menu **no longer** contains "Export Aseba (Thymio) code…"
+      (removed in rc.14; the AsebaExporter code is retained for the post-1.0
+      Thymio extension and unreachable from the 1.0 UI)
 
 ### Cross-platform export "open folder" prompts (commit a44f750)
 - L [ ] M [ ] W [ ] After a successful Linux-binary export, the "open folder?" prompt
@@ -484,7 +501,12 @@ and then spot-check the platform-sensitive items below.
       NameError); collision-spawned instances' create events read their **own**
       speed, not the colliding pair's (L28, L29, M45)
 
-### 15.2 Thymio playground / simulator
+### 15.2 Thymio playground / simulator (DEFERRED for 1.0 — Thymio UI removed in rc.14)
+
+> The Thymio menu/toolbar entry points were removed in rc.14 (moving to a
+> post-1.0 extension). A playground asset is still creatable from the asset
+> tree, so these items remain valid only when exercising the retained
+> playground/Thymio code. Skip for standard 1.0 sign-off.
 
 - [ ] L · [ ] W · [ ] m — Ground sensors read the surface **in front** of the
       robot (line-following works); "Turn Left" rotates left on screen (M55, M56)
@@ -525,16 +547,20 @@ and then spot-check the platform-sensitive items below.
 - [ ] L · [ ] W · [ ] m — Importing a normal `.gmk` works; a hostile/corrupt one
       (huge declared image/zlib sizes) is rejected with a warning, not an OOM
       hang (M40, M41, L26)
-- [ ] L · [ ] W · [ ] m — Roberta import: LED colours apply (red/green/blue);
-      a variable-driven LED colour doesn't crash the import (M42, L27)
+- [ ] L · [ ] W · [ ] m — Roberta import: DEFERRED for 1.0 — the "Import Open
+      Roberta XML…" menu was removed in rc.14; the importer (LED colours
+      red/green/blue, variable-driven colour) is retained for the post-1.0
+      extension and unreachable from the 1.0 UI (M42, L27)
 
 ### 15.6 Exporters (platform-sensitive — run the native target per OS)
 
 - [ ] L · [ ] W · [ ] m — Desktop export of a project named with an apostrophe
       (e.g. "L'aventure") builds; a locked output folder reports failure and
       keeps the build instead of reporting fake success (M38, M39)
-- [ ] L · [ ] W · [ ] m — Aseba `.aesl` export opens via Aseba Studio
-      File ▸ Open (valid XML, no stray `end`) (M32, M33)
+- [ ] L · [ ] W · [ ] m — Aseba `.aesl` export: DEFERRED for 1.0 — the export
+      menu was removed in rc.14 (exporter retained for the post-1.0 extension);
+      previously validated as valid XML with no stray `end` via Aseba Studio
+      File ▸ Open (M32, M33)
 - [ ] L · [ ] W · [ ] m — Kivy/desktop export: collision actions, jump,
       keyboard-release and non-PNG backgrounds work; a quoted/newline message
       doesn't break the build (M34, M35, M36, M37, L21, L22)
