@@ -229,7 +229,11 @@ class AssetTreeWidget(QTreeWidget):
             "separator",  # First separator
             ("objects", self.tr("Objects")),
             ("rooms", self.tr("Rooms")),
-            ("playgrounds", self.tr("Playgrounds")),
+            # [1.0] Playgrounds category hidden until the Thymio extension ships —
+            # see docs/POST_1_0_REFACTOR.md. add_asset() no-ops when the category
+            # is absent, so projects that already contain playground assets still
+            # load and round-trip on save; they're just not shown or creatable.
+            # ("playgrounds", self.tr("Playgrounds")),
             "separator",  # Second separator
             ("scripts", self.tr("Scripts")),
             ("fonts", self.tr("Fonts"))

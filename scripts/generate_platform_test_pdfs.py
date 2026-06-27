@@ -40,7 +40,7 @@ phase("Phase 0 — Setup", "5 min", [
         "Linux": "Pull a fresh build from the rc.14 release page. Run on a clean machine where possible (no leftover ~/.config/pygamemaker etc. — student install scenario).",
     }),
     (2, "Verify the About dialog reports Version 1.0.0-rc.14.", {}),
-    ("2a", "[STAR] rc.14 menu cleanup — confirm the Thymio / Open Roberta entry points are GONE: Tools menu has no 'Thymio Programming' submenu and no 'Configure Thymio Blocks…'; File menu has no 'Export Aseba (Thymio) code…' and no 'Import Open Roberta XML…'; the toolbar has no 'Thymio' quick-add button. (Code is retained but hidden, moving to a post-1.0 extension — see docs/POST_1_0_REFACTOR.md.)", {}),
+    ("2a", "[STAR] rc.14 menu cleanup — confirm the Thymio / Open Roberta entry points are GONE: Tools menu has no 'Thymio Programming' submenu and no 'Configure Thymio Blocks…'; File menu has no 'Export Aseba (Thymio) code…' and no 'Import Open Roberta XML…'; the toolbar has no 'Thymio' quick-add button; the asset tree has no 'Playgrounds' category; the Welcome tab 'More options' dropdown has no 'Import Open Roberta XML…'. (Code is retained but hidden, moving to a post-1.0 extension — see docs/POST_1_0_REFACTOR.md.)", {}),
     (3, "Confirm the binary launches correctly on this platform.", {
         "Windows": "Confirm SmartScreen doesn't block the .exe. If a SmartScreen prompt appears, 'Run anyway' should work.",
         "macOS": "Confirm the binary is executable. You may need to right-click → Open the first time to bypass Gatekeeper.",
@@ -72,7 +72,7 @@ phase("Phase 2 — Project lifecycle", "10 min", [
 
 # --- Phase 3 ---
 phase("Phase 3 — Asset CRUD", "15 min", [
-    (15, "Create — right-click asset tree → New (for each asset type: sprite, sound, background, object, room, playground). Asset appears in tree, default name auto-numbers if duplicate.", {}),
+    (15, "Create — right-click asset tree → New (for each asset type: sprite, sound, background, object, room). Asset appears in tree, default name auto-numbers if duplicate. (The Playgrounds category is hidden in 1.0 — see Phase 0 #2a.)", {}),
     (16, "Rename — right-click → Rename. New name appears in tree, project.json reflects new name. [STAR] If an editor is open for that asset, the editor's tab text and its asset_name update too.", {}),
     (17, "Delete — right-click → Delete. Asset removed from tree and disk. If the asset is in use elsewhere (e.g. an object's sprite), confirm a sensible error/warning.", {}),
     (18, "Duplicate — right-click → Duplicate. New asset with _copy suffix.", {}),
@@ -121,7 +121,7 @@ phase("Phase 7 — Playground editor (Thymio)", "10 min", [
     (39, "Link a placed robot to a Thymio object. Modify, save.", {}),
     (40, "[STAR] Click Float — playground editor pops out into its own window (rc.9 capability). Modify — title shows *. Click Attach — returns to tab strip.", {}),
     (41, "Run — playground simulator launches with the linked robot's code.", {}),
-], note="DEFERRED for 1.0 — Thymio is moving to a post-1.0 extension and its menu/toolbar entry points were removed in rc.14. The playground asset type is still creatable from the asset tree (right-click → New), so these items remain valid only if you are exercising the retained playground/Thymio code. Skip this phase for standard 1.0 sign-off.")
+], note="DEFERRED for 1.0 — Thymio is moving to a post-1.0 extension. Its menu/toolbar entry points were removed in rc.14 and the Playgrounds asset-tree category is now hidden too, so playgrounds cannot be created or opened through the 1.0 UI. These items describe behaviour to re-verify when Thymio returns as an extension; the playground code is retained. Skip this phase for 1.0 sign-off.")
 
 
 # --- Phase 8 ---
