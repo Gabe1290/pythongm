@@ -195,7 +195,7 @@ class KivyExporter:
 
         for pkg_dir in package_dirs:
             init_file = pkg_dir / "__init__.py"
-            init_file.write_text("# Auto-generated package file\n")
+            init_file.write_text("# Auto-generated package file\n", encoding="utf-8")
             logger.debug(f"  Created: {init_file}")
 
     def _count_assets(self) -> int:
@@ -1146,7 +1146,7 @@ if __name__ == '__main__':
         )
 
         output_file = self.output_path / "game" / "main.py"
-        output_file.write_text(code_formatted)
+        output_file.write_text(code_formatted, encoding="utf-8")
 
     def _generate_scenes(self):
         """Generate scene files for each room"""
@@ -1597,7 +1597,7 @@ class {class_name}(Widget):
         )
 
         output_file = self.output_path / "game" / "scenes" / f"{room_name}.py"
-        output_file.write_text(code_formatted)
+        output_file.write_text(code_formatted, encoding="utf-8")
 
     def _generate_objects(self):
         """Generate object class files"""
@@ -1664,7 +1664,7 @@ class {class_name}(Widget):
             'keyed by exported asset path. Generated from the project sprites."""\n\n'
             'SPRITE_META = ' + body + '\n'
         )
-        (self.output_path / "game" / "sprite_meta.py").write_text(code)
+        (self.output_path / "game" / "sprite_meta.py").write_text(code, encoding="utf-8")
 
     def _generate_highscore_module(self):
         """Write game/highscore.py — a standalone high-score table module.
@@ -1797,7 +1797,7 @@ def show_highscore(allow_new_entry=True):
         _show_table(entries)
 '''
         output_file = self.output_path / "game" / "highscore.py"
-        output_file.write_text(code)
+        output_file.write_text(code, encoding="utf-8")
 
     def _generate_base_object(self):
         """Generate the base GameObject class"""
@@ -2341,7 +2341,7 @@ class GameObject(Widget):
         code_formatted = code.format(grid_size=self.grid_size)
 
         output_file = self.output_path / "game" / "objects" / "base_object.py"
-        output_file.write_text(code_formatted)
+        output_file.write_text(code_formatted, encoding="utf-8")
 
     def _generate_object(self, obj_name: str, obj_data: Dict, pushable: bool = False):
         """Generate a specific object class"""
@@ -2501,7 +2501,7 @@ class {class_name}(GameObject):
         )
 
         output_file = self.output_path / "game" / "objects" / f"{obj_name}.py"
-        output_file.write_text(code_formatted)
+        output_file.write_text(code_formatted, encoding="utf-8")
 
     def _generate_event_methods(self, obj_name: str, events: List[Dict]) -> str:
         """Generate event handler methods from event data"""
@@ -3121,7 +3121,7 @@ def clear_image_cache():
 '''
 
         output_file = self.output_path / "game" / "utils.py"
-        output_file.write_text(code)
+        output_file.write_text(code, encoding="utf-8")
 
     def _generate_buildozer_spec(self):
         """Generate buildozer.spec for Android builds"""
@@ -3155,7 +3155,7 @@ warn_on_root = 1
         )
 
         output_file = self.output_path / "buildozer.spec"
-        output_file.write_text(spec_formatted)
+        output_file.write_text(spec_formatted, encoding="utf-8")
 
     def _generate_requirements(self):
         """Generate requirements.txt"""
@@ -3163,7 +3163,7 @@ warn_on_root = 1
 '''
 
         output_file = self.output_path / "requirements.txt"
-        output_file.write_text(requirements)
+        output_file.write_text(requirements, encoding="utf-8")
 
     def _generate_readme(self):
         """Generate README with instructions"""
@@ -3227,7 +3227,7 @@ game development environment for Python.
         readme_formatted = readme.format(project_name=project_name)
 
         output_file = self.output_path / "README.md"
-        output_file.write_text(readme_formatted)
+        output_file.write_text(readme_formatted, encoding="utf-8")
 
     def _get_room_class_name(self, room_name: str) -> str:
         """Convert room name to class name"""
