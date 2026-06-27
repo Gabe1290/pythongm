@@ -16,6 +16,7 @@ post-1.0 extension (see `docs/POST_1_0_REFACTOR.md`).
 - L [ ] M [ ] W [ ] Tools menu has **no** "Thymio Programming" submenu and **no** "Configure Thymio Blocks…"
 - L [ ] M [ ] W [ ] File menu has **no** "Export Aseba (Thymio) code…" and **no** "Import Open Roberta XML…"
 - L [ ] M [ ] W [ ] Main toolbar has **no** "Thymio" quick-add button
+- L [ ] M [ ] W [ ] Asset tree has **no** "Playgrounds" category (hidden until the Thymio extension; existing playground assets still load and round-trip on save)
 - L [ ] M [ ] W [ ] Welcome tab → "More options" dropdown lists only Open ZIP / Import GMK (no "Import Open Roberta XML…")
 - L [ ] M [ ] W [ ] Object editor on a normal (no-playground) project offers no Thymio events/actions; the "Show Thymio Tab" toggle is no longer reachable (its menu was removed)
 
@@ -503,10 +504,11 @@ and then spot-check the platform-sensitive items below.
 
 ### 15.2 Thymio playground / simulator (DEFERRED for 1.0 — Thymio UI removed in rc.14)
 
-> The Thymio menu/toolbar entry points were removed in rc.14 (moving to a
-> post-1.0 extension). A playground asset is still creatable from the asset
-> tree, so these items remain valid only when exercising the retained
-> playground/Thymio code. Skip for standard 1.0 sign-off.
+> The Thymio menu/toolbar entry points were removed in rc.14 and the
+> Playgrounds asset-tree category is now hidden too (both moving to a post-1.0
+> extension), so playgrounds cannot be created or opened through the 1.0 UI.
+> These items remain valid only when exercising the retained playground/Thymio
+> code. Skip for standard 1.0 sign-off.
 
 - [ ] L · [ ] W · [ ] m — Ground sensors read the surface **in front** of the
       robot (line-following works); "Turn Left" rotates left on screen (M55, M56)
@@ -525,9 +527,10 @@ and then spot-check the platform-sensitive items below.
       paste/duplicate/paint **redo** works; scaled instances are clickable over
       their whole footprint; Ctrl+D doesn't clobber the copy clipboard
       (M23, M24, L12, L13)
-- [ ] L · [ ] W · [ ] m — Playground editor: robots get unique ports; Add
-      Wall/Robot redo works; properties panel refreshes after undo/redo
-      (M21, M22, L11)
+- [ ] L · [ ] W · [ ] m — Playground editor: DEFERRED for 1.0 (Playgrounds
+      category hidden — not reachable from the 1.0 UI). Retained behaviour:
+      robots get unique ports; Add Wall/Robot redo works; properties panel
+      refreshes after undo/redo (M21, M22, L11)
 - [ ] L · [ ] W · [ ] m — Script editor: toolbar Undo/Redo and Edit ▸ Undo work
       (not just Ctrl+Z) (L14)
 - [ ] L · [ ] W · [ ] m — A room and an object that share a name can both be
