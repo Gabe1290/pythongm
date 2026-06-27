@@ -4,8 +4,8 @@
 # http://msdn.microsoft.com/en-us/library/ms646997.aspx
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(1, 0, 0, 13),
-    prodvers=(1, 0, 0, 13),
+    filevers=(1, 0, 0, 14),
+    prodvers=(1, 0, 0, 14),
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -21,12 +21,12 @@ VSVersionInfo(
           [
             StringStruct(u'CompanyName', u'PyGameMaker'),
             StringStruct(u'FileDescription', u'PyGameMaker IDE - A GameMaker-inspired game development environment'),
-            StringStruct(u'FileVersion', u'1.0.0-rc.13'),
+            StringStruct(u'FileVersion', u'1.0.0-rc.14'),
             StringStruct(u'InternalName', u'PyGameMaker'),
             StringStruct(u'LegalCopyright', u'Gabriel Thullen, 2025-2026. Licensed under MIT.'),
             StringStruct(u'OriginalFilename', u'PyGameMaker.exe'),
             StringStruct(u'ProductName', u'PyGameMaker IDE'),
-            StringStruct(u'ProductVersion', u'1.0.0-rc.13'),
+            StringStruct(u'ProductVersion', u'1.0.0-rc.14'),
           ]
         )
       ]
