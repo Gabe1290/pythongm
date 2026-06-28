@@ -7,6 +7,23 @@ A GameMaker-style visual game development IDE for creating 2D games with Python.
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
 
+## ⬇️ Download PyGameMaker 1.0
+
+**Version 1.0 is here** — grab a ready-to-run build. No Python install required:
+
+| Platform | Download |
+|----------|----------|
+| **Windows** | [PyGameMaker.exe](https://github.com/Gabe1290/pythongm/releases/latest/download/PyGameMaker.exe) |
+| **macOS** (Apple Silicon) | [PyGameMaker-macOS-ARM.zip](https://github.com/Gabe1290/pythongm/releases/latest/download/PyGameMaker-macOS-ARM.zip) |
+| **macOS** (Intel) | [PyGameMaker-macOS-Intel.zip](https://github.com/Gabe1290/pythongm/releases/latest/download/PyGameMaker-macOS-Intel.zip) |
+| **Linux** | [PyGameMaker-Linux.tar.gz](https://github.com/Gabe1290/pythongm/releases/latest/download/PyGameMaker-Linux.tar.gz) |
+
+See **[all releases & release notes](https://github.com/Gabe1290/pythongm/releases)**, or read the **[Getting Started guide](https://github.com/Gabe1290/pythongm/wiki)** in the wiki. Prefer to run from source? See [Installation](#installation) below.
+
+> **First launch:** on Windows, SmartScreen → *More info → Run anyway*; on macOS, right-click the app → *Open* to get past Gatekeeper.
+
+<!-- TIP: add a screenshot or a short demo GIF right here (e.g. ![PyGameMaker](docs/screenshot.png)). A visual of building + running a game is the single biggest boost a project README can get. -->
+
 ## Educational Goals
 
 This project serves a dual educational purpose:
