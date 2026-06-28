@@ -27,7 +27,6 @@
 | **Samostojna EXE datoteka** | Nativna izvršljiva datoteka, zgrajena za vašo trenutno platformo (Windows, macOS ali Linux) — delite svojo igro s komerkoli |
 | **HTML5** | Spletna igra v eni datoteki — teče v kateremkoli brskalniku, brez namestitve |
 | **Android / iOS** | Pripravljeno za mobilne naprave prek Kivy in Buildozer |
-| **Thymio robot** | Programirajte prave izobraževalne robote z logiko vaše igre! |
 
 ---
 
@@ -42,12 +41,6 @@ PyGameMaker je zasnovan za učenje. Vklopite **Pogled kode**, da vidite, kako se
 ## Blockly vizualno programiranje
 
 Raje imate kodne bloke? PyGameMaker integrira **Google Blockly** s 173 bloki za sestavljanje v 19 kategorijah. Izbirajte med prednastavitvami, kot so Začetnik, Platformer ali RPG — ali sestavite svojo lastno paleto blokov.
-
----
-
-## Thymio robotski simulator
-
-Prenesite svojo kodo v resnični svet! PyGameMaker vključuje popoln **Thymio robotski simulator** z motorji, senzorji bližine, talnimi senzorji, LED lučmi in gumbi. Preizkusite svoje robotske programe na zaslonu, nato jih izvozite na pravega Thymio robota prek Aseba.
 
 ---
 
@@ -72,4 +65,4 @@ python main.py
 
 ---
 
-*PyGameMaker IDE v1.0.0-rc.13 — Gabriel Thullen, 2025-2026*
+*PyGameMaker IDE v1.0.0-rc.14 — Gabriel Thullen, 2025-2026*
