@@ -20,7 +20,7 @@ import sys
 
 __version__ = "1.0.0"
 __author__ = "Gabriel Thullen"
-__description__ = "GameMaker-style IDE for Python game development with Thymio robot support"
+__description__ = "GameMaker-style IDE for creating 2D games in Python"
 
 # The application class is PyGameMakerIDE; GameMakerIDE is a backward-compatible
 # alias for the previously-documented (and previously-broken) name.
