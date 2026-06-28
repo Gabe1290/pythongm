@@ -2,13 +2,13 @@
 
 A comprehensive checklist for testing all features of PyGameMaker IDE.
 
-**Target build: 1.0.0-rc.14**
+**Target build: 1.0.0**
 
 > Each item has three checkboxes: **L** = Linux, **M** = macOS, **W** = Windows. Tick the box for every platform you tested it on.
 
-## 0. New in 1.0.0-rc.14 (Thymio / Open Roberta hidden; Kivy UTF-8 export fix)
+## 0. New in 1.0.0 (Thymio / Open Roberta hidden; Kivy UTF-8 export fix)
 
-rc.14 hides the Thymio robot and Open Roberta entry points from the UI so 1.0
+1.0.0 hides the Thymio robot and Open Roberta entry points from the UI so 1.0
 ships a focused, game-only IDE. The underlying code is retained for a planned
 post-1.0 extension (see `docs/POST_1_0_REFACTOR.md`).
 
@@ -26,7 +26,7 @@ post-1.0 extension (see `docs/POST_1_0_REFACTOR.md`).
 
 ### Kivy / Android export UTF-8 fix (commit 7d50da3)
 - L [ ] M [ ] W [ ] Export to Kivy of a project containing non-ASCII text (an em-dash "—" or accented letters in an object/room name or a draw_text string) produces **valid UTF-8** `game/*.py` files (open `game/main.py` and `game/objects/base_object.py` — no mojibake)
-- L [ ] M [ ] W [ ] The generated files byte-compile under UTF-8: `python -c "import pathlib; compile(pathlib.Path('game/main.py').read_text(encoding='utf-8'),'main.py','exec')"` (before rc.14 these were written in the Windows cp1252 codepage and failed on UTF-8 systems)
+- L [ ] M [ ] W [ ] The generated files byte-compile under UTF-8: `python -c "import pathlib; compile(pathlib.Path('game/main.py').read_text(encoding='utf-8'),'main.py','exec')"` (before 1.0.0 these were written in the Windows cp1252 codepage and failed on UTF-8 systems)
 
 ---
 
@@ -37,9 +37,9 @@ references the commit it shipped in so a regression is easy to bisect.
 
 ### Welcome tab (commits e42d4b6 / 7e86274 / 37d7186)
 - L [ ] M [ ] W [ ] Welcome tab is the default tab on first launch with no project
-- L [ ] M [ ] W [ ] Title "Welcome to PyGameMaker IDE" + version label "v1.0.0-rc.14" visible
+- L [ ] M [ ] W [ ] Title "Welcome to PyGameMaker IDE" + version label "v1.0.0" visible
 - L [ ] M [ ] W [ ] **Get started** column shows New Project, Open Project, **More options** dropdown
-- L [ ] M [ ] W [ ] "More options" dropdown opens a menu with Open ZIP / Import GMK entries (Import Open Roberta XML removed in rc.14)
+- L [ ] M [ ] W [ ] "More options" dropdown opens a menu with Open ZIP / Import GMK entries (Import Open Roberta XML removed in 1.0.0)
 - L [ ] M [ ] W [ ] **Continue where you left off** list shows recent projects with "N days ago" timestamps
 - L [ ] M [ ] W [ ] Clicking a recent-project row opens that project
 - L [ ] M [ ] W [ ] Recent-project list is wrapped in a visible rectangle (themed frame)
@@ -69,11 +69,11 @@ references the commit it shipped in so a regression is easy to bisect.
 - L [ ] M [ ] W [ ] Same icons enable correctly once a project is loaded
 - L [ ] M [ ] W [ ] New / Open icons stay enabled in both states
 
-### Tools menu graying (commit 78e190d; Thymio/Roberta items removed in rc.14)
+### Tools menu graying (commit 78e190d; Thymio/Roberta items removed in 1.0.0)
 - L [ ] M [ ] W [ ] No project loaded: "Validate Project" and "Migrate to Modular Structure" are greyed out
 - L [ ] M [ ] W [ ] No project loaded: Preferences, Configure Action Blocks and Language stay enabled
 - L [ ] M [ ] W [ ] Project loaded: every Tools item becomes enabled
-- L [ ] M [ ] W [ ] The Thymio submenu, "Configure Thymio Blocks", "Open Playground" and "Import Open Roberta XML" are no longer present (removed in rc.14)
+- L [ ] M [ ] W [ ] The Thymio submenu, "Configure Thymio Blocks", "Open Playground" and "Import Open Roberta XML" are no longer present (removed in 1.0.0)
 
 ### Asset tree empty-state hint (commit 00911b3)
 - L [ ] M [ ] W [ ] No project loaded: italic hint visible below the category list
@@ -87,9 +87,9 @@ references the commit it shipped in so a regression is easy to bisect.
 - L [ ] M [ ] W [ ] Message appears in both light and dark themes
 - L [ ] M [ ] W [ ] Project loaded: the three group boxes reappear; placeholder is hidden
 
-### Aseba code export (commit 71e19f3 — DEFERRED in rc.14)
+### Aseba code export (commit 71e19f3 — DEFERRED in 1.0.0)
 - L [ ] M [ ] W [ ] File → Export menu **no longer** contains "Export Aseba (Thymio) code…"
-      (removed in rc.14; the AsebaExporter code is retained for the post-1.0
+      (removed in 1.0.0; the AsebaExporter code is retained for the post-1.0
       Thymio extension and unreachable from the 1.0 UI)
 
 ### Cross-platform export "open folder" prompts (commit a44f750)
@@ -502,9 +502,9 @@ and then spot-check the platform-sensitive items below.
       NameError); collision-spawned instances' create events read their **own**
       speed, not the colliding pair's (L28, L29, M45)
 
-### 15.2 Thymio playground / simulator (DEFERRED for 1.0 — Thymio UI removed in rc.14)
+### 15.2 Thymio playground / simulator (DEFERRED for 1.0 — Thymio UI removed in 1.0.0)
 
-> The Thymio menu/toolbar entry points were removed in rc.14 and the
+> The Thymio menu/toolbar entry points were removed in 1.0.0 and the
 > Playgrounds asset-tree category is now hidden too (both moving to a post-1.0
 > extension), so playgrounds cannot be created or opened through the 1.0 UI.
 > These items remain valid only when exercising the retained playground/Thymio
@@ -551,7 +551,7 @@ and then spot-check the platform-sensitive items below.
       (huge declared image/zlib sizes) is rejected with a warning, not an OOM
       hang (M40, M41, L26)
 - [ ] L · [ ] W · [ ] m — Roberta import: DEFERRED for 1.0 — the "Import Open
-      Roberta XML…" menu was removed in rc.14; the importer (LED colours
+      Roberta XML…" menu was removed in 1.0.0; the importer (LED colours
       red/green/blue, variable-driven colour) is retained for the post-1.0
       extension and unreachable from the 1.0 UI (M42, L27)
 
@@ -561,7 +561,7 @@ and then spot-check the platform-sensitive items below.
       (e.g. "L'aventure") builds; a locked output folder reports failure and
       keeps the build instead of reporting fake success (M38, M39)
 - [ ] L · [ ] W · [ ] m — Aseba `.aesl` export: DEFERRED for 1.0 — the export
-      menu was removed in rc.14 (exporter retained for the post-1.0 extension);
+      menu was removed in 1.0.0 (exporter retained for the post-1.0 extension);
       previously validated as valid XML with no stray `end` via Aseba Studio
       File ▸ Open (M32, M33)
 - [ ] L · [ ] W · [ ] m — Kivy/desktop export: collision actions, jump,

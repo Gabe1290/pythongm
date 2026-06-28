@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-06-28
+
+**First stable release.** PyGameMaker 1.0 ships as a focused, game-only IDE:
+visual event/action programming, Google Blockly, built-in sprite and room
+editors, a tutorial set, and export to Windows / macOS / Linux / HTML5 /
+Kivy (mobile + desktop).
+
+The Thymio robot and Open Roberta tooling are **hidden** from the 1.0 UI —
+the Tools "Thymio Programming" submenu, "Configure Thymio Blocks…", the File
+menu's Aseba export and Open Roberta import, the toolbar quick-add, the
+Welcome-tab import entry, and the Playgrounds asset-tree category. The
+underlying code is retained behind `# [1.0]` markers for a planned post-1.0
+extension (see `docs/POST_1_0_REFACTOR.md`).
+
+This promotes `1.0.0-rc.14` to stable with no functional changes beyond the
+version bump. See the release-candidate entries below for the full pre-1.0
+history — most notably the complete 2026-06-11 audit (15 high / 61 medium /
+35 low, all closed with regression tests) and the Kivy/Android export now
+writing UTF-8 source files.
+
+### Changed
+- Version promoted to **1.0.0** across `__init__.py`, `pyproject.toml`, the
+  Windows exe metadata (`version_info.txt`), the README badge, the language
+  flyers, and the platform test checklists.
+
 ## [1.0.0-rc.14] - 2026-06-27
 
 Release-candidate ahead of the 1.0 stable cut. Hides the Thymio robot and

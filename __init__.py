@@ -18,7 +18,7 @@ import importlib
 import os
 import sys
 
-__version__ = "1.0.0-rc.14"
+__version__ = "1.0.0"
 __author__ = "Gabriel Thullen"
 __description__ = "GameMaker-style IDE for Python game development with Thymio robot support"
 
