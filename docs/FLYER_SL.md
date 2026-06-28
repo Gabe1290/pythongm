@@ -65,4 +65,4 @@ python main.py
 
 ---
 
-*PyGameMaker IDE v1.0.0-rc.14 — Gabriel Thullen, 2025-2026*
+*PyGameMaker IDE v1.0.0 — Gabriel Thullen, 2025-2026*

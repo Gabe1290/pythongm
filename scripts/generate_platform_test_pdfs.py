@@ -34,19 +34,19 @@ def phase(title, time, items, note=None):
 
 # --- Phase 0 ---
 phase("Phase 0 — Setup", "5 min", [
-    (1, "Pull a fresh build from the rc.14 release page. Run on a clean machine where possible (no leftover .config/pygamemaker etc. — student install scenario).", {
-        "Windows": "Pull a fresh build from the rc.14 release page. Run the .exe directly without admin elevation on a clean machine (no leftover config — student install scenario).",
-        "macOS": "Pull a fresh build from the rc.14 release page. Run on a clean machine where possible (no leftover ~/.config/pygamemaker etc. — student install scenario).",
-        "Linux": "Pull a fresh build from the rc.14 release page. Run on a clean machine where possible (no leftover ~/.config/pygamemaker etc. — student install scenario).",
+    (1, "Pull a fresh build from the 1.0.0 release page. Run on a clean machine where possible (no leftover .config/pygamemaker etc. — student install scenario).", {
+        "Windows": "Pull a fresh build from the 1.0.0 release page. Run the .exe directly without admin elevation on a clean machine (no leftover config — student install scenario).",
+        "macOS": "Pull a fresh build from the 1.0.0 release page. Run on a clean machine where possible (no leftover ~/.config/pygamemaker etc. — student install scenario).",
+        "Linux": "Pull a fresh build from the 1.0.0 release page. Run on a clean machine where possible (no leftover ~/.config/pygamemaker etc. — student install scenario).",
     }),
-    (2, "Verify the About dialog reports Version 1.0.0-rc.14.", {}),
-    ("2a", "[STAR] rc.14 menu cleanup — confirm the Thymio / Open Roberta entry points are GONE: Tools menu has no 'Thymio Programming' submenu and no 'Configure Thymio Blocks…'; File menu has no 'Export Aseba (Thymio) code…' and no 'Import Open Roberta XML…'; the toolbar has no 'Thymio' quick-add button; the asset tree has no 'Playgrounds' category; the Welcome tab 'More options' dropdown has no 'Import Open Roberta XML…'. (Code is retained but hidden, moving to a post-1.0 extension — see docs/POST_1_0_REFACTOR.md.)", {}),
+    (2, "Verify the About dialog reports Version 1.0.0.", {}),
+    ("2a", "[STAR] 1.0.0 menu cleanup — confirm the Thymio / Open Roberta entry points are GONE: Tools menu has no 'Thymio Programming' submenu and no 'Configure Thymio Blocks…'; File menu has no 'Export Aseba (Thymio) code…' and no 'Import Open Roberta XML…'; the toolbar has no 'Thymio' quick-add button; the asset tree has no 'Playgrounds' category; the Welcome tab 'More options' dropdown has no 'Import Open Roberta XML…'. (Code is retained but hidden, moving to a post-1.0 extension — see docs/POST_1_0_REFACTOR.md.)", {}),
     (3, "Confirm the binary launches correctly on this platform.", {
         "Windows": "Confirm SmartScreen doesn't block the .exe. If a SmartScreen prompt appears, 'Run anyway' should work.",
         "macOS": "Confirm the binary is executable. You may need to right-click → Open the first time to bypass Gatekeeper.",
         "Linux": "Confirm the binary is executable (chmod +x if needed). Verify no missing shared libraries (ldd check).",
     }),
-], note="Pass criteria: app launches, About shows 1.0.0-rc.14, and the Thymio/Open Roberta menu + toolbar entry points are absent.")
+], note="Pass criteria: app launches, About shows 1.0.0, and the Thymio/Open Roberta menu + toolbar entry points are absent.")
 
 
 # --- Phase 1 ---
@@ -121,7 +121,7 @@ phase("Phase 7 — Playground editor (Thymio)", "10 min", [
     (39, "Link a placed robot to a Thymio object. Modify, save.", {}),
     (40, "[STAR] Click Float — playground editor pops out into its own window (rc.9 capability). Modify — title shows *. Click Attach — returns to tab strip.", {}),
     (41, "Run — playground simulator launches with the linked robot's code.", {}),
-], note="DEFERRED for 1.0 — Thymio is moving to a post-1.0 extension. Its menu/toolbar entry points were removed in rc.14 and the Playgrounds asset-tree category is now hidden too, so playgrounds cannot be created or opened through the 1.0 UI. These items describe behaviour to re-verify when Thymio returns as an extension; the playground code is retained. Skip this phase for 1.0 sign-off.")
+], note="DEFERRED for 1.0 — Thymio is moving to a post-1.0 extension. Its menu/toolbar entry points were removed in 1.0.0 and the Playgrounds asset-tree category is now hidden too, so playgrounds cannot be created or opened through the 1.0 UI. These items describe behaviour to re-verify when Thymio returns as an extension; the playground code is retained. Skip this phase for 1.0 sign-off.")
 
 
 # --- Phase 8 ---
@@ -183,7 +183,7 @@ phase("Phase 12 — Thymio integration", "10 min", [
     (69, "Open a Thymio playground. Place a Thymio robot, link it to the object above.", {}),
     (70, "Run the playground (Run). Verify the robot responds to the Thymio events.", {}),
     (71, "Aseba export — both paths: (a) playground editor → File → Export produces a working .playground file Aseba Studio can open; (b) main IDE → File → Export Aseba (Thymio) code… writes one .aesl file per Thymio object plus a README.md. Both load in Aseba Studio.", {}),
-], note="DEFERRED for 1.0 — every entry point in this phase (Configure Thymio Blocks, the object-editor Thymio tab, and the 'Export Aseba (Thymio) code…' File-menu path) was removed in rc.14 and is not reachable through the 1.0 UI. These steps describe behaviour to re-verify when Thymio returns as a post-1.0 extension. Skip for 1.0 sign-off; Phase 0 #2a verifies the entry points are absent.")
+], note="DEFERRED for 1.0 — every entry point in this phase (Configure Thymio Blocks, the object-editor Thymio tab, and the 'Export Aseba (Thymio) code…' File-menu path) was removed in 1.0.0 and is not reachable through the 1.0 UI. These steps describe behaviour to re-verify when Thymio returns as a post-1.0 extension. Skip for 1.0 sign-off; Phase 0 #2a verifies the entry points are absent.")
 
 
 # --- Phase 13 ---
@@ -204,7 +204,7 @@ phase("Phase 14 — Importers", "10 min", [
     (80, "GMK import (File → Import GameMaker .gmk File...): pick a real .gmk file. Per-phase progress logs to console. Imported assets appear in tree.", {}),
     (81, "Open an imported sprite — frames load, dimensions correct.", {}),
     (82, "Open an imported object — events visible.", {}),
-    (83, "[STAR] Open Roberta import — confirm the menu entry is ABSENT in rc.14 (File → Import Open Roberta XML… was removed; both the File-menu copy and the Thymio-submenu copy are gone). The roberta_importer code is retained but unreachable from the 1.0 UI, moving to the post-1.0 Thymio extension.", {}),
+    (83, "[STAR] Open Roberta import — confirm the menu entry is ABSENT in 1.0.0 (File → Import Open Roberta XML… was removed; both the File-menu copy and the Thymio-submenu copy are gone). The roberta_importer code is retained but unreachable from the 1.0 UI, moving to the post-1.0 Thymio extension.", {}),
 ], note="Pass criteria: GMK round-trip lands assets without crashing; object events at least display. Open Roberta import is intentionally not reachable in 1.0.")
 
 
@@ -230,7 +230,7 @@ phase("Phase 15 — Exporters", "30 min, parallelizable", [
         "macOS": "Android build (Buildozer): only if Android tooling is installed.",
         "Linux": "Android build (Buildozer): only if Android tooling is installed.",
     }),
-    ("88a", "[STAR] rc.14 Kivy/Android UTF-8 export regression — create a project whose text contains non-ASCII characters (an em-dash '—' or accented letters in an object/room name or a draw_text string). Export via File → Export to Kivy… (and/or the Android build). Confirm the generated game/*.py files are valid UTF-8 (open game/main.py and game/objects/base_object.py — no mojibake) and that they byte-compile: python -c \"import pathlib; compile(pathlib.Path('game/main.py').read_text(encoding='utf-8'),'main.py','exec')\". Before rc.14 these files were written in the OS locale codepage on Windows (em-dash → byte 0x97) and failed to load on UTF-8 systems.", {}),
+    ("88a", "[STAR] 1.0.0 Kivy/Android UTF-8 export regression — create a project whose text contains non-ASCII characters (an em-dash '—' or accented letters in an object/room name or a draw_text string). Export via File → Export to Kivy… (and/or the Android build). Confirm the generated game/*.py files are valid UTF-8 (open game/main.py and game/objects/base_object.py — no mojibake) and that they byte-compile: python -c \"import pathlib; compile(pathlib.Path('game/main.py').read_text(encoding='utf-8'),'main.py','exec')\". Before 1.0.0 these files were written in the OS locale codepage on Windows (em-dash → byte 0x97) and failed to load on UTF-8 systems.", {}),
     (89, "iOS build (kivy-ios): macOS-only, optional.", {
         "Windows": None,  # skip on Windows
         "Linux": None,    # skip on Linux
@@ -265,22 +265,22 @@ phase("Phase 17 — Stress / classroom edge cases", "15 min", [
 
 # --- Phase 18 ---
 phase("Phase 18 — Build artifacts (the actual release)", "10 min", [
-    (102, "From the rc.14 GitHub Release page, download each platform's artifact.", {
-        "Windows": "From the rc.14 GitHub Release page, download the Windows artifact (.exe / .msi).",
-        "macOS": "From the rc.14 GitHub Release page, download the macOS artifact (.dmg / .app).",
-        "Linux": "From the rc.14 GitHub Release page, download the Linux artifact (.AppImage / .deb / tarball).",
+    (102, "From the 1.0.0 GitHub Release page, download each platform's artifact.", {
+        "Windows": "From the 1.0.0 GitHub Release page, download the Windows artifact (.exe / .msi).",
+        "macOS": "From the 1.0.0 GitHub Release page, download the macOS artifact (.dmg / .app).",
+        "Linux": "From the 1.0.0 GitHub Release page, download the Linux artifact (.AppImage / .deb / tarball).",
     }),
     (103, 'Run on a clean target (VM or fresh user account). Confirm it launches without "missing DLL" / "missing Qt plugin" errors.', {
         "Windows": 'Run on a clean Windows VM or fresh user account. Confirm it launches without "missing DLL" / "missing Qt plugin" errors.',
         "macOS": "Run on a clean macOS VM or fresh user account. Confirm it launches without missing framework / Qt plugin errors.",
         "Linux": 'Run on a clean Linux VM or fresh user account. Confirm it launches without "missing .so" / "missing Qt plugin" errors. Test on both Ubuntu and Fedora if possible.',
     }),
-    (104, "Verify the executable's version metadata shows 1.0.0-rc.14.", {
-        "Windows": "Verify the executable's File Properties shows version 1.0.0-rc.14 (the version_info.txt change should propagate to PE metadata).",
-        "macOS": "Verify the .app bundle's Info.plist shows version 1.0.0-rc.14.",
-        "Linux": "Verify the --version flag or About dialog shows version 1.0.0-rc.14.",
+    (104, "Verify the executable's version metadata shows 1.0.0.", {
+        "Windows": "Verify the executable's File Properties shows version 1.0.0 (the version_info.txt change should propagate to PE metadata).",
+        "macOS": "Verify the .app bundle's Info.plist shows version 1.0.0.",
+        "Linux": "Verify the --version flag or About dialog shows version 1.0.0.",
     }),
-    (105, "Confirm pip-install of the Python sdist works in a venv: pip install pygamemaker-1.0.0rc14.tar.gz, then python -m pygamemaker launches.", {}),
+    (105, "Confirm pip-install of the Python sdist works in a venv: pip install pygamemaker-1.0.0.tar.gz, then python -m pygamemaker launches.", {}),
 ], note="Pass criteria: all advertised platforms produce a working binary out of the box.")
 
 
@@ -333,7 +333,7 @@ class TestPDF(FPDF):
     def header(self):
         self.set_font(FONT_FAMILY, "B", 11)
         self.set_text_color(100, 100, 100)
-        self.cell(0, 8, f"PyGameMaker 1.0.0-rc.14 \u2014 {self.platform} Testing Checklist", align="R", new_x="LMARGIN", new_y="NEXT")
+        self.cell(0, 8, f"PyGameMaker 1.0.0 \u2014 {self.platform} Testing Checklist", align="R", new_x="LMARGIN", new_y="NEXT")
         self.set_draw_color(200, 200, 200)
         self.line(10, self.get_y(), 200, self.get_y())
         self.ln(4)
@@ -425,7 +425,7 @@ def generate_pdf(platform):
     pdf.ln(10)
     pdf.cell(0, 12, "PyGameMaker", align="C", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font(FONT_FAMILY, "", 14)
-    pdf.cell(0, 8, "IDE Testing Checklist — v1.0.0-rc.14", align="C", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 8, "IDE Testing Checklist — v1.0.0", align="C", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(6)
     pdf.set_font(FONT_FAMILY, "B", 16)
     pdf.set_text_color(0, 80, 160)
@@ -435,7 +435,7 @@ def generate_pdf(platform):
     # Legend
     pdf.set_text_color(60, 60, 60)
     pdf.set_font(FONT_FAMILY, "", 10)
-    pdf.cell(0, 6, f"Date: _______________    Tester: _______________    Build: rc.14", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 6, f"Date: _______________    Tester: _______________    Build: 1.0.0", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
     pdf.cell(0, 6, f"{STAR} = audit-critical item (must pass for 1.0 release)", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(2)
@@ -470,7 +470,7 @@ def generate_pdf(platform):
     tips = [
         "Use a separate user account for testing to avoid polluting your dev environment.",
         "Keep the console visible while testing — many bugs log tracebacks without user-visible errors.",
-        "Save the rc.14 builds for bisecting if a regression surfaces after promoting to 1.0.",
+        "Save the 1.0.0 builds for bisecting if a regression surfaces after promoting to 1.0.",
     ]
     for t in tips:
         pdf.set_x(15)
