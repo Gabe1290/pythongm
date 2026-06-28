@@ -27,7 +27,6 @@
 | **Standalone EXE** | Native executable built for your current platform (Windows, macOS, or Linux) — share your game with anyone |
 | **HTML5** | Single-file web game — runs in any browser, no install needed |
 | **Android / iOS** | Mobile-ready via Kivy and Buildozer |
-| **Thymio Robot** | Program real educational robots with your game logic! |
 
 ---
 
@@ -42,12 +41,6 @@ PyGameMaker is built for learning. Toggle **View Code** to see how your visual a
 ## Blockly Visual Programming
 
 Prefer code blocks? PyGameMaker integrates **Google Blockly** with 173 snap-together blocks across 19 categories. Choose from presets like Beginner, Platformer, or RPG — or build your own custom block palette.
-
----
-
-## Thymio Robot Simulator
-
-Bring your code into the real world! PyGameMaker includes a full **Thymio robot simulator** with motors, proximity sensors, ground sensors, LEDs, and buttons. Test your robot programs on screen, then export to a real Thymio via Aseba.
 
 ---
 
@@ -72,4 +65,4 @@ python main.py
 
 ---
 
-*PyGameMaker IDE v1.0.0-rc.13 — Gabriel Thullen, 2025-2026*
+*PyGameMaker IDE v1.0.0-rc.14 — Gabriel Thullen, 2025-2026*
