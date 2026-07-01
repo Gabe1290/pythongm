@@ -22,7 +22,9 @@ See **[all releases & release notes](https://github.com/Gabe1290/pythongm/releas
 
 > **First launch:** on Windows, SmartScreen → *More info → Run anyway*; on macOS, right-click the app → *Open* to get past Gatekeeper.
 
-<!-- TIP: add a screenshot or a short demo GIF right here (e.g. ![PyGameMaker](docs/screenshot.png)). A visual of building + running a game is the single biggest boost a project README can get. -->
+![PyGameMaker — the room editor with a live preview](docs/screenshot.png)
+
+*Building a maze in the PyGameMaker room editor, with a live preview of the room in the properties panel.*
 
 ## Educational Goals
 
