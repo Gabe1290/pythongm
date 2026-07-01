@@ -615,6 +615,46 @@ class RoomCanvas(QWidget):
         if self.show_preview and self.preview_position and self.current_tile_info:
             self.draw_tile_preview(painter)
 
+    def render_room_pixmap(self, max_width=200, max_height=150):
+        """Render the room exactly as the editor displays it, scaled to fit.
+
+        Reuses the same draw helpers as paintEvent — background (incl.
+        multi-layer/tiled backgrounds), the tile layer, instances (with
+        their real sprites and transforms) and foreground layers — so the
+        result is a faithful thumbnail of the room, tiles and all. Skips
+        editor-only chrome: grid, selection handles, rubber band, the
+        placement ghost, and the tile-palette dim overlay.
+
+        Used by the IDE properties panel's Preview frame.
+        """
+        room_w = max(1, self.room_width)
+        room_h = max(1, self.room_height)
+        scale = min(max_width / room_w, max_height / room_h)
+        preview_w = max(1, int(room_w * scale))
+        preview_h = max(1, int(room_h * scale))
+
+        pixmap = QPixmap(preview_w, preview_h)
+        pixmap.fill(Qt.transparent)
+
+        painter = QPainter(pixmap)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.SmoothPixmapTransform)
+        painter.scale(scale, scale)
+
+        # Same layering as paintEvent, minus editor chrome.
+        self.draw_background(painter)
+        self.draw_tiles(painter)
+        for instance in self.instances:
+            self.draw_instance(painter, instance)
+        self.draw_foregrounds(painter)
+
+        # Room border (kept crisp at 2px regardless of scale, like the canvas).
+        painter.setPen(QPen(QColor("#333333"), 2 / scale))
+        painter.drawRect(0, 0, self.room_width, self.room_height)
+
+        painter.end()
+        return pixmap
+
     def draw_background(self, painter):
         """Draw room background (color and/or multi-layer images)"""
         painter.fillRect(0, 0, self.room_width, self.room_height, self.background_color)
