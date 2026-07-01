@@ -651,6 +651,21 @@ class RoomEditor(FloatableEditorMixin, QWidget):
 
         return data
 
+    def generate_room_preview(self, max_width: int = 200, max_height: int = 150):
+        """Render a thumbnail of the room currently being edited.
+
+        Called by the IDE properties panel's Preview frame. Renders the live
+        canvas (backgrounds, tiles, instances and foreground layers, using the
+        canvas's own project info and sprite cache) so the preview matches the
+        room editor exactly — tiles and all — and tracks unsaved edits.
+        """
+        from PySide6.QtGui import QPixmap
+        try:
+            return self.room_canvas.render_room_pixmap(max_width, max_height)
+        except Exception as e:
+            logger.error(f"Error generating room preview: {e}")
+            return QPixmap()
+
     def save(self):
         """Save the room"""
         self._saving = True
