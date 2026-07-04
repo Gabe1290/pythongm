@@ -8392,6 +8392,11 @@ Möchten Sie trotzdem speichern?</translation>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Match-3 — Level 1</source>
+            <translation>Match-3 — Level 1</translation>
+        </message>
+
+        <message>
             <source>Maze — Level 1</source>
             <translation>Labyrinth — Level 1</translation>
         </message>

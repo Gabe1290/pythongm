@@ -2388,6 +2388,11 @@ Preverite konzolo za podrobnosti o napaki.</translation>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Match-3 — Level 1</source>
+            <translation>Match-3 — Stopnja 1</translation>
+        </message>
+
+        <message>
             <source>Maze — Level 1</source>
             <translation>Labirint — Stopnja 1</translation>
         </message>
