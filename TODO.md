@@ -316,6 +316,43 @@ Other:
 
 ## Export
 
+### Kivy/Android export — remaining parity gaps (draw-queue + mouse LANDED)
+- Found while validating the `match3_1` bundled sample (2026-07-03) for
+  Android. The two blocking gaps were **fixed the same day** in
+  `export/Kivy/kivy_exporter.py` (regression tests:
+  `tests/test_kivy_draw_queue_mouse_export.py`, which also runs the exported
+  match3_1 game headlessly against stub kivy modules — the first
+  execute-the-generated-code export test):
+  - ✅ **`draw` events now run.** The exported `GameObject` initializes
+    `self._draw_queue` / `mouse_x` / `mouse_y`; the scene loop's step 8
+    calls `on_draw` then `_render_draw_queue`, which renders the IDE
+    runtime's command schema (rectangle / circle / ellipse / line / text /
+    scaled_text, room coords y-down → Kivy y-up) into an InstructionGroup
+    on `canvas.after`.
+  - ✅ **Left-mouse events now export.** `mouse_left_press`/`_button`/`_down`
+    → `on_mouse_left_press`, `mouse_left_release` → `on_mouse_left_release`;
+    the scene's `on_touch_down`/`on_touch_up` invert the Android container
+    transform (or the desktop DPI window scale), set room-coordinate
+    `mouse_x`/`mouse_y`, and dispatch to every instance with the handler
+    (IDE-runtime semantics: no hit-test).
+  - ✅ The Android virtual D-pad is now generated only when the project has
+    keyboard events (`NEEDS_DPAD`), so touch-only games don't get a corner
+    overlay that swallows taps.
+- **Still open** (deferred, none block `match3_1`):
+  - Draw-queue types `sprite` / `background` / `lives` / `health_bar` are
+    not rendered by the Kivy `_render_draw_queue` (skipped silently, like
+    unknown types in the IDE runtime's dispatch table).
+  - Right/middle mouse events have no touch equivalent and stay unexported.
+  - **`execute_code` env is thinner than the IDE's.** Code is inlined
+    verbatim into the generated method (good), but the IDE's exec
+    environment (`runtime/action_executor.py` `execute_execute_code_action`)
+    also copies locals back onto the instance and binds `game`, `keyboard`,
+    `other`; the export does none of that, so bare-name assignments don't
+    persist across events and those names raise `NameError`.
+  - A real on-device/buildozer end-to-end test still doesn't exist
+    (`test_android_export_cleanup.py` mocks the build); the stub-kivy
+    execution test above covers logic, not the actual Kivy/GL layer.
+
 - **Kivy export — long-tail action coverage** —
   `export/Kivy/code_generator.py:681`. Most actions translate fine; unhandled
   ones fall through to a no-op `pass`. Each one needs to be ported as we hit
