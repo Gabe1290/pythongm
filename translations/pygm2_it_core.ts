@@ -2388,6 +2388,11 @@ Controlla la console per i dettagli dell&apos;errore.</translation>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Match-3 — Level 1</source>
+            <translation>Match-3 — Livello 1</translation>
+        </message>
+
+        <message>
             <source>Maze — Level 1</source>
             <translation>Labirinto — Livello 1</translation>
         </message>

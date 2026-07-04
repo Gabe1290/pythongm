@@ -1,0 +1,179 @@
+{
+  "name": "Match3Game",
+  "version": "1.0.0",
+  "created": "2026-07-02T22:00:00.000000",
+  "modified": "2026-07-03T11:45:19.073746",
+  "settings": {
+    "window_title": "Match-3 Tile Game",
+    "window_width": 800,
+    "window_height": 800,
+    "room_speed": 60,
+    "fullscreen": false,
+    "blockly_preset": "beginner",
+    "startup_room": "rm_match3"
+  },
+  "assets": {
+    "sprites": {
+      "spr_red": {
+        "name": "spr_red",
+        "asset_type": "sprite",
+        "width": 32,
+        "height": 32,
+        "image_file": "sprites/spr_red.png",
+        "imported": true,
+        "animation_type": "single",
+        "file_path": "sprites/spr_red.png",
+        "frame_height": 32,
+        "frame_width": 32,
+        "frames": 1,
+        "origin_x": 16,
+        "origin_y": 16,
+        "precise": false,
+        "speed": 10.0,
+        "thumbnail": "thumbnails\\spr_red_thumb.png",
+        "modified": "2026-07-02T22:27:37.583276"
+      },
+      "spr_blue": {
+        "name": "spr_blue",
+        "asset_type": "sprite",
+        "width": 32,
+        "height": 32,
+        "image_file": "sprites/spr_blue.png",
+        "imported": true,
+        "animation_type": "single",
+        "file_path": "sprites/spr_blue.png",
+        "frame_height": 32,
+        "frame_width": 32,
+        "frames": 1,
+        "origin_x": 16,
+        "origin_y": 16,
+        "precise": false,
+        "speed": 10.0,
+        "thumbnail": "thumbnails\\spr_blue_thumb.png",
+        "modified": "2026-07-02T22:27:53.950600"
+      },
+      "spr_green": {
+        "name": "spr_green",
+        "asset_type": "sprite",
+        "width": 32,
+        "height": 32,
+        "image_file": "sprites/spr_green.png",
+        "imported": true,
+        "animation_type": "single",
+        "file_path": "sprites/spr_green.png",
+        "frame_height": 32,
+        "frame_width": 32,
+        "frames": 1,
+        "origin_x": 16,
+        "origin_y": 16,
+        "precise": false,
+        "speed": 10.0,
+        "thumbnail": "thumbnails\\spr_green_thumb.png",
+        "modified": "2026-07-02T22:27:45.758432"
+      },
+      "spr_yellow": {
+        "name": "spr_yellow",
+        "asset_type": "sprite",
+        "width": 32,
+        "height": 32,
+        "image_file": "sprites/spr_yellow.png",
+        "imported": true,
+        "animation_type": "single",
+        "file_path": "sprites/spr_yellow.png",
+        "frame_height": 32,
+        "frame_width": 32,
+        "frames": 1,
+        "origin_x": 16,
+        "origin_y": 16,
+        "precise": false,
+        "speed": 10.0,
+        "thumbnail": "thumbnails\\spr_yellow_thumb.png",
+        "modified": "2026-07-02T22:28:02.458251"
+      }
+    },
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "obj_GridManager": {
+        "name": "obj_GridManager",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "execute_code",
+                "parameters": {
+                  "code": "self.cols = 6\nself.rows = 6\nself.tile = 96\nself.ox = 112\nself.oy = 140\nself.palette = [(214, 69, 65), (65, 105, 225), (60, 179, 113), (244, 208, 63)]\nself.grid = []\nfor gy in range(self.rows):\n    row = []\n    for gx in range(self.cols):\n        n = random.randrange(4)\n        while (gx >= 2 and row[gx - 1] == n and row[gx - 2] == n) or (gy >= 2 and self.grid[gy - 1][gx] == n and self.grid[gy - 2][gx] == n):\n            n = random.randrange(4)\n        row.append(n)\n    self.grid.append(row)\nself.sel = None\nself.score = 0\nself.target = 500\nself.won = False\nself.marked = set()\nself.flash = 0\nself.flash_total = 36\nself.falling = {}\nself.fall_speed = 12\n\ndef find_matches(g, rows, cols):\n    marks = set()\n    for yy in range(rows):\n        run = 1\n        for xx in range(1, cols + 1):\n            if xx < cols and g[yy][xx] == g[yy][xx - 1]:\n                run = run + 1\n            else:\n                if run >= 3:\n                    for k in range(xx - run, xx):\n                        marks.add((k, yy))\n                run = 1\n    for xx in range(cols):\n        run = 1\n        for yy in range(1, rows + 1):\n            if yy < rows and g[yy][xx] == g[yy - 1][xx]:\n                run = run + 1\n            else:\n                if run >= 3:\n                    for k in range(yy - run, yy):\n                        marks.add((xx, k))\n                run = 1\n    return marks\n\nself.find_matches = find_matches\n"
+                }
+              }
+            ]
+          },
+          "mouse_left_press": {
+            "actions": [
+              {
+                "action": "execute_code",
+                "parameters": {
+                  "code": "if not self.won and self.flash == 0 and not self.falling:\n    gx = int((self.mouse_x - self.ox) // self.tile)\n    gy = int((self.mouse_y - self.oy) // self.tile)\n    if gx < 0 or gx >= self.cols or gy < 0 or gy >= self.rows:\n        self.sel = None\n    elif self.sel is None:\n        self.sel = (gx, gy)\n    elif self.sel == (gx, gy):\n        self.sel = None\n    elif abs(self.sel[0] - gx) + abs(self.sel[1] - gy) != 1:\n        self.sel = (gx, gy)\n    else:\n        g = self.grid\n        sx = self.sel[0]\n        sy = self.sel[1]\n        tmp = g[gy][gx]\n        g[gy][gx] = g[sy][sx]\n        g[sy][sx] = tmp\n        marks = self.find_matches(g, self.rows, self.cols)\n        if marks:\n            self.marked = marks\n            self.flash = self.flash_total\n        else:\n            tmp = g[gy][gx]\n            g[gy][gx] = g[sy][sx]\n            g[sy][sx] = tmp\n        self.sel = None\n"
+                }
+              }
+            ]
+          },
+          "step": {
+            "actions": [
+              {
+                "action": "execute_code",
+                "parameters": {
+                  "code": "if self.flash > 0:\n    self.flash = self.flash - 1\n    if self.flash == 0:\n        g = self.grid\n        marks = self.marked\n        self.score = self.score + len(marks) * 10\n        falls = {}\n        for xx in range(self.cols):\n            kept = []\n            for yy in range(self.rows):\n                if (xx, yy) not in marks:\n                    kept.append((yy, g[yy][xx]))\n            new_count = self.rows - len(kept)\n            for i in range(len(kept)):\n                dst = new_count + i\n                src = kept[i][0]\n                g[dst][xx] = kept[i][1]\n                if dst != src:\n                    falls[(xx, dst)] = (dst - src) * self.tile\n            for dst in range(new_count):\n                g[dst][xx] = random.randrange(4)\n                falls[(xx, dst)] = new_count * self.tile\n        self.marked = set()\n        self.falling = falls\n        if self.score >= self.target:\n            self.won = True\n        if not falls:\n            new_marks = self.find_matches(g, self.rows, self.cols)\n            if new_marks:\n                self.marked = new_marks\n                self.flash = self.flash_total\nelif self.falling:\n    done = True\n    for key in list(self.falling.keys()):\n        v = self.falling[key] - self.fall_speed\n        if v > 0:\n            self.falling[key] = v\n            done = False\n        else:\n            self.falling[key] = 0\n    if done:\n        self.falling = {}\n        new_marks = self.find_matches(self.grid, self.rows, self.cols)\n        if new_marks:\n            self.marked = new_marks\n            self.flash = self.flash_total\n"
+                }
+              }
+            ]
+          },
+          "draw": {
+            "actions": [
+              {
+                "action": "execute_code",
+                "parameters": {
+                  "code": "q = self._draw_queue\nq.append({'type': 'rectangle', 'x1': self.ox - 10, 'y1': self.oy - 10, 'x2': self.ox + self.cols * self.tile + 10, 'y2': self.oy + self.rows * self.tile + 10, 'color': (52, 73, 94), 'filled': True})\nblink_on = self.flash > 0 and (self.flash // 6) % 2 == 0\nboard_top = self.oy\nfor gy in range(self.rows):\n    for gx in range(self.cols):\n        c = self.palette[self.grid[gy][gx]]\n        off = self.falling.get((gx, gy), 0)\n        x1 = self.ox + gx * self.tile + 4\n        y1 = self.oy + gy * self.tile + 4 - off\n        y2 = y1 + self.tile - 8\n        if y2 <= board_top:\n            continue\n        if y1 < board_top:\n            y1 = board_top\n        if (gx, gy) in self.marked:\n            if blink_on:\n                c = (255, 255, 255)\n            q.append({'type': 'rectangle', 'x1': x1, 'y1': y1, 'x2': x1 + self.tile - 8, 'y2': y2, 'color': c, 'filled': True})\n            for k in range(3):\n                q.append({'type': 'rectangle', 'x1': x1 + k, 'y1': y1 + k, 'x2': x1 + self.tile - 8 - k, 'y2': y2 - k, 'color': (255, 255, 255), 'filled': False})\n        else:\n            q.append({'type': 'rectangle', 'x1': x1, 'y1': y1, 'x2': x1 + self.tile - 8, 'y2': y2, 'color': c, 'filled': True})\nif self.sel is not None:\n    for k in range(4):\n        x1 = self.ox + self.sel[0] * self.tile + k\n        y1 = self.oy + self.sel[1] * self.tile + k\n        q.append({'type': 'rectangle', 'x1': x1, 'y1': y1, 'x2': x1 + self.tile - 2 * k, 'y2': y1 + self.tile - 2 * k, 'color': (255, 255, 255), 'filled': False})\nq.append({'type': 'text', 'x': self.ox, 'y': self.oy - 56, 'text': 'Score: ' + str(self.score) + '   (win at ' + str(self.target) + ')', 'color': (30, 30, 30)})\nq.append({'type': 'text', 'x': self.ox, 'y': self.oy + self.rows * self.tile + 26, 'text': 'Click a tile, then an adjacent tile to swap. Match 3+ in a row.', 'color': (60, 60, 60)})\nif self.won:\n    q.append({'type': 'text', 'x': self.ox + 190, 'y': self.oy - 96, 'text': 'YOU WIN!', 'color': (200, 30, 30)})\n"
+                }
+              }
+            ]
+          }
+        },
+        "imported": true,
+        "created": "2026-07-03T00:00:51.321537",
+        "modified": "2026-07-03T00:00:51.321537"
+      }
+    },
+    "rooms": {
+      "rm_match3": {
+        "name": "rm_match3",
+        "asset_type": "room",
+        "width": 800,
+        "height": 800,
+        "background_color": "#a1e4eb",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 1,
+        "instances": [],
+        "tiles": [],
+        "created": "2026-07-03T00:00:51.321537",
+        "modified": "2026-07-03T00:00:51.321537",
+        "imported": true,
+        "_external_file": "rooms/rm_match3.json"
+      }
+    },
+    "playgrounds": {},
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  },
+  "room_order": [
+    "rm_match3"
+  ]
+}

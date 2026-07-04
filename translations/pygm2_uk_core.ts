@@ -2252,6 +2252,11 @@ Check the console for error details.</source>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Match-3 — Level 1</source>
+            <translation>Три в ряд — Рівень 1</translation>
+        </message>
+
+        <message>
             <source>Maze — Level 1</source>
             <translation>Лабіринт — Рівень 1</translation>
         </message>

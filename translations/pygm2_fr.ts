@@ -8481,6 +8481,11 @@ Voulez-vous quand même enregistrer ?</translation>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Match-3 — Level 1</source>
+            <translation>Match-3 — Niveau 1</translation>
+        </message>
+
+        <message>
             <source>Maze — Level 1</source>
             <translation>Labyrinthe — Niveau 1</translation>
         </message>

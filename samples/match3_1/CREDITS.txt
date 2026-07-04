@@ -1,0 +1,27 @@
+Sprite art in this sample — License notice
+==========================================
+
+The four image files in this folder were created for this sample (plain
+32x32 solid-color tile squares) by the pygm2 author (Gabriel Thullen) and
+are dedicated to the public domain:
+
+  sprites/spr_red.png
+  sprites/spr_blue.png
+  sprites/spr_green.png
+  sprites/spr_yellow.png
+
+License: CC0 1.0 Universal (Public Domain Dedication), SPDX: CC0-1.0.
+To the extent possible under law, the author has waived all copyright and
+related or neighboring rights to these files. You may copy, modify,
+distribute, and use them, including for commercial purposes, all without
+asking permission. No attribution is required (though it is appreciated).
+
+  Full text: ../../licenses/CC0-1.0.txt
+  Summary  : https://creativecommons.org/publicdomain/zero/1.0/
+
+Note: the current version of the game draws its board with color
+primitives and does not yet display these sprites — they are bundled for
+the planned sprite-based follow-up version (see README.md).
+
+Full project-wide asset licensing: see docs/ASSET_LICENSES.md in the
+PyGameMaker repository.

@@ -43,6 +43,7 @@ SAMPLE_PROJECTS: List[Tuple[str, str]] = [
     ("samples/plateforme_1", "Platform — Level 1"),
     ("samples/plateforme_2", "Platform — Level 2"),
     ("samples/plateforme_3", "Platform — Level 3"),
+    ("samples/match3_1", "Match-3 — Level 1"),
     # `treasure` and `maze_4` were dropped from the bundled set after
     # rc.12 user testing surfaced enough GMK-import edge cases (bad
     # action parameters, sprite issues, half-converted events) that

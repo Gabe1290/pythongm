@@ -21,7 +21,17 @@ copy — the bundled folders themselves are never modified.
 | `plateforme_3/`  | imported from a GameMaker 8.x .gmk  | platformer · art from Pingus, GPLv3+ †           |
 | `plateforme_4/`  | imported from a GameMaker 8.x .gmk  | platformer · art from Pingus, GPLv3+ †           |
 | `plateforme_5/`  | imported from a GameMaker 8.x .gmk  | platformer · art from Pingus, GPLv3+ †           |
+| `match3_1/`      | authored natively in pygm2          | match-3 puzzle · 1 room, 1 object, pure `execute_code` · see its `README.md` ‡ |
 | `maze.playground`| Aseba playground (for Thymio tests) | XML file, used by `File → Open Playground`       |
+
+‡ `match3_1/` is the first sample authored directly in the native format
+(no `.gmk` origin, so the "Regenerating" section below does not apply to
+it). Its gameplay, code architecture, planned advanced versions, and
+export status (including the current Android/Kivy limitations) are
+documented in [`match3_1/README.md`](match3_1/README.md) — Android/Kivy
+export is supported since 2026-07-03 (the draw-queue + touch support in
+the Kivy exporter was added for this sample); its four tile sprites are
+CC0 (see `match3_1/CREDITS.txt`).
 
 † The `plateforme_*` image assets are taken from [Pingus](https://pingus.seul.org/)
 and are licensed **GPL-3.0-or-later**, *not* the project's MIT license. Each

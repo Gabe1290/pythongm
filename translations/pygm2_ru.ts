@@ -8392,6 +8392,11 @@ Do you want to save anyway?</source>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Match-3 — Level 1</source>
+            <translation>Три в ряд — Уровень 1</translation>
+        </message>
+
+        <message>
             <source>Maze — Level 1</source>
             <translation>Лабиринт — Уровень 1</translation>
         </message>
