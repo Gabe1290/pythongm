@@ -291,30 +291,41 @@ class WSLBridge:
     # Buildozer Execution
     # ------------------------------------------------------------------
 
-    def run_buildozer(self, build_dir_windows: str) -> subprocess.Popen:
-        """Launch buildozer inside WSL as a streaming subprocess.
+    @staticmethod
+    def _project_build_key(project_name) -> str:
+        """Sanitize a project name into a WSL build-directory key."""
+        import re
+        key = re.sub(r'[^a-z0-9_]+', '_', str(project_name or '').lower()).strip('_')
+        return key or 'project'
 
-        Copies the game files from the Windows temp directory into
-        WSL's native filesystem (``/tmp/pygm_build``), runs buildozer
-        there, and copies the APK back.  Building on the native Linux
-        filesystem avoids ``/mnt/c/`` I/O slowness and path-resolution
-        issues that can prevent SDK tools like ``aidl`` from working.
+    def _build_script_text(self, wsl_src: str, project_key: str) -> str:
+        """Compose the bash script that runs buildozer inside WSL.
 
-        The build script is written to a file inside WSL because:
-        - ``wsl bash -c`` strips ``$`` variable references
-        - Piping via stdin produces Windows ``\\r\\n`` line endings
+        The build runs in a PERSISTENT per-project directory
+        (``~/pygm_builds/<key>``) rather than a fresh mktemp dir: the
+        python-for-android compile inside ``.buildozer/`` takes 40+
+        minutes from scratch, so a throwaway dir made every retry pay the
+        full first-build cost again (and made the exporter's timeout
+        unbeatable on slower machines). Only the game sources, spec, and
+        previous ``bin/`` output are refreshed each run — ``.buildozer/``
+        and ``.gradle/`` caches survive, so retries are incremental.
 
-        Returns a :class:`subprocess.Popen` with ``stdout`` piped.
+        The path must contain NO hidden (dot-prefixed) component:
+        buildozer's ``_copy_application_sources`` skips any walk root
+        whose ABSOLUTE path has a component starting with '.', so a build
+        under e.g. ``~/.pygm/`` silently copies zero sources into the app
+        dir and p4a fails with "No main.py found in your app directory".
         """
-        wsl_src = self.windows_to_wsl_path(build_dir_windows)
-
-        # Write the build script to a file inside WSL to avoid
-        # Windows line-ending issues and $ stripping in 'wsl bash -c'.
-        build_script = (
+        return (
             '#!/bin/bash\n'
             'set -e\n'
-            'BUILD_DIR=$(mktemp -d /tmp/pygm_build_XXXXXX)\n'
+            'BUILD_DIR="$HOME/pygm_builds/{key}"\n'
+            'mkdir -p "$BUILD_DIR"\n'
             'echo "Build directory: $BUILD_DIR"\n'
+            '# Refresh game sources + spec; keep .buildozer/.gradle caches.\n'
+            '# bin/ is cleared so a stale APK from an older build can never\n'
+            '# be copied back as if this build produced it.\n'
+            'rm -rf "$BUILD_DIR/game" "$BUILD_DIR/bin"\n'
             'cp -r "{src}"/* "$BUILD_DIR"/\n'
             'cd "$BUILD_DIR"\n'
             'export PATH="$HOME/.local/bin:$PATH"\n'
@@ -338,7 +349,31 @@ class WSLBridge:
             'cp "$BUILD_DIR"/bin/*.apk "{src}/bin/" 2>/dev/null || true\n'
             'rm -f "$0"\n'  # self-delete the run script (unique per build)
             'exit $EXIT_CODE\n'
-        ).format(src=wsl_src)
+        ).format(src=wsl_src, key=project_key)
+
+    def run_buildozer(self, build_dir_windows: str,
+                      project_name=None) -> subprocess.Popen:
+        """Launch buildozer inside WSL as a streaming subprocess.
+
+        Copies the game files from the Windows temp directory into a
+        persistent per-project directory on WSL's native filesystem
+        (``~/pygm_builds/<project>``), runs buildozer there, and
+        copies the APK back.  Building on the native Linux filesystem
+        avoids ``/mnt/c/`` I/O slowness and path-resolution issues that
+        can prevent SDK tools like ``aidl`` from working; keeping the
+        directory persistent preserves the python-for-android and gradle
+        caches so rebuilds take minutes instead of the full first-build
+        compile.
+
+        The build script is written to a file inside WSL because:
+        - ``wsl bash -c`` strips ``$`` variable references
+        - Piping via stdin produces Windows ``\\r\\n`` line endings
+
+        Returns a :class:`subprocess.Popen` with ``stdout`` piped.
+        """
+        wsl_src = self.windows_to_wsl_path(build_dir_windows)
+        project_key = self._project_build_key(project_name)
+        build_script = self._build_script_text(wsl_src, project_key)
 
         # Write the script to a file inside WSL with Unix line endings.
         # Use binary mode (no text=True) so Python won't convert \n to \r\n.
@@ -367,7 +402,7 @@ class WSLBridge:
         logger.info("Running buildozer in WSL (native filesystem):")
         logger.info("  Windows dir: %s", build_dir_windows)
         logger.info("  WSL source:  %s", wsl_src)
-        logger.info("  Build will run in /tmp/pygm_build_*")
+        logger.info("  Build dir:   ~/pygm_builds/%s (persistent)", project_key)
 
         process = subprocess.Popen(
             ['wsl', 'bash', script_path],

@@ -16,12 +16,17 @@ from export.base_exporter import BaseKivyExporter
 
 logger = get_logger(__name__)
 
-# Wall-clock ceilings for a single buildozer run, in seconds. The first build
-# downloads the Android SDK/NDK (~2GB) and can legitimately take a long time;
-# WSL filesystem I/O is slower so it gets a larger budget. Module-level so the
-# silent-build cancel/timeout regression tests can shrink them.
-BUILDOZER_TIMEOUT_NATIVE = 1200  # 20 min
-BUILDOZER_TIMEOUT_WSL = 2400     # 40 min — WSL filesystem I/O is slower
+# Wall-clock ceilings for a single buildozer run, in seconds. Module-level so
+# the silent-build cancel/timeout regression tests can shrink them.
+# Hang failsafes, not expected durations. A first build legitimately takes
+# 40-90+ minutes (python-for-android cross-compiles CPython, SDL2, Kivy...);
+# the old 20/40-minute values killed healthy first builds mid-compile, and
+# with the (then) throwaway WSL build dir every retry started from zero, so
+# the export could never succeed on a slower machine. Rebuilds hit the
+# persistent per-project cache and finish in minutes; the user can always
+# cancel interactively.
+BUILDOZER_TIMEOUT_NATIVE = 7200   # 2 h
+BUILDOZER_TIMEOUT_WSL = 10800     # 3 h — WSL filesystem I/O is slower
 
 
 class AndroidExporter(BaseKivyExporter):
@@ -467,6 +472,21 @@ class AndroidExporter(BaseKivyExporter):
             traceback.print_exc()
             return False
 
+    def _native_persistent_build_dir(self) -> Path:
+        """Persistent per-project buildozer directory for native Linux/macOS.
+
+        Same contract as the WSL bridge's ~/pygm_builds/<key>: survives
+        across exports and login sessions so the python-for-android and
+        gradle caches are reused, and contains no hidden path component
+        (buildozer's source copy skips those).
+        """
+        from export.android.wsl_bridge import WSLBridge
+        key = WSLBridge._project_build_key(
+            (self.project_data or {}).get('name') if self.project_data else None)
+        persist = Path.home() / 'pygm_builds' / key
+        persist.mkdir(parents=True, exist_ok=True)
+        return persist
+
     def _run_buildozer(self, build_dir: Path):
         """Run Buildozer to build the Android APK.
 
@@ -489,7 +509,9 @@ class AndroidExporter(BaseKivyExporter):
             if self._use_wsl:
                 # Run buildozer inside WSL
                 logger.info("Using WSL to run buildozer")
-                process = self._wsl_bridge.run_buildozer(str(build_dir))
+                process = self._wsl_bridge.run_buildozer(
+                    str(build_dir),
+                    project_name=(self.project_data or {}).get('name'))
                 timeout = BUILDOZER_TIMEOUT_WSL
             else:
                 # Native Linux/macOS execution
@@ -509,9 +531,28 @@ class AndroidExporter(BaseKivyExporter):
                 env['PIP_USER'] = '0'
                 env['VIRTUAL_ENV'] = venv_root
 
+                # Build in a persistent per-project directory, same rationale
+                # as the WSL bridge: the temp build_dir is deleted after every
+                # export, and running buildozer there threw away the 40+ min
+                # python-for-android compile each time. ~/pygm_builds/<key>
+                # keeps .buildozer/.gradle caches across exports AND user
+                # sessions (classroom machines: a build can be finished a week
+                # later as long as the home directory persists). Must be
+                # dot-free — buildozer's source copy skips any absolute path
+                # containing a hidden component (see WSLBridge._build_script_text).
+                persist_dir = self._native_persistent_build_dir()
+                for sub in ('game', 'bin'):
+                    shutil.rmtree(persist_dir / sub, ignore_errors=True)
+                for item in Path(build_dir).iterdir():
+                    dest = persist_dir / item.name
+                    if item.is_dir():
+                        shutil.copytree(item, dest, dirs_exist_ok=True)
+                    else:
+                        shutil.copy2(item, dest)
+
                 process = subprocess.Popen(
                     [python_exe, '-m', 'buildozer', 'android', 'debug'],
-                    cwd=build_dir,
+                    cwd=persist_dir,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
                     text=True,
@@ -671,19 +712,30 @@ class AndroidExporter(BaseKivyExporter):
                         process.returncode, tail)
 
             logger.info("Buildozer build completed successfully!")
+            if not self._use_wsl:
+                # Native builds ran in the persistent dir — bring the APK back
+                # to the temp build_dir where _copy_to_output expects it (the
+                # WSL script does its own copy-back).
+                persist_bin = self._native_persistent_build_dir() / 'bin'
+                out_bin = Path(build_dir) / 'bin'
+                out_bin.mkdir(exist_ok=True)
+                for apk in persist_bin.glob('*.apk'):
+                    shutil.copy2(apk, out_bin / apk.name)
             return True
 
         except subprocess.TimeoutExpired:
-            timeout_min = 40 if self._use_wsl else 20
+            timeout_min = (BUILDOZER_TIMEOUT_WSL if self._use_wsl
+                           else BUILDOZER_TIMEOUT_NATIVE) // 60
             logger.error("Buildozer timed out after %d minutes", timeout_min)
             if process:
                 process.kill()
             return (
                 "Buildozer timed out after {} minutes.\n\n"
-                "The first Android build downloads the SDK/NDK and can take\n"
-                "a very long time on slow connections. Try running again —\n"
-                "subsequent builds are much faster once the SDK is cached.".format(
-                    timeout_min)
+                "This timeout is a hang failsafe well above a normal\n"
+                "first-build time, so something is likely stuck (network,\n"
+                "disk space, a wedged gradle daemon). The build cache is\n"
+                "kept, so running the export again resumes from where it\n"
+                "stopped rather than starting over.".format(timeout_min)
             )
         except Exception as e:
             logger.error("Error running Buildozer: {}".format(e))
