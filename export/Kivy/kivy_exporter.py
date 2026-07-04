@@ -385,6 +385,11 @@ if not IS_ANDROID:
 # Global game manager reference
 _game_app = None
 
+# Whether any object listens to keyboard events. A game with no keyboard
+# input (e.g. touch/mouse-driven puzzles) gets no virtual D-pad overlay,
+# which would otherwise cover the corner and swallow taps there.
+NEEDS_DPAD = {needs_dpad}
+
 # Room configuration
 ROOM_ORDER = [{room_list_str}]
 ROOM_CLASSES = {{{room_mapping_str}}}
@@ -950,8 +955,8 @@ class GameApp(App):
             # Scale game to fill screen with correct aspect ratio
             self.scene_container = self._create_scaled_container(self.scene)
             self.root_layout.add_widget(self.scene_container)
-            # Add virtual D-pad overlay
-            if VirtualDPad is not None:
+            # Add virtual D-pad overlay (only for keyboard-driven games)
+            if VirtualDPad is not None and NEEDS_DPAD:
                 self.dpad = VirtualDPad(scene_ref=self.scene)
                 self.dpad.size_hint = (1, 1)
                 self.root_layout.add_widget(self.dpad)
@@ -1142,11 +1147,30 @@ if __name__ == '__main__':
             room_mapping_str=room_mapping_str,
             room_meta_str=room_meta_str,
             project_name=project_name,
-            first_room_class=first_room_class
+            first_room_class=first_room_class,
+            needs_dpad=self._project_uses_keyboard()
         )
 
         output_file = self.output_path / "game" / "main.py"
         output_file.write_text(code_formatted, encoding="utf-8")
+
+    def _project_uses_keyboard(self) -> bool:
+        """True if any object has a keyboard-family event (drives whether
+        the exported Android build shows the virtual D-pad overlay)."""
+        for obj_data in self.project_data.get('assets', {}).get('objects', {}).values():
+            if not isinstance(obj_data, dict):
+                continue
+            events = obj_data.get('events', {})
+            if isinstance(events, dict):
+                keys = events.keys()
+            elif isinstance(events, list):
+                keys = [e.get('event_type', '') for e in events if isinstance(e, dict)]
+            else:
+                continue
+            for key in keys:
+                if str(key).startswith('keyboard') or str(key) == 'nokey':
+                    return True
+        return False
 
     def _generate_scenes(self):
         """Generate scene files for each room"""
@@ -1525,7 +1549,14 @@ class {class_name}(Widget):
             if hasattr(instance, 'on_end_step'):
                 instance.on_end_step(dt)
 
-        # 8. DRAW EVENTS - handled by Kivy's rendering system
+        # 8. DRAW EVENTS - sprites render via each widget's canvas; the
+        # GameMaker draw event renders through the per-instance draw queue
+        # (room coordinates, y-down — see GameObject._render_draw_queue)
+        for instance in _live:
+            if hasattr(instance, 'on_draw'):
+                instance._draw_queue = []
+                instance.on_draw(dt)
+                instance._render_draw_queue()
 
         # 9. CLEANUP - Remove destroyed instances
         if self.instances_to_destroy:
@@ -1578,6 +1609,68 @@ class {class_name}(Widget):
                     instance.on_keyboard_up(key, scancode)
         except Exception as exc:
             print(f"[ERROR] on_keyboard_up: {{exc}}")
+        return False
+
+    def _touch_to_room(self, touch):
+        """Convert a window touch position to room coordinates (y-down).
+
+        On Android the scene sits inside a canvas-scaled container whose
+        transform does NOT apply to touch coordinates, so it is inverted
+        here. On desktop the scene fills the (possibly DPI-adjusted)
+        window, so window coords are rescaled to room coords.
+        """
+        from main import get_game_app
+        _app = get_game_app()
+        x, y = touch.x, touch.y
+        if _app is not None and getattr(_app, '_ctr_scale', None) is not None:
+            sc = _app._ctr_scale.x or 1.0
+            x = (x - _app._ctr_translate.x) / sc
+            y = (y - _app._ctr_translate.y) / sc
+        elif Window.width and Window.height:
+            x = x * self.room_width / float(Window.width)
+            y = y * self.room_height / float(Window.height)
+        return x, self.room_height - y
+
+    def on_touch_down(self, touch):
+        """Dispatch a touch/click as the GameMaker left-mouse press event.
+
+        Matches the IDE runtime: the event fires on EVERY instance that
+        has it (no hit-test), with mouse_x/mouse_y set in room coords.
+        """
+        if super().on_touch_down(touch):
+            return True
+        from main import get_game_app
+        _app = get_game_app()
+        if _app is not None and _app.scene is not self:
+            return False
+        mx, my = self._touch_to_room(touch)
+        for instance in list(self.instances):
+            if hasattr(instance, 'on_mouse_left_press'):
+                instance.mouse_x = mx
+                instance.mouse_y = my
+                try:
+                    instance.on_mouse_left_press()
+                except Exception as exc:
+                    print(f"[ERROR] on_mouse_left_press: {{exc}}")
+        return False
+
+    def on_touch_up(self, touch):
+        """Dispatch touch release as the GameMaker left-mouse release event."""
+        if super().on_touch_up(touch):
+            return True
+        from main import get_game_app
+        _app = get_game_app()
+        if _app is not None and _app.scene is not self:
+            return False
+        mx, my = self._touch_to_room(touch)
+        for instance in list(self.instances):
+            if hasattr(instance, 'on_mouse_left_release'):
+                instance.mouse_x = mx
+                instance.mouse_y = my
+                try:
+                    instance.on_mouse_left_release()
+                except Exception as exc:
+                    print(f"[ERROR] on_mouse_left_release: {{exc}}")
         return False
 '''
 
@@ -1808,8 +1901,9 @@ GameMaker-style base object with movement and collision
 """
 
 from kivy.uix.widget import Widget
-from kivy.graphics import Rectangle, Color
+from kivy.graphics import Rectangle, Color, Line, Ellipse, InstructionGroup
 from kivy.core.image import Image as CoreImage
+from kivy.core.text import Label as CoreLabel
 import math
 from utils import load_image
 
@@ -1879,6 +1973,18 @@ class GameObject(Widget):
 
         # Don't draw anything here - wait for set_sprite
         self.rect = None
+
+        # Draw-queue (GameMaker draw event) state. The draw event appends
+        # command dicts in ROOM coordinates (y-down, like the IDE runtime);
+        # _render_draw_queue converts and renders them each frame.
+        self._draw_queue = []
+        self._dq_group = None
+
+        # Mouse position in room coordinates (y-down). Set by the scene's
+        # touch dispatch right before a mouse event handler runs, so
+        # execute_code referencing self.mouse_x / self.mouse_y works.
+        self.mouse_x = 0.0
+        self.mouse_y = 0.0
 
     # GAMEMAKER 7.0: Bidirectional speed/direction synchronization
     @property
@@ -2335,6 +2441,109 @@ class GameObject(Widget):
     def on_keyboard_up(self, key, scancode):
         """Called when a key is released"""
         pass
+
+    # ---- Draw-queue rendering (GameMaker draw event parity) ----
+
+    @staticmethod
+    def _dq_color(value):
+        """Normalize a draw-queue color ((r,g,b[,a]) 0-255 or '#RRGGBB')
+        to a Kivy rgba tuple of 0-1 floats."""
+        try:
+            if isinstance(value, str):
+                hex_str = value[1:] if value.startswith('#') else value
+                return (int(hex_str[0:2], 16) / 255.0,
+                        int(hex_str[2:4], 16) / 255.0,
+                        int(hex_str[4:6], 16) / 255.0, 1)
+            r, g, b = value[0], value[1], value[2]
+            a = value[3] if len(value) > 3 else 255
+            return (r / 255.0, g / 255.0, b / 255.0, a / 255.0)
+        except Exception:
+            return (1, 1, 1, 1)
+
+    def _render_draw_queue(self):
+        """Render queued draw commands as Kivy canvas instructions.
+
+        Commands use the IDE runtime's schema and room coordinates (y=0 at
+        the TOP); this converts to Kivy's y-up frame via the room height.
+        Mirrors GameRunner._process_draw_queue: rectangle / circle /
+        ellipse / line / text / scaled_text; unknown types are skipped.
+        The queue is cleared afterwards, matching the runtime.
+        """
+        if self._dq_group is None:
+            self._dq_group = InstructionGroup()
+            self.canvas.after.add(self._dq_group)
+        group = self._dq_group
+        group.clear()
+        room_h = self.scene.room_height if self.scene else 0
+        for cmd in self._draw_queue:
+            try:
+                self._dq_render_cmd(group, cmd, room_h)
+            except Exception as exc:
+                print(f"[ERROR] draw-queue {{cmd.get('type')}}: {{exc}}")
+        self._draw_queue = []
+
+    def _dq_render_cmd(self, group, cmd, room_h):
+        """Render one draw-queue command dict into ``group``."""
+        ctype = cmd.get('type')
+        color = self._dq_color(cmd.get('color', '#FFFFFF'))
+        if ctype == 'rectangle':
+            x1 = float(cmd.get('x1', 0))
+            y1 = float(cmd.get('y1', 0))
+            x2 = float(cmd.get('x2', 100))
+            y2 = float(cmd.get('y2', 100))
+            group.add(Color(*color))
+            if cmd.get('filled', True):
+                group.add(Rectangle(pos=(x1, room_h - y2),
+                                    size=(x2 - x1, y2 - y1)))
+            else:
+                group.add(Line(rectangle=(x1, room_h - y2,
+                                          x2 - x1, y2 - y1), width=1))
+        elif ctype == 'ellipse':
+            x1 = float(cmd.get('x1', 0))
+            y1 = float(cmd.get('y1', 0))
+            x2 = float(cmd.get('x2', 100))
+            y2 = float(cmd.get('y2', 100))
+            group.add(Color(*color))
+            if cmd.get('filled', True):
+                group.add(Ellipse(pos=(x1, room_h - y2),
+                                  size=(x2 - x1, y2 - y1)))
+            else:
+                group.add(Line(ellipse=(x1, room_h - y2,
+                                        x2 - x1, y2 - y1), width=1))
+        elif ctype == 'circle':
+            x = float(cmd.get('x', 0))
+            y = float(cmd.get('y', 0))
+            radius = float(cmd.get('radius', 10))
+            group.add(Color(*color))
+            if cmd.get('filled', True):
+                group.add(Ellipse(pos=(x - radius, room_h - y - radius),
+                                  size=(2 * radius, 2 * radius)))
+            else:
+                group.add(Line(circle=(x, room_h - y, radius), width=1))
+        elif ctype == 'line':
+            group.add(Color(*color))
+            group.add(Line(points=[float(cmd.get('x1', 0)),
+                                   room_h - float(cmd.get('y1', 0)),
+                                   float(cmd.get('x2', 100)),
+                                   room_h - float(cmd.get('y2', 100))],
+                           width=1))
+        elif ctype in ('text', 'scaled_text'):
+            label = CoreLabel(text=str(cmd.get('text', '')), font_size=18)
+            label.refresh()
+            texture = label.texture
+            if texture is None:
+                return
+            width, height = texture.size
+            if ctype == 'scaled_text':
+                width = max(1, int(width * float(cmd.get('xscale', 1.0))))
+                height = max(1, int(height * float(cmd.get('yscale', 1.0))))
+            x = float(cmd.get('x', 0))
+            y = float(cmd.get('y', 0))
+            # CoreLabel glyphs are white; the Color instruction tints them.
+            group.add(Color(*color))
+            group.add(Rectangle(texture=texture,
+                                pos=(x, room_h - y - height),
+                                size=(width, height)))
 '''
 
         # Format the template with actual values
@@ -2999,6 +3208,16 @@ class {class_name}(GameObject):
             'keyboard_up': 'on_keyboard_up',  # Legacy name
             'draw': 'on_draw',
             'draw_gui': 'on_draw_gui',
+            # Flat mouse-event keys as written by the IDE events panel
+            # (mirrors runtime _FLAT_MOUSE_KEY_ALIASES; audit H11). The
+            # scene's on_touch_down/on_touch_up dispatch these — press and
+            # held variants fire on touch down, matching the IDE runtime,
+            # which has no per-frame held-mouse loop either. Right/middle
+            # buttons have no touch equivalent and stay unexported.
+            'mouse_left_press': 'on_mouse_left_press',
+            'mouse_left_button': 'on_mouse_left_press',
+            'mouse_left_down': 'on_mouse_left_press',
+            'mouse_left_release': 'on_mouse_left_release',
             'room_start': 'on_room_start',
             'room_end': 'on_room_end',
             'game_start': 'on_game_start',
