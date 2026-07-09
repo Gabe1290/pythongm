@@ -33,8 +33,13 @@ class HTML5Exporter:
                 with open(project_file, 'r', encoding='utf-8') as f:
                     project_data = json.load(f)
 
-                # Load room instances from external files
+                # Load room instances and object events from external files.
+                # project.json's embedded object bodies can be stale (the IDE
+                # only rewrites them on save; objects/<name>.json is the
+                # source of truth the project loader also prefers), so
+                # exporting without the merge shipped outdated events.
                 self._load_room_instances(project_path, project_data)
+                self._load_object_files(project_path, project_data)
 
                 logger.info(f"  Loaded project: {project_data['name']}")
 
@@ -141,6 +146,30 @@ class HTML5Exporter:
                         logger.debug(f"  Loaded {len(room_data['instances'])} instances for room: {room_name}")
                 except Exception as e:
                     logger.warning(f"  Failed to load room file {room_file}: {e}")
+
+    def _load_object_files(self, project_path: Path, project_data: Dict) -> None:
+        """Merge objects/<name>.json side files into project_data (file wins),
+        matching the project loader's precedence (merge_object_file)."""
+        from utils.project_file_merge import merge_object_file
+
+        objects_data = project_data.get('assets', {}).get('objects', {})
+        objects_dir = project_path / "objects"
+        if not objects_dir.exists():
+            return
+
+        for object_name, object_data in list(objects_data.items()):
+            if isinstance(object_data, str):
+                object_data = {"name": object_name, "asset_type": "object"}
+                objects_data[object_name] = object_data
+            object_file = objects_dir / f"{object_name}.json"
+            if object_file.exists():
+                try:
+                    with open(object_file, 'r', encoding='utf-8') as f:
+                        file_object_data = json.load(f)
+                    merge_object_file(object_data, file_object_data)
+                    logger.debug(f"  Merged object file: {object_name}")
+                except Exception as e:
+                    logger.warning(f"  Failed to load object file {object_file}: {e}")
 
     def encode_sprites(self, project_path: Path, project_data: Dict) -> Dict[str, str]:
         """Encode sprites and backgrounds as base64 data URLs"""

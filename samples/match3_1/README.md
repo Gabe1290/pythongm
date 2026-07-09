@@ -132,4 +132,13 @@ readable diff over the previous.
   full guide (setup, build times, classroom/session caching); remaining
   Kivy-export parity gaps that do *not* affect this game are listed
   under "Kivy/Android export" in the repository `TODO.md`.
-- **Other targets (HTML5, standalone zip):** untested with this sample.
+- **Web (HTML5):** **supported** (as of 2026-07-10) — and the best route
+  to iPhones (no install, no signing). The exported page detects that the
+  game contains Python `execute_code` events and loads the Pyodide
+  runtime to execute them with the IDE's semantics; taps/clicks dispatch
+  as the left-mouse-press event and the draw queue renders to the
+  canvas. Verified end-to-end in headless Chromium (board renders,
+  click-swap, flash, slide, scoring). One caveat: the Python runtime
+  loads from a CDN, so the page needs internet access when opened —
+  pure-action games (the maze/platform samples) stay fully offline.
+- **Standalone zip:** untested with this sample.

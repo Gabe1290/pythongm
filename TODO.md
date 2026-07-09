@@ -353,6 +353,27 @@ Other:
     (`test_android_export_cleanup.py` mocks the build); the stub-kivy
     execution test above covers logic, not the actual Kivy/GL layer.
 
+### HTML5 export — Python bridge follow-ups (execute_code/mouse LANDED)
+- 2026-07-10, while validating "HTML export works" for the classroom: the
+  JS engine gained a Pyodide-backed execute_code bridge (IDE exec
+  semantics: persistent `self`, locals copy-back, keyboard shim),
+  mouse/touch dispatch (IDE no-hit-test semantics, room coords),
+  draw-queue canvas rendering, create-before-first-step ordering, the
+  object-side-file merge in the exporter (embedded project.json copies go
+  stale), and the maze movement actions (`test_alignment`,
+  `start_moving_direction`). Verified in headless Chromium for maze_1 and
+  match3_1 (`tests/test_html5_python_export.py` pins the codegen; the
+  Playwright harness lives in the session notes).
+- Still open:
+  - Pyodide loads from the jsDelivr CDN — a Python-using game needs
+    internet on first open. An "offline bundle" export option (ship
+    pyodide files next to the .html) would fix locked-down school
+    networks. Pure-action games are unaffected (no Pyodide load at all).
+  - The Python env exposes `self`/`math`/`random`/`keyboard` but `game`
+    is None — no score/lives bridge yet (match3 tracks its own score).
+  - Draw-queue `sprite`/`lives`/`health_bar` commands and right/middle
+    mouse events are not implemented (same gaps as the Kivy export).
+
 - **Kivy export — long-tail action coverage** —
   `export/Kivy/code_generator.py:681`. Most actions translate fine; unhandled
   ones fall through to a no-op `pass`. Each one needs to be ported as we hit
