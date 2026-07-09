@@ -67,11 +67,260 @@ function getTranslation(key, language = 'en') {
     return lang[key] || ENGINE_TRANSLATIONS['en'][key] || key;
 }
 
+// ============================================================================
+// Python bridge (Pyodide) - runs execute_code actions authored in Python.
+// Loaded on demand, only when the project actually contains execute_code
+// actions; pure-action games keep working fully offline with no download.
+// ============================================================================
+const PYODIDE_URL = 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js';
+
+// Python-side runtime: mirrors the IDE's execute_code environment
+// (runtime/action_executor.py execute_execute_code_action): `self` with
+// persistent attributes, `math`/`random` modules, a `keyboard.check()`
+// shim, and exec-locals copied back onto the instance afterwards.
+const PY_BOOTSTRAP = `
+import json, math, random
+
+class _ExecInstance:
+    pass
+
+_instances = {}
+
+def _get_inst(inst_id):
+    inst = _instances.get(inst_id)
+    if inst is None:
+        inst = _ExecInstance()
+        inst._draw_queue = []
+        _instances[inst_id] = inst
+    return inst
+
+class _Keyboard:
+    def __init__(self, held):
+        self._held = set(held)
+    def check(self, key):
+        return str(key).lower() in self._held
+    is_pressed = check
+
+def run_code(inst_id, code, sync_json):
+    self = _get_inst(inst_id)
+    sync = json.loads(sync_json)
+    for key in ('x', 'y', 'mouse_x', 'mouse_y'):
+        if key in sync:
+            setattr(self, key, sync[key])
+    exec_globals = {
+        '__builtins__': __builtins__,
+        'self': self,
+        'sel': self,
+        'instance': self,
+        'other': None,
+        'game': None,
+        'math': math,
+        'random': random,
+        'keyboard': _Keyboard(sync.get('keys', [])),
+    }
+    exec_locals = {}
+    exec(compile(code, '<execute_code>', 'exec'), exec_globals, exec_locals)
+    for key, value in exec_locals.items():
+        if not key.startswith('__'):
+            setattr(self, key, value)
+    patch = {}
+    for key in ('x', 'y', 'visible'):
+        if key in sync and getattr(self, key, sync.get(key)) != sync.get(key):
+            patch[key] = getattr(self, key)
+    return json.dumps(patch)
+
+def run_draw(inst_id, code, sync_json):
+    self = _get_inst(inst_id)
+    self._draw_queue = []
+    run_code(inst_id, code, sync_json)
+    try:
+        return json.dumps(self._draw_queue, default=list)
+    finally:
+        self._draw_queue = []
+`;
+
+class PythonBridge {
+    constructor() {
+        this.pyodide = null;
+        this.ready = false;
+    }
+
+    // Does any object event (top level, nested branches, keyboard sub-maps)
+    // contain an execute_code action?
+    static projectNeedsPython(gameData) {
+        const scanActions = (actions) => (actions || []).some(a => {
+            if (!a || typeof a !== 'object') return false;
+            if (a.action === 'execute_code' || a.action_type === 'execute_code') return true;
+            const p = a.parameters || {};
+            return scanActions(p.then_actions) || scanActions(p.else_actions) ||
+                   scanActions(p.actions) || scanActions(a.sub_actions);
+        });
+        const objects = (gameData && gameData.assets && gameData.assets.objects) || {};
+        for (const obj of Object.values(objects)) {
+            if (!obj || typeof obj !== 'object') continue;
+            for (const ev of Object.values(obj.events || {})) {
+                if (!ev || typeof ev !== 'object') continue;
+                if (scanActions(ev.actions)) return true;
+                // keyboard/keyboard_press style sub-event maps
+                for (const sub of Object.values(ev)) {
+                    if (sub && typeof sub === 'object' && scanActions(sub.actions)) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    async init(statusCallback) {
+        statusCallback('Loading Python runtime…');
+        await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = PYODIDE_URL;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error(
+                'Could not load the Python runtime (Pyodide) from\n' + PYODIDE_URL +
+                '\n\nThis game contains Python code and needs internet access ' +
+                'the first time it is opened.'));
+            document.head.appendChild(script);
+        });
+        this.pyodide = await loadPyodide();
+        this.pyodide.runPython(PY_BOOTSTRAP);
+        this._runCode = this.pyodide.globals.get('run_code');
+        this._runDraw = this.pyodide.globals.get('run_draw');
+        this.ready = true;
+        statusCallback('');
+        console.log('✅ Python runtime ready');
+    }
+
+    _syncJson(inst, game) {
+        const held = Object.keys(game.keys || {})
+            .filter(k => game.keys[k])
+            .map(k => k.toLowerCase());
+        return JSON.stringify({
+            x: inst.x, y: inst.y, visible: inst.visible,
+            mouse_x: inst.mouse_x || 0, mouse_y: inst.mouse_y || 0,
+            keys: held,
+        });
+    }
+
+    // Run one execute_code action; apply the returned JS-relevant patch.
+    runCode(inst, code, game) {
+        if (!this.ready) return;
+        try {
+            const patch = JSON.parse(this._runCode(inst._pyId, code, this._syncJson(inst, game)));
+            if ('x' in patch) inst.x = patch.x;
+            if ('y' in patch) inst.y = patch.y;
+            if ('visible' in patch) inst.visible = patch.visible;
+        } catch (err) {
+            // Log-and-continue, matching the IDE runtime's behaviour for
+            // errors inside user code.
+            console.error('execute_code error:', err);
+        }
+    }
+
+    // Run a draw-event execute_code action; returns the draw-command list.
+    runDraw(inst, code, game) {
+        if (!this.ready) return [];
+        try {
+            return JSON.parse(this._runDraw(inst._pyId, code, this._syncJson(inst, game)));
+        } catch (err) {
+            console.error('draw execute_code error:', err);
+            return [];
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Draw-queue rendering: the same command schema the IDE runtime processes in
+// GameRunner._process_draw_queue. Canvas 2D is y-down like GameMaker room
+// coordinates, so no axis flip is needed (unlike the Kivy export).
+// ---------------------------------------------------------------------------
+function drawCommandColor(c) {
+    if (typeof c === 'string') return c;
+    if (Array.isArray(c) && c.length >= 3) {
+        const a = c.length > 3 ? c[3] / 255 : 1;
+        return `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+    }
+    return '#FFFFFF';
+}
+
+function renderDrawCommands(ctx, cmds) {
+    for (const cmd of (cmds || [])) {
+        const color = drawCommandColor(cmd.color);
+        switch (cmd.type) {
+            case 'rectangle': {
+                const x1 = cmd.x1 || 0, y1 = cmd.y1 || 0;
+                const x2 = cmd.x2 !== undefined ? cmd.x2 : 100;
+                const y2 = cmd.y2 !== undefined ? cmd.y2 : 100;
+                if (cmd.filled !== false) {
+                    ctx.fillStyle = color;
+                    ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
+                } else {
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(x1 + 0.5, y1 + 0.5, x2 - x1 - 1, y2 - y1 - 1);
+                }
+                break;
+            }
+            case 'ellipse': {
+                const x1 = cmd.x1 || 0, y1 = cmd.y1 || 0;
+                const x2 = cmd.x2 !== undefined ? cmd.x2 : 100;
+                const y2 = cmd.y2 !== undefined ? cmd.y2 : 100;
+                ctx.beginPath();
+                ctx.ellipse((x1 + x2) / 2, (y1 + y2) / 2,
+                            Math.abs(x2 - x1) / 2, Math.abs(y2 - y1) / 2, 0, 0, Math.PI * 2);
+                if (cmd.filled !== false) { ctx.fillStyle = color; ctx.fill(); }
+                else { ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.stroke(); }
+                break;
+            }
+            case 'circle': {
+                ctx.beginPath();
+                ctx.arc(cmd.x || 0, cmd.y || 0, cmd.radius !== undefined ? cmd.radius : 10, 0, Math.PI * 2);
+                if (cmd.filled !== false) { ctx.fillStyle = color; ctx.fill(); }
+                else { ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.stroke(); }
+                break;
+            }
+            case 'line': {
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(cmd.x1 || 0, cmd.y1 || 0);
+                ctx.lineTo(cmd.x2 !== undefined ? cmd.x2 : 100, cmd.y2 !== undefined ? cmd.y2 : 100);
+                ctx.stroke();
+                break;
+            }
+            case 'text':
+            case 'scaled_text': {
+                ctx.fillStyle = color;
+                ctx.font = '18px Arial';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'top';
+                const tx = cmd.x || 0, ty = cmd.y || 0;
+                if (cmd.type === 'scaled_text' && (cmd.xscale !== 1 || cmd.yscale !== 1)) {
+                    ctx.save();
+                    ctx.translate(tx, ty);
+                    ctx.scale(cmd.xscale || 1, cmd.yscale || 1);
+                    ctx.fillText(String(cmd.text !== undefined ? cmd.text : ''), 0, 0);
+                    ctx.restore();
+                } else {
+                    ctx.fillText(String(cmd.text !== undefined ? cmd.text : ''), tx, ty);
+                }
+                break;
+            }
+            // Unknown command types are skipped, matching the IDE runtime's
+            // dispatch-table behaviour.
+        }
+    }
+}
+
 console.log('🎮 Game engine loading...');
 
 class GameObject {
     constructor(name, x, y, data, objectData) {
         this.name = name;
+        // Stable id keying this instance's Python-side state (execute_code)
+        this._pyId = ++GameObject._nextInstanceId;
+        this.mouse_x = 0;
+        this.mouse_y = 0;
         this.x = x;
         this.y = y;
         this.sprite = null;
@@ -241,13 +490,21 @@ class GameObject {
     }
 
     onDraw(ctx) {
-        if (this.events && this.events.draw) {
-            const event = this.events.draw;
-            const actions = event.actions || [];
-            // Draw events would need special handling for graphics context
-            // For now, just do normal rendering
-        }
+        // Sprite first, then the draw event's queue on top — same order as
+        // the IDE runtime (GameRunner draws the sprite, then processes the
+        // instance's draw queue).
         this.render(ctx);
+        if (this.events && this.events.draw) {
+            const actions = this.events.draw.actions || [];
+            const game = this._gameRef;
+            for (const action of actions) {
+                if (!action || action.action !== 'execute_code') continue;
+                const code = (action.parameters || {}).code || '';
+                if (code.trim() && game && game.python && game.python.ready) {
+                    renderDrawCommands(ctx, game.python.runDraw(this, code, game));
+                }
+            }
+        }
     }
 
     onKeyboardPress(key, game) {
@@ -419,8 +676,10 @@ class GameObject {
             const actionType = action.action;
             const params = action.parameters || {};
 
-            // Check if this is a conditional action
-            if (actionType && actionType.startsWith('if_')) {
+            // Check if this is a conditional action. test_alignment is a
+            // GM question action ("is the instance snapped to the grid?")
+            // and gates the following block like any if_*.
+            if (actionType && (actionType.startsWith('if_') || actionType === 'test_alignment')) {
                 // Check if this conditional uses NESTED then_actions/else_actions (legacy format)
                 // If so, delegate to executeAction which handles nested format
                 if (params.then_actions || params.else_actions) {
@@ -493,6 +752,13 @@ class GameObject {
         const params = action.parameters || {};
 
         switch (actionType) {
+            case 'test_alignment': {
+                // Snapped to the grid? (GM "if aligned with grid" question)
+                const hsnap = parseInt(params.hsnap) || 32;
+                const vsnap = parseInt(params.vsnap) || 32;
+                return (this.x % hsnap === 0) && (this.y % vsnap === 0);
+            }
+
             case 'if_next_room_exists':
                 const roomNamesNext = Object.keys(game.rooms);
                 const currentIdxNext = roomNamesNext.indexOf(game.currentRoom.name);
@@ -1252,6 +1518,57 @@ class GameObject {
                 alert(`${game.translate('high_score')}: ${game.score}`);
                 break;
 
+            case 'start_moving_direction': {
+                // Set motion toward one of the named directions (random pick
+                // when several are given), or stop. Mirrors the IDE runtime's
+                // execute_start_moving_direction_action, including tolerating
+                // the stringified-list form "['down', 'up']" (see TODO.md,
+                // maze_3 list-param note).
+                let dirs = params.directions;
+                const moveSpeed = parseFloat(params.speed) || 0;
+                if (typeof dirs === 'string' && dirs.trim().startsWith('[')) {
+                    dirs = dirs.replace(/[\[\]'"\s]/g, '').split(',').filter(Boolean);
+                }
+                if (typeof dirs === 'string') dirs = [dirs];
+                if (!Array.isArray(dirs) || dirs.length === 0) break;
+                const choice = String(dirs[Math.floor(Math.random() * dirs.length)]).toLowerCase();
+                if (choice === 'stop' || choice === 'none') {
+                    this.hspeed = 0;
+                    this.vspeed = 0;
+                    break;
+                }
+                // GM angles (0=right, 90=up); diagonals move at `speed`
+                // magnitude along the angle, matching the IDE runtime.
+                const angles = {
+                    'right': 0, 'up-right': 45, 'upright': 45, 'up': 90,
+                    'up-left': 135, 'upleft': 135, 'left': 180,
+                    'down-left': 225, 'downleft': 225, 'down': 270,
+                    'down-right': 315, 'downright': 315,
+                };
+                const angle = angles[choice];
+                if (angle === undefined) break;
+                const rad = angle * Math.PI / 180;
+                this.hspeed = moveSpeed * Math.cos(rad);
+                this.vspeed = -moveSpeed * Math.sin(rad);  // screen y is down
+                break;
+            }
+
+            case 'execute_code': {
+                // Python code, executed via the Pyodide bridge with the IDE
+                // runtime's execute_code semantics. Draw events route through
+                // onDraw/runDraw instead (they return a draw-command queue).
+                const pyCode = params.code || '';
+                if (pyCode.trim() && game.python && game.python.ready) {
+                    game.python.runCode(this, pyCode, game);
+                } else if (pyCode.trim()) {
+                    if (!this._warnedNoPython) {
+                        this._warnedNoPython = true;
+                        console.warn('execute_code skipped: Python runtime not available');
+                    }
+                }
+                break;
+            }
+
             default:
                 console.warn(`Unknown action: ${actionType}`);
         }
@@ -1410,6 +1727,9 @@ class GameObject {
     }
 }
 
+// Class field syntax is avoided for broad browser compatibility.
+GameObject._nextInstanceId = 0;
+
 class GameRoom {
     constructor(data) {
         this.name = data.name;
@@ -1424,6 +1744,17 @@ class GameRoom {
     }
 
     step(game) {
+        // 0. Pending create events fire BEFORE any step event touches the
+        // instance (IDE-runtime order: create runs at room load). Firing
+        // them at the END of the first frame let step events run against
+        // un-initialized instances (an AttributeError for execute_code
+        // games whose state is built in create).
+        this.instances.forEach(inst => {
+            if (inst._pendingCreateEvent) {
+                inst.triggerCreateEvent(game);
+            }
+        });
+
         // GAMEMAKER 7.0 EVENT ORDER:
         // 1. Begin Step events
         this.instances.forEach(inst => {
@@ -1472,7 +1803,9 @@ class GameRoom {
         // 8. Cleanup destroyed instances
         this.instances = this.instances.filter(inst => !inst.toDestroy);
 
-        // Trigger create events for new instances
+        // Create events for instances spawned DURING this frame fire here
+        // (next frame's step-0 pass would also catch them; this keeps the
+        // old same-frame timing for dynamically created instances).
         this.instances.forEach(inst => {
             if (inst._pendingCreateEvent) {
                 inst.triggerCreateEvent(game);
@@ -1535,8 +1868,77 @@ class Game {
         // Language for translations (default English, can be set from gameData)
         this.language = 'en';
 
+        // Python bridge for execute_code actions (set up in initPython)
+        this.python = null;
+        this.pythonError = null;
+
         this.setupKeyboard();
+        this.setupMouse();
         this.loadGame();
+    }
+
+    // Load the Python runtime if (and only if) the project uses execute_code.
+    async initPython() {
+        if (!PythonBridge.projectNeedsPython(this.gameData)) return;
+        this.python = new PythonBridge();
+        const statusEl = document.getElementById('fps');
+        try {
+            await this.python.init(msg => {
+                if (statusEl && msg) statusEl.textContent = msg;
+            });
+        } catch (err) {
+            console.error('❌ Python runtime failed to load:', err);
+            this.pythonError = String(err && err.message ? err.message : err);
+        }
+    }
+
+    setupMouse() {
+        // Dispatch clicks/taps as GameMaker mouse events, matching the IDE
+        // runtime (game_runner.handle_mouse_press): the event fires on EVERY
+        // instance that defines it (no hit-test), with mouse_x/mouse_y set
+        // in room coordinates. Canvas CSS scaling is inverted.
+        const PRESS_KEYS = ['mouse_left_press', 'mouse_left_button', 'mouse_left_down'];
+        const RELEASE_KEYS = ['mouse_left_release'];
+
+        const dispatch = (clientX, clientY, eventKeys) => {
+            if (!this.currentRoom || this.paused) return;
+            const rect = this.canvas.getBoundingClientRect();
+            // clientWidth/clientLeft exclude the canvas border, which
+            // getBoundingClientRect includes.
+            const cw = this.canvas.clientWidth, ch = this.canvas.clientHeight;
+            if (!cw || !ch) return;
+            const mx = (clientX - rect.left - this.canvas.clientLeft) * this.canvas.width / cw;
+            const my = (clientY - rect.top - this.canvas.clientTop) * this.canvas.height / ch;
+            [...this.currentRoom.instances].forEach(inst => {
+                if (inst.toDestroy || !inst.events) return;
+                for (const key of eventKeys) {
+                    const ev = inst.events[key];
+                    if (ev && ev.actions) {
+                        inst.mouse_x = mx;
+                        inst.mouse_y = my;
+                        inst.executeActions(ev.actions, this);
+                        break;  // aliases map to the same runtime event
+                    }
+                }
+            });
+        };
+
+        this.canvas.addEventListener('mousedown', (e) => {
+            if (e.button === 0) dispatch(e.clientX, e.clientY, PRESS_KEYS);
+        });
+        this.canvas.addEventListener('mouseup', (e) => {
+            if (e.button === 0) dispatch(e.clientX, e.clientY, RELEASE_KEYS);
+        });
+        this.canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const t = e.changedTouches[0];
+            if (t) dispatch(t.clientX, t.clientY, PRESS_KEYS);
+        }, { passive: false });
+        this.canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            const t = e.changedTouches[0];
+            if (t) dispatch(t.clientX, t.clientY, RELEASE_KEYS);
+        }, { passive: false });
     }
 
     // Get translated text for the current language
@@ -1700,6 +2102,21 @@ class Game {
             this.ctx.fillText('PAUSED', this.canvas.width / 2, this.canvas.height / 2);
         }
 
+        if (this.pythonError) {
+            // The game needs Python but the runtime could not load — say so
+            // instead of showing a silently dead game.
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fillStyle = 'white';
+            this.ctx.font = '16px Arial';
+            this.ctx.textAlign = 'center';
+            const lines = this.pythonError.split('\n');
+            lines.forEach((line, i) => {
+                this.ctx.fillText(line, this.canvas.width / 2,
+                                  this.canvas.height / 2 - lines.length * 10 + i * 20);
+            });
+        }
+
         requestAnimationFrame(() => this.gameLoop());
     }
 
@@ -1799,9 +2216,12 @@ class Game {
     }
 }
 
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
     try {
         window.game = new Game();
+        // Loads Pyodide only for projects that contain execute_code actions,
+        // so create events written in Python run on the very first frame.
+        await window.game.initPython();
         window.game.start();
         console.log('✅ Game started!');
     } catch (error) {
