@@ -379,6 +379,30 @@ Other:
   ones fall through to a no-op `pass`. Each one needs to be ported as we hit
   it.
 
+### Export feature-parity matrix (quantified 2026-07-10)
+- `tests/test_export_feature_matrix.py` cross-references every action and
+  event the bundled samples use against what each export target
+  implements — the systematic check the code audits structurally couldn't
+  do (audits review code that exists; they can't see integrations that
+  don't). Current state, pinned in the test's KNOWN_*_GAPS registries:
+  - **Runtime:** complete for all 9 samples (enforced — hard failure).
+  - **maze_1 + match3_1:** fully covered on HTML5 AND Kivy (enforced —
+    these are the verified classroom demonstrators; gaps may not be
+    "registered" for them, only fixed).
+  - **HTML5:** maze_2/3 and plateforme_1–5 use 2–16 unimplemented actions
+    each (draw_score/draw_lives/draw_text, set_sprite, set_variable/
+    test_variable, move_to_contact, play_sound, if_object_exists,
+    create_moving/random_instance…) plus events (destroy, animation_end,
+    game_start, no_more_lives, outside_room). The JS engine needs these
+    ported before those samples are honestly "web-exportable".
+  - **Kivy:** smaller but real: draw_* actions, set_direction_speed,
+    create_moving/random_instance, jump_to_random, test_score;
+    events animation_end / no_more_lives.
+- Working the registries down to empty is the roadmap for full export
+  parity; the test fails on any NEW gap (e.g. a future sample using a
+  feature an exporter lacks — the match3_1 lesson) and on stale entries
+  after a fix, so the registries can't rot in either direction.
+
 ---
 
 ## Done since the last review (don't re-add)
