@@ -116,7 +116,11 @@ def runtime_actions() -> set:
 
 def html5_actions() -> set:
     src = (REPO_ROOT / "export/HTML5/templates/engine.js").read_text(encoding="utf-8")
-    return set(re.findall(r"case '([a-z_0-9]+)':", src))
+    found = set(re.findall(r"case '([a-z_0-9]+)':", src))
+    # draw-event actions are dispatched in GameObject.onDraw by comparison,
+    # not switch cases
+    found |= set(re.findall(r"action\.action === '([a-z_0-9]+)'", src))
+    return found
 
 
 def kivy_actions() -> set:
@@ -131,7 +135,7 @@ def kivy_actions() -> set:
 # GameObject.on* in export/HTML5/templates/engine.js). 'draw' is dispatched
 # for execute_code actions; draw-action gaps show up in the ACTION matrix.
 HTML5_EVENTS = {
-    "create", "step", "begin_step", "end_step", "draw",
+    "create", "step", "begin_step", "end_step", "draw", "destroy",
     "keyboard", "keyboard_press", "keyboard_release",
     "collision_with_*", "alarm_*",
     "mouse_left_press", "mouse_left_button", "mouse_left_down",
@@ -160,34 +164,26 @@ def kivy_supports_event(ev: str) -> bool:
 # absent: they are the verified classroom demonstrators and must stay
 # fully covered (see test_classroom_pair_is_gap_free). Shrink these by
 # implementing features; never grow them silently.
+# 2026-07-10 (second pass): maze_2 and plateforme_1 fully covered
+# (browser-verified: maze_2 draw_score/destroy-scoring, plateforme_1
+# gravity + move_to_contact landing + test_variable vspeed cap).
 KNOWN_HTML5_ACTION_GAPS = {
-    "maze_2": ["draw_score", "game_end", "if_object_exists", "room_goto_next",
-               "set_window_caption"],
     "maze_3": ["change_instance", "destroy_at_position", "draw_lives",
-               "draw_score", "draw_text", "play_sound", "set_direction_speed",
-               "set_draw_color", "set_draw_font", "set_window_caption",
-               "test_instance_count"],
-    "plateforme_1": ["move_to_contact", "test_variable"],
-    "plateforme_2": ["move_to_contact", "set_sprite", "set_variable",
-                     "test_variable"],
-    "plateforme_3": ["change_instance", "if_object_exists", "move_to_contact",
-                     "play_sound", "set_sprite", "set_window_caption", "sleep",
-                     "test_variable"],
+               "draw_text", "play_sound", "set_direction_speed",
+               "set_draw_color", "set_draw_font", "test_instance_count"],
+    "plateforme_2": ["set_sprite"],
+    "plateforme_3": ["change_instance", "play_sound", "set_sprite", "sleep"],
     "plateforme_4": ["create_moving_instance", "create_random_instance",
-                     "draw_score", "goto_room", "if_object_exists",
-                     "jump_to_random", "move_to_contact", "set_sprite",
-                     "set_window_caption", "test_score", "test_variable"],
+                     "goto_room", "jump_to_random", "set_sprite",
+                     "test_score"],
     "plateforme_5": ["change_instance", "create_moving_instance",
-                     "create_random_instance", "draw_lives", "draw_score",
-                     "draw_sprite", "goto_room", "if_object_exists",
-                     "jump_to_random", "move_to_contact", "set_draw_color",
-                     "set_sprite", "set_variable", "set_window_caption",
-                     "test_score", "test_variable"],
+                     "create_random_instance", "draw_lives", "draw_sprite",
+                     "goto_room", "jump_to_random", "set_draw_color",
+                     "set_sprite", "test_score"],
 }
 
 KNOWN_HTML5_EVENT_GAPS = {
-    "maze_2": ["destroy"],
-    "maze_3": ["animation_end", "destroy", "no_more_lives"],
+    "maze_3": ["animation_end", "no_more_lives"],
     "plateforme_3": ["animation_end", "game_start", "no_more_lives"],
     "plateforme_4": ["animation_end", "game_start", "no_more_lives"],
     "plateforme_5": ["game_start", "no_more_lives", "outside_room"],

@@ -389,12 +389,17 @@ Other:
   - **maze_1 + match3_1:** fully covered on HTML5 AND Kivy (enforced —
     these are the verified classroom demonstrators; gaps may not be
     "registered" for them, only fixed).
-  - **HTML5:** maze_2/3 and plateforme_1–5 use 2–16 unimplemented actions
-    each (draw_score/draw_lives/draw_text, set_sprite, set_variable/
-    test_variable, move_to_contact, play_sound, if_object_exists,
-    create_moving/random_instance…) plus events (destroy, animation_end,
-    game_start, no_more_lives, outside_room). The JS engine needs these
-    ported before those samples are honestly "web-exportable".
+  - **HTML5:** maze_2 and plateforme_1 were closed 2026-07-10
+    (browser-verified; the pass also replaced the engine's structurally
+    wrong branch-scan conditional logic with the runtime's GM80 flat
+    skip-next semantics, fixed exit_event to abort the whole event, made
+    nested then/else branches actually execute, accepted the legacy
+    'object' instance key plateforme rooms use, and fired destroy
+    events). Remaining: maze_3 and plateforme_2–5 use 1–10 unimplemented
+    actions each (draw_lives/draw_text/draw_sprite, set_sprite,
+    play_sound, change_instance, create_moving/random_instance,
+    test_score, sleep…) plus events (animation_end, game_start,
+    no_more_lives, outside_room).
   - **Kivy:** smaller but real: draw_* actions, set_direction_speed,
     create_moving/random_instance, jump_to_random, test_score;
     events animation_end / no_more_lives.
