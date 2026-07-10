@@ -312,6 +312,11 @@ function renderDrawCommands(ctx, cmds) {
     }
 }
 
+// Sentinel thrown by exit_event to abort the rest of the current event's
+// actions (mirrors the IDE runtime's _ExitEvent exception). Absorbed by
+// GameObject.executeActions; recursive branch/repeat execution propagates it.
+const EXIT_EVENT_SENTINEL = Symbol('exit_event');
+
 console.log('🎮 Game engine loading...');
 
 class GameObject {
@@ -427,6 +432,7 @@ class GameObject {
     }
 
     getDepthForObject(name) {
+        name = name || '';
         // Define rendering order layers
         if (name.includes('store') && !name.includes('box')) {
             return 0;  // Floor/store tiles at the bottom
@@ -498,10 +504,23 @@ class GameObject {
             const actions = this.events.draw.actions || [];
             const game = this._gameRef;
             for (const action of actions) {
-                if (!action || action.action !== 'execute_code') continue;
-                const code = (action.parameters || {}).code || '';
-                if (code.trim() && game && game.python && game.python.ready) {
-                    renderDrawCommands(ctx, game.python.runDraw(this, code, game));
+                if (!action) continue;
+                const p = action.parameters || {};
+                if (action.action === 'execute_code') {
+                    const code = p.code || '';
+                    if (code.trim() && game && game.python && game.python.ready) {
+                        renderDrawCommands(ctx, game.python.runDraw(this, code, game));
+                    }
+                } else if (action.action === 'draw_score' && game) {
+                    // Same command the IDE runtime queues (white text,
+                    // caption + current score) — see execute_draw_score_action.
+                    renderDrawCommands(ctx, [{
+                        type: 'text',
+                        text: `${p.caption !== undefined ? p.caption : 'Score: '}${game.score}`,
+                        x: parseFloat(p.x) || 0,
+                        y: parseFloat(p.y) || 0,
+                        color: [255, 255, 255],
+                    }]);
                 }
             }
         }
@@ -669,78 +688,98 @@ class GameObject {
      * Execute an array of actions with block-based conditional support.
      * Handles if_xxx/else_block patterns where actions are sequential siblings.
      */
+    static isConditionalAction(actionType) {
+        return !!actionType && (actionType.startsWith('if_') ||
+                                actionType === 'test_alignment' ||
+                                actionType === 'test_variable');
+    }
+
     executeActions(actions, game) {
+        // Public entry point: absorbs the exit_event sentinel so callers
+        // (event dispatchers) don't need to know about it. Recursive sites
+        // (repeat, nested then/else branches) call _executeActionsInner so
+        // exit_event unwinds the WHOLE event, matching the IDE runtime.
+        try {
+            this._executeActionsInner(actions, game);
+        } catch (e) {
+            if (e !== EXIT_EVENT_SENTINEL) throw e;
+        }
+    }
+
+    _executeActionsInner(actions, game) {
+        // GM80 flat conditional semantics, mirroring the IDE runtime's
+        // _execute_action_list_inner (runtime/action_executor.py): a
+        // question action that evaluates false sets skipNext, which skips
+        // the SINGLE next action or the next start_block..end_block group;
+        // else_action inverts based on how the condition went. The previous
+        // implementation treated everything up to the next if_/else as the
+        // branch, which both over-ran then-branches and executed the tail
+        // after an else unconditionally.
         let i = 0;
+        let skipNext = false;
+        let conditionWasFalse = false;
+
         while (i < actions.length) {
             const action = actions[i];
             const actionType = action.action;
             const params = action.parameters || {};
 
-            // Check if this is a conditional action. test_alignment is a
-            // GM question action ("is the instance snapped to the grid?")
-            // and gates the following block like any if_*.
-            if (actionType && (actionType.startsWith('if_') || actionType === 'test_alignment')) {
-                // Check if this conditional uses NESTED then_actions/else_actions (legacy format)
-                // If so, delegate to executeAction which handles nested format
-                if (params.then_actions || params.else_actions) {
-                    this.executeAction(action, game);
+            if (actionType === 'else_action' || actionType === 'else_block' || actionType === 'else') {
+                skipNext = !conditionWasFalse;
+                i++;
+                continue;
+            }
+
+            if (actionType === 'start_block' || actionType === 'start') {
+                if (skipNext) {
+                    let depth = 1;
                     i++;
+                    while (i < actions.length && depth > 0) {
+                        const t = actions[i].action;
+                        if (t === 'start_block' || t === 'start') depth++;
+                        else if (t === 'end_block' || t === 'end') depth--;
+                        i++;
+                    }
+                    skipNext = false;
+                    conditionWasFalse = true;
                     continue;
                 }
-
-                // Otherwise, use SEQUENTIAL block-based format (if_xxx, actions, else_block, actions)
-                // Evaluate the condition
-                const conditionResult = this.evaluateCondition(action, game);
-
-                // Find the else_block position (if any) and end of block
-                let elseIndex = -1;
-                let endIndex = actions.length;
-
-                for (let j = i + 1; j < actions.length; j++) {
-                    const nextAction = actions[j].action;
-                    if (nextAction === 'else_block' || nextAction === 'else_action') {
-                        elseIndex = j;
-                        break;
-                    }
-                    // If we hit another if_* at the same level, that's the end
-                    if (nextAction && nextAction.startsWith('if_')) {
-                        endIndex = j;
-                        break;
-                    }
-                }
-
-                if (conditionResult) {
-                    // Condition is TRUE: execute actions from i+1 to elseIndex (or endIndex)
-                    const trueEndIndex = elseIndex >= 0 ? elseIndex : endIndex;
-                    for (let j = i + 1; j < trueEndIndex; j++) {
-                        this.executeAction(actions[j], game);
-                    }
-                    // Skip past the else block content
-                    if (elseIndex >= 0) {
-                        i = endIndex;  // Jump to end
-                    } else {
-                        i = trueEndIndex;
-                    }
-                } else {
-                    // Condition is FALSE: skip to else_block and execute from there
-                    if (elseIndex >= 0) {
-                        for (let j = elseIndex + 1; j < endIndex; j++) {
-                            this.executeAction(actions[j], game);
-                        }
-                        i = endIndex;
-                    } else {
-                        // No else block, skip the whole if block
-                        i = endIndex;
-                    }
-                }
-            } else if (actionType === 'else_block' || actionType === 'else_action') {
-                // Else blocks handled by if_* processing, skip if encountered standalone
                 i++;
-            } else {
-                // Regular action, execute normally
-                this.executeAction(action, game);
-                i++;
+                continue;
             }
+
+            if (actionType === 'end_block' || actionType === 'end') {
+                skipNext = false;
+                conditionWasFalse = false;
+                i++;
+                continue;
+            }
+
+            if (skipNext) {
+                skipNext = false;
+                i++;
+                continue;
+            }
+
+            if (GameObject.isConditionalAction(actionType) &&
+                !(params.then_actions && params.then_actions.length) &&
+                !(params.else_actions && params.else_actions.length)) {
+                // Flat question action: gate the next action/block.
+                const result = this.evaluateCondition(action, game);
+                if (result === false) {
+                    skipNext = true;
+                    conditionWasFalse = true;
+                } else {
+                    conditionWasFalse = false;
+                }
+                i++;
+                continue;
+            }
+
+            // Regular action — or a nested-format conditional, which
+            // executeAction routes through its then/else branch handler.
+            this.executeAction(action, game);
+            i++;
         }
     }
 
@@ -847,9 +886,12 @@ class GameObject {
                 const collObjectType = params.object || 'any';
                 const notFlag = params.not_flag || false;
 
-                // Check for collision at position
+                // Check for collision at position (instances live on the
+                // current room, not the game — `game.instances` was never
+                // a thing and threw for any project using this condition)
                 let hasCollision = false;
-                for (const inst of game.instances) {
+                const roomInstances = game.currentRoom ? game.currentRoom.instances : [];
+                for (const inst of roomInstances) {
                     if (inst === this || inst.toDestroy) continue;
 
                     // Check if positions overlap
@@ -892,6 +934,47 @@ class GameObject {
                     default: return currentValue == compareValue;
                 }
 
+            case 'test_variable': {
+                // IDE runtime semantics (execute_test_variable_action):
+                // scope sel/self (instance), other (collision), global;
+                // named operations; numeric comparison when both parse.
+                const name = params.variable || params.variable_name || '';
+                if (!name) return false;
+                const scope = params.scope || 'sel';
+                let current;
+                if (scope === 'global') {
+                    current = game.globalVariables[name];
+                } else if (scope === 'other') {
+                    current = this._collision_other ? this._collision_other[name] : undefined;
+                } else {
+                    current = this[name];
+                }
+                if (current === undefined) current = 0;
+                let expected = params.value;
+                const cf = parseFloat(current), ef = parseFloat(expected);
+                const numeric = !isNaN(cf) && !isNaN(ef);
+                const a = numeric ? cf : String(current);
+                const b = numeric ? ef : String(expected);
+                switch (params.operation || 'equal') {
+                    case 'equal': case '==': return a == b;
+                    case 'not_equal': case '!=': return a != b;
+                    case 'less': case '<': return a < b;
+                    case 'greater': case '>': return a > b;
+                    case 'less_equal': case '<=': return a <= b;
+                    case 'greater_equal': case '>=': return a >= b;
+                    default: return a == b;
+                }
+            }
+
+            case 'if_object_exists': {
+                // Any live instance of the object type in the room?
+                const objectType = params.object || '';
+                if (!objectType || !game.currentRoom) return false;
+                const exists = game.currentRoom.instances.some(
+                    inst => inst.name === objectType && !inst.toDestroy);
+                return params.not_flag ? !exists : exists;
+            }
+
             case 'if_question':
                 // Show a yes/no dialog and return result
                 const question = params.message || params.question || game.translate('yes_or_no');
@@ -906,6 +989,19 @@ class GameObject {
     executeAction(action, game) {
         const actionType = action.action;
         const params = action.parameters || {};
+
+        // Nested-format conditionals (then_actions/else_actions inside
+        // parameters): evaluate and run the matching branch. The old
+        // switch stub for this format silently dropped both branches.
+        if (GameObject.isConditionalAction(actionType) &&
+            ((params.then_actions && params.then_actions.length) ||
+             (params.else_actions && params.else_actions.length))) {
+            const branch = this.evaluateCondition(action, game)
+                ? params.then_actions : params.else_actions;
+            // inner: exit_event inside a branch aborts the whole event
+            if (branch && branch.length) this._executeActionsInner(branch, game);
+            return;
+        }
 
         switch(actionType) {
             // GAMEMAKER 7.0: Movement actions
@@ -1201,12 +1297,16 @@ class GameObject {
                 const times = params.times || 1;
                 const repeatActions = params.actions || [];
                 for (let i = 0; i < times; i++) {
-                    this.executeActions(repeatActions, game);
+                    // inner: an exit_event inside the block aborts the whole
+                    // event AND the remaining iterations (IDE runtime M43)
+                    this._executeActionsInner(repeatActions, game);
                 }
                 break;
 
             case 'exit_event':
-                return; // Exit current event
+                // Abort the rest of this event's actions (the old `return`
+                // only left executeAction, so the event kept running).
+                throw EXIT_EVENT_SENTINEL;
 
             // Grid movement (existing)
             case 'grid_move':
@@ -1341,6 +1441,7 @@ class GameObject {
                 break;
 
             case 'next_room':
+            case 'room_goto_next':
                 // Go to next room in the room order
                 const roomNamesNext = Object.keys(game.rooms);
                 const currentIndexNext = roomNamesNext.indexOf(game.currentRoom.name);
@@ -1510,12 +1611,17 @@ class GameObject {
                 break;
 
             case 'end_game':
+            case 'game_end':
                 game.running = false;
                 alert(game.translate('game_over'));
                 break;
 
             case 'show_highscore':
                 alert(`${game.translate('high_score')}: ${game.score}`);
+                break;
+
+            case 'comment':
+                // Authoring-time annotation; no runtime effect.
                 break;
 
             case 'start_moving_direction': {
@@ -1550,6 +1656,66 @@ class GameObject {
                 const rad = angle * Math.PI / 180;
                 this.hspeed = moveSpeed * Math.cos(rad);
                 this.vspeed = -moveSpeed * Math.sin(rad);  // screen y is down
+                break;
+            }
+
+            case 'set_variable': {
+                // scope sel/self (instance), other (collision), global;
+                // relative adds to the current value.
+                const name = params.variable || params.variable_name || '';
+                if (!name) break;
+                let value = params.value;
+                const num = parseFloat(value);
+                if (!isNaN(num) && String(num) === String(value).trim()) value = num;
+                const scope = params.scope || 'sel';
+                const target = scope === 'global' ? game.globalVariables
+                    : (scope === 'other' ? this._collision_other : this);
+                if (!target) break;
+                if (params.relative) {
+                    const current = parseFloat(target[name]) || 0;
+                    value = current + (parseFloat(value) || 0);
+                }
+                target[name] = value;
+                break;
+            }
+
+            case 'set_window_caption':
+                // Caption display settings; on the web the caption is the
+                // document title (the HUD bar shows score/lives already).
+                game.showScoreInCaption = params.show_score !== false;
+                game.showLivesInCaption = params.show_lives !== false;
+                game.showHealthInCaption = params.show_health === true;
+                if (params.caption) document.title = params.caption;
+                break;
+
+            case 'move_to_contact': {
+                // Move pixel-by-pixel toward `direction` (degrees, 0=right,
+                // 90=up) until touching `object` ("all"/"solid"/<name>) or
+                // max_distance — the platformer landing action.
+                const dirDeg = parseFloat(params.direction) || 0;
+                const maxDist = parseFloat(params.max_distance ?? params.maximum ?? 1000) || 1000;
+                const target = params.object || 'all';
+                const rad = dirDeg * Math.PI / 180;
+                const dx = Math.cos(rad), dy = -Math.sin(rad);
+                const boxesOverlap = (a, b) =>
+                    a.x < b.x + b.width && a.x + a.width > b.x &&
+                    a.y < b.y + b.height && a.y + a.height > b.y;
+                const touches = () => {
+                    if (!game.currentRoom) return false;
+                    const myBox = this.getBoundingBox();
+                    for (const other of game.currentRoom.instances) {
+                        if (other === this || other.toDestroy) continue;
+                        if (target === 'solid' && !other.solid) continue;
+                        if (target !== 'all' && target !== 'solid' && other.name !== target) continue;
+                        if (boxesOverlap(myBox, other.getBoundingBox())) return true;
+                    }
+                    return false;
+                };
+                for (let i = 0; i < Math.floor(maxDist); i++) {
+                    this.x += dx;
+                    this.y += dy;
+                    if (touches()) break;
+                }
                 break;
             }
 
@@ -1800,7 +1966,14 @@ class GameRoom {
             if (!inst.toDestroy) inst.onEndStep(game);
         });
 
-        // 8. Cleanup destroyed instances
+        // 8. Cleanup destroyed instances — firing their destroy event first
+        // (IDE-runtime order; maze_2's diamonds award score on destroy).
+        this.instances.forEach(inst => {
+            if (inst.toDestroy && !inst._destroyEventFired) {
+                inst._destroyEventFired = true;
+                inst.triggerEvent('destroy');
+            }
+        });
         this.instances = this.instances.filter(inst => !inst.toDestroy);
 
         // Create events for instances spawned DURING this frame fire here
@@ -1864,6 +2037,7 @@ class Game {
         this.score = 0;
         this.lives = 3;
         this.health = 100;
+        this.globalVariables = {};  // set_variable/test_variable global scope
 
         // Language for translations (default English, can be set from gameData)
         this.language = 'en';
@@ -2011,9 +2185,19 @@ class Game {
 
             const instancesData = roomData.instances || [];
             instancesData.forEach(instData => {
-                const objectData = gameData.assets.objects[instData.object_name];
+                // Rooms written at different times use different keys for
+                // the object reference (same tolerance as the Android
+                // exporter): plateforme_* uses 'object', newer rooms use
+                // 'object_name'.
+                const objName = instData.object_name || instData.object ||
+                                instData.object_type || instData.type || '';
+                if (!objName) {
+                    console.warn('Skipping instance with no object reference:', instData);
+                    return;
+                }
+                const objectData = gameData.assets.objects[objName];
                 const inst = new GameObject(
-                    instData.object_name,
+                    objName,
                     instData.x,
                     instData.y,
                     instData,
