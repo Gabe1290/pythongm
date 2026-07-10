@@ -274,6 +274,18 @@ class ActionCodeGenerator:
                 self.add_line("self.snap_to_grid()")
             return
 
+        elif action_type == 'test_alignment':
+            # GM "if aligned with grid" question (maze samples gate their
+            # keyboard movement on it). Same guard shape as test_expression.
+            try:
+                hsnap = int(float(params.get('hsnap', 32) or 32))
+                vsnap = int(float(params.get('vsnap', 32) or 32))
+            except (TypeError, ValueError):
+                hsnap, vsnap = 32, 32
+            self._open_guard(
+                f"if (self.x % {hsnap} == 0) and (self.y % {vsnap} == 0):")
+            return
+
         elif action_type == 'test_expression':
             expr = _resolve_instance_names(params.get('expression', 'False'))
             self._open_guard(f"if {expr}:")
