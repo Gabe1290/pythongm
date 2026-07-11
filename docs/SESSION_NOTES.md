@@ -36,19 +36,48 @@ every computer.
 - Keep deep dives in their dedicated docs (`docs/CODE_AUDIT.md`,
   `docs/LATENT_BUG_AUDIT_2026-06-03.md`, etc.) and just link them here.
 
+## Automatic raw extracts: `docs/session-notes/` (since 2026-07-11)
+
+Alongside this curated file there is now an **automatic** layer. A `Stop`
+hook in the committed `.claude/settings.json` runs
+`scripts/export_session_notes.py` at the end of every agent turn. It mines
+the machine-local transcript and writes/refreshes
+`docs/session-notes/<start-date>-<session-id8>.md` — the user's prompts
+(quoted) plus Claude's explanation text, with all tool noise stripped.
+
+- **One file per session**, so machines never collide on the same file —
+  commits from different computers merge cleanly.
+- The hook only *writes the files*; **you still commit + push** (the hook's
+  reminder message nags when the tree is dirty or ahead).
+- **Curating an extract:** edit it, then put `<!-- curated -->` on a line of
+  its own near the top — the extractor will never overwrite it again.
+- **Backfill on a machine** (mines every surviving local transcript, all
+  historical project paths):
+  `python3 scripts/export_session_notes.py ~/.claude/projects/*/*.jsonl`
+  (Windows Git Bash: `py -3 scripts/export_session_notes.py ...`).
+  Trivial sessions are skipped automatically.
+- **Retention warning:** Claude Code deletes transcripts after ~30 days by
+  default, and that history is then unrecoverable (the May 2026 sessions on
+  the Windows box were partially lost this way). On **each machine**, set
+  `"cleanupPeriodDays": 3650` in `~/.claude/settings.json` — this cannot be
+  configured from the repo. Done: Windows box (2026-07-11).
+
+This file (`SESSION_NOTES.md`) stays the **curated** layer: dated summaries
+of significant sessions, written for humans, linking into the raw extracts
+when detail matters.
+
 ## How to keep it synced across machines
 
 GitHub is the cross-machine sync (the repo was migrated off Dropbox for exactly
 this reason — see the entry below). So:
 
 1. **Start of session, on any machine:** `git pull`.
-2. During/after the session, the agent appends an entry here.
+2. During the session the hook keeps `docs/session-notes/` current; the agent
+   appends curated entries here for significant sessions.
 3. **End of session:** commit + push so the next machine sees it.
 
-The raw transcripts on the *other* machines stay local to those machines and
-are not retrievable from here. If you ever want one mined into notes, copy that
-machine's `.jsonl` into the repo (or just run the agent there and have it
-append below).
+Transcripts older than each machine's `cleanupPeriodDays` are gone for good,
+but anything already extracted into `docs/session-notes/` survives in git.
 
 ---
 
