@@ -177,23 +177,15 @@ KNOWN_HTML5_ACTION_GAPS = {}
 
 KNOWN_HTML5_EVENT_GAPS = {}
 
-KNOWN_KIVY_ACTION_GAPS = {
-    "maze_2": ["draw_score"],
-    "maze_3": ["destroy_at_position", "draw_lives", "draw_score", "draw_text",
-               "set_direction_speed", "set_draw_color", "set_draw_font"],
-    "plateforme_4": ["create_moving_instance", "create_random_instance",
-                     "draw_score", "jump_to_random", "test_score"],
-    "plateforme_5": ["create_moving_instance", "create_random_instance",
-                     "draw_lives", "draw_score", "draw_sprite",
-                     "jump_to_random", "set_draw_color", "test_score"],
-}
+# 2026-07-11: the Kivy registries are EMPTY too — the whole matrix is
+# closed on both export targets (see tests/test_kivy_parity_batch.py:
+# every sample's Kivy export compiles module-for-module, and the parity
+# batch is behaviorally tested under stub kivy). Keep all four registries
+# empty: a NEW entry means an exporter regressed or a new sample outgrew
+# an engine — fix the engine, don't register.
+KNOWN_KIVY_ACTION_GAPS = {}
 
-KNOWN_KIVY_EVENT_GAPS = {
-    "maze_3": ["animation_end", "no_more_lives"],
-    "plateforme_3": ["animation_end", "no_more_lives"],
-    "plateforme_4": ["animation_end", "no_more_lives"],
-    "plateforme_5": ["no_more_lives"],
-}
+KNOWN_KIVY_EVENT_GAPS = {}
 
 
 def _gap_matrix(implemented_fn, feature_index):
