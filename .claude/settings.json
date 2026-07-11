@@ -1,10 +1,14 @@
 {
   "permissions": {
+    "defaultMode": "acceptEdits",
     "allow": [
       "Bash(git restore:*)",
       "Read(//c/**)",
       "WebFetch(domain:github.com)",
-      "Bash(wmctrl:*)"
+      "Bash(wmctrl:*)",
+      "Bash(py -3.12 -m pytest *)",
+      "Bash(py -3.12 -m py_compile *)",
+      "Bash(git check-ignore *)"
     ]
   },
   "hooks": {
