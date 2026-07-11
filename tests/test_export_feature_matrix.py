@@ -136,7 +136,7 @@ def kivy_actions() -> set:
 # for execute_code actions; draw-action gaps show up in the ACTION matrix.
 HTML5_EVENTS = {
     "create", "step", "begin_step", "end_step", "draw", "destroy",
-    "game_start", "no_more_lives",
+    "game_start", "no_more_lives", "outside_room",
     "keyboard", "keyboard_press", "keyboard_release",
     "collision_with_*", "alarm_*",
     "mouse_left_press", "mouse_left_button", "mouse_left_down",
@@ -165,27 +165,17 @@ def kivy_supports_event(ev: str) -> bool:
 # absent: they are the verified classroom demonstrators and must stay
 # fully covered (see test_classroom_pair_is_gap_free). Shrink these by
 # implementing features; never grow them silently.
-# 2026-07-10 (third pass): plateforme_2 and plateforme_3 fully covered on
-# actions (browser-verified: set_sprite facing swap, embedded sounds,
-# game_start, no_more_lives crossing, change_instance, sleep). Remaining
-# concentrations: the draw_* family, sprite animation (animation_end),
-# and the create_*_instance/test_score cluster in plateforme_4/5.
-KNOWN_HTML5_ACTION_GAPS = {
-    "maze_3": ["destroy_at_position", "draw_lives", "draw_text",
-               "set_direction_speed", "set_draw_color", "set_draw_font",
-               "test_instance_count"],
-    "plateforme_4": ["create_moving_instance", "create_random_instance",
-                     "goto_room", "jump_to_random", "test_score"],
-    "plateforme_5": ["create_moving_instance", "create_random_instance",
-                     "draw_lives", "draw_sprite", "goto_room",
-                     "jump_to_random", "set_draw_color", "test_score"],
-}
+# 2026-07-11 (fourth pass): the HTML5 ACTION registry is EMPTY — every
+# action used by every bundled sample is implemented (browser-verified,
+# all 9 samples boot with zero unknown-action warnings). The only gap
+# left in the whole HTML5 matrix is the animation_end event, which needs
+# sprite-strip animation in the JS engine (sprites render single-frame).
+KNOWN_HTML5_ACTION_GAPS = {}
 
 KNOWN_HTML5_EVENT_GAPS = {
     "maze_3": ["animation_end"],
     "plateforme_3": ["animation_end"],
     "plateforme_4": ["animation_end"],
-    "plateforme_5": ["outside_room"],
 }
 
 KNOWN_KIVY_ACTION_GAPS = {

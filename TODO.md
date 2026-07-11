@@ -400,13 +400,17 @@ Other:
     stop_all_sounds, set_sprite, change_instance, sleep (non-blocking
     step suspension), game_start, and runtime-parity no_more_lives
     (fires once on the >0→<=0 crossing, on every listening instance).
-    Remaining: maze_3 and plateforme_4/5 — the draw_* family
-    (draw_lives/draw_text/draw_sprite/set_draw_color/set_draw_font),
-    create_moving/random_instance, jump_to_random, goto_room,
-    test_score/test_instance_count, destroy_at_position,
-    set_direction_speed; events animation_end (needs sprite-strip
-    animation in the JS engine, the one real subsystem left) and
-    outside_room.
+    The final action batch landed 2026-07-11 (draw family with queue
+    parity — conditionals work inside draw events now — creation
+    cluster, test_score/test_instance_count, destroy_at_position,
+    set_direction_speed, outside_room): **the HTML5 action registry is
+    empty** — all 9 bundled samples boot in a real browser with zero
+    unknown-action warnings. The ONLY remaining HTML5 matrix gap is the
+    `animation_end` event, which needs sprite-strip animation in the JS
+    engine (exported sprites render single-frame; set_sprite ignores
+    subimage/speed for the same reason). Note: some GMK-imported sample
+    scripts (bare GML `vspeed`, `view_xview`) error identically in the
+    IDE runtime — sample-data debt, not exporter gaps.
   - **Kivy:** smaller but real: draw_* actions, set_direction_speed,
     create_moving/random_instance, jump_to_random, test_score;
     events animation_end / no_more_lives.

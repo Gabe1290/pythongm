@@ -43,7 +43,14 @@ REPO_ROOT = Path(__file__).parent.parent
 # 1. Sample display names (no Qt needed)
 # --------------------------------------------------------------------------
 
-@pytest.mark.parametrize("sample", ["plateforme_1", "plateforme_2", "plateforme_3"])
+# maze_3 ("maze3_reimport") and plateforme_4/5 ("_refresh2") kept their
+# working names through the rc.12 cleanup; caught 2026-07-11 when the
+# HTML5 exports came out with the working names baked into the filename
+# and window title. match3_1 is exempt: its display name is "Match3Game".
+@pytest.mark.parametrize("sample", ["maze_1", "maze_2", "maze_3",
+                                    "plateforme_1", "plateforme_2",
+                                    "plateforme_3", "plateforme_4",
+                                    "plateforme_5"])
 def test_sample_name_has_no_working_suffix(sample):
     data = json.loads((REPO_ROOT / "samples" / sample / "project.json").read_text(encoding="utf-8"))
     assert data["name"] == sample, (
