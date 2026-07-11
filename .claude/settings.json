@@ -14,7 +14,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"$CLAUDE_PROJECT_DIR\" 2>/dev/null || exit 0; git rev-parse --is-inside-work-tree >/dev/null 2>&1 || exit 0; dirty=$(git status --porcelain 2>/dev/null); ahead=$(git rev-list --count @{u}..HEAD 2>/dev/null || echo 0); if [ -n \"$dirty\" ] || [ \"${ahead:-0}\" -gt 0 ]; then echo '{\"systemMessage\": \"Session-notes reminder: update docs/SESSION_NOTES.md, then commit & push so other machines pick it up (git pull --rebase first if push is rejected).\"}'; fi"
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" 2>/dev/null || exit 0; if command -v py >/dev/null 2>&1; then py -3 scripts/export_session_notes.py 2>/dev/null; else python3 scripts/export_session_notes.py 2>/dev/null; fi; git rev-parse --is-inside-work-tree >/dev/null 2>&1 || exit 0; dirty=$(git status --porcelain 2>/dev/null); ahead=$(git rev-list --count @{u}..HEAD 2>/dev/null || echo 0); if [ -n \"$dirty\" ] || [ \"${ahead:-0}\" -gt 0 ]; then echo '{\"systemMessage\": \"Session notes auto-exported to docs/session-notes/ (curated summaries go in docs/SESSION_NOTES.md). Commit & push so other machines pick them up (git pull --rebase first if push is rejected).\"}'; fi",
+            "timeout": 30
           }
         ]
       }
