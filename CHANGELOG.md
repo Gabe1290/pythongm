@@ -7,6 +7,66 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-07-11
+
+**The export release.** Every export target was verified end-to-end for
+the first time — by actually building and playing the results — and the
+gaps that surfaced were closed. All nine bundled samples are now covered
+by an enforced feature-parity matrix
+(`tests/test_export_feature_matrix.py`) across the desktop runtime, the
+HTML5 export, and the Kivy/Android export.
+
+### Added
+- **New bundled sample: `match3_1`** — the first sample authored natively
+  in the pygm2 format (Welcome tab: "Match-3 — Level 1", translated into
+  all seven locales). One controller object drives a full match-3 game:
+  click/tap-swap, match flash, visible cascade slide, scoring. Fully
+  documented in `samples/match3_1/README.md` (gameplay, architecture,
+  roadmap for match3_2/3) with CC0 art credits.
+- **HTML5 export: Python games run in the browser.** Projects using
+  `execute_code` load the Pyodide runtime on demand and execute their
+  Python events with the IDE's semantics; pure-action games stay fully
+  offline. Taps/clicks dispatch as mouse events (phone-friendly
+  `touchstart` included), the draw queue renders to canvas, and sounds
+  are embedded and played (wav/mp3/ogg/m4a).
+- **HTML5 export: full engine parity for the bundled samples** — the
+  action vocabulary (draw family, instance creation cluster,
+  `set_sprite`, `play_sound`, `move_to_contact`, variables/conditionals,
+  …), the event set (`destroy`, `game_start`, `no_more_lives`,
+  `outside_room`), GM-correct flat conditional semantics (a question
+  gates the next action/block; `exit_event` aborts the event), and
+  sprite-strip animation with `animation_end`. Verified in headless
+  Chromium: all nine samples boot and play with zero errors.
+- **Kivy/Android export: parity batch.** Draw queue + draw events, touch
+  dispatched as mouse events with room-coordinate `mouse_x`/`mouse_y`,
+  the draw family and creation cluster, sprite `animation_end`,
+  `no_more_lives`, and a virtual D-pad that appears only for
+  keyboard-driven games.
+- **Android APK builds actually finish.** Buildozer now runs in a
+  persistent per-project workspace (`~/pygm_builds/<project>`) that
+  survives retries and login sessions — an interrupted first build
+  resumes instead of restarting — with hang-failsafe timeouts instead of
+  the old 40-minute kill. Verified end-to-end on Windows/WSL with a real
+  42 MB APK of the match-3 sample. New classroom-oriented guide:
+  `docs/ANDROID_EXPORT.md`.
+
+### Fixed
+- HTML5 exports of `maze_1`–`maze_3` and `plateforme_1`–`5` were broken
+  in ways nobody had seen (the player couldn't move in maze_1; all 120
+  plateforme_1 instances crashed the loader; conditional branches
+  over-ran). All nine samples now play in the browser.
+- The Kivy exports of `maze_3` and `plateforme_4`/`5` had never compiled
+  (an orphaned `else` from GMK mis-imports; an object name containing a
+  space). Every module of every sample's Kivy export is now
+  compile-gated in CI.
+- The exporters read stale object data from `project.json`'s embedded
+  copies; they now merge the authoritative `objects/*.json` side files
+  like the project loader does.
+- `maze_3`, `plateforme_4`, and `plateforme_5` still carried their GMK
+  working names ("maze3_reimport", "*_refresh2") in `project.json`.
+- The About dialog reported "1.0.0-rc.13": `utils`/`core` carried their
+  own stale `__version__`; they are now bumped by the release script.
+
 ## [1.0.0] - 2026-06-28
 
 **First stable release.** PyGameMaker 1.0 ships as a focused, game-only IDE:

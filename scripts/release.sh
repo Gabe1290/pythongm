@@ -54,7 +54,7 @@ esac
 BADGE="${VER//-/--}"          # shields.io escapes '-' as '--'
 TAG="v$VER"
 DATE="$(date +%Y-%m-%d)"
-FILES=(__init__.py pyproject.toml version_info.txt README.md CHANGELOG.md)
+FILES=(__init__.py utils/__init__.py core/__init__.py pyproject.toml version_info.txt README.md CHANGELOG.md)
 
 echo "Releasing $VER"
 echo "  tag           : $TAG"
@@ -79,6 +79,11 @@ fi
 sed_i() { sed "$1" "$2" > "$2.tmp" && mv "$2.tmp" "$2"; }
 
 sed_i "s/^__version__ = \".*\"/__version__ = \"$VER\"/" __init__.py
+# utils/core carry their own __version__ (the About dialog and Welcome tab
+# read utils'); they went stale at "1.0.0-rc.13" when 1.0.0 shipped because
+# this script didn't know about them.
+sed_i "s/^__version__ = \".*\"/__version__ = \"$VER\"/" utils/__init__.py
+sed_i "s/^__version__ = \".*\"/__version__ = \"$VER\"/" core/__init__.py
 sed_i "s/^version = \".*\"/version = \"$PEP440\"/" pyproject.toml
 sed_i "s/filevers=([0-9, ]*)/filevers=($MAJOR, $MINOR, $PATCH, $BUILD)/" version_info.txt
 sed_i "s/prodvers=([0-9, ]*)/prodvers=($MAJOR, $MINOR, $PATCH, $BUILD)/" version_info.txt
@@ -101,6 +106,8 @@ awk -v ver="$VER" -v date="$DATE" '
 # ---- verify every edit landed (guards against pattern drift) --------------
 fail() { echo "error: expected change not found: $1" >&2; git checkout -- "${FILES[@]}"; exit 1; }
 grep -q "^__version__ = \"$VER\"$"                     __init__.py      || fail "__init__.py __version__"
+grep -q "^__version__ = \"$VER\"$"                     utils/__init__.py || fail "utils/__init__.py __version__"
+grep -q "^__version__ = \"$VER\"$"                     core/__init__.py || fail "core/__init__.py __version__"
 grep -q "^version = \"$PEP440\"$"                      pyproject.toml   || fail "pyproject version"
 grep -q "filevers=($MAJOR, $MINOR, $PATCH, $BUILD)"    version_info.txt || fail "version_info filevers"
 grep -q "u'FileVersion', u'$VER'"                      version_info.txt || fail "version_info FileVersion"
