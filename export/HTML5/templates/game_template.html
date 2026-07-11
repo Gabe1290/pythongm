@@ -170,6 +170,7 @@
         console.log('📦 Decompressing game data...');
         const gameData = decompressData({game_data});
         const spritesData = decompressData({sprites_data});
+        const soundsData = decompressData({sounds_data}) || {};
 
         if (!gameData || !spritesData) {
             document.body.innerHTML = '<div style="color:white;text-align:center;padding:50px;">❌ Failed to load game data</div>';
