@@ -519,12 +519,22 @@ def get_lives():
 def set_lives(value, relative=False):
     """Set the lives value"""
     if _game_app:
+        _old_lives = _game_app.lives
         if relative:
             _game_app.lives += value
         else:
             _game_app.lives = value
         _game_app.show_lives_in_caption = True
         _game_app.update_caption()
+        # IDE-runtime parity: when lives cross from >0 to <=0, fire
+        # no_more_lives once on EVERY instance that defines it.
+        if _old_lives > 0 and _game_app.lives <= 0 and _game_app.scene:
+            for _inst in list(_game_app.scene.instances):
+                if hasattr(_inst, 'on_no_more_lives'):
+                    try:
+                        _inst.on_no_more_lives()
+                    except Exception as _exc:
+                        print(f"[ERROR] on_no_more_lives: {{_exc}}")
 
 
 def get_health():
@@ -1244,7 +1254,7 @@ if __name__ == '__main__':
         logger.debug(f"    Total unique object types: {len(object_imports)}")
 
         import_lines = '\n'.join([
-            f"from objects.{obj} import {self._get_object_class_name(obj)}"
+            f"from objects.{self._get_object_module_name(obj)} import {self._get_object_class_name(obj)}"
             for obj in sorted(object_imports)
         ])
 
@@ -2134,11 +2144,26 @@ class GameObject(Widget):
         self._last_frame_drawn = frame
 
     def _advance_animation(self, dt):
-        """Advance the sprite animation; redraw only when the frame changes."""
-        if self._sprite_frames <= 1 or not self.visible:
+        """Advance the sprite animation; redraw only when the frame changes.
+
+        Wrapping past the last frame fires the animation_end event
+        (on_animation_end), matching the IDE runtime's GameInstance.step.
+        The advance runs even while invisible (parity); only the redraw
+        is gated on visibility.
+        """
+        if self._sprite_frames <= 1:
             return
         if self.image_speed:
             self.image_index += self.image_speed * dt
+            if self.image_index >= self._sprite_frames or self.image_index < 0:
+                self.image_index = self.image_index % self._sprite_frames
+                if hasattr(self, 'on_animation_end'):
+                    try:
+                        self.on_animation_end()
+                    except Exception as exc:
+                        print(f"[ERROR] on_animation_end: {{exc}}")
+        if not self.visible:
+            return
         frame = int(self.image_index) % self._sprite_frames
         if frame != self._last_frame_drawn:
             self._redraw_frame(frame)
@@ -2442,6 +2467,61 @@ class GameObject(Widget):
         """Called when a key is released"""
         pass
 
+    def destroy_at_position(self, x, y, radius=32, object_filter='all', relative=False):
+        """Destroy matching instances within radius px of (x, y).
+
+        Mirrors the IDE runtime's execute_destroy_at_position_action,
+        excluding the caller. Relative GM offsets: y grows downward in GM
+        room coords, so the kivy-space offset is self.y - y.
+        """
+        if not self.scene:
+            return
+        cx = self.x + x if relative else x
+        cy = self.y - y if relative else y
+        for other in list(self.scene.instances):
+            if other is self:
+                continue
+            if object_filter == 'solid' and not other.solid:
+                continue
+            if object_filter == 'non-solid' and other.solid:
+                continue
+            if object_filter not in ('all', 'any', 'solid', 'non-solid'):
+                other_name = getattr(other, 'object_name', other.__class__.__name__)
+                if other_name != object_filter and other.__class__.__name__ != object_filter:
+                    continue
+            dx = other.x - cx
+            dy = other.y - cy
+            in_range = (dx * dx + dy * dy <= radius * radius) if radius > 0 \
+                else (dx == 0 and dy == 0)
+            if in_range:
+                self.scene.destroy_instance(other)
+
+    def jump_to_random(self, snap_h=1, snap_v=1):
+        """Move to a random room position (snapped), avoiding solids
+        best-effort — mirrors the IDE runtime's execute_jump_to_random."""
+        import random
+        if not self.scene:
+            return
+        w = int(self.image_width or self.grid_size)
+        h = int(self.image_height or self.grid_size)
+        snap_h = max(1, int(snap_h or 1))
+        snap_v = max(1, int(snap_v or 1))
+        for _attempt in range(20):
+            nx = random.randrange(0, max(1, int(self.scene.room_width) - w))
+            ny = random.randrange(0, max(1, int(self.scene.room_height) - h))
+            nx = (nx // snap_h) * snap_h
+            ny = (ny // snap_v) * snap_v
+            self.x = float(nx)
+            self.y = float(ny)
+            self._update_position()
+            blocked = False
+            for other in self.scene.instances:
+                if other is not self and other.solid and self.check_collision(other):
+                    blocked = True
+                    break
+            if not blocked:
+                break
+
     # ---- Draw-queue rendering (GameMaker draw event parity) ----
 
     @staticmethod
@@ -2544,6 +2624,47 @@ class GameObject(Widget):
             group.add(Rectangle(texture=texture,
                                 pos=(x, room_h - y - height),
                                 size=(width, height)))
+        elif ctype == 'sprite':
+            # draw_sprite: sprite resolved to its exported asset path at
+            # code-generation time ('sprite_path'); unknown sprites skip.
+            path = cmd.get('sprite_path') or ''
+            img = load_image(path) if path else None
+            if img is None:
+                return
+            x = float(cmd.get('x', 0))
+            y = float(cmd.get('y', 0))
+            tex = img.texture
+            group.add(Color(1, 1, 1, 1))
+            group.add(Rectangle(texture=tex,
+                                pos=(x, room_h - y - tex.height),
+                                size=(tex.width, tex.height)))
+        elif ctype == 'lives':
+            # draw_lives: one sprite per remaining life, left-to-right;
+            # text fallback when no usable sprite (runtime _draw_lives).
+            path = cmd.get('sprite_path') or ''
+            img = load_image(path) if path else None
+            count = max(0, int(cmd.get('count', 0)))
+            x = float(cmd.get('x', 0))
+            y = float(cmd.get('y', 0))
+            scale = float(cmd.get('scale', 1.0) or 1.0)
+            if img is not None:
+                tex = img.texture
+                tw = tex.width * scale
+                th = tex.height * scale
+                group.add(Color(1, 1, 1, 1))
+                for i in range(count):
+                    group.add(Rectangle(texture=tex,
+                                        pos=(x + i * tw, room_h - y - th),
+                                        size=(tw, th)))
+            else:
+                label = CoreLabel(text='Lives: ' + str(count), font_size=18)
+                label.refresh()
+                if label.texture is None:
+                    return
+                group.add(Color(1, 1, 1, 1))
+                group.add(Rectangle(texture=label.texture,
+                                    pos=(x, room_h - y - label.texture.size[1]),
+                                    size=label.texture.size))
 '''
 
         # Format the template with actual values
@@ -2709,7 +2830,8 @@ class {class_name}(GameObject):
             event_methods=event_methods
         )
 
-        output_file = self.output_path / "game" / "objects" / f"{obj_name}.py"
+        output_file = (self.output_path / "game" / "objects" /
+                       f"{self._get_object_module_name(obj_name)}.py")
         output_file.write_text(code_formatted, encoding="utf-8")
 
     def _generate_event_methods(self, obj_name: str, events: List[Dict]) -> str:
@@ -3220,6 +3342,8 @@ class {class_name}(GameObject):
             'mouse_left_release': 'on_mouse_left_release',
             'room_start': 'on_room_start',
             'room_end': 'on_room_end',
+            'animation_end': 'on_animation_end',
+            'no_more_lives': 'on_no_more_lives',
             'game_start': 'on_game_start',
             'game_end': 'on_game_end',
             'outside_room': 'on_outside_room',
@@ -3453,10 +3577,28 @@ game development environment for Python.
         # Convert snake_case to PascalCase
         return ''.join(word.capitalize() for word in room_name.split('_'))
 
+    @staticmethod
+    def _get_object_module_name(obj_name: str) -> str:
+        """Python module name for an object: non-identifier characters
+        become underscores ("obj trigger" -> "obj_trigger"). Registry keys
+        and create_instance lookups keep the ORIGINAL name; only module
+        filenames / import statements / class names need sanitizing."""
+        import re
+        sanitized = re.sub(r'\W', '_', obj_name)
+        if not sanitized or sanitized[0].isdigit():
+            sanitized = f"obj_{sanitized}"
+        return sanitized
+
     def _get_object_class_name(self, obj_name: str) -> str:
-        """Convert object name to class name"""
-        # Convert snake_case to PascalCase
-        return ''.join(word.capitalize() for word in obj_name.split('_'))
+        """Convert object name to a valid PascalCase class identifier.
+
+        Sanitizes first: maze_3 ships an object named "obj trigger" (space,
+        from the GMK import) which used to emit `class Obj trigger` — a
+        SyntaxError that made the whole maze_3 Kivy export unimportable.
+        """
+        return ''.join(
+            word.capitalize()
+            for word in self._get_object_module_name(obj_name).split('_') if word)
 
 
 def export_to_kivy(project_data: Dict[str, Any], project_path: Path,

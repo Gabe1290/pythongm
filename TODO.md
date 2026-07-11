@@ -412,13 +412,25 @@ Other:
     engine instead. Note: some GMK-imported sample scripts (bare GML
     `vspeed`, `view_xview`) error identically in the IDE runtime —
     sample-data debt, not exporter gaps.
-  - **Kivy:** smaller but real: draw_* actions, set_direction_speed,
-    create_moving/random_instance, jump_to_random, test_score;
-    events animation_end / no_more_lives.
-- Working the registries down to empty is the roadmap for full export
-  parity; the test fails on any NEW gap (e.g. a future sample using a
+  - **Kivy: CLOSED 2026-07-11** — the parity batch (draw family via the
+    draw queue, creation cluster, test_score, set_direction_speed,
+    destroy_at_position/jump_to_random base helpers, animation_end on
+    wrap, no_more_lives on the set_lives crossing) emptied the Kivy
+    registries too. The pass also fixed two pre-existing exporter
+    breakers the action survey couldn't see: orphaned else_action
+    (GMK mis-import) generated a bare `else:` SyntaxError — the
+    plateforme_4/5 Kivy exports never compiled; and maze_3's
+    "obj trigger" (space in the name) generated invalid class/module
+    identifiers — the maze_3 Kivy export never compiled.
+    `tests/test_kivy_parity_batch.py` now compile-gates every module of
+    every sample's Kivy export.
+- **All four registries are EMPTY — the matrix is fully closed on both
+  targets.** The test fails on any NEW gap (a future sample using a
   feature an exporter lacks — the match3_1 lesson) and on stale entries
-  after a fix, so the registries can't rot in either direction.
+  after a fix, so the registries can't rot in either direction. What the
+  matrix does NOT cover: on-device behavior (a real APK install / a
+  phone-browser session) and per-action semantic parity beyond what the
+  behavioral tests pin.
 
 ---
 

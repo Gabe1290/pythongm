@@ -5,6 +5,7 @@ Exports projects to Kivy format for mobile deployment
 """
 
 import ast
+import re
 from typing import Dict
 
 from core.logger import get_logger
@@ -98,6 +99,23 @@ def _literal(value):
         return str(value)
     except (TypeError, ValueError):
         return repr(value)
+
+
+def _num_code(value, default=0):
+    """Emit a NUMERIC parameter that may be an expression ("direction+90").
+
+    view_* variables become 0 (views unimplemented — matches the pygame
+    runtime's unresolved-variable-defaults-to-0 fallback); plain numbers
+    embed as literals; anything else resolves bare instance names to
+    self.<name> and embeds as a parenthesized expression.
+    """
+    s = str(default if value is None or str(value).strip() == '' else value).strip()
+    s = re.sub(r'view_[a-z]+', '0', s)
+    try:
+        f = float(s)
+        return str(int(f)) if f.is_integer() else str(f)
+    except ValueError:
+        return f"({_resolve_instance_names(s)})"
 
 
 class ActionCodeGenerator:
@@ -244,13 +262,21 @@ class ActionCodeGenerator:
             return
 
         elif action_type == 'else_action' or action_type == 'else_block':
-            # Legacy/odd data: an else with no just-closed guard. Keep the
-            # historical pop/else/push so old sequences stay shaped.
-            self.pop_indent()
-            self.add_line("else:")
-            self.push_indent()
             if self._top_label() in ['if', 'if_on_grid', 'if_next_room_exists', 'if_previous_room_exists']:
+                # Legacy nested shape: attach to the open if-block.
+                self.pop_indent()
+                self.add_line("else:")
+                self.push_indent()
                 self.block_stack[-1] = ('else', self.block_stack[-1][1])
+            else:
+                # ORPHANED else — no guard to attach to (GMK mis-imports
+                # sometimes drop the question action, e.g. if_free_position
+                # imported as set_score; see TODO.md maze_3 findings). The
+                # IDE runtime skips the next action/block after such an
+                # else; an "if False:" guard is the codegen equivalent.
+                # The old pop/bare-else/push here emitted a SyntaxError
+                # module (plateforme_4/5 Kivy exports never imported).
+                self._open_guard("if False:  # orphaned else_action (runtime skips its unit)")
             return
 
         # CONDITIONAL ACTIONS (these start blocks)
@@ -289,6 +315,21 @@ class ActionCodeGenerator:
         elif action_type == 'test_expression':
             expr = _resolve_instance_names(params.get('expression', 'False'))
             self._open_guard(f"if {expr}:")
+            return
+
+        elif action_type == 'test_score':
+            value = _num_code(params.get('value', 0))
+            op = _COMPARISON_OPS.get(str(params.get('operation', 'equal')))
+            if op is None:
+                # Unknown operation (e.g. raw GM numeric codes in old
+                # imports): the IDE runtime evaluates these to False.
+                self._open_guard(
+                    f"if False:  # test_score: unknown operation "
+                    f"{params.get('operation')!r}")
+            else:
+                self.add_line("from main import get_game_app as _tsga")
+                self._open_guard(
+                    f"if (_tsga().score if _tsga() else 0) {op} {value}:")
             return
 
         elif action_type in ('if_collision', 'if_collision_at', 'check_collision'):
@@ -826,6 +867,105 @@ if dist > 0:
             value = params.get('value', 100)
             relative = params.get('relative', False)
             return f"from main import set_health; set_health({value}, relative={relative})"
+
+        # DRAW ACTIONS — queue runtime-schema commands into
+        # self._draw_queue; the scene renders it after on_draw runs
+        # (base_object._render_draw_queue).
+        elif action_type == 'draw_score':
+            caption = str(params.get('caption', 'Score: '))
+            x = _num_code(params.get('x', 0))
+            y = _num_code(params.get('y', 0))
+            return ("from main import get_game_app as _ga; "
+                    f"self._draw_queue.append(dict(type='text', "
+                    f"text={caption!r} + str(_ga().score if _ga() else 0), "
+                    f"x={x}, y={y}, "
+                    "color=getattr(self, 'draw_color', None) or (255, 255, 255)))")
+
+        elif action_type == 'draw_text':
+            text = str(params.get('text', ''))
+            x = _num_code(params.get('x', 0))
+            y = _num_code(params.get('y', 0))
+            return (f"self._draw_queue.append(dict(type='text', text={text!r}, "
+                    f"x={x}, y={y}, "
+                    "color=getattr(self, 'draw_color', None) or (0, 0, 0)))")
+
+        elif action_type == 'draw_lives':
+            sprite = str(params.get('sprite', '') or '')
+            path = self.sprite_paths.get(sprite, '')
+            x = _num_code(params.get('x', 0))
+            y = _num_code(params.get('y', 0))
+            scale = _num_code(params.get('scale', 1.0), 1.0)
+            return ("from main import get_game_app as _ga; "
+                    f"self._draw_queue.append(dict(type='lives', "
+                    f"count=int(_ga().lives if _ga() else 0), "
+                    f"x={x}, y={y}, sprite_path={path!r}, scale={scale}))")
+
+        elif action_type == 'draw_sprite':
+            sprite = str(params.get('sprite', params.get('sprite_name', '')) or '')
+            path = self.sprite_paths.get(sprite, '')
+            if not path:
+                return f"pass  # draw_sprite: sprite {sprite!r} not found in export"
+            x = _num_code(params.get('x', 0))
+            y = _num_code(params.get('y', 0))
+            return (f"self._draw_queue.append(dict(type='sprite', "
+                    f"sprite_path={path!r}, x={x}, y={y}))")
+
+        elif action_type == 'set_draw_color':
+            color = str(params.get('color', '#000000'))
+            try:
+                hex_str = color.lstrip('#')
+                rgb = (int(hex_str[0:2], 16), int(hex_str[2:4], 16),
+                       int(hex_str[4:6], 16))
+            except (ValueError, IndexError):
+                rgb = (0, 0, 0)
+            return f"self.draw_color = {rgb!r}"
+
+        elif action_type == 'set_draw_font':
+            # Stored for parity; the renderer uses one font, same as the
+            # pygame runtime's _draw_text.
+            return f"self.draw_font = {str(params.get('font', ''))!r}"
+
+        # INSTANCE CREATION / DESTRUCTION CLUSTER
+        elif action_type == 'create_moving_instance':
+            obj_name = str(params.get('object', ''))
+            if not obj_name:
+                return "pass  # create_moving_instance: no object specified"
+            x = _num_code(params.get('x', 0))
+            y = _num_code(params.get('y', 0))
+            direction = _num_code(params.get('direction', 0))
+            speed = _num_code(params.get('speed', 0))
+            return (f"_cmi = self.scene.create_instance({obj_name!r}, {x}, {y}); "
+                    f"_cmi and setattr(_cmi, 'direction', {direction}); "
+                    f"_cmi and setattr(_cmi, 'speed', {speed})")
+
+        elif action_type == 'create_random_instance':
+            choices = [str(params.get(f'object{i}'))
+                       for i in range(1, 5) if params.get(f'object{i}')]
+            if not choices:
+                return "pass  # create_random_instance: no objects specified"
+            x = _num_code(params.get('x', 0))
+            y = _num_code(params.get('y', 0))
+            return (f"import random as _rnd; "
+                    f"self.scene.create_instance(_rnd.choice({choices!r}), {x}, {y})")
+
+        elif action_type == 'jump_to_random':
+            snap_h = _num_code(params.get('snap_h', 1), 1)
+            snap_v = _num_code(params.get('snap_v', 1), 1)
+            return f"self.jump_to_random({snap_h}, {snap_v})"
+
+        elif action_type == 'destroy_at_position':
+            x = _num_code(params.get('x', 0))
+            y = _num_code(params.get('y', 0))
+            radius = _num_code(params.get('radius', 32), 32)
+            obj_filter = str(params.get('object', 'all') or 'all')
+            relative = bool(params.get('relative', False))
+            return (f"self.destroy_at_position({x}, {y}, {radius}, "
+                    f"{obj_filter!r}, relative={relative})")
+
+        elif action_type == 'set_direction_speed':
+            direction = _num_code(params.get('direction', 0))
+            speed = _num_code(params.get('speed', 4))
+            return f"self.direction = {direction}; self.speed = {speed}"
 
         elif action_type == 'set_window_caption':
             caption = params.get('caption', '')
