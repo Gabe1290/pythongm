@@ -243,7 +243,32 @@ function drawCommandColor(c) {
     return '#FFFFFF';
 }
 
-function renderDrawCommands(ctx, cmds) {
+// Parse a numeric action parameter that may be an expression referencing
+// the instance ("self.x + 16"). view_* variables default to 0, matching
+// the IDE runtime's unresolved-variable fallback (views aren't implemented).
+function parseNumParam(value, inst, fallback) {
+    if (value === undefined || value === null || value === '') return fallback;
+    if (typeof value === 'number') return value;
+    const s = String(value).trim();
+    const direct = parseFloat(s);
+    if (!isNaN(direct) && /^[-+]?[0-9.]+$/.test(s)) return direct;
+    try {
+        const other = inst._collision_other;
+        const expr = s
+            .replace(/self\.x/g, `(${inst.x})`)
+            .replace(/self\.y/g, `(${inst.y})`)
+            .replace(/other\.x/g, `(${other ? other.x : 0})`)
+            .replace(/other\.y/g, `(${other ? other.y : 0})`)
+            .replace(/view_[a-z]+/g, '0');
+        if (/^[-+*/(). 0-9]+$/.test(expr)) {
+            const result = Function(`"use strict"; return (${expr});`)();
+            if (typeof result === 'number' && isFinite(result)) return result;
+        }
+    } catch (e) { /* fall through */ }
+    return fallback;
+}
+
+function renderDrawCommands(ctx, cmds, game) {
     for (const cmd of (cmds || [])) {
         const color = drawCommandColor(cmd.color);
         switch (cmd.type) {
@@ -306,6 +331,36 @@ function renderDrawCommands(ctx, cmds) {
                 }
                 break;
             }
+            case 'sprite': {
+                // {'type':'sprite','sprite_name':...,'x':...,'y':...} — the
+                // runtime's _draw_sprite schema (subimage ignored: HTML5
+                // sprites are single-frame for now).
+                const img = game && game.sprites ? game.sprites[cmd.sprite_name] : null;
+                if (img && img.complete) {
+                    ctx.drawImage(img, cmd.x || 0, cmd.y || 0);
+                }
+                break;
+            }
+            case 'lives': {
+                // Runtime _draw_lives: one sprite per remaining life,
+                // left-to-right; text fallback when no usable sprite.
+                const img = (cmd.sprite && game && game.sprites)
+                    ? game.sprites[cmd.sprite] : null;
+                const count = Math.max(0, cmd.count || 0);
+                const lx = cmd.x || 0, ly = cmd.y || 0;
+                if (img && img.complete && img.width) {
+                    for (let i = 0; i < count; i++) {
+                        ctx.drawImage(img, lx + i * img.width, ly);
+                    }
+                } else {
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.font = '18px Arial';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'top';
+                    ctx.fillText(`Lives: ${count}`, lx, ly);
+                }
+                break;
+            }
             // Unknown command types are skipped, matching the IDE runtime's
             // dispatch-table behaviour.
         }
@@ -326,6 +381,12 @@ class GameObject {
         this._pyId = ++GameObject._nextInstanceId;
         this.mouse_x = 0;
         this.mouse_y = 0;
+        // Draw-event state: draw_* actions queue commands (runtime schema);
+        // onDraw renders and clears the queue each frame.
+        this._draw_queue = [];
+        this._inDrawEvent = false;
+        this.draw_color = null;   // set_draw_color; null = target default
+        this.draw_font = null;    // set_draw_font (stored; renderer uses one font, like the runtime)
         this.x = x;
         this.y = y;
         this.sprite = null;
@@ -498,32 +559,21 @@ class GameObject {
     onDraw(ctx) {
         // Sprite first, then the draw event's queue on top — same order as
         // the IDE runtime (GameRunner draws the sprite, then processes the
-        // instance's draw queue).
+        // instance's draw queue). The draw event runs through the normal
+        // action executor (so conditionals like test_lives work inside it);
+        // draw_* actions queue runtime-schema commands, rendered at the end.
         this.render(ctx);
-        if (this.events && this.events.draw) {
-            const actions = this.events.draw.actions || [];
-            const game = this._gameRef;
-            for (const action of actions) {
-                if (!action) continue;
-                const p = action.parameters || {};
-                if (action.action === 'execute_code') {
-                    const code = p.code || '';
-                    if (code.trim() && game && game.python && game.python.ready) {
-                        renderDrawCommands(ctx, game.python.runDraw(this, code, game));
-                    }
-                } else if (action.action === 'draw_score' && game) {
-                    // Same command the IDE runtime queues (white text,
-                    // caption + current score) — see execute_draw_score_action.
-                    renderDrawCommands(ctx, [{
-                        type: 'text',
-                        text: `${p.caption !== undefined ? p.caption : 'Score: '}${game.score}`,
-                        x: parseFloat(p.x) || 0,
-                        y: parseFloat(p.y) || 0,
-                        color: [255, 255, 255],
-                    }]);
-                }
-            }
+        if (!this.events || !this.events.draw) return;
+        const game = this._gameRef;
+        this._draw_queue = [];
+        this._inDrawEvent = true;
+        try {
+            this.executeActions(this.events.draw.actions || [], game);
+        } finally {
+            this._inDrawEvent = false;
         }
+        renderDrawCommands(ctx, this._draw_queue, game);
+        this._draw_queue = [];
     }
 
     onKeyboardPress(key, game) {
@@ -691,7 +741,9 @@ class GameObject {
     static isConditionalAction(actionType) {
         return !!actionType && (actionType.startsWith('if_') ||
                                 actionType === 'test_alignment' ||
-                                actionType === 'test_variable');
+                                actionType === 'test_variable' ||
+                                actionType === 'test_score' ||
+                                actionType === 'test_instance_count');
     }
 
     executeActions(actions, game) {
@@ -963,6 +1015,40 @@ class GameObject {
                     case 'less_equal': case '<=': return a <= b;
                     case 'greater_equal': case '>=': return a >= b;
                     default: return a == b;
+                }
+            }
+
+            case 'test_score': {
+                // Compare the game score (runtime execute_test_score_action)
+                const value = parseInt(params.value) || 0;
+                const score = game.score;
+                switch (params.operation || 'equal') {
+                    case 'equal': return score === value;
+                    case 'not_equal': return score !== value;
+                    case 'less': return score < value;
+                    case 'greater': return score > value;
+                    case 'less_equal': return score <= value;
+                    case 'greater_equal': return score >= value;
+                    default: return score === value;
+                }
+            }
+
+            case 'test_instance_count': {
+                // Count live instances of a type and compare (runtime
+                // execute_test_instance_count_action)
+                const objectType = params.object || '';
+                if (!objectType || !game.currentRoom) return false;
+                const count = game.currentRoom.instances.filter(
+                    inst => inst.name === objectType && !inst.toDestroy).length;
+                const target = parseInt(params.number) || 0;
+                switch (params.operation || 'equal') {
+                    case 'equal': return count === target;
+                    case 'not_equal': return count !== target;
+                    case 'less': return count < target;
+                    case 'greater': return count > target;
+                    case 'less_equal': return count <= target;
+                    case 'greater_equal': return count >= target;
+                    default: return count === target;
                 }
             }
 
@@ -1472,6 +1558,7 @@ class GameObject {
 
             case 'change_room':
             case 'go_to_room':
+            case 'goto_room':
                 let roomName = params.room_name || params.room;
 
                 if (roomName === '__next__') {
@@ -1843,11 +1930,16 @@ class GameObject {
 
             case 'execute_code': {
                 // Python code, executed via the Pyodide bridge with the IDE
-                // runtime's execute_code semantics. Draw events route through
-                // onDraw/runDraw instead (they return a draw-command queue).
+                // runtime's execute_code semantics. In a draw event the
+                // Python-side draw queue is returned and merged into this
+                // instance's queue (rendered by onDraw).
                 const pyCode = params.code || '';
                 if (pyCode.trim() && game.python && game.python.ready) {
-                    game.python.runCode(this, pyCode, game);
+                    if (this._inDrawEvent) {
+                        this._draw_queue.push(...game.python.runDraw(this, pyCode, game));
+                    } else {
+                        game.python.runCode(this, pyCode, game);
+                    }
                 } else if (pyCode.trim()) {
                     if (!this._warnedNoPython) {
                         this._warnedNoPython = true;
@@ -1856,6 +1948,151 @@ class GameObject {
                 }
                 break;
             }
+
+            // ---- Draw actions: queue runtime-schema commands; onDraw
+            // renders the queue after the draw event finishes ----
+
+            case 'draw_score':
+                this._draw_queue.push({
+                    type: 'text',
+                    text: `${params.caption !== undefined ? params.caption : 'Score: '}${game.score}`,
+                    x: parseNumParam(params.x, this, 0),
+                    y: parseNumParam(params.y, this, 0),
+                    // runtime: active draw colour, defaulting to white
+                    color: this.draw_color || game.draw_color || [255, 255, 255],
+                });
+                break;
+
+            case 'draw_text':
+                this._draw_queue.push({
+                    type: 'text',
+                    text: String(params.text !== undefined ? params.text : ''),
+                    x: parseNumParam(params.x, this, this.x),
+                    y: parseNumParam(params.y, this, this.y),
+                    // runtime: active draw colour, defaulting to black
+                    color: this.draw_color || game.draw_color || [0, 0, 0],
+                });
+                break;
+
+            case 'draw_lives':
+                this._draw_queue.push({
+                    type: 'lives',
+                    count: Math.max(0, Math.trunc(game.lives)),
+                    x: parseNumParam(params.x, this, 0),
+                    y: parseNumParam(params.y, this, 0),
+                    sprite: params.sprite || '',
+                });
+                break;
+
+            case 'draw_sprite':
+                this._draw_queue.push({
+                    type: 'sprite',
+                    sprite_name: params.sprite || params.sprite_name || '',
+                    x: parseNumParam(params.x, this, this.x),
+                    y: parseNumParam(params.y, this, this.y),
+                });
+                break;
+
+            case 'set_draw_color':
+                // Stored as-is ('#RRGGBB'); the command renderer accepts hex
+                // strings and rgb arrays alike. Mirrors runtime: instance
+                // colour + global fallback.
+                this.draw_color = params.color || '#000000';
+                game.draw_color = this.draw_color;
+                break;
+
+            case 'set_draw_font':
+                // Stored for parity; the canvas renderer uses one font, the
+                // same as the pygame runtime's _draw_text (alignment is
+                // stored there too but never applied).
+                this.draw_font = params.font || null;
+                break;
+
+            // ---- Instance creation / destruction cluster ----
+
+            case 'create_moving_instance': {
+                const inst = game.spawnInstance(
+                    params.object || '',
+                    parseNumParam(params.x, this, 0),
+                    parseNumParam(params.y, this, 0));
+                if (inst) {
+                    inst.direction = parseNumParam(params.direction, this, 0);
+                    inst.speed = parseNumParam(params.speed, this, 0);
+                }
+                break;
+            }
+
+            case 'create_random_instance': {
+                const choices = [];
+                for (let n = 1; n <= 4; n++) {
+                    const name = params[`object${n}`];
+                    if (name) choices.push(name);
+                }
+                if (!choices.length) break;
+                game.spawnInstance(
+                    choices[Math.floor(Math.random() * choices.length)],
+                    parseNumParam(params.x, this, 0),
+                    parseNumParam(params.y, this, 0));
+                break;
+            }
+
+            case 'jump_to_random': {
+                // Random room position, snapped; a few attempts to avoid
+                // landing inside a solid (best effort, like the runtime).
+                const snapH = Math.max(1, parseInt(params.snap_h) || 1);
+                const snapV = Math.max(1, parseInt(params.snap_v) || 1);
+                const room = game.currentRoom;
+                if (!room) break;
+                const myW = this.spriteInfo ? this.spriteInfo.width : 32;
+                const myH = this.spriteInfo ? this.spriteInfo.height : 32;
+                for (let attempt = 0; attempt < 20; attempt++) {
+                    const rx = Math.floor(Math.random() * Math.max(1, room.width - myW) / snapH) * snapH;
+                    const ry = Math.floor(Math.random() * Math.max(1, room.height - myH) / snapV) * snapV;
+                    this.x = rx;
+                    this.y = ry;
+                    const solidHit = room.instances.some(o =>
+                        o !== this && !o.toDestroy && o.solid &&
+                        rx < o.x + (o.spriteInfo ? o.spriteInfo.width : 32) &&
+                        rx + myW > o.x &&
+                        ry < o.y + (o.spriteInfo ? o.spriteInfo.height : 32) &&
+                        ry + myH > o.y);
+                    if (!solidHit) break;
+                }
+                break;
+            }
+
+            case 'destroy_at_position': {
+                // Destroy matching instances within `radius` px of (x, y);
+                // relative offsets from the caller (IDE runtime semantics).
+                const relative = params.relative === true || params.relative === 'true';
+                let px = parseNumParam(params.x, this, 0);
+                let py = parseNumParam(params.y, this, 0);
+                if (relative) { px += this.x; py += this.y; }
+                const radius = parseNumParam(params.radius, this, 32);
+                const filter = params.object || 'all';
+                if (!game.currentRoom) break;
+                for (const other of game.currentRoom.instances) {
+                    if (other.toDestroy) continue;
+                    if (filter === 'solid' && !other.solid) continue;
+                    if (filter === 'non-solid' && other.solid) continue;
+                    if (filter !== 'all' && filter !== 'any' &&
+                        filter !== 'solid' && filter !== 'non-solid' &&
+                        other.name !== filter) continue;
+                    const dx = other.x - px, dy = other.y - py;
+                    const inRange = radius > 0
+                        ? (dx * dx + dy * dy) <= radius * radius
+                        : (dx === 0 && dy === 0);
+                    if (inRange) other.toDestroy = true;
+                }
+                break;
+            }
+
+            case 'set_direction_speed':
+                // GM angles: 0=right, 90=up. The direction/speed setters
+                // sync hspeed/vspeed with the y-down screen convention.
+                this.direction = parseNumParam(params.direction, this, 0);
+                this.speed = parseNumParam(params.speed, this, 4);
+                break;
 
             default:
                 console.warn(`Unknown action: ${actionType}`);
@@ -2090,6 +2327,19 @@ class GameRoom {
             if (!inst.toDestroy) inst.processMovement(game);
         });
 
+        // 5b. outside_room events — fires while the instance's box is
+        // entirely outside the room (GM behaviour; e.g. plateforme_5
+        // despawns off-screen projectiles with it)
+        this.instances.forEach(inst => {
+            if (inst.toDestroy || !inst.events || !inst.events.outside_room) return;
+            const w = inst.spriteInfo ? inst.spriteInfo.width : 32;
+            const h = inst.spriteInfo ? inst.spriteInfo.height : 32;
+            if (inst.x + w < 0 || inst.x > this.width ||
+                inst.y + h < 0 || inst.y > this.height) {
+                inst.executeActions(inst.events.outside_room.actions || [], game);
+            }
+        });
+
         // 6. Collision events
         this.instances.forEach(inst => {
             if (!inst.toDestroy) inst.checkCollisions(game);
@@ -2187,6 +2437,35 @@ class Game {
         this.setupKeyboard();
         this.setupMouse();
         this.loadGame();
+    }
+
+    // Create an instance of an object type at (x, y) in the current room.
+    // The create event fires via the pending-create pass in GameRoom.step.
+    spawnInstance(objName, x, y) {
+        if (!objName || !this.currentRoom) return null;
+        const objectData = this.gameData.assets.objects[objName];
+        if (!objectData) {
+            console.warn(`spawnInstance: unknown object: ${objName}`);
+            return null;
+        }
+        const inst = new GameObject(objName, x, y, {}, objectData);
+        inst._gameRef = this;
+        inst._startX = x;
+        inst._startY = y;
+        if (objectData.sprite && this.sprites[objectData.sprite]) {
+            inst.sprite = this.sprites[objectData.sprite];
+            const meta = this.gameData.assets.sprites[objectData.sprite];
+            if (meta) {
+                inst.spriteInfo = {
+                    origin_x: meta.origin_x || 0,
+                    origin_y: meta.origin_y || 0,
+                    width: meta.width || inst.sprite.width,
+                    height: meta.height || inst.sprite.height,
+                };
+            }
+        }
+        this.currentRoom.instances.push(inst);
+        return inst;
     }
 
     // Load the Python runtime if (and only if) the project uses execute_code.
