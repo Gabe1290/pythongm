@@ -395,11 +395,18 @@ Other:
     skip-next semantics, fixed exit_event to abort the whole event, made
     nested then/else branches actually execute, accepted the legacy
     'object' instance key plateforme rooms use, and fired destroy
-    events). Remaining: maze_3 and plateforme_2–5 use 1–10 unimplemented
-    actions each (draw_lives/draw_text/draw_sprite, set_sprite,
-    play_sound, change_instance, create_moving/random_instance,
-    test_score, sleep…) plus events (animation_end, game_start,
-    no_more_lives, outside_room).
+    events). plateforme_2 and plateforme_3 followed the same day
+    (browser-verified): embedded base64 sounds + play_sound/
+    stop_all_sounds, set_sprite, change_instance, sleep (non-blocking
+    step suspension), game_start, and runtime-parity no_more_lives
+    (fires once on the >0→<=0 crossing, on every listening instance).
+    Remaining: maze_3 and plateforme_4/5 — the draw_* family
+    (draw_lives/draw_text/draw_sprite/set_draw_color/set_draw_font),
+    create_moving/random_instance, jump_to_random, goto_room,
+    test_score/test_instance_count, destroy_at_position,
+    set_direction_speed; events animation_end (needs sprite-strip
+    animation in the JS engine, the one real subsystem left) and
+    outside_room.
   - **Kivy:** smaller but real: draw_* actions, set_direction_speed,
     create_moving/random_instance, jump_to_random, test_score;
     events animation_end / no_more_lives.

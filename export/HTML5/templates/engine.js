@@ -1570,19 +1570,26 @@ class GameObject {
                 console.log(`📊 Score: ${game.score}`);
                 break;
 
-            case 'set_lives':
+            case 'set_lives': {
+                const oldLives = game.lives;
                 if (params.relative) {
                     game.lives += parseFloat(params.value) || 0;
                 } else {
                     game.lives = parseFloat(params.value) || 0;
                 }
                 console.log(`❤️ Lives: ${game.lives}`);
-                // Check for no more lives
-                if (game.lives <= 0 && this.events && this.events.no_more_lives) {
-                    const noLivesEvent = this.events.no_more_lives;
-                    this.executeActions(noLivesEvent.actions || [], game);
+                // IDE-runtime semantics: when lives cross from >0 to <=0,
+                // fire no_more_lives once on EVERY instance that defines it
+                // (not just the instance whose action decremented lives).
+                if (oldLives > 0 && game.lives <= 0 && game.currentRoom) {
+                    [...game.currentRoom.instances].forEach(inst => {
+                        if (!inst.toDestroy && inst.events && inst.events.no_more_lives) {
+                            inst.executeActions(inst.events.no_more_lives.actions || [], game);
+                        }
+                    });
                 }
                 break;
+            }
 
             case 'set_health':
                 if (params.relative) {
@@ -1716,6 +1723,121 @@ class GameObject {
                     this.y += dy;
                     if (touches()) break;
                 }
+                break;
+            }
+
+            case 'play_sound': {
+                // Sounds are embedded as data URLs (soundsData); a small
+                // per-sound pool lets overlapping plays coexist. Autoplay
+                // policy may reject play() before the first user gesture —
+                // swallowed, matching a muted-until-interaction browser.
+                const soundName = params.sound || '';
+                if (!soundName) break;
+                const src = game.sounds ? game.sounds[soundName] : null;
+                if (!src) {
+                    console.warn(`play_sound: sound not found or unsupported format: ${soundName}`);
+                    break;
+                }
+                try {
+                    const pool = game._audioPool[soundName] || (game._audioPool[soundName] = []);
+                    let audio = pool.find(a => a.paused || a.ended);
+                    if (!audio && pool.length < 8) {
+                        audio = new Audio(src);
+                        pool.push(audio);
+                    }
+                    if (audio) {
+                        audio.loop = params.loop === true || params.loop === 'true';
+                        audio.currentTime = 0;
+                        const playPromise = audio.play();
+                        if (playPromise && playPromise.catch) playPromise.catch(() => {});
+                    }
+                } catch (e) {
+                    console.warn('play_sound failed:', e);
+                }
+                break;
+            }
+
+            case 'stop_all_sounds':
+                for (const pool of Object.values(game._audioPool || {})) {
+                    for (const audio of pool) {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }
+                }
+                break;
+
+            case 'set_sprite': {
+                // sprite "<self>" keeps the current sprite (the runtime then
+                // only adjusts animation, which HTML5 sprites don't have yet
+                // — subimage/speed are ignored here).
+                const spriteName = params.sprite || '<self>';
+                if (spriteName && spriteName !== '<self>') {
+                    const img = game.sprites ? game.sprites[spriteName] : null;
+                    if (img) {
+                        this.sprite = img;
+                        const meta = (game.gameData.assets.sprites || {})[spriteName];
+                        if (meta) {
+                            this.spriteInfo = {
+                                origin_x: meta.origin_x || 0,
+                                origin_y: meta.origin_y || 0,
+                                width: meta.width || img.width,
+                                height: meta.height || img.height,
+                            };
+                        }
+                    } else {
+                        console.warn(`set_sprite: sprite not found: ${spriteName}`);
+                    }
+                }
+                break;
+            }
+
+            case 'change_instance': {
+                // Become a different object type in place (IDE runtime:
+                // target self/other/object, perform_events runs the old
+                // object's destroy event and the new object's create event).
+                const newName = params.object || '';
+                if (!newName) break;
+                const objectData = game.gameData.assets.objects[newName];
+                if (!objectData) {
+                    console.warn(`change_instance: unknown object: ${newName}`);
+                    break;
+                }
+                const performEvents = params.perform_events !== false;
+                let targets = [this];
+                if (params.target === 'other' && this._collision_other) {
+                    targets = [this._collision_other];
+                } else if (params.target === 'object' && params.target_object && game.currentRoom) {
+                    targets = game.currentRoom.instances.filter(
+                        i => i.name === params.target_object && !i.toDestroy);
+                }
+                for (const inst of targets) {
+                    if (performEvents) inst.triggerEvent('destroy');
+                    inst.name = newName;
+                    inst.objectData = objectData;
+                    inst.events = objectData.events || {};
+                    inst.solid = objectData.solid || false;
+                    inst.visible = objectData.visible !== false;
+                    inst.depth = inst.getDepthForObject(newName);
+                    const sprName = objectData.sprite;
+                    inst.sprite = (sprName && game.sprites[sprName]) || null;
+                    const meta = sprName ? (game.gameData.assets.sprites || {})[sprName] : null;
+                    inst.spriteInfo = meta ? {
+                        origin_x: meta.origin_x || 0,
+                        origin_y: meta.origin_y || 0,
+                        width: meta.width || (inst.sprite ? inst.sprite.width : 32),
+                        height: meta.height || (inst.sprite ? inst.sprite.height : 32),
+                    } : null;
+                    if (performEvents) inst.triggerEvent('create');
+                }
+                break;
+            }
+
+            case 'sleep': {
+                // The IDE runtime blocks for the duration (sounds keep
+                // playing). A browser can't block, so stepping is suspended
+                // while rendering continues — same observable effect.
+                const ms = parseInt(params.milliseconds ?? params.ms ?? params.duration ?? 1000) || 0;
+                if (ms > 0) game._sleepUntil = Date.now() + Math.min(ms, 10000);
                 break;
             }
 
@@ -1921,6 +2043,18 @@ class GameRoom {
             }
         });
 
+        // 0b. game_start fires once per game, after the first room's create
+        // events (IDE-runtime order) — authored startup setup like lives /
+        // caption lives here (runtime fix 5f09b1d).
+        if (game && !game._gameStartFired) {
+            game._gameStartFired = true;
+            [...this.instances].forEach(inst => {
+                if (!inst.toDestroy && inst.events && inst.events.game_start) {
+                    inst.executeActions(inst.events.game_start.actions || [], game);
+                }
+            });
+        }
+
         // GAMEMAKER 7.0 EVENT ORDER:
         // 1. Begin Step events
         this.instances.forEach(inst => {
@@ -2038,6 +2172,10 @@ class Game {
         this.lives = 3;
         this.health = 100;
         this.globalVariables = {};  // set_variable/test_variable global scope
+        this.sounds = {};           // sound name -> data URL (loadGame)
+        this._audioPool = {};       // sound name -> [Audio] (play_sound)
+        this._sleepUntil = 0;       // sleep action deadline
+        this._gameStartFired = false;
 
         // Language for translations (default English, can be set from gameData)
         this.language = 'en';
@@ -2173,6 +2311,13 @@ class Game {
             sprites[name] = img;
         });
 
+        // Embedded sounds (data URLs). Guarded so pages exported before the
+        // sound blob existed keep working.
+        this.sounds = (typeof soundsData !== 'undefined' && soundsData) ? soundsData : {};
+        if (Object.keys(this.sounds).length) {
+            console.log(`Loaded ${Object.keys(this.sounds).length} sounds`);
+        }
+
         const roomsData = gameData.assets.rooms;
         console.log(`Loading ${Object.keys(roomsData).length} rooms...`);
 
@@ -2262,7 +2407,7 @@ class Game {
             document.getElementById('fps').textContent = `FPS: ${this.fps}`;
         }
 
-        if (!this.paused) {
+        if (!this.paused && Date.now() >= this._sleepUntil) {
             this.processKeyboard();
             this.processKeyboardRelease();
             if (this.currentRoom) {

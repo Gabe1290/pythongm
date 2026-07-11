@@ -48,6 +48,10 @@ class HTML5Exporter:
                 sprites_data = self.encode_sprites(project_path, project_data)
                 logger.info(f"  Encoded {len(sprites_data)} sprites")
 
+                # Encode sounds as base64 (browser-playable formats only)
+                sounds_data = self.encode_sounds(project_path, project_data)
+                logger.info(f"  Encoded {len(sounds_data)} sounds")
+
                 # Get window size from settings or room dimensions
                 settings = project_data.get('settings', {})
                 width = settings.get('window_width')
@@ -86,6 +90,11 @@ class HTML5Exporter:
                     gzip.compress(sprites_data_json.encode('utf-8'), compresslevel=9)
                 ).decode('ascii')
 
+                sounds_data_json = json.dumps(sounds_data, separators=(',', ':'))
+                sounds_data_compressed = base64.b64encode(
+                    gzip.compress(sounds_data_json.encode('utf-8'), compresslevel=9)
+                ).decode('ascii')
+
                 compression_ratio_game = (len(game_data_compressed) * 100) // len(game_data_json)
                 compression_ratio_sprites = (len(sprites_data_compressed) * 100) // len(sprites_data_json)
 
@@ -100,6 +109,7 @@ class HTML5Exporter:
                 html_content = html_content.replace('{height}', str(height))
                 html_content = html_content.replace('{game_data}', f'"{game_data_compressed}"')
                 html_content = html_content.replace('{sprites_data}', f'"{sprites_data_compressed}"')
+                html_content = html_content.replace('{sounds_data}', f'"{sounds_data_compressed}"')
                 html_content = html_content.replace('{engine_code}', self.engine_code)
 
                 # Write output
@@ -170,6 +180,42 @@ class HTML5Exporter:
                     logger.debug(f"  Merged object file: {object_name}")
                 except Exception as e:
                     logger.warning(f"  Failed to load object file {object_file}: {e}")
+
+    # Formats browsers can decode via <audio>/Audio(); .mid/.midi have no
+    # browser support and are skipped with a warning.
+    _SOUND_MIME = {
+        '.wav': 'audio/wav',
+        '.mp3': 'audio/mpeg',
+        '.ogg': 'audio/ogg',
+        '.m4a': 'audio/mp4',
+    }
+
+    def encode_sounds(self, project_path: Path, project_data: Dict) -> Dict[str, str]:
+        """Encode project sounds as base64 data URLs for the play_sound action."""
+        encoded = {}
+        sounds_data = project_data.get('assets', {}).get('sounds', {})
+        for sound_name, sound_info in sounds_data.items():
+            if not isinstance(sound_info, dict):
+                continue
+            file_path = sound_info.get('file_path', '')
+            if not file_path:
+                continue
+            full_path = project_path / file_path
+            if not full_path.exists():
+                logger.warning(f"  Sound file not found: {full_path}")
+                continue
+            mime = self._SOUND_MIME.get(full_path.suffix.lower())
+            if not mime:
+                logger.warning(
+                    f"  Skipping sound '{sound_name}': {full_path.suffix} has no "
+                    f"browser playback support")
+                continue
+            try:
+                b64 = base64.b64encode(full_path.read_bytes()).decode('utf-8')
+                encoded[sound_name] = f"data:{mime};base64,{b64}"
+            except Exception as e:
+                logger.warning(f"  Failed to encode sound {sound_name}: {e}")
+        return encoded
 
     def encode_sprites(self, project_path: Path, project_data: Dict) -> Dict[str, str]:
         """Encode sprites and backgrounds as base64 data URLs"""
