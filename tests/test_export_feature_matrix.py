@@ -136,7 +136,7 @@ def kivy_actions() -> set:
 # for execute_code actions; draw-action gaps show up in the ACTION matrix.
 HTML5_EVENTS = {
     "create", "step", "begin_step", "end_step", "draw", "destroy",
-    "game_start", "no_more_lives", "outside_room",
+    "game_start", "no_more_lives", "outside_room", "animation_end",
     "keyboard", "keyboard_press", "keyboard_release",
     "collision_with_*", "alarm_*",
     "mouse_left_press", "mouse_left_button", "mouse_left_down",
@@ -165,18 +165,17 @@ def kivy_supports_event(ev: str) -> bool:
 # absent: they are the verified classroom demonstrators and must stay
 # fully covered (see test_classroom_pair_is_gap_free). Shrink these by
 # implementing features; never grow them silently.
-# 2026-07-11 (fourth pass): the HTML5 ACTION registry is EMPTY — every
-# action used by every bundled sample is implemented (browser-verified,
-# all 9 samples boot with zero unknown-action warnings). The only gap
-# left in the whole HTML5 matrix is the animation_end event, which needs
-# sprite-strip animation in the JS engine (sprites render single-frame).
+# 2026-07-11 (fifth pass): the HTML5 matrix is CLOSED — every action and
+# every event used by every bundled sample is implemented. Sprite-strip
+# animation (frame slicing, image_index/image_speed, animation_end on
+# wrap, frame-sized collision boxes) was the last subsystem;
+# browser-verified end-to-end (maze_3's spawned explosion plays its 16
+# frames and destroys itself via its authored animation_end). Keep these
+# registries empty: a NEW entry means an exporter regressed or a new
+# sample outgrew the engine — fix the engine, don't register.
 KNOWN_HTML5_ACTION_GAPS = {}
 
-KNOWN_HTML5_EVENT_GAPS = {
-    "maze_3": ["animation_end"],
-    "plateforme_3": ["animation_end"],
-    "plateforme_4": ["animation_end"],
-}
+KNOWN_HTML5_EVENT_GAPS = {}
 
 KNOWN_KIVY_ACTION_GAPS = {
     "maze_2": ["draw_score"],

@@ -387,6 +387,11 @@ class GameObject {
         this._inDrawEvent = false;
         this.draw_color = null;   // set_draw_color; null = target default
         this.draw_font = null;    // set_draw_font (stored; renderer uses one font, like the runtime)
+
+        // Sprite-strip animation (GM semantics: image_index advances by
+        // image_speed per game step; wrap fires animation_end)
+        this.image_index = 0.0;
+        this.image_speed = 1.0;
         this.x = x;
         this.y = y;
         this.sprite = null;
@@ -946,11 +951,11 @@ class GameObject {
                 for (const inst of roomInstances) {
                     if (inst === this || inst.toDestroy) continue;
 
-                    // Check if positions overlap
-                    const myW = this.sprite ? this.sprite.width : 32;
-                    const myH = this.sprite ? this.sprite.height : 32;
-                    const otherW = inst.sprite ? inst.sprite.width : 32;
-                    const otherH = inst.sprite ? inst.sprite.height : 32;
+                    // Check if positions overlap (frame-sized boxes)
+                    const myW = this.boxWidth();
+                    const myH = this.boxHeight();
+                    const otherW = inst.boxWidth();
+                    const otherH = inst.boxHeight();
 
                     if (collCheckX < inst.x + otherW && collCheckX + myW > inst.x &&
                         collCheckY < inst.y + otherH && collCheckY + myH > inst.y) {
@@ -1854,27 +1859,24 @@ class GameObject {
                 break;
 
             case 'set_sprite': {
-                // sprite "<self>" keeps the current sprite (the runtime then
-                // only adjusts animation, which HTML5 sprites don't have yet
-                // — subimage/speed are ignored here).
+                // sprite "<self>" keeps the current sprite; subimage/speed
+                // of -1 leave animation state untouched (runtime semantics).
                 const spriteName = params.sprite || '<self>';
                 if (spriteName && spriteName !== '<self>') {
                     const img = game.sprites ? game.sprites[spriteName] : null;
                     if (img) {
                         this.sprite = img;
-                        const meta = (game.gameData.assets.sprites || {})[spriteName];
-                        if (meta) {
-                            this.spriteInfo = {
-                                origin_x: meta.origin_x || 0,
-                                origin_y: meta.origin_y || 0,
-                                width: meta.width || img.width,
-                                height: meta.height || img.height,
-                            };
-                        }
+                        this.spriteInfo = game.makeSpriteInfo(spriteName);
                     } else {
                         console.warn(`set_sprite: sprite not found: ${spriteName}`);
                     }
                 }
+                const subimage = params.subimage !== undefined
+                    ? parseInt(params.subimage) : -1;
+                if (!isNaN(subimage) && subimage >= 0) this.image_index = subimage;
+                const animSpeed = params.speed !== undefined
+                    ? parseFloat(params.speed) : -1;
+                if (!isNaN(animSpeed) && animSpeed >= 0) this.image_speed = animSpeed;
                 break;
             }
 
@@ -1907,13 +1909,8 @@ class GameObject {
                     inst.depth = inst.getDepthForObject(newName);
                     const sprName = objectData.sprite;
                     inst.sprite = (sprName && game.sprites[sprName]) || null;
-                    const meta = sprName ? (game.gameData.assets.sprites || {})[sprName] : null;
-                    inst.spriteInfo = meta ? {
-                        origin_x: meta.origin_x || 0,
-                        origin_y: meta.origin_y || 0,
-                        width: meta.width || (inst.sprite ? inst.sprite.width : 32),
-                        height: meta.height || (inst.sprite ? inst.sprite.height : 32),
-                    } : null;
+                    inst.spriteInfo = sprName ? game.makeSpriteInfo(sprName) : null;
+                    inst.image_index = 0.0;
                     if (performEvents) inst.triggerEvent('create');
                 }
                 break;
@@ -2101,8 +2098,8 @@ class GameObject {
 
     checkCollisionAt(x, y, game) {
         // Get my bounding box dimensions and origin
-        const myW = this.sprite ? this.sprite.width : 32;
-        const myH = this.sprite ? this.sprite.height : 32;
+        const myW = this.boxWidth();
+        const myH = this.boxHeight();
         const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
         const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
         // Test rect at position (x, y) accounting for origin
@@ -2123,8 +2120,8 @@ class GameObject {
         if (!game.currentRoom) return null;
 
         // Get my bounding box dimensions and origin
-        const myW = this.sprite ? this.sprite.width : 32;
-        const myH = this.sprite ? this.sprite.height : 32;
+        const myW = this.boxWidth();
+        const myH = this.boxHeight();
         const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
         const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
         // Test rect at position (x, y) accounting for origin
@@ -2156,16 +2153,27 @@ class GameObject {
     }
 
     // Get bounding box accounting for sprite origin
+    // Collision/render size of one FRAME. spriteInfo.width/height are
+    // per-frame (Game.makeSpriteInfo); falling back to the raw image is
+    // only correct for single-frame sprites, where they coincide.
+    boxWidth() {
+        if (this.spriteInfo && this.spriteInfo.width) return this.spriteInfo.width;
+        return this.sprite ? this.sprite.width : 32;
+    }
+
+    boxHeight() {
+        if (this.spriteInfo && this.spriteInfo.height) return this.spriteInfo.height;
+        return this.sprite ? this.sprite.height : 32;
+    }
+
     getBoundingBox() {
-        const w = this.sprite ? this.sprite.width : 32;
-        const h = this.sprite ? this.sprite.height : 32;
         const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
         const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
         return {
             x: this.x - originX,
             y: this.y - originY,
-            width: w,
-            height: h
+            width: this.boxWidth(),
+            height: this.boxHeight()
         };
     }
 
@@ -2182,6 +2190,15 @@ class GameObject {
         const drawX = Math.floor(this.x - originX);
         const drawY = Math.floor(this.y - originY);
 
+        // Multi-frame strips draw only the current frame (sliced from the
+        // horizontal strip by image_index); single frames draw whole.
+        const frames = this.spriteInfo ? (this.spriteInfo.frames || 1) : 1;
+        const fw = this.boxWidth();
+        const fh = this.boxHeight();
+        const srcX = frames > 1
+            ? ((Math.floor(this.image_index) % frames + frames) % frames) * fw
+            : 0;
+
         if (this.rotation !== 0 || this.scale_x !== 1.0 || this.scale_y !== 1.0) {
             ctx.save();
             // Translate to the origin point (where x,y is)
@@ -2196,8 +2213,14 @@ class GameObject {
             }
 
             // Draw with origin offset
-            ctx.drawImage(this.sprite, -originX, -originY);
+            if (frames > 1) {
+                ctx.drawImage(this.sprite, srcX, 0, fw, fh, -originX, -originY, fw, fh);
+            } else {
+                ctx.drawImage(this.sprite, -originX, -originY);
+            }
             ctx.restore();
+        } else if (frames > 1) {
+            ctx.drawImage(this.sprite, srcX, 0, fw, fh, drawX, drawY, fw, fh);
         } else {
             ctx.drawImage(this.sprite, drawX, drawY);
         }
@@ -2316,6 +2339,27 @@ class GameRoom {
                 }
             });
         }
+
+        // 3c. Sprite animation: image_index advances by image_speed per
+        // game step (GM semantics, mirroring GameInstance.step in
+        // runtime/game_runner.py); wrapping fires animation_end.
+        this.instances.forEach(inst => {
+            if (inst.toDestroy || !inst.spriteInfo) return;
+            const frames = inst.spriteInfo.frames || 1;
+            if (frames <= 1 || inst.image_speed === 0) return;
+            inst.image_index += inst.image_speed;
+            let wrapped = false;
+            if (inst.image_index >= frames) {
+                inst.image_index = inst.image_index % frames;
+                wrapped = true;
+            } else if (inst.image_index < 0) {
+                inst.image_index = frames + (inst.image_index % frames);
+                wrapped = true;
+            }
+            if (wrapped && inst.events && inst.events.animation_end) {
+                inst.executeActions(inst.events.animation_end.actions || [], game);
+            }
+        });
 
         // 4. Step events
         this.instances.forEach(inst => {
@@ -2439,6 +2483,28 @@ class Game {
         this.loadGame();
     }
 
+    // Build the per-frame sprite metadata block every instance carries.
+    // width/height are FRAME dimensions: the project's sprite 'width' is
+    // the full strip width for multi-frame art (importer convention), so
+    // frame_width (or strip/frames) is what collision and rendering use.
+    makeSpriteInfo(spriteName) {
+        const img = this.sprites ? this.sprites[spriteName] : null;
+        if (!img) return null;
+        const meta = (this.gameData.assets.sprites || {})[spriteName] || {};
+        const frames = Math.max(1, parseInt(meta.frames) || 1);
+        const stripW = meta.width || img.width || 32;
+        const fw = parseInt(meta.frame_width) ||
+                   (frames > 1 ? Math.floor(stripW / frames) : stripW);
+        const fh = parseInt(meta.frame_height) || meta.height || img.height || 32;
+        return {
+            origin_x: meta.origin_x || 0,
+            origin_y: meta.origin_y || 0,
+            width: fw,
+            height: fh,
+            frames: frames,
+        };
+    }
+
     // Create an instance of an object type at (x, y) in the current room.
     // The create event fires via the pending-create pass in GameRoom.step.
     spawnInstance(objName, x, y) {
@@ -2454,15 +2520,7 @@ class Game {
         inst._startY = y;
         if (objectData.sprite && this.sprites[objectData.sprite]) {
             inst.sprite = this.sprites[objectData.sprite];
-            const meta = this.gameData.assets.sprites[objectData.sprite];
-            if (meta) {
-                inst.spriteInfo = {
-                    origin_x: meta.origin_x || 0,
-                    origin_y: meta.origin_y || 0,
-                    width: meta.width || inst.sprite.width,
-                    height: meta.height || inst.sprite.height,
-                };
-            }
+            inst.spriteInfo = this.makeSpriteInfo(objectData.sprite);
         }
         this.currentRoom.instances.push(inst);
         return inst;
@@ -2635,16 +2693,7 @@ class Game {
 
                 if (objectData && objectData.sprite && sprites[objectData.sprite]) {
                     inst.sprite = sprites[objectData.sprite];
-                    // Also store sprite metadata (origin, dimensions) from gameData
-                    const spriteMetadata = gameData.assets.sprites[objectData.sprite];
-                    if (spriteMetadata) {
-                        inst.spriteInfo = {
-                            origin_x: spriteMetadata.origin_x || 0,
-                            origin_y: spriteMetadata.origin_y || 0,
-                            width: spriteMetadata.width || inst.sprite.width,
-                            height: spriteMetadata.height || inst.sprite.height
-                        };
-                    }
+                    inst.spriteInfo = this.makeSpriteInfo(objectData.sprite);
                 }
 
                 room.instances.push(inst);
