@@ -23,7 +23,8 @@ sys.path.insert(0, str(REPO_ROOT))
 
 from export.registry import EXPORT_TARGETS, ExportTarget  # noqa: E402
 
-EXPECTED_IDS = ["html5", "windows_exe", "linux", "macos", "android_apk", "ios"]
+EXPECTED_IDS = ["html5", "windows_exe", "linux", "macos", "android_apk", "ios",
+                "kivy_project", "source_zip"]
 
 # Every label a probe may return, exactly as the dialog always showed them.
 LEGACY_LABELS = {
@@ -40,6 +41,10 @@ LEGACY_LABELS = {
                     "Android Package (.apk) - ⚠️ Requires Linux or macOS"},
     "ios": {"iOS App (.ipa) - ✅ Available (macOS only)",
             "iOS App (.ipa) - ⚠️ Requires macOS with Xcode"},
+    # From the retired File → Export Project dialog (2026-07-12): new
+    # targets, so these labels are new translation keys (not legacy).
+    "kivy_project": {"Kivy Source Project - ✅ Available"},
+    "source_zip": {"Project Source (.zip) - ✅ Available"},
 }
 
 

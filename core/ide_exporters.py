@@ -6,8 +6,7 @@ This module can be progressively integrated into the main IDE window
 """
 
 from pathlib import Path
-from PySide6.QtWidgets import QMessageBox, QFileDialog, QDialog
-from dialogs.project_dialogs import ExportProjectDialog
+from PySide6.QtWidgets import QMessageBox, QFileDialog
 from utils.config import Config
 
 
@@ -78,29 +77,66 @@ class IDEExporters:
                 )
                 self.ide.update_status(self.ide.tr("Export failed"))
 
-    def export_kivy(self):
-        """Quick export to Kivy - opens export dialog with Kivy pre-selected"""
-        dialog = ExportProjectDialog(self.ide, self.ide.current_project_data)
-        # Pre-select Kivy by its locale-independent id, not the translated
-        # display text (findText would miss in a non-English IDE) (audit M13).
-        kivy_index = dialog.export_platform.findData("kivy")
-        if kivy_index >= 0:
-            dialog.export_platform.setCurrentIndex(kivy_index)
+    @staticmethod
+    def _open_directory(path):
+        """Open a folder in the OS file manager (best effort)."""
+        import platform
+        import subprocess
+        try:
+            if platform.system() == 'Windows':
+                import os
+                os.startfile(str(path))  # nosec B606 - user-chosen export dir
+            elif platform.system() == 'Darwin':
+                subprocess.run(['open', str(path)])
+            else:
+                subprocess.run(['xdg-open', str(path)])
+        except Exception:
+            pass  # opening the folder is a convenience, never an error
 
-        if dialog.exec() == QDialog.DialogCode.Accepted:
-            result = dialog.get_project_info()
-            self.ide.statusBar().showMessage(
-                f"Export completed to: {result['export_settings']['output_path']}", 5000
-            )
+    def export_kivy_project(self):
+        """Export the project as a raw Kivy/buildozer source project.
 
-    def export_project(self):
-        """Open export project dialog"""
-        dialog = ExportProjectDialog(self.ide, self.ide.current_project_data)
-        if dialog.exec() == QDialog.DialogCode.Accepted:
-            result = dialog.get_project_info()
-            self.ide.statusBar().showMessage(
-                f"Export completed to: {result['export_settings']['output_path']}", 5000
+        This emits the runnable Kivy game + buildozer.spec WITHOUT building
+        an APK (that is export_android_apk's job) — useful for building on
+        another machine or inspecting the generated code. Ported from the
+        retired ExportProjectDialog._export_kivy.
+        """
+        if not self.ide.current_project_path:
+            QMessageBox.warning(
+                self.ide,
+                self.ide.tr("No Project"),
+                self.ide.tr("Please open or create a project first before exporting.")
             )
+            return
+
+        output_dir = QFileDialog.getExistingDirectory(
+            self.ide,
+            self.ide.tr("Select Export Directory"),
+            str(Path.home())
+        )
+        if not output_dir:
+            return
+
+        from export.Kivy.project_adapter import export_with_adapter
+        self.ide.update_status(self.ide.tr("Exporting Kivy project..."))
+        if export_with_adapter(self.ide.project_manager, output_dir):
+            reply = QMessageBox.question(
+                self.ide,
+                self.ide.tr("Export Successful"),
+                self.ide.tr("Kivy project exported to:\n{0}\n\n"
+                            "Would you like to open the export directory?").format(output_dir),
+                QMessageBox.Yes | QMessageBox.No
+            )
+            if reply == QMessageBox.Yes:
+                self._open_directory(output_dir)
+            self.ide.update_status(self.ide.tr("Kivy export complete"))
+        else:
+            QMessageBox.warning(
+                self.ide,
+                self.ide.tr("Export Failed"),
+                self.ide.tr("Failed to export project. Check console for errors.")
+            )
+            self.ide.update_status(self.ide.tr("Export failed"))
 
     def export_project_zip(self):
         """Export current project as a .zip file"""
