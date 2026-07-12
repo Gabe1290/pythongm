@@ -2354,68 +2354,21 @@ class PyGameMakerIDE(QMainWindow):
         layout.addWidget(QLabel(self.tr("<h3>Export Game</h3>")))
         layout.addWidget(QLabel(self.tr("Choose export format:")))
 
-        # Export format options
+        # Export format options — one radio per registry target
+        # (export/registry.py, the single source of truth for targets:
+        # order, availability text, and which method runs the export).
+        # Unavailable targets stay selectable on purpose: their exporters
+        # explain what's missing (e.g. the Android WSL setup steps).
+        from export.registry import EXPORT_TARGETS
+
         button_group = QButtonGroup(dialog)
-
-        html5_radio = QRadioButton(self.tr("HTML5 (Web Browser) - ✅ Available"))
-        html5_radio.setChecked(True)
-        button_group.addButton(html5_radio, 1)
-        layout.addWidget(html5_radio)
-
-        import platform as _platform
-        if _platform.system() == 'Windows':
-            windows_radio = QRadioButton(self.tr("Windows Executable (.exe) - ✅ Available"))
-        else:
-            windows_radio = QRadioButton(self.tr("Windows Executable (.exe) - ⚠️ Requires Windows"))
-        windows_radio.setEnabled(True)
-        button_group.addButton(windows_radio, 2)
-        layout.addWidget(windows_radio)
-
-        if _platform.system() == 'Linux':
-            linux_radio = QRadioButton(self.tr("Linux Binary - ✅ Available"))
-        else:
-            linux_radio = QRadioButton(self.tr("Linux Binary - ⚠️ Requires Linux"))
-        linux_radio.setEnabled(True)
-        button_group.addButton(linux_radio, 3)
-        layout.addWidget(linux_radio)
-
-        if _platform.system() == 'Darwin':
-            mac_radio = QRadioButton(self.tr("macOS Application (.app) - ✅ Available"))
-        else:
-            mac_radio = QRadioButton(self.tr("macOS Application (.app) - ⚠️ Requires macOS"))
-        mac_radio.setEnabled(True)
-        button_group.addButton(mac_radio, 4)
-        layout.addWidget(mac_radio)
-
-        if _platform.system() in ('Linux', 'Darwin'):
-            android_radio = QRadioButton(self.tr("Android Package (.apk) - ✅ Available"))
-        elif _platform.system() == 'Windows':
-            # Check if WSL is available for Android export on Windows
-            try:
-                from export.android.wsl_bridge import WSLBridge
-                _wsl = WSLBridge()
-                if _wsl.is_wsl_available():
-                    android_radio = QRadioButton(
-                        self.tr("Android Package (.apk) - ✅ Available (via WSL)"))
-                else:
-                    android_radio = QRadioButton(
-                        self.tr("Android Package (.apk) - ⚠️ Requires WSL (not detected)"))
-            except Exception:
-                android_radio = QRadioButton(
-                    self.tr("Android Package (.apk) - ⚠️ Requires WSL (not detected)"))
-        else:
-            android_radio = QRadioButton(self.tr("Android Package (.apk) - ⚠️ Requires Linux or macOS"))
-        android_radio.setEnabled(True)
-        button_group.addButton(android_radio, 5)
-        layout.addWidget(android_radio)
-
-        if _platform.system() == 'Darwin':
-            ios_radio = QRadioButton(self.tr("iOS App (.ipa) - ✅ Available (macOS only)"))
-        else:
-            ios_radio = QRadioButton(self.tr("iOS App (.ipa) - ⚠️ Requires macOS with Xcode"))
-        ios_radio.setEnabled(True)
-        button_group.addButton(ios_radio, 6)
-        layout.addWidget(ios_radio)
+        for index, target in enumerate(EXPORT_TARGETS):
+            _available, label = target.probe()
+            radio = QRadioButton(self.tr(label))
+            if index == 0:
+                radio.setChecked(True)  # html5 — available on every host
+            button_group.addButton(radio, index)
+            layout.addWidget(radio)
 
         # Buttons
         button_layout = QHBoxLayout()
@@ -2428,26 +2381,11 @@ class PyGameMakerIDE(QMainWindow):
         layout.addLayout(button_layout)
 
         if dialog.exec() == QDialog.Accepted:
-            selected_id = button_group.checkedId()
-
-            if selected_id == 1:  # HTML5
-                self.export_html5()
-            elif selected_id == 2:  # Windows EXE
-                self.export_windows_exe()
-            elif selected_id == 3:  # Linux Binary
-                self.export_linux_binary()
-            elif selected_id == 4:  # macOS App
-                self.export_macos_app()
-            elif selected_id == 5:  # Android APK
-                self.export_android_apk()
-            elif selected_id == 6:  # iOS IPA
-                self.export_ios_app()
-            else:
-                QMessageBox.information(
-                    self,
-                    self.tr("Coming Soon"),
-                    self.tr("This export format is not yet available.")
-                )
+            index = button_group.checkedId()
+            if 0 <= index < len(EXPORT_TARGETS):
+                # Dispatch via the registry's runner method name — stable
+                # ids, no translated-text or magic-number routing (M13).
+                getattr(self, EXPORT_TARGETS[index].runner)()
 
     # ------------------------------------------------------------------
     # Platform export methods — thin shells delegating to the shared
