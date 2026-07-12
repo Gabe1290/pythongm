@@ -12,6 +12,23 @@ move it to a feature branch and remove the entry once the feature ships.
 
 ## IDE features
 
+### Consolidate the two export UIs (post-registry)
+- The IDE has TWO overlapping export entry points: **Build → Export
+  Game…** (radio dialog: HTML5 / Win / Linux / macOS / Android APK /
+  iOS — now built from `export/registry.py`) and **File → Export
+  Project…** (Ctrl+E, `ExportProjectDialog`: Desktop exe / HTML5 /
+  Mobile Kivy / "Mobile (APK)" / Source zip — where "Mobile (APK)" only
+  emits a Kivy/buildozer project folder, it never builds an APK). The
+  overlap confuses users hunting for a target ("there is no Android
+  Package (.apk)", 2026-07-03) and the two paths have different
+  capabilities. Now that the Build dialog is registry-driven, the clean
+  consolidation is: fold ExportProjectDialog's genuinely distinct
+  targets (source zip; raw Kivy project) into the registry as targets,
+  port its output-path picker/options into the registry dialog, and
+  retire one of the two. ExportProjectDialog is pinned by
+  `test_audit_project_dialogs.py` / `test_export_dialog_*` (M13, L8,
+  L9) — migrate those assertions with it.
+
 ### Find / Find and Replace
 - Was: `Edit → Find...` (Ctrl+F) and `Edit → Find and Replace...` (Ctrl+H).
 - Scope: text search across the code editor, room editor scripts, and event
