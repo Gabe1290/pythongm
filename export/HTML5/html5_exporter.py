@@ -7,11 +7,25 @@ Exports projects as standalone HTML5 games with GameMaker 7.0 compatibility
 import json
 import base64
 import gzip
+import html
 from pathlib import Path
 from typing import Dict
 
 from core.logger import get_logger
 logger = get_logger(__name__)
+
+
+def _sanitize_filename(name: str) -> str:
+    """Reduce a project name to a filesystem-safe basename.
+
+    Replaces the characters illegal in a Windows filename (< > : " / \\ |
+    ? * and control chars) with '_', and trims trailing dots/spaces (also
+    illegal on Windows). The project's real name is preserved in the page
+    itself (HTML-escaped); this only guards the file on disk.
+    """
+    import re
+    cleaned = re.sub(r'[<>:"/\\|?*\x00-\x1f]', '_', name)
+    return cleaned.strip(' .')
 
 
 class HTML5Exporter:
@@ -103,8 +117,13 @@ class HTML5Exporter:
                 logger.debug(f"     Sprites data: {len(sprites_data_compressed):,} bytes ({compression_ratio_sprites}%)")
                 logger.debug(f"  Total size reduction: {len(game_data_json) + len(sprites_data_json) - len(game_data_compressed) - len(sprites_data_compressed):,} bytes saved")
 
-                # Replace placeholders
-                html_content = self.template_html.replace('{game_name}', project_data['name'])
+                # Replace placeholders. The project name lands in HTML text
+                # context (<title> and the title <div>), so escape it — a
+                # legitimate name with '&' or '<' would otherwise corrupt the
+                # markup (and in principle inject). width/height are ints and
+                # the data blobs are base64, so those need no escaping (L1).
+                html_content = self.template_html.replace(
+                    '{game_name}', html.escape(str(project_data['name'])))
                 html_content = html_content.replace('{width}', str(width))
                 html_content = html_content.replace('{height}', str(height))
                 html_content = html_content.replace('{game_data}', f'"{game_data_compressed}"')
@@ -112,8 +131,14 @@ class HTML5Exporter:
                 html_content = html_content.replace('{sounds_data}', f'"{sounds_data_compressed}"')
                 html_content = html_content.replace('{engine_code}', self.engine_code)
 
-                # Write output
-                output_file = output_path / f"{project_data['name']}.html"
+                # Write output. Sanitize the name for the FILENAME —
+                # characters legal in a project name but illegal in a
+                # filename (< > : " / \ | ? * and control chars) otherwise
+                # crash the write on Windows (e.g. a name like "Level 1: Go"
+                # or "Tom & <Jerry>"). The in-page title keeps the real
+                # (HTML-escaped) name; only the file on disk is sanitized.
+                safe_name = _sanitize_filename(str(project_data['name'])) or "game"
+                output_file = output_path / f"{safe_name}.html"
                 with open(output_file, 'w', encoding='utf-8') as f:
                     f.write(html_content)
 
