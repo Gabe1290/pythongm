@@ -79,7 +79,13 @@ Summary: **1 high / 3 medium / 1 low.**
 
 ## Low
 
-- [ ] **L1 — Project name interpolated unescaped into the exported HTML.**
+- [x] **L1 — Project name interpolated unescaped into the exported HTML.**
+  FIXED — `html.escape` at the `{game_name}` interpolation (both the
+  `<title>` and title `<div>`). The fix also surfaced a related crash: the
+  name was used as the output FILENAME too, so a name with `:`/`<>` (legal
+  in a project name, illegal on Windows) crashed the export — now sanitized
+  via `_sanitize_filename` while the in-page title keeps the real name.
+  `tests/test_html5_export_escaping.py`.
   `export/HTML5/html5_exporter.py` @107 (`template_html.replace(
   '{game_name}', project_data['name'])`).
   A project name containing `<`, `&`, or a quote lands unescaped in the
