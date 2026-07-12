@@ -16,8 +16,9 @@ bug: all three desktop exporters bundle a Kivy runtime via PyInstaller, so
 Kivy is a genuine build dependency and the message already tells the user
 to `pip install kivy`.)
 
-The selection now lives in the module-level helper _desktop_exporter_for_host
-so it is unit-testable without standing up the Qt dialog or running
+The selection lives in export.registry.desktop_exporter_for_host (moved
+there from the retired ExportProjectDialog when the two export UIs were
+consolidated, 2026-07-12) so it is unit-testable without Qt or
 PyInstaller.
 """
 
@@ -42,13 +43,13 @@ pytestmark = skip_without_pyside6
     ("FreeBSD", "LinuxExporter"),
 ])
 def test_desktop_exporter_matches_host(host_os, expected):
-    from dialogs.project_dialogs import _desktop_exporter_for_host
-    assert _desktop_exporter_for_host(host_os).__name__ == expected
+    from export.registry import desktop_exporter_for_host
+    assert desktop_exporter_for_host(host_os).__name__ == expected
 
 
 def test_non_windows_hosts_never_get_the_windows_exporter():
-    from dialogs.project_dialogs import _desktop_exporter_for_host
+    from export.registry import desktop_exporter_for_host
     for host_os in ("Darwin", "Linux", "FreeBSD"):
-        assert _desktop_exporter_for_host(host_os).__name__ != "ExeExporter", (
+        assert desktop_exporter_for_host(host_os).__name__ != "ExeExporter", (
             f"{host_os} must not route to the Windows-only ExeExporter"
         )

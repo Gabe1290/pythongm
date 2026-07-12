@@ -12,22 +12,18 @@ move it to a feature branch and remove the entry once the feature ships.
 
 ## IDE features
 
-### Consolidate the two export UIs (post-registry)
-- The IDE has TWO overlapping export entry points: **Build → Export
-  Game…** (radio dialog: HTML5 / Win / Linux / macOS / Android APK /
-  iOS — now built from `export/registry.py`) and **File → Export
-  Project…** (Ctrl+E, `ExportProjectDialog`: Desktop exe / HTML5 /
-  Mobile Kivy / "Mobile (APK)" / Source zip — where "Mobile (APK)" only
-  emits a Kivy/buildozer project folder, it never builds an APK). The
-  overlap confuses users hunting for a target ("there is no Android
-  Package (.apk)", 2026-07-03) and the two paths have different
-  capabilities. Now that the Build dialog is registry-driven, the clean
-  consolidation is: fold ExportProjectDialog's genuinely distinct
-  targets (source zip; raw Kivy project) into the registry as targets,
-  port its output-path picker/options into the registry dialog, and
-  retire one of the two. ExportProjectDialog is pinned by
-  `test_audit_project_dialogs.py` / `test_export_dialog_*` (M13, L8,
-  L9) — migrate those assertions with it.
+### ~~Consolidate the two export UIs~~ (DONE 2026-07-12)
+- Done: File → Export Project… (Ctrl+E) and Build → Export Game… both
+  open the single registry-driven dialog. ExportProjectDialog (and the
+  never-referenced BuildProjectDialog) were retired; its distinct
+  targets became registry entries (`kivy_project`, `source_zip`), its
+  Export Options checkboxes moved into the unified dialog (and now
+  reach the desktop/Android runner shells, which had L9's hardcoded
+  dict), and its host-OS desktop routing moved to
+  `export.registry.desktop_exporter_for_host`. The M13/L8/L9 audit
+  tests were migrated to the consolidated path
+  (`test_export_dialog_routing/options.py`,
+  `test_audit_project_dialogs.py`, `test_desktop_export_host_routing.py`).
 
 ### Find / Find and Replace
 - Was: `Edit → Find...` (Ctrl+F) and `Edit → Find and Replace...` (Ctrl+H).

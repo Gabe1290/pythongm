@@ -610,13 +610,21 @@ class PyGameMakerIDE(QMainWindow):
     def export_html5(self):
         """Export project as HTML5 - delegated to exporters module"""
         self.exporters.export_html5()
+
     def export_kivy(self):
-        """Quick export to Kivy - delegated to exporters module"""
-        self.exporters.export_kivy()
+        """Export a raw Kivy/buildozer source project (no APK build)."""
+        self.exporters.export_kivy_project()
 
     def export_project(self):
-        """Open export project dialog - delegated to exporters module"""
-        self.exporters.export_project()
+        """File → Export Project… (Ctrl+E): the unified export dialog.
+
+        Historically this opened ExportProjectDialog — a SECOND export UI
+        with a different, overlapping target list (and a "Mobile (APK)"
+        entry that never built an APK). Both entry points now open the
+        same registry-driven dialog; the old dialog's distinct targets
+        (raw Kivy project, source zip) are registry entries.
+        """
+        self.export_game()
 
     def export_project_zip(self):
         """Export current project as a .zip file - delegated to exporters module"""
@@ -2370,6 +2378,24 @@ class PyGameMakerIDE(QMainWindow):
             button_group.addButton(radio, index)
             layout.addWidget(radio)
 
+        # Export options (from the retired ExportProjectDialog, audit L9:
+        # user choices must actually reach the exporters — the runner
+        # shells used to hardcode this dict). Consumed by the desktop
+        # exporters (include_debug → console/debug build, optimize → UPX)
+        # and Android (include_debug keeps the build directory).
+        from PySide6.QtWidgets import QCheckBox, QGroupBox
+        options_group = QGroupBox(self.tr("Export Options"))
+        options_layout = QVBoxLayout(options_group)
+        include_assets_check = QCheckBox(self.tr("Include Assets"))
+        include_assets_check.setChecked(True)
+        optimize_check = QCheckBox(self.tr("Optimize for Release"))
+        optimize_check.setChecked(True)
+        include_debug_check = QCheckBox(self.tr("Include Debug Info"))
+        include_debug_check.setChecked(False)
+        for check in (include_assets_check, optimize_check, include_debug_check):
+            options_layout.addWidget(check)
+        layout.addWidget(options_group)
+
         # Buttons
         button_layout = QHBoxLayout()
         export_btn = QPushButton(self.tr("Export"))
@@ -2383,9 +2409,20 @@ class PyGameMakerIDE(QMainWindow):
         if dialog.exec() == QDialog.Accepted:
             index = button_group.checkedId()
             if 0 <= index < len(EXPORT_TARGETS):
-                # Dispatch via the registry's runner method name — stable
-                # ids, no translated-text or magic-number routing (M13).
-                getattr(self, EXPORT_TARGETS[index].runner)()
+                # Stash the options for the runner (audit L9 lineage: the
+                # checkbox states must reach the exporter settings).
+                self._export_options = {
+                    'include_assets': include_assets_check.isChecked(),
+                    'optimize': optimize_check.isChecked(),
+                    'include_debug': include_debug_check.isChecked(),
+                }
+                try:
+                    # Dispatch via the registry's runner method name —
+                    # stable ids, no translated-text or magic-number
+                    # routing (M13).
+                    getattr(self, EXPORT_TARGETS[index].runner)()
+                finally:
+                    self._export_options = None
 
     # ------------------------------------------------------------------
     # Platform export methods — thin shells delegating to the shared
@@ -2393,6 +2430,16 @@ class PyGameMakerIDE(QMainWindow):
     # exporter class, the per-target settings dict, and the user-facing
     # labels that differ between targets.
     # ------------------------------------------------------------------
+
+    def _current_export_options(self):
+        """The Export Options chosen in the export dialog, or the historical
+        defaults when a runner is invoked directly (audit L9 lineage: user
+        checkbox states must reach the exporter settings — the shells used
+        to hardcode this dict)."""
+        options = getattr(self, '_export_options', None)
+        if isinstance(options, dict):
+            return dict(options)
+        return {'include_assets': True, 'optimize': True, 'include_debug': False}
 
     def export_windows_exe(self):
         """Handle Windows EXE export with progress dialog."""
@@ -2407,9 +2454,7 @@ class PyGameMakerIDE(QMainWindow):
             output_dir=output_dir,
             export_settings={
                 'output_path': output_dir,
-                'include_assets': True,
-                'optimize': True,
-                'include_debug': False,
+                **self._current_export_options(),
             },
             dialog_title=self.tr("Exporting Game"),
             status_text=self.tr("Preparing export..."),
@@ -2433,9 +2478,7 @@ class PyGameMakerIDE(QMainWindow):
             output_dir=output_dir,
             export_settings={
                 'output_path': output_dir,
-                'include_assets': True,
-                'optimize': True,
-                'include_debug': False,
+                **self._current_export_options(),
             },
             dialog_title=self.tr("Exporting Game"),
             status_text=self.tr("Preparing export..."),
@@ -2459,9 +2502,7 @@ class PyGameMakerIDE(QMainWindow):
             output_dir=output_dir,
             export_settings={
                 'output_path': output_dir,
-                'include_assets': True,
-                'optimize': True,
-                'include_debug': False,
+                **self._current_export_options(),
             },
             dialog_title=self.tr("Exporting Game"),
             status_text=self.tr("Preparing export..."),
@@ -2485,9 +2526,7 @@ class PyGameMakerIDE(QMainWindow):
             output_dir=output_dir,
             export_settings={
                 'output_path': output_dir,
-                'include_assets': True,
-                'optimize': True,
-                'include_debug': False,
+                **self._current_export_options(),
             },
             dialog_title=self.tr("Exporting Game"),
             status_text=self.tr("Preparing export..."),
@@ -2509,14 +2548,15 @@ class PyGameMakerIDE(QMainWindow):
         from export.ios.ios_exporter import iOSExporter
         # iOS deliberately omits 'optimize' from the settings dict — the
         # iOSExporter does not currently consume it. Preserve this so the
-        # exporter sees the same payload as before consolidation.
+        # exporter sees the same payload shape as before consolidation.
+        ios_options = self._current_export_options()
+        ios_options.pop('optimize', None)
         self._run_export_with_progress(
             exporter_class=iOSExporter,
             output_dir=output_dir,
             export_settings={
                 'output_path': output_dir,
-                'include_assets': True,
-                'include_debug': False,
+                **ios_options,
             },
             dialog_title=self.tr("Building iOS App"),
             status_text=self.tr("Preparing iOS export..."),

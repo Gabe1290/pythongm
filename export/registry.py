@@ -77,8 +77,43 @@ def _ios_probe() -> Tuple[bool, str]:
     return False, "iOS App (.ipa) - ⚠️ Requires macOS with Xcode"
 
 
+def _kivy_project_probe() -> Tuple[bool, str]:
+    return True, "Kivy Source Project - ✅ Available"
+
+
+def _source_zip_probe() -> Tuple[bool, str]:
+    return True, "Project Source (.zip) - ✅ Available"
+
+
+def desktop_exporter_for_host(host_os):
+    """Return the PyInstaller-based exporter class that builds a native
+    desktop artifact for ``host_os`` (a ``platform.system()`` value): a
+    Windows ``.exe``, a macOS ``.app``, or a Linux ELF binary.
+
+    PyInstaller cannot cross-compile — it always builds for the platform
+    it runs on — so the host OS determines the artifact. Anything that
+    isn't macOS or Windows (Linux and other Unixes) gets the Linux
+    exporter rather than failing on the Windows one (the off-platform
+    failure users hit pre-fix; regression-pinned since the 2026-06-26
+    report). Moved here from dialogs/project_dialogs.py when the two
+    export dialogs were consolidated.
+    """
+    if host_os == 'Darwin':
+        from export.macos import MacOSExporter
+        return MacOSExporter
+    if host_os == 'Windows':
+        from export.exe import ExeExporter
+        return ExeExporter
+    from export.linux import LinuxExporter
+    return LinuxExporter
+
+
 # Dialog order. html5 stays first (and pre-selected): it is the one
-# target available on every host.
+# target available on every host. kivy_project and source_zip came from
+# the retired File → Export Project dialog (ExportProjectDialog): the
+# raw Kivy/buildozer project (its "Mobile (Kivy)"/"Mobile (APK)" entries
+# — neither built an APK; export_android_apk does) and the project
+# source zip.
 EXPORT_TARGETS = (
     ExportTarget("html5", "export_html5", _html5_probe),
     ExportTarget("windows_exe", "export_windows_exe", _windows_probe),
@@ -86,4 +121,6 @@ EXPORT_TARGETS = (
     ExportTarget("macos", "export_macos_app", _macos_probe),
     ExportTarget("android_apk", "export_android_apk", _android_probe),
     ExportTarget("ios", "export_ios_app", _ios_probe),
+    ExportTarget("kivy_project", "export_kivy", _kivy_project_probe),
+    ExportTarget("source_zip", "export_project_zip", _source_zip_probe),
 )

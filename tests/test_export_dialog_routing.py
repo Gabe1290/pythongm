@@ -1,69 +1,69 @@
-"""Regression tests for export-target routing (audit M13).
+"""Export routing regression tests (audit M13 lineage).
 
-docs/FULL_AUDIT_2026-06-11.md: the export-platform combo items were added
-via self.tr(), so in a localized IDE currentText() returns the translated
-label. accept_export compared that against hard-coded English literals, so
-'Desktop Executable' and 'Source Code (.zip)' silently no-op'd (the else
-branch just self.accept()'d) in French/etc., with a false 'Export
-completed' status. Routing now uses a locale-independent userData id.
+Original finding: ExportProjectDialog routed on TRANSLATED combo text, so
+'Desktop Executable' and 'Source Code (.zip)' silently no-op'd in
+French/etc. The fix introduced locale-independent ids.
+
+That dialog was retired 2026-07-12 when the two overlapping export UIs
+were consolidated: File -> Export Project... and Build -> Export Game...
+now both open the single registry-driven dialog, whose dispatch never
+touches display text at all -- the checked radio's index selects an
+ExportTarget and its `runner` method name (export/registry.py). These
+tests pin the consolidated routing and that the M13 failure mode cannot
+reappear.
 """
+import sys
+from pathlib import Path
 
 import pytest
 
-from conftest import skip_without_pyside6
+REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO_ROOT))
 
-pytestmark = skip_without_pyside6
+from export.registry import EXPORT_TARGETS  # noqa: E402
 
-EXPECTED_IDS = ["exe", "html5", "kivy", "apk", "zip"]
-
-
-def _dialog(qapp):
-    from dialogs.project_dialogs import ExportProjectDialog
-    return ExportProjectDialog(None, {"name": "G"})
+from conftest import skip_without_pyside6  # noqa: E402
 
 
-class TestComboData:
-    def test_items_carry_stable_ids(self, qapp):
-        dlg = _dialog(qapp)
-        ids = [dlg.export_platform.itemData(i)
-               for i in range(dlg.export_platform.count())]
-        assert ids == EXPECTED_IDS
-
-    def test_find_data_locates_kivy(self, qapp):
-        dlg = _dialog(qapp)
-        assert dlg.export_platform.findData("kivy") == 2
+def test_registry_carries_the_retired_dialogs_targets():
+    """The old dialog's distinct targets survived consolidation as
+    registry entries (raw Kivy project + source zip)."""
+    ids = [t.id for t in EXPORT_TARGETS]
+    assert "kivy_project" in ids
+    assert "source_zip" in ids
 
 
-class TestRoutingByDataNotText:
-    def _route(self, qapp, index):
-        dlg = _dialog(qapp)
-        # Simulate a translated UI: scramble every display label, keep ids.
-        for i in range(dlg.export_platform.count()):
-            dlg.export_platform.setItemText(i, f"TRANSLATED_{i}")
-        dlg.export_platform.setCurrentIndex(index)
-        dlg.output_path_edit.setText("/tmp/out")
-        calls = []
-        dlg._export_executable = lambda: calls.append("exe")
-        dlg._export_html5 = lambda: calls.append("html5")
-        dlg._export_kivy = lambda: calls.append("kivy")
-        dlg._export_zip = lambda: calls.append("zip")
-        dlg.accept_export()
-        return calls
+def test_dispatch_is_locale_independent():
+    """M13's failure mode was text-based routing. The unified dialog
+    dispatches index -> ExportTarget.runner; assert the dialog code never
+    routes on display text."""
+    src = (REPO_ROOT / "core" / "ide_window.py").read_text(encoding="utf-8")
+    dialog_src = src.split("def export_game(self):", 1)[1].split(
+        "\n    def ", 1)[0]
+    assert "EXPORT_TARGETS[index].runner" in dialog_src
+    for text_api in ("currentText", "findText"):
+        assert text_api not in dialog_src, (
+            f"export_game routes on display text ({text_api}) -- M13 regression")
 
-    def test_exe_routes_even_when_translated(self, qapp):
-        assert self._route(qapp, 0) == ["exe"]  # pre-fix: silent no-op
 
-    def test_zip_routes_even_when_translated(self, qapp):
-        assert self._route(qapp, 4) == ["zip"]  # pre-fix: silent no-op
+def test_file_export_project_opens_the_unified_dialog():
+    """File -> Export Project... (Ctrl+E) must open the same registry
+    dialog as Build -> Export Game... -- not a second, diverging UI."""
+    src = (REPO_ROOT / "core" / "ide_window.py").read_text(encoding="utf-8")
+    shell = src.split("def export_project(self):", 1)[1].split(
+        "\n    def ", 1)[0]
+    assert "self.export_game()" in shell
 
-    def test_kivy_and_apk_route_to_kivy(self, qapp):
-        assert self._route(qapp, 2) == ["kivy"]
-        assert self._route(qapp, 3) == ["kivy"]
 
-    def test_settings_store_stable_id(self, qapp):
-        dlg = _dialog(qapp)
-        dlg.export_platform.setCurrentIndex(4)  # zip
-        dlg.output_path_edit.setText("/tmp/out")
-        dlg._export_zip = lambda: None
-        dlg.accept_export()
-        assert dlg.export_settings["platform"] == "zip"
+def test_export_project_dialog_is_retired():
+    src = (REPO_ROOT / "dialogs" / "project_dialogs.py").read_text(encoding="utf-8")
+    assert "class ExportProjectDialog" not in src
+    assert "class BuildProjectDialog" not in src
+
+
+@skip_without_pyside6
+def test_every_registry_runner_exists_including_new_targets():
+    # Class-level check only: no QApplication (and no pytest-qt) needed.
+    from core.ide_window import PyGameMakerIDE
+    for target in EXPORT_TARGETS:
+        assert callable(getattr(PyGameMakerIDE, target.runner, None)), target.id

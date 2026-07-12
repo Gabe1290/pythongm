@@ -1,18 +1,17 @@
 """
-Regression tests for audit findings in dialogs/project_dialogs.py.
+Regression tests for audit findings L8/L9 (post export-UI consolidation).
 
-L9 — ExportProjectDialog._export_executable() used to build a hardcoded
-{'include_assets': True, 'include_debug': False, 'optimize': True} dict,
-ignoring the user's Export Options checkboxes (Include Assets / Optimize for
-Release / Include Debug Info). ExeExporter genuinely consumes include_debug
-(PyInstaller console=/debug=) and optimize (upx=), so the checkboxes had zero
-effect. This locks in that the user's checkbox states reach ExeExporter.
+L9 -- Export Options checkboxes must reach the exporter instead of being
+overridden by a hardcoded dict. Originally pinned against
+ExportProjectDialog._export_executable; that dialog was retired
+2026-07-12 (the two overlapping export UIs were consolidated into the
+registry-driven Build -> Export Game dialog), so the same guarantee is
+now pinned against the unified path: the dialog stashes _export_options,
+and export_windows_exe builds ExeExporter's settings from
+_current_export_options().
 
-L8 — NewProjectDialog collects a Description, but its sole consumer in
-core/ide_window.py drops it. The dialog side is correct (get_project_info()
-returns the description); the missing write lives in another source file, so
-that finding is deferred cross-file. We still assert the dialog exposes the
-description so the cross-file fix has something to consume.
+L8 -- NewProjectDialog collects a Description; the dialog side must keep
+exposing it via get_project_info() for the cross-file consumer fix.
 
 Constructs a real offscreen QApplication (no pytest-qt) so it runs on 3.11.
 """
@@ -55,122 +54,50 @@ def test_new_project_dialog_exposes_description(_qapp):
     assert info["description"] == "A platformer about a frog."
 
 
-def test_export_executable_honors_checkbox_options(_qapp, tmp_path, monkeypatch):
-    """L9: the user's Export Options checkboxes must reach ExeExporter
-    instead of being overridden by a hardcoded dict."""
-    from PySide6.QtCore import QObject, Signal
-    from PySide6.QtWidgets import QMessageBox
-    import dialogs.project_dialogs as pd
-
-    # A real project.json so the early-exists guard passes.
-    project_dir = tmp_path / "proj"
-    project_dir.mkdir()
-    (project_dir / "project.json").write_text("{}", encoding="utf-8")
+def _run_windows_export_with_options(options):
+    """Drive the real export_windows_exe shell with a stub IDE carrying
+    ``options`` in _export_options; return the settings the exporter
+    would receive."""
+    from core.ide_window import PyGameMakerIDE
 
     captured = {}
 
-    class FakeExeExporter(QObject):
-        progress_update = Signal(int, str)
-        export_complete = Signal(bool, str)
+    class StubIDE:
+        _export_options = options
 
-        def export_project(self, project_path, output_path, settings):
-            captured["settings"] = dict(settings)
-            # Mimic a successful export so no failure dialog pops.
-            self.export_complete.emit(True, "ok")
+        def tr(self, text):
+            return text
+
+        def _require_open_project(self):
             return True
 
-    # _export_executable routes by host OS (PyInstaller can't cross-compile);
-    # pin the host to Windows so the patched ExeExporter is the one selected.
-    import platform as _platform
-    monkeypatch.setattr(_platform, "system", lambda: "Windows")
-    import export.exe as exe_pkg
-    monkeypatch.setattr(exe_pkg, "ExeExporter", FakeExeExporter, raising=False)
+        def _ask_export_dir(self, suffix):
+            return "/tmp/out"
 
-    # Don't block on the post-export info/warn message boxes.
-    monkeypatch.setattr(
-        QMessageBox, "information",
-        staticmethod(lambda *a, **k: QMessageBox.StandardButton.No),
-    )
-    monkeypatch.setattr(
-        QMessageBox, "warning",
-        staticmethod(lambda *a, **k: QMessageBox.StandardButton.Ok),
-    )
-    monkeypatch.setattr(
-        QMessageBox, "critical",
-        staticmethod(lambda *a, **k: QMessageBox.StandardButton.Ok),
-    )
+        def _current_export_options(self):
+            return PyGameMakerIDE._current_export_options(self)
 
-    class FakeIDE:
-        current_project_path = str(project_dir)
+        def _run_export_with_progress(self, **kwargs):
+            captured.update(kwargs["export_settings"])
 
-    dialog = pd.ExportProjectDialog()
-    dialog.parent_ide = FakeIDE()
-    dialog.output_path_edit.setText(str(tmp_path / "out"))
-
-    # User wants a debug build, no UPX optimization, and no asset bundling.
-    dialog.include_debug_check.setChecked(True)
-    dialog.optimize_check.setChecked(False)
-    dialog.include_assets_check.setChecked(False)
-
-    # Populate self.export_settings the way accept_export would, then export.
-    dialog._export_executable()
-
-    assert captured.get("settings") is not None, "ExeExporter.export_project not called"
-    assert captured["settings"]["include_debug"] is True
-    assert captured["settings"]["optimize"] is False
-    assert captured["settings"]["include_assets"] is False
+    PyGameMakerIDE.export_windows_exe(StubIDE())
+    return captured
 
 
-def test_export_executable_default_checkbox_states(_qapp, tmp_path, monkeypatch):
-    """The default checkbox states (debug off, optimize on, assets on) still
-    flow through unchanged — guards against an inverted-logic regression."""
-    from PySide6.QtCore import QObject, Signal
-    from PySide6.QtWidgets import QMessageBox
-    import dialogs.project_dialogs as pd
+def test_export_executable_honors_checkbox_options(_qapp):
+    """L9: the user's Export Options choices must reach ExeExporter."""
+    settings = _run_windows_export_with_options(
+        {"include_assets": False, "optimize": False, "include_debug": True})
+    assert settings["include_debug"] is True
+    assert settings["optimize"] is False
+    assert settings["include_assets"] is False
+    assert settings["output_path"] == "/tmp/out"
 
-    project_dir = tmp_path / "proj"
-    project_dir.mkdir()
-    (project_dir / "project.json").write_text("{}", encoding="utf-8")
 
-    captured = {}
-
-    class FakeExeExporter(QObject):
-        progress_update = Signal(int, str)
-        export_complete = Signal(bool, str)
-
-        def export_project(self, project_path, output_path, settings):
-            captured["settings"] = dict(settings)
-            self.export_complete.emit(True, "ok")
-            return True
-
-    # Pin the host to Windows so the routing selects the patched ExeExporter.
-    import platform as _platform
-    monkeypatch.setattr(_platform, "system", lambda: "Windows")
-    import export.exe as exe_pkg
-    monkeypatch.setattr(exe_pkg, "ExeExporter", FakeExeExporter, raising=False)
-    monkeypatch.setattr(
-        QMessageBox, "information",
-        staticmethod(lambda *a, **k: QMessageBox.StandardButton.No),
-    )
-    monkeypatch.setattr(
-        QMessageBox, "warning",
-        staticmethod(lambda *a, **k: QMessageBox.StandardButton.Ok),
-    )
-    monkeypatch.setattr(
-        QMessageBox, "critical",
-        staticmethod(lambda *a, **k: QMessageBox.StandardButton.Ok),
-    )
-
-    class FakeIDE:
-        current_project_path = str(project_dir)
-
-    dialog = pd.ExportProjectDialog()
-    dialog.parent_ide = FakeIDE()
-    dialog.output_path_edit.setText(str(tmp_path / "out"))
-
-    dialog._export_executable()
-
-    assert captured.get("settings") is not None
-    assert captured["settings"]["include_debug"] is False
-    assert captured["settings"]["optimize"] is True
-    assert captured["settings"]["include_assets"] is True
+def test_export_executable_default_checkbox_states(_qapp):
+    """The defaults (debug off, optimize on, assets on) still flow through
+    unchanged when no dialog stashed options -- guards inverted logic."""
+    settings = _run_windows_export_with_options(None)
+    assert settings["include_debug"] is False
+    assert settings["optimize"] is True
+    assert settings["include_assets"] is True

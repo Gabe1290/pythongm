@@ -8,11 +8,11 @@ from .preferences_dialog import PreferencesDialog
 from .auto_save_dialog import AutoSaveSettingsDialog
 
 # Project dialogs (NewProjectDialog lives here — the standalone dialogs/new_project.py
-# was an unused early prototype and has been removed)
+# was an unused early prototype and has been removed; ExportProjectDialog
+# was retired 2026-07-12 in favour of the registry-driven export dialog)
 from .project_dialogs import (
     NewProjectDialog,
     ProjectSettingsDialog,
-    ExportProjectDialog
 )
 
 # Import dialogs
@@ -29,7 +29,6 @@ __all__ = [
     'PreferencesDialog',
     'AutoSaveSettingsDialog',
     'ProjectSettingsDialog',
-    'ExportProjectDialog',
     'ImportAssetsDialog',
     'ThymioEventSelector',
     'ThymioActionSelector',
