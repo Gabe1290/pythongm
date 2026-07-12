@@ -50,7 +50,13 @@ Summary: **1 high / 3 medium / 1 low.**
 
 ## Medium
 
-- [ ] **M1 — `if_collision` / `if_collision_at` ignore sprite origin.**
+- [x] **M1 — `if_collision` / `if_collision_at` ignore sprite origin.**
+  FIXED — the condition now routes through the origin-/frame-aware
+  `placeMeetsCollision` helper (shared with check_empty) instead of the
+  inline raw-position loop. `checkCollisionAt`/`getObjectAt` were already
+  origin-correct; the dead `executeAction` `if_collision_at` case is
+  unreachable (all `if_*` route through `evaluateCondition`).
+  Browser-verified (3/3, centered-origin sprite) + regression test.
   `engine.js` @960 (and the `if_collision_at` executeAction path @1482).
   The collision test builds the probe rect from raw sprite width/height
   without subtracting the sprite origin, so instances whose sprite origin

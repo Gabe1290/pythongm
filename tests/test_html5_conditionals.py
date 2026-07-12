@@ -52,7 +52,7 @@ def test_evaluate_condition_implements_the_questions():
 
 def test_shared_helpers_exist():
     assert "function gmExpressionValue(" in ENGINE
-    assert "placeMeetsCollision(atX, atY, filter, game)" in ENGINE
+    assert "placeMeetsCollision(atX, atY, filter, game" in ENGINE
     # Python operators translated to JS in the expression evaluator
     assert r"\band\b" in ENGINE and r"\bor\b" in ENGINE and r"\bnot\b" in ENGINE
 
@@ -60,11 +60,24 @@ def test_shared_helpers_exist():
 def test_check_empty_uses_origin_aware_boxes():
     """placeMeetsCollision must use getBoundingBox geometry (origin-aware),
     not raw positions — otherwise centered-origin sprites mis-detect."""
-    m = re.search(r"placeMeetsCollision\(atX, atY, filter, game\)\s*\{(.*?)\n    \}", ENGINE, re.S)
+    m = re.search(r"placeMeetsCollision\(atX, atY, filter, game.*?\)\s*\{(.*?)\n    \}", ENGINE, re.S)
     assert m, "placeMeetsCollision not found"
     body = m.group(1)
     assert "getBoundingBox()" in body
     assert "origin_x" in body and "origin_y" in body
+
+
+def test_if_collision_condition_is_origin_aware():
+    """M1: the if_collision / if_collision_at CONDITION must route through
+    placeMeetsCollision (origin-aware), not the old inline loop that used
+    raw this.x/inst.x as box corners and ignored sprite origin."""
+    m = re.search(r"case 'if_collision':\s*\n\s*case 'if_collision_at':(.*?)case 'if_variable':",
+                  ENGINE, re.S)
+    assert m, "if_collision condition block not found"
+    body = m.group(1)
+    assert "this.placeMeetsCollision(" in body, "if_collision must use placeMeetsCollision"
+    # the origin-blind inline overlap test must be gone from this block
+    assert "inst.x + otherW" not in body
 
 
 def test_samples_that_use_these_still_export():
