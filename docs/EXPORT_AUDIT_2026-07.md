@@ -12,7 +12,11 @@ leads, not ground truth* — nothing is fixed until re-verified against the
 actual code. Raw: 19 candidates → 5 confirmed / 14 rejected by the
 adversarial pass.
 
-Summary: **1 high / 3 medium / 1 low.**
+Summary: **1 high / 3 medium / 1 low** — where the 3 mediums reduce to 2
+root causes (M2/M3 fold into H1). **All confirmed findings CLOSED
+2026-07-12** (H1, M1, L1 fixed with regression tests; L1 also fixed a
+related name-as-filename crash it surfaced). Full suite 1523 passed;
+68 browser checks green across all 9 samples + the focused H1/M1 harnesses.
 
 ---
 
