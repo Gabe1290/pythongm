@@ -268,6 +268,58 @@ function parseNumParam(value, inst, fallback) {
     return fallback;
 }
 
+// Evaluate a GameMaker/Python-style expression against the instance +
+// game-state scope, mirroring the IDE runtime's _eval_bool_expression
+// (runtime/action_executor.py): Python operators (and/or/not,
+// True/False/None) are translated to JS, and the same named scope is
+// exposed — self, other, the bare motion/state names (x, y, hspeed,
+// vspeed, speed, direction, image_index/speed, score, lives, health,
+// room_width/height), abs/min/max/round, plus the instance's own
+// primitive custom variables. Returns the raw value; callers coerce
+// (test_expression -> bool, check_empty x/y -> number). Returns
+// undefined on empty/error so callers apply their own fallback.
+function gmExpressionValue(expr, inst, game) {
+    if (expr === undefined || expr === null || String(expr).trim() === '') return undefined;
+    const js = String(expr)
+        .replace(/\bnot\b/g, '!')
+        .replace(/\band\b/g, '&&')
+        .replace(/\bor\b/g, '||')
+        .replace(/\bTrue\b/g, 'true')
+        .replace(/\bFalse\b/g, 'false')
+        .replace(/\bNone\b/g, 'null');
+    const room = game && game.currentRoom;
+    const scope = {
+        self: inst,
+        other: inst._collision_other || null,
+        x: inst.x, y: inst.y,
+        hspeed: inst.hspeed || 0, vspeed: inst.vspeed || 0,
+        speed: inst.speed || 0, direction: inst.direction || 0,
+        image_index: inst.image_index || 0, image_speed: inst.image_speed || 0,
+        score: game ? game.score : 0,
+        lives: game ? game.lives : 0,
+        health: game ? game.health : 0,
+        room_width: room ? room.width : 0,
+        room_height: room ? room.height : 0,
+        abs: Math.abs, min: Math.min, max: Math.max, round: Math.round,
+    };
+    // Expose the instance's own PRIMITIVE custom variables as bare names
+    // (mirrors the runtime's instance.__dict__ spread; objects/functions
+    // and _private/internal fields are excluded).
+    for (const k of Object.keys(inst)) {
+        if (k.startsWith('_') || (k in scope)) continue;
+        const t = typeof inst[k];
+        if (t === 'number' || t === 'string' || t === 'boolean') scope[k] = inst[k];
+    }
+    try {
+        const names = Object.keys(scope);
+        const fn = new Function(...names, `"use strict"; return (${js});`);
+        return fn(...names.map(n => scope[n]));
+    } catch (e) {
+        console.warn('expression eval failed:', expr, e);
+        return undefined;
+    }
+}
+
 function renderDrawCommands(ctx, cmds, game) {
     for (const cmd of (cmds || [])) {
         const color = drawCommandColor(cmd.color);
@@ -743,12 +795,24 @@ class GameObject {
      * Execute an array of actions with block-based conditional support.
      * Handles if_xxx/else_block patterns where actions are sequential siblings.
      */
+    // GM "question" actions gate the next action/block (flat form) or run
+    // their then/else branch (nested form). Any name here is routed through
+    // evaluateCondition; anything NOT here that is really a question falls
+    // through to executeAction as a plain action and silently fails to gate
+    // (the H1 defect: test_expression / check_empty etc. were missing).
     static isConditionalAction(actionType) {
         return !!actionType && (actionType.startsWith('if_') ||
                                 actionType === 'test_alignment' ||
                                 actionType === 'test_variable' ||
                                 actionType === 'test_score' ||
-                                actionType === 'test_instance_count');
+                                actionType === 'test_instance_count' ||
+                                actionType === 'test_expression' ||
+                                actionType === 'test_lives' ||
+                                actionType === 'test_health' ||
+                                actionType === 'test_chance' ||
+                                actionType === 'test_question' ||
+                                actionType === 'check_empty' ||
+                                actionType === 'check_collision');
     }
 
     executeActions(actions, game) {
@@ -1071,6 +1135,72 @@ class GameObject {
                 const question = params.message || params.question || game.translate('yes_or_no');
                 return confirm(question);
 
+            case 'test_expression': {
+                // Evaluate a Python/GML boolean expression (runtime
+                // _eval_bool_expression). Empty/error -> false.
+                const val = gmExpressionValue(params.expression, this, game);
+                return val === undefined ? false : !!val;
+            }
+
+            case 'check_empty':
+            case 'check_collision': {
+                // check_empty: true when the instance placed at (x, y) hits
+                // NO matching object; check_collision: the inverse. objects
+                // "solid" -> solids only, else "all". x/y are expressions,
+                // offsets from the instance when relative (runtime
+                // execute_check_empty_action).
+                const ex = gmExpressionValue(params.x, this, game);
+                const ey = gmExpressionValue(params.y, this, game);
+                let px = (ex === undefined || isNaN(Number(ex))) ? 0 : Number(ex);
+                let py = (ey === undefined || isNaN(Number(ey))) ? 0 : Number(ey);
+                if (params.relative) { px += this.x; py += this.y; }
+                const objects = params.objects || (params.only_solid === false ? 'all' : 'solid');
+                const filter = objects === 'solid' ? 'solid' : 'all';
+                const hit = this.placeMeetsCollision(px, py, filter, game);
+                return actionType === 'check_collision' ? hit : !hit;
+            }
+
+            case 'test_lives': {
+                // Compare game lives (runtime execute_test_lives_action)
+                const value = parseInt(params.value) || 0;
+                const lives = game.lives;
+                switch (params.operation || 'equal') {
+                    case 'equal': return lives === value;
+                    case 'not_equal': return lives !== value;
+                    case 'less': return lives < value;
+                    case 'greater': return lives > value;
+                    case 'less_equal': return lives <= value;
+                    case 'greater_equal': return lives >= value;
+                    default: return lives === value;
+                }
+            }
+
+            case 'test_health': {
+                // Compare game health (runtime execute_test_health_action)
+                const value = parseFloat(params.value) || 0;
+                const health = game.health;
+                switch (params.operation || 'equal') {
+                    case 'equal': return health === value;
+                    case 'not_equal': return health !== value;
+                    case 'less': return health < value;
+                    case 'greater': return health > value;
+                    case 'less_equal': return health <= value;
+                    case 'greater_equal': return health >= value;
+                    default: return health === value;
+                }
+            }
+
+            case 'test_chance': {
+                // 1-in-N roll (runtime execute_test_chance_action)
+                let sides = parseInt(params.sides);
+                if (isNaN(sides) || sides < 1) sides = 6;
+                return Math.floor(Math.random() * sides) === 0;
+            }
+
+            case 'test_question':
+                // Yes/No dialog (runtime execute_test_question_action)
+                return confirm(params.question || params.message || game.translate('yes_or_no'));
+
             default:
                 console.warn(`Unknown conditional action: ${actionType}`);
                 return false;
@@ -1374,15 +1504,10 @@ class GameObject {
                 break;
 
             // GAMEMAKER 7.0: Control actions
-            case 'test_expression':
-                const expr = params.expression || 'false';
-                // Would need safe evaluation
-                break;
-
-            case 'check_empty':
-            case 'check_collision':
-                // Collision checking logic
-                break;
+            // NOTE: test_expression / check_empty / check_collision are
+            // conditionals (isConditionalAction) and are handled by
+            // evaluateCondition — they no longer fall through to here as
+            // no-op stubs (the H1 fix).
 
             case 'repeat':
                 const times = params.times || 1;
@@ -2175,6 +2300,31 @@ class GameObject {
             width: this.boxWidth(),
             height: this.boxHeight()
         };
+    }
+
+    // Would my bounding box, placed with my ORIGIN at (atX, atY), overlap a
+    // matching instance? filter: 'solid' (solids only), 'all'/'any' (any
+    // instance), or an object name. Excludes self and the collision
+    // partner. Origin- and frame-aware (both boxes via getBoundingBox
+    // geometry) — used by check_empty/check_collision.
+    placeMeetsCollision(atX, atY, filter, game) {
+        const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
+        const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
+        const left = atX - originX, top = atY - originY;
+        const w = this.boxWidth(), h = this.boxHeight();
+        const exclude = this._collision_other || null;
+        const insts = game.currentRoom ? game.currentRoom.instances : [];
+        for (const inst of insts) {
+            if (inst === this || inst === exclude || inst.toDestroy) continue;
+            const b = inst.getBoundingBox();
+            if (left < b.x + b.width && left + w > b.x &&
+                top < b.y + b.height && top + h > b.y) {
+                if (filter === 'all' || filter === 'any') return true;
+                if (filter === 'solid') { if (inst.solid) return true; }
+                else if (inst.name === filter || inst.objectName === filter) return true;
+            }
+        }
+        return false;
     }
 
     render(ctx) {

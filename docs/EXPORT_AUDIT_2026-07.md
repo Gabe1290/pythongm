@@ -18,8 +18,11 @@ Summary: **1 high / 3 medium / 1 low.**
 
 ## High
 
-- [ ] **H1 — Unrecognized "question" actions don't gate; guarded branches
-  run unconditionally.** `export/HTML5/templates/engine.js`
+- [x] **H1 — Unrecognized "question" actions don't gate; guarded branches
+  run unconditionally.** FIXED — the 7 question actions are now in
+  `isConditionalAction` and implemented in `evaluateCondition` (shared
+  `gmExpressionValue` + origin-aware `placeMeetsCollision` helpers); no-op
+  stubs removed. Browser-verified (11/11) + `tests/test_html5_conditionals.py`. `export/HTML5/templates/engine.js`
   (`isConditionalAction` @746; stubs @1377–1385).
   `isConditionalAction` recognizes only `if_*`, `test_alignment`,
   `test_variable`, `test_score`, `test_instance_count`. Other GM question
