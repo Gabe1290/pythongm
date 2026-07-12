@@ -1007,35 +1007,14 @@ class GameObject {
                 const collObjectType = params.object || 'any';
                 const notFlag = params.not_flag || false;
 
-                // Check for collision at position (instances live on the
-                // current room, not the game — `game.instances` was never
-                // a thing and threw for any project using this condition)
-                let hasCollision = false;
-                const roomInstances = game.currentRoom ? game.currentRoom.instances : [];
-                for (const inst of roomInstances) {
-                    if (inst === this || inst.toDestroy) continue;
-
-                    // Check if positions overlap (frame-sized boxes)
-                    const myW = this.boxWidth();
-                    const myH = this.boxHeight();
-                    const otherW = inst.boxWidth();
-                    const otherH = inst.boxHeight();
-
-                    if (collCheckX < inst.x + otherW && collCheckX + myW > inst.x &&
-                        collCheckY < inst.y + otherH && collCheckY + myH > inst.y) {
-                        // Collision detected - check if it matches the filter
-                        if (collObjectType === 'any') {
-                            hasCollision = true;
-                            break;
-                        } else if (collObjectType === 'solid' && inst.solid) {
-                            hasCollision = true;
-                            break;
-                        } else if (inst.objectName === collObjectType || inst.name === collObjectType) {
-                            hasCollision = true;
-                            break;
-                        }
-                    }
-                }
+                // Origin- and frame-aware overlap via the shared helper (M1:
+                // the old inline loop used raw this.x/inst.x as box corners,
+                // ignoring sprite origin, so centered-origin sprites
+                // mis-detected — while the main collision-event path already
+                // applied origin via getBoundingBox). excludePartner=false
+                // preserves this condition's original all-instances scope.
+                const hasCollision = this.placeMeetsCollision(
+                    collCheckX, collCheckY, collObjectType, game, false);
 
                 return notFlag ? !hasCollision : hasCollision;
 
@@ -2304,15 +2283,16 @@ class GameObject {
 
     // Would my bounding box, placed with my ORIGIN at (atX, atY), overlap a
     // matching instance? filter: 'solid' (solids only), 'all'/'any' (any
-    // instance), or an object name. Excludes self and the collision
-    // partner. Origin- and frame-aware (both boxes via getBoundingBox
-    // geometry) — used by check_empty/check_collision.
-    placeMeetsCollision(atX, atY, filter, game) {
+    // instance), or an object name. Origin- and frame-aware (both boxes via
+    // getBoundingBox geometry). excludePartner drops the current collision
+    // partner (check_empty semantics — the runtime excludes it); pass false
+    // to check every instance (if_collision semantics).
+    placeMeetsCollision(atX, atY, filter, game, excludePartner = true) {
         const originX = this.spriteInfo ? this.spriteInfo.origin_x : 0;
         const originY = this.spriteInfo ? this.spriteInfo.origin_y : 0;
         const left = atX - originX, top = atY - originY;
         const w = this.boxWidth(), h = this.boxHeight();
-        const exclude = this._collision_other || null;
+        const exclude = excludePartner ? (this._collision_other || null) : null;
         const insts = game.currentRoom ? game.currentRoom.instances : [];
         for (const inst of insts) {
             if (inst === this || inst === exclude || inst.toDestroy) continue;
