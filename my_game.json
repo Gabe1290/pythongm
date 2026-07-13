@@ -1,22 +1,59 @@
 {
-  "project_name": "My First Game",
-  "settings": {
-    "screen_width": 800,
-    "screen_height": 600,
-    "fps": 60
-  },
-  "resources": {
-    "sprites": [
-      { "name": "spr_player", "path": "sprites/player.png" },
-      { "name": "spr_wall", "path": "sprites/spr_wall.png" }
-    ],
-    "objects": [
-      { "name": "obj_player", "definition_file": "objects/obj_player.json" },
-      { "name": "obj_wall", "definition_file": "objects/obj_wall.json" }
-    ],
-    "rooms": [
-      { "name": "room_main", "definition_file": "rooms/room_main.json" }
-    ]
-  },
-  "start_room": "room_main"
+    "project_name": "My First Game",
+    "resources": {
+        "backgrounds": [
+            {
+                "name": "bg_bg_bkgd3",
+                "path": "sprites/bg_bg_bkgd3.png"
+            },
+            {
+                "name": "bg_bg_bkgd31",
+                "path": "sprites/bg_bg_bkgd31.png"
+            },
+            {
+                "name": "bg_sky",
+                "path": "sprites/bg_sky.png"
+            }
+        ],
+        "objects": [
+            {
+                "definition_file": "objects/obj_player.json",
+                "name": "obj_player"
+            },
+            {
+                "definition_file": "objects/obj_wall.json",
+                "name": "obj_wall"
+            }
+        ],
+        "rooms": [
+            {
+                "definition_file": "rooms/room_main.json",
+                "name": "room_main"
+            }
+        ],
+        "sprites": [
+            {
+                "name": "spr_player",
+                "path": "sprites/player.png"
+            },
+            {
+                "name": "spr_wall",
+                "path": "sprites/spr_wall.png"
+            }
+        ],
+        "tilesets": [
+            {
+                "name": "ts_world1",
+                "path": "sprites/tileset_world1.png",
+                "tile_height": 32,
+                "tile_width": 32
+            }
+        ]
+    },
+    "settings": {
+        "fps": 60,
+        "screen_height": 600,
+        "screen_width": 800
+    },
+    "start_room": "room_main"
 }

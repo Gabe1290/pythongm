@@ -1,0 +1,15 @@
+{
+    "instances": [],
+    "name": "room1",
+    "settings": {
+        "background_color": [
+            20,
+            20,
+            50
+        ],
+        "background_image_path": "",
+        "background_mode": "fixed",
+        "height": 640,
+        "width": 800
+    }
+}
