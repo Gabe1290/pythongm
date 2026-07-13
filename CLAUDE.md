@@ -75,6 +75,43 @@ Pixel-perfect collision was implemented in Phase 2a (2026-05-22) and is
 no longer in `TODO.md` as a stub — what remains is the IDE-UI follow-up
 for toggling `precise` on a native sprite asset.
 
+## Standing preferences & landmines (ported from machine-local agent memory, 2026-07-13)
+
+These lived only in the Linux box's local agent memory and were ported here
+before that machine was reformatted. They apply on every machine.
+
+- **French text must always carry proper accents** (é, è, ê, à, ç, ù, î, ô…).
+  This is educational software for French-speaking students and teachers;
+  missing accents are unacceptable. Double-check any generated or translated
+  French — UI strings, docs, flyers.
+- **Commit and push directly to `main` — no feature branches.** The user works
+  across several computers that all converge on `main` (GitHub is the sync);
+  a feature branch fragments that single line of history. Group changes into
+  logical commits and push.
+- **Audio actions are plugin-owned.** `play_sound`/`stop_sound`/`play_music`/
+  `stop_music`/`set_volume` live in `plugins/audio_actions.py` (category
+  "Audio"), NOT in the static `ACTION_TYPES` dict in `events/action_types.py`;
+  `events/plugin_loader.py` merges them at app runtime, so
+  `get_action_type('play_sound')` returning `None` in CLI/test imports is
+  expected, not a bug. **Landmine:** `plugin_loader._load_actions` skips any
+  plugin action whose name already exists in `ACTION_TYPES`, so adding a
+  static duplicate silently shadows the plugin version (real regression
+  `f85e1ec`, fixed in `1ae8fbd`). To add/modify an audio action, edit the
+  plugin; don't add it to `BLOCKLY_TO_ACTION_MAP`/`actionToBlockType` or the
+  hardcoded Blockly "Sound" toolbox category (basic audio is intentionally
+  ungated and auto-generates its Blockly blocks into an always-visible
+  "Audio" category; the legacy `sound_play`/`music_play`/`music_stop` block
+  defs exist only to load old saved workspaces).
+- **Export dependency strategy (decided 2026-06-26): keep pip-based deps.**
+  Native desktop/mobile export needs kivy + pyinstaller + pillow in the same
+  Python that runs the IDE. A second "everything bundled" download was
+  discussed and **deferred** (PyInstaller can't run inside a frozen app, so
+  it would mean shipping a portable Python env — hundreds of MB, ~double
+  release work, macOS signing pain). Don't re-propose it unless asked. The
+  supported low-friction paths: `pip install --user <pkg>` (no admin) or the
+  zero-install HTML5 export; `export/base_exporter.py`
+  `_missing_dependency_message` already surfaces both.
+
 ## Recent agent-session notes
 
 **2026-05-22 — Copilot rate-limit handoff.** A Copilot session at
