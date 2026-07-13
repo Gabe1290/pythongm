@@ -81,6 +81,55 @@ but anything already extracted into `docs/session-notes/` survives in git.
 
 ---
 
+## 2026-07-13 — Linux-box session notes backfilled + summary of this machine's sessions (Linux box)
+
+The automatic extract layer (`scripts/export_session_notes.py`, set up from
+the Windows box on 2026-07-11) had never been backfilled on this Linux box
+(`SEMLOG-GTH-0001`). Done now: **6 extracts written** to `docs/session-notes/`
+from the surviving transcripts across this machine's three historical project
+paths (`~/USR/Documents/pygm2`, `~/Dropbox/pygm2`,
+`~/Echanges/SEM/Tests/Tous/pygm2`); 3 trivial sessions skipped. Also applied
+the per-machine retention fix here — `"cleanupPeriodDays": 3650` in
+`~/.claude/settings.json` (previously only done on the Windows box). This
+box's May/early-June transcripts were already lost to the default ~30-day
+cleanup; the oldest surviving one starts 2026-06-11.
+
+Summaries of this machine's sessions not yet curated here (the
+2026-06-11→15 audit marathon already has its entries below; raw extracts:
+`docs/session-notes/2026-06-11-724250c2.md` and siblings):
+
+- **2026-06-15 (`e9043d8e`)** — added the per-platform **Linux / Mac /
+  Windows checkbox columns** to the test checklists, with French
+  translation (`ea1d20c`), ODT export (`f579340`), and a per-OS audit-fix
+  validation section + reusable smoke tools (`9982784`).
+- **2026-06-25 (`6c139651`)** — printable test checklists. Near-miss worth
+  remembering: `docs/TESTING_CHECKLIST.md` looked like a stale duplicate of
+  `docs/test_checklist.md` but is a **distinct document** (Events & Actions
+  by game type, vs. IDE features) and is referenced from
+  `config/blockly_config.py:616` — kept, not deleted. Both were converted
+  to A4 / 15 mm-margin PDFs, printed, and force-added past the
+  `docs/*.pdf` ignore rule (`ebb2cfa`) — future regenerations need
+  `git add -f` again to commit.
+- **2026-06-26 (`9900cdf4`)** — first manual-testing feedback batch (user
+  ~10% through the checklist; session survived three VS Code crashes).
+  IDE polish `293feb5` (sample display names, Close Project, green Test
+  Game icon, dark-theme Import Sound icon, Welcome-tab gmk/Roberta
+  imports); export fixes `295dfff` ("Desktop Executable" routes by host OS
+  instead of always producing a Windows .exe) and `dac5195`
+  (dependency-missing errors are now no-admin-friendly — suggest
+  `pip install --user` and point at the zero-install HTML5 export); and a
+  seven-commit Kivy-export fix run `638c2a8`..`6578854` (bare instance
+  variable names in exported conditions — the shipped-game
+  `NameError: vspeed` crash —, game globals in conditions + execute_code
+  export, set_sprite / start_moving_direction / restart_game, play_sound +
+  move_to_contact, a real high-score screen, expression
+  direction/max_distance resolution, drawing one sprite frame instead of
+  the whole strip). **Decision recorded:** keep pip-based export
+  dependencies; a second "everything bundled" download per platform was
+  discussed and deferred — school environments vary (some already have
+  kivy/pyinstaller, some have a local admin who can install).
+- **2026-07-03 (`38dbe5d5`)** — Claude Code update housekeeping only.
+
 ## 2026-06-13 — First 20 audit mediums (M1–M20) fixed (Windows box)
 
 Continued through the medium list of `docs/FULL_AUDIT_2026-06-11.md`:
