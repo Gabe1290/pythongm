@@ -327,3 +327,72 @@ def test_base_object_helpers_behave(exports):
         a.on_animation_end = lambda: fired.append(1)
         a._advance_animation(0.1)
         assert fired and 0 <= a.image_index < 4
+
+
+# ---------------------------------------------------------------------------
+# Kivy code-generator hardening (audit KA finder, 2026-07-14):
+# empty/expression/malformed numeric fields, caption escaping, keymap.
+# ---------------------------------------------------------------------------
+
+def _gen(action, params, event="step"):
+    from export.Kivy.code_generator import ActionCodeGenerator
+    g = ActionCodeGenerator(base_indent=2)
+    g.process_action({"action": action, "parameters": params}, event)
+    return g.get_code()
+
+
+def _compiles(code):
+    compile(f"def _m(self):\n{code or '        pass'}\n", "<gen>", "exec")
+    return True
+
+
+@pytest.mark.parametrize("action,params", [
+    ("set_hspeed", {"speed": ""}),
+    ("set_vspeed", {"speed": ""}),
+    ("set_speed", {"speed": ""}),
+    ("set_direction", {"direction": ""}),
+    ("set_alarm", {"alarm_number": "2", "steps": ""}),
+    ("create_instance", {"object": "obj_x", "x": "", "y": ""}),
+    ("jump_to_position", {"x": "", "y": ""}),
+    ("set_score", {"value": "", "relative": True}),
+    ("set_variable", {"variable": "hspeed", "value": ""}),
+    ("set_variable", {"variable": "myvar", "value": ""}),
+    ("draw_text", {"text": "hi", "x": "10 pixels", "y": 0}),  # malformed expr
+    ("set_hspeed", {"speed": "5 apples"}),                    # malformed expr
+])
+def test_empty_or_malformed_numeric_fields_compile(action, params):
+    """KA finder F1/F4: a cleared or malformed numeric field is a no-op on
+    desktop but used to emit uncompilable Python (self.hspeed = ) that
+    killed the whole exported object module. Now routed through _num_code."""
+    assert _compiles(_gen(action, params))
+
+
+def test_set_vspeed_folds_sign_for_numeric():
+    """The sign flip folds a numeric literal (-3 stays a clean 3, not --3)."""
+    assert "self.vspeed = 3" in _gen("set_vspeed", {"speed": "-3"})
+    assert "self.vspeed = -24" in _gen("set_vspeed", {"speed": "24"})
+    # an expression is wrapped, not folded
+    assert "self.vspeed = -(" in _gen("set_vspeed", {"speed": "myjump"})
+
+
+def test_numeric_field_resolves_bare_instance_var():
+    """KA finder F3: a bare instance-var name resolves to self.<name>
+    (parity with the desktop runtime's _parse_value)."""
+    assert "self.direction" in _gen("set_hspeed", {"speed": "direction"})
+
+
+def test_caption_and_names_with_quotes_are_repr_escaped():
+    """KA finder F2: free text (caption) / a lookup name with an apostrophe
+    used to break the emitted literal -> SyntaxError."""
+    assert _compiles(_gen("set_window_caption", {"caption": "Player's Score"}))
+    assert _compiles(_gen("create_instance", {"object": "obj'x", "x": 0, "y": 0}))
+
+
+def test_if_key_pressed_non_arrow_keys():
+    """KA finder F5: non-arrow keys used to all fall back to 275 (RIGHT).
+    Now space/letters map correctly and an unknown key maps to -1 (never
+    fires) instead of firing on the right arrow."""
+    assert "get(32," in _gen("if_key_pressed", {"key": "space"})   # space
+    assert "get(97," in _gen("if_key_pressed", {"key": "a"})       # 'a'
+    assert "get(-1," in _gen("if_key_pressed", {"key": "f5"})      # unknown
+    assert "get(275," not in _gen("if_key_pressed", {"key": "f5"})

@@ -200,3 +200,45 @@ KA-L1 (fallback). More involved: KA-M2/M3 (process-group kill). Still
 owed: the 2 finders that never ran (kivy-codegen, exporter-io-registry).
 
 **KA closure 2026-07-14:** KA-H1/M1/M2/M3/L1/L2/L3/L5 all FIXED with regression tests (suite 1532 passed). KA-L4 (username command-substitution) left as accepted-low: exotic, self-inflicted (needs a maliciously-named local Windows account), and the project-name vector is already closed by _project_build_key. STILL OWED: the 2 finders that never ran (kivy-codegen, exporter-io-registry).
+
+---
+
+## Kivy code-generator finder — 2026-07-14 (one-finder-at-a-time)
+
+Ran the previously-un-run `kivy-codegen` finder as a single agent (avoids
+the workflow's session-limit blowout). All findings personally verified
+against `export/Kivy/code_generator.py` before fixing.
+
+- [x] **KCG-1 (high)** — the movement/instance/alarm/score cluster
+  (`set_hspeed/vspeed/speed/direction`, `set_alarm`, `create_instance`,
+  `jump_to_position`, `set_score/lives/health`, `set_variable`) embedded
+  raw params with f-strings. A CLEARED field stores `""` (action_editor),
+  so `self.hspeed = {""}` → `self.hspeed = ` → SyntaxError → the whole
+  exported object module fails to import (desktop treats it as a no-op).
+  FIXED: routed through `_num_code` (empty→default). The newer draw/
+  creation cluster already did this; the old cluster was never migrated.
+- [x] **KCG-2 (high)** — `set_window_caption` emitted `caption='{caption}'`;
+  a caption like `Player's Score` → SyntaxError in main.py (same bug fixed
+  for `show_message`). FIXED: `caption={caption!r}` + `bool()` flags. Also
+  repr'd the `create_instance` / `if_collision` object-name lookup literals.
+- [x] **KCG-3 (med)** — the same cluster didn't resolve bare instance-var
+  expressions (`set_hspeed` = `direction` → NameError; desktop resolves via
+  `_parse_value`). FIXED by the same `_num_code` routing.
+- [x] **KCG-4 (med)** — `_num_code` / `_resolve_instance_names` passed
+  UNPARSEABLE text through, so a malformed field (`10 pixels`) became
+  `x=(10 pixels)` → SyntaxError. FIXED: `_num_code` now `ast.parse`-checks
+  the resolved expression and falls back to the numeric default.
+- [x] **KCG-5 (low)** — `if_key_pressed` mapped every non-arrow key to
+  `275` (RIGHT), so e.g. a `space` event fired on the right arrow. FIXED:
+  arrows + common keys + letter/digit ASCII codes; unknown → `-1` (never
+  fires) instead of RIGHT.
+- [ ] **KCG-6 (low/info, WON'T-FIX)** — a dead legacy else-attach branch
+  (labels `'if'`/`'if_on_grid'`/... are never pushed). Benign: the
+  `_await_else` fast-path handles the normal case; the only reachable edge
+  (`if_on_grid` with no then_actions immediately followed by `else_action`)
+  nests an orphaned `if False:` — authoring-only, no crash. Left as-is.
+
+Verified: 18/18 hostile-input codegen checks (empty/expression/malformed
+fields, apostrophe caption/name, non-arrow keys) compile; existing Kivy
+tests updated for the cleaner `-24` vspeed folding. Suite 1548 passed.
+Still owed: the `exporter-io-registry` finder.
