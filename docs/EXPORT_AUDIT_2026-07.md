@@ -176,7 +176,7 @@ NOT audited. Re-run after the limit resets (script:
   ZeroDivisionError at Android startup. The pygame runtime clamps via
   `_sane_room_dimension`; Kivy doesn't. Corrupt/foreign data; low. Fix:
   clamp room dims in the exporter.
-- [ ] **KA-L3** `wsl_bridge.py:346–350` — **CONFIRMED (low).** `set -e`
+- [x] **KA-L3** `wsl_bridge.py:346–350` — **CONFIRMED (low).** `set -e`
   aborts on a buildozer non-zero exit BEFORE `EXIT_CODE=$?` and `rm -f
   "$0"`, so the per-build run script leaks in WSL `/tmp` on every failed
   build (~1KB each). Fix: `trap 'rm -f "$0"' EXIT` or capture with `|| true`.
@@ -187,7 +187,7 @@ NOT audited. Re-run after the limit resets (script:
   vector — `_project_build_key` sanitizes it to `[a-z0-9_]`; only the
   username path component is raw. Requires a maliciously-named local
   account (self-inflicted). Fix: single-quote the path or validate.
-- [ ] **KA-L5** `wsl_bridge.py:383–389` — **CONFIRMED (low).** `mktemp`
+- [x] **KA-L5** `wsl_bridge.py:383–389` — **CONFIRMED (low).** `mktemp`
   returncode and the `tee` result are unchecked; a full/read-only WSL
   `/tmp` yields an empty/predictable script → buildozer never runs → an
   unhelpful "exited with code 1" with an empty log. Fix: check returncodes,
