@@ -268,7 +268,8 @@ class KivyExporter:
         room_class_map = {}
         for room_name in room_names:
             class_name = self._get_room_class_name(room_name)
-            room_imports.append(f"from scenes.{room_name} import {class_name}")
+            module_name = self._get_room_module_name(room_name)
+            room_imports.append(f"from scenes.{module_name} import {class_name}")
             room_class_map[room_name] = class_name
 
         room_imports_str = '\n'.join(room_imports)
@@ -1699,7 +1700,8 @@ class {class_name}(Widget):
             bg_image_code=bg_image_code
         )
 
-        output_file = self.output_path / "game" / "scenes" / f"{room_name}.py"
+        output_file = (self.output_path / "game" / "scenes" /
+                       f"{self._get_room_module_name(room_name)}.py")
         output_file.write_text(code_formatted, encoding="utf-8")
 
     def _generate_objects(self):
@@ -3572,10 +3574,29 @@ game development environment for Python.
         output_file = self.output_path / "README.md"
         output_file.write_text(readme_formatted, encoding="utf-8")
 
+    @staticmethod
+    def _get_room_module_name(room_name: str) -> str:
+        """Python module name for a room's scene file: non-identifier
+        characters become underscores ("level 1" -> "level_1"), matching
+        _get_object_module_name. ROOM_ORDER / ROOM_CLASSES keep the ORIGINAL
+        room name as the lookup key; only the scene filename, its import,
+        and the class identifier are sanitized (KA-H1)."""
+        import re
+        sanitized = re.sub(r'\W', '_', room_name)
+        if not sanitized or sanitized[0].isdigit():
+            sanitized = f"room_{sanitized}"
+        return sanitized
+
     def _get_room_class_name(self, room_name: str) -> str:
-        """Convert room name to class name"""
-        # Convert snake_case to PascalCase
-        return ''.join(word.capitalize() for word in room_name.split('_'))
+        """Convert a room name to a valid PascalCase class identifier.
+
+        Sanitizes first: a room named "level 1" (space) or "1_intro"
+        (leading digit) — common in GMK imports, like maze_3's "obj
+        trigger" object — otherwise emitted `class Level 1(Widget):` /
+        `scenes/level 1.py`, a SyntaxError that broke the whole export."""
+        return ''.join(
+            word.capitalize()
+            for word in self._get_room_module_name(room_name).split('_') if word)
 
     @staticmethod
     def _get_object_module_name(obj_name: str) -> str:
