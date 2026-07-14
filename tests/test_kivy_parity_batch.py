@@ -148,6 +148,55 @@ def test_room_name_with_space_or_leading_digit_sanitized():
     assert exporter._get_room_class_name("1_intro")[0].isalpha()
 
 
+def test_punctuation_only_name_gets_nonempty_class(exports=None):
+    """KA-L1: a punctuation-only name reduces to all-underscores; without a
+    fallback the class name is empty -> `class (GameObject):` SyntaxError."""
+    exporter = KivyExporter({}, REPO_ROOT, REPO_ROOT)
+    assert exporter._get_object_class_name("!!!") == "Obj"
+    assert exporter._get_room_class_name("###") == "Room"
+
+
+def test_room_dimensions_clamped():
+    """KA-L2: a 0/negative/non-numeric room dimension must not reach the
+    Android scaler's division (ZeroDivisionError at startup)."""
+    exporter = KivyExporter({}, REPO_ROOT, REPO_ROOT)
+    assert exporter._safe_room_dim(0, 640) == 640
+    assert exporter._safe_room_dim(-5, 640) == 640
+    assert exporter._safe_room_dim(None, 640) == 640
+    assert exporter._safe_room_dim("bad", 640) == 640
+    assert exporter._safe_room_dim(800, 640) == 800
+
+
+def test_hostile_project_name_and_zero_dim_room_still_compile():
+    """KA-M1 + KA-L2 end-to-end: a project name with an embedded quote and
+    backslash, plus a 0x0 room, must still produce a compilable export."""
+    import json
+    import py_compile
+    import shutil
+    import tempfile
+
+    src = REPO_ROOT / "samples" / "maze_1"
+    tmp = Path(tempfile.mkdtemp(prefix="ka_qw_test_"))
+    proj = tmp / "proj"
+    shutil.copytree(src, proj)
+    data = json.loads((proj / "project.json").read_text(encoding="utf-8"))
+    data["name"] = 'My "Weird\\" Game'  # embedded quote + backslash (KA-M1)
+    first = next(iter(data["assets"]["rooms"]))
+    rf = proj / "rooms" / f"{first}.json"
+    if rf.exists():
+        data["assets"]["rooms"][first] = {
+            **data["assets"]["rooms"][first],
+            **json.loads(rf.read_text(encoding="utf-8"))}
+    data["assets"]["rooms"][first]["width"] = 0   # KA-L2
+    data["assets"]["rooms"][first]["height"] = 0
+    (proj / "project.json").write_text(json.dumps(data), encoding="utf-8")
+
+    out = tmp / "out"
+    assert KivyExporter(data, proj, out).export()
+    for f in sorted((out / "game").rglob("*.py")):
+        py_compile.compile(str(f), doraise=True)  # raises on any SyntaxError
+
+
 # ---------------------------------------------------------------------------
 # Behavioral: base-object helpers under stub kivy modules
 # ---------------------------------------------------------------------------
