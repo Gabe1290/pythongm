@@ -63,6 +63,27 @@ def test_stale_apk_cannot_be_copied_back():
     assert clear < copy_back
 
 
+def test_run_script_self_deletes_on_any_exit():
+    """KA-L3: `set -e` aborted before the old trailing `rm -f "$0"`, so a
+    failed build leaked the run script in /tmp. An EXIT trap deletes it on
+    every path (success, failure, set -e abort)."""
+    script = _script()
+    assert 'trap \'rm -f "$0"\' EXIT' in script
+    # the old success-only trailing delete must be gone
+    lines = [l.strip() for l in script.splitlines()]
+    assert 'rm -f "$0"' not in lines  # only inside the trap now
+
+
+def test_buildozer_exit_code_captured_without_set_e_abort():
+    """The buildozer exit must be captured via && / || so `set -e` doesn't
+    abort before the APK copy-back and the real code propagates (KA-L3)."""
+    script = _script()
+    assert 'buildozer android debug && EXIT_CODE=0 || EXIT_CODE=$?' in script
+    # copy-back still runs after buildozer, exit code propagates
+    assert script.index('EXIT_CODE=0 || EXIT_CODE=$?') < script.index('cp "$BUILD_DIR"/bin/*.apk')
+    assert script.rstrip().endswith('exit $EXIT_CODE')
+
+
 def test_project_key_sanitized():
     key = WSLBridge._project_build_key
     assert key("Match3Game") == "match3game"
