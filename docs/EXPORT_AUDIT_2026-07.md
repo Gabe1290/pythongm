@@ -145,27 +145,56 @@ NOT audited. Re-run after the limit resets (script:
   Not live in a bundled sample (clean room names) but real for
   GMK-imported/user projects. **FIXED** (see below).
 
-### Unverified leads (pending re-audit / personal verification)
+### Verified by hand 2026-07-14 (all CONFIRMED; none live in a bundled sample, none high)
 
-- [ ] **KA-M1** `kivy_exporter.py:916` — project name interpolated
-  unescaped into a Python string literal in main.py; a quote/backslash
-  yields invalid main.py. (Kivy analog of the HTML5 L1.)
-- [ ] **KA-M2** `android_exporter.py:629` — WSL cancel/timeout kills
-  `wsl.exe` but not the Linux-side buildozer/gradle/gcc processes.
-- [ ] **KA-M3** `android_exporter.py:553` — native cancel/timeout kills
-  the buildozer parent but orphans child compilers (gradle/gcc/p4a).
-- [ ] **KA-L1** `kivy_exporter.py:3592` — object-name sanitization can
-  collide two distinct objects onto one module (silent overwrite) or
-  produce an empty class name. (Known edge; noted when the sanitizer was
-  written.)
-- [ ] **KA-L2** `kivy_exporter.py:1001` — Kivy export doesn't clamp room
-  dimensions; a 0-width/height room → ZeroDivisionError at Android
-  startup (the pygame runtime clamps; Kivy doesn't).
-- [ ] **KA-L3** `wsl_bridge.py:346` — `set -e` aborts the WSL build
-  script before its self-delete, leaking `/tmp/pygm_buildozer_run.*.sh`
-  on every failed build.
-- [ ] **KA-L4** `wsl_bridge.py:329` — Windows username interpolated into
-  the WSL bash script; a crafted account name (backtick/`$(...)`) enables
-  command substitution. (Very low: attacker-controlled local username.)
-- [ ] **KA-L5** `wsl_bridge.py:389` — mktemp/tee results unchecked; a full
-  or read-only WSL /tmp yields an empty script and a confusing failure.
+- [ ] **KA-M1** `kivy_exporter.py:917/1160` — **CONFIRMED (med).** The raw
+  project name is `.format()`-substituted into `self.project_name =
+  "{project_name}"`; a name with a `"` or trailing `\` breaks the Python
+  string literal → main.py unimportable → whole export dead. Kivy analog
+  of the fixed HTML5 L1. Fix: `repr()`/escape the value (trivial).
+- [ ] **KA-M2** `android_exporter.py:629,731` — **CONFIRMED (med).**
+  `process.kill()` kills the Windows `wsl.exe`, not the Linux-side
+  buildozer/gradle/gcc it spawned; the gradle daemon especially survives.
+  Cancel/timeout during a long build leaves it running. Fix: kill the
+  WSL-side process group (e.g. run the script under `setsid` and signal
+  it) — non-trivial.
+- [ ] **KA-M3** `android_exporter.py:553,629,731` — **CONFIRMED (med).**
+  The native buildozer Popen is started with no process group
+  (`start_new_session` absent), so `process.kill()` on cancel/timeout
+  leaves child compilers (gradle/gcc/make/p4a) orphaned. Fix:
+  `start_new_session=True` + `os.killpg` (POSIX) — moderate.
+- [ ] **KA-L1** `kivy_exporter.py:3581/3592` — **CONFIRMED (low).**
+  Distinct objects whose names sanitize alike ("obj trigger" vs
+  "obj_trigger") share one module (silent last-writer-wins); a
+  punctuation-only name ("!!!" → "___") yields an EMPTY class name →
+  `class (GameObject):` SyntaxError. The KA-H1 room fix inherits the same
+  collision edge. Pathological names; low. Fix: de-dup suffix + non-empty
+  class-name fallback.
+- [ ] **KA-L2** `kivy_exporter.py:1002` — **CONFIRMED (low).** `min(
+  screen_w/game_w, screen_h/game_h)` with an explicit `width:0`/`height:0`
+  room (`.get('width',640)` returns the 0, not the default) →
+  ZeroDivisionError at Android startup. The pygame runtime clamps via
+  `_sane_room_dimension`; Kivy doesn't. Corrupt/foreign data; low. Fix:
+  clamp room dims in the exporter.
+- [ ] **KA-L3** `wsl_bridge.py:346–350` — **CONFIRMED (low).** `set -e`
+  aborts on a buildozer non-zero exit BEFORE `EXIT_CODE=$?` and `rm -f
+  "$0"`, so the per-build run script leaks in WSL `/tmp` on every failed
+  build (~1KB each). Fix: `trap 'rm -f "$0"' EXIT` or capture with `|| true`.
+- [ ] **KA-L4** `wsl_bridge.py:329` — **CONFIRMED (low, exotic).** The
+  `{src}` path (which embeds the Windows username) is interpolated inside
+  `"…"` in the bash script, so a username containing `` ` `` or `$(…)`
+  triggers command substitution in WSL. NOTE: the project name is NOT a
+  vector — `_project_build_key` sanitizes it to `[a-z0-9_]`; only the
+  username path component is raw. Requires a maliciously-named local
+  account (self-inflicted). Fix: single-quote the path or validate.
+- [ ] **KA-L5** `wsl_bridge.py:383–389` — **CONFIRMED (low).** `mktemp`
+  returncode and the `tee` result are unchecked; a full/read-only WSL
+  `/tmp` yields an empty/predictable script → buildozer never runs → an
+  unhelpful "exited with code 1" with an empty log. Fix: check returncodes,
+  fail loudly.
+
+**Triage:** all 8 are real but none are high and none fire in a bundled
+sample (every one needs unusual project data or the cancel/timeout path).
+Quick wins: KA-M1 (escape), KA-L2 (clamp), KA-L3/L5 (WSL robustness),
+KA-L1 (fallback). More involved: KA-M2/M3 (process-group kill). Still
+owed: the 2 finders that never ran (kivy-codegen, exporter-io-registry).
