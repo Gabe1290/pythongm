@@ -134,6 +134,20 @@ def test_object_name_with_space_sanitized():
     assert exporter._get_object_class_name("obj trigger") == "ObjTrigger"
 
 
+def test_room_name_with_space_or_leading_digit_sanitized():
+    """KA-H1: room names (like object names, e.g. GMK's "obj trigger")
+    must sanitize into valid module/class identifiers. A room "level 1"
+    used to emit `scenes/level 1.py` + `class Level 1` — a SyntaxError
+    that broke the whole Kivy export. ROOM_ORDER/ROOM_CLASSES keep the
+    original name as the lookup key."""
+    exporter = KivyExporter({}, REPO_ROOT, REPO_ROOT)
+    assert exporter._get_room_module_name("level 1") == "level_1"
+    assert exporter._get_room_class_name("level 1") == "Level1"
+    # leading digit -> prefixed (not a valid identifier start otherwise)
+    assert exporter._get_room_module_name("1_intro") == "room_1_intro"
+    assert exporter._get_room_class_name("1_intro")[0].isalpha()
+
+
 # ---------------------------------------------------------------------------
 # Behavioral: base-object helpers under stub kivy modules
 # ---------------------------------------------------------------------------
