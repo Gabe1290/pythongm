@@ -152,13 +152,13 @@ NOT audited. Re-run after the limit resets (script:
   "{project_name}"`; a name with a `"` or trailing `\` breaks the Python
   string literal → main.py unimportable → whole export dead. Kivy analog
   of the fixed HTML5 L1. Fix: `repr()`/escape the value (trivial).
-- [ ] **KA-M2** `android_exporter.py:629,731` — **CONFIRMED (med).**
+- [x] **KA-M2** `android_exporter.py:629,731` — **CONFIRMED (med).**
   `process.kill()` kills the Windows `wsl.exe`, not the Linux-side
   buildozer/gradle/gcc it spawned; the gradle daemon especially survives.
   Cancel/timeout during a long build leaves it running. Fix: kill the
   WSL-side process group (e.g. run the script under `setsid` and signal
   it) — non-trivial.
-- [ ] **KA-M3** `android_exporter.py:553,629,731` — **CONFIRMED (med).**
+- [x] **KA-M3** `android_exporter.py:553,629,731` — **CONFIRMED (med).**
   The native buildozer Popen is started with no process group
   (`start_new_session` absent), so `process.kill()` on cancel/timeout
   leaves child compilers (gradle/gcc/make/p4a) orphaned. Fix:
@@ -180,7 +180,7 @@ NOT audited. Re-run after the limit resets (script:
   aborts on a buildozer non-zero exit BEFORE `EXIT_CODE=$?` and `rm -f
   "$0"`, so the per-build run script leaks in WSL `/tmp` on every failed
   build (~1KB each). Fix: `trap 'rm -f "$0"' EXIT` or capture with `|| true`.
-- [ ] **KA-L4** `wsl_bridge.py:329` — **CONFIRMED (low, exotic).** The
+- [~] **KA-L4** `wsl_bridge.py:329` — **CONFIRMED (low, exotic).** The
   `{src}` path (which embeds the Windows username) is interpolated inside
   `"…"` in the bash script, so a username containing `` ` `` or `$(…)`
   triggers command substitution in WSL. NOTE: the project name is NOT a
@@ -198,3 +198,5 @@ sample (every one needs unusual project data or the cancel/timeout path).
 Quick wins: KA-M1 (escape), KA-L2 (clamp), KA-L3/L5 (WSL robustness),
 KA-L1 (fallback). More involved: KA-M2/M3 (process-group kill). Still
 owed: the 2 finders that never ran (kivy-codegen, exporter-io-registry).
+
+**KA closure 2026-07-14:** KA-H1/M1/M2/M3/L1/L2/L3/L5 all FIXED with regression tests (suite 1532 passed). KA-L4 (username command-substitution) left as accepted-low: exotic, self-inflicted (needs a maliciously-named local Windows account), and the project-name vector is already closed by _project_build_key. STILL OWED: the 2 finders that never ran (kivy-codegen, exporter-io-registry).
