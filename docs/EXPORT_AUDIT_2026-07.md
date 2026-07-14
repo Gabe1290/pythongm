@@ -147,7 +147,7 @@ NOT audited. Re-run after the limit resets (script:
 
 ### Verified by hand 2026-07-14 (all CONFIRMED; none live in a bundled sample, none high)
 
-- [ ] **KA-M1** `kivy_exporter.py:917/1160` — **CONFIRMED (med).** The raw
+- [x] **KA-M1** `kivy_exporter.py:917/1160` — **CONFIRMED (med).** The raw
   project name is `.format()`-substituted into `self.project_name =
   "{project_name}"`; a name with a `"` or trailing `\` breaks the Python
   string literal → main.py unimportable → whole export dead. Kivy analog
@@ -163,14 +163,14 @@ NOT audited. Re-run after the limit resets (script:
   (`start_new_session` absent), so `process.kill()` on cancel/timeout
   leaves child compilers (gradle/gcc/make/p4a) orphaned. Fix:
   `start_new_session=True` + `os.killpg` (POSIX) — moderate.
-- [ ] **KA-L1** `kivy_exporter.py:3581/3592` — **CONFIRMED (low).**
+- [x] **KA-L1** `kivy_exporter.py:3581/3592` — **CONFIRMED (low).**
   Distinct objects whose names sanitize alike ("obj trigger" vs
   "obj_trigger") share one module (silent last-writer-wins); a
   punctuation-only name ("!!!" → "___") yields an EMPTY class name →
   `class (GameObject):` SyntaxError. The KA-H1 room fix inherits the same
   collision edge. Pathological names; low. Fix: de-dup suffix + non-empty
   class-name fallback.
-- [ ] **KA-L2** `kivy_exporter.py:1002` — **CONFIRMED (low).** `min(
+- [x] **KA-L2** `kivy_exporter.py:1002` — **CONFIRMED (low).** `min(
   screen_w/game_w, screen_h/game_h)` with an explicit `width:0`/`height:0`
   room (`.get('width',640)` returns the 0, not the default) →
   ZeroDivisionError at Android startup. The pygame runtime clamps via
