@@ -55,7 +55,10 @@ class HTML5Exporter:
                 self._load_room_instances(project_path, project_data)
                 self._load_object_files(project_path, project_data)
 
-                logger.info(f"  Loaded project: {project_data['name']}")
+                # A nameless (malformed/hand-edited) project.json must not
+                # KeyError the whole export — default to 'game' (finding #4).
+                project_name = project_data.get('name', 'game')
+                logger.info(f"  Loaded project: {project_name}")
 
                 # Encode sprites as base64
                 logger.info("  Encoding sprites...")
@@ -123,7 +126,7 @@ class HTML5Exporter:
                 # markup (and in principle inject). width/height are ints and
                 # the data blobs are base64, so those need no escaping (L1).
                 html_content = self.template_html.replace(
-                    '{game_name}', html.escape(str(project_data['name'])))
+                    '{game_name}', html.escape(str(project_name)))
                 html_content = html_content.replace('{width}', str(width))
                 html_content = html_content.replace('{height}', str(height))
                 html_content = html_content.replace('{game_data}', f'"{game_data_compressed}"')
@@ -137,7 +140,7 @@ class HTML5Exporter:
                 # crash the write on Windows (e.g. a name like "Level 1: Go"
                 # or "Tom & <Jerry>"). The in-page title keeps the real
                 # (HTML-escaped) name; only the file on disk is sanitized.
-                safe_name = _sanitize_filename(str(project_data['name'])) or "game"
+                safe_name = _sanitize_filename(str(project_name)) or "game"
                 output_file = output_path / f"{safe_name}.html"
                 with open(output_file, 'w', encoding='utf-8') as f:
                     f.write(html_content)
@@ -163,6 +166,11 @@ class HTML5Exporter:
         rooms_dir = project_path / "rooms"
 
         for room_name, room_data in rooms_data.items():
+            # A non-dict room value (a string reference, as the object loader
+            # tolerates) must not AttributeError before the try below and
+            # abort the whole export (finding #3).
+            if not isinstance(room_data, dict):
+                continue
             # Check if this room has an external file reference
             external_file = room_data.get('_external_file')
             if external_file:
@@ -249,47 +257,67 @@ class HTML5Exporter:
         # Encode sprites
         sprites_data = project_data.get('assets', {}).get('sprites', {})
         for sprite_name, sprite_info in sprites_data.items():
+            # A non-dict entry (a bare string path — a form the loaders
+            # elsewhere tolerate) must not AttributeError and abort the
+            # WHOLE export; skip it like encode_sounds does (finding #2).
+            if not isinstance(sprite_info, dict):
+                logger.warning(f"  Skipping sprite '{sprite_name}': unexpected entry type")
+                continue
             file_path = sprite_info.get('file_path', '')
-            if file_path:
-                full_path = project_path / file_path
-                if full_path.exists():
-                    try:
-                        with open(full_path, 'rb') as f:
-                            sprite_bytes = f.read()
-                            b64 = base64.b64encode(sprite_bytes).decode('utf-8')
+            if not file_path:
+                # A missing file used to be dropped SILENTLY with a success
+                # dialog — the user shipped invisible art with zero signal.
+                # Log it, mirroring encode_sounds (finding #1).
+                logger.warning(f"  Sprite '{sprite_name}' has no file_path; not encoded")
+                continue
+            full_path = project_path / file_path
+            if not full_path.exists():
+                logger.warning(f"  Sprite file not found for '{sprite_name}': {full_path}")
+                continue
+            try:
+                with open(full_path, 'rb') as f:
+                    sprite_bytes = f.read()
+                    b64 = base64.b64encode(sprite_bytes).decode('utf-8')
 
-                            # Detect image type
-                            ext = full_path.suffix.lower()
-                            mime_type = 'image/png'
-                            if ext == '.jpg' or ext == '.jpeg':
-                                mime_type = 'image/jpeg'
-                            elif ext == '.gif':
-                                mime_type = 'image/gif'
+                    # Detect image type
+                    ext = full_path.suffix.lower()
+                    mime_type = 'image/png'
+                    if ext == '.jpg' or ext == '.jpeg':
+                        mime_type = 'image/jpeg'
+                    elif ext == '.gif':
+                        mime_type = 'image/gif'
 
-                            encoded[sprite_name] = f"data:{mime_type};base64,{b64}"
-                    except Exception as e:
-                        logger.warning(f"  Failed to encode {sprite_name}: {e}")
+                    encoded[sprite_name] = f"data:{mime_type};base64,{b64}"
+            except Exception as e:
+                logger.warning(f"  Failed to encode {sprite_name}: {e}")
 
-        # Encode backgrounds
+        # Encode backgrounds (same guards/logging as sprites, #1/#2)
         backgrounds_data = project_data.get('assets', {}).get('backgrounds', {})
         for bg_name, bg_info in backgrounds_data.items():
+            if not isinstance(bg_info, dict):
+                logger.warning(f"  Skipping background '{bg_name}': unexpected entry type")
+                continue
             file_path = bg_info.get('file_path', '')
-            if file_path:
-                full_path = project_path / file_path
-                if full_path.exists():
-                    try:
-                        with open(full_path, 'rb') as f:
-                            bg_bytes = f.read()
-                            b64 = base64.b64encode(bg_bytes).decode('utf-8')
+            if not file_path:
+                logger.warning(f"  Background '{bg_name}' has no file_path; not encoded")
+                continue
+            full_path = project_path / file_path
+            if not full_path.exists():
+                logger.warning(f"  Background file not found for '{bg_name}': {full_path}")
+                continue
+            try:
+                with open(full_path, 'rb') as f:
+                    bg_bytes = f.read()
+                    b64 = base64.b64encode(bg_bytes).decode('utf-8')
 
-                            ext = full_path.suffix.lower()
-                            mime_type = 'image/png'
-                            if ext == '.jpg' or ext == '.jpeg':
-                                mime_type = 'image/jpeg'
+                    ext = full_path.suffix.lower()
+                    mime_type = 'image/png'
+                    if ext == '.jpg' or ext == '.jpeg':
+                        mime_type = 'image/jpeg'
 
-                            encoded[bg_name] = f"data:{mime_type};base64,{b64}"
-                    except Exception as e:
-                        logger.warning(f"  Failed to encode background {bg_name}: {e}")
+                    encoded[bg_name] = f"data:{mime_type};base64,{b64}"
+            except Exception as e:
+                logger.warning(f"  Failed to encode background {bg_name}: {e}")
 
         return encoded
 

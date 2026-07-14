@@ -2371,7 +2371,14 @@ class PyGameMakerIDE(QMainWindow):
 
         button_group = QButtonGroup(dialog)
         for index, target in enumerate(EXPORT_TARGETS):
-            _available, label = target.probe()
+            # Guard each probe: one probe raising must not blank the WHOLE
+            # dialog and hide every export target. No probe raises today
+            # (the Android/WSL one is internally try/excepted), but a future
+            # probe that does would otherwise leave the user with no options.
+            try:
+                _available, label = target.probe()
+            except Exception:
+                label = target.id
             radio = QRadioButton(self.tr(label))
             if index == 0:
                 radio.setChecked(True)  # html5 — available on every host

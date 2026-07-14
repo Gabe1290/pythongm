@@ -242,3 +242,48 @@ Verified: 18/18 hostile-input codegen checks (empty/expression/malformed
 fields, apostrophe caption/name, non-arrow keys) compile; existing Kivy
 tests updated for the cleaner `-24` vspeed folding. Suite 1548 passed.
 Still owed: the `exporter-io-registry` finder.
+
+---
+
+## Exporter-IO / registry finder — 2026-07-14 (one-finder-at-a-time)
+
+Ran the previously-un-run `exporter-io-registry` finder as a single agent.
+All leads personally verified against the code before fixing. This
+completes the export-subsystem audit (all planned finders have now run).
+
+- [x] **EIO-1 (med)** — `encode_sprites`/`encode_backgrounds` dropped a
+  missing/empty-path asset SILENTLY (no log, no else), while `export()`
+  still reported success — the user shipped invisible art with zero
+  signal. FIXED: `logger.warning` on the empty-path and file-not-found
+  branches, mirroring `encode_sounds`.
+- [x] **EIO-2 (med)** — sprites/backgrounds lacked the non-dict guard that
+  `encode_sounds` has; a non-dict entry (bare string) raised AttributeError
+  that escaped to `export()` and failed the WHOLE export. FIXED:
+  `isinstance(..., dict)` skip-with-warning at each loop top.
+- [x] **EIO-3 (low/med)** — `_load_room_instances` called
+  `room_data.get('_external_file')` before the per-room try, so a non-dict
+  room value aborted the whole export. FIXED: `isinstance` guard.
+- [x] **EIO-4 (low)** — `project_data['name']` KeyError'd on a nameless
+  project.json. FIXED: `project_data.get('name', 'game')` once, reused.
+- [x] **EIO-5 (med)** — REGRESSION from the earlier L1 `_sanitize_filename`
+  fix: `core/ide_exporters.py` recomputed the success-dialog / "Open in
+  browser" filename from the RAW name, so a name with `:`/`<>` opened a
+  file that doesn't exist (the write was sanitized). FIXED: reuse
+  `_sanitize_filename` + `.get('name','game')` in the consumer.
+- [x] **EIO-6 (low, hardening)** — the Export-dialog build loop didn't
+  guard `target.probe()`, so a future probe raising would blank the whole
+  dialog and hide every target. (No probe raises today — the Android/WSL
+  one is internally try/excepted, which the finder confirmed.) FIXED:
+  per-probe try/except falling back to the target id as the label.
+- [x] **EIO-7 (low)** — `project_adapter` used `startswith('/')` for
+  absolute-path detection, misclassifying Windows paths. FIXED:
+  `os.path.isabs` at all three sites (sprites/sounds/backgrounds).
+- [x] **EIO-8 (low)** — `project_adapter` rejected a valid empty project
+  dict `{}` as "not found" (`not project` is truthy for `{}`). FIXED:
+  `project is None or not isinstance(project, dict)`.
+
+Verified: 5/5 I/O end-to-end checks (missing sprite, non-dict sprite/room,
+nameless project, sanitized-consumer filename) + unit checks. Suite 1553
+passed. **The export-subsystem audit is now COMPLETE** — engine.js, Kivy
+templates + codegen, Android/WSL pipeline, and exporter IO/registry have
+all been audited and their confirmed findings fixed.
