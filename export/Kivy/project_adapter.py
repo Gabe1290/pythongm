@@ -3,6 +3,7 @@ Project Data Adapter for Kivy Export - ULTIMATE VERSION
 Works with your actual project structure where rooms/sprites/etc are in 'assets'
 """
 
+import os
 from core.logger import get_logger
 from utils.color import to_kivy_rgba
 
@@ -41,7 +42,9 @@ def adapt_project_for_kivy_export(project_manager):
                 logger.debug(f"Found project data in attribute: {attr_name}")
                 break
 
-    if not project or not isinstance(project, dict):
+    # An empty dict {} is a valid (if empty) project; only None / a
+    # non-dict is 'not found' (finding #8 — `not project` rejected {}).
+    if project is None or not isinstance(project, dict):
         raise ValueError("Could not find project data in ProjectManager")
 
     # Try to get project path
@@ -142,7 +145,7 @@ def adapt_project_for_kivy_export(project_manager):
             sprite_path = str(sprite_info)
 
         # Make path absolute
-        if sprite_path and not sprite_path.startswith('/'):
+        if sprite_path and not os.path.isabs(sprite_path):
             import os
             sprite_path = os.path.join(str(project_path), sprite_path)
 
@@ -164,7 +167,7 @@ def adapt_project_for_kivy_export(project_manager):
         else:
             sound_path = str(sound_info)
 
-        if sound_path and not sound_path.startswith('/'):
+        if sound_path and not os.path.isabs(sound_path):
             import os
             sound_path = os.path.join(str(project_path), sound_path)
 
@@ -187,7 +190,7 @@ def adapt_project_for_kivy_export(project_manager):
         else:
             bg_path = str(bg_info)
 
-        if bg_path and not bg_path.startswith('/'):
+        if bg_path and not os.path.isabs(bg_path):
             import os
             bg_path = os.path.join(str(project_path), bg_path)
 

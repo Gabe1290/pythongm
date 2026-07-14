@@ -66,3 +66,67 @@ def test_filename_illegal_chars_do_not_crash_export():
     # End-to-end: a colon name exports without raising and titles correctly.
     html = _export_with_name("Level 1: Go")
     assert "<title>Level 1: Go</title>" in html
+
+
+# --- exporter-io-registry finder (2026-07-14): I/O robustness ------------
+
+def _export_mutated(mutate):
+    """Copy maze_1, mutate its project dict, export; return (ok, out_dir)."""
+    import shutil
+    src = REPO_ROOT / "samples" / "maze_1"
+    tmp = Path(tempfile.mkdtemp(prefix="io_test_"))
+    proj = tmp / "proj"
+    shutil.copytree(src, proj)
+    data = json.loads((proj / "project.json").read_text(encoding="utf-8"))
+    mutate(data)
+    (proj / "project.json").write_text(json.dumps(data), encoding="utf-8")
+    out = tmp / "out"
+    out.mkdir()
+    return HTML5Exporter().export(proj, out), out
+
+
+def test_missing_sprite_file_does_not_abort_export():
+    """#1: a sprite whose file is gone is dropped (logged) — export still
+    succeeds rather than silently shipping invisible art with no signal."""
+    def m(d):
+        for info in d["assets"]["sprites"].values():
+            info["file_path"] = "sprites/GONE.png"
+            break
+    ok, _ = _export_mutated(m)
+    assert ok
+
+
+def test_non_dict_sprite_entry_does_not_abort_export():
+    """#2: a non-dict sprite entry (bare string) is skipped, not an
+    AttributeError that fails the whole export (encode_sounds already did
+    this; sprites/backgrounds now match)."""
+    ok, _ = _export_mutated(lambda d: d["assets"]["sprites"].__setitem__("bogus", "s.png"))
+    assert ok
+
+
+def test_non_dict_room_entry_does_not_abort_export():
+    """#3: a non-dict room value must not AttributeError in
+    _load_room_instances before the per-room try."""
+    ok, _ = _export_mutated(lambda d: d["assets"]["rooms"].__setitem__("bogus", "r.json"))
+    assert ok
+
+
+def test_nameless_project_exports_as_game_html():
+    """#4: a project.json without a 'name' must not KeyError the export."""
+    ok, out = _export_mutated(lambda d: d.pop("name", None))
+    assert ok and (out / "game.html").exists()
+
+
+def test_success_consumer_uses_sanitized_filename():
+    """#5: the IDE success dialog / 'Open in browser' must reference the
+    SANITIZED filename that was actually written, not the raw project name
+    (a ':' name is sanitized on write; recomputing the raw name opened a
+    file that doesn't exist)."""
+    from export.HTML5.html5_exporter import _sanitize_filename
+    ok, out = _export_mutated(lambda d: d.__setitem__("name", "Level 1: Go"))
+    assert ok
+    consumer = (_sanitize_filename("Level 1: Go") or "game") + ".html"
+    assert (out / consumer).exists()
+    # this is what core/ide_exporters.py now computes for the dialog/webbrowser
+    src = (REPO_ROOT / "core" / "ide_exporters.py").read_text(encoding="utf-8")
+    assert "_sanitize_filename" in src
