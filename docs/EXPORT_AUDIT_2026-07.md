@@ -119,3 +119,53 @@ The scope was `engine.js` (+ its exporter). The Kivy code generator /
 templates, the Android/WSL build pipeline, and the registry were part of
 the original full-audit plan but were **not** audited here — a separate
 scoped pass (see the prepared full script) still owes them a review.
+
+---
+
+## Kivy / Android / IO pass — INCOMPLETE (2026-07-14)
+
+Second scoped audit (Kivy codegen/templates + Android/WSL pipeline +
+registry/IO). **Ran only partially** — the account session limit stopped
+it after 2 of 4 finders (`kivy-codegen` and `exporter-io-registry` never
+ran) and before any verification/synthesis. The 9 candidates below are
+therefore **UNVERIFIED leads** from the `kivy-templates` and
+`android-pipeline` finders only, preserved so the work isn't lost.
+Coverage gap: the Kivy code generator and the exporter IO/registry were
+NOT audited. Re-run after the limit resets (script:
+`scratchpad/kivy_android_audit.js`).
+
+### Confirmed by personal code-reading
+
+- [x] **KA-H1 — Kivy room names are not sanitized (invalid Python).**
+  `export/Kivy/kivy_exporter.py:3575` (`_get_room_class_name`) + scene
+  filename `:1702` + imports `:270`. A room named `level 1` / `1_intro`
+  emits `class Level 1(Widget):`, `scenes/level 1.py`, and
+  `from scenes.level 1 import ...` — the whole export fails to import.
+  Same class as the object-name bug already fixed; rooms were overlooked.
+  Not live in a bundled sample (clean room names) but real for
+  GMK-imported/user projects. **FIXED** (see below).
+
+### Unverified leads (pending re-audit / personal verification)
+
+- [ ] **KA-M1** `kivy_exporter.py:916` — project name interpolated
+  unescaped into a Python string literal in main.py; a quote/backslash
+  yields invalid main.py. (Kivy analog of the HTML5 L1.)
+- [ ] **KA-M2** `android_exporter.py:629` — WSL cancel/timeout kills
+  `wsl.exe` but not the Linux-side buildozer/gradle/gcc processes.
+- [ ] **KA-M3** `android_exporter.py:553` — native cancel/timeout kills
+  the buildozer parent but orphans child compilers (gradle/gcc/p4a).
+- [ ] **KA-L1** `kivy_exporter.py:3592` — object-name sanitization can
+  collide two distinct objects onto one module (silent overwrite) or
+  produce an empty class name. (Known edge; noted when the sanitizer was
+  written.)
+- [ ] **KA-L2** `kivy_exporter.py:1001` — Kivy export doesn't clamp room
+  dimensions; a 0-width/height room → ZeroDivisionError at Android
+  startup (the pygame runtime clamps; Kivy doesn't).
+- [ ] **KA-L3** `wsl_bridge.py:346` — `set -e` aborts the WSL build
+  script before its self-delete, leaking `/tmp/pygm_buildozer_run.*.sh`
+  on every failed build.
+- [ ] **KA-L4** `wsl_bridge.py:329` — Windows username interpolated into
+  the WSL bash script; a crafted account name (backtick/`$(...)`) enables
+  command substitution. (Very low: attacker-controlled local username.)
+- [ ] **KA-L5** `wsl_bridge.py:389` — mktemp/tee results unchecked; a full
+  or read-only WSL /tmp yields an empty script and a confusing failure.
