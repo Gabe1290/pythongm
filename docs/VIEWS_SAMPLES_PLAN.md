@@ -52,6 +52,19 @@ primitive next to existing ones.
 
 ### Progress
 
+- **2026-07-15 — 3-target parity test DONE (step 4). Phase 1 complete.**
+  `tests/test_views_export_parity.py` feeds one synthetic scenario (2400×800
+  room, 800×600 view, 100px borders, no speed cap, following one object) through
+  all three view-follow implementations and asserts the horizontal scroll
+  (`view_x`) is identical — the coordinate-system-independent axis (desktop/HTML5
+  y-down, Kivy y-up, but room x means the same everywhere and survives export).
+  Reference sequence `[500, 1600, 0, 200]` is matched by the **real**
+  `GameRoom.update_views` (pygame patched), the **exported** Kivy scene's
+  `update_views` (stub-kivy), and — since node isn't a CI dep — the **engine.js**
+  `updateViews` source (the three defining expressions; behaviour proven by the
+  recorded Playwright run). Guards against the three copies drifting. Suite
+  1623 → 1627 passed. **Phase 1 is done — next is Phase 2 (`views_1`/`views_2`
+  sample games).**
 - **2026-07-15 — Kivy camera DONE (step 1).** The Kivy exporter's generated
   scene now bakes a `views_config` (8 views, runtime default schema) and opens
   a camera transform in `canvas.before` — `PushMatrix()` + a `Translate`
