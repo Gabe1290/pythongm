@@ -274,6 +274,12 @@ def test_exported_game_plays_sounds_and_renders_sprites_headlessly(exported):
         scene_cls = next(v for v in vars(scene_mod).values()
                          if isinstance(v, type) and issubclass(v, _Widget)
                          and v.__module__ == "scenes.rm_match3")
+        # Deterministic tile refills: match3 fills cleared cells with
+        # random.randrange, and an unlucky refill can form an accidental cascade
+        # that shifts the render/score counts asserted below (a rare flake).
+        # Seed the shared random module so the sim is reproducible.
+        import random
+        random.seed(20260715)
         scene = scene_cls()
         assert len(scene.instances) == 1
         inst = scene.instances[0]
