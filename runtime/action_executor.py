@@ -202,11 +202,45 @@ class ActionExecutor:
             self.execute_action_list(instance, actions)
         finally:
             self._event_depth -= 1
+            self._drain_sound_queue(instance)
 
             # Process deferred create events when we return to top level
             # This ensures instance counts are accurate (e.g., after destroy_instance)
             if self._event_depth == 0 and self._deferred_create_events:
                 self._process_deferred_create_events()
+
+    def _drain_sound_queue(self, instance):
+        """Play and clear sounds queued by execute_code via
+        ``self._sound_queue.append('snd_name')`` (or a
+        ``{'sound': name, 'volume': v}`` dict for a non-default volume).
+
+        This is the desktop half of the cross-platform sound primitive —
+        execute_code has no live `game` object on Kivy/Web exports, so code
+        that wants to play a sound queues it here instead of calling
+        `game.sounds[...].play()` directly, and the Kivy/Web runtimes drain
+        their own mirror of this queue the same way.
+        """
+        queue = getattr(instance, '_sound_queue', None)
+        if not queue:
+            return
+        sounds = getattr(self.game_runner, 'sounds', None) or {}
+        for item in queue:
+            if isinstance(item, dict):
+                name = item.get('sound', '')
+                volume = item.get('volume', 1.0)
+            else:
+                name = item
+                volume = 1.0
+            sound = sounds.get(name)
+            if sound is None:
+                logger.debug(f"⚠️ Queued sound '{name}' not found")
+                continue
+            try:
+                sound.set_volume(float(volume))
+                sound.play()
+            except Exception as e:
+                logger.debug(f"⚠️ Could not play queued sound '{name}': {e}")
+        instance._sound_queue = []
 
     def _process_deferred_create_events(self):
         """Process any deferred create events

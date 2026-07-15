@@ -148,6 +148,10 @@ class KivyExporter:
             self._generate_sprite_meta_module()
             logger.info("Sprite metadata module generated")
 
+            # Generate the asset name -> exported path lookup module
+            self._generate_asset_paths_module()
+            logger.info("Asset paths module generated")
+
             # Generate build configuration
             self._generate_buildozer_spec()
             logger.info("Buildozer spec generated")
@@ -1559,6 +1563,13 @@ class {class_name}(Widget):
             if hasattr(instance, 'on_end_step'):
                 instance.on_end_step(dt)
 
+        # 7b. SOUND QUEUE DRAIN - plays anything execute_code queued via
+        # self._sound_queue.append(...) this frame (create/step/mouse/
+        # collision/keyboard, not just draw), unconditionally so it works
+        # for objects with no draw event too.
+        for instance in _live:
+            instance._drain_sound_queue()
+
         # 8. DRAW EVENTS - sprites render via each widget's canvas; the
         # GameMaker draw event renders through the per-instance draw queue
         # (room coordinates, y-down — see GameObject._render_draw_queue)
@@ -1769,6 +1780,28 @@ class {class_name}(Widget):
         )
         (self.output_path / "game" / "sprite_meta.py").write_text(code, encoding="utf-8")
 
+    def _generate_asset_paths_module(self):
+        """Write game/asset_paths.py — sprite/sound name -> exported asset
+        path lookup. Structured actions (draw_sprite, play_sound, ...) get
+        their path resolved at code-generation time via sprite_path_map /
+        sound_path_map; hand-authored execute_code that references an asset
+        by name (self._sound_queue.append('snd_x'), a draw-queue
+        {'type': 'sprite', 'sprite_name': ...} dict) has no such generation
+        step, so base_object.py resolves it at runtime from this module
+        instead. Written verbatim, like sprite_meta.py — no str.format brace
+        escaping involved.
+        """
+        import json as _json
+        code = (
+            '#!/usr/bin/env python3\n'
+            '"""Sprite/sound name -> exported asset path, for execute_code\n'
+            'that references an asset by name rather than through a\n'
+            'structured action. Generated from the project\'s assets."""\n\n'
+            'SPRITE_PATHS = ' + _json.dumps(self.sprite_path_map, indent=4, sort_keys=True) + '\n\n'
+            'SOUND_PATHS = ' + _json.dumps(self.sound_path_map, indent=4, sort_keys=True) + '\n'
+        )
+        (self.output_path / "game" / "asset_paths.py").write_text(code, encoding="utf-8")
+
     def _generate_highscore_module(self):
         """Write game/highscore.py — a standalone high-score table module.
 
@@ -1922,6 +1955,12 @@ try:
 except Exception:
     SPRITE_META = {{}}
 
+try:
+    from asset_paths import SPRITE_PATHS, SOUND_PATHS
+except Exception:
+    SPRITE_PATHS = {{}}
+    SOUND_PATHS = {{}}
+
 
 class GameObject(Widget):
     """Base class for all game objects - GAMEMAKER 7.0 COMPATIBLE"""
@@ -1989,6 +2028,13 @@ class GameObject(Widget):
         # _render_draw_queue converts and renders them each frame.
         self._draw_queue = []
         self._dq_group = None
+
+        # Sounds queued from execute_code via self._sound_queue.append('snd_x')
+        # (or {{'sound': name, 'volume': v}}). execute_code has no live `game`
+        # object here to call game.sounds[...].play() on directly (unlike the
+        # desktop runtime), so it queues by name instead; drained once per
+        # frame by the scene's update() loop via _drain_sound_queue below.
+        self._sound_queue = []
 
         # Mouse position in room coordinates (y-down). Set by the scene's
         # touch dispatch right before a mouse event handler runs, so
@@ -2562,6 +2608,31 @@ class GameObject(Widget):
                 print(f"[ERROR] draw-queue {{cmd.get('type')}}: {{exc}}")
         self._draw_queue = []
 
+    def _drain_sound_queue(self):
+        """Play + clear sounds queued via self._sound_queue.append(...).
+
+        Mirrors the desktop runtime's ActionExecutor._drain_sound_queue.
+        Called once per frame per live instance from the scene's update()
+        loop (not tied to on_draw, so it works for objects with no draw
+        event too).
+        """
+        if not self._sound_queue:
+            return
+        from main import play_sound
+        for item in self._sound_queue:
+            if isinstance(item, dict):
+                name = item.get('sound', '')
+                volume = item.get('volume', 1.0)
+            else:
+                name = item
+                volume = 1.0
+            path = SOUND_PATHS.get(name, '')
+            if path:
+                play_sound(path, volume)
+            else:
+                print(f"[WARN] queued sound not found in export: {{name}}")
+        self._sound_queue = []
+
     def _dq_render_cmd(self, group, cmd, room_h):
         """Render one draw-queue command dict into ``group``."""
         ctype = cmd.get('type')
@@ -2626,8 +2697,11 @@ class GameObject(Widget):
                                 size=(width, height)))
         elif ctype == 'sprite':
             # draw_sprite: sprite resolved to its exported asset path at
-            # code-generation time ('sprite_path'); unknown sprites skip.
-            path = cmd.get('sprite_path') or ''
+            # code-generation time ('sprite_path' — structured actions), or
+            # by name via SPRITE_PATHS for hand-authored execute_code draw
+            # commands (which the code generator never sees); unknown
+            # sprites skip.
+            path = cmd.get('sprite_path') or SPRITE_PATHS.get(cmd.get('sprite_name'), '')
             img = load_image(path) if path else None
             if img is None:
                 return

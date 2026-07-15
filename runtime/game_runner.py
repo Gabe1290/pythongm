@@ -609,6 +609,13 @@ class GameInstance:
         # instead of hasattr() for every instance every frame.
         self._delayed_actions = []
 
+        # Sounds queued from execute_code via self._sound_queue.append('snd_x').
+        # Drained (played + cleared) by ActionExecutor.execute_event after
+        # every event, not just draw — this is the cross-platform sound
+        # primitive mirrored by the Kivy/Web exporters, since execute_code has
+        # no live `game` object to call game.sounds[...].play() on there.
+        self._sound_queue = []
+
         # Alarms - 12 alarms (0-11), -1 means disabled
         self.alarm = [-1] * 12
 
