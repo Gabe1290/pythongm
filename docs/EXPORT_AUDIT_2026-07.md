@@ -119,3 +119,171 @@ The scope was `engine.js` (+ its exporter). The Kivy code generator /
 templates, the Android/WSL build pipeline, and the registry were part of
 the original full-audit plan but were **not** audited here — a separate
 scoped pass (see the prepared full script) still owes them a review.
+
+---
+
+## Kivy / Android / IO pass — INCOMPLETE (2026-07-14)
+
+Second scoped audit (Kivy codegen/templates + Android/WSL pipeline +
+registry/IO). **Ran only partially** — the account session limit stopped
+it after 2 of 4 finders (`kivy-codegen` and `exporter-io-registry` never
+ran) and before any verification/synthesis. The 9 candidates below are
+therefore **UNVERIFIED leads** from the `kivy-templates` and
+`android-pipeline` finders only, preserved so the work isn't lost.
+Coverage gap: the Kivy code generator and the exporter IO/registry were
+NOT audited. Re-run after the limit resets (script:
+`scratchpad/kivy_android_audit.js`).
+
+### Confirmed by personal code-reading
+
+- [x] **KA-H1 — Kivy room names are not sanitized (invalid Python).**
+  `export/Kivy/kivy_exporter.py:3575` (`_get_room_class_name`) + scene
+  filename `:1702` + imports `:270`. A room named `level 1` / `1_intro`
+  emits `class Level 1(Widget):`, `scenes/level 1.py`, and
+  `from scenes.level 1 import ...` — the whole export fails to import.
+  Same class as the object-name bug already fixed; rooms were overlooked.
+  Not live in a bundled sample (clean room names) but real for
+  GMK-imported/user projects. **FIXED** (see below).
+
+### Verified by hand 2026-07-14 (all CONFIRMED; none live in a bundled sample, none high)
+
+- [x] **KA-M1** `kivy_exporter.py:917/1160` — **CONFIRMED (med).** The raw
+  project name is `.format()`-substituted into `self.project_name =
+  "{project_name}"`; a name with a `"` or trailing `\` breaks the Python
+  string literal → main.py unimportable → whole export dead. Kivy analog
+  of the fixed HTML5 L1. Fix: `repr()`/escape the value (trivial).
+- [x] **KA-M2** `android_exporter.py:629,731` — **CONFIRMED (med).**
+  `process.kill()` kills the Windows `wsl.exe`, not the Linux-side
+  buildozer/gradle/gcc it spawned; the gradle daemon especially survives.
+  Cancel/timeout during a long build leaves it running. Fix: kill the
+  WSL-side process group (e.g. run the script under `setsid` and signal
+  it) — non-trivial.
+- [x] **KA-M3** `android_exporter.py:553,629,731` — **CONFIRMED (med).**
+  The native buildozer Popen is started with no process group
+  (`start_new_session` absent), so `process.kill()` on cancel/timeout
+  leaves child compilers (gradle/gcc/make/p4a) orphaned. Fix:
+  `start_new_session=True` + `os.killpg` (POSIX) — moderate.
+- [x] **KA-L1** `kivy_exporter.py:3581/3592` — **CONFIRMED (low).**
+  Distinct objects whose names sanitize alike ("obj trigger" vs
+  "obj_trigger") share one module (silent last-writer-wins); a
+  punctuation-only name ("!!!" → "___") yields an EMPTY class name →
+  `class (GameObject):` SyntaxError. The KA-H1 room fix inherits the same
+  collision edge. Pathological names; low. Fix: de-dup suffix + non-empty
+  class-name fallback.
+- [x] **KA-L2** `kivy_exporter.py:1002` — **CONFIRMED (low).** `min(
+  screen_w/game_w, screen_h/game_h)` with an explicit `width:0`/`height:0`
+  room (`.get('width',640)` returns the 0, not the default) →
+  ZeroDivisionError at Android startup. The pygame runtime clamps via
+  `_sane_room_dimension`; Kivy doesn't. Corrupt/foreign data; low. Fix:
+  clamp room dims in the exporter.
+- [x] **KA-L3** `wsl_bridge.py:346–350` — **CONFIRMED (low).** `set -e`
+  aborts on a buildozer non-zero exit BEFORE `EXIT_CODE=$?` and `rm -f
+  "$0"`, so the per-build run script leaks in WSL `/tmp` on every failed
+  build (~1KB each). Fix: `trap 'rm -f "$0"' EXIT` or capture with `|| true`.
+- [~] **KA-L4** `wsl_bridge.py:329` — **CONFIRMED (low, exotic).** The
+  `{src}` path (which embeds the Windows username) is interpolated inside
+  `"…"` in the bash script, so a username containing `` ` `` or `$(…)`
+  triggers command substitution in WSL. NOTE: the project name is NOT a
+  vector — `_project_build_key` sanitizes it to `[a-z0-9_]`; only the
+  username path component is raw. Requires a maliciously-named local
+  account (self-inflicted). Fix: single-quote the path or validate.
+- [x] **KA-L5** `wsl_bridge.py:383–389` — **CONFIRMED (low).** `mktemp`
+  returncode and the `tee` result are unchecked; a full/read-only WSL
+  `/tmp` yields an empty/predictable script → buildozer never runs → an
+  unhelpful "exited with code 1" with an empty log. Fix: check returncodes,
+  fail loudly.
+
+**Triage:** all 8 are real but none are high and none fire in a bundled
+sample (every one needs unusual project data or the cancel/timeout path).
+Quick wins: KA-M1 (escape), KA-L2 (clamp), KA-L3/L5 (WSL robustness),
+KA-L1 (fallback). More involved: KA-M2/M3 (process-group kill). Still
+owed: the 2 finders that never ran (kivy-codegen, exporter-io-registry).
+
+**KA closure 2026-07-14:** KA-H1/M1/M2/M3/L1/L2/L3/L5 all FIXED with regression tests (suite 1532 passed). KA-L4 (username command-substitution) left as accepted-low: exotic, self-inflicted (needs a maliciously-named local Windows account), and the project-name vector is already closed by _project_build_key. STILL OWED: the 2 finders that never ran (kivy-codegen, exporter-io-registry).
+
+---
+
+## Kivy code-generator finder — 2026-07-14 (one-finder-at-a-time)
+
+Ran the previously-un-run `kivy-codegen` finder as a single agent (avoids
+the workflow's session-limit blowout). All findings personally verified
+against `export/Kivy/code_generator.py` before fixing.
+
+- [x] **KCG-1 (high)** — the movement/instance/alarm/score cluster
+  (`set_hspeed/vspeed/speed/direction`, `set_alarm`, `create_instance`,
+  `jump_to_position`, `set_score/lives/health`, `set_variable`) embedded
+  raw params with f-strings. A CLEARED field stores `""` (action_editor),
+  so `self.hspeed = {""}` → `self.hspeed = ` → SyntaxError → the whole
+  exported object module fails to import (desktop treats it as a no-op).
+  FIXED: routed through `_num_code` (empty→default). The newer draw/
+  creation cluster already did this; the old cluster was never migrated.
+- [x] **KCG-2 (high)** — `set_window_caption` emitted `caption='{caption}'`;
+  a caption like `Player's Score` → SyntaxError in main.py (same bug fixed
+  for `show_message`). FIXED: `caption={caption!r}` + `bool()` flags. Also
+  repr'd the `create_instance` / `if_collision` object-name lookup literals.
+- [x] **KCG-3 (med)** — the same cluster didn't resolve bare instance-var
+  expressions (`set_hspeed` = `direction` → NameError; desktop resolves via
+  `_parse_value`). FIXED by the same `_num_code` routing.
+- [x] **KCG-4 (med)** — `_num_code` / `_resolve_instance_names` passed
+  UNPARSEABLE text through, so a malformed field (`10 pixels`) became
+  `x=(10 pixels)` → SyntaxError. FIXED: `_num_code` now `ast.parse`-checks
+  the resolved expression and falls back to the numeric default.
+- [x] **KCG-5 (low)** — `if_key_pressed` mapped every non-arrow key to
+  `275` (RIGHT), so e.g. a `space` event fired on the right arrow. FIXED:
+  arrows + common keys + letter/digit ASCII codes; unknown → `-1` (never
+  fires) instead of RIGHT.
+- [ ] **KCG-6 (low/info, WON'T-FIX)** — a dead legacy else-attach branch
+  (labels `'if'`/`'if_on_grid'`/... are never pushed). Benign: the
+  `_await_else` fast-path handles the normal case; the only reachable edge
+  (`if_on_grid` with no then_actions immediately followed by `else_action`)
+  nests an orphaned `if False:` — authoring-only, no crash. Left as-is.
+
+Verified: 18/18 hostile-input codegen checks (empty/expression/malformed
+fields, apostrophe caption/name, non-arrow keys) compile; existing Kivy
+tests updated for the cleaner `-24` vspeed folding. Suite 1548 passed.
+Still owed: the `exporter-io-registry` finder.
+
+---
+
+## Exporter-IO / registry finder — 2026-07-14 (one-finder-at-a-time)
+
+Ran the previously-un-run `exporter-io-registry` finder as a single agent.
+All leads personally verified against the code before fixing. This
+completes the export-subsystem audit (all planned finders have now run).
+
+- [x] **EIO-1 (med)** — `encode_sprites`/`encode_backgrounds` dropped a
+  missing/empty-path asset SILENTLY (no log, no else), while `export()`
+  still reported success — the user shipped invisible art with zero
+  signal. FIXED: `logger.warning` on the empty-path and file-not-found
+  branches, mirroring `encode_sounds`.
+- [x] **EIO-2 (med)** — sprites/backgrounds lacked the non-dict guard that
+  `encode_sounds` has; a non-dict entry (bare string) raised AttributeError
+  that escaped to `export()` and failed the WHOLE export. FIXED:
+  `isinstance(..., dict)` skip-with-warning at each loop top.
+- [x] **EIO-3 (low/med)** — `_load_room_instances` called
+  `room_data.get('_external_file')` before the per-room try, so a non-dict
+  room value aborted the whole export. FIXED: `isinstance` guard.
+- [x] **EIO-4 (low)** — `project_data['name']` KeyError'd on a nameless
+  project.json. FIXED: `project_data.get('name', 'game')` once, reused.
+- [x] **EIO-5 (med)** — REGRESSION from the earlier L1 `_sanitize_filename`
+  fix: `core/ide_exporters.py` recomputed the success-dialog / "Open in
+  browser" filename from the RAW name, so a name with `:`/`<>` opened a
+  file that doesn't exist (the write was sanitized). FIXED: reuse
+  `_sanitize_filename` + `.get('name','game')` in the consumer.
+- [x] **EIO-6 (low, hardening)** — the Export-dialog build loop didn't
+  guard `target.probe()`, so a future probe raising would blank the whole
+  dialog and hide every target. (No probe raises today — the Android/WSL
+  one is internally try/excepted, which the finder confirmed.) FIXED:
+  per-probe try/except falling back to the target id as the label.
+- [x] **EIO-7 (low)** — `project_adapter` used `startswith('/')` for
+  absolute-path detection, misclassifying Windows paths. FIXED:
+  `os.path.isabs` at all three sites (sprites/sounds/backgrounds).
+- [x] **EIO-8 (low)** — `project_adapter` rejected a valid empty project
+  dict `{}` as "not found" (`not project` is truthy for `{}`). FIXED:
+  `project is None or not isinstance(project, dict)`.
+
+Verified: 5/5 I/O end-to-end checks (missing sprite, non-dict sprite/room,
+nameless project, sanitized-consumer filename) + unit checks. Suite 1553
+passed. **The export-subsystem audit is now COMPLETE** — engine.js, Kivy
+templates + codegen, Android/WSL pipeline, and exporter IO/registry have
+all been audited and their confirmed findings fixed.

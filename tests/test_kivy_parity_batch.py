@@ -172,6 +172,69 @@ def test_object_name_with_space_sanitized():
     assert exporter._get_object_class_name("obj trigger") == "ObjTrigger"
 
 
+def test_room_name_with_space_or_leading_digit_sanitized():
+    """KA-H1: room names (like object names, e.g. GMK's "obj trigger")
+    must sanitize into valid module/class identifiers. A room "level 1"
+    used to emit `scenes/level 1.py` + `class Level 1` — a SyntaxError
+    that broke the whole Kivy export. ROOM_ORDER/ROOM_CLASSES keep the
+    original name as the lookup key."""
+    exporter = KivyExporter({}, REPO_ROOT, REPO_ROOT)
+    assert exporter._get_room_module_name("level 1") == "level_1"
+    assert exporter._get_room_class_name("level 1") == "Level1"
+    # leading digit -> prefixed (not a valid identifier start otherwise)
+    assert exporter._get_room_module_name("1_intro") == "room_1_intro"
+    assert exporter._get_room_class_name("1_intro")[0].isalpha()
+
+
+def test_punctuation_only_name_gets_nonempty_class(exports=None):
+    """KA-L1: a punctuation-only name reduces to all-underscores; without a
+    fallback the class name is empty -> `class (GameObject):` SyntaxError."""
+    exporter = KivyExporter({}, REPO_ROOT, REPO_ROOT)
+    assert exporter._get_object_class_name("!!!") == "Obj"
+    assert exporter._get_room_class_name("###") == "Room"
+
+
+def test_room_dimensions_clamped():
+    """KA-L2: a 0/negative/non-numeric room dimension must not reach the
+    Android scaler's division (ZeroDivisionError at startup)."""
+    exporter = KivyExporter({}, REPO_ROOT, REPO_ROOT)
+    assert exporter._safe_room_dim(0, 640) == 640
+    assert exporter._safe_room_dim(-5, 640) == 640
+    assert exporter._safe_room_dim(None, 640) == 640
+    assert exporter._safe_room_dim("bad", 640) == 640
+    assert exporter._safe_room_dim(800, 640) == 800
+
+
+def test_hostile_project_name_and_zero_dim_room_still_compile():
+    """KA-M1 + KA-L2 end-to-end: a project name with an embedded quote and
+    backslash, plus a 0x0 room, must still produce a compilable export."""
+    import json
+    import py_compile
+    import shutil
+    import tempfile
+
+    src = REPO_ROOT / "samples" / "maze_1"
+    tmp = Path(tempfile.mkdtemp(prefix="ka_qw_test_"))
+    proj = tmp / "proj"
+    shutil.copytree(src, proj)
+    data = json.loads((proj / "project.json").read_text(encoding="utf-8"))
+    data["name"] = 'My "Weird\\" Game'  # embedded quote + backslash (KA-M1)
+    first = next(iter(data["assets"]["rooms"]))
+    rf = proj / "rooms" / f"{first}.json"
+    if rf.exists():
+        data["assets"]["rooms"][first] = {
+            **data["assets"]["rooms"][first],
+            **json.loads(rf.read_text(encoding="utf-8"))}
+    data["assets"]["rooms"][first]["width"] = 0   # KA-L2
+    data["assets"]["rooms"][first]["height"] = 0
+    (proj / "project.json").write_text(json.dumps(data), encoding="utf-8")
+
+    out = tmp / "out"
+    assert KivyExporter(data, proj, out).export()
+    for f in sorted((out / "game").rglob("*.py")):
+        py_compile.compile(str(f), doraise=True)  # raises on any SyntaxError
+
+
 # ---------------------------------------------------------------------------
 # Behavioral: base-object helpers under stub kivy modules
 # ---------------------------------------------------------------------------
@@ -302,3 +365,72 @@ def test_base_object_helpers_behave(exports):
         a.on_animation_end = lambda: fired.append(1)
         a._advance_animation(0.1)
         assert fired and 0 <= a.image_index < 4
+
+
+# ---------------------------------------------------------------------------
+# Kivy code-generator hardening (audit KA finder, 2026-07-14):
+# empty/expression/malformed numeric fields, caption escaping, keymap.
+# ---------------------------------------------------------------------------
+
+def _gen(action, params, event="step"):
+    from export.Kivy.code_generator import ActionCodeGenerator
+    g = ActionCodeGenerator(base_indent=2)
+    g.process_action({"action": action, "parameters": params}, event)
+    return g.get_code()
+
+
+def _compiles(code):
+    compile(f"def _m(self):\n{code or '        pass'}\n", "<gen>", "exec")
+    return True
+
+
+@pytest.mark.parametrize("action,params", [
+    ("set_hspeed", {"speed": ""}),
+    ("set_vspeed", {"speed": ""}),
+    ("set_speed", {"speed": ""}),
+    ("set_direction", {"direction": ""}),
+    ("set_alarm", {"alarm_number": "2", "steps": ""}),
+    ("create_instance", {"object": "obj_x", "x": "", "y": ""}),
+    ("jump_to_position", {"x": "", "y": ""}),
+    ("set_score", {"value": "", "relative": True}),
+    ("set_variable", {"variable": "hspeed", "value": ""}),
+    ("set_variable", {"variable": "myvar", "value": ""}),
+    ("draw_text", {"text": "hi", "x": "10 pixels", "y": 0}),  # malformed expr
+    ("set_hspeed", {"speed": "5 apples"}),                    # malformed expr
+])
+def test_empty_or_malformed_numeric_fields_compile(action, params):
+    """KA finder F1/F4: a cleared or malformed numeric field is a no-op on
+    desktop but used to emit uncompilable Python (self.hspeed = ) that
+    killed the whole exported object module. Now routed through _num_code."""
+    assert _compiles(_gen(action, params))
+
+
+def test_set_vspeed_folds_sign_for_numeric():
+    """The sign flip folds a numeric literal (-3 stays a clean 3, not --3)."""
+    assert "self.vspeed = 3" in _gen("set_vspeed", {"speed": "-3"})
+    assert "self.vspeed = -24" in _gen("set_vspeed", {"speed": "24"})
+    # an expression is wrapped, not folded
+    assert "self.vspeed = -(" in _gen("set_vspeed", {"speed": "myjump"})
+
+
+def test_numeric_field_resolves_bare_instance_var():
+    """KA finder F3: a bare instance-var name resolves to self.<name>
+    (parity with the desktop runtime's _parse_value)."""
+    assert "self.direction" in _gen("set_hspeed", {"speed": "direction"})
+
+
+def test_caption_and_names_with_quotes_are_repr_escaped():
+    """KA finder F2: free text (caption) / a lookup name with an apostrophe
+    used to break the emitted literal -> SyntaxError."""
+    assert _compiles(_gen("set_window_caption", {"caption": "Player's Score"}))
+    assert _compiles(_gen("create_instance", {"object": "obj'x", "x": 0, "y": 0}))
+
+
+def test_if_key_pressed_non_arrow_keys():
+    """KA finder F5: non-arrow keys used to all fall back to 275 (RIGHT).
+    Now space/letters map correctly and an unknown key maps to -1 (never
+    fires) instead of firing on the right arrow."""
+    assert "get(32," in _gen("if_key_pressed", {"key": "space"})   # space
+    assert "get(97," in _gen("if_key_pressed", {"key": "a"})       # 'a'
+    assert "get(-1," in _gen("if_key_pressed", {"key": "f5"})      # unknown
+    assert "get(275," not in _gen("if_key_pressed", {"key": "f5"})

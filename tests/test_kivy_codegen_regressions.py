@@ -125,7 +125,9 @@ class TestConditionalScoping:
         code = _generate_event(actions)
         lines = code.splitlines()
         jump_cond = next(l for l in lines if 'if ' in l and 'vspeed' in l)
-        jump = next(l for l in lines if l.strip().startswith('self.vspeed = -('))
+        # set_vspeed flips the sign; a numeric literal folds to a clean
+        # "-24" (an expression would be "-(...)"). Match either form.
+        jump = next(l for l in lines if l.strip().startswith('self.vspeed = -'))
         # The jump is guarded by (exactly one level under) the condition
         assert (len(jump) - len(jump.lstrip())) == \
             (len(jump_cond) - len(jump_cond.lstrip())) + 4

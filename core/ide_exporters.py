@@ -55,7 +55,14 @@ class IDEExporters:
             self.ide.update_status(self.ide.tr("Exporting to HTML5..."))
 
             if exporter.export(self.ide.current_project_path, Path(output_dir)):
-                output_file = Path(output_dir) / f"{self.ide.current_project_data['name']}.html"
+                # Reuse the exporter's own filename sanitization so the
+                # success message + "Open in browser" point at the file that
+                # was actually written — a name with ':' / '<>' is sanitized
+                # on write, so recomputing the raw name opened nothing (#5).
+                from export.HTML5.html5_exporter import _sanitize_filename
+                _name = self.ide.current_project_data.get('name', 'game')
+                _safe = _sanitize_filename(str(_name)) or 'game'
+                output_file = Path(output_dir) / f"{_safe}.html"
 
                 reply = QMessageBox.question(
                     self.ide,

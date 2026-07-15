@@ -26,7 +26,7 @@ import logging
 # Package version. Surfaces in the Welcome tab's title block and in
 # `export_project_summary()`. Bumped in lockstep with README.md,
 # version_info.txt, and pyproject.toml.
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
