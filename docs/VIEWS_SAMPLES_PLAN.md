@@ -50,6 +50,22 @@ primitive next to existing ones.
 
 ## Proposed plan
 
+### Progress
+
+- **2026-07-15 — HTML5 camera DONE (step 2 + the enable_views/set_view
+  dispatch part of step 3).** `engine.js` gained the GameMaker 8-view
+  system mirroring `game_runner.py`: view state on `GameRoom` (from
+  `room_data.views`), `updateViews()` (border-follow + per-axis speed
+  limit + room clamp), a view-aware `render()` (per-view `ctx.clip()` +
+  translate by `port - view`; `_renderContents` factored out; no-view
+  path unchanged), and `enable_views`/`set_view` executeAction cases.
+  Verified end-to-end in real Chromium (follow math, both-edge clamp, and
+  the render offset via a pixel check on a 2400×800/800×600 synthetic
+  room — 7/7). Source-level regression: `tests/test_html5_views.py`.
+  Suite 1613 passed. **Still to do:** Kivy camera (step 1), the
+  `events/action_types.py` metadata registration (rest of step 3), and
+  the synthetic 3-target parity test (step 4) — then Phase 2 samples.
+
 ### Phase 1 — engine work (do this first; it's the actual risk/unknown)
 
 1. Add view-offset-aware rendering to the Kivy exporter:
