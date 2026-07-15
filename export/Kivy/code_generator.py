@@ -829,6 +829,46 @@ if dist > 0:
         elif action_type == 'restart_room' or action_type == 'room_restart':
             return "from main import get_game_app; app = get_game_app(); app._switch_to_room(app.current_room_index) if app else None"
 
+        # VIEW / CAMERA ACTIONS — reconfigure the scene's views live. The
+        # multi-view render needs the Fbo built at construction (baked
+        # views_enabled), so these reconfigure an already-enabled camera; the
+        # scene methods no-op safely otherwise. (Was previously "Unknown action
+        # type".)
+        elif action_type in ('enable_views', 'enable_view'):
+            raw = params.get('enable', params.get('enabled', 'true'))
+            if isinstance(raw, str):
+                flag = raw.strip().lower() in ('true', '1', 'yes')
+            else:
+                flag = bool(raw)
+            return f"self.scene.set_views_enabled({flag})"
+
+        elif action_type in ('set_view', 'view_set'):
+            try:
+                idx = int(params.get('view', 0))
+            except (ValueError, TypeError):
+                idx = 0
+            if idx < 0 or idx > 7:
+                idx = 0
+            updates = {}
+            for k in ('view_x', 'view_y', 'view_w', 'view_h',
+                      'port_x', 'port_y', 'port_w', 'port_h',
+                      'hborder', 'vborder', 'hspeed', 'vspeed'):
+                if k in params and params[k] not in (None, ''):
+                    try:
+                        updates[k] = int(float(params[k]))
+                    except (ValueError, TypeError):
+                        pass
+            if 'visible' in params:
+                vis = params['visible']
+                if isinstance(vis, str):
+                    updates['visible'] = vis.strip().lower() in ('true', '1', 'yes')
+                else:
+                    updates['visible'] = bool(vis)
+            if 'follow' in params:
+                f = params['follow']
+                updates['follow'] = str(f) if f else None
+            return f"self.scene.apply_set_view({idx}, {updates!r})"
+
         # GAME CONTROL ACTIONS
         elif action_type == 'game_end' or action_type == 'end_game':
             return "from kivy.app import App; App.get_running_app().stop()"

@@ -102,10 +102,12 @@ this sample — see `CREDITS.txt`.
   1:1 translate); the two-view config round-trips into the export.
 - **Mobile (Kivy/Android):** the exporter renders the room into an Fbo and
   blits each visible view's region into its screen port
-  (`tests/test_kivy_views.py` covers the multi-view render). Same *Known
-  limitation* as `views_1`: the Kivy code generator doesn't emit the
-  `enable_views`/`set_view` actions themselves, so the camera is driven by the
-  baked room config (which this sample provides).
+  (`tests/test_kivy_views.py` covers the multi-view render). The
+  `enable_views`/`set_view` actions are emitted, so the two-view setup runs from
+  `obj_camera`'s create event as well as from the baked room config. Residual
+  limitation (as in `views_1`): the render target is built at room creation, so
+  `views_enabled` must be in the room config (it is here) for the camera to
+  render on Kivy.
 - Cross-target scroll-math agreement is pinned by
   `tests/test_views_export_parity.py`.
 
