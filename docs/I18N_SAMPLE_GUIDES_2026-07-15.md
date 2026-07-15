@@ -97,7 +97,7 @@ committing — French especially, per the CLAUDE.md standing rule)
    flip the checkbox below with the commit hash.
 
 - [x] de
-- [ ] it
+- [x] it
 - [ ] ru
 - [ ] sl
 - [ ] uk
