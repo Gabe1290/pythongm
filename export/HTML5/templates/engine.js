@@ -91,6 +91,12 @@ def _get_inst(inst_id):
     if inst is None:
         inst = _ExecInstance()
         inst._draw_queue = []
+        # Sounds queued via self._sound_queue.append('snd_x') — no live
+        # \`game\` object exists in this exec scope, so execute_code can't
+        # call game.sounds[...].play() directly the way the desktop
+        # pygame runtime does; the queue is drained into the JSON patch
+        # below and actually played on the JS side (real Audio elements).
+        inst._sound_queue = []
         _instances[inst_id] = inst
     return inst
 
@@ -127,17 +133,64 @@ def run_code(inst_id, code, sync_json):
     for key in ('x', 'y', 'visible'):
         if key in sync and getattr(self, key, sync.get(key)) != sync.get(key):
             patch[key] = getattr(self, key)
+    if self._sound_queue:
+        patch['sounds'] = self._sound_queue
+        self._sound_queue = []
     return json.dumps(patch)
 
 def run_draw(inst_id, code, sync_json):
     self = _get_inst(inst_id)
     self._draw_queue = []
-    run_code(inst_id, code, sync_json)
+    code_patch = json.loads(run_code(inst_id, code, sync_json))
     try:
-        return json.dumps(self._draw_queue, default=list)
+        return json.dumps({'draws': self._draw_queue,
+                            'sounds': code_patch.get('sounds', [])}, default=list)
     finally:
         self._draw_queue = []
 `;
+
+// Shared with the `play_sound` action handler below (executeAction's
+// 'play_sound' case) — one pooled-<audio> acquisition path for both the
+// structured action and the execute_code sound-queue primitive.
+function acquirePooledAudio(game, name) {
+    const src = game.sounds ? game.sounds[name] : null;
+    if (!src) return null;
+    const pool = game._audioPool[name] || (game._audioPool[name] = []);
+    let audio = pool.find(a => a.paused || a.ended);
+    if (!audio && pool.length < 8) {
+        audio = new Audio(src);
+        pool.push(audio);
+    }
+    return audio || null;
+}
+
+// Plays a sound queued by execute_code via self._sound_queue.append(...).
+// Entries are either a bare sound name or {sound, volume}. One-shot only
+// (no loop) — matches the desktop runtime's ActionExecutor._drain_sound_queue.
+function playQueuedSounds(sounds, game) {
+    if (!sounds || !sounds.length) return;
+    for (const item of sounds) {
+        const name = typeof item === 'string' ? item : (item && (item.sound || item.name)) || '';
+        const volume = typeof item === 'object' && item ? item.volume : undefined;
+        if (!name) continue;
+        const audio = acquirePooledAudio(game, name);
+        if (!audio) {
+            console.warn(`queued sound not found or unsupported format: ${name}`);
+            continue;
+        }
+        try {
+            audio.loop = false;
+            audio.currentTime = 0;
+            if (typeof volume === 'number' && !Number.isNaN(volume)) {
+                audio.volume = Math.max(0, Math.min(1, volume));
+            }
+            const playPromise = audio.play();
+            if (playPromise && playPromise.catch) playPromise.catch(() => {});
+        } catch (e) {
+            console.warn('queued sound play failed:', e);
+        }
+    }
+}
 
 class PythonBridge {
     constructor() {
@@ -210,6 +263,7 @@ class PythonBridge {
             if ('x' in patch) inst.x = patch.x;
             if ('y' in patch) inst.y = patch.y;
             if ('visible' in patch) inst.visible = patch.visible;
+            playQueuedSounds(patch.sounds, game);
         } catch (err) {
             // Log-and-continue, matching the IDE runtime's behaviour for
             // errors inside user code.
@@ -221,7 +275,9 @@ class PythonBridge {
     runDraw(inst, code, game) {
         if (!this.ready) return [];
         try {
-            return JSON.parse(this._runDraw(inst._pyId, code, this._syncJson(inst, game)));
+            const result = JSON.parse(this._runDraw(inst._pyId, code, this._syncJson(inst, game)));
+            playQueuedSounds(result.sounds, game);
+            return result.draws || [];
         } catch (err) {
             console.error('draw execute_code error:', err);
             return [];
@@ -1929,24 +1985,16 @@ class GameObject {
                 // swallowed, matching a muted-until-interaction browser.
                 const soundName = params.sound || '';
                 if (!soundName) break;
-                const src = game.sounds ? game.sounds[soundName] : null;
-                if (!src) {
+                const audio = acquirePooledAudio(game, soundName);
+                if (!audio) {
                     console.warn(`play_sound: sound not found or unsupported format: ${soundName}`);
                     break;
                 }
                 try {
-                    const pool = game._audioPool[soundName] || (game._audioPool[soundName] = []);
-                    let audio = pool.find(a => a.paused || a.ended);
-                    if (!audio && pool.length < 8) {
-                        audio = new Audio(src);
-                        pool.push(audio);
-                    }
-                    if (audio) {
-                        audio.loop = params.loop === true || params.loop === 'true';
-                        audio.currentTime = 0;
-                        const playPromise = audio.play();
-                        if (playPromise && playPromise.catch) playPromise.catch(() => {});
-                    }
+                    audio.loop = params.loop === true || params.loop === 'true';
+                    audio.currentTime = 0;
+                    const playPromise = audio.play();
+                    if (playPromise && playPromise.catch) playPromise.catch(() => {});
                 } catch (e) {
                     console.warn('play_sound failed:', e);
                 }
