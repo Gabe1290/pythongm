@@ -52,6 +52,30 @@ primitive next to existing ones.
 
 ### Progress
 
+- **2026-07-15 — Kivy camera DONE (step 1).** The Kivy exporter's generated
+  scene now bakes a `views_config` (8 views, runtime default schema) and opens
+  a camera transform in `canvas.before` — `PushMatrix()` + a `Translate`
+  (`self._cam_translate`), closed by `PopMatrix()` in `canvas.after` — so the
+  background *and* every child instance's canvas scroll together (the Android
+  fit-scale container nests cleanly outside it). `update_views()` mirrors
+  `game_runner.update_views` but is computed in Kivy's **y-up** space
+  (instances already store `self.x/self.y` in Kivy coords): border-based
+  follow of view 0's `follow` object, per-axis speed limit, clamp to room
+  bounds, then `_cam_translate = port - view`. Called each frame after the
+  end-step, before draw. **Scope: single-view follow only** — multi-view port
+  clipping (a `StencilView`/scissor per port) is the documented follow-up, same
+  as it would be the next increment on HTML5's multi-view path. Verified by
+  `tests/test_kivy_views.py`: source assertions + a headless run against stub
+  kivy that drives `update_views()` and checks the translate tracks the target
+  and clamps at both room edges (and is inert when `views_enabled` is False).
+  Suite 1618 → 1623 passed. **Now all 3 targets have the camera** (desktop was
+  always there, HTML5 + Kivy added this plan). **Still to do:** the synthetic
+  3-target parity test (step 4), then Phase 2 samples.
+- **2026-07-15 — view actions registered (rest of step 3).** `enable_views`
+  and `set_view` are now structured actions in `events/action_types.py`
+  (category "Views"), so they round-trip through save/load and the exporters'
+  action dispatch instead of being raw-`execute_code`-only. Regression:
+  `tests/test_views_action_registration.py`. (commit a7a963a)
 - **2026-07-15 — HTML5 camera DONE (step 2 + the enable_views/set_view
   dispatch part of step 3).** `engine.js` gained the GameMaker 8-view
   system mirroring `game_runner.py`: view state on `GameRoom` (from

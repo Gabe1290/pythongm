@@ -146,6 +146,11 @@ class _Instr:
         self.kw = kw
 
 
+class _Translate:
+    def __init__(self, x=0, y=0, z=0):
+        self.x, self.y, self.z = x, y, z
+
+
 class _Color(_Instr):
     pass
 
@@ -216,7 +221,8 @@ def _stub_kivy_env(game_dir: Path, play_sound_calls):
         mod("kivy.uix")
         mod("kivy.uix.widget", Widget=_Widget)
         mod("kivy.graphics", Rectangle=_Rectangle, Color=_Color, Line=_Line,
-            Ellipse=_EllipseI, InstructionGroup=_Group)
+            Ellipse=_EllipseI, InstructionGroup=_Group,
+            PushMatrix=_Instr, PopMatrix=_Instr, Translate=_Translate)
         mod("kivy.core")
         mod("kivy.core.window", Window=_WindowCls())
         mod("kivy.core.image", Image=_CoreImage)

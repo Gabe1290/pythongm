@@ -1237,6 +1237,35 @@ if __name__ == '__main__':
         # Convert hex string or [r, g, b, a] list to RGB floats (0-1 range)
         r, g, b = _bg_color_to_rgb(bg_color)
 
+        # Camera / views config baked into the scene (single-view follow).
+        views_enabled = bool(room_data.get('views_enabled',
+                                           room_data.get('enable_views', False)))
+        views_raw = room_data.get('views', {})
+        if not isinstance(views_raw, dict):
+            views_raw = {}
+        views_list = []
+        for vi in range(8):
+            vd = views_raw.get(f'view_{vi}', {})
+            if not isinstance(vd, dict):
+                vd = {}
+            views_list.append({
+                'visible': bool(vd.get('visible', vi == 0)),
+                'view_x': int(vd.get('view_x', 0) or 0),
+                'view_y': int(vd.get('view_y', 0) or 0),
+                'view_w': int(vd.get('view_w', width) or width),
+                'view_h': int(vd.get('view_h', height) or height),
+                'port_x': int(vd.get('port_x', 0) or 0),
+                'port_y': int(vd.get('port_y', 0) or 0),
+                'port_w': int(vd.get('port_w', width) or width),
+                'port_h': int(vd.get('port_h', height) or height),
+                'follow': vd.get('follow') or None,
+                'hborder': int(vd.get('hborder', 32) or 0),
+                'vborder': int(vd.get('vborder', 32) or 0),
+                'hspeed': int(vd.get('hspeed', -1)),
+                'vspeed': int(vd.get('vspeed', -1)),
+            })
+        views_repr = repr(views_list)
+
         # Import ALL project objects (not just room-placed ones) so
         # create_instance can dynamically create any object type (e.g., obj_box_store)
         all_objects = self.project_data.get('assets', {}).get('objects', {})
@@ -1356,7 +1385,8 @@ Generated from PyGameMaker IDE
 """
 
 from kivy.uix.widget import Widget
-from kivy.graphics import Rectangle, Color
+from kivy.graphics import Rectangle, Color, PushMatrix, PopMatrix
+from kivy.graphics import Translate as TranslateInstr
 from kivy.core.window import Window
 from utils import load_image
 
@@ -1379,6 +1409,13 @@ class {class_name}(Widget):
         self.instances_to_destroy = []
         self._pending_creates = []
 
+        # Camera / views (large-level scrolling). Single-view follow only;
+        # multi-view port clipping is a documented follow-up. view_x/view_y
+        # are repurposed as the live camera position in Kivy space (y-up).
+        self.views_enabled = {views_enabled}
+        self.views = {views_repr}
+        self._cam_translate = None
+
         # Keyboard state tracking
         self.keys_pressed = {{}}
 
@@ -1393,12 +1430,23 @@ class {class_name}(Widget):
         self.create_instances()
 
     def _draw_background(self):
-        """Draw the room background color and image"""
+        """Draw the room background color and image, under the camera transform.
+
+        PushMatrix + a Translate (updated each frame by update_views) open the
+        camera in canvas.before; the matching PopMatrix in canvas.after closes
+        it. Everything drawn between — the background here and every child
+        instance's canvas — scrolls with the view. When views are disabled the
+        Translate stays at (0, 0, 0), so rendering is identical to before.
+        """
         with self.canvas.before:
+            PushMatrix()
+            self._cam_translate = TranslateInstr(0, 0, 0)
             # Background color: RGB = ({bg_r:.3f}, {bg_g:.3f}, {bg_b:.3f})
             self._bg_color_instr = Color({bg_r:.3f}, {bg_g:.3f}, {bg_b:.3f}, 1)
             self.bg_rect = Rectangle(pos=(0, 0), size=(self.room_width, self.room_height))
 {bg_image_code}
+        with self.canvas.after:
+            PopMatrix()
 
     def _class_name_to_snake_case(self, name):
         """Convert PascalCase class name to snake_case for collision events"""
@@ -1459,6 +1507,82 @@ class {class_name}(Widget):
             self._pending_creates.append(instance)
             return instance
         return None
+
+    def _find_view_target(self, name):
+        """First live instance of object `name` (snake_case or PascalCase)."""
+        if not name:
+            return None
+        pascal = ''.join(p.capitalize() for p in name.split('_')) if '_' in name else name
+        for inst in self.instances:
+            if inst in self.instances_to_destroy:
+                continue
+            cls = inst.__class__.__name__
+            if cls == name or cls == pascal or getattr(inst, 'object_name', '') == name:
+                return inst
+        return None
+
+    def update_views(self):
+        """GameMaker-style camera follow + clamp for view 0, computed in Kivy's
+        y-up space (mirrors runtime/game_runner.update_views). Border-based
+        follow with optional per-axis speed limit, clamped to room bounds. Only
+        view 0 drives the camera here; multi-view port clipping is a follow-up.
+        """
+        if not self.views_enabled or self._cam_translate is None:
+            return
+        view = self.views[0]
+        if not view.get('visible') or not view.get('follow'):
+            return
+        target = self._find_view_target(view['follow'])
+        if target is None:
+            return
+
+        vw = int(view['view_w'])
+        vh = int(view['view_h'])
+        hb = int(view['hborder'])
+        vb = int(view['vborder'])
+        old_x = int(view['view_x'])
+        old_y = int(view['view_y'])
+        new_x, new_y = old_x, old_y
+        tx = float(target.x)
+        ty = float(target.y)
+
+        # Horizontal border follow
+        if tx < old_x + hb:
+            new_x = int(tx - hb)
+        elif tx > old_x + vw - hb:
+            new_x = int(tx - vw + hb)
+        # Vertical border follow
+        if ty < old_y + vb:
+            new_y = int(ty - vb)
+        elif ty > old_y + vh - vb:
+            new_y = int(ty - vh + vb)
+
+        # Per-axis speed limit (-1 == unlimited)
+        hsp = int(view.get('hspeed', -1))
+        vsp = int(view.get('vspeed', -1))
+        if hsp >= 0:
+            dx = new_x - old_x
+            if dx > hsp:
+                new_x = old_x + hsp
+            elif dx < -hsp:
+                new_x = old_x - hsp
+        if vsp >= 0:
+            dy = new_y - old_y
+            if dy > vsp:
+                new_y = old_y + vsp
+            elif dy < -vsp:
+                new_y = old_y - vsp
+
+        # Clamp to room bounds (if the view is smaller than the room)
+        new_x = max(0, min(new_x, self.room_width - vw)) if vw < self.room_width else 0
+        new_y = max(0, min(new_y, self.room_height - vh)) if vh < self.room_height else 0
+
+        view['view_x'] = new_x
+        view['view_y'] = new_y
+        # Translate the scene so room point (view_x, view_y) maps to the port
+        # origin. Kivy is y-up, so a positive view_y scrolls content downward.
+        self._cam_translate.x = int(view.get('port_x', 0)) - new_x
+        self._cam_translate.y = int(view.get('port_y', 0)) - new_y
 
     def update(self, dt):
         """Main game loop update - GAMEMAKER 7.0 EVENT ORDER"""
@@ -1576,6 +1700,10 @@ class {class_name}(Widget):
         # for objects with no draw event too.
         for instance in _live:
             instance._drain_sound_queue()
+
+        # 7c. CAMERA - follow/clamp views so the transform is up to date before
+        # instance canvases (which live under the camera translate) render.
+        self.update_views()
 
         # 8. DRAW EVENTS - sprites render via each widget's canvas; the
         # GameMaker draw event renders through the per-instance draw queue
@@ -1708,6 +1836,8 @@ class {class_name}(Widget):
             class_name=class_name,
             width=width,
             height=height,
+            views_enabled=views_enabled,
+            views_repr=views_repr,
             import_lines=import_lines,
             object_registry=object_registry,
             instances_init=instances_init,
