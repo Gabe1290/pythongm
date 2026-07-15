@@ -2577,5 +2577,28 @@ Check the console for error details.</source>
         <source>Clear Recent Projects</source>
         <translation type="vanished">Zuletzt verwendete Projekte löschen</translation>
     </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>📖  Sample guides</source>
+        <translation>📖  Beispielanleitungen</translation>
+    </message>
+</context>
+<context>
+    <name>SampleDocsDialog</name>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="489"/>
+        <source>Sample guides</source>
+        <translation>Beispielanleitungen</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="526"/>
+        <source>_No bundled samples were found in this build._</source>
+        <translation>_In dieser Version wurden keine mitgelieferten Beispiele gefunden._</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="567"/>
+        <source>_No documentation is bundled for **{0}**._</source>
+        <translation>_Für **{0}** ist keine Dokumentation enthalten._</translation>
+    </message>
 </context>
 </TS>

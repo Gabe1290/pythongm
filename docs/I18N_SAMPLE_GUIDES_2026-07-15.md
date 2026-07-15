@@ -96,7 +96,7 @@ committing — French especially, per the CLAUDE.md standing rule)
 4. Commit + push (message-only + `.qm` binary; one language = one commit),
    flip the checkbox below with the commit hash.
 
-- [ ] de
+- [x] de
 - [ ] it
 - [ ] ru
 - [ ] sl
