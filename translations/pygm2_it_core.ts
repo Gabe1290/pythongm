@@ -2388,6 +2388,11 @@ Controlla la console per i dettagli dell&apos;errore.</translation>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Views — Level 1</source>
+            <translation>Viste — Livello 1</translation>
+        </message>
+
+        <message>
             <source>Match-3 — Level 3</source>
             <translation>Match-3 — Livello 3</translation>
         </message>
