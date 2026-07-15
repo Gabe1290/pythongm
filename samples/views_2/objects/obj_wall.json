@@ -1,0 +1,12 @@
+{
+  "name": "obj_wall",
+  "asset_type": "object",
+  "sprite": "spr_wall",
+  "visible": true,
+  "solid": true,
+  "persistent": false,
+  "depth": 0,
+  "events": {},
+  "imported": true,
+  "parent": ""
+}

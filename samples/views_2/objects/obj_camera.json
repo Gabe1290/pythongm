@@ -1,0 +1,59 @@
+{
+  "name": "obj_camera",
+  "asset_type": "object",
+  "sprite": "",
+  "visible": false,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "enable_views",
+          "parameters": {
+            "enable": "true"
+          }
+        },
+        {
+          "action": "set_view",
+          "parameters": {
+            "view": "0",
+            "visible": "true",
+            "view_w": "400",
+            "view_h": "600",
+            "port_x": "0",
+            "port_y": "0",
+            "port_w": "400",
+            "port_h": "600",
+            "follow": "obj_player1",
+            "hborder": "120",
+            "vborder": "150",
+            "hspeed": "-1",
+            "vspeed": "-1"
+          }
+        },
+        {
+          "action": "set_view",
+          "parameters": {
+            "view": "1",
+            "visible": "true",
+            "view_w": "400",
+            "view_h": "600",
+            "port_x": "400",
+            "port_y": "0",
+            "port_w": "400",
+            "port_h": "600",
+            "follow": "obj_player2",
+            "hborder": "120",
+            "vborder": "150",
+            "hspeed": "-1",
+            "vspeed": "-1"
+          }
+        }
+      ]
+    }
+  },
+  "imported": true,
+  "parent": ""
+}
