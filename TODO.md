@@ -113,11 +113,12 @@ move it to a feature branch and remove the entry once the feature ships.
   full 8-view camera (`552a9bc`, Chromium-verified), and `enable_views`/
   `set_view` are now **registered in `events/action_types.py`** (category
   "Views") so they round-trip through the action editor. State by target:
-  **desktop runtime ✅, HTML5 export ✅, Kivy/Android export ❌ (pending —
-  the next engine unit).** So the actions are honestly usable on 2 of 3
-  targets; the action-editor entry documents nothing false, but a Kivy
-  export of a views game will not scroll until that unit lands. Remaining
-  Phase 1: Kivy camera + the synthetic 3-target parity test; then the
+  **desktop runtime ✅, HTML5 export ✅, Kivy/Android export ✅ (single-view
+  follow; multi-view port clipping is a documented follow-up).** All 3
+  targets now scroll a views game — the Kivy camera bakes a views config +
+  `PushMatrix`/`Translate`/`PopMatrix` around the scene and runs an
+  `update_views()` follow/clamp in Kivy's y-up space (`tests/test_kivy_views.py`).
+  Remaining Phase 1: the synthetic 3-target parity test; then the
   `views_1`/`views_2` samples (Phase 2).
 - Recipe for adding more: see the comments at the bottom of
   `events/action_types.py` and the survey script that lived briefly at
