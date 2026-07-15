@@ -1,0 +1,37 @@
+Sprite art and sound effects in this sample — License notice
+==============================================================
+
+The four gem images are copied unmodified from samples/match3_2 (same
+license, same author). Two of the five sound effects are also copied from
+match3_2; snd_special.wav and snd_level_up.wav are new for this sample.
+All are dedicated to the public domain by the pygm2 author (Gabriel
+Thullen):
+
+  sprites/spr_gem_red.png      (from match3_2)
+  sprites/spr_gem_blue.png     (from match3_2)
+  sprites/spr_gem_green.png    (from match3_2)
+  sprites/spr_gem_yellow.png   (from match3_2)
+  sounds/snd_swap.wav          (from match3_2)
+  sounds/snd_match.wav         (from match3_2)
+  sounds/snd_cascade.wav       (from match3_2)
+  sounds/snd_special.wav       (new — plays when a special tile is created
+                                 or activated)
+  sounds/snd_level_up.wav      (new — plays when a level's target score is
+                                 reached and the game advances rooms)
+
+License: CC0 1.0 Universal (Public Domain Dedication), SPDX: CC0-1.0.
+To the extent possible under law, the author has waived all copyright and
+related or neighboring rights to these files. You may copy, modify,
+distribute, and use them, including for commercial purposes, all without
+asking permission. No attribution is required (though it is appreciated).
+
+  Full text: ../../licenses/CC0-1.0.txt
+  Summary  : https://creativecommons.org/publicdomain/zero/1.0/
+
+Notes on the new sounds: same synthesis approach as match3_2 — short
+(<=0.32s) synthesized tones (sine waves with a linear fade envelope)
+written directly via Python's stdlib `wave` module, no recordings or
+external sound libraries.
+
+Full project-wide asset licensing: see docs/ASSET_LICENSES.md in the
+PyGameMaker repository.

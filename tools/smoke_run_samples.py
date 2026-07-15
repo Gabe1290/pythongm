@@ -40,7 +40,7 @@ from runtime.game_runner import GameRunner
 
 SAMPLES = ["maze_1", "maze_2", "maze_3",
            "plateforme_1", "plateforme_2", "plateforme_3",
-           "plateforme_4", "plateforme_5", "match3_1"]
+           "match3_1", "match3_2", "match3_3"]
 
 
 class _Collector(logging.Handler):
