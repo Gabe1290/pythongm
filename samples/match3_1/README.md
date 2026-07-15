@@ -11,6 +11,19 @@ makes it the reference sample for the `execute_code` action and for
 draw-queue rendering. More advanced versions (sprite-based tiles, sound,
 levels) are planned as `match3_2` etc. — see *Roadmap* below.
 
+**Where this fits:** `match3_*` is the last (and most different) of the
+three sample families — a different paradigm, not an incremental step:
+no built-in actions, no per-tile objects, no room-level tiles. Everything
+(grid state, collision, rendering) is driven directly from `execute_code`
+Python instead of composed from built-in actions across many objects, the
+way `maze_*` and `plateforme_*` are. See
+[`../README.md`](../README.md#progression-how-each-family-is-built-not-just-how-it-plays)
+for the full progression.
+
+**Sound & music:** none — deliberately, per the paragraph above. (Sound
+becomes possible from `match3_2` on, via the sound-queue primitive that
+sample introduced.)
+
 ## How to play
 
 - **Click** a tile to select it (white outline), then **click an
@@ -103,11 +116,12 @@ idle ──(click swaps, match found)──▶ FLASH (marked blink, 36 frames)
 
 ## Roadmap (planned advanced versions)
 
-- **match3_2** — draw the tiles with the bundled sprites instead of
-  color rectangles; add sound effects for swap/match/cascade; swap
-  animation.
-- **match3_3** — move limit or timer, multiple rooms as levels with
-  rising targets, special tiles (4/5-in-a-row bonuses).
+- **[match3_2](../match3_2/README.md)** — done: draws the tiles with
+  sprites instead of color rectangles, adds sound effects for
+  swap/match/cascade, and a swap slide animation.
+- **[match3_3](../match3_3/README.md)** — done: a move limit, three rooms
+  as rising-target levels, and special tiles from 4/5-in-a-row matches.
+  Closes this roadmap.
 
 The versions are meant to mirror the maze_1→3 progression: each one a
 readable diff over the previous.

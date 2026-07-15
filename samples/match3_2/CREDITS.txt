@@ -1,0 +1,37 @@
+Sprite art and sound effects in this sample — License notice
+==============================================================
+
+The four gem images and three sound effects in this folder were created
+for this sample by the pygm2 author (Gabriel Thullen) and are dedicated
+to the public domain:
+
+  sprites/spr_gem_red.png
+  sprites/spr_gem_blue.png
+  sprites/spr_gem_green.png
+  sprites/spr_gem_yellow.png
+  sounds/snd_swap.wav
+  sounds/snd_match.wav
+  sounds/snd_cascade.wav
+
+License: CC0 1.0 Universal (Public Domain Dedication), SPDX: CC0-1.0.
+To the extent possible under law, the author has waived all copyright and
+related or neighboring rights to these files. You may copy, modify,
+distribute, and use them, including for commercial purposes, all without
+asking permission. No attribution is required (though it is appreciated).
+
+  Full text: ../../licenses/CC0-1.0.txt
+  Summary  : https://creativecommons.org/publicdomain/zero/1.0/
+
+Notes on the art: each gem sprite is a plain 88x88 rounded-square PNG
+(generated procedurally with Pillow — no external image assets), sized to
+drop into the board exactly where match3_1's colored rectangle used to be,
+since the runtime's `draw_sprite` command blits at native pixel size with
+no scaling. A center-icon shape (circle/diamond/square/triangle) is layered
+on top of each color as a colorblind-safe secondary cue, not just hue.
+
+Notes on the sounds: three short synthesized tones (<=0.3s, sine waves with
+a linear fade envelope) written directly via Python's stdlib `wave` module —
+no recordings, no external sound libraries.
+
+Full project-wide asset licensing: see docs/ASSET_LICENSES.md in the
+PyGameMaker repository.

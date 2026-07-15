@@ -1,0 +1,26 @@
+{
+  "name": "rm_level3",
+  "asset_type": "room",
+  "width": 800,
+  "height": 800,
+  "background_color": "#a1e4eb",
+  "background_image": "",
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "instance_count": 1,
+  "instances": [
+    {
+      "object_name": "obj_GridManager",
+      "x": 0,
+      "y": 0,
+      "rotation": 0,
+      "scale_x": 1.0,
+      "scale_y": 1.0,
+      "visible": true
+    }
+  ],
+  "tiles": [],
+  "created": "2026-07-15T08:58:56.906676",
+  "modified": "2026-07-15T08:58:56.906676",
+  "imported": true
+}

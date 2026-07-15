@@ -1,0 +1,220 @@
+{
+  "name": "Match3Game2",
+  "version": "1.0.0",
+  "created": "2026-07-15T08:27:03.820616",
+  "modified": "2026-07-15T08:27:03.820616",
+  "settings": {
+    "window_title": "Match-3 Tile Game \u2014 Level 2",
+    "window_width": 800,
+    "window_height": 800,
+    "room_speed": 60,
+    "fullscreen": false,
+    "blockly_preset": "beginner",
+    "startup_room": "rm_match3"
+  },
+  "assets": {
+    "sprites": {
+      "spr_gem_red": {
+        "name": "spr_gem_red",
+        "asset_type": "sprite",
+        "width": 88,
+        "height": 88,
+        "image_file": "sprites/spr_gem_red.png",
+        "imported": true,
+        "animation_type": "single",
+        "file_path": "sprites/spr_gem_red.png",
+        "frame_height": 88,
+        "frame_width": 88,
+        "frames": 1,
+        "origin_x": 44,
+        "origin_y": 44,
+        "precise": false,
+        "speed": 10.0,
+        "thumbnail": "thumbnails/spr_gem_red_thumb.png",
+        "modified": "2026-07-15T08:27:03.820616"
+      },
+      "spr_gem_blue": {
+        "name": "spr_gem_blue",
+        "asset_type": "sprite",
+        "width": 88,
+        "height": 88,
+        "image_file": "sprites/spr_gem_blue.png",
+        "imported": true,
+        "animation_type": "single",
+        "file_path": "sprites/spr_gem_blue.png",
+        "frame_height": 88,
+        "frame_width": 88,
+        "frames": 1,
+        "origin_x": 44,
+        "origin_y": 44,
+        "precise": false,
+        "speed": 10.0,
+        "thumbnail": "thumbnails/spr_gem_blue_thumb.png",
+        "modified": "2026-07-15T08:27:03.820616"
+      },
+      "spr_gem_green": {
+        "name": "spr_gem_green",
+        "asset_type": "sprite",
+        "width": 88,
+        "height": 88,
+        "image_file": "sprites/spr_gem_green.png",
+        "imported": true,
+        "animation_type": "single",
+        "file_path": "sprites/spr_gem_green.png",
+        "frame_height": 88,
+        "frame_width": 88,
+        "frames": 1,
+        "origin_x": 44,
+        "origin_y": 44,
+        "precise": false,
+        "speed": 10.0,
+        "thumbnail": "thumbnails/spr_gem_green_thumb.png",
+        "modified": "2026-07-15T08:27:03.820616"
+      },
+      "spr_gem_yellow": {
+        "name": "spr_gem_yellow",
+        "asset_type": "sprite",
+        "width": 88,
+        "height": 88,
+        "image_file": "sprites/spr_gem_yellow.png",
+        "imported": true,
+        "animation_type": "single",
+        "file_path": "sprites/spr_gem_yellow.png",
+        "frame_height": 88,
+        "frame_width": 88,
+        "frames": 1,
+        "origin_x": 44,
+        "origin_y": 44,
+        "precise": false,
+        "speed": 10.0,
+        "thumbnail": "thumbnails/spr_gem_yellow_thumb.png",
+        "modified": "2026-07-15T08:27:03.820616"
+      }
+    },
+    "sounds": {
+      "snd_swap": {
+        "name": "snd_swap",
+        "asset_type": "sound",
+        "file_path": "sounds/snd_swap.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-07-15T08:27:03.820616",
+        "modified": "2026-07-15T08:27:03.820616"
+      },
+      "snd_match": {
+        "name": "snd_match",
+        "asset_type": "sound",
+        "file_path": "sounds/snd_match.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-07-15T08:27:03.820616",
+        "modified": "2026-07-15T08:27:03.820616"
+      },
+      "snd_cascade": {
+        "name": "snd_cascade",
+        "asset_type": "sound",
+        "file_path": "sounds/snd_cascade.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-07-15T08:27:03.820616",
+        "modified": "2026-07-15T08:27:03.820616"
+      }
+    },
+    "backgrounds": {},
+    "objects": {
+      "obj_GridManager": {
+        "name": "obj_GridManager",
+        "asset_type": "object",
+        "sprite": "",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "execute_code",
+                "parameters": {
+                  "code": "self.cols = 6\nself.rows = 6\nself.tile = 96\nself.ox = 112\nself.oy = 140\nself.palette = [(214, 69, 65), (65, 105, 225), (60, 179, 113), (244, 208, 63)]\nself.sprite_names = ['spr_gem_red', 'spr_gem_blue', 'spr_gem_green', 'spr_gem_yellow']\nself.grid = []\nfor gy in range(self.rows):\n    row = []\n    for gx in range(self.cols):\n        n = random.randrange(4)\n        while (gx >= 2 and row[gx - 1] == n and row[gx - 2] == n) or (gy >= 2 and self.grid[gy - 1][gx] == n and self.grid[gy - 2][gx] == n):\n            n = random.randrange(4)\n        row.append(n)\n    self.grid.append(row)\nself.sel = None\nself.score = 0\nself.target = 500\nself.won = False\nself.marked = set()\nself.flash = 0\nself.flash_total = 36\nself.falling = {}\nself.fall_speed = 12\nself.swap_off = {}\nself.swap_speed = 24\nself.swap_phase = None\nself.last_swap = None\nself.pending_marks = None\nself.chain = 0\n\ndef find_matches(g, rows, cols):\n    marks = set()\n    for yy in range(rows):\n        run = 1\n        for xx in range(1, cols + 1):\n            if xx < cols and g[yy][xx] == g[yy][xx - 1]:\n                run = run + 1\n            else:\n                if run >= 3:\n                    for k in range(xx - run, xx):\n                        marks.add((k, yy))\n                run = 1\n    for xx in range(cols):\n        run = 1\n        for yy in range(1, rows + 1):\n            if yy < rows and g[yy][xx] == g[yy - 1][xx]:\n                run = run + 1\n            else:\n                if run >= 3:\n                    for k in range(yy - run, yy):\n                        marks.add((xx, k))\n                run = 1\n    return marks\n\nself.find_matches = find_matches\n\ndef arm_swap(a, b):\n    ax, ay = a\n    bx, by = b\n    self.swap_off[a] = ((ax - bx) * self.tile, (ay - by) * self.tile)\n    self.swap_off[b] = ((bx - ax) * self.tile, (by - ay) * self.tile)\n\nself.arm_swap = arm_swap\n"
+                }
+              }
+            ]
+          },
+          "mouse_left_press": {
+            "actions": [
+              {
+                "action": "execute_code",
+                "parameters": {
+                  "code": "if not self.won and self.flash == 0 and not self.falling and not self.swap_off:\n    gx = int((self.mouse_x - self.ox) // self.tile)\n    gy = int((self.mouse_y - self.oy) // self.tile)\n    if gx < 0 or gx >= self.cols or gy < 0 or gy >= self.rows:\n        self.sel = None\n    elif self.sel is None:\n        self.sel = (gx, gy)\n    elif self.sel == (gx, gy):\n        self.sel = None\n    elif abs(self.sel[0] - gx) + abs(self.sel[1] - gy) != 1:\n        self.sel = (gx, gy)\n    else:\n        g = self.grid\n        sx = self.sel[0]\n        sy = self.sel[1]\n        tmp = g[gy][gx]\n        g[gy][gx] = g[sy][sx]\n        g[sy][sx] = tmp\n        self.last_swap = (gx, gy, sx, sy)\n        self.pending_marks = self.find_matches(g, self.rows, self.cols)\n        self.swap_phase = 'forward'\n        self.arm_swap((gx, gy), (sx, sy))\n        self.sel = None\n        self._sound_queue.append('snd_swap')\n"
+                }
+              }
+            ]
+          },
+          "step": {
+            "actions": [
+              {
+                "action": "execute_code",
+                "parameters": {
+                  "code": "if self.flash > 0:\n    self.flash = self.flash - 1\n    if self.flash == 0:\n        g = self.grid\n        marks = self.marked\n        self.score = self.score + len(marks) * 10\n        falls = {}\n        for xx in range(self.cols):\n            kept = []\n            for yy in range(self.rows):\n                if (xx, yy) not in marks:\n                    kept.append((yy, g[yy][xx]))\n            new_count = self.rows - len(kept)\n            for i in range(len(kept)):\n                dst = new_count + i\n                src = kept[i][0]\n                g[dst][xx] = kept[i][1]\n                if dst != src:\n                    falls[(xx, dst)] = (dst - src) * self.tile\n            for dst in range(new_count):\n                g[dst][xx] = random.randrange(4)\n                falls[(xx, dst)] = new_count * self.tile\n        self.marked = set()\n        self.falling = falls\n        if self.score >= self.target:\n            self.won = True\n        if not falls:\n            new_marks = self.find_matches(g, self.rows, self.cols)\n            if new_marks:\n                self.marked = new_marks\n                self.flash = self.flash_total\n                self.chain = self.chain + 1\n                self._sound_queue.append('snd_cascade')\nelif self.falling:\n    done = True\n    for key in list(self.falling.keys()):\n        v = self.falling[key] - self.fall_speed\n        if v > 0:\n            self.falling[key] = v\n            done = False\n        else:\n            self.falling[key] = 0\n    if done:\n        self.falling = {}\n        new_marks = self.find_matches(self.grid, self.rows, self.cols)\n        if new_marks:\n            self.marked = new_marks\n            self.flash = self.flash_total\n            self.chain = self.chain + 1\n            self._sound_queue.append('snd_cascade')\nelif self.swap_off:\n    done = True\n    for key in list(self.swap_off.keys()):\n        dx, dy = self.swap_off[key]\n        if dx > 0:\n            dx = max(0, dx - self.swap_speed)\n        elif dx < 0:\n            dx = min(0, dx + self.swap_speed)\n        if dy > 0:\n            dy = max(0, dy - self.swap_speed)\n        elif dy < 0:\n            dy = min(0, dy + self.swap_speed)\n        if dx != 0 or dy != 0:\n            done = False\n        self.swap_off[key] = (dx, dy)\n    if done:\n        self.swap_off = {}\n        if self.swap_phase == 'forward':\n            if self.pending_marks:\n                self.marked = self.pending_marks\n                self.flash = self.flash_total\n                self.chain = 0\n                self._sound_queue.append('snd_match')\n                self.swap_phase = None\n                self.pending_marks = None\n                self.last_swap = None\n            else:\n                gx, gy, sx, sy = self.last_swap\n                g = self.grid\n                tmp = g[gy][gx]\n                g[gy][gx] = g[sy][sx]\n                g[sy][sx] = tmp\n                self.arm_swap((gx, gy), (sx, sy))\n                self.swap_phase = 'back'\n        elif self.swap_phase == 'back':\n            self.swap_phase = None\n            self.pending_marks = None\n            self.last_swap = None\n"
+                }
+              }
+            ]
+          },
+          "draw": {
+            "actions": [
+              {
+                "action": "execute_code",
+                "parameters": {
+                  "code": "q = self._draw_queue\nq.append({'type': 'rectangle', 'x1': self.ox - 10, 'y1': self.oy - 10, 'x2': self.ox + self.cols * self.tile + 10, 'y2': self.oy + self.rows * self.tile + 10, 'color': (52, 73, 94), 'filled': True})\nblink_on = self.flash > 0 and (self.flash // 6) % 2 == 0\nboard_top = self.oy\nfor gy in range(self.rows):\n    for gx in range(self.cols):\n        color_idx = self.grid[gy][gx]\n        off_x, off_y = self.swap_off.get((gx, gy), (0, 0))\n        off_y = off_y + self.falling.get((gx, gy), 0)\n        x1 = self.ox + gx * self.tile + 4 - off_x\n        y1 = self.oy + gy * self.tile + 4 - off_y\n        y2 = y1 + self.tile - 8\n        if y2 <= board_top:\n            continue\n        if y1 < board_top:\n            y1 = board_top\n        if (gx, gy) in self.marked and blink_on:\n            q.append({'type': 'rectangle', 'x1': x1, 'y1': y1, 'x2': x1 + self.tile - 8, 'y2': y2, 'color': (255, 255, 255), 'filled': True})\n        else:\n            q.append({'type': 'sprite', 'sprite_name': self.sprite_names[color_idx], 'x': x1, 'y': y1})\n        if (gx, gy) in self.marked:\n            for k in range(3):\n                q.append({'type': 'rectangle', 'x1': x1 + k, 'y1': y1 + k, 'x2': x1 + self.tile - 8 - k, 'y2': y2 - k, 'color': (255, 255, 255), 'filled': False})\nif self.sel is not None:\n    for k in range(4):\n        x1 = self.ox + self.sel[0] * self.tile + k\n        y1 = self.oy + self.sel[1] * self.tile + k\n        q.append({'type': 'rectangle', 'x1': x1, 'y1': y1, 'x2': x1 + self.tile - 2 * k, 'y2': y1 + self.tile - 2 * k, 'color': (255, 255, 255), 'filled': False})\nq.append({'type': 'text', 'x': self.ox, 'y': self.oy - 56, 'text': 'Score: ' + str(self.score) + '   (win at ' + str(self.target) + ')', 'color': (30, 30, 30)})\nq.append({'type': 'text', 'x': self.ox, 'y': self.oy + self.rows * self.tile + 26, 'text': 'Click a tile, then an adjacent tile to swap. Match 3+ in a row.', 'color': (60, 60, 60)})\nif self.won:\n    q.append({'type': 'text', 'x': self.ox + 190, 'y': self.oy - 96, 'text': 'YOU WIN!', 'color': (200, 30, 30)})\n"
+                }
+              }
+            ]
+          }
+        },
+        "imported": true,
+        "created": "2026-07-15T08:27:03.820616",
+        "modified": "2026-07-15T08:27:03.820616"
+      }
+    },
+    "rooms": {
+      "rm_match3": {
+        "name": "rm_match3",
+        "asset_type": "room",
+        "width": 800,
+        "height": 800,
+        "background_color": "#a1e4eb",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 1,
+        "instances": [
+          {
+            "object_name": "obj_GridManager",
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scale_x": 1.0,
+            "scale_y": 1.0,
+            "visible": true
+          }
+        ],
+        "tiles": [],
+        "created": "2026-07-15T08:27:03.820616",
+        "modified": "2026-07-15T08:27:03.820616",
+        "imported": true,
+        "_external_file": "rooms/rm_match3.json"
+      }
+    },
+    "playgrounds": {},
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  },
+  "room_order": [
+    "rm_match3"
+  ]
+}
