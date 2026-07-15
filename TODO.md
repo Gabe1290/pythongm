@@ -118,11 +118,14 @@ move it to a feature branch and remove the entry once the feature ships.
   screen port via tex_coords; the OS window is sized to the view, not the room,
   so the camera shows a true scrolling slice).** Non-views Kivy rooms keep the
   original child-widget path untouched. `tests/test_kivy_views.py` covers
-  single- and multi-view. **Remaining known limitation:** the Kivy code
-  generator does not emit the `enable_views`/`set_view` *actions* themselves
-  (views are driven by the baked room config), so dynamic mid-game camera
-  reconfiguration isn't supported on Kivy yet. **Next:** the `views_2` minimap
-  sample (Phase 2) — the Kivy multi-view render it needs now exists.
+  single- and multi-view. The `enable_views`/`set_view` actions are now emitted
+  by the Kivy code generator too (via `scene.set_views_enabled`/`apply_set_view`),
+  so runtime camera reconfiguration works. **Residual limitation:** the Fbo
+  render target is built at room construction, so a room needs `views_enabled`
+  in its config for the Kivy camera to render (enabling views purely via a
+  runtime action on a non-views room won't retro-fit the Fbo). Both `views_1`
+  (single scrolling camera) and `views_2` (split-screen multi-view) samples
+  ship. **Phase 1 + 2 complete.**
 - Recipe for adding more: see the comments at the bottom of
   `events/action_types.py` and the survey script that lived briefly at
   `.scratch_find_missing_actions.py` (removed after the bulk pass).

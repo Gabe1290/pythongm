@@ -111,6 +111,34 @@ def test_scene_defines_and_calls_update_views(exported):
 
 
 # ---------------------------------------------------------------------------
+# enable_views / set_view are emitted by the code generator (were "Unknown
+# action type" before) — dynamic camera reconfiguration on Kivy.
+# ---------------------------------------------------------------------------
+
+def test_codegen_emits_view_actions():
+    from export.Kivy.code_generator import ActionCodeGenerator
+    gen = ActionCodeGenerator()
+    assert gen._convert_simple_action(
+        "enable_views", {"enable": "true"}, "create") == "self.scene.set_views_enabled(True)"
+    assert gen._convert_simple_action(
+        "enable_views", {"enable": "false"}, "create") == "self.scene.set_views_enabled(False)"
+    code = gen._convert_simple_action(
+        "set_view",
+        {"view": "1", "view_w": "800", "port_x": "400", "follow": "obj_hero",
+         "visible": "true", "hspeed": "-1"},
+        "create")
+    assert code.startswith("self.scene.apply_set_view(1, {")
+    assert "'view_w': 800" in code and "'port_x': 400" in code
+    assert "'follow': 'obj_hero'" in code and "'visible': True" in code
+    assert "'hspeed': -1" in code
+    # blank follow -> None (fixed view), out-of-range index clamps to 0
+    assert "'follow': None" in gen._convert_simple_action(
+        "set_view", {"view": "0", "follow": ""}, "create")
+    assert gen._convert_simple_action(
+        "set_view", {"view": "99"}, "create").startswith("self.scene.apply_set_view(0, {")
+
+
+# ---------------------------------------------------------------------------
 # Headless run of the exported scene against stub kivy modules
 # ---------------------------------------------------------------------------
 
@@ -304,6 +332,20 @@ def test_camera_follows_and_clamps_headlessly(exported):
         target.x = 0.0
         scene.update_views()
         assert scene.views[0]['view_x'] == 0
+
+
+def test_set_view_methods_reconfigure_camera_live(exported):
+    """The runtime set_view/enable_views actions (via the scene's
+    apply_set_view / set_views_enabled) patch views live and are crash-safe."""
+    with _stub_kivy_env(exported):
+        scene = _load_scene(exported)
+        scene.apply_set_view(0, {"follow": "obj_other", "view_w": 500, "visible": True})
+        assert scene.views[0]["follow"] == "obj_other"
+        assert scene.views[0]["view_w"] == 500
+        # out-of-range index is ignored, not a crash
+        scene.apply_set_view(99, {"view_w": 1})
+        scene.set_views_enabled(False)
+        assert scene.views_enabled is False
 
 
 def test_multi_view_renders_a_quad_per_visible_view():

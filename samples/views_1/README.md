@@ -92,12 +92,13 @@ generated for this sample — see `CREDITS.txt`.
 - **Mobile (Kivy/Android):** the exported scene renders the whole room into an
   Fbo and blits each visible view's region into its screen port, with the OS
   window sized to the view (not the room) so the camera shows a true scrolling
-  slice and supports multiple viewports (`tests/test_kivy_views.py`). *Known
-  limitation:* the Kivy code generator does not yet emit the
-  `enable_views`/`set_view` **actions** themselves, so a game that reconfigures
-  the camera dynamically at runtime (rather than via the baked room config, as
-  this sample does) would not update on Kivy. The baked static follow this
-  sample uses works.
+  slice and supports multiple viewports (`tests/test_kivy_views.py`). The
+  `enable_views`/`set_view` actions are emitted, so runtime camera
+  reconfiguration works too. *One residual limitation:* the multi-view render
+  target is built when the room is created, so a room must have `views_enabled`
+  in its config (as this sample does) for the camera to render — enabling views
+  purely via a runtime `enable_views` on a room that started without them won't
+  retro-fit it on Kivy.
 - Cross-target agreement on the scroll math is pinned by
   `tests/test_views_export_parity.py`.
 

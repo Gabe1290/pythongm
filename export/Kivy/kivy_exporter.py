@@ -1560,6 +1560,21 @@ class {class_name}(Widget):
                 size=(int(view['port_w']), int(view['port_h'])),
                 tex_coords=tc))
 
+    def set_views_enabled(self, flag):
+        """Runtime enable_views action. Flips the flag; the multi-view render
+        needs the Fbo built at construction (baked views_enabled), so enabling
+        views on a room that started without them won't retro-fit the camera —
+        set views_enabled in the room config for the camera to render."""
+        self.views_enabled = bool(flag)
+
+    def apply_set_view(self, index, updates):
+        """Runtime set_view action: patch view `index`'s fields and re-blit.
+        Reconfiguring a view (follow target, borders, region, port) works live
+        when views are enabled; unknown/out-of-range indices are ignored."""
+        if 0 <= index < len(self.views):
+            self.views[index].update(updates)
+            self._render_views()
+
     def _class_name_to_snake_case(self, name):
         """Convert PascalCase class name to snake_case for collision events"""
         # ObjWall -> obj_wall, ObjPlayer -> obj_player
