@@ -1,0 +1,144 @@
+{
+  "name": "views_1",
+  "version": "1.0.0",
+  "settings": {
+    "window_title": "Views — Level 1",
+    "window_width": 800,
+    "window_height": 600,
+    "room_speed": 30,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": true,
+    "starting_health": 100,
+    "show_health_in_caption": false,
+    "blockly_preset": "full"
+  },
+  "assets": {
+    "sprites": {
+      "spr_wall": {
+        "name": "spr_wall",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_wall.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true
+      },
+      "spr_player": {
+        "name": "spr_player",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_player.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true
+      },
+      "spr_coin": {
+        "name": "spr_coin",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_coin.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true
+      }
+    },
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "obj_wall": {
+        "name": "obj_wall",
+        "asset_type": "object",
+        "sprite": "spr_wall",
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "parent": "",
+        "_external_file": "objects/obj_wall.json"
+      },
+      "obj_player": {
+        "name": "obj_player",
+        "asset_type": "object",
+        "sprite": "spr_player",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "parent": "",
+        "remember_destroyed": false,
+        "_external_file": "objects/obj_player.json"
+      },
+      "obj_coin": {
+        "name": "obj_coin",
+        "asset_type": "object",
+        "sprite": "spr_coin",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "parent": "",
+        "_external_file": "objects/obj_coin.json"
+      }
+    },
+    "rooms": {
+      "room0": {
+        "name": "room0",
+        "asset_type": "room",
+        "width": 2400,
+        "height": 800,
+        "background_color": "#2e3d52",
+        "background_image": "",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "views_enabled": true,
+        "views": {
+          "view_0": {
+            "visible": true,
+            "view_x": 0, "view_y": 0, "view_w": 800, "view_h": 600,
+            "port_x": 0, "port_y": 0, "port_w": 800, "port_h": 600,
+            "follow": "obj_player",
+            "hborder": 240, "vborder": 180, "hspeed": -1, "vspeed": -1
+          }
+        },
+        "instance_count": 245,
+        "instances": [],
+        "imported": true,
+        "tiles": [],
+        "_external_file": "rooms/room0.json"
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  }
+}

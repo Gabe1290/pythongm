@@ -1,0 +1,152 @@
+{
+  "name": "obj_player",
+  "asset_type": "object",
+  "sprite": "spr_player",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "enable_views",
+          "parameters": {
+            "enable": "true"
+          }
+        },
+        {
+          "action": "set_view",
+          "parameters": {
+            "view": "0",
+            "visible": "true",
+            "view_w": "800",
+            "view_h": "600",
+            "port_x": "0",
+            "port_y": "0",
+            "port_w": "800",
+            "port_h": "600",
+            "follow": "obj_player",
+            "hborder": "240",
+            "vborder": "180",
+            "hspeed": "-1",
+            "vspeed": "-1"
+          }
+        }
+      ]
+    },
+    "collision_with_obj_wall": {
+      "actions": [
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "stop",
+            "speed": "8"
+          }
+        },
+        {
+          "action": "snap_to_grid",
+          "parameters": {
+            "grid_size": "32"
+          }
+        }
+      ],
+      "target_object": "obj_wall"
+    },
+    "keyboard": {
+      "down": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "down",
+              "speed": "4"
+            }
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "right",
+              "speed": "4"
+            }
+          }
+        ]
+      },
+      "up": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "up",
+              "speed": "4"
+            }
+          }
+        ]
+      },
+      "left": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "left",
+              "speed": "4"
+            }
+          }
+        ]
+      },
+      "nokey": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "stop",
+              "speed": "8"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "imported": true,
+  "parent": "",
+  "remember_destroyed": false
+}

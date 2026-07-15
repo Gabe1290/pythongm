@@ -53,6 +53,15 @@ one-time explanation of the pattern across all of them.
    runtime's draw-queue) and, from `match3_2` on, sound (via the
    cross-platform sound-queue primitive) are all driven directly from
    code rather than composed from built-in actions across many objects.
+4. **`views_*`** — introduces a new *engine capability* rather than a new
+   authoring style: a **room larger than the window** with a **scrolling
+   camera** (GameMaker "views"). `views_1` reuses `maze_1`'s grid movement
+   and adds exactly one new thing — view 0, enabled and told to follow the
+   player from the player's create event via the registered `enable_views` +
+   `set_view` actions (with the same config baked into the room's `views`
+   block). The camera (desktop, HTML5, and Kivy all implement it) follows the
+   player across a 2400×800 room behind an 800×600 window and clamps at the
+   room edges.
 
 ‡ `match3_1/`, `match3_2/`, and `match3_3/` are authored directly in the
 native format (no `.gmk` origin, so the "Regenerating" section below does
