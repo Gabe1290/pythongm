@@ -109,17 +109,20 @@ move it to a feature branch and remove the entry once the feature ships.
   exposing them would re-introduce the rc.11 "stop lying to users"
   anti-pattern.
 - **Views/camera — IN PROGRESS (2026-07-15).** No longer fully deferred.
-  Plan: `docs/VIEWS_SAMPLES_PLAN.md`. Done so far: HTML5 export gained the
-  full 8-view camera (`552a9bc`, Chromium-verified), and `enable_views`/
-  `set_view` are now **registered in `events/action_types.py`** (category
-  "Views") so they round-trip through the action editor. State by target:
-  **desktop runtime ✅, HTML5 export ✅, Kivy/Android export ✅ (single-view
-  follow; multi-view port clipping is a documented follow-up).** All 3
-  targets now scroll a views game — the Kivy camera bakes a views config +
-  `PushMatrix`/`Translate`/`PopMatrix` around the scene and runs an
-  `update_views()` follow/clamp in Kivy's y-up space (`tests/test_kivy_views.py`).
-  Remaining Phase 1: the synthetic 3-target parity test; then the
-  `views_1`/`views_2` samples (Phase 2).
+  Plan: `docs/VIEWS_SAMPLES_PLAN.md`. Done: HTML5 8-view camera (`552a9bc`,
+  Chromium-verified); `enable_views`/`set_view` **registered** in
+  `events/action_types.py` (category "Views"); 3-target parity test
+  (`df0a3e9`); the `views_1` sample (`fc37aea`). State by target: **desktop ✅,
+  HTML5 ✅ (multi-view: per-view clip+translate), Kivy/Android ✅ (multi-view:
+  the room renders into an Fbo and each visible view blits its region into its
+  screen port via tex_coords; the OS window is sized to the view, not the room,
+  so the camera shows a true scrolling slice).** Non-views Kivy rooms keep the
+  original child-widget path untouched. `tests/test_kivy_views.py` covers
+  single- and multi-view. **Remaining known limitation:** the Kivy code
+  generator does not emit the `enable_views`/`set_view` *actions* themselves
+  (views are driven by the baked room config), so dynamic mid-game camera
+  reconfiguration isn't supported on Kivy yet. **Next:** the `views_2` minimap
+  sample (Phase 2) — the Kivy multi-view render it needs now exists.
 - Recipe for adding more: see the comments at the bottom of
   `events/action_types.py` and the survey script that lived briefly at
   `.scratch_find_missing_actions.py` (removed after the bulk pass).

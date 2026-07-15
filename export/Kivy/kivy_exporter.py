@@ -267,6 +267,23 @@ class KivyExporter:
         room_width = self._safe_room_dim(room_data.get('width'), 640)
         room_height = self._safe_room_dim(room_data.get('height'), 480)
 
+        # A views room displays the game WINDOW (a slice of the larger room),
+        # not the room, so the OS window / Android fit-scale must use the window
+        # size. Non-views rooms are unchanged (window == room). Prefer project
+        # window settings, then view 0's port, then the room.
+        first_views = bool(room_data.get('views_enabled',
+                                         room_data.get('enable_views', False)))
+        if first_views:
+            settings = self.project_data.get('settings', {})
+            v0 = {}
+            vraw = room_data.get('views', {})
+            if isinstance(vraw, dict):
+                v0 = vraw.get('view_0', {}) or {}
+            room_width = int(settings.get('window_width')
+                             or v0.get('port_w') or room_width)
+            room_height = int(settings.get('window_height')
+                              or v0.get('port_h') or room_height)
+
         # Generate imports for all rooms
         room_imports = []
         room_class_map = {}
@@ -1000,8 +1017,11 @@ class GameApp(App):
         """
         screen_w = Window.width
         screen_h = Window.height
-        game_w = scene.room_width
-        game_h = scene.room_height
+        # Fit-scale the DISPLAYED surface (the window/ports for a views room,
+        # the room otherwise) — not the room, which for a views game is larger
+        # than what the camera actually shows.
+        game_w = getattr(scene, 'display_width', scene.room_width)
+        game_h = getattr(scene, 'display_height', scene.room_height)
 
         scale = min(screen_w / game_w, screen_h / game_h)
         offset_x = (screen_w - game_w * scale) / 2
@@ -1098,20 +1118,24 @@ class GameApp(App):
             _log(f"_do_room_switch: creating {{room_class.__name__}}")
             new_scene = room_class()
 
-            # 4. Add new scene to widget tree
+            # 4. Add new scene to widget tree. Use the scene's DISPLAYED size
+            # (window/ports for a views room, else the room) so a views room
+            # sizes to its camera window, not the larger room.
+            disp_w = getattr(new_scene, 'display_width', meta[0])
+            disp_h = getattr(new_scene, 'display_height', meta[1])
             if IS_ANDROID:
                 self.scene_container.add_widget(new_scene)
                 screen_w = Window.width
                 screen_h = Window.height
-                scale = min(screen_w / meta[0], screen_h / meta[1])
-                self._ctr_translate.x = (screen_w - meta[0] * scale) / 2
-                self._ctr_translate.y = (screen_h - meta[1] * scale) / 2
+                scale = min(screen_w / disp_w, screen_h / disp_h)
+                self._ctr_translate.x = (screen_w - disp_w * scale) / 2
+                self._ctr_translate.y = (screen_h - disp_h * scale) / 2
                 self._ctr_scale.x = scale
                 self._ctr_scale.y = scale
             else:
                 self.root_layout.add_widget(new_scene)
-                new_w = int(meta[0] / DPI_SCALE)
-                new_h = int(meta[1] / DPI_SCALE)
+                new_w = int(disp_w / DPI_SCALE)
+                new_h = int(disp_h / DPI_SCALE)
                 Window.size = (new_w, new_h)
 
             # 5. Update references
@@ -1248,16 +1272,20 @@ if __name__ == '__main__':
             vd = views_raw.get(f'view_{vi}', {})
             if not isinstance(vd, dict):
                 vd = {}
+            vw_ = int(vd.get('view_w', width) or width)
+            vh_ = int(vd.get('view_h', height) or height)
             views_list.append({
                 'visible': bool(vd.get('visible', vi == 0)),
                 'view_x': int(vd.get('view_x', 0) or 0),
                 'view_y': int(vd.get('view_y', 0) or 0),
-                'view_w': int(vd.get('view_w', width) or width),
-                'view_h': int(vd.get('view_h', height) or height),
+                'view_w': vw_,
+                'view_h': vh_,
                 'port_x': int(vd.get('port_x', 0) or 0),
                 'port_y': int(vd.get('port_y', 0) or 0),
-                'port_w': int(vd.get('port_w', width) or width),
-                'port_h': int(vd.get('port_h', height) or height),
+                # A port defaults to the view size (1:1 view->screen), not the
+                # room — the whole point of a view is to show a room *slice*.
+                'port_w': int(vd.get('port_w', vw_) or vw_),
+                'port_h': int(vd.get('port_h', vh_) or vh_),
                 'follow': vd.get('follow') or None,
                 'hborder': int(vd.get('hborder', 32) or 0),
                 'vborder': int(vd.get('vborder', 32) or 0),
@@ -1265,6 +1293,14 @@ if __name__ == '__main__':
                 'vspeed': int(vd.get('vspeed', -1)),
             })
         views_repr = repr(views_list)
+
+        # Window/port size for a views room: the display surface is the game
+        # WINDOW (a slice of the larger room), not the room. Prefer the project
+        # window settings; fall back to view 0's port, then the room size.
+        settings = self.project_data.get('settings', {})
+        v0 = views_list[0]
+        window_width = int(settings.get('window_width') or v0['port_w'] or width)
+        window_height = int(settings.get('window_height') or v0['port_h'] or height)
 
         # Import ALL project objects (not just room-placed ones) so
         # create_instance can dynamically create any object type (e.g., obj_box_store)
@@ -1333,43 +1369,46 @@ if __name__ == '__main__':
         tile_horizontal = room_data.get('tile_horizontal', False)
         tile_vertical = room_data.get('tile_vertical', False)
 
-        # Generate background image loading code (if background image is set)
+        # Generate background image loading code (if background image is set).
+        # Emitted as the body of _draw_bg_image(self) (8-space method indent) so
+        # the same instructions can render into either the legacy canvas.before
+        # context (non-views rooms) or the multi-view Fbo (views rooms).
         if bg_image:
             if tile_horizontal or tile_vertical:
                 # Generate tiled background code
-                bg_image_code = f'''
-            # Load and draw tiled background image
-            Color(1, 1, 1, 1)  # Reset color to white for untinted textures
-            bg_img = load_image('assets/images/{bg_filename}')
-            if bg_img:
-                # Tile the background
-                tex = bg_img.texture
-                tex_width = tex.width
-                tex_height = tex.height
-                tile_h = {tile_horizontal}
-                tile_v = {tile_vertical}
+                bg_image_body = f'''\
+        # Load and draw tiled background image
+        Color(1, 1, 1, 1)  # Reset color to white for untinted textures
+        bg_img = load_image('assets/images/{bg_filename}')
+        if bg_img:
+            # Tile the background
+            tex = bg_img.texture
+            tex_width = tex.width
+            tex_height = tex.height
+            tile_h = {tile_horizontal}
+            tile_v = {tile_vertical}
 
-                # Calculate how many tiles we need
-                cols = int(self.room_width / tex_width) + 1 if tile_h else 1
-                rows = int(self.room_height / tex_height) + 1 if tile_v else 1
+            # Calculate how many tiles we need
+            cols = int(self.room_width / tex_width) + 1 if tile_h else 1
+            rows = int(self.room_height / tex_height) + 1 if tile_v else 1
 
-                # Draw tiles
-                for row in range(rows):
-                    for col in range(cols):
-                        x = col * tex_width
-                        y = row * tex_height
-                        # Only draw if at least partially visible
-                        if x < self.room_width and y < self.room_height:
-                            Rectangle(texture=tex, pos=(x, y), size=(tex_width, tex_height))'''
+            # Draw tiles
+            for row in range(rows):
+                for col in range(cols):
+                    x = col * tex_width
+                    y = row * tex_height
+                    # Only draw if at least partially visible
+                    if x < self.room_width and y < self.room_height:
+                        Rectangle(texture=tex, pos=(x, y), size=(tex_width, tex_height))'''
             else:
-                bg_image_code = f'''
-            # Load and draw background image (stretched to fit)
-            Color(1, 1, 1, 1)  # Reset color to white for untinted textures
-            bg_img = load_image('assets/images/{bg_filename}')
-            if bg_img:
-                Rectangle(texture=bg_img.texture, pos=(0, 0), size=(self.room_width, self.room_height))'''
+                bg_image_body = f'''\
+        # Load and draw background image (stretched to fit)
+        Color(1, 1, 1, 1)  # Reset color to white for untinted textures
+        bg_img = load_image('assets/images/{bg_filename}')
+        if bg_img:
+            Rectangle(texture=bg_img.texture, pos=(0, 0), size=(self.room_width, self.room_height))'''
         else:
-            bg_image_code = "            pass  # No background image"
+            bg_image_body = "        pass  # No background image"
 
         # Generate object class registry for dynamic instance creation
         registry_entries = ', '.join([
@@ -1387,6 +1426,7 @@ Generated from PyGameMaker IDE
 from kivy.uix.widget import Widget
 from kivy.graphics import Rectangle, Color, PushMatrix, PopMatrix
 from kivy.graphics import Translate as TranslateInstr
+from kivy.graphics import Fbo, ClearColor, ClearBuffers, InstructionGroup
 from kivy.core.window import Window
 from utils import load_image
 
@@ -1409,18 +1449,48 @@ class {class_name}(Widget):
         self.instances_to_destroy = []
         self._pending_creates = []
 
-        # Camera / views (large-level scrolling). Single-view follow only;
-        # multi-view port clipping is a documented follow-up. view_x/view_y
-        # are repurposed as the live camera position in Kivy space (y-up).
+        # Camera / views (GameMaker-style large-level scrolling + multi-view).
+        # view_x/view_y hold the live camera position in Kivy space (y-up).
         self.views_enabled = {views_enabled}
         self.views = {views_repr}
         self._cam_translate = None
+        # Displayed surface: for a views room it's the game WINDOW (a slice of
+        # the larger room); otherwise it's the room itself. The exporter sizes
+        # the OS window / Android fit-scale to this via scene.display_width/height.
+        self.window_width = {window_width}
+        self.window_height = {window_height}
+        if self.views_enabled:
+            self.display_width, self.display_height = self.window_width, self.window_height
+        else:
+            self.display_width, self.display_height = self.room_width, self.room_height
+
+        # Multi-view render target. The whole room is drawn ONCE into an Fbo
+        # (offscreen texture); each visible view then blits its room region
+        # (view_x/y/w/h) into its screen port with tex_coords. Two viewports
+        # (e.g. main + minimap) can therefore show the same room at once —
+        # impossible with a single scene transform. Non-views rooms keep the
+        # original child-widget path completely untouched.
+        self._fbo = None
+        self._view_group = None
+        if self.views_enabled:
+            self.size = (self.display_width, self.display_height)
+            self._fbo = Fbo(size=(self.room_width, self.room_height),
+                            with_stencilbuffer=True)
+            with self._fbo:
+                self._fbo_clear = ClearColor({bg_r:.3f}, {bg_g:.3f}, {bg_b:.3f}, 1)
+                ClearBuffers()
+                self._draw_bg_image()
+            self.canvas.add(self._fbo)
+            self._view_group = InstructionGroup()
+            self.canvas.add(self._view_group)
 
         # Keyboard state tracking
         self.keys_pressed = {{}}
 
-        # Draw background
-        self._draw_background()
+        # Draw background (child-widget path only; the views path drew it into
+        # the Fbo above)
+        if not self.views_enabled:
+            self._draw_background()
 
         # Bind keyboard events
         Window.bind(on_keyboard=self.on_keyboard)
@@ -1429,14 +1499,18 @@ class {class_name}(Widget):
         # Initialize room
         self.create_instances()
 
-    def _draw_background(self):
-        """Draw the room background color and image, under the camera transform.
+        # First camera placement + port blit so frame 0 is already correct.
+        if self.views_enabled:
+            self.update_views()
+            self._render_views()
 
-        PushMatrix + a Translate (updated each frame by update_views) open the
-        camera in canvas.before; the matching PopMatrix in canvas.after closes
-        it. Everything drawn between — the background here and every child
-        instance's canvas — scrolls with the view. When views are disabled the
-        Translate stays at (0, 0, 0), so rendering is identical to before.
+    def _draw_background(self):
+        """Draw the room background color + image under the camera transform.
+
+        Non-views path only. PushMatrix + a Translate (updated each frame by
+        update_views) open the camera in canvas.before; PopMatrix in
+        canvas.after closes it. When views are disabled the Translate stays at
+        (0, 0, 0), so rendering is identical to the pre-camera exporter.
         """
         with self.canvas.before:
             PushMatrix()
@@ -1444,9 +1518,47 @@ class {class_name}(Widget):
             # Background color: RGB = ({bg_r:.3f}, {bg_g:.3f}, {bg_b:.3f})
             self._bg_color_instr = Color({bg_r:.3f}, {bg_g:.3f}, {bg_b:.3f}, 1)
             self.bg_rect = Rectangle(pos=(0, 0), size=(self.room_width, self.room_height))
-{bg_image_code}
+            self._draw_bg_image()
         with self.canvas.after:
             PopMatrix()
+
+    def _draw_bg_image(self):
+        """Draw the room background image (if any) into the active canvas/Fbo.
+
+        Called inside a `with self.canvas.before:` (non-views) or `with self._fbo:`
+        (views) block, so the instructions land in whichever is active.
+        """
+{bg_image_body}
+
+    def _render_views(self):
+        """Blit each visible view's room region into its screen port.
+
+        The Fbo texture holds the whole room; for each visible view we draw one
+        textured Rectangle at the port (port_x/y/w/h), sampling the room region
+        (view_x/y/w/h) via normalized tex_coords. A minimap is just a view whose
+        view_w/h span the whole room drawn into a small port. No-op when views
+        are disabled.
+        """
+        if not self.views_enabled or self._fbo is None:
+            return
+        tex = self._fbo.texture
+        rw = float(self.room_width) or 1.0
+        rh = float(self.room_height) or 1.0
+        self._view_group.clear()
+        self._view_group.add(Color(1, 1, 1, 1))
+        for view in self.views:
+            if not view.get('visible'):
+                continue
+            vx, vy = float(view['view_x']), float(view['view_y'])
+            vw, vh = float(view['view_w']), float(view['view_h'])
+            u0, u1 = vx / rw, (vx + vw) / rw
+            v0, v1 = vy / rh, (vy + vh) / rh
+            tc = (u0, v0, u1, v0, u1, v1, u0, v1)
+            self._view_group.add(Rectangle(
+                texture=tex,
+                pos=(int(view.get('port_x', 0)), int(view.get('port_y', 0))),
+                size=(int(view['port_w']), int(view['port_h'])),
+                tex_coords=tc))
 
     def _class_name_to_snake_case(self, name):
         """Convert PascalCase class name to snake_case for collision events"""
@@ -1466,15 +1578,25 @@ class {class_name}(Widget):
                 inst.on_create()
 
     def add_instance(self, instance):
-        """Add an instance to the room"""
+        """Add an instance to the room.
+
+        Views rooms render every instance into the Fbo (so the per-view blits
+        pick them up), so the instance's canvas is attached to the Fbo rather
+        than added as a child widget. Non-views rooms use the child-widget path.
+        """
         self.instances.append(instance)
-        self.add_widget(instance)
+        if self.views_enabled and self._fbo is not None:
+            self._fbo.add(instance.canvas)
+        else:
+            self.add_widget(instance)
 
     def remove_instance(self, instance):
         """Remove an instance from the room"""
         if instance in self.instances:
             self.instances.remove(instance)
-            if instance in self.children:
+            if self.views_enabled and self._fbo is not None:
+                self._fbo.remove(instance.canvas)
+            elif instance in self.children:
                 self.remove_widget(instance)
 
     def count_instances(self, class_name):
@@ -1522,67 +1644,65 @@ class {class_name}(Widget):
         return None
 
     def update_views(self):
-        """GameMaker-style camera follow + clamp for view 0, computed in Kivy's
-        y-up space (mirrors runtime/game_runner.update_views). Border-based
-        follow with optional per-axis speed limit, clamped to room bounds. Only
-        view 0 drives the camera here; multi-view port clipping is a follow-up.
+        """GameMaker-style camera follow + clamp for EVERY visible view, in
+        Kivy's y-up space (mirrors runtime/game_runner.update_views). Each view
+        with a follow target does border-based follow with an optional per-axis
+        speed limit, clamped to room bounds; views without a follow target keep
+        their configured position (e.g. a fixed minimap). _render_views then
+        blits each view's region into its port.
         """
-        if not self.views_enabled or self._cam_translate is None:
+        if not self.views_enabled:
             return
-        view = self.views[0]
-        if not view.get('visible') or not view.get('follow'):
-            return
-        target = self._find_view_target(view['follow'])
-        if target is None:
-            return
+        for view in self.views:
+            if not view.get('visible') or not view.get('follow'):
+                continue
+            target = self._find_view_target(view['follow'])
+            if target is None:
+                continue
 
-        vw = int(view['view_w'])
-        vh = int(view['view_h'])
-        hb = int(view['hborder'])
-        vb = int(view['vborder'])
-        old_x = int(view['view_x'])
-        old_y = int(view['view_y'])
-        new_x, new_y = old_x, old_y
-        tx = float(target.x)
-        ty = float(target.y)
+            vw = int(view['view_w'])
+            vh = int(view['view_h'])
+            hb = int(view['hborder'])
+            vb = int(view['vborder'])
+            old_x = int(view['view_x'])
+            old_y = int(view['view_y'])
+            new_x, new_y = old_x, old_y
+            tx = float(target.x)
+            ty = float(target.y)
 
-        # Horizontal border follow
-        if tx < old_x + hb:
-            new_x = int(tx - hb)
-        elif tx > old_x + vw - hb:
-            new_x = int(tx - vw + hb)
-        # Vertical border follow
-        if ty < old_y + vb:
-            new_y = int(ty - vb)
-        elif ty > old_y + vh - vb:
-            new_y = int(ty - vh + vb)
+            # Horizontal border follow
+            if tx < old_x + hb:
+                new_x = int(tx - hb)
+            elif tx > old_x + vw - hb:
+                new_x = int(tx - vw + hb)
+            # Vertical border follow
+            if ty < old_y + vb:
+                new_y = int(ty - vb)
+            elif ty > old_y + vh - vb:
+                new_y = int(ty - vh + vb)
 
-        # Per-axis speed limit (-1 == unlimited)
-        hsp = int(view.get('hspeed', -1))
-        vsp = int(view.get('vspeed', -1))
-        if hsp >= 0:
-            dx = new_x - old_x
-            if dx > hsp:
-                new_x = old_x + hsp
-            elif dx < -hsp:
-                new_x = old_x - hsp
-        if vsp >= 0:
-            dy = new_y - old_y
-            if dy > vsp:
-                new_y = old_y + vsp
-            elif dy < -vsp:
-                new_y = old_y - vsp
+            # Per-axis speed limit (-1 == unlimited)
+            hsp = int(view.get('hspeed', -1))
+            vsp = int(view.get('vspeed', -1))
+            if hsp >= 0:
+                dx = new_x - old_x
+                if dx > hsp:
+                    new_x = old_x + hsp
+                elif dx < -hsp:
+                    new_x = old_x - hsp
+            if vsp >= 0:
+                dy = new_y - old_y
+                if dy > vsp:
+                    new_y = old_y + vsp
+                elif dy < -vsp:
+                    new_y = old_y - vsp
 
-        # Clamp to room bounds (if the view is smaller than the room)
-        new_x = max(0, min(new_x, self.room_width - vw)) if vw < self.room_width else 0
-        new_y = max(0, min(new_y, self.room_height - vh)) if vh < self.room_height else 0
+            # Clamp to room bounds (if the view is smaller than the room)
+            new_x = max(0, min(new_x, self.room_width - vw)) if vw < self.room_width else 0
+            new_y = max(0, min(new_y, self.room_height - vh)) if vh < self.room_height else 0
 
-        view['view_x'] = new_x
-        view['view_y'] = new_y
-        # Translate the scene so room point (view_x, view_y) maps to the port
-        # origin. Kivy is y-up, so a positive view_y scrolls content downward.
-        self._cam_translate.x = int(view.get('port_x', 0)) - new_x
-        self._cam_translate.y = int(view.get('port_y', 0)) - new_y
+            view['view_x'] = new_x
+            view['view_y'] = new_y
 
     def update(self, dt):
         """Main game loop update - GAMEMAKER 7.0 EVENT ORDER"""
@@ -1701,9 +1821,10 @@ class {class_name}(Widget):
         for instance in _live:
             instance._drain_sound_queue()
 
-        # 7c. CAMERA - follow/clamp views so the transform is up to date before
-        # instance canvases (which live under the camera translate) render.
+        # 7c. CAMERA - follow/clamp every visible view, then re-blit each view's
+        # room region into its screen port (the Fbo already holds the room).
         self.update_views()
+        self._render_views()
 
         # 8. DRAW EVENTS - sprites render via each widget's canvas; the
         # GameMaker draw event renders through the per-instance draw queue
@@ -1783,8 +1904,17 @@ class {class_name}(Widget):
             x = (x - _app._ctr_translate.x) / sc
             y = (y - _app._ctr_translate.y) / sc
         elif Window.width and Window.height:
-            x = x * self.room_width / float(Window.width)
-            y = y * self.room_height / float(Window.height)
+            # display_width == room_width for a non-views room, so this is
+            # unchanged there; for a views room it maps into window pixels.
+            x = x * self.display_width / float(Window.width)
+            y = y * self.display_height / float(Window.height)
+        if self.views_enabled and self.views:
+            # Displayed pixels are relative to the main view (view 0) port; add
+            # its room-space camera origin. (Touch through a secondary port /
+            # minimap is not resolved — main view only.)
+            v0 = self.views[0]
+            x = float(v0['view_x']) + (x - int(v0.get('port_x', 0)))
+            y = float(v0['view_y']) + (y - int(v0.get('port_y', 0)))
         return x, self.room_height - y
 
     def on_touch_down(self, touch):
@@ -1838,13 +1968,15 @@ class {class_name}(Widget):
             height=height,
             views_enabled=views_enabled,
             views_repr=views_repr,
+            window_width=window_width,
+            window_height=window_height,
             import_lines=import_lines,
             object_registry=object_registry,
             instances_init=instances_init,
             bg_r=r,
             bg_g=g,
             bg_b=b,
-            bg_image_code=bg_image_code
+            bg_image_body=bg_image_body
         )
 
         output_file = (self.output_path / "game" / "scenes" /
