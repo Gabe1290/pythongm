@@ -33,8 +33,7 @@ sys.path.insert(0, str(REPO_ROOT))
 from utils.project_file_merge import merge_object_file  # noqa: E402
 
 SAMPLES = ["maze_1", "maze_2", "maze_3",
-           "plateforme_1", "plateforme_2", "plateforme_3",
-           "plateforme_4", "plateforme_5", "match3_1"]
+           "plateforme_1", "plateforme_2", "plateforme_3", "match3_1"]
 
 KEYBOARD_FAMILY = ("keyboard", "keyboard_press", "keyboard_release")
 

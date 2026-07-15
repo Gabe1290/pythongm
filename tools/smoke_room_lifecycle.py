@@ -29,7 +29,7 @@ except Exception:
 import pygame
 from runtime.game_runner import GameRunner
 
-SAMPLES = ["maze_1", "maze_3", "plateforme_2", "plateforme_4"]
+SAMPLES = ["maze_1", "maze_3", "plateforme_2", "plateforme_3"]
 
 
 def _prep(name):

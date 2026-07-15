@@ -26,11 +26,12 @@ MIT license.
 - `samples/plateforme_1/`
 - `samples/plateforme_2/`
 - `samples/plateforme_3/`
-- `samples/plateforme_4/`
-- `samples/plateforme_5/`
 
-(76 PNGs total — penguin/walker sprites such as `spr_pingus_*`, monsters,
-flyers, ladders, blocks, bonuses, markers, and the snow/sky backgrounds.)
+(39 PNGs total — penguin/walker sprites such as `spr_pingus_*`, monsters,
+flyers, ladders, blocks, bonuses, markers, and the snow/sky backgrounds.
+`plateforme_4/` and `plateforme_5/` used the same art but were removed
+from the bundled set pending import cleanup — see `samples/README.md`;
+their original `.gmk` sources are still tracked for a future re-import.)
 
 **Origin:** these graphics are taken from **Pingus**, the free/libre
 Lemmings-style game by Ingo Ruhnke and contributors. They were brought into
