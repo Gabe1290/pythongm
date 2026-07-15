@@ -8392,6 +8392,11 @@ Do you want to save anyway?</source>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Views — Level 2</source>
+            <translation>Pogledi — Stopnja 2</translation>
+        </message>
+
+        <message>
             <source>Views — Level 1</source>
             <translation>Pogledi — Stopnja 1</translation>
         </message>
