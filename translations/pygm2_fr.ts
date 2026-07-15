@@ -8670,6 +8670,29 @@ Voulez-vous quand même enregistrer ?</translation>
         <source>Clear Recent Projects</source>
         <translation type="vanished">Effacer les projets récents</translation>
     </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>📖  Sample guides</source>
+        <translation>📖  Guides des exemples</translation>
+    </message>
+</context>
+<context>
+    <name>SampleDocsDialog</name>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="489"/>
+        <source>Sample guides</source>
+        <translation>Guides des exemples</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="526"/>
+        <source>_No bundled samples were found in this build._</source>
+        <translation>_Aucun exemple fourni n'a été trouvé dans cette version._</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="567"/>
+        <source>_No documentation is bundled for **{0}**._</source>
+        <translation>_Aucune documentation n'est fournie pour **{0}**._</translation>
+    </message>
 </context>
 <context>
     <name>self.ide</name>
