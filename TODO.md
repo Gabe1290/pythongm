@@ -107,7 +107,10 @@ move it to a feature branch and remove the entry once the feature ships.
   functional check first; and the views/camera + room-background/scrolling
   actions (enable_views, set_view, set_background*, set_room_speed/persistent)
   which are incomplete features — exposing them would re-introduce the
-  rc.11 "stop lying to users" anti-pattern.
+  rc.11 "stop lying to users" anti-pattern. **2026-07-15: a plan to close
+  the views/camera gap (desktop runtime is actually complete; Kivy/Web
+  exporters have zero camera support) and ship `views_1`/`views_2` sample
+  games is written up in `docs/VIEWS_SAMPLES_PLAN.md` — not started yet.**
 - Recipe for adding more: see the comments at the bottom of
   `events/action_types.py` and the survey script that lived briefly at
   `.scratch_find_missing_actions.py` (removed after the bulk pass).
