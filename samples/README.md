@@ -61,7 +61,13 @@ one-time explanation of the pattern across all of them.
    `set_view` actions (with the same config baked into the room's `views`
    block). The camera (desktop, HTML5, and Kivy all implement it) follows the
    player across a 2400×800 room behind an 800×600 window and clamps at the
-   room edges.
+   room edges. `views_2` adds the feature's other headline capability —
+   **multiple viewports at once**: a left/right split screen where view 0
+   follows player 1 (arrow keys) and view 1 follows player 2 (WASD), each a
+   1:1 camera into the shared 2400×800 room. Both views are the same size as
+   their screen ports (no zoom) so they render identically on all three
+   targets — desktop and HTML5 clip each view 1:1, and Kivy renders the room
+   to an Fbo and blits each view's region into its port.
 
 ‡ `match3_1/`, `match3_2/`, and `match3_3/` are authored directly in the
 native format (no `.gmk` origin, so the "Regenerating" section below does

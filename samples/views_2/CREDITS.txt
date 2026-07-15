@@ -1,0 +1,11 @@
+views_2 — asset credits
+=======================
+
+Sprites (spr_player1.png, spr_player2.png, spr_wall.png, spr_coin.png):
+  Simple flat-color 32x32 art generated programmatically for this sample.
+  Released under CC0 1.0 (public domain dedication) by the pygm2 author.
+  spr_wall.png and spr_coin.png are shared with the views_1 sample;
+  spr_player1.png (orange) and spr_player2.png (teal) distinguish the two
+  split-screen players. No third-party assets are used in this sample.
+
+No sound or music files are bundled with this sample.

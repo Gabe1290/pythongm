@@ -1,0 +1,120 @@
+{
+  "name": "views_2",
+  "version": "1.0.0",
+  "settings": {
+    "window_title": "Views — Level 2",
+    "window_width": 800,
+    "window_height": 600,
+    "room_speed": 30,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": true,
+    "starting_health": 100,
+    "show_health_in_caption": false,
+    "blockly_preset": "full"
+  },
+  "assets": {
+    "sprites": {
+      "spr_wall": {
+        "name": "spr_wall",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_wall.png",
+        "width": 32, "height": 32, "origin_x": 0, "origin_y": 0,
+        "precise": true, "frames": 1, "frame_width": 32, "frame_height": 32,
+        "animation_type": "single", "speed": 10.0, "imported": true
+      },
+      "spr_player1": {
+        "name": "spr_player1",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_player1.png",
+        "width": 32, "height": 32, "origin_x": 0, "origin_y": 0,
+        "precise": true, "frames": 1, "frame_width": 32, "frame_height": 32,
+        "animation_type": "single", "speed": 10.0, "imported": true
+      },
+      "spr_player2": {
+        "name": "spr_player2",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_player2.png",
+        "width": 32, "height": 32, "origin_x": 0, "origin_y": 0,
+        "precise": true, "frames": 1, "frame_width": 32, "frame_height": 32,
+        "animation_type": "single", "speed": 10.0, "imported": true
+      },
+      "spr_coin": {
+        "name": "spr_coin",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_coin.png",
+        "width": 32, "height": 32, "origin_x": 0, "origin_y": 0,
+        "precise": true, "frames": 1, "frame_width": 32, "frame_height": 32,
+        "animation_type": "single", "speed": 10.0, "imported": true
+      }
+    },
+    "sounds": {},
+    "backgrounds": {},
+    "objects": {
+      "obj_camera": {
+        "name": "obj_camera", "asset_type": "object", "sprite": "",
+        "visible": false, "solid": false, "persistent": false, "depth": 0,
+        "events": {}, "imported": true, "parent": "",
+        "_external_file": "objects/obj_camera.json"
+      },
+      "obj_wall": {
+        "name": "obj_wall", "asset_type": "object", "sprite": "spr_wall",
+        "visible": true, "solid": true, "persistent": false, "depth": 0,
+        "events": {}, "imported": true, "parent": "",
+        "_external_file": "objects/obj_wall.json"
+      },
+      "obj_player1": {
+        "name": "obj_player1", "asset_type": "object", "sprite": "spr_player1",
+        "visible": true, "solid": false, "persistent": false, "depth": 0,
+        "events": {}, "imported": true, "parent": "", "remember_destroyed": false,
+        "_external_file": "objects/obj_player1.json"
+      },
+      "obj_player2": {
+        "name": "obj_player2", "asset_type": "object", "sprite": "spr_player2",
+        "visible": true, "solid": false, "persistent": false, "depth": 0,
+        "events": {}, "imported": true, "parent": "", "remember_destroyed": false,
+        "_external_file": "objects/obj_player2.json"
+      },
+      "obj_coin": {
+        "name": "obj_coin", "asset_type": "object", "sprite": "spr_coin",
+        "visible": true, "solid": false, "persistent": false, "depth": 0,
+        "events": {}, "imported": true, "parent": "",
+        "_external_file": "objects/obj_coin.json"
+      }
+    },
+    "rooms": {
+      "room0": {
+        "name": "room0", "asset_type": "room", "width": 2400, "height": 800,
+        "background_color": "#243447", "background_image": "",
+        "tile_horizontal": false, "tile_vertical": false,
+        "views_enabled": true,
+        "views": {
+          "view_0": {
+            "visible": true,
+            "view_x": 0, "view_y": 0, "view_w": 400, "view_h": 600,
+            "port_x": 0, "port_y": 0, "port_w": 400, "port_h": 600,
+            "follow": "obj_player1", "hborder": 120, "vborder": 150,
+            "hspeed": -1, "vspeed": -1
+          },
+          "view_1": {
+            "visible": true,
+            "view_x": 0, "view_y": 0, "view_w": 400, "view_h": 600,
+            "port_x": 400, "port_y": 0, "port_w": 400, "port_h": 600,
+            "follow": "obj_player2", "hborder": 120, "vborder": 150,
+            "hspeed": -1, "vspeed": -1
+          }
+        },
+        "instance_count": 284,
+        "instances": [],
+        "imported": true,
+        "tiles": [],
+        "_external_file": "rooms/room0.json"
+      }
+    },
+    "scripts": {},
+    "fonts": {},
+    "data": {}
+  }
+}
