@@ -104,13 +104,21 @@ move it to a feature branch and remove the entry once the feature ships.
 - **Still deferred to post-1.0 (do NOT add UI yet):** particle system
   (create_emitter/burst_particles/…), timelines (set_timeline/start_timeline/
   …), save_game/load_game, show_video, execute_script — these need a
-  functional check first; and the views/camera + room-background/scrolling
-  actions (enable_views, set_view, set_background*, set_room_speed/persistent)
-  which are incomplete features — exposing them would re-introduce the
-  rc.11 "stop lying to users" anti-pattern. **2026-07-15: a plan to close
-  the views/camera gap (desktop runtime is actually complete; Kivy/Web
-  exporters have zero camera support) and ship `views_1`/`views_2` sample
-  games is written up in `docs/VIEWS_SAMPLES_PLAN.md` — not started yet.**
+  functional check first; and the room-background/scrolling actions
+  (set_background*, set_room_speed/persistent) which are incomplete —
+  exposing them would re-introduce the rc.11 "stop lying to users"
+  anti-pattern.
+- **Views/camera — IN PROGRESS (2026-07-15).** No longer fully deferred.
+  Plan: `docs/VIEWS_SAMPLES_PLAN.md`. Done so far: HTML5 export gained the
+  full 8-view camera (`552a9bc`, Chromium-verified), and `enable_views`/
+  `set_view` are now **registered in `events/action_types.py`** (category
+  "Views") so they round-trip through the action editor. State by target:
+  **desktop runtime ✅, HTML5 export ✅, Kivy/Android export ❌ (pending —
+  the next engine unit).** So the actions are honestly usable on 2 of 3
+  targets; the action-editor entry documents nothing false, but a Kivy
+  export of a views game will not scroll until that unit lands. Remaining
+  Phase 1: Kivy camera + the synthetic 3-target parity test; then the
+  `views_1`/`views_2` samples (Phase 2).
 - Recipe for adding more: see the comments at the bottom of
   `events/action_types.py` and the survey script that lived briefly at
   `.scratch_find_missing_actions.py` (removed after the bulk pass).

@@ -402,6 +402,72 @@ ACTION_TYPES = {
         parameters=[]
     ),
 
+    # Views / camera. Lets a level be larger than the window and scroll.
+    # Works on the desktop runtime (Test Game) and the HTML5 export; the
+    # Kivy/Android export's camera is still pending (see
+    # docs/VIEWS_SAMPLES_PLAN.md).
+    "enable_views": ActionType(
+        name="enable_views",
+        display_name="Enable Views",
+        description="Turn the room's camera/view system on or off (lets a "
+                    "level scroll when it is larger than the window)",
+        category="Views",
+        icon="🎥",
+        parameters=[
+            ActionParameter(
+                name="enable",
+                display_name="Enable",
+                param_type="boolean",
+                default_value=True,
+                description="On = camera views; off = draw the whole room at once",
+                aliases=["enabled"],
+            )
+        ]
+    ),
+
+    "set_view": ActionType(
+        name="set_view",
+        display_name="Set View",
+        description="Configure a camera view: which part of the room it shows, "
+                    "where on screen it draws, and an object to follow",
+        category="Views",
+        icon="🎥",
+        parameters=[
+            ActionParameter(name="view", display_name="View (0-7)", param_type="choice",
+                default_value="0", description="Which of the 8 views to configure",
+                choices=["0", "1", "2", "3", "4", "5", "6", "7"]),
+            ActionParameter(name="visible", display_name="Visible", param_type="boolean",
+                default_value=True, description="Draw this view"),
+            ActionParameter(name="view_x", display_name="View X (room)", param_type="number",
+                default_value=0, description="Left edge of the room region shown"),
+            ActionParameter(name="view_y", display_name="View Y (room)", param_type="number",
+                default_value=0, description="Top edge of the room region shown"),
+            ActionParameter(name="view_w", display_name="View Width", param_type="number",
+                default_value=800, description="Width of the room region shown"),
+            ActionParameter(name="view_h", display_name="View Height", param_type="number",
+                default_value=600, description="Height of the room region shown"),
+            ActionParameter(name="port_x", display_name="Port X (screen)", param_type="number",
+                default_value=0, description="Left edge on screen"),
+            ActionParameter(name="port_y", display_name="Port Y (screen)", param_type="number",
+                default_value=0, description="Top edge on screen"),
+            ActionParameter(name="port_w", display_name="Port Width", param_type="number",
+                default_value=800, description="Width drawn on screen"),
+            ActionParameter(name="port_h", display_name="Port Height", param_type="number",
+                default_value=600, description="Height drawn on screen"),
+            ActionParameter(name="follow", display_name="Follow Object", param_type="object",
+                default_value="", required=False,
+                description="Object the camera tracks (blank = fixed view)"),
+            ActionParameter(name="hborder", display_name="H Border", param_type="number",
+                default_value=32, description="Horizontal border before the camera scrolls"),
+            ActionParameter(name="vborder", display_name="V Border", param_type="number",
+                default_value=32, description="Vertical border before the camera scrolls"),
+            ActionParameter(name="hspeed", display_name="Max H Scroll", param_type="number",
+                default_value=-1, description="Max horizontal scroll speed (-1 = instant)"),
+            ActionParameter(name="vspeed", display_name="Max V Scroll", param_type="number",
+                default_value=-1, description="Max vertical scroll speed (-1 = instant)"),
+        ]
+    ),
+
     "previous_room": ActionType(
         name="previous_room",
         display_name="Previous Room",
