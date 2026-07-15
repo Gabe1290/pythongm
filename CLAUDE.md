@@ -309,8 +309,11 @@ per-subsystem commits `b6b27da`..`4d76181`. The 4 deferred-cross-file items
 (M31, M34, L5, L8) were then ALL closed in the same session with their
 coordinated second-file edits + tests. **The full 2026-06-11 audit is now
 111/111 closed** (suite 1091 passed, 0 failed). Untracked tracked-for-later
-remainders (not registry items): L4 WA_DeleteOnClose on PlaygroundRunnerWindow;
-M30 belt-and-braces runtime alias/'state' field in action_executor.py.
+remainder (not a registry item): M30 belt-and-braces runtime alias/'state'
+field in action_executor.py. (The other one, L4 WA_DeleteOnClose on
+PlaygroundRunnerWindow, was already fixed by commit `f389035` — both
+PlaygroundRunnerWindow and ThymioPlaygroundWindow set Qt.WA_DeleteOnClose;
+verified 2026-07-15, this note corrected.)
 
 **2026-06-11 — Full-codebase audit (18 finders, adversarially verified):
 111 confirmed findings.** Unlike the earlier single-batch audits, every
