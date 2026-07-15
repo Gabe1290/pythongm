@@ -52,6 +52,26 @@ primitive next to existing ones.
 
 ### Progress
 
+- **2026-07-15 — Kivy multi-view (FBO) DONE; single-view window bug fixed.**
+  Investigation found the Kivy single-view camera was incomplete: the export
+  sized the OS window to the *room* (`GAME_WIDTH = room_width`), so the camera
+  translate scrolled content inside a room-sized window instead of showing a
+  window-sized slice. Replaced the single scene-transform camera with the
+  canonical multi-view approach: the whole room renders once into an `Fbo`
+  (room-sized offscreen texture) and each visible view blits its room region
+  (`view_x/y/w/h`) into its screen port (`port_x/y/w/h`) via `tex_coords` — so
+  a main view + a fixed minimap can show the same room at once. The window is
+  now sized to the view/window (`display_width/height`), `update_views` follows
+  **every** view (not just view 0), and non-views rooms keep the original
+  child-widget path byte-for-byte (branch on `views_enabled`). GL-bound parts
+  (the Fbo texture) need on-device verification; the follow math and per-port
+  blit geometry (pos/size/`tex_coords`) are stub-tested, including a 2-view
+  main+minimap case. `tests/test_kivy_views.py` (+ the parity/other headless
+  kivy stubs gained `Fbo`/`ClearColor`/`ClearBuffers`). This unblocks `views_2`.
+  Remaining Kivy limitation: the code generator still doesn't emit the
+  `enable_views`/`set_view` *actions* (baked room config only).
+
+
 - **2026-07-15 — 3-target parity test DONE (step 4). Phase 1 complete.**
   `tests/test_views_export_parity.py` feeds one synthetic scenario (2400×800
   room, 800×600 view, 100px borders, no speed cap, following one object) through

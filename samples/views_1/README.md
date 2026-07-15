@@ -89,13 +89,15 @@ generated for this sample — see `CREDITS.txt`.
   (`tests/test_html5_views.py`, Chromium-verified during development); this
   sample's `views` config and create-event `set_view` both round-trip into the
   export.
-- **Mobile (Kivy/Android):** the exported scene bakes the `views` config and a
-  `PushMatrix`/`Translate` camera (`tests/test_kivy_views.py`) — the camera
-  follows via the baked config. *Known limitation:* the Kivy code generator
-  does not yet emit the `enable_views`/`set_view` **actions** themselves, so a
-  game that reconfigures the camera dynamically at runtime (rather than via the
-  baked room config, as this sample does) would not update on Kivy. Single
-  static follow — this sample — works.
+- **Mobile (Kivy/Android):** the exported scene renders the whole room into an
+  Fbo and blits each visible view's region into its screen port, with the OS
+  window sized to the view (not the room) so the camera shows a true scrolling
+  slice and supports multiple viewports (`tests/test_kivy_views.py`). *Known
+  limitation:* the Kivy code generator does not yet emit the
+  `enable_views`/`set_view` **actions** themselves, so a game that reconfigures
+  the camera dynamically at runtime (rather than via the baked room config, as
+  this sample does) would not update on Kivy. The baked static follow this
+  sample uses works.
 - Cross-target agreement on the scroll math is pinned by
   `tests/test_views_export_parity.py`.
 

@@ -148,6 +148,29 @@ class _Translate:
         self.x, self.y, self.z = x, y, z
 
 
+class _Fbo:
+    def __init__(self, size=(0, 0), **kw):
+        self.size = size
+        self.texture = object()
+        self.children = []
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+    def add(self, instr):
+        self.children.append(instr)
+
+    def remove(self, instr):
+        if instr in self.children:
+            self.children.remove(instr)
+
+    def ask_update(self):
+        pass
+
+
 class _Win:
     width = 800
     height = 600
@@ -175,7 +198,8 @@ def _stub_kivy_env(game_dir: Path):
         mod("kivy.uix.widget", Widget=_Widget)
         mod("kivy.graphics", Rectangle=_Instr, Color=_Instr, Line=_Instr,
             Ellipse=_Instr, InstructionGroup=_Group,
-            PushMatrix=_Instr, PopMatrix=_Instr, Translate=_Translate)
+            PushMatrix=_Instr, PopMatrix=_Instr, Translate=_Translate,
+            Fbo=_Fbo, ClearColor=_Instr, ClearBuffers=_Instr)
         mod("kivy.core")
         mod("kivy.core.window", Window=_Win())
         mod("kivy.core.image", Image=object)
