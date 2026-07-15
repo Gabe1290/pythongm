@@ -98,8 +98,8 @@ committing — French especially, per the CLAUDE.md standing rule)
 
 - [x] de
 - [x] it
-- [ ] ru
-- [ ] sl
-- [ ] uk
-- [ ] fr
-- [ ] es
+- [x] ru
+- [x] sl
+- [x] uk
+- [x] fr
+- [x] es
