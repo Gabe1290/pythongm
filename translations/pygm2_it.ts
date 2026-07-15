@@ -8392,6 +8392,11 @@ Vuoi salvare comunque?</translation>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Views — Level 2</source>
+            <translation>Viste — Livello 2</translation>
+        </message>
+
+        <message>
             <source>Views — Level 1</source>
             <translation>Viste — Livello 1</translation>
         </message>

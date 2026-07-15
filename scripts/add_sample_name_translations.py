@@ -33,7 +33,7 @@ SAMPLES = [
     ("Maze", 1), ("Maze", 2), ("Maze", 3),
     ("Platform", 1), ("Platform", 2), ("Platform", 3),
     ("Match-3", 1), ("Match-3", 2), ("Match-3", 3),
-    ("Views", 1),
+    ("Views", 1), ("Views", 2),
 ]
 
 # Per language: (maze word, platform word, match-3 word, views word, level

@@ -2252,6 +2252,11 @@ Check the console for error details.</source>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Views — Level 2</source>
+            <translation>Види — Рівень 2</translation>
+        </message>
+
+        <message>
             <source>Views — Level 1</source>
             <translation>Види — Рівень 1</translation>
         </message>
