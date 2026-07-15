@@ -18,8 +18,9 @@ from typing import List, Tuple
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
-    QFrame, QHBoxLayout, QLabel, QListWidget, QListWidgetItem, QMenu,
-    QPushButton, QSizePolicy, QVBoxLayout, QWidget,
+    QDialog, QDialogButtonBox, QFrame, QHBoxLayout, QLabel, QListWidget,
+    QListWidgetItem, QMenu, QPushButton, QSizePolicy, QSplitter, QTextBrowser,
+    QVBoxLayout, QWidget,
 )
 
 from core.logger import get_logger
@@ -188,6 +189,15 @@ class WelcomeTab(QWidget):
         if sample_items:
             lay.addWidget(self._dropdown_button(
                 self.tr("Choose a sample"), sample_items))
+            # Samples live in one dropdown (no per-card surface), so per-sample
+            # documentation gets its own entry point: a viewer listing every
+            # bundled sample's README guide.
+            docs_btn = QPushButton(self.tr("📖  Sample guides"))
+            docs_btn.setCursor(Qt.PointingHandCursor)
+            docs_btn.setStyleSheet(
+                "QPushButton { text-align: left; padding: 8px 12px; }")
+            docs_btn.clicked.connect(self._on_show_sample_docs)
+            lay.addWidget(docs_btn)
         else:
             placeholder = QLabel(self.tr("(No bundled samples found in this build.)"))
             placeholder.setObjectName("welcomeMutedLabel")
@@ -436,6 +446,10 @@ class WelcomeTab(QWidget):
         if self.main_window and hasattr(self.main_window, 'show_tutorials'):
             self.main_window.show_tutorials()
 
+    def _on_show_sample_docs(self):
+        dlg = SampleDocsDialog(SAMPLE_PROJECTS, self._repo_root(), self)
+        dlg.exec()
+
     def _on_show_about(self):
         if self.main_window and hasattr(self.main_window, 'about'):
             self.main_window.about()
@@ -455,3 +469,99 @@ class WelcomeTab(QWidget):
         if not hasattr(self.main_window, 'load_project'):
             return
         self.main_window.load_project(sample_path)
+
+
+class SampleDocsDialog(QDialog):
+    """Modal viewer for the bundled samples' README.md guides.
+
+    The Welcome tab collapses samples into a single "Choose a sample" dropdown,
+    so there is no per-card surface to hang a docs button on. This dialog is the
+    per-sample documentation entry point instead: the sample list on the left,
+    the selected sample's rendered README on the right.
+
+    README files ship inside the frozen build (PyGameMaker.spec bundles the whole
+    samples/ tree), and paths resolve via the same repo_root the dropdown uses,
+    so this works identically from source and from a compiled executable.
+    """
+
+    def __init__(self, samples, repo_root: Path, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(self.tr("Sample guides"))
+        self.resize(760, 520)
+        self._repo_root = repo_root
+
+        layout = QVBoxLayout(self)
+        splitter = QSplitter(Qt.Horizontal, self)
+
+        self._list = QListWidget()
+        self._list.setMaximumWidth(220)
+        self._list.setCursor(Qt.PointingHandCursor)
+        # Parallel to the list rows: (relative_path, label) for each sample that
+        # actually exists in this build (same existence check the dropdown uses).
+        self._samples = []
+        for relative_path, label in samples:
+            sample = repo_root / relative_path
+            if not (sample.is_dir() and (sample / 'project.json').exists()):
+                continue
+            self._samples.append((relative_path, label))
+            QListWidgetItem(label, self._list)
+        splitter.addWidget(self._list)
+
+        self._viewer = QTextBrowser()
+        self._viewer.setOpenExternalLinks(True)
+        splitter.addWidget(self._viewer)
+        splitter.setStretchFactor(1, 1)
+        layout.addWidget(splitter, 1)
+
+        buttons = QDialogButtonBox(QDialogButtonBox.Close)
+        buttons.rejected.connect(self.reject)
+        buttons.accepted.connect(self.accept)
+        layout.addWidget(buttons)
+
+        self._list.currentRowChanged.connect(self._show_row)
+        if self._samples:
+            self._list.setCurrentRow(0)
+        else:
+            self._viewer.setMarkdown(
+                self.tr("_No bundled samples were found in this build._"))
+
+    # -- API (also used by the offscreen widget test) ----------------------
+
+    def sample_labels(self):
+        """Labels of the samples the dialog is showing, in list order."""
+        return [label for _rel, label in self._samples]
+
+    def select_sample(self, relative_path: str) -> bool:
+        """Select the row for ``relative_path`` (e.g. 'samples/views_1'). Returns
+        True if it was found and selected."""
+        for i, (rel, _label) in enumerate(self._samples):
+            if rel == relative_path:
+                self._list.setCurrentRow(i)
+                return True
+        return False
+
+    def rendered_text(self) -> str:
+        """The plain (rendered) text currently shown — README markdown with the
+        formatting applied, so headings/links read as visible words."""
+        return self._viewer.toPlainText()
+
+    # -- internal ----------------------------------------------------------
+
+    def _show_row(self, row: int):
+        if row < 0 or row >= len(self._samples):
+            return
+        relative_path, label = self._samples[row]
+        readme = self._repo_root / relative_path / "README.md"
+        try:
+            text = readme.read_text(encoding="utf-8")
+        except OSError:
+            text = ""
+        if text.strip():
+            # Qt6 QTextBrowser renders Markdown natively; fall back defensively.
+            try:
+                self._viewer.setMarkdown(text)
+            except (AttributeError, TypeError):
+                self._viewer.setPlainText(text)
+        else:
+            self._viewer.setMarkdown(
+                self.tr("_No documentation is bundled for **{0}**._").format(label))
