@@ -85,11 +85,11 @@ claims.
 
 ## Things to tweak
 
-- The `obj_pingus` vs. `obj_monstre`/`obj_monstre_volant` stomp test is the
-  same fragile `vspeed > 0 and y < other.y+8` check flagged as a known
-  game-feel gap on the other platformer samples (see project CLAUDE.md); a
-  fast fall can overshoot the 8px window and cost a life on what looks like
-  a clean stomp.
+- The `obj_pingus` vs. `obj_monstre`/`obj_monstre_volant` stomp test used to
+  be `vspeed > 0 and y < other.y+8`, which a fast fall could overshoot (the
+  8px window is checked against the *post-move* position) and cost a life on
+  what looked like a clean stomp. It's now `vspeed > 0 and y - vspeed <
+  other.y+8`, which checks the window against the pre-move position instead.
 - The `obj_power` pickup silently gates all interaction with
   `obj_monstre_volant` (via `if_object_exists(obj_power, not_flag=true)`
   around the stomp/death logic in `obj_pingus`) — worth making visible to

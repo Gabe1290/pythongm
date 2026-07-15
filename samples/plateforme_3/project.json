@@ -697,7 +697,7 @@
               {
                 "action": "test_expression",
                 "parameters": {
-                  "expression": "vspeed > 0 and y < other.y+8",
+                  "expression": "vspeed > 0 and y - vspeed < other.y+8",
                   "then_actions": [
                     {
                       "action": "comment",
@@ -824,7 +824,7 @@
               {
                 "action": "test_expression",
                 "parameters": {
-                  "expression": "vspeed > 0 and y < other.y+8",
+                  "expression": "vspeed > 0 and y - vspeed < other.y+8",
                   "then_actions": [
                     {
                       "action": "comment",

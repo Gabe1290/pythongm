@@ -192,11 +192,15 @@ A run of user-reported fixes, each pushed to `main` with regression tests:
   has since re-saved maze_1 (`01587c9`) and maze_2 (`1567565`) with new sprite
   art; maze_3 still pending.
 
-Open follow-up (left to the user — game-feel): the platformer samples' player
-`collision_with_obj_monstre` uses a fragile stomp test `vspeed > 0 and
-y < other.y+8`; fast falls overshoot the 8px window and take a life. Suggested
-`vspeed > 0 and y - vspeed < other.y+8` (uses the pre-move position). Sample
-data only; not applied.
+**2026-07-15 — Platformer stomp-test fixed.** The `plateforme_3` follow-up
+noted above (`obj_pingus`'s `collision_with_obj_monstre`/`_volant` fragile
+stomp test) is applied: `vspeed > 0 and y < other.y+8` →
+`vspeed > 0 and y - vspeed < other.y+8` (checks the pre-move position, so a
+fast fall no longer overshoots the 8px window and costs an unearned life) in
+both `samples/plateforme_3/objects/obj_pingus.json` and the embedded copy in
+`samples/plateforme_3/project.json`. The sample's own README documented this
+as a "Things to tweak" teaching point; it's been reworded to describe the fix
+rather than pose it as an open exercise.
 
 **2026-06-09 — Audit follow-through (dead code + save rollback).** Acted on a
 re-audit by verifying each claim against code first (several were overstated).
