@@ -1947,6 +1947,42 @@ class GameObject {
                 if (params.caption) document.title = params.caption;
                 break;
 
+            case 'enable_views': {
+                // Turn the room's camera system on/off (mirrors the desktop
+                // execute_enable_views_action).
+                if (!game.currentRoom) break;
+                const v = params.enable !== undefined ? params.enable : params.enabled;
+                game.currentRoom.viewsEnabled = !(v === false || v === 'false' || v === 0);
+                break;
+            }
+
+            case 'set_view': {
+                // Configure one of the 8 views (mirrors set_view: only the
+                // provided fields change; others keep their current value).
+                if (!game.currentRoom) break;
+                let vi = parseInt(params.view);
+                if (isNaN(vi) || vi < 0 || vi > 7) vi = 0;
+                const view = game.currentRoom.views[vi];
+                const setNum = (k) => {
+                    if (params[k] !== undefined) {
+                        const n = parseNumParam(params[k], this, view[k]);
+                        view[k] = Math.trunc(n);
+                    }
+                };
+                if (params.visible !== undefined) {
+                    const vis = params.visible;
+                    view.visible = !(vis === false || vis === 'false' || vis === 0 ||
+                                     (typeof vis === 'string' && vis.toLowerCase() === 'no'));
+                }
+                ['view_x', 'view_y', 'view_w', 'view_h',
+                 'port_x', 'port_y', 'port_w', 'port_h',
+                 'hborder', 'vborder', 'hspeed', 'vspeed'].forEach(setNum);
+                if (params.follow !== undefined) {
+                    view.follow = params.follow || null;
+                }
+                break;
+            }
+
             case 'move_to_contact': {
                 // Move pixel-by-pixel toward `direction` (degrees, 0=right,
                 // 90=up) until touching `object` ("all"/"solid"/<name>) or
@@ -2467,6 +2503,75 @@ class GameRoom {
         this.tileVertical = data.tile_vertical || false;
         this.instances = [];
         this.backgroundSprite = null;
+
+        // GameMaker-style 8-view camera system (mirrors the desktop runtime's
+        // GameRoom in game_runner.py). When enabled, the room can be larger
+        // than the window and the renderer scrolls/clips per view.
+        this.viewsEnabled = data.views_enabled || data.enable_views || false;
+        this.currentViewIndex = -1;  // active view during render, else -1
+        this.views = [];
+        const viewsRaw = (data.views && !Array.isArray(data.views)) ? data.views : {};
+        for (let i = 0; i < 8; i++) {
+            const v = viewsRaw['view_' + i] || {};
+            this.views.push({
+                visible: v.visible !== undefined ? v.visible : (i === 0),
+                view_x: v.view_x || 0, view_y: v.view_y || 0,
+                view_w: v.view_w || this.width, view_h: v.view_h || this.height,
+                port_x: v.port_x || 0, port_y: v.port_y || 0,
+                port_w: v.port_w || this.width, port_h: v.port_h || this.height,
+                follow: v.follow || null,
+                hborder: v.hborder !== undefined ? v.hborder : 32,
+                vborder: v.vborder !== undefined ? v.vborder : 32,
+                hspeed: v.hspeed !== undefined ? v.hspeed : -1,
+                vspeed: v.vspeed !== undefined ? v.vspeed : -1,
+            });
+        }
+    }
+
+    findFirstInstance(objectName) {
+        for (const inst of this.instances) {
+            if (!inst.toDestroy && inst.name === objectName) return inst;
+        }
+        return null;
+    }
+
+    // Per-frame camera follow + clamp, mirroring game_runner.update_views().
+    updateViews() {
+        if (!this.viewsEnabled) return;
+        for (const view of this.views) {
+            if (!view.visible || !view.follow) continue;
+            const target = this.findFirstInstance(view.follow);
+            if (!target) continue;
+            const vw = Math.trunc(view.view_w), vh = Math.trunc(view.view_h);
+            const hb = Math.trunc(view.hborder), vb = Math.trunc(view.vborder);
+            const oldVx = Math.trunc(view.view_x), oldVy = Math.trunc(view.view_y);
+            let newVx = oldVx, newVy = oldVy;
+            if (target.x < oldVx + hb) newVx = Math.trunc(target.x - hb);
+            else if (target.x > oldVx + vw - hb) newVx = Math.trunc(target.x - vw + hb);
+            if (target.y < oldVy + vb) newVy = Math.trunc(target.y - vb);
+            else if (target.y > oldVy + vh - vb) newVy = Math.trunc(target.y - vh + vb);
+            // Per-axis speed limit (-1 = no limit)
+            const hsl = Math.trunc(view.hspeed), vsl = Math.trunc(view.vspeed);
+            if (hsl >= 0) {
+                const dx = newVx - oldVx;
+                if (dx > hsl) newVx = oldVx + hsl; else if (dx < -hsl) newVx = oldVx - hsl;
+            }
+            if (vsl >= 0) {
+                const dy = newVy - oldVy;
+                if (dy > vsl) newVy = oldVy + vsl; else if (dy < -vsl) newVy = oldVy - vsl;
+            }
+            // Clamp to room bounds
+            newVx = vw < this.width ? Math.max(0, Math.min(newVx, this.width - vw)) : 0;
+            newVy = vh < this.height ? Math.max(0, Math.min(newVy, this.height - vh)) : 0;
+            view.view_x = newVx;
+            view.view_y = newVy;
+        }
+    }
+
+    _activeViews() {
+        const out = [];
+        this.views.forEach((v, i) => { if (v.visible) out.push([i, v]); });
+        return out;
     }
 
     step(game) {
@@ -2593,9 +2698,39 @@ class GameRoom {
     }
 
     render(ctx) {
+        // Fill the whole canvas with the bg color once; areas outside any
+        // view port then show the bg color rather than stale pixels.
         ctx.fillStyle = this.bgColor;
-        ctx.fillRect(0, 0, this.width, this.height);
+        const cw = ctx.canvas ? ctx.canvas.width : this.width;
+        const ch = ctx.canvas ? ctx.canvas.height : this.height;
+        ctx.fillRect(0, 0, cw, ch);
 
+        const active = this.viewsEnabled ? this._activeViews() : [];
+        if (active.length === 0) {
+            // Legacy no-view path: draw at room origin.
+            this.currentViewIndex = -1;
+            this._renderContents(ctx);
+            return;
+        }
+        // For each visible view: clip to its port and translate so the
+        // view's top-left maps to the port's top-left (mirrors the desktop
+        // runtime's per-view render loop; offset = port - view).
+        for (const [i, view] of active) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(view.port_x, view.port_y, view.port_w, view.port_h);
+            ctx.clip();
+            ctx.translate(view.port_x - view.view_x, view.port_y - view.view_y);
+            this.currentViewIndex = i;
+            this._renderContents(ctx);
+            ctx.restore();
+        }
+        this.currentViewIndex = -1;
+    }
+
+    // Room contents in ROOM coordinates (the caller applies any camera
+    // translate/clip). Background image + depth-sorted instance draws.
+    _renderContents(ctx) {
         if (this.backgroundSprite && this.backgroundSprite.complete) {
             if (this.tileHorizontal || this.tileVertical) {
                 const imgWidth = this.backgroundSprite.width;
@@ -2922,6 +3057,9 @@ class Game {
         }
 
         if (this.currentRoom) {
+            // Camera follow/clamp before drawing (desktop order: update_views
+            // runs in render() before the room is drawn).
+            this.currentRoom.updateViews();
             this.currentRoom.render(this.ctx);
         }
 
