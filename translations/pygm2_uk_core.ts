@@ -2441,5 +2441,28 @@ Check the console for error details.</source>
         <source>Clear Recent Projects</source>
         <translation type="vanished">Очистити нещодавні проєкти</translation>
     </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>📖  Sample guides</source>
+        <translation>📖  Посібники до прикладів</translation>
+    </message>
+</context>
+<context>
+    <name>SampleDocsDialog</name>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="489"/>
+        <source>Sample guides</source>
+        <translation>Посібники до прикладів</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="526"/>
+        <source>_No bundled samples were found in this build._</source>
+        <translation>_У цій збірці не знайдено вбудованих прикладів._</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="567"/>
+        <source>_No documentation is bundled for **{0}**._</source>
+        <translation>_Для **{0}** документація не включена._</translation>
+    </message>
 </context>
 </TS>
