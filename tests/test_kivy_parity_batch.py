@@ -4,7 +4,11 @@ the matrix:
 
 - an ORPHANED else_action (GMK mis-imports drop the question action; see
   TODO.md maze_3 findings) generated a bare `else:` SyntaxError, so the
-  plateforme_4/5 Kivy exports never compiled;
+  plateforme_4/5 Kivy exports never compiled (those two samples were later
+  removed from the bundled set pending import cleanup — see samples/README.md
+  — so the create_moving_instance/jump_to_random/test_score-unknown-operation
+  assertions below are now pinned directly against ActionCodeGenerator
+  rather than through a sample export);
 - maze_3's "obj trigger" (space in the object name) generated
   `class Obj trigger` / `from objects.obj trigger import ...`, so the
   whole maze_3 Kivy export never compiled.
@@ -30,8 +34,7 @@ from export.Kivy.code_generator import ActionCodeGenerator  # noqa: E402
 from utils.project_file_merge import merge_object_file  # noqa: E402
 
 SAMPLES = ["maze_1", "maze_2", "maze_3",
-           "plateforme_1", "plateforme_2", "plateforme_3",
-           "plateforme_4", "plateforme_5", "match3_1"]
+           "plateforme_1", "plateforme_2", "plateforme_3", "match3_1"]
 
 
 def _load_project(sample):
@@ -88,20 +91,55 @@ def test_draw_family_queues_runtime_commands(exports):
 
 
 def test_creation_cluster_and_expressions(exports):
-    person = (exports["plateforme_4"] / "objects" / "obj_personnage.py").read_text(encoding="utf-8")
-    assert "create_instance('obj_monstre_volant_mort'" in person
-    monster = (exports["plateforme_4"] / "objects" / "obj_monstre.py").read_text(encoding="utf-8")
-    assert "self.jump_to_random(" in monster
     maze3_monster = (exports["maze_3"] / "objects" / "monster_all.py").read_text(encoding="utf-8")
     # set_direction_speed with an expression param ("direction+90")
     assert "self.direction = (self.direction + 90)" in maze3_monster
 
 
-def test_test_score_unknown_operation_mirrors_runtime(exports):
-    """GMK numeric operation codes evaluate to False in the IDE runtime;
-    the generated guard must do the same, not crash or guess."""
-    person = (exports["plateforme_4"] / "objects" / "obj_personnage.py").read_text(encoding="utf-8")
-    assert "test_score: unknown operation" in person
+def test_create_moving_instance_and_jump_to_random_codegen():
+    """create_moving_instance / jump_to_random codegen, pinned directly
+    against ActionCodeGenerator rather than through a bundled sample.
+
+    These two action types don't naturally occur in any currently-bundled
+    sample — they used to be exercised by plateforme_4/5's real GMK-import
+    data (obj_personnage's create_moving_instance('obj_monstre_volant_mort',
+    ...) on collision, obj_monstre's jump_to_random on a wall bump) before
+    those two samples were removed from the bundled set pending import
+    cleanup (see samples/README.md)."""
+    gen = ActionCodeGenerator(base_indent=2)
+    gen.process_action(
+        {"action": "create_moving_instance",
+         "parameters": {"object": "obj_monstre_volant_mort", "x": "1"}},
+        "create")
+    code = gen.get_code()
+    compile(f"def _t(self):\n{code}\n", "<gen>", "exec")
+    assert "self.scene.create_instance('obj_monstre_volant_mort'" in code
+
+    gen2 = ActionCodeGenerator(base_indent=2)
+    gen2.process_action({"action": "jump_to_random", "parameters": {}}, "create")
+    code2 = gen2.get_code()
+    compile(f"def _t(self):\n{code2}\n", "<gen>", "exec")
+    assert "self.jump_to_random(" in code2
+
+
+def test_test_score_unknown_operation_mirrors_runtime():
+    """GMK numeric operation codes (a raw, un-translated GML operation
+    index left over from an import — e.g. samples/plateforme_4's
+    obj_personnage had a keyboard.up test_score action with
+    operation='1' instead of a named comparison) evaluate to False in the
+    IDE runtime; the generated guard must do the same, not crash or guess.
+
+    Pinned directly against ActionCodeGenerator — see
+    test_create_moving_instance_and_jump_to_random_codegen's docstring for
+    why this moved off the (now-removed) plateforme_4 sample."""
+    gen = ActionCodeGenerator(base_indent=2)
+    gen.process_action(
+        {"action": "test_score", "parameters": {"value": "0", "operation": "1"}},
+        "create")
+    gen.process_action({"action": "reverse_horizontal", "parameters": {}}, "create")
+    code = gen.get_code()
+    compile(f"def _t(self):\n{code}\n", "<gen>", "exec")
+    assert "test_score: unknown operation" in code
 
 
 def test_animation_end_and_no_more_lives_wiring(exports):
