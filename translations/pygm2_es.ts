@@ -8844,6 +8844,11 @@ Do you want to save anyway?</source>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Views — Level 1</source>
+            <translation>Vistas — Nivel 1</translation>
+        </message>
+
+        <message>
             <source>Match-3 — Level 3</source>
             <translation>Match-3 — Nivel 3</translation>
         </message>

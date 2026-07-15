@@ -33,20 +33,22 @@ SAMPLES = [
     ("Maze", 1), ("Maze", 2), ("Maze", 3),
     ("Platform", 1), ("Platform", 2), ("Platform", 3),
     ("Match-3", 1), ("Match-3", 2), ("Match-3", 3),
+    ("Views", 1),
 ]
 
-# Per language: (maze word, platform word, match-3 word, level word). "Level"
-# is kept as-is for German (idiomatic in gaming); "Match-3" is the established
-# genre name in most locales, with the native "three in a row" phrase for
-# ru/uk. The em-dash separator (—, U+2014) matches the English source exactly.
+# Per language: (maze word, platform word, match-3 word, views word, level
+# word). "Level" is kept as-is for German (idiomatic in gaming); "Match-3" is
+# the established genre name in most locales, with the native "three in a row"
+# phrase for ru/uk. "Views" uses the native GameMaker camera-views term per
+# locale. The em-dash separator (—, U+2014) matches the English source exactly.
 TERMS = {
-    "fr": ("Labyrinthe", "Plateforme", "Match-3", "Niveau"),
-    "de": ("Labyrinth", "Plattform", "Match-3", "Level"),
-    "es": ("Laberinto", "Plataforma", "Match-3", "Nivel"),
-    "it": ("Labirinto", "Piattaforma", "Match-3", "Livello"),
-    "ru": ("Лабиринт", "Платформа", "Три в ряд", "Уровень"),
-    "sl": ("Labirint", "Platforma", "Match-3", "Stopnja"),
-    "uk": ("Лабіринт", "Платформа", "Три в ряд", "Рівень"),
+    "fr": ("Labyrinthe", "Plateforme", "Match-3", "Vues", "Niveau"),
+    "de": ("Labyrinth", "Plattform", "Match-3", "Ansichten", "Level"),
+    "es": ("Laberinto", "Plataforma", "Match-3", "Vistas", "Nivel"),
+    "it": ("Labirinto", "Piattaforma", "Match-3", "Viste", "Livello"),
+    "ru": ("Лабиринт", "Платформа", "Три в ряд", "Виды", "Уровень"),
+    "sl": ("Labirint", "Platforma", "Match-3", "Pogledi", "Stopnja"),
+    "uk": ("Лабіринт", "Платформа", "Три в ряд", "Види", "Рівень"),
 }
 
 
@@ -55,8 +57,9 @@ def en_label(kind: str, level: int) -> str:
 
 
 def translate(lang: str, kind: str, level: int) -> str:
-    maze, platform, match3, lvl = TERMS[lang]
-    word = {"Maze": maze, "Platform": platform, "Match-3": match3}[kind]
+    maze, platform, match3, views, lvl = TERMS[lang]
+    word = {"Maze": maze, "Platform": platform,
+            "Match-3": match3, "Views": views}[kind]
     return f"{word} — {lvl} {level}"
 
 

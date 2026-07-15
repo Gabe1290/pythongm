@@ -8256,6 +8256,11 @@ Do you want to save anyway?</source>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Views — Level 1</source>
+            <translation>Види — Рівень 1</translation>
+        </message>
+
+        <message>
             <source>Match-3 — Level 3</source>
             <translation>Три в ряд — Рівень 3</translation>
         </message>
