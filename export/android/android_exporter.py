@@ -487,6 +487,48 @@ class AndroidExporter(BaseKivyExporter):
         persist.mkdir(parents=True, exist_ok=True)
         return persist
 
+    def _terminate_build(self, process):
+        """Kill a buildozer build and its whole child tree on cancel/timeout.
+
+        Native (POSIX): buildozer is a process-group leader
+        (start_new_session), so signal the group — killing only the parent
+        left gradle/gcc/p4a orphaned (KA-M3).
+
+        WSL: killing the Windows ``wsl.exe`` does NOT stop the Linux-side
+        build (buildozer/gradle/java), so after it, best-effort ``pkill``
+        the WSL processes by their command patterns (KA-M2). Best-effort —
+        never raise from teardown.
+        """
+        if process is None:
+            return
+        if self._use_wsl:
+            try:
+                process.kill()
+            except Exception:
+                pass
+            try:
+                subprocess.run(
+                    ['wsl', 'bash', '-lc',
+                     'pkill -f "m buildozer"; pkill -f pythonforandroid; '
+                     'pkill -f "gradle" ; true'],
+                    capture_output=True, timeout=15)
+            except Exception as exc:
+                logger.debug("WSL build cleanup pkill failed: %s", exc)
+            return
+        # Native POSIX: signal the whole process group. SIGKILL where
+        # available, else SIGTERM (keeps this importable/testable on
+        # Windows, though the native path never runs there).
+        try:
+            import os
+            import signal
+            sig = getattr(signal, 'SIGKILL', getattr(signal, 'SIGTERM', 15))
+            os.killpg(os.getpgid(process.pid), sig)
+        except Exception:
+            try:
+                process.kill()  # fall back to the lone parent
+            except Exception:
+                pass
+
     def _run_buildozer(self, build_dir: Path):
         """Run Buildozer to build the Android APK.
 
@@ -550,6 +592,11 @@ class AndroidExporter(BaseKivyExporter):
                     else:
                         shutil.copy2(item, dest)
 
+                # start_new_session makes buildozer a process-group leader so
+                # cancel/timeout can kill the WHOLE tree (gradle, gcc/make,
+                # p4a subprocesses) via killpg, not just the parent (KA-M3).
+                # POSIX-only, which is fine — the native path never runs on
+                # Windows (Windows routes through WSL).
                 process = subprocess.Popen(
                     [python_exe, '-m', 'buildozer', 'android', 'debug'],
                     cwd=persist_dir,
@@ -557,7 +604,8 @@ class AndroidExporter(BaseKivyExporter):
                     stderr=subprocess.STDOUT,
                     text=True,
                     bufsize=1,
-                    env=env
+                    env=env,
+                    start_new_session=True,
                 )
                 timeout = BUILDOZER_TIMEOUT_NATIVE
 
@@ -626,7 +674,7 @@ class AndroidExporter(BaseKivyExporter):
             while True:
                 # Check for cancellation even while buildozer is silent.
                 if self.cancel_requested:
-                    process.kill()
+                    self._terminate_build(process)
                     self.export_complete.emit(False, "Export cancelled by user.")
                     # Return the None sentinel so export_project doesn't also
                     # emit a bogus 'Buildozer build failed: False' (L24).
@@ -727,8 +775,7 @@ class AndroidExporter(BaseKivyExporter):
             timeout_min = (BUILDOZER_TIMEOUT_WSL if self._use_wsl
                            else BUILDOZER_TIMEOUT_NATIVE) // 60
             logger.error("Buildozer timed out after %d minutes", timeout_min)
-            if process:
-                process.kill()
+            self._terminate_build(process)
             return (
                 "Buildozer timed out after {} minutes.\n\n"
                 "This timeout is a hang failsafe well above a normal\n"

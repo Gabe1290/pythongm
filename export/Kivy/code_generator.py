@@ -115,7 +115,17 @@ def _num_code(value, default=0):
         f = float(s)
         return str(int(f)) if f.is_integer() else str(f)
     except ValueError:
-        return f"({_resolve_instance_names(s)})"
+        pass
+    resolved = _resolve_instance_names(s)
+    # Only emit the expression if it actually parses — a malformed field
+    # ("10 pixels", "x >") would otherwise become uncompilable Python and
+    # kill the whole exported object module. Fall back to the numeric
+    # default (matching the runtime's silent no-op on a bad numeric field).
+    try:
+        ast.parse(resolved, mode='eval')
+        return f"({resolved})"
+    except SyntaxError:
+        return str(default if isinstance(default, (int, float)) else 0)
 
 
 class ActionCodeGenerator:
@@ -337,9 +347,9 @@ class ActionCodeGenerator:
             # The pygame runtime treats x/y as OFFSETS from the instance
             # (check_x = instance.x + x_offset), defaulting to 0 — match that
             # here instead of passing them as absolute coordinates.
-            x = params.get('x', 0)
-            y = params.get('y', 0)
-            cond = f"self.check_collision_at(self.x + ({x}), self.y + ({y}), '{obj_name}')"
+            x = _num_code(params.get('x', 0))
+            y = _num_code(params.get('y', 0))
+            cond = f"self.check_collision_at(self.x + ({x}), self.y + ({y}), {obj_name!r})"
             # GM stores the NOT checkbox as not_flag (older JSON: negate/not)
             if params.get('not_flag', params.get('negate', params.get('not', False))):
                 cond = f"not {cond}"
@@ -348,8 +358,8 @@ class ActionCodeGenerator:
 
         elif action_type == 'check_empty':
             # Check if position is collision-free
-            x = params.get('x', 'self.x')
-            y = params.get('y', 'self.y')
+            x = _num_code(params.get('x', 'self.x'))
+            y = _num_code(params.get('y', 'self.y'))
             # relative parameter means offset from current position
             relative = params.get('relative', False)
             if relative:
@@ -359,9 +369,20 @@ class ActionCodeGenerator:
             return
 
         elif action_type == 'if_key_pressed':
-            key = params.get('key', 'right')
-            key_map = {'right': '275', 'left': '276', 'up': '273', 'down': '274'}
-            key_code = key_map.get(key, '275')
+            # Kivy keycodes. Arrows + common keys; letters/digits map to their
+            # ASCII code (Kivy uses those). An unknown key maps to -1 so the
+            # event simply never fires — the old fallback of '275' made EVERY
+            # non-arrow key trigger on the RIGHT arrow.
+            key = str(params.get('key', 'right')).lower()
+            key_map = {'right': 275, 'left': 276, 'up': 273, 'down': 274,
+                       'space': 32, 'enter': 13, 'return': 13, 'escape': 27,
+                       'backspace': 8, 'tab': 9}
+            if key in key_map:
+                key_code = key_map[key]
+            elif len(key) == 1 and (key.isalpha() or key.isdigit()):
+                key_code = ord(key)
+            else:
+                key_code = -1
             self._open_guard(f"if self.scene.keys_pressed.get({key_code}, False):")
             return
 
@@ -644,24 +665,32 @@ class ActionCodeGenerator:
     def _convert_simple_action(self, action_type: str, params: Dict, event_type: str) -> str:
         """Convert a simple (non-block) action to Python code"""
 
-        # MOVEMENT ACTIONS
+        # MOVEMENT ACTIONS. Numeric params go through _num_code (empty field
+        # -> default, bare instance names -> self.<name>, malformed -> default)
+        # so a cleared or expression field can't emit uncompilable Python
+        # the way a raw f-string embed did.
         if action_type == 'set_hspeed':
-            return f"self.hspeed = {params.get('speed', params.get('value', 0))}"
+            return f"self.hspeed = {_num_code(params.get('speed', params.get('value', 0)))}"
 
         elif action_type == 'set_vspeed':
             # KIVY COORDINATE FIX: Flip vspeed sign
             # GameMaker: Y=0 at top, increases downward. UP = negative vspeed
             # Kivy: Y=0 at bottom, increases upward. UP = positive vspeed
-            # So: kivy_vspeed = -gamemaker_vspeed
-            speed = params.get('speed', params.get('value', 0))
-            flipped_speed = -speed if isinstance(speed, (int, float)) else f"-({speed})"
-            return f"self.vspeed = {flipped_speed}"
+            # So: kivy_vspeed = -gamemaker_vspeed. Fold the sign into a numeric
+            # literal (so -3 -> 3, not "--3"); wrap an expression as -(expr).
+            code = _num_code(params.get('speed', params.get('value', 0)))
+            try:
+                folded = -float(code)
+                code = str(int(folded)) if folded.is_integer() else str(folded)
+            except ValueError:
+                code = f"-{code}"  # code is "(expr)" -> "-(expr)"
+            return f"self.vspeed = {code}"
 
         elif action_type == 'set_speed':
-            return f"self.speed = {params.get('speed', params.get('value', 0))}"
+            return f"self.speed = {_num_code(params.get('speed', params.get('value', 0)))}"
 
         elif action_type == 'set_direction':
-            return f"self.direction = {params.get('direction', params.get('value', 0))}"
+            return f"self.direction = {_num_code(params.get('direction', params.get('value', 0)))}"
 
         elif action_type in ('move_fixed', 'start_moving_direction'):
             # start_moving_direction shares move_fixed's semantics (a set of
@@ -753,13 +782,13 @@ if dist > 0:
         # INSTANCE ACTIONS
         elif action_type == 'create_instance':
             obj_name = params.get('object', '')
-            x = params.get('x', 0)
-            y = params.get('y', 0)
+            x = _num_code(params.get('x', 0))
+            y = _num_code(params.get('y', 0))
             relative = params.get('relative', False)
             if relative:
-                return f"self.scene.create_instance('{obj_name}', self.x + {x}, self.y + {y})"
+                return f"self.scene.create_instance({obj_name!r}, self.x + {x}, self.y + {y})"
             else:
-                return f"self.scene.create_instance('{obj_name}', {x}, {y})"
+                return f"self.scene.create_instance({obj_name!r}, {x}, {y})"
 
         elif action_type == 'destroy_instance':
             target = params.get('target', 'self')
@@ -770,8 +799,11 @@ if dist > 0:
 
         # ALARM ACTIONS
         elif action_type == 'set_alarm':
-            alarm_num = params.get('alarm_number', 0)
-            steps = params.get('steps', 30)
+            try:
+                alarm_num = int(params.get('alarm_number', 0) or 0)
+            except (TypeError, ValueError):
+                alarm_num = 0
+            steps = _num_code(params.get('steps', 30), 30)
             return f"self.alarms[{alarm_num}] = {steps}"
 
         elif action_type == 'sleep':
@@ -854,18 +886,18 @@ if dist > 0:
 
         # SCORE/LIVES/HEALTH ACTIONS (use lazy import to avoid circular imports)
         elif action_type == 'set_score':
-            value = params.get('value', 0)
-            relative = params.get('relative', False)
+            value = _num_code(params.get('value', 0))
+            relative = bool(params.get('relative', False))
             return f"from main import set_score; set_score({value}, relative={relative})"
 
         elif action_type == 'set_lives':
-            value = params.get('value', 3)
-            relative = params.get('relative', False)
+            value = _num_code(params.get('value', 3), 3)
+            relative = bool(params.get('relative', False))
             return f"from main import set_lives; set_lives({value}, relative={relative})"
 
         elif action_type == 'set_health':
-            value = params.get('value', 100)
-            relative = params.get('relative', False)
+            value = _num_code(params.get('value', 100), 100)
+            relative = bool(params.get('relative', False))
             return f"from main import set_health; set_health({value}, relative={relative})"
 
         # DRAW ACTIONS — queue runtime-schema commands into
@@ -968,16 +1000,21 @@ if dist > 0:
             return f"self.direction = {direction}; self.speed = {speed}"
 
         elif action_type == 'set_window_caption':
+            # repr() the caption (free text) so an apostrophe/newline/backslash
+            # can't break the literal — same fix as show_message. bool() the
+            # flags so a non-bool stored value can't emit invalid Python.
             caption = params.get('caption', '')
-            show_score = params.get('show_score', True)
-            show_lives = params.get('show_lives', True)
-            show_health = params.get('show_health', False)
-            return f"from main import set_window_caption; set_window_caption(caption='{caption}', show_score={show_score}, show_lives={show_lives}, show_health={show_health})"
+            show_score = bool(params.get('show_score', True))
+            show_lives = bool(params.get('show_lives', True))
+            show_health = bool(params.get('show_health', False))
+            return (f"from main import set_window_caption; set_window_caption("
+                    f"caption={caption!r}, show_score={show_score}, "
+                    f"show_lives={show_lives}, show_health={show_health})")
 
         elif action_type == 'jump_to_position':
             # Teleport to a specific position
-            x = params.get('x', 0)
-            y = params.get('y', 0)
+            x = _num_code(params.get('x', 0))
+            y = _num_code(params.get('y', 0))
             relative = params.get('relative', False)
             if relative:
                 return f"self.x += {x}; self.y += {y}"
@@ -1029,22 +1066,25 @@ if dist > 0:
             return
 
         elif action_type == 'set_variable':
-            # Set a variable to a value
+            # Set a variable to a value. Known-numeric attrs go through
+            # _num_code (empty/expression safe); a custom var may hold a
+            # number OR a string, so use _literal (number as-is, else a
+            # repr'd string) — either way a cleared or quoted field can't
+            # emit uncompilable Python.
             var_name = params.get('variable', params.get('name', 'temp'))
-            value = params.get('value', 0)
+            raw = params.get('value', 0)
             relative = params.get('relative', False)
-            # Handle special variable names that might need self prefix
-            if var_name in ['x', 'y', 'hspeed', 'vspeed', 'speed', 'direction', 'visible', 'solid']:
+            numeric_attrs = ['x', 'y', 'hspeed', 'vspeed', 'speed', 'direction',
+                             'visible', 'solid']
+            if var_name in numeric_attrs:
+                value = _num_code(raw)
                 if relative:
                     return f"self.{var_name} += {value}"
-                else:
-                    return f"self.{var_name} = {value}"
-            else:
-                # Custom variable - store as instance attribute
-                if relative:
-                    return f"self.{var_name} = getattr(self, '{var_name}', 0) + {value}"
-                else:
-                    return f"self.{var_name} = {value}"
+                return f"self.{var_name} = {value}"
+            value = _literal(raw)
+            if relative:
+                return f"self.{var_name} = getattr(self, {var_name!r}, 0) + {value}"
+            return f"self.{var_name} = {value}"
 
         elif action_type == 'comment':
             # GM comments are real (no-op) actions: they can be the guarded

@@ -319,6 +319,11 @@ class WSLBridge:
         return (
             '#!/bin/bash\n'
             'set -e\n'
+            # Self-delete on ANY exit (success, failure, or `set -e` abort).
+            # The old trailing `rm -f "$0"` ran only on success, so `set -e`
+            # aborting on a buildozer failure leaked this run script in /tmp
+            # on every failed build (KA-L3).
+            'trap \'rm -f "$0"\' EXIT\n'
             'BUILD_DIR="$HOME/pygm_builds/{key}"\n'
             'mkdir -p "$BUILD_DIR"\n'
             'echo "Build directory: $BUILD_DIR"\n'
@@ -343,11 +348,12 @@ class WSLBridge:
             '    fi\n'
             'fi\n'
             '\n'
-            'python3 -m buildozer android debug\n'
-            'EXIT_CODE=$?\n'
+            # Capture buildozer's exit without letting `set -e` abort first,
+            # so the APK copy-back still runs on success and the real exit
+            # code propagates. (The EXIT trap deletes this script regardless.)
+            'python3 -m buildozer android debug && EXIT_CODE=0 || EXIT_CODE=$?\n'
             'mkdir -p "{src}/bin"\n'
             'cp "$BUILD_DIR"/bin/*.apk "{src}/bin/" 2>/dev/null || true\n'
-            'rm -f "$0"\n'  # self-delete the run script (unique per build)
             'exit $EXIT_CODE\n'
         ).format(src=wsl_src, key=project_key)
 
@@ -380,19 +386,32 @@ class WSLBridge:
         # Generate a unique per-build path *inside WSL* via mktemp so concurrent
         # builds don't clobber each other and tee can't follow a pre-planted
         # symlink at a predictable name. The script rm's itself when done.
+        # Fail loudly if staging fails, instead of silently proceeding with
+        # an empty/predictable script (KA-L5): a full or read-only WSL /tmp
+        # otherwise gave buildozer "exited with code 1" and an empty log,
+        # with no hint that script staging was the real problem.
         mktemp = subprocess.run(
             ['wsl', 'mktemp', '/tmp/pygm_buildozer_run.XXXXXX.sh'],
             capture_output=True,
             text=True,
             timeout=10,
         )
-        script_path = mktemp.stdout.strip() or '/tmp/pygm_buildozer_run.sh'  # nosec B108 - fallback only if mktemp fails
-        subprocess.run(
+        script_path = mktemp.stdout.strip()
+        if mktemp.returncode != 0 or not script_path:
+            raise RuntimeError(
+                "Could not stage the WSL build script (mktemp failed — is "
+                "WSL /tmp full or read-only?).\n"
+                f"{(mktemp.stderr or '').strip()}")
+        tee = subprocess.run(
             ['wsl', 'tee', script_path],
             input=build_script.encode('utf-8'),
             capture_output=True,
             timeout=10,
         )
+        if tee.returncode != 0:
+            raise RuntimeError(
+                "Could not write the WSL build script.\n"
+                f"{(tee.stderr or b'').decode('utf-8', 'replace').strip()}")
         subprocess.run(
             ['wsl', 'chmod', '+x', script_path],
             capture_output=True,

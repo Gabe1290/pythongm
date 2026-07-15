@@ -179,3 +179,65 @@ def test_timeout_fires_during_silent_build(_qapp, tmp_path, monkeypatch):
     assert "timed out" in result.lower()   # timeout message returned, not a hang
     assert created["p"].killed is True      # the handler killed the process
     assert elapsed < 5
+
+
+# --- KA-M2/M3: cancel/timeout must kill the whole build tree --------------
+
+def test_native_terminate_signals_process_group(_qapp, monkeypatch):
+    """KA-M3: native cancel/timeout must killpg the buildozer group, not
+    just the parent (which orphaned gradle/gcc/p4a)."""
+    import os as _os
+    import export.android.android_exporter as mod
+    ex = mod.AndroidExporter()
+    ex._use_wsl = False
+
+    calls = {}
+
+    class FakeProc:
+        pid = 4321
+        def kill(self):
+            calls["parent_kill"] = True
+
+    # os.getpgid/killpg are POSIX-only; inject them so the POSIX branch is
+    # exercised even when the test host is Windows (raising=False creates
+    # the attrs). The native path never runs on Windows in production.
+    monkeypatch.setattr(_os, "getpgid", lambda pid: pid, raising=False)
+    monkeypatch.setattr(_os, "killpg",
+                        lambda pgid, sig: calls.setdefault("killpg", (pgid, sig)),
+                        raising=False)
+
+    ex._terminate_build(FakeProc())
+    # Signalled the whole GROUP (pgid == pid here) with a real signal,
+    # and therefore did NOT need the lone-parent fallback.
+    assert calls.get("killpg") is not None
+    assert calls["killpg"][0] == 4321 and calls["killpg"][1]
+    assert "parent_kill" not in calls
+
+
+def test_wsl_terminate_kills_wsl_and_cleans_linux_tree(_qapp, monkeypatch):
+    """KA-M2: WSL cancel/timeout kills wsl.exe AND best-effort pkills the
+    Linux-side build (killing wsl.exe alone leaves it running)."""
+    import export.android.android_exporter as mod
+    ex = mod.AndroidExporter()
+    ex._use_wsl = True
+
+    calls = {"killed": False, "runs": []}
+
+    class FakeProc:
+        pid = 99
+        def kill(self):
+            calls["killed"] = True
+
+    monkeypatch.setattr(mod.subprocess, "run",
+                        lambda *a, **k: calls["runs"].append(a[0]))
+    ex._terminate_build(FakeProc())
+    assert calls["killed"] is True
+    assert any("pkill" in " ".join(cmd) for cmd in calls["runs"]), calls["runs"]
+
+
+def test_native_buildozer_starts_new_session():
+    """KA-M3: the native buildozer Popen must be a process-group leader so
+    the group can be killed."""
+    src = (Path(__file__).parent.parent / "export" / "android"
+           / "android_exporter.py").read_text(encoding="utf-8")
+    assert "start_new_session=True" in src

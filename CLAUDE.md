@@ -88,6 +88,20 @@ before that machine was reformatted. They apply on every machine.
   across several computers that all converge on `main` (GitHub is the sync);
   a feature branch fragments that single line of history. Group changes into
   logical commits and push.
+- **Size every task to the account's session limit — no multi-agent
+  workflows.** The account's usage limit is small; fan-out (not total work)
+  exhausts it. Empirically (2026-07 export audit) multi-agent `Workflow`s
+  (15–28 parallel agents) hit the limit and blocked the account **three
+  times**, always mid-run; single `Agent` finders and main-thread work
+  stayed fine. So: **one task ≈ one commit** (a fix + its regression test +
+  verification); **don't launch multi-agent `Workflow`s** — if parallel
+  investigation is needed, run ONE `Agent` at a time and **verify findings by
+  reading code on the main thread**, not with verifier subagents; for a big
+  job (audit/migration) write the plan/registry to a file and **commit it
+  first**, then work a queue of finder→verify→fix units one at a time,
+  **committing and pushing after each** so a mid-session limit loses nothing
+  and the next session resumes from clean `main`. Checkbox registries (e.g.
+  `docs/EXPORT_AUDIT_2026-07.md`) are the resume state.
 - **Audio actions are plugin-owned.** `play_sound`/`stop_sound`/`play_music`/
   `stop_music`/`set_volume` live in `plugins/audio_actions.py` (category
   "Audio"), NOT in the static `ACTION_TYPES` dict in `events/action_types.py`;

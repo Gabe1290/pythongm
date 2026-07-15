@@ -7,6 +7,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-07-14
+
+**The export-audit release.** An adversarial code review of the entire
+export subsystem (the complement to 1.1.0's end-to-end verification),
+plus a consolidation of the two overlapping export dialogs. The findings
+were the class end-to-end testing can't catch — invalid generated code
+for unusual project data, silent asset loss, and a few resource leaks —
+so this is a pure bug-fix/hardening release. Registry:
+`docs/EXPORT_AUDIT_2026-07.md`.
+
+### Fixed
+- **HTML5 conditionals were broken in shipped samples (was live).**
+  `test_expression`, `check_empty`, and `check_collision` weren't
+  recognized as conditionals in the exported engine and were no-op
+  stubs, so their guarded branches ran unconditionally. maze_2/3 and the
+  platformers use these, so their HTML5 exports had broken logic. Also
+  fixed: the `if_collision` condition ignored sprite origin
+  (centered-origin sprites mis-detected), and the project name was
+  interpolated unescaped into the page (`&`/`<`/quote corrupted the
+  markup; a `:`/`<>` name also crashed the file write on Windows).
+- **Kivy/Android generated code hardened against unusual project data.**
+  Room names are sanitized into valid identifiers (a room "level 1"
+  broke the whole export, like the earlier "obj trigger" object); a
+  cleared numeric field, a bare-variable expression, a malformed value,
+  or a caption/name with a quote no longer emit uncompilable Python that
+  silently kills the exported object module; room dimensions are clamped
+  (a 0×0 room crashed Android startup); a punctuation-only asset name
+  gets a valid class name.
+- **Android build robustness.** Cancel/timeout now kills the whole build
+  tree (native via process group, WSL via best-effort pkill) instead of
+  orphaning gradle/gcc/p4a; the WSL run-script self-deletes on every exit
+  (was leaking on failed builds); staging failures fail loudly instead of
+  producing an empty log.
+- **Exporter I/O.** A missing sprite/background is now logged instead of
+  silently dropped under a "success" dialog; a malformed (non-dict) asset
+  or room entry, or a nameless project, no longer aborts the whole
+  export; the HTML5 success dialog / "Open in browser" now points at the
+  actually-written (sanitized) filename.
+
+### Changed
+- **One export dialog instead of two.** `File → Export Project…` and
+  `Build → Export Game…` now open the same registry-driven dialog
+  (`export/registry.py`); the overlapping second dialog was retired and
+  its distinct targets (raw Kivy project, source zip) became registry
+  entries. The Export Options checkboxes now actually reach every
+  exporter.
+
 ## [1.1.0] - 2026-07-11
 
 **The export release.** Every export target was verified end-to-end for

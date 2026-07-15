@@ -264,15 +264,16 @@ class KivyExporter:
 
         # Get room dimensions
         room_data = rooms.get(first_room, {})
-        room_width = room_data.get('width', 640)
-        room_height = room_data.get('height', 480)
+        room_width = self._safe_room_dim(room_data.get('width'), 640)
+        room_height = self._safe_room_dim(room_data.get('height'), 480)
 
         # Generate imports for all rooms
         room_imports = []
         room_class_map = {}
         for room_name in room_names:
             class_name = self._get_room_class_name(room_name)
-            room_imports.append(f"from scenes.{room_name} import {class_name}")
+            module_name = self._get_room_module_name(room_name)
+            room_imports.append(f"from scenes.{module_name} import {class_name}")
             room_class_map[room_name] = class_name
 
         room_imports_str = '\n'.join(room_imports)
@@ -287,8 +288,8 @@ class KivyExporter:
         room_meta_entries = []
         for rname in room_names:
             rd = rooms.get(rname, {})
-            rw = rd.get('width', 640)
-            rh = rd.get('height', 480)
+            rw = self._safe_room_dim(rd.get('width'), 640)
+            rh = self._safe_room_dim(rd.get('height'), 480)
             br, bg_, bb = _bg_color_to_rgb(rd.get('background_color', '#808080'))
             room_meta_entries.append(
                 f'"{rname}": ({rw}, {rh}, {br:.3f}, {bg_:.3f}, {bb:.3f})')
@@ -1151,8 +1152,13 @@ if __name__ == '__main__':
         raise
 '''
 
-        # Format the template with actual values
+        # Format the template with actual values. The name lands in a
+        # double-quoted Python string literal (self.project_name = "..."),
+        # so escape backslashes and quotes — a name with a '"' or trailing
+        # '\' would otherwise produce invalid main.py and break the whole
+        # export (KA-M1).
         first_room_class = self._get_room_class_name(first_room)
+        project_name_literal = project_name.replace('\\', '\\\\').replace('"', '\\"')
         code_formatted = code.format(
             room_width=room_width,
             room_height=room_height,
@@ -1160,7 +1166,7 @@ if __name__ == '__main__':
             room_list_str=room_list_str,
             room_mapping_str=room_mapping_str,
             room_meta_str=room_meta_str,
-            project_name=project_name,
+            project_name=project_name_literal,
             first_room_class=first_room_class,
             needs_dpad=self._project_uses_keyboard()
         )
@@ -1208,9 +1214,10 @@ if __name__ == '__main__':
         """Generate a single scene file"""
         class_name = self._get_room_class_name(room_name)
 
-        # Get room properties
-        width = room_data.get('width', 1024)
-        height = room_data.get('height', 768)
+        # Get room properties (clamped — a 0/negative dim would divide-by-
+        # zero in the Android scaler, KA-L2)
+        width = self._safe_room_dim(room_data.get('width'), 1024)
+        height = self._safe_room_dim(room_data.get('height'), 768)
         instances = room_data.get('instances', [])
 
         # Get background properties
@@ -1710,7 +1717,8 @@ class {class_name}(Widget):
             bg_image_code=bg_image_code
         )
 
-        output_file = self.output_path / "game" / "scenes" / f"{room_name}.py"
+        output_file = (self.output_path / "game" / "scenes" /
+                       f"{self._get_room_module_name(room_name)}.py")
         output_file.write_text(code_formatted, encoding="utf-8")
 
     def _generate_objects(self):
@@ -3646,10 +3654,45 @@ game development environment for Python.
         output_file = self.output_path / "README.md"
         output_file.write_text(readme_formatted, encoding="utf-8")
 
+    @staticmethod
+    def _safe_room_dim(value, default):
+        """Clamp a room width/height to a sane positive int. An explicit
+        0 / negative / non-numeric dimension (corrupt or foreign-imported
+        project) reaches the Android scaler's min(screen/game) division and
+        raises ZeroDivisionError at startup — the pygame runtime clamps via
+        _sane_room_dimension, so mirror that here (KA-L2)."""
+        try:
+            v = int(value)
+        except (TypeError, ValueError):
+            return default
+        return v if v >= 1 else default
+
+    @staticmethod
+    def _get_room_module_name(room_name: str) -> str:
+        """Python module name for a room's scene file: non-identifier
+        characters become underscores ("level 1" -> "level_1"), matching
+        _get_object_module_name. ROOM_ORDER / ROOM_CLASSES keep the ORIGINAL
+        room name as the lookup key; only the scene filename, its import,
+        and the class identifier are sanitized (KA-H1)."""
+        import re
+        sanitized = re.sub(r'\W', '_', room_name)
+        if not sanitized or sanitized[0].isdigit():
+            sanitized = f"room_{sanitized}"
+        return sanitized
+
     def _get_room_class_name(self, room_name: str) -> str:
-        """Convert room name to class name"""
-        # Convert snake_case to PascalCase
-        return ''.join(word.capitalize() for word in room_name.split('_'))
+        """Convert a room name to a valid PascalCase class identifier.
+
+        Sanitizes first: a room named "level 1" (space) or "1_intro"
+        (leading digit) — common in GMK imports, like maze_3's "obj
+        trigger" object — otherwise emitted `class Level 1(Widget):` /
+        `scenes/level 1.py`, a SyntaxError that broke the whole export."""
+        cls = ''.join(
+            word.capitalize()
+            for word in self._get_room_module_name(room_name).split('_') if word)
+        # A punctuation-only name reduces to all-underscores -> empty class
+        # name -> `class (Widget):` SyntaxError (KA-L1).
+        return cls or 'Room'
 
     @staticmethod
     def _get_object_module_name(obj_name: str) -> str:
@@ -3670,9 +3713,12 @@ game development environment for Python.
         from the GMK import) which used to emit `class Obj trigger` — a
         SyntaxError that made the whole maze_3 Kivy export unimportable.
         """
-        return ''.join(
+        cls = ''.join(
             word.capitalize()
             for word in self._get_object_module_name(obj_name).split('_') if word)
+        # A punctuation-only name reduces to all-underscores -> empty class
+        # name -> `class (GameObject):` SyntaxError (KA-L1).
+        return cls or 'Obj'
 
 
 def export_to_kivy(project_data: Dict[str, Any], project_path: Path,
