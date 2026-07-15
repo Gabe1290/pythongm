@@ -1,0 +1,29 @@
+Sprite art in this sample — License notice
+==========================================
+
+The provenance of the image and sound assets in this folder is not yet
+documented — see "Maze samples" > "Remaining maze assets" in
+../../docs/ASSET_LICENSES.md, which tracks this as a TODO item covering
+samples/maze_2/ (and samples/maze_3/).
+
+This includes (non-exhaustive):
+
+  sprites/sprite_person.png
+  sprites/sprite_bonbon.png
+  sprites/sprite_door.png
+  sprites/sprite_goal.png
+  sprites/sprite_wall_corner.png
+  sprites/sprite_wall_horizontal.png
+  sprites/sprite_wall_vertical.png
+  backgrounds/background_start.png
+  backgrounds/background_tiles.png
+  sounds/sound_background.mid
+  sounds/sound_diamond.wav
+  sounds/sound_door.wav
+  sounds/sound_goal.wav
+
+Do not assume any particular license for these files until that
+documentation work is done.
+
+Full project-wide asset licensing: see docs/ASSET_LICENSES.md in the
+PyGameMaker repository.
