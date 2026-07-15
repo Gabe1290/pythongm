@@ -2577,5 +2577,28 @@ Preverite konzolo za podrobnosti o napaki.</translation>
         <source>Clear Recent Projects</source>
         <translation type="vanished">Počisti nedavne projekte</translation>
     </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="195"/>
+        <source>📖  Sample guides</source>
+        <translation>📖  Vodniki po vzorcih</translation>
+    </message>
+</context>
+<context>
+    <name>SampleDocsDialog</name>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="489"/>
+        <source>Sample guides</source>
+        <translation>Vodniki po vzorcih</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="526"/>
+        <source>_No bundled samples were found in this build._</source>
+        <translation>_V tej različici ni bilo najdenih priloženih vzorcev._</translation>
+    </message>
+    <message>
+        <location filename="../widgets/welcome_tab.py" line="567"/>
+        <source>_No documentation is bundled for **{0}**._</source>
+        <translation>_Za **{0}** ni priložene dokumentacije._</translation>
+    </message>
 </context>
 </TS>
