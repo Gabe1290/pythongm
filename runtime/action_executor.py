@@ -5325,14 +5325,31 @@ class ActionExecutor:
                 obj_data = getattr(inst, '_cached_object_data', None) or {}
                 if bool(obj_data.get('solid', False)) != solid_filter:
                     continue
-            dx = inst.x - x
-            dy = inst.y - y
             if radius > 0:
+                dx = inst.x - x
+                dy = inst.y - y
                 if dx * dx + dy * dy > radius_sq:
                     continue
             else:
-                # Legacy exact-position match (within 1 pixel)
-                if abs(dx) >= 1 or abs(dy) >= 1:
+                # GM's "Destroy Instance at Position" (action_kill_position /
+                # position_destroy) destroys every instance whose BOUNDING BOX
+                # contains the point, not only ones sitting exactly at it. The
+                # old exact-origin(±1px) match missed maze_4's explosion, which
+                # clears a 3x3 tile area by firing destroy_at_position at points
+                # 16px inside the surrounding walls — inside their bboxes but
+                # not at their origins — so bombs never opened the walls and the
+                # level was inescapable.
+                ox = inst.sprite.origin_x if getattr(inst, 'sprite', None) else 0
+                oy = inst.sprite.origin_y if getattr(inst, 'sprite', None) else 0
+                left = inst.x - ox
+                top = inst.y - oy
+                w = getattr(inst, '_cached_width', 0) or 0
+                h = getattr(inst, '_cached_height', 0) or 0
+                if w <= 0 or h <= 0:
+                    # No usable bbox — fall back to exact-origin (±1px) match.
+                    if abs(inst.x - x) >= 1 or abs(inst.y - y) >= 1:
+                        continue
+                elif not (left <= x < left + w and top <= y < top + h):
                     continue
             inst.to_destroy = True
             destroyed_count += 1
