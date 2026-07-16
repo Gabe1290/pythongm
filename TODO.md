@@ -77,18 +77,26 @@ it before picking an item to work on.
   `editors/object_editor/object_editor_main.py` was removed (no UI element
   called it). Restore the method + a toolbar button when implementing.
 
-### Generic asset-type editor fallback
-- Currently when `open_asset_editor` is called with an asset type that has no
-  registered editor (anything other than `rooms`, `objects`, `sprites`,
-  `playgrounds`, `scripts`), it logs a warning and does nothing. The
-  remaining holes are `sounds`, `backgrounds`, and `fonts` — those still
-  show "No editor registered for asset type 'X'" if double-clicked.
-- TODO: register editors for the remaining asset types, or formalize the
-  registration so adding a new asset type fails loudly at startup rather than
-  silently at click time.
-- `scripts` got a minimal QPlainTextEdit-backed editor in rc.12
-  (`editors/script_editor.py`); the same pattern is the cheapest fix
-  for the others.
+### ~~Generic asset-type editor fallback~~ (DONE 2026-07-15)
+- Done: `sounds`, `backgrounds`, and `fonts` now have minimal form editors
+  (`editors/sound_editor.py`, `editors/background_editor.py`,
+  `editors/font_editor.py`), following the `scripts` editor's template —
+  a thin `BaseEditor` form, not a re-import surface. Sound adds a Play/Stop
+  preview button (`pygame.mixer`); background adds a read-only image
+  preview; font adds a live sample label. Wired into
+  `on_asset_double_clicked`'s dispatch and `_canonical_category` (the
+  singular→plural rename-signal mapping — missing this would silently
+  break the open-tab-on-rename path). Round-trip + no-dirty-on-load
+  regression tests: `tests/test_asset_type_editors.py`.
+- **New finding, not fixed:** the font editor exists now, but nothing in
+  `runtime/game_runner.py` reads a font asset's `font_name`/`size`/
+  `bold`/`italic` back — `set_draw_font` stores the chosen font *name* on
+  the instance, but `draw_text` rendering doesn't consult it. Wiring font
+  assets into actual text rendering is a separate runtime task; tracked
+  here rather than silently left implicit.
+- Formalizing the registration so a future new asset type fails loudly at
+  startup (instead of silently at click time) is still open, but lower
+  priority now that all current asset types are covered.
 - Same applies to the create-asset fallback in
   `widgets/asset_tree/asset_tree_widget.py` — it now logs and returns silently
   when no `create_asset` handler is reachable.
