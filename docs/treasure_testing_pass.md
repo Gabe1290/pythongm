@@ -31,10 +31,10 @@ Legend: `[x]` pass · `[!]` works with caveat (note it) · `[-]` not testable.
 
 ## 1. Console hygiene on open
 
-- [ ] No `Unknown action type` warnings
-- [ ] No "will never fire" keyboard warnings (fixed in `df993c8` —
+- [x] No `Unknown action type` warnings
+- [x] No "will never fire" keyboard warnings (fixed in `df993c8` —
       if any appear, that's a regression)
-- [ ] No tracebacks during project load
+- [x] No tracebacks during project load
 
 ## 2. Editor spot-checks (the old failure mode was bad action params)
 
@@ -69,4 +69,16 @@ Legend: `[x]` pass · `[!]` works with caveat (note it) · `[-]` not testable.
 
 ## Notes
 
-(findings here)
+- **Finding #1 (2026-07-16, FIXED same day):** opening the monster object
+  logged `Unknown action type: execute_script` (×4 — the two script-call
+  actions, step + collision_with_wall) and double-clicking either action
+  refused to open the editor dialog. Root cause: the runtime executes
+  `execute_script` fine (the smoke run's monster moved), but the action had
+  no `events/action_types.py` entry, so the events panel had no UI metadata
+  for it. Fixed by registering it (script + arg0..arg4, matching the runtime
+  handler) with a new `script` param type — an editable dropdown of the
+  project's script assets. Regression:
+  `tests/test_execute_script_action_registration.py`. **Re-test section 2's
+  first checkbox after pulling** — the action should now open a dialog with
+  "adapt_direction" selected. (To view the script's *code*, open the script
+  asset itself; the action dialog shows which script is called + arguments.)

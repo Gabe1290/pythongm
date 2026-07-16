@@ -350,6 +350,23 @@ class ActionConfigDialog(QDialog):
                 else:
                     widget.setCurrentText(str(param.default_value))
 
+            # Script selection (project script assets — execute_script)
+            elif param.param_type == "script":
+                widget = QComboBox()
+                # Editable so a project without the script yet (or a GMK import
+                # referencing a renamed script) still shows the saved name
+                # instead of silently snapping to the first item.
+                widget.setEditable(True)
+
+                available_scripts = self.get_available_scripts()
+                if available_scripts:
+                    widget.addItems(available_scripts)
+
+                if param.name in self.current_params:
+                    widget.setCurrentText(str(self.current_params[param.name]))
+                else:
+                    widget.setCurrentText(str(param.default_value))
+
             # Multi-line code editor
             elif param.param_type == "code":
                 widget = QTextEdit()
@@ -525,6 +542,20 @@ class ActionConfigDialog(QDialog):
                 if project_data and 'assets' in project_data:
                     sounds = project_data['assets'].get('sounds', {})
                     return list(sounds.keys())
+                break
+            parent = parent.parent()
+
+        return []
+
+    def get_available_scripts(self):
+        """Get list of available script assets from the project"""
+        parent = self.parent()
+        while parent:
+            if hasattr(parent, 'current_project_data'):
+                project_data = parent.current_project_data
+                if project_data and 'assets' in project_data:
+                    scripts = project_data['assets'].get('scripts', {})
+                    return list(scripts.keys())
                 break
             parent = parent.parent()
 
