@@ -5590,7 +5590,11 @@ class ActionExecutor:
 
         Parameters:
             room: Target room name
-            transition: Transition effect (not yet implemented)
+            transition: 'fade' fades to black, switches, fades back in
+                (GameRunner.change_room / _fade_overlay). Any other value
+                (including the default 'none') is an instant switch —
+                only 'fade' is implemented; desktop pygame runtime only,
+                Kivy/HTML5 exports still switch instantly (see TODO.md).
         """
         room_name = parameters.get("room", "")
         transition = parameters.get("transition", "none")

@@ -323,8 +323,21 @@ Other:
   scrolling today. The view/camera system (Phase 2b–2c) handles full
   room-larger-than-window scrolling, but this specific per-call setter
   needs wiring.
-- **Room transition effects** — `runtime/action_executor.py:5111`. Parameter
-  accepted but ignored; transitions are instant.
+- ~~**Room transition effects**~~ (DONE 2026-07-15, deferred-items plan
+  tier 1) — `goto_room`'s `transition` parameter now supports `'fade'`
+  (fade to black, switch, fade back in — `GameRunner.change_room`/
+  `_fade_overlay`, `runtime/game_runner.py`). Any other value (including
+  the default `'none'`) stays instant, unchanged. **Desktop pygame
+  runtime only** — Kivy/HTML5 exports still switch instantly; no bundled
+  sample currently exercises `transition` at all (only the `execute_code`
+  `self.goto_room_target = ...` pattern and the `next_room`/
+  `previous_room`/`restart_room` sentinels, none of which carry a
+  transition param), so there's nothing to verify export parity against
+  yet — scoped to desktop until a sample or user need shows up. Caught a
+  real bug in its own first draft: the fade-in/fade-out alpha ramp was
+  inverted (screen went black and stayed black) until
+  `tests/test_room_transition_fade.py`'s pixel-sampling test (plus a
+  10-frame visual montage) caught it.
 
 ## Translations / i18n
 
