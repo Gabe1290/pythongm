@@ -43,11 +43,14 @@ logger = logging.getLogger(__name__)
 # ("self" | "other" | "object" + object name) — the destinations for GM's
 # "Applies to" selector. Keep in sync with runtime/action_executor.py
 # (execute_destroy_instance_action / execute_change_instance_action /
-# execute_destroy_at_position_action).
+# execute_destroy_at_position_action / execute_jump_to_start_action /
+# execute_set_alarm_action — the latter two via _resolve_target_instances).
 TARGETABLE_PYGM2_ACTIONS = {
     "destroy_instance",
     "change_instance",
     "destroy_at_position",
+    "jump_to_start",
+    "set_alarm",
 }
 
 # Upper bound on any single decoded image dimension from an imported .gmk.

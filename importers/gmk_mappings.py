@@ -649,6 +649,13 @@ GM_FUNCTION_NAME_MAP = {
     "action_if_previous_room":       "if_previous_room_exists",
     # ---- Timing / Game ----
     "action_set_alarm":              "set_alarm",
+    # GM's "Sleep" (main2 tab): pause the game for N milliseconds. Its
+    # (1, 302) id collides with the Control-tab id table below, where 302 is
+    # if_object_exists — function-name dispatch (authoritative for GM7/8
+    # files) is what routes it correctly. Without this entry, treasure's
+    # death event imported its 1500 ms pause as a bogus
+    # if_object_exists("1500") conditional that swallowed the monster reset.
+    "action_sleep":                  "sleep",
     "action_restart_game":           "restart_game",
     "action_end_game":               "end_game",
     "action_message":                "show_message",   # popup (id=321); inline-comment usage has empty fname
@@ -720,6 +727,9 @@ GM_FUNCTION_NAME_PARAMS = {
     "action_room_goto":              ["room", "transition"],
     # Timing / Game
     "action_set_alarm":              ["steps", "alarm_number"],
+    # GM sleep args are (milliseconds, redraw); the runtime ignores redraw,
+    # so only the first arg is mapped.
+    "action_sleep":                  ["milliseconds"],
     "action_message":                ["message"],
 }
 
