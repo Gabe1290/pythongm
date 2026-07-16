@@ -858,6 +858,7 @@ class GameInstance:
         'sprite': '_draw_sprite',
         'background': '_draw_background',
         'scaled_text': '_draw_scaled_text',
+        'arrow': '_draw_arrow',
     }
 
     def _process_draw_queue(self, screen: pygame.Surface):
@@ -1134,6 +1135,32 @@ class GameInstance:
 
         # Draw line with width of 1 pixel
         pygame.draw.line(screen, color, (int(x1), int(y1)), (int(x2), int(y2)), 1)
+
+    def _draw_arrow(self, screen: pygame.Surface, cmd: dict):
+        """Draw an arrow: the shaft plus two tip segments.
+
+        execute_draw_arrow_action (runtime/action_executor.py) already
+        computes tip1_x/tip1_y/tip2_x/tip2_y at queue time (the geometry
+        depends on x1/y1/x2/y2/tip_size, which can be expressions — easier
+        to resolve once there than to redo trig per draw call), so this is
+        just three pygame.draw.line calls. 'arrow' was queued by
+        execute_draw_arrow_action since the 2026-06-05 UI-metadata sweep
+        but had no entry in _DRAW_HANDLERS until now — draw_arrow silently
+        drew nothing.
+        """
+        x1 = cmd.get('x1', 0)
+        y1 = cmd.get('y1', 0)
+        x2 = cmd.get('x2', 100)
+        y2 = cmd.get('y2', 100)
+        tip1_x = cmd.get('tip1_x', x2)
+        tip1_y = cmd.get('tip1_y', y2)
+        tip2_x = cmd.get('tip2_x', x2)
+        tip2_y = cmd.get('tip2_y', y2)
+        color = self._parse_color(cmd.get('color', '#FFFFFF'))
+
+        pygame.draw.line(screen, color, (int(x1), int(y1)), (int(x2), int(y2)), 1)
+        pygame.draw.line(screen, color, (int(x2), int(y2)), (int(tip1_x), int(tip1_y)), 1)
+        pygame.draw.line(screen, color, (int(x2), int(y2)), (int(tip2_x), int(tip2_y)), 1)
 
     def _draw_sprite(self, screen: pygame.Surface, cmd: dict):
         """Draw a sprite at specified position"""

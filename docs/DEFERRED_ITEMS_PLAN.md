@@ -30,14 +30,14 @@ discipline as the match3_2/3 and views sessions:
    `editors/sound_editor.py` / `background_editor.py` / `font_editor.py`,
    following the `scripts` editor's template. Found along the way: the
    font asset's fields aren't consumed by `draw_text` rendering yet
-   (new TODO.md entry, not fixed — separate runtime task).
+   (new TODO.md entry) — **also DONE 2026-07-16**, see below.
 2. ~~**Kivy/HTML5 draw-queue `background`/`health_bar` types**~~ **DONE
    2026-07-15** — `BACKGROUND_PATHS` map + both `_dq_render_cmd` branches
    on Kivy, both `case`s in `engine.js`. Found along the way: structured
    `draw_rectangle`/`circle`/`ellipse`/`line`/`arrow`/`variable`/
    `health_bar`/`background` *actions* (not `execute_code` draw-queue
-   dicts) have no codegen on either export target at all — bigger than
-   this item, new TODO.md entry, not fixed here.
+   dicts) have no codegen on either export target at all — **also DONE
+   2026-07-16**, see below.
 3. ~~**Object test runner ("Play Object" button)**~~ **DONE 2026-07-15** —
    runs the object in a throwaway temp project through the same
    `_run_project_json` path Test Game now shares (factored out of
@@ -140,11 +140,16 @@ discipline as the match3_2/3 and views sessions:
 ## Suggested starting point when resuming
 
 **Tier 1 is fully closed (2026-07-15, items 1-4).** Two follow-up items
-it surfaced along the way, not yet scheduled anywhere else: font assets
-aren't consumed by `draw_text` rendering, and structured `draw_*` actions
-(rectangle/circle/ellipse/line/arrow/variable/health_bar/background)
-have no Kivy/HTML5 codegen at all (both new `TODO.md` entries under their
-respective sections).
+it surfaced along the way are now **also DONE (2026-07-16)**: font assets
+are consumed by `draw_text`/`draw_scaled_text` rendering
+(`GameInstance._resolve_draw_font`/`_align_text_pos`,
+`tests/test_draw_font_rendering.py`), and structured `draw_*` actions
+(rectangle/circle/ellipse/line/arrow/variable/health_bar/background) now
+have codegen on both Kivy (`export/Kivy/code_generator.py`) and HTML5
+(`export/HTML5/templates/engine.js`'s `executeAction` + a new `'arrow'`
+case in `renderDrawCommands`), plus a genuine desktop `_DRAW_HANDLERS`
+gap for `'arrow'` that surfaced along the way — see `TODO.md`'s matching
+entries for detail; `tests/test_draw_action_codegen.py` covers all three.
 
 Next: Tier 2, item 5 (Find/Replace) or item 6 (`set_background`
 auto-scroll, flagged as likely smaller than it looks now that views
