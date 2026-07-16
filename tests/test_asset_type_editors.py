@@ -13,7 +13,8 @@ from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO_ROOT))
 from conftest import skip_without_pyside6
 
 pytestmark = skip_without_pyside6
@@ -173,7 +174,12 @@ class TestAssetEditorDispatchWiring:
     that the editor classes exist in isolation."""
 
     def _source(self):
-        return Path("core/ide_window.py").read_text(encoding="utf-8")
+        # Absolute (repo-root-relative), not a bare relative path: CI's
+        # widget-tests job runs `cd tests && pytest .`, so a relative
+        # "core/ide_window.py" resolves against tests/ and raises
+        # FileNotFoundError there even though every local `pytest tests/`
+        # invocation (run from the repo root) resolves it fine.
+        return (REPO_ROOT / "core" / "ide_window.py").read_text(encoding="utf-8")
 
     def test_double_click_dispatch_covers_new_types(self):
         src = self._source()
