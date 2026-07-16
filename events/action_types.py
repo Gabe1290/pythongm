@@ -1361,6 +1361,51 @@ ACTION_TYPES = {
         ],
     ),
 
+    # Runtime: execute_execute_script_action (action_executor.py). GMK imports
+    # emit this for GM's "execute script" action (treasure's monster calls its
+    # adapt_direction project script from step/collision events); without this
+    # entry the events panel logged "Unknown action type: execute_script" and
+    # refused to open the editor dialog for a working runtime action.
+    "execute_script": ActionType(
+        name="execute_script",
+        display_name="Execute Script",
+        description="Run one of the project's script assets",
+        category="Control",
+        icon="📜",
+        parameters=[
+            ActionParameter(
+                name="script", display_name="Script",
+                param_type="script", default_value="",
+                description="Name of the project script to run",
+            ),
+            ActionParameter(
+                name="arg0", display_name="Argument 0",
+                param_type="string", default_value="", required=False,
+                description="Available in the script as argument0",
+            ),
+            ActionParameter(
+                name="arg1", display_name="Argument 1",
+                param_type="string", default_value="", required=False,
+                description="Available in the script as argument1",
+            ),
+            ActionParameter(
+                name="arg2", display_name="Argument 2",
+                param_type="string", default_value="", required=False,
+                description="Available in the script as argument2",
+            ),
+            ActionParameter(
+                name="arg3", display_name="Argument 3",
+                param_type="string", default_value="", required=False,
+                description="Available in the script as argument3",
+            ),
+            ActionParameter(
+                name="arg4", display_name="Argument 4",
+                param_type="string", default_value="", required=False,
+                description="Available in the script as argument4",
+            ),
+        ],
+    ),
+
     # Runtime: execute_test_health_action (line 2307)
     "test_health": ActionType(
         name="test_health",
