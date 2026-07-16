@@ -93,11 +93,22 @@ GM_VK_TO_KEY_NAME = {
 # Keep this set in sync with runtime/_keymap.pygame_key_name. As of L25 the
 # runtime keymap was extended (runtime/_keymap._extended_keys) to dispatch the
 # numpad / punctuation / lock keys that GM_VK_TO_KEY_NAME emits, so those names
-# are now genuinely dispatchable and belong here too. The only GM_VK_TO_KEY_NAME
-# entries that remain undispatchable are the two pseudo-keys "nokey"/"anykey"
-# (VK 0/1 — GM event markers, not real keys), which are excluded intentionally.
+# are now genuinely dispatchable and belong here too.
+#
+# The pseudo-keys "nokey"/"anykey" (VK 0/1 — GM event markers, not physical
+# keys) ARE dispatched by the runtime, via dedicated paths rather than the
+# keymap: keyboard.nokey fires each frame while the instance has no key pressed
+# (GameInstance.step), and keyboard[_press/_release].anykey fires for any key
+# (_process_held_keys / handle_keyboard_press / handle_keyboard_release —
+# maze_3's controller_start advances rooms on it). Warning that they "will
+# never fire" was a false positive that fired on every treasure/maze_4 import.
+# Kept as a separate set so the physical part can stay exactly synced to
+# runtime/_keymap (see test_supported_set_matches_runtime_keymap_exactly).
+RUNTIME_PSEUDO_KEY_NAMES = {"nokey", "anykey"}
+
 RUNTIME_SUPPORTED_KEY_NAMES = (
-    {"left", "right", "up", "down"}
+    RUNTIME_PSEUDO_KEY_NAMES
+    | {"left", "right", "up", "down"}
     | {str(d) for d in range(10)}                       # "0".."9"
     | {chr(c) for c in range(ord("a"), ord("z") + 1)}   # "a".."z"
     | {

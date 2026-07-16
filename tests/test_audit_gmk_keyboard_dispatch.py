@@ -47,12 +47,23 @@ def test_numpad_and_punctuation_now_dispatchable():
         assert name in RUNTIME_SUPPORTED_KEY_NAMES
 
 
-def test_pseudo_keys_remain_undispatchable():
-    # The only GM_VK_TO_KEY_NAME entries the runtime cannot dispatch are the two
-    # pseudo-keys (VK 0/1 — GM event markers, not real keys).
+def test_pseudo_keys_are_dispatchable(caplog):
+    # RETARGETED (2026-07-16, treasure/maze_4 re-validation): the runtime DOES
+    # dispatch both pseudo-keys — keyboard.nokey fires each frame while the
+    # instance has no key pressed (GameInstance.step) and anykey fires for any
+    # key (_process_held_keys / handle_keyboard_press / handle_keyboard_release;
+    # maze_3's controller_start relies on it). Warning "will never fire" for
+    # them was a false positive that fired on every treasure/maze_4 import.
+    from importers.gmk_mappings import RUNTIME_PSEUDO_KEY_NAMES
+    assert RUNTIME_PSEUDO_KEY_NAMES == {"nokey", "anykey"}
     for name in ("nokey", "anykey"):
         assert name in GM_VK_TO_KEY_NAME.values()
-        assert name not in RUNTIME_SUPPORTED_KEY_NAMES
+        assert name in RUNTIME_SUPPORTED_KEY_NAMES
+    # and resolving keyboard events bound to them stays quiet (VK 0 / VK 1)
+    with caplog.at_level(logging.WARNING):
+        assert resolve_event(5, 0, [])[1] == "nokey"
+        assert resolve_event(5, 1, [])[1] == "anykey"
+    assert not [r for r in caplog.records if "never fire" in r.getMessage()]
 
 
 def test_resolve_event_warns_for_undispatchable_keyboard_key(caplog):
@@ -119,9 +130,13 @@ def test_supported_set_matches_runtime_keymap_exactly():
             produced.add(name)
 
     assert produced, "runtime keymap produced no names; probe range wrong?"
-    assert produced == RUNTIME_SUPPORTED_KEY_NAMES, (
-        "importer's RUNTIME_SUPPORTED_KEY_NAMES is out of sync with "
-        "runtime/_keymap.pygame_key_name.\n"
-        f"  only in importer set: {sorted(RUNTIME_SUPPORTED_KEY_NAMES - produced)}\n"
-        f"  only produced by runtime: {sorted(produced - RUNTIME_SUPPORTED_KEY_NAMES)}"
+    # The pseudo-keys (nokey/anykey) are dispatched via dedicated runtime paths,
+    # not the keymap, so the exact-sync invariant covers the PHYSICAL subset.
+    from importers.gmk_mappings import RUNTIME_PSEUDO_KEY_NAMES
+    physical = RUNTIME_SUPPORTED_KEY_NAMES - RUNTIME_PSEUDO_KEY_NAMES
+    assert produced == physical, (
+        "importer's RUNTIME_SUPPORTED_KEY_NAMES (physical subset) is out of "
+        "sync with runtime/_keymap.pygame_key_name.\n"
+        f"  only in importer set: {sorted(physical - produced)}\n"
+        f"  only produced by runtime: {sorted(produced - physical)}"
     )
