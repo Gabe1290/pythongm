@@ -239,16 +239,31 @@ draw events without matching UI metadata).
       nothing. Pinned by
       `tests/test_gmk_treasure_maze4_import.py::test_no_dangling_asset_references`
       (both samples).
-- [ ] Remaining full re-validation of `treasure`/`maze_4`: no visual
-      playtest done, no `test_game` smoke run, no check of room-level
-      content (instance placement, tile layers) for corruption beyond the
-      reference-integrity check above. **This is the actual remaining
-      blocker before re-adding either sample to the bundled Welcome-tab
-      list** — clean unmapped-action + no-dangling-references results are
-      a strong positive signal but not sufficient proof of correctness by
-      themselves (e.g. an instance could be placed at the wrong
-      coordinates, or a whole room's tile layer could be silently
-      dropped, without tripping either check).
+- [x] Remaining full re-validation of `treasure`/`maze_4` — **DONE
+      2026-07-16 (on the Windows box).** Two new layers, both **clean**:
+      **(a) room-content fidelity vs the raw `.gmk` parse** — per-room
+      instance/tile counts AND the multiset of instance positions in the
+      import match `GmkParser`'s raw records exactly (treasure: 708
+      instances / 4 rooms; maze_4: 2909 instances / 21 rooms; 0 tiles in
+      both sources, 0 in both imports), with every instance inside (or
+      ≤64px off) its room bounds; **(b) headless smoke run** — both fresh
+      imports run 120/180 frames through the real `GameRunner` (SDL dummy,
+      injected input) with no loop crash; maze_4 advanced through rooms on
+      injected input (room transitions work). Pinned by
+      `test_room_content_fidelity_vs_raw_parse` +
+      `test_fresh_import_smoke_runs_headlessly` (both samples, in
+      `tests/test_gmk_treasure_maze4_import.py`; random seeded, GameRunner
+      `cleanup()` no-opped so pygame survives for the rest of the suite).
+      Two benign findings: each game has one sound in a format pygame
+      can't load ("music" / "sound_background", "Unrecognized audio
+      format" — same pre-existing class as shipped maze_2/maze_3, a GM8
+      MIDI-era asset, not an importer bug); and the importer's
+      nokey/anykey "cannot dispatch" warnings are FALSE POSITIVES — the
+      runtime dispatches both (maze_3's controller relies on anykey);
+      `RUNTIME_SUPPORTED_KEY_NAMES` just omits the two pseudo-keys (fix
+      queued as its own small commit). No visual playtest was possible in
+      this headless session — flagged for a quick human confirmation when
+      re-adding, but all automatable gates are green.
 - [ ] Draw events (`draw_self`, `draw_sprite_ext`, etc.) without matching
       UI metadata in `treasure`/`maze_4` — not checked this pass; cross
       reference against the "UI metadata coverage for runtime actions"

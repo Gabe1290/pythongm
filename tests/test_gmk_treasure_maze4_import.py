@@ -161,3 +161,104 @@ class TestMaze4Import:
     def test_no_dangling_asset_references(self, tmp_path):
         out_dir = _import("maze_4.gmk", tmp_path)
         assert _dangling_asset_references(out_dir) == []
+
+
+# ---------------------------------------------------------------------------
+# Full re-validation (plan doc: "Remaining full re-validation of
+# treasure/maze_4" — the gate before re-adding either to the bundled set).
+# Two layers the earlier checks can't see:
+#  - room-content fidelity: an instance could be silently dropped or placed at
+#    the wrong coordinates, or a tile layer lost, without tripping the
+#    unmapped-action or dangling-reference checks; and
+#  - the imported project must actually RUN through the real GameRunner.
+# ---------------------------------------------------------------------------
+
+def _room_json(out_dir, project, name):
+    room = project["assets"]["rooms"][name]
+    ext = room.get("_external_file")
+    if ext:
+        return json.loads((out_dir / ext).read_text(encoding="utf-8"))
+    return room
+
+
+@pytest.mark.parametrize("gmk_name", ["treasure.gmk", "maze_4.gmk"])
+def test_room_content_fidelity_vs_raw_parse(gmk_name, tmp_path):
+    """Per-room instance/tile counts and the multiset of instance positions in
+    the import must match the raw .gmk parse exactly; every instance must sit
+    within (or hang slightly off) its room bounds."""
+    from importers.gmk_parser import GmkParser
+    out = _import(gmk_name, tmp_path)
+    project = json.loads((out / "project.json").read_text(encoding="utf-8"))
+    parsed = GmkParser().parse(str(REPO_ROOT / "samples" / gmk_name))
+    # GM files keep placeholder slots for deleted resources -> None entries
+    src_rooms = {r.name: r for r in parsed.rooms if r is not None}
+    assert src_rooms, "raw parse produced no rooms"
+    for rname, src in src_rooms.items():
+        assert rname in project["assets"]["rooms"], f"room {rname} missing from import"
+        imp = _room_json(out, project, rname)
+        insts = imp.get("instances", [])
+        assert len(insts) == len(src.instances), f"{rname}: instance count"
+        assert len(imp.get("tiles", [])) == len(src.tiles), f"{rname}: tile count"
+        assert (sorted((i.get("x"), i.get("y")) for i in insts)
+                == sorted((i.x, i.y) for i in src.instances)), \
+            f"{rname}: instance positions differ from the .gmk"
+        w, h = imp.get("width", 0), imp.get("height", 0)
+        oob = [i for i in insts
+               if not (-64 <= i.get("x", 0) <= w + 64 and -64 <= i.get("y", 0) <= h + 64)]
+        assert not oob, f"{rname}: instances far outside {w}x{h}: {oob[:3]}"
+
+
+@pytest.mark.parametrize("gmk_name", ["treasure.gmk", "maze_4.gmk"])
+def test_fresh_import_smoke_runs_headlessly(gmk_name, tmp_path):
+    """The freshly imported project actually runs: 120 frames through the real
+    GameRunner (SDL dummy) with injected input and no loop crash — the
+    test_game-equivalent gate from the hardening plan. random is seeded (both
+    games use it: monster movement / adapt_direction), and cleanup() is
+    no-opped so pygame stays initialized for the rest of the suite."""
+    import random
+    import pygame
+    from runtime.game_runner import GameRunner
+
+    random.seed(20260716)
+    out = _import(gmk_name, tmp_path)
+    runner = GameRunner(str(out / "project.json"))
+    runner.language = "en"
+    runner.show_message_dialog = lambda *a, **k: None
+    runner.show_highscore_dialog = lambda *a, **k: None
+    runner._show_name_entry_dialog = lambda *a, **k: ""
+    runner.process_pending_messages = lambda *a, **k: None
+    runner.cleanup = lambda: None          # keep pygame alive for later tests
+
+    state = {"frames": 0, "cap": False}
+
+    class _FakeClock:
+        def tick(self, fps=0):
+            f = state["frames"] = state["frames"] + 1
+            if f == 3:
+                pygame.event.post(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RIGHT))
+            if f == 40:
+                pygame.event.post(pygame.event.Event(pygame.KEYUP, key=pygame.K_RIGHT))
+            if f % 20 == 0:
+                for k in (pygame.K_UP, pygame.K_SPACE):
+                    pygame.event.post(pygame.event.Event(pygame.KEYDOWN, key=k))
+                    pygame.event.post(pygame.event.Event(pygame.KEYUP, key=k))
+            if f >= 120:
+                state["cap"] = True
+                runner.running = False
+            return 0
+
+        def get_fps(self):
+            return 60.0
+
+    real_clock = pygame.time.Clock
+    pygame.time.Clock = _FakeClock
+    try:
+        result = runner.run()
+    finally:
+        pygame.time.Clock = real_clock
+
+    assert result is not False, "game loop crashed"
+    assert state["cap"], (
+        f"game exited after only {state['frames']} frames — unexpected auto-end")
+    assert runner.current_room is not None
+    assert len(runner.current_room.instances) > 0
