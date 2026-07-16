@@ -778,7 +778,12 @@ class GmkParser:
                 sprite.bbox_top = 0
                 sprite.bbox_right = _spr_width
                 sprite.bbox_bottom = _spr_height
-            transparent = True  # used for BMP key color
+            # Honor the sprite's own Transparent flag for the BMP key color.
+            # This was hardcoded True, so a non-transparent sprite whose
+            # bottom-left pixel color appears in its artwork lost those pixels
+            # — maze_4's sprite_hole (a solid black hole, transparency OFF in
+            # GM) decoded to a 100% transparent PNG and rendered invisible.
+            transparent = bool(_transparent)
         else:
             transparent = False
 

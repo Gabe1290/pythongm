@@ -262,3 +262,47 @@ def test_fresh_import_smoke_runs_headlessly(gmk_name, tmp_path):
         f"game exited after only {state['frames']} frames — unexpected auto-end")
     assert runner.current_room is not None
     assert len(runner.current_room.instances) > 0
+
+
+@pytest.mark.parametrize("gmk_name", ["treasure.gmk", "maze_4.gmk"])
+def test_no_sprite_decodes_fully_transparent(gmk_name, tmp_path):
+    """The pre-v800 sprite reader honored GM's per-sprite Transparent flag only
+    nominally — it read the flag into a discarded local and hardcoded the BMP
+    key-color pass ON for every sprite. A non-transparent sprite whose
+    bottom-left pixel color appears in its artwork lost those pixels: maze_4's
+    sprite_hole (a solid black hole, transparency OFF in GM) decoded to a 100%
+    transparent PNG and rendered invisible in-game (playtest finding #9).
+    No imported sprite may decode to zero opaque pixels."""
+    from PIL import Image
+    out = _import(gmk_name, tmp_path)
+    blank = []
+    for png in sorted((out / "sprites").glob("*.png")):
+        img = Image.open(png).convert("RGBA")
+        if not any(px[3] > 0 for px in img.getdata()):
+            blank.append(png.stem)
+    assert blank == []
+
+
+def test_transparent_flag_still_keys_when_set(tmp_path):
+    """Sprites WITH transparency enabled still get the key-color pass:
+    maze_4's sprite_person keeps a transparent background (mixed alpha)."""
+    from PIL import Image
+    out = _import("maze_4.gmk", tmp_path)
+    img = Image.open(out / "sprites" / "sprite_person.png").convert("RGBA")
+    alphas = {px[3] > 0 for px in img.getdata()}
+    assert alphas == {True, False}   # some opaque art, some keyed background
+
+
+def test_hole_destroy_order_is_faithful_and_both_die(tmp_path):
+    """Playtest query: the hole's collision destroys SELF then OTHER — that IS
+    the .gmk's own action order (applies_to -1 then -2, raw-verified), and the
+    runtime destroys BOTH in that order (the event continues after a self
+    destroy and 'other' resolves from the executor context). Faithful import,
+    working behavior — pinned so neither layer regresses."""
+    import json
+    out = _import("maze_4.gmk", tmp_path)
+    hole = json.loads((out / "objects" / "hole.json").read_text(encoding="utf-8"))
+    actions = hole["events"]["collision_with_block"]["actions"]
+    kills = [a["parameters"].get("target", "self")
+             for a in actions if a["action"] == "destroy_instance"]
+    assert kills == ["self", "other"]

@@ -114,3 +114,21 @@ Legend: `[x]` pass · `[!]` works with caveat (note it) · `[-]` not testable.
   (300,484), "Lives:" at (8,484), sprite_lives at (70,484)). Regression:
   `tests/test_draw_relative_and_room_order.py`. **Test build refreshed —
   re-open it.**
+- **Finding #9 (2026-07-16, FIXED — importer/parser):** the hole sprite was
+  invisible. `sprite_hole.png` decoded to a 100% transparent image (0/1024
+  opaque pixels): the pre-v800 sprite reader read GM's per-sprite Transparent
+  flag into a discarded local and hardcoded the BMP key-color pass ON for
+  every sprite — a solid black hole with transparency OFF in GM got its own
+  color keyed out entirely. The parser now honors the real flag; verified no
+  sprite in maze_4/treasure/maze_1/maze_3 decodes blank, and sprites WITH
+  transparency still key their background. Regression in
+  `tests/test_gmk_treasure_maze4_import.py`. **Test build refreshed.**
+- **Finding #10 (2026-07-16, NOT A BUG — faithful import, verified working):**
+  the hole's collision destroying SELF before OTHER is the `.gmk`'s own action
+  order (raw records: `action_kill_object` applies_to −1 then −2 — the
+  original author wrote it that way). Verified the runtime destroys BOTH in
+  that order (the event continues after a self-destroy and `other` resolves
+  from the executor's collision context) — push a block into a hole and both
+  vanish. Pinned in `tests/test_gmk_treasure_maze4_import.py`. If gameplay
+  shows the block SURVIVING the hole, re-log with what you saw — that would
+  be a different bug, not the action order.
