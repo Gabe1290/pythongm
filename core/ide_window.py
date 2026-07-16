@@ -3500,6 +3500,12 @@ class PyGameMakerIDE(QMainWindow):
             self.open_playground_editor(asset_name, asset_info)
         elif asset_type == 'scripts':
             self.open_script_editor(asset_name, asset_info)
+        elif asset_type == 'sounds':
+            self.open_sound_editor(asset_name, asset_info)
+        elif asset_type == 'backgrounds':
+            self.open_background_editor(asset_name, asset_info)
+        elif asset_type == 'fonts':
+            self.open_font_editor(asset_name, asset_info)
         else:
             logger.warning(f"No editor registered for asset type '{asset_type}' (asset: {asset_name})")
 
@@ -3510,6 +3516,7 @@ class PyGameMakerIDE(QMainWindow):
         return {
             'object': 'objects', 'room': 'rooms', 'sprite': 'sprites',
             'script': 'scripts', 'playground': 'playgrounds',
+            'sound': 'sounds', 'background': 'backgrounds', 'font': 'fonts',
         }.get(category, category)
 
     def _editor_key(self, category: str, name: str) -> str:
@@ -3791,6 +3798,129 @@ class PyGameMakerIDE(QMainWindow):
             traceback.print_exc()
             QMessageBox.critical(self, self.tr("Error"),
                             self.tr("Failed to open script editor: {0}").format(e))
+
+    def open_sound_editor(self, sound_name: str, sound_data: dict):
+        """Open a sound asset in the minimal sound editor (volume/loop form
+        + a preview Play button). Mirrors open_script_editor's wiring."""
+        from editors.sound_editor import SoundEditor
+
+        key = self._editor_key('sounds', sound_name)
+        if key in self.open_editors:
+            if self._focus_detached_editor(key):
+                return
+            for i in range(self.editor_tabs.count()):
+                if self.editor_tabs.widget(i) is self.open_editors[key]:
+                    self.editor_tabs.setCurrentIndex(i)
+                    return
+
+        try:
+            sound_editor = SoundEditor(str(self.current_project_path), self)
+            sound_editor.load_asset(sound_name, sound_data)
+
+            sound_editor.save_requested.connect(self.on_editor_save_requested, Qt.ConnectionType.UniqueConnection)
+            sound_editor.close_requested.connect(self.on_editor_close_requested, Qt.ConnectionType.UniqueConnection)
+            sound_editor.data_modified.connect(self.on_editor_data_modified, Qt.ConnectionType.UniqueConnection)
+            sound_editor.float_requested.connect(self.float_editor, Qt.ConnectionType.UniqueConnection)
+            sound_editor.reattach_requested.connect(self.reattach_editor, Qt.ConnectionType.UniqueConnection)
+
+            tab_index = self.editor_tabs.addTab(sound_editor, sound_name)
+            self.editor_tabs.setCurrentIndex(tab_index)
+
+            sound_editor._open_editor_key = key
+            self.open_editors[key] = sound_editor
+
+            self.update_status(self.tr("Opened sound: {0}").format(sound_name))
+
+            if self.window_mode == 'floating':
+                self.float_editor(sound_editor)
+
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            QMessageBox.critical(self, self.tr("Error"),
+                            self.tr("Failed to open sound editor: {0}").format(e))
+
+    def open_background_editor(self, background_name: str, background_data: dict):
+        """Open a background asset in the minimal background editor (image
+        preview + tile-flags form). Mirrors open_script_editor's wiring."""
+        from editors.background_editor import BackgroundEditor
+
+        key = self._editor_key('backgrounds', background_name)
+        if key in self.open_editors:
+            if self._focus_detached_editor(key):
+                return
+            for i in range(self.editor_tabs.count()):
+                if self.editor_tabs.widget(i) is self.open_editors[key]:
+                    self.editor_tabs.setCurrentIndex(i)
+                    return
+
+        try:
+            background_editor = BackgroundEditor(str(self.current_project_path), self)
+            background_editor.load_asset(background_name, background_data)
+
+            background_editor.save_requested.connect(self.on_editor_save_requested, Qt.ConnectionType.UniqueConnection)
+            background_editor.close_requested.connect(self.on_editor_close_requested, Qt.ConnectionType.UniqueConnection)
+            background_editor.data_modified.connect(self.on_editor_data_modified, Qt.ConnectionType.UniqueConnection)
+            background_editor.float_requested.connect(self.float_editor, Qt.ConnectionType.UniqueConnection)
+            background_editor.reattach_requested.connect(self.reattach_editor, Qt.ConnectionType.UniqueConnection)
+
+            tab_index = self.editor_tabs.addTab(background_editor, background_name)
+            self.editor_tabs.setCurrentIndex(tab_index)
+
+            background_editor._open_editor_key = key
+            self.open_editors[key] = background_editor
+
+            self.update_status(self.tr("Opened background: {0}").format(background_name))
+
+            if self.window_mode == 'floating':
+                self.float_editor(background_editor)
+
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            QMessageBox.critical(self, self.tr("Error"),
+                            self.tr("Failed to open background editor: {0}").format(e))
+
+    def open_font_editor(self, font_name: str, font_data: dict):
+        """Open a font asset in the minimal font editor (family/size/style
+        form + a live sample label). Mirrors open_script_editor's wiring."""
+        from editors.font_editor import FontEditor
+
+        key = self._editor_key('fonts', font_name)
+        if key in self.open_editors:
+            if self._focus_detached_editor(key):
+                return
+            for i in range(self.editor_tabs.count()):
+                if self.editor_tabs.widget(i) is self.open_editors[key]:
+                    self.editor_tabs.setCurrentIndex(i)
+                    return
+
+        try:
+            font_editor = FontEditor(str(self.current_project_path), self)
+            font_editor.load_asset(font_name, font_data)
+
+            font_editor.save_requested.connect(self.on_editor_save_requested, Qt.ConnectionType.UniqueConnection)
+            font_editor.close_requested.connect(self.on_editor_close_requested, Qt.ConnectionType.UniqueConnection)
+            font_editor.data_modified.connect(self.on_editor_data_modified, Qt.ConnectionType.UniqueConnection)
+            font_editor.float_requested.connect(self.float_editor, Qt.ConnectionType.UniqueConnection)
+            font_editor.reattach_requested.connect(self.reattach_editor, Qt.ConnectionType.UniqueConnection)
+
+            tab_index = self.editor_tabs.addTab(font_editor, font_name)
+            self.editor_tabs.setCurrentIndex(tab_index)
+
+            font_editor._open_editor_key = key
+            self.open_editors[key] = font_editor
+
+            self.update_status(self.tr("Opened font: {0}").format(font_name))
+
+            if self.window_mode == 'floating':
+                self.float_editor(font_editor)
+
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            QMessageBox.critical(self, self.tr("Error"),
+                            self.tr("Failed to open font editor: {0}").format(e))
 
     def on_object_editor_activated(self, object_name: str, object_properties: dict):
         """Handle object editor activation"""
