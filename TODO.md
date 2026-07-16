@@ -8,6 +8,11 @@ have been removed; the work is tracked here instead.
 Add new entries at the top of each section. When you start implementing one,
 move it to a feature branch and remove the entry once the feature ships.
 
+**2026-07-15: `docs/DEFERRED_ITEMS_PLAN.md` triages and sequences this
+whole registry** (small-and-ready items first, then moderate-effort ones,
+then larger multi-session efforts, then explicitly-not-now items) — read
+it before picking an item to work on.
+
 ---
 
 ## IDE features
@@ -370,9 +375,12 @@ Other:
     keyboard events (`NEEDS_DPAD`), so touch-only games don't get a corner
     overlay that swallows taps.
 - **Still open** (deferred, none block `match3_1`):
-  - Draw-queue types `sprite` / `background` / `lives` / `health_bar` are
-    not rendered by the Kivy `_render_draw_queue` (skipped silently, like
-    unknown types in the IDE runtime's dispatch table).
+  - Draw-queue types `background` / `health_bar` are not rendered by the
+    Kivy `_render_draw_queue` (skipped silently, like unknown types in
+    the IDE runtime's dispatch table). **Correction 2026-07-15:** `sprite`
+    and `lives` *are* now implemented (landed with the match3_2
+    sound-queue/sprite-fallback work and the views/camera work) — this
+    entry previously listed all four as missing, which had gone stale.
   - Right/middle mouse events have no touch equivalent and stay unexported.
   - **`execute_code` env is thinner than the IDE's.** Code is inlined
     verbatim into the generated method (good), but the IDE's exec
@@ -402,8 +410,10 @@ Other:
     networks. Pure-action games are unaffected (no Pyodide load at all).
   - The Python env exposes `self`/`math`/`random`/`keyboard` but `game`
     is None — no score/lives bridge yet (match3 tracks its own score).
-  - Draw-queue `sprite`/`lives`/`health_bar` commands and right/middle
-    mouse events are not implemented (same gaps as the Kivy export).
+  - Draw-queue `background`/`health_bar` commands and right/middle mouse
+    events are not implemented. **Correction 2026-07-15:** `sprite` and
+    `lives` *are* implemented (`case 'sprite'`/`case 'lives'` in
+    `engine.js`) — see the matching correction in the Kivy section above.
 
 - **Kivy export — long-tail action coverage** —
   `export/Kivy/code_generator.py:681`. Most actions translate fine; unhandled
