@@ -383,12 +383,28 @@ Other:
     keyboard events (`NEEDS_DPAD`), so touch-only games don't get a corner
     overlay that swallows taps.
 - **Still open** (deferred, none block `match3_1`):
-  - Draw-queue types `background` / `health_bar` are not rendered by the
-    Kivy `_render_draw_queue` (skipped silently, like unknown types in
-    the IDE runtime's dispatch table). **Correction 2026-07-15:** `sprite`
-    and `lives` *are* now implemented (landed with the match3_2
-    sound-queue/sprite-fallback work and the views/camera work) — this
-    entry previously listed all four as missing, which had gone stale.
+  - ~~Draw-queue types `background` / `health_bar` are not rendered~~
+    **DONE 2026-07-15** (deferred-items plan tier 1): both now render —
+    `background` resolves by name via a new `BACKGROUND_PATHS` map
+    (backgrounds copy to `assets/images/` alongside sprites but get their
+    own map, not merged into `SPRITE_PATHS`, so a same-named sprite and
+    background can't collide) with tiling support; `health_bar` is two
+    rectangles + a border. All four draw-queue types (`sprite`/`lives`/
+    `background`/`health_bar`) are now implemented on Kivy. Regression:
+    `tests/test_draw_queue_background_health_bar.py` (includes a headless
+    stub-kivy run that actually renders both and checks the resulting
+    Rectangle sizes, not just source-level checks).
+  - **New finding, not fixed:** the gap was narrower than it looked —
+    structured `draw_rectangle`/`circle`/`ellipse`/`line`/`arrow`/
+    `variable`/`health_bar`/`background` *actions* (as opposed to
+    hand-authored `execute_code` draw-queue dicts, which is what the fix
+    above and every bundled sample actually use) have no codegen case in
+    `export/Kivy/code_generator.py` at all — only `draw_score`/`text`/
+    `lives`/`sprite` do. A project built with the visual action editor
+    using e.g. `draw_rectangle` would silently no-op on Kivy export. Same
+    gap confirmed on HTML5 (no matching `case` in `engine.js`'s action
+    switch either). Not fixed here — 8 action types, a separate task from
+    the draw-queue *rendering* fix above.
   - Right/middle mouse events have no touch equivalent and stay unexported.
   - **`execute_code` env is thinner than the IDE's.** Code is inlined
     verbatim into the generated method (good), but the IDE's exec
@@ -418,10 +434,14 @@ Other:
     networks. Pure-action games are unaffected (no Pyodide load at all).
   - The Python env exposes `self`/`math`/`random`/`keyboard` but `game`
     is None — no score/lives bridge yet (match3 tracks its own score).
-  - Draw-queue `background`/`health_bar` commands and right/middle mouse
-    events are not implemented. **Correction 2026-07-15:** `sprite` and
-    `lives` *are* implemented (`case 'sprite'`/`case 'lives'` in
-    `engine.js`) — see the matching correction in the Kivy section above.
+  - ~~Draw-queue `background`/`health_bar` commands... not implemented~~
+    **DONE 2026-07-15** — `case 'background'` (reuses the `game.sprites`
+    map backgrounds already share with sprites, per `encode_sprites`) and
+    `case 'health_bar'` added to `engine.js`. All four draw-queue types
+    now implemented on both HTML5 and Kivy — see the matching Kivy entry
+    above, including the new "structured draw_* actions have no codegen
+    on either target" finding.
+  - Right/middle mouse events are not implemented.
 
 - **Kivy export — long-tail action coverage** —
   `export/Kivy/code_generator.py:681`. Most actions translate fine; unhandled

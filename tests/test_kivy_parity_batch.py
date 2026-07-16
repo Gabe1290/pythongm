@@ -314,6 +314,12 @@ def _stub_kivy_env(game_dir: Path):
                 self.texture = _Tex()
 
         mod("kivy.core.text", Label=_CoreLabel)
+
+        class _Window:
+            width = 800
+            height = 600
+
+        mod("kivy.core.window", Window=_Window())
         for n in [k for k in sys.modules
                   if k == "utils" or k.startswith(("utils.", "objects"))]:
             del sys.modules[n]

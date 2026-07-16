@@ -61,6 +61,16 @@ class KivyExporter:
             for name, data in project_data.get('assets', {}).get('sounds', {}).items()
             if data.get('file_path')
         }
+        # background_name -> exported asset path, for the draw_background
+        # draw-queue command. Backgrounds are copied to assets/images/<file>
+        # by _export_background (same directory as sprites, but kept in its
+        # own map — not merged into sprite_path_map — so a background and a
+        # sprite that happen to share a name can never collide).
+        self.background_path_map = {
+            name: f"assets/images/{Path(data.get('file_path', '')).name}"
+            for name, data in project_data.get('assets', {}).get('backgrounds', {}).items()
+            if data.get('file_path')
+        }
         # exported sprite path -> frame metadata, so the runtime draws a single
         # frame of a multi-frame strip (and animates it) instead of blitting the
         # whole sheet. frame_width/height are per-frame; 'width' is the full
@@ -2079,11 +2089,13 @@ class {class_name}(Widget):
         import json as _json
         code = (
             '#!/usr/bin/env python3\n'
-            '"""Sprite/sound name -> exported asset path, for execute_code\n'
-            'that references an asset by name rather than through a\n'
-            'structured action. Generated from the project\'s assets."""\n\n'
+            '"""Sprite/sound/background name -> exported asset path, for\n'
+            'execute_code that references an asset by name rather than\n'
+            'through a structured action. Generated from the project\'s\n'
+            'assets."""\n\n'
             'SPRITE_PATHS = ' + _json.dumps(self.sprite_path_map, indent=4, sort_keys=True) + '\n\n'
-            'SOUND_PATHS = ' + _json.dumps(self.sound_path_map, indent=4, sort_keys=True) + '\n'
+            'SOUND_PATHS = ' + _json.dumps(self.sound_path_map, indent=4, sort_keys=True) + '\n\n'
+            'BACKGROUND_PATHS = ' + _json.dumps(self.background_path_map, indent=4, sort_keys=True) + '\n'
         )
         (self.output_path / "game" / "asset_paths.py").write_text(code, encoding="utf-8")
 
@@ -2232,6 +2244,7 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Rectangle, Color, Line, Ellipse, InstructionGroup
 from kivy.core.image import Image as CoreImage
 from kivy.core.text import Label as CoreLabel
+from kivy.core.window import Window
 import math
 from utils import load_image
 
@@ -2241,10 +2254,11 @@ except Exception:
     SPRITE_META = {{}}
 
 try:
-    from asset_paths import SPRITE_PATHS, SOUND_PATHS
+    from asset_paths import SPRITE_PATHS, SOUND_PATHS, BACKGROUND_PATHS
 except Exception:
     SPRITE_PATHS = {{}}
     SOUND_PATHS = {{}}
+    BACKGROUND_PATHS = {{}}
 
 
 class GameObject(Widget):
@@ -3024,6 +3038,62 @@ class GameObject(Widget):
                 group.add(Rectangle(texture=label.texture,
                                     pos=(x, room_h - y - label.texture.size[1]),
                                     size=label.texture.size))
+        elif ctype == 'background':
+            # draw_background: background resolved by name via
+            # BACKGROUND_PATHS (backgrounds are copied alongside sprites
+            # into assets/images/ by _export_background, but kept in a
+            # separate name->path map so a background can't collide with
+            # a same-named sprite). 'tiled' repeats it across the room.
+            path = cmd.get('background_path') or BACKGROUND_PATHS.get(cmd.get('background_name'), '')
+            img = load_image(path) if path else None
+            if img is None:
+                return
+            x = float(cmd.get('x', 0))
+            y = float(cmd.get('y', 0))
+            tex = img.texture
+            bw, bh = tex.width, tex.height
+            group.add(Color(1, 1, 1, 1))
+            if cmd.get('tiled'):
+                # Mirrors the desktop runtime's _draw_background tiling math
+                # (screen.get_width/height there -> Window.width/height here).
+                screen_w = Window.width
+                screen_h = Window.height
+                start_x = (x % bw) - bw if x < 0 else (x % bw)
+                if start_x > 0:
+                    start_x -= bw
+                start_y = (y % bh) - bh if y < 0 else (y % bh)
+                if start_y > 0:
+                    start_y -= bh
+                cy = start_y
+                while cy < screen_h:
+                    cx = start_x
+                    while cx < screen_w:
+                        group.add(Rectangle(texture=tex, pos=(cx, room_h - cy - bh), size=(bw, bh)))
+                        cx += bw
+                    cy += bh
+            else:
+                group.add(Rectangle(texture=tex, pos=(x, room_h - y - bh), size=(bw, bh)))
+        elif ctype == 'health_bar':
+            # draw_health_bar: filled back rect, filled health-proportion
+            # rect on top, unfilled border — mirrors runtime._draw_health_bar.
+            x1 = float(cmd.get('x1', 0))
+            y1 = float(cmd.get('y1', 0))
+            x2 = float(cmd.get('x2', 100))
+            y2 = float(cmd.get('y2', 20))
+            health = float(cmd.get('health', 100))
+            back_color = self._dq_color(cmd.get('back_color', '#FF0000'))
+            bar_color = self._dq_color(cmd.get('bar_color', '#00FF00'))
+            bar_w = x2 - x1
+            bar_h = y2 - y1
+            pos = (x1, room_h - y2)
+            group.add(Color(*back_color))
+            group.add(Rectangle(pos=pos, size=(bar_w, bar_h)))
+            health_w = bar_w * max(0.0, min(100.0, health)) / 100.0
+            if health_w > 0:
+                group.add(Color(*bar_color))
+                group.add(Rectangle(pos=pos, size=(health_w, bar_h)))
+            group.add(Color(0, 0, 0, 1))
+            group.add(Line(rectangle=(x1, room_h - y2, bar_w, bar_h), width=1))
 '''
 
         # Format the template with actual values

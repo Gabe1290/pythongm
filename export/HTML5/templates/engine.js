@@ -469,6 +469,54 @@ function renderDrawCommands(ctx, cmds, game) {
                 }
                 break;
             }
+            case 'background': {
+                // {'type':'background','background_name':...,'x':...,'y':...,
+                // 'tiled':...} — backgrounds are embedded into the same
+                // game.sprites map as sprites by the exporter's
+                // encode_sprites (background/sprite names can't collide
+                // since they're separate project asset categories).
+                const img = game && game.sprites ? game.sprites[cmd.background_name] : null;
+                if (!img || !img.complete) break;
+                const bx = cmd.x || 0, by = cmd.y || 0;
+                if (cmd.tiled) {
+                    const bw = img.width, bh = img.height;
+                    if (bw > 0 && bh > 0) {
+                        const screenW = ctx.canvas.width, screenH = ctx.canvas.height;
+                        let startX = bx < 0 ? (bx % bw) - bw : bx % bw;
+                        if (startX > 0) startX -= bw;
+                        let startY = by < 0 ? (by % bh) - bh : by % bh;
+                        if (startY > 0) startY -= bh;
+                        for (let cy = startY; cy < screenH; cy += bh) {
+                            for (let cx = startX; cx < screenW; cx += bw) {
+                                ctx.drawImage(img, cx, cy);
+                            }
+                        }
+                    }
+                } else {
+                    ctx.drawImage(img, bx, by);
+                }
+                break;
+            }
+            case 'health_bar': {
+                // Runtime _draw_health_bar: filled back rect, filled
+                // health-proportion rect on top, unfilled border.
+                const x1 = cmd.x1 || 0, y1 = cmd.y1 || 0;
+                const x2 = cmd.x2 !== undefined ? cmd.x2 : 100;
+                const y2 = cmd.y2 !== undefined ? cmd.y2 : 20;
+                const health = cmd.health !== undefined ? cmd.health : 100;
+                const barW = x2 - x1, barH = y2 - y1;
+                ctx.fillStyle = drawCommandColor(cmd.back_color || '#FF0000');
+                ctx.fillRect(x1, y1, barW, barH);
+                const healthW = barW * Math.max(0, Math.min(100, health)) / 100;
+                if (healthW > 0) {
+                    ctx.fillStyle = drawCommandColor(cmd.bar_color || '#00FF00');
+                    ctx.fillRect(x1, y1, healthW, barH);
+                }
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(x1 + 0.5, y1 + 0.5, barW - 1, barH - 1);
+                break;
+            }
             // Unknown command types are skipped, matching the IDE runtime's
             // dispatch-table behaviour.
         }
