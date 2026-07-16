@@ -82,3 +82,24 @@ Legend: `[x]` pass · `[!]` works with caveat (note it) · `[-]` not testable.
   first checkbox after pulling** — the action should now open a dialog with
   "adapt_direction" selected. (To view the script's *code*, open the script
   asset itself; the action dialog shows which script is called + arguments.)
+- **Finding #2 (2026-07-16, FIXED same day — importer, two-layer):** Explorer's
+  `collision_with_pil` destroyed **Self** instead of **Other** (eating a pill
+  killed the player). Root cause: GM's "Applies to" selector was never
+  imported — the parser read the wrong int into `applies_to` (a 0/1
+  "has-selector" flag) and threw the real value away, and the converter never
+  emitted a target. Fixed: the parser now reads the true WHO field
+  (-1 self / -2 other / ≥0 object), and the converter emits
+  `target`/`target_object` for `destroy_instance` / `change_instance` /
+  `destroy_at_position`. The power-pill event is now faithful: destroy the
+  pill, reset already-scared monsters, scare all monsters. Regression:
+  `tests/test_gmk_applies_to.py`. **Test build refreshed — re-open it.**
+- **Known remaining (next unit, do NOT re-log):** actions the runtime can't
+  retarget yet now import with a **console warning** instead of silent
+  self-targeting: treasure's `set_alarm` (applies to scared — so scared
+  monsters may not revert to normal after the timer) and `jump_to_start`
+  (applies to other/monster/scared — eaten monsters won't teleport home, and
+  monsters won't reset when you die). Runtime target support for those is the
+  queued follow-up; expect those specific behaviors to be off in this pass.
+- **adapt_direction script round-trip: CONFIRMED GOOD** (user pasted the
+  imported code — real Python: `instance.hspeed`,
+  `game.check_collision_at_position`, `random.random()`).
