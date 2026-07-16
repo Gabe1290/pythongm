@@ -4070,6 +4070,14 @@ class ActionExecutor:
             tiled_h = tiled_h.lower() in ('true', '1', 'yes')
         if isinstance(tiled_v, str):
             tiled_v = tiled_v.lower() in ('true', '1', 'yes')
+        try:
+            hspeed = float(hspeed)
+        except (TypeError, ValueError):
+            hspeed = 0.0
+        try:
+            vspeed = float(vspeed)
+        except (TypeError, ValueError):
+            vspeed = 0.0
 
         # Look up the background/sprite
         import pygame
@@ -4101,14 +4109,17 @@ class ActionExecutor:
             self.game_runner.current_room.background_image_name = background_name
             self.game_runner.current_room.tile_horizontal = tiled_h
             self.game_runner.current_room.tile_vertical = tiled_v
+            self.game_runner.current_room.bg_hspeed = hspeed
+            self.game_runner.current_room.bg_vspeed = vspeed
 
-            # Note: foreground, hspeed, vspeed would require additional room properties
-            # For now, we'll just acknowledge them
+            # Note: foreground (drawing in front of instances) isn't wired
+            # for the legacy single-background path — only the newer
+            # multi-layer `backgrounds` room format supports per-layer
+            # foreground (see GameRoom._render_bg_layers). Acknowledged but
+            # not applied here; see TODO.md.
             logger.debug(f"🖼️ Set background: '{background_name}', visible={visible}, "
-                  f"tiled_h={tiled_h}, tiled_v={tiled_v}, foreground={foreground}")
-
-            if hspeed != 0 or vspeed != 0:
-                logger.debug(f"   Scroll speed: h={hspeed}, v={vspeed} (scrolling not yet implemented)")
+                  f"tiled_h={tiled_h}, tiled_v={tiled_v}, foreground={foreground}, "
+                  f"hspeed={hspeed}, vspeed={vspeed}")
         elif not visible:
             # Clear background
             self.game_runner.current_room.background_surface = None
