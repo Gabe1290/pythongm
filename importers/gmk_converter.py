@@ -176,6 +176,13 @@ class GmkConverter:
             },
         }
 
+        # Explicit play order (GM's room execution order, parsed from the
+        # .gmk). The rooms dict above is already built in this order, but the
+        # runtime's find_starting_room/next_room prefer an explicit
+        # room_order — relying on JSON key order is fragile (any tool that
+        # re-sorts keys would silently scramble level progression).
+        project_data["room_order"] = list(project_data["assets"]["rooms"].keys())
+
         return project_data
 
     def _create_directory_structure(self):
