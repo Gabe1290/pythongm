@@ -272,7 +272,22 @@ draw events without matching UI metadata).
 - [ ] Once the full re-validation above is done: re-add `treasure` and
       `maze_4` to the bundled Welcome-tab sample list (reverses commits
       `d3fd71a` and `be6e0a9`); update `samples/README.md`'s
-      dropped-samples note.
+      dropped-samples note. **STATUS 2026-07-16: awaiting the user's
+      visual playtest (their explicit call — the samples were dropped on
+      their hands-on testing, so they sign off on the return).** Fresh
+      imports delivered for testing to
+      `<Documents>/PyGameMaker Projects/treasure_reimport_2026-07/` and
+      `.../maze_4_reimport_2026-07/` (the older `treasure*`/`maze_4`
+      folders there are the broken rc.12 imports — do not confuse).
+      Structured checklists: `docs/treasure_testing_pass.md` and
+      `docs/maze_4_testing_pass.md` (RE-ADD / HOLD verdict at the bottom
+      of each). On RE-ADD: import fresh into `samples/<name>/`, apply any
+      hand-patches the playtest called for (maze_1-style, documented as
+      deliberate fixes), add README/CREDITS, register in
+      `widgets/welcome_tab.py` + `tools/smoke_run_samples.py` +
+      `scripts/add_sample_name_translations.py`, and update
+      `samples/README.md`. On HOLD: each finding becomes a
+      finder→verify→fix unit here.
 
 ## Correction to the working-discipline note above
 
