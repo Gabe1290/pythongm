@@ -109,19 +109,25 @@ def _import(gmk_name):
     return json.loads((out / "project.json").read_text(encoding="utf-8"))
 
 
-def test_room_order_emitted_and_faithful_maze1():
+def test_rooms_dict_is_in_play_order_maze1():
+    """Room play order in pygm2 IS the rooms-dict key order (the IDE reorders
+    by moving keys and the runtime falls back to it). The importer must build
+    that dict in the .gmk's execution order — and must NOT emit a `room_order`
+    key, which the IDE never maintains and which would freeze the order against
+    any in-IDE reorder (finding #11)."""
     proj = _import("maze_1.gmk")
-    assert proj["room_order"] == ["room0", "room1"]
+    assert list(proj["assets"]["rooms"].keys()) == ["room0", "room1"]
+    assert "room_order" not in proj
 
 
-def test_room_order_emitted_and_faithful_maze4():
+def test_rooms_dict_is_in_play_order_maze4():
     """maze_4's genuine authored order — room_start then three descending
     runs. Calibrated: maze_1/maze_3/treasure all parse in their known-correct
-    ascending order, so this is the original game's ordering, not a parse bug."""
+    ascending order, so this is the original game's ordering, not a parse bug.
+    Carried by dict key order, no frozen room_order key."""
     proj = _import("maze_4.gmk")
-    order = proj["room_order"]
+    order = list(proj["assets"]["rooms"].keys())
     assert order[0] == "room_start"
     assert order[1:4] == ["room14", "room13", "room12"]
     assert len(order) == 21
-    # and it matches the rooms dict's insertion order (belt and braces)
-    assert order == list(proj["assets"]["rooms"].keys())
+    assert "room_order" not in proj
