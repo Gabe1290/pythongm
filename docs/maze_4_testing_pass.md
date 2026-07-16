@@ -77,21 +77,40 @@ Legend: `[x]` pass · `[!]` works with caveat (note it) · `[-]` not testable.
   it, recursively), verified headlessly (steady speed-4 movement, aligned
   wall stop at x=256). Regression: `tests/test_question_chain_scoping.py`.
   **Test build refreshed — re-open it.**
-- **Finding #6 (OPEN — next up):** pressing a movement key TOWARD a flush
-  wall slides the person ~3px into it (pixel-mask slop; pygm2 slides-to-
-  contact where GM8 reverts to the pre-move position), leaving it off the
-  32-grid so `test_alignment` gates all further movement — permanently stuck.
-  Verified headlessly (UP at (256,416) against the wall above → y=413, then
-  dead). Candidate fixes: engine revert-on-block semantics (risky for the
-  platformer samples) vs a maze_1-style hand-patch (snap_to_grid in the wall
-  collision) at re-add time. Under investigation.
-- **Finding #7 (OPEN):** the importer emits NO `room_order`, and the rooms
-  dict order is scrambled — the first playable room is room14, not the
-  original first level, and next_room walks 13, 12, ... backwards. The raw
-  .gmk chunk order starts `room_start, room7, room8...` (creation order); the
-  true PLAY order lives in the GM resource tree, which the parser currently
-  skips. Needs resource-tree parsing + room_order emission.
-- **Finding #8 (OPEN):** score/lives not displayed. `controller_main`'s draw
-  event (`set_draw_font score_font` + `draw_score`/`draw_text`/`draw_lives`
-  with `relative: true`, controller placed at (0,480) = bottom strip) — not
-  yet diagnosed (relative-draw support? font? draw event not firing?).
+- **Finding #6 (2026-07-16, RESOLVED for testing via hand-patch):** pressing a
+  movement key TOWARD a flush wall slid the person ~3px into it (pygm2
+  slides-to-contact where GM8 reverts to the pre-move position; tight GM
+  bboxes give the slack), knocking it off the 32-grid so `test_alignment`
+  gated all movement — permanently stuck. Verified headlessly (UP at
+  (256,416) → y=413, dead controls). **Fix applied = the maze_1 precedent**
+  (a fresh maze_1 import confirms its shipped `snap_to_grid` wall patch was
+  hand-added in rc.12 for this same engine deviation): obj_person's
+  `collision_with_wall_corner` gets `snap_to_grid(32)` appended, and new
+  stop+snap events added for `wall_horizontal`/`wall_vertical` (the person can
+  press into those too; the original needed no events there because GM's
+  revert kept it aligned for free). Verified headlessly: wall press now stays
+  at (256,416), aligned, controls alive. **This hand-patch lives in the test
+  build and MUST be re-applied to `samples/maze_4/` at re-add time** (script:
+  the session scratchpad's patch_maze4.py logic — stop+snap on all three wall
+  types). Engine-level revert-on-block stays rejected for now (the platformer
+  samples rely on slide-to-contact landing).
+- **Finding #7 (2026-07-16, RESOLVED — half original-game quirk, half fixed):**
+  the level order really IS `room_start, room14, room13, ..., room7,
+  room20..15, room26..21` — that's the .gmk's own room execution order
+  (calibrated: maze_1/maze_3/treasure all parse in their known-correct
+  ascending order, so the parser is right and this is the author's ordering,
+  faithfully imported — same class as maze_1's original-game quirks). The
+  genuine gap: the importer never wrote an explicit `room_order` into
+  project.json (the rooms dict was ordered correctly but key-order reliance
+  is fragile) — now emitted. Regression:
+  `tests/test_draw_relative_and_room_order.py`.
+- **Finding #8 (2026-07-16, FIXED — runtime, two bugs):** score/lives not
+  displayed. (a) `draw_score`/`draw_text`/`draw_lives` ignored GM's
+  `relative` flag, drawing the HUD at absolute (300,4)/(8,4)/(70,4) — buried
+  in the top wall row — instead of controller-relative (0,480)+offset = the
+  bottom strip; (b) `draw_lives` read only a `sprite` parameter while GM/the
+  importer call it `image`, so the lives images resolved to "" and drew
+  nothing. Both fixed; verified headlessly (queue now shows "Score: 0" at
+  (300,484), "Lives:" at (8,484), sprite_lives at (70,484)). Regression:
+  `tests/test_draw_relative_and_room_order.py`. **Test build refreshed —
+  re-open it.**

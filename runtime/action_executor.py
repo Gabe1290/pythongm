@@ -2491,6 +2491,17 @@ class ActionExecutor:
             color = getattr(self.game_runner, 'draw_color', None)
         return color if color is not None else default
 
+    @staticmethod
+    def _is_relative(parameters: Dict[str, Any]) -> bool:
+        """GM's 'relative' checkbox on draw actions: coordinates are offsets
+        from the instance's position (imported GMK controllers draw HUDs this
+        way — e.g. maze_4's controller at (0, 480) drawing the score strip at
+        y+4 = the bottom of the room)."""
+        relative = parameters.get("relative", False)
+        if isinstance(relative, str):
+            return relative.strip().lower() in ("true", "1", "yes")
+        return bool(relative)
+
     def execute_draw_score_action(self, instance, parameters: Dict[str, Any]):
         """Draw score on screen (queued for draw event)"""
         if not self.game_runner:
@@ -2498,6 +2509,9 @@ class ActionExecutor:
 
         x = int(parameters.get("x", 0))
         y = int(parameters.get("y", 0))
+        if self._is_relative(parameters):
+            x += int(instance.x)
+            y += int(instance.y)
         caption = parameters.get("caption", "Score: ")
 
         # Store draw command for rendering
@@ -2577,7 +2591,12 @@ class ActionExecutor:
 
         x = int(parameters.get("x", 0))
         y = int(parameters.get("y", 0))
-        sprite_name = parameters.get("sprite", "")
+        if self._is_relative(parameters):
+            x += int(instance.x)
+            y += int(instance.y)
+        # GM's action_draw_life_images calls the sprite argument "image" (and
+        # the GMK importer emits it as such); accept both names.
+        sprite_name = parameters.get("sprite") or parameters.get("image", "")
         try:
             scale = float(parameters.get("scale", 1.0))
         except (ValueError, TypeError):
@@ -3496,6 +3515,9 @@ class ActionExecutor:
         # Parse parameters with expression support
         x = self._parse_value(parameters.get("x", instance.x), instance)
         y = self._parse_value(parameters.get("y", instance.y), instance)
+        if self._is_relative(parameters):
+            x += instance.x
+            y += instance.y
         text = str(self._parse_value(parameters.get("text", ""), instance))
 
         # Get the active drawing colour (instance, then global, then black).
