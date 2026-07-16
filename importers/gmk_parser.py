@@ -1111,7 +1111,12 @@ class GmkParser:
         act.action_kind = s.read_int32()
         act.has_relative = s.read_bool()
         act.is_question = s.read_bool()
-        act.applies_to = s.read_int32()
+        # bool: whether this action HAS an "Applies to" selector in the GM UI
+        # (destroy/change/alarm = 1, play_sound = 0). This was previously
+        # misread as the applies-to WHO value, so every action reported 0/1
+        # and the real selector below was discarded — the treasure playtest
+        # surfaced it as "destroys Self instead of Other".
+        _applies_to_something = s.read_int32()
         act.execution_type = s.read_int32()
 
         act.function_name = s.read_string()
@@ -1122,8 +1127,9 @@ class GmkParser:
         arg_type_count = s.read_int32()
         act.argument_types = [s.read_int32() for _ in range(arg_type_count)]
 
-        # "who" applies-to field, "relative" flag, and arg value count
-        _who = s.read_int32()
+        # The actual "Applies to" WHO field: -1 = self, -2 = other,
+        # >= 0 = apply to every instance of that object index.
+        act.applies_to = s.read_int32()
         act.is_relative = s.read_bool()
         arg_val_count = s.read_int32()
 

@@ -39,6 +39,17 @@ from importers.gmk_parser import (
 
 logger = logging.getLogger(__name__)
 
+# pygm2 actions whose runtime handlers honor target/target_object parameters
+# ("self" | "other" | "object" + object name) — the destinations for GM's
+# "Applies to" selector. Keep in sync with runtime/action_executor.py
+# (execute_destroy_instance_action / execute_change_instance_action /
+# execute_destroy_at_position_action).
+TARGETABLE_PYGM2_ACTIONS = {
+    "destroy_instance",
+    "change_instance",
+    "destroy_at_position",
+}
+
 # Upper bound on any single decoded image dimension from an imported .gmk.
 # The width/height are parsed as int32 with no upper bound, so a malicious or
 # corrupt file declaring e.g. 40000x40000 with a few bytes of pixel data would
@@ -680,6 +691,41 @@ class GmkConverter:
         # Handle the 'not' flag for question actions
         if gm_act.is_not:
             parameters["not_flag"] = True
+
+        # GM's "Applies to" selector: -1 = self (the default — emit nothing),
+        # -2 = other (the collision partner), >= 0 = every instance of that
+        # object. Route it into the runtime's target/target_object params for
+        # the actions whose handlers support per-target application; for
+        # anything else, warn — running it as self is a behavior change the
+        # importing teacher should hear about instead of a silent surprise.
+        # (Treasure's power-pill event is the canonical case: destroy OTHER
+        # [the pill] + change all MONSTER instances into scared.)
+        if gm_act.applies_to != -1:
+            if pygm2_action in TARGETABLE_PYGM2_ACTIONS:
+                if gm_act.applies_to == -2:
+                    parameters["target"] = "other"
+                else:
+                    obj_name = self._resolve_name("objects", gm_act.applies_to)
+                    if obj_name:
+                        parameters["target"] = "object"
+                        parameters["target_object"] = obj_name
+                    else:
+                        logger.warning(
+                            "GMK import: %s has 'Applies to' object index %d "
+                            "which does not resolve to an object; the action "
+                            "will run against the instance itself.",
+                            pygm2_action, gm_act.applies_to,
+                        )
+            else:
+                who = ("other" if gm_act.applies_to == -2
+                       else self._resolve_name("objects", gm_act.applies_to)
+                       or f"object #{gm_act.applies_to}")
+                logger.warning(
+                    "GMK import: %s has 'Applies to: %s', which the runtime "
+                    "does not support for this action; it will run against "
+                    "the instance itself.",
+                    pygm2_action, who,
+                )
 
         return {
             "action": pygm2_action,
