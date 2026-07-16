@@ -39,6 +39,7 @@ class ObjectEditor(BaseEditor):
     # Additional signals specific to object editor
     object_property_changed = Signal(str, object)  # property_name, value
     object_editor_activated = Signal(str, dict)    # object_name, properties
+    test_object_requested = Signal(str, dict)      # object_name, current object data
 
     # Splitter sizes for [events panel | center tabs]. Numbers are relative;
     # Qt distributes them proportionally to fill the available width.
@@ -640,6 +641,43 @@ class ObjectEditor(BaseEditor):
 
         # Ensure save functionality
         self.ensure_save_functionality()
+
+        self._ensure_play_object_button()
+
+    def _ensure_play_object_button(self):
+        """Add the "Play Object" toolbar button once (idempotent, same
+        guard style as ensure_save_functionality — this can be called
+        more than once as the toolbar gets rebuilt during editor setup).
+
+        Runs the object in an isolated throwaway room via the IDE
+        window's test_object (core/ide_window.py) — walks up the parent
+        chain the same way the asset tree's create_asset dispatch does,
+        since the object editor doesn't hold a direct reference to the
+        main window.
+        """
+        if getattr(self, '_play_object_action', None) is not None:
+            return
+        if not hasattr(self, 'toolbar'):
+            return
+        self._play_object_action = self.toolbar.addAction(
+            self.tr("▶ Play Object"), self._on_play_object_clicked)
+        self._play_object_action.setToolTip(
+            self.tr("Run this object alone in a small test room"))
+
+    def _on_play_object_clicked(self):
+        if not self.asset_name:
+            return
+        # Flush pending debounced edits (Blockly sync / code-editor auto-apply)
+        # so the test reflects what's on screen, not a stale pre-edit snapshot —
+        # same reasoning as save()'s call to this before persisting.
+        if hasattr(self, '_flush_pending_auto_applies'):
+            self._flush_pending_auto_applies()
+        try:
+            data = self.get_data()
+        except Exception as e:
+            logger.warning(f"Could not collect object data for Play Object: {e}")
+            return
+        self.test_object_requested.emit(self.asset_name, data)
 
     def ensure_save_functionality(self):
         """Ensure save button and functionality are available"""

@@ -68,14 +68,32 @@ it before picking an item to work on.
   stubs, and the `build_game_action` / `build_and_run_action` enable/disable
   references in `core/ide_window.py`.
 
-### Object test runner ("Play Object" button)
-- Was: a planned toolbar button in the Object Editor wired to a `test_object`
-  method.
-- Scope: run a single object in isolation (without putting it in a room) to
-  test its events. Useful for unit-testing object behaviour.
-- Notes: the orphaned `test_object` method in
-  `editors/object_editor/object_editor_main.py` was removed (no UI element
-  called it). Restore the method + a toolbar button when implementing.
+### ~~Object test runner ("Play Object" button)~~ (DONE 2026-07-15)
+- Done (deferred-items plan tier 1): a "▶ Play Object" toolbar button in the
+  Object Editor (`editors/object_editor/object_editor_main.py`) emits
+  `test_object_requested(name, data)`; `core/ide_window.py`'s
+  `PyGameMakerIDE.test_object` builds a throwaway temp project (just the
+  object + its sprite, if any, copied alongside it + one small test room)
+  and launches it through the *same* subprocess-supervision path Test
+  Game uses (`_run_project_json`, factored out of `test_game` so both
+  share it rather than duplicating the Popen/stderr-capture/QTimer-polling
+  logic) — the real runtime, not a simulation. The temp dir is cleaned up
+  in `_drain_game_stderr` (which both the normal-exit and manual-stop
+  paths already call), so a Play Object run can't leak a temp directory
+  either way. Tests the editor's live in-memory state, not a saved
+  project — no save/validate step, matching a "quick preview" workflow.
+  Other object types the tested object references (e.g. a collision
+  event against `obj_enemy`) won't exist in the throwaway project, so
+  those specific events won't fire — an accepted isolation limitation,
+  not a bug.
+- Regression: `tests/test_play_object.py` (guards, temp-project building,
+  sprite copying, missing-sprite-file degradation, cleanup). The
+  `test_game`/`_run_project_json` split required updating 3 pre-existing
+  tests' lightweight stubs (`test_audit_ide_window_leaks.py`,
+  `test_test_game_editor_sync.py`, `test_open_editors_composite_key.py`)
+  to also provide the newly-factored-out method — same "give the stub
+  every attribute the real method body touches" convention those tests
+  already used for `_drain_game_stderr` etc.
 
 ### ~~Generic asset-type editor fallback~~ (DONE 2026-07-15)
 - Done: `sounds`, `backgrounds`, and `fonts` now have minimal form editors

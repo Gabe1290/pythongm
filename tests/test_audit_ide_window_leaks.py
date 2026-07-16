@@ -64,6 +64,11 @@ def test_test_game_cleans_stderr_capture_on_popen_failure(_qapp, tmp_path, monke
 
         # Use the real cleanup routine — that is the fix under test.
         _drain_game_stderr = PyGameMakerIDE._drain_game_stderr
+        # test_game delegates the actual launch to _run_project_json
+        # (factored out so test_object/"Play Object" can reuse it) — the
+        # stub needs the real implementation too, not just the methods it
+        # directly calls itself.
+        _run_project_json = PyGameMakerIDE._run_project_json
 
         def _iter_open_editors(self):
             return iter(())
