@@ -389,10 +389,15 @@ class PyGameMakerIDE(QMainWindow):
         # Store references to build actions
         self.test_game_action = self.create_action(self.tr("&Test Game"), "F5", self.test_game)
         self.debug_game_action = self.create_action(self.tr("&Debug Game"), "F6", self.debug_game)
+        self.build_game_action = self.create_action(self.tr("&Build Game..."), "F7", self.build_game)
+        self.build_and_run_action = self.create_action(self.tr("Build and &Run"), "F8", self.build_and_run)
         self.export_game_action = self.create_action(self.tr("&Export Game..."), None, self.export_game)
 
         self.build_menu.addAction(self.test_game_action)
         self.build_menu.addAction(self.debug_game_action)
+        self.build_menu.addSeparator()
+        self.build_menu.addAction(self.build_game_action)
+        self.build_menu.addAction(self.build_and_run_action)
         self.build_menu.addSeparator()
         self.build_menu.addAction(self.export_game_action)
 
@@ -2782,6 +2787,21 @@ class PyGameMakerIDE(QMainWindow):
             else:  # Linux
                 subprocess.run(['xdg-open', output_dir])
 
+    def build_game(self):
+        """Build → Build Game... (F7): build a native desktop artifact for
+        the current host, without going through the multi-target Export
+        Game dialog. Uses the same PyInstaller-based exporter class the
+        dialog's own platform entries pick via
+        export.registry.desktop_exporter_for_host (Windows exe, macOS
+        .app, or Linux ELF binary, chosen by host OS since PyInstaller
+        can't cross-compile)."""
+        self._build_desktop(run_after=False)
+
+    def build_and_run(self):
+        """Build → Build and Run (F8): same build as build_game, then
+        launch the resulting executable."""
+        self._build_desktop(run_after=True)
+
     # ------------------------------------------------------------------
     # Helpers backing the shells above.
     # ------------------------------------------------------------------
@@ -2833,6 +2853,7 @@ class PyGameMakerIDE(QMainWindow):
         open_folder_prompt: str,
         show_cancel: bool = False,
         cancel_status_message: str = "",
+        on_success=None,
     ):
         """Drive an exporter to completion behind a modal progress dialog.
 
@@ -2848,6 +2869,12 @@ class PyGameMakerIDE(QMainWindow):
         implementations. Caller-side ``ExporterClass()`` would invert
         the order because keyword arguments are evaluated before the
         call.
+
+        ``on_success``, if given, is called (no args) after a successful
+        build, regardless of whether the user answered the "open output
+        folder?" prompt — used by ``build_and_run`` (F8) to launch the
+        freshly-built executable without duplicating the whole
+        progress-dialog/thread machinery.
         """
         # cancel_export is defined below; route Esc/close to it for
         # cancel-enabled targets so the dialog can't be dismissed in a way
@@ -2909,6 +2936,8 @@ class PyGameMakerIDE(QMainWindow):
                         subprocess.run(['open', output_dir])
                     else:  # Linux
                         subprocess.run(['xdg-open', output_dir])
+                if on_success is not None:
+                    on_success()
             else:
                 QMessageBox.critical(self, failure_title, message)
 
@@ -2956,6 +2985,75 @@ class PyGameMakerIDE(QMainWindow):
         # instant rather than the multi-minute GUI-thread freeze of the old
         # early-dismiss path (audit M9/M10). It also joins the thread cleanly.
         export_thread.wait()
+
+    def _build_desktop(self, run_after: bool):
+        """Shared body of build_game/build_and_run: build via the
+        host-appropriate desktop exporter, optionally launching the result
+        afterward."""
+        if not self._require_open_project():
+            return
+        output_dir = self._ask_export_dir('_build')
+        if not output_dir:
+            return
+        import platform
+        from export.registry import desktop_exporter_for_host
+        exporter_class = desktop_exporter_for_host(platform.system())
+        self._run_export_with_progress(
+            exporter_class=exporter_class,
+            output_dir=output_dir,
+            export_settings={
+                'output_path': output_dir,
+                **self._current_export_options(),
+            },
+            dialog_title=self.tr("Building Game"),
+            status_text=self.tr("Preparing build..."),
+            dialog_size=(500, 150),
+            success_title=self.tr("Build Complete"),
+            failure_title=self.tr("Build Failed"),
+            open_folder_prompt=self.tr("Would you like to open the output folder?"),
+            show_cancel=False,
+            on_success=(lambda: self._launch_built_game(output_dir)) if run_after else None,
+        )
+
+    def _launch_built_game(self, output_dir: str):
+        """Locate and launch the executable build_and_run just produced in
+        output_dir. Mirrors the exporters' own naming convention exactly
+        (export/{exe,linux,macos}_exporter.py's _create_spec_file: the
+        project name run through the same
+        re.sub(r'[^A-Za-z0-9_]', '_', name) sanitizer, suffixed .exe / no
+        suffix / .app for Windows/Linux/macOS respectively) rather than
+        scanning output_dir, since PyInstaller's onefile dist/ can contain
+        incidental extra files (e.g. debug builds)."""
+        import platform
+        import re
+        import subprocess as _subprocess
+
+        raw_name = (self.current_project_data or {}).get('name', 'Game')
+        game_name = re.sub(r'[^A-Za-z0-9_]', '_', raw_name) or 'Game'
+        system = platform.system()
+        output_path = Path(output_dir)
+
+        try:
+            if system == 'Windows':
+                exe_path = output_path / f"{game_name}.exe"
+                if exe_path.exists():
+                    os.startfile(str(exe_path))
+                else:
+                    logger.warning(f"Build and Run: {exe_path} not found")
+            elif system == 'Darwin':
+                app_path = output_path / f"{game_name}.app"
+                if app_path.exists():
+                    _subprocess.Popen(['open', str(app_path)])
+                else:
+                    logger.warning(f"Build and Run: {app_path} not found")
+            else:
+                bin_path = output_path / game_name
+                if bin_path.exists():
+                    _subprocess.Popen([str(bin_path)])
+                else:
+                    logger.warning(f"Build and Run: {bin_path} not found")
+        except Exception:
+            logger.warning("Build and Run: failed to launch the built game", exc_info=True)
 
     def _active_editor(self):
         """Return the editor the user is interacting with right now.
@@ -4717,6 +4815,10 @@ class PyGameMakerIDE(QMainWindow):
             self.test_game_action.setEnabled(has_project)
         if hasattr(self, 'debug_game_action'):
             self.debug_game_action.setEnabled(has_project)
+        if hasattr(self, 'build_game_action'):
+            self.build_game_action.setEnabled(has_project)
+        if hasattr(self, 'build_and_run_action'):
+            self.build_and_run_action.setEnabled(has_project)
         if hasattr(self, 'export_game_action'):
             self.export_game_action.setEnabled(has_project)
 
