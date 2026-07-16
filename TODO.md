@@ -106,12 +106,20 @@ it before picking an item to work on.
   singular→plural rename-signal mapping — missing this would silently
   break the open-tab-on-rename path). Round-trip + no-dirty-on-load
   regression tests: `tests/test_asset_type_editors.py`.
-- **New finding, not fixed:** the font editor exists now, but nothing in
-  `runtime/game_runner.py` reads a font asset's `font_name`/`size`/
-  `bold`/`italic` back — `set_draw_font` stores the chosen font *name* on
-  the instance, but `draw_text` rendering doesn't consult it. Wiring font
-  assets into actual text rendering is a separate runtime task; tracked
-  here rather than silently left implicit.
+- ~~New finding, not fixed: nothing reads a font asset's `font_name`/
+  `size`/`bold`/`italic` back~~ **DONE 2026-07-16.** `GameInstance` gained
+  `_resolve_draw_font` (looks `self.draw_font` up in
+  `project_data['assets']['fonts']`, builds/caches a real
+  `pygame.font.Font`/`SysFont` honoring family/size/bold/italic, falls
+  back to the old hardcoded 24pt default when unset or missing) and
+  `_align_text_pos` (shifts the blit position per `draw_halign`/
+  `draw_valign`, which were also being stored and never read).
+  `_font_cache` is now keyed by `(family, size, bold, italic)` instead of
+  just `size`. `_draw_text`/`_draw_scaled_text` call both. Regression:
+  `tests/test_draw_font_rendering.py` (14 tests) — end-to-end cases render
+  onto a real `pygame.Surface` and inspect actual pixel bounding boxes
+  (`Surface.blit` can't be monkeypatched), confirming alignment shifts and
+  that a bigger font asset genuinely produces wider glyphs.
 - Formalizing the registration so a future new asset type fails loudly at
   startup (instead of silently at click time) is still open, but lower
   priority now that all current asset types are covered.

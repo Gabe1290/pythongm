@@ -585,8 +585,9 @@ class GameInstance:
         self._scaled_cache: Dict[Tuple[int, float, float], Any] = {}
         self._last_scale = (1.0, 1.0)  # Track scale changes to invalidate cache
 
-        # Font cache for draw_text rendering
-        self._font_cache: Dict[int, Any] = {}
+        # Font cache for draw_text rendering, keyed by
+        # (family, size, bold, italic) — see _get_cached_font.
+        self._font_cache: Dict[Tuple[Any, int, bool, bool], Any] = {}
 
         # Animation properties
         self.image_index = 0.0  # Current animation frame (can be fractional for smooth interpolation)
@@ -878,25 +879,89 @@ class GameInstance:
         # Clear the queue after processing
         self._draw_queue = []
 
-    def _get_cached_font(self, size: int) -> pygame.font.Font:
-        """Get a cached font of the specified size, creating if needed.
+    def _get_cached_font(self, size: int, family: str = None,
+                          bold: bool = False, italic: bool = False) -> pygame.font.Font:
+        """Get a cached font, creating it if needed.
 
         Args:
             size: Font size in points
+            family: System font family name (None -> pygame's built-in
+                default font, the pre-existing behavior for every draw_text
+                call that never went through set_draw_font)
+            bold, italic: Style flags, honored for both the family and
+                default-font paths
 
         Returns:
             Cached pygame Font object
         """
-        if size not in self._font_cache:
+        key = (family, size, bold, italic)
+        if key not in self._font_cache:
             try:
-                self._font_cache[size] = pygame.font.Font(None, size)
+                if family:
+                    self._font_cache[key] = pygame.font.SysFont(family, size, bold=bold, italic=italic)
+                else:
+                    font = pygame.font.Font(None, size)
+                    if bold:
+                        font.set_bold(True)
+                    if italic:
+                        font.set_italic(True)
+                    self._font_cache[key] = font
             except Exception:
-                self._font_cache[size] = pygame.font.SysFont('arial', size - 6)
-        return self._font_cache[size]
+                self._font_cache[key] = pygame.font.SysFont('arial', max(1, size - 6))
+        return self._font_cache[key]
+
+    def _resolve_draw_font(self) -> pygame.font.Font:
+        """Resolve self.draw_font (a font *asset name*, set by
+        set_draw_font — runtime/action_executor.py execute_set_draw_font_action)
+        into a real Font honoring that asset's font_name/size/bold/italic.
+
+        set_draw_font stored the asset name on the instance but nothing
+        ever read it back; draw_text/draw_scaled_text always rendered at
+        a hardcoded 24pt default font regardless. Falls back to that same
+        default when no draw_font is set, or the named asset can't be
+        found — every game that never calls set_draw_font (the vast
+        majority, today) sees zero behavior change.
+        """
+        font_name = getattr(self, 'draw_font', None)
+        if not font_name:
+            return self._get_cached_font(24)
+        runner = getattr(getattr(self, 'action_executor', None), 'game_runner', None)
+        fonts = {}
+        if runner and runner.project_data:
+            fonts = runner.project_data.get('assets', {}).get('fonts', {}) or {}
+        font_asset = fonts.get(font_name)
+        if not isinstance(font_asset, dict):
+            logger.warning(f"⚠️ set_draw_font: font asset '{font_name}' not found; using default")
+            return self._get_cached_font(24)
+        family = font_asset.get('font_name') or None
+        try:
+            size = int(font_asset.get('size', 12) or 12)
+        except (TypeError, ValueError):
+            size = 12
+        bold = bool(font_asset.get('bold', False))
+        italic = bool(font_asset.get('italic', False))
+        return self._get_cached_font(size, family, bold, italic)
+
+    def _align_text_pos(self, x, y, width, height):
+        """Shift (x, y) per self.draw_halign/draw_valign (also set by
+        set_draw_font, also never previously read) so x/y become the
+        alignment anchor GameMaker's draw_set_halign/draw_set_valign
+        promise, not always the top-left corner."""
+        halign = getattr(self, 'draw_halign', 'left')
+        valign = getattr(self, 'draw_valign', 'top')
+        if halign == 'center':
+            x = x - width / 2
+        elif halign == 'right':
+            x = x - width
+        if valign == 'middle':
+            y = y - height / 2
+        elif valign == 'bottom':
+            y = y - height
+        return x, y
 
     def _draw_text(self, screen: pygame.Surface, cmd: dict):
         """Draw text on screen"""
-        font = self._get_cached_font(24)
+        font = self._resolve_draw_font()
 
         text = cmd.get('text', '')
         x = cmd.get('x', 0)
@@ -904,11 +969,12 @@ class GameInstance:
         color = self._parse_color(cmd.get('color', '#FFFFFF'))
 
         text_surface = font.render(str(text), True, color)
+        x, y = self._align_text_pos(x, y, text_surface.get_width(), text_surface.get_height())
         screen.blit(text_surface, (x, y))
 
     def _draw_scaled_text(self, screen: pygame.Surface, cmd: dict):
         """Draw scaled text on screen"""
-        font = self._get_cached_font(24)
+        font = self._resolve_draw_font()
 
         text = cmd.get('text', '')
         x = cmd.get('x', 0)
@@ -933,6 +999,9 @@ class GameInstance:
 
             text_surface = pygame.transform.scale(text_surface, (new_width, new_height))
 
+        # Align against the FINAL (post-scale) size — alignment is a
+        # visual anchor, so it should track what's actually on screen.
+        x, y = self._align_text_pos(x, y, text_surface.get_width(), text_surface.get_height())
         screen.blit(text_surface, (int(x), int(y)))
 
     def _draw_lives(self, screen: pygame.Surface, cmd: dict):
