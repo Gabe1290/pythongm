@@ -48,11 +48,15 @@ discipline as the match3_2/3 and views sessions:
    already used elsewhere) — worth remembering for the remaining tier-1/2
    items: touching a method other tests stub out has a wider blast radius
    than the diff alone suggests.
-4. **Room transition effects** (`runtime/action_executor.py:5111`) — the
-   parameter is already accepted and threaded through; only the actual
-   transition (even just a fade) needs implementing. Scope it down to
-   one transition type for a first pass rather than a whole effect
-   library.
+4. ~~**Room transition effects**~~ **DONE 2026-07-15** — `goto_room`'s
+   `transition='fade'` fades to black, switches, fades back in
+   (`GameRunner._fade_overlay`). Scoped to desktop only (no sample
+   exercises the parameter at all yet, so there was nothing to verify
+   Kivy/HTML5 parity against — see the TODO.md entry). Worth noting: the
+   first draft's alpha ramp was inverted (screen went black and stayed
+   black); a pixel-sampling test plus a 10-frame visual montage caught it
+   before it shipped — a "doesn't crash" test alone would have missed it.
+   **Tier 1 is now fully closed.**
 
 ## Tier 2 — moderate effort, clear scope, one design decision each
 
@@ -135,10 +139,17 @@ discipline as the match3_2/3 and views sessions:
 
 ## Suggested starting point when resuming
 
-Tier 1, item 1 (the three missing asset-type editors) — smallest, most
-contained, most similar in shape to work already proven out this session
-(copy an established pattern three times), and it closes out a TODO.md
-section that's otherwise just an enumeration with one example already
-built. Work the numbered list in order after that; re-verify each
+**Tier 1 is fully closed (2026-07-15, items 1-4).** Two follow-up items
+it surfaced along the way, not yet scheduled anywhere else: font assets
+aren't consumed by `draw_text` rendering, and structured `draw_*` actions
+(rectangle/circle/ellipse/line/arrow/variable/health_bar/background)
+have no Kivy/HTML5 codegen at all (both new `TODO.md` entries under their
+respective sections).
+
+Next: Tier 2, item 5 (Find/Replace) or item 6 (`set_background`
+auto-scroll, flagged as likely smaller than it looks now that views
+shipped) — pick whichever fits the session budget better. Re-verify each
 item's `TODO.md` claim against current code before starting it, per the
-discipline above.
+discipline above; this tier's items proved touching a widely-stubbed
+method (item 3) has a wider blast radius than the diff alone suggests,
+so budget time for fixing incidental test breakage, not just the feature.

@@ -2849,8 +2849,14 @@ class GameRunner:
             if instance.goto_room_target:
                 goto_target = instance.goto_room_target
                 instance.goto_room_target = None
+                # Only the goto_room action's explicit `transition` param
+                # sets this — direct self.goto_room_target assignment (the
+                # pattern execute_code samples like match3_3 use) and
+                # delay_action leave it unset, which is fine: 'none' is the
+                # existing instant-switch behaviour, unchanged.
+                transition = getattr(instance, 'goto_room_transition', 'none')
                 logger.info(f"🚪 Going to room: {goto_target}")
-                self.change_room(goto_target)
+                self.change_room(goto_target, transition=transition)
                 return
 
             # Apply gravity (instance.gravity is always defined, default 0)
@@ -4393,9 +4399,66 @@ class GameRunner:
             if instance.object_data and "events" in instance.object_data:
                 instance.action_executor.execute_event(instance, "game_start", instance.object_data["events"])
 
-    def change_room(self, room_name: str):
-        """Change to a different room"""
+    # Frames spent fading each direction (out then in) — half a second each
+    # way at a 30fps room_speed, scaled by the room's actual speed so it
+    # reads the same regardless of project fps.
+    _FADE_TRANSITION_SECONDS = 0.25
+
+    def _fade_overlay(self, base_frame: "pygame.Surface", fade_in: bool):
+        """Blocking sub-loop: replay base_frame under a black overlay whose
+        alpha ramps 255->0 (fade_in) or 0->255 (fade out) over
+        _FADE_TRANSITION_SECONDS. Mirrors show_message_dialog's existing
+        "own local event/render loop" pattern — game logic is frozen for
+        these frames (deliberately: a transition is a pause, not extra
+        simulated time), only the overlay's alpha advances.
+
+        Safe to call with self.screen is None (headless/test contexts):
+        no-ops immediately, matching every other rendering path's guard.
+        """
+        if not self.screen:
+            return
+        frame_count = max(1, int(self.fps * self._FADE_TRANSITION_SECONDS))
+        overlay = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
+        clock = pygame.time.Clock()
+        for step in range(frame_count):
+            # Let the OS know we're alive; a closed window mid-transition
+            # must not hang the process waiting out the fade.
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    return
+            progress = (step + 1) / frame_count
+            # fade_in: 255 (opaque black, hiding the new room) -> 0 (fully
+            # visible). fade_out (the old room): the reverse, 0 -> 255.
+            alpha = int(255 * ((1 - progress) if fade_in else progress))
+            alpha = max(0, min(255, alpha))
+            self.screen.blit(base_frame, (0, 0))
+            overlay.fill((0, 0, 0, alpha))
+            self.screen.blit(overlay, (0, 0))
+            pygame.display.flip()
+            clock.tick(self.fps)
+
+    def change_room(self, room_name: str, transition: str = 'none'):
+        """Change to a different room.
+
+        transition: 'none' (default, instant — unchanged behaviour) or
+        'fade' (fade to black, switch, fade back in). Any other value is
+        treated as 'none' — matching the runtime's general "unknown ->
+        no-op" convention rather than raising. Only 'fade' is implemented;
+        see TODO.md's "Room transition effects" entry.
+        """
         if room_name in self.rooms:
+            do_fade = transition == 'fade' and self.screen is not None
+            if do_fade:
+                # Snapshot whatever's already on screen from the last
+                # rendered frame — no extra render() call needed (and no
+                # risk of double-firing draw_gui/update_views the way a
+                # full render() pass would — see show_message_dialog's
+                # matching one-off self.current_room.render() precedent
+                # used below for the fade-in snapshot).
+                old_frame = self.screen.copy()
+                self._fade_overlay(old_frame, fade_in=False)
+
             # Collect persistent instances from the current room before leaving
             persistent_instances = []
             if self.current_room:
@@ -4469,6 +4532,14 @@ class GameRunner:
             # This prevents immediate collision triggers when player spawns on a portal
             self._room_transition_grace_frames = 1
 
+            if do_fade:
+                # One-off snapshot render of the new room (create/room_start
+                # already ran above, so this shows real starting state, not
+                # a blank frame) — same "render once outside the main loop
+                # to capture a frame" precedent show_message_dialog uses.
+                self.current_room.render(self.screen)
+                new_frame = self.screen.copy()
+                self._fade_overlay(new_frame, fade_in=True)
 
     def get_caption_text(self, key: str) -> str:
         """Get translated caption text for a key (score, lives, health, room)"""
