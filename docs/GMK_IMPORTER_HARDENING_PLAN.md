@@ -226,15 +226,29 @@ draw events without matching UI metadata).
       real list). Still open if someone wants to build a `multi_choice`
       param_type; the `ast.literal_eval` runtime fallback means it isn't
       urgent.
-- [ ] Full re-validation of `treasure`/`maze_4` beyond "imports without
-      unmapped-action stubs": no visual playtest done, no `test_game`
-      smoke run, no check of whether every referenced sprite/sound file
-      actually exists on disk with the expected filename, no check of
-      room-level content (instance placement, tile layers) for
-      corruption. **This is the actual remaining blocker before
-      re-adding either sample to the bundled Welcome-tab list** — the
-      clean unmapped-action result is a strong positive signal but not
-      sufficient proof of correctness by itself.
+- [x] Asset-reference integrity check for `treasure`/`maze_4` — **DONE
+      2026-07-16.** Every `object.sprite`, room-instance `object_name`,
+      and room/layer `background_image` reference resolves to a real
+      asset name in both samples (zero dangling references across all
+      175+ room instances checked); every sprite/sound/background's
+      `file_path` also resolves to a real file on disk. This is the
+      "silently-renamed sprite/object references on case/whitespace
+      conflicts" category `TODO.md` flagged as a plausible failure mode —
+      checked directly rather than inferred from the unmapped-action
+      result, since a reference can be well-formed but still point at
+      nothing. Pinned by
+      `tests/test_gmk_treasure_maze4_import.py::test_no_dangling_asset_references`
+      (both samples).
+- [ ] Remaining full re-validation of `treasure`/`maze_4`: no visual
+      playtest done, no `test_game` smoke run, no check of room-level
+      content (instance placement, tile layers) for corruption beyond the
+      reference-integrity check above. **This is the actual remaining
+      blocker before re-adding either sample to the bundled Welcome-tab
+      list** — clean unmapped-action + no-dangling-references results are
+      a strong positive signal but not sufficient proof of correctness by
+      themselves (e.g. an instance could be placed at the wrong
+      coordinates, or a whole room's tile layer could be silently
+      dropped, without tripping either check).
 - [ ] Draw events (`draw_self`, `draw_sprite_ext`, etc.) without matching
       UI metadata in `treasure`/`maze_4` — not checked this pass; cross
       reference against the "UI metadata coverage for runtime actions"
