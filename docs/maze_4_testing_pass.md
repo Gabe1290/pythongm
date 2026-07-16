@@ -64,6 +64,22 @@ Legend: `[x]` pass · `[!]` works with caveat (note it) · `[-]` not testable.
 
 ## Notes
 
+- **Finding #11 (2026-07-16, FIXED — REGRESSION I introduced in f1dcc86):**
+  reordering rooms in the IDE had no effect at Test Game — the original
+  imported order still played. Root cause: finding #7's fix baked a
+  `room_order` key into project.json, but pygm2's room order IS the rooms-dict
+  key order (the IDE reorders by moving keys and never writes `room_order`),
+  while the runtime's `find_starting_room`/`get_room_list` PREFER `room_order`
+  when present. So the frozen key shadowed every in-IDE reorder. Reverted the
+  emission (dict order is the single source of truth; the importer already
+  builds the dict in play order). **The user's build had its `room_order`
+  stripped in place** — their saved reorder (room_start → room8 → …) now
+  drives play order. **RELOAD the project in the IDE** (close + reopen) before
+  the next Test Game so the in-memory copy drops the stale key too; after that,
+  reorder/save/test all honor dict order. Regression:
+  `tests/test_draw_relative_and_room_order.py` (asserts the dict is in play
+  order AND that no `room_order` key is emitted).
+
 - **Finding #5 (2026-07-16, FIXED same day — runtime, severe):** "obj_person
   starts moving right, cannot stop." Root cause was question-CHAIN scoping in
   both action-list executors: a false question skipped exactly one action, but

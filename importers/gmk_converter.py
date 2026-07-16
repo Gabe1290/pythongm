@@ -176,12 +176,15 @@ class GmkConverter:
             },
         }
 
-        # Explicit play order (GM's room execution order, parsed from the
-        # .gmk). The rooms dict above is already built in this order, but the
-        # runtime's find_starting_room/next_room prefer an explicit
-        # room_order — relying on JSON key order is fragile (any tool that
-        # re-sorts keys would silently scramble level progression).
-        project_data["room_order"] = list(project_data["assets"]["rooms"].keys())
+        # NOTE: do NOT emit a `room_order` key. Room play order in pygm2 is the
+        # rooms-dict key order (asset_manager: "for rooms, dict order IS the
+        # room order"), and _convert_rooms already builds that dict in the
+        # .gmk's execution order. The IDE reorders rooms by moving dict keys
+        # and never writes room_order, while the runtime's find_starting_room
+        # PREFERS room_order when present — so baking a frozen room_order here
+        # made the runtime ignore any reorder the user did in the IDE
+        # (they'd change the level order, save, and still get the imported
+        # order at Test Game). Single source of truth = dict order.
 
         return project_data
 
