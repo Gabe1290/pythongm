@@ -108,18 +108,29 @@ edge cases (bad action parameters, sprite issues, half-converted
 events) that the IDE could only partially round-trip them. Both can
 be reintroduced by running the regeneration steps below against the
 original `.gmk` source once the importer is hardened against those
-cases — see `TODO.md` ("GMK importer hardening") for the
-investigation recipe.
+cases — see `TODO.md` ("GMK importer hardening") and
+`docs/GMK_IMPORTER_HARDENING_PLAN.md` for the investigation recipe and
+current status. **2026-07-16 update:** re-importing both fresh
+(`samples/treasure.gmk`, `samples/maze_4.gmk`, both now tracked again —
+see below) produces zero unmapped-action stubs and no obvious parameter
+mismatches, a strong sign the importer has closed most of the gaps since
+these were dropped — but neither has been fully re-validated (visual
+playtest, full test-game smoke run) or re-added to the bundled set yet.
 
 ## Regenerating from `.gmk` originals
 
 The folders above were produced by running `importers/gmk_importer.py`
-against a set of GameMaker 8.x source files (`maze_1.gmk` etc.). Most of
-the `.gmk` sources **are** committed alongside this README
-(`samples/maze_3.gmk` and `samples/plateforme_1..5.gmk`) — the global
-`*.gmk` ignore rule has a `!samples/*.gmk` exception so they stay tracked
-and the import is auditable. The `maze_1.gmk` / `maze_2.gmk` sources are
-not currently committed. If the conversion ever needs to be redone:
+against a set of GameMaker 8.x source files (`maze_1.gmk` etc.). The
+`.gmk` sources **are** committed alongside this README
+(`samples/maze_1.gmk`, `maze_2.gmk`, `maze_3.gmk`, `maze_4.gmk`,
+`treasure.gmk`, and `plateforme_1..5.gmk`) — the global `*.gmk` ignore
+rule has a `!samples/*.gmk` exception so they stay tracked and every
+import is auditable. (`maze_1.gmk`/`maze_2.gmk`/`maze_4.gmk`/
+`treasure.gmk` were untracked for a while after native project folders
+became the shipping format in commit `f8a0eb7`, then recovered from that
+commit's parent and re-added 2026-07-16 for the importer-hardening work —
+they were never actually lost, just not in the working tree.) If the
+conversion ever needs to be redone:
 
 1. Place any missing `.gmk` files next to this README. Files under
    `samples/` are exempt from the global `*.gmk` ignore, so they will be
