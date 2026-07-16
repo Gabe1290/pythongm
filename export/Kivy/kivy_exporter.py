@@ -2977,6 +2977,22 @@ class GameObject(Widget):
                                    float(cmd.get('x2', 100)),
                                    room_h - float(cmd.get('y2', 100))],
                            width=1))
+        elif ctype == 'arrow':
+            # Shaft + two tip segments, pre-computed by the draw_arrow
+            # codegen (see code_generator.py) the same way the pygame
+            # runtime's execute_draw_arrow_action pre-computes them.
+            x1 = float(cmd.get('x1', 0))
+            y1 = float(cmd.get('y1', 0))
+            x2 = float(cmd.get('x2', 100))
+            y2 = float(cmd.get('y2', 100))
+            t1x = float(cmd.get('tip1_x', x2))
+            t1y = float(cmd.get('tip1_y', y2))
+            t2x = float(cmd.get('tip2_x', x2))
+            t2y = float(cmd.get('tip2_y', y2))
+            group.add(Color(*color))
+            group.add(Line(points=[x1, room_h - y1, x2, room_h - y2], width=1))
+            group.add(Line(points=[x2, room_h - y2, t1x, room_h - t1y], width=1))
+            group.add(Line(points=[x2, room_h - y2, t2x, room_h - t2y], width=1))
         elif ctype in ('text', 'scaled_text'):
             label = CoreLabel(text=str(cmd.get('text', '')), font_size=18)
             label.refresh()
@@ -3477,7 +3493,7 @@ class {class_name}(GameObject):
             code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")
 
             if actions:
-                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map)
+                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map)
                 for action in actions:
                     if isinstance(action, dict):
                         generator.process_action(action, 'keyboard')
@@ -3667,7 +3683,7 @@ class {class_name}(GameObject):
 
             if actions:
                 # Generate action code for this key press
-                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map)
+                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map)
                 for action in actions:
                     if isinstance(action, dict):
                         generator.process_action(action, 'keyboard_press')
@@ -3710,7 +3726,7 @@ class {class_name}(GameObject):
             code_lines.append(f"        {if_keyword} key == {key_code}:  # {key_name}")
 
             if actions:
-                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map)
+                generator = ActionCodeGenerator(base_indent=3, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map)
                 for action in actions:
                     if isinstance(action, dict):
                         generator.process_action(action, 'keyboard_release')
@@ -3795,7 +3811,7 @@ class {class_name}(GameObject):
         logger.debug(f"        _generate_action_code: {len(actions)} actions for event {event_type}")
 
         # Use the new ActionCodeGenerator for proper block/indentation handling
-        generator = ActionCodeGenerator(base_indent=2, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map)
+        generator = ActionCodeGenerator(base_indent=2, sprite_paths=self.sprite_path_map, sound_paths=self.sound_path_map, background_paths=self.background_path_map)
 
         for i, action in enumerate(actions):
             logger.debug(f"          Action {i}: {type(action).__name__}")

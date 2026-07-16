@@ -433,17 +433,43 @@ Other:
     `tests/test_draw_queue_background_health_bar.py` (includes a headless
     stub-kivy run that actually renders both and checks the resulting
     Rectangle sizes, not just source-level checks).
-  - **New finding, not fixed:** the gap was narrower than it looked —
-    structured `draw_rectangle`/`circle`/`ellipse`/`line`/`arrow`/
-    `variable`/`health_bar`/`background` *actions* (as opposed to
-    hand-authored `execute_code` draw-queue dicts, which is what the fix
-    above and every bundled sample actually use) have no codegen case in
-    `export/Kivy/code_generator.py` at all — only `draw_score`/`text`/
-    `lives`/`sprite` do. A project built with the visual action editor
-    using e.g. `draw_rectangle` would silently no-op on Kivy export. Same
-    gap confirmed on HTML5 (no matching `case` in `engine.js`'s action
-    switch either). Not fixed here — 8 action types, a separate task from
-    the draw-queue *rendering* fix above.
+  - ~~New finding, not fixed: structured `draw_rectangle`/`circle`/
+    `ellipse`/`line`/`arrow`/`variable`/`health_bar`/`background`
+    *actions* have no codegen case~~ **DONE 2026-07-16.** All 8 action
+    types now have a `process_action` branch in
+    `export/Kivy/code_generator.py`, each emitting a
+    `self._draw_queue.append(dict(type=..., ...))` matching the runtime's
+    `execute_draw_*_action` schemas exactly: rectangle/ellipse/circle/line
+    are direct param translations; `draw_arrow` precomputes the two tip
+    segments at run time via inlined `atan2`/`cos`/`sin` (mirroring
+    `execute_draw_arrow_action`'s geometry, since the draw-queue renderer
+    only knows how to draw pre-computed line segments, not "arrows");
+    `draw_variable` routes its expression through the existing
+    `_resolve_instance_names` global-name resolver (`score` →
+    `get_score()`, etc.); `draw_health_bar` reads the app's live
+    `get_game_app().health`; `draw_background` resolves through a new
+    `background_paths` map threaded into `ActionCodeGenerator.__init__`
+    and all 4 export call sites, emitting an honest `pass  # ... not
+    found in export` comment for an unresolvable name instead of a silent
+    no-op. **Surfaced a genuine desktop-runtime bug along the way:**
+    `runtime/game_runner.py`'s `_DRAW_HANDLERS` dispatch table had no
+    `'arrow'` entry at all, so `draw_arrow` silently drew nothing even on
+    the pygame desktop runtime, not just on export — fixed by adding the
+    entry plus a new `_draw_arrow` method (shaft + two tip line segments).
+    HTML5 got the matching 8 `case` blocks in `engine.js`'s
+    `executeAction` switch (reusing `parseNumParam` for numeric params and
+    `gmExpressionValue` for `draw_variable`'s expression, matching the
+    existing `draw_text`/`draw_score` cases' conventions) plus a new
+    `'arrow'` case in `renderDrawCommands` (the draw-queue *renderer*, a
+    separate switch from `executeAction`) to actually paint the segments
+    on the canvas. Regression: `tests/test_draw_action_codegen.py` (25
+    tests) — Kivy side calls `ActionCodeGenerator.process_action` directly
+    and `compile()`-checks the emitted source (matching
+    `test_kivy_more_actions_export.py`'s established pattern); HTML5 side
+    is static regex/substring assertions against `engine.js` source
+    (Node isn't a CI dep, matching `test_draw_queue_background_health_bar.py`'s
+    pattern); the desktop `_draw_arrow` fix gets both a `_DRAW_HANDLERS`
+    lookup test and a real-pixel render test.
   - Right/middle mouse events have no touch equivalent and stay unexported.
   - **`execute_code` env is thinner than the IDE's.** Code is inlined
     verbatim into the generated method (good), but the IDE's exec
@@ -477,9 +503,11 @@ Other:
     **DONE 2026-07-15** — `case 'background'` (reuses the `game.sprites`
     map backgrounds already share with sprites, per `encode_sprites`) and
     `case 'health_bar'` added to `engine.js`. All four draw-queue types
-    now implemented on both HTML5 and Kivy — see the matching Kivy entry
-    above, including the new "structured draw_* actions have no codegen
-    on either target" finding.
+    now implemented on both HTML5 and Kivy.
+  - ~~structured draw_* actions have no codegen on either target~~
+    **DONE 2026-07-16** — see the matching Kivy entry above; `engine.js`'s
+    `executeAction` switch gained the same 8 `case` blocks and
+    `renderDrawCommands` gained an `'arrow'` case.
   - Right/middle mouse events are not implemented.
 
 - **Kivy export — long-tail action coverage** —

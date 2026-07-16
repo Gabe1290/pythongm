@@ -136,7 +136,7 @@ class ActionCodeGenerator:
     start_block, and else_action need to properly indent subsequent actions.
     """
 
-    def __init__(self, base_indent=2, sprite_paths=None, sound_paths=None):
+    def __init__(self, base_indent=2, sprite_paths=None, sound_paths=None, background_paths=None):
         """
         Initialize the code generator.
 
@@ -148,10 +148,14 @@ class ActionCodeGenerator:
                 no-op comment rather than a broken path).
             sound_paths: Optional {sound_name: 'assets/sounds/<file>'} map so the
                 play_sound action can resolve a sound name to its exported path.
+            background_paths: Optional {background_name: 'assets/images/<file>'}
+                map so the draw_background action can resolve a background name
+                to its exported path.
         """
         self.base_indent = base_indent
         self.sprite_paths = sprite_paths or {}
         self.sound_paths = sound_paths or {}
+        self.background_paths = background_paths or {}
         self.indent_level = 0  # Additional indent beyond base
         self.lines = []
         self.block_stack = []  # Track open blocks for proper nesting
@@ -981,6 +985,98 @@ if dist > 0:
             y = _num_code(params.get('y', 0))
             return (f"self._draw_queue.append(dict(type='sprite', "
                     f"sprite_path={path!r}, x={x}, y={y}))")
+
+        elif action_type in ('draw_rectangle', 'draw_ellipse'):
+            # Same shape for both — only the draw-queue 'type' differs,
+            # mirroring runtime/action_executor.py's execute_draw_rectangle_
+            # /ellipse_action (which are themselves near-identical).
+            dq_type = 'rectangle' if action_type == 'draw_rectangle' else 'ellipse'
+            x1 = _num_code(params.get('x1', 0))
+            y1 = _num_code(params.get('y1', 0))
+            x2 = _num_code(params.get('x2', 100))
+            y2 = _num_code(params.get('y2', 100))
+            filled = params.get('filled', True)
+            filled = filled if isinstance(filled, bool) else str(filled).lower() in ('true', '1', 'yes')
+            return (f"self._draw_queue.append(dict(type={dq_type!r}, "
+                    f"x1={x1}, y1={y1}, x2={x2}, y2={y2}, filled={filled}, "
+                    "color=getattr(self, 'draw_color', None) or (0, 0, 0)))")
+
+        elif action_type == 'draw_circle':
+            x = _num_code(params.get('x', 0))
+            y = _num_code(params.get('y', 0))
+            radius = _num_code(params.get('radius', 50))
+            filled = params.get('filled', True)
+            filled = filled if isinstance(filled, bool) else str(filled).lower() in ('true', '1', 'yes')
+            return (f"self._draw_queue.append(dict(type='circle', "
+                    f"x={x}, y={y}, radius={radius}, filled={filled}, "
+                    "color=getattr(self, 'draw_color', None) or (0, 0, 0)))")
+
+        elif action_type == 'draw_line':
+            x1 = _num_code(params.get('x1', 0))
+            y1 = _num_code(params.get('y1', 0))
+            x2 = _num_code(params.get('x2', 100))
+            y2 = _num_code(params.get('y2', 100))
+            return (f"self._draw_queue.append(dict(type='line', "
+                    f"x1={x1}, y1={y1}, x2={x2}, y2={y2}, "
+                    "color=getattr(self, 'draw_color', None) or (0, 0, 0)))")
+
+        elif action_type == 'draw_arrow':
+            # tip1/tip2 are computed once at RUN time (positions may be
+            # expressions), mirroring execute_draw_arrow_action's
+            # atan2/cos/sin geometry exactly — the draw-queue renderer
+            # (both the pygame runtime and _dq_render_cmd) just draws the
+            # three pre-computed segments, it doesn't know about "arrows".
+            x1 = _num_code(params.get('x1', 0))
+            y1 = _num_code(params.get('y1', 0))
+            x2 = _num_code(params.get('x2', 100))
+            y2 = _num_code(params.get('y2', 100))
+            tip_size = _num_code(params.get('tip_size', 10), 10)
+            return (
+                "import math as _m; "
+                f"_ax1, _ay1, _ax2, _ay2, _ats = {x1}, {y1}, {x2}, {y2}, {tip_size}; "
+                "_aang = _m.atan2(_ay2 - _ay1, _ax2 - _ax1); "
+                "_at1x = _ax2 - _ats * _m.cos(_aang - _m.pi / 6); "
+                "_at1y = _ay2 - _ats * _m.sin(_aang - _m.pi / 6); "
+                "_at2x = _ax2 - _ats * _m.cos(_aang + _m.pi / 6); "
+                "_at2y = _ay2 - _ats * _m.sin(_aang + _m.pi / 6); "
+                "self._draw_queue.append(dict(type='arrow', x1=_ax1, y1=_ay1, "
+                "x2=_ax2, y2=_ay2, tip1_x=_at1x, tip1_y=_at1y, tip2_x=_at2x, "
+                "tip2_y=_at2y, color=getattr(self, 'draw_color', None) or (0, 0, 0)))"
+            )
+
+        elif action_type == 'draw_variable':
+            x = _num_code(params.get('x', 0))
+            y = _num_code(params.get('y', 0))
+            var_name = str(params.get('variable', '') or '')
+            expr = _resolve_instance_names(var_name) if var_name else "''"
+            return (f"self._draw_queue.append(dict(type='text', text=str({expr}), "
+                    f"x={x}, y={y}, "
+                    "color=getattr(self, 'draw_color', None) or (0, 0, 0)))")
+
+        elif action_type == 'draw_health_bar':
+            x1 = _num_code(params.get('x1', 0))
+            y1 = _num_code(params.get('y1', 0))
+            x2 = _num_code(params.get('x2', 100))
+            y2 = _num_code(params.get('y2', 20))
+            back_color = str(params.get('back_color', '#FF0000'))
+            bar_color = str(params.get('bar_color', '#00FF00'))
+            return ("from main import get_game_app as _ga; "
+                    f"self._draw_queue.append(dict(type='health_bar', "
+                    f"x1={x1}, y1={y1}, x2={x2}, y2={y2}, "
+                    f"health=(_ga().health if _ga() else 100), "
+                    f"back_color={back_color!r}, bar_color={bar_color!r}))")
+
+        elif action_type == 'draw_background':
+            bg = str(params.get('background', params.get('background_name', '')) or '')
+            path = self.background_paths.get(bg, '')
+            if not path:
+                return f"pass  # draw_background: background {bg!r} not found in export"
+            x = _num_code(params.get('x', 0))
+            y = _num_code(params.get('y', 0))
+            tiled = params.get('tiled', False)
+            tiled = tiled if isinstance(tiled, bool) else str(tiled).lower() in ('true', '1', 'yes')
+            return (f"self._draw_queue.append(dict(type='background', "
+                    f"background_path={path!r}, x={x}, y={y}, tiled={tiled}))")
 
         elif action_type == 'set_draw_color':
             color = str(params.get('color', '#000000'))

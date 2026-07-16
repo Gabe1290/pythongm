@@ -421,6 +421,29 @@ function renderDrawCommands(ctx, cmds, game) {
                 ctx.stroke();
                 break;
             }
+            case 'arrow': {
+                // Shaft + two tip segments, pre-computed by the draw_arrow
+                // executeAction handler the same way the pygame runtime's
+                // execute_draw_arrow_action pre-computes them.
+                const x1 = cmd.x1 || 0, y1 = cmd.y1 || 0;
+                const x2 = cmd.x2 !== undefined ? cmd.x2 : 100;
+                const y2 = cmd.y2 !== undefined ? cmd.y2 : 100;
+                const t1x = cmd.tip1_x !== undefined ? cmd.tip1_x : x2;
+                const t1y = cmd.tip1_y !== undefined ? cmd.tip1_y : y2;
+                const t2x = cmd.tip2_x !== undefined ? cmd.tip2_x : x2;
+                const t2y = cmd.tip2_y !== undefined ? cmd.tip2_y : y2;
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.moveTo(x2, y2);
+                ctx.lineTo(t1x, t1y);
+                ctx.moveTo(x2, y2);
+                ctx.lineTo(t2x, t2y);
+                ctx.stroke();
+                break;
+            }
             case 'text':
             case 'scaled_text': {
                 ctx.fillStyle = color;
@@ -2223,6 +2246,101 @@ class GameObject {
                     sprite_name: params.sprite || params.sprite_name || '',
                     x: parseNumParam(params.x, this, this.x),
                     y: parseNumParam(params.y, this, this.y),
+                });
+                break;
+
+            case 'draw_rectangle':
+            case 'draw_ellipse':
+                this._draw_queue.push({
+                    type: actionType === 'draw_rectangle' ? 'rectangle' : 'ellipse',
+                    x1: parseNumParam(params.x1, this, 0),
+                    y1: parseNumParam(params.y1, this, 0),
+                    x2: parseNumParam(params.x2, this, 100),
+                    y2: parseNumParam(params.y2, this, 100),
+                    filled: params.filled !== false,
+                    color: this.draw_color || game.draw_color || [0, 0, 0],
+                });
+                break;
+
+            case 'draw_circle':
+                this._draw_queue.push({
+                    type: 'circle',
+                    x: parseNumParam(params.x, this, 0),
+                    y: parseNumParam(params.y, this, 0),
+                    radius: parseNumParam(params.radius, this, 50),
+                    filled: params.filled !== false,
+                    color: this.draw_color || game.draw_color || [0, 0, 0],
+                });
+                break;
+
+            case 'draw_line':
+                this._draw_queue.push({
+                    type: 'line',
+                    x1: parseNumParam(params.x1, this, 0),
+                    y1: parseNumParam(params.y1, this, 0),
+                    x2: parseNumParam(params.x2, this, 100),
+                    y2: parseNumParam(params.y2, this, 100),
+                    color: this.draw_color || game.draw_color || [0, 0, 0],
+                });
+                break;
+
+            case 'draw_arrow': {
+                // Pre-compute the tip segments once, mirroring the pygame
+                // runtime's execute_draw_arrow_action — the draw-queue
+                // renderer just draws three lines, it has no arrow concept.
+                const ax1 = parseNumParam(params.x1, this, 0);
+                const ay1 = parseNumParam(params.y1, this, 0);
+                const ax2 = parseNumParam(params.x2, this, 100);
+                const ay2 = parseNumParam(params.y2, this, 100);
+                const ats = parseNumParam(params.tip_size, this, 10);
+                const aang = Math.atan2(ay2 - ay1, ax2 - ax1);
+                this._draw_queue.push({
+                    type: 'arrow',
+                    x1: ax1, y1: ay1, x2: ax2, y2: ay2,
+                    tip1_x: ax2 - ats * Math.cos(aang - Math.PI / 6),
+                    tip1_y: ay2 - ats * Math.sin(aang - Math.PI / 6),
+                    tip2_x: ax2 - ats * Math.cos(aang + Math.PI / 6),
+                    tip2_y: ay2 - ats * Math.sin(aang + Math.PI / 6),
+                    color: this.draw_color || game.draw_color || [0, 0, 0],
+                });
+                break;
+            }
+
+            case 'draw_variable': {
+                const value = gmExpressionValue(params.variable, this, game);
+                this._draw_queue.push({
+                    type: 'text',
+                    text: String(value !== undefined ? value : ''),
+                    x: parseNumParam(params.x, this, 0),
+                    y: parseNumParam(params.y, this, 0),
+                    color: this.draw_color || game.draw_color || [0, 0, 0],
+                });
+                break;
+            }
+
+            case 'draw_health_bar':
+                this._draw_queue.push({
+                    type: 'health_bar',
+                    x1: parseNumParam(params.x1, this, 0),
+                    y1: parseNumParam(params.y1, this, 0),
+                    x2: parseNumParam(params.x2, this, 100),
+                    y2: parseNumParam(params.y2, this, 20),
+                    health: game ? game.health : 100,
+                    back_color: params.back_color || '#FF0000',
+                    bar_color: params.bar_color || '#00FF00',
+                });
+                break;
+
+            case 'draw_background':
+                // Backgrounds are embedded into the same game.sprites map as
+                // sprites by the exporter's encode_sprites — see the
+                // matching 'background' case in renderDrawCommands.
+                this._draw_queue.push({
+                    type: 'background',
+                    background_name: params.background || params.background_name || '',
+                    x: parseNumParam(params.x, this, 0),
+                    y: parseNumParam(params.y, this, 0),
+                    tiled: params.tiled === true || params.tiled === 'true',
                 });
                 break;
 
