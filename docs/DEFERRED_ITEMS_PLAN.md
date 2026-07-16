@@ -60,11 +60,12 @@ discipline as the match3_2/3 and views sessions:
 
 ## Tier 2 — moderate effort, clear scope, one design decision each
 
-5. **Find / Find and Replace** — scope decision needed: code editor only
-   first (cheapest, matches the removed Ctrl+F/Ctrl+H stub most
-   directly), or project-wide (asset names, identifiers) as a stretch.
-   Recommend code-editor-only for a first PR, project-wide as a follow-up
-   entry.
+5. ~~**Find / Find and Replace**~~ **DONE 2026-07-16** — code-editor-only,
+   as recommended below. `dialogs/find_replace_dialog.py` +
+   `core/ide_window.py`'s `find`/`find_replace`/`_show_find_dialog`/
+   `_find_target_text_edit`. Project-wide search (asset names,
+   identifiers) and the `execute_code` action dialog's separate `QTextEdit`
+   remain open as a follow-up — see `TODO.md`'s entry.
 6. **Background auto-scroll on `set_background`** — flagged in `TODO.md`
    as adjacent to the view/camera system, which is now fully built
    (this session). Worth **re-scoping this item now** rather than

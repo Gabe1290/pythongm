@@ -30,14 +30,31 @@ it before picking an item to work on.
   (`test_export_dialog_routing/options.py`,
   `test_audit_project_dialogs.py`, `test_desktop_export_host_routing.py`).
 
-### Find / Find and Replace
-- Was: `Edit → Find...` (Ctrl+F) and `Edit → Find and Replace...` (Ctrl+H).
-- Scope: text search across the code editor, room editor scripts, and event
-  scripts. Probably also useful across the whole project (asset names,
-  identifiers in events).
-- Notes: removed the menu entries and the `find()` / `find_replace()` stubs in
-  `core/ide_window.py`. When implementing, restore the menu wiring with the
-  same Ctrl+F / Ctrl+H shortcuts.
+### ~~Find / Find and Replace~~ (DONE 2026-07-16, code editor scope)
+- Done (deferred-items plan tier 2, item 5): `Edit → Find...` (Ctrl+F) and
+  `Edit → Find and Replace...` (Ctrl+H) restored, wired exactly where the
+  rc.11 cleanup (`77e9dbf`) removed them. New `dialogs/find_replace_dialog.py`
+  (`FindReplaceDialog`) is a non-modal find/replace bar — case-sensitive and
+  whole-word toggles, wraparound Find Next/Previous, Replace (only acts on a
+  selection that's a live search match, then advances), Replace All (uses the
+  standard Qt `while edit.find(text): cursor = edit.textCursor();
+  cursor.insertText(replacement)` idiom, which can't loop forever even when
+  the replacement text contains the search text, e.g. `cat` → `cats cat`).
+  `core/ide_window.py`'s new `_find_target_text_edit`/`_show_find_dialog`
+  reuse the existing `_active_editor()` dispatch (same one Undo/Redo/Cut/
+  Copy/Paste/Duplicate already use) and reuse a single dialog instance
+  across repeated Ctrl+F presses, rebinding its target each time. Regression:
+  `tests/test_find_replace.py` (20 tests) — the dialog's search/replace logic
+  against a real `QPlainTextEdit`, plus the IDE-level dispatch via the
+  established `PyGameMakerIDE.method(stub, ...)` unbound-call pattern.
+- **Scoped narrower than the original note, intentionally:** only
+  `editors/script_editor.py`'s `QPlainTextEdit` (the sole real code-editing
+  widget in the app — verified nothing else uses `QPlainTextEdit`) is wired
+  up. "Room editor scripts, event scripts" (the `execute_code` action's
+  `QTextEdit` inside `editors/object_editor/gm80_action_dialog.py`, a modal
+  per-action dialog, not an editor tab `_active_editor()` can see) and
+  project-wide search (asset names, identifiers) are **not** covered —
+  genuinely separate follow-up work, not silently dropped scope.
 
 ### Asset Manager
 - Was: `Tools → Asset Manager...`.
