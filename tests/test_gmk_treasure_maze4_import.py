@@ -14,9 +14,10 @@ dropped in the first place.
 
 This is NOT a claim that either sample is fully correct or ready to
 reintroduce -- only that the importer no longer falls through to unmapped
-stubs for anything either project's action data touches. Full
-re-validation (visual playtest, a real test-game run) is still open, per
-the plan doc.
+stubs, and every object.sprite / room-instance.object / background_image
+reference actually resolves to a real asset, for anything either
+project's data touches. Full re-validation (visual playtest, a real
+test-game run) is still open, per the plan doc.
 """
 import json
 import sys
@@ -68,6 +69,44 @@ def _no_unmapped_actions(out_dir):
     return unmapped
 
 
+def _dangling_asset_references(out_dir):
+    """Every object.sprite / room-instance.object_name / room
+    background_image reference must resolve to a real asset name --
+    catches the "silently-renamed sprite/object references on case or
+    whitespace conflicts" category TODO.md's GMK hardening notes flag as
+    a plausible importer failure mode, distinct from the unmapped-action
+    check above (a reference can be present and well-formed but still
+    point at nothing)."""
+    project = json.loads((out_dir / "project.json").read_text(encoding="utf-8"))
+    assets = project["assets"]
+    object_names = set(assets.get("objects", {}).keys())
+    sprite_names = set(assets.get("sprites", {}).keys())
+    background_names = set(assets.get("backgrounds", {}).keys())
+
+    dangling = []
+    for obj_name, obj_data in assets.get("objects", {}).items():
+        sprite = obj_data.get("sprite")
+        if sprite and sprite != "<self>" and sprite not in sprite_names:
+            dangling.append(("object.sprite", obj_name, sprite))
+
+    for room_name, room_data in assets.get("rooms", {}).items():
+        external = room_data.get("_external_file")
+        full_room = json.loads((out_dir / external).read_text(encoding="utf-8")) \
+            if external else room_data
+        for inst in full_room.get("instances", []):
+            obj_ref = inst.get("object_name") or inst.get("object")
+            if obj_ref and obj_ref not in object_names:
+                dangling.append(("room.instance.object", room_name, obj_ref))
+        bg = full_room.get("background_image")
+        if bg and bg not in background_names:
+            dangling.append(("room.background_image", room_name, bg))
+        for layer in full_room.get("backgrounds", []):
+            layer_bg = layer.get("background_image")
+            if layer_bg and layer_bg not in background_names:
+                dangling.append(("room.backgrounds[].background_image", room_name, layer_bg))
+    return dangling
+
+
 class TestTreasureImport:
     def test_imports_without_raising(self, tmp_path):
         _import("treasure.gmk", tmp_path)
@@ -97,6 +136,10 @@ class TestTreasureImport:
         assert script_calls
         assert all(a["parameters"].get("script") == "adapt_direction" for a in script_calls)
 
+    def test_no_dangling_asset_references(self, tmp_path):
+        out_dir = _import("treasure.gmk", tmp_path)
+        assert _dangling_asset_references(out_dir) == []
+
 
 class TestMaze4Import:
     def test_imports_without_raising(self, tmp_path):
@@ -114,3 +157,7 @@ class TestMaze4Import:
         assert len(assets["rooms"]) == 21
         assert len(assets["sprites"]) == 24
         assert len(assets["sounds"]) == 10
+
+    def test_no_dangling_asset_references(self, tmp_path):
+        out_dir = _import("maze_4.gmk", tmp_path)
+        assert _dangling_asset_references(out_dir) == []
