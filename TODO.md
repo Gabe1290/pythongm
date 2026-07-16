@@ -74,16 +74,43 @@ it before picking an item to work on.
 - Notes: removed the menu entry and the `clean_project()` stub in
   `core/ide_window.py`.
 
-### Standalone executable build (Build Game / Build and Run)
-- Was: `Build → Build Game...` (F7) and `Build → Build and Run` (F8).
-- Scope: package the project as a standalone runnable artifact — Windows
-  `.exe`, Linux binary, macOS `.app`. Android `.apk` is handled separately via
-  the Kivy export path.
-- Current workaround: `Build → Test Game` (F5) runs from source; `Build →
-  Export Game...` produces an HTML5 build.
-- Notes: removed the menu entries, the `build_game()` and `build_and_run()`
-  stubs, and the `build_game_action` / `build_and_run_action` enable/disable
-  references in `core/ide_window.py`.
+### ~~Standalone executable build (Build Game / Build and Run)~~ (DONE
+2026-07-16, deferred-items plan tier 2, item 7 — closes tier 2)
+- Done: `Build → Build Game...` (F7) and `Build → Build and Run` (F8)
+  restored, exactly where the rc.11 cleanup (`77e9dbf`) removed them
+  (menu entries, actions, and the `has_project` enable/disable wiring).
+  Confirmed the plan's prediction — "wiring a menu action + progress UI
+  around an existing capability, not new export infrastructure": both
+  are thin shells (`build_game`/`build_and_run` → shared `_build_desktop`)
+  around the exact same `export.registry.desktop_exporter_for_host` +
+  `_run_export_with_progress` machinery the Export Game dialog's Windows/
+  macOS/Linux entries already use — same PyInstaller-based exporter
+  classes, same progress dialog, same host-OS artifact selection (exe /
+  ELF binary / `.app`, since PyInstaller can't cross-compile). `Build and
+  Run` additionally launches the freshly-built artifact, via one new
+  optional `on_success` callback parameter added to
+  `_run_export_with_progress` (called after a successful build,
+  regardless of the "open output folder?" answer; `None` for every
+  existing caller, so no behaviour change there) — `_launch_built_game`
+  locates the artifact by re-deriving its exact filename from the same
+  `re.sub(r'[^A-Za-z0-9_]', '_', project_name)` sanitizer each exporter's
+  `_create_spec_file` already uses, rather than scanning the output
+  directory. Regression: `tests/test_build_game.py` (16 tests) — routing
+  (`_build_desktop` picks the right exporter class, threads output dir/
+  checkbox options through, no-op on no-project/cancelled-dialog),
+  `_launch_built_game`'s per-platform path construction against real
+  temp files, and a from-scratch `on_success` integration test that
+  exercises the real `_run_export_with_progress` with a fake exporter
+  (a real `QThread`-driven version would be non-deterministic in a test,
+  so `ExportThread` is swapped for a `QTimer.singleShot(0, ...)`-based
+  stand-in that preserves the real "thread starts, then exec() blocks
+  until the completion signal arrives" ordering — completing the signal
+  before `exec()` starts would hide an unshown dialog and hang the
+  subsequent `exec()` forever, a real trap worth documenting for anyone
+  else testing this method).
+- Kept out of scope, per the original note: Android `.apk` (handled
+  separately by `export_android_apk`/the Kivy export path, already a
+  dedicated Export Game dialog entry) and iOS.
 
 ### ~~Object test runner ("Play Object" button)~~ (DONE 2026-07-15)
 - Done (deferred-items plan tier 1): a "▶ Play Object" toolbar button in the

@@ -71,12 +71,11 @@ discipline as the match3_2/3 and views sessions:
    already had a working `bg_hspeed`/`bg_vspeed`-driven scroll renderer;
    `execute_set_background_action` just never wrote its `hspeed`/`vspeed`
    parameters into it. One small wiring fix — see `TODO.md`'s entry.
-7. **Standalone executable build** (Build Game / Build and Run, F7/F8) —
-   `pyinstaller` is already a project dependency (used for the desktop
-   export target per `docs/EXPORT_AUDIT_2026-07.md` / the "keep
-   pip-based deps" decision in `CLAUDE.md`), so the packaging mechanism
-   doesn't need inventing — this is wiring a menu action + progress UI
-   around an existing capability, not new export infrastructure.
+7. ~~**Standalone executable build**~~ (Build Game / Build and Run, F7/F8)
+   **DONE 2026-07-16 — Tier 2 is now fully closed.** Confirmed the
+   prediction exactly: thin shells around the existing
+   `export.registry.desktop_exporter_for_host` + `_run_export_with_progress`
+   machinery, no new export infrastructure. See `TODO.md`'s entry.
 
 ## Tier 3 — larger, needs its own finder→verify→fix pass
 
@@ -150,19 +149,22 @@ case in `renderDrawCommands`), plus a genuine desktop `_DRAW_HANDLERS`
 gap for `'arrow'` that surfaced along the way — see `TODO.md`'s matching
 entries for detail; `tests/test_draw_action_codegen.py` covers all three.
 
-**Tier 2 items 5 and 6 are also DONE (2026-07-16)** — Find/Replace
-(code-editor scope, `dialogs/find_replace_dialog.py`) and the
+**Tier 2 is now fully closed (2026-07-16, items 5-7).** Find/Replace
+(code-editor scope, `dialogs/find_replace_dialog.py`), the
 `set_background` `hspeed`/`vspeed` scroll wiring (one-line-per-axis fix in
-`execute_set_background_action`, confirmed smaller than it looked). Only
-item 7 (standalone executable build) remains in Tier 2.
+`execute_set_background_action`, confirmed smaller than it looked), and
+Build Game/Build and Run (F7/F8 — thin shells around the existing
+`export.registry.desktop_exporter_for_host`/`_run_export_with_progress`
+machinery, confirmed no new export infrastructure needed as predicted).
 
-Next: Tier 2 item 7 (Build Game / Build and Run, F7/F8 — `pyinstaller` is
-already a dependency via the desktop export target, so this is UI/menu
-wiring around an existing capability) or start scoping Tier 3 (GMK
-importer hardening is the highest-value item there, but budget it as its
-own multi-session project per the note below, not a single continuation).
-Re-verify each item's `TODO.md` claim against current code before
-starting it, per the discipline above; this tier's items proved touching
-a widely-stubbed method (item 3) has a wider blast radius than the diff
-alone suggests, so budget time for fixing incidental test breakage, not
-just the feature.
+Next: start scoping Tier 3. GMK importer hardening is the
+highest-value item there, but budget it as its own multi-session project
+per the note above (its own investigation phase, regenerate both samples
+from `.gmk` sources, catalog every parameter that didn't survive
+conversion) — not a single continuation of this session's rhythm. Kivy
+`execute_code` environment parity (item 9) needs a design decision first
+(build a `game` proxy vs. document the gap) before any code. Asset
+Manager / Clean Project (items 10-11) have no small starting subset
+documented yet — scope Asset Manager first since Clean Project's
+unused-asset detection overlaps it. Re-verify each item's `TODO.md` claim
+against current code before starting it, per the discipline above.
