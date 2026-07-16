@@ -64,17 +64,19 @@ Legend: `[x]` pass · `[!]` works with caveat (note it) · `[-]` not testable.
 
 ## Notes
 
-- **Finding #12 (room24 conveyor markers): VERIFIED WORKING — could not
-  reproduce a failure.** Drove all four marker types (move_up/down/left/right)
-  headlessly in room24 on current code: each sets the right velocity when the
-  person is on it, and a multi-frame ride carried the person smoothly up a
-  move_up column (y 384 → 192, staying aligned). The mechanic depends on the
-  question-chain scoping fix (#5, commit 06d1051) — before that, markers fired
-  unconditionally; after it, they fire correctly. **If you saw this on an
-  older build/before pulling #5, re-test now.** If it still fails, note the
-  exact spot: which marker, whether the person actually reaches it, and whether
-  it's grid-aligned when it arrives (a marker only fires when the person is on
-  the 32/8 grid — arriving off-grid from a prior slide would gate it).
+- **Finding #12 (room24 conveyor markers), SECOND PASS — FIXED (runtime,
+  GM event order):** my first "verified working" was wrong — the harness only
+  ran the step event + movement, not the FULL frame. Reproducing in the real
+  game loop showed the person frozen on the marker: obj_person's `<no key>`
+  keyboard event (align + STOP) was dispatched AFTER the step event, so every
+  no-keys frame went "step sets conveyor motion → nokey stops it", net zero.
+  GM's event order is keyboard (incl. `<no key>`) → step, so in GM the
+  conveyor's step runs LAST and wins. `GameInstance.step` now dispatches
+  nokey BEFORE the step event. Verified in the full loop: the person rides the
+  move_up column (v=-8, steady climb). All 11 bundled samples still smoke-run
+  clean (nokey order touches every game that uses it). Regression:
+  `tests/test_nokey_before_step_order.py`. **Repo runtime fix — re-run
+  `python main.py`, no re-import needed.**
 - **Finding #13 (room16 explosions don't destroy walls): FIXED (runtime).**
   `destroy_at_position` matched only instances within 1px of their ORIGIN, but
   the explosion clears a 3x3 area by firing at points 16px INSIDE the

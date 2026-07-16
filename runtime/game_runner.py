@@ -737,14 +737,14 @@ class GameInstance:
             if getattr(self, '_skip_next_step', False):
                 self._skip_next_step = False
                 return
-            # Execute regular step event
-            # NOTE: Alarms are now processed in main game loop (before step)
-            # to match GameMaker 7.0 event execution order
-            self.action_executor.execute_event(self, "step", self.object_data["events"])
 
-            # Check for "nokey" event (GameMaker compatibility)
+            # "nokey" keyboard event — BEFORE the step event, matching GM's
+            # event order (keyboard events run before step). maze_4's conveyor
+            # markers set motion from the STEP event while the person's <no
+            # key> event stops motion: with nokey after step, the stop stomped
+            # the conveyor every frame and the person froze on the marker; in
+            # GM the step runs last and the conveyor wins.
             events = self.object_data["events"]
-            # This event triggers when no keyboard keys are currently pressed
             if "keyboard" in events and "nokey" in events["keyboard"]:
                 # Check if no keys are currently pressed
                 keys_pressed = getattr(self, 'keys_pressed', set())
@@ -754,6 +754,11 @@ class GameInstance:
                     nokey_event = events["keyboard"]["nokey"]
                     if isinstance(nokey_event, dict) and "actions" in nokey_event:
                         self.action_executor.execute_action_list(self, nokey_event["actions"])
+
+            # Execute regular step event
+            # NOTE: Alarms are now processed in main game loop (before step)
+            # to match GameMaker 7.0 event execution order
+            self.action_executor.execute_event(self, "step", self.object_data["events"])
 
     def set_sprite(self, sprite: GameSprite):
         """Set the sprite for this instance"""
