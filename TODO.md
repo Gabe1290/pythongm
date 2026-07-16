@@ -217,6 +217,7 @@ it before picking an item to work on.
   names resolve to a single ActionType without duplicate entries.
 
 ### GMK importer hardening (post-1.0)
+- Working plan + checkbox registry: `docs/GMK_IMPORTER_HARDENING_PLAN.md`.
 - During rc.12 user-testing the **`treasure.gmk`** and **`maze_4.gmk`**
   samples both exposed importer issues the IDE could only partially
   round-trip — the imported projects loaded but had bad action
@@ -225,6 +226,17 @@ it before picking an item to work on.
   were dropped from the bundled set (treasure in commit d3fd71a,
   maze_4 in the commit that adds this entry); they can be
   reintroduced once the importer is hardened.
+- **2026-07-16 update:** both `.gmk` sources recovered from git history
+  (they were committed once, then untracked when native project folders
+  became the shipping format — never actually lost) and re-imported
+  fresh. Result: **zero unmapped-action stubs, expected asset counts,
+  for both** — a strong sign the importer has closed most of its gaps
+  since rc.12 (from general `GM_ACTION_MAP` work over the following
+  months, not anything specific to these two samples). Pinned by
+  `tests/test_gmk_treasure_maze4_import.py`. **Not yet re-added to the
+  bundled set** — a clean unmapped-action result isn't proof of full
+  correctness; still needs a visual playtest / test-game smoke run /
+  asset-reference check before shipping. See the plan doc for detail.
 - The earlier hypothesis that only treasure was affected (because
   it's the only one using project-level scripts) was wrong: maze_4
   has no scripts but still imports with significant gaps. The
@@ -261,29 +273,40 @@ it before picking an item to work on.
   hide the same bugs rather than truly being unaffected. Worth
   re-validating the maze_1..3 imports as part of the eventual
   hardening pass.
-- **Concrete findings from rc.12 maze_1 testing pass:**
-  - The importer mistranslated `if_previous_room_exists` into
-    `if_next_room_exists` on at least one event in maze_1
-    (obj_goal's `p` event — names were `test_previous_room` /
-    `test_next_room` before those aliases were dropped). The two
-    are opposite-direction conditional checks (`is there a next
-    room?` vs `is there a previous room?`) — swapping them
-    silently inverts a navigation guard. Worth grepping the
-    importer (`importers/gmk_mappings.py`) for places that
-    disambiguate the two GMK action codes (1,226 vs 1,227); the
-    bug is probably a constant lookup with a wrong value rather
-    than a logic error.
-  - The importer set `visible: false` on `obj_goal` even though
-    the source GameMaker project marks the object as visible.
-    Symptom: the goal sprite never renders during gameplay, so
-    the player has no visual feedback for where to go — only
-    walking into the (invisible) goal trigger advances the room.
-    Possibly the same root cause as the above (wrong constant
-    lookup in the importer's object-attributes table) or a
-    separate import-default-value bug.
+- **Concrete findings from rc.12 maze_1 testing pass — RE-VERIFIED
+  2026-07-16, both are original-game data, not importer bugs (see
+  `docs/GMK_IMPORTER_HARDENING_PLAN.md` for the raw-byte verification
+  method):**
+  - ~~The importer mistranslated `if_previous_room_exists` into
+    `if_next_room_exists`...~~ **Not an importer bug.** Dumped the raw
+    parsed `GmkAction` records directly (bypassing the converter): the
+    `.gmk` binary itself encodes `id=226` (`if_next_room_exists`) for
+    *all three* of `obj_goal`'s events, including the `p`
+    (previous-room) keypress — `GM_ACTION_MAP`'s `(1,226)`/`(1,227)`
+    entries are correct and the converter faithfully reproduces what's
+    actually in the source file. Reads as a copy-paste bug in the
+    *original GameMaker 8 game* (collision event's action block reused
+    verbatim in both keypress events). The shipped `samples/maze_1/`
+    hand patch (`if_previous_room_exists` for the `p` key) is a
+    deliberate gameplay fix layered on top of a faithful import, not a
+    fidelity restoration — if `maze_1` is ever re-imported from scratch,
+    expect the original bug back and re-apply the same hand patch.
+  - ~~The importer set `visible: false` on `obj_goal`...~~ **Not an
+    importer bug**, same verification method: `obj_wall`/`obj_person`
+    both parse as `visible=True` (so the parser's field order isn't
+    systematically wrong), but `obj_goal` genuinely parses as
+    `visible=False` from the raw byte stream, and has no `draw` event to
+    compensate. The original `.gmk` really does mark `obj_goal` invisible
+    with no manual draw workaround. Same conclusion: genuine original-game
+    bug, faithfully imported; the shipped sample's `visible: true` is a
+    deliberate fix layered on top, not fidelity restoration.
   - Bundled maze_1 was patched manually in the IDE after these
     findings; the corrected `samples/maze_1/` is back in git.
-- **Concrete findings from rc.12 maze_3 testing pass:**
+- **Concrete findings from rc.12 maze_3 testing pass — RE-VERIFIED
+  2026-07-16, all already fixed (fresh `maze_3.gmk` re-import produces
+  zero unmapped-action stubs and matches the shipped sample
+  byte-for-byte on every action checked; see
+  `docs/GMK_IMPORTER_HARDENING_PLAN.md`):**
   - `samples/maze_3/objects/monster_all.json` originally contained
     pairs of `(set_score value=hspeed relative=true)` +
     `(comment "Unmapped GM action: lib=1, id=425, kind=4")` between
@@ -293,18 +316,16 @@ it before picking an item to work on.
     `_GMK_KIND_TO_ACTION` in `importers/gmk_converter.py` so all
     action_kind values 1/2/3/4/5 produce the canonical control-flow
     action regardless of which library/id the GMK file used.
-  - The companion `set_score(value=hspeed, relative=true)` lines were
-    also a mis-import — most likely the original
-    `action_if_free_position(hspeed, vspeed, relative=true)` test
-    that gated each `exit_event`. The importer's parameter mapping
-    matched the unmapped action's first arg ("hspeed") to set_score's
-    `value` field by name. Hand-stripped from the sample for now; the
-    monster now turns +90° deterministically on every wall hit
-    instead of testing each candidate direction. Fixing properly
-    requires either reverse-engineering which (library_id, action_id)
-    that lib=1 unmapped test corresponds to and adding it to
-    `gmk_mappings.py`, or re-importing the `.gmk` with a corrected
-    converter.
+  - ~~The companion `set_score(value=hspeed, relative=true)` lines...~~
+    **Also fixed** — a fresh re-import now correctly produces
+    `check_empty(x=hspeed, y=vspeed, objects=solid, relative=true)`
+    where the old mis-import produced `set_score`, and the shipped
+    `samples/maze_3/objects/monster_all.json` already matches that fresh
+    import byte-for-byte (the "hand-stripped, deterministic +90° turn"
+    workaround described below is stale — the sample was already
+    regenerated with the real test-each-candidate-direction logic at
+    some point after this note was written, just never updated in this
+    doc).
   - `start_moving_direction`'s `directions` parameter accepts a list
     (e.g. `["down", "up"]` for a random-pick monster) but the events
     panel has no multi-select widget for list-typed action params.
@@ -317,33 +338,19 @@ it before picking an item to work on.
     `multi_choice` param_type backed by a row of QCheckBox widgets.
     Same gap likely affects other list-typed action params if any
     exist; check for other `isinstance(directions, list)` consumers.
-  - The GMK importer mis-maps `action_play_sound` (and possibly other
-    sound actions) to `set_sprite` with the sound name in the `sprite`
-    field. Affected five locations in the maze_3 samples:
-    `controller_main.json` (keyboard.r resets sprite to `sound_dead`),
-    `obj_person.json` × 3 (each collision_with_monster_* uses
-    `sound_dead`), `obj_block.json` (sound_push on push), `obj_hole.json`
-    (sound_hole on block fall-in), `obj trigger.json` (sound_explode on
-    activate). Hand-fixed the sample data to use
-    `{"action": "play_sound", "parameters": {"sound": "<name>"}}`. The
-    importer fix likely lives in `importers/gmk_mappings.py` or its
-    GM_ACTION_MAP — the GM action_play_sound action id (probably in
-    the (1, 6XX) range for "Main2" tab) isn't currently mapped, so the
-    converter must be falling through to whichever lookup matches the
-    sound resource argument and producing set_sprite by accident. Worth
-    grepping the GMK action library spec for the action id and adding
-    `(1, <id>): "play_sound"` to GM_ACTION_MAP with the right param
-    name mapping.
-  - The GMK importer was missing the `(1, 223)` mapping for
-    `action_current_room` ("restart current room"). All collision
-    handlers that ended with a room-restart imported as
-    `comment "Unmapped GM action: lib=1, id=223, kind=0,
-    func=action_current_room"` — silently dropping the restart from
-    e.g. maze_3's three obj_person death handlers, leaving the player
-    overlapping the monster after the life lost and chaining into more
-    collisions. Added `(1, 223): "restart_room"` + matching
-    `["transition"]` param row to `importers/gmk_mappings.py`. Future
-    .gmk re-imports recover the action.
+  - ~~The GMK importer mis-maps `action_play_sound`... to `set_sprite`~~
+    **Fixed — re-verified 2026-07-16.** A fresh `maze_3.gmk` re-import
+    now correctly produces `play_sound` with the right sound name at all
+    five originally-affected locations (`controller_main.json`,
+    `obj_person.json` ×3, `obj_block.json`, `obj_hole.json`,
+    `obj trigger.json`). `GM_ACTION_MAP` already has `(1, 212)` and
+    `(1, 551)` mapped to `play_sound`; whichever of those two is the
+    actual id in this file, it's covered now.
+  - ~~The GMK importer was missing the `(1, 223)` mapping...~~ **Fixed —
+    re-verified 2026-07-16.** `GM_ACTION_MAP` has `(1, 223):
+    "restart_room"` (`importers/gmk_mappings.py:379`) with the matching
+    `["transition"]` param row; a fresh re-import produces no unmapped-id-223
+    comment stubs.
 
 ---
 

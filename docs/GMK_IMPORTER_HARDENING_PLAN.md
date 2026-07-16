@@ -139,46 +139,122 @@ draw events without matching UI metadata).
   suites (`test_audit_*.py`, `test_gmk_*.py` if any already exist —
   check before inventing a new prefix).
 
-## Registry (fill in as Step 0's re-verification proceeds)
+## Registry
 
-- [ ] Recover `samples/treasure.gmk` and `samples/maze_4.gmk` from git
-      history (`git show f8a0eb7^:samples/<name>.gmk > samples/<name>.gmk`)
-      and commit them alongside this plan, or in the first work commit.
-- [ ] Re-import `maze_3.gmk` fresh; diff against shipped `samples/maze_3/`;
-      record every genuine remaining gap here as a new checkbox item
-      (expect most of the historical findings below to already be
-      resolved — confirm each rather than trusting the note).
-- [ ] Re-import `treasure.gmk` for the first time since it was dropped;
-      catalog every broken action/parameter as a checkbox item.
-- [ ] Re-import `maze_4.gmk` for the first time since it was dropped;
-      catalog every broken action/parameter as a checkbox item.
-- [ ] (Historical, needs re-verification per Step 0) `if_previous_room_exists`
-      / `if_next_room_exists` swap in some maze_1 event — confirm still
-      reproduces; if the `GM_ACTION_MAP` table is already correct, find
-      the actual remaining root cause (a different lookup path?) before
-      closing.
-- [ ] (Historical, needs re-verification) `obj_goal` importing with
-      `visible: false` when the GM source marks it visible.
-- [ ] (Historical, needs re-verification) `action_play_sound` mis-mapped
-      to `set_sprite` — pin the exact `(library_id, action_id)` from a
-      fresh maze_3 re-import rather than assuming it's `(1,212)`/`(1,551)`
-      (both already correctly mapped).
-- [ ] (Historical, needs re-verification) list-typed action params
-      (`start_moving_direction`'s `directions`) round-tripping through the
-      events panel as a stringified `"['down', 'up']"` — this is an
-      events-panel widget gap, not strictly an importer gap; confirm
-      whether it's still worth a `multi_choice` param_type or whether the
-      `ast.literal_eval` runtime fallback is judged sufficient long-term.
-- [ ] Project-level script calls in `treasure` referencing GM built-ins
-      not implemented in the pygm2 runtime — catalog which built-ins are
-      missing once `treasure.gmk` re-imports.
+- [x] Recover `samples/treasure.gmk` and `samples/maze_4.gmk` (plus
+      `maze_1.gmk`/`maze_2.gmk`, needed for the re-verification below)
+      from git history and commit them — **DONE 2026-07-16**, commit
+      `c6682d9`. Byte-verified identical to the historical committed
+      versions (sha1 match against `f8a0eb7^`).
+- [x] Re-import `maze_3.gmk` fresh; diff against shipped `samples/maze_3/`
+      — **DONE 2026-07-16.** Result: **clean.** No "Unmapped GM action"
+      comments anywhere; `monster_all.json`'s `collision_with_wall_corner`
+      event (the specific spot the maze_3 finding below was about)
+      matches the shipped, hand-verified sample byte-for-byte (modulo
+      `created`/`modified` timestamps) — `check_empty`/`exit_event` are
+      both correctly emitted, not the `set_score(hspeed)`/comment-stub
+      pattern the old finding described. All 5 `play_sound` sites
+      (`controller_main.json`, `obj_person.json` ×3,
+      `obj_block.json`, `obj_hole.json`, `obj trigger.json`) import as
+      `play_sound` with the right sound name, not `set_sprite`.
+      **Both maze_3 findings below are stale — already fixed**, most
+      likely by general `GM_ACTION_MAP`/`_GMK_KIND_TO_ACTION` work done
+      since the note was written, not anything from this session.
+- [x] Re-import `treasure.gmk` for the first time since it was dropped —
+      **DONE 2026-07-16.** Result: **clean.** Zero unmapped-action
+      comments across all 7 objects; expected asset counts (7 objects, 4
+      rooms, 10 sprites, 6 sounds, 1 script) match; the one project-level
+      script (`adapt_direction`, called from `monster`'s `step` and
+      `collision_with_wall` events) round-trips as real, working pygm2
+      Python (`instance.hspeed`, `game.check_collision_at_position`,
+      `random.random()` — not raw GML pseudo-code, not dropped). Pinned
+      by `tests/test_gmk_treasure_maze4_import.py::TestTreasureImport`
+      (4 tests).
+- [x] Re-import `maze_4.gmk` for the first time since it was dropped —
+      **DONE 2026-07-16.** Result: **clean.** Zero unmapped-action
+      comments across all 24 objects; expected asset counts (24 objects,
+      21 rooms, 24 sprites, 10 sounds) match. Pinned by
+      `tests/test_gmk_treasure_maze4_import.py::TestMaze4Import`
+      (3 tests).
+- [x] `if_previous_room_exists` / `if_next_room_exists` "swap" in maze_1's
+      `obj_goal` — **RE-VERIFIED, NOT AN IMPORTER BUG.** Dumped the raw
+      parsed `GmkAction` records (`GmkParser().parse(...)`, inspecting
+      `library_id`/`action_id`/`action_kind` directly, bypassing the
+      converter) for all three of `obj_goal`'s events
+      (`collision_with_obj_person`, `keyboard_press/p`,
+      `keyboard_press/n`). **All three raw GMK records use
+      `id=226` (`if_next_room_exists`)** — including the `p`
+      (previous-room) keypress event. The `.gmk` binary itself encodes
+      `if_next_room_exists` for the "previous room" key, not
+      `if_previous_room_exists`; `GM_ACTION_MAP`'s `(1,226)`/`(1,227)`
+      entries are correct and the converter faithfully reproduces the
+      source data. This reads as a genuine bug/oversight in the
+      **original GameMaker 8 game** (the developer likely copy-pasted the
+      collision event's action block into both keypress events without
+      swapping "next" for "previous"), not an importer defect. The hand
+      patch in shipped `samples/maze_1/` (using
+      `if_previous_room_exists` for the `p` key) is a deliberate
+      **gameplay fix**, not a fidelity restoration — worth being explicit
+      about that distinction if `maze_1` is ever re-imported from scratch
+      (the fresh import will reproduce the original bug; that's correct
+      importer behaviour, re-apply the same hand patch afterward).
+- [x] `obj_goal` importing with `visible: false` — **RE-VERIFIED, NOT AN
+      IMPORTER BUG.** Same raw-parse technique: `obj_wall` and
+      `obj_person` both parse as `visible=True` (so the parser's
+      `sprite_id, solid, visible, depth, persistent, parent_id, mask_id`
+      field order — matching GM8's actual on-disk object-chunk layout —
+      is not systematically off), but `obj_goal` genuinely parses as
+      `visible=False` directly from the raw byte stream, and `obj_goal`
+      has no `draw` event to compensate (GameMaker draws invisible
+      instances only if their object has an explicit draw event that
+      manually calls `draw_self`/`draw_sprite`). The original `.gmk`
+      really does mark `obj_goal` invisible with no manual draw
+      workaround — matching the described symptom exactly ("goal sprite
+      never renders... only walking into the invisible goal trigger
+      advances the room"). Same conclusion as the room-nav item: a
+      genuine original-game bug, faithfully imported; the shipped
+      sample's `visible: true` hand patch is a deliberate fix, not
+      fidelity restoration.
+- [ ] `action_play_sound` mis-mapped to `set_sprite` — **closed by the
+      maze_3 re-verification above** (all 5 sites now import correctly as
+      `play_sound`). No further action.
+- [ ] List-typed action params (`start_moving_direction`'s `directions`)
+      round-tripping through the events panel as a stringified
+      `"['down', 'up']"` — **not re-investigated this pass** (confirmed
+      out of scope for the importer specifically: it's an events-panel
+      widget gap, not a GMK-conversion gap — the importer itself emits a
+      real list). Still open if someone wants to build a `multi_choice`
+      param_type; the `ast.literal_eval` runtime fallback means it isn't
+      urgent.
+- [ ] Full re-validation of `treasure`/`maze_4` beyond "imports without
+      unmapped-action stubs": no visual playtest done, no `test_game`
+      smoke run, no check of whether every referenced sprite/sound file
+      actually exists on disk with the expected filename, no check of
+      room-level content (instance placement, tile layers) for
+      corruption. **This is the actual remaining blocker before
+      re-adding either sample to the bundled Welcome-tab list** — the
+      clean unmapped-action result is a strong positive signal but not
+      sufficient proof of correctness by itself.
 - [ ] Draw events (`draw_self`, `draw_sprite_ext`, etc.) without matching
-      UI metadata — cross-reference against the "UI metadata coverage for
-      runtime actions" section of `TODO.md` before assuming this is an
-      importer bug rather than a metadata-registry gap.
-- [ ] Once fixes land: re-add `treasure` and `maze_4` to the bundled
-      Welcome-tab sample list (reverses commits `d3fd71a` and `be6e0a9`);
-      update `samples/README.md`'s dropped-samples note.
+      UI metadata in `treasure`/`maze_4` — not checked this pass; cross
+      reference against the "UI metadata coverage for runtime actions"
+      section of `TODO.md` before assuming any gap found is an importer
+      bug rather than a metadata-registry gap.
+- [ ] Once the full re-validation above is done: re-add `treasure` and
+      `maze_4` to the bundled Welcome-tab sample list (reverses commits
+      `d3fd71a` and `be6e0a9`); update `samples/README.md`'s
+      dropped-samples note.
+
+## Correction to the working-discipline note above
+
+Regression tests for this work landed as flat
+`tests/test_gmk_treasure_maze4_import.py`, **not** under a new
+`tests/test_importers/` directory as originally suggested — the existing
+suite already has an established flat `test_gmk_*.py` / `test_audit_gmk_*.py`
+naming convention (`test_gmk_zlib_bomb.py`, `test_gmk_image_bounds.py`,
+etc.) with zero subdirectories anywhere in `tests/`, so a new nested
+directory would be the odd one out. Follow that convention for any
+further importer regression tests from this plan.
 
 ## When this doc is done
 
