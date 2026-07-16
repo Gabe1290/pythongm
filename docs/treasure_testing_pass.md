@@ -93,13 +93,26 @@ Legend: `[x]` pass · `[!]` works with caveat (note it) · `[-]` not testable.
   `destroy_at_position`. The power-pill event is now faithful: destroy the
   pill, reset already-scared monsters, scare all monsters. Regression:
   `tests/test_gmk_applies_to.py`. **Test build refreshed — re-open it.**
-- **Known remaining (next unit, do NOT re-log):** actions the runtime can't
-  retarget yet now import with a **console warning** instead of silent
-  self-targeting: treasure's `set_alarm` (applies to scared — so scared
-  monsters may not revert to normal after the timer) and `jump_to_start`
-  (applies to other/monster/scared — eaten monsters won't teleport home, and
-  monsters won't reset when you die). Runtime target support for those is the
-  queued follow-up; expect those specific behaviors to be off in this pass.
+- **Findings #3 (2026-07-16, FIXED same day — user re-test):** "scared
+  monsters freeze" + "only Explorer teleports home on death". Three stacked
+  causes, all fixed:
+  (a) the runtime's `change_instance` zeroed hspeed/vspeed unconditionally
+  (GM8 keeps them; scared has NO events — its movement is purely the carried
+  velocity). Motion is now preserved, except mid grid-step (the case the old
+  reset was added for).
+  (b) `jump_to_start` and `set_alarm` now honor GM's "Applies to"
+  (self/other/every-instance-of-object) — the death event resets ALL
+  monsters + scared home, eating a scared monster teleports IT home, and the
+  power pill arms alarm 0 on every scared monster (so they revert).
+  (c) GM's Sleep action (id 302, `action_sleep`) was mis-mapped to
+  `if_object_exists`, turning the death pause into a bogus conditional that
+  swallowed the monster reset — the death event now imports as a real 1.5 s
+  pause. Regressions: `tests/test_applies_to_runtime_targets.py` +
+  `tests/test_gmk_applies_to.py` (treasure now imports with ZERO applies-to
+  warnings). **Test build refreshed again — re-open it.** Expected behavior
+  now: pill → monsters turn scared AND keep moving, revert after ~5 s;
+  eat scared → it teleports home as a normal monster; die → 1.5 s pause,
+  everyone resets, −1 life.
 - **adapt_direction script round-trip: CONFIRMED GOOD** (user pasted the
   imported code — real Python: `instance.hspeed`,
   `game.check_collision_at_position`, `random.random()`).

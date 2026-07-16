@@ -1015,19 +1015,43 @@ class ActionExecutor:
                 other.vspeed = 0
                 logger.debug(f"  🚶 Pusher {other.object_name} moved to ({old_x}, {old_y}) and stopped")
 
-    def execute_jump_to_start_action(self, instance, parameters: Dict[str, Any]):
-        """Jump to the instance's starting position (where it was created)
+    def _resolve_target_instances(self, instance, parameters: Dict[str, Any]):
+        """Resolve GM-style target/target_object parameters to instances.
 
-        This restores the instance to its original position when it was first placed in the room.
+        target: "self" (default) | "other" (collision partner) | "object"
+        (every live instance of parameters["target_object"]). Mirrors the
+        semantics execute_destroy_instance_action / execute_change_instance_action
+        already implement inline — GM's "Applies to" selector, which the GMK
+        importer now emits (treasure's power-pill / death-reset events).
         """
-        # Get start position (stored when instance is created)
-        start_x = getattr(instance, 'xstart', instance.x)
-        start_y = getattr(instance, 'ystart', instance.y)
+        target = parameters.get("target", "self")
+        if target in ("self", "sel", "", None):
+            return [instance]
+        if target == "other":
+            other = getattr(instance, '_collision_other', None)
+            return [other] if other else []
+        if target == "object":
+            target_object = parameters.get("target_object", "")
+            if not target_object or not (self.game_runner and self.game_runner.current_room):
+                return []
+            return [inst for inst in self.game_runner.current_room.instances
+                    if getattr(inst, 'object_name', None) == target_object]
+        return [instance]
 
-        instance.x = start_x
-        instance.y = start_y
+    def execute_jump_to_start_action(self, instance, parameters: Dict[str, Any]):
+        """Jump to the starting position (where the instance was created).
 
-        logger.debug(f"  🏠 {instance.object_name} jumped to start position ({start_x}, {start_y})")
+        Honors GM's "Applies to" selector via target/target_object — e.g.
+        treasure resets every monster to its spawn when the player dies, and
+        teleports an eaten scared monster (target "other") home.
+        """
+        for target_instance in self._resolve_target_instances(instance, parameters):
+            start_x = getattr(target_instance, 'xstart', target_instance.x)
+            start_y = getattr(target_instance, 'ystart', target_instance.y)
+            target_instance.x = start_x
+            target_instance.y = start_y
+            logger.debug(f"  🏠 {target_instance.object_name} jumped to start "
+                         f"position ({start_x}, {start_y})")
 
     def execute_jump_to_random_action(self, instance, parameters: Dict[str, Any]):
         """Jump to a random position in the room
@@ -2308,22 +2332,28 @@ class ActionExecutor:
             steps = 30
         steps = int(steps)
 
-        # Ensure instance has alarm array
-        if not hasattr(instance, 'alarm'):
-            instance.alarm = [-1] * 12
+        # Honors GM's "Applies to" selector (target/target_object) — e.g.
+        # treasure arms alarm 0 on every scared monster so they revert to
+        # normal when it fires. Default remains the acting instance.
+        for target_instance in self._resolve_target_instances(instance, parameters):
+            # Ensure the instance has an alarm array
+            if not hasattr(target_instance, 'alarm'):
+                target_instance.alarm = [-1] * 12
 
-        if relative:
-            current = instance.alarm[alarm_number]
-            if current < 0:
-                current = 0  # If disabled, treat as 0
-            steps = current + steps
+            value = steps
+            if relative:
+                current = target_instance.alarm[alarm_number]
+                if current < 0:
+                    current = 0  # If disabled, treat as 0
+                value = current + steps
 
-        instance.alarm[alarm_number] = steps
+            target_instance.alarm[alarm_number] = value
 
-        if steps < 0:
-            logger.debug(f"⏰ Alarm {alarm_number} disabled for {instance.object_name}")
-        else:
-            logger.debug(f"⏰ Alarm {alarm_number} set to {steps} steps for {instance.object_name}")
+            if value < 0:
+                logger.debug(f"⏰ Alarm {alarm_number} disabled for {target_instance.object_name}")
+            else:
+                logger.debug(f"⏰ Alarm {alarm_number} set to {value} steps "
+                             f"for {target_instance.object_name}")
 
     # Maximum blocking sleep, in milliseconds. A blocking sleep freezes
     # rendering and input, so an absurd value (typo / hostile project) would
@@ -3365,13 +3395,24 @@ class ActionExecutor:
         # box_stored, then the reset causes a "new" collision with the pusher
         # which moves box_stored an extra grid cell).
 
-        # Reset movement so the new object type doesn't inherit the old speed.
-        # The old object may have had step-event logic (e.g. if_on_grid → stop)
-        # that the new type lacks, causing it to keep moving forever.
-        target_instance.hspeed = 0
-        target_instance.vspeed = 0
-        target_instance.speed = 0
-        # Clear any pending grid movement
+        # GM8's instance_change keeps every instance variable INCLUDING motion —
+        # treasure's monster→scared relies on it: scared has no create/step
+        # events, its movement is purely the velocity carried through the
+        # change, so zeroing it froze every scared monster. Preserve motion.
+        # The one exception (the e8f31c9 case this reset was added for): an
+        # instance mid GRID-step — its velocity was generated by the OLD
+        # type's cell-to-cell step logic (e.g. if_on_grid → stop) and without
+        # that logic the leftover step velocity never terminates. Zero motion
+        # only for those pending grid movers.
+        was_grid_moving = (
+            getattr(target_instance, 'intended_x', target_instance.x) != target_instance.x
+            or getattr(target_instance, 'intended_y', target_instance.y) != target_instance.y
+        )
+        if was_grid_moving:
+            target_instance.hspeed = 0
+            target_instance.vspeed = 0
+            target_instance.speed = 0
+        # Clear any pending grid movement either way
         target_instance._has_intended_move = False
 
         # Execute create event for new object type if requested. Read from the
