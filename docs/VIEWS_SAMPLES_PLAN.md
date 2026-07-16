@@ -1,9 +1,11 @@
 # Plan: sample games introducing views (large-level scrolling)
 
-Status: **planned, not started.** Written 2026-07-15 at ~68% of that
-session's budget specifically so it could be picked up cold on a
-different machine. Read this whole file before starting — it's the only
-record of the investigation, there's no partial branch/WIP to resume.
+Status: **done (2026-07-15).** All three phases shipped — camera support
+on all 3 export targets, `views_1` + `views_2` sample games, and the doc/
+registration pass. See "Progress" below for the commit-by-commit record.
+Kept as a retrospective + the one open architectural note (Kivy's FBO
+build-time binding) rather than deleted, since it's the only place that
+record lives.
 
 ## Why this exists
 
@@ -199,16 +201,34 @@ verification on all 3 targets, *then* write the README.
   says the feature is incomplete and UI-deferred; that description will
   need to change to reflect whatever subset actually got exported/UI-wired.
 
-## Explicitly not decided yet — pick these up when resuming
+## How the open questions were resolved
 
-- Exact room dimensions for `views_1`/`views_2` (2400×800 above is a
-  starting guess, not a commitment).
-- Whether `views_2`'s second view is a minimap (zoomed out) or a genuine
-  split-screen (two players) — minimap is cheaper to build and still
-  demonstrates the multi-view capability; split-screen is flashier but
-  needs a second controllable character.
-- Whether Phase 1's Kivy/web camera logic should be factored into a
-  shared/ported implementation of `update_views()` or reimplemented
-  per-target (desktop already has its own copy in `game_runner.py`, so a
-  third and fourth copy is plausible drift risk — worth 10 minutes of
-  thought before writing either).
+- **Room dimensions:** `views_1` and `views_2` shipped — see each
+  sample's own `README.md` for its actual room/view/port numbers rather
+  than trusting this doc's original 2400×800 guess.
+- **`views_2`'s second view:** went with **split-screen co-op** (two
+  controllable characters, `e1f31e2`), not a minimap — the flashier,
+  more-work option. If a minimap is still wanted later, it's a new
+  sample (`views_3`?) or a variant, not a change to `views_2`.
+- **Shared vs. per-target camera logic:** went with **per-target
+  reimplementation**, not a shared library — `runtime/game_runner.py`
+  (desktop), `engine.js`'s `updateViews()` (HTML5), and the Kivy-exported
+  scene's `update_views()` (Kivy, y-up coordinate space) are three
+  independent copies. The accepted drift risk this creates is guarded by
+  `tests/test_views_export_parity.py`, which feeds one synthetic
+  follow-camera scenario through all three and asserts identical
+  `view_x` output at each step — so a future edit to one copy that
+  silently diverges from the other two fails a test instead of shipping.
+
+## Known accepted limitation (not a bug, not scheduled)
+
+The Kivy camera's FBO render target is built at **room construction**,
+so a room needs `views_enabled` set in its own config for the camera to
+render at all — enabling views purely via a runtime `enable_views`
+action on a room that didn't start with them won't retrofit the FBO.
+Desktop and HTML5 don't have this restriction (their camera state is
+just data checked every frame, no separate render target to allocate).
+Recorded in `TODO.md`'s views/camera entry too. Fixing it means making
+FBO allocation lazy (build it the first time `views_enabled` flips true,
+not just at construction) — real but narrow Kivy-exporter work, not
+attempted here since no sample or use case has needed it yet.
