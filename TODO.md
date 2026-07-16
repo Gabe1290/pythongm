@@ -341,13 +341,25 @@ Other:
 
 ## Runtime features called out in code
 
-- **Background auto-scroll on `set_background`** —
-  `runtime/action_executor.py:3781`. The `hspeed`/`vspeed` accepted by
-  the `set_background` action are still ignored; only the room's own
-  `bg_hspeed`/`bg_vspeed` (from room config or `set_view`) drive layer
-  scrolling today. The view/camera system (Phase 2b–2c) handles full
-  room-larger-than-window scrolling, but this specific per-call setter
-  needs wiring.
+- ~~**Background auto-scroll on `set_background`**~~ (DONE 2026-07-16,
+  deferred-items plan tier 2, item 6) — `execute_set_background_action`
+  (`runtime/action_executor.py`) now writes its `hspeed`/`vspeed`
+  parameters onto `game_runner.current_room.bg_hspeed`/`bg_vspeed`
+  (coerced to float, falling back to 0 on a bad value) alongside the
+  existing `tile_horizontal`/`tile_vertical` wiring. `GameRoom` already
+  had a fully working `bg_hspeed`/`bg_vspeed`-driven scroll renderer
+  (`_render_legacy_background` — accumulates and wraps the scroll offset,
+  auto-tiles once either speed is nonzero) serving room-config-authored
+  backgrounds and `set_view`; the gap really was just this one action
+  never writing to it, confirming the plan's re-scoping note ("smaller
+  than it looked"). `foreground` stays acknowledged-but-not-applied — the
+  legacy single-background path has no draw-in-front-of-instances
+  support at all (only the newer multi-layer `backgrounds` room format
+  does, via `_render_bg_layers`), which is unrelated pre-existing scope,
+  not part of this fix. Regression: `tests/test_background_scroll.py` (6
+  tests) plus an end-to-end case that calls the real
+  `GameRoom._render_legacy_background` across several frames and checks
+  the scroll offset actually accumulates and wraps.
 - ~~**Room transition effects**~~ (DONE 2026-07-15, deferred-items plan
   tier 1) — `goto_room`'s `transition` parameter now supports `'fade'`
   (fade to black, switch, fade back in — `GameRunner.change_room`/

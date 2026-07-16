@@ -66,13 +66,11 @@ discipline as the match3_2/3 and views sessions:
    `_find_target_text_edit`. Project-wide search (asset names,
    identifiers) and the `execute_code` action dialog's separate `QTextEdit`
    remain open as a follow-up — see `TODO.md`'s entry.
-6. **Background auto-scroll on `set_background`** — flagged in `TODO.md`
-   as adjacent to the view/camera system, which is now fully built
-   (this session). Worth **re-scoping this item now** rather than
-   later — the room-larger-than-window scrolling problem it was
-   conflated with is solved; what's left is genuinely just wiring the
-   per-call `hspeed`/`vspeed` parameters that `set_background` already
-   accepts. Likely smaller than it looked when the note was written.
+6. ~~**Background auto-scroll on `set_background`**~~ **DONE 2026-07-16** —
+   confirmed smaller than it looked, per the re-scoping note: `GameRoom`
+   already had a working `bg_hspeed`/`bg_vspeed`-driven scroll renderer;
+   `execute_set_background_action` just never wrote its `hspeed`/`vspeed`
+   parameters into it. One small wiring fix — see `TODO.md`'s entry.
 7. **Standalone executable build** (Build Game / Build and Run, F7/F8) —
    `pyinstaller` is already a project dependency (used for the desktop
    export target per `docs/EXPORT_AUDIT_2026-07.md` / the "keep
@@ -152,10 +150,19 @@ case in `renderDrawCommands`), plus a genuine desktop `_DRAW_HANDLERS`
 gap for `'arrow'` that surfaced along the way — see `TODO.md`'s matching
 entries for detail; `tests/test_draw_action_codegen.py` covers all three.
 
-Next: Tier 2, item 5 (Find/Replace) or item 6 (`set_background`
-auto-scroll, flagged as likely smaller than it looks now that views
-shipped) — pick whichever fits the session budget better. Re-verify each
-item's `TODO.md` claim against current code before starting it, per the
-discipline above; this tier's items proved touching a widely-stubbed
-method (item 3) has a wider blast radius than the diff alone suggests,
-so budget time for fixing incidental test breakage, not just the feature.
+**Tier 2 items 5 and 6 are also DONE (2026-07-16)** — Find/Replace
+(code-editor scope, `dialogs/find_replace_dialog.py`) and the
+`set_background` `hspeed`/`vspeed` scroll wiring (one-line-per-axis fix in
+`execute_set_background_action`, confirmed smaller than it looked). Only
+item 7 (standalone executable build) remains in Tier 2.
+
+Next: Tier 2 item 7 (Build Game / Build and Run, F7/F8 — `pyinstaller` is
+already a dependency via the desktop export target, so this is UI/menu
+wiring around an existing capability) or start scoping Tier 3 (GMK
+importer hardening is the highest-value item there, but budget it as its
+own multi-session project per the note below, not a single continuation).
+Re-verify each item's `TODO.md` claim against current code before
+starting it, per the discipline above; this tier's items proved touching
+a widely-stubbed method (item 3) has a wider blast radius than the diff
+alone suggests, so budget time for fixing incidental test breakage, not
+just the feature.
