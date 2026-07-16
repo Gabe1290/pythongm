@@ -64,6 +64,21 @@ Legend: `[x]` pass · `[!]` works with caveat (note it) · `[-]` not testable.
 
 ## Notes
 
+- **Monster-scare "Applies to" sites (2026-07-16, DONE — the last queued
+  runtime-target unit):** `set_variable`, `set_sprite`, and `test_variable`
+  now honor GM's "Applies to" (target/target_object), completing the scare
+  mechanic: the **ring** bonus sets `afraid=true` + the afraid sprite + a
+  300-step revert alarm on EVERY monster_all, and obj_person's
+  collision tests `afraid` on the OTHER monster to decide eat-vs-die. Both
+  recovered samples now import with **zero** applies-to warnings (the warning
+  path stays for genuinely non-targetable actions, pinned via a synthetic
+  conversion). Regressions: `tests/test_applies_to_runtime_targets.py` +
+  `tests/test_gmk_applies_to.py`. **Your build was surgically patched in
+  place** (ring.json + obj_person's monster collision only — your room
+  reorder and the wall hand-patch are untouched). Expected in-game: grab a
+  ring → monsters turn afraid (sprite + frozen animation), touching one eats
+  it (+50, it resets home), and they revert after ~10 s.
+
 - **Finding #12 (room24 conveyor markers), SECOND PASS — FIXED (runtime,
   GM event order):** my first "verified working" was wrong — the harness only
   ran the step event + movement, not the FULL frame. Reproducing in the real

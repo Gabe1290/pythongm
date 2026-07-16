@@ -51,6 +51,9 @@ TARGETABLE_PYGM2_ACTIONS = {
     "destroy_at_position",
     "jump_to_start",
     "set_alarm",
+    "set_variable",
+    "set_sprite",
+    "test_variable",
 }
 
 # Upper bound on any single decoded image dimension from an imported .gmk.

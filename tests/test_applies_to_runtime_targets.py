@@ -182,3 +182,79 @@ def test_set_alarm_default_is_self():
     ex = _executor_with_room([hero])
     ex.execute_set_alarm_action(hero, {"steps": "30", "alarm_number": "2"})
     assert hero.alarm[2] == 30
+
+
+# ---------------------------------------------------------------------------
+# set_variable / set_sprite / test_variable targeting (maze_4's monster-scare
+# mechanic: the ring bonus sets afraid=true + the afraid sprite + a revert
+# alarm on EVERY monster_all; obj_person then tests afraid on the OTHER
+# monster it touches).
+# ---------------------------------------------------------------------------
+
+def test_set_variable_targets_every_instance_of_object():
+    m1 = _instance("monster_all", 0, 0)
+    m2 = _instance("monster_all", 64, 0)
+    hero = _instance("obj_person", 32, 0)
+    ex = _executor_with_room([hero, m1, m2])
+    ex.execute_set_variable_action(
+        hero, {"variable": "afraid", "value": "true",
+               "target": "object", "target_object": "monster_all"})
+    assert getattr(m1, "afraid") is True
+    assert getattr(m2, "afraid") is True
+    assert not hasattr(hero, "afraid")       # the caller is not the target
+
+
+def test_set_variable_scope_other_still_works():
+    hero = _instance("obj_person", 0, 0)
+    other = _instance("monster_all", 32, 0)
+    ex = _executor_with_room([hero, other])
+    ex._collision_other = other
+    ex.execute_set_variable_action(hero, {"variable": "hp", "value": "5",
+                                          "scope": "other"})
+    assert getattr(other, "hp") == 5
+
+
+def test_test_variable_reads_the_collision_other_via_target():
+    """The eaten-monster gate: obj_person tests other.afraid == 1 through the
+    REAL collision dispatch (context lives on the executor)."""
+    hero = _instance("obj_person", 0, 0)
+    monster = _instance("monster_all", 0, 0)
+    monster.afraid = 1
+    ex = _executor_with_room([hero, monster])
+    hero.object_data = {"events": {"collision_with_monster_all": {"actions": [
+        {"action": "test_variable",
+         "parameters": {"variable": "afraid", "value": "1",
+                        "operation": "equal", "target": "other"}},
+        {"action": "set_variable",
+         "parameters": {"variable": "ate_it", "value": "1"}},
+    ]}}}
+    hero.action_executor = ex
+    ex.execute_collision_event(
+        hero, "collision_with_monster_all", hero.object_data["events"], monster)
+    assert getattr(hero, "ate_it", None) == 1     # gate passed
+
+    # and with afraid unset, the gate blocks the guarded action
+    hero2 = _instance("obj_person", 0, 0)
+    brave = _instance("monster_all", 0, 0)        # no afraid attr -> 0
+    ex2 = _executor_with_room([hero2, brave])
+    hero2.object_data = hero.object_data
+    hero2.action_executor = ex2
+    ex2.execute_collision_event(
+        hero2, "collision_with_monster_all", hero2.object_data["events"], brave)
+    assert getattr(hero2, "ate_it", None) is None
+
+
+def test_set_sprite_targets_every_instance_of_object():
+    """The ring's scare visual: every monster_all freezes animation (speed 0)
+    and — when the sprite exists — switches to the afraid sprite."""
+    m1 = _instance("monster_all", 0, 0)
+    m2 = _instance("monster_all", 64, 0)
+    hero = _instance("obj_person", 32, 0)
+    m1.image_speed = m2.image_speed = 1.0
+    ex = _executor_with_room([hero, m1, m2])
+    ex.execute_set_sprite_action(
+        hero, {"sprite": "", "subimage": "2", "speed": "0",
+               "target": "object", "target_object": "monster_all"})
+    assert m1.image_speed == 0 and m2.image_speed == 0
+    assert m1.image_index == 2.0 and m2.image_index == 2.0
+    assert hero.image_speed != 0 or hero.image_index != 2.0  # caller untouched

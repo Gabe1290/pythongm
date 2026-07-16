@@ -2240,35 +2240,33 @@ class ActionExecutor:
             self.game_runner.global_variables[variable] = value
             logger.debug(f"🌐 Global variable '{variable}' = {value}")
 
-        elif scope == "other":
-            # Get the "other" instance from collision context
-            other = getattr(self, '_collision_other', None)
-            if not other:
-                logger.debug("⚠️  set_variable: 'other' scope only available in collision events")
-                return
-
-            if relative:
-                current = getattr(other, variable, 0)
-                try:
-                    value = current + value
-                except TypeError:
-                    logger.debug(f"⚠️  set_variable: Cannot add {type(value)} to {type(current)}")
+        else:
+            # Who gets the variable: GM's "Applies to" selector
+            # (target/target_object, emitted by the GMK importer — e.g.
+            # maze_4's ring bonus sets afraid=true on EVERY monster_all)
+            # takes precedence; otherwise the legacy scope param.
+            if "target" in parameters:
+                targets = self._resolve_target_instances(instance, parameters)
+            elif scope == "other":
+                other = getattr(self, '_collision_other', None)
+                if not other:
+                    logger.debug("⚠️  set_variable: 'other' scope only available in collision events")
                     return
+                targets = [other]
+            else:  # scope == "sel"
+                targets = [instance]
 
-            setattr(other, variable, value)
-            logger.debug(f"📝 Other instance variable '{variable}' = {value}")
-
-        else:  # scope == "sel"
-            if relative:
-                current = getattr(instance, variable, 0)
-                try:
-                    value = current + value
-                except TypeError:
-                    logger.debug(f"⚠️  set_variable: Cannot add {type(value)} to {type(current)}")
-                    return
-
-            setattr(instance, variable, value)
-            logger.debug(f"📝 Instance variable '{variable}' = {value}")
+            for target_instance in targets:
+                new_value = value
+                if relative:
+                    current = getattr(target_instance, variable, 0)
+                    try:
+                        new_value = current + value
+                    except TypeError:
+                        logger.debug(f"⚠️  set_variable: Cannot add {type(value)} to {type(current)}")
+                        continue
+                setattr(target_instance, variable, new_value)
+                logger.debug(f"📝 {target_instance.object_name}.{variable} = {new_value}")
 
     def execute_test_variable_action(self, instance, parameters: Dict[str, Any]):
         """Test an instance or global variable
@@ -2291,11 +2289,23 @@ class ActionExecutor:
             logger.debug("⚠️  test_variable: No variable name specified")
             return False
 
-        # Get current value based on scope
+        # Get current value based on scope / GM "Applies to" target
         if scope == "global":
             if not self.game_runner:
                 return False
             current = self.game_runner.global_variables.get(variable, 0)
+        elif "target" in parameters:
+            # GM's "Applies to" on a question (emitted by the GMK importer):
+            # "other" reads the collision partner (maze_4's obj_person tests
+            # other.afraid on the monster it just touched); "object" reads the
+            # first live instance of that object — an approximation of GM's
+            # per-instance question execution, adequate for the shared-state
+            # checks imported games actually use.
+            targets = self._resolve_target_instances(instance, parameters)
+            if not targets:
+                logger.debug("⚠️  test_variable: 'Applies to' target resolved to no instances")
+                return False
+            current = getattr(targets[0], variable, 0)
         elif scope == "other":
             # Get the "other" instance from collision context
             other = getattr(self, '_collision_other', None)
@@ -4820,30 +4830,39 @@ class ActionExecutor:
         except (ValueError, TypeError):
             speed = -1
 
-        # Handle sprite change (unless <self>)
-        if sprite_name != "<self>" and sprite_name:
-            if self.game_runner and sprite_name in self.game_runner.sprites:
-                instance.set_sprite(self.game_runner.sprites[sprite_name])
-                logger.debug(f"🖼️ Set sprite to '{sprite_name}' for {instance.object_name}")
-            else:
-                logger.debug(f"⚠️ set_sprite: Sprite '{sprite_name}' not found")
+        # GM's "Applies to" selector (target/target_object, emitted by the GMK
+        # importer): maze_4's ring bonus changes EVERY monster_all's sprite to
+        # the afraid look. Default remains the acting instance.
+        if "target" in parameters:
+            targets = self._resolve_target_instances(instance, parameters)
+        else:
+            targets = [instance]
 
-        # Handle subimage (frame index)
-        if subimage >= 0:
-            instance.image_index = float(subimage)
-            logger.debug(f"🎬 Set image_index to {subimage} for {instance.object_name}")
-
-        # Handle animation speed (only print when value changes)
-        if speed >= 0:
-            old_speed = getattr(instance, 'image_speed', 1.0)
-            if old_speed != speed:
-                instance.image_speed = speed
-                if speed == 0:
-                    logger.debug(f"⏸️ Stopped animation for {instance.object_name}")
+        for target_instance in targets:
+            # Handle sprite change (unless <self>)
+            if sprite_name != "<self>" and sprite_name:
+                if self.game_runner and sprite_name in self.game_runner.sprites:
+                    target_instance.set_sprite(self.game_runner.sprites[sprite_name])
+                    logger.debug(f"🖼️ Set sprite to '{sprite_name}' for {target_instance.object_name}")
                 else:
-                    logger.debug(f"⏩ Set image_speed to {speed} for {instance.object_name}")
-            else:
-                instance.image_speed = speed  # Still set it, just don't print
+                    logger.debug(f"⚠️ set_sprite: Sprite '{sprite_name}' not found")
+
+            # Handle subimage (frame index)
+            if subimage >= 0:
+                target_instance.image_index = float(subimage)
+                logger.debug(f"🎬 Set image_index to {subimage} for {target_instance.object_name}")
+
+            # Handle animation speed (only print when value changes)
+            if speed >= 0:
+                old_speed = getattr(target_instance, 'image_speed', 1.0)
+                if old_speed != speed:
+                    target_instance.image_speed = speed
+                    if speed == 0:
+                        logger.debug(f"⏸️ Stopped animation for {target_instance.object_name}")
+                    else:
+                        logger.debug(f"⏩ Set image_speed to {speed} for {target_instance.object_name}")
+                else:
+                    target_instance.image_speed = speed  # Still set it, just don't print
 
     def execute_collision_event(self, instance, event_name: str, events_data: Dict[str, Any], other_instance, collision_speeds=None):
         """Execute collision event with context about the other instance

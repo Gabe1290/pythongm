@@ -149,17 +149,33 @@ def test_treasure_imports_with_no_applies_to_warnings(caplog):
                 if "Applies to" in r.getMessage()]
 
 
-def test_unsupported_targets_warn_not_silent(caplog):
-    """Actions the runtime can't retarget yet (maze_4 carries set_variable /
-    set_sprite / test_variable sites) must WARN when the .gmk gave them a
-    non-self target, so the behavior change is visible to the importing user."""
+def test_maze4_imports_with_no_applies_to_warnings(caplog):
+    """With set_variable / set_sprite / test_variable now targetable, every
+    'Applies to' site in BOTH recovered samples is supported end-to-end."""
     with caplog.at_level(logging.WARNING, logger="importers.gmk_converter"):
-        out = Path(tempfile.mkdtemp(prefix="gmk_applies_warn_")) / "import"
+        out = Path(tempfile.mkdtemp(prefix="gmk_applies_m4_")) / "import"
         import_gmk_detailed(str(REPO_ROOT / "samples" / "maze_4.gmk"), str(out))
+    assert not [r.getMessage() for r in caplog.records
+                if "Applies to" in r.getMessage()]
+
+
+def test_unsupported_targets_warn_not_silent(caplog):
+    """The warning path stays for actions the runtime can't retarget: convert a
+    synthetic play_sound carrying an 'Applies to: other' and expect the visible
+    warning instead of a silent behavior change."""
+    from importers.gmk_parser import GmkParser, GmkAction
+    from importers.gmk_converter import GmkConverter
+    parsed = GmkParser().parse(str(REPO_ROOT / "samples" / "maze_1.gmk"))
+    conv = GmkConverter(parsed, Path(tempfile.mkdtemp(prefix="gmk_warn_conv_")))
+    act = GmkAction()
+    act.library_id, act.action_id = 1, 211
+    act.function_name = "action_sound"
+    act.applies_to = -2                     # "other" on a non-targetable action
+    act.argument_values = ["0", "0"]
+    act.argument_types = []
+    with caplog.at_level(logging.WARNING, logger="importers.gmk_converter"):
+        result = conv._convert_single_action(act)
+    assert result["action"] == "play_sound"
+    assert "target" not in result["parameters"]
     warnings = [r.getMessage() for r in caplog.records if "Applies to" in r.getMessage()]
-    assert any("set_variable" in w for w in warnings)
-    assert any("set_sprite" in w for w in warnings)
-    # and never for the actions we DO support
-    for supported in ("destroy_instance", "change_instance",
-                      "jump_to_start", "set_alarm"):
-        assert not any(supported in w for w in warnings)
+    assert any("play_sound" in w for w in warnings)
