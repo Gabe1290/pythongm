@@ -69,6 +69,7 @@ def test_same_named_room_and_object_both_open(qapp):
         float_editor=None,
         reattach_editor=None,
         on_object_editor_activated=None,
+        test_object=None,
     )
 
     # Opening an OBJECT named 'niveau1' must NOT focus the room (different

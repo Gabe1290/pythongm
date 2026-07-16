@@ -2070,10 +2070,24 @@ class PyGameMakerIDE(QMainWindow):
         # Validate project and show warnings
         self._show_validation_warnings()
 
+        self._run_project_json(self.current_project_path)
+
+    def _run_project_json(self, project_path: Path):
+        """Launch project_path/project.json's game in a subprocess (or
+        in-process for packaged builds), with the same stderr-capture +
+        QTimer-polling supervision test_game already had.
+
+        Factored out of test_game so test_object can reuse the exact
+        same launch/monitor/cleanup path against a temporary
+        single-object project instead of duplicating it (TODO.md's
+        "Object test runner" item). Only test_game does the "sync open
+        editors, save, validate" preflight — a Play Object run doesn't
+        need to save or validate the whole project.
+        """
         try:
             self.update_status(self.tr("Running game..."))
 
-            project_json = self.current_project_path / "project.json"
+            project_json = project_path / "project.json"
 
             if not project_json.exists():
                 QMessageBox.warning(
@@ -2081,6 +2095,11 @@ class PyGameMakerIDE(QMainWindow):
                     self.tr("Project Error"),
                     self.tr("project.json not found in project directory")
                 )
+                # Unreachable for test_object (it always writes project.json
+                # right before calling here), but drain unconditionally so a
+                # future caller of _run_project_json can't leak a temp dir
+                # through this branch.
+                self._drain_game_stderr(None)
                 return
 
             # Run game in subprocess to avoid OpenGL conflicts between Qt WebEngine and pygame
@@ -2108,7 +2127,7 @@ class PyGameMakerIDE(QMainWindow):
             if is_packaged:
                 # When packaged, run game in-process using the game runner
                 # This works because pygame is bundled in the package
-                if self.game_runner.test_game(str(self.current_project_path), Config.get('language', 'en')):
+                if self.game_runner.test_game(str(project_path), Config.get('language', 'en')):
                     self.update_status(self.tr("Game closed"))
                 else:
                     self.update_status(self.tr("Game test failed"))
@@ -2146,7 +2165,7 @@ class PyGameMakerIDE(QMainWindow):
             try:
                 process = subprocess.Popen(
                     [sys.executable, str(game_script), str(project_json), language],
-                    cwd=str(self.current_project_path),
+                    cwd=str(project_path),
                     env=env,
                     stdout=None,
                     stderr=self._game_stderr_handle,
@@ -2180,6 +2199,119 @@ class PyGameMakerIDE(QMainWindow):
             traceback.print_exc()
             self.update_status(self.tr("Game test failed"))
 
+    def test_object(self, object_name: str, object_data: dict):
+        """Play Object: run a single object in an isolated, throwaway room.
+
+        Restores the "Play Object" button TODO.md tracked as removed
+        orphaned dead code. Builds a minimal temp project (just this
+        object + its sprite, if any, + one small test room) and launches
+        it through the exact same _run_project_json path Test Game uses —
+        the real runtime, not a simulation, so events/collisions-with-self/
+        drawing all behave identically to running it for real. Other
+        object types the object might reference (e.g. a collision event
+        against obj_enemy) simply won't exist in this throwaway project,
+        so those specific events won't fire — an accepted limitation of
+        testing in isolation, not a bug.
+
+        Does not touch the real project.json or ask to save first — it
+        tests the editor's current in-memory state (object_data comes
+        from the open ObjectEditor's get_data(), including unsaved edits).
+        """
+        if hasattr(self, '_game_process') and self._game_process is not None:
+            if self._game_process.poll() is None:
+                QMessageBox.information(
+                    self, self.tr("Game Running"),
+                    self.tr("A game is already running. Please close it first."))
+                return
+
+        if not self.current_project_path:
+            QMessageBox.warning(
+                self, self.tr("No Project"),
+                self.tr("Please open or create a project first before testing an object."))
+            return
+
+        import copy
+        import json as _json
+        import shutil
+        import tempfile
+
+        temp_dir = Path(tempfile.mkdtemp(prefix="pygm2_test_object_"))
+        try:
+            object_data = copy.deepcopy(object_data) if isinstance(object_data, dict) else {}
+            object_data['name'] = object_name
+            object_data.setdefault('asset_type', 'object')
+
+            # Carry the object's sprite along (JSON + the actual image file)
+            # so it actually renders, not just its collision box.
+            sprites = {}
+            sprite_name = object_data.get('sprite', '')
+            current_sprites = (self.current_project_data or {}).get('assets', {}).get('sprites', {})
+            if sprite_name and sprite_name in current_sprites:
+                sprite_data = copy.deepcopy(current_sprites[sprite_name])
+                file_path = sprite_data.get('file_path', '')
+                if file_path:
+                    src = self.asset_manager.get_absolute_path(file_path)
+                    if src and src.exists():
+                        dst_rel = Path('sprites') / Path(file_path).name
+                        dst = temp_dir / dst_rel
+                        dst.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copy2(src, dst)
+                        sprite_data['file_path'] = dst_rel.as_posix()
+                sprites[sprite_name] = sprite_data
+
+            settings = (self.current_project_data or {}).get('settings', {})
+            width = int(settings.get('window_width', 800) or 800)
+            height = int(settings.get('window_height', 600) or 600)
+            room_speed = int(settings.get('room_speed', 30) or 30)
+
+            room_name = 'room_test_object'
+            project = {
+                'name': 'TestObject',
+                'settings': {
+                    'window_title': self.tr('Play Object: {0}').format(object_name),
+                    'window_width': width,
+                    'window_height': height,
+                    'room_speed': room_speed,
+                    'fullscreen': False,
+                    'startup_room': room_name,
+                },
+                'assets': {
+                    'sprites': sprites,
+                    'sounds': {},
+                    'backgrounds': {},
+                    'objects': {object_name: object_data},
+                    'rooms': {
+                        room_name: {
+                            'name': room_name, 'asset_type': 'room',
+                            'width': width, 'height': height,
+                            'background_color': '#808080',
+                            'instances': [{
+                                'object_name': object_name,
+                                'x': width // 2, 'y': height // 2,
+                                'rotation': 0, 'scale_x': 1.0, 'scale_y': 1.0,
+                                'visible': True,
+                            }],
+                            'tiles': [],
+                        },
+                    },
+                    'playgrounds': {}, 'scripts': {}, 'fonts': {}, 'data': {},
+                },
+                'room_order': [room_name],
+            }
+
+            (temp_dir / 'project.json').write_text(
+                _json.dumps(project, indent=2), encoding='utf-8')
+
+        except Exception as e:
+            shutil.rmtree(temp_dir, ignore_errors=True)
+            QMessageBox.critical(
+                self, self.tr("Error"),
+                self.tr("Failed to prepare object test: {0}").format(e))
+            return
+
+        self._game_temp_project_dir = temp_dir
+        self._run_project_json(temp_dir)
+
     def _check_game_process(self):
         """Check if the game subprocess has finished (called by QTimer)"""
         if not hasattr(self, '_game_process') or self._game_process is None:
@@ -2211,6 +2343,18 @@ class PyGameMakerIDE(QMainWindow):
         path = getattr(self, '_game_stderr_path', None)
         self._game_stderr_handle = None
         self._game_stderr_path = None
+
+        # A Play Object run (test_object) built a throwaway temp project;
+        # clean it up now that the process it backed has exited. Ahead of
+        # the "no stderr capture" early-return below so it still runs even
+        # when there's no stderr path to drain (both exit paths —
+        # _check_game_process and stop_game — call _drain_game_stderr, so
+        # a manually-stopped object test doesn't leak its temp dir either).
+        temp_dir = getattr(self, '_game_temp_project_dir', None)
+        self._game_temp_project_dir = None
+        if temp_dir is not None:
+            import shutil
+            shutil.rmtree(temp_dir, ignore_errors=True)
 
         if handle is not None:
             try:
@@ -3669,6 +3813,10 @@ class PyGameMakerIDE(QMainWindow):
 
             # Connect object editor activation signal
             object_editor.object_editor_activated.connect(self.on_object_editor_activated, Qt.ConnectionType.UniqueConnection)
+
+            # "Play Object" toolbar button — run this object alone in a
+            # throwaway test room (TODO.md's Object test runner item).
+            object_editor.test_object_requested.connect(self.test_object, Qt.ConnectionType.UniqueConnection)
 
             # Add to tabs - object editor occupies full center panel
             tab_index = self.editor_tabs.addTab(object_editor, object_name)

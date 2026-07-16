@@ -46,6 +46,12 @@ def test_test_game_syncs_detached_editors(tmp_path):
         update_status=lambda *a: None,
         tr=lambda s: s,
     )
+    # test_game delegates the actual launch to _run_project_json (factored
+    # out so test_object/"Play Object" can reuse it); bind the real
+    # implementation to this stub — a SimpleNamespace attribute doesn't
+    # auto-bind self the way a class attribute would.
+    stub._run_project_json = lambda project_path: _ide_cls()._run_project_json(stub, project_path)
+    stub._drain_game_stderr = lambda *a: None
 
     with patch('core.ide_window.QMessageBox'):
         _ide_cls().test_game(stub)

@@ -38,10 +38,16 @@ discipline as the match3_2/3 and views sessions:
    `health_bar`/`background` *actions* (not `execute_code` draw-queue
    dicts) have no codegen on either export target at all — bigger than
    this item, new TODO.md entry, not fixed here.
-3. **Object test runner ("Play Object" button)** — the `test_object`
-   method was removed as orphaned dead code in a past cleanup; TODO.md
-   says to "restore the method + a toolbar button when implementing."
-   Small, contained, no ambiguity about scope.
+3. ~~**Object test runner ("Play Object" button)**~~ **DONE 2026-07-15** —
+   runs the object in a throwaway temp project through the same
+   `_run_project_json` path Test Game now shares (factored out of
+   `test_game`). Turned out less "small" than it looked: the refactor
+   changed `test_game`'s observable call shape, which broke 3
+   pre-existing tests' lightweight `PyGameMakerIDE` stubs (they needed
+   the newly-factored-out method added, same convention those stubs
+   already used elsewhere) — worth remembering for the remaining tier-1/2
+   items: touching a method other tests stub out has a wider blast radius
+   than the diff alone suggests.
 4. **Room transition effects** (`runtime/action_executor.py:5111`) — the
    parameter is already accepted and threaded through; only the actual
    transition (even just a fade) needs implementing. Scope it down to
