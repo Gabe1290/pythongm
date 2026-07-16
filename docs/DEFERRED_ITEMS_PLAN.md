@@ -26,18 +26,18 @@ worth of shipped work and hasn't been swept since.
 Good candidates for a "one task = one commit, verify, push" queue, same
 discipline as the match3_2/3 and views sessions:
 
-1. **Generic asset-type editor fallback** (`sounds`/`backgrounds`/`fonts`
-   have no registered editor — confirmed still true, `core/ide_window.py`
-   only wires `rooms`/`objects`/`sprites`/`playgrounds`/`scripts`). The
-   `scripts` editor (`editors/script_editor.py`, a minimal
-   `QPlainTextEdit`) is the documented template to copy for the other
-   three. Three small, independent editors — could be three separate
-   commits.
-2. **Kivy/HTML5 draw-queue `background`/`health_bar` types** — the
-   `sprite`/`lives` precedent from this session is the template
-   (`_dq_render_cmd` in `export/Kivy/kivy_exporter.py`, the `case`
-   dispatch in `engine.js`). Small, mechanical, pairs naturally with #1
-   in review since both are "finish a partially-done enumeration."
+1. ~~**Generic asset-type editor fallback**~~ **DONE 2026-07-15** —
+   `editors/sound_editor.py` / `background_editor.py` / `font_editor.py`,
+   following the `scripts` editor's template. Found along the way: the
+   font asset's fields aren't consumed by `draw_text` rendering yet
+   (new TODO.md entry, not fixed — separate runtime task).
+2. ~~**Kivy/HTML5 draw-queue `background`/`health_bar` types**~~ **DONE
+   2026-07-15** — `BACKGROUND_PATHS` map + both `_dq_render_cmd` branches
+   on Kivy, both `case`s in `engine.js`. Found along the way: structured
+   `draw_rectangle`/`circle`/`ellipse`/`line`/`arrow`/`variable`/
+   `health_bar`/`background` *actions* (not `execute_code` draw-queue
+   dicts) have no codegen on either export target at all — bigger than
+   this item, new TODO.md entry, not fixed here.
 3. **Object test runner ("Play Object" button)** — the `test_object`
    method was removed as orphaned dead code in a past cleanup; TODO.md
    says to "restore the method + a toolbar button when implementing."
