@@ -272,6 +272,24 @@ class ActionExecutor:
         except _ExitEvent:
             return
 
+    # Question actions: they return True/False and guard the following unit.
+    # The skip logic needs to know them WITHOUT executing them — when a false
+    # question's guarded unit is being skipped and that unit is ITSELF a
+    # question, GM semantics skip the nested question AND its guarded unit,
+    # recursively. (maze_4's obj_person step is the canonical chain:
+    # test_alignment → if_collision(move_*) → start_moving_direction ×4; the
+    # old skip-one-action logic ran every movement unconditionally whenever
+    # the alignment check failed, force-feeding the last direction each frame.)
+    _QUESTION_ACTIONS = frozenset({
+        "check_empty", "check_room", "check_sound",
+        "if_can_push", "if_collision", "if_collision_at", "if_condition",
+        "if_next_room_exists", "if_object_exists", "if_on_grid",
+        "if_previous_room_exists",
+        "test_alignment", "test_chance", "test_expression", "test_health",
+        "test_instance_count", "test_lives", "test_question", "test_score",
+        "test_variable",
+    })
+
     def _execute_action_list_inner(self, instance, actions: list):
         i = 0
         skip_next = False
@@ -318,6 +336,10 @@ class ActionExecutor:
             # Skip this action if skip_next is set (for single actions)
             if skip_next:
                 skip_next = False
+                # A skipped QUESTION takes its own guarded unit down with it
+                # (recursively — question chains skip as one unit, GM-style).
+                if action_name in self._QUESTION_ACTIONS:
+                    skip_next = True
                 i += 1
                 continue
 
@@ -4912,6 +4934,10 @@ class ActionExecutor:
             # Skip this action if skip_next is set (for single actions)
             if skip_next:
                 skip_next = False
+                # A skipped QUESTION takes its own guarded unit down with it
+                # (recursively — question chains skip as one unit, GM-style).
+                if action_name in self._QUESTION_ACTIONS:
+                    skip_next = True
                 i += 1
                 continue
 

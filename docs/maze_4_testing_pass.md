@@ -64,4 +64,34 @@ Legend: `[x]` pass · `[!]` works with caveat (note it) · `[-]` not testable.
 
 ## Notes
 
-(findings here)
+- **Finding #5 (2026-07-16, FIXED same day — runtime, severe):** "obj_person
+  starts moving right, cannot stop." Root cause was question-CHAIN scoping in
+  both action-list executors: a false question skipped exactly one action, but
+  when the skipped action was itself a question (obj_person's step event is
+  four `test_alignment → if_collision(move_*) → start_moving_direction`
+  conveyor chains), the nested question's guarded movement ran
+  UNCONDITIONALLY — every misaligned frame executed all four movements and
+  the last (right, speed 8) won, overriding the arrow keys. Reproduced
+  headlessly (h jumped 4→8 one frame after pressing RIGHT in a room with ZERO
+  markers), fixed (a skipped question now takes its guarded unit down with
+  it, recursively), verified headlessly (steady speed-4 movement, aligned
+  wall stop at x=256). Regression: `tests/test_question_chain_scoping.py`.
+  **Test build refreshed — re-open it.**
+- **Finding #6 (OPEN — next up):** pressing a movement key TOWARD a flush
+  wall slides the person ~3px into it (pixel-mask slop; pygm2 slides-to-
+  contact where GM8 reverts to the pre-move position), leaving it off the
+  32-grid so `test_alignment` gates all further movement — permanently stuck.
+  Verified headlessly (UP at (256,416) against the wall above → y=413, then
+  dead). Candidate fixes: engine revert-on-block semantics (risky for the
+  platformer samples) vs a maze_1-style hand-patch (snap_to_grid in the wall
+  collision) at re-add time. Under investigation.
+- **Finding #7 (OPEN):** the importer emits NO `room_order`, and the rooms
+  dict order is scrambled — the first playable room is room14, not the
+  original first level, and next_room walks 13, 12, ... backwards. The raw
+  .gmk chunk order starts `room_start, room7, room8...` (creation order); the
+  true PLAY order lives in the GM resource tree, which the parser currently
+  skips. Needs resource-tree parsing + room_order emission.
+- **Finding #8 (OPEN):** score/lives not displayed. `controller_main`'s draw
+  event (`set_draw_font score_font` + `draw_score`/`draw_text`/`draw_lives`
+  with `relative: true`, controller placed at (0,480) = bottom strip) — not
+  yet diagnosed (relative-draw support? font? draw event not firing?).
