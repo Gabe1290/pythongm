@@ -116,3 +116,15 @@ Legend: `[x]` pass · `[!]` works with caveat (note it) · `[-]` not testable.
 - **adapt_direction script round-trip: CONFIRMED GOOD** (user pasted the
   imported code — real Python: `instance.hspeed`,
   `game.check_collision_at_position`, `random.random()`).
+- **Finding #4 (2026-07-16, FIXED same day — user re-test):** eating a scared
+  monster reverted it to monster but cost the explorer a life. The new
+  `_resolve_target_instances` helper read the collision context off the
+  INSTANCE, but the desktop pipeline installs it on the EXECUTOR — so
+  `jump_to_start {target: other}` silently resolved to nothing, the eaten
+  monster never teleported home, and it killed the still-overlapping explorer
+  next frame the moment it became a monster again. (`change_instance` reads
+  the executor context inline, which is why the color revert worked while the
+  teleport didn't.) Fixed + pinned through the REAL collision dispatch
+  (`execute_collision_event`) this time, which is the path that would have
+  caught it. **Test build refreshed — re-open it.** Expected now: eat scared →
+  +100, it reappears at its spawn as a normal monster, no life lost.

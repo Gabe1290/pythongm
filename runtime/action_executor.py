@@ -1028,7 +1028,14 @@ class ActionExecutor:
         if target in ("self", "sel", "", None):
             return [instance]
         if target == "other":
-            other = getattr(instance, '_collision_other', None)
+            # The desktop collision pipeline installs the collision context on
+            # the EXECUTOR (self._collision_other, set/cleared around each
+            # collision event) — reading it off the instance silently resolved
+            # to nothing, so treasure's eaten scared monster never teleported
+            # home and the explorer died to it next frame. Keep the instance
+            # attribute as a fallback for harnesses that set it there.
+            other = (getattr(self, '_collision_other', None)
+                     or getattr(instance, '_collision_other', None))
             return [other] if other else []
         if target == "object":
             target_object = parameters.get("target_object", "")

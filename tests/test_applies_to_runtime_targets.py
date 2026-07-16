@@ -104,8 +104,42 @@ def test_jump_to_start_targets_every_instance_of_object():
     assert (hero.x, hero.y) == (50, 50)     # untouched — not the target
 
 
-def test_jump_to_start_targets_other():
-    """Eating a scared monster teleports IT home (target 'other')."""
+def test_jump_to_start_targets_other_via_real_collision_event():
+    """Eating a scared monster teleports IT home (target 'other') — driven
+    through execute_collision_event, the REAL dispatch, which installs the
+    collision context on the EXECUTOR (self._collision_other). The first
+    version of _resolve_target_instances read it off the instance instead, so
+    in the live game the eaten monster never teleported, stayed overlapping,
+    changed back into a monster and killed the explorer next frame (playtest
+    finding #4)."""
+    hero = _instance("explorer", 50, 50)
+    scared = _instance("scared", 200, 200)
+    scared.x, scared.y = 55, 52          # overlapping the explorer (just eaten)
+    ex = _executor_with_room([hero, scared])
+    hero.object_data = {"events": {"collision_with_scared": {"actions": [
+        {"action": "jump_to_start", "parameters": {"target": "other"}},
+        {"action": "change_instance",
+         "parameters": {"object": "monster", "perform_events": "0",
+                        "target": "other"}},
+    ]}}}
+    ex.game_runner.project_data["assets"]["objects"]["monster"] = {
+        "name": "monster", "sprite": "", "events": {}}
+    hero.action_executor = ex
+
+    ex.execute_collision_event(
+        hero, "collision_with_scared", hero.object_data["events"], scared)
+
+    # the eaten monster went HOME first, then became a monster there
+    assert (scared.x, scared.y) == (200, 200)
+    assert scared.object_name == "monster"
+    assert (hero.x, hero.y) == (50, 50)
+    # context cleared after the event (no stale carry-over)
+    assert ex._collision_other is None
+
+
+def test_resolve_other_falls_back_to_instance_attribute():
+    """Harnesses (and the Kivy export convention) set _collision_other on the
+    instance — keep that working as a fallback."""
     hero = _instance("explorer", 50, 50)
     scared = _instance("scared", 200, 200)
     scared.x, scared.y = 260, 230
@@ -113,7 +147,6 @@ def test_jump_to_start_targets_other():
     ex = _executor_with_room([hero, scared])
     ex.execute_jump_to_start_action(hero, {"target": "other"})
     assert (scared.x, scared.y) == (200, 200)
-    assert (hero.x, hero.y) == (50, 50)
 
 
 def test_jump_to_start_default_is_self():
