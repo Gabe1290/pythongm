@@ -64,6 +64,28 @@ Legend: `[x]` pass · `[!]` works with caveat (note it) · `[-]` not testable.
 
 ## Notes
 
+- **Finding #12 (room24 conveyor markers): VERIFIED WORKING — could not
+  reproduce a failure.** Drove all four marker types (move_up/down/left/right)
+  headlessly in room24 on current code: each sets the right velocity when the
+  person is on it, and a multi-frame ride carried the person smoothly up a
+  move_up column (y 384 → 192, staying aligned). The mechanic depends on the
+  question-chain scoping fix (#5, commit 06d1051) — before that, markers fired
+  unconditionally; after it, they fire correctly. **If you saw this on an
+  older build/before pulling #5, re-test now.** If it still fails, note the
+  exact spot: which marker, whether the person actually reaches it, and whether
+  it's grid-aligned when it arrives (a marker only fires when the person is on
+  the 32/8 grid — arriving off-grid from a prior slide would gate it).
+- **Finding #13 (room16 explosions don't destroy walls): FIXED (runtime).**
+  `destroy_at_position` matched only instances within 1px of their ORIGIN, but
+  the explosion clears a 3x3 area by firing at points 16px INSIDE the
+  surrounding walls (inside their bboxes, not at their origins), so no walls
+  opened and the level was inescapable. Now uses GM's `position_destroy`
+  semantics — destroy every instance whose BOUNDING BOX contains the point
+  (radius==0); radius>0 still does the Euclidean sweep. Verified: an explosion
+  on a wall grid clears the surrounding wall block. Regression:
+  `tests/test_destroy_at_position_bbox.py`. **This is a repo runtime fix — it
+  takes effect as soon as you re-run `python main.py`; no re-import needed.**
+
 - **Finding #11 (2026-07-16, FIXED — REGRESSION I introduced in f1dcc86):**
   reordering rooms in the IDE had no effect at Test Game — the original
   imported order still played. Root cause: finding #7's fix baked a
