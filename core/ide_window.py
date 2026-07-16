@@ -345,6 +345,9 @@ class PyGameMakerIDE(QMainWindow):
         edit_menu.addAction(self.create_action(self.tr("&Copy"), "Ctrl+C", self.copy))
         edit_menu.addAction(self.create_action(self.tr("&Paste"), "Ctrl+V", self.paste))
         edit_menu.addAction(self.create_action(self.tr("&Duplicate"), "Ctrl+D", self.duplicate))
+        edit_menu.addSeparator()
+        edit_menu.addAction(self.create_action(self.tr("&Find..."), "Ctrl+F", self.find))
+        edit_menu.addAction(self.create_action(self.tr("Find and &Replace..."), "Ctrl+H", self.find_replace))
 
         # Store references to all asset actions and enable them
         self.import_sprite_action = self.create_action(self.tr("Import &Sprite..."), None, self.import_sprite)
@@ -3069,6 +3072,42 @@ class PyGameMakerIDE(QMainWindow):
                 editor.duplicate_instance()
                 return
         logger.debug("Duplicate action (no room editor active)")
+
+    def _find_target_text_edit(self):
+        """The text-edit widget Find/Replace searches — currently the
+        Script Editor's code_edit (a QPlainTextEdit) only. Room editor
+        scripts / event scripts (execute_code action dialogs, a separate
+        QTextEdit inside gm80_action_dialog.py) aren't wired in yet; see
+        TODO.md's Find/Replace entry."""
+        editor = self._active_editor()
+        if editor is not None and hasattr(editor, 'code_edit'):
+            return editor.code_edit
+        return None
+
+    def _show_find_dialog(self, show_replace: bool):
+        target = self._find_target_text_edit()
+        if target is None:
+            self.status_bar.showMessage(
+                self.tr("Find is only available in the code editor"), 3000)
+            return
+        if getattr(self, '_find_dialog', None) is None:
+            from dialogs.find_replace_dialog import FindReplaceDialog
+            self._find_dialog = FindReplaceDialog(self)
+        self._find_dialog.set_target(target)
+        self._find_dialog.set_replace_visible(show_replace)
+        self._find_dialog.show()
+        self._find_dialog.raise_()
+        self._find_dialog.activateWindow()
+        self._find_dialog.find_field.setFocus()
+        self._find_dialog.find_field.selectAll()
+
+    def find(self):
+        """Edit → Find... (Ctrl+F)."""
+        self._show_find_dialog(show_replace=False)
+
+    def find_replace(self):
+        """Edit → Find and Replace... (Ctrl+H)."""
+        self._show_find_dialog(show_replace=True)
 
     def preferences(self):
             """Open preferences/settings dialog"""
