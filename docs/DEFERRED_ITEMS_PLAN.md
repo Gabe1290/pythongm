@@ -79,7 +79,13 @@ discipline as the match3_2/3 and views sessions:
 
 ## Tier 3 — larger, needs its own finder→verify→fix pass
 
-8. **GMK importer hardening** — the biggest-value item here: reintroduces
+8. **GMK importer hardening** — detailed working plan + checkbox registry:
+   `docs/GMK_IMPORTER_HARDENING_PLAN.md` (written 2026-07-16, includes an
+   unblocking discovery — `treasure.gmk`/`maze_4.gmk` are recoverable
+   from git history despite not being in the working tree — and flags
+   that several of the findings cataloged below look already fixed on a
+   spot check, so re-verification is Step 0, not fixing from memory).
+   The biggest-value item here: reintroduces
    two dropped samples (`treasure`, `maze_4`) and has unusually good
    groundwork already (specific root-cause hypotheses cataloged in
    `TODO.md`'s "GMK importer hardening" section: `if_previous_room_exists`
@@ -157,14 +163,15 @@ Build Game/Build and Run (F7/F8 — thin shells around the existing
 `export.registry.desktop_exporter_for_host`/`_run_export_with_progress`
 machinery, confirmed no new export infrastructure needed as predicted).
 
-Next: start scoping Tier 3. GMK importer hardening is the
-highest-value item there, but budget it as its own multi-session project
-per the note above (its own investigation phase, regenerate both samples
-from `.gmk` sources, catalog every parameter that didn't survive
-conversion) — not a single continuation of this session's rhythm. Kivy
-`execute_code` environment parity (item 9) needs a design decision first
-(build a `game` proxy vs. document the gap) before any code. Asset
-Manager / Clean Project (items 10-11) have no small starting subset
-documented yet — scope Asset Manager first since Clean Project's
-unused-asset detection overlaps it. Re-verify each item's `TODO.md` claim
-against current code before starting it, per the discipline above.
+**2026-07-16, 72% session usage, next session in ~1h25 — stopped here on
+purpose** rather than start Tier 3 mid-budget. `docs/GMK_IMPORTER_HARDENING_PLAN.md`
+is the resume state for item 8: it starts with Step 0 (re-verify every
+cataloged finding — several already look fixed on a spot check) before
+any regeneration/fixing, and has the `treasure.gmk`/`maze_4.gmk`
+git-history recovery command ready to run. Kivy `execute_code`
+environment parity (item 9) needs a design decision first (build a
+`game` proxy vs. document the gap) before any code. Asset Manager / Clean
+Project (items 10-11) have no small starting subset documented yet —
+scope Asset Manager first since Clean Project's unused-asset detection
+overlaps it. Re-verify each item's `TODO.md` claim against current code
+before starting it, per the discipline above.
