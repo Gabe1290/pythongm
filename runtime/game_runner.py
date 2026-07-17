@@ -1905,6 +1905,21 @@ class GameRoom:
         if camera is None:
             return  # nothing to render from -- flat floor/ceiling only
 
+        # Ray origin is the camera instance's sprite CENTER, not its raw
+        # x/y (top-left corner). Every instance in a grid maze -- walls
+        # and the player alike -- sits at exact multiples of cell_size, so
+        # a player at rest against a wall has a raw (x, y) that lands
+        # exactly on a wall-bearing grid line. DDA rays cast from exactly
+        # on that line hit it (or graze past it) almost immediately and
+        # inconsistently depending on ray angle, which read as "there's a
+        # wall right in front of me in every direction" -- a player
+        # correctly stopped against the west wall, still facing east,
+        # would see a wall filling the whole screen instead of the open
+        # corridor actually ahead. Centering the origin in the occupied
+        # cell removes the coincidence.
+        cam_x = camera.x + camera._cached_width / 2
+        cam_y = camera.y + camera._cached_height / 2
+
         wall_color = self.parse_color(cfg.get('wall_color', '#993333'))
         # Half brightness on the y-face (side==1) walls -- a much stronger
         # depth cue than the original 75% factor, which read as barely
@@ -1924,7 +1939,7 @@ class GameRoom:
         for col in range(num_columns):
             ray_offset = -fov_rad / 2 + fov_rad * (col / num_columns)
             ray_angle = facing_screen_rad + ray_offset
-            dist, side, hit = self._cast_ray(camera.x, camera.y, ray_angle, cell_size, render_distance_cells)
+            dist, side, hit = self._cast_ray(cam_x, cam_y, ray_angle, cell_size, render_distance_cells)
             if not hit:
                 # No wall within render distance -- leave the ceiling/floor
                 # fill showing for this column instead of drawing a bogus
