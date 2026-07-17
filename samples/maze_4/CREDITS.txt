@@ -1,0 +1,13 @@
+Asset licensing — maze_4
+========================================
+
+All image, sound, and font assets in this sample were imported from the
+GameMaker 8.x source `maze_4.gmk` (the sibling file in samples/). Their
+provenance is per the original GameMaker game and is not individually
+documented here — see "Maze samples" / the GMK-imported assets note in
+../../docs/ASSET_LICENSES.md in the PyGameMaker repository.
+
+The pygm2 project structure, event wiring, and any pygm2-authored code
+(e.g. imported script bodies) are part of the PyGameMaker project.
+
+Full project-wide asset licensing: see docs/ASSET_LICENSES.md.

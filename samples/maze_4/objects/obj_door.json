@@ -1,0 +1,46 @@
+{
+  "name": "obj_door",
+  "asset_type": "object",
+  "sprite": "sprite_door",
+  "visible": true,
+  "solid": true,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "step": {
+      "actions": [
+        {
+          "action": "test_instance_count",
+          "parameters": {
+            "object": "obj_diamond",
+            "count": "0",
+            "operation": "equal"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "play_sound",
+          "parameters": {
+            "sound": "sound_door",
+            "loop": "0"
+          }
+        },
+        {
+          "action": "destroy_instance",
+          "parameters": {}
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ]
+    }
+  },
+  "imported": true,
+  "created": "2026-07-17T10:51:41.365497",
+  "modified": "2026-07-17T10:51:41.365497",
+  "parent": "wall_corner"
+}

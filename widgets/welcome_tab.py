@@ -41,6 +41,7 @@ SAMPLE_PROJECTS: List[Tuple[str, str]] = [
     ("samples/maze_1", "Maze — Level 1"),
     ("samples/maze_2", "Maze — Level 2"),
     ("samples/maze_3", "Maze — Level 3"),
+    ("samples/maze_4", "Maze — Level 4"),
     ("samples/plateforme_1", "Platform — Level 1"),
     ("samples/plateforme_2", "Platform — Level 2"),
     ("samples/plateforme_3", "Platform — Level 3"),
@@ -49,14 +50,18 @@ SAMPLE_PROJECTS: List[Tuple[str, str]] = [
     ("samples/match3_3", "Match-3 — Level 3"),
     ("samples/views_1", "Views — Level 1"),
     ("samples/views_2", "Views — Level 2"),
-    # `treasure` and `maze_4` were dropped from the bundled set after
-    # rc.12 user testing surfaced enough GMK-import edge cases (bad
-    # action parameters, sprite issues, half-converted events) that
-    # they couldn't be relied on as "click and play" demonstrators.
-    # Reintroduce when the importer is hardened — see TODO.md
-    # ("GMK importer hardening"). plateforme_1 was added back once the
-    # function_name-based dispatch landed and gravity/collision actions
-    # round-tripped cleanly.
+    ("samples/treasure", "Treasure"),
+    # `treasure` and `maze_4` were dropped after rc.12 user testing, then
+    # RE-ADDED 2026-07-16 once the GMK importer hardening closed the bugs
+    # that had made them unreliable (GM "Applies to" targeting, sprite
+    # transparency, the Sleep mis-map, question-chain scoping, nokey/step
+    # order, destroy_at_position bbox, execute_script UI metadata — see
+    # docs/GMK_IMPORTER_HARDENING_PLAN.md and the per-sample testing passes
+    # docs/{treasure,maze_4}_testing_pass.md). maze_4 carries one hand-patch
+    # (snap_to_grid on obj_person's wall collisions — pygm2 slide-to-contact
+    # vs GM revert-on-block, the maze_1 precedent); it is a genuine gameplay
+    # fix, documented in that sample's README. plateforme_1 was likewise
+    # added back once its actions round-tripped cleanly.
 ]
 
 

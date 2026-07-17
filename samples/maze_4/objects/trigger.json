@@ -1,0 +1,42 @@
+{
+  "name": "trigger",
+  "asset_type": "object",
+  "sprite": "sprite_trigger",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "collision_with_obj_person": {
+      "actions": [
+        {
+          "action": "play_sound",
+          "parameters": {
+            "sound": "sound_explode",
+            "loop": "0"
+          }
+        },
+        {
+          "action": "change_instance",
+          "parameters": {
+            "object": "explosion",
+            "perform_events": "1",
+            "target": "object",
+            "target_object": "bomb"
+          }
+        },
+        {
+          "action": "destroy_instance",
+          "parameters": {
+            "target": "object",
+            "target_object": "trigger"
+          }
+        }
+      ],
+      "target_object": "obj_person"
+    }
+  },
+  "imported": true,
+  "created": "2026-07-17T10:51:41.365497",
+  "modified": "2026-07-17T10:51:41.365497"
+}

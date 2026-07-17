@@ -1,0 +1,82 @@
+{
+  "name": "obj_goal",
+  "asset_type": "object",
+  "sprite": "sprite_goal",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "collision_with_obj_person": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "40",
+            "relative": true
+          }
+        },
+        {
+          "action": "play_sound",
+          "parameters": {
+            "sound": "sound_goal",
+            "loop": "0"
+          }
+        },
+        {
+          "action": "sleep",
+          "parameters": {
+            "milliseconds": "1000"
+          }
+        },
+        {
+          "action": "if_next_room_exists",
+          "parameters": {}
+        },
+        {
+          "action": "next_room",
+          "parameters": {
+            "transition": "0"
+          }
+        },
+        {
+          "action": "else_action",
+          "parameters": {}
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "show_message",
+          "parameters": {
+            "message": "CONGRATULATIONSYou finished all levels."
+          }
+        },
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "250",
+            "relative": true
+          }
+        },
+        {
+          "action": "show_highscore",
+          "parameters": {}
+        },
+        {
+          "action": "restart_game",
+          "parameters": {}
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_person"
+    }
+  },
+  "imported": true,
+  "created": "2026-07-17T10:51:41.365497",
+  "modified": "2026-07-17T10:51:41.365497"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "point",
+  "asset_type": "object",
+  "sprite": "treasure_sprite",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {},
+  "imported": true,
+  "created": "2026-07-17T10:51:41.696115",
+  "modified": "2026-07-17T10:51:41.696115"
+}

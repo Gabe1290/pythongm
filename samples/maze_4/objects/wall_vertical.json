@@ -1,0 +1,14 @@
+{
+  "name": "wall_vertical",
+  "asset_type": "object",
+  "sprite": "sprite_wall_vertical",
+  "visible": true,
+  "solid": true,
+  "persistent": false,
+  "depth": 0,
+  "events": {},
+  "imported": true,
+  "created": "2026-07-17T10:51:41.365497",
+  "modified": "2026-07-17T10:51:41.365497",
+  "parent": "wall_corner"
+}

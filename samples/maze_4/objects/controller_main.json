@@ -1,0 +1,114 @@
+{
+  "name": "controller_main",
+  "asset_type": "object",
+  "sprite": "",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "keyboard": {
+      "r": {
+        "actions": [
+          {
+            "action": "play_sound",
+            "parameters": {
+              "sound": "sound_dead",
+              "loop": "0"
+            }
+          },
+          {
+            "action": "set_lives",
+            "parameters": {
+              "value": "-1",
+              "relative": true
+            }
+          },
+          {
+            "action": "restart_room",
+            "parameters": {
+              "transition": "0"
+            }
+          }
+        ]
+      },
+      "p": {
+        "actions": [
+          {
+            "action": "previous_room",
+            "parameters": {}
+          }
+        ]
+      },
+      "n": {
+        "actions": [
+          {
+            "action": "next_room",
+            "parameters": {
+              "transition": "0"
+            }
+          }
+        ]
+      }
+    },
+    "no_more_lives": {
+      "actions": [
+        {
+          "action": "show_highscore",
+          "parameters": {}
+        },
+        {
+          "action": "restart_game",
+          "parameters": {}
+        }
+      ]
+    },
+    "draw": {
+      "actions": [
+        {
+          "action": "set_draw_font",
+          "parameters": {
+            "font": "score_font",
+            "align": "0"
+          }
+        },
+        {
+          "action": "set_draw_color",
+          "parameters": {
+            "color": "255"
+          }
+        },
+        {
+          "action": "draw_score",
+          "parameters": {
+            "x": "300",
+            "y": "4",
+            "caption": "Score: ",
+            "relative": true
+          }
+        },
+        {
+          "action": "draw_text",
+          "parameters": {
+            "text": "Lives:",
+            "x": "8",
+            "y": "4",
+            "relative": true
+          }
+        },
+        {
+          "action": "draw_lives",
+          "parameters": {
+            "x": "70",
+            "y": "4",
+            "image": "sprite_lives",
+            "relative": true
+          }
+        }
+      ]
+    }
+  },
+  "imported": true,
+  "created": "2026-07-17T10:51:41.365497",
+  "modified": "2026-07-17T10:51:41.365497"
+}

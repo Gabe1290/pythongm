@@ -102,20 +102,21 @@ comparison) that hadn't been cleaned up. Their `.gmk` sources
 tracked, so they can be regenerated and re-added once that cleanup is
 done — see "Regenerating from `.gmk` originals" below.
 
-Two further samples (`treasure/` and `maze_4/`) shipped briefly in
-rc.12 but were dropped after user testing surfaced enough GMK-import
-edge cases (bad action parameters, sprite issues, half-converted
-events) that the IDE could only partially round-trip them. Both can
-be reintroduced by running the regeneration steps below against the
-original `.gmk` source once the importer is hardened against those
-cases — see `TODO.md` ("GMK importer hardening") and
-`docs/GMK_IMPORTER_HARDENING_PLAN.md` for the investigation recipe and
-current status. **2026-07-16 update:** re-importing both fresh
-(`samples/treasure.gmk`, `samples/maze_4.gmk`, both now tracked again —
-see below) produces zero unmapped-action stubs and no obvious parameter
-mismatches, a strong sign the importer has closed most of the gaps since
-these were dropped — but neither has been fully re-validated (visual
-playtest, full test-game smoke run) or re-added to the bundled set yet.
+`treasure/` and `maze_4/` shipped briefly in rc.12, were **dropped** after
+user testing surfaced GMK-import bugs (bad action parameters, sprite issues,
+half-converted events), and were **RE-ADDED on 2026-07-16** once the importer
+hardening closed those bugs and a full manual playtest passed. That hardening
+pass fixed, among others: GM's "Applies to" targeting (it was never imported —
+every action ran against self), sprite transparency (a solid sprite could
+decode fully transparent), GM's Sleep action being mis-mapped to a conditional,
+question-chain conditional scoping, `nokey`-vs-step event order (conveyors),
+`destroy_at_position` bounding-box semantics (bombs destroying walls), and the
+`execute_script` action having no editor UI. See
+`docs/GMK_IMPORTER_HARDENING_PLAN.md` and the per-sample testing passes
+`docs/treasure_testing_pass.md` / `docs/maze_4_testing_pass.md`. `maze_4`
+carries one documented gameplay hand-patch (`snap_to_grid` on `obj_person`'s
+wall collisions — pygm2 slide-to-contact vs GM revert-on-block, the `maze_1`
+precedent); `treasure` needed none.
 
 ## Regenerating from `.gmk` originals
 

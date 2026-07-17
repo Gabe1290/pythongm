@@ -1,0 +1,493 @@
+{
+  "name": "obj_person",
+  "asset_type": "object",
+  "sprite": "sprite_person",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": -5,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "sprite_person",
+            "subimage": "0",
+            "speed": "0"
+          }
+        }
+      ]
+    },
+    "step": {
+      "actions": [
+        {
+          "action": "test_alignment",
+          "parameters": {
+            "hsnap": "32",
+            "vsnap": "8"
+          }
+        },
+        {
+          "action": "if_collision",
+          "parameters": {
+            "object": "move_up",
+            "x": "0",
+            "y": "0",
+            "relative": true
+          }
+        },
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "up",
+            "speed": "8"
+          }
+        },
+        {
+          "action": "test_alignment",
+          "parameters": {
+            "hsnap": "32",
+            "vsnap": "8"
+          }
+        },
+        {
+          "action": "if_collision",
+          "parameters": {
+            "object": "move_down",
+            "x": "0",
+            "y": "0",
+            "relative": true
+          }
+        },
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "down",
+            "speed": "8"
+          }
+        },
+        {
+          "action": "test_alignment",
+          "parameters": {
+            "hsnap": "8",
+            "vsnap": "32"
+          }
+        },
+        {
+          "action": "if_collision",
+          "parameters": {
+            "object": "move_left",
+            "x": "0",
+            "y": "0",
+            "relative": true
+          }
+        },
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "left",
+            "speed": "8"
+          }
+        },
+        {
+          "action": "test_alignment",
+          "parameters": {
+            "hsnap": "8",
+            "vsnap": "32"
+          }
+        },
+        {
+          "action": "if_collision",
+          "parameters": {
+            "object": "move_right",
+            "x": "0",
+            "y": "0",
+            "relative": true
+          }
+        },
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "right",
+            "speed": "8"
+          }
+        }
+      ]
+    },
+    "collision_with_block": {
+      "actions": [
+        {
+          "action": "comment",
+          "parameters": {
+            "text": "Do nothing, but notify it"
+          }
+        }
+      ],
+      "target_object": "block"
+    },
+    "collision_with_monster_all": {
+      "actions": [
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "afraid",
+            "value": "1",
+            "operation": "equal",
+            "target": "other"
+          }
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "play_sound",
+          "parameters": {
+            "sound": "sound_monster",
+            "loop": "0"
+          }
+        },
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "50",
+            "relative": true
+          }
+        },
+        {
+          "action": "jump_to_start",
+          "parameters": {
+            "target": "other"
+          }
+        },
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "steps": "1",
+            "alarm_number": "0",
+            "target": "other"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        },
+        {
+          "action": "else_action",
+          "parameters": {}
+        },
+        {
+          "action": "start_block",
+          "parameters": {}
+        },
+        {
+          "action": "play_sound",
+          "parameters": {
+            "sound": "sound_dead",
+            "loop": "0"
+          }
+        },
+        {
+          "action": "sleep",
+          "parameters": {
+            "milliseconds": "1000"
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "-1",
+            "relative": true
+          }
+        },
+        {
+          "action": "restart_room",
+          "parameters": {
+            "transition": "0"
+          }
+        },
+        {
+          "action": "end_block",
+          "parameters": {}
+        }
+      ],
+      "target_object": "monster_all"
+    },
+    "collision_with_monster_ud": {
+      "actions": [
+        {
+          "action": "play_sound",
+          "parameters": {
+            "sound": "sound_dead",
+            "loop": "0"
+          }
+        },
+        {
+          "action": "sleep",
+          "parameters": {
+            "milliseconds": "1000"
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "-1",
+            "relative": true
+          }
+        },
+        {
+          "action": "restart_room",
+          "parameters": {
+            "transition": "0"
+          }
+        }
+      ],
+      "target_object": "monster_ud"
+    },
+    "collision_with_monster_lr": {
+      "actions": [
+        {
+          "action": "play_sound",
+          "parameters": {
+            "sound": "sound_dead",
+            "loop": "0"
+          }
+        },
+        {
+          "action": "sleep",
+          "parameters": {
+            "milliseconds": "1000"
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "-1",
+            "relative": true
+          }
+        },
+        {
+          "action": "restart_room",
+          "parameters": {
+            "transition": "0"
+          }
+        }
+      ],
+      "target_object": "monster_lr"
+    },
+    "collision_with_wall_corner": {
+      "actions": [
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "stop",
+            "speed": "8"
+          }
+        },
+        {
+          "action": "snap_to_grid",
+          "parameters": {
+            "grid_size": "32"
+          }
+        }
+      ],
+      "target_object": "wall_corner"
+    },
+    "keyboard": {
+      "down": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_block",
+            "parameters": {}
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "down",
+              "speed": "4"
+            }
+          },
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "sprite_person",
+              "subimage": "0",
+              "speed": "0"
+            }
+          },
+          {
+            "action": "end_block",
+            "parameters": {}
+          }
+        ]
+      },
+      "right": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_block",
+            "parameters": {}
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "right",
+              "speed": "4"
+            }
+          },
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "sprite_person",
+              "subimage": "2",
+              "speed": "0"
+            }
+          },
+          {
+            "action": "end_block",
+            "parameters": {}
+          }
+        ]
+      },
+      "up": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_block",
+            "parameters": {}
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "up",
+              "speed": "4"
+            }
+          },
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "sprite_person",
+              "subimage": "1",
+              "speed": "0"
+            }
+          },
+          {
+            "action": "end_block",
+            "parameters": {}
+          }
+        ]
+      },
+      "left": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_block",
+            "parameters": {}
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "left",
+              "speed": "4"
+            }
+          },
+          {
+            "action": "set_sprite",
+            "parameters": {
+              "sprite": "sprite_person",
+              "subimage": "3",
+              "speed": "0"
+            }
+          },
+          {
+            "action": "end_block",
+            "parameters": {}
+          }
+        ]
+      },
+      "nokey": {
+        "actions": [
+          {
+            "action": "test_alignment",
+            "parameters": {
+              "hsnap": "32",
+              "vsnap": "32"
+            }
+          },
+          {
+            "action": "start_moving_direction",
+            "parameters": {
+              "directions": "stop",
+              "speed": "8"
+            }
+          }
+        ]
+      }
+    },
+    "collision_with_wall_horizontal": {
+      "actions": [
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "stop",
+            "speed": "8"
+          }
+        },
+        {
+          "action": "snap_to_grid",
+          "parameters": {
+            "grid_size": "32"
+          }
+        }
+      ],
+      "target_object": "wall_horizontal"
+    },
+    "collision_with_wall_vertical": {
+      "actions": [
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": "stop",
+            "speed": "8"
+          }
+        },
+        {
+          "action": "snap_to_grid",
+          "parameters": {
+            "grid_size": "32"
+          }
+        }
+      ],
+      "target_object": "wall_vertical"
+    }
+  },
+  "imported": true,
+  "created": "2026-07-17T10:51:41.365497",
+  "modified": "2026-07-17T10:51:41.365497"
+}

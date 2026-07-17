@@ -1,0 +1,65 @@
+{
+  "name": "ring",
+  "asset_type": "object",
+  "sprite": "sprite_ring",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "collision_with_obj_person": {
+      "actions": [
+        {
+          "action": "play_sound",
+          "parameters": {
+            "sound": "sound_diamond",
+            "loop": "0"
+          }
+        },
+        {
+          "action": "destroy_instance",
+          "parameters": {}
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "sprite_monster_afraid",
+            "subimage": "-1",
+            "speed": "0",
+            "target": "object",
+            "target_object": "monster_all"
+          }
+        },
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "afraid",
+            "value": "true",
+            "target": "object",
+            "target_object": "monster_all"
+          }
+        },
+        {
+          "action": "set_alarm",
+          "parameters": {
+            "steps": "300",
+            "alarm_number": "0",
+            "target": "object",
+            "target_object": "monster_all"
+          }
+        },
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "20",
+            "relative": true
+          }
+        }
+      ],
+      "target_object": "obj_person"
+    }
+  },
+  "imported": true,
+  "created": "2026-07-17T10:51:41.365497",
+  "modified": "2026-07-17T10:51:41.365497"
+}

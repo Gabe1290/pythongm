@@ -1,0 +1,37 @@
+{
+  "name": "hole",
+  "asset_type": "object",
+  "sprite": "sprite_hole",
+  "visible": true,
+  "solid": true,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "collision_with_block": {
+      "actions": [
+        {
+          "action": "play_sound",
+          "parameters": {
+            "sound": "sound_hole",
+            "loop": "0"
+          }
+        },
+        {
+          "action": "destroy_instance",
+          "parameters": {}
+        },
+        {
+          "action": "destroy_instance",
+          "parameters": {
+            "target": "other"
+          }
+        }
+      ],
+      "target_object": "block"
+    }
+  },
+  "imported": true,
+  "created": "2026-07-17T10:51:41.365497",
+  "modified": "2026-07-17T10:51:41.365497",
+  "parent": "wall_corner"
+}

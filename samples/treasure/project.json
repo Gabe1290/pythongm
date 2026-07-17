@@ -1,0 +1,1176 @@
+{
+  "name": "treasure",
+  "version": "1.0.0",
+  "created": "2026-07-17T10:51:41.596057",
+  "modified": "2026-07-17T10:51:41.596057",
+  "settings": {
+    "window_title": "",
+    "window_width": 480,
+    "window_height": 480,
+    "room_speed": 20,
+    "fullscreen": false,
+    "starting_lives": 3,
+    "show_lives_in_caption": false,
+    "starting_score": 0,
+    "show_score_in_caption": false,
+    "starting_health": 100,
+    "show_health_in_caption": false,
+    "blockly_preset": "full"
+  },
+  "assets": {
+    "sprites": {
+      "expl_left": {
+        "name": "expl_left",
+        "asset_type": "sprite",
+        "file_path": "sprites/expl_left.png",
+        "width": 128,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 4,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.596057",
+        "modified": "2026-07-17T10:51:41.596057"
+      },
+      "expl_right": {
+        "name": "expl_right",
+        "asset_type": "sprite",
+        "file_path": "sprites/expl_right.png",
+        "width": 128,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 4,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.596057",
+        "modified": "2026-07-17T10:51:41.596057"
+      },
+      "expl_up": {
+        "name": "expl_up",
+        "asset_type": "sprite",
+        "file_path": "sprites/expl_up.png",
+        "width": 128,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 4,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.596057",
+        "modified": "2026-07-17T10:51:41.596057"
+      },
+      "expl_down": {
+        "name": "expl_down",
+        "asset_type": "sprite",
+        "file_path": "sprites/expl_down.png",
+        "width": 128,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 4,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.596057",
+        "modified": "2026-07-17T10:51:41.596057"
+      },
+      "monster": {
+        "name": "monster",
+        "asset_type": "sprite",
+        "file_path": "sprites/monster.png",
+        "width": 128,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 4,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.596057",
+        "modified": "2026-07-17T10:51:41.596057"
+      },
+      "treasure_sprite": {
+        "name": "treasure_sprite",
+        "asset_type": "sprite",
+        "file_path": "sprites/treasure_sprite.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.596057",
+        "modified": "2026-07-17T10:51:41.596057"
+      },
+      "wall_sprite": {
+        "name": "wall_sprite",
+        "asset_type": "sprite",
+        "file_path": "sprites/wall_sprite.png",
+        "width": 64,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 2,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.596057",
+        "modified": "2026-07-17T10:51:41.596057"
+      },
+      "special_sprite": {
+        "name": "special_sprite",
+        "asset_type": "sprite",
+        "file_path": "sprites/special_sprite.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.596057",
+        "modified": "2026-07-17T10:51:41.596057"
+      },
+      "bonus_sprite": {
+        "name": "bonus_sprite",
+        "asset_type": "sprite",
+        "file_path": "sprites/bonus_sprite.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.596057",
+        "modified": "2026-07-17T10:51:41.596057"
+      },
+      "afraid": {
+        "name": "afraid",
+        "asset_type": "sprite",
+        "file_path": "sprites/afraid.png",
+        "width": 128,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": true,
+        "frames": 4,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "strip_h",
+        "speed": 10.0,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.596057",
+        "modified": "2026-07-17T10:51:41.596057"
+      }
+    },
+    "sounds": {
+      "beeb": {
+        "name": "beeb",
+        "asset_type": "sound",
+        "file_path": "sounds/beeb.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.615428",
+        "modified": "2026-07-17T10:51:41.615428"
+      },
+      "dead": {
+        "name": "dead",
+        "asset_type": "sound",
+        "file_path": "sounds/dead.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.615428",
+        "modified": "2026-07-17T10:51:41.615428"
+      },
+      "bonus": {
+        "name": "bonus",
+        "asset_type": "sound",
+        "file_path": "sounds/bonus.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.615428",
+        "modified": "2026-07-17T10:51:41.615428"
+      },
+      "won": {
+        "name": "won",
+        "asset_type": "sound",
+        "file_path": "sounds/won.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.615428",
+        "modified": "2026-07-17T10:51:41.615428"
+      },
+      "catch": {
+        "name": "catch",
+        "asset_type": "sound",
+        "file_path": "sounds/catch.wav",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.615428",
+        "modified": "2026-07-17T10:51:41.615428"
+      },
+      "music": {
+        "name": "music",
+        "asset_type": "sound",
+        "file_path": "sounds/music.mid",
+        "volume": 1.0,
+        "loop": false,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.615428",
+        "modified": "2026-07-17T10:51:41.615428"
+      }
+    },
+    "backgrounds": {
+      "background": {
+        "name": "background",
+        "asset_type": "background",
+        "file_path": "backgrounds/background.png",
+        "width": 480,
+        "height": 480,
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "use_as_tileset": false,
+        "tile_width": 0,
+        "tile_height": 0,
+        "h_offset": 16,
+        "v_offset": 16,
+        "h_sep": 0,
+        "v_sep": 0,
+        "imported": true,
+        "created": "2026-07-17T10:51:41.615428",
+        "modified": "2026-07-17T10:51:41.615428"
+      }
+    },
+    "objects": {
+      "explorer": {
+        "name": "explorer",
+        "asset_type": "object",
+        "sprite": "expl_up",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": -1,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "expl_up",
+                  "subimage": "0",
+                  "speed": "0"
+                }
+              }
+            ]
+          },
+          "step": {
+            "actions": [
+              {
+                "action": "test_instance_count",
+                "parameters": {
+                  "object": "point",
+                  "count": "0",
+                  "operation": "equal"
+                }
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "play_sound",
+                "parameters": {
+                  "sound": "won",
+                  "loop": "0"
+                }
+              },
+              {
+                "action": "sleep",
+                "parameters": {
+                  "milliseconds": "2000"
+                }
+              },
+              {
+                "action": "if_next_room_exists",
+                "parameters": {}
+              },
+              {
+                "action": "next_room",
+                "parameters": {
+                  "transition": "0"
+                }
+              },
+              {
+                "action": "else_action",
+                "parameters": {}
+              },
+              {
+                "action": "start_block",
+                "parameters": {}
+              },
+              {
+                "action": "show_highscore",
+                "parameters": {}
+              },
+              {
+                "action": "restart_game",
+                "parameters": {}
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              },
+              {
+                "action": "end_block",
+                "parameters": {}
+              }
+            ]
+          },
+          "collision_with_pil": {
+            "actions": [
+              {
+                "action": "play_sound",
+                "parameters": {
+                  "sound": "bonus",
+                  "loop": "0"
+                }
+              },
+              {
+                "action": "destroy_instance",
+                "parameters": {
+                  "target": "other"
+                }
+              },
+              {
+                "action": "change_instance",
+                "parameters": {
+                  "object": "monster",
+                  "perform_events": "0",
+                  "target": "object",
+                  "target_object": "scared"
+                }
+              },
+              {
+                "action": "change_instance",
+                "parameters": {
+                  "object": "scared",
+                  "perform_events": "0",
+                  "target": "object",
+                  "target_object": "monster"
+                }
+              },
+              {
+                "action": "set_alarm",
+                "parameters": {
+                  "steps": "160",
+                  "alarm_number": "0",
+                  "target": "object",
+                  "target_object": "scared"
+                }
+              }
+            ],
+            "target_object": "pil"
+          },
+          "collision_with_point": {
+            "actions": [
+              {
+                "action": "destroy_instance",
+                "parameters": {
+                  "target": "other"
+                }
+              },
+              {
+                "action": "play_sound",
+                "parameters": {
+                  "sound": "beeb",
+                  "loop": "0"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "10",
+                  "relative": true
+                }
+              }
+            ],
+            "target_object": "point"
+          },
+          "collision_with_wall": {
+            "actions": [
+              {
+                "action": "start_moving_direction",
+                "parameters": {
+                  "directions": "stop",
+                  "speed": "0"
+                }
+              },
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "image_speed",
+                  "value": "0"
+                }
+              }
+            ],
+            "target_object": "wall"
+          },
+          "collision_with_scared": {
+            "actions": [
+              {
+                "action": "play_sound",
+                "parameters": {
+                  "sound": "catch",
+                  "loop": "0"
+                }
+              },
+              {
+                "action": "jump_to_start",
+                "parameters": {
+                  "target": "other"
+                }
+              },
+              {
+                "action": "change_instance",
+                "parameters": {
+                  "object": "monster",
+                  "perform_events": "0",
+                  "target": "other"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "100",
+                  "relative": true
+                }
+              }
+            ],
+            "target_object": "scared"
+          },
+          "collision_with_monster": {
+            "actions": [
+              {
+                "action": "play_sound",
+                "parameters": {
+                  "sound": "dead",
+                  "loop": "0"
+                }
+              },
+              {
+                "action": "sleep",
+                "parameters": {
+                  "milliseconds": "1500"
+                }
+              },
+              {
+                "action": "jump_to_start",
+                "parameters": {
+                  "target": "object",
+                  "target_object": "monster"
+                }
+              },
+              {
+                "action": "jump_to_start",
+                "parameters": {
+                  "target": "object",
+                  "target_object": "scared"
+                }
+              },
+              {
+                "action": "start_moving_direction",
+                "parameters": {
+                  "directions": "stop",
+                  "speed": "0"
+                }
+              },
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "image_speed",
+                  "value": "0"
+                }
+              },
+              {
+                "action": "jump_to_start",
+                "parameters": {}
+              },
+              {
+                "action": "set_lives",
+                "parameters": {
+                  "value": "-1",
+                  "relative": true
+                }
+              }
+            ],
+            "target_object": "monster"
+          },
+          "keyboard": {
+            "down": {
+              "actions": [
+                {
+                  "action": "check_empty",
+                  "parameters": {
+                    "x": "0",
+                    "y": "4",
+                    "objects": "solid",
+                    "relative": true
+                  }
+                },
+                {
+                  "action": "start_block",
+                  "parameters": {}
+                },
+                {
+                  "action": "start_moving_direction",
+                  "parameters": {
+                    "directions": "down",
+                    "speed": "4"
+                  }
+                },
+                {
+                  "action": "set_sprite",
+                  "parameters": {
+                    "sprite": "expl_down",
+                    "subimage": "-1",
+                    "speed": "0.5"
+                  }
+                },
+                {
+                  "action": "end_block",
+                  "parameters": {}
+                }
+              ]
+            },
+            "right": {
+              "actions": [
+                {
+                  "action": "check_empty",
+                  "parameters": {
+                    "x": "4",
+                    "y": "0",
+                    "objects": "solid",
+                    "relative": true
+                  }
+                },
+                {
+                  "action": "start_block",
+                  "parameters": {}
+                },
+                {
+                  "action": "start_moving_direction",
+                  "parameters": {
+                    "directions": "right",
+                    "speed": "4"
+                  }
+                },
+                {
+                  "action": "set_sprite",
+                  "parameters": {
+                    "sprite": "expl_right",
+                    "subimage": "-1",
+                    "speed": "0.5"
+                  }
+                },
+                {
+                  "action": "end_block",
+                  "parameters": {}
+                }
+              ]
+            },
+            "up": {
+              "actions": [
+                {
+                  "action": "check_empty",
+                  "parameters": {
+                    "x": "0",
+                    "y": "-4",
+                    "objects": "solid",
+                    "relative": true
+                  }
+                },
+                {
+                  "action": "start_block",
+                  "parameters": {}
+                },
+                {
+                  "action": "start_moving_direction",
+                  "parameters": {
+                    "directions": "up",
+                    "speed": "4"
+                  }
+                },
+                {
+                  "action": "set_sprite",
+                  "parameters": {
+                    "sprite": "expl_up",
+                    "subimage": "-1",
+                    "speed": "0.5"
+                  }
+                },
+                {
+                  "action": "end_block",
+                  "parameters": {}
+                }
+              ]
+            },
+            "left": {
+              "actions": [
+                {
+                  "action": "check_empty",
+                  "parameters": {
+                    "x": "-4",
+                    "y": "0",
+                    "objects": "solid",
+                    "relative": true
+                  }
+                },
+                {
+                  "action": "start_block",
+                  "parameters": {}
+                },
+                {
+                  "action": "start_moving_direction",
+                  "parameters": {
+                    "directions": "left",
+                    "speed": "4"
+                  }
+                },
+                {
+                  "action": "set_sprite",
+                  "parameters": {
+                    "sprite": "expl_left",
+                    "subimage": "-1",
+                    "speed": "0.5"
+                  }
+                },
+                {
+                  "action": "end_block",
+                  "parameters": {}
+                }
+              ]
+            }
+          },
+          "no_more_lives": {
+            "actions": [
+              {
+                "action": "show_highscore",
+                "parameters": {}
+              },
+              {
+                "action": "restart_game",
+                "parameters": {}
+              }
+            ]
+          },
+          "game_start": {
+            "actions": [
+              {
+                "action": "set_lives",
+                "parameters": {
+                  "value": "3"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "0"
+                }
+              },
+              {
+                "action": "set_window_caption",
+                "parameters": {
+                  "score": "1",
+                  "score_caption": "Score: ",
+                  "lives": "1",
+                  "lives_caption": "Lives: ",
+                  "health": "0",
+                  "health_caption": "health: "
+                }
+              },
+              {
+                "action": "play_sound",
+                "parameters": {
+                  "sound": "music",
+                  "loop": "1"
+                }
+              }
+            ]
+          },
+          "outside_room": {
+            "actions": [
+              {
+                "action": "wrap_around_room",
+                "parameters": {
+                  "direction": "2"
+                }
+              }
+            ]
+          }
+        },
+        "imported": true,
+        "created": "2026-07-17T10:51:41.696115",
+        "modified": "2026-07-17T10:51:41.696115"
+      },
+      "monster": {
+        "name": "monster",
+        "asset_type": "object",
+        "sprite": "monster",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": -2,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "monster",
+                  "subimage": "0",
+                  "speed": "0"
+                }
+              },
+              {
+                "action": "start_moving_direction",
+                "parameters": {
+                  "directions": [
+                    "down",
+                    "left",
+                    "right",
+                    "up"
+                  ],
+                  "speed": "4"
+                }
+              }
+            ]
+          },
+          "end_step": {
+            "actions": [
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "direction",
+                  "value": "0",
+                  "operation": "equal"
+                }
+              },
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "image_index",
+                  "value": "2"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "direction",
+                  "value": "90",
+                  "operation": "equal"
+                }
+              },
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "image_index",
+                  "value": "3"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "direction",
+                  "value": "180",
+                  "operation": "equal"
+                }
+              },
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "image_index",
+                  "value": "0"
+                }
+              },
+              {
+                "action": "test_variable",
+                "parameters": {
+                  "variable": "direction",
+                  "value": "270",
+                  "operation": "equal"
+                }
+              },
+              {
+                "action": "set_variable",
+                "parameters": {
+                  "variable": "image_index",
+                  "value": "1"
+                }
+              }
+            ]
+          },
+          "step": {
+            "actions": [
+              {
+                "action": "test_alignment",
+                "parameters": {
+                  "hsnap": "32",
+                  "vsnap": "32"
+                }
+              },
+              {
+                "action": "execute_script",
+                "parameters": {
+                  "script": "adapt_direction"
+                }
+              }
+            ]
+          },
+          "collision_with_wall": {
+            "actions": [
+              {
+                "action": "reverse_horizontal",
+                "parameters": {}
+              },
+              {
+                "action": "reverse_vertical",
+                "parameters": {}
+              },
+              {
+                "action": "execute_script",
+                "parameters": {
+                  "script": "adapt_direction"
+                }
+              }
+            ],
+            "target_object": "wall"
+          },
+          "outside_room": {
+            "actions": [
+              {
+                "action": "wrap_around_room",
+                "parameters": {
+                  "direction": "2"
+                }
+              }
+            ]
+          }
+        },
+        "imported": true,
+        "created": "2026-07-17T10:51:41.696115",
+        "modified": "2026-07-17T10:51:41.696115"
+      },
+      "scared": {
+        "name": "scared",
+        "asset_type": "object",
+        "sprite": "afraid",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "alarm_0": {
+            "actions": [
+              {
+                "action": "change_instance",
+                "parameters": {
+                  "object": "monster",
+                  "perform_events": "0"
+                }
+              }
+            ]
+          }
+        },
+        "imported": true,
+        "created": "2026-07-17T10:51:41.696115",
+        "modified": "2026-07-17T10:51:41.696115",
+        "parent": "monster"
+      },
+      "wall": {
+        "name": "wall",
+        "asset_type": "object",
+        "sprite": "wall_sprite",
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "wall_sprite",
+                  "subimage": "0",
+                  "speed": "0"
+                }
+              },
+              {
+                "action": "test_chance",
+                "parameters": {
+                  "sides": "20"
+                }
+              },
+              {
+                "action": "set_sprite",
+                "parameters": {
+                  "sprite": "wall_sprite",
+                  "subimage": "1",
+                  "speed": "0"
+                }
+              }
+            ]
+          }
+        },
+        "imported": true,
+        "created": "2026-07-17T10:51:41.696115",
+        "modified": "2026-07-17T10:51:41.696115"
+      },
+      "point": {
+        "name": "point",
+        "asset_type": "object",
+        "sprite": "treasure_sprite",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-07-17T10:51:41.696115",
+        "modified": "2026-07-17T10:51:41.696115"
+      },
+      "pil": {
+        "name": "pil",
+        "asset_type": "object",
+        "sprite": "special_sprite",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": true,
+        "created": "2026-07-17T10:51:41.696115",
+        "modified": "2026-07-17T10:51:41.696115"
+      },
+      "bonus": {
+        "name": "bonus",
+        "asset_type": "object",
+        "sprite": "bonus_sprite",
+        "visible": true,
+        "solid": false,
+        "persistent": false,
+        "depth": 0,
+        "events": {
+          "create": {
+            "actions": [
+              {
+                "action": "jump_to_position",
+                "parameters": {
+                  "x": "-1000",
+                  "y": "0"
+                }
+              },
+              {
+                "action": "set_alarm",
+                "parameters": {
+                  "steps": "500",
+                  "alarm_number": "0"
+                }
+              }
+            ]
+          },
+          "alarm_1": {
+            "actions": [
+              {
+                "action": "jump_to_position",
+                "parameters": {
+                  "x": "-1000",
+                  "y": "0"
+                }
+              },
+              {
+                "action": "set_alarm",
+                "parameters": {
+                  "steps": "500",
+                  "alarm_number": "0"
+                }
+              }
+            ]
+          },
+          "alarm_0": {
+            "actions": [
+              {
+                "action": "jump_to_start",
+                "parameters": {}
+              },
+              {
+                "action": "set_alarm",
+                "parameters": {
+                  "steps": "200",
+                  "alarm_number": "1"
+                }
+              }
+            ]
+          },
+          "collision_with_explorer": {
+            "actions": [
+              {
+                "action": "play_sound",
+                "parameters": {
+                  "sound": "bonus",
+                  "loop": "0"
+                }
+              },
+              {
+                "action": "set_score",
+                "parameters": {
+                  "value": "200",
+                  "relative": true
+                }
+              },
+              {
+                "action": "jump_to_position",
+                "parameters": {
+                  "x": "-1000",
+                  "y": "0"
+                }
+              },
+              {
+                "action": "set_alarm",
+                "parameters": {
+                  "steps": "500",
+                  "alarm_number": "0"
+                }
+              }
+            ],
+            "target_object": "explorer"
+          }
+        },
+        "imported": true,
+        "created": "2026-07-17T10:51:41.696115",
+        "modified": "2026-07-17T10:51:41.696115"
+      }
+    },
+    "rooms": {
+      "room0": {
+        "name": "room0",
+        "asset_type": "room",
+        "width": 480,
+        "height": 480,
+        "background_color": "#c0c0c0",
+        "background_image": "background",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 175,
+        "instances": [],
+        "_external_file": "rooms/room0.json",
+        "created": "2026-07-17T10:51:41.706382",
+        "modified": "2026-07-17T10:51:41.706382",
+        "imported": true
+      },
+      "room1": {
+        "name": "room1",
+        "asset_type": "room",
+        "width": 480,
+        "height": 480,
+        "background_color": "#c0c0c0",
+        "background_image": "background",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 177,
+        "instances": [],
+        "_external_file": "rooms/room1.json",
+        "created": "2026-07-17T10:51:41.706382",
+        "modified": "2026-07-17T10:51:41.706382",
+        "imported": true
+      },
+      "room2": {
+        "name": "room2",
+        "asset_type": "room",
+        "width": 480,
+        "height": 480,
+        "background_color": "#c0c0c0",
+        "background_image": "background",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 180,
+        "instances": [],
+        "_external_file": "rooms/room2.json",
+        "created": "2026-07-17T10:51:41.706382",
+        "modified": "2026-07-17T10:51:41.706382",
+        "imported": true
+      },
+      "room3": {
+        "name": "room3",
+        "asset_type": "room",
+        "width": 480,
+        "height": 480,
+        "background_color": "#c0c0c0",
+        "background_image": "background",
+        "tile_horizontal": false,
+        "tile_vertical": false,
+        "instance_count": 176,
+        "instances": [],
+        "_external_file": "rooms/room3.json",
+        "created": "2026-07-17T10:51:41.706382",
+        "modified": "2026-07-17T10:51:41.706382",
+        "imported": true
+      }
+    },
+    "scripts": {
+      "adapt_direction": {
+        "name": "adapt_direction",
+        "asset_type": "script",
+        "code": "# This script adapts the direction of the monster\n# when it comes at a possible crossing\n\nif instance.hspeed == 0:\n    if random.random() * 3<1 and not game.check_collision_at_position(instance, instance.x-4, instance.y, \"solid\"):\n        instance.hspeed = -4\n        instance.vspeed = 0\n    if random.random() * 3<1 and not game.check_collision_at_position(instance, instance.x+4, instance.y, \"solid\"):\n        instance.hspeed = 4\n        instance.vspeed = 0\nelse:\n    if random.random() * 3<1 and not game.check_collision_at_position(instance, instance.x, instance.y-4, \"solid\"):\n        instance.hspeed = 0\n        instance.vspeed = -4\n    if random.random() * 3<1 and not game.check_collision_at_position(instance, instance.x, instance.y+4, \"solid\"):\n        instance.hspeed = 0\n        instance.vspeed = 4",
+        "language": "python",
+        "imported": true,
+        "created": "2026-07-17T10:51:41.717834",
+        "modified": "2026-07-17T10:51:41.717834"
+      }
+    },
+    "fonts": {},
+    "data": {}
+  }
+}
