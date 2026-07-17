@@ -66,6 +66,14 @@ not implemented — this sample currently only runs correctly through
   `enable_raycast_view` parameters on `obj_person`'s `create` event.
 - Wall/floor/ceiling colors are also `enable_raycast_view` parameters —
   easy first thing to experiment with before textures land.
+- `spr_person`'s collision bbox is `(8,8)-(24,24)` (16×16, 8px margin per
+  side) — deliberately much smaller than the sprite's full 32×32 canvas,
+  set in `sprites/spr_person.json` (this sample's own copy, independent
+  of `maze_1`'s). Every corridor/gap in this layout is exactly one 32px
+  cell wide, so the player needs real clearance to turn corners with
+  continuous (non-grid-snapped) movement — a full-cell bbox has zero
+  alignment tolerance. If you shrink corridors or widen the player
+  sprite, re-check this.
 
 ## Export status
 
