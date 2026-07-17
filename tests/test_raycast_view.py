@@ -3,8 +3,12 @@
 
 Covers, in order: the new persistent facing_angle instance state + its
 set_facing_angle action, the enable_raycast_view action (both via the
-established MockGameRunner/MockRoom action_executor pattern), the wall
-grid derived from solid instances, the DDA raycast core against
+established MockGameRunner/MockRoom action_executor pattern), thin wall
+EDGES derived from solid instances (_build_raycast_walls -- reworked
+from an earlier coarse per-cell occupancy grid specifically so a wall
+thinner than a cell, e.g. an 8px strip on a cell boundary, reads and
+collides as thin rather than opaquing its whole cell; see the "complete
+rethink" note in the plan doc), the DDA raycast core against
 deterministic geometry with closed-form expected distances (not just
 "doesn't crash" -- this is exactly the kind of assertion that caught the
 inverted fade-alpha bug earlier this session), a real-Surface pixel-sample
@@ -51,7 +55,7 @@ class MockInstance:
 class MockRoom:
     def __init__(self):
         self.raycast_camera = {'enabled': False}
-        self._raycast_grid = None
+        self._raycast_v_walls = None
 
 
 class MockGameRunner:
@@ -137,11 +141,11 @@ class TestEnableRaycastView:
 
     def test_cell_size_change_invalidates_grid_cache(self):
         runner = MockGameRunner()
-        runner.current_room._raycast_grid = {(0, 0): True}
+        runner.current_room._raycast_v_walls = {(0, 0)}
         executor = ActionExecutor(game_runner=runner)
         instance = MockInstance()
         executor.execute_enable_raycast_view_action(instance, {"cell_size": 16})
-        assert runner.current_room._raycast_grid is None
+        assert runner.current_room._raycast_v_walls is None
 
 
 # ---------------------------------------------------------------------------
@@ -152,9 +156,16 @@ def _room(width, height):
     return GameRoom("test_room", {"width": width, "height": height}, action_executor=None)
 
 
-def _solid_instance(name, x, y):
+def _solid_instance(name, x, y, width=32, height=32):
+    """A solid instance for raycast tests. Defaults to a square 32x32
+    footprint -- the "roughly square -> block all 4 edges of its cell"
+    fallback in _build_raycast_walls, i.e. old-style full-block wall
+    behaviour, so most existing tests didn't need to change when the
+    engine moved from coarse per-cell occupancy to real wall edges."""
     inst = GameInstance(name, x, y, {}, action_executor=None)
     inst._cached_object_data = {"solid": True}
+    inst._cached_width = width
+    inst._cached_height = height
     return inst
 
 
@@ -164,47 +175,55 @@ def _nonsolid_instance(name, x, y):
     return inst
 
 
-class TestBuildRaycastGrid:
-    def test_solid_instance_marks_its_cell(self):
+class TestBuildRaycastWalls:
+    """_build_raycast_walls derives thin wall EDGES (v_walls/h_walls)
+    from solid instances, keyed by absolute grid-line index -- not a
+    per-cell occupancy grid. See docs/RAYCAST_2_5D_PLAN.md's
+    "Complete rethink" section for why: a coarse per-cell grid can't
+    represent a wall thinner than a cell, which is what a real
+    Doom/Wolfenstein-style maze needs for corridors wide enough to
+    actually turn corners in."""
+
+    def test_square_solid_instance_blocks_all_four_edges_of_its_cell(self):
         room = _room(128, 128)
-        room.instances.append(_solid_instance("obj_wall", 64, 32))
-        room._build_raycast_grid(32)
-        assert room._raycast_grid == {(2, 1): True}
+        room.instances.append(_solid_instance("obj_wall", 64, 32))  # grid (2, 1)
+        room._build_raycast_walls(32)
+        assert room._raycast_v_walls == {(2, 1), (3, 1)}
+        assert room._raycast_h_walls == {(2, 1), (2, 2)}
+
+    def test_wide_thin_instance_is_a_horizontal_edge_segment(self):
+        # 32 wide x 8 tall, centered on the grid line at y=1*32=32 ->
+        # top-left y = 32 - 4 = 28.
+        room = _room(128, 128)
+        room.instances.append(_solid_instance("obj_wall_h", 0, 28, width=32, height=8))
+        room._build_raycast_walls(32)
+        assert room._raycast_h_walls == {(0, 1)}
+        assert room._raycast_v_walls == set()
+
+    def test_tall_thin_instance_is_a_vertical_edge_segment(self):
+        # 8 wide x 32 tall, centered on the grid line at x=1*32=32 ->
+        # top-left x = 32 - 4 = 28.
+        room = _room(128, 128)
+        room.instances.append(_solid_instance("obj_wall_v", 28, 0, width=8, height=32))
+        room._build_raycast_walls(32)
+        assert room._raycast_v_walls == {(1, 0)}
+        assert room._raycast_h_walls == set()
 
     def test_non_solid_instance_ignored(self):
         room = _room(128, 128)
         room.instances.append(_nonsolid_instance("obj_person", 64, 32))
-        room._build_raycast_grid(32)
-        assert room._raycast_grid == {}
+        room._build_raycast_walls(32)
+        assert room._raycast_v_walls == set()
+        assert room._raycast_h_walls == set()
 
     def test_instance_with_no_cached_object_data_ignored(self):
         room = _room(128, 128)
         inst = GameInstance("obj_x", 0, 0, {}, action_executor=None)
         assert inst._cached_object_data is None
         room.instances.append(inst)
-        room._build_raycast_grid(32)  # must not raise
-        assert room._raycast_grid == {}
-
-
-class TestRaycastIsWall:
-    def test_out_of_bounds_is_wall(self):
-        room = _room(128, 128)
-        room._build_raycast_grid(32)
-        assert room._raycast_is_wall(-1, 0, 32) is True
-        assert room._raycast_is_wall(0, -1, 32) is True
-        assert room._raycast_is_wall(4, 0, 32) is True  # 4*32=128 >= width
-        assert room._raycast_is_wall(0, 4, 32) is True
-
-    def test_in_bounds_empty_cell_is_not_wall(self):
-        room = _room(128, 128)
-        room._build_raycast_grid(32)
-        assert room._raycast_is_wall(0, 0, 32) is False
-
-    def test_in_bounds_solid_cell_is_wall(self):
-        room = _room(128, 128)
-        room.instances.append(_solid_instance("obj_wall", 64, 32))
-        room._build_raycast_grid(32)
-        assert room._raycast_is_wall(2, 1, 32) is True
+        room._build_raycast_walls(32)  # must not raise
+        assert room._raycast_v_walls == set()
+        assert room._raycast_h_walls == set()
 
 
 # ---------------------------------------------------------------------------
@@ -212,24 +231,10 @@ class TestRaycastIsWall:
 # ---------------------------------------------------------------------------
 
 class TestCastRay:
-    def test_hits_room_edge_at_expected_distance(self):
-        # No solid instances -- the only "wall" is the room boundary.
-        # Camera at grid-cell-center (0.5, 0.5) facing +x (angle 0): the
-        # ray travels through cells x=0..4 and hits the out-of-bounds
-        # edge at grid x=5 (room width 160 = 5 cells of 32).
-        # side_x starts at (1 - 0.5) = 0.5, then advances by 1.0 per
-        # cell; it reports the hit at side_x - delta_x = 5.5 - 1 = 4.5
-        # cells = 144px.
-        room = _room(160, 64)
-        room._build_raycast_grid(32)
-        dist, side = room._cast_ray(16, 16, 0.0, 32, 20)
-        assert dist == pytest.approx(144.0, abs=0.01)
-        assert side == 0
-
     def test_hits_solid_instance_at_expected_distance(self):
         room = _room(160, 160)
         room.instances.append(_solid_instance("obj_wall", 64, 0))  # grid (2, 0)
-        room._build_raycast_grid(32)
+        room._build_raycast_walls(32)
         # Camera at grid (0.5, 0.5), i.e. (16, 16); ray along +x hits the
         # wall's west face at grid x=2 -> (2.5 - 1) = 1.5 cells = 48px.
         dist, side = room._cast_ray(16, 16, 0.0, 32, 20)
@@ -239,7 +244,7 @@ class TestCastRay:
     def test_perpendicular_ray_reports_the_other_side(self):
         room = _room(160, 160)
         room.instances.append(_solid_instance("obj_wall", 0, 64))  # grid (0, 2)
-        room._build_raycast_grid(32)
+        room._build_raycast_walls(32)
         # Straight down (GM screen-space: angle pi/2 in this method's raw
         # math convention, since _cast_ray takes screen-space radians
         # directly -- see _render_raycast_view for the GM-angle mapping).
@@ -247,14 +252,34 @@ class TestCastRay:
         assert dist == pytest.approx(48.0, abs=0.01)
         assert side == 1
 
-    def test_ray_within_a_single_open_cell_reaches_render_distance(self):
-        room = _room(64, 64)  # 2x2 cells, all open
-        room._build_raycast_grid(32)
+    def test_thin_horizontal_wall_only_blocks_its_own_row(self):
+        """The whole point of edge-based (not cell-occupancy-based) walls:
+        a thin segment registered for one row must not leak into an
+        adjacent row -- that's what makes a genuinely thin wall read (and
+        collide) as thin rather than opaquing its entire cell."""
+        room = _room(96, 96)
+        # Horizontal segment across row 0's south edge only.
+        room.instances.append(_solid_instance("obj_wall_h", 0, 28, width=32, height=8))
+        room._build_raycast_walls(32)
+        # Ray straight down through row 0 hits it...
+        dist, side = room._cast_ray(16, 4, math.pi / 2, 32, 20)
+        assert dist == pytest.approx(28.0, abs=0.01)
+        assert side == 1
+        # ...but the same ray one row over (row 1, no wall registered
+        # there) sails through to the render-distance cap instead.
+        dist2, side2 = room._cast_ray(16, 36, math.pi / 2, 32, 3)
+        assert dist2 == pytest.approx(3 * 32, abs=0.01)
+
+    def test_no_walls_at_all_reaches_max_cells(self):
+        # No implicit "out of room bounds = wall" anymore (see the
+        # "complete rethink" note in docs/RAYCAST_2_5D_PLAN.md) -- an
+        # unenclosed map is a content bug for a real maze, not something
+        # the raycaster itself guards against; here it should just march
+        # to max_cells and stop cleanly, no crash / no infinite loop.
+        room = _room(64, 64)
+        room._build_raycast_walls(32)
         dist, side = room._cast_ray(16, 16, 0.3, 32, 3)
-        # max_cells=3 with nothing to hit inside the room bounds along
-        # this short ray -- but the room edge is still a wall, so this
-        # mostly guards against an infinite loop / crash on a tiny map.
-        assert dist > 0
+        assert dist == pytest.approx(3 * 32, abs=0.01)
 
 
 # ---------------------------------------------------------------------------
@@ -343,7 +368,7 @@ class TestRenderRaycastView:
 # flagged (pure-Python raycasting, no numpy). The spike measured ~1.6ms/
 # frame for 320 columns against maze_1's real 15x15 grid on this machine;
 # this guards against a future regression collapsing that headroom (e.g.
-# an accidentally-quadratic change to _build_raycast_grid or _cast_ray).
+# an accidentally-quadratic change to _build_raycast_walls or _cast_ray).
 # ---------------------------------------------------------------------------
 
 class TestRaycastPerformance:
@@ -486,28 +511,19 @@ class TestRaycast1SampleSmoke:
         )
 
     def test_player_can_turn_a_corner_in_the_maze(self):
-        """Regression: raycast_1's room0 corridor (spawn row, grid row 13)
-        connects further into the maze only through a 1-cell-wide gap
-        north at grid column 13 (row 12 is a solid wall band everywhere
-        else -- see docs/RAYCAST_2_5D_PLAN.md's wall-grid dump).
-        obj_person's original sprite bbox was ~32x31, essentially the
-        full 32px cell -- for a 32px-wide gap, that requires *exact*
-        (0px-tolerance) alignment to fit through, which continuous
-        (non-grid-snapped) movement can't realistically guarantee. User-
-        reported symptom: "stops a short distance from wall, cannot make
-        the turn." Fixed by giving spr_person an explicit, smaller
-        collision bbox (8,8)-(24,24) in samples/raycast_1/ specifically
-        (harmless there since the sprite never renders in raycast mode).
-
-        This places the player 5px off-center from the gap column (a
-        small, realistic misalignment -- not a contrived worst case) and
-        confirms it still passes through. Verified during development
-        that this exact scenario reproduces the bug against the
-        old (unshrunk) bbox: blocked at y=416, never entering the row-12
-        band at all -- so this genuinely discriminates the fix rather
-        than passing regardless (an earlier draft of this test walked a
-        perfectly cardinal-aligned path that never drifted and passed
-        even without the fix -- not a meaningful regression guard)."""
+        """Regression covering the full "complete rethink" fix described
+        in docs/RAYCAST_2_5D_PLAN.md: raycast_1's walls were converted
+        from full-cell 32px blocks to thin (8px) edge segments (a real
+        engine change -- see GameRoom._build_raycast_walls/_cast_ray),
+        because the earlier fix (just shrinking the player's collision
+        bbox within full-cell-block corridors) still weren't reliably
+        enough clearance to turn every corner. This walks the player east
+        along the spawn corridor to the far wall, turns 90 degrees left
+        with a realistic multi-frame gap between releasing forward and
+        starting the turn (so residual velocity from the old direction
+        can't confound the result), then walks forward again and confirms
+        real progress deep into the next corridor -- not just barely
+        crossing the threshold."""
         from runtime.game_runner import GameRunner
 
         project_json = str(REPO_ROOT / "samples" / "raycast_1" / "project.json")
@@ -518,32 +534,24 @@ class TestRaycast1SampleSmoke:
         runner._show_name_entry_dialog = lambda *a, **k: ""
         runner.process_pending_messages = lambda *a, **k: None
 
-        placed = {"done": False}
-
         class _FakeClock:
             def __init__(self):
                 self.f = 0
 
             def tick(self, fps=0):
                 self.f += 1
-                if not placed["done"]:
-                    player = next((i for i in runner.current_room.instances
-                                    if i.object_name == "obj_person"), None)
-                    if player is not None:
-                        # Gap column is grid x=13 (world x 416-448); 411 is
-                        # 5px off-center (perfect alignment is x=416) --
-                        # a small, realistic amount of drift, not a
-                        # contrived worst case. y=420 sits safely inside
-                        # the open row-13 corridor, clear of any wall at
-                        # the start (avoids the engine's "already
-                        # overlapping -> let it escape" exemption, which
-                        # would mask the bug this test is for).
-                        player.x, player.y = 411.0, 420.0
-                        player.facing_angle = 90.0  # facing north, toward the gap
-                        player.hspeed = player.vspeed = 0.0
-                        placed["done"] = True
-                        pygame.event.post(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_UP))
-                if self.f >= 60:
+                f = self.f
+                if f == 1:
+                    pygame.event.post(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_UP))
+                if f == 200:  # long enough to reach the far wall and stop there
+                    pygame.event.post(pygame.event.Event(pygame.KEYUP, key=pygame.K_UP))
+                if f == 205:  # realistic gap -- lets `nokey` zero hspeed/vspeed first
+                    pygame.event.post(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_LEFT))
+                if f == 235:  # 30 frames * 3 deg/frame = 90 degrees, now facing north
+                    pygame.event.post(pygame.event.Event(pygame.KEYUP, key=pygame.K_LEFT))
+                if f == 240:
+                    pygame.event.post(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_UP))
+                if f == 300:
                     runner.running = False
                 return 0
 
@@ -558,10 +566,11 @@ class TestRaycast1SampleSmoke:
             pygame.time.Clock = real_clock
 
         player = next(i for i in runner.current_room.instances if i.object_name == "obj_person")
-        # Row 12 (world y 384-416) is a solid wall band except at this
-        # gap -- successfully passing through must land the player well
-        # below it, not just barely into row 12.
-        assert player.y < 384, (
-            f"player.y={player.y} never crossed the row-12 wall band -- "
-            "corner turn failed (stuck at the gap)"
+        assert player.facing_angle == pytest.approx(90.0, abs=0.01)
+        # Started at y=416 (grid row 13); reaching y=239 requires having
+        # turned the corner and walked deep into the next corridor
+        # segment, not just barely nudging past the old blocking point.
+        assert player.y < 300, (
+            f"player.y={player.y} didn't make real progress after turning -- "
+            "corner turn failed or movement stalled"
         )

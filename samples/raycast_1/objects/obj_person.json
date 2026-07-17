@@ -7,9 +7,13 @@
   "persistent": false,
   "depth": 0,
   "events": {
-    "collision_with_obj_wall": {
+    "collision_with_obj_wall_h": {
       "actions": [],
-      "target_object": "obj_wall"
+      "target_object": "obj_wall_h"
+    },
+    "collision_with_obj_wall_v": {
+      "actions": [],
+      "target_object": "obj_wall_v"
     },
     "create": {
       "actions": [

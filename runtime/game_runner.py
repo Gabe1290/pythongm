@@ -1330,11 +1330,17 @@ class GameRoom:
 
         # Raycast (Doom/Wolfenstein-style) first-person camera — see
         # docs/RAYCAST_2_5D_PLAN.md. Off by default; enable_raycast_view
-        # replaces this dict. The wall-occupancy grid is derived lazily
-        # from solid instances (see _build_raycast_grid) and cached, since
-        # room geometry doesn't change at runtime for this v1.
+        # replaces this dict. Wall EDGES (not whole grid cells) are
+        # derived lazily from solid instances (see _build_raycast_walls)
+        # and cached, since room geometry doesn't change at runtime for
+        # this v1. Edge-based (not cell-occupancy-based) so a solid
+        # instance thinner than a full cell — e.g. an 8px-thick wall
+        # segment sitting on a cell boundary — reads and collides
+        # consistently: the ray only stops at the segment's actual
+        # thickness, not the whole cell it happens to touch.
         self.raycast_camera: Dict[str, Any] = {'enabled': False}
-        self._raycast_grid: Optional[Dict[Tuple[int, int], bool]] = None
+        self._raycast_v_walls: Optional[Set[Tuple[int, int]]] = None
+        self._raycast_h_walls: Optional[Set[Tuple[int, int]]] = None
         self._raycast_cell_size: int = 32
 
         # Depth-sorted instance cache (invalidated when instances change)
@@ -1760,39 +1766,66 @@ class GameRoom:
                 return inst
         return None
 
-    def _build_raycast_grid(self, cell_size: int):
-        """Derive a sparse wall-occupancy grid from every solid instance in
-        the room, bucketed by (x // cell_size, y // cell_size).
+    def _build_raycast_walls(self, cell_size: int):
+        """Derive thin wall EDGES from every solid instance in the room —
+        not "which whole grid cells are occupied". This is what makes a
+        wall genuinely thinner than a cell (e.g. an 8px strip on a cell
+        boundary) actually read as thin: a ray only stops at the specific
+        edge a wall segment occupies, not at every cell the segment
+        happens to touch.
+
+        A solid instance's sprite aspect ratio decides its role: wider
+        than tall -> a horizontal segment, sitting astride a horizontal
+        grid line (blocks north/south passage); taller than wide -> a
+        vertical segment astride a vertical line (blocks east/west).
+        Roughly square (e.g. an old-style full-cell block) falls back to
+        blocking all 4 edges of its cell, matching the coarse-grid
+        behaviour this replaces — so non-thin-wall content still works.
+
+        v_walls holds (line_x, row): a vertical wall on the grid line at
+        column index line_x (world x = line_x * cell_size), spanning
+        cell row. h_walls holds (col, line_y) symmetrically.
 
         Reuses existing room content instead of a separate authoring
-        format — every maze_* sample already places solid wall objects on
-        a grid, so this "just works" for them. Built once and cached
-        (room geometry is static at runtime for this v1 — walls
-        created/destroyed after room load won't update the grid).
+        format. Built once and cached (room geometry is static at
+        runtime for this v1 — walls created/destroyed after room load
+        won't update the derived edges).
         """
-        grid: Dict[Tuple[int, int], bool] = {}
+        v_walls: Set[Tuple[int, int]] = set()
+        h_walls: Set[Tuple[int, int]] = set()
         for inst in self.instances:
             obj_data = inst._cached_object_data
-            if obj_data and obj_data.get('solid', False):
+            if not (obj_data and obj_data.get('solid', False)):
+                continue
+            width = inst._cached_width
+            height = inst._cached_height
+            if width >= height * 1.5:
+                line_y = round((inst.y + height / 2) / cell_size)
+                col = int(inst.x // cell_size)
+                h_walls.add((col, line_y))
+            elif height >= width * 1.5:
+                line_x = round((inst.x + width / 2) / cell_size)
+                row = int(inst.y // cell_size)
+                v_walls.add((line_x, row))
+            else:
                 gx = int(inst.x // cell_size)
                 gy = int(inst.y // cell_size)
-                grid[(gx, gy)] = True
-        self._raycast_grid = grid
+                v_walls.add((gx, gy))
+                v_walls.add((gx + 1, gy))
+                h_walls.add((gx, gy))
+                h_walls.add((gx, gy + 1))
+        self._raycast_v_walls = v_walls
+        self._raycast_h_walls = h_walls
         self._raycast_cell_size = cell_size
-
-    def _raycast_is_wall(self, gx: int, gy: int, cell_size: int) -> bool:
-        """True if grid cell (gx, gy) is solid, or is outside the room
-        bounds (the room edge acts as an implicit wall — no sample needs
-        to fence its maze in explicitly)."""
-        if gx < 0 or gy < 0 or gx * cell_size >= self.width or gy * cell_size >= self.height:
-            return True
-        return self._raycast_grid.get((gx, gy), False)
 
     def _cast_ray(self, px: float, py: float, angle_rad: float, cell_size: int, max_cells: int):
         """DDA raycast from (px, py) (room pixel coords) at angle_rad
         (standard math convention: 0=+x, increasing counter-clockwise in
         *grid* space — see _render_raycast_view for the GM-angle-to-this
-        conversion) until it hits a solid cell.
+        conversion) until it crosses a grid line carrying a registered
+        wall edge (see _build_raycast_walls) — not "until it enters a
+        solid cell". The ray marches freely through open cells (however
+        many) and only stops at an actual wall's real position.
 
         Returns (distance_in_pixels, side) where side is 0 for a
         vertical wall face (x-step hit) or 1 for a horizontal one (y-step
@@ -1826,11 +1859,19 @@ class GameRoom:
                 side_x += delta_x
                 map_x += step_x
                 side = 0
+                # The vertical line just crossed is at the leading edge of
+                # the cell just entered (moving +x) or the trailing edge
+                # of the cell just left (moving -x) -- both name the same
+                # absolute line index.
+                line_x = map_x if step_x > 0 else map_x + 1
+                hit = (line_x, map_y) in self._raycast_v_walls
             else:
                 side_y += delta_y
                 map_y += step_y
                 side = 1
-            if self._raycast_is_wall(map_x, map_y, cell_size):
+                line_y = map_y if step_y > 0 else map_y + 1
+                hit = (map_x, line_y) in self._raycast_h_walls
+            if hit:
                 dist_cells = (side_x - delta_x) if side == 0 else (side_y - delta_y)
                 break
         return max(dist_cells, 1e-4) * cell_size, side
@@ -1840,8 +1881,8 @@ class GameRoom:
         the normal top-down view. See docs/RAYCAST_2_5D_PLAN.md."""
         cfg = self.raycast_camera
         cell_size = int(cfg.get('cell_size', 32))
-        if self._raycast_grid is None or self._raycast_cell_size != cell_size:
-            self._build_raycast_grid(cell_size)
+        if self._raycast_v_walls is None or self._raycast_cell_size != cell_size:
+            self._build_raycast_walls(cell_size)
 
         camera = self._find_first_instance(cfg.get('camera_object', ''))
         w, h = screen.get_size()

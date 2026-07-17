@@ -19,24 +19,41 @@
   },
   "assets": {
     "sprites": {
-      "spr_wall": {
-        "name": "spr_wall",
+      "spr_wall_h": {
+        "name": "spr_wall_h",
         "asset_type": "sprite",
-        "file_path": "sprites/spr_wall.png",
+        "file_path": "sprites/spr_wall_h.png",
         "width": 32,
+        "height": 8,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 8,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": false,
+        "created": "2026-07-17T00:00:00.000000",
+        "modified": "2026-07-17T00:00:00.000000"
+      },
+      "spr_wall_v": {
+        "name": "spr_wall_v",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_wall_v.png",
+        "width": 8,
         "height": 32,
         "origin_x": 0,
         "origin_y": 0,
-        "precise": true,
+        "precise": false,
         "frames": 1,
-        "frame_width": 32,
+        "frame_width": 8,
         "frame_height": 32,
         "animation_type": "single",
         "speed": 10.0,
-        "imported": true,
-        "created": "2026-05-23T14:34:54.961536",
-        "modified": "2026-06-07T18:50:54.526962",
-        "thumbnail": "thumbnails/spr_wall_thumb.png"
+        "imported": false,
+        "created": "2026-07-17T00:00:00.000000",
+        "modified": "2026-07-17T00:00:00.000000"
       },
       "spr_goal": {
         "name": "spr_goal",
@@ -82,18 +99,31 @@
     "sounds": {},
     "backgrounds": {},
     "objects": {
-      "obj_wall": {
-        "name": "obj_wall",
+      "obj_wall_h": {
+        "name": "obj_wall_h",
         "asset_type": "object",
-        "sprite": "spr_wall",
+        "sprite": "spr_wall_h",
         "visible": true,
         "solid": true,
         "persistent": false,
         "depth": 0,
         "events": {},
-        "imported": true,
-        "created": "2026-05-23T14:34:54.997955",
-        "modified": "2026-05-23T14:34:54.997955"
+        "imported": false,
+        "created": "2026-07-17T00:00:00.000000",
+        "modified": "2026-07-17T00:00:00.000000"
+      },
+      "obj_wall_v": {
+        "name": "obj_wall_v",
+        "asset_type": "object",
+        "sprite": "spr_wall_v",
+        "visible": true,
+        "solid": true,
+        "persistent": false,
+        "depth": 0,
+        "events": {},
+        "imported": false,
+        "created": "2026-07-17T00:00:00.000000",
+        "modified": "2026-07-17T00:00:00.000000"
       },
       "obj_goal": {
         "name": "obj_goal",
@@ -188,9 +218,13 @@
         "persistent": false,
         "depth": 0,
         "events": {
-          "collision_with_obj_wall": {
+          "collision_with_obj_wall_h": {
             "actions": [],
-            "target_object": "obj_wall"
+            "target_object": "obj_wall_h"
+          },
+          "collision_with_obj_wall_v": {
+            "actions": [],
+            "target_object": "obj_wall_v"
           },
           "create": {
             "actions": [
