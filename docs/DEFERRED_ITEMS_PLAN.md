@@ -79,7 +79,10 @@ discipline as the match3_2/3 and views sessions:
 
 ## Tier 3 — larger, needs its own finder→verify→fix pass
 
-8. **GMK importer hardening** — detailed working plan + checkbox registry:
+8. **GMK importer hardening** — ✅ **DONE 2026-07-16.** `treasure` and
+   `maze_4` re-added to the bundled set after a full user playtest closed
+   12 real importer/runtime bugs (registry all checked in the plan doc).
+   Detailed working plan + checkbox registry:
    `docs/GMK_IMPORTER_HARDENING_PLAN.md` (written 2026-07-16, includes an
    unblocking discovery — `treasure.gmk`/`maze_4.gmk` are recoverable
    from git history despite not being in the working tree — and flags

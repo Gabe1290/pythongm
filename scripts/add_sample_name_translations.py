@@ -30,11 +30,20 @@ CONTEXT = "WelcomeTab"
 # (kind, level) for every sample exposed in SAMPLE_PROJECTS. The English label
 # below MUST byte-match the label string in widgets/welcome_tab.py.
 SAMPLES = [
-    ("Maze", 1), ("Maze", 2), ("Maze", 3),
+    ("Maze", 1), ("Maze", 2), ("Maze", 3), ("Maze", 4),
     ("Platform", 1), ("Platform", 2), ("Platform", 3),
     ("Match-3", 1), ("Match-3", 2), ("Match-3", 3),
     ("Views", 1), ("Views", 2),
 ]
+
+# Standalone sample names (no "— Level N" suffix). English label must
+# byte-match widgets/welcome_tab.py.
+STANDALONE = {
+    "Treasure": {
+        "fr": "Trésor", "de": "Schatz", "es": "Tesoro", "it": "Tesoro",
+        "ru": "Сокровище", "sl": "Zaklad", "uk": "Скарб",
+    },
+}
 
 # Per language: (maze word, platform word, match-3 word, views word, level
 # word). "Level" is kept as-is for German (idiomatic in gaming); "Match-3" is
@@ -63,11 +72,15 @@ def translate(lang: str, kind: str, level: int) -> str:
     return f"{word} — {lvl} {level}"
 
 
-SOURCES = [en_label(k, n) for k, n in SAMPLES]
+SOURCES = [en_label(k, n) for k, n in SAMPLES] + list(STANDALONE.keys())
 
 
 def table_for(lang: str) -> dict:
-    return {en_label(k, n): translate(lang, k, n) for k, n in SAMPLES}
+    table = {en_label(k, n): translate(lang, k, n) for k, n in SAMPLES}
+    for source, per_lang in STANDALONE.items():
+        if lang in per_lang:
+            table[source] = per_lang[lang]
+    return table
 
 
 def find_lrelease() -> str:

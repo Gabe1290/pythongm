@@ -2388,6 +2388,15 @@ Controlla la console per i dettagli dell&apos;errore.</translation>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Maze — Level 4</source>
+            <translation>Labirinto — Livello 4</translation>
+        </message>
+        <message>
+            <source>Treasure</source>
+            <translation>Tesoro</translation>
+        </message>
+
+        <message>
             <source>Views — Level 2</source>
             <translation>Viste — Livello 2</translation>
         </message>

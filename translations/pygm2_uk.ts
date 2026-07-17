@@ -8256,6 +8256,15 @@ Do you want to save anyway?</source>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Maze — Level 4</source>
+            <translation>Лабіринт — Рівень 4</translation>
+        </message>
+        <message>
+            <source>Treasure</source>
+            <translation>Скарб</translation>
+        </message>
+
+        <message>
             <source>Views — Level 2</source>
             <translation>Види — Рівень 2</translation>
         </message>

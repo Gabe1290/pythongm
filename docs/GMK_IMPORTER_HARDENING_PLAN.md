@@ -269,25 +269,28 @@ draw events without matching UI metadata).
       reference against the "UI metadata coverage for runtime actions"
       section of `TODO.md` before assuming any gap found is an importer
       bug rather than a metadata-registry gap.
-- [ ] Once the full re-validation above is done: re-add `treasure` and
-      `maze_4` to the bundled Welcome-tab sample list (reverses commits
-      `d3fd71a` and `be6e0a9`); update `samples/README.md`'s
-      dropped-samples note. **STATUS 2026-07-16: awaiting the user's
-      visual playtest (their explicit call — the samples were dropped on
-      their hands-on testing, so they sign off on the return).** Fresh
-      imports delivered for testing to
-      `<Documents>/PyGameMaker Projects/treasure_reimport_2026-07/` and
-      `.../maze_4_reimport_2026-07/` (the older `treasure*`/`maze_4`
-      folders there are the broken rc.12 imports — do not confuse).
-      Structured checklists: `docs/treasure_testing_pass.md` and
-      `docs/maze_4_testing_pass.md` (RE-ADD / HOLD verdict at the bottom
-      of each). On RE-ADD: import fresh into `samples/<name>/`, apply any
-      hand-patches the playtest called for (maze_1-style, documented as
-      deliberate fixes), add README/CREDITS, register in
-      `widgets/welcome_tab.py` + `tools/smoke_run_samples.py` +
-      `scripts/add_sample_name_translations.py`, and update
-      `samples/README.md`. On HOLD: each finding becomes a
-      finder→verify→fix unit here.
+- [x] Re-add `treasure` and `maze_4` to the bundled set — **DONE
+      2026-07-16, verdict RE-ADD** (user played both through and approved).
+      The playtest ran 15 findings; **12 were real bugs, all fixed** with
+      regression tests, 2 were faithful imports of the original game's own
+      data, and 1 was a regression I introduced and reverted. The fixes
+      (each its own commit): execute_script editor UI (`8d11101`), GM
+      "Applies to" never imported — parser + converter (`fbed924`),
+      change_instance motion / jump_to_start+set_alarm targeting / GM Sleep
+      mis-map (`d328466`), target-"other" collision context (`c1c6123`),
+      question-chain conditional scoping (`06d1051`), room_order vs IDE
+      reorder regression revert (`3d12a12`), HUD relative draws + draw_lives
+      image alias (`f1dcc86`), sprite Transparent flag (`32e066d`),
+      destroy_at_position bbox containment (`b8be6a9`), nokey-before-step
+      order (`6df509b`), and set_variable/set_sprite/test_variable targeting
+      for the scare mechanic (`7783584`). Fresh imports landed in
+      `samples/{treasure,maze_4}/` (`429a633`); maze_4 carries the documented
+      `snap_to_grid` wall hand-patch (maze_1 precedent), treasure none.
+      Registered in `widgets/welcome_tab.py` + `tools/smoke_run_samples.py`
+      (13/13 smoke OK) + name translations, with READMEs/CREDITS and the
+      `samples/README.md` note rewritten. Both remaining unchecked items
+      below (draw-event UI metadata) are folded into the playtest result —
+      no unmapped/undrawn actions surfaced.
 
 ## Correction to the working-discipline note above
 

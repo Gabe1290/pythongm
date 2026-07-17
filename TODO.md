@@ -216,7 +216,19 @@ it before picking an item to work on.
   through `ActionExecutor.ACTION_ALIASES` so legacy/alternate action
   names resolve to a single ActionType without duplicate entries.
 
-### GMK importer hardening (post-1.0)
+### GMK importer hardening (post-1.0) — ✅ DONE 2026-07-16
+- **Closed.** `treasure` and `maze_4` are back in the bundled set after a
+  full user playtest: 15 findings, 12 real bugs fixed with regression tests
+  (GM "Applies to" targeting never imported, sprite Transparent flag, GM
+  Sleep mis-mapped to a conditional, question-chain conditional scoping,
+  nokey-before-step event order, destroy_at_position bbox containment,
+  execute_script editor UI, HUD relative draws, change_instance motion,
+  collision-context targeting, room_order-vs-IDE-reorder), 2 faithful
+  imports of the original game's own quirks, 1 self-inflicted regression
+  reverted. maze_4 carries one documented `snap_to_grid` wall hand-patch;
+  treasure none. See `docs/GMK_IMPORTER_HARDENING_PLAN.md` (registry all
+  checked) and `docs/{treasure,maze_4}_testing_pass.md`. Historical notes
+  below retained for context.
 - Working plan + checkbox registry: `docs/GMK_IMPORTER_HARDENING_PLAN.md`.
 - During rc.12 user-testing the **`treasure.gmk`** and **`maze_4.gmk`**
   samples both exposed importer issues the IDE could only partially
