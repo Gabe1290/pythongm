@@ -4359,6 +4359,91 @@ class ActionExecutor:
                     f"port=({view['port_x']},{view['port_y']},{view['port_w']}x{view['port_h']}), "
                     f"follow={view['follow']}")
 
+    def execute_set_facing_angle_action(self, instance, parameters: Dict[str, Any]):
+        """Set this instance's facing_angle — persistent look direction for
+        a raycast camera (see docs/RAYCAST_2_5D_PLAN.md), independent of
+        movement speed. Same GM angle convention as set_direction_speed
+        (0=right, 90=up, 180=left, 270=down) and the same relative/
+        absolute shape as every other set_* action here.
+
+        Parameters:
+            angle: Angle in degrees (default 0)
+            relative: Add to the current facing_angle instead of replacing
+                it (default False)
+        """
+        angle = self._parse_value(parameters.get("angle", 0), instance)
+        relative = self._parse_value(parameters.get("relative", False), instance)
+        if isinstance(relative, str):
+            relative = relative.lower() in ('true', '1', 'yes')
+
+        try:
+            angle = float(angle)
+        except (TypeError, ValueError):
+            angle = 0.0
+
+        if relative:
+            instance.facing_angle = (instance.facing_angle + angle) % 360.0
+        else:
+            instance.facing_angle = angle % 360.0
+
+    def execute_enable_raycast_view_action(self, instance, parameters: Dict[str, Any]):
+        """Switch the current room to a Doom/Wolfenstein-style raycast
+        first-person view (see docs/RAYCAST_2_5D_PLAN.md), or back to the
+        normal top-down view.
+
+        Parameters:
+            enable: True to switch to the raycast view (default True)
+            camera_object: Object name whose x/y/facing_angle is the
+                camera (default: the calling instance's own object)
+            fov: Field of view in degrees (default 66)
+            render_distance: Max ray length in grid cells (default 20)
+            cell_size: Grid cell size in pixels — must match the room's
+                wall-placement grid (default 32, the convention every
+                maze_* sample already uses)
+            columns: Screen columns to raycast (default min(window
+                width, 320) — see the plan doc's Phase 0 spike: 320
+                columns has enormous headroom in pure Python, this cap
+                just avoids one ray per physical pixel on wide windows)
+            wall_color, floor_color, ceiling_color: Hex colors for the v1
+                flat-shaded look
+        """
+        if not self.game_runner or not self.game_runner.current_room:
+            logger.debug("⚠️ enable_raycast_view: No current room")
+            return
+
+        enable = self._parse_value(parameters.get("enable", True), instance)
+        if isinstance(enable, str):
+            enable = enable.lower() in ('true', '1', 'yes')
+
+        room = self.game_runner.current_room
+        if not enable:
+            room.raycast_camera = {'enabled': False}
+            return
+
+        camera_object = self._parse_value(parameters.get("camera_object", ""), instance)
+        camera_object = str(camera_object) if camera_object else instance.object_name
+
+        def _num(key, default):
+            try:
+                return float(self._parse_value(parameters.get(key, default), instance))
+            except (TypeError, ValueError):
+                return default
+
+        room.raycast_camera = {
+            'enabled': True,
+            'camera_object': camera_object,
+            'fov': _num('fov', 66),
+            'render_distance': int(_num('render_distance', 20)),
+            'cell_size': int(_num('cell_size', 32)),
+            'columns': int(_num('columns', 320)),
+            'wall_color': str(parameters.get('wall_color', '#993333')),
+            'floor_color': str(parameters.get('floor_color', '#464632')),
+            'ceiling_color': str(parameters.get('ceiling_color', '#1e1e28')),
+        }
+        # Force the wall grid to rebuild against the (possibly new)
+        # cell_size next render instead of reusing a stale cache.
+        room._raycast_grid = None
+
     def _parse_color(self, color_str: str) -> tuple:
         """Parse color string to RGB tuple (helper method)"""
         if isinstance(color_str, tuple):
