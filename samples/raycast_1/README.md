@@ -23,10 +23,11 @@ feature — see the plan doc's "why raycasting" pedagogy note.
 
 **v1 status — flat colors only, desktop (pygame) only.** Walls are a flat
 color per wall-face orientation (a free lighting cue, no real lighting
-model), floor/ceiling are flat fills, no textures, no sky/horizon yet, no
-sprites for `obj_goal` in the first-person view. Kivy/HTML5 export parity is
-not implemented — this sample currently only runs correctly through
-`Build → Test Game` / desktop export.
+model), floor/ceiling are flat fills, no textures, no sky/horizon yet.
+`obj_goal` renders as a camera-facing billboard sprite (scaled by
+distance, occluded by walls) — see "What's new here" below. Kivy/HTML5
+export parity is not implemented — this sample currently only runs
+correctly through `Build → Test Game` / desktop export.
 
 ## How to play
 
@@ -58,6 +59,17 @@ not implemented — this sample currently only runs correctly through
   8px thickness actually matter for both rendering and turning
   clearance, not just visually — see the plan doc's "Complete rethink"
   section.
+- **Billboard sprites.** Any visible, non-solid instance with a sprite
+  (here, `obj_goal`) draws as a camera-facing 2D sprite in the raycast
+  view, scaled by distance and vertically centered on the horizon like a
+  wall strip. Occlusion is real per-column clipping against the wall
+  distances already computed for that frame's wall pass, so a goal
+  behind a wall is properly hidden rather than showing through. This is
+  a first cut of the plan doc's Phase 6 (walls only draw solid
+  instances; billboards only draw non-solid ones, so nothing gets drawn
+  twice) — no partial-transparency blending, no rotation to match the
+  sprite's own facing, just the flat scale-and-clip a Wolfenstein-style
+  engine used for pickups and enemies.
 
 ## Project structure
 

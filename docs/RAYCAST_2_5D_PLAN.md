@@ -521,13 +521,41 @@ land, not building a sample from scratch.
   codegen from `views_1`/`views_2`, no OpenGL/3D API needed.
 
 ### Phase 6 — billboard sprites (stretch, likely last)
+**DONE (scoped down), 2026-07-17** — landed early, out of phase order,
+in direct response to a user report that `obj_goal` was invisible in
+`raycast_1`'s first-person view.
 
-- Render non-wall solid objects (monsters, pickups) as camera-facing
-  sprites, scaled by distance, sorted back-to-front (or tested per-column
-  against the wall distance array for correct occlusion behind walls).
-  This is the piece with the most edge cases (partial occlusion, sprites
-  behind the camera, sprites outside the FOV) — sequence it last and
-  treat it as genuinely optional for a first ship.
+- `_render_raycast_view` now renders every visible, **non-solid**
+  sprited instance (walls are solid and already drawn as strips —
+  excluded explicitly, both to avoid double-drawing and because a solid
+  instance with a sprite would otherwise render as both a wall strip and
+  a billboard) as a camera-facing sprite: angle-to-instance vs. facing
+  angle picks the screen column, fisheye-corrected distance picks the
+  scale (same formula as wall strips, generalized to the sprite's own
+  width/height instead of assuming a full cell), vertically centered on
+  the horizon like a wall strip.
+- **Real per-column occlusion**, not the single-ray approximation
+  originally scoped: the wall pass already computes a corrected distance
+  per screen column (`col_wall_dist`); the billboard pass reuses that
+  array directly, clipping the sprite's own scaled surface one pixel-
+  column at a time against it. A goal fully behind a wall is fully
+  hidden; one peeking around a corner shows only the unoccluded slice.
+- Multiple billboards sort farthest-first (painter's algorithm) so
+  nearer ones draw over farther ones where they overlap.
+- The camera's own instance is excluded by identity (it's non-solid too
+  — `obj_person` would otherwise billboard itself).
+- **Not done** (deliberately out of scope for this cut, matching the
+  plan's original "genuinely optional" framing for anything beyond the
+  core): sprite rotation to face a fixed direction regardless of camera
+  angle (these always face the camera, which is the standard/expected
+  Wolfenstein convention anyway), partial alpha blending, and sprites
+  that are their own camera target (a billboard can't currently *be*
+  `camera_object`, which was never a sensible configuration).
+- Regression: `TestBillboardSprites` in `tests/test_raycast_view.py` (5
+  tests — renders when visible, occluded behind a wall, solid instances
+  never billboarded, the camera never billboards itself, nearer sprite
+  wins overlap) — verified the two "must render" cases fail without the
+  feature and pass with it. Suite 1859 → 1864 passed, 0 failed.
 
 ## Testing strategy (matching this session's established discipline)
 

@@ -175,6 +175,27 @@ def _nonsolid_instance(name, x, y):
     return inst
 
 
+def _sprited_instance(name, x, y, color, width=16, height=16):
+    """A visible, non-solid instance with a real (single-frame, flat-
+    color) sprite -- a billboard candidate (goal/pickup/monster), not a
+    wall. GameSprite's normal constructor loads an image file from disk;
+    tests build the frame surface directly instead."""
+    from runtime.game_runner import GameSprite
+
+    inst = GameInstance(name, x, y, {}, action_executor=None)
+    inst._cached_object_data = {"solid": False}
+    inst._cached_width = width
+    inst._cached_height = height
+    inst.visible = True
+    sprite = GameSprite.__new__(GameSprite)
+    frame = pygame.Surface((width, height))
+    frame.fill(color)
+    sprite.frames = [frame]
+    inst.sprite = sprite
+    inst.image_index = 0
+    return inst
+
+
 class TestBuildRaycastWalls:
     """_build_raycast_walls derives thin wall EDGES (v_walls/h_walls)
     from solid instances, keyed by absolute grid-line index -- not a
@@ -492,6 +513,129 @@ class TestRenderRaycastView:
         # would normally show; here just confirm it did NOT take the
         # raycast branch's ceiling color at the top-left.
         assert screen.get_at((2, 2))[:3] != (0, 0, 255)
+
+
+class TestBillboardSprites:
+    """Phase 6 of the plan doc, scoped down to a first cut: non-solid
+    visible sprited instances (goals, pickups, monsters) render as a
+    camera-facing sprite scaled by distance, occluded per-column against
+    walls -- not just left invisible in the first-person view the way
+    obj_goal was before this feature landed."""
+
+    def test_visible_sprite_renders_in_front_of_camera(self):
+        room = _room(160, 160)
+        goal = _sprited_instance("obj_goal", 96, 16, (255, 255, 0))  # ahead, no wall between
+        room.instances.append(goal)
+        camera = GameInstance("obj_person", 16, 16, {}, action_executor=None)
+        camera.facing_angle = 0.0
+        room.instances.append(camera)
+        room.raycast_camera = {
+            'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
+            'render_distance': 20, 'cell_size': 32, 'columns': 64,
+            'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
+        }
+        screen = pygame.Surface((320, 240))
+        room._render_raycast_view(screen)
+        w, h = screen.get_size()
+        found = any(screen.get_at((x, h // 2))[:3] == (255, 255, 0) for x in range(w))
+        assert found, "billboard sprite never appeared on screen despite a clear line of sight"
+
+    def test_sprite_behind_wall_is_occluded(self):
+        room = _room(160, 160)
+        wall = _solid_instance("obj_wall", 64, 0)  # directly between camera and goal
+        room.instances.append(wall)
+        goal = _sprited_instance("obj_goal", 96, 16, (255, 255, 0))
+        room.instances.append(goal)
+        camera = GameInstance("obj_person", 16, 16, {}, action_executor=None)
+        camera.facing_angle = 0.0
+        room.instances.append(camera)
+        room.raycast_camera = {
+            'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
+            'render_distance': 20, 'cell_size': 32, 'columns': 64,
+            'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
+        }
+        screen = pygame.Surface((320, 240))
+        room._render_raycast_view(screen)
+        w, h = screen.get_size()
+        found = any(screen.get_at((x, h // 2))[:3] == (255, 255, 0) for x in range(w))
+        assert not found, "billboard sprite showed through a wall standing directly in front of it"
+
+    def test_solid_instances_are_not_billboarded(self):
+        """Solid instances are walls, already drawn as strips -- rendering
+        them a second time as a billboard would double-draw and also
+        misread any solid pickup/monster as a wall-strip AND a sprite."""
+        room = _room(160, 160)
+        wall = _solid_instance("obj_wall_solid_sprited", 64, 16, width=16, height=16)
+        wall.visible = True
+        from runtime.game_runner import GameSprite
+        sprite = GameSprite.__new__(GameSprite)
+        frame = pygame.Surface((16, 16))
+        frame.fill((255, 255, 0))
+        sprite.frames = [frame]
+        wall.sprite = sprite
+        wall.image_index = 0
+        room.instances.append(wall)
+        camera = GameInstance("obj_person", 16, 16, {}, action_executor=None)
+        camera.facing_angle = 0.0
+        room.instances.append(camera)
+        room.raycast_camera = {
+            'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
+            'render_distance': 20, 'cell_size': 32, 'columns': 64,
+            'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
+        }
+        screen = pygame.Surface((320, 240))
+        room._render_raycast_view(screen)
+        w, h = screen.get_size()
+        # The wall strip itself (drawn as wall_color) is expected; the
+        # sprite's own yellow must never appear anywhere.
+        found_yellow = any(
+            screen.get_at((x, y))[:3] == (255, 255, 0) for x in range(0, w, 4) for y in range(0, h, 4)
+        )
+        assert not found_yellow, "a solid instance's sprite was billboarded on top of its wall strip"
+
+    def test_camera_object_itself_is_never_billboarded(self):
+        room = _room(160, 160)
+        camera = _sprited_instance("obj_person", 16, 16, (255, 255, 0))
+        camera.facing_angle = 0.0
+        room.instances.append(camera)
+        room.raycast_camera = {
+            'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
+            'render_distance': 20, 'cell_size': 32, 'columns': 64,
+            'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
+        }
+        screen = pygame.Surface((320, 240))
+        room._render_raycast_view(screen)  # must not raise, and not draw itself
+        w, h = screen.get_size()
+        found_yellow = any(
+            screen.get_at((x, y))[:3] == (255, 255, 0) for x in range(0, w, 4) for y in range(0, h, 4)
+        )
+        assert not found_yellow, "the camera's own instance was drawn as a billboard sprite"
+
+    def test_nearer_sprite_draws_over_farther_one(self):
+        """Painter's algorithm: two overlapping billboards must show the
+        nearer one on top, not whichever happens to iterate last."""
+        room = _room(160, 160)
+        # Camera center is (32, 32) (default 32x32 GameInstance). Both
+        # sprites' centers sit on y=32 too -- directly along the facing=0
+        # ray, at different distances, so they genuinely overlap on
+        # screen instead of merely being near each other.
+        far = _sprited_instance("obj_far", 120, 20, (0, 255, 255), width=24, height=24)
+        near = _sprited_instance("obj_near", 60, 20, (255, 0, 255), width=24, height=24)
+        room.instances.append(far)
+        room.instances.append(near)
+        camera = GameInstance("obj_person", 16, 16, {}, action_executor=None)
+        camera.facing_angle = 0.0
+        room.instances.append(camera)
+        room.raycast_camera = {
+            'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
+            'render_distance': 20, 'cell_size': 32, 'columns': 64,
+            'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
+        }
+        screen = pygame.Surface((320, 240))
+        room._render_raycast_view(screen)
+        w, h = screen.get_size()
+        center = screen.get_at((w // 2, h // 2))[:3]
+        assert center == (255, 0, 255), f"expected the nearer sprite's color at screen center, got {center}"
 
 
 # ---------------------------------------------------------------------------
