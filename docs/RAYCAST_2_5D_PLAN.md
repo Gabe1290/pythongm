@@ -1,12 +1,72 @@
 # Plan: Doom/Wolfenstein-style raycast 2.5D rendering mode
 
-Status: **scoped, not started.** Written 2026-07-16 in response to a
-direct ask: "how hard would a 3D extension be, and if hard, scope out a
-fake 2.5D instead." This doc is that scope-out. Not linked from
-`docs/DEFERRED_ITEMS_PLAN.md` — this is a new feature pitch, not an item
-from the existing deferred-features registry, and shouldn't be started
-without an explicit go-ahead (see "Before committing to this" at the
-bottom).
+Status: **Phase 0 + Phase 1 DONE (2026-07-16, desktop/pygame only).**
+Written in response to a direct ask: "how hard would a 3D extension be,
+and if hard, scope out a fake 2.5D instead," then given an explicit
+go-ahead to start ("start work based on maze_1 with flat color walls to
+start, then... flat textures... then an outside horizon like in DOOM").
+Phases 2 onward (HTML5/Kivy parity, textures, sky/horizon, sprites) are
+still ahead — see the phase list below for current per-phase status. Not
+linked from `docs/DEFERRED_ITEMS_PLAN.md` — this is a new feature, not an
+item from the existing deferred-features registry.
+
+## Phase 0 + Phase 1 — what actually landed
+
+- **Phase 0 spike, validated**: pure-Python DDA raycasting against
+  maze_1's real 15×15 grid measured ~1.6ms/frame at 320 columns (≈636fps
+  ceiling) — the performance risk flagged in the original scope-out did
+  not materialize; no numpy/Cython needed. Correctness verified visually
+  via rendered PNG frames (a corridor view with correctly-converging side
+  walls and floor/ceiling perspective triangles).
+- **`GameInstance.facing_angle`** (`runtime/game_runner.py`): new
+  persistent float, GM angle convention (0=right/90=up/180=left/270=down,
+  matching `set_direction_speed`/the `direction` property), independent
+  of `hspeed`/`vspeed` — needed because the existing `direction` property
+  is read-only and derived from velocity (0 when stationary), exactly the
+  gap flagged during the original scope-out.
+- **`set_facing_angle` action** (`runtime/action_executor.py`):
+  absolute/relative, same shape as every other `set_*` action.
+- **`GameRoom.raycast_camera`/`_raycast_grid`** + **`enable_raycast_view`
+  action**: wall map is *derived* from the room's existing solid
+  instances (bucketed by `x // cell_size`) — no new authoring format, so
+  every existing grid-based maze sample is raycastable for free. Cached
+  per room, invalidated on a `cell_size` change.
+- **`GameRoom._cast_ray`/`_raycast_is_wall`/`_render_raycast_view`**: DDA
+  core + flat-color wall/floor/ceiling rendering, side-based shading
+  (x-face vs y-face) as a free depth cue. Hooked into `_render_room` as
+  an early-return — raycast mode fully replaces the normal top-down
+  render for that room (not an overlay); game *logic* is completely
+  unaffected, only this method's picture changes.
+- **`samples/raycast_1/`**: a new sample, walls/rooms literally copied
+  from `maze_1` (same grid, same layout — the "reuse existing content"
+  bet paid off exactly as scoped), `obj_person` rewritten for FPS-style
+  controls (continuous turn via `set_facing_angle`, forward/back via
+  `set_direction_speed(direction="facing_angle[+180]", ...)` — both
+  resolve `facing_angle` as a bare expression variable through the
+  existing generic `hasattr(instance, name)` expression resolver, no
+  new expression-evaluation code needed). Wall collision is the
+  **existing** solid-instance movement-blocking system, completely
+  unchanged — confirms the core "2.5D" premise: gameplay stayed 2D, only
+  the picture changed.
+- Manually smoke-tested through the real `GameRunner` loop (headless,
+  injected key events, mirroring `tools/smoke_run_samples.py`'s
+  pattern) and visually verified via rendered PNG frames: turning,
+  forward movement, and automatic wall-blocking all behaved correctly.
+- Regression tests: `tests/test_raycast_view.py` (26 tests) —
+  `set_facing_angle`/`enable_raycast_view` action behavior, wall-grid
+  derivation, **deterministic DDA geometry tests with closed-form
+  expected distances** (not "doesn't crash" — the same discipline that
+  caught the inverted fade-alpha bug earlier this session), a real-Surface
+  pixel-sampled render test, a performance regression guard, and an
+  end-to-end smoke run of the real sample through the real `GameRunner`
+  loop. Full suite 1829 → 1855 passed, 0 failed.
+
+**Known v1 gaps, by design** (not bugs, scoped out deliberately):
+Kivy/HTML5 parity (Phases 2-3, not started — `raycast_1` currently only
+runs on desktop); no textures (flat colors only, Phase 5 per the original
+phase list, now reordered — see below); no sky/horizon; no billboard
+sprites for `obj_goal` in the first-person view; no HUD compositing while
+raycast mode is active (documented in code comments in `_render_room`).
 
 ## What this is, precisely
 
@@ -86,7 +146,20 @@ motivates learning a real 3D engine.
 
 ## Phased plan
 
+**Reprioritized 2026-07-16** per explicit direction after Phase 1 shipped:
+next up is flat *textures* for walls/floor/ceiling, then an outside
+sky/horizon (both "DOOM-style" — the original Phase 5/stretch content),
+**ahead of** HTML5/Kivy parity and billboard sprites. The phase numbers
+below are kept as originally scoped (so this doc's history stays legible)
+but the work order is: **0 → 1 → 5 (textures) → new sky/horizon phase →
+2/3 (HTML5/Kivy) → 4 (sample) → 6 (sprites)** — note Phase 4's sample
+already exists (`raycast_1`, built alongside Phase 1 since deriving the
+map from `maze_1`'s content made it nearly free), so what's left of
+Phase 4 is folding textures/sky into it as they land, not building a
+sample from scratch.
+
 ### Phase 0 — feasibility spike (throwaway script, not a feature commit)
+**DONE 2026-07-16.**
 
 The one real technical unknown is **pure-Python raycasting performance**.
 Wolfenstein-era raycasting was cheap on 1992 hardware because it's
@@ -112,6 +185,7 @@ dependency currently). Before designing anything further:
   matching the rest of this codebase.
 
 ### Phase 1 — desktop runtime core (flat-color walls, no textures/sprites yet)
+**DONE 2026-07-16** — see "what actually landed" above.
 
 - New persistent instance state: a facing angle (separate from
   `direction`, per the finding above) plus FOV, render distance/fog
@@ -141,6 +215,59 @@ dependency currently). Before designing anything further:
   couple of lines of `execute_code`, matching how `match3_*` samples
   already do custom logic without new engine primitives.
 
+(HTML5/Kivy parity moved below — see "Phase 2"/"Phase 3" after Phase 5b,
+reflecting the 2026-07-16 reprioritization.)
+
+### Phase 4 — sample game
+**Landed alongside Phase 1, ahead of schedule** — `samples/raycast_1/`
+already exists (built 2026-07-16), because deriving the wall map from
+`maze_1`'s existing content made a from-scratch sample essentially free
+once Phase 1's core existed, exactly as this doc originally bet. What's
+left of this phase is folding in textures/sky/sprites as those phases
+land, not building a sample from scratch.
+
+### Phase 5 — textured walls, floor, and ceiling (NEXT, reprioritized ahead of HTML5/Kivy)
+
+- **Walls**: sample a 1px-wide vertical strip from the wall's sprite at
+  the ray's hit position instead of a flat color. The hit position's
+  fractional offset within its cell (`side_x`/`side_y`'s fractional part
+  at the moment of the hit, already computed by `_cast_ray` — needs
+  exposing, not recomputing) gives the horizontal texture-U coordinate;
+  `pygame.transform.scale` a 1px-wide subsurface of the wall sprite to
+  the strip height. Which sprite to sample needs resolving per solid
+  instance hit (currently `_raycast_grid` only stores `True`/`False` —
+  will need to store the hit instance's sprite reference too, not just
+  occupancy).
+- **Floor/ceiling**: classic "floor casting" — for each screen row below
+  the horizon, compute the world-space distance for that row (a function
+  of row-to-center-of-screen offset, not column), then for each column
+  derive the world (x, y) at that distance along that column's ray
+  direction, and sample the floor/ceiling texture at that world position
+  modulo the texture's tile size. This is a per-pixel-row operation
+  (screen_height/2 rows × screen_width columns), meaningfully more work
+  than the per-column wall pass — worth a dedicated Phase 0-style timing
+  check before committing to full-resolution floor casting; a cheaper
+  fallback is a fixed low-res floor grid (checkerboard-style, sampled
+  coarsely) if per-pixel floor casting is too slow in pure Python.
+
+### Phase 5b — outside sky/horizon (NEXT, DOOM-style)
+
+- The "outside" look: replace the flat ceiling fill with a horizontal
+  strip of sky texture (or a gradient, as a cheaper first cut) whose
+  horizontal offset scrolls with `facing_angle` (so turning pans the
+  sky, giving a sense of a full 360° horizon even though only a FOV-wide
+  slice renders per frame) but does **not** scale/recede with distance —
+  classic Doom sky rendering treats the sky as infinitely far away, which
+  conveniently means it's the *cheapest* texture in the whole pipeline
+  (no per-column distance math, just a horizontal pan-and-tile). Likely
+  implementation: a `sky_texture`/`sky_color` param on
+  `enable_raycast_view`, applied to the ceiling fill above the horizon
+  line only where no wall strip is drawn (open sight-lines, e.g. looking
+  over a low wall or out of the maze bounds if a sample ever has open
+  areas — `raycast_1`'s current maze is fully enclosed, so this may need
+  a second sample, or `raycast_1`'s map opened up at an edge, to actually
+  be visible in play).
+
 ### Phase 2 — HTML5 parity
 
 - Port the same DDA loop into `engine.js` (a `renderRaycastView`
@@ -156,25 +283,6 @@ dependency currently). Before designing anything further:
   emitting a loop of `Rectangle` graphics instructions per column into
   the object's canvas — mirrors the existing Fbo-based view/camera
   codegen from `views_1`/`views_2`, no OpenGL/3D API needed.
-
-### Phase 4 — sample game
-
-- A new bundled sample (`raycast_1`, matching the `views_1`/`views_2`
-  naming precedent) — most efficient path is reusing `maze_1`'s existing
-  wall layout (it's already a grid of solid objects) rendered in
-  first-person instead of top-down. This is the actual "aha" deliverable
-  for students and should ship as soon as Phase 1-3 are solid, even
-  before textures/sprites — a flat-colored maze you can walk through in
-  first-person is already the pedagogical payload.
-
-### Phase 5 — textured walls (stretch, after the flat-color MVP ships)
-
-- Sample a 1px-wide vertical strip from the wall's sprite at the ray's
-  hit position instead of a flat color. Desktop:
-  `pygame.transform.scale` a 1px subsurface. HTML5: `ctx.drawImage` with
-  a 1px source rect. Kivy: a textured `Rectangle` with `tex_coords`. Each
-  is a small, target-specific addition on top of the Phase 1-3
-  machinery, not a new rendering approach.
 
 ### Phase 6 — billboard sprites (stretch, likely last)
 
