@@ -1,0 +1,37 @@
+{
+  "name": "bonus",
+  "asset_type": "object",
+  "sprite": "sprite_bonus",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "collision_with_obj_person": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "100",
+            "relative": true
+          }
+        },
+        {
+          "action": "play_sound",
+          "parameters": {
+            "sound": "sound_diamond",
+            "loop": "0"
+          }
+        },
+        {
+          "action": "destroy_instance",
+          "parameters": {}
+        }
+      ],
+      "target_object": "obj_person"
+    }
+  },
+  "imported": true,
+  "created": "2026-07-17T10:51:41.365497",
+  "modified": "2026-07-17T10:51:41.365497"
+}

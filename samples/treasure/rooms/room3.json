@@ -1,0 +1,1126 @@
+{
+  "name": "room3",
+  "asset_type": "room",
+  "width": 480,
+  "height": 480,
+  "background_color": "#c0c0c0",
+  "background_image": "background",
+  "backgrounds": [
+    {
+      "visible": true,
+      "foreground": false,
+      "background_image": "background",
+      "x": 0,
+      "y": 0,
+      "tile_h": false,
+      "tile_v": false,
+      "hspeed": 0,
+      "vspeed": 0,
+      "stretch": false
+    },
+    {
+      "visible": false,
+      "foreground": false,
+      "background_image": "",
+      "x": 0,
+      "y": 0,
+      "tile_h": true,
+      "tile_v": true,
+      "hspeed": 0,
+      "vspeed": 0,
+      "stretch": false
+    },
+    {
+      "visible": false,
+      "foreground": false,
+      "background_image": "",
+      "x": 0,
+      "y": 0,
+      "tile_h": true,
+      "tile_v": true,
+      "hspeed": 0,
+      "vspeed": 0,
+      "stretch": false
+    },
+    {
+      "visible": false,
+      "foreground": false,
+      "background_image": "",
+      "x": 0,
+      "y": 0,
+      "tile_h": true,
+      "tile_v": true,
+      "hspeed": 0,
+      "vspeed": 0,
+      "stretch": false
+    },
+    {
+      "visible": false,
+      "foreground": false,
+      "background_image": "",
+      "x": 0,
+      "y": 0,
+      "tile_h": true,
+      "tile_v": true,
+      "hspeed": 0,
+      "vspeed": 0,
+      "stretch": false
+    },
+    {
+      "visible": false,
+      "foreground": false,
+      "background_image": "",
+      "x": 0,
+      "y": 0,
+      "tile_h": true,
+      "tile_v": true,
+      "hspeed": 0,
+      "vspeed": 0,
+      "stretch": false
+    },
+    {
+      "visible": false,
+      "foreground": false,
+      "background_image": "",
+      "x": 0,
+      "y": 0,
+      "tile_h": true,
+      "tile_v": true,
+      "hspeed": 0,
+      "vspeed": 0,
+      "stretch": false
+    },
+    {
+      "visible": false,
+      "foreground": false,
+      "background_image": "",
+      "x": 0,
+      "y": 0,
+      "tile_h": true,
+      "tile_v": true,
+      "hspeed": 0,
+      "vspeed": 0,
+      "stretch": false
+    }
+  ],
+  "tile_horizontal": false,
+  "tile_vertical": false,
+  "instances": [
+    {
+      "object_name": "point",
+      "x": 288,
+      "y": 416
+    },
+    {
+      "object_name": "point",
+      "x": 288,
+      "y": 352
+    },
+    {
+      "object_name": "point",
+      "x": 352,
+      "y": 416
+    },
+    {
+      "object_name": "point",
+      "x": 160,
+      "y": 352
+    },
+    {
+      "object_name": "point",
+      "x": 160,
+      "y": 416
+    },
+    {
+      "object_name": "point",
+      "x": 96,
+      "y": 416
+    },
+    {
+      "object_name": "point",
+      "x": 32,
+      "y": 416
+    },
+    {
+      "object_name": "point",
+      "x": 32,
+      "y": 288
+    },
+    {
+      "object_name": "point",
+      "x": 32,
+      "y": 32
+    },
+    {
+      "object_name": "point",
+      "x": 96,
+      "y": 32
+    },
+    {
+      "object_name": "point",
+      "x": 96,
+      "y": 96
+    },
+    {
+      "object_name": "point",
+      "x": 160,
+      "y": 32
+    },
+    {
+      "object_name": "point",
+      "x": 352,
+      "y": 32
+    },
+    {
+      "object_name": "point",
+      "x": 288,
+      "y": 32
+    },
+    {
+      "object_name": "point",
+      "x": 416,
+      "y": 416
+    },
+    {
+      "object_name": "point",
+      "x": 416,
+      "y": 288
+    },
+    {
+      "object_name": "point",
+      "x": 416,
+      "y": 160
+    },
+    {
+      "object_name": "point",
+      "x": 416,
+      "y": 32
+    },
+    {
+      "object_name": "point",
+      "x": 160,
+      "y": 288
+    },
+    {
+      "object_name": "point",
+      "x": 32,
+      "y": 160
+    },
+    {
+      "object_name": "point",
+      "x": 160,
+      "y": 96
+    },
+    {
+      "object_name": "point",
+      "x": 288,
+      "y": 96
+    },
+    {
+      "object_name": "point",
+      "x": 352,
+      "y": 96
+    },
+    {
+      "object_name": "wall",
+      "x": 0,
+      "y": 192
+    },
+    {
+      "object_name": "wall",
+      "x": 0,
+      "y": 160
+    },
+    {
+      "object_name": "wall",
+      "x": 0,
+      "y": 128
+    },
+    {
+      "object_name": "wall",
+      "x": 0,
+      "y": 64
+    },
+    {
+      "object_name": "wall",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "object_name": "wall",
+      "x": 64,
+      "y": 0
+    },
+    {
+      "object_name": "wall",
+      "x": 96,
+      "y": 0
+    },
+    {
+      "object_name": "wall",
+      "x": 128,
+      "y": 0
+    },
+    {
+      "object_name": "wall",
+      "x": 160,
+      "y": 0
+    },
+    {
+      "object_name": "wall",
+      "x": 192,
+      "y": 0
+    },
+    {
+      "object_name": "wall",
+      "x": 256,
+      "y": 0
+    },
+    {
+      "object_name": "wall",
+      "x": 288,
+      "y": 0
+    },
+    {
+      "object_name": "wall",
+      "x": 320,
+      "y": 0
+    },
+    {
+      "object_name": "wall",
+      "x": 352,
+      "y": 0
+    },
+    {
+      "object_name": "wall",
+      "x": 384,
+      "y": 0
+    },
+    {
+      "object_name": "wall",
+      "x": 448,
+      "y": 0
+    },
+    {
+      "object_name": "wall",
+      "x": 448,
+      "y": 64
+    },
+    {
+      "object_name": "wall",
+      "x": 448,
+      "y": 128
+    },
+    {
+      "object_name": "wall",
+      "x": 448,
+      "y": 160
+    },
+    {
+      "object_name": "wall",
+      "x": 448,
+      "y": 192
+    },
+    {
+      "object_name": "wall",
+      "x": 448,
+      "y": 256
+    },
+    {
+      "object_name": "wall",
+      "x": 448,
+      "y": 288
+    },
+    {
+      "object_name": "wall",
+      "x": 448,
+      "y": 320
+    },
+    {
+      "object_name": "wall",
+      "x": 448,
+      "y": 384
+    },
+    {
+      "object_name": "wall",
+      "x": 448,
+      "y": 448
+    },
+    {
+      "object_name": "wall",
+      "x": 384,
+      "y": 448
+    },
+    {
+      "object_name": "wall",
+      "x": 352,
+      "y": 448
+    },
+    {
+      "object_name": "wall",
+      "x": 320,
+      "y": 448
+    },
+    {
+      "object_name": "wall",
+      "x": 288,
+      "y": 448
+    },
+    {
+      "object_name": "wall",
+      "x": 256,
+      "y": 448
+    },
+    {
+      "object_name": "wall",
+      "x": 192,
+      "y": 448
+    },
+    {
+      "object_name": "wall",
+      "x": 160,
+      "y": 448
+    },
+    {
+      "object_name": "wall",
+      "x": 128,
+      "y": 448
+    },
+    {
+      "object_name": "wall",
+      "x": 96,
+      "y": 448
+    },
+    {
+      "object_name": "wall",
+      "x": 64,
+      "y": 448
+    },
+    {
+      "object_name": "wall",
+      "x": 0,
+      "y": 448
+    },
+    {
+      "object_name": "wall",
+      "x": 0,
+      "y": 384
+    },
+    {
+      "object_name": "wall",
+      "x": 0,
+      "y": 320
+    },
+    {
+      "object_name": "wall",
+      "x": 0,
+      "y": 288
+    },
+    {
+      "object_name": "wall",
+      "x": 0,
+      "y": 256
+    },
+    {
+      "object_name": "wall",
+      "x": 64,
+      "y": 256
+    },
+    {
+      "object_name": "wall",
+      "x": 96,
+      "y": 256
+    },
+    {
+      "object_name": "wall",
+      "x": 64,
+      "y": 128
+    },
+    {
+      "object_name": "wall",
+      "x": 64,
+      "y": 64
+    },
+    {
+      "object_name": "wall",
+      "x": 96,
+      "y": 64
+    },
+    {
+      "object_name": "wall",
+      "x": 128,
+      "y": 64
+    },
+    {
+      "object_name": "wall",
+      "x": 320,
+      "y": 64
+    },
+    {
+      "object_name": "wall",
+      "x": 352,
+      "y": 64
+    },
+    {
+      "object_name": "wall",
+      "x": 384,
+      "y": 64
+    },
+    {
+      "object_name": "wall",
+      "x": 384,
+      "y": 128
+    },
+    {
+      "object_name": "wall",
+      "x": 352,
+      "y": 256
+    },
+    {
+      "object_name": "wall",
+      "x": 384,
+      "y": 256
+    },
+    {
+      "object_name": "wall",
+      "x": 384,
+      "y": 352
+    },
+    {
+      "object_name": "wall",
+      "x": 384,
+      "y": 384
+    },
+    {
+      "object_name": "wall",
+      "x": 352,
+      "y": 384
+    },
+    {
+      "object_name": "wall",
+      "x": 256,
+      "y": 320
+    },
+    {
+      "object_name": "wall",
+      "x": 192,
+      "y": 320
+    },
+    {
+      "object_name": "wall",
+      "x": 96,
+      "y": 384
+    },
+    {
+      "object_name": "wall",
+      "x": 64,
+      "y": 384
+    },
+    {
+      "object_name": "wall",
+      "x": 64,
+      "y": 352
+    },
+    {
+      "object_name": "wall",
+      "x": 160,
+      "y": 256
+    },
+    {
+      "object_name": "wall",
+      "x": 192,
+      "y": 256
+    },
+    {
+      "object_name": "wall",
+      "x": 256,
+      "y": 256
+    },
+    {
+      "object_name": "wall",
+      "x": 288,
+      "y": 256
+    },
+    {
+      "object_name": "point",
+      "x": 224,
+      "y": 32
+    },
+    {
+      "object_name": "wall",
+      "x": 0,
+      "y": 224
+    },
+    {
+      "object_name": "wall",
+      "x": 192,
+      "y": 384
+    },
+    {
+      "object_name": "wall",
+      "x": 256,
+      "y": 384
+    },
+    {
+      "object_name": "wall",
+      "x": 192,
+      "y": 64
+    },
+    {
+      "object_name": "wall",
+      "x": 192,
+      "y": 96
+    },
+    {
+      "object_name": "wall",
+      "x": 256,
+      "y": 64
+    },
+    {
+      "object_name": "wall",
+      "x": 256,
+      "y": 96
+    },
+    {
+      "object_name": "wall",
+      "x": 256,
+      "y": 160
+    },
+    {
+      "object_name": "wall",
+      "x": 192,
+      "y": 160
+    },
+    {
+      "object_name": "wall",
+      "x": 448,
+      "y": 224
+    },
+    {
+      "object_name": "point",
+      "x": 32,
+      "y": 352
+    },
+    {
+      "object_name": "point",
+      "x": 32,
+      "y": 96
+    },
+    {
+      "object_name": "point",
+      "x": 416,
+      "y": 96
+    },
+    {
+      "object_name": "point",
+      "x": 416,
+      "y": 352
+    },
+    {
+      "object_name": "wall",
+      "x": 0,
+      "y": 96
+    },
+    {
+      "object_name": "wall",
+      "x": 0,
+      "y": 352
+    },
+    {
+      "object_name": "wall",
+      "x": 224,
+      "y": 448
+    },
+    {
+      "object_name": "wall",
+      "x": 448,
+      "y": 352
+    },
+    {
+      "object_name": "wall",
+      "x": 448,
+      "y": 96
+    },
+    {
+      "object_name": "wall",
+      "x": 224,
+      "y": 0
+    },
+    {
+      "object_name": "wall",
+      "x": 192,
+      "y": 128
+    },
+    {
+      "object_name": "wall",
+      "x": 256,
+      "y": 128
+    },
+    {
+      "object_name": "wall",
+      "x": 64,
+      "y": 192
+    },
+    {
+      "object_name": "wall",
+      "x": 96,
+      "y": 192
+    },
+    {
+      "object_name": "wall",
+      "x": 160,
+      "y": 192
+    },
+    {
+      "object_name": "wall",
+      "x": 128,
+      "y": 192
+    },
+    {
+      "object_name": "wall",
+      "x": 64,
+      "y": 96
+    },
+    {
+      "object_name": "wall",
+      "x": 128,
+      "y": 128
+    },
+    {
+      "object_name": "wall",
+      "x": 320,
+      "y": 128
+    },
+    {
+      "object_name": "wall",
+      "x": 384,
+      "y": 96
+    },
+    {
+      "object_name": "wall",
+      "x": 192,
+      "y": 192
+    },
+    {
+      "object_name": "wall",
+      "x": 256,
+      "y": 192
+    },
+    {
+      "object_name": "wall",
+      "x": 288,
+      "y": 192
+    },
+    {
+      "object_name": "wall",
+      "x": 320,
+      "y": 192
+    },
+    {
+      "object_name": "wall",
+      "x": 352,
+      "y": 192
+    },
+    {
+      "object_name": "wall",
+      "x": 384,
+      "y": 192
+    },
+    {
+      "object_name": "wall",
+      "x": 192,
+      "y": 288
+    },
+    {
+      "object_name": "wall",
+      "x": 192,
+      "y": 352
+    },
+    {
+      "object_name": "wall",
+      "x": 256,
+      "y": 288
+    },
+    {
+      "object_name": "wall",
+      "x": 256,
+      "y": 352
+    },
+    {
+      "object_name": "wall",
+      "x": 320,
+      "y": 256
+    },
+    {
+      "object_name": "wall",
+      "x": 384,
+      "y": 320
+    },
+    {
+      "object_name": "wall",
+      "x": 320,
+      "y": 320
+    },
+    {
+      "object_name": "wall",
+      "x": 320,
+      "y": 384
+    },
+    {
+      "object_name": "wall",
+      "x": 128,
+      "y": 384
+    },
+    {
+      "object_name": "wall",
+      "x": 64,
+      "y": 320
+    },
+    {
+      "object_name": "wall",
+      "x": 128,
+      "y": 320
+    },
+    {
+      "object_name": "wall",
+      "x": 128,
+      "y": 256
+    },
+    {
+      "object_name": "bonus",
+      "x": 224,
+      "y": 224
+    },
+    {
+      "object_name": "pil",
+      "x": 160,
+      "y": 160
+    },
+    {
+      "object_name": "pil",
+      "x": 288,
+      "y": 288
+    },
+    {
+      "object_name": "point",
+      "x": 32,
+      "y": 224
+    },
+    {
+      "object_name": "point",
+      "x": 96,
+      "y": 224
+    },
+    {
+      "object_name": "point",
+      "x": 160,
+      "y": 224
+    },
+    {
+      "object_name": "point",
+      "x": 288,
+      "y": 224
+    },
+    {
+      "object_name": "point",
+      "x": 352,
+      "y": 224
+    },
+    {
+      "object_name": "point",
+      "x": 416,
+      "y": 224
+    },
+    {
+      "object_name": "point",
+      "x": 288,
+      "y": 160
+    },
+    {
+      "object_name": "point",
+      "x": 352,
+      "y": 160
+    },
+    {
+      "object_name": "point",
+      "x": 96,
+      "y": 160
+    },
+    {
+      "object_name": "point",
+      "x": 96,
+      "y": 288
+    },
+    {
+      "object_name": "point",
+      "x": 96,
+      "y": 352
+    },
+    {
+      "object_name": "point",
+      "x": 352,
+      "y": 352
+    },
+    {
+      "object_name": "point",
+      "x": 352,
+      "y": 288
+    },
+    {
+      "object_name": "point",
+      "x": 224,
+      "y": 288
+    },
+    {
+      "object_name": "point",
+      "x": 224,
+      "y": 160
+    },
+    {
+      "object_name": "point",
+      "x": 224,
+      "y": 96
+    },
+    {
+      "object_name": "point",
+      "x": 224,
+      "y": 352
+    },
+    {
+      "object_name": "wall",
+      "x": -32,
+      "y": 0
+    },
+    {
+      "object_name": "wall",
+      "x": -32,
+      "y": 64
+    },
+    {
+      "object_name": "wall",
+      "x": -32,
+      "y": 384
+    },
+    {
+      "object_name": "wall",
+      "x": -32,
+      "y": 448
+    },
+    {
+      "object_name": "wall",
+      "x": 448,
+      "y": -32
+    },
+    {
+      "object_name": "wall",
+      "x": 384,
+      "y": -32
+    },
+    {
+      "object_name": "wall",
+      "x": 64,
+      "y": -32
+    },
+    {
+      "object_name": "wall",
+      "x": 0,
+      "y": -32
+    },
+    {
+      "object_name": "wall",
+      "x": 480,
+      "y": 64
+    },
+    {
+      "object_name": "wall",
+      "x": 480,
+      "y": 448
+    },
+    {
+      "object_name": "wall",
+      "x": 448,
+      "y": 480
+    },
+    {
+      "object_name": "wall",
+      "x": 384,
+      "y": 480
+    },
+    {
+      "object_name": "wall",
+      "x": 64,
+      "y": 480
+    },
+    {
+      "object_name": "explorer",
+      "x": 224,
+      "y": 416
+    },
+    {
+      "object_name": "monster",
+      "x": 192,
+      "y": 224
+    },
+    {
+      "object_name": "monster",
+      "x": 256,
+      "y": 224
+    },
+    {
+      "object_name": "monster",
+      "x": 224,
+      "y": 256
+    },
+    {
+      "object_name": "monster",
+      "x": 224,
+      "y": 192
+    },
+    {
+      "object_name": "monster",
+      "x": 224,
+      "y": 128
+    },
+    {
+      "object_name": "monster",
+      "x": 224,
+      "y": 224
+    }
+  ],
+  "tiles": [],
+  "creation_code": "",
+  "views_enabled": false,
+  "views": {
+    "view_0": {
+      "visible": false,
+      "view_x": 0,
+      "view_y": 0,
+      "view_w": 640,
+      "view_h": 480,
+      "port_x": 0,
+      "port_y": 0,
+      "port_w": 640,
+      "port_h": 480,
+      "hborder": 32,
+      "vborder": 32,
+      "hspeed": -1,
+      "vspeed": -1,
+      "follow": ""
+    },
+    "view_1": {
+      "visible": false,
+      "view_x": 0,
+      "view_y": 0,
+      "view_w": 640,
+      "view_h": 480,
+      "port_x": 0,
+      "port_y": 0,
+      "port_w": 640,
+      "port_h": 480,
+      "hborder": 32,
+      "vborder": 32,
+      "hspeed": -1,
+      "vspeed": -1,
+      "follow": ""
+    },
+    "view_2": {
+      "visible": false,
+      "view_x": 0,
+      "view_y": 0,
+      "view_w": 640,
+      "view_h": 480,
+      "port_x": 0,
+      "port_y": 0,
+      "port_w": 640,
+      "port_h": 480,
+      "hborder": 32,
+      "vborder": 32,
+      "hspeed": -1,
+      "vspeed": -1,
+      "follow": ""
+    },
+    "view_3": {
+      "visible": false,
+      "view_x": 0,
+      "view_y": 0,
+      "view_w": 640,
+      "view_h": 480,
+      "port_x": 0,
+      "port_y": 0,
+      "port_w": 640,
+      "port_h": 480,
+      "hborder": 32,
+      "vborder": 32,
+      "hspeed": -1,
+      "vspeed": -1,
+      "follow": ""
+    },
+    "view_4": {
+      "visible": false,
+      "view_x": 0,
+      "view_y": 0,
+      "view_w": 640,
+      "view_h": 480,
+      "port_x": 0,
+      "port_y": 0,
+      "port_w": 640,
+      "port_h": 480,
+      "hborder": 32,
+      "vborder": 32,
+      "hspeed": -1,
+      "vspeed": -1,
+      "follow": ""
+    },
+    "view_5": {
+      "visible": false,
+      "view_x": 0,
+      "view_y": 0,
+      "view_w": 640,
+      "view_h": 480,
+      "port_x": 0,
+      "port_y": 0,
+      "port_w": 640,
+      "port_h": 480,
+      "hborder": 32,
+      "vborder": 32,
+      "hspeed": -1,
+      "vspeed": -1,
+      "follow": ""
+    },
+    "view_6": {
+      "visible": false,
+      "view_x": 0,
+      "view_y": 0,
+      "view_w": 640,
+      "view_h": 480,
+      "port_x": 0,
+      "port_y": 0,
+      "port_w": 640,
+      "port_h": 480,
+      "hborder": 32,
+      "vborder": 32,
+      "hspeed": -1,
+      "vspeed": -1,
+      "follow": ""
+    },
+    "view_7": {
+      "visible": false,
+      "view_x": 0,
+      "view_y": 0,
+      "view_w": 640,
+      "view_h": 480,
+      "port_x": 0,
+      "port_y": 0,
+      "port_w": 640,
+      "port_h": 480,
+      "hborder": 32,
+      "vborder": 32,
+      "hspeed": -1,
+      "vspeed": -1,
+      "follow": ""
+    }
+  },
+  "created": "2026-07-17T10:51:41.706382",
+  "modified": "2026-07-17T10:51:41.706382",
+  "imported": true
+}

@@ -1,0 +1,60 @@
+{
+  "name": "controller_start",
+  "asset_type": "object",
+  "sprite": "",
+  "visible": false,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "set_score",
+          "parameters": {
+            "value": "0"
+          }
+        },
+        {
+          "action": "set_window_caption",
+          "parameters": {
+            "score": "0",
+            "score_caption": "score: ",
+            "lives": "0",
+            "lives_caption": "lives: ",
+            "health": "0",
+            "health_caption": "health: "
+          }
+        },
+        {
+          "action": "set_lives",
+          "parameters": {
+            "value": "3"
+          }
+        },
+        {
+          "action": "play_sound",
+          "parameters": {
+            "sound": "sound_background",
+            "loop": "1"
+          }
+        }
+      ]
+    },
+    "keyboard": {
+      "anykey": {
+        "actions": [
+          {
+            "action": "next_room",
+            "parameters": {
+              "transition": "0"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "imported": true,
+  "created": "2026-07-17T10:51:41.365497",
+  "modified": "2026-07-17T10:51:41.365497"
+}

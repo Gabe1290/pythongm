@@ -1,0 +1,26 @@
+{
+  "name": "scared",
+  "asset_type": "object",
+  "sprite": "afraid",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": 0,
+  "events": {
+    "alarm_0": {
+      "actions": [
+        {
+          "action": "change_instance",
+          "parameters": {
+            "object": "monster",
+            "perform_events": "0"
+          }
+        }
+      ]
+    }
+  },
+  "imported": true,
+  "created": "2026-07-17T10:51:41.696115",
+  "modified": "2026-07-17T10:51:41.696115",
+  "parent": "monster"
+}

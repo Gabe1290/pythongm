@@ -1,0 +1,114 @@
+{
+  "name": "explosion",
+  "asset_type": "object",
+  "sprite": "sprite_explosion",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": -10,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "jump_to_position",
+          "parameters": {
+            "x": "-200",
+            "y": "-200",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200-16",
+            "y": "200-16",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200-16",
+            "y": "200+16",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200-16",
+            "y": "200+48",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200+16",
+            "y": "200-16",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200+16",
+            "y": "200+16",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200+16",
+            "y": "200+48",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200+48",
+            "y": "200-16",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200+48",
+            "y": "200+16",
+            "relative": true
+          }
+        },
+        {
+          "action": "destroy_at_position",
+          "parameters": {
+            "x": "200+48",
+            "y": "200+48",
+            "relative": true
+          }
+        },
+        {
+          "action": "jump_to_position",
+          "parameters": {
+            "x": "200",
+            "y": "200",
+            "relative": true
+          }
+        }
+      ]
+    },
+    "animation_end": {
+      "actions": [
+        {
+          "action": "destroy_instance",
+          "parameters": {}
+        }
+      ]
+    }
+  },
+  "imported": true,
+  "created": "2026-07-17T10:51:41.365497",
+  "modified": "2026-07-17T10:51:41.365497"
+}

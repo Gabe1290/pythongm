@@ -1,0 +1,208 @@
+{
+  "name": "monster_all",
+  "asset_type": "object",
+  "sprite": "sprite_monster3",
+  "visible": true,
+  "solid": false,
+  "persistent": false,
+  "depth": -10,
+  "events": {
+    "create": {
+      "actions": [
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": [
+              "down",
+              "left",
+              "right",
+              "up"
+            ],
+            "speed": "32/6"
+          }
+        },
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "afraid",
+            "value": "false"
+          }
+        },
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "image_speed",
+            "value": "0"
+          }
+        }
+      ]
+    },
+    "alarm_0": {
+      "actions": [
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "afraid",
+            "value": "false"
+          }
+        },
+        {
+          "action": "set_sprite",
+          "parameters": {
+            "sprite": "sprite_monster3",
+            "subimage": "-1",
+            "speed": "0"
+          }
+        }
+      ]
+    },
+    "end_step": {
+      "actions": [
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "hspeed",
+            "value": "-1",
+            "operation": "less"
+          }
+        },
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "image_index",
+            "value": "3"
+          }
+        },
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "hspeed",
+            "value": "1",
+            "operation": "greater"
+          }
+        },
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "image_index",
+            "value": "2"
+          }
+        },
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "vspeed",
+            "value": "-1",
+            "operation": "less"
+          }
+        },
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "image_index",
+            "value": "1"
+          }
+        },
+        {
+          "action": "test_variable",
+          "parameters": {
+            "variable": "vspeed",
+            "value": "1",
+            "operation": "greater"
+          }
+        },
+        {
+          "action": "set_variable",
+          "parameters": {
+            "variable": "image_index",
+            "value": "0"
+          }
+        }
+      ]
+    },
+    "step": {
+      "actions": [
+        {
+          "action": "test_alignment",
+          "parameters": {
+            "hsnap": "32",
+            "vsnap": "32"
+          }
+        },
+        {
+          "action": "test_chance",
+          "parameters": {
+            "sides": "8"
+          }
+        },
+        {
+          "action": "start_moving_direction",
+          "parameters": {
+            "directions": [
+              "down",
+              "left",
+              "right",
+              "up"
+            ],
+            "speed": "32/6"
+          }
+        }
+      ]
+    },
+    "collision_with_wall_corner": {
+      "actions": [
+        {
+          "action": "set_direction_speed",
+          "parameters": {
+            "direction": "direction+90",
+            "speed": "32/6"
+          }
+        },
+        {
+          "action": "check_empty",
+          "parameters": {
+            "x": "hspeed",
+            "y": "vspeed",
+            "objects": "solid",
+            "relative": true
+          }
+        },
+        {
+          "action": "exit_event",
+          "parameters": {}
+        },
+        {
+          "action": "set_direction_speed",
+          "parameters": {
+            "direction": "direction+180",
+            "speed": "32/6"
+          }
+        },
+        {
+          "action": "check_empty",
+          "parameters": {
+            "x": "hspeed",
+            "y": "vspeed",
+            "objects": "solid",
+            "relative": true
+          }
+        },
+        {
+          "action": "exit_event",
+          "parameters": {}
+        },
+        {
+          "action": "set_direction_speed",
+          "parameters": {
+            "direction": "direction-90",
+            "speed": "32/6"
+          }
+        }
+      ],
+      "target_object": "wall_corner"
+    }
+  },
+  "imported": true,
+  "created": "2026-07-17T10:51:41.365497",
+  "modified": "2026-07-17T10:51:41.365497"
+}
