@@ -291,6 +291,28 @@ class TestRenderRaycastView:
         assert screen.get_at((2, 2))[:3] == (0, 0, 255)          # ceiling
         assert screen.get_at((2, h - 2))[:3] == (0, 255, 0)       # floor
 
+    def test_side_shading_is_half_brightness(self):
+        """Regression: the y-face (side==1) shading factor must give a
+        clearly visible depth cue -- the original 3/4 factor (only 25%
+        darker) read as barely distinguishable from an unshaded wall
+        (user feedback); it's now 1/2."""
+        room = _room(160, 160)
+        wall = _solid_instance("obj_wall", 0, 64)  # grid (0, 2) -- a y-face hit
+        room.instances.append(wall)
+        camera = GameInstance("obj_person", 16, 16, {}, action_executor=None)
+        camera.facing_angle = -90.0  # GM angle -90 -> screen-space +y (down)
+        room.instances.append(camera)
+        room.raycast_camera = {
+            'enabled': True, 'camera_object': 'obj_person', 'fov': 10,
+            'render_distance': 20, 'cell_size': 32, 'columns': 16,
+            'wall_color': '#993333', 'floor_color': '#000000', 'ceiling_color': '#000000',
+        }
+        screen = pygame.Surface((160, 120))
+        room._render_raycast_view(screen)
+        w, h = screen.get_size()
+        shaded = screen.get_at((w // 2, h // 2))[:3]
+        assert shaded == (76, 25, 25)  # exactly half of (153, 51, 51)
+
     def test_missing_camera_still_renders_floor_and_ceiling(self):
         room = _room(160, 160)
         room.raycast_camera = {
@@ -338,7 +360,7 @@ class TestRaycastPerformance:
         room.raycast_camera = {
             'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
             'render_distance': 20, 'cell_size': 32, 'columns': 320,
-            'wall_color': '#993333', 'floor_color': '#464632', 'ceiling_color': '#1e1e28',
+            'wall_color': '#993333', 'floor_color': '#464632', 'ceiling_color': '#87CEEB',
         }
         screen = pygame.Surface((640, 480))
 
@@ -405,3 +427,60 @@ class TestRaycast1SampleSmoke:
         # 30 held frames * 3 deg/frame = 90 degrees turned left.
         assert player.facing_angle == pytest.approx(90.0, abs=0.01)
         assert runner.current_room.raycast_camera['enabled'] is True
+
+    def test_player_is_blocked_by_walls_not_walking_through_them(self):
+        """Regression: obj_person's continuous FPS-style movement (via
+        set_direction_speed, not the grid-snapped start_moving_direction
+        maze_1 uses) needs a *registered* collision_with_obj_wall handler
+        for the engine's movement-blocking optimization to even run the
+        check -- it's gated behind get_collision_listened_types(), not
+        automatic just because obj_wall is solid. The first version of
+        this sample dropped that handler (reasoning the AABB block was
+        unconditional -- it isn't: registration is required even though
+        the block itself doesn't depend on the handler's actions), so the
+        player walked straight through every wall. Empty-actions handler
+        fixes it; this pins the fix by holding forward into a known wall
+        for far longer than the room is wide and confirming the player
+        never leaves room bounds."""
+        from runtime.game_runner import GameRunner
+
+        project_json = str(REPO_ROOT / "samples" / "raycast_1" / "project.json")
+        runner = GameRunner(project_json)
+        runner.language = "en"
+        runner.show_message_dialog = lambda *a, **k: None
+        runner.show_highscore_dialog = lambda *a, **k: None
+        runner._show_name_entry_dialog = lambda *a, **k: ""
+        runner.process_pending_messages = lambda *a, **k: None
+
+        state = {"frames": 0}
+        MAX_FRAMES = 200  # 200 * 3px/frame = 600px, more than the 480px room
+
+        class _FakeClock:
+            def tick(self, fps=0):
+                f = state["frames"] = state["frames"] + 1
+                if f == 1:
+                    pygame.event.post(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_UP))
+                if f >= MAX_FRAMES:
+                    runner.running = False
+                return 0
+
+            def get_fps(self):
+                return 60.0
+
+        real_clock = pygame.time.Clock
+        pygame.time.Clock = _FakeClock
+        try:
+            runner.run()
+        finally:
+            pygame.time.Clock = real_clock
+
+        player = next(i for i in runner.current_room.instances if i.object_name == "obj_person")
+        room = runner.current_room
+        assert 0 <= player.x <= room.width, (
+            f"player.x={player.x} escaped room bounds [0, {room.width}] -- "
+            "walked through a wall"
+        )
+        assert 0 <= player.y <= room.height, (
+            f"player.y={player.y} escaped room bounds [0, {room.height}] -- "
+            "walked through a wall"
+        )

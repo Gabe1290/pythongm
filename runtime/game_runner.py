@@ -1848,7 +1848,7 @@ class GameRoom:
         half_h = h / 2
 
         floor_color = self.parse_color(cfg.get('floor_color', '#464632'))
-        ceiling_color = self.parse_color(cfg.get('ceiling_color', '#1e1e28'))
+        ceiling_color = self.parse_color(cfg.get('ceiling_color', '#87CEEB'))
         screen.fill(ceiling_color, (0, 0, w, int(half_h)))
         screen.fill(floor_color, (0, int(half_h), w, h - int(half_h)))
 
@@ -1856,7 +1856,10 @@ class GameRoom:
             return  # nothing to render from -- flat floor/ceiling only
 
         wall_color = self.parse_color(cfg.get('wall_color', '#993333'))
-        wall_color_shaded = tuple(c * 3 // 4 for c in wall_color)
+        # Half brightness on the y-face (side==1) walls -- a much stronger
+        # depth cue than the original 75% factor, which read as barely
+        # distinguishable from the unshaded x-face walls (user feedback).
+        wall_color_shaded = tuple(c // 2 for c in wall_color)
         fov_rad = math.radians(cfg.get('fov', 66))
         render_distance_cells = int(cfg.get('render_distance', 20))
         num_columns = int(cfg.get('columns', min(w, 320)))

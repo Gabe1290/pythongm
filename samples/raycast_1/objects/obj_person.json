@@ -7,6 +7,10 @@
   "persistent": false,
   "depth": 0,
   "events": {
+    "collision_with_obj_wall": {
+      "actions": [],
+      "target_object": "obj_wall"
+    },
     "create": {
       "actions": [
         {
