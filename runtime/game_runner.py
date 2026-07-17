@@ -602,6 +602,14 @@ class GameInstance:
         self.gravity_direction = 270  # Direction of gravity in degrees (270 = down)
         self.friction = 0.0  # Friction coefficient (reduces speed each frame)
 
+        # Facing angle (GM convention: 0=right, 90=up, 180=left, 270=down),
+        # set by set_facing_angle. Unlike the read-only `direction` property
+        # below (derived from hspeed/vspeed, so it's 0 when stationary),
+        # this is real persistent state — needed for a raycast camera, which
+        # must remember which way an instance is looking even while standing
+        # still (e.g. turning on the spot).
+        self.facing_angle = 0.0
+
         # Track if movement keys are currently pressed
         self.keys_pressed = set()  # Set of currently pressed keys
 
@@ -1320,6 +1328,15 @@ class GameRoom:
         self.instances: List[GameInstance] = []
         self.action_executor = action_executor
 
+        # Raycast (Doom/Wolfenstein-style) first-person camera — see
+        # docs/RAYCAST_2_5D_PLAN.md. Off by default; enable_raycast_view
+        # replaces this dict. The wall-occupancy grid is derived lazily
+        # from solid instances (see _build_raycast_grid) and cached, since
+        # room geometry doesn't change at runtime for this v1.
+        self.raycast_camera: Dict[str, Any] = {'enabled': False}
+        self._raycast_grid: Optional[Dict[Tuple[int, int], bool]] = None
+        self._raycast_cell_size: int = 32
+
         # Depth-sorted instance cache (invalidated when instances change)
         self._sorted_instances: Optional[List[GameInstance]] = None
         self._depth_dirty = True  # Flag to trigger re-sort
@@ -1629,6 +1646,17 @@ class GameRoom:
         offset: (dx, dy) added to every blit so room coords (0, 0) lands at
         (dx, dy) on screen. (0, 0) preserves the legacy no-view behavior.
         """
+        # Raycast first-person mode replaces the normal top-down render
+        # entirely (background/tiles/instance sprites) — it's its own
+        # camera, not compatible with the offset/multi-view system v1.
+        # Game *logic* (movement, collision, events) is untouched; only
+        # this method's picture changes. Known v1 gap: HUD draw-queue
+        # actions (draw_score etc.) on other instances won't render while
+        # this is active — see docs/RAYCAST_2_5D_PLAN.md.
+        if self.raycast_camera.get('enabled'):
+            self._render_raycast_view(screen)
+            return
+
         # Draw background layers (non-foreground) or legacy single background
         if self.bg_layers:
             self._render_bg_layers(screen, foreground=False, view_offset=offset)
@@ -1731,6 +1759,125 @@ class GameRoom:
             if inst.object_name == object_name:
                 return inst
         return None
+
+    def _build_raycast_grid(self, cell_size: int):
+        """Derive a sparse wall-occupancy grid from every solid instance in
+        the room, bucketed by (x // cell_size, y // cell_size).
+
+        Reuses existing room content instead of a separate authoring
+        format — every maze_* sample already places solid wall objects on
+        a grid, so this "just works" for them. Built once and cached
+        (room geometry is static at runtime for this v1 — walls
+        created/destroyed after room load won't update the grid).
+        """
+        grid: Dict[Tuple[int, int], bool] = {}
+        for inst in self.instances:
+            obj_data = inst._cached_object_data
+            if obj_data and obj_data.get('solid', False):
+                gx = int(inst.x // cell_size)
+                gy = int(inst.y // cell_size)
+                grid[(gx, gy)] = True
+        self._raycast_grid = grid
+        self._raycast_cell_size = cell_size
+
+    def _raycast_is_wall(self, gx: int, gy: int, cell_size: int) -> bool:
+        """True if grid cell (gx, gy) is solid, or is outside the room
+        bounds (the room edge acts as an implicit wall — no sample needs
+        to fence its maze in explicitly)."""
+        if gx < 0 or gy < 0 or gx * cell_size >= self.width or gy * cell_size >= self.height:
+            return True
+        return self._raycast_grid.get((gx, gy), False)
+
+    def _cast_ray(self, px: float, py: float, angle_rad: float, cell_size: int, max_cells: int):
+        """DDA raycast from (px, py) (room pixel coords) at angle_rad
+        (standard math convention: 0=+x, increasing counter-clockwise in
+        *grid* space — see _render_raycast_view for the GM-angle-to-this
+        conversion) until it hits a solid cell.
+
+        Returns (distance_in_pixels, side) where side is 0 for a
+        vertical wall face (x-step hit) or 1 for a horizontal one (y-step
+        hit) — used to cheaply shade one set of faces darker, a free
+        depth cue with no lighting model needed.
+        """
+        px_cell, py_cell = px / cell_size, py / cell_size
+        dx, dy = math.cos(angle_rad), math.sin(angle_rad)
+        map_x, map_y = int(px_cell), int(py_cell)
+
+        delta_x = abs(1 / dx) if dx != 0 else 1e30
+        delta_y = abs(1 / dy) if dy != 0 else 1e30
+
+        if dx < 0:
+            step_x = -1
+            side_x = (px_cell - map_x) * delta_x
+        else:
+            step_x = 1
+            side_x = (map_x + 1 - px_cell) * delta_x
+        if dy < 0:
+            step_y = -1
+            side_y = (py_cell - map_y) * delta_y
+        else:
+            step_y = 1
+            side_y = (map_y + 1 - py_cell) * delta_y
+
+        side = 0
+        dist_cells = float(max_cells)
+        for _ in range(max_cells):
+            if side_x < side_y:
+                side_x += delta_x
+                map_x += step_x
+                side = 0
+            else:
+                side_y += delta_y
+                map_y += step_y
+                side = 1
+            if self._raycast_is_wall(map_x, map_y, cell_size):
+                dist_cells = (side_x - delta_x) if side == 0 else (side_y - delta_y)
+                break
+        return max(dist_cells, 1e-4) * cell_size, side
+
+    def _render_raycast_view(self, screen: pygame.Surface):
+        """Render the room as a first-person raycast projection instead of
+        the normal top-down view. See docs/RAYCAST_2_5D_PLAN.md."""
+        cfg = self.raycast_camera
+        cell_size = int(cfg.get('cell_size', 32))
+        if self._raycast_grid is None or self._raycast_cell_size != cell_size:
+            self._build_raycast_grid(cell_size)
+
+        camera = self._find_first_instance(cfg.get('camera_object', ''))
+        w, h = screen.get_size()
+        half_h = h / 2
+
+        floor_color = self.parse_color(cfg.get('floor_color', '#464632'))
+        ceiling_color = self.parse_color(cfg.get('ceiling_color', '#1e1e28'))
+        screen.fill(ceiling_color, (0, 0, w, int(half_h)))
+        screen.fill(floor_color, (0, int(half_h), w, h - int(half_h)))
+
+        if camera is None:
+            return  # nothing to render from -- flat floor/ceiling only
+
+        wall_color = self.parse_color(cfg.get('wall_color', '#993333'))
+        wall_color_shaded = tuple(c * 3 // 4 for c in wall_color)
+        fov_rad = math.radians(cfg.get('fov', 66))
+        render_distance_cells = int(cfg.get('render_distance', 20))
+        num_columns = int(cfg.get('columns', min(w, 320)))
+        col_width = w / num_columns
+
+        # GM angle convention (0=right, 90=up, ...) -> screen-space radians
+        # (y grows downward), matching GameInstance.direction's own
+        # atan2(-vspeed, hspeed) convention so turning via set_facing_angle
+        # feels consistent with every other direction-based action.
+        facing_screen_rad = math.radians(-camera.facing_angle)
+
+        for col in range(num_columns):
+            ray_offset = -fov_rad / 2 + fov_rad * (col / num_columns)
+            ray_angle = facing_screen_rad + ray_offset
+            dist, side = self._cast_ray(camera.x, camera.y, ray_angle, cell_size, render_distance_cells)
+            corrected = dist * math.cos(ray_offset)  # fisheye correction
+            strip_h = min(h, int(h * cell_size / max(corrected, 1e-4)))
+            color = wall_color if side == 0 else wall_color_shaded
+            x0 = int(col * col_width)
+            x1 = int((col + 1) * col_width)
+            screen.fill(color, (x0, int(half_h - strip_h / 2), max(1, x1 - x0), strip_h))
 
     def render_tiles(self, screen: pygame.Surface, view_offset=(0, 0)):
         """Render tile layer"""
