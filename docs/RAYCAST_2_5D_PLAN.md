@@ -26,17 +26,20 @@ item from the existing deferred-features registry.
   gap flagged during the original scope-out.
 - **`set_facing_angle` action** (`runtime/action_executor.py`):
   absolute/relative, same shape as every other `set_*` action.
-- **`GameRoom.raycast_camera`/`_raycast_grid`** + **`enable_raycast_view`
-  action**: wall map is *derived* from the room's existing solid
-  instances (bucketed by `x // cell_size`) — no new authoring format, so
-  every existing grid-based maze sample is raycastable for free. Cached
-  per room, invalidated on a `cell_size` change.
-- **`GameRoom._cast_ray`/`_raycast_is_wall`/`_render_raycast_view`**: DDA
-  core + flat-color wall/floor/ceiling rendering, side-based shading
-  (x-face vs y-face) as a free depth cue. Hooked into `_render_room` as
-  an early-return — raycast mode fully replaces the normal top-down
-  render for that room (not an overlay); game *logic* is completely
-  unaffected, only this method's picture changes.
+- **`GameRoom.raycast_camera`** + **`enable_raycast_view` action**: wall
+  map is *derived* from the room's existing solid instances — no new
+  authoring format, so every existing grid-based maze sample is
+  raycastable for free. Cached per room, invalidated on a `cell_size`
+  change. *(Originally a coarse per-cell occupancy grid via
+  `_build_raycast_grid`/`_raycast_is_wall` — superseded 2026-07-16 by
+  edge-based `_build_raycast_walls`, see "Complete rethink" below; kept
+  here as the historical record of what shipped first.)*
+- **`GameRoom._cast_ray`/`_render_raycast_view`**: DDA core + flat-color
+  wall/floor/ceiling rendering, side-based shading (x-face vs y-face) as
+  a free depth cue. Hooked into `_render_room` as an early-return —
+  raycast mode fully replaces the normal top-down render for that room
+  (not an overlay); game *logic* is completely unaffected, only this
+  method's picture changes.
 - **`samples/raycast_1/`**: a new sample, walls/rooms literally copied
   from `maze_1` (same grid, same layout — the "reuse existing content"
   bet paid off exactly as scoped), `obj_person` rewritten for FPS-style
@@ -119,6 +122,112 @@ all fixed:
   the fix was to explicitly verify the test fails against the pre-fix
   code, not just that it passes against the post-fix code.
 - Suite 1855 → 1858 passed, 0 failed.
+
+## Complete rethink: thin edge-walls, not full-cell blocks (2026-07-16)
+
+Even after the bbox fix above, a third playtesting round found the
+player *still* getting stuck unable to turn corners. The user's own
+diagnosis was right: patching bbox sizes was chasing a symptom. The
+actual root cause was architectural, and specific to `raycast_1`'s
+maze data — **every corridor and every wall in a `maze_1`-derived
+layout is exactly one 32px grid cell**, because walls there are
+full-cell solid blocks, not thin partitions. A corridor bounded by
+full-cell walls on both sides is *exactly* 32px wide — no amount of
+shrinking the player recovers real turning clearance once you're also
+subtracting a full 32px wall block's footprint from each neighboring
+cell at a corner. Genuine clearance requires the walls themselves to be
+thin, matching how real Wolfenstein/Doom-style engines actually
+represent a map: walls are thin segments on cell *edges*, not blocks
+occupying whole cells.
+
+That, in turn, exposed a second, deeper mismatch: **collision and
+raycasting disagreed about what "wall" meant.** Collision
+(`check_movement_collision_with_blocker`) already used real per-instance
+AABB geometry — thin wall objects would have collided correctly with
+zero engine changes. But `_build_raycast_grid` (the original raycasting
+wall-map builder) worked on **coarse per-cell occupancy**: any solid
+instance touching a cell made the *whole* cell opaque for ray-marching,
+regardless of the instance's actual size. Making wall sprites thin
+would have changed nothing visually — the raycaster would still have
+drawn a full 32px block wherever a thin sliver touched a cell, while
+collision quietly let the player through most of that same cell. Fixing
+only the maze content, or only bbox sizes, could never have closed this
+gap on its own.
+
+**The fix, chosen after presenting the user two options (widen
+corridors within the existing block-wall model vs. this) and getting
+an explicit go-ahead for the real one:**
+
+1. **`GameRoom._build_raycast_walls`** (replaces `_build_raycast_grid`)
+   derives thin wall **edges**, not cell occupancy, from solid
+   instances — keyed as `v_walls: {(line_x, row)}` / `h_walls: {(col,
+   line_y)}`, absolute grid-line indices, not cells. A solid instance's
+   sprite aspect ratio decides its role: wider-than-tall → a horizontal
+   edge segment; taller-than-wide → vertical; roughly square (e.g. an
+   old-style full-cell block) falls back to blocking all 4 edges of its
+   cell, so non-thin-wall content still works unchanged (verified via
+   `TestBuildRaycastWalls::test_square_solid_instance_blocks_all_four_edges_of_its_cell`).
+2. **`GameRoom._cast_ray`** now checks, at each DDA step, whether the
+   *specific grid line just crossed* carries a registered edge —
+   instead of whether the cell just entered is occupied. This is the
+   textbook Wolfenstein-style DDA (the algorithm already naturally knows
+   which line it just crossed via the existing `side_x < side_y`
+   step-selection; the only change is what's looked up at that line).
+   Rays now march freely through any number of open cells and stop only
+   at an actual wall's real position — confirmed with
+   `test_thin_horizontal_wall_only_blocks_its_own_row`: a wall registered
+   for row 0 does not block a ray one row over.
+3. **No changes needed to collision at all** — it already did real
+   geometry. This is exactly the payoff of the "2.5D: only the picture
+   is faked" design: fixing the *rendering* model didn't require
+   touching *gameplay* code.
+4. **Removed the implicit "out of room bounds = wall" rule.** With real
+   edges, an unenclosed map is a content bug (the maze needs its own
+   boundary wall segments), not something the raycaster should paper
+   over — an open ray now just marches to `render_distance` and stops
+   cleanly, no crash, no infinite loop (`test_no_walls_at_all_reaches_max_cells`).
+5. **`samples/raycast_1/` regenerated**: new thin sprites `spr_wall_h`
+   (32×8) / `spr_wall_v` (8×32) and objects `obj_wall_h` / `obj_wall_v`
+   replace the old `spr_wall`/`obj_wall` full-block pair (deleted, along
+   with their now-dead side files). `rooms/room0.json` and `room1.json`
+   were regenerated from the *original* block-wall layout via a
+   topology-preserving conversion (not hand-redesigned): for every open
+   cell, place a thin edge wherever a neighboring cell (or the room
+   edge) is solid in the *original* data, leaving no edge where both
+   neighbors were open. This preserves the exact original maze
+   connectivity/solvability while giving every corridor its full 32px
+   width — confirmed the conversion correctly reconstructs a column that
+   was a single long open shaft in the source data (not a "1-cell gap",
+   as an earlier, wrong assumption about the maze's shape had it) purely
+   from re-deriving edges, with no hand-authored corrections. `obj_person`
+   gained `collision_with_obj_wall_h`/`_v` registrations (same
+   empty-actions-just-to-register pattern as the earlier fix, now against
+   both new wall object names).
+6. Verified with a multi-corner walkthrough (not just one gap): starting
+   at the spawn point, walk east, turn north into a shaft, walk the full
+   height of the maze (12 rows), turn west, walk further — all with
+   realistic key timing, no stuck states, reaching deep into the maze
+   each time.
+7. Regression tests reworked: `TestBuildRaycastWalls` (was
+   `TestBuildRaycastGrid`) covers the aspect-ratio-based edge derivation
+   and the square-instance backward-compat fallback;
+   `TestRaycastIsWall` (a method that no longer exists) removed;
+   `TestCastRay` gained thin-wall-specific cases and dropped the
+   out-of-bounds test (behaviour removed by design, see point 4);
+   `test_player_can_turn_a_corner_in_the_maze` rewritten around a real
+   multi-frame walk-turn-walk sequence against the new content (its
+   predecessor's hardcoded pixel coordinates were tied to the old
+   block-wall geometry and stopped being meaningful once the walls moved).
+   Suite 1858 → 1857 passed, 0 failed (net -1 test count from
+   consolidating the old corner test into the new one, not a coverage
+   loss — see the diff for what each test now covers).
+
+**Takeaway for later phases**: this is now the correct foundation for
+Phase 5 (textures) — a texture needs to know exactly which wall segment
+and which face was hit, which edge-based walls give directly (the
+segment *is* the addressable unit), where the old coarse-grid model
+would have needed guessing which of possibly several instances touching
+a cell was actually hit.
 
 ## What this is, precisely
 

@@ -4443,9 +4443,9 @@ class ActionExecutor:
             'floor_color': str(parameters.get('floor_color', '#464632')),
             'ceiling_color': str(parameters.get('ceiling_color', '#87CEEB')),
         }
-        # Force the wall grid to rebuild against the (possibly new)
+        # Force the wall edges to rebuild against the (possibly new)
         # cell_size next render instead of reusing a stale cache.
-        room._raycast_grid = None
+        room._raycast_v_walls = None
 
     def _parse_color(self, color_str: str) -> tuple:
         """Parse color string to RGB tuple (helper method)"""
