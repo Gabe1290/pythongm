@@ -263,6 +263,47 @@ strip. Regression: `test_miss_column_shows_no_wall_sliver_at_horizon` in
 `wall_color` at the horizon) and passing post-fix, per this session's
 established discipline. Suite 1857 → 1858 passed, 0 failed.
 
+**Follow-up, same session**: after that fix landed, the user sent a
+second screenshot from the same "Down from spawn" scenario — no more
+stripes, but still a wall filling ~40% of the screen with sky/floor
+visible for the rest, and still reported as "ended up outside." This
+was a second, deeper bug in the same area: `_render_raycast_view` used
+`camera.x`/`camera.y` **raw** as the ray origin — a GameInstance's x/y
+is its sprite's top-left corner, not its center. Every instance in a
+grid maze (walls and the player alike) sits at exact multiples of
+`cell_size`, so a player at rest against a wall — extremely common in a
+corridor maze — has a raw position landing exactly on a wall-bearing
+grid line. DDA rays cast from precisely on that line hit it (or graze
+past it) almost immediately, inconsistently by ray angle: reproduced by
+holding Down from room0's spawn (blocks correctly at `(29, 416)`,
+`facing_angle` unchanged at 0/east since only movement was blocked, not
+facing) and directly inspecting `_cast_ray`'s returned distances across
+the FOV — roughly half the rays (the half angled toward the coincident
+grid line) measured **~3px**, the other half ~130px (the real corridor).
+The player's logical position was never wrong (re-confirmed) and the
+wall topology was still bit-exact (re-confirmed by rebuilding it fresh
+from `maze_1`'s source data and diffing — zero missing/extra edges in
+either room) — this was purely which point in space the camera rays
+originate from. Fixed by adding half the camera instance's cached
+sprite width/height to its x/y before casting, so the ray origin is the
+occupied cell's center, matching how a real body would stand in it.
+Regression: `test_camera_origin_is_centered_not_the_sprite_corner`,
+grounded in the real sample (not a hand-built minimal case — the
+coincidence proved surprisingly hard to reproduce synthetically without
+going through the actual `GameRunner.run()` startup, since object_data/
+sprite-dimension caching on instances isn't resolved until then; an
+earlier draft of this test silently produced an empty or wrongly-shaped
+wall set and passed for the wrong reason). The test intercepts the real
+`_cast_ray` call `_render_raycast_view` makes (rather than
+re-implementing the centering formula inline, and rather than
+pixel-sampling the rendered output — strip height caps at full screen
+height once distance ≤ `cell_size`, so both the ~3px pre-fix and
+~29-35px post-fix near-wall readings render pixel-identically and can't
+be told apart that way) and asserts the origin passed is the sprite-
+centered point, not the raw corner. Verified failing pre-fix (origin
+`(29.0, 416.0)`, expected `(45.0, 432.0)`) and passing post-fix. Suite
+1858 → 1859 passed, 0 failed.
+
 ## What this is, precisely
 
 Not real 3D. A **raycast projection**: the room stays a normal 2D grid

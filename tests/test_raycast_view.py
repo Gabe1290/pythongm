@@ -296,7 +296,11 @@ class TestRenderRaycastView:
         room = _room(160, 160)
         wall = _solid_instance("obj_wall", 96, 64)  # grid (3, 2)
         room.instances.append(wall)
-        camera = GameInstance("obj_person", 16, 80, {}, action_executor=None)
+        # Instance x/y is the sprite's top-left corner (matching every real
+        # GameInstance) -- _render_raycast_view centers the ray origin in
+        # the occupied cell itself (+ half width/height), so this is 16px
+        # up-left of the intended center-of-cell-(0,2) ray origin (16, 80).
+        camera = GameInstance("obj_person", 0, 64, {}, action_executor=None)
         camera.facing_angle = 0.0  # facing +x (right), toward the wall
         room.instances.append(camera)
         room.raycast_camera = {
@@ -329,7 +333,10 @@ class TestRenderRaycastView:
         room = _room(160, 160)
         wall = _solid_instance("obj_wall", 0, 64)  # grid (0, 2) -- a y-face hit
         room.instances.append(wall)
-        camera = GameInstance("obj_person", 16, 16, {}, action_executor=None)
+        # See _room_with_camera_and_wall's comment -- (0, 0) + the
+        # render code's own +16/+16 centering gives the intended (16, 16)
+        # ray origin (center of grid cell (0, 0)).
+        camera = GameInstance("obj_person", 0, 0, {}, action_executor=None)
         camera.facing_angle = -90.0  # GM angle -90 -> screen-space +y (down)
         room.instances.append(camera)
         room.raycast_camera = {
@@ -381,6 +388,98 @@ class TestRenderRaycastView:
         for x in range(0, w, 4):
             assert screen.get_at((x, h // 2 - 1))[:3] == (0, 0, 255), f"col {x} leaked wall color above horizon"
             assert screen.get_at((x, h // 2 + 1))[:3] == (0, 255, 0), f"col {x} leaked wall color below horizon"
+
+    def test_camera_origin_is_centered_not_the_sprite_corner(self):
+        """Regression: _cast_ray used to be given camera.x/camera.y raw --
+        the sprite's top-left corner, not its center. Every instance in a
+        grid maze (walls and the player alike) sits at exact multiples of
+        cell_size, so a player at rest against a wall has a raw (x, y)
+        landing exactly on a wall-bearing grid line; DDA rays cast from
+        exactly on that line hit it (or graze past it) almost immediately
+        and inconsistently by angle. This is the real scenario a user hit
+        and reported (with a screenshot) as "I go backward and end up
+        outside the map": hold Down from raycast_1's room0 spawn, get
+        correctly blocked at (29, 416) by the west wall -- y=416 is
+        exactly 13*32, landing dead on the wall grid line separating the
+        two rows on either side of the corridor. Still facing east
+        (facing_angle unchanged by movement, unlike position), the actual
+        corridor ahead is open for ~300px, but the raw-origin bug rendered
+        a wall a few px away across most of the FOV, appearing to fill the
+        whole screen. Uses the real, unmodified sample (through the actual
+        GameRunner.run() loop, not a hand-initialized room -- object_data
+        and sprite dimensions aren't resolved until real startup runs, and
+        a partially-initialized room silently produces an empty or
+        wrongly-shaped wall set that made an earlier version of this test
+        pass for the wrong reason)."""
+        from runtime.game_runner import GameRunner
+
+        project_json = str(REPO_ROOT / "samples" / "raycast_1" / "project.json")
+        runner = GameRunner(project_json)
+        runner.language = "en"
+        runner.show_message_dialog = lambda *a, **k: None
+        runner.show_highscore_dialog = lambda *a, **k: None
+        runner._show_name_entry_dialog = lambda *a, **k: ""
+        runner.process_pending_messages = lambda *a, **k: None
+
+        state = {"frames": 0, "checked": False, "origins": None}
+        MAX_FRAMES = 65
+
+        class _FakeClock:
+            def tick(self, fps=0):
+                f = state["frames"] = state["frames"] + 1
+                if f == 1:
+                    pygame.event.post(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_DOWN))
+                if f == 60 and not state["checked"]:
+                    state["checked"] = True
+                    room = runner.current_room
+                    player = next(
+                        i for i in room.instances if i.object_name == "obj_person"
+                    )
+                    # Intercept the real production call -- not a
+                    # reimplementation of its math -- to see exactly what
+                    # ray origin _render_raycast_view actually uses.
+                    # Pixel-sampling the rendered output can't distinguish
+                    # pre-fix from post-fix here: strip height caps at the
+                    # full screen once dist <= cell_size (32px), and both
+                    # the pre-fix ~3px and post-fix ~29-35px near-wall
+                    # readings fall under that cap, rendering identically.
+                    real_cast_ray = room._cast_ray
+                    seen = []
+
+                    def _spy(px, py, *a, **k):
+                        seen.append((px, py))
+                        return real_cast_ray(px, py, *a, **k)
+
+                    room._cast_ray = _spy
+                    try:
+                        runner.current_room._render_raycast_view(runner.screen)
+                    finally:
+                        room._cast_ray = real_cast_ray
+                    state["origins"] = (seen, player.x, player.y, player._cached_width, player._cached_height)
+                if f >= MAX_FRAMES:
+                    runner.running = False
+                return 0
+
+            def get_fps(self):
+                return 60.0
+
+        real_clock = pygame.time.Clock
+        pygame.time.Clock = _FakeClock
+        try:
+            runner.run()
+        finally:
+            pygame.time.Clock = real_clock
+
+        assert state["checked"], "tick hook never ran -- test setup is broken"
+        seen, px, py, pw, ph = state["origins"]
+        assert seen, "_render_raycast_view never called _cast_ray"
+        expected = (px + pw / 2, py + ph / 2)
+        for origin in seen:
+            assert origin == pytest.approx(expected), (
+                f"_render_raycast_view cast a ray from {origin}, expected the sprite-centered "
+                f"{expected} -- raw player position {(px, py)} sits exactly on a wall-bearing "
+                "grid line at this maze position"
+            )
 
     def test_disabled_room_takes_the_normal_render_path(self):
         room = self._room_with_camera_and_wall()
