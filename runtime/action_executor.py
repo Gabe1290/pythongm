@@ -4405,7 +4405,10 @@ class ActionExecutor:
                 columns has enormous headroom in pure Python, this cap
                 just avoids one ray per physical pixel on wide windows)
             wall_color, floor_color, ceiling_color: Hex colors for the v1
-                flat-shaded look
+                flat-shaded look (ceiling defaults to a light sky blue,
+                not a dark "indoor ceiling" tone — most raycast mazes
+                read better lit like they're outdoors, and it previews
+                the Phase 5b sky/horizon this flat fill will become)
         """
         if not self.game_runner or not self.game_runner.current_room:
             logger.debug("⚠️ enable_raycast_view: No current room")
@@ -4438,7 +4441,7 @@ class ActionExecutor:
             'columns': int(_num('columns', 320)),
             'wall_color': str(parameters.get('wall_color', '#993333')),
             'floor_color': str(parameters.get('floor_color', '#464632')),
-            'ceiling_color': str(parameters.get('ceiling_color', '#1e1e28')),
+            'ceiling_color': str(parameters.get('ceiling_color', '#87CEEB')),
         }
         # Force the wall grid to rebuild against the (possibly new)
         # cell_size next render instead of reusing a stale cache.
