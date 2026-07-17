@@ -484,3 +484,84 @@ class TestRaycast1SampleSmoke:
             f"player.y={player.y} escaped room bounds [0, {room.height}] -- "
             "walked through a wall"
         )
+
+    def test_player_can_turn_a_corner_in_the_maze(self):
+        """Regression: raycast_1's room0 corridor (spawn row, grid row 13)
+        connects further into the maze only through a 1-cell-wide gap
+        north at grid column 13 (row 12 is a solid wall band everywhere
+        else -- see docs/RAYCAST_2_5D_PLAN.md's wall-grid dump).
+        obj_person's original sprite bbox was ~32x31, essentially the
+        full 32px cell -- for a 32px-wide gap, that requires *exact*
+        (0px-tolerance) alignment to fit through, which continuous
+        (non-grid-snapped) movement can't realistically guarantee. User-
+        reported symptom: "stops a short distance from wall, cannot make
+        the turn." Fixed by giving spr_person an explicit, smaller
+        collision bbox (8,8)-(24,24) in samples/raycast_1/ specifically
+        (harmless there since the sprite never renders in raycast mode).
+
+        This places the player 5px off-center from the gap column (a
+        small, realistic misalignment -- not a contrived worst case) and
+        confirms it still passes through. Verified during development
+        that this exact scenario reproduces the bug against the
+        old (unshrunk) bbox: blocked at y=416, never entering the row-12
+        band at all -- so this genuinely discriminates the fix rather
+        than passing regardless (an earlier draft of this test walked a
+        perfectly cardinal-aligned path that never drifted and passed
+        even without the fix -- not a meaningful regression guard)."""
+        from runtime.game_runner import GameRunner
+
+        project_json = str(REPO_ROOT / "samples" / "raycast_1" / "project.json")
+        runner = GameRunner(project_json)
+        runner.language = "en"
+        runner.show_message_dialog = lambda *a, **k: None
+        runner.show_highscore_dialog = lambda *a, **k: None
+        runner._show_name_entry_dialog = lambda *a, **k: ""
+        runner.process_pending_messages = lambda *a, **k: None
+
+        placed = {"done": False}
+
+        class _FakeClock:
+            def __init__(self):
+                self.f = 0
+
+            def tick(self, fps=0):
+                self.f += 1
+                if not placed["done"]:
+                    player = next((i for i in runner.current_room.instances
+                                    if i.object_name == "obj_person"), None)
+                    if player is not None:
+                        # Gap column is grid x=13 (world x 416-448); 411 is
+                        # 5px off-center (perfect alignment is x=416) --
+                        # a small, realistic amount of drift, not a
+                        # contrived worst case. y=420 sits safely inside
+                        # the open row-13 corridor, clear of any wall at
+                        # the start (avoids the engine's "already
+                        # overlapping -> let it escape" exemption, which
+                        # would mask the bug this test is for).
+                        player.x, player.y = 411.0, 420.0
+                        player.facing_angle = 90.0  # facing north, toward the gap
+                        player.hspeed = player.vspeed = 0.0
+                        placed["done"] = True
+                        pygame.event.post(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_UP))
+                if self.f >= 60:
+                    runner.running = False
+                return 0
+
+            def get_fps(self):
+                return 60.0
+
+        real_clock = pygame.time.Clock
+        pygame.time.Clock = _FakeClock
+        try:
+            runner.run()
+        finally:
+            pygame.time.Clock = real_clock
+
+        player = next(i for i in runner.current_room.instances if i.object_name == "obj_person")
+        # Row 12 (world y 384-416) is a solid wall band except at this
+        # gap -- successfully passing through must land the player well
+        # below it, not just barely into row 12.
+        assert player.y < 384, (
+            f"player.y={player.y} never crossed the row-12 wall band -- "
+            "corner turn failed (stuck at the gap)"
+        )

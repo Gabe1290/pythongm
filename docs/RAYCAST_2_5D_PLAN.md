@@ -68,6 +68,58 @@ phase list, now reordered — see below); no sky/horizon; no billboard
 sprites for `obj_goal` in the first-person view; no HUD compositing while
 raycast mode is active (documented in code comments in `_render_room`).
 
+## Playtesting fixes (2026-07-16, after Phase 1 shipped)
+
+Two rounds of real playtesting on `raycast_1` surfaced three real bugs,
+all fixed:
+
+- **Ceiling read as an indoor/dark tone.** `enable_raycast_view`'s
+  `ceiling_color` default was `#1e1e28` (dark navy); changed to `#87CEEB`
+  (sky blue, matching this codebase's own existing `GameRoom.background_color`
+  default) in both the action's default and `_render_raycast_view`'s own
+  internal fallback (a second, separate hardcoded default that also
+  needed fixing).
+- **Side-wall shading barely visible.** The x-face/y-face shading factor
+  was `c * 3 // 4` (only 25% darker); changed to `c // 2` (50% darker) —
+  a much clearer depth cue.
+- **Player could walk through walls, or get stuck unable to turn a
+  corner.** Two related but distinct root causes:
+  1. This engine's movement-blocking check is gated behind
+     `get_collision_listened_types()` as a perf optimization — it only
+     runs when at least one side has a *registered*
+     `collision_with_<object>` event, even though the geometric block
+     itself doesn't depend on that event's actions. `raycast_1`'s
+     `obj_person` dropped its `collision_with_obj_wall` handler when
+     rewritten for continuous movement (wrongly assuming the block was
+     unconditional). Fixed by restoring the handler with empty actions,
+     just to register it.
+  2. Even with blocking restored, `spr_person`'s collision bbox was
+     ~32×31 — essentially the full 32px grid cell. Every corridor and
+     gap in a `maze_1`-derived layout is exactly one cell (32px) wide,
+     so a full-cell player needs *exact*, zero-tolerance alignment to
+     pass through a perpendicular gap — unachievable with continuous
+     (non-grid-snapped) movement, which will always have some drift.
+     Fixed by giving `raycast_1`'s own copy of `spr_person` (not
+     `maze_1`'s shared asset — kept fully independent to avoid any risk
+     to that sample) an explicit, smaller collision bbox: `(8,8)-(24,24)`,
+     an effective 16×16 box with 8px of clearance per side. Harmless
+     here since the sprite never renders in first-person mode anyway —
+     this is purely a movement-feel parameter now, decoupled from visual
+     size.
+- Regression tests added: `test_side_shading_is_half_brightness` (direct
+  pixel check) and `test_player_can_turn_a_corner_in_the_maze` (places
+  the player 5px off-center from a known 1-cell gap and confirms it still
+  passes through — verified during development that this specific
+  scenario reproduces the bug against the pre-fix bbox and is fixed by
+  the post-fix one, not just "passes regardless"). An earlier draft of
+  the corner-turning test walked a perfectly cardinal-aligned path that
+  never drifted at all and passed even without the fix — worth noting as
+  a reminder that a scripted-input smoke test can *look* like it
+  exercises a bug class without actually discriminating pass/fail on it;
+  the fix was to explicitly verify the test fails against the pre-fix
+  code, not just that it passes against the post-fix code.
+- Suite 1855 → 1858 passed, 0 failed.
+
 ## What this is, precisely
 
 Not real 3D. A **raycast projection**: the room stays a normal 2D grid
