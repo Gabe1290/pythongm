@@ -8392,6 +8392,15 @@ Möchten Sie trotzdem speichern?</translation>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Maze — Level 4</source>
+            <translation>Labyrinth — Level 4</translation>
+        </message>
+        <message>
+            <source>Treasure</source>
+            <translation>Schatz</translation>
+        </message>
+
+        <message>
             <source>Views — Level 2</source>
             <translation>Ansichten — Level 2</translation>
         </message>

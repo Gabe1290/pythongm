@@ -8392,6 +8392,15 @@ Do you want to save anyway?</source>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Maze — Level 4</source>
+            <translation>Labirint — Stopnja 4</translation>
+        </message>
+        <message>
+            <source>Treasure</source>
+            <translation>Zaklad</translation>
+        </message>
+
+        <message>
             <source>Views — Level 2</source>
             <translation>Pogledi — Stopnja 2</translation>
         </message>
