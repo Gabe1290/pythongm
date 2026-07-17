@@ -1936,6 +1936,7 @@ class GameRoom:
         # feels consistent with every other direction-based action.
         facing_screen_rad = math.radians(-camera.facing_angle)
 
+        col_wall_dist = [float('inf')] * num_columns  # for billboard occlusion, below
         for col in range(num_columns):
             ray_offset = -fov_rad / 2 + fov_rad * (col / num_columns)
             ray_angle = facing_screen_rad + ray_offset
@@ -1946,11 +1947,68 @@ class GameRoom:
                 # horizon-line sliver (see _cast_ray's miss-path comment).
                 continue
             corrected = dist * math.cos(ray_offset)  # fisheye correction
+            col_wall_dist[col] = corrected
             strip_h = min(h, int(h * cell_size / max(corrected, 1e-4)))
             color = wall_color if side == 0 else wall_color_shaded
             x0 = int(col * col_width)
             x1 = int((col + 1) * col_width)
             screen.fill(color, (x0, int(half_h - strip_h / 2), max(1, x1 - x0), strip_h))
+
+        # Billboard sprites (Phase 6 of the plan doc, scoped down to a
+        # single first cut): any visible, sprited, non-solid instance
+        # (goals, pickups, monsters -- walls are solid and already drawn
+        # above) renders as a camera-facing sprite, scaled by distance and
+        # centered on the horizon like a wall strip. Occlusion is real
+        # per-column clipping against col_wall_dist (the same corrected
+        # distances the wall loop above just computed), not just a single
+        # bounding check, so a goal behind a wall is properly hidden while
+        # one only partially behind a corner is properly clipped.
+        billboards = []
+        for inst in self.instances:
+            if inst is camera or not inst.visible or inst.sprite is None:
+                continue
+            if (inst._cached_object_data or {}).get('solid', False):
+                continue
+            bx = inst.x + inst._cached_width / 2
+            by = inst.y + inst._cached_height / 2
+            dx, dy = bx - cam_x, by - cam_y
+            dist = math.hypot(dx, dy)
+            if dist < 1e-4:
+                continue
+            rel_angle = math.atan2(dy, dx) - facing_screen_rad
+            rel_angle = (rel_angle + math.pi) % (2 * math.pi) - math.pi
+            if abs(rel_angle) > fov_rad / 2 + 0.5:  # margin for the sprite's own width
+                continue
+            corrected = dist * math.cos(rel_angle)
+            if corrected <= 1e-4:
+                continue
+            billboards.append((corrected, rel_angle, inst))
+
+        # Farthest first (painter's algorithm) so nearer billboards draw
+        # over farther ones where sprites overlap.
+        billboards.sort(key=lambda b: -b[0])
+        for corrected, rel_angle, inst in billboards:
+            sprite_h = min(h, int(h * inst._cached_height / max(corrected, 1e-4)))
+            sprite_w = int(h * inst._cached_width / max(corrected, 1e-4))
+            if sprite_w < 1 or sprite_h < 1:
+                continue
+            col_center = (rel_angle + fov_rad / 2) / fov_rad * num_columns
+            x_center = col_center * col_width
+            x_left = int(x_center - sprite_w / 2)
+            frame = inst.sprite.get_frame(inst.image_index)
+            scaled = pygame.transform.scale(frame, (sprite_w, sprite_h))
+            y_top = int(half_h - sprite_h / 2)
+            # Clip column-by-column against the wall distance already
+            # cast for that screen column -- a sprite behind a wall (or
+            # half-behind a corner) only shows the unoccluded slice.
+            slice_x = 0
+            while slice_x < sprite_w:
+                screen_x = x_left + slice_x
+                if 0 <= screen_x < w:
+                    col_idx = min(num_columns - 1, max(0, int(screen_x / col_width)))
+                    if corrected < col_wall_dist[col_idx]:
+                        screen.blit(scaled, (screen_x, y_top), (slice_x, 0, 1, sprite_h))
+                slice_x += 1
 
     def render_tiles(self, screen: pygame.Surface, view_offset=(0, 0)):
         """Render tile layer"""
