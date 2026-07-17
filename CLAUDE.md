@@ -484,3 +484,79 @@ rejected items** — this is the 5th audit in this class:
   `TypeError`/`ValueError`/`OverflowError` incl. NaN/inf, then clamp). Coverage:
   `tests/test_room_dimension_bounds.py` (12 tests). Suite 678→690 passed, 0
   failed.
+
+**2026-07-17 — Raycast (`raycast_1`) bug hunt: two real rendering bugs
+found and fixed, plus billboard sprites shipped.** Follow-on to the
+2026-07-16 "complete rethink" (thin edge-walls) session-notes entry —
+after that rearchitecture landed, the user reported (with screenshots,
+running via IDE Test Game) "press Down from spawn, end up outside the
+map." Both bugs were purely in `_render_raycast_view`/`_cast_ray`
+(`runtime/game_runner.py`) — the player's logical position and the wall
+topology were re-verified correct at every step; nothing here touched
+collision.
+- **Bug 1 (`5284cb7`): miss-column phantom wall sliver.** `_cast_ray`
+  returned a distance/side pair even when the DDA loop reached
+  `render_distance` without hitting a registered wall edge (a legitimate
+  case — any column facing an opening wider than render distance). The
+  render loop drew a wall strip anyway (`dist==max_cells`, a thin sliver
+  right at the horizon since strip height is inversely proportional to
+  distance), shaded by whatever `side` the last *non-hit* DDA step
+  happened to leave set — flips per column, producing the reported
+  alternating dark-red/black stripe band. Fixed: `_cast_ray` now returns
+  a third `hit: bool`; the render loop skips the strip on a miss.
+- **Bug 2 (`8772e53`): camera ray origin was the sprite's top-left
+  corner, not its center.** Every instance in a grid maze — walls and
+  the player alike — sits at exact multiples of `cell_size`, so a player
+  at rest against a wall (constant in a corridor maze) has a raw `(x,
+  y)` landing exactly on a wall-bearing grid line. DDA rays cast from
+  precisely on that line hit it almost immediately and inconsistently by
+  angle, reading as "a wall fills my screen" when the real corridor
+  ahead was wide open. Fixed by offsetting the ray origin to the
+  occupied cell's center (`+ half the camera's cached sprite
+  width/height`). **General lesson, worth remembering for any future
+  raycast/grid-geometry work**: this class of exact-grid-line coincidence
+  is a real, recurring hazard in this DDA implementation — anything that
+  casts a ray from a position/computes geometry using raw instance `x/y`
+  in a grid-aligned map is at risk of it, not just the camera. The
+  billboard occlusion check below reuses `_cast_ray` and inherits the
+  same theoretical exposure (accepted as-is; realistic float positions
+  essentially never land exactly on a grid corner in practice).
+- Both bugs were hard to reproduce in a hand-built minimal test — a
+  `GameRunner`'s rooms are loaded straight from JSON and **instances
+  don't get `_cached_object_data`/sprite-derived `_cached_width/height`
+  resolved until `set_sprites_for_instances` runs** (normally inside
+  `run()`'s real startup); a partially-initialized room silently
+  produces an empty or wrongly-shaped wall set and makes a naive test
+  pass for the wrong reason. Both regression tests ended up going
+  through the real `GameRunner.run()` loop (matching the existing
+  `TestRaycast1SampleSmoke` harness pattern: `pygame.event.post` +
+  `_FakeClock` + a tick-hook), not a hand-initialized room. Also:
+  pixel-sampling the rendered output can't distinguish some pre/post-fix
+  states, because wall-strip height caps at full screen height for any
+  distance <= `cell_size` — a ~3px pre-fix reading and a ~30px post-fix
+  reading render pixel-identically. Where that mattered, the test
+  intercepts the real `_cast_ray` call args instead of sampling pixels
+  or reimplementing the fix's own math inline.
+- **Feature (`2c14c67`): billboard sprites.** Once the two bugs were
+  fixed, the user noted `obj_goal` was invisible in the first-person
+  view — expected, since `_render_raycast_view` only ever drew *solid*
+  instances as wall strips; non-solid sprited instances (goals, pickups,
+  monsters) had no representation at all. Added a scoped-down first cut
+  of the plan doc's Phase 6 (originally sequenced last/optional): every
+  visible, non-solid, sprited instance now draws as a camera-facing
+  billboard, scaled by the same fisheye-corrected-distance formula wall
+  strips use, with **real per-column occlusion** (reuses `col_wall_dist`,
+  the corrected distances the wall pass already computes that frame —
+  not a single approximating ray) and farthest-first painter's-algorithm
+  sorting for overlaps. `docs/RAYCAST_2_5D_PLAN.md`'s Phase 6 section and
+  `samples/raycast_1/README.md` both updated; not done (deliberately):
+  sprite rotation/facing, alpha blending.
+- Suite 1858 → 1859 → 1864 passed, 0 failed across the three commits.
+  Full root-cause detail and the exact reproduction numbers are in
+  `docs/RAYCAST_2_5D_PLAN.md`'s "Miss-column render artifact" and
+  "Follow-up" sections. **Next up on this feature** (per the plan doc,
+  still open): flat textures for walls/floor/ceiling, then an outdoor
+  sky/horizon, then HTML5/Kivy export parity — this session's fixes and
+  the billboard cut were both reactive (user-reported), not scheduled
+  roadmap work, so the phase order in the plan doc is otherwise
+  unchanged.
