@@ -229,6 +229,40 @@ segment *is* the addressable unit), where the old coarse-grid model
 would have needed guessing which of possibly several instances touching
 a cell was actually hit.
 
+## Miss-column render artifact ("I walked outside the map") (2026-07-17)
+
+User report, with screenshot: "From starting position I go backward
+(down arrow) and end up outside" — sky-colored ceiling, a wall filling
+part of the screen, and a thin horizontal band of alternating dark-red/
+black vertical stripes right at the horizon line.
+
+Extensive position/collision testing (direct scripted play through the
+real SDL event pipeline via `pygame.event.post` + `GameRunner.run()`,
+20,000+ frames of randomized stress-testing across both rooms, a
+rigorous rebuild of the expected wall topology straight from `maze_1`'s
+original block-wall source data diffed against `raycast_1`'s converted
+edges) found **zero** cases of the player's logical `x`/`y` ever leaving
+the enclosed maze, and confirmed the converted wall data is a bit-exact
+match to the source topology. The player was never actually outside.
+
+The real bug was in rendering, not collision: `_cast_ray` returned
+`(dist_cells * cell_size, side)` unconditionally, including on a miss
+(the DDA loop exhausts `max_cells` without crossing a registered wall
+edge — a real, valid case for any column facing an opening wider than
+`render_distance`). `_render_raycast_view`'s per-column loop then drew a
+wall strip for *every* column regardless, using `dist == max_cells` (a
+thin sliver right at the horizon, since projected height is inversely
+proportional to distance) and whatever `side` the last *non-hit* DDA
+step happened to leave set — which flips between 0 and 1 semi-randomly
+column to column depending on ray angle, producing the reported
+alternating-stripe pattern. Fixed by having `_cast_ray` return a third
+`hit: bool` and having the render loop `continue` (leave the already-
+filled ceiling/floor colors showing) on a miss instead of drawing a
+strip. Regression: `test_miss_column_shows_no_wall_sliver_at_horizon` in
+`tests/test_raycast_view.py` — verified failing pre-fix (leaks
+`wall_color` at the horizon) and passing post-fix, per this session's
+established discipline. Suite 1857 → 1858 passed, 0 failed.
+
 ## What this is, precisely
 
 Not real 3D. A **raycast projection**: the room stays a normal 2D grid

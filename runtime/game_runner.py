@@ -1873,8 +1873,17 @@ class GameRoom:
                 hit = (map_x, line_y) in self._raycast_h_walls
             if hit:
                 dist_cells = (side_x - delta_x) if side == 0 else (side_y - delta_y)
-                break
-        return max(dist_cells, 1e-4) * cell_size, side
+                return max(dist_cells, 1e-4) * cell_size, side, True
+        # Marched the full render distance without crossing a registered
+        # wall edge -- a real miss (open corridor/junction), not a wall at
+        # max range. The caller must not draw a wall strip for this column:
+        # earlier code drew one anyway using dist_cells==max_cells and
+        # whatever `side` the last (non-hit) DDA step happened to leave
+        # behind, producing a thin mis-colored sliver right at the horizon
+        # for every miss column -- misread by a user as "walked outside the
+        # map" when they were really just facing an opening wider than the
+        # wall's own render distance.
+        return max(dist_cells, 1e-4) * cell_size, side, False
 
     def _render_raycast_view(self, screen: pygame.Surface):
         """Render the room as a first-person raycast projection instead of
@@ -1915,7 +1924,12 @@ class GameRoom:
         for col in range(num_columns):
             ray_offset = -fov_rad / 2 + fov_rad * (col / num_columns)
             ray_angle = facing_screen_rad + ray_offset
-            dist, side = self._cast_ray(camera.x, camera.y, ray_angle, cell_size, render_distance_cells)
+            dist, side, hit = self._cast_ray(camera.x, camera.y, ray_angle, cell_size, render_distance_cells)
+            if not hit:
+                # No wall within render distance -- leave the ceiling/floor
+                # fill showing for this column instead of drawing a bogus
+                # horizon-line sliver (see _cast_ray's miss-path comment).
+                continue
             corrected = dist * math.cos(ray_offset)  # fisheye correction
             strip_h = min(h, int(h * cell_size / max(corrected, 1e-4)))
             color = wall_color if side == 0 else wall_color_shaded

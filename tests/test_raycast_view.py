@@ -237,9 +237,10 @@ class TestCastRay:
         room._build_raycast_walls(32)
         # Camera at grid (0.5, 0.5), i.e. (16, 16); ray along +x hits the
         # wall's west face at grid x=2 -> (2.5 - 1) = 1.5 cells = 48px.
-        dist, side = room._cast_ray(16, 16, 0.0, 32, 20)
+        dist, side, hit = room._cast_ray(16, 16, 0.0, 32, 20)
         assert dist == pytest.approx(48.0, abs=0.01)
         assert side == 0
+        assert hit is True
 
     def test_perpendicular_ray_reports_the_other_side(self):
         room = _room(160, 160)
@@ -248,9 +249,10 @@ class TestCastRay:
         # Straight down (GM screen-space: angle pi/2 in this method's raw
         # math convention, since _cast_ray takes screen-space radians
         # directly -- see _render_raycast_view for the GM-angle mapping).
-        dist, side = room._cast_ray(16, 16, math.pi / 2, 32, 20)
+        dist, side, hit = room._cast_ray(16, 16, math.pi / 2, 32, 20)
         assert dist == pytest.approx(48.0, abs=0.01)
         assert side == 1
+        assert hit is True
 
     def test_thin_horizontal_wall_only_blocks_its_own_row(self):
         """The whole point of edge-based (not cell-occupancy-based) walls:
@@ -262,13 +264,15 @@ class TestCastRay:
         room.instances.append(_solid_instance("obj_wall_h", 0, 28, width=32, height=8))
         room._build_raycast_walls(32)
         # Ray straight down through row 0 hits it...
-        dist, side = room._cast_ray(16, 4, math.pi / 2, 32, 20)
+        dist, side, hit = room._cast_ray(16, 4, math.pi / 2, 32, 20)
         assert dist == pytest.approx(28.0, abs=0.01)
         assert side == 1
+        assert hit is True
         # ...but the same ray one row over (row 1, no wall registered
         # there) sails through to the render-distance cap instead.
-        dist2, side2 = room._cast_ray(16, 36, math.pi / 2, 32, 3)
+        dist2, side2, hit2 = room._cast_ray(16, 36, math.pi / 2, 32, 3)
         assert dist2 == pytest.approx(3 * 32, abs=0.01)
+        assert hit2 is False
 
     def test_no_walls_at_all_reaches_max_cells(self):
         # No implicit "out of room bounds = wall" anymore (see the
@@ -278,8 +282,9 @@ class TestCastRay:
         # to max_cells and stop cleanly, no crash / no infinite loop.
         room = _room(64, 64)
         room._build_raycast_walls(32)
-        dist, side = room._cast_ray(16, 16, 0.3, 32, 3)
+        dist, side, hit = room._cast_ray(16, 16, 0.3, 32, 3)
         assert dist == pytest.approx(3 * 32, abs=0.01)
+        assert hit is False
 
 
 # ---------------------------------------------------------------------------
@@ -349,6 +354,33 @@ class TestRenderRaycastView:
         w, h = screen.get_size()
         assert screen.get_at((2, 2))[:3] == (0, 0, 255)
         assert screen.get_at((2, h - 2))[:3] == (0, 255, 0)
+
+    def test_miss_column_shows_no_wall_sliver_at_horizon(self):
+        """Regression: a ray that reaches render_distance without crossing
+        a registered wall edge used to still draw a wall-colored strip
+        (dist_cells==max_cells, plus whatever `side` the last non-hit DDA
+        step happened to leave behind), producing a thin horizontal sliver
+        of wall color right at the horizon for every miss column -- exactly
+        the "alternating stripes at the horizon, wall filling only part of
+        the screen" a player reported as "I end up outside the map" when
+        they were really just facing an opening wider than render_distance.
+        No wall anywhere in range: every column must be pure ceiling above
+        the horizon and pure floor below it, never wall_color."""
+        room = _room(480, 480)
+        camera = GameInstance("obj_person", 240, 240, {}, action_executor=None)
+        camera.facing_angle = 0.0
+        room.instances.append(camera)
+        room.raycast_camera = {
+            'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
+            'render_distance': 5, 'cell_size': 32, 'columns': 64,
+            'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
+        }
+        screen = pygame.Surface((320, 240))
+        room._render_raycast_view(screen)
+        w, h = screen.get_size()
+        for x in range(0, w, 4):
+            assert screen.get_at((x, h // 2 - 1))[:3] == (0, 0, 255), f"col {x} leaked wall color above horizon"
+            assert screen.get_at((x, h // 2 + 1))[:3] == (0, 255, 0), f"col {x} leaked wall color below horizon"
 
     def test_disabled_room_takes_the_normal_render_path(self):
         room = self._room_with_camera_and_wall()
