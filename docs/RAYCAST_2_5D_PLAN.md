@@ -703,6 +703,14 @@ harness if one is available.)
    raycast_1 export round-trip). No JS engine/Playwright in CI, so behavioural
    proof is a browser run (as with views); added lines brace-balanced.
 3. HTML5 sky + floor (spike first) + billboards (+ source/Playwright). Medium.
+   — **sky + billboards DONE 2026-07-18** (`engine.js` renderRaycastView: sky
+   panorama pan+wrap over the ceiling; per-column `colWallDist`; billboard pass
+   — non-solid sprited instances, farthest-first, per-column occlusion via
+   `ctx.drawImage` source-column slices; `tests/test_html5_raycast.py` +2, added
+   lines brace-balanced). **HTML5 floor casting DEFERRED to its own unit (3b)**:
+   the per-pixel `ImageData` low-res cast is the risky piece and its timing
+   can't be spiked here (no JS engine in CI) — needs a browser-based spike
+   before committing, with a flat-floor fallback if a browser can't hit budget.
 4. Kivy facing_angle + walls (+ stub test). Medium.
 5. Kivy sky + floor (spike) + billboards (+ stub test). Medium.
 6. 3-target `_cast_ray` parity test. Small.

@@ -81,6 +81,28 @@ def test_wall_render_samples_texture_strip():
     assert "r.side === 1" in body                 # y-face depth cue
 
 
+def test_sky_panorama_pans_over_ceiling():
+    m = re.search(r"renderRaycastView\(ctx\)\s*\{(.*?)\n    \}", ENGINE, re.S)
+    body = m.group(1)
+    assert "cfg.sky_texture ? sprites[cfg.sky_texture]" in body
+    # pano width = w*360/fov, panned by facing_angle, wrap copy
+    assert "w * 360 / Math.max(1, cfg.fov" in body
+    assert "camera.facing_angle % 360" in body
+    assert "panoW - pan < w" in body
+
+
+def test_billboards_with_per_column_occlusion():
+    m = re.search(r"renderRaycastView\(ctx\)\s*\{(.*?)\n    \}", ENGINE, re.S)
+    body = m.group(1)
+    # only non-solid visible sprited instances, farthest-first
+    assert "!inst.visible || !inst.sprite || inst.solid" in body
+    assert "billboards.sort((a, b) => b.corr - a.corr)" in body
+    # per-column occlusion against the wall distances the wall pass recorded
+    assert "const colWallDist = new Array(numCols).fill(Infinity)" in body
+    assert "colWallDist[col] = corrected" in body
+    assert "b.corr < colWallDist[colIdx]" in body
+
+
 def test_build_walls_derives_edges_with_sprites():
     m = re.search(r"buildRaycastWalls\(cellSize\)\s*\{(.*?)\n    \}", ENGINE, re.S)
     assert m
