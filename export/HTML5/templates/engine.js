@@ -315,6 +315,10 @@ function parseNumParam(value, inst, fallback) {
             .replace(/self\.y/g, `(${inst.y})`)
             .replace(/other\.x/g, `(${other ? other.x : 0})`)
             .replace(/other\.y/g, `(${other ? other.y : 0})`)
+            // facing_angle (raycast camera look direction) as a bare variable,
+            // so set_direction_speed(direction="facing_angle"[+180]) — the
+            // raycast_1 FPS controls — resolves, matching the desktop runtime.
+            .replace(/facing_angle/g, `(${inst.facing_angle || 0})`)
             .replace(/view_[a-z]+/g, '0');
         if (/^[-+*/(). 0-9]+$/.test(expr)) {
             const result = Function(`"use strict"; return (${expr});`)();
@@ -595,6 +599,9 @@ class GameObject {
         this._friction = 0;
         this._gravity = 0;
         this._gravity_direction = 270;
+        // Raycast (first-person) camera look direction, GM angle convention
+        // (0=right, 90=up), independent of movement — see set_facing_angle.
+        this.facing_angle = 0;
 
         // GAMEMAKER 7.0: 12 alarm clocks per instance
         this.alarms = new Array(12).fill(-1);  // -1 = inactive, >= 0 = countdown
@@ -2445,6 +2452,55 @@ class GameObject {
                 this.speed = parseNumParam(params.speed, this, 4);
                 break;
 
+            case 'set_facing_angle': {
+                // Raycast camera look direction (see execute_set_facing_angle_action).
+                const fa = parseNumParam(params.angle, this, 0);
+                const rel = params.relative === true || params.relative === 'true' ||
+                            params.relative === 1 || params.relative === '1';
+                this.facing_angle = rel
+                    ? ((this.facing_angle + fa) % 360 + 360) % 360
+                    : ((fa % 360) + 360) % 360;
+                break;
+            }
+
+            case 'enable_raycast_view': {
+                // Switch the room to / from the Doom-style first-person raycast
+                // view (mirrors execute_enable_raycast_view_action). Config
+                // lives on the room, like views; the renderer is GameRoom
+                // .renderRaycastView.
+                if (!game || !game.currentRoom) break;
+                const rEnable = !(params.enable === false || params.enable === 'false' ||
+                                  params.enable === 0 || params.enable === '0');
+                if (!rEnable) {
+                    game.currentRoom.raycastCamera = { enabled: false };
+                    break;
+                }
+                const rNum = (k, d) => {
+                    const n = parseNumParam(params[k], this, d);
+                    return (typeof n === 'number' && isFinite(n)) ? n : d;
+                };
+                game.currentRoom.raycastCamera = {
+                    enabled: true,
+                    camera_object: params.camera_object || this.name,
+                    fov: rNum('fov', 66),
+                    render_distance: Math.floor(rNum('render_distance', 20)),
+                    cell_size: Math.floor(rNum('cell_size', 32)),
+                    columns: Math.floor(rNum('columns', 320)),
+                    wall_color: params.wall_color || '#993333',
+                    floor_color: params.floor_color || '#464632',
+                    ceiling_color: params.ceiling_color || '#87CEEB',
+                    wall_texture: params.wall_texture || '',
+                    wall_textured: !(params.wall_textured === false ||
+                                     params.wall_textured === 'false'),
+                    sky_texture: params.sky_texture || '',
+                    floor_texture: params.floor_texture || '',
+                    ceiling_texture: params.ceiling_texture || '',
+                    floor_cast_res: Math.max(1, Math.floor(rNum('floor_cast_res', 4))),
+                };
+                game.currentRoom._vWalls = null;  // rebuild wall map next render
+                break;
+            }
+
             default:
                 console.warn(`Unknown action: ${actionType}`);
         }
@@ -2701,6 +2757,144 @@ class GameRoom {
         return null;
     }
 
+    // ---- Raycast (Doom-style) first-person view. Ports of the desktop
+    // runtime's _build_raycast_walls / _cast_ray / _render_raycast_view
+    // (runtime/game_runner.py). See docs/RAYCAST_2_5D_PLAN.md; kept faithful
+    // to the desktop math so tests/test_raycast_export_parity.py holds. ----
+
+    buildRaycastWalls(cellSize) {
+        // Thin wall EDGES from solid instances (wide -> horizontal segment,
+        // tall -> vertical, square -> all 4 edges), plus each edge's sprite
+        // Image for texturing. Keys are "line,cell" strings.
+        const vWalls = new Set(), hWalls = new Set();
+        const vSprites = new Map(), hSprites = new Map();
+        for (const inst of this.instances) {
+            if (!inst.solid) continue;
+            const width = inst.boxWidth(), height = inst.boxHeight();
+            const spr = inst.sprite;
+            if (width >= height * 1.5) {
+                const lineY = Math.round((inst.y + height / 2) / cellSize);
+                const col = Math.floor(inst.x / cellSize);
+                hWalls.add(col + ',' + lineY); hSprites.set(col + ',' + lineY, spr);
+            } else if (height >= width * 1.5) {
+                const lineX = Math.round((inst.x + width / 2) / cellSize);
+                const row = Math.floor(inst.y / cellSize);
+                vWalls.add(lineX + ',' + row); vSprites.set(lineX + ',' + row, spr);
+            } else {
+                const gx = Math.floor(inst.x / cellSize), gy = Math.floor(inst.y / cellSize);
+                vWalls.add(gx + ',' + gy); vWalls.add((gx + 1) + ',' + gy);
+                hWalls.add(gx + ',' + gy); hWalls.add(gx + ',' + (gy + 1));
+                vSprites.set(gx + ',' + gy, spr); vSprites.set((gx + 1) + ',' + gy, spr);
+                hSprites.set(gx + ',' + gy, spr); hSprites.set(gx + ',' + (gy + 1), spr);
+            }
+        }
+        this._vWalls = vWalls; this._hWalls = hWalls;
+        this._vWallSprites = vSprites; this._hWallSprites = hSprites;
+        this._raycastCellSize = cellSize;
+    }
+
+    castRay(px, py, angleRad, cellSize, maxCells) {
+        const pxCell = px / cellSize, pyCell = py / cellSize;
+        const dx = Math.cos(angleRad), dy = Math.sin(angleRad);
+        let mapX = Math.floor(pxCell), mapY = Math.floor(pyCell);
+        const deltaX = dx !== 0 ? Math.abs(1 / dx) : 1e30;
+        const deltaY = dy !== 0 ? Math.abs(1 / dy) : 1e30;
+        let stepX, sideX, stepY, sideY;
+        if (dx < 0) { stepX = -1; sideX = (pxCell - mapX) * deltaX; }
+        else { stepX = 1; sideX = (mapX + 1 - pxCell) * deltaX; }
+        if (dy < 0) { stepY = -1; sideY = (pyCell - mapY) * deltaY; }
+        else { stepY = 1; sideY = (mapY + 1 - pyCell) * deltaY; }
+        let side = 0, distCells = maxCells;
+        for (let i = 0; i < maxCells; i++) {
+            let key, hit;
+            if (sideX < sideY) {
+                sideX += deltaX; mapX += stepX; side = 0;
+                const lineX = stepX > 0 ? mapX : mapX + 1;
+                key = lineX + ',' + mapY; hit = this._vWalls.has(key);
+            } else {
+                sideY += deltaY; mapY += stepY; side = 1;
+                const lineY = stepY > 0 ? mapY : mapY + 1;
+                key = mapX + ',' + lineY; hit = this._hWalls.has(key);
+            }
+            if (hit) {
+                distCells = side === 0 ? (sideX - deltaX) : (sideY - deltaY);
+                let wallCoord, sprite;
+                if (side === 0) {
+                    wallCoord = pyCell + distCells * dy;
+                    if (dx > 0) wallCoord = -wallCoord;
+                    sprite = this._vWallSprites.get(key);
+                } else {
+                    wallCoord = pxCell + distCells * dx;
+                    if (dy < 0) wallCoord = -wallCoord;
+                    sprite = this._hWallSprites.get(key);
+                }
+                const texU = wallCoord - Math.floor(wallCoord);
+                return { dist: Math.max(distCells, 1e-4) * cellSize, side, hit: true, texU, sprite };
+            }
+        }
+        return { dist: Math.max(distCells, 1e-4) * cellSize, side, hit: false, texU: 0, sprite: null };
+    }
+
+    _shadeColor(hex) {
+        const h = String(hex).replace('#', '');
+        if (h.length !== 6) return hex;
+        const r = parseInt(h.slice(0, 2), 16) >> 1;
+        const g = parseInt(h.slice(2, 4), 16) >> 1;
+        const b = parseInt(h.slice(4, 6), 16) >> 1;
+        return `rgb(${r},${g},${b})`;
+    }
+
+    renderRaycastView(ctx) {
+        const cfg = this.raycastCamera;
+        const cellSize = cfg.cell_size || 32;
+        if (!this._vWalls || this._raycastCellSize !== cellSize) this.buildRaycastWalls(cellSize);
+
+        const w = ctx.canvas.width, h = ctx.canvas.height;
+        const halfH = Math.floor(h / 2);
+        // Flat floor/ceiling fills (sky + floor textures land in unit 3).
+        ctx.fillStyle = cfg.ceiling_color || '#87CEEB'; ctx.fillRect(0, 0, w, halfH);
+        ctx.fillStyle = cfg.floor_color || '#464632'; ctx.fillRect(0, halfH, w, h - halfH);
+
+        const camera = this.findFirstInstance(cfg.camera_object || '');
+        if (!camera) return;
+        const camX = camera.x + camera.boxWidth() / 2;
+        const camY = camera.y + camera.boxHeight() / 2;
+
+        const wallColor = cfg.wall_color || '#993333';
+        const wallColorShaded = this._shadeColor(wallColor);
+        const fovRad = (cfg.fov || 66) * Math.PI / 180;
+        const renderDist = cfg.render_distance || 20;
+        const numCols = cfg.columns || Math.min(w, 320);
+        const colWidth = w / numCols;
+        const facingScreenRad = -camera.facing_angle * Math.PI / 180;
+        const textured = cfg.wall_textured !== false;
+        const sprites = (this._gameRef && this._gameRef.sprites) || {};
+        const wallTex = cfg.wall_texture ? sprites[cfg.wall_texture] : null;
+
+        for (let col = 0; col < numCols; col++) {
+            const rayOffset = -fovRad / 2 + fovRad * (col / numCols);
+            const r = this.castRay(camX, camY, facingScreenRad + rayOffset, cellSize, renderDist);
+            if (!r.hit) continue;  // open sight-line: leave floor/ceiling showing
+            const corrected = r.dist * Math.cos(rayOffset);  // fisheye correction
+            const stripH = Math.min(h, Math.floor(h * cellSize / Math.max(corrected, 1e-4)));
+            const x0 = Math.floor(col * colWidth), x1 = Math.floor((col + 1) * colWidth);
+            const stripW = Math.max(1, x1 - x0), y0 = Math.floor(halfH - stripH / 2);
+            const texSprite = wallTex || r.sprite;
+            if (textured && texSprite && texSprite.complete && texSprite.width > 0) {
+                const tw = texSprite.width, th = texSprite.height;
+                const texX = Math.min(tw - 1, Math.max(0, Math.floor(r.texU * tw)));
+                ctx.drawImage(texSprite, texX, 0, 1, th, x0, y0, stripW, stripH);
+                if (r.side === 1) {  // half-brightness y-face depth cue
+                    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                    ctx.fillRect(x0, y0, stripW, stripH);
+                }
+            } else {
+                ctx.fillStyle = r.side === 0 ? wallColor : wallColorShaded;
+                ctx.fillRect(x0, y0, stripW, stripH);
+            }
+        }
+    }
+
     // Per-frame camera follow + clamp, mirroring game_runner.update_views().
     updateViews() {
         if (!this.viewsEnabled) return;
@@ -2864,6 +3058,13 @@ class GameRoom {
     }
 
     render(ctx) {
+        // Raycast (Doom-style) first-person view fully replaces the top-down
+        // render for this room (mirrors the desktop _render_room early-return);
+        // game logic is unaffected, only the picture changes.
+        if (this.raycastCamera && this.raycastCamera.enabled) {
+            this.renderRaycastView(ctx);
+            return;
+        }
         // Fill the whole canvas with the bg color once; areas outside any
         // view port then show the bg color rather than stale pixels.
         ctx.fillStyle = this.bgColor;
@@ -3139,6 +3340,7 @@ class Game {
 
         for (const [roomName, roomData] of Object.entries(roomsData)) {
             const room = new GameRoom(roomData);
+            room._gameRef = this;  // so renderRaycastView can resolve textures
 
             if (room.bgImage && sprites[room.bgImage]) {
                 room.backgroundSprite = sprites[room.bgImage];
