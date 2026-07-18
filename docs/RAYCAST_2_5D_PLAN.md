@@ -504,7 +504,26 @@ per-pixel-row part flagged for a timing check) — next.
   fallback is a fixed low-res floor grid (checkerboard-style, sampled
   coarsely) if per-pixel floor casting is too slow in pure Python.
 
-### Phase 5b — outside sky/horizon (NEXT, DOOM-style)
+### Phase 5b — outside sky/horizon (DOOM-style)
+
+**DONE 2026-07-18.** The flat ceiling fill is replaced (when a `sky_texture`
+sprite name is set on the camera config) by a panorama scaled to the ceiling
+region and panned horizontally by `facing_angle`: `pano_w = w * 360 / fov`
+(so the FOV-wide screen shows exactly `fov/360` of the panorama), `pan =
+(facing_angle % 360)/360 * pano_w`, blitted at `-pan` plus a wrap copy — a full
+360° turn pans the sky exactly once and it never recedes with distance
+(cheapest texture in the pipeline: one scale + up to two blits, no per-column
+math). Drawn over the flat ceiling fill and under the walls, so wall strips
+occlude it for free; the sky shows in the ceiling region (always visible above
+walls in `raycast_1`'s enclosed maze — no open-edge map needed after all).
+`raycast_1` ships a generated 256×64 tileable `spr_sky` (blue gradient +
+sun + wrap-safe clouds) and the `sky_texture` param. Regression:
+`tests/test_raycast_view.py::TestSky` (4: sky replaces the flat ceiling, pans
+with facing_angle, floor stays flat, absent sky_texture keeps the flat fill).
+**Floor casting is the remaining Phase 5 piece** (the per-pixel timing-check
+one).
+
+Original notes:
 
 - The "outside" look: replace the flat ceiling fill with a horizontal
   strip of sky texture (or a gradient, as a cheaper first cut) whose

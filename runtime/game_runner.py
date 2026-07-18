@@ -1971,7 +1971,8 @@ class GameRoom:
         # depth cue than the original 75% factor, which read as barely
         # distinguishable from the unshaded x-face walls (user feedback).
         wall_color_shaded = tuple(c // 2 for c in wall_color)
-        fov_rad = math.radians(cfg.get('fov', 66))
+        fov_deg = cfg.get('fov', 66)
+        fov_rad = math.radians(fov_deg)
         render_distance_cells = int(cfg.get('render_distance', 20))
         num_columns = int(cfg.get('columns', min(w, 320)))
         col_width = w / num_columns
@@ -1981,6 +1982,31 @@ class GameRoom:
         # atan2(-vspeed, hspeed) convention so turning via set_facing_angle
         # feels consistent with every other direction-based action.
         facing_screen_rad = math.radians(-camera.facing_angle)
+
+        # Phase 5b: DOOM-style sky over the ceiling region. The sky is treated
+        # as infinitely far away -- it does NOT recede with distance, it just
+        # pans horizontally with facing_angle (turning 360deg pans the full
+        # panorama exactly once, so a landmark returns to the same screen spot
+        # after a full turn), giving a sense of a 360deg horizon from a
+        # FOV-wide slice. Cheapest texture in the pipeline: one scale + up to
+        # two blits, no per-column distance math. Drawn OVER the flat ceiling
+        # fill and UNDER the walls, so wall strips occlude it for free. Absent
+        # sky_texture -> the flat ceiling_color fill above stands (unchanged).
+        sky_name = cfg.get('sky_texture', '')
+        sky_sprite = (getattr(self, '_all_sprites', {}) or {}).get(sky_name) if sky_name else None
+        if sky_sprite is not None and h > 0:
+            sky_frame = sky_sprite.get_frame(0)
+            # Panorama width = the sky stretched so the FOV-wide screen shows
+            # exactly fov/360 of it.
+            pano_w = max(1, int(w * 360.0 / max(1.0, fov_deg)))
+            ceil_h = int(half_h)
+            pano = pygame.transform.scale(sky_frame, (pano_w, max(1, ceil_h)))
+            pan = int((camera.facing_angle % 360) / 360.0 * pano_w)
+            # Two blits cover the visible window regardless of where the pan
+            # lands (the second is the horizontal wrap).
+            screen.blit(pano, (-pan, 0))
+            if pano_w - pan < w:
+                screen.blit(pano, (pano_w - pan, 0))
 
         # Phase 5: sample a vertical texture strip per wall column (per the
         # plan). Off -> flat colour (the pre-Phase-5 look), also the automatic

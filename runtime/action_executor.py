@@ -4452,6 +4452,9 @@ class ActionExecutor:
             # flat colour / per-instance sprite fallback), and an on/off toggle.
             'wall_texture': str(parameters.get('wall_texture', '')),
             'wall_textured': _bool('wall_textured', True),
+            # Phase 5b: a sprite NAME for a DOOM-style panning sky over the
+            # ceiling (empty = the flat ceiling_color fill).
+            'sky_texture': str(parameters.get('sky_texture', '')),
         }
         # Force the wall edges to rebuild against the (possibly new)
         # cell_size next render instead of reusing a stale cache.
