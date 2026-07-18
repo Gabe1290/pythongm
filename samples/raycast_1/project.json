@@ -94,6 +94,22 @@
         "imported": true,
         "created": "2026-05-23T14:34:54.961536",
         "modified": "2026-06-07T18:52:32.258111"
+      },
+      "spr_wall_texture": {
+        "name": "spr_wall_texture",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_wall_texture.png",
+        "width": 64,
+        "height": 64,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 64,
+        "frame_height": 64,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true
       }
     },
     "sounds": {},
@@ -236,7 +252,8 @@
                   "render_distance": "20",
                   "wall_color": "#993333",
                   "floor_color": "#464632",
-                  "ceiling_color": "#87CEEB"
+                  "ceiling_color": "#87CEEB",
+                  "wall_texture": "spr_wall_texture"
                 }
               }
             ]

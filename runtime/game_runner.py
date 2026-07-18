@@ -1341,6 +1341,11 @@ class GameRoom:
         self.raycast_camera: Dict[str, Any] = {'enabled': False}
         self._raycast_v_walls: Optional[Set[Tuple[int, int]]] = None
         self._raycast_h_walls: Optional[Set[Tuple[int, int]]] = None
+        # Parallel to the wall-edge sets: the sprite of the solid instance that
+        # created each edge, so a ray hit can sample a texture strip (Phase 5)
+        # instead of a flat colour. None entry / missing key -> flat colour.
+        self._raycast_v_wall_sprites: Dict[Tuple[int, int], Any] = {}
+        self._raycast_h_wall_sprites: Dict[Tuple[int, int], Any] = {}
         self._raycast_cell_size: int = 32
 
         # Depth-sorted instance cache (invalidated when instances change)
@@ -1590,6 +1595,9 @@ class GameRoom:
 
     def set_sprites_for_instances(self, sprites: Dict[str, GameSprite], objects: Dict[str, dict]):
         """Set sprites for all instances based on their object types"""
+        # Keep the whole sprite table so the raycast renderer can resolve a
+        # wall_texture / sky_texture sprite by NAME (not just per-instance).
+        self._all_sprites = sprites
         for instance in self.instances:
             # Get object data
             if instance.object_name in objects:
@@ -1793,20 +1801,28 @@ class GameRoom:
         """
         v_walls: Set[Tuple[int, int]] = set()
         h_walls: Set[Tuple[int, int]] = set()
+        # Edge -> the sprite of the instance that created it (for Phase 5
+        # texturing). Parallel to the sets; last writer wins if two instances
+        # map to the same edge (grid walls all share one sprite anyway).
+        v_sprites: Dict[Tuple[int, int], Any] = {}
+        h_sprites: Dict[Tuple[int, int], Any] = {}
         for inst in self.instances:
             obj_data = inst._cached_object_data
             if not (obj_data and obj_data.get('solid', False)):
                 continue
             width = inst._cached_width
             height = inst._cached_height
+            spr = inst.sprite
             if width >= height * 1.5:
                 line_y = round((inst.y + height / 2) / cell_size)
                 col = int(inst.x // cell_size)
                 h_walls.add((col, line_y))
+                h_sprites[(col, line_y)] = spr
             elif height >= width * 1.5:
                 line_x = round((inst.x + width / 2) / cell_size)
                 row = int(inst.y // cell_size)
                 v_walls.add((line_x, row))
+                v_sprites[(line_x, row)] = spr
             else:
                 gx = int(inst.x // cell_size)
                 gy = int(inst.y // cell_size)
@@ -1814,8 +1830,14 @@ class GameRoom:
                 v_walls.add((gx + 1, gy))
                 h_walls.add((gx, gy))
                 h_walls.add((gx, gy + 1))
+                for key in ((gx, gy), (gx + 1, gy)):
+                    v_sprites[key] = spr
+                for key in ((gx, gy), (gx, gy + 1)):
+                    h_sprites[key] = spr
         self._raycast_v_walls = v_walls
         self._raycast_h_walls = h_walls
+        self._raycast_v_wall_sprites = v_sprites
+        self._raycast_h_wall_sprites = h_sprites
         self._raycast_cell_size = cell_size
 
     def _cast_ray(self, px: float, py: float, angle_rad: float, cell_size: int, max_cells: int):
@@ -1827,10 +1849,16 @@ class GameRoom:
         solid cell". The ray marches freely through open cells (however
         many) and only stops at an actual wall's real position.
 
-        Returns (distance_in_pixels, side) where side is 0 for a
-        vertical wall face (x-step hit) or 1 for a horizontal one (y-step
-        hit) — used to cheaply shade one set of faces darker, a free
-        depth cue with no lighting model needed.
+        Returns (distance_in_pixels, side, hit, tex_u, sprite):
+          - side is 0 for a vertical wall face (x-step hit) or 1 for a
+            horizontal one (y-step hit) — used to cheaply shade one set of
+            faces darker, a free depth cue with no lighting model needed.
+          - hit is False when the ray reached max range without crossing a
+            registered wall edge (the caller must draw no strip).
+          - tex_u in [0, 1) is the horizontal texture coordinate where the ray
+            met the wall (the fractional position along that wall's face) and
+            sprite is the wall's sprite (or None) — both for Phase 5 texturing;
+            a flat-colour caller just ignores them.
         """
         px_cell, py_cell = px / cell_size, py / cell_size
         dx, dy = math.cos(angle_rad), math.sin(angle_rad)
@@ -1864,16 +1892,34 @@ class GameRoom:
                 # of the cell just left (moving -x) -- both name the same
                 # absolute line index.
                 line_x = map_x if step_x > 0 else map_x + 1
-                hit = (line_x, map_y) in self._raycast_v_walls
+                wall_key = (line_x, map_y)
+                hit = wall_key in self._raycast_v_walls
             else:
                 side_y += delta_y
                 map_y += step_y
                 side = 1
                 line_y = map_y if step_y > 0 else map_y + 1
-                hit = (map_x, line_y) in self._raycast_h_walls
+                wall_key = (map_x, line_y)
+                hit = wall_key in self._raycast_h_walls
             if hit:
                 dist_cells = (side_x - delta_x) if side == 0 else (side_y - delta_y)
-                return max(dist_cells, 1e-4) * cell_size, side, True
+                # Texture-U: the fractional position along the wall's face
+                # where the ray met it. wall_coord = the world coordinate
+                # (in cell units) parallel to the wall at the hit; its
+                # fractional part is U. Flip on the two faces a wall can be
+                # seen from so the texture isn't mirrored between them.
+                if side == 0:
+                    wall_coord = py_cell + dist_cells * dy
+                    if dx > 0:
+                        wall_coord = -wall_coord
+                    sprite = self._raycast_v_wall_sprites.get(wall_key)
+                else:
+                    wall_coord = px_cell + dist_cells * dx
+                    if dy < 0:
+                        wall_coord = -wall_coord
+                    sprite = self._raycast_h_wall_sprites.get(wall_key)
+                tex_u = wall_coord - math.floor(wall_coord)
+                return max(dist_cells, 1e-4) * cell_size, side, True, tex_u, sprite
         # Marched the full render distance without crossing a registered
         # wall edge -- a real miss (open corridor/junction), not a wall at
         # max range. The caller must not draw a wall strip for this column:
@@ -1883,7 +1929,7 @@ class GameRoom:
         # for every miss column -- misread by a user as "walked outside the
         # map" when they were really just facing an opening wider than the
         # wall's own render distance.
-        return max(dist_cells, 1e-4) * cell_size, side, False
+        return max(dist_cells, 1e-4) * cell_size, side, False, 0.0, None
 
     def _render_raycast_view(self, screen: pygame.Surface):
         """Render the room as a first-person raycast projection instead of
@@ -1936,11 +1982,22 @@ class GameRoom:
         # feels consistent with every other direction-based action.
         facing_screen_rad = math.radians(-camera.facing_angle)
 
+        # Phase 5: sample a vertical texture strip per wall column (per the
+        # plan). Off -> flat colour (the pre-Phase-5 look), also the automatic
+        # fallback when no texture is available. A `wall_texture` sprite name
+        # in the camera config textures EVERY wall with one image (the usual
+        # choice — the derived thin edge-wall collision sprites are not real
+        # wall art); without it, each wall samples its own instance sprite.
+        textured = bool(cfg.get('wall_textured', True))
+        wall_texture_name = cfg.get('wall_texture', '')
+        wall_texture = (getattr(self, '_all_sprites', {}) or {}).get(wall_texture_name) \
+            if wall_texture_name else None
         col_wall_dist = [float('inf')] * num_columns  # for billboard occlusion, below
         for col in range(num_columns):
             ray_offset = -fov_rad / 2 + fov_rad * (col / num_columns)
             ray_angle = facing_screen_rad + ray_offset
-            dist, side, hit = self._cast_ray(cam_x, cam_y, ray_angle, cell_size, render_distance_cells)
+            dist, side, hit, tex_u, wall_sprite = self._cast_ray(
+                cam_x, cam_y, ray_angle, cell_size, render_distance_cells)
             if not hit:
                 # No wall within render distance -- leave the ceiling/floor
                 # fill showing for this column instead of drawing a bogus
@@ -1949,10 +2006,25 @@ class GameRoom:
             corrected = dist * math.cos(ray_offset)  # fisheye correction
             col_wall_dist[col] = corrected
             strip_h = min(h, int(h * cell_size / max(corrected, 1e-4)))
-            color = wall_color if side == 0 else wall_color_shaded
             x0 = int(col * col_width)
             x1 = int((col + 1) * col_width)
-            screen.fill(color, (x0, int(half_h - strip_h / 2), max(1, x1 - x0), strip_h))
+            strip_w = max(1, x1 - x0)
+            y0 = int(half_h - strip_h / 2)
+
+            tex_sprite = wall_texture if wall_texture is not None else wall_sprite
+            if textured and tex_sprite is not None:
+                frame = tex_sprite.get_frame(0)
+                tw, th = frame.get_width(), frame.get_height()
+                tex_x = min(tw - 1, max(0, int(tex_u * tw)))
+                col_surf = frame.subsurface((tex_x, 0, 1, th))
+                strip = pygame.transform.scale(col_surf, (strip_w, strip_h))
+                if side == 1:
+                    # Same half-brightness y-face depth cue as the flat path.
+                    strip.fill((128, 128, 128), special_flags=pygame.BLEND_RGB_MULT)
+                screen.blit(strip, (x0, y0))
+            else:
+                color = wall_color if side == 0 else wall_color_shaded
+                screen.fill(color, (x0, y0, strip_w, strip_h))
 
         # Billboard sprites (Phase 6 of the plan doc, scoped down to a
         # single first cut): any visible, sprited, non-solid instance
