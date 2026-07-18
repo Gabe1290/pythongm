@@ -688,7 +688,10 @@ harness if one is available.)
 #### Suggested commit-sized unit sequence (session-limit discipline)
 
 1. Register `set_facing_angle` + `enable_raycast_view` in `action_types.py`
-   (+ test). Small.
+   (+ test). Small. — **DONE 2026-07-18** (category "3D View", full param sets
+   with sprite-picker texture params + colour params; `tests/
+   test_raycast_action_registration.py`, 6 tests). No feature-matrix/handler
+   coverage regressions.
 2. HTML5 facing_angle + walls (+ source test). Medium.
 3. HTML5 sky + floor (spike first) + billboards (+ source/Playwright). Medium.
 4. Kivy facing_angle + walls (+ stub test). Medium.
