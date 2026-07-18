@@ -2008,6 +2008,27 @@ class GameRoom:
             if pano_w - pan < w:
                 screen.blit(pano, (pano_w - pan, 0))
 
+        # Phase 5: textured floor (and, indoors, ceiling) via low-res floor
+        # casting. Full-resolution per-pixel casting measured ~64ms/frame in
+        # pure Python (the plan's timing gate) -- unusable; a low-res cast +
+        # transform.scale upscale is ~5ms at 4x and keeps the authentic
+        # chunky Wolfenstein look. floor_texture casts the floor region; a
+        # ceiling_texture casts the ceiling ONLY when no sky_texture claimed
+        # it. Absent both -> the flat floor/ceiling fills stand.
+        cast_res = max(1, int(cfg.get('floor_cast_res', 4)))
+        floor_sprite = (getattr(self, '_all_sprites', {}) or {}).get(cfg.get('floor_texture', ''))
+        ceil_tex_name = cfg.get('ceiling_texture', '')
+        ceil_sprite = (getattr(self, '_all_sprites', {}) or {}).get(ceil_tex_name) if ceil_tex_name else None
+        cam_cx, cam_cy = cam_x / cell_size, cam_y / cell_size
+        if floor_sprite is not None:
+            self._cast_floor_plane(screen, floor_sprite.get_frame(0),
+                                   cam_cx, cam_cy, facing_screen_rad, fov_rad,
+                                   cast_res, ceiling=False)
+        if ceil_sprite is not None and sky_sprite is None:
+            self._cast_floor_plane(screen, ceil_sprite.get_frame(0),
+                                   cam_cx, cam_cy, facing_screen_rad, fov_rad,
+                                   cast_res, ceiling=True)
+
         # Phase 5: sample a vertical texture strip per wall column (per the
         # plan). Off -> flat colour (the pre-Phase-5 look), also the automatic
         # fallback when no texture is available. A `wall_texture` sprite name
@@ -2107,6 +2128,70 @@ class GameRoom:
                     if corrected < col_wall_dist[col_idx]:
                         screen.blit(scaled, (screen_x, y_top), (slice_x, 0, 1, sprite_h))
                 slice_x += 1
+
+    def _cast_floor_plane(self, screen, frame, cam_cx, cam_cy,
+                          facing_screen_rad, fov_rad, res, ceiling=False):
+        """Low-res floor/ceiling texture casting (Phase 5). Renders the ground
+        (or ceiling) plane into a downsampled surface, then upscales — full-res
+        per-pixel casting is ~13x too slow in pure Python (timing spike).
+
+        The plane is sampled in CELL units so the texture tiles once per grid
+        cell and lines up with the wall bases. Row distance is derived from the
+        same projection the wall pass uses (a wall 1 cell away has its base at
+        the screen bottom), so floor and walls meet seamlessly:
+        rowDistance_cells = (0.5*h) / (y - horizon). The two FOV-edge ray
+        directions (camera-plane method) are interpolated across columns, which
+        keeps floor lines straight (the fisheye-correct equivalent of the wall
+        pass). `ceiling` mirrors the same cast into the top half.
+        """
+        w, h = screen.get_size()
+        half_h = h // 2
+        region_h = h - half_h
+        if region_h <= 0:
+            return
+        tw, th = frame.get_width(), frame.get_height()
+        if tw <= 0 or th <= 0:
+            return
+        dir_x, dir_y = math.cos(facing_screen_rad), math.sin(facing_screen_rad)
+        plane = math.tan(fov_rad / 2)
+        plane_x, plane_y = -dir_y * plane, dir_x * plane
+        rdx0, rdy0 = dir_x - plane_x, dir_y - plane_y   # leftmost column ray
+        rdx1, rdy1 = dir_x + plane_x, dir_y + plane_y   # rightmost column ray
+        pos_z = 0.5 * h
+
+        sw = max(1, w // res)
+        sh = max(1, region_h // res)
+        small = pygame.Surface((sw, sh))
+        put = small.set_at
+        tex_at = frame.get_at
+        floor = math.floor
+        step_scale = res / w  # (rdx1-rdx0)/w scaled by the horizontal stride
+        for j in range(sh):
+            y = half_h + j * res
+            p = y - half_h
+            if p <= 0:
+                p = 1
+            rowd = pos_z / p
+            stepx = rowd * (rdx1 - rdx0) * step_scale
+            stepy = rowd * (rdy1 - rdy0) * step_scale
+            fx = cam_cx + rowd * rdx0
+            fy = cam_cy + rowd * rdy0
+            for i in range(sw):
+                tx = int(tw * (fx - floor(fx)))
+                ty = int(th * (fy - floor(fy)))
+                if tx >= tw:
+                    tx = tw - 1
+                if ty >= th:
+                    ty = th - 1
+                put((i, j), tex_at((tx, ty)))
+                fx += stepx
+                fy += stepy
+        scaled = pygame.transform.scale(small, (w, region_h))
+        if ceiling:
+            scaled = pygame.transform.flip(scaled, False, True)
+            screen.blit(scaled, (0, 0))
+        else:
+            screen.blit(scaled, (0, half_h))
 
     def render_tiles(self, screen: pygame.Surface, view_offset=(0, 0)):
         """Render tile layer"""

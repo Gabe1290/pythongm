@@ -126,6 +126,22 @@
         "animation_type": "single",
         "speed": 10.0,
         "imported": true
+      },
+      "spr_floor": {
+        "name": "spr_floor",
+        "asset_type": "sprite",
+        "file_path": "sprites/spr_floor.png",
+        "width": 32,
+        "height": 32,
+        "origin_x": 0,
+        "origin_y": 0,
+        "precise": false,
+        "frames": 1,
+        "frame_width": 32,
+        "frame_height": 32,
+        "animation_type": "single",
+        "speed": 10.0,
+        "imported": true
       }
     },
     "sounds": {},
@@ -270,7 +286,8 @@
                   "floor_color": "#464632",
                   "ceiling_color": "#87CEEB",
                   "wall_texture": "spr_wall_texture",
-                  "sky_texture": "spr_sky"
+                  "sky_texture": "spr_sky",
+                  "floor_texture": "spr_floor"
                 }
               }
             ]

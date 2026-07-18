@@ -464,6 +464,26 @@ land, not building a sample from scratch.
 
 ### Phase 5 — textured walls, floor, and ceiling
 
+**Floor/ceiling: DONE 2026-07-18.** The mandated timing spike settled it:
+full-resolution per-pixel floor casting measured **~64ms/frame** at the sample's
+480×480 in pure Python (unusable), while a **low-res cast + `transform.scale`
+upscale** is ~5ms at 4× downsample (3× ≈ 7.6ms, 2× ≈ 17ms) — so the
+plan's documented fallback is what shipped. `_cast_floor_plane` renders the
+ground plane into a `(w//res) × (region_h//res)` surface (Lodev camera-plane
+method: two FOV-edge ray directions interpolated across columns for straight
+floor lines; sampled in CELL units so the texture tiles once per grid cell and
+`rowDistance_cells = 0.5h/(y-horizon)` makes it meet the wall bases seamlessly),
+then upscales. `floor_texture` casts the floor; `ceiling_texture` casts the
+ceiling **only when no `sky_texture` claimed it** (mirrored via `flip`);
+`floor_cast_res` (default 4) trades sharpness for speed. `raycast_1` ships a
+generated 32×32 stone `spr_floor` — the corridor now has brick walls, a cloudy
+panning sky, and a paved receding floor (verified by rendered-PNG eyeball).
+Regression: `tests/test_raycast_view.py::TestFloorCasting` (6: floor replaces
+the flat fill, flat fallback, ceiling_texture casts without sky, sky wins over
+ceiling_texture, res configurable+safe, and a full walls+sky+floor
+under-budget perf guard). **Phase 5 is complete** — remaining raycast work is
+Phases 2/3 (HTML5/Kivy export parity) and 6 (sprite facing, already a first cut).
+
 **Walls: DONE 2026-07-18.** `_cast_ray` now also returns the texture-U (the
 fractional hit position along the wall face, computed from the DDA hit — the
 standard `posY + perpDist*rayDirY` fractional part, flipped per face so the
