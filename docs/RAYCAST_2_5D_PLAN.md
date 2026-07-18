@@ -1,6 +1,12 @@
 # Plan: Doom/Wolfenstein-style raycast 2.5D rendering mode
 
-Status: **Phase 0 + Phase 1 DONE (2026-07-16, desktop/pygame only).**
+Status: **Desktop/pygame feature COMPLETE (2026-07-18).** Phases 0, 1, 4
+(sample), 5 (textured walls + panning sky + cast floor) and a first cut of 6
+(billboard sprites) are all done on desktop. **NEXT: Phases 2 & 3 — HTML5 +
+Kivy export parity** (detailed plan added 2026-07-18, see that section);
+`raycast_1` is desktop-only until then. Historical per-phase notes below.
+
+Original status line: **Phase 0 + Phase 1 DONE (2026-07-16, desktop/pygame only).**
 Written in response to a direct ask: "how hard would a 3D extension be,
 and if hard, scope out a fake 2.5D instead," then given an explicit
 go-ahead to start ("start work based on maze_1 with flat color walls to
@@ -561,21 +567,147 @@ Original notes:
   a second sample, or `raycast_1`'s map opened up at an edge, to actually
   be visible in play).
 
-### Phase 2 — HTML5 parity
+### Phases 2 & 3 — HTML5 + Kivy export parity (NEXT — detailed plan, 2026-07-18)
 
-- Port the same DDA loop into `engine.js` (a `renderRaycastView`
-  function alongside `renderDrawCommands`), draw with `ctx.fillRect` per
-  column — natural fit for Canvas2D, no rendering-model change needed.
-- New `case 'enable_raycast_view'` (or whatever the action is named) in
-  `executeAction`'s switch, mirroring every other action-parity addition
-  this session.
+`raycast_1` is **desktop-only** today. Bringing it to the two export targets
+means re-implementing the desktop raycast renderer in each (there is no shared
+code between the runtime and the exporters — the exported games are
+standalone), so this is a **three-copies-of-the-renderer** situation, exactly
+like the `views` feature (desktop `game_runner.update_views`, `engine.js`
+`updateViews`, Kivy generated `update_views`). Same mitigations apply:
+port faithfully, and add a **3-target parity test** (model it on
+`tests/test_views_export_parity.py`) so the copies can't drift.
 
-### Phase 3 — Kivy parity
+**Ground truth to port** (all in `runtime/game_runner.py` / `action_executor.py`):
+`_build_raycast_walls` (edge derivation + parallel sprite dicts), `_cast_ray`
+(DDA returning dist/side/hit/tex_u/sprite), `_render_raycast_view` (flat fills →
+sky pan → floor cast → per-column wall strips → billboard sprites with
+per-column occlusion), `_cast_floor_plane` (low-res floor cast), and the
+`facing_angle` instance state + `set_facing_angle` / `enable_raycast_view`
+actions.
 
-- Port the same loop into `export/Kivy/code_generator.py`'s codegen,
-  emitting a loop of `Rectangle` graphics instructions per column into
-  the object's canvas — mirrors the existing Fbo-based view/camera
-  codegen from `views_1`/`views_2`, no OpenGL/3D API needed.
+#### Shared prerequisite — action registration + facing-angle parity (do first)
+
+Neither `set_facing_angle` nor `enable_raycast_view` is registered in
+`events/action_types.py` yet (they're runtime-only, like `enable_views` was
+before I registered it), and neither exporter knows `facing_angle`. One small
+unit, mirroring the `enable_views`/`set_view` registration
+(`a7a963a`-style):
+1. Register both actions in `events/action_types.py` (category e.g. "3D View"),
+   with the full parameter set (`fov`, `render_distance`, `cell_size`,
+   `columns`, `wall_color`/`floor_color`/`ceiling_color`,
+   `wall_texture`/`sky_texture`/`floor_texture`/`ceiling_texture`,
+   `wall_textured`, `floor_cast_res`, `camera_object`; and `angle` + `relative`
+   for `set_facing_angle`). This unblocks both exporters' action dispatch and
+   lets the action round-trip through save/load.
+2. Regression test like `tests/test_views_action_registration.py`.
+
+#### Phase 2 — HTML5 (`engine.js`)
+
+Anchors (as of this writing): `GameRoom.render(ctx)` at ~line 2866 (the raycast
+branch goes here as an early return, exactly like the desktop `_render_room`
+early-return); `executeAction` switch at ~line 1316 (new `case
+'enable_raycast_view'` / `'set_facing_angle'`, next to `case 'enable_views'` at
+~2021); `parseNumParam` (~305) / `gmExpressionValue` (~340) for expressions;
+sprites are ready-to-draw `Image` objects via `game.sprites[name]`.
+
+- **facing_angle**: add it as a `GameInstance` property (default 0), a
+  `set_facing_angle` action case, and expose `facing_angle` in the
+  `gmExpressionValue` scope so `set_direction_speed(direction="facing_angle")`
+  — the exact expression `raycast_1`'s controls use — resolves (it already
+  exposes `direction`, `hspeed`, etc.; add this name).
+- **Renderer** — a `renderRaycastView(ctx)` method on `GameRoom`, called from
+  `render()` when `this.raycastCamera?.enabled`:
+  - Wall map: port `_build_raycast_walls` to build `vWalls`/`hWalls` (Set of
+    `"lx,cell"` keys) + parallel sprite-name maps, once, cached on the room
+    (invalidate on cell_size change), from the solid instances.
+  - DDA: port `_cast_ray` verbatim (integer/float math is identical in JS).
+  - Walls: `ctx.drawImage(img, texX, 0, 1, texH, x0, y0, stripW, stripH)` — the
+    9-arg form samples a 1px source column and scales it to the strip, the
+    Canvas2D equivalent of pygame's subsurface+scale. Half-brightness y-face
+    via a `ctx.globalAlpha`/overlay or a pre-dimmed offscreen (simplest: draw
+    then `fillRect` a 50%-black over side==1 strips).
+  - Sky: `pano_w = w*360/fov`, `ctx.drawImage` the sky scaled to
+    `(pano_w, h/2)` at `-pan` + wrap copy (direct port).
+  - Floor: the per-pixel cast is even less viable in JS; port the **low-res
+    approach** — render the floor into a small offscreen canvas via
+    `ImageData`/`putImageData` at `(w/res, (h/2)/res)`, then `drawImage` it
+    scaled up (Canvas smoothing off for the chunky look). Time it in a Phase-0
+    style spike first, same as desktop.
+  - Billboards: port the non-solid-sprite pass + `colWallDist` per-column
+    occlusion (`drawImage` per unoccluded column slice).
+- **Action**: `case 'enable_raycast_view'` builds `this.currentRoom.raycastCamera`
+  from params (mirror the desktop handler's defaults).
+- **Tests**: source-level assertions in a new `tests/test_html5_raycast.py`
+  (the renderer/actions exist, the wall/sky/floor/DDA formulas are present),
+  plus a real-Chromium Playwright check during development (Playwright isn't a
+  CI dep — same pattern as `test_html5_views`).
+
+#### Phase 3 — Kivy (generated scene)
+
+Anchors: the FBO/views machinery in `export/Kivy/kivy_exporter.py`
+(`_render_views` ~1543, `_update_impl` ~1741, `InstructionGroup` on the scene
+canvas ~1494) is the model. Textures load via `load_image(...).texture`
+(`CoreImage`); per-column draws are `Rectangle(texture=…, tex_coords=…)` in an
+`InstructionGroup` — the same primitives the view blits already use.
+
+- **facing_angle / actions**: `set_facing_angle` + `enable_raycast_view` codegen
+  in `export/Kivy/code_generator.py` (like the `enable_views`/`set_view` codegen
+  added in `c6c034b`), writing a `raycast_camera` dict + a `_facing_angle`
+  attribute onto the generated object/scene.
+- **Renderer**: a generated `_render_raycast()` scene method drawing into a
+  dedicated `InstructionGroup` each frame (branch `_update_impl` so a
+  raycast-enabled room renders the first-person view instead of the top-down
+  child-widget instances). Port `_build_raycast_walls` + `_cast_ray` as scene
+  methods. Walls: one `Rectangle(texture=wall_tex.texture, tex_coords=(u,0, u,0,
+  u,1, u,1), pos=(x0,y0), size=(stripW, stripH))` per column (a 1px-wide U
+  slice — the FBO views code already does exactly this kind of tex_coords
+  slice). Sky: one panned `Rectangle`. Floor: low-res — render into a small
+  `Fbo` (or a `Texture.create` + `blit_buffer`) and draw it scaled; **spike the
+  timing** (Python-in-Kivy is the same speed class as the desktop spike, so 4×
+  downsample should land ~5ms). **Watch the y-axis**: Kivy is y-up (the whole
+  reason the views port needed a flip) — the raycast screen math is y-down, so
+  either flip the final draw or build the column rects in Kivy coords.
+- **Tests**: stub-Kivy headless render (extend the existing
+  `tests/test_kivy_views.py` stub set — `Fbo`/`Rectangle`/`InstructionGroup`
+  are already stubbed) asserting the per-column rect count/geometry; source
+  assertions on the generated scene.
+
+#### The 3-target parity test (last unit of this phase)
+
+`tests/test_raycast_export_parity.py`, modeled on `test_views_export_parity.py`:
+feed one synthetic room (a couple of solid walls + a camera at a known
+position/`facing_angle`) through all three `_cast_ray` implementations and
+assert they return the **same hit distance + side** for a fixed set of ray
+angles. `_cast_ray` is coordinate-system-independent (pure grid DDA), so this
+is a clean cross-target invariant — the raycast analogue of the views parity
+test's `view_x` check. (Desktop runs the real method; Kivy via the stub scene;
+HTML5 via source-formula assertion since node isn't a CI dep, or a tiny node
+harness if one is available.)
+
+#### Suggested commit-sized unit sequence (session-limit discipline)
+
+1. Register `set_facing_angle` + `enable_raycast_view` in `action_types.py`
+   (+ test). Small.
+2. HTML5 facing_angle + walls (+ source test). Medium.
+3. HTML5 sky + floor (spike first) + billboards (+ source/Playwright). Medium.
+4. Kivy facing_angle + walls (+ stub test). Medium.
+5. Kivy sky + floor (spike) + billboards (+ stub test). Medium.
+6. 3-target `_cast_ray` parity test. Small.
+
+Then fold the result into `raycast_1`'s README (drop the "desktop-only" caveat)
+and, optionally, add `raycast_1` to `tools/smoke_run_samples.py`.
+
+#### Risks / open questions
+
+- **Floor casting perf on each target** is the main unknown — JS `ImageData`
+  per-pixel and Kivy `blit_buffer` are both untested here; the low-res spike is
+  mandatory before committing either (a documented fallback is a *flat* floor
+  on export if a target can't hit budget, with textured floor desktop-only).
+- **Drift** across three renderer copies — the parity test covers the DDA
+  core, but sky/floor/billboard rendering isn't cross-checked by it; keep the
+  ports close to the desktop source and reference it in comments.
+- **Kivy y-flip** is the fiddly bit (same class of bug as the views port).
 
 ### Phase 6 — billboard sprites (stretch, likely last)
 **DONE (scoped down), 2026-07-17** — landed early, out of phase order,
