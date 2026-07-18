@@ -686,6 +686,116 @@ class TestSky:
         assert screen.get_at((160, 8))[:3] == (0, 0, 255)  # flat ceiling_color
 
 
+class TestFloorCasting:
+    """Phase 5: low-res floor/ceiling texture casting. Full-res per-pixel was
+    ~13x too slow in pure Python (timing spike), so the floor is cast into a
+    downsampled surface and upscaled."""
+
+    def _open_room(self, floor_color='#00ff00', ceiling_color='#0000ff'):
+        room = _room(320, 320)
+        camera = GameInstance("obj_person", 128, 128, {}, action_executor=None)
+        camera.facing_angle = 0.0
+        room.instances.append(camera)
+        room.raycast_camera = {
+            'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
+            'render_distance': 20, 'cell_size': 32, 'columns': 64,
+            'wall_color': '#ff0000', 'floor_color': floor_color,
+            'ceiling_color': ceiling_color,
+        }
+        return room
+
+    def _solid_tex(self, color):
+        from runtime.game_runner import GameSprite
+        spr = GameSprite.__new__(GameSprite)
+        frame = pygame.Surface((32, 32))
+        frame.fill(color)
+        spr.frames = [frame]
+        return spr
+
+    def test_floor_texture_replaces_flat_floor(self):
+        room = self._open_room()
+        room._all_sprites = {'spr_floor': self._solid_tex((200, 40, 160))}
+        room.raycast_camera['floor_texture'] = 'spr_floor'
+        screen = pygame.Surface((320, 240))
+        room._render_raycast_view(screen)
+        w, h = screen.get_size()
+        # a floor pixel near the bottom is now the texture colour, not flat green
+        assert screen.get_at((w // 2, h - 4))[:3] == (200, 40, 160)
+
+    def test_no_floor_texture_keeps_flat_floor(self):
+        room = self._open_room()
+        screen = pygame.Surface((320, 240))
+        room._render_raycast_view(screen)
+        w, h = screen.get_size()
+        assert screen.get_at((w // 2, h - 4))[:3] == (0, 255, 0)
+
+    def test_ceiling_texture_casts_when_no_sky(self):
+        room = self._open_room()
+        room._all_sprites = {'spr_ceil': self._solid_tex((40, 200, 160))}
+        room.raycast_camera['ceiling_texture'] = 'spr_ceil'
+        screen = pygame.Surface((320, 240))
+        room._render_raycast_view(screen)
+        w, h = screen.get_size()
+        assert screen.get_at((w // 2, 4))[:3] == (40, 200, 160)
+
+    def test_sky_wins_over_ceiling_texture(self):
+        room = self._open_room()
+        room._all_sprites = {
+            'spr_ceil': self._solid_tex((40, 200, 160)),
+            'spr_sky': self._solid_tex((10, 20, 30)),
+        }
+        room.raycast_camera['ceiling_texture'] = 'spr_ceil'
+        room.raycast_camera['sky_texture'] = 'spr_sky'
+        screen = pygame.Surface((320, 240))
+        room._render_raycast_view(screen)
+        w, h = screen.get_size()
+        # sky claimed the ceiling; the ceiling_texture must not appear
+        assert screen.get_at((w // 2, 4))[:3] == (10, 20, 30)
+
+    def test_floor_cast_res_is_configurable_and_safe(self):
+        room = self._open_room()
+        room._all_sprites = {'spr_floor': self._solid_tex((200, 40, 160))}
+        room.raycast_camera['floor_texture'] = 'spr_floor'
+        for res in (1, 2, 8):
+            room.raycast_camera['floor_cast_res'] = res
+            screen = pygame.Surface((320, 240))
+            room._render_raycast_view(screen)  # must not raise
+            assert screen.get_at((160, 236))[:3] == (200, 40, 160)
+
+    def test_full_textured_pipeline_under_budget(self):
+        """Walls + sky + floor together stay well under a frame budget at the
+        real 480x480 sample size (floor casting is the expensive part; the
+        spike put 4x downsample at ~5ms)."""
+        import time
+        room = _room(480, 480)
+        for gx in range(15):
+            room.instances.append(_solid_instance(f"w{gx}0", gx * 32, 0))
+            room.instances.append(_solid_instance(f"w{gx}14", gx * 32, 14 * 32))
+        camera = GameInstance("obj_person", 32, 416, {}, action_executor=None)
+        camera.facing_angle = 0.0
+        room.instances.append(camera)
+        room._all_sprites = {
+            'spr_wall': self._solid_tex((150, 74, 56)),
+            'spr_sky': self._solid_tex((90, 150, 210)),
+            'spr_floor': self._solid_tex((100, 96, 80)),
+        }
+        room.raycast_camera = {
+            'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
+            'render_distance': 20, 'cell_size': 32, 'columns': 320,
+            'wall_color': '#993333', 'floor_color': '#464632', 'ceiling_color': '#87CEEB',
+            'wall_texture': 'spr_wall', 'sky_texture': 'spr_sky',
+            'floor_texture': 'spr_floor', 'floor_cast_res': 4,
+        }
+        screen = pygame.Surface((480, 480))
+        frames = 20
+        start = time.perf_counter()
+        for i in range(frames):
+            camera.facing_angle = (i / frames) * 360.0
+            room._render_raycast_view(screen)
+        ms = (time.perf_counter() - start) / frames * 1000
+        assert ms < 25.0, f"full textured raycast took {ms:.1f}ms/frame (floor cast too slow?)"
+
+
 class TestBillboardSprites:
     """Phase 6 of the plan doc, scoped down to a first cut: non-solid
     visible sprited instances (goals, pickups, monsters) render as a

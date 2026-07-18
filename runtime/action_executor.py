@@ -4455,6 +4455,13 @@ class ActionExecutor:
             # Phase 5b: a sprite NAME for a DOOM-style panning sky over the
             # ceiling (empty = the flat ceiling_color fill).
             'sky_texture': str(parameters.get('sky_texture', '')),
+            # Phase 5: floor / (indoor) ceiling texture sprite names, cast via
+            # low-res floor casting; floor_cast_res is the downsample factor
+            # (higher = faster + chunkier; 4 measured ~5ms/frame). Empty
+            # textures -> the flat floor_color / ceiling fills.
+            'floor_texture': str(parameters.get('floor_texture', '')),
+            'ceiling_texture': str(parameters.get('ceiling_texture', '')),
+            'floor_cast_res': int(_num('floor_cast_res', 4)),
         }
         # Force the wall edges to rebuild against the (possibly new)
         # cell_size next render instead of reusing a stale cache.

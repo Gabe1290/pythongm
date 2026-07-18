@@ -27,7 +27,8 @@
             "floor_color": "#464632",
             "ceiling_color": "#87CEEB",
             "wall_texture": "spr_wall_texture",
-            "sky_texture": "spr_sky"
+            "sky_texture": "spr_sky",
+            "floor_texture": "spr_floor"
           }
         }
       ]
