@@ -2871,11 +2871,25 @@ class GameRoom {
         const sprites = (this._gameRef && this._gameRef.sprites) || {};
         const wallTex = cfg.wall_texture ? sprites[cfg.wall_texture] : null;
 
+        // Sky (Phase 5b port): a panorama over the ceiling, panned by
+        // facing_angle, never receding. pano_w = w*360/fov; blit at -pan + wrap.
+        const skyTex = cfg.sky_texture ? sprites[cfg.sky_texture] : null;
+        if (skyTex && skyTex.complete && skyTex.width > 0) {
+            const panoW = Math.max(1, Math.floor(w * 360 / Math.max(1, cfg.fov || 66)));
+            const pan = Math.floor((((camera.facing_angle % 360) + 360) % 360) / 360 * panoW);
+            ctx.drawImage(skyTex, 0, 0, skyTex.width, skyTex.height, -pan, 0, panoW, halfH);
+            if (panoW - pan < w) {
+                ctx.drawImage(skyTex, 0, 0, skyTex.width, skyTex.height, panoW - pan, 0, panoW, halfH);
+            }
+        }
+
+        const colWallDist = new Array(numCols).fill(Infinity);  // for billboard occlusion
         for (let col = 0; col < numCols; col++) {
             const rayOffset = -fovRad / 2 + fovRad * (col / numCols);
             const r = this.castRay(camX, camY, facingScreenRad + rayOffset, cellSize, renderDist);
-            if (!r.hit) continue;  // open sight-line: leave floor/ceiling showing
+            if (!r.hit) continue;  // open sight-line: leave floor/ceiling/sky showing
             const corrected = r.dist * Math.cos(rayOffset);  // fisheye correction
+            colWallDist[col] = corrected;
             const stripH = Math.min(h, Math.floor(h * cellSize / Math.max(corrected, 1e-4)));
             const x0 = Math.floor(col * colWidth), x1 = Math.floor((col + 1) * colWidth);
             const stripW = Math.max(1, x1 - x0), y0 = Math.floor(halfH - stripH / 2);
@@ -2891,6 +2905,44 @@ class GameRoom {
             } else {
                 ctx.fillStyle = r.side === 0 ? wallColor : wallColorShaded;
                 ctx.fillRect(x0, y0, stripW, stripH);
+            }
+        }
+
+        // Billboard sprites (Phase 6 port): every visible, non-solid, sprited
+        // instance as a camera-facing sprite scaled by distance, with real
+        // per-column occlusion against colWallDist (farthest-first).
+        const billboards = [];
+        for (const inst of this.instances) {
+            if (inst === camera || !inst.visible || !inst.sprite || inst.solid) continue;
+            if (!inst.sprite.complete || inst.sprite.width <= 0) continue;
+            const bx = inst.x + inst.boxWidth() / 2, by = inst.y + inst.boxHeight() / 2;
+            const ddx = bx - camX, ddy = by - camY;
+            const bdist = Math.hypot(ddx, ddy);
+            if (bdist < 1e-4) continue;
+            let relAngle = Math.atan2(ddy, ddx) - facingScreenRad;
+            relAngle = ((relAngle + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI;
+            if (Math.abs(relAngle) > fovRad / 2 + 0.5) continue;  // margin for width
+            const bcorr = bdist * Math.cos(relAngle);
+            if (bcorr <= 1e-4) continue;
+            billboards.push({ corr: bcorr, relAngle: relAngle, inst: inst });
+        }
+        billboards.sort((a, b) => b.corr - a.corr);  // farthest first (painter's)
+        for (const b of billboards) {
+            const spriteH = Math.min(h, Math.floor(h * b.inst.boxHeight() / Math.max(b.corr, 1e-4)));
+            const spriteW = Math.floor(h * b.inst.boxWidth() / Math.max(b.corr, 1e-4));
+            if (spriteW < 1 || spriteH < 1) continue;
+            const colCenter = (b.relAngle + fovRad / 2) / fovRad * numCols;
+            const xLeft = Math.floor(colCenter * colWidth - spriteW / 2);
+            const yTop = Math.floor(halfH - spriteH / 2);
+            const img = b.inst.sprite;
+            for (let sx = 0; sx < spriteW; sx++) {
+                const screenX = xLeft + sx;
+                if (screenX < 0 || screenX >= w) continue;
+                const colIdx = Math.min(numCols - 1, Math.max(0, Math.floor(screenX / colWidth)));
+                if (b.corr < colWallDist[colIdx]) {  // unoccluded by a nearer wall
+                    const srcX = Math.min(img.width - 1, Math.floor(sx / spriteW * img.width));
+                    ctx.drawImage(img, srcX, 0, 1, img.height, screenX, yTop, 1, spriteH);
+                }
             }
         }
     }
