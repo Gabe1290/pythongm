@@ -692,7 +692,16 @@ harness if one is available.)
    with sprite-picker texture params + colour params; `tests/
    test_raycast_action_registration.py`, 6 tests). No feature-matrix/handler
    coverage regressions.
-2. HTML5 facing_angle + walls (+ source test). Medium.
+2. HTML5 facing_angle + walls (+ source test). Medium. — **DONE 2026-07-18.**
+   `engine.js`: `facing_angle` on GameInstance + `set_facing_angle` case +
+   `parseNumParam` facing_angle expansion (so `set_direction_speed(direction=
+   "facing_angle")` resolves); `enable_raycast_view` case building
+   `room.raycastCamera`; `buildRaycastWalls`/`castRay`/`renderRaycastView`
+   (walls: `ctx.drawImage(tex, texX,0,1,th, x0,y0,stripW,stripH)` slice + flat
+   fallback + y-face shade) ported faithfully from the desktop; `render()`
+   early-return. `tests/test_html5_raycast.py` (7, source-level + real
+   raycast_1 export round-trip). No JS engine/Playwright in CI, so behavioural
+   proof is a browser run (as with views); added lines brace-balanced.
 3. HTML5 sky + floor (spike first) + billboards (+ source/Playwright). Medium.
 4. Kivy facing_angle + walls (+ stub test). Medium.
 5. Kivy sky + floor (spike) + billboards (+ stub test). Medium.
