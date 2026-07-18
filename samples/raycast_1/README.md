@@ -21,19 +21,20 @@ look (no pitch), corridors must be grid-aligned, and there's no true
 room-over-room. That's a deliberate, honest limitation, not a missing
 feature — see the plan doc's "why raycasting" pedagogy note.
 
-**Status — textured walls, desktop (pygame) only.** Walls now sample a
-**brick texture** (`spr_wall_texture`, set via the `wall_texture` parameter
-on `enable_raycast_view`): each screen column samples a vertical strip of
-the texture at the ray's hit position, scaled by distance, with the
-away-facing wall face drawn at half brightness as a free depth cue.
-Floor/ceiling are still flat fills (the sky-blue ceiling previews the
-sky/horizon phase). `obj_goal` renders as a camera-facing billboard sprite
-(scaled by distance, occluded by walls) — see "What's new here" below.
-Still ahead: floor/ceiling textures, an outdoor sky, and Kivy/HTML5 export
-parity — this sample currently only runs through `Build → Test Game` /
-desktop export. To go back to the old flat-color look, set
-`wall_textured` to `false` (or clear `wall_texture`) on the
-`enable_raycast_view` action.
+**Status — textured walls + panning sky, desktop (pygame) only.** Walls
+sample a **brick texture** (`spr_wall_texture`, via the `wall_texture`
+parameter on `enable_raycast_view`): each screen column samples a vertical
+strip of the texture at the ray's hit position, scaled by distance, with the
+away-facing wall face at half brightness as a free depth cue. The ceiling is
+now a **DOOM-style sky** (`spr_sky`, via `sky_texture`) — a panorama that pans
+horizontally as you turn (a full 360° turn pans it exactly once) and does
+*not* recede with distance, so it reads as an infinitely-far horizon.
+The floor is still a flat fill. `obj_goal` renders as a camera-facing
+billboard sprite (scaled by distance, occluded by walls) — see "What's new
+here" below. Still ahead: floor/ceiling textures and Kivy/HTML5 export parity
+— this sample currently only runs through `Build → Test Game` / desktop
+export. To go back to the old look, clear `wall_texture`/`sky_texture` (or set
+`wall_textured: false`) on the `enable_raycast_view` action.
 
 ## How to play
 

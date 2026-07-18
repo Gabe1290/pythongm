@@ -617,6 +617,75 @@ class TestTexturedWalls:
         assert screen.get_at((w // 2, h // 2))[:3] == (255, 0, 0)
 
 
+class TestSky:
+    """Phase 5b: a DOOM-style sky over the ceiling region -- panned by
+    facing_angle, not scaled by distance. Absent sky_texture -> the flat
+    ceiling_color fill (unchanged)."""
+
+    def _open_room_with_sky(self):
+        """A wall-less room (whole ceiling is sky at every angle) + a camera,
+        with a horizontal-gradient sky sprite registered by name so a pan is
+        detectable pixel-to-pixel."""
+        from runtime.game_runner import GameSprite
+        room = _room(320, 320)
+        camera = GameInstance("obj_person", 128, 128, {}, action_executor=None)
+        camera.facing_angle = 0.0
+        room.instances.append(camera)
+        # 256x64 horizontal gradient: R ramps 0..255 across the width, so any
+        # horizontal pan changes the sampled colour.
+        frame = pygame.Surface((256, 64))
+        for x in range(256):
+            frame.fill((x, 0, 255 - x), (x, 0, 1, 64))
+        sky = GameSprite.__new__(GameSprite)
+        sky.frames = [frame]
+        room._all_sprites = {'spr_sky': sky}
+        room.raycast_camera = {
+            'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
+            'render_distance': 20, 'cell_size': 32, 'columns': 64,
+            'wall_color': '#ff0000', 'floor_color': '#00ff00',
+            'ceiling_color': '#0000ff', 'sky_texture': 'spr_sky',
+        }
+        return room
+
+    def test_sky_replaces_flat_ceiling(self):
+        room = self._open_room_with_sky()
+        screen = pygame.Surface((320, 240))
+        room._render_raycast_view(screen)
+        # a ceiling pixel is now sky (gradient R>0/G==0), not the flat blue fill
+        px = screen.get_at((160, 8))[:3]
+        assert px != (0, 0, 255), "sky did not replace the flat ceiling fill"
+        assert px[1] == 0, "sampled pixel is not from the gradient sky"
+
+    def test_sky_pans_with_facing_angle(self):
+        room = self._open_room_with_sky()
+        screen = pygame.Surface((320, 240))
+        cam = next(i for i in room.instances if i.object_name == "obj_person")
+
+        cam.facing_angle = 0.0
+        room._render_raycast_view(screen)
+        at0 = screen.get_at((160, 8))[:3]
+
+        cam.facing_angle = 90.0
+        room._render_raycast_view(screen)
+        at90 = screen.get_at((160, 8))[:3]
+
+        assert at0 != at90, "sky did not pan when the camera turned"
+
+    def test_floor_still_flat_below_horizon(self):
+        room = self._open_room_with_sky()
+        screen = pygame.Surface((320, 240))
+        room._render_raycast_view(screen)
+        w, h = screen.get_size()
+        assert screen.get_at((w // 2, h - 4))[:3] == (0, 255, 0)  # floor_color
+
+    def test_no_sky_texture_keeps_flat_ceiling(self):
+        room = self._open_room_with_sky()
+        del room.raycast_camera['sky_texture']
+        screen = pygame.Surface((320, 240))
+        room._render_raycast_view(screen)
+        assert screen.get_at((160, 8))[:3] == (0, 0, 255)  # flat ceiling_color
+
+
 class TestBillboardSprites:
     """Phase 6 of the plan doc, scoped down to a first cut: non-solid
     visible sprited instances (goals, pickups, monsters) render as a
