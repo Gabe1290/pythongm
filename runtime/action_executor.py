@@ -4432,6 +4432,12 @@ class ActionExecutor:
             except (TypeError, ValueError):
                 return default
 
+        def _bool(key, default):
+            raw = parameters.get(key, default)
+            if isinstance(raw, str):
+                return raw.strip().lower() in ('true', '1', 'yes')
+            return bool(raw)
+
         room.raycast_camera = {
             'enabled': True,
             'camera_object': camera_object,
@@ -4442,6 +4448,10 @@ class ActionExecutor:
             'wall_color': str(parameters.get('wall_color', '#993333')),
             'floor_color': str(parameters.get('floor_color', '#464632')),
             'ceiling_color': str(parameters.get('ceiling_color', '#87CEEB')),
+            # Phase 5 texturing: a sprite NAME to texture every wall (empty =
+            # flat colour / per-instance sprite fallback), and an on/off toggle.
+            'wall_texture': str(parameters.get('wall_texture', '')),
+            'wall_textured': _bool('wall_textured', True),
         }
         # Force the wall edges to rebuild against the (possibly new)
         # cell_size next render instead of reusing a stale cache.

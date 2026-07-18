@@ -258,7 +258,7 @@ class TestCastRay:
         room._build_raycast_walls(32)
         # Camera at grid (0.5, 0.5), i.e. (16, 16); ray along +x hits the
         # wall's west face at grid x=2 -> (2.5 - 1) = 1.5 cells = 48px.
-        dist, side, hit = room._cast_ray(16, 16, 0.0, 32, 20)
+        dist, side, hit, *_ = room._cast_ray(16, 16, 0.0, 32, 20)
         assert dist == pytest.approx(48.0, abs=0.01)
         assert side == 0
         assert hit is True
@@ -270,7 +270,7 @@ class TestCastRay:
         # Straight down (GM screen-space: angle pi/2 in this method's raw
         # math convention, since _cast_ray takes screen-space radians
         # directly -- see _render_raycast_view for the GM-angle mapping).
-        dist, side, hit = room._cast_ray(16, 16, math.pi / 2, 32, 20)
+        dist, side, hit, *_ = room._cast_ray(16, 16, math.pi / 2, 32, 20)
         assert dist == pytest.approx(48.0, abs=0.01)
         assert side == 1
         assert hit is True
@@ -285,13 +285,13 @@ class TestCastRay:
         room.instances.append(_solid_instance("obj_wall_h", 0, 28, width=32, height=8))
         room._build_raycast_walls(32)
         # Ray straight down through row 0 hits it...
-        dist, side, hit = room._cast_ray(16, 4, math.pi / 2, 32, 20)
+        dist, side, hit, *_ = room._cast_ray(16, 4, math.pi / 2, 32, 20)
         assert dist == pytest.approx(28.0, abs=0.01)
         assert side == 1
         assert hit is True
         # ...but the same ray one row over (row 1, no wall registered
         # there) sails through to the render-distance cap instead.
-        dist2, side2, hit2 = room._cast_ray(16, 36, math.pi / 2, 32, 3)
+        dist2, side2, hit2, *_ = room._cast_ray(16, 36, math.pi / 2, 32, 3)
         assert dist2 == pytest.approx(3 * 32, abs=0.01)
         assert hit2 is False
 
@@ -303,7 +303,7 @@ class TestCastRay:
         # to max_cells and stop cleanly, no crash / no infinite loop.
         room = _room(64, 64)
         room._build_raycast_walls(32)
-        dist, side, hit = room._cast_ray(16, 16, 0.3, 32, 3)
+        dist, side, hit, *_ = room._cast_ray(16, 16, 0.3, 32, 3)
         assert dist == pytest.approx(3 * 32, abs=0.01)
         assert hit is False
 
@@ -515,6 +515,108 @@ class TestRenderRaycastView:
         assert screen.get_at((2, 2))[:3] != (0, 0, 255)
 
 
+class TestTexturedWalls:
+    """Phase 5: a wall renders a vertical strip sampled from its own sprite,
+    not a flat colour -- when the wall's solid instance has a sprite and
+    wall_textured isn't disabled."""
+
+    def _sprited_solid_wall(self, color=(255, 0, 255)):
+        from runtime.game_runner import GameSprite
+        room = _room(160, 160)
+        wall = _solid_instance("obj_wall", 96, 64)   # square -> all 4 edges
+        sprite = GameSprite.__new__(GameSprite)
+        frame = pygame.Surface((32, 32))
+        frame.fill(color)
+        sprite.frames = [frame]
+        wall.sprite = sprite
+        room.instances.append(wall)
+        camera = GameInstance("obj_person", 0, 64, {}, action_executor=None)
+        camera.facing_angle = 0.0                    # facing +x, toward the wall
+        room.instances.append(camera)
+        room.raycast_camera = {
+            'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
+            'render_distance': 20, 'cell_size': 32, 'columns': 64,
+            'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
+        }
+        return room
+
+    def test_solid_wall_is_textured_with_its_own_sprite(self):
+        room = self._sprited_solid_wall(color=(255, 0, 255))
+        screen = pygame.Surface((320, 240))
+        room._render_raycast_view(screen)
+        w, h = screen.get_size()
+        # centre column shows the sprite's colour, NOT the flat wall_color red
+        assert screen.get_at((w // 2, h // 2))[:3] == (255, 0, 255)
+
+    def test_wall_textured_false_forces_flat_colour(self):
+        room = self._sprited_solid_wall(color=(255, 0, 255))
+        room.raycast_camera['wall_textured'] = False
+        screen = pygame.Surface((320, 240))
+        room._render_raycast_view(screen)
+        w, h = screen.get_size()
+        assert screen.get_at((w // 2, h // 2))[:3] == (255, 0, 0)   # wall_color
+
+    def test_y_face_texture_strip_is_half_brightness(self):
+        """A y-face (side==1) texture strip gets the same half-brightness
+        depth cue as the flat path (mirrors test_side_shading's geometry:
+        camera at (0,0) facing down into a wall on the (0,2) grid line)."""
+        from runtime.game_runner import GameSprite
+        room = _room(160, 160)
+        wall = _solid_instance("obj_wall", 0, 64)    # grid (0, 2) -- y-face hit
+        sprite = GameSprite.__new__(GameSprite)
+        frame = pygame.Surface((32, 32))
+        frame.fill((200, 200, 200))
+        sprite.frames = [frame]
+        wall.sprite = sprite
+        room.instances.append(wall)
+        camera = GameInstance("obj_person", 0, 0, {}, action_executor=None)
+        camera.facing_angle = -90.0                  # screen-space +y (down)
+        room.instances.append(camera)
+        room.raycast_camera = {
+            'enabled': True, 'camera_object': 'obj_person', 'fov': 10,
+            'render_distance': 20, 'cell_size': 32, 'columns': 16,
+            'wall_color': '#993333', 'floor_color': '#000000', 'ceiling_color': '#000000',
+        }
+        screen = pygame.Surface((160, 120))
+        room._render_raycast_view(screen)
+        w, h = screen.get_size()
+        # 200 * 128 / 255 == 100 (BLEND_RGB_MULT half-brightness)
+        assert screen.get_at((w // 2, h // 2))[:3] == (100, 100, 100)
+
+    def test_cast_ray_returns_tex_u_and_sprite_on_hit(self):
+        room = self._sprited_solid_wall()
+        room._build_raycast_walls(32)
+        dist, side, hit, tex_u, sprite = room._cast_ray(16, 80, 0.0, 32, 20)
+        assert hit is True
+        assert 0.0 <= tex_u < 1.0
+        assert sprite is room.instances[0].sprite
+
+    def test_cast_ray_miss_returns_no_texture(self):
+        room = _room(160, 160)
+        room._build_raycast_walls(32)                # no walls at all
+        dist, side, hit, tex_u, sprite = room._cast_ray(16, 16, 0.0, 32, 5)
+        assert hit is False
+        assert tex_u == 0.0 and sprite is None
+
+    def test_spriteless_wall_falls_back_to_flat_colour(self):
+        """A solid wall whose instance has no sprite still renders (flat)."""
+        room = _room(160, 160)
+        wall = _solid_instance("obj_wall", 96, 64)   # no .sprite set
+        room.instances.append(wall)
+        camera = GameInstance("obj_person", 0, 64, {}, action_executor=None)
+        camera.facing_angle = 0.0
+        room.instances.append(camera)
+        room.raycast_camera = {
+            'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
+            'render_distance': 20, 'cell_size': 32, 'columns': 64,
+            'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
+        }
+        screen = pygame.Surface((320, 240))
+        room._render_raycast_view(screen)
+        w, h = screen.get_size()
+        assert screen.get_at((w // 2, h // 2))[:3] == (255, 0, 0)
+
+
 class TestBillboardSprites:
     """Phase 6 of the plan doc, scoped down to a first cut: non-solid
     visible sprited instances (goals, pickups, monsters) render as a
@@ -582,6 +684,12 @@ class TestBillboardSprites:
             'enabled': True, 'camera_object': 'obj_person', 'fov': 66,
             'render_distance': 20, 'cell_size': 32, 'columns': 64,
             'wall_color': '#ff0000', 'floor_color': '#00ff00', 'ceiling_color': '#0000ff',
+            # Force flat-colour walls so the ONLY way the sprite's yellow could
+            # appear is a (wrong) billboard double-draw. With Phase 5 texturing
+            # on, this solid wall would legitimately be textured with its own
+            # yellow sprite, which is a separate behaviour (see
+            # test_solid_wall_is_textured_with_its_own_sprite).
+            'wall_textured': False,
         }
         screen = pygame.Surface((320, 240))
         room._render_raycast_view(screen)

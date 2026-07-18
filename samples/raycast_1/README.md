@@ -21,13 +21,19 @@ look (no pitch), corridors must be grid-aligned, and there's no true
 room-over-room. That's a deliberate, honest limitation, not a missing
 feature — see the plan doc's "why raycasting" pedagogy note.
 
-**v1 status — flat colors only, desktop (pygame) only.** Walls are a flat
-color per wall-face orientation (a free lighting cue, no real lighting
-model), floor/ceiling are flat fills, no textures, no sky/horizon yet.
-`obj_goal` renders as a camera-facing billboard sprite (scaled by
-distance, occluded by walls) — see "What's new here" below. Kivy/HTML5
-export parity is not implemented — this sample currently only runs
-correctly through `Build → Test Game` / desktop export.
+**Status — textured walls, desktop (pygame) only.** Walls now sample a
+**brick texture** (`spr_wall_texture`, set via the `wall_texture` parameter
+on `enable_raycast_view`): each screen column samples a vertical strip of
+the texture at the ray's hit position, scaled by distance, with the
+away-facing wall face drawn at half brightness as a free depth cue.
+Floor/ceiling are still flat fills (the sky-blue ceiling previews the
+sky/horizon phase). `obj_goal` renders as a camera-facing billboard sprite
+(scaled by distance, occluded by walls) — see "What's new here" below.
+Still ahead: floor/ceiling textures, an outdoor sky, and Kivy/HTML5 export
+parity — this sample currently only runs through `Build → Test Game` /
+desktop export. To go back to the old flat-color look, set
+`wall_textured` to `false` (or clear `wall_texture`) on the
+`enable_raycast_view` action.
 
 ## How to play
 

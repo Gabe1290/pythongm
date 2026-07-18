@@ -462,7 +462,25 @@ once Phase 1's core existed, exactly as this doc originally bet. What's
 left of this phase is folding in textures/sky/sprites as those phases
 land, not building a sample from scratch.
 
-### Phase 5 — textured walls, floor, and ceiling (NEXT, reprioritized ahead of HTML5/Kivy)
+### Phase 5 — textured walls, floor, and ceiling
+
+**Walls: DONE 2026-07-18.** `_cast_ray` now also returns the texture-U (the
+fractional hit position along the wall face, computed from the DDA hit — the
+standard `posY + perpDist*rayDirY` fractional part, flipped per face so the
+texture isn't mirrored) and the hit wall's sprite (stored in parallel
+`_raycast_{v,h}_wall_sprites` dicts built alongside the edge sets). The render
+loop samples a 1px vertical subsurface strip and `pygame.transform.scale`s it
+to the projected strip height, with the same half-brightness y-face shading as
+the flat path (via `BLEND_RGB_MULT`). Resolution order per wall column: an
+explicit `wall_texture` sprite name on the camera config (the usual choice —
+the derived thin edge-wall collision sprites aren't real wall art), else the
+per-instance wall sprite, else flat colour; `wall_textured: false` forces flat.
+`raycast_1` ships a generated 64×64 tileable brick `spr_wall_texture` and looks
+like a proper Wolfenstein corridor now (verified by rendered-PNG eyeball).
+Regression: `tests/test_raycast_view.py::TestTexturedWalls` (6 tests: textured
+render, flat override, y-face shading, tex_u + sprite on hit, miss returns no
+texture, spriteless fallback). **Floor/ceiling casting is still ahead** (the
+per-pixel-row part flagged for a timing check) — next.
 
 - **Walls**: sample a 1px-wide vertical strip from the wall's sprite at
   the ray's hit position instead of a flat color. The hit position's
