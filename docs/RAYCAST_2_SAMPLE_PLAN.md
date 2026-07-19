@@ -97,9 +97,29 @@ limit loses nothing and the next session resumes from clean `main`.
   on input, and the player is blocked by walls. `tests/test_raycast_2_sample.py`
   (3). **The "derive from maze_2" note in the Concept/Level-design sections is
   superseded by this hand-built approach.**
-- **Unit 2 — gems + score.** `obj_gem` (non-solid, sprited) + N room instances;
-  `obj_gem`↔`obj_person` collision adds score and destroys the gem; `set_score`
-  HUD on. Verify score increments and gems disappear from the billboard pass.
+- **Unit 2 — gems + score. LEAN PASS DONE 2026-07-19** (committed under a tight
+  session budget). `obj_gem` (non-solid, sprited → billboard) with maze_2's
+  collect pattern (`collision_with_obj_person` → `destroy_instance self`;
+  `destroy` → `set_score +10 relative`); 8 gems scattered at deterministic open
+  cells by the regenerated maze script; `obj_gem` + `spr_gem` registered in
+  `project.json`. `spr_gem` is a **reused 88×88 match3 gem** (`spr_gem_blue.png`,
+  centred origin). Verified: `tests/test_raycast_2_sample.py` +2 (data wiring +
+  a behavioural collision→`score==10`→gem-destroyed run through the real loop).
+  **⚠️ RESUME STATE for next session (do these FIRST, with full budget):**
+  1. **Run the FULL suite** — the lean pass gated on only `test_raycast_2_sample.py`
+     to save budget; changes are additive (new sample data + a self-contained
+     test file) so risk is low, but the full gate is owed. Baseline was 1950
+     passed before Unit 2; confirm it's 1952 (or the current count + 2) with 0
+     failed.
+  2. **Score HUD polish:** score currently shows only in the **window caption**
+     (auto-enabled on first `set_score`) and only *after* the first gem. Add a
+     `set_score 0` to `obj_person`'s create event for a from-start HUD, and
+     consider an in-view `draw_score` (confirm the draw queue renders over the
+     raycast view — it may not; if not, that's a small engine note, not a
+     sample bug).
+  3. **Gem art:** the 88×88 placeholder renders as a large billboard — resize
+     `spr_gem` (or reskin) to ~24–32 px for proportion.
+  Then proceed to Unit 3.
 - **Unit 3 — patrolling enemy.** `obj_monster` (non-solid, sprited, moving);
   wall-bounce via `collision_with_obj_wall_*`; `obj_monster`↔`obj_person`
   collision deducts a life and restarts the room; `set_lives` HUD on. Verify the

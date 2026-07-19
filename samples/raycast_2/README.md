@@ -13,9 +13,11 @@ and [`docs/RAYCAST_2_SAMPLE_PLAN.md`](../../docs/RAYCAST_2_SAMPLE_PLAN.md) for
 this sample's design and unit plan.
 
 > **Work in progress.** This is being built one commit-sized unit at a time.
-> **Landed:** Unit 1 — the maze geometry + first-person baseline (navigate the
-> corridors and reach the goal). **Coming:** collectible gems + score (Unit 2),
-> a patrolling billboard monster (Unit 3), a gem-gated exit (Unit 4).
+> **Landed:** Unit 1 — maze geometry + first-person baseline; Unit 2 (lean) —
+> collectible gems that add to the score. **Coming:** a patrolling billboard
+> monster (Unit 3), a gem-gated exit (Unit 4), and Unit-2 polish (an in-view
+> `draw_score` HUD, and resizing/reskinning the placeholder gem art — the gem
+> sprite is currently a large 88×88 reused match3 gem).
 
 ## How to play
 
@@ -24,7 +26,9 @@ this sample's design and unit plan.
   solid-instance collision).
 - **Left / Right** — turn in place (rotates `facing_angle`, independent of
   movement — you can turn while standing still).
-- **Objective (Unit 1):** find the goal at the far corner of the maze.
+- **Collect the gems** scattered through the maze — each one adds 10 to the
+  score (shown in the window caption once the first is picked up).
+- **Objective:** find the goal at the far corner of the maze.
 
 ## Level geometry
 
