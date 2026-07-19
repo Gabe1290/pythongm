@@ -101,6 +101,14 @@ def _literal(value):
         return repr(value)
 
 
+def _tofloat(value, default):
+    """Parse a param value to float at codegen time; fall back to default."""
+    try:
+        return float(str(value).strip())
+    except (TypeError, ValueError):
+        return float(default)
+
+
 def _num_code(value, default=0):
     """Emit a NUMERIC parameter that may be an expression ("direction+90").
 
@@ -695,6 +703,60 @@ class ActionCodeGenerator:
 
         elif action_type == 'set_direction':
             return f"self.direction = {_num_code(params.get('direction', params.get('value', 0)))}"
+
+        elif action_type == 'set_direction_speed':
+            # GM's Move Fixed-ish "direction + speed" setter (raycast_1's FPS
+            # controls use direction="facing_angle"[+180]). _num_code resolves
+            # the bare `facing_angle` to self.facing_angle.
+            d = _num_code(params.get('direction', 0))
+            s = _num_code(params.get('speed', 4))
+            return f"self.direction = {d}; self.speed = {s}"
+
+        elif action_type == 'set_facing_angle':
+            angle = _num_code(params.get('angle', 0))
+            rel = params.get('relative', False)
+            if isinstance(rel, str):
+                rel = rel.strip().lower() in ('true', '1', 'yes')
+            if rel:
+                return f"self.facing_angle = (self.facing_angle + {angle}) % 360"
+            return f"self.facing_angle = ({angle}) % 360"
+
+        elif action_type == 'enable_raycast_view':
+            # Configure the scene's Doom-style first-person raycast camera
+            # (rendered by the scene; see the raycast render methods). Mirrors
+            # execute_enable_raycast_view_action's defaults.
+            en = params.get('enable', True)
+            if isinstance(en, str):
+                en = en.strip().lower() not in ('false', '0', 'no')
+            if not en:
+                return "self.scene.raycast_camera = {'enabled': False}"
+            def _q(v):
+                return "''" if v is None else repr(str(v))
+            cfg = {
+                'enabled': True,
+                'camera_object': str(params.get('camera_object') or ''),
+                'fov': _tofloat(params.get('fov'), 66),
+                'render_distance': int(_tofloat(params.get('render_distance'), 20)),
+                'cell_size': int(_tofloat(params.get('cell_size'), 32)),
+                'columns': int(_tofloat(params.get('columns'), 320)),
+                'wall_color': str(params.get('wall_color') or '#993333'),
+                'floor_color': str(params.get('floor_color') or '#464632'),
+                'ceiling_color': str(params.get('ceiling_color') or '#87CEEB'),
+                'wall_texture': str(params.get('wall_texture') or ''),
+                'sky_texture': str(params.get('sky_texture') or ''),
+                'floor_texture': str(params.get('floor_texture') or ''),
+                'ceiling_texture': str(params.get('ceiling_texture') or ''),
+                'wall_textured': not (str(params.get('wall_textured', 'true')).strip().lower()
+                                      in ('false', '0', 'no')),
+                'floor_cast_res': max(1, int(_tofloat(params.get('floor_cast_res'), 4))),
+            }
+            if not cfg['camera_object']:
+                # No named camera object -> the acting instance IS the camera;
+                # store it directly (the generated Kivy object has no
+                # object_name attribute to look up by).
+                return (f"self.scene.raycast_camera = {cfg!r}; "
+                        f"self.scene.raycast_camera['camera_instance'] = self")
+            return f"self.scene.raycast_camera = {cfg!r}"
 
         elif action_type in ('move_fixed', 'start_moving_direction'):
             # start_moving_direction shares move_fixed's semantics (a set of
