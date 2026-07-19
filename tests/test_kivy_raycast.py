@@ -168,6 +168,20 @@ class _WindowCls:
         pass
 
 
+class _FakeGLTexture:
+    """Stub for kivy.graphics.texture.Texture — records blit_buffer calls."""
+    def __init__(self, size):
+        self.width, self.height = size
+        self.blits = []
+
+    @staticmethod
+    def create(size=(1, 1), colorfmt='rgba'):
+        return _FakeGLTexture(size)
+
+    def blit_buffer(self, buf, colorfmt='rgba', bufferfmt='ubyte'):
+        self.blits.append(len(buf))
+
+
 @contextmanager
 def _stub_kivy_env(game_dir: Path):
     saved_path = list(sys.path)
@@ -187,6 +201,7 @@ def _stub_kivy_env(game_dir: Path):
             Ellipse=_Instr, InstructionGroup=_Group,
             PushMatrix=_Instr, PopMatrix=_Instr, Translate=_Instr,
             Fbo=_Instr, ClearColor=_Instr, ClearBuffers=_Instr)
+        mod("kivy.graphics.texture", Texture=_FakeGLTexture)
         mod("kivy.core")
         mod("kivy.core.window", Window=_WindowCls())
         mod("kivy.core.image", Image=object)
@@ -401,3 +416,50 @@ def test_billboard_drawn_and_occluded_by_wall(exported):
         occluded = [c for c in _textured_rects(scene2)
                     if c.kw["texture"] is goal_tex2]
         assert not occluded, "billboard should be fully occluded by the wall"
+
+
+def test_floor_buffer_size_and_sampling(exported):
+    import math
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls)
+        scene.display_width, scene.display_height = 480, 480
+        tw = th = 32
+        # A recognisable RGBA texture: red gradient so the cast output varies.
+        pixels = bytearray(tw * th * 4)
+        for k in range(tw * th):
+            pixels[k * 4] = k % 256
+            pixels[k * 4 + 3] = 255
+        buf, sw, sh = scene._floor_buffer(bytes(pixels), tw, th, 4,
+                                          facing_screen_rad=0.0, fov_rad=math.radians(66),
+                                          cam_cx=3.5, cam_cy=3.5)
+        # res=4 over a 480-wide, 240-tall floor region -> 120x60 low-res grid.
+        assert (sw, sh) == (120, 60)
+        assert len(buf) == sw * sh * 4
+        assert all(buf[i + 3] == 255 for i in range(0, len(buf), 4))   # opaque
+        assert any(buf[i] for i in range(0, len(buf), 4))              # sampled non-zero
+
+
+def test_render_raycast_casts_floor_texture(exported):
+    with _stub_kivy_env(exported):
+        cls = _scene_class(exported)
+        scene = _blank_scene(cls)
+        # Pre-seed the floor sprite's pixels so the caster runs headlessly.
+        floor_px = (bytes([90, 90, 90, 255] * (32 * 32)), 32, 32)
+        scene._raycast_px_cache = {"spr_floor": floor_px}
+        cam = _FakeInst(32, 32, 32, 32, solid=False, facing=0.0)
+        scene.instances = [cam]
+        scene.raycast_camera = {
+            "enabled": True, "cell_size": 32, "fov": 66, "render_distance": 20,
+            "columns": 80, "camera_instance": cam, "wall_textured": False,
+            "floor_texture": "spr_floor", "floor_cast_res": 4,
+        }
+        scene._render_raycast()
+        # A textured floor Rectangle (the low-res cast) was added, sized to the
+        # full display width, with the v-flip tex_coords for the bottom region.
+        floor_rects = [c for c in scene._raycast_group.children
+                       if getattr(c, "kw", None) and c.kw.get("texture") is not None
+                       and c.kw.get("size", (0,))[0] == scene.display_width
+                       and c.kw.get("tex_coords") == (0, 1, 1, 1, 1, 0, 0, 0)]
+        assert floor_rects, "floor cast rectangle not drawn"
+        assert floor_rects[0].kw["pos"] == (0, 0)     # bottom half (Kivy y-up)

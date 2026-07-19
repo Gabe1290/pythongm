@@ -1477,6 +1477,7 @@ class {class_name}(Widget):
         self._raycast_v_walls = None     # derived wall edges (built lazily)
         self._raycast_cell_size = None
         self._raycast_tex_cache = {{}}
+        self._raycast_px_cache = {{}}   # sprite name -> (rgba bytes, tw, th)
         # Displayed surface: for a views room it's the game WINDOW (a slice of
         # the larger room); otherwise it's the room itself. The exporter sizes
         # the OS window / Android fit-scale to this via scene.display_width/height.
@@ -1781,13 +1782,104 @@ class {class_name}(Widget):
             return tex.get_region(idx * fw, 0, fw, fh)
         return tex
 
+    def _raycast_texture_pixels(self, name):
+        """(rgba_bytes, tw, th) for a floor/ceiling sprite NAME (cached), for
+        per-pixel floor casting. Kivy texture.pixels are bottom-up (GL order);
+        the caster flips the row to match the desktop's top-down sampling."""
+        if not name:
+            return None
+        cache = self._raycast_px_cache
+        if name in cache:
+            return cache[name]
+        result = None
+        tex = self._raycast_texture(name)
+        if tex is not None:
+            try:
+                result = (tex.pixels, int(tex.width), int(tex.height))
+            except Exception:
+                result = None
+        cache[name] = result
+        return result
+
+    def _floor_buffer(self, pixels, tw, th, res, facing_screen_rad, fov_rad,
+                      cam_cx, cam_cy):
+        """Faithful port of _cast_floor_plane's cast into an RGBA byte buffer
+        (returns buf, sw, sh). Camera-plane FOV-edge rays interpolated across
+        columns; row distance 0.5h/(y-horizon); texture tiled per grid cell.
+        `pixels` is bottom-up (Kivy), so the source row is flipped to sample
+        the tile the same way the desktop's top-down get_at does."""
+        import math
+        w = float(self.display_width)
+        h = float(self.display_height)
+        half_h = int(h // 2)
+        region_h = int(h) - half_h
+        sw = max(1, int(w) // res)
+        sh = max(1, region_h // res)
+        out = bytearray(sw * sh * 4)
+        dir_x, dir_y = math.cos(facing_screen_rad), math.sin(facing_screen_rad)
+        plane = math.tan(fov_rad / 2)
+        plane_x, plane_y = -dir_y * plane, dir_x * plane
+        rdx0, rdy0 = dir_x - plane_x, dir_y - plane_y
+        rdx1, rdy1 = dir_x + plane_x, dir_y + plane_y
+        pos_z = 0.5 * h
+        step_scale = res / w
+        floor = math.floor
+        for j in range(sh):
+            y = half_h + j * res
+            p = y - half_h
+            if p <= 0:
+                p = 1
+            rowd = pos_z / p
+            stepx = rowd * (rdx1 - rdx0) * step_scale
+            stepy = rowd * (rdy1 - rdy0) * step_scale
+            fx = cam_cx + rowd * rdx0
+            fy = cam_cy + rowd * rdy0
+            di = j * sw * 4
+            for _ in range(sw):
+                tx = int(tw * (fx - floor(fx)))
+                ty = int(th * (fy - floor(fy)))
+                if tx >= tw:
+                    tx = tw - 1
+                if ty >= th:
+                    ty = th - 1
+                si = ((th - 1 - ty) * tw + tx) * 4   # flip row: Kivy px are bottom-up
+                out[di] = pixels[si]; out[di + 1] = pixels[si + 1]
+                out[di + 2] = pixels[si + 2]; out[di + 3] = 255
+                di += 4
+                fx += stepx
+                fy += stepy
+        return bytes(out), sw, sh
+
+    def _render_floor_plane(self, group, px, res, facing_screen_rad, fov_rad,
+                            cam_cx, cam_cy, w, h, ceiling):
+        """Cast the floor (or, if `ceiling`, the top half) into a low-res
+        Texture and add it to the overlay, GPU-upscaled to the region. Kivy is
+        y-up: the floor is the BOTTOM half and the cast buffer's horizon row
+        (row 0) must sit at the TOP of that region (adjacent to the centre), so
+        the tex_coords flip v; the ceiling mirrors it."""
+        from kivy.graphics.texture import Texture   # local import: keeps the
+        # scene module importable under stubs that don't provide this submodule
+        buf, sw, sh = self._floor_buffer(px[0], px[1], px[2], res,
+                                         facing_screen_rad, fov_rad, cam_cx, cam_cy)
+        tex = Texture.create(size=(sw, sh), colorfmt='rgba')
+        tex.blit_buffer(buf, colorfmt='rgba', bufferfmt='ubyte')
+        region_h = h - h / 2.0
+        group.add(Color(1, 1, 1, 1))
+        if ceiling:
+            group.add(Rectangle(texture=tex, pos=(0, h - region_h),
+                                size=(w, region_h),
+                                tex_coords=(0, 0, 1, 0, 1, 1, 0, 1)))
+        else:
+            group.add(Rectangle(texture=tex, pos=(0, 0), size=(w, region_h),
+                                tex_coords=(0, 1, 1, 1, 1, 0, 0, 0)))
+
     def _render_raycast(self):
         """Draw the first-person view as an opaque overlay: flat ceiling/floor
-        fills, a panning sky panorama over the ceiling, textured/flat wall
-        strips, then camera-facing billboard sprites with per-column occlusion
-        (units 4b + 5). A faithful port of game_runner._render_raycast_view;
-        textured floor casting is deferred to unit 5b (needs a GL timing spike).
-        Runs each frame from _update_impl when raycast_camera is enabled."""
+        fills, a panning sky panorama over the ceiling, low-res textured floor
+        (and indoor ceiling) casting, textured/flat wall strips, then
+        camera-facing billboard sprites with per-column occlusion (units 4b +
+        5). A faithful port of game_runner._render_raycast_view. Runs each frame
+        from _update_impl when raycast_camera is enabled."""
         import math
         cfg = self.raycast_camera
         if not cfg or not cfg.get('enabled'):
@@ -1861,6 +1953,24 @@ class {class_name}(Widget):
             if pano_w - pan < w:
                 group.add(Rectangle(texture=sky_tex, pos=(pano_w - pan, half_h),
                                     size=(pano_w, ceil_h)))
+
+        # Floor (and, when no sky claimed it, ceiling) texture casting — a
+        # low-res per-pixel cast + GPU upscale (port of _cast_floor_plane).
+        # res from cfg.floor_cast_res (default 4, desktop parity; the timing
+        # spike measured res=4 naive at ~5ms on an AMD 840M). Drawn UNDER the
+        # walls so they occlude it; absent floor_texture leaves the flat fill.
+        cast_res = max(1, int(cfg.get('floor_cast_res', 4)))
+        cam_cx, cam_cy = cam_x / cell_size, cam_y / cell_size
+        floor_px = self._raycast_texture_pixels(cfg.get('floor_texture', ''))
+        if floor_px is not None:
+            self._render_floor_plane(group, floor_px, cast_res, facing_screen_rad,
+                                     fov_rad, cam_cx, cam_cy, w, h, ceiling=False)
+        ceil_name = cfg.get('ceiling_texture', '')
+        if ceil_name and sky_tex is None:
+            ceil_px = self._raycast_texture_pixels(ceil_name)
+            if ceil_px is not None:
+                self._render_floor_plane(group, ceil_px, cast_res, facing_screen_rad,
+                                         fov_rad, cam_cx, cam_cy, w, h, ceiling=True)
 
         # Fisheye-corrected wall distance per screen column, for billboard
         # occlusion below (Infinity where a column saw no wall).
