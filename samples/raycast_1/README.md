@@ -102,12 +102,13 @@ action.
 - Wall thickness is `8`px, hardcoded in the conversion that generated
   `rooms/*.json` (not a runtime parameter) — regenerate the rooms to
   change it.
-- `spr_person`'s collision bbox is `(8,8)-(24,24)` (16×16, 8px margin per
-  side), set in `sprites/spr_person.json` (this sample's own copy,
-  independent of `maze_1`'s) — kept from the earlier bbox-only fix even
-  though the thin walls now give much more headroom on their own; a
-  smaller player still feels more appropriate for a corridor shooter than
-  the sprite's full 32×32 canvas.
+- `spr_person` is **16×16** with a `(4,4)-(12,12)` collision bbox — the player
+  was halved from the old 32×32 (and re-centred in its start cell, so the camera
+  still sits at the cell centre) because the full-size player made the 1-cell
+  corridors feel cramped; a smaller footprint gives much more room to move. The
+  wall **brick texture** was likewise made finer (bricks at half scale) so the
+  walls read as more distant — both tweaks trade "in-your-face" for a roomier
+  sense of space.
 
 ## Export status
 
