@@ -1788,8 +1788,8 @@
       "scale_x": 1.0,
       "scale_y": 1.0,
       "visible": true,
-      "x": 32,
-      "y": 32
+      "x": 40,
+      "y": 40
     },
     {
       "object_name": "obj_goal_final",
