@@ -161,12 +161,16 @@ limit loses nothing and the next session resumes from clean `main`.
   camera → collect gems + goal → room1 ice theme. `tests/test_raycast_2_sample.py`
   +2, and the two Unit-4 goal tests updated for the advance/win split. Suite
   1959→1961.
-- **Unit 6 — ship.** README (mirroring `raycast_1`'s depth, French-accurate);
-  `thumbnails/`; add to the Welcome-tab `SAMPLE_PROJECTS` + the
-  `add_sample_name_translations.py` term tables ("Raycast — Level 2" →
-  "Lancer de rayons — Niveau 2", etc.) + recompile `.qm`; add to
-  `tools/smoke_run_samples.py`; a `tests/test_raycast_2_sample.py` smoke test.
-  Test on desktop (`Test Game`), HTML5 export, and Kivy export.
+- **Unit 6 — ship. DONE 2026-07-19.** Added to the Welcome-tab
+  `SAMPLE_PROJECTS` ("Raycast — Level 2") + the `add_sample_name_translations.py`
+  term table (`("Raycast", 2)` → "Lancer de rayons — Niveau 2" etc.), all 13
+  `.ts` updated + `.qm` recompiled; added to `tools/smoke_run_samples.py`;
+  `tests/test_sample_docs_dialog.py` asserts the label. README finalised (drops
+  the WIP banner). **Per-target playtest all green:** desktop smoke
+  `[OK]` at 120 frames (15/15 samples clean); HTML5 export carries both rooms +
+  the ice sprites + camera objects; Kivy export's `room0`/`room1` scenes compile,
+  the ice/gem/monster textures copy, and `obj_cam1` enables the ice theme naming
+  `obj_person`. **The raycast_2 sample is complete (Units 1–6).**
 
 ## Testing per unit
 

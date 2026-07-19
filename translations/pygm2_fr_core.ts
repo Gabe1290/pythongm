@@ -2388,6 +2388,11 @@ Consultez la console pour les détails de l&apos;erreur.</translation>
 <context>
     <name>WelcomeTab</name>
         <message>
+            <source>Raycast — Level 2</source>
+            <translation>Lancer de rayons — Niveau 2</translation>
+        </message>
+
+        <message>
             <source>Raycast — Level 1</source>
             <translation>Lancer de rayons — Niveau 1</translation>
         </message>
